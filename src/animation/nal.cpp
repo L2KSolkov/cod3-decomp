@@ -3339,20 +3339,38 @@ nalGenericPose* new_nalGenericPose(TPakId pakId,
     return v2;
 }
 
-// InteractMetaAnimData / InteractMetaAnimInstance (anim.o; mirror the
-// ADSMetaAnim family; layout verified vs disasm)
-struct InteractMetaAnimData {
-    tlFixedString mName;   // +0x00
-    void* vftable;         // +0x20
+// MetaAnimData / InteractMetaAnimData (anim.o; vftable order verified:
+// GetAnimName, IsAnimLooping, IsAnimTrajRelative, GetAnimDuration,
+// GetSkeleton, CreateAnimInst, IsDelayCreate, DelayCreate; base slots 1-5
+// are __purecall, InteractMetaAnimData overrides them)
+class MetaAnimData {
+public:
+    virtual const tlFixedString& GetAnimName() const;  // 0x53ACB0
+    virtual int IsAnimLooping() const = 0;
+    virtual int IsAnimTrajRelative() const = 0;
+    virtual float GetAnimDuration() const = 0;
+    virtual const void* GetSkeleton() const = 0;
+    virtual void* CreateAnimInst(void* theSkel, void* theAnim) = 0;
+    virtual int IsDelayCreate();  // 0x53ACC0
+    virtual void DelayCreate(void** animArray, int numAnims);  // 0x53ACD0 (empty)
+
+    tlFixedString mName;   // +0x04 (vptr @ +0)
+};
+
+class InteractMetaAnimData : public MetaAnimData {
+public:
+    virtual int IsAnimLooping() const;       // 0x53F840
+    virtual int IsAnimTrajRelative() const;  // 0x53F860
+    virtual float GetAnimDuration() const;   // 0x53F880
+    virtual const void* GetSkeleton() const; // 0x53F8A0
+    virtual void* CreateAnimInst(void* theSkel, void* theAnim);  // 0x53F8B0
+    virtual int IsDelayCreate();             // 0x55FE20
+    virtual void DelayCreate(void** animArray, int numAnims);    // 0x53D180
+
     void* mAnimPtr;        // +0x24
     void* mRevPtr;         // +0x28
 
     InteractMetaAnimData();  // ea: 0x0055FDE0
-    int IsDelayCreate();           // 0x55FE20
-    const void* GetSkeleton() const;  // 0x53F8A0
-    int IsAnimLooping() const;     // 0x53F840
-    float GetAnimDuration() const; // 0x53F880
-    int IsAnimTrajRelative() const;// 0x53F860
 };
 
 class InteractMetaAnimInstance {
@@ -3375,9 +3393,55 @@ public:
 InteractMetaAnimData::InteractMetaAnimData()
 {
     memset(&mName, 0, sizeof(mName));
-    vftable = nullptr;
     mAnimPtr = nullptr;
     mRevPtr = nullptr;
+}
+
+// ea: 0x0053ACB0
+const tlFixedString& MetaAnimData::GetAnimName() const
+{
+    return mName;
+}
+
+// ea: 0x0053ACC0
+int MetaAnimData::IsDelayCreate()
+{
+    return 0;
+}
+
+// ea: 0x0053ACD0
+void MetaAnimData::DelayCreate(void** animArray, int numAnims)
+{
+    (void)animArray; (void)numAnims;
+}
+
+// ea: 0x0053F8B0
+void* InteractMetaAnimData::CreateAnimInst(void* theSkel, void* theAnim)
+{
+    (void)theAnim;
+    void* v4 = tlMemAlloc(0x1C, 8, 0);
+    if (v4 != nullptr)
+    {
+        return new (v4) InteractMetaAnimInstance(
+            (nalAnimClass<nalAnyPose>*)mAnimPtr,
+            (nalAnimClass<nalAnyPose>*)mRevPtr,
+            (nalBaseSkeleton*)theSkel);
+    }
+    return nullptr;
+}
+
+// ea: 0x0053D180
+void InteractMetaAnimData::DelayCreate(void** animArray, int numAnims)
+{
+    if (animArray == nullptr || numAnims <= 0)
+    {
+        XANIM_ASSERT("animArray && numAnims > 0",
+                     "c:\\cod\\code\\game\\InteractState.cpp", 90,
+                     "Bad anim array passed to DelayCreate");
+    }
+    mAnimPtr = *animArray;
+    mRevPtr = (numAnims == 2) ? animArray[1] : nullptr;
+    mName = tlFixedString("InteractMetaAnim");
 }
 
 // ea: 0x0055FB90
@@ -6234,7 +6298,7 @@ public:
     int mSaveFrozen;            // +0x44
     int mSaveNoClip;            // +0x48
     int mSaveDrawCrosshair;     // +0x4C
-    int mEffectEventState[4];   // +0x50
+    void* mNotifiesUsed[4];     // +0x50 (CheckNotifySet + effect-event state)
     unsigned int mEffectEventPosted;  // +0x60
     void* mPlayerAnim;          // +0x64
     void* mOtherAnim;           // +0x68
@@ -6248,8 +6312,6 @@ public:
     LerpInfo mPlayerLerp;       // +0x90
     LerpInfo mOtherLerp;        // +0x110
     InteractionController* mController;  // +0x190
-    void* mNotifiesUsed[4];     // +0x194
-    void* mPlayerAnimRef;       // +0x1A4
 
     void SetPlayerTagUtilityIndex(int weaponIndex);  // 0x53D280
     float UpdateLerp(float deltaT);                  // 0x53D330
@@ -8807,7 +8869,7 @@ void InteractState::CheckForEffectEvents(float deltaT, int postRemaining)
         InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
         unsigned int mask = 1u << i;
         if (*(unsigned int*)((char*)info + 0x42C + 4 * i) != 0
-            && mEffectEventState[i] == 0
+            && mNotifiesUsed[i] == 0
             && (mask & mEffectEventPosted) == 0)
         {
             float eventTime = *(float*)((char*)info + 0x43C + 4 * i);
@@ -9512,6 +9574,433 @@ int InteractStateRowboat_UpdateModeRow(InteractState* self, float deltaT)
         }
     }
     return mMode;
+}
+
+// ============================================================================
+// Meta-anim + Melee final cluster (anim.o)
+// Melee fields: mModifierIndex +0x1B0, mNumModifiers +0x1B4, mModifierAnimTime
+// +0x1B8, mModifierIntervalTimer +0x1BC, mPlayerSoundHandle +0x1C0,
+// mOtherSoundHandle +0x1C4, mScore +0x1D0, mNumFacialAnims +0x1FC,
+// mFacialAnims +0x200, mFacialAnimTimer +0x210; subclass meta-anim fields at
+// mMetaNalBaseAnimPtr +0x1A0 / mMetaAnimDataPtr +0x1A8.
+// ============================================================================
+
+float sFacialAnimTimeMin = 4.0f;   // 0xDF3730
+float sInitialBlendTime = 0.1f;    // 0xDF372C
+float sMinIntervalOffset = 0.1f;   // 0xDF3728
+
+// C-style MetaNalBaseAnim wrappers (defined in g_entity_misc.cpp).
+extern void* MetaNalBaseAnim_Ctor(void* self);
+extern void MetaNalBaseAnim_Create(void* self, void* metaAnimData);
+extern void MetaNalBaseAnim_DelayCreate(void* self, void** animArray,
+                                        int numAnims);
+
+extern void VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx,
+                           int entryIdx, int fromPos);  // ?VEH_LinkPlayer (g.o)
+extern Handle PostEffectEventEIMelee(const Entity* ent, int action);
+
+// ea: 0x00550DF0
+void InteractStateVehicleTurn_PlayMetaAnim(InteractState* self, float deltaT)
+{
+    (void)deltaT;
+    if ((self->mFlags & 1) != 0)
+    {
+        XANIM_ASSERT("!IsFlagged(kAnimStarted)",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 397,
+                     "Anim not started");
+    }
+    if ((self->mFlags & 0x40) != 0)
+    {
+        XANIM_ASSERT("!IsFlagged(kWeaponNotReady)",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 398,
+                     "Weapon not ready");
+    }
+    Entity* Player =
+        EntityManager::sInst->GetPlayer(self->mController->mClient);
+    unsigned int v4 = self->mController->mInteractableH.mVal & 0xFFF;
+    if (v4 < 0x540
+        && self->mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr
+            && (*(unsigned int*)((char*)Player->client + 0xF4) & 0x100000)
+                   == 0)
+        {
+            VEH_LinkPlayer(mObject, Player, 0, 0, 0);
+            sSteeringWheelAngleVehicleBase = 0.0f;
+        }
+    }
+    if (*(void**)((char*)self + 0x1A0) != nullptr)
+    {
+        XANIM_ASSERT("!mMetaNalBaseAnimPtr",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 409,
+                     "Should be null");
+    }
+    if (*(void**)((char*)self + 0x1A8) != nullptr)
+    {
+        XANIM_ASSERT("!mMetaAnimDataPtr",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 410,
+                     "Should be null");
+    }
+    void* v6 = tlMemAlloc(0x44, 8, 0);
+    void* v7 = (v6 != nullptr) ? MetaNalBaseAnim_Ctor(v6) : nullptr;
+    *(void**)((char*)self + 0x1A0) = v7;
+    void* v8 = mem_heap_malloc(0x2C);
+    if (v8 != nullptr)
+        v8 = new (v8) InteractMetaAnimData();
+    *(void**)((char*)self + 0x1A8) = v8;
+    MetaNalBaseAnim_Create(*(void**)((char*)self + 0x1A0),
+                           *(void**)((char*)self + 0x1A8));
+    DObj* dobj =
+        (DObj*)dword_F6A2A0[802 * self->mController->mClient];
+    tlFixedString name(
+        ((InteractStateInfoLocal*)self->mInfo)->playerAnim);
+    void* Anim = nalGetAnim(name);
+    MetaNalBaseAnim_DelayCreate(*(void**)((char*)self + 0x1A0), &Anim, 1);
+    ((AnimationPlayer*)dobj->animPlayers[0])
+        ->Play((nalGenericAnim*)*(void**)((char*)self + 0x1A0), true,
+               ((InteractStateInfoLocal*)self->mInfo)->animFadeInTime,
+               (void*)&gMetaAnimPlayMethod, 0.0f, self->mPlayerCallback,
+               1.0f, 0.0f);
+    self->mFlags |= 1u;
+}
+
+// ea: 0x0054E880
+void InteractStateLeverPush_PlayMetaAnims(InteractState* self)
+{
+    if ((self->mFlags & 1) == 0)
+    {
+        if (*(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client
+                    + 0xA4)
+            != self->mController->mSelectedInteractWeaponIndex)
+        {
+            XANIM_ASSERT(
+                "player->client->ps.weapon == weaponIndex",
+                "c:\\cod\\code\\game\\InteractStateLever.cpp", 186,
+                "Weapon needs to be set to interact weapon");
+        }
+        if (*(void**)((char*)self + 0x1A0) != nullptr)
+        {
+            XANIM_ASSERT("!mMetaNalBaseAnimPtr[0]",
+                         "c:\\cod\\code\\game\\InteractStateLever.cpp", 189,
+                         "Should be null");
+        }
+        if (*(void**)((char*)self + 0x1A8) != nullptr)
+        {
+            XANIM_ASSERT("!mMetaAnimDataPtr[0]",
+                         "c:\\cod\\code\\game\\InteractStateLever.cpp", 190,
+                         "Should be null");
+        }
+        void* v2 = tlMemAlloc(0x44, 8, 0);
+        void* v3 = (v2 != nullptr) ? MetaNalBaseAnim_Ctor(v2) : nullptr;
+        *(void**)((char*)self + 0x1A0) = v3;
+        void* v4 = mem_heap_malloc(0x2C);
+        if (v4 != nullptr)
+            v4 = new (v4) InteractMetaAnimData();
+        *(void**)((char*)self + 0x1A8) = v4;
+        MetaNalBaseAnim_Create(*(void**)((char*)self + 0x1A0),
+                               *(void**)((char*)self + 0x1A8));
+        DObj* dobj =
+            (DObj*)dword_F6A2A0[802 * self->mController->mClient];
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+        tlFixedString name(info->playerAnim);
+        void* Anim = nalGetAnim(name);
+        MetaNalBaseAnim_DelayCreate(*(void**)((char*)self + 0x1A0), &Anim, 1);
+        ((AnimationPlayer*)dobj->animPlayers[0])
+            ->Play((nalGenericAnim*)*(void**)((char*)self + 0x1A0), true,
+                   info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
+                   self->mPlayerCallback, 1.0f, 0.0f);
+        self->mFlags |= 1u;
+        if (info->interactableAnim[0] != 0)
+        {
+            unsigned int v8 = self->mController->mInteractableH.mVal & 0xFFF;
+            if (v8 < 0x540
+                && self->mController->mInteractableH.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v8].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+                if (mObject != nullptr)
+                {
+                    if (*(void**)((char*)self + 0x1A4) != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!mMetaNalBaseAnimPtr[1]",
+                            "c:\\cod\\code\\game\\InteractStateLever.cpp",
+                            211, "Should be null");
+                    }
+                    if (*(void**)((char*)self + 0x1AC) != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!mMetaAnimDataPtr[1]",
+                            "c:\\cod\\code\\game\\InteractStateLever.cpp",
+                            212, "Should be null");
+                    }
+                    void* v10 = tlMemAlloc(0x44, 8, 0);
+                    void* v11 =
+                        (v10 != nullptr) ? MetaNalBaseAnim_Ctor(v10) : nullptr;
+                    *(void**)((char*)self + 0x1A4) = v11;
+                    void* v12 = mem_heap_malloc(0x2C);
+                    if (v12 != nullptr)
+                        v12 = new (v12) InteractMetaAnimData();
+                    *(void**)((char*)self + 0x1AC) = v12;
+                    MetaNalBaseAnim_Create(*(void**)((char*)self + 0x1A4),
+                                           *(void**)((char*)self + 0x1AC));
+                    tlFixedString v20(info->interactableAnim);
+                    void* v15 = nalGetAnim(v20);
+                    MetaNalBaseAnim_DelayCreate(
+                        *(void**)((char*)self + 0x1A4), &v15, 1);
+                    DObj* mDObj = mObject->mDObj;
+                    self->mController->CreateInteractableAnimPlayer();
+                    for (int v17 = 0; v17 < mDObj->numModels; ++v17)
+                    {
+                        AnimationPlayer* v18 =
+                            (AnimationPlayer*)mDObj->animPlayers[v17];
+                        if (v18 != nullptr)
+                        {
+                            void* callback =
+                                (v17 != 0) ? nullptr : self->mOtherCallback;
+                            v18->Play(
+                                (nalGenericAnim*)*(void**)((char*)self
+                                                           + 0x1A4),
+                                true, info->animFadeInTime,
+                                (void*)&gMetaAnimPlayMethod, 0.0f, callback,
+                                1.0f, 0.0f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0054F390
+void InteractStateMelee_UpdateFacialAnim(InteractState* self, float deltaT)
+{
+    unsigned int mVal = InteractionController::Inst(currCl)
+                            ->mInteractableH.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* ent = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (ent != nullptr)
+        {
+            int numFacialAnims = *(int*)((char*)self + 0x1FC);
+            if (numFacialAnims > 0)
+            {
+                int mModifierIndex = *(int*)((char*)self + 0x1B0);
+                float v7 = deltaT + *(float*)((char*)self + 0x210);
+                *(float*)((char*)self + 0x210) = v7;
+                if ((mModifierIndex == 0
+                     && sFacialAnimTimeMin > self->mStateTimer)
+                    || v7 > sFacialAnimTimeMin)
+                {
+                    int v9 = irand(0, numFacialAnims);
+                    void* v10 = *(void**)((char*)self + 0x200 + 4 * v9);
+                    void** arr = (void**)((char*)self + 0x200);
+                    for (int k = v9; k < numFacialAnims; ++k)
+                        arr[k] = (k + 1 < numFacialAnims) ? arr[k + 1]
+                                                          : nullptr;
+                    *(int*)((char*)self + 0x1FC) = numFacialAnims - 1;
+                    DObj* mDObj = ent->mDObj;
+                    if (mDObj != nullptr)
+                    {
+                        AnimationPlayer* v15 =
+                            (AnimationPlayer*)mDObj->animPlayers[0];
+                        if (v15 != nullptr && v10 != nullptr)
+                        {
+                            v15->PlayModifier(
+                                (nalGenericAnim*)v10,
+                                AnimationPlayer::nalPartialModifier, 1.0f, 4u,
+                                true, 0.1f, 0.1f, nullptr, 0.0f, nullptr,
+                                1.0f, 0.0f);
+                        }
+                    }
+                    *(float*)((char*)self + 0x210) = 0.0f;
+                    const char* animName = (const char*)v10 + 4;
+                    int v16 = tolower(animName[strlen(animName) - 1]);
+                    int v17 = v16 - 0x60;
+                    if (v17 >= 1 && v17 <= 4)
+                    {
+                        XANIM_ASSERT(
+                            "animIndex < 1 || animIndex > kMeleeFacialAnimsMax",
+                            "c:\\cod\\code\\game\\InteractStateMelee.cpp",
+                            456, "Bad");
+                    }
+                    static unsigned int sInitMeleeFace = 0;
+                    static unsigned int sMeleeFaceHash = 0;
+                    if ((sInitMeleeFace & 1) == 0)
+                    {
+                        sInitMeleeFace |= 1u;
+                        sMeleeFaceHash = HashString::CalcHash("melee_face");
+                    }
+                    unsigned int animIdx = (unsigned int)v17;
+                    HashString h;
+                    h.mHash = sMeleeFaceHash;
+                    ent->Notify(h, animIdx);
+                    char scriptName[40];
+                    sprintf(scriptName, "melee_face%i", v17);
+                    PostEffectEventScriptCall(ent, scriptName, false,
+                                              PAK_ID_INVALID, false);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0054EFF0
+void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
+{
+    float* pIntervalTimer = (float*)((char*)self + 0x1BC);
+    float* pAnimTime = (float*)((char*)self + 0x1B8);
+    int* pModifierIndex = (int*)((char*)self + 0x1B0);
+    int* pNumModifiers = (int*)((char*)self + 0x1B4);
+    *pIntervalTimer = *pIntervalTimer - deltaT;
+    if (*pIntervalTimer <= 0.0f)
+    {
+        int mModifierIndex = *pModifierIndex;
+        int lastModIndex = mModifierIndex;
+        float blendTime = 0.0f;
+        int blendIsDefault = 0;
+        if (mModifierIndex == -1)
+        {
+            float mScore = *(float*)((char*)self + 0x1D0);
+            blendIsDefault = 1;
+            *pModifierIndex =
+                InteractStateMelee_GetInitialModifierIndex(self, mScore);
+        }
+        if (*pNumModifiers <= 1)
+        {
+            *pModifierIndex = 0;
+        }
+        else
+        {
+            InteractStateInfoLocal* info =
+                (InteractStateInfoLocal*)self->mInfo;
+            if (*(float*)((char*)self + 0x1D0)
+                > info->modAnimThresholdMax[*pModifierIndex])
+            {
+                int v8 = *pNumModifiers - 1;
+                for (;;)
+                {
+                    int v9 = *pModifierIndex;
+                    if (v9 >= v8)
+                        break;
+                    int v10 = v9 + 1;
+                    *pModifierIndex = v10;
+                    if (!(*(float*)((char*)self + 0x1D0)
+                          > info->modAnimThresholdMax[v10]))
+                        break;
+                }
+            }
+            if (*(float*)((char*)info + 0x54C + 4 * *pModifierIndex)
+                > *(float*)((char*)self + 0x1D0))
+            {
+                for (;;)
+                {
+                    int v11 = *pModifierIndex;
+                    if (v11 <= 0)
+                        break;
+                    int v12 = v11 - 1;
+                    *pModifierIndex = v12;
+                    if (!(*(float*)((char*)info + 0x54C + 4 * v12)
+                          > *(float*)((char*)self + 0x1D0)))
+                        break;
+                }
+            }
+        }
+        if (*pModifierIndex != mModifierIndex)
+        {
+            InteractionController* mController = self->mController;
+            void* playerMod = nullptr;
+            void* otherMod = nullptr;
+            if (mController->mSelectedInteractWeaponIndex < 1)
+                EntityManager::sInst->GetPlayer(mController->mClient);
+            InteractionController* v15 = self->mController;
+            unsigned int mVal = v15->mInteractableH.mVal;
+            DObj* dobj = (DObj*)dword_F6A2A0[802 * v15->mClient];
+            unsigned int v17 = mVal & 0xFFF;
+            Entity* mObject = nullptr;
+            if (v17 < 0x540
+                && mVal >> 12 == EntityHandleDb::sInst.mElements[v17].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v17].mObject;
+            DObj* otherDObj = nullptr;
+            if (mObject != nullptr)
+                otherDObj = mObject->mDObj;
+            Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+            InteractStateInfoLocal* info =
+                (InteractStateInfoLocal*)self->mInfo;
+            if (info->playerModAnim[*pModifierIndex][0] != 0
+                && dobj->animPlayers[0] != nullptr)
+            {
+                tlFixedString name(info->playerModAnim[*pModifierIndex]);
+                playerMod = nalGetAnim(name);
+            }
+            if (info->interModAnim[*pModifierIndex][0] != 0
+                && otherDObj != nullptr
+                && otherDObj->animPlayers[0] != nullptr)
+            {
+                tlFixedString v29(info->interModAnim[*pModifierIndex]);
+                otherMod = nalGetAnim(v29);
+            }
+            if (blendTime == 0.0f)
+                blendTime = InteractStateMelee_CalcModifierBlendTime(self);
+            else
+                blendTime = sInitialBlendTime;
+            if (playerMod != nullptr)
+            {
+                float Duration = *(float*)((char*)playerMod + 0x38);
+                if (*pAnimTime > Duration)
+                {
+                    float t = *pAnimTime;
+                    while (t > Duration)
+                        t -= Duration;
+                    *pAnimTime = t;
+                }
+            }
+            AnimationPlayer* v24 =
+                (AnimationPlayer*)dobj->animPlayers[0];
+            float v25 = blendTime;
+            if (v24 != nullptr && playerMod != nullptr)
+            {
+                v24->PlayModifier((nalGenericAnim*)playerMod,
+                                  AnimationPlayer::nalPartialModifier, 1.0f,
+                                  8u, true, blendTime, blendTime, nullptr,
+                                  0.0f, nullptr, 1.0f, *pAnimTime);
+            }
+            if (otherDObj != nullptr)
+            {
+                AnimationPlayer* v26 =
+                    (AnimationPlayer*)otherDObj->animPlayers[0];
+                if (v26 != nullptr && otherMod != nullptr)
+                {
+                    v26->PlayModifier((nalGenericAnim*)otherMod,
+                                      AnimationPlayer::nalPartialModifier,
+                                      1.0f, 8u, true, v25, v25, nullptr,
+                                      0.0f, nullptr, 1.0f, *pAnimTime);
+                }
+            }
+            int v27 = *pModifierIndex;
+            *pIntervalTimer = sMinIntervalOffset + blendTime;
+            if (v27 != 0
+                && (v27 == *pNumModifiers - 1 || lastModIndex <= v27))
+            {
+                *(int*)((char*)self + 0x1C0) =
+                    PostEffectEventEIMelee(Player, 59).mVal;
+                *(int*)((char*)self + 0x1C4) =
+                    PostEffectEventEIMelee(Player, 58).mVal;
+            }
+            else
+            {
+                *(int*)((char*)self + 0x1C0) =
+                    PostEffectEventEIMelee(Player, 60).mVal;
+                *(int*)((char*)self + 0x1C4) =
+                    PostEffectEventEIMelee(Player, 61).mVal;
+            }
+        }
+    }
+    *pAnimTime = *pAnimTime + deltaT;
 }
 
 // ea: 0x0054D1A0
