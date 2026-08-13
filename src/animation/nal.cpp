@@ -5957,26 +5957,6 @@ void InteractionController_Lerper_Ctor(InteractionController_Lerper* self)
     self->mTimer = 0.0f;
 }
 
-// ea: 0x0053AC40 (InteractState::Lerper)
-struct InteractState_Lerper {
-    float mTarget;      // +0x00
-    float mDuration;    // +0x04
-    float mLerpTimeIn;  // +0x08
-    float mLerpTimeOut; // +0x0C
-    float mInitialVal;  // +0x10
-    float mTimer;       // +0x14
-};
-
-void InteractState_Lerper_Ctor(InteractState_Lerper* self)
-{
-    self->mTarget = 1.0f;
-    self->mDuration = -1.0f;
-    self->mLerpTimeIn = 0.0f;
-    self->mLerpTimeOut = 0.0f;
-    self->mInitialVal = 0.0f;
-    self->mTimer = 0.0f;
-}
-
 // ============================================================================
 // InteractInputRcvr (anim.o InteractionController.cpp)
 // Layout verified vs ctors (0x53A8C0/0x53A9E0/...): vftable +0, mType +4,
@@ -6265,7 +6245,8 @@ struct InteractStateInfo {
     unsigned char _pad0[0x28];
     char successState[4][32];       // +0x28
     char failureState[32];          // +0xA8
-    unsigned char _padC8[0xD0 - 0xC8];
+    int numAnimRepsBeforeSuccess;   // +0xC8
+    unsigned int successOnInput;    // +0xCC
     char playerAnim[32];            // +0xD0
     char playerModAnim[6][40];      // +0xF8
     char weaponAnim[32];            // +0x1E8
@@ -6305,6 +6286,12 @@ struct InteractStateInfo {
     float steeringAngleKeepTurn;    // +0x58C
     float steeringWheelTurnRate;    // +0x590
     float steeringWheelAngleFactor; // +0x594
+    unsigned int effectEventOnPlayer[4];  // +0x44C
+    unsigned int effectEventOnOther[4];   // +0x45C
+    float timeScaleValue[4];        // +0x46C
+    float timeScaleDuration[4];     // +0x47C
+    float timeScaleLerpTimeIn[4];   // +0x48C
+    float timeScaleLerpTimeOut[4];  // +0x49C
 };
 typedef InteractStateInfo InteractStateInfoLocal;
 
@@ -6544,6 +6531,31 @@ class InteractState;
 
 class InteractState {
 public:
+    // ?Set@Lerper@InteractState@@QAEXMMMMM@Z / ?Update@Lerper@...@@QAEXMAAM@Z
+    class Lerper {
+    public:
+        Lerper()  // ??0Lerper@InteractState@@QAE@XZ (0x53AC40)
+        {
+            mTarget = 1.0f;
+            mDuration = -1.0f;
+            mLerpTimeIn = 0.0f;
+            mLerpTimeOut = 0.0f;
+            mInitialVal = 0.0f;
+            mTimer = 0.0f;
+        }
+        float mTarget;      // +0x00
+        float mDuration;    // +0x04
+        float mLerpTimeIn;  // +0x08
+        float mLerpTimeOut; // +0x0C
+        float mInitialVal;  // +0x10
+        float mTimer;       // +0x14
+
+        void Set(float target, float duration, float lerpTimeIn,
+                 float lerpTimeOut, float initialVal);
+        void Update(float deltaT, float& updatedVal);  // ?Update@Lerper@InteractState@@QAEXMAAM@Z
+    };
+    static Lerper sTimeScaleMgr;  // ?sTimeScaleMgr@InteractState@@1VLerper@1@A
+
     void* __vftable;            // +0x00
     int mType;                  // +0x10
     TPakId mPakId;              // +0x14
@@ -6579,19 +6591,23 @@ public:
     void CheckNotifySet(Entity* ent, int eventIndex); // 0x53F9F0
     void PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
                         float animTimeFrac, float speed);  // 0x53FA70
-    int GetCameraMode() const;         // 0x53D820 (virtual in binary)
-    float GetRotation() const;         // 0x5614B0
+
+    // Binary vtable order (??_7InteractState@@6B@ @ 0xCED550): Activate,
+    // Deactivate, Update, PostPhysicsUpdate, GetCameraMode, Press, Release,
+    // GetRotation, GetInteractableMat, PostEffectEvent, PlayAnims.
+    virtual void Activate();          // 0x54CC10 (UAE)
+    virtual void Deactivate();        // 0x53F920 (UAE)
+    virtual InteractState* Update(float deltaT);  // 0x546700 (UAEPAV1@M)
+    virtual void PostPhysicsUpdate(float deltaT); // 0x56EB0 (UAEXM; empty)
+    virtual int GetCameraMode() const;  // 0x53D820 (UBEH)
+    virtual int Press(int buttonIndex); // 0x53D860 (UAEHH)
+    virtual int Release(int buttonIndex);  // 0x53D8B0 (UAEHH)
+    virtual float GetRotation() const;  // 0x5614B0 (UBEM)
     const void* GetInfo() const;       // 0x53AC20
     TPakId GetPakId() const;           // 0x53AC30
     void SetFlag(unsigned int f, int enable);  // 0x53ABC0
     int IsFlagged(unsigned int f) const;       // 0x53AC00
-    int Press(int buttonIndex);            // 0x53D860
-    int Release(int buttonIndex);          // 0x53D8B0
-    void PlayAnims(int weaponIndex, float fadeIn);  // 0x54DC40
     void CreateTransitionStates();  // 0x54CBA0
-    void Activate();                // 0x54CC10 (virtual in binary; stub)
-    void Deactivate();              // 0x53F920 (virtual in binary; stub)
-    InteractState* Update(float deltaT);  // 0x546700 (virtual in binary; stub)
     void CheckForEffectEvents(float deltaT, int postRemaining);  // 0x54D9E0
     void DoWeaponChange();  // 0x546A00
     void SetInitialLerpValues();  // 0x54D1A0
@@ -6602,13 +6618,23 @@ public:
     void UpdateOtherPosAndAngles();  // 0x54D500
     void CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
                                 int useScriptOrigin);  // 0x53D420
-    void GetInteractableMat(math::Mat43* mat);  // 0x54D720
 
-    // ?PostEffectEvent@InteractState@@IAEXIH@Z (stub; real in g.o)
-    void PostEffectEvent(unsigned int effectName, int eventIndex)
-    {
-        (void)effectName; (void)eventIndex;
-    }
+protected:
+    virtual void GetInteractableMat(math::Mat43& mat) const;  // 0x54D720 (MBEXAAVMat43)
+    virtual void PostEffectEvent(const char* effectName, int eventIndex);  // 0x53FBB0 (MAE)
+    virtual void PlayAnims(int weaponIndex, float fadeIn);  // 0x54DC40 (MAE)
+
+    friend void InteractStateMeleeSuccess_PlayAnims(InteractState* self,
+                                                    int weaponIndex,
+                                                    float fadeIn);
+    friend void InteractStateMeleeFailure_PlayAnims(InteractState* self,
+                                                    int weaponIndex,
+                                                    float fadeIn);
+
+public:
+    // ??0InteractState@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z
+    InteractState(TPakId curPakId, const InteractStateInfo* info,
+                  InteractionController* controller);
 };
 
 // ============================================================================
@@ -6640,20 +6666,22 @@ public:
     float mInputProgress;           // +0x1B8
     float mLastInputProgress;       // +0x1BC
     float mAnimScore;               // +0x1C0
-    unsigned char _pad1C4[0x1CC - 0x1C4];
+    float mLastAnimScore;           // +0x1C4
+    float mAnimSpeed;               // +0x1C8
     float mAnimFadeTimer;           // +0x1CC
     int mStartAnim;                 // +0x1D0
     int mFinishStroke;              // +0x1D4
     int mRowAnimIndex;              // +0x1D8
     float mStallTimer;              // +0x1DC
-    unsigned char _pad1E0[0x1E8 - 0x1E0];
+    int mNotifiedThisStroke;        // +0x1E0
+    float mNormalizedStrokeTime;    // +0x1E4
     unsigned int mRowboatFlags;     // +0x1E8
     int mRumbleHandleVal;           // +0x1EC
     int mNumStrokes;                // +0x1F0
     float mStrokeTimer;             // +0x1F4
     float mCurStrokeDuration;       // +0x1F8
     float mFeedbackTimer;           // +0x1FC
-    unsigned char _pad200[0x204 - 0x200];
+    int mShowHalfCircleText;        // +0x200
     int mNumSuccessful;             // +0x204
     int mNumMisses;                 // +0x208
 
@@ -6677,6 +6705,34 @@ private:
     EMode UpdateModeRow(float deltaT);   // ?UpdateModeRow@...@@AAE?AW4EMode@1@M@Z
     void HandleMortarFlinch();           // ?HandleMortarFlinch@...@@AAEXXZ
     void ProcessOrder();                 // ?ProcessOrder@...@@AAEXXZ
+
+public:
+    virtual void Activate();    // ?Activate@InteractStateRowboat@@UAEXXZ
+    virtual void Deactivate();  // ?Deactivate@InteractStateRowboat@@UAEXXZ
+    virtual InteractState* Update(float deltaT);  // ?Update@InteractStateRowboat@@UAEPAVInteractState@@M@Z
+};
+
+// ============================================================================
+// InteractStatePlayAnims / InteractStateRowboatInit (anim.o)
+// PlayAnims is the common "play the configured anims" base; RowboatInit
+// (0x1A0) derives from it (binary Activate/Update delegate to PlayAnims).
+// ============================================================================
+class InteractStatePlayAnims : public InteractState {
+public:
+    InteractStatePlayAnims(TPakId curPakId, const InteractStateInfo* info,
+                           InteractionController* controller);
+    virtual void Activate();              // ?Activate@InteractStatePlayAnims@@UAEXXZ
+    virtual void Deactivate();            // ?Deactivate@InteractStatePlayAnims@@UAEXXZ (thunk)
+    virtual InteractState* Update(float deltaT);  // ?Update@...@@UAEPAVInteractState@@M@Z
+};
+
+class InteractStateRowboatInit : public InteractStatePlayAnims {
+public:
+    InteractStateRowboatInit(TPakId curPakId, const InteractStateInfo* info,
+                             InteractionController* controller);
+    virtual void Activate();              // ?Activate@InteractStateRowboatInit@@UAEXXZ
+    virtual void Deactivate();            // ?Deactivate@InteractStateRowboatInit@@UAEXXZ
+    virtual InteractState* Update(float deltaT);  // ?Update@...@@UAEPAVInteractState@@M@Z
 };
 
 extern void* RumbleManager_Inst(int instance);
@@ -6865,10 +6921,8 @@ void InteractState::CheckNotifySet(Entity* ent, int eventIndex)
             } while (v7 < 4);
             if (v7 == 4)
             {
-                PostEffectEvent(
-                    (unsigned int)(uintptr_t)((char*)info + 0x3DC
-                                              + 20 * eventIndex),
-                    eventIndex);
+                PostEffectEvent((const char*)info + 0x3DC + 20 * eventIndex,
+                                eventIndex);
                 this->mNotifiesUsed[eventIndex] = Notify;
             }
         }
@@ -7201,53 +7255,53 @@ int InteractMetaAnimData::IsAnimTrajRelative() const
 // InteractState::Lerper Set/Update (anim.o)
 // ============================================================================
 
+InteractState::Lerper InteractState::sTimeScaleMgr;
+    // ?sTimeScaleMgr@InteractState@@1VLerper@1@A
+
 // ea: 0x0053DAD0
-void InteractState_Lerper_Set(InteractState_Lerper* self, float target,
-                              float duration, float lerpTimeIn,
-                              float lerpTimeOut, float initialVal)
+void InteractState::Lerper::Set(float target, float duration,
+                                float lerpTimeIn, float lerpTimeOut,
+                                float initialVal)
 {
-    self->mTarget = target;
-    self->mDuration = duration;
-    self->mLerpTimeIn = lerpTimeIn;
-    self->mLerpTimeOut = lerpTimeOut;
-    self->mTimer = 0.0f;
-    self->mInitialVal = initialVal;
+    mTarget = target;
+    mDuration = duration;
+    mLerpTimeIn = lerpTimeIn;
+    mLerpTimeOut = lerpTimeOut;
+    mTimer = 0.0f;
+    mInitialVal = initialVal;
 }
 
 // ea: 0x0053FC80
-void InteractState_Lerper_Update(InteractState_Lerper* self, float deltaT,
-                                 float* updatedVal)
+void InteractState::Lerper::Update(float deltaT, float& updatedVal)
 {
-    if (self->mDuration > 0.0f)
+    if (mDuration > 0.0f)
     {
-        float v3 = deltaT + self->mTimer;
-        self->mTimer = v3;
-        float total = self->mLerpTimeIn + self->mLerpTimeOut
-                      + self->mDuration;
+        float v3 = deltaT + mTimer;
+        mTimer = v3;
+        float total = mLerpTimeIn + mLerpTimeOut + mDuration;
         if (v3 <= total)
         {
-            if (v3 <= self->mLerpTimeIn + self->mDuration)
+            if (v3 <= mLerpTimeIn + mDuration)
             {
-                float lerpIn = self->mLerpTimeIn;
+                float lerpIn = mLerpTimeIn;
                 if (lerpIn <= v3 || lerpIn <= 0.0f)
-                    *updatedVal = self->mTarget;
+                    updatedVal = mTarget;
                 else
-                    *updatedVal = ((v3 / lerpIn)
-                                   * (self->mTarget - self->mInitialVal))
-                                  + self->mInitialVal;
+                    updatedVal = ((v3 / lerpIn) * (mTarget - mInitialVal))
+                                 + mInitialVal;
             }
             else
             {
-                *updatedVal = ((((v3 - self->mLerpTimeOut) - self->mDuration)
-                                / self->mLerpTimeOut)
-                               * (self->mInitialVal - self->mTarget))
-                              + self->mTarget;
+                updatedVal = ((((v3 - mLerpTimeOut) - mDuration)
+                               / mLerpTimeOut)
+                              * (mInitialVal - mTarget))
+                             + mTarget;
             }
         }
         else
         {
-            *updatedVal = self->mInitialVal;
-            self->mDuration = -1.0f;
+            updatedVal = mInitialVal;
+            mDuration = -1.0f;
         }
     }
 }
@@ -7474,50 +7528,56 @@ void InteractState::PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
 extern void InteractState_Ctor(InteractState* self, TPakId curPakId,
                                void* info, InteractionController* controller);
 
-// base ctor (0x546600) - stub body so subclass ctors link
-void InteractState_Ctor(InteractState* self, TPakId curPakId, void* info,
-                        InteractionController* controller)
+// base ctor (0x546600) - ??0InteractState@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z
+InteractState::InteractState(TPakId curPakId, const InteractStateInfo* info,
+                             InteractionController* controller)
 {
-    self->mPakId = curPakId;
-    self->mType = kInteractTypeInvalid;
-    self->mFlags = 0;
-    self->mInfo = info;
-    self->mInputRcvr = nullptr;
-    self->mFailureState = nullptr;
-    self->mStateTimer = 0.0f;
-    self->mFrameCount = -1;
-    self->mDesiredWeaponIndex = -1;
-    self->mSaveFrozen = 0;
-    self->mSaveNoClip = 0;
-    self->mSaveDrawCrosshair = 0;
-    self->mPlayerAnim = nullptr;
-    self->mOtherAnim = nullptr;
-    self->mPlayerCallback = nullptr;
-    self->mOtherCallback = nullptr;
-    self->mNumAnimRepetitions = 1;
-    self->mLerpType = kLerpNone;
-    self->mLerpTimer = 0.0f;
-    self->mLerpInteractableTagIndex = -1;
-    self->mPlayerLerp.Init();
-    self->mOtherLerp.Init();
-    self->mController = controller;
-    self->mSuccessState[0] = nullptr;
-    self->mSuccessState[1] = nullptr;
-    self->mSuccessState[2] = nullptr;
-    self->mSuccessState[3] = nullptr;
+    mPakId = curPakId;
+    mType = kInteractTypeInvalid;
+    mFlags = 0;
+    mInfo = (void*)info;
+    mInputRcvr = nullptr;
+    mFailureState = nullptr;
+    mStateTimer = 0.0f;
+    mFrameCount = -1;
+    mDesiredWeaponIndex = -1;
+    mSaveFrozen = 0;
+    mSaveNoClip = 0;
+    mSaveDrawCrosshair = 0;
+    mPlayerAnim = nullptr;
+    mOtherAnim = nullptr;
+    mPlayerCallback = nullptr;
+    mOtherCallback = nullptr;
+    mNumAnimRepetitions = 1;
+    mLerpType = kLerpNone;
+    mLerpTimer = 0.0f;
+    mLerpInteractableTagIndex = -1;
+    mPlayerLerp.Init();
+    mOtherLerp.Init();
+    mController = controller;
+    mSuccessState[0] = nullptr;
+    mSuccessState[1] = nullptr;
+    mSuccessState[2] = nullptr;
+    mSuccessState[3] = nullptr;
     if (info != nullptr)
     {
         int inputType = *(int*)((char*)info + 0x24);
         if (inputType != -1)
-            self->mInputRcvr =
+            mInputRcvr =
                 InteractInputRcvr::GetInteractInputRcvr(
                     (InteractInputRcvr::EInputType)inputType, curPakId);
     }
 }
 
+// C-style shim kept for the not-yet-converted subclass *_Ctor wrappers.
+void InteractState_Ctor(InteractState* self, TPakId curPakId, void* info,
+                        InteractionController* controller)
+{
+    new (self) InteractState(
+        curPakId, (const InteractStateInfo*)info, controller);
+}
+
 // 0x546AF0
-INTERACT_STATE_CTOR(InteractStatePlayAnims, kInteractTypePlayAnims)
-// 0x546C50
 INTERACT_STATE_CTOR(InteractStatePlayPlayerAnim, kInteractTypePlayPlayerAnim)
 // 0x546DF0
 INTERACT_STATE_CTOR(InteractStatePush, kInteractTypePush)
@@ -7555,7 +7615,6 @@ INTERACT_STATE_CTOR(InteractStateMeleeStagedSuccess,
 // 0x547600
 INTERACT_STATE_CTOR(InteractStateMeleeDropWeapon, kInteractTypeMeleeDropWeapon)
 // 0x547630
-INTERACT_STATE_CTOR(InteractStateRowboatInit, kInteractTypeRowboatInit)
 // 0x547BE0
 INTERACT_STATE_CTOR(InteractStateVehicleBase, kInteractTypeVehicleBase)
 // 0x547C50
@@ -7570,13 +7629,33 @@ INTERACT_STATE_CTOR(InteractStatePickLiveGrenade,
 
 #undef INTERACT_STATE_CTOR
 
+// ??0InteractStatePlayAnims@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z
+// (0x546AF0)
+InteractStatePlayAnims::InteractStatePlayAnims(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractState(curPakId, info, controller)
+{
+    mType = kInteractTypePlayAnims;
+}
+
+// ??0InteractStateRowboatInit@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z
+// (0x547630)
+InteractStateRowboatInit::InteractStateRowboatInit(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStatePlayAnims(curPakId, info, controller)
+{
+    mType = kInteractTypeRowboatInit;
+}
+
 // ??0InteractStateRowboat@@QAE@W4TPakId@@PBUInteractStateInfo@@PAVInteractionController@@@Z
 // (0x547660; base-call + mType, binary sets vftable which the port omits)
 InteractStateRowboat::InteractStateRowboat(TPakId curPakId,
                                            const InteractStateInfo* info,
                                            InteractionController* controller)
+    : InteractState(curPakId, info, controller)
 {
-    InteractState_Ctor(this, curPakId, (void*)info, controller);
     mType = kInteractTypeRowboat;
 }
 
@@ -7591,6 +7670,8 @@ void InteractionQueueEntry_Ctor(void* self)
 // RowboatMgr (anim.o Rowboat.cpp)
 // ============================================================================
 class RowboatMgr {
+    friend class InteractStateRowboat;
+    friend class InteractStateRowboatInit;
 public:
     int mNumLeaders;             // +0x00
     int mNumBoatmen;             // +0x04
@@ -7608,20 +7689,30 @@ public:
     float mFlinchTimer;          // +0x84
 
     void Init();  // ?Init@RowboatMgr@@QAEXXZ (anim.o)
-    void InitIdleAnims(const void* info);    // 0x53DCB0
-    void InitFlinchAnims(const void* info);  // 0x53DD10
-    void InitActionAnims(const void* info);  // 0x53DDD0
+    void InitIdleAnims(const InteractStateInfo& info);    // 0x53DCB0
+    void InitFlinchAnims(const InteractStateInfo& info);  // 0x53DD10
+    void InitActionAnims(const InteractStateInfo& info);  // 0x53DDD0
     void PlayStrokes(float duration);  // 0x550140
-    void PlayPushOff(const void* info);  // 0x550270
-    void PlayLeaderAnim(int index);  // 0x550300
-    void PlayIdle(int index);        // 0x5503B0
-    void PlayFlinch(int index);      // 0x550430
+    void PlayPushOff(const InteractStateInfo& info);  // 0x550270
     void PlayIdles();                // 0x556220
     void PlayFlinches();             // 0x556250
     void PlayFaster();               // 0x556290
     void PlaySlower();               // 0x5562A0
     void PlayRow();                  // 0x5562B0
-    void AlignBoatmen();             // 0x550080
+    void EndInteraction();           // 0x54FFF0
+    void Update(float deltaT);       // 0x5562C0
+    void StartInteraction(const char* leader1, const char* leader2,
+                          const char* rower1, const char* rower2,
+                          const char* rower3);  // 0x5560E0
+
+    RowboatMgr();  // ??0RowboatMgr@@QAE@XZ (0x561460)
+
+private:
+    // Binary mangles these AAE (private)
+    void PlayLeaderAnim(int index);   // 0x550300
+    void PlayIdle(int index);         // 0x5503B0
+    void PlayFlinch(int index);       // 0x550430
+    void AlignBoatmen();              // 0x550080
     void AddBoatman(const char* targetName, bool isLeader);  // 0x5408B0
 };
 
@@ -7637,11 +7728,11 @@ float sRowFadeTime = 0.1f;       // @ 0xDF3128
 static unsigned char sFlinchCallbacks[5][8];  // @ 0xDF1290
 
 // ea: 0x00561460
-void RowboatMgr_Ctor(RowboatMgr* self)
+RowboatMgr::RowboatMgr()
 {
     for (int i = 0; i < 5; ++i)
-        self->mBoatmen[i].mVal = 0;
-    self->Init();
+        mBoatmen[i].mVal = 0;
+    Init();
 }
 
 void RowboatMgr::Init()
@@ -7663,9 +7754,9 @@ void RowboatMgr::Init()
 }
 
 // ea: 0x0053DCB0
-void RowboatMgr::InitIdleAnims(const void* info)
+void RowboatMgr::InitIdleAnims(const InteractStateInfo& info)
 {
-    const char* v5 = (const char*)info + 0x238;  // interModAnim[0]
+    const char* v5 = (const char*)&info + 0x238;  // interModAnim[0]
     for (int v3 = 0; v3 < mNumBoatmen && v3 < 6; ++v3)
     {
         if (*v5 != 0)
@@ -7678,7 +7769,7 @@ void RowboatMgr::InitIdleAnims(const void* info)
 }
 
 // ea: 0x0053DD10
-void RowboatMgr::InitFlinchAnims(const void* info)
+void RowboatMgr::InitFlinchAnims(const InteractStateInfo& info)
 {
     if (mNumBoatmen > 6)
     {
@@ -7686,7 +7777,7 @@ void RowboatMgr::InitFlinchAnims(const void* info)
                      "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 148,
                      "Bad");
     }
-    const char* v4 = (const char*)info + 0xF8;  // playerModAnim[0]
+    const char* v4 = (const char*)&info + 0xF8;  // playerModAnim[0]
     for (int v3 = 0; v3 < mNumBoatmen && v3 < 6; ++v3)
     {
         if (*v4 != 0)
@@ -7699,7 +7790,7 @@ void RowboatMgr::InitFlinchAnims(const void* info)
 }
 
 // ea: 0x0053DDD0
-void RowboatMgr::InitActionAnims(const void* info)
+void RowboatMgr::InitActionAnims(const InteractStateInfo& info)
 {
     if (mNumBoatmen > 6)
     {
@@ -7707,7 +7798,7 @@ void RowboatMgr::InitActionAnims(const void* info)
                      "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 161,
                      "Bad");
     }
-    const char* v4 = (const char*)info + 0x238;  // interModAnim[0]
+    const char* v4 = (const char*)&info + 0x238;  // interModAnim[0]
     for (int v3 = 0; v3 < mNumBoatmen && v3 < 6; ++v3)
     {
         if (*v4 != 0)
@@ -7795,7 +7886,7 @@ void RowboatMgr::PlayStrokes(float duration)
 }
 
 // ea: 0x00550270
-void RowboatMgr::PlayPushOff(const void* info)
+void RowboatMgr::PlayPushOff(const InteractStateInfo& info)
 {
     unsigned int mVal = mBoatmen[2].mVal;
     unsigned int v3 = mVal & 0xFFF;
@@ -7804,12 +7895,12 @@ void RowboatMgr::PlayPushOff(const void* info)
     {
         Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
         if (mObject != nullptr
-            && *(char*)((char*)info + 0x2D0) != 0)
+            && *(char*)((char*)&info + 0x2D0) != 0)
         {
             DObj* mDObj = mObject->mDObj;
             if (mDObj != nullptr)
             {
-                tlFixedString name((char*)info + 0x2D0);
+                tlFixedString name((char*)&info + 0x2D0);
                 void* Anim = nalGetAnim(name);
                 if (Anim != nullptr)
                 {
@@ -8469,6 +8560,12 @@ extern void* sInteractStateInfos[64];
 extern int sNumInteractStateInfos;
 
 // ea: 0x0054C1A0 (per-type alloc sizes verified vs disasm)
+static void InteractStatePlayAnims_New(InteractState* mem, TPakId curPakId,
+                                       void* info,
+                                       InteractionController* controller);
+static void InteractStateRowboatInit_New(InteractState* mem, TPakId curPakId,
+                                         void* info,
+                                         InteractionController* controller);
 static void InteractStateRowboat_New(InteractState* mem, TPakId curPakId,
                                      void* info,
                                      InteractionController* controller);
@@ -8477,7 +8574,7 @@ static const struct InteractStateCtorEntry {
     int mSize;
     void (*ctor)(InteractState*, TPakId, void*, InteractionController*);
 } kInteractStateCtors[25] = {
-    { 0, 0x1A0, InteractStatePlayAnims_Ctor },
+    { 0, 0x1A0, InteractStatePlayAnims_New },
     { 1, 0x1A0, InteractStatePlayPlayerAnim_Ctor },
     { 2, 0x1A0, InteractStatePlaceItem_Ctor },
     { 3, 0x1C0, InteractStatePush_Ctor },
@@ -8500,9 +8597,25 @@ static const struct InteractStateCtorEntry {
     { 20, 0x1C0, InteractStateVehicleRelease_Ctor },
     { 21, 0x1A0, InteractStateVehicleLink_Ctor },
     { 22, 0x1C0, InteractStatePickLiveGrenade_Ctor },
-    { 23, 0x1A0, InteractStateRowboatInit_Ctor },
+    { 23, 0x1A0, InteractStateRowboatInit_New },
     { 24, 0x210, InteractStateRowboat_New },
 };
+
+static void InteractStatePlayAnims_New(InteractState* mem, TPakId curPakId,
+                                       void* info,
+                                       InteractionController* controller)
+{
+    new (mem) InteractStatePlayAnims(
+        curPakId, (const InteractStateInfo*)info, controller);
+}
+
+static void InteractStateRowboatInit_New(InteractState* mem, TPakId curPakId,
+                                         void* info,
+                                         InteractionController* controller)
+{
+    new (mem) InteractStateRowboatInit(
+        curPakId, (const InteractStateInfo*)info, controller);
+}
 
 // Placement-new wrapper for the real InteractStateRowboat ctor (the other
 // entries still use the C-style *_Ctor wrappers pending their own class
@@ -8640,6 +8753,52 @@ InteractState* InteractState::Update(float deltaT)
 {
     (void)deltaT;
     return this;
+}
+
+// ea: 0x0056EB0 (?PostPhysicsUpdate@InteractState@@UAEXM@Z; empty)
+void InteractState::PostPhysicsUpdate(float deltaT)
+{
+    (void)deltaT;
+}
+
+extern cvar_t* com_timescale;  // ?com_timescale@@3PAUcvar_t@@A (cl.o)
+extern Handle PostEffectEventScriptCall(const Entity* ent,
+                                        const char* scriptId, bool queue,
+                                        TPakId pakid, bool important);
+
+// ea: 0x0054DB20 (?PostEffectEvent@InteractState@@MAEXPBDH@Z)
+void InteractState::PostEffectEvent(const char* scriptName, int eventIndex)
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (info->effectEventOnPlayer[eventIndex] != 0)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        if (Player != nullptr)
+            PostEffectEventScriptCall(Player, scriptName, false,
+                                      PAK_ID_INVALID, false);
+    }
+    if (info->effectEventOnOther[eventIndex] != 0)
+    {
+        unsigned int v6 = mController->mInteractableH.mVal & 0xFFF;
+        if (v6 < 0x540
+            && mController->mInteractableH.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v6].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+            if (mObject != nullptr)
+                PostEffectEventScriptCall(mObject, scriptName, false,
+                                          PAK_ID_INVALID, false);
+        }
+    }
+    if (info->timeScaleDuration[eventIndex] > 0.0f)
+    {
+        sTimeScaleMgr.mTarget = info->timeScaleValue[eventIndex];
+        sTimeScaleMgr.mDuration = info->timeScaleDuration[eventIndex];
+        sTimeScaleMgr.mLerpTimeIn = info->timeScaleLerpTimeIn[eventIndex];
+        sTimeScaleMgr.mLerpTimeOut = info->timeScaleLerpTimeOut[eventIndex];
+        sTimeScaleMgr.mTimer = 0.0f;
+        sTimeScaleMgr.mInitialVal = com_timescale->value;
+    }
 }
 
 float sArmsOffsetLerpDuration = 0.1f;  // 0xDF37CC
@@ -9262,7 +9421,7 @@ void InteractState::CheckForEffectEvents(float deltaT, int postRemaining)
                      || postRemaining != 0)
             {
                 const char* notifyName = (char*)info + 0x3DC + 20 * i;
-                PostEffectEvent((unsigned int)(uintptr_t)notifyName, i);
+                PostEffectEvent(notifyName, i);
                 HashString h;
                 h.mHash = HashString::CalcHash(notifyName);
                 player->Notify(h);
@@ -9933,6 +10092,409 @@ InteractStateRowboat::EMode InteractStateRowboat::UpdateModeRow(float deltaT)
 }
 
 // ============================================================================
+// Rowboat virtual overrides + RowboatMgr::EndInteraction/Update/StartInteraction
+// ============================================================================
+
+extern void* MetaNalBaseAnim_Ctor(void* self);
+extern void MetaNalBaseAnim_Create(void* self, void* metaAnimData);
+extern void MetaNalBaseAnim_DelayCreate(void* self, void** animArray,
+                                        int numAnims);
+
+// ea: 0x0054FFF0 (?EndInteraction@RowboatMgr@@QAEXXZ)
+void RowboatMgr::EndInteraction()
+{
+    for (int v1 = 0; v1 < mNumBoatmen; ++v1)
+    {
+        unsigned int v3 = mBoatmen[v1].mVal & 0xFFF;
+        if (v3 < 0x540
+            && mBoatmen[v1].mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v3].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+            if (mObject != nullptr)
+            {
+                actor_s* actor = (actor_s*)mObject->actor;
+                if (actor != nullptr
+                    && Actor_IsCurState(actor, AIS_INTERACTION) != 0)
+                {
+                    // binary calls an empty nullsub here
+                }
+                DObj* mDObj = mObject->mDObj;
+                if (mDObj != nullptr)
+                    DObjDeleteAnimationPlayers(mDObj);
+            }
+        }
+    }
+}
+
+// ea: 0x005562C0 (?Update@RowboatMgr@@QAEXM@Z)
+void RowboatMgr::Update(float deltaT)
+{
+    if (mLastLeaderAnim != nullptr)
+    {
+        void* curAnim = *(void**)((char*)mCallback + 0x04);
+        if (curAnim == nullptr || mLastLeaderAnim != curAnim)
+        {
+            if (mLastLeaderIndex == -1)
+            {
+                XANIM_ASSERT(
+                    "mLastLeaderIndex != -1",
+                    "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 350,
+                    "Bad index");
+            }
+            PlayIdle(mLastLeaderIndex);
+            mLastLeaderAnim = nullptr;
+        }
+    }
+    if (mStrokeTimer >= 0.0f)
+    {
+        float v6 = mStrokeTimer - deltaT;
+        mStrokeTimer = v6;
+        if (v6 < 0.0f)
+        {
+            if (mPendingStrokeDuration <= 0.000099999997f)
+                PlayIdles();
+            else
+            {
+                PlayStrokes(mPendingStrokeDuration);
+                mPendingStrokeDuration = 0.0f;
+            }
+        }
+    }
+    for (int v7 = 0; v7 < 5; ++v7)
+    {
+        if (mFlinchCallback[v7] != nullptr)
+        {
+            void* v9 = *(void**)((char*)mFlinchCallback[v7] + 0x04);
+            if (v9 == nullptr || mBoatmanAnimFlinch[v7] != v9)
+            {
+                mFlinchCallback[v7] = nullptr;
+                --mNumFlinches;
+                PlayIdle(v7);
+            }
+        }
+    }
+}
+
+// ea: 0x005560E0 (?StartInteraction@RowboatMgr@@QAEXPBD0000@Z)
+void RowboatMgr::StartInteraction(const char* leader1, const char* leader2,
+                                  const char* rower1, const char* rower2,
+                                  const char* rower3)
+{
+    Init();
+    AddBoatman(leader1, true);
+    AddBoatman(leader2, true);
+    AddBoatman(rower1, false);
+    AddBoatman(rower2, false);
+    AddBoatman(rower3, false);
+    for (int i = 0; i < mNumBoatmen; ++i)
+    {
+        unsigned int v8 = mBoatmen[i].mVal & 0xFFF;
+        if (v8 < 0x540
+            && mBoatmen[i].mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v8].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+            if (mObject != nullptr)
+            {
+                actor_s* actor = (actor_s*)mObject->actor;
+                if (actor != nullptr)
+                {
+                    if (Actor_PushState(actor, AIS_INTERACTION) == 0)
+                    {
+                        XANIM_ASSERT(
+                            "success",
+                            "c:\\cod\\code\\game\\InteractStateRowboat.cpp",
+                            59,
+                            "Couldn't push interaction state on boatman");
+                    }
+                    DObj* mDObj = mObject->mDObj;
+                    if (mDObj != nullptr && mDObj->animPlayers[0] == nullptr)
+                        DObjCreateAnimationPlayer(mDObj, 0);
+                }
+            }
+        }
+    }
+    AlignBoatmen();
+    mStrokeTimer = -1.0f;
+    mPendingStrokeDuration = 0.0f;
+}
+
+// ea: 0x00550DF0 path: ?Activate@InteractStateRowboat@@UAEXXZ (0x5504B0)
+void InteractStateRowboat::Activate()
+{
+    typedef void (__thiscall* RB_TextFn)(void*, const char*);
+    typedef void (__thiscall* RB_PosFn)(void*, int, int);
+    typedef void (__thiscall* RB_ScaleFn)(void*, float);
+    typedef void (__thiscall* RB_AlphaFn)(void*, float);
+    InteractState::Activate();
+    gRowboatMgr.InitActionAnims(*(const InteractStateInfo*)mInfo);
+    int mRumbleHandleVal = mRumbleHandleVal;
+    mMode = MODE_IDLE;
+    mStartAnim = 1;
+    if (mRumbleHandleVal != -1)
+    {
+        RumbleManager* v3 = (RumbleManager*)RumbleManager_Inst(currCl);
+        if (v3 != nullptr)
+        {
+            RumbleEffectInstanceHandle h;
+            h.mVal = mRumbleHandleVal;
+            v3->Remove(h);
+        }
+        mRumbleHandleVal = -1;
+    }
+    UpdateModeIdle(0.0f);
+    const char* v4 = ((InteractStateInfoLocal*)mInfo)->playerModAnim[2];
+    mAnimScore = 0.0f;
+    mLastAnimScore = 0.0f;
+    mAnimSpeed = 0.0f;
+    mStallTimer = 0.0f;
+    mLastInputProgress = 0.0f;
+    mInputProgress = 0.0f;
+    mStrokeTimer = 0.0f;
+    mCurStrokeDuration = 0.0f;
+    mAnimFadeTimer = 0.0f;
+    mRowAnimIndex = 0;
+    mNotifiedThisStroke = 0;
+    mNormalizedStrokeTime = 1.0f;
+    mNumStrokes = 0;
+    mFeedbackTimer = -1.0f;
+    mNumSuccessful = 0;
+    mNumMisses = 0;
+    mRowboatFlags = 0;
+    mShowHalfCircleText = 0;
+    mRumbleHandleVal = -1;
+    tlFixedString name(v4);
+    mSlipAnim = nalGetAnim(name);
+    for (int v16 = 0; v16 < 80; v16 += 40)
+    {
+        int i = v16 / 40;
+        if (mMetaNalBaseAnimPtr[i] != nullptr)
+        {
+            XANIM_ASSERT("!mMetaNalBaseAnimPtr[i]",
+                         "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 513,
+                         "Should be null");
+        }
+        if (mMetaAnimDataPtr[i] != nullptr)
+        {
+            XANIM_ASSERT("!mMetaAnimDataPtr[i]",
+                         "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 514,
+                         "Should be null");
+        }
+        void* v6 = tlMemAlloc(0x44, 8, 0);
+        void* v7 = (v6 != nullptr) ? MetaNalBaseAnim_Ctor(v6) : nullptr;
+        mMetaNalBaseAnimPtr[i] = v7;
+        void* v8 = mem_heap_malloc(0x2C);
+        if (v8 != nullptr)
+            v8 = new (v8) InteractMetaAnimData();
+        mMetaAnimDataPtr[i] = v8;
+        MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr[i], mMetaAnimDataPtr[i]);
+        tlFixedString v13(((InteractStateInfoLocal*)mInfo)
+                              ->playerModAnim[i]);
+        void* Anim = nalGetAnim(v13);
+        MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[i], &Anim, 1);
+    }
+    InteractionController* mController2 = mController;
+    void* v12 = mController2->mRenderText[1];
+    mController2->mRenderTextPosX[1] = 200;
+    ((RB_TextFn)((void**)*(void**)v12)[0x84 / 4])(v12, "ROW!");
+    void* t1 = mController2->mRenderText[1];
+    ((RB_PosFn)((void**)*(void**)t1)[0x94 / 4])(t1, 200, 30);
+    void* t1b = mController2->mRenderText[1];
+    ((RB_ScaleFn)((void**)*(void**)t1b)[0x70 / 4])(t1b, 2.0f);
+    void* t1c = mController2->mRenderText[1];
+    ((RB_AlphaFn)((void**)*(void**)t1c)[0xA0 / 4])(t1c, 1.0f);
+}
+
+// ea: 0x005507C0 (?Deactivate@InteractStateRowboat@@UAEXXZ)
+void InteractStateRowboat::Deactivate()
+{
+    InteractState::Deactivate();
+    for (int i = 2; i != 0; --i)
+    {
+        int idx = i - 1;
+        void* base = mMetaNalBaseAnimPtr[idx];
+        if (base != nullptr)
+        {
+            ((void (__thiscall*)(void*, int))(
+                (void**)*(void**)base)[4 / 4])(base, 1);
+            mMetaNalBaseAnimPtr[idx] = nullptr;
+        }
+        if (mMetaAnimDataPtr[idx] != nullptr)
+        {
+            mem_heap_free(mMetaAnimDataPtr[idx]);
+            mMetaAnimDataPtr[idx] = nullptr;
+        }
+    }
+    sOrderPendingRowboat = 0;
+    sOrderHashRowboat = 0;
+    sStrokeDurationRowboat = 0.0f;
+    gRowboatMgr.EndInteraction();
+    InteractionController* mController = this->mController;
+    for (int j = 0; j < 5; ++j)
+        mController->ClearRenderText(j);
+    if (mRumbleHandleVal != -1)
+    {
+        RumbleManager* v9 = (RumbleManager*)RumbleManager_Inst(currCl);
+        if (v9 != nullptr)
+        {
+            RumbleEffectInstanceHandle h;
+            h.mVal = mRumbleHandleVal;
+            v9->Remove(h);
+        }
+    }
+}
+
+// ea: 0x00556FD0 (?Update@InteractStateRowboat@@UAEPAVInteractState@@M@Z)
+InteractState* InteractStateRowboat::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    mAnimFadeTimer = mAnimFadeTimer - deltaT;
+    HandleMortarFlinch();
+    ProcessOrder();
+    mLastInputProgress = mInputProgress;
+    InteractInputRcvr* rcvr = (InteractInputRcvr*)mInputRcvr;
+    mInputProgress = rcvr->mInputProgress;
+    if (mFrameCount == 0)
+        mLastInputProgress = mInputProgress;
+    EMode mMode = this->mMode;
+    mLastAnimScore = mAnimScore;
+    if (mMode != MODE_IDLE)
+    {
+        if (mMode == MODE_ROW)
+            mMode = UpdateModeRow(deltaT);
+        else if (mMode == MODE_SLIP)
+            mMode = UpdateModeSlip(deltaT);
+    }
+    else
+    {
+        mMode = UpdateModeIdle(deltaT);
+    }
+    if (mMode != this->mMode)
+        StartMode(mMode);
+    mStrokeTimer = deltaT + mStrokeTimer;
+    gRowboatMgr.Update(deltaT);
+    UpdateUI(deltaT);
+    return v3;
+}
+
+// ea: 0x0054DF50 (?Activate@InteractStatePlayAnims@@UAEXXZ)
+void InteractStatePlayAnims::Activate()
+{
+    InteractState::Activate();
+    if ((mFlags & 0x40) == 0)
+    {
+        InteractionController* mController = this->mController;
+        int mSelectedInteractWeaponIndex =
+            mController->mSelectedInteractWeaponIndex;
+        if (mSelectedInteractWeaponIndex < 1)
+        {
+            Entity* Player =
+                EntityManager::sInst->GetPlayer(mController->mClient);
+            if (Player != nullptr)
+            {
+                void* client = Player->client;
+                if (client != nullptr)
+                {
+                    PlayAnims(*(int*)((char*)client + 0xA4),
+                              ((InteractStateInfoLocal*)mInfo)
+                                  ->animFadeInTime);
+                    return;
+                }
+            }
+            mSelectedInteractWeaponIndex = 0;
+        }
+        PlayAnims(mSelectedInteractWeaponIndex,
+                  ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+    }
+}
+
+// ea: 0x0053FBA0 (?Deactivate@InteractStatePlayAnims@@UAEXXZ; thunk)
+void InteractStatePlayAnims::Deactivate()
+{
+    InteractState::Deactivate();
+}
+
+// ea: 0x00546B20 (?Update@InteractStatePlayAnims@@UAEPAVInteractState@@M@Z)
+InteractState* InteractStatePlayAnims::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    if ((mFlags & 0x41) == 0)
+    {
+        InteractionController* mController = this->mController;
+        int mSelectedInteractWeaponIndex =
+            mController->mSelectedInteractWeaponIndex;
+        if (mSelectedInteractWeaponIndex < 1)
+        {
+            Entity* Player =
+                EntityManager::sInst->GetPlayer(mController->mClient);
+            if (Player != nullptr && Player->client != nullptr)
+                mSelectedInteractWeaponIndex =
+                    *(int*)((char*)Player->client + 0xA4);
+            else
+                mSelectedInteractWeaponIndex = 0;
+        }
+        PlayAnims(mSelectedInteractWeaponIndex,
+                  ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+    }
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (info->numAnimRepsBeforeSuccess <= 0 || (mFlags & 1) == 0)
+        return v3;
+    if (mPlayerCallback == nullptr)
+    {
+        XANIM_ASSERT("mPlayerCallback",
+                     "c:\\cod\\code\\game\\InteractState.cpp", 1144,
+                     "Null player callback");
+    }
+    void* mPlayerAnim = this->mPlayerAnim;
+    if (mPlayerAnim != nullptr)
+    {
+        void* curAnim = *(void**)((char*)this->mPlayerCallback + 0x04);
+        if (curAnim != nullptr && mPlayerAnim == curAnim)
+            return v3;
+    }
+    int v10 = mNumAnimRepetitions - 1;
+    bool v11 = mNumAnimRepetitions == 1;
+    mNumAnimRepetitions = v10;
+    if (v10 >= 0 && !v11)
+    {
+        mFlags &= ~1u;
+        InteractionController* v14 = InteractionController::Inst(currCl);
+        PlayAnims(v14->GetInteractWeaponIndex(), info->animFadeInTime);
+        return v3;
+    }
+    mFlags |= 2u;
+    return mSuccessState[0];
+}
+
+// ea: 0x005563D0 (?Activate@InteractStateRowboatInit@@UAEXXZ)
+void InteractStateRowboatInit::Activate()
+{
+    InteractStatePlayAnims::Activate();
+    gRowboatMgr.StartInteraction("dixon", "mccullin", "guzzo", "huxley",
+                                 "boat_redshirt");
+    gRowboatMgr.InitIdleAnims(*(const InteractStateInfo*)mInfo);
+    gRowboatMgr.InitFlinchAnims(*(const InteractStateInfo*)mInfo);
+    for (int i = 0; i < gRowboatMgr.mNumBoatmen; ++i)
+        gRowboatMgr.PlayIdle(i);
+    gRowboatMgr.PlayPushOff(*(const InteractStateInfo*)mInfo);
+}
+
+// ea: 0x00540950 (?Deactivate@InteractStateRowboatInit@@UAEXXZ; thunk)
+void InteractStateRowboatInit::Deactivate()
+{
+    InteractState::Deactivate();
+}
+
+// ea: 0x00556450 (?Update@InteractStateRowboatInit@@UAEPAVInteractState@@M@Z)
+InteractState* InteractStateRowboatInit::Update(float deltaT)
+{
+    InteractState* v2 = InteractStatePlayAnims::Update(deltaT);
+    gRowboatMgr.Update(deltaT);
+    return v2;
+}
+
+// ============================================================================
 // Meta-anim + Melee final cluster (anim.o)
 // Melee fields: mModifierIndex +0x1B0, mNumModifiers +0x1B4, mModifierAnimTime
 // +0x1B8, mModifierIntervalTimer +0x1BC, mPlayerSoundHandle +0x1C0,
@@ -10456,7 +11018,7 @@ void InteractState::SetOtherPosAndAngles(float (*angles)[3],
 }
 
 // ea: 0x0054D720
-void InteractState::GetInteractableMat(math::Mat43* mat)
+void InteractState::GetInteractableMat(math::Mat43& mat) const
 {
     unsigned int mVal = mController->mInteractableH.mVal;
     unsigned int v5 = mVal & 0xFFF;
@@ -10467,7 +11029,7 @@ void InteractState::GetInteractableMat(math::Mat43* mat)
         if (mObject != nullptr)
         {
             const math::Mat43 m = mObject->CalcRotTranMat43();
-            *mat = m;
+            mat = m;
             if (mLerpInteractableTagIndex != -1)
             {
                 DObj* mDObj = mObject->mDObj;
@@ -10477,8 +11039,8 @@ void InteractState::GetInteractableMat(math::Mat43* mat)
                         mDObj->GetMat(mLerpInteractableTagIndex);
                     __m128 tx = tag.x.v, ty = tag.y.v, tz = tag.z.v;
                     __m128 tw = tag.w.v;
-                    __m128 mx = mat->x.v, my = mat->y.v, mz = mat->z.v;
-                    __m128 mw = mat->w.v;
+                    __m128 mx = mat.x.v, my = mat.y.v, mz = mat.z.v;
+                    __m128 mw = mat.w.v;
                     math::Mat43 r;
                     r.x.v = _mm_add_ps(
                         _mm_add_ps(
@@ -10529,7 +11091,7 @@ void InteractState::GetInteractableMat(math::Mat43* mat)
                                                 _MM_SHUFFLE(2, 2, 2, 2)),
                                 mz)),
                         mw);
-                    *mat = r;
+                    mat = r;
                 }
             }
         }
@@ -10570,7 +11132,7 @@ void InteractState::CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
     if (useScriptOrigin != 0 && (mController->mFlags & 0x40) != 0)
         mat = *mController->GetScriptOriginMat();
     else
-        GetInteractableMat(&mat);
+        GetInteractableMat(mat);
     const math::Mat43& inv = lerpInfo->mInvTagUtilityMat;
     __m128 ix = inv.x.v, iy = inv.y.v, iz = inv.z.v, iw = inv.w.v;
     __m128 mx = mat.x.v, my = mat.y.v, mz = mat.z.v, mw = mat.w.v;
