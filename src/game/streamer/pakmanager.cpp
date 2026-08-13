@@ -266,6 +266,7 @@ extern void Com_Printf(const char* fmt, ...);  // core.o
 extern double atof(const char* nptr);
 extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
+extern char* va(const char* fmt, ...);  // ?va@@YAPADPBDZZ (g_q_shared.cpp)
 extern void tlMemFree(void* ptr);                // tl_system.o
 extern unsigned int AeHash(const char* str);     // ae_hash.cpp
 struct cvar_t {
@@ -4092,9 +4093,19 @@ void SceneManager::SingletonDebugRender()
     SceneManager::sInst->DebugRender();
 }
 
-// ea: 0x675E20 (stub; render pass port later)
+// ea: 0x675E20
 void SceneManager::DebugRender()
 {
+    if (mPlayerFootstepNumMatches == 0)
+    {
+        const char* material = (const char*)mPlayerFootstepMaterial;
+        char* v2 = va("no sound for footstep: %s", material);
+        DebugRender::RenderText(v2, 200, 250, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                                0.0f, 1.0f);
+    }
+    DebugRenderFX();
+    DebugRenderEnts();
+    DebugRenderLights();
 }
 
 // ea: 0x668B30
