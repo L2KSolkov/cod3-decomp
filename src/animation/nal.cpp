@@ -395,8 +395,19 @@ struct nalCachedPoseInfo {};
 struct nalAnimFile {};
 class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
 public:
-    virtual ~nalClientSceneAnim() {}
+    nalClientSceneAnim();  // ??0nalClientSceneAnim@@QAE@XZ (0x55EA20)
+    virtual ~nalClientSceneAnim();  // ??1nalClientSceneAnim@@UAE@XZ (0x55E6B0)
 };
+
+// ea: 0x0055EA20
+nalClientSceneAnim::nalClientSceneAnim()
+{
+}
+
+// ea: 0x0055E6B0
+nalClientSceneAnim::~nalClientSceneAnim()
+{
+}
 class nalHeap {};
 class nalSceneAnim;
 class nalSceneAnimInstance;
@@ -6118,13 +6129,18 @@ void XAnimCalcAbsDeltaParts(XAnimEntry* entry,
 // SceneAnimClient (anim.o 0x561630/0x5619A0) - nalClientSceneAnim client
 // ============================================================================
 
-class SceneAnimClient {
+class SceneAnimClient : public nalClientSceneAnim {
 public:
-    SceneAnimClient(const nalSceneAnim* anim, const tlFixedString* name,
+    SceneAnimClient(const nalSceneAnim* anim, const tlFixedString& name,
                     float blendIn, float blendOut);  // ea: 0x00561630
     virtual ~SceneAnimClient();                       // ea: 0x005619A0
 
-    void* __vftable;             // +0x00
+    // ?Render@SceneAnimClient@@UAEXPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@M@Z
+    virtual void Render(
+        nalAnimClass<nalAnyPose>::nalInstanceClass* animInst, float t);
+    // ?Release@SceneAnimClient@@UAEXXZ (0x563DD0)
+    virtual void Release();
+
     const void* mAnim;           // +0x04 nalSceneAnim*
     tlFixedString mName;         // +0x08
     unsigned int mFlags;         // +0x28
@@ -6150,11 +6166,11 @@ void* EntityHandleDb_Find(void* self, int fieldofs, unsigned int match)
 
 // ea: 0x00561630
 SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
-                                 const tlFixedString* name, float blendIn,
+                                 const tlFixedString& name, float blendIn,
                                  float blendOut)
 {
     mAnim = anim;
-    mName = *name;
+    mName = name;
     mFlags = 0;
     mEntity.mVal = 0;
     mNotify = nullptr;
@@ -6164,7 +6180,7 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
     mBlendInTime = blendIn;
     mBlender = nullptr;
     mBlendOutTime = blendOut;
-    if (strstr(name->str, "camera") != nullptr)
+    if (strstr(name.str, "camera") != nullptr)
     {
         mFlags |= 1u;
         mEntity.mVal = 0;
@@ -6243,6 +6259,48 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
 // ea: 0x005619A0
 SceneAnimClient::~SceneAnimClient()
 {
+}
+
+// ea: 0x00561960
+void SceneAnimClient::Render(
+    nalAnimClass<nalAnyPose>::nalInstanceClass* animInst, float t)
+{
+    (void)animInst; (void)t;
+}
+
+// ea: 0x00563DD0
+void SceneAnimClient::Release()
+{
+    void* mBlender = this->mBlender;
+    if (mBlender != nullptr)
+    {
+        typedef void (__thiscall* DelDtorFn)(void*, unsigned int);
+        ((DelDtorFn)((void**)*(void**)mBlender)[0])(mBlender, 1);
+    }
+    unsigned int v3 = mEntity.mVal & 0xFFF;
+    if (v3 < 0x540
+        && mEntity.mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            mObject->flags &= 0x3BFFFFFFu;
+            mObject->mFlags &= ~2u;
+        }
+    }
+    void* mNotify = this->mNotify;
+    if (mNotify != nullptr)
+    {
+        unsigned int count = ((unsigned int*)mNotify)[-1];
+        char* base = (char*)mNotify - 4;
+        AnimNotifyListElem* arr = (AnimNotifyListElem*)mNotify;
+        for (unsigned int n = 0; n < count; ++n)
+            arr[n].AsInfo()->~XAnimNotifyInfo();
+        mem_heap_free(base);
+    }
+    this->mNotify = nullptr;
+    this->nalClientSceneAnim::~nalClientSceneAnim();
+    mem_heap_free(this);
 }
 
 // ??_GSceneAnimClient@@UAEPAXI@Z (0x561970) - deleting dtor (mem_heap_free)
@@ -6847,9 +6905,11 @@ void* nalStreamAnimQueueInstance_6(
 
 
 // ea: 0x00552D90
-void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
-                     void* blendOut, TPakId pakAlloc, void* pakInfo)
+unsigned int QueueSceneAnim(const char* name, unsigned int notify,
+                            float blendIn, float blendOut, bool pakAlloc,
+                            unsigned int pakInfo)
 {
+    void* notifyPtr = (void*)(intptr_t)notify;
     reserved_dlist<SceneAnimInfo>::dlist_node* m_head =
         gSceneAnimList.m_head;
     reserved_dlist<SceneAnimInfo>::dlist_node* m_next =
@@ -6876,7 +6936,7 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
                     __debugbreak();
                 break;
             }
-            if (info->mNotify == notify)
+            if (info->mNotify == notifyPtr)
                 break;
             m_head = m_next;
             m_next = m_next->m_next;
@@ -6885,7 +6945,7 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
         }
         {
             SceneAnimInfo* info = (SceneAnimInfo*)m_head;
-            if (info->mNotify == notify)
+            if (info->mNotify == notifyPtr)
             {
                 AeAssert::gCurrentAuthor = AeAssert::COD3;
                 AeAssert::gCurrentFile =
@@ -6901,19 +6961,16 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
         }
     }
 
-    if (pakAlloc != PAK_ID_MIN)
-    {
-        pakAlloc = (TPakId)StreamZoneManager::sInst
-                       ->GetCellPakInfo(StreamZoneManager::sInst->mLastCellNum)
-                       ->pakId;
-    }
+    TPakId pakId;
+    if (pakAlloc)
+        pakId = (TPakId)StreamZoneManager::sInst
+                    ->GetCellPakInfo(StreamZoneManager::sInst->mLastCellNum)
+                    ->pakId;
     else
-    {
-        pakAlloc = PAK_ID_INVALID;
-    }
+        pakId = PAK_ID_INVALID;
 
     PakFileLocal* v8 = (PakFileLocal*)pakInfo;
-    if (pakInfo != nullptr)
+    if (pakInfo != 0)
     {
         if (v8->mHeapList[5] == -1)
         {
@@ -6929,10 +6986,10 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
         }
         int v9 = v8->mHeapList[5];
         if (v9 != PAK_ID_INVALID)
-            pakAlloc = (TPakId)v9;
+            pakId = (TPakId)v9;
     }
 
-    PakHeapContext pakCtx(pakAlloc, false);
+    PakHeapContext pakCtx(pakId, false);
     PakManager* v10 = PakManager::sInst;
     void* v11 = nullptr;
     unsigned int offset = 0;
@@ -6963,8 +7020,8 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
         info->mNotify = nullptr;
         info->blendNotify = nullptr;
         info->mPlaying = 0;
-        info->blendIn = *(float*)&blendIn;
-        info->blendOut = *(float*)&blendOut;
+        info->blendIn = blendIn;
+        info->blendOut = blendOut;
         info->mPakId = -1;
         info->mName[0] = 0;
         v11 = v16;
@@ -6977,9 +7034,9 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
             SceneAnimCallback,
         (char*)v11 + 0x1C);
     SceneAnimInfo* info2 = (SceneAnimInfo*)v11;
-    info2->mNotify = notify;
+    info2->mNotify = notifyPtr;
     info2->mInst = v18;
-    info2->mPakId = pakAlloc;
+    info2->mPakId = pakId;
     int oLen = 0;
     char oBuff[32];
     AeStringSupport::CStrToAeStr(oBuff, &oLen, 31, name);
@@ -6994,7 +7051,7 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
     gSceneAnimList.m_end.m_prev =
         (reserved_dlist<SceneAnimInfo>::dlist_node*)info2;
     ++gSceneAnimList.m_size;
-    return v11;
+    return (unsigned int)(intptr_t)v11;
 }
 
 // C-style wrapper for the inlined binary ctor (SceneAnimCallback path)
@@ -7002,7 +7059,7 @@ void* SceneAnimClient_CtorReal(void* self, const nalSceneAnim* anim,
                                const tlFixedString* name, float blendIn,
                                float blendOut)
 {
-    return new (self) SceneAnimClient(anim, name, blendIn, blendOut);
+    return new (self) SceneAnimClient(anim, *name, blendIn, blendOut);
 }
 
 // ============================================================================
