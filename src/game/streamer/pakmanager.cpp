@@ -1439,13 +1439,28 @@ struct InstanceBankSet {
                    void* userdata);  // ?Enumerate@InstanceBankSet@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
 };
 
-// cdResourceDirectory<T> object layout (12 bytes; vftable + flags + old dir)
-struct CdResourceDirectoryView {
-    void* __vftable;          // +0x00
-    bool  m_enable_release;   // +0x04
-    bool  m_release_once;     // +0x05
-    bool  m_enable_add;       // +0x06
-    void* m_old_directory;    // +0x08
+// nal resource types (nal.h; forward decls)
+struct nalAnyPose;
+struct nalAnimFile;
+class nalSceneAnim;
+class nalBaseSkeleton;
+template <typename T> class nalAnimClass;
+
+// cdResourceDirectory<T> (streamer.o; verified IDA: vftable +0x00,
+// m_old_directory +0x04, m_enable_release +0x08, m_enable_add +0x09,
+// m_release_once +0x0A). Subclass of tlResourceDirectory<T> so the
+// vftable slot order matches (Find slot 2, Add slot 3).
+template <typename T>
+struct cdResourceDirectory : tlResourceDirectory<T> {
+    tlResourceDirectory<T>* m_old_directory;  // +0x04
+    bool m_enable_release;    // +0x08
+    bool m_enable_add;        // +0x09
+    bool m_release_once;      // +0x0A
+
+    // ?Add@?$cdResourceDirectory@V...@@@UAEPAV...@@PAV...@@Z (streamer.o)
+    virtual T* Add(T* DataPtr) override;
+    // ?Find@?$cdResourceDirectory@V...@@@UAEPAV...@@ABVtlFixedString@@@Z
+    virtual T* Find(const tlFixedString& key) override;
 };
 
 // MipSettingsBank (streamer.o; mMipSettings +0x0C)
@@ -1462,10 +1477,10 @@ struct MipSettingsBank {
 // InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
 class InstanceBankMgr {
 public:
-    CdResourceDirectoryView m_anim_directory;      // +0x00
-    CdResourceDirectoryView m_scnanim_directory;   // +0x0C
-    CdResourceDirectoryView m_animfile_directory;  // +0x18
-    CdResourceDirectoryView m_skeleton_directory;  // +0x24
+    cdResourceDirectory<nalAnimClass<nalAnyPose>> m_anim_directory;  // +0x00
+    cdResourceDirectory<nalSceneAnim>             m_scnanim_directory;   // +0x0C
+    cdResourceDirectory<nalAnimFile>              m_animfile_directory;  // +0x18
+    cdResourceDirectory<nalBaseSkeleton>          m_skeleton_directory;  // +0x24
     MipSettingsBank* mMipSettingsBank;  // +0x30
     InstanceBankSet* mEntries[99];  // +0x34
     static InstanceBankMgr* sInst;  // ?sInst@InstanceBankMgr@@2PAV1@A
@@ -1499,6 +1514,64 @@ public:
                      float* out_value);  // ?GetMipScale@InstanceBankMgr@@QAE_NPBDAAM@Z
 };
 InstanceBankMgr* InstanceBankMgr::sInst = nullptr;
+
+// per-instantiation bank type / name offset for cdResourceDirectory
+template <typename T> struct CdResourceTraits;
+template <> struct CdResourceTraits<nalAnimClass<nalAnyPose>> {
+    static const int kBankType = INSTBANK_TYPE_ANIMFILE;
+    static const int kNameOffset = 0x00;  // DataPtr->Name
+};
+template <> struct CdResourceTraits<nalSceneAnim> {
+    static const int kBankType = INSTBANK_TYPE_ANIM;
+    static const int kNameOffset = 0x10;  // DataPtr->Header.Name
+};
+template <> struct CdResourceTraits<nalAnimFile> {
+    static const int kBankType = INSTBANK_TYPE_MESH;
+    static const int kNameOffset = 0x10;  // DataPtr->Header.Name
+};
+template <> struct CdResourceTraits<nalBaseSkeleton> {
+    static const int kBankType = INSTBANK_TYPE_ANIMOFFSET;
+    static const int kNameOffset = 0x00;  // DataPtr->Name
+};
+
+// ea: 0x66F6F0/0x66F760/0x66F7D0/0x66F840
+template <typename T>
+T* cdResourceDirectory<T>::Add(T* DataPtr)
+{
+    if (!m_enable_add)
+        return DataPtr;
+    ae_sized_array<TPakId, 128>& ContextStack =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    int m_size = ContextStack.m_size;
+    if (m_size != 0
+        && ContextStack.m_elements[m_size - 1] != PAK_ID_INVALID)
+    {
+        TPakId v6 = ContextStack.m_elements[m_size - 1];
+        return (T*)InstanceBankMgr::sInst->Add(
+            (eInstanceBankType)CdResourceTraits<T>::kBankType, v6,
+            *(tlFixedString*)((char*)DataPtr
+                              + CdResourceTraits<T>::kNameOffset),
+            (unsigned int)DataPtr);
+    }
+    return m_old_directory->Add(DataPtr);
+}
+
+// ea: 0x679130/0x679160/0x679190/0x6791C0
+template <typename T>
+T* cdResourceDirectory<T>::Find(const tlFixedString& key)
+{
+    tlResourceDirectory<T>* m_old_directory = this->m_old_directory;
+    if (m_old_directory == nullptr)
+        return (T*)InstanceBankMgr::sInst->Get(
+            (eInstanceBankType)CdResourceTraits<T>::kBankType,
+            PAK_ID_INVALID, &key);
+    T* result = m_old_directory->Find(key);
+    if (result == nullptr)
+        return (T*)InstanceBankMgr::sInst->Get(
+            (eInstanceBankType)CdResourceTraits<T>::kBankType,
+            PAK_ID_INVALID, &key);
+    return result;
+}
 
 // Manager DecodeBank stubs (cross-object: core.o / render.o / mp_actors.o)
 class XModelManager {
@@ -7912,65 +7985,6 @@ tlResourceDirectory<nalSceneAnim>* nalGetSceneAnimDirectory()
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim>* dir)
 {
     nalSceneAnimDirectory = dir;
-}
-
-// cdResourceDirectory<T> (streamer.o) - static accessors over the nal globals
-template <typename T>
-struct cdResourceDirectory {
-    static tlResourceDirectory<T>* GetDirectory();
-    static void SetDirectory(tlResourceDirectory<T>* dir);
-};
-
-template <>
-tlResourceDirectory<nalAnimClass<nalAnyPose>>*
-cdResourceDirectory<nalAnimClass<nalAnyPose>>::GetDirectory()
-{
-    return nalAnimDirectory;
-}
-template <>
-void cdResourceDirectory<nalAnimClass<nalAnyPose>>::SetDirectory(
-    tlResourceDirectory<nalAnimClass<nalAnyPose>>* dir)
-{
-    nalAnimDirectory = dir;
-}
-
-template <>
-tlResourceDirectory<nalSceneAnim>*
-cdResourceDirectory<nalSceneAnim>::GetDirectory()
-{
-    return nalSceneAnimDirectory;
-}
-template <>
-void cdResourceDirectory<nalSceneAnim>::SetDirectory(
-    tlResourceDirectory<nalSceneAnim>* dir)
-{
-    nalSceneAnimDirectory = dir;
-}
-
-template <>
-tlResourceDirectory<nalAnimFile>*
-cdResourceDirectory<nalAnimFile>::GetDirectory()
-{
-    return nalAnimFileDirectory;
-}
-template <>
-void cdResourceDirectory<nalAnimFile>::SetDirectory(
-    tlResourceDirectory<nalAnimFile>* dir)
-{
-    nalAnimFileDirectory = dir;
-}
-
-template <>
-tlResourceDirectory<nalBaseSkeleton>*
-cdResourceDirectory<nalBaseSkeleton>::GetDirectory()
-{
-    return nalSkeletonDirectory;
-}
-template <>
-void cdResourceDirectory<nalBaseSkeleton>::SetDirectory(
-    tlResourceDirectory<nalBaseSkeleton>* dir)
-{
-    nalSkeletonDirectory = dir;
 }
 
 // ============================================================================
