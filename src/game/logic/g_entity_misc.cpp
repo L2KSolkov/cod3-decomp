@@ -2933,17 +2933,6 @@ void ae_sized_array_push_back_pair(
     (void)self; (void)elt;
 }
 
-void* ADSMetaAnimInstance_Ctor(void* self, void* a, void* b, void* c,
-                               float* d)
-{
-    (void)self; (void)a; (void)b; (void)c; (void)d;
-    return nullptr;
-}
-void* AnimBank_GetAnimTree(void* self, const char* name)
-{
-    (void)self; (void)name;
-    return nullptr;
-}
 void* cdScratchMaterial_Ctor(void* self, void* a, unsigned int b, int c,
                              bool d)
 {

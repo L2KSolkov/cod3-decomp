@@ -42,6 +42,9 @@ public:
     // apsMath.o (non-inline): row-vector * 3x3 matrix. Unresolved here.
     const math::Dir3& operator*=(const math::Mat33& m);
 
+    // cg.o inline COMDAT (??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z)
+    const math::Dir3& operator-=(const math::Position3& v);
+
     // Constant layout (for compile-time initialization)
     struct Constant {
         float x, y, z, w;
@@ -75,6 +78,13 @@ public:
 static_assert(sizeof(Position3) == 0x10, "Position3 size mismatch");
 static_assert(sizeof(Position3::Constant) == 0x10, "Position3::Constant size mismatch");
 static_assert(sizeof(Position3::Packed) == 0x0C, "Position3::Packed size mismatch");
+
+// ea: 0x00687920
+inline const math::Dir3& Dir3::operator-=(const math::Position3& v)
+{
+    this->v = _mm_sub_ps(this->v, v.v);
+    return *this;
+}
 
 // ============================================================================
 // Vector4 — 4-component float vector (16 bytes)

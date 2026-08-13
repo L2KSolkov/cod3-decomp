@@ -135,6 +135,13 @@ float RumbleEffect::GetSteadyDuration(ERumbleMotorID rumbleID) const
     }
     return mRumbleDataArray[rumbleID].steady_duration;
 }
+
+// ea: 0x006BBDE0 (cg.o)
+void RumbleEffect::SetLooping(ERumbleMotorID rumbleID, bool looping)
+{
+    mRumbleDataArray[rumbleID].m_flags.mVal |= 2u;
+}
+
 extern void controller_rumble(void* self, int i_controller_num, int i_motor,
                               float intensity);
 extern int currCl;

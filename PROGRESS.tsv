@@ -26,7 +26,7 @@ anim.o		anim.o	game	408	TODO
 
 mp_actors.o		mp_actors.o	game	380	TODO	
 
-cg.o		cg.o	game	350	TODO	
+cg.o		cg.o	game	350	PORTED	cg.o inline-COMDAT + small-fn batch (26 cg.o symbols): refdef_s ctor + GlobalEffect/nglRenderNode family (SetDofEffect/SetShockedClient real, ctor(int)/dtor/Render/GetDesc/GetSortInfo + GlobalEffect derives ngl/nglRenderNode.h class) + Camera::GetPrevViewPos + View::Window ctor (FovX/FovY/Safety fields) + FastFloor + PlayerAnimMgr::CanRunWeaponAnims + ADSMetaAnimInstance ctor/dtor/VirtualGetPose (vftable slot 5 VirtualCreateInstance + slot 1 VirtualGetPose + slot 0 dtor calls, nal_anim.h asserts) + ADSMetaAnimData ctor/GetAnimName/IsDelayCreate (vftable re-ordered to binary 0xD0F4FC order; MetaNalBaseAnim slot [5]/[7] CreateAnimInst/DelayCreate fixed in g_debugthread) + AnimBank::GetAnimTree real + AnimationPlayer::GetAnimTime/IsPartialIdle real (cg_ents/cg_misc wrappers delegate) + XModelParts::GetBoneName + EntityState::SetLerpAngles + shellshock_t ctor + RumbleEffect::SetLooping + tl_min/tl_max templates + Dir3::operator-= + old stubs removed from g_entity_misc; cg.o audit 0 missing (401 symbols incl. data)
 
 cl.o		cl.o	game	313	PORTED	cl_input (99) + cl_console core+draw/print (26) + cl_usercmd (24) + cl_keys (26) + cl_snapshot (8) + cl_debug (18) + cl_dobj (12) + cl_localclient (24) + cl_scr (24) + cl_field (17) + cl_lifecycle (15) + cl_parse (20) = 313/313 COMPLETE; render parse + Con_Draw* + SCR_UpdateScreen + CL_Frame + CL_InitRef ported
 
@@ -621,4 +621,5 @@ bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engi
 bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	bdPlatformSocket.cpp: socket stats + ctor (5 funcs) from IDA
 
 bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	bdInAddr.cpp: IPv4 address (5 funcs) from IDA
+
 

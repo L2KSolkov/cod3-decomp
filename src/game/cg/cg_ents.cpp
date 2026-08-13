@@ -1069,11 +1069,10 @@ struct DObjSkelMat;
 extern vehicle_info_t* G_GetVehicleInfo(Entity* ent);
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
-// AnimationPlayer_IsPartialIdle artifact (anim.o; stub)
+// AnimationPlayer_IsPartialIdle artifact (real member: AnimationPlayer::IsPartialIdle)
 int AnimationPlayer_IsPartialIdle(void* player, bool checkLooping)
 {
-    (void)player; (void)checkLooping;
-    return 0;
+    return ((AnimationPlayer*)player)->IsPartialIdle(checkLooping) ? 1 : 0;
 }
 struct CameraView {
     uint8_t _pad[0x118];

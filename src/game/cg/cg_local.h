@@ -12,6 +12,14 @@
 
 struct Entity;
 class DObj;
+namespace nalGeneric { class nalGenericAnim; }
+
+// Minimal view of AnimationPlayer (full class in anim.o; cg.o members below)
+class AnimationPlayer {
+public:
+    float GetAnimTime(nalGeneric::nalGenericAnim* anim);  // ea: 0x006BBD00
+    bool IsPartialIdle(bool checkLooping);                 // ea: 0x006BBD60
+};
 
 // Renderer export table (refexport_t; matches the layout used by core.o
 // common.cpp's re_export_view and cl_parse.cpp's refexport_t2)

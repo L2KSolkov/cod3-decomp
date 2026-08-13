@@ -5,11 +5,38 @@
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
 #include "game/trace_types.h"
+#include "ngl/nglRenderNode.h"
 
 #include <math.h>
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// ea: 0x006BB680
+int FastFloor(float x)
+{
+    return (int)x;
+}
+
+// ??$tl_min@MM@@ (cg.o inline COMDAT)
+template <typename T, typename U>
+T tl_min(const T& a, const U& b)
+{
+    return b <= a ? b : a;
+}
+
+// ??$tl_max@MM@@ (cg.o inline COMDAT)
+template <typename T, typename U>
+T tl_max(const T& a, const U& b)
+{
+    return a <= b ? b : a;
+}
+
+// Minimal view of refdef_s (full type in cg_refdef.h); ctor is empty.
+struct refdef_s {
+    refdef_s() {}  // ea: 0x00687A90
+};
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 struct RumbleEffect;
@@ -634,6 +661,62 @@ struct GlobalEffectNode {
     int   mClientIndex;   // +0x28
 };
 
+// ============================================================================
+// GlobalEffect - cg.o render node (vftable order verified vs 0xD0F648:
+// dtor, Dummy, Render, GetDesc, GetSortInfo)
+// ============================================================================
+class GlobalEffect : public nglRenderNode {
+public:
+    GlobalEffect(int client);              // ea: 0x006BC160
+    virtual ~GlobalEffect();               // ea: 0x006BBE00
+    virtual void Render();                 // ea: 0x006BC190 (empty override)
+    void SetDofEffect(int on, float r1, float r2, float r3, float r4);  // ea: 0x00687AA0
+    void SetShockedClient(int shock);      // ea: 0x00687AF0
+
+    struct DofParams {
+        int   on;      // +0x0C
+        float r1;      // +0x10
+        float r2;      // +0x14
+        float r3;      // +0x18
+        float r4;      // +0x1C
+    };
+    DofParams mDof;          // +0x0C
+    float glowIntensity;     // +0x20
+    int ShockedClient;       // +0x24
+    int mClientIndex;        // +0x28
+};
+
+// ea: 0x006BC160
+GlobalEffect::GlobalEffect(int client)
+{
+    mClientIndex = client;
+    glowIntensity = 0.0f;
+}
+
+// ea: 0x006BBE00
+GlobalEffect::~GlobalEffect() {}
+
+// ea: 0x006BC190
+void GlobalEffect::Render()
+{
+}
+
+// ea: 0x00687AA0
+void GlobalEffect::SetDofEffect(int on, float r1, float r2, float r3, float r4)
+{
+    mDof.r1 = r1;
+    mDof.r2 = r2;
+    mDof.r3 = r3;
+    mDof.on = on;
+    mDof.r4 = r4;
+}
+
+// ea: 0x00687AF0
+void GlobalEffect::SetShockedClient(int shock)
+{
+    ShockedClient = shock;
+}
+
 enum EVehicleCameraMode {
     VEH_MODE_FIRSTPERSON = 0,
     VEH_MODE_CHASECAM    = 1,
@@ -676,6 +759,17 @@ enum {
 class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
+};
+
+// ea: 0x006BBC20
+struct shellshock_t {
+    RumbleEffectInstanceHandle hLoopSound;  // +0x00
+    RumbleEffectInstanceHandle hExitSound;  // +0x04
+    shellshock_t()
+    {
+        hLoopSound.mVal = 0;
+        hExitSound.mVal = 0;
+    }
 };
 
 struct ServerTime_s {
@@ -778,6 +872,7 @@ public:
 
     Camera();
 
+    math::Position3 GetPrevViewPos();  // ea: 0x00687B00
     float GetLastFOV();
     bool IsTweening();
     void StartCameraFade();
@@ -876,6 +971,12 @@ void Camera::SaveLastFOV()
 {
     if (mPrevViewPos.v.m128_f32[0] != 0.0f)
         mPrevFOV = CG_GetViewFov();
+}
+
+// ea: 0x00687B00
+math::Position3 Camera::GetPrevViewPos()
+{
+    return mPrevViewPos;
 }
 
 // ea: 0x0068E770
@@ -1873,7 +1974,13 @@ struct View_Window {
     float YPos;    // +0x04
     float Width;   // +0x08
     float Height;  // +0x0C
-    unsigned char _pad[0x1C - 0x10];
+    float FovX;        // +0x10
+    float FovY;        // +0x14
+    unsigned int Safety;  // +0x18
+
+    View_Window() {}
+    View_Window(float x, float y, float w, float h, float fovx, float fovy,
+                unsigned int flag);  // ea: 0x006BB5A0
 };
 
 struct View_Setup {
@@ -1883,6 +1990,20 @@ struct View_Setup {
 namespace View {
 int lNumViewports = 0;  // ?lNumViewports@View@@3HA (cg.o @ 0xF61728)
 }
+
+// ea: 0x006BB5A0
+View_Window::View_Window(float x, float y, float w, float h, float fovx,
+                         float fovy, unsigned int flag)
+{
+    XPos = x;
+    YPos = y;
+    Width = w;
+    Height = h;
+    FovX = fovx;
+    FovY = fovy;
+    Safety = flag;
+}
+
 View_Setup Setups[8];               // ?Setups@@3PAUView_Setup@@A (cg.o @ 0xDF9DB8)
 View_Window Windows[8];             // ?Windows@@3PAUView_Window@@A (cg.o @ 0xDF9E58)
 int ViewSetupConfigurations[4];  // ?ViewSetupConfigurations (cg.o @ 0xD0D200)
@@ -3214,6 +3335,7 @@ struct nalAnyPoseAnim {
     void* Skeleton;          // +0x30
     unsigned char Flags;     // +0x34
     float Duration;          // +0x38
+    int InstanceCount;       // +0x3C
 };
 
 struct tlFixedString {
@@ -3230,16 +3352,18 @@ tlFixedString tlFixedString_ctor(void* self, const char* s)
 }
 
 struct ADSMetaAnimData {
-    void* vftable;           // +0x00
     tlFixedString mName;     // +0x04
     nalAnyPoseAnim* mAnimPtr;  // +0x24
     nalAnyPoseAnim* mRevPtr;   // +0x28
 
+    ADSMetaAnimData();                     // ea: 0x006BBEB0
+    virtual const tlFixedString& GetAnimName() const;  // slot 0 (MetaAnimData base in binary)
     virtual int IsAnimLooping() const;
     virtual int IsAnimTrajRelative() const;
     virtual float GetAnimDuration() const;
     virtual const void* GetSkeleton() const;
     virtual void* CreateAnimInst(void* theSkel, void* theAnim);
+    virtual int IsDelayCreate();           // ea: 0x006BBEF0
     virtual void DelayCreate(void** animArray, int numAnims);
 };
 
@@ -3251,6 +3375,50 @@ struct ADSMetaAnimPlayer {
     void CreateMetaAnim(XAnimTree* pAnimTree);
     int Update(XAnimTree* pAnimTree, weaponInfo_s* weaponInfo);
 };
+
+// nalInstanceClass-derived ADS instance (cg.o; layout verified vs disasm)
+struct nalBasePose {
+    void* Skeleton;  // +0x00
+};
+
+class ADSMetaAnimInstance {
+public:
+    ADSMetaAnimInstance(nalAnyPoseAnim* forwardAnim, nalAnyPoseAnim* reverseAnim,
+                        void* theSkel, float* interpValue);  // ea: 0x006BB7C0
+    virtual ~ADSMetaAnimInstance();                          // ea: 0x006BB940
+    virtual void VirtualGetPose(float t, float t_prev,
+                                nalBasePose* pose,
+                                const nalBasePose* defaultPose,
+                                int lod);                    // ea: 0x006BBF00
+
+    float Duration;          // +0x04
+    float InverseDuration;   // +0x08
+    void* Skeleton;          // +0x0C
+    nalAnyPoseAnim* Anim;    // +0x10
+    void* mForwardInst;      // +0x14 (nalInstanceClass*)
+    void* mReverseInst;      // +0x18 (nalInstanceClass*)
+    float* mInterpValue;     // +0x1C
+    float mPrevValue;        // +0x20
+};
+
+// AnimBank - anim tree bank (cg.o; anims InplaceVector at +0x00)
+class AnimBank {
+public:
+    AnimTree* GetAnimTree(const char* name);  // ea: 0x006BBC30
+    unsigned int mSize;   // +0x00
+    AnimTree* mList;      // +0x04
+};
+
+// Minimal local view of PlayerAnimMgr (full class in anim.o; cg.o COMDAT)
+class PlayerAnimMgr {
+public:
+    bool CanRunWeaponAnims() const;  // ea: 0x006BB6B0
+    unsigned char _pad[0x14];
+    void* mCurPrimary;               // +0x14
+};
+
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);
 
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
@@ -3268,11 +3436,11 @@ extern void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
                                  float fadeIn, void* playMethod,
                                  float callbackTime, void* callback,
                                  float speed, float startTimeSec);
-// ?AnimationPlayer_GetAnimTime@@YAMPBX0@Z artifact (anim.o; stub)
+// ?AnimationPlayer_GetAnimTime@@YAMPBX0@Z artifact (real member below)
 float AnimationPlayer_GetAnimTime(void* self, void* anim)
 {
-    (void)self; (void)anim;
-    return 0.0f;
+    return ((AnimationPlayer*)self)->GetAnimTime(
+        (nalGeneric::nalGenericAnim*)anim);
 }
 extern void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
                                float fadeInTime, float startTimeInSec,
@@ -3359,6 +3527,223 @@ void ADSMetaAnimData::DelayCreate(void** animArray, int numAnims)
     mName = v5;
 }
 
+// ea: 0x006BBEB0
+ADSMetaAnimData::ADSMetaAnimData()
+{
+    memset(&mName, 0, sizeof(mName));
+    mAnimPtr = nullptr;
+    mRevPtr = nullptr;
+}
+
+// GetAnimName (inherited from MetaAnimData in the binary; anim.o)
+const tlFixedString& ADSMetaAnimData::GetAnimName() const
+{
+    return mName;
+}
+
+// ea: 0x006BBEF0
+int ADSMetaAnimData::IsDelayCreate()
+{
+    return 1;
+}
+
+// ea: 0x006BBD00
+float AnimationPlayer::GetAnimTime(nalGeneric::nalGenericAnim* anim)
+{
+    void** animStates = (void**)((char*)this + 0x28);
+    for (int i = 0; i < 3; ++i)
+    {
+        if (animStates[i] != nullptr)
+        {
+            void* instance = *(void**)animStates[i];
+            if (instance != nullptr && *(void**)((char*)instance + 0x10) == anim)
+                return *(float*)((char*)animStates[i] + 0x14);
+        }
+    }
+    return 0.0f;
+}
+
+// ea: 0x006BBD60
+bool AnimationPlayer::IsPartialIdle(bool checkLooping)
+{
+    void* state = *(void**)((char*)this + 0x34);
+    if (state == nullptr)
+        return true;
+    while (1)
+    {
+        unsigned char v3 =
+            *(unsigned char*)((char*)*(void**)((char*)state + 0x00) + 0x44) & 1;
+        if (v3 == 0 || checkLooping)
+        {
+            if (v3 != 0)
+                return false;
+            float t = *(float*)((char*)state + 0x14);
+            if (t >= 0.0f && t < 1.0f)
+                return false;
+            float t_prev = *(float*)((char*)state + 0x18);
+            if (t_prev >= 0.0f && t_prev < 1.0f)
+                return false;
+        }
+        state = *(void**)((char*)state + 0x30);
+        if (state == nullptr)
+            return true;
+    }
+}
+
+// ea: 0x006BBC30
+AnimTree* AnimBank::GetAnimTree(const char* name)
+{
+    if (mSize <= 1)
+        return nullptr;
+    unsigned int v4 = 1;
+    while (1)
+    {
+        unsigned int v5 = v4;
+        if (v4 >= mSize)
+        {
+            CG_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h", 81);
+        }
+        if (v4 >= mSize)
+            v5 = 0;
+        if (_stricmp((const char*)mList[v5].name, name) == 0)
+            break;
+        if (++v4 >= mSize)
+            return nullptr;
+    }
+    return &mList[v4];
+}
+
+// C-style wrapper for cg_weapon.cpp (real member: AnimBank::GetAnimTree)
+void* AnimBank_GetAnimTree(void* self, const char* name)
+{
+    return ((AnimBank*)self)->GetAnimTree(name);
+}
+
+// ea: 0x006BB6B0
+bool PlayerAnimMgr::CanRunWeaponAnims() const
+{
+    return mCurPrimary == nullptr;
+}
+
+// nalInstanceClass vtable slots used by ADSMetaAnimInstance (x86 thiscall)
+typedef void* (__thiscall* VirtualCreateInstanceFn)(void* self, void* theSkel);
+typedef void (__thiscall* InstanceDtorFn)(void* self, unsigned int flags);
+typedef void (__thiscall* InstanceVirtualGetPoseFn)(
+    void* self, float t, float t_prev, nalBasePose* pose,
+    const nalBasePose* defaultPose, int lod);
+
+// ea: 0x006BB7C0
+ADSMetaAnimInstance::ADSMetaAnimInstance(nalAnyPoseAnim* forwardAnim,
+                                        nalAnyPoseAnim* reverseAnim,
+                                        void* theSkel, float* interpValue)
+{
+    Duration = forwardAnim->Duration;
+    InverseDuration = Duration == 0.0f ? 0.0f : 1.0f / Duration;
+    Skeleton = theSkel != nullptr ? theSkel : forwardAnim->Skeleton;
+    Anim = forwardAnim;
+    ++forwardAnim->InstanceCount;
+    mInterpValue = interpValue;
+    mPrevValue = 0.0f;
+    if (theSkel != nullptr
+        && *(void**)forwardAnim->Skeleton != *(void**)theSkel
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 147,
+               "!skeleton || Compatible(GetSkeleton(),skeleton)",
+               "attempt to create an instance without a compatible skeleton"))
+    {
+        __debugbreak();
+    }
+    mForwardInst = ((VirtualCreateInstanceFn)((void**)*(void**)forwardAnim)[5])(
+        forwardAnim, theSkel);
+    if (theSkel != nullptr
+        && *(void**)reverseAnim->Skeleton != *(void**)theSkel
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 147,
+               "!skeleton || Compatible(GetSkeleton(),skeleton)",
+               "attempt to create an instance without a compatible skeleton"))
+    {
+        __debugbreak();
+    }
+    mReverseInst = ((VirtualCreateInstanceFn)((void**)*(void**)reverseAnim)[5])(
+        reverseAnim, theSkel);
+}
+
+// ea: 0x006BB940
+ADSMetaAnimInstance::~ADSMetaAnimInstance()
+{
+    if (mForwardInst != nullptr)
+        ((InstanceDtorFn)((void**)*(void**)mForwardInst)[0])(mForwardInst, 1);
+    if (mReverseInst != nullptr)
+        ((InstanceDtorFn)((void**)*(void**)mReverseInst)[0])(mReverseInst, 1);
+    --Anim->InstanceCount;
+}
+
+// ea: 0x006BBF00
+void ADSMetaAnimInstance::VirtualGetPose(float t, float t_prev,
+                                         nalBasePose* pose,
+                                         const nalBasePose* defaultPose,
+                                         int lod)
+{
+    if (*mInterpValue <= mPrevValue)
+    {
+        void* reverseInst = mReverseInst;
+        float v14 = 1.0f - *mInterpValue;
+        float v16 = 1.0f - mPrevValue;
+        void* skel = *(void**)((char*)reverseInst + 0x0C);
+        if ((skel != pose->Skeleton || skel != defaultPose->Skeleton)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 117,
+                   "GetSkeleton() == pose.GetSkeleton() && GetSkeleton() == defaultPose.GetSkeleton()",
+                   "pose skeleton types do not match"))
+        {
+            __debugbreak();
+        }
+        ((InstanceVirtualGetPoseFn)((void**)*(void**)reverseInst)[1])(
+            reverseInst, v14, v16, pose, defaultPose, 0);
+    }
+    else
+    {
+        void* forwardInst = mForwardInst;
+        float prevValue = mPrevValue;
+        float v11 = *mInterpValue;
+        void* skel = *(void**)((char*)forwardInst + 0x0C);
+        if ((skel != pose->Skeleton || skel != defaultPose->Skeleton)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 117,
+                   "GetSkeleton() == pose.GetSkeleton() && GetSkeleton() == defaultPose.GetSkeleton()",
+                   "pose skeleton types do not match"))
+        {
+            __debugbreak();
+        }
+        ((InstanceVirtualGetPoseFn)((void**)*(void**)forwardInst)[1])(
+            forwardInst, v11, prevValue, pose, defaultPose, 0);
+    }
+    mPrevValue = *mInterpValue;
+}
+
+// C-style wrapper for the inlined binary ctor
+// (ADSMetaAnimData::CreateAnimInst path)
+void* ADSMetaAnimInstance_Ctor(void* self, void* forwardAnim,
+                               void* reverseAnim, void* theSkel,
+                               float* interpValue)
+{
+    return new (self) ADSMetaAnimInstance((nalAnyPoseAnim*)forwardAnim,
+                                          (nalAnyPoseAnim*)reverseAnim,
+                                          theSkel, interpValue);
+}
+
+// ea: 0x006BBAC0
+void EntityState::SetLerpAngles(const math::Position3& angles)
+{
+    if (lerpAngles.v.m128_f32[0] != angles.v.m128_f32[0]
+        || lerpAngles.v.m128_f32[1] != angles.v.m128_f32[1]
+        || lerpAngles.v.m128_f32[2] != angles.v.m128_f32[2])
+    {
+        lerpAngles = angles;
+        eFlags |= 0x40000000;
+    }
+}
+
 // ea: 0x0068F490
 void ADSMetaAnimPlayer::DeleteMetaAnim()
 {
@@ -3391,13 +3776,9 @@ void ADSMetaAnimPlayer::CreateMetaAnim(XAnimTree* pAnimTree)
     {
         void* v5 = mem_heap_malloc(0x2C);
         if (v5 != nullptr)
-        {
-            memset(v5, 0, 0x2C);
-            *(void**)v5 = (void*)0x00D0F4FC;  // &ADSMetaAnimData::vftable
-            ((ADSMetaAnimData*)v5)->mAnimPtr = nullptr;
-            ((ADSMetaAnimData*)v5)->mRevPtr = nullptr;
-        }
-        mADSMetaAnimDataPtr = (ADSMetaAnimData*)v5;
+            mADSMetaAnimDataPtr = new (v5) ADSMetaAnimData();
+        else
+            mADSMetaAnimDataPtr = nullptr;
     }
     MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr, mADSMetaAnimDataPtr);
     XAnimEntry* e23 = AnimTreeEntry(pAnimTree, 0x17);
@@ -3542,10 +3923,23 @@ struct XModelParts {
     unsigned char _pad1[0x28 - 0x18];
     int mMeshPtrsSize;        // +0x28
     void** mMeshPtrsList;     // +0x2C
+
+    const char* GetBoneName(unsigned int i);  // ea: 0x006BBA40
 };
 
 extern int _stricmp(const char* dst, const char* src);
 extern int _strnicmp(const char* dst, const char* src, size_t count);
+
+// ea: 0x006BBA40
+const char* XModelParts::GetBoneName(unsigned int i)
+{
+    if (i >= (unsigned int)mHierarchySize)
+    {
+        CG_ASSERT("i >= 0 && i < mHierarchy.size()",
+                  "c:\\cod\\code\\game\\XModelParts.h", 215);
+    }
+    return mHierarchyList[i].mStr;
+}
 
 // ea: 0x00699A90
 void FixupGunModelParts(XModelParts* xmp)

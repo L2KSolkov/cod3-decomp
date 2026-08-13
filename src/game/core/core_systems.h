@@ -548,6 +548,7 @@ struct RumbleEffect {
     float GetRampDownDuration(ERumbleMotorID rumbleID) const;   // ?GetRampDownDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE210)
     float GetRampUpDuration(ERumbleMotorID rumbleID) const;     // ?GetRampUpDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE290)
     float GetSteadyDuration(ERumbleMotorID rumbleID) const;     // ?GetSteadyDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE310)
+    void SetLooping(ERumbleMotorID rumbleID, bool looping);     // ?SetLooping@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z (cg.o 0x6BBDE0)
 };
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 

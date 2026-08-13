@@ -182,6 +182,7 @@ static_assert(offsetof(trajectory_t, trDelta) == 0x18, "trajectory_t::trDelta of
 class EntityState {
 public:
     EntityState();                            // ??0EntityState@@QAE@XZ (game.o 0x620480)
+    void SetLerpAngles(const math::Position3& angles);  // ?SetLerpAngles@EntityState@@QAEXABVPosition3@math@@@Z (cg.o 0x6BBAC0)
 
     uint8_t  eType;                               // +0x00
     uint8_t  loopSound;                           // +0x01

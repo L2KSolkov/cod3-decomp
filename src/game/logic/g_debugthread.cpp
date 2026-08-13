@@ -1172,9 +1172,9 @@ struct MetaAnimData {
     //   [2] IsAnimTrajRelative() -> int
     //   [3] GetAnimDuration() -> float
     //   [4] GetSkeleton() -> nalBaseSkeleton*
-    //   [5] DelayCreate(nalAnimClass**, int)
+    //   [5] CreateAnimInst(...)   (verified vs ADSMetaAnimData vftable 0xD0F4FC)
     //   [6] IsDelayCreate() -> int
-    //   [7] CreateAnimInst(...)
+    //   [7] DelayCreate(nalAnimClass**, int)
 };
 
 struct nalBaseSkeleton;
@@ -1239,7 +1239,7 @@ void MetaNalBaseAnim::Create(MetaAnimData* theMetaAnimData)
 // ea: 0x4F5FE0
 void MetaNalBaseAnim::DelayCreate(void** animArray, int numAnims)
 {
-    ((DelayCreateFn)mData->__vftable[5])(mData, animArray, numAnims);
+    ((DelayCreateFn)mData->__vftable[7])(mData, animArray, numAnims);
     Create(mData);
 }
 
@@ -1247,7 +1247,7 @@ void MetaNalBaseAnim::DelayCreate(void** animArray, int numAnims)
 void MetaNalBaseAnim::DelayCreate(void* anim)
 {
     void* animArray = anim;
-    ((DelayCreateFn)mData->__vftable[5])(mData, &animArray, 1);
+    ((DelayCreateFn)mData->__vftable[7])(mData, &animArray, 1);
     Create(mData);
 }
 
@@ -1260,7 +1260,7 @@ int MetaNalBaseAnim::IsDelayCreate()
 // ea: 0x4F6020
 void* MetaNalBaseAnim::CreateAnimInst(nalBaseSkeleton* theSkel)
 {
-    return ((CreateAnimInstFn)mData->__vftable[7])(mData, theSkel, this);
+    return ((CreateAnimInstFn)mData->__vftable[5])(mData, theSkel, this);
 }
 
 // ============================================================================
