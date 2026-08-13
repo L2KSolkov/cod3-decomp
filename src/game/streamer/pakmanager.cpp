@@ -68,8 +68,18 @@ public:
     int32_t mPakId;     // +0x230
     uint8_t _pad234[0x244 - 0x234];
     ScriptEventHandler* mScriptEventHandler;  // +0x244
-    uint8_t _pad248[0x270 - 0x248];
+    uint8_t _pad248[0x258 - 0x248];
+    void*   mActor;      // +0x258 (actor_s*)
+    uint8_t _pad25C[0x260 - 0x25C];
+    void*   mScrVehicle;  // +0x260 (scr_vehicle_t*)
+    uint8_t _pad264[0x270 - 0x264];
     IVPointer<XModel> mModel;  // +0x270
+    uint8_t _pad278[0x27C - 0x278];
+    Broc::string mClassName;  // +0x27C
+    uint8_t _pad284[0x294 - 0x284];
+    Broc::string mGroupName;  // +0x294
+    uint8_t _pad29C[0x2A4 - 0x29C];
+    Broc::string mAnimName;   // +0x2A4
 
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (g_entity_misc.cpp)
     int GetPakId() const { return mPakId; }  // g.o inline
@@ -155,8 +165,8 @@ public:
         Entity* mObject;  // +0x00
         int     mKey;     // +0x04
     };
-    uint8_t     _pad[0xA8];
-    DbElement   mElements[0x540];
+    uint8_t     mFreeIndices[0xA8];  // +0x00 (BitSet<1344>)
+    DbElement   mElements[0x540];    // +0xA8
     static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
 };
 
@@ -582,6 +592,62 @@ struct BitSet {
                 return false;
         }
         return true;
+    }
+
+    // BitSet<N>::iterator (core.o HandleDb.h; m_src +0, m_cur_word +4,
+    // m_word_idx +8, m_cur_val +0xC)
+    struct iterator {
+        const BitSet<N>* m_src;       // +0x00
+        unsigned int m_cur_word;      // +0x04
+        int m_word_idx;               // +0x08
+        int m_cur_val;                // +0x0C
+
+        iterator() : m_src(nullptr), m_cur_word(0), m_word_idx(-1),
+                     m_cur_val(-1) {}
+        int operator*() const { return m_cur_val; }  // ea: 0x4ACFA0
+        void operator++()  // ea: 0x4B1360
+        {
+            if (m_word_idx == -1)
+                return;
+            if (m_cur_word == 0)
+            {
+                while (m_word_idx < kNumWords - 1)
+                {
+                    ++m_word_idx;
+                    m_cur_word = m_src->mBits[m_word_idx];
+                    if (m_cur_word != 0)
+                        break;
+                }
+            }
+            if (m_cur_word != 0)
+            {
+                unsigned long v6;
+                _BitScanForward(&v6, m_cur_word);
+                m_cur_val = (int)v6 + 32 * m_word_idx;
+                m_cur_word &= ~(1u << v6);
+            }
+            else
+            {
+                m_cur_val = -1;
+                m_word_idx = -1;
+            }
+        }
+    };
+    iterator begin() const
+    {
+        iterator it;
+        it.m_src = this;
+        it.m_cur_word = mBits[0];
+        it.m_word_idx = 0;
+        it.m_cur_val = -1;
+        return it;
+    }
+    BitSet<N> operator~() const
+    {
+        BitSet<N> r;
+        for (int i = 0; i < kNumWords; ++i)
+            r.mBits[i] = ~mBits[i];
+        return r;
     }
 };
 
@@ -2301,6 +2367,11 @@ public:
     static void RenderText3D(const math::Position3& wpos, const Color& col,
                              float scale, const char* format,
                              ...);  // render.o 0xAB36C0
+    static void RenderLine(const math::Position3& pt1,
+                           const math::Position3& pt2, const Color& col,
+                           float thickness);  // render.o 0xAC7AB0
+    static void RenderQuad2D(float l, float t, float r, float b, float z,
+                             const Color& col);  // render.o 0xAAC730
 };
 
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
@@ -2343,6 +2414,7 @@ public:
     void ConvertEntity(SceneEntity* source, Entity* dest);  // ?ConvertEntity@SceneManager@@AAEXPAVSceneEntity@@PAVEntity@@@Z @ 0x673D60
     void RenderLightGlows();  // ?RenderLightGlows@SceneManager@@QAEXXZ @ 0x675EA0
     void RenderInstanceGroups();  // ?RenderInstanceGroups@SceneManager@@QAEXXZ @ 0x669AF0
+    void DebugRenderEnts();  // ?DebugRenderEnts@SceneManager@@QAEXXZ @ 0x672170
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -4985,6 +5057,315 @@ void SceneManager::RenderInstanceGroups()
             }
         }
     }
+}
+
+// ea: 0x672170
+void SceneManager::DebugRenderEnts()
+{
+    if (!mDebugRenderEnts)
+        return;
+
+    int simpleEnts = 0;
+    int pak = 0;                 // "PakReq" count
+    int unstreamedWasActor = 0;  // "Main" count
+    int main = 0;                // "Actor" count
+    int unstreamedWasPreReq = 0; // "Simple" count
+    int radius = 0;              // "From PreReq" count
+    int maxLength = 0;           // "From Actor" count
+    int fromPak = 0;             // v99: "From Pak" count
+    int total = 0;
+    float unstreamedSimple[3];   // v79/v80/numDrawn: Pak/Zone/Main simple mem
+    float memUseSimp[5];
+    float memUseComp[5];
+    float pakCount = 0.0f;       // memUseComp[4]
+    memset(memUseSimp, 0, sizeof(memUseSimp));
+    memUseComp[0] = 0.0f;
+    memUseComp[1] = 0.0f;
+    memUseComp[4] = 0.0f;
+    unstreamedSimple[0] = 0.0f;
+    unstreamedSimple[1] = 0.0f;
+    unstreamedSimple[2] = 0.0f;
+
+    const Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    math::Position3 playerPos = Player->r.currentOrigin;
+    int renderLimit = 0;
+
+    BitSet<1344> freeBits =
+        ~*(BitSet<1344>*)&EntityHandleDb::sInst.mFreeIndices;
+    BitSet<1344>::iterator it = freeBits.begin();
+    ++it;
+    while (it.m_cur_val != -1 || it.m_word_idx != -1)
+    {
+        int idx = *it;
+        ++total;
+        bool overLimit = (++renderLimit > 200);
+
+        Entity* entity = EntityHandleDb::sInst.mElements[idx].mObject;
+        math::Position3 origin = entity->r.currentOrigin;
+        math::Position3 d;
+        d.v = _mm_sub_ps(origin.v, playerPos.v);
+        __m128 d2 = _mm_mul_ps(d.v, d.v);
+        float zone = sqrtf(d2.m128_f32[0]
+                           + (_mm_shuffle_ps(d2, d2, 85).m128_f32[0]
+                              + _mm_shuffle_ps(d2, d2, 170).m128_f32[0]));
+        bool within5000 = (zone <= 5000.0f);
+        bool within12000 = (zone <= 12000.0f);
+
+        Broc::string heapLabel;   // v101
+        Broc::string pakLabel;    // v106
+        pakLabel = defaultFileName;
+
+        TPakId entityPak = (TPakId)entity->mPakId;
+        if (entityPak == PAK_ID_INVALID)
+            entityPak = PakManager::sInst->mLevelPakId;
+        PakFile* slot = (entityPak <= 0x62)
+                            ? PakManager::sInst->mSlots[entityPak]
+                            : nullptr;
+
+        int v16;
+        if (slot != nullptr && slot->IsInPakHeap(entity))
+            v16 = 0;
+        else
+        {
+            unsigned char* arena = BankManager::sInst->mMramArena;
+            if (arena != nullptr && (unsigned char*)entity >= arena
+                && (unsigned char*)entity
+                       < arena + (unsigned int)(BankManager::sInst
+                                                    ->mMramBankSize
+                                                * BankManager::sInst
+                                                      ->mNumMramBanks))
+                v16 = 1;
+            else
+            {
+                mem_heap* h = gActorHeap->GetHeapPointer();
+                if (h != nullptr && (unsigned char*)entity
+                                           >= (unsigned char*)h->start
+                    && (unsigned char*)entity < (unsigned char*)h->end)
+                    v16 = 4;
+                else
+                {
+                    overLimit = false;
+                    v16 = 2;
+                }
+            }
+        }
+
+        memUseComp[3] = 8.0f;
+        float* actorMem =
+            (v16 <= 2) ? &memUseSimp[v16 + 2] : &memUseComp[v16 - 3];
+        if (entity->mActor != nullptr)
+        {
+            memUseComp[3] = 30.0f;
+            *actorMem += 13.9f;
+        }
+        else if (entity->mScrVehicle != nullptr)
+        {
+            memUseComp[3] = 20.0f;
+            *actorMem += 11.67f;
+        }
+        else
+        {
+            float* simpleMem =
+                (v16 <= 2) ? &unstreamedSimple[v16] : &memUseSimp[v16 - 3];
+            *simpleMem += 1.12f;
+            ++unstreamedWasPreReq;
+        }
+
+        if (v16 != 2)
+        {
+            TPakId v21 = (TPakId)entity->mPakId;
+            if (v21 == PAK_ID_INVALID)
+                v21 = PakManager::sInst->mLevelPakId;
+            if (v21 == PakManager::sInst->mLevelPakId)
+            {
+                if (v16 != 0)
+                {
+                    int v22 = v16 - 1;
+                    if (v22 == 0)
+                    {
+                        pakLabel = "Zone";
+                        ++radius;
+                        v16 = 3;
+                        goto DebugRenderEnts_Switch;
+                    }
+                    if (v22 == 3)
+                    {
+                        pakLabel = "Actor";
+                        ++maxLength;
+                        v16 = 3;
+                        goto DebugRenderEnts_Switch;
+                    }
+                }
+                else
+                {
+                    pakLabel = "Pak";
+                    ++fromPak;
+                }
+                v16 = 3;
+            }
+        }
+
+    DebugRenderEnts_Switch:
+        Color entCol;
+        switch (v16)
+        {
+        case 0:
+            entCol = Color(0.0f, 1.0f, 0.0f, 0.5f);
+            heapLabel = "Pak";
+            pakCount += 1.0f;
+            break;
+        case 1:
+            entCol = Color(1.0f, 1.0f, 0.0f, 0.5f);
+            heapLabel = "Zone";
+            ++pak;
+            break;
+        case 2:
+            entCol = Color(1.0f, 0.0f, 0.0f, 0.5f);
+            heapLabel = "Main";
+            ++unstreamedWasActor;
+            break;
+        case 3:
+            entCol = Color(1.0f, 0.5f, 0.0f, 0.5f);
+            heapLabel = "Unstreamed";
+            ++simpleEnts;
+            break;
+        default:
+            entCol = Color(0.0f, 0.0f, 1.0f, 0.5f);
+            heapLabel = "Actor";
+            ++main;
+            break;
+        }
+
+        math::Position3 up = origin;
+        up.v.m128_f32[2] += 5000.0f;
+        if (within5000 && !overLimit)
+            DebugRender::RenderLine(origin, up, entCol, 2.2f);
+
+        if (within12000 && !overLimit)
+        {
+            DebugRender::RenderSphere(origin, memUseComp[3], entCol);
+            if (zone < 500.0f)
+            {
+                Broc::string label;
+                if (entity->mClassName.mBlock != nullptr)
+                    label += Broc::string("classname: ") + entity->mClassName
+                             + "\n";
+                if (entity->mGroupName.mBlock != nullptr)
+                    label += Broc::string("groupname: ") + entity->mGroupName
+                             + "\n";
+                if (entity->mAnimName.mBlock != nullptr)
+                    label += Broc::string("animname: ") + entity->mAnimName
+                             + "\n";
+                TPakId v33 = (TPakId)entity->mPakId;
+                if (v33 == PAK_ID_INVALID)
+                    v33 = PakManager::sInst->mLevelPakId;
+                if (v33 <= 0x62)
+                {
+                    PakFile* v34 = PakManager::sInst->mSlots[v33];
+                    if (v34 != nullptr)
+                    {
+                        label += Broc::string("pak: ")
+                                 + Broc::string(v34->mPath.mBuff) + "\n";
+                    }
+                }
+                label += Broc::string("heap: ") + heapLabel + "\n";
+                if (!(pakLabel == defaultFileName))
+                    label += Broc::string("(") + pakLabel + ")\n";
+                if (label.mBlock == nullptr)
+                    label = "[ent here]";
+
+                float fade;
+                if (zone >= 250.0f)
+                {
+                    if (zone <= 1000.0f)
+                        fade = 1.0f - ((zone - 250.0f) * 0.0013333333f);
+                    else
+                        fade = 0.2f;
+                }
+                else
+                {
+                    fade = 1.0f;
+                }
+                const char* txt =
+                    label.mBlock != nullptr ? label.GetBuff() : defaultFileName;
+                DebugRender::RenderText3D(origin, Color(1.0f, 1.0f, 1.0f, fade),
+                                          1.0f, txt);
+            }
+        }
+        ++it;
+    }
+
+    char summary[256];
+    int nonSimple = total - unstreamedWasPreReq;
+    sprintf(summary,
+            "Entities: %d\nSimple: %d (%0.2f kb)\nActors: %d (%0.2f kb)\n",
+            total, unstreamedWasPreReq, unstreamedWasPreReq * 1.12,
+            nonSimple, nonSimple * 13.9);
+    DebugRender::RenderText(summary, 20, 50, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                            0.0f, 1.0f);
+
+    int pakCountInt = (int)pakCount;
+    sprintf(summary, "Pak: %d (%0.2f kb, %0.2f kb) %0.2f kb\n", pakCountInt,
+            unstreamedSimple[0], memUseSimp[2],
+            memUseSimp[2] + unstreamedSimple[0]);
+    DebugRender::RenderText(summary, 20, 102, Color(0.5f, 0.0f, 1.0f, 0.0f),
+                            0.0f, 1.0f);
+
+    sprintf(summary, "PakReq: %d (%0.2f kb, %0.2f kb) %0.2f kb\n", pak,
+            unstreamedSimple[1], memUseSimp[3],
+            memUseSimp[3] + unstreamedSimple[1]);
+    DebugRender::RenderText(summary, 20, 118, Color(1.0f, 1.0f, 0.0f, 1.0f),
+                            0.0f, 1.0f);
+
+    sprintf(summary, "Actor: %d (%0.2f kb, %0.2f kb) %0.2f kb\n", main,
+            memUseSimp[1], memUseComp[1], memUseComp[1] + memUseSimp[1]);
+    DebugRender::RenderText(summary, 20, 134, Color(0.0f, 0.0f, 1.0f, 1.0f),
+                            0.0f, 1.0f);
+
+    sprintf(summary, "Unstreamed: %d (From Pak %d, From PreReq %d, From Actor %d)\n",
+            simpleEnts, fromPak, radius, maxLength);
+    DebugRender::RenderText(summary, 20, 150,
+                            Color(0.5f, 1.0f, 0.5f, 0.0f), 0.0f, 1.0f);
+
+    sprintf(summary, "Main: %d (%0.2f kb, %0.2f kb) %0.2f kb\n",
+            unstreamedWasActor, unstreamedSimple[2], memUseSimp[4],
+            memUseSimp[4] + unstreamedSimple[2]);
+    DebugRender::RenderText(summary, 20, 166, Color(1.0f, 0.0f, 0.0f, 1.0f),
+                            0.0f, 1.0f);
+
+    // stacked distribution bar (Pak / PakReq / Actor / Unstreamed / Main)
+    float pakFrac = 0.0f;
+    float pakReqFrac = 0.0f;
+    float actorFrac = 0.0f;
+    float mainFrac = 0.0f;
+    float unstreamedFrac = 0.0f;
+    if (pakCountInt != 0)
+        pakFrac = pakCountInt / (float)total;
+    if (pak != 0)
+        pakReqFrac = pak / (float)total;
+    if (simpleEnts != 0)
+        unstreamedFrac = simpleEnts / (float)total;
+    if (unstreamedWasActor != 0)
+        mainFrac = unstreamedWasActor / (float)total;
+    if (main != 0)
+        actorFrac = main / (float)total;
+    float w0 = total * pakFrac;
+    float w1 = total * pakReqFrac;
+    float w2 = total * actorFrac;
+    float w3 = total * unstreamedFrac;
+    float w4 = total * mainFrac;
+    DebugRender::RenderQuad2D(20.0f, 20.0f, 20.0f + w0, 40.0f, -5.0f,
+                              Color(0.0f, 1.0f, 0.0f, 1.0f));
+    DebugRender::RenderQuad2D(20.0f + w0, 20.0f, 20.0f + w0 + w1, 40.0f,
+                              -5.0f, Color(1.0f, 1.0f, 0.0f, 1.0f));
+    DebugRender::RenderQuad2D(20.0f + w0 + w1, 20.0f, 20.0f + w0 + w1 + w2,
+                              40.0f, -5.0f, Color(0.0f, 0.0f, 1.0f, 1.0f));
+    DebugRender::RenderQuad2D(20.0f + w0 + w1 + w2, 20.0f,
+                              20.0f + w0 + w1 + w2 + w3, 40.0f, -5.0f,
+                              Color(1.0f, 0.5f, 0.0f, 1.0f));
+    DebugRender::RenderQuad2D(20.0f + w0 + w1 + w2 + w3, 20.0f,
+                              20.0f + w0 + w1 + w2 + w3 + w4, 40.0f, -5.0f,
+                              Color(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 // ea: 0x6663F0
