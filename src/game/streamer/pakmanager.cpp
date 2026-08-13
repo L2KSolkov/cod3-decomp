@@ -1790,11 +1790,14 @@ struct SceneLight {
 };
 class SceneBank {
 public:
-    uint8_t _pad0[0x08];
+    unsigned int mId;              // +0x00
+    float        mVersion;         // +0x04
     unsigned int mSceneHeapSize;  // +0x08
-    uint8_t _pad0C[0x10 - 0x0C];
-    InplaceVector<InstanceGroup> mInstanceGroups;  // +0x10
-    uint8_t _pad18[0x30 - 0x18];
+    void*        mWorldSpawn;      // +0x0C
+    InplaceVector<void*> mSceneEntities;      // +0x10
+    InplaceVector<void*> mStaticModels;       // +0x18
+    InplaceVector<InstanceGroup> mInstanceGroups;  // +0x20
+    InplaceVector<void*> mVehicleNodes;       // +0x28
     InplaceVector<SceneEffect> mSceneEffects;      // +0x30
     InplaceVector<void*> mSceneEffectGroups;       // +0x38
     InplaceVector<SceneLight> mSceneLights;        // +0x40
@@ -1859,6 +1862,10 @@ public:
     void UnloadBank(TPakId pakId);  // ?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z
     void DebugRenderLights();  // ?DebugRenderLights@SceneManager@@QAEXXZ
     void ProcessEffects(TPakId pakId, SceneBank* bank);  // ?ProcessEffects@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
+    void PostProcess(TPakId pakId);  // ?PostProcess@SceneManager@@AAEXW4TPakId@@@Z @ 0x6787E0
+    void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
+    void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
+    void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
     ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
@@ -2722,6 +2729,48 @@ void SceneManager::ProcessEffects(TPakId pakId, SceneBank* bank)
             __debugbreak();
     }
     loaded_ids.m_elements[mLoadedIdsCount] = pakId;
+}
+
+// ea: 0x6787E0
+void SceneManager::PostProcess(TPakId pakId)
+{
+    SceneBank* Bank = GetBank(pakId);
+    void* mWorldSpawn = Bank->mWorldSpawn;
+    if (mWorldSpawn != nullptr)
+        ProcessWorldSpawn(*(WorldSpawn*)mWorldSpawn);
+    for (unsigned int i = 0; i < Bank->mInstanceGroups.mSize; ++i)
+    {
+        ProcessInstanceGroup(pakId, &Bank->mInstanceGroups.mList[i]);
+    }
+    for (unsigned int v7 = 0; v7 < Bank->mStaticModels.mSize; ++v7)
+    {
+        ProcessStaticModel(pakId, &Bank->mStaticModels.mList[v7]);
+    }
+    extern int cls_state;  // ?cls_state@@3HA (cl_debug.cpp)
+    if (cls_state == 0 /* CA_ACTIVE */ || cls_state == 5 /* CA_MAP_RESTART */)
+    {
+        for (unsigned int j = 0; j < Bank->mSceneEntities.mSize; ++j)
+            ProcessEntity(pakId, (int)j);
+    }
+    ProcessEffects(pakId, Bank);
+}
+
+// ea: 0x673190 (heavy; port later)
+void SceneManager::ProcessInstanceGroup(TPakId pakId, void* group)
+{
+    (void)pakId; (void)group;
+}
+
+// ea: 0x66D670 (heavy; port later)
+void SceneManager::ProcessStaticModel(TPakId pakId, void* model)
+{
+    (void)pakId; (void)model;
+}
+
+// ea: 0x676C50 (heavy; port later)
+void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
+{
+    (void)pakId; (void)entIdx;
 }
 
 // ea: 0x6786A0
