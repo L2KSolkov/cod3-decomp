@@ -140,17 +140,19 @@ public:
     void* mInst;                    // +0x0C
     void* mNotify;                  // +0x10
     void* blendNotify;              // +0x14
-    unsigned char _pad18[0x19 - 0x18];
+    unsigned char mReady;           // +0x18
     unsigned char mPlaying;         // +0x19
     float blendIn;                  // +0x1C
     float blendOut;                 // +0x20
     int mPakId;                     // +0x24
     char mName[32];                 // +0x28
 
+    // ??0SceneAnimInfo@@QAE@MM@Z (0x55F1F0)
+    SceneAnimInfo(float blendIn, float blendOut);
     // ?get_dlist_node@SceneAnimInfo@@QAEPAXXZ (0x539D10)
-    void* get_dlist_node() { return this; }
+    void* get_dlist_node();
     // ?get_dlist_node_offset@SceneAnimInfo@@SAHXZ (0x539D20)
-    static int get_dlist_node_offset() { return 0; }
+    static int get_dlist_node_offset();
 
     // Pool allocator (anim.o): ?sAllocator@SceneAnimInfo@@2PAVPoolAllocator@@A
     // @ 0xF25A30.  ??2/??3SceneAnimInfo@@SAPAXI_NPBDH@Z (0x539CB0/0x539CD0)
@@ -163,6 +165,34 @@ public:
 };
 
 PoolAllocator* SceneAnimInfo::sAllocator = nullptr;  // @ 0xF25A30
+
+// ea: 0x0055F1F0
+SceneAnimInfo::SceneAnimInfo(float blendIn, float blendOut)
+{
+    *(void**)&m_dlist_node[0] = nullptr;
+    *(void**)&m_dlist_node[4] = nullptr;
+    mInst = nullptr;
+    mReady = false;
+    mPlaying = false;
+    this->blendIn = blendIn;
+    this->blendOut = blendOut;
+    mPakId = (int)(TPakId)-1;  // PAK_ID_INVALID
+    mName[0] = 0;
+    mName[1] = 0;
+}
+
+// ea: 0x00539D10
+void* SceneAnimInfo::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x00539D20
+int SceneAnimInfo::get_dlist_node_offset()
+{
+    return 0;
+}
+
 void* SceneAnimInfo::operator new(unsigned int size, bool forceHeapAlloc,
                                   const char* file, int line)
 {
@@ -1009,10 +1039,22 @@ class XAnimTree {
     unsigned short infoArray[1];       // +0x18
 
     // ?get_dlist_node@XAnimTree@@QAEPAXXZ (0x53A860)
-    void* get_dlist_node() { return this; }
+    void* get_dlist_node();
       // ?get_dlist_node_offset@XAnimTree@@SAHXZ (0x53A870)
-      static int get_dlist_node_offset() { return 0; }
+      static int get_dlist_node_offset();
 };
+
+// ea: 0x0053A860
+void* XAnimTree::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x0053A870
+int XAnimTree::get_dlist_node_offset()
+{
+    return 0;
+}
 
 // Explicit instantiations for the anim.o lists (emit ctor/iterator COMDATs
 // with the exact binary manglings).
@@ -3056,7 +3098,7 @@ int GetNumButtonTypeNames()
 }
 
 // ea: 0x53AFD0
-const char* GetButtonTypeName(unsigned int index)
+const char* GetButtonTypeName(int index)
 {
     if (index > 0x10)
     {
@@ -3069,7 +3111,7 @@ const char* GetButtonTypeName(unsigned int index)
 }
 
 // ea: 0x53B030
-const char* GetButtonTextName(unsigned int index)
+const char* GetButtonTextName(int index)
 {
     if (index > 0x10)
     {
@@ -5082,14 +5124,26 @@ template void FastCycleTrajectory<
 // xanim.cpp leaf batch (anim.o) - simple/empty/wrapper functions
 // ============================================================================
 
+struct fileData_s;  // game/core/core_types.h (12 bytes)
+
 // ea: 0x0053E0D0
-void XAnimFreeMemory()
+void XAnimFreeMemory(fileData_s* file)
 {
+    (void)file;
+}
+
+// ea: 0x0053E0F0
+void XAnimCreate(AnimTree* tree, unsigned short numAnims, const char* name)
+{
+    (void)tree; (void)numAnims; (void)name;
+    XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 468, "dead code");
 }
 
 // ea: 0x0053E340
-AnimTree* XAnimCreateAnims()
+AnimTree* XAnimCreateAnims(const char* treeName, int numAnims,
+                           void* (*allocFn)(int))
 {
+    (void)treeName; (void)numAnims; (void)allocFn;
     XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 609, "dead code");
     return nullptr;
 }
@@ -5101,28 +5155,37 @@ const char* XAnimGetAnimTreeDebugName(AnimTree* anims)
 }
 
 // ea: 0x0053E6E0
-void DObjUpdateClientInfo()
+void DObjUpdateClientInfo(DObj* d, float deltaT)
 {
+    (void)d; (void)deltaT;
 }
 
 // ea: 0x0053E9C0
-void XAnimSetUser()
+void XAnimSetUser(int user)
 {
+    (void)user;
 }
 
 // ea: 0x0053E9E0
-void XAnimLoadAnimTree()
+void XAnimLoadAnimTree(XAnimTree* tree)
 {
+    (void)tree;
     XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 5488,
                  "ma dead code");
 }
 
 // ea: 0x0053EA30
-void XAnimSaveAnimTree()
+void XAnimSaveAnimTree(XAnimTree* tree)
 {
+    (void)tree;
     XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 5521,
                  "ma dead code");
 }
+
+// Force COMDAT emission of ?BtlFixedString@@QBEPBDXZ (0x539D30) from nal.obj.
+typedef const char* (tlFixedString::*TlFixedStringConvFn)() const;
+static volatile TlFixedStringConvFn tlFixedStringConvAnchor =
+    &tlFixedString::operator const char*;
 
 // ea: 0x00543870
 unsigned int XAnimGetAnimTreeSize(AnimTree* anims)
@@ -7457,7 +7520,7 @@ struct InteractStateInfo {
 };
 typedef InteractStateInfo InteractStateInfoLocal;
 
-extern const char* GetButtonTextName(unsigned int index);
+extern const char* GetButtonTextName(int index);
 extern float sMinStickVal;
 extern float sStickDownMinProgress;
 extern float sStickUpMaxSide;
