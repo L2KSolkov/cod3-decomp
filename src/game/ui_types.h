@@ -12,6 +12,7 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include "game/game_types.h"
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -151,6 +152,14 @@ enum panel_layer {
     PANEL_LAYER_TOTAL = 9,
 };
 
+enum mask_type {
+    NO_MASK = 0,
+    LEFT_MASK = 1,
+    RIGHT_MASK = 2,
+    BOTTOM_MASK = 3,
+    TOP_MASK = 4,
+};
+
 // ============================================================================
 // ae_array<T,N> - fixed-size array (elements only; bounds asserts in callers)
 // ============================================================================
@@ -264,6 +273,9 @@ public:
     virtual void SetAlpha(float alpha);       // ?SetAlpha@PanelQuad@@UAEXM@Z 0x576870
     virtual void SetZvalueAbs(float z);       // 0x57A530
     virtual float GetCenterX() { return center_point.x; }  // inline 0x5B6490
+    virtual void SetXYInitialToCurrentPos();  // ?SetXYInitialToCurrentPos@PanelQuad@@UAEXXZ 0x57A8A0
+    void Mask(float percent, mask_type maskType,
+              float uv_width);  // ?Mask@PanelQuad@@QAEXMW4mask_type@@M@Z 0x579C40
     virtual void GetCenterPos(float& cx, float& cy)  // inline 0x5B6470
     {
         cx = center_point.x;
@@ -360,6 +372,8 @@ public:
     void SetVisibility(int i, float vis);          // shell.o 0x5798A0
     void FormatForSplitScreen(int viewport, int old_viewport);  // 0x56A3B0
     void MoveForSplitScreen(int viewport, int old_viewport);    // 0x56A690
+    void Mask(float mask, mask_type type, float uv_width,
+              float scale);  // ?Mask@PanelQuadSection@@QAEXMW4mask_type@@MM@Z 0x579640
 };
 static_assert(sizeof(PanelQuadSection::PQVert) == 20,
               "PQVert size mismatch");
@@ -825,6 +839,9 @@ public:
     virtual void SetValue(int) {}               // slot 51 0x5AE840 (empty)
 
     void CommonConstructor(FEText* text, FEMenu* menu);  // shell.o 0x56FBC0
+    FEMenuEntry() : menu(nullptr), up(-1), down(-1), left(-1), right(-1),
+                    text(nullptr), color_scheme_index(0), highlight(false),
+                    disabled(false), must_delete_text(false) {}
     FEMenuEntry(FEText* t, FEMenu* m, bool delete_me);  // inline 0x5B1C90
     FEMenuEntry(const char* text, FEMenu* m, bool floating,
                 font_index ft, int nlines);     // shell.o 0x585C70
@@ -1164,16 +1181,156 @@ static_assert(offsetof(FEMultiLineText, lines) == 0x90, "FEMultiLineText::lines 
 // ============================================================================
 class FEMenuListBoxItem {
 public:
-    int          mIndex;         // +0x00
+    unsigned int mIndex;         // +0x00
     Broc::string mText;          // +0x04
-    void*        mData;          // +0x08
-    int          mSubItemCount;  // +0x0C
+    int          mData;          // +0x08
+    unsigned int mSubItemCount;  // +0x0C
     Broc::string mSubItems[3];   // +0x10
 
+    FEMenuListBoxItem(unsigned int index, const Broc::string& text,
+                      int data);  // inline COMDAT 0x5B2DF0-ish
+    ~FEMenuListBoxItem();         // ?dtor 0x5B2E10-ish
     const Broc::string& GetSubItem(unsigned int index);  // shell.o 0x571D90
+    unsigned int AddSubItem(const Broc::string& text);   // shell.o 0x571D60
 };
 static_assert(sizeof(FEMenuListBoxItem) == 28,
               "FEMenuListBoxItem size mismatch");
+
+// ============================================================================
+// FE widget entry subclasses (shell.o FEComboBox.cpp / FESlider.cpp /
+// FEDoubleEntry.cpp / FEMenuListBox.cpp) - all inherit FEMenuEntry
+// ============================================================================
+class FEComboBox : public FEMenuEntry {
+public:
+    short    mCurrOption;     // +0x18
+    short    mCachedOption;   // +0x1A
+    short    mNumOptions;     // +0x1C
+    short    mMaxOptions;     // +0x1E
+    Broc::string* mOptionStrings;  // +0x20
+    Handle   mSound;          // +0x24
+    bool     mEnableSound;    // +0x28
+    uint8_t  _pad29[3];       // +0x29
+    FEText*  mLabel;          // +0x2C
+    struct Fader {
+        PanelQuad* mQuad;
+        float mAlpha;
+        float mAlphaTo;
+        float mTime;
+        float mAlphaDelta;
+        bool  mFading;
+        uint8_t _pad[3];
+    } mScrollBarLeftFader;    // +0x30
+    Fader mScrollBarRightFader;  // +0x48
+
+    FEComboBox(FEMenu* parent, short maxOptions, FEText* text,
+               FEText* label, PanelQuad* leftArrow,
+               PanelQuad* rightArrow);  // 0x57E0E0
+    virtual ~FEComboBox();              // 0x58E180
+    virtual short OnLeft();             // 0x586260
+    virtual short OnRight();            // 0x586310
+    virtual void Draw();                // 0x5714F0
+    virtual void Update(float time_inc);// 0x571810
+    virtual void SetShown(bool on);     // vtable slot 14
+    virtual void Highlight(bool h, bool anim);  // 0x571A80
+    virtual void AdjustColor();         // 0x571B00
+    virtual void MoveForSplitScreen(int viewport, int old_viewport);  // 0x571AC0
+    virtual void SetValue(int value);   // slot 49
+    virtual int GetValue();             // slot 50
+
+    void PlayNavigationSound();         // 0x57E230
+    void SetWidgets(FEText* copy_this, FEText* label, PanelQuad* leftArrow,
+                    PanelQuad* rightArrow);  // 0x571520
+    void AddOption(Broc::string optionString);       // 0x571570
+    void AddOptionNoLocalize(Broc::string optionString);  // 0x571950
+    void ClearOptions();                // 0x571660
+    void SetOption(int index, Broc::string optionString);  // 0x571700
+    void SetCurrOption(short option);   // 0x571A30
+};
+static_assert(sizeof(FEComboBox) == 0x60, "FEComboBox size mismatch");
+
+class FESlider : public FEMenuEntry {
+public:
+    int   mValue;            // +0x18
+    int   mMin;              // +0x1C
+    int   mMax;              // +0x20
+    Handle mSound;           // +0x24
+    bool  mEnableSound;      // +0x28
+    uint8_t _pad29[3];       // +0x29
+    FEText* mBarText;        // +0x2C
+    PanelQuad* mBar;         // +0x30
+    bool  mNumeric;          // +0x34
+    uint8_t _pad35[3];       // +0x35
+
+    FESlider(FEMenu* parent, PanelQuad* bar, FEText* label,
+             FEText* barText);          // 0x57E2B0
+    virtual ~FESlider();                // 0x58E270
+    virtual short OnLeft();             // 0x5863C0
+    virtual short OnRight();            // 0x5863F0
+    virtual void Draw();                // 0x571B30
+    virtual void Update(float time_inc);// 0x571B70
+    virtual void SetShown(bool on);     // vtable slot 14
+    virtual void Highlight(bool h, bool anim);  // 0x571BD0
+    virtual void MoveForSplitScreen(int viewport, int old_viewport);  // 0x57E440
+    virtual void UpdateWidescreen(bool widescreen);  // 0x571C10
+    virtual void SetValue(int value);   // slot 49
+    virtual int GetValue();             // slot 50
+
+    void PlayNavigationSound();         // 0x57E3C0
+    void SetRange(int min, int max);    // 0x571BB0
+    void AdjustBar();                   // 0x57E350
+    void SetWidgets(PanelQuad* bar, FEText* label, FEText* barText);  // 0x57E470
+};
+static_assert(sizeof(FESlider) == 0x38, "FESlider size mismatch");
+
+class FEDoubleEntry : public FEMenuEntry {
+public:
+    FEText* mLabel;          // +0x18
+
+    FEDoubleEntry(FEMenu* parent, FEText* label, FEText* text);  // 0x57E4B0
+    virtual ~FEDoubleEntry();           // 0x571C30
+    virtual void SetShown(bool on);     // inline 0x5B3690
+    virtual void Draw();                // 0x571C50
+    virtual void Update(float time_inc);// 0x571C80
+    virtual void Highlight(bool h, bool anim);  // 0x571CB0
+    virtual void AdjustColor();         // 0x571D30
+    virtual void MoveForSplitScreen(int viewport, int old_viewport);  // 0x571CF0
+};
+static_assert(sizeof(FEDoubleEntry) == 0x1C, "FEDoubleEntry size mismatch");
+
+class FEMenuListBox : public FEMenuEntry {
+public:
+    ae_vector<FEMenuListBoxItem*> mItems;  // +0x18
+    float  mColumnWidths[4];               // +0x24
+    bool   mHasHeadings;                   // +0x34
+    uint8_t _pad35[3];                     // +0x35
+    Broc::string mColumnHeadings[4];       // +0x38
+    unsigned int mNumLines;                // +0x48
+    unsigned int mTopLine;                 // +0x4C
+    unsigned int mSelectedLine;            // +0x50
+    float  mRowHeight;                     // +0x54
+    float  mHeadingSpacing;                // +0x58
+
+    FEMenuListBox(FEText* t, FEMenu* m, int numLines);  // inline 0x5A5D30-ish
+    virtual ~FEMenuListBox();
+    virtual short OnUp();               // 0x57E8F0
+    virtual short OnDown();             // 0x57E970
+    virtual void Draw();                // 0x57E5B0
+
+    unsigned int AddItem(const Broc::string& itemText,
+                         FEMenuListBoxItem* itemData);  // 0x58E330
+    unsigned int AddSubItem(unsigned int itemIndex,
+                            const Broc::string& subItemText);  // 0x57E520
+    void SetCurrentSelection(int iCurrentSelection);  // 0x57EA00
+    unsigned int GetCurrentSelection();  // 0x57EA60
+    int GetCurrentSelectionData();       // 0x57EA80
+    void SetColumnWidth(unsigned int column, float width);  // 0x571DF0
+    void SetColumnHeading(unsigned int column,
+                          const char* heading);  // 0x571E60
+    void Sort(unsigned int column);      // 0x571ED0 (empty)
+    void FormatForSplitScreen(int viewport, int old_viewport);  // 0x571EE0
+    void Clear();                        // 0x586420
+};
+static_assert(sizeof(FEMenuListBox) == 0x5C, "FEMenuListBox size mismatch");
 
 // ============================================================================
 // UIListBox - 172 bytes (verified against IDA; shell.o owns the impl)

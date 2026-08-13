@@ -18,29 +18,6 @@ extern FEMenuColorScheme color_schemes[];  // 0xDF3AE0
 extern int currCl;                       // ?currCl@@3HA @ 0xF1579C
 extern int dword_F6A28C[];               // @ 0xF6A28C
 
-// Widget entry subclasses (shell.o, ported later)
-class FEComboBox : public FEMenuEntry {
-public:
-    FEComboBox(FEMenu* parent, short maxOptions, FEText* text,
-               FEText* label, PanelQuad* leftArrow,
-               PanelQuad* rightArrow);  // ??0FEComboBox@@QAE@PAVFEMenu@@FPAVFEText@@1PAVPanelQuad@@2@Z
-};
-class FESlider : public FEMenuEntry {
-public:
-    FESlider(FEMenu* parent, PanelQuad* bar, FEText* label,
-             FEText* barText);  // ??0FESlider@@QAE@PAVFEMenu@@PAVPanelQuad@@PAVFEText@@2@Z
-};
-class FEDoubleEntry : public FEMenuEntry {
-public:
-    FEDoubleEntry(FEMenu* parent, FEText* label,
-                  FEText* text);  // ??0FEDoubleEntry@@QAE@PAVFEMenu@@PAVFEText@@1@Z
-};
-class FEMenuListBox : public FEMenuEntry {
-public:
-    FEMenuListBox(FEText* t, FEMenu* m,
-                  int numLines);  // ??0FEMenuListBox@@QAE@PAVFEText@@PAVFEMenu@@H@Z
-};
-
 // ============================================================================
 // FEMenuEntry
 // ============================================================================

@@ -301,6 +301,20 @@ void PanelQuad::SetAlpha(float alpha)
     SetVisibility(alpha);
 }
 
+// ea: 0x57A8A0
+void PanelQuad::SetXYInitialToCurrentPos()
+{
+    for (int i = 0; i < pqs.mSize; ++i)
+    {
+        PanelQuadSection* v3 = pqs.mElements[i];
+        for (int v4 = 0; v4 < 4; ++v4)
+        {
+            v3->x_initial[v4] = (short)v3->quad.Verts[v4].X;
+            v3->y_initial[v4] = (short)v3->quad.Verts[v4].Y;
+        }
+    }
+}
+
 // ea: 0x0057A530
 void PanelQuad::SetZvalueAbs(float z)
 {
@@ -639,6 +653,139 @@ void PanelQuad::MoveForSplitScreen(int viewport, int old_viewport)
 {
     for (int i = 0; i < pqs.mSize; ++i)
         pqs.mElements[i]->MoveForSplitScreen(viewport, old_viewport);
+}
+
+// ea: 0x579C40
+void PanelQuad::Mask(float percent, mask_type maskType, float uv_width)
+{
+    if (maskType == NO_MASK)
+        return;
+    if (pqs.mSize != 1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEPanel.cpp";
+        AeAssert::gCurrentLine = 833;
+        AeAssert::gCurrentExpr =
+            "pqs.size() == 1 && \"Cannot mask PanelQuads with more than one Section\"";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (percent < 0.0f || percent > 1.0f)
+        percent = percent < 0.0f ? 0.0f : 1.0f;
+    float scale = (maskType == LEFT_MASK || maskType == RIGHT_MASK)
+                      ? this->sc_x
+                      : this->sc_y;
+    pqs.mElements[0]->Mask(percent, maskType, uv_width, scale);
+}
+
+// ea: 0x579640
+void PanelQuadSection::Mask(float mask, mask_type type, float uv_width,
+                            float scale)
+{
+    if (type == NO_MASK)
+        return;
+    float v5 = mask;
+    if (mask > 1.0f)
+        v5 = 2.0f - mask;
+    int v6 = (type == LEFT_MASK || type == RIGHT_MASK) ? x_initial[3]
+                                                       : y_initial[3];
+    int v7 = (type == LEFT_MASK || type == RIGHT_MASK) ? x_initial[0]
+                                                       : y_initial[0];
+    float v8 = (v6 - v7) * scale;
+    float X;
+    float v10;
+    float v11;
+    float Y;
+    if (type == LEFT_MASK)
+    {
+        X = quad.Verts[3].X - (v8 * v5);
+        v10 = quad.Verts[3].X;
+        v11 = quad.Verts[0].Y;
+        Y = quad.Verts[3].Y;
+    }
+    else if (type == RIGHT_MASK)
+    {
+        X = quad.Verts[0].X;
+        v10 = (v8 * v5) + X;
+        v11 = quad.Verts[0].Y;
+        Y = (v8 * v5) + v11;
+    }
+    else if (type == TOP_MASK)
+    {
+        X = quad.Verts[0].X;
+        v10 = quad.Verts[3].X;
+        v11 = quad.Verts[3].Y - (v8 * v5);
+        Y = quad.Verts[3].Y;
+    }
+    else  // BOTTOM_MASK
+    {
+        X = quad.Verts[0].X;
+        v10 = quad.Verts[3].X;
+        v11 = quad.Verts[0].Y;
+        Y = (v8 * v5) + v11;
+    }
+    float U = quad.Verts[1].U;
+    float v14 = quad.Verts[0].U;
+    bool v15;
+    v15 = (v14 < U) ? (U - v14) < 0.001f : (v14 - U) < 0.001f;
+    float v27 = v15 ? X : v10;
+    float v16 = v15 ? v10 : X;
+    float v17 = v15 ? v11 : Y;
+    float v18 = v15 ? Y : v11;
+    quad.Verts[3].Y = Y;
+    quad.Verts[0].Y = v11;
+    quad.Verts[0].X = X;
+    quad.Verts[1].X = v27;
+    quad.Verts[1].Y = v18;
+    quad.Verts[2].X = v16;
+    quad.Verts[2].Y = v17;
+    quad.Verts[3].X = v10;
+    if (uv_width <= 0.0f)
+        return;
+    float v19;
+    float v20;
+    float V;
+    float v22;
+    if (type == LEFT_MASK)
+    {
+        v19 = quad.Verts[3].U - (v5 * uv_width);
+        v20 = quad.Verts[3].U;
+        V = quad.Verts[0].V;
+        v22 = quad.Verts[3].V;
+    }
+    else if (type == RIGHT_MASK)
+    {
+        v19 = quad.Verts[0].U;
+        v20 = (v5 * uv_width) + v19;
+        V = quad.Verts[0].V;
+        v22 = (v5 * uv_width) + V;
+    }
+    else if (type == TOP_MASK)
+    {
+        v19 = quad.Verts[0].U;
+        v20 = quad.Verts[3].U;
+        V = quad.Verts[3].V - (v5 * uv_width);
+        v22 = quad.Verts[3].V;
+    }
+    else
+    {
+        v19 = quad.Verts[0].U;
+        v20 = quad.Verts[3].U;
+        V = quad.Verts[0].V;
+        v22 = (v5 * uv_width) + V;
+    }
+    float v23 = v15 ? v19 : v20;
+    float v24 = v15 ? v20 : v19;
+    float v25 = v15 ? V : v22;
+    float v26 = v15 ? v22 : V;
+    quad.Verts[0].U = v19;
+    quad.Verts[0].V = V;
+    quad.Verts[1].U = v23;
+    quad.Verts[1].V = v26;
+    quad.Verts[2].U = v24;
+    quad.Verts[2].V = v25;
+    quad.Verts[3].U = v20;
+    quad.Verts[3].V = v22;
 }
 
 // ============================================================================
