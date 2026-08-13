@@ -26,8 +26,10 @@ struct nalPositionOrientation {
     math::Position3 pos;   // +0x00
     math::Dir3 orient;     // +0x10
 };
+namespace nalGeneric {
 class nalGenericSkeleton;
 class nalGenericPose;
+}
 
 // Cross-object externs
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
@@ -293,8 +295,8 @@ public:
     void ApplyTerrainMapping(Entity* ent,
                              nalMatrix4x4* leftFootMat,
                              nalMatrix4x4* rightFootMat);  // ea: 0x507EC0
-    void Update(Entity* ent, nalGenericSkeleton* inSkeleton,
-                nalGenericPose* inPose);               // ea: 0x50BBC0
+    void Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
+                nalGeneric::nalGenericPose* inPose);   // ea: 0x50BBC0
 };
 static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
 
@@ -456,8 +458,8 @@ extern float AnimIK_painDurationMax;      // game2.o
 extern float AnimIK_painAmpMin;           // game2.o
 extern float AnimIK_painAmpMax;           // game2.o
 
-void AnimIK::Update(Entity* ent, nalGenericSkeleton* inSkeleton,
-                    nalGenericPose* inPose)
+void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
+                    nalGeneric::nalGenericPose* inPose)
 {
     pose = inPose;
     skeleton = inSkeleton;

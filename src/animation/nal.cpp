@@ -436,6 +436,7 @@ class nalGenericPose;
 class nalGenericSkeleton;
 }
 
+namespace nalGeneric {
 class nalGenericPose {
     unsigned char* m_data;
     unsigned       m_size;
@@ -451,7 +452,8 @@ public:
         tlMemFree(ptr);
     }
 
-    nalGenericPose(const nalBaseSkeleton* skel, int flags);
+    // ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z
+    nalGenericPose(const nalGenericSkeleton* skel, int flags);
     nalGenericPose(const nalGenericPose& other, bool copyData);
     ~nalGenericPose();
     void operator=(const nalGenericPose& other);
@@ -470,7 +472,7 @@ public:
 
     // ??$?AM@nalGenericPose@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
     template <typename T>
-    const float& operator[](const nalGeneric::nalGenericConstComponentHandle<T>& handle) const;
+    const float& operator[](const nalGenericConstComponentHandle<T>& handle) const;
 
     void* GetData() { return m_data; }
 };
@@ -504,17 +506,17 @@ public:
 
     // anim.o nalGeneric templates (0x560F60/0x5610F0/0x563970)
     template <typename T>
-    void GetComponentHandle(nalGeneric::nalGenericComponentHandle<T>& handle,
+    void GetComponentHandle(nalGenericComponentHandle<T>& handle,
                             const tlFixedString& a3,
                             const tlFixedString& a4);
     template <typename T>
     void GetComponentHandle(
-        nalGeneric::nalGenericConstComponentHandle<T>& handle,
+        nalGenericConstComponentHandle<T>& handle,
         const tlFixedString& a3, const tlFixedString& a4);
 
     // ??$?AM@nalGenericSkeleton@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
     template <typename T>
-    const float& operator[](const nalGeneric::nalGenericConstComponentHandle<T>& handle) const;
+    const float& operator[](const nalGenericConstComponentHandle<T>& handle) const;
 
     unsigned char _pad[0x60 - 0x04];
     unsigned int LODCount;  // +0x60
@@ -568,8 +570,18 @@ public:
 
     // ??$?AVnalPositionOrientation@@@nalGenericPoseBlender@nalGeneric@@QAEAAMABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@@Z
     template <typename T>
-    float& operator[](const nalGeneric::nalGenericComponentHandle<T>& handle);
+    float& operator[](nalGenericComponentHandle<T>& handle);
 };
+}  // namespace nalGeneric
+
+// Global aliases so existing nal.cpp code (and other TUs' opaque use sites)
+// keep compiling against the binary-accurate nalGeneric:: types.
+using nalGeneric::nalGenericPose;
+using nalGeneric::nalGenericSkeleton;
+using nalGeneric::nalGenericAnim;
+using nalGeneric::nalGenericInstance;
+using nalGeneric::nalGenericPoseBlender;
+using nalGeneric::nalComponentInfo;
 
 // ============================================================================
 // nalGeneric Blend functions
@@ -2625,7 +2637,7 @@ inline void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
 
 // Global-scope stub bodies for the local nalGeneric views in this TU
 // (the correctly-mangled real definitions live in the nal_xboxr port).
-inline nalGenericPose::nalGenericPose(const nalBaseSkeleton* skel, int flags)
+inline nalGenericPose::nalGenericPose(const nalGenericSkeleton* skel, int flags)
 {
     (void)skel; (void)flags;
 }
@@ -2974,7 +2986,7 @@ void AnimQueue::ExecuteAndClearAnimation()
         void* v4 = tlMemAlloc(0x10, 8, 0);
         if (v4 != nullptr)
             *v3 = new (v4) nalGenericPose(
-                (const nalBaseSkeleton*)m_pSkeleton, 0);
+                (const nalGenericSkeleton*)m_pSkeleton, 0);
         else
             *v3 = nullptr;
     }
@@ -2991,7 +3003,7 @@ void AnimQueue::ExecuteAndClearAnimation()
         void* v6 = tlMemAlloc(0x10, 8, 0);
         if (v6 != nullptr)
             pTempPose = new (v6) nalGenericPose(
-                (const nalBaseSkeleton*)m_pSkeleton, 0);
+                (const nalGenericSkeleton*)m_pSkeleton, 0);
         else
             pTempPose = nullptr;
     }
@@ -3025,7 +3037,7 @@ void AnimQueue::ExecuteAndClearAnimation()
             void* v11 = tlMemAlloc(0x10, 8, 0);
             if (v11 != nullptr)
                 ppPoseStack[v2++] = new (v11) nalGenericPose(
-                    (const nalBaseSkeleton*)m_pSkeleton, 0);
+                    (const nalGenericSkeleton*)m_pSkeleton, 0);
             else
                 ppPoseStack[v2++] = nullptr;
         } while (v2 < v8);
@@ -3067,9 +3079,10 @@ void AnimQueue::ExecuteAndClearAnimation()
 // nalGenericSkeleton component tables (raw offsets; verified vs disasm):
 //   typeTable  +0x74, components +0x80, groupCount +0x84, groups +0x88,
 //   constGroupCount +0xA0, constGroups +0xA4.
+namespace nalGeneric {
 template <typename T>
 void nalGenericSkeleton::GetComponentHandle(
-    nalGeneric::nalGenericComponentHandle<T>& handle, const tlFixedString& a3,
+    nalGenericComponentHandle<T>& handle, const tlFixedString& a3,
     const tlFixedString& a4)
 {
     unsigned int typeId = 0;
@@ -3132,9 +3145,9 @@ void nalGenericSkeleton::GetComponentHandle(
                                     if (tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_12;
                                     handle.Skeleton =
-                                        (const nalGeneric::nalGenericSkeleton*)this;
+                                        (const nalGenericSkeleton*)this;
                                     handle.ComponentInfo =
-                                        (const nalGeneric::nalComponentInfo*)
+                                        (const nalComponentInfo*)
                                             (groups + 48 * v19);
                                     handle.ComponentIndex = v18;
                                     return;
@@ -3156,10 +3169,12 @@ LABEL_12:
     }
     (void)result;
 }
+}  // namespace nalGeneric
 
+namespace nalGeneric {
 template <typename T>
 void nalGenericSkeleton::GetComponentHandle(
-    nalGeneric::nalGenericConstComponentHandle<T>& handle,
+    nalGenericConstComponentHandle<T>& handle,
     const tlFixedString& a3, const tlFixedString& a4)
 {
     unsigned int typeId = 0;
@@ -3305,11 +3320,13 @@ LABEL_27:
         } while (v32 < groupCount2);
     }
 }
+}  // namespace nalGeneric
 
 // ??$?AM@nalGenericSkeleton@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
+namespace nalGeneric {
 template <typename T>
 const float& nalGenericSkeleton::operator[](
-    const nalGeneric::nalGenericConstComponentHandle<T>& handle) const
+    const nalGenericConstComponentHandle<T>& handle) const
 {
     static float sZero = 0.0f;  // unk_F30A1C equivalent
     const void* v2 = handle.Skeleton;
@@ -3338,11 +3355,13 @@ const float& nalGenericSkeleton::operator[](
     return *(const float*)(*(char**)((char*)handle.ComponentInfo + 44)
                            + 4 * handle.ComponentIndex + v5);
 }
+}  // namespace nalGeneric
 
 // ??$?AM@nalGenericPose@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
+namespace nalGeneric {
 template <typename T>
 const float& nalGenericPose::operator[](
-    const nalGeneric::nalGenericConstComponentHandle<T>& handle) const
+    const nalGenericConstComponentHandle<T>& handle) const
 {
     static float sZero = 0.0f;  // unk_F30A18 equivalent
     const void* v2 = handle.Skeleton;
@@ -3369,11 +3388,13 @@ const float& nalGenericPose::operator[](
                            + *(char**)((char*)handle.ComponentInfo + 44)
                            + 4 * handle.ComponentIndex);
 }
+}  // namespace nalGeneric
 
 // ??$?AVnalPositionOrientation@@@nalGenericPoseBlender@nalGeneric@@QAEAAMABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@@Z
+namespace nalGeneric {
 template <typename T>
 float& nalGenericPoseBlender::operator[](
-    const nalGeneric::nalGenericComponentHandle<T>& handle)
+    nalGenericComponentHandle<T>& handle)
 {
     static float sZero = 0.0f;
     const void* v2 = handle.Skeleton;
@@ -3398,6 +3419,7 @@ float& nalGenericPoseBlender::operator[](
                      + 4 * (handle.ComponentIndex
                             + *(int*)((char*)handle.ComponentInfo + 36)));
 }
+}  // namespace nalGeneric
 
 // ea: 0x00560150
 void nalGenericPoseBlender::VirtualBlend(nalGenericPose* dst,
@@ -4770,7 +4792,7 @@ void XAnimCalcRelDeltaParts(XAnimEntry* entry,
         if (v10 == nullptr
             || *(void**)v10 != (void*)0x10E6D04)
             v10 = nullptr;
-        nalGenericPose pose((const nalBaseSkeleton*)v10, 0);
+        nalGenericPose pose((const nalGenericSkeleton*)v10, 0);
         if (time0 > time1)
             time1 = time1 + 1.0f;
         ((nalGenericInstance*)inst)
@@ -4812,7 +4834,7 @@ void XAnimCalcAbsDeltaParts(XAnimEntry* entry,
         void* v9 = *(void**)((char*)inst + 0x0C);
         if (v9 == nullptr || *(void**)v9 != (void*)0x10E6D04)
             v9 = nullptr;
-        nalGenericPose pose((const nalBaseSkeleton*)v9, 0);
+        nalGenericPose pose((const nalGenericSkeleton*)v9, 0);
         int v10 = *(int*)((char*)v9 + 0x60) - 1;
         ((nalGenericInstance*)inst)
             ->GetPose(time, 0.0f, pose,
@@ -4843,18 +4865,10 @@ public:
     struct { unsigned int mVal; } mEntity;  // +0x2C
     void* mNotify;               // +0x30
     struct { unsigned int mHash; } mTagInfo;  // +0x34
-    struct {
-        const void* Skeleton;    // +0x00
-        const void* ComponentInfo;
-        int ComponentIndex;
-        unsigned char IsConst;
-    } mTrajectoryHandle;         // +0x38
-    struct {
-        const void* Skeleton;
-        const void* ComponentInfo;
-        int ComponentIndex;
-        unsigned char IsConst;
-    } mPelvisHandle;             // +0x48
+    nalGeneric::nalGenericComponentHandle<nalPositionOrientation>
+        mTrajectoryHandle;       // +0x38
+    nalGeneric::nalGenericComponentHandle<math::Dir3>
+        mPelvisHandle;           // +0x48
     float mBlendInTime;          // +0x58
     void* mBlender;              // +0x5C
     float mBlendOutTime;         // +0x60
@@ -4920,23 +4934,18 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
                 tlFixedString v14("fakeroot");
                 nalGenericSkeleton* skel = (nalGenericSkeleton*)v11;
                 skel->GetComponentHandle<nalPositionOrientation>(
-                    (nalGeneric::nalGenericComponentHandle<
-                        nalPositionOrientation>&)mTrajectoryHandle, v14, v15);
+                    mTrajectoryHandle, v14, v15);
                 if (mTrajectoryHandle.Skeleton == nullptr)
                 {
                     tlFixedString v14b("Trajectory");
                     tlFixedString v15b("tag_origin");
                     skel->GetComponentHandle<nalPositionOrientation>(
-                        (nalGeneric::nalGenericComponentHandle<
-                            nalPositionOrientation>&)mTrajectoryHandle, v15b,
-                        v14b);
+                        mTrajectoryHandle, v15b, v14b);
                 }
                 tlFixedString v14c("Position");
                 tlFixedString v15c("Bip01 Pelvis");
-                skel->GetComponentHandle<math::Dir3>(
-                    (nalGeneric::nalGenericComponentHandle<math::Dir3>&)
-                        mPelvisHandle,
-                    v15c, v14c);
+                skel->GetComponentHandle<math::Dir3>(mPelvisHandle, v15c,
+                                                     v14c);
                 void* v12 = mem_heap_malloc(0xC);
                 if (v12 != nullptr)
                 {
