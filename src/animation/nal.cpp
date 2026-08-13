@@ -897,6 +897,11 @@ public:
     void GetPose(float t1, float t2, nalGenericPose& out, const nalGenericPose& base, int flags, unsigned);
 
     static unsigned GetHash(const nalGenericSkeleton*, const nalGenericSkeleton*);
+
+    nalGenericAnim* Anim;  // +0x04
+
+    // ?GetAnim@nalGenericInstance@nalGeneric@@QBEPAVnalGenericAnim@2@XZ (0x5600A0)
+    nalGenericAnim* GetAnim() const { return Anim; }
 };
 
 // ============================================================================
@@ -906,15 +911,24 @@ class nalGenericPoseBlender {
 public:
     // ??1nalGenericPoseBlender@nalGeneric@@UAE@XZ / ??_G...UAEPAXI@Z
     virtual ~nalGenericPoseBlender() {}
+
+    // ??0nalGenericPoseBlender@nalGeneric@@QAE@PBVnalGenericSkeleton@1@@Z (0x5600B0)
+    nalGenericPoseBlender(const nalGenericSkeleton* skeleton);
+
     void Blend(nalGenericPose& out, const nalGenericPose& a, const nalGenericPose& b, float t);
 
+protected:
     // ?VirtualBlend@nalGenericPoseBlender@nalGeneric@@MAEXAAVnalBasePose@@ABV3@1@Z
-    virtual void VirtualBlend(nalGenericPose* dst, const nalGenericPose* src0,
-                              const nalGenericPose* src1);
+    virtual void VirtualBlend(nalBasePose& dst, const nalBasePose& src0,
+                              const nalBasePose& src1);
 
+public:
     // ??$?AVnalPositionOrientation@@@nalGenericPoseBlender@nalGeneric@@QAEAAMABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@@Z
     template <typename T>
-    float& operator[](nalGenericComponentHandle<T>& handle);
+    float& operator[](const nalGenericComponentHandle<T>& handle);
+
+    const nalGenericSkeleton* Skeleton;  // +0x04
+    float* BlendValues;                  // +0x08
 };
 }  // namespace nalGeneric
 
@@ -4439,8 +4453,8 @@ const float& nalGenericSkeleton::operator[](
         v5 = *(char**)((char*)this + 0xB0);
     else
         v5 = *(char**)((char*)this + 0x94);
-    return *(const float*)(*(char**)((char*)handle.ComponentInfo + 44)
-                           + 4 * handle.ComponentIndex + v5);
+    return *(const float*)(v5 + *(int*)((char*)handle.ComponentInfo + 44)
+                           + 4 * handle.ComponentIndex);
 }
 }  // namespace nalGeneric
 
@@ -4472,7 +4486,7 @@ const float& nalGenericPose::operator[](
     if (handle.IsConst != 0)
         return ((nalGenericSkeleton*)v2)->operator[]<T>(handle);
     return *(const float*)(*(char**)((char*)this + 8)
-                           + *(char**)((char*)handle.ComponentInfo + 44)
+                           + *(int*)((char*)handle.ComponentInfo + 44)
                            + 4 * handle.ComponentIndex);
 }
 }  // namespace nalGeneric
@@ -4481,7 +4495,7 @@ const float& nalGenericPose::operator[](
 namespace nalGeneric {
 template <typename T>
 float& nalGenericPoseBlender::operator[](
-    nalGenericComponentHandle<T>& handle)
+    const nalGenericComponentHandle<T>& handle)
 {
     static float sZero = 0.0f;
     const void* v2 = handle.Skeleton;
@@ -4631,11 +4645,22 @@ void nalGenericPose_DeleteShim(nalGeneric::nalGenericPose* p)
 }
 
 // ea: 0x00560150
-void nalGenericPoseBlender::VirtualBlend(nalGenericPose* dst,
-                                         const nalGenericPose* src0,
-                                         const nalGenericPose* src1)
+void nalGenericPoseBlender::VirtualBlend(nalBasePose& dst,
+                                         const nalBasePose& src0,
+                                         const nalBasePose& src1)
 {
-    Blend(*dst, *src0, *src1, 1.0f);
+    Blend((nalGenericPose&)dst, (const nalGenericPose&)src0,
+          (const nalGenericPose&)src1, 1.0f);
+}
+
+// ea: 0x005600B0
+nalGenericPoseBlender::nalGenericPoseBlender(
+    const nalGenericSkeleton* skeleton)
+{
+    Skeleton = skeleton;
+    int poseTrackCount = *(int*)((char*)skeleton + 0x7C);
+    BlendValues = (float*)tlMemAlloc(4 * poseTrackCount, 8, 0);
+    memset(BlendValues, 0, 4 * poseTrackCount);
 }
 
 // ?Blend@nalGenericPoseBlender@@QAEXAAVnalGenericPose@@ABV2@1M@Z (stub;
@@ -4672,6 +4697,20 @@ template bool operator==<32, unsigned char>(
 template class nalGeneric::nalGenericComponentHandle<nalPositionOrientation>;
 template nalGeneric::nalGenericPose* nalPosePtrCast<nalGeneric::nalGenericPose>(
     nalBasePose*);
+namespace nalGeneric {
+template const float& nalGenericSkeleton::operator[]<float>(
+    const nalGenericConstComponentHandle<float>&) const;
+template const float& nalGenericPose::operator[]<float>(
+    const nalGenericConstComponentHandle<float>&) const;
+template float& nalGenericPoseBlender::operator[]<nalPositionOrientation>(
+    const nalGenericComponentHandle<nalPositionOrientation>&);
+}
+
+// Force COMDAT emission of ?GetAnim@nalGenericInstance@nalGeneric@@QBEPAVnalGenericAnim@2@XZ (0x5600A0).
+typedef nalGeneric::nalGenericAnim* (
+    nalGeneric::nalGenericInstance::*NalGenericGetAnimFn)() const;
+static volatile NalGenericGetAnimFn nalGenericGetAnimAnchor =
+    &nalGeneric::nalGenericInstance::GetAnim;
 
 // ea: 0x00547E10
 void VectorCopyUnalignedInc(char*& pos, float (&v)[3])
@@ -6348,7 +6387,8 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
                 void* v12 = mem_heap_malloc(0xC);
                 if (v12 != nullptr)
                 {
-                    void* v13 = new (v12) nalGenericPoseBlender();
+                    void* v13 =
+                        new (v12) nalGenericPoseBlender(skel);
                     mBlender = v13;
                 }
                 else
