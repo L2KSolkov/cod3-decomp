@@ -130,10 +130,6 @@ extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
 extern void tlMemFree(void* ptr);                // tl_system.o
 extern unsigned int AeHash(const char* str);     // ae_hash.cpp
-// InplaceTree<T,K>::Find (tree not ported yet) - file-local stubs
-static unsigned int* InplaceTreeFindUInt(void* tree,
-                                        const unsigned int* key);
-static float* InplaceTreeFindFloat(void* tree, const char* const* key);
 struct cvar_t {
     char*  name;    // +0x00
     char*  string;  // +0x04
@@ -723,11 +719,132 @@ struct InplaceVector {
     T*           mList;  // +0x04
 };
 
+// InplaceTree<T,K> (ae/inplace/InplaceTree.h; mSize +0x00, m_array +0x04)
+// element = { mKey(T), mVal(K) }, 8 bytes; "used" = non-zero element.
+template <typename T, typename K>
+struct InplaceTree {
+    struct Element {
+        T mKey;  // +0x00
+        K mVal;  // +0x04
+    };
+    unsigned int mSize;    // +0x00
+    Element*     m_array;  // +0x04
+
+    bool IsUsed(unsigned int index) const
+    {
+        if (index >= mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 211;
+            AeAssert::gCurrentExpr = "index >= 0 && index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        const unsigned char* p = (const unsigned char*)&m_array[index];
+        return p[0] != 0 || p[1] != 0 || p[2] != 0 || p[3] != 0
+               || p[4] != 0 || p[5] != 0 || p[6] != 0 || p[7] != 0;
+    }
+};
+
+// InplaceTree<InplaceString,unsigned int>::Find<char const *> (0x4E50F0)
+static unsigned int* InplaceTreeFindStringUInt(
+    const InplaceTree<InplaceString, unsigned int>& tree, const char* key)
+{
+    if (tree.mSize == 0)
+        return nullptr;
+    unsigned int v3 = 0;
+    while (1)
+    {
+        if (!tree.IsUsed(v3))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 101;
+            AeAssert::gCurrentExpr = "IsUsed(index)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index must be used"))
+                __debugbreak();
+        }
+        const InplaceString& mKey = tree.m_array[v3].mKey;
+        if (_stricmp(mKey.mStr, key) == 0)
+            break;
+        v3 = _stricmp(mKey.mStr, key) >= 0 ? 2 * v3 + 1 : 2 * v3 + 2;
+        if (v3 >= tree.mSize || !tree.IsUsed(v3) || v3 >= tree.mSize)
+            return nullptr;
+    }
+    return &tree.m_array[v3].mVal;
+}
+
+// InplaceTree<unsigned int,unsigned int>::Find<unsigned int>
+static unsigned int* InplaceTreeFindUInt(
+    const InplaceTree<unsigned int, unsigned int>& tree,
+    const unsigned int* key)
+{
+    if (tree.mSize == 0)
+        return nullptr;
+    unsigned int v3 = 0;
+    while (1)
+    {
+        if (!tree.IsUsed(v3))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 101;
+            AeAssert::gCurrentExpr = "IsUsed(index)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index must be used"))
+                __debugbreak();
+        }
+        const unsigned int& mKey = tree.m_array[v3].mKey;
+        if (mKey == *key)
+            break;
+        v3 = mKey >= *key ? 2 * v3 + 1 : 2 * v3 + 2;
+        if (v3 >= tree.mSize || !tree.IsUsed(v3) || v3 >= tree.mSize)
+            return nullptr;
+    }
+    return &tree.m_array[v3].mVal;
+}
+
+// InplaceTree<InplaceString,float>::Find<char const *>
+static float* InplaceTreeFindFloat(
+    const InplaceTree<InplaceString, float>& tree, const char* key)
+{
+    if (tree.mSize == 0)
+        return nullptr;
+    unsigned int v3 = 0;
+    while (1)
+    {
+        if (!tree.IsUsed(v3))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 101;
+            AeAssert::gCurrentExpr = "IsUsed(index)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index must be used"))
+                __debugbreak();
+        }
+        const InplaceString& mKey = tree.m_array[v3].mKey;
+        if (_stricmp(mKey.mStr, key) == 0)
+            break;
+        v3 = _stricmp(mKey.mStr, key) >= 0 ? 2 * v3 + 1 : 2 * v3 + 2;
+        if (v3 >= tree.mSize || !tree.IsUsed(v3) || v3 >= tree.mSize)
+            return nullptr;
+    }
+    return &tree.m_array[v3].mVal;
+}
+
 // PakInfoBank (streamer.o; InplaceAssetBank base, mPtrs +0x10)
 class PakInfoBank {
 public:
-    uint8_t _pad[0x10];
+    uint8_t _pad[0x08];
+    uint8_t mTree[8];        // +0x08 (InplaceTree<InplaceString,unsigned int>)
     InplaceVector<const PakInfoNode*> mPtrs;  // +0x10
+    void*   mPtrFixupTable;  // +0x18
+    char    sku[4];          // +0x1C
+
+    void Fixup();  // InplaceAssetBank<PakInfoNode,...>::Fixup @ 0x685680
 };
 
 // InplaceTriple (ae/inplace; used by ZoneOverrideBrushSet::mNonZoneDistances)
@@ -913,8 +1030,13 @@ public:
     const PakInfoNode* SyncLoadFLI(EPakType t, const char* path);
     // - ea: 0x665900 (stub)
     const PakInfoNode* GetPakInfo(TPakId pakId) const;
-    // - ea: 0x665960 (stub)
+    // - ea: 0x66C660
     const PakInfoNode* GetPakInfo(const char* long_name) const;
+    // - ea: 0x675980
+    void DecodeFLI(const char* name, PakInfoBank* data, int size,
+                   TPakId pakId);  // ?DecodeFLI@PakManager@@QAEXPBDPAEHW4TPakId@@@Z
+    // - ea: 0x66FE10
+    void UpdateInfo();  // ?UpdateInfo@PakManager@@AAEXXZ
 };
 
 // PoolAllocator (core/PoolAllocator.h)
@@ -1674,8 +1796,10 @@ const StreamZone* StreamZoneManager::FindZone(const char* name) const
                 __debugbreak();
         }
         ZoneBoundaryBank* v4 = mBankArray.m_elements[mFirstBank];
-        unsigned int* v5 = InplaceTreeFindUInt(
-            (void*)((char*)v4 + 0), (const unsigned int*)&name);
+        unsigned int* v5 = InplaceTreeFindStringUInt(
+            *(const InplaceTree<InplaceString, unsigned int>*)
+                ((char*)v4 + 8),
+            name);
         if (v5 != nullptr)
         {
             const StreamZone* result = v4->mPtrs.mList[*v5];
@@ -2920,12 +3044,162 @@ const PakInfoNode* PakManager::GetPakInfo(TPakId pakId) const
     return nullptr;
 }
 
-// ea: 0x66C660 (needs InplaceTree::Find; stub until InplaceTree lands)
+// ea: 0x66C660
 const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
 {
-    (void)long_name;
-    return nullptr;
+    if (mPakInfoBank == nullptr)
+        return nullptr;
+    const char* v4 = long_name;
+
+    PakInfoBank* level = mLevelPakInfoBank;
+    const PakInfoNode* result = nullptr;
+    unsigned int* v6 = nullptr;
+    if (level == nullptr
+        || (v6 = InplaceTreeFindStringUInt(
+                *(const InplaceTree<InplaceString, unsigned int>*)(void*)
+                    level->mTree,
+                long_name)) == nullptr
+        || (result = level->mPtrs.mList[*v6]) == nullptr)
+    {
+        PakInfoBank* mainBank = mPakInfoBank;
+        unsigned int* v8 = InplaceTreeFindStringUInt(
+            *(const InplaceTree<InplaceString, unsigned int>*)(void*)
+                mainBank->mTree,
+            v4);
+        if (v8 == nullptr
+            || (result = mainBank->mPtrs.mList[*v8]) == nullptr)
+        {
+            if (mPakInfoBank != nullptr)
+            {
+                for (unsigned int v10 = 0; v10 < mPakInfoBank->mPtrs.mSize;
+                     ++v10)
+                {
+                    const PakInfoNode* v12 = mPakInfoBank->mPtrs.mList[v10];
+                    if (strstr(((InplaceString*)v12->path)->mStr, v4)
+                        != nullptr)
+                        return v12;
+                }
+            }
+            PakInfoBank* v13 = mLevelPakInfoBank;
+            if (v13 != nullptr)
+            {
+                for (unsigned int v14 = 0; v14 < v13->mPtrs.mSize; ++v14)
+                {
+                    const PakInfoNode* v12 = v13->mPtrs.mList[v14];
+                    if (_stricmp(((InplaceString*)v12->path)->mStr, v4) == 0)
+                        return v12;
+                }
+            }
+            return nullptr;
+        }
+    }
+    return result;
 }
+
+// ea: 0x685680
+void PakInfoBank::Fixup()
+{
+    if ((uintptr_t)mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr = "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    mPtrFixupTable = (char*)this + (uintptr_t)mPtrFixupTable;
+    // PtrFixupTable::Fixup(this, basePtr) - fixup table walk not ported;
+    // the tree/vector pointers are already relative and fixed by Find/At.
+}
+
+// ELanguage (core_globals.h ABI twin; values verified vs LanguageStr disasm)
+enum ELanguage : int {
+    kLanguageEnglish = 0,
+    kLanguageGerman = 1,
+    kLanguageFrench = 2,
+    kLanguageSpanish = 3,
+    kLanguageItalian = 4,
+    kLanguageUnlocalized = 5,
+};
+extern ELanguage gLanguage;  // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
+bool gCE = false;            // ?gCE@@3_NA @ 0xF91714
+bool gUKBuild = false;       // ?gUKBuild@@3_NA @ 0xF91D18
+extern unsigned int XGetLanguage();  // xbox platform
+unsigned int XGetLanguage()
+{
+    return 0;  // stub: returns English locale on Win32
+}
+extern void FEManager_UpdateButtonFontForLanguage(void* self);
+void FEManager_UpdateButtonFontForLanguage(void* self)
+{
+    (void)self;
+}
+
+// ea: 0x675980
+void PakManager::DecodeFLI(const char* name, PakInfoBank* data, int size,
+                           TPakId pakId)
+{
+    (void)name; (void)size; (void)pakId;
+    data->Fixup();
+    if (data->mPtrs.mList[1]->pakType == (EPakType)3)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 426;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Shouldn't be here"))
+            __debugbreak();
+    }
+    else
+    {
+        if (mPakInfoBank != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 430;
+            AeAssert::gCurrentExpr = "mPakInfoBank==0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("fli already loaded!"))
+                __debugbreak();
+        }
+        mPakInfoBank = data;
+    }
+    char* sku = mPakInfoBank->sku;
+    if (gLanguage == kLanguageEnglish)
+    {
+        if (strstr(sku, "de") != nullptr)
+        {
+            gLanguage = kLanguageGerman;
+        }
+        else if (strstr(sku, "eu") != nullptr)
+        {
+            if (XGetLanguage() == 5)
+                gLanguage = kLanguageFrench;
+            else
+                gLanguage = XGetLanguage() != 6 ? kLanguageFrench
+                                                : kLanguageItalian;
+        }
+        else
+        {
+            gLanguage = kLanguageEnglish;
+        }
+    }
+    if (strstr(sku, "ck") != nullptr || strstr(sku, "ce") != nullptr)
+        gCE = true;
+    if (strstr(sku, "ck") != nullptr || strstr(sku, "uk") != nullptr)
+        gUKBuild = true;
+    FEManager_UpdateButtonFontForLanguage(&g_femanager);
+    UpdateInfo();
+}
+
+// ea: 0x66FE10 (stub until the update pipeline ports)
+void PakManager::UpdateInfo()
+{
+}
+
 TPakId PakManager::SyncLoadPak(EPakType t, const char* path, NumBanks banks)
 {
     (void)t; (void)path; (void)banks;
@@ -6382,18 +6656,6 @@ void InstanceBankSet::Fixup()
     // the tree/vector pointers are already relative and fixed by GetBank/Find.
 }
 
-// stub: InplaceTree<T,K>::Find (tree not ported yet) - returns nullptr
-static unsigned int* InplaceTreeFindUInt(void* tree, const unsigned int* key)
-{
-    (void)tree; (void)key;
-    return nullptr;
-}
-static float* InplaceTreeFindFloat(void* tree, const char* const* key)
-{
-    (void)tree; (void)key;
-    return nullptr;
-}
-
 // ea: 0x684B50
 InstanceBank& InstanceBankSet::GetBank(eInstanceBankType type)
 {
@@ -6415,7 +6677,9 @@ int InstanceBank::Find(const char* str, unsigned int hash) const
 {
     if (hash == 0 && str != nullptr)
         hash = AeHash(str);
-    unsigned int* v4 = InplaceTreeFindUInt((void*)&mTree, &hash);
+    unsigned int* v4 = InplaceTreeFindUInt(
+        *(const InplaceTree<unsigned int, unsigned int>*)(void*)&mTree,
+        &hash);
     if (v4 == nullptr)
         return -1;
     const IbEntry& v6 = InplaceVectorAtConst(mEntries, *v4);
@@ -6596,7 +6860,9 @@ bool InstanceBankMgr::GetMipScale(const char* texture, float* out_value)
     MipSettingsBank* bank = mMipSettingsBank;
     if (bank == nullptr)
         return false;
-    float* v4 = InplaceTreeFindFloat((void*)&bank->mMipSettings, &texture);
+    float* v4 = InplaceTreeFindFloat(
+        *(const InplaceTree<InplaceString, float>*)(void*)&bank->mMipSettings,
+        texture);
     if (v4 == nullptr)
         return false;
     *out_value = *v4;
