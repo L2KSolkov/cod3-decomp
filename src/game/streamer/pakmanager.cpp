@@ -2268,6 +2268,16 @@ extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
 extern bool dont_delete;            // g.o (g_globals.cpp)
 extern bool no_really_delete_it;    // g.o (g_globals.cpp)
 extern void* gApsHeap;              // ?gApsHeap@@3PAVae_heap@@A (render.o @ 0x1363940; defined in common.cpp)
+extern void AnglesToAxis(const math::Position3* angles,
+                         float (*axis)[3]);  // core.o (q_math.cpp)
+extern void nglGetStringDimensions(nglFont* Font, const char* Text,
+                                   unsigned int* Width, unsigned int* Height,
+                                   float ScaleX, float ScaleY);  // ngl_font.o
+extern nglFont* nglSysFont;  // ngl_font.o
+
+// StreamZoneManager.cpp debug statics
+static int only_this = -1;
+static bool reassign_colors = false;
 struct ScriptEventHandler {
     unsigned char m_dlist_node[8];  // +0x00
     uint8_t _pad8[0x40 - 0x08];
@@ -2292,6 +2302,9 @@ extern world_t s_worldData;  // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
 world_t s_worldData;
 class ZoneCellBox {
 public:
+    BoundingBox mAabb;                       // +0x00
+    uint8_t _pad20[0x24 - 0x20];
+    InplaceVector<const ZdNode*> mZdNodes;   // +0x24
     const BoundingBox& GetBounds() const;  // ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ
 };
 
@@ -2311,9 +2324,9 @@ public:
 // ZoneCellDesc (streamer.o view; mZone +0x2C)
 class ZoneCellDesc {
 public:
-    uint8_t _pad[0x20];
+    BoundingBox mAabb;          // +0x00
     unsigned int mCellId;       // +0x20
-    uint8_t _pad24[0x2C - 0x24];
+    InplaceVector<const ZoneCellBox*> mCellBoxes;  // +0x24
     const StreamZone* mZone;  // +0x2C
 
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
@@ -10604,10 +10617,195 @@ void StreamZoneManager::DebugRender()
     }
 }
 
-// ea: 0x6678F0 (zone-graph line render; port later)
+// ea: 0x6678F0
 void StreamZoneManager::RenderZoneGraph(const ZoneBoundaryBank* zbs)
 {
-    (void)zbs;
+    static const float size = 1.0f;    // @ 0xDF9050
+    static const float scale_0 = 0.8f; // @ 0xDF904C
+
+    float h = (mDebugRenderMode & 8) != 0 ? 4.5f : 0.02f;
+    if (zoneGraphScale != 0.0f)
+        h *= zoneGraphScale;
+    int ScreenWidth = nglGetScreenWidth();
+    int ScreenHeight = nglGetScreenHeight();
+    math::Position3 cam = mLastPosition;
+
+    auto project = [&](const math::Position3& p) -> math::Position3 {
+        math::Position3 r;
+        r.v.m128_f32[0] = (p.v.m128_f32[0] - cam.v.m128_f32[0]) * h
+                          + ScreenWidth * 0.5f;
+        r.v.m128_f32[1] = -(p.v.m128_f32[1] - cam.v.m128_f32[1]) * h
+                          + ScreenHeight * 0.5f;
+        r.v.m128_f32[2] = 0.0f;
+        r.v.m128_f32[3] = 0.0f;
+        return r;
+    };
+
+    unsigned int i = 0;
+    if (zbs->mPtrs.mSize != 0)
+    {
+        do
+        {
+            if (only_this == -1 || (int)i == only_this)
+            {
+                const StreamZone* z = zbs->mPtrs.mList[i];
+                math::Position3 centroid;
+                centroid.v = _mm_setzero_ps();
+                int nodeCount = 0;
+                for (unsigned int cellIdx = 0;
+                     cellIdx < z->mCells.mSize; ++cellIdx)
+                {
+                    const ZoneCellDesc* cell = z->mCells.mList[cellIdx];
+                    math::Position3 l = project(cell->mAabb.vmin);
+                    math::Position3 r2 = project(cell->mAabb.vmax);
+
+                    if (reassign_colors)
+                    {
+                        unsigned int rc;
+                        ((unsigned char*)&rc)[0] =
+                            (unsigned char)(rand() % 255);
+                        ((unsigned char*)&rc)[1] =
+                            (unsigned char)(rand() % 255);
+                        ((unsigned char*)&rc)[2] =
+                            (unsigned char)(rand() % 255);
+                        ((unsigned char*)&rc)[3] = 0xFF;
+                        *(unsigned int*)((char*)z->mPakInfo + 0xC4) = rc;
+                    }
+
+                    TPakId pakId = z->mPakInfo->pakId;
+                    Color cellCol;
+                    if (pakId == PAK_ID_INVALID
+                        || PakManager::sInst->mSlots[pakId] == nullptr
+                        || PakManager::sInst->mSlots[pakId]->mState
+                               != PakManager::STATE_LOADED)
+                    {
+                        if (PakManager::sInst->mCurrentPakId == pakId
+                            && PakManager::sInst->mState
+                                   == PakManager::STATE_LOADING)
+                        {
+                            cellCol = Color(1.0f, 1.0f, 0.0f, 0.5f);
+                        }
+                        else
+                        {
+                            unsigned int mc = z->mPakInfo->mapColor;
+                            cellCol = Color(
+                                ((mc >> 16) & 0xFF) / 255.0f,
+                                ((mc >> 8) & 0xFF) / 255.0f,
+                                (mc & 0xFF) / 255.0f, 0.5f);
+                        }
+                    }
+                    else
+                    {
+                        cellCol = Color(0.0f, 1.0f, 0.0f, 0.5f);
+                    }
+
+                    DebugRender::RenderQuad2D(
+                        l.v.m128_f32[0], r2.v.m128_f32[1],
+                        r2.v.m128_f32[0], l.v.m128_f32[1], 1.0f, cellCol);
+
+                    for (unsigned int boxIdx = 0;
+                         boxIdx < cell->mCellBoxes.mSize; ++boxIdx)
+                    {
+                        const ZoneCellBox* box =
+                            cell->mCellBoxes.mList[boxIdx];
+                        for (unsigned int nIdx = 0;
+                             nIdx < box->mZdNodes.mSize; ++nIdx)
+                        {
+                            const ZdNode* node = box->mZdNodes.mList[nIdx];
+                            ++nodeCount;
+                            math::Position3 p = project(node->mPosition);
+                            centroid.v = _mm_add_ps(centroid.v, p.v);
+                            if (node == zbs->mActiveNode)
+                            {
+                                DebugRender::RenderQuad2D(
+                                    p.v.m128_f32[0] - size,
+                                    p.v.m128_f32[1] + size,
+                                    p.v.m128_f32[0] + size,
+                                    p.v.m128_f32[1] - size, 1.0f,
+                                    Color(1.0f, 0.0f, 0.0f, 0.5f));
+                                DebugRender::RenderQuad2D(
+                                    l.v.m128_f32[0], r2.v.m128_f32[1],
+                                    r2.v.m128_f32[0], l.v.m128_f32[1], 1.0f,
+                                    cellCol);
+                            }
+                            else
+                            {
+                                DebugRender::RenderQuad2D(
+                                    p.v.m128_f32[0] - size,
+                                    p.v.m128_f32[1] + size,
+                                    p.v.m128_f32[0] + size,
+                                    p.v.m128_f32[1] - size, 1.0f, cellCol);
+                            }
+                        }
+                    }
+                }
+
+                unsigned int w = 0;
+                unsigned int hgt = 0;
+                nglGetStringDimensions(nglSysFont, z->mName.mStr, &w, &hgt,
+                                       scale_0, scale_0);
+                float hgtF = (float)(int)hgt;
+                if (hgtF < 0.0f)
+                    hgtF += 4294967300.0f;
+                math::Position3 avg;
+                if (nodeCount != 0)
+                    avg.v = _mm_div_ps(centroid.v, _mm_set1_ps((float)nodeCount));
+                else
+                    avg.v = _mm_setzero_ps();
+                DebugRender::RenderText(
+                    z->mName.mStr, (int)(avg.v.m128_f32[0] - w * 0.5f),
+                    (int)(avg.v.m128_f32[1] - hgtF * 0.5f),
+                    Color(0.98f, 0.98f, 0.98f, 1.0f), 0.0f, scale_0);
+                char distStr[32];
+                if (z->mPakInfo->distance == 3.4028235e38f)
+                    sprintf(distStr, "inf");
+                else
+                    sprintf(distStr, "%1.fm",
+                            z->mPakInfo->distance * 0.0254);
+                DebugRender::RenderText(
+                    distStr, (int)avg.v.m128_f32[0],
+                    (int)(avg.v.m128_f32[1] + 10.0),
+                    Color(0.98f, 0.98f, 0.98f, 1.0f), 0.0f, scale_0);
+            }
+            ++i;
+        } while (i < zbs->mPtrs.mSize);
+    }
+
+    if (currCl >= 16)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "idx<16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    Entity* player = EntityManager::sInst->mPlayers[currCl];
+    if (player == nullptr)
+        return;
+
+    math::Position3 playerPos = player->r.currentOrigin;
+    math::Position3 pp = project(playerPos);
+    float axis[3][3];
+    AnglesToAxis(&player->r.currentAngles, axis);
+    math::Position3 fwd;
+    fwd.v = _mm_setr_ps(playerPos.v.m128_f32[0] + axis[0][0] * 50.0f,
+                        playerPos.v.m128_f32[1] + axis[0][1] * 50.0f,
+                        playerPos.v.m128_f32[2] + axis[0][2] * 50.0f,
+                        0.0f);
+    math::Position3 fp = project(fwd);
+    DebugRender::RenderQuad2D(pp.v.m128_f32[0] - 4.0f,
+                              pp.v.m128_f32[1] + 4.0f,
+                              pp.v.m128_f32[0] + 4.0f,
+                              pp.v.m128_f32[1] - 4.0f, 0.0f,
+                              Color(1.0f, 0.0f, 0.0f, 1.0f));
+    DebugRender::RenderQuad2D(fp.v.m128_f32[0] - 2.0f,
+                              fp.v.m128_f32[1] + 2.0f,
+                              fp.v.m128_f32[0] + 2.0f,
+                              fp.v.m128_f32[1] - 2.0f, 0.0f,
+                              Color(1.0f, 0.0f, 0.0f, 1.0f));
+    if (reassign_colors)
+        reassign_colors = false;
 }
 
 // ea: 0x6795C0
