@@ -258,6 +258,21 @@ void G_ParseInteractionInfo(TPakId pakId)
 {
     (void)pakId;  // stub: game.o
 }
+class EffectEventSys {
+public:
+    static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A (g_cmd.cpp)
+    void StopEffect(unsigned int handle, bool kill);  // game.o; stub
+};
+void EffectEventSys::StopEffect(unsigned int handle, bool kill)
+{
+    (void)handle; (void)kill;  // stub: game.o
+}
+extern void R_DestroyStaticModels(TPakId pakId);  // render.o
+void R_DestroyStaticModels(TPakId pakId)
+{
+    (void)pakId;  // stub: render.o
+}
+extern void CM_DestroyStaticModels(TPakId pakId);  // render.o
 typedef void (*PakDecoder)(const char* name, unsigned char* data,
                            unsigned int size, TPakId pakId, PakFile* pak);
 PakDecoder GetDecoder(const char* ext);  // streamer.o (defined below)
@@ -1632,11 +1647,36 @@ private:
 
 // SceneBank (scenemanager.cpp; verified IDA: mSceneHeapSize +0x08,
 // mSceneHeap +0x50, size 0x58)
+struct InstanceGroup {
+    InplaceString modelName;            // +0x00
+    void*         instanceList;         // +0x04 (InstanceListNode*)
+    void*         insts;                // +0x08
+};
+struct cdSimpleInstance {
+    uint8_t _pad[0x20];                 // +0x00
+    void Destroy();  // ?Destroy@cdSimpleInstance@@QAEXXZ (cdSimpleInstance.cpp)
+};
+struct InstanceListNode {
+    cdSimpleInstance instance;          // +0x00 (0x20 bytes)
+    uint8_t _pad20[0x30 - 0x20];
+    void*  renderFlagList;              // +0x30
+    InstanceListNode* next;             // +0x34
+};
+struct SceneEffect {
+    uint8_t _pad[0x50];
+    unsigned int mEffectHandle;         // +0x50
+};
 class SceneBank {
 public:
     uint8_t _pad0[0x08];
     unsigned int mSceneHeapSize;  // +0x08
-    uint8_t _pad0C[0x50 - 0x0C];
+    uint8_t _pad0C[0x10 - 0x0C];
+    InplaceVector<InstanceGroup> mInstanceGroups;  // +0x10
+    uint8_t _pad18[0x30 - 0x18];
+    InplaceVector<SceneEffect> mSceneEffects;      // +0x30
+    InplaceVector<void*> mSceneEffectGroups;       // +0x38
+    uint8_t _pad40[0x48 - 0x40];                   // mSceneLights
+    InplaceVector<void*> mPersistentStorage;       // +0x48
     unsigned char* mSceneHeap;    // +0x50
 };
 
@@ -1682,6 +1722,8 @@ public:
     void DisableEffect(unsigned int hash); // ?DisableEffect@SceneManager@@QAEXI@Z
     SceneBank* GetBank(TPakId pakId);      // ?GetBank@SceneManager@@AAEPAVSceneBank@@W4TPakId@@@Z
     void AddBank(TPakId pakId, SceneBank* bank);  // ?AddBank@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
+    void UnloadInstanceGroups(TPakId pakId);  // ?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z
+    void UnloadBank(TPakId pakId);  // ?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
@@ -2360,6 +2402,106 @@ void SceneManager::AddBank(TPakId pakId, SceneBank* bank)
         else
             PakManager::sInst->mSlots[pakId]->AddHeap(bank->mSceneHeap,
                                                       bank->mSceneHeapSize);
+    }
+}
+
+// ea: 0x676B20
+void SceneManager::UnloadInstanceGroups(TPakId pakId)
+{
+    PakHeapContext heapContext(pakId, false);
+    SceneBank* v4 = mBankArray.m_elements[pakId];
+    InplaceVector<InstanceGroup>* p_mInstanceGroups =
+        &v4->mInstanceGroups;
+    if (p_mInstanceGroups->mSize != 0)
+    {
+        for (unsigned int i = 0; i < p_mInstanceGroups->mSize; ++i)
+        {
+            InstanceListNode* instanceList =
+                (InstanceListNode*)p_mInstanceGroups->mList[i]
+                    .instanceList;
+            if (instanceList != nullptr)
+            {
+                InstanceListNode* next;
+                do
+                {
+                    next = instanceList->next;
+                    instanceList->instance.Destroy();
+                    ae_sized_array<TPakId, 128>& ContextStack =
+                        (ae_sized_array<TPakId, 128>&)
+                            PakManager::sInst->GetContextStack();
+                    TPakId v11 = PAK_ID_INVALID;
+                    if (ContextStack.m_size != 0)
+                        v11 = ContextStack
+                                  .m_elements[ContextStack.m_size - 1];
+                    PakManager::sInst->MemFree(v11,
+                                               instanceList->renderFlagList,
+                                               false);
+                    PakManager::sInst->MemFree(pakId, instanceList, false);
+                    instanceList = next;
+                } while (next != nullptr);
+            }
+            p_mInstanceGroups->mList[i].instanceList = nullptr;
+        }
+    }
+    if (heapContext.mPakId != PAK_ID_INVALID)
+    {
+        TlSystemCallbacks::LockTlAllocsToPakHeap(heapContext.mLastState,
+                                                 false);
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        if (ContextStack.m_size != 0)
+            ContextStack.m_size = ContextStack.m_size - 1;
+    }
+}
+
+// ea: 0x6773B0
+void SceneManager::UnloadBank(TPakId pakId)
+{
+    if (mBankArray.m_elements[pakId] != nullptr)
+    {
+        UnloadInstanceGroups(pakId);
+        SceneBank* v4 = mBankArray.m_elements[pakId];
+        InplaceVector<SceneEffect>* p_mSceneEffects =
+            &v4->mSceneEffects;
+        if (v4->mSceneEffects.mSize != 0)
+        {
+            for (unsigned int v6 = 0; v6 < p_mSceneEffects->mSize; ++v6)
+            {
+                EffectEventSys::sInst->StopEffect(
+                    p_mSceneEffects->mList[v6].mEffectHandle, true);
+            }
+        }
+        if (v4->mSceneEffectGroups.mSize != 0)
+            mSceneEffectGroups = nullptr;
+        if (v4->mPersistentStorage.mSize != 0)
+            mPersistantStorage = nullptr;
+        mBankArray.m_elements[pakId] = nullptr;
+        R_DestroyStaticModels(pakId);
+        CM_DestroyStaticModels(pakId);
+        for (int i = 0; i < mLoadedIdsCount; ++i)
+        {
+            if (i > 0x62)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            if (loaded_ids.m_elements[i] == pakId)
+            {
+                if (i < mLoadedIdsCount - 1)
+                {
+                    loaded_ids.m_elements[i] =
+                        loaded_ids.m_elements[mLoadedIdsCount - 1];
+                    --i;
+                }
+                --mLoadedIdsCount;
+            }
+        }
     }
 }
 
