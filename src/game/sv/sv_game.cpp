@@ -128,7 +128,7 @@ extern int   DObjNumBones(DObj* obj);
 extern int   DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
 extern void  DObjDisplayAnim(DObj* obj);
-extern void  DObjDisplayAnim3D(int id, DObj* obj, float* loc, int line);
+extern void  DObjDisplayAnim3D(int id, DObj* obj, float* const loc, int line);
 extern XAnimTree* DObjGetTree(DObj* obj);
 
 // File / model

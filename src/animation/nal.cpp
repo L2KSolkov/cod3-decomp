@@ -1,5 +1,5 @@
 // ============================================================================
-// NAL â€” NGL Animation Library (125 funcs, 10 objects)
+// NAL Ã¢â‚¬â€ NGL Animation Library (125 funcs, 10 objects)
 // ea: 0x854490-0x878100
 // ============================================================================
 
@@ -510,13 +510,13 @@ namespace math { struct Quaternion; }
 struct tlFixedString;
 
 // ============================================================================
-// nalObject / nalCachedPoseInfo â€” animation cache types
+// nalObject / nalCachedPoseInfo Ã¢â‚¬â€ animation cache types
 // ============================================================================
 struct nalObject {};
 struct nalCachedPoseInfo {};
 
 // ============================================================================
-// nalAnimFile / nalClientSceneAnim / nalHeap â€” resource types
+// nalAnimFile / nalClientSceneAnim / nalHeap Ã¢â‚¬â€ resource types
 // ============================================================================
 struct nalAnimFile {};
 class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
@@ -541,7 +541,7 @@ class nalStreamInstance;
 class nalStaticInstance;
 
 // ============================================================================
-// nalAnimCache â€” animation data cache (LRU decompression cache)
+// nalAnimCache Ã¢â‚¬â€ animation data cache (LRU decompression cache)
 // ============================================================================
 
 class nalBaseSkeleton {
@@ -798,7 +798,7 @@ public:
 };
 
 // ============================================================================
-// nalGenericPose â€” generic (untyped) pose data
+// nalGenericPose Ã¢â‚¬â€ generic (untyped) pose data
 // ============================================================================
 namespace nalGeneric {
 template <typename T> class nalGenericComponentHandle;
@@ -850,7 +850,7 @@ struct nalComponentInfo;
 }
 
 // ============================================================================
-// nalGenericSkeleton â€” runtime skeleton (bone matrices, processed pose)
+// nalGenericSkeleton Ã¢â‚¬â€ runtime skeleton (bone matrices, processed pose)
 // ============================================================================
 class nalGenericSkeleton {
 public:
@@ -905,7 +905,7 @@ unsigned int nalGenericSkeleton::GetBoneMatrixCount(int lod) const
 }
 
 // ============================================================================
-// nalGenericAnim â€” runtime animation instance (per-skeleton)
+// nalGenericAnim Ã¢â‚¬â€ runtime animation instance (per-skeleton)
 // ============================================================================
 class nalGenericAnim {
 public:
@@ -921,7 +921,7 @@ public:
 };
 
 // ============================================================================
-// nalGenericInstance â€” animated skeleton instance (pose cache, decompression)
+// nalGenericInstance Ã¢â‚¬â€ animated skeleton instance (pose cache, decompression)
 // ============================================================================
 class nalGenericInstance {
 public:
@@ -943,7 +943,7 @@ public:
 };
 
 // ============================================================================
-// nalGenericPoseBlender â€” pose blending
+// nalGenericPoseBlender Ã¢â‚¬â€ pose blending
 // ============================================================================
 class nalGenericPoseBlender {
 public:
@@ -991,7 +991,7 @@ void nalGenericBlendIntra(nalGenericPose& out, float t, const nalGenericPose& a,
 void nalGenericBlendTorso(nalGenericPose& out, float t, const nalGenericPose& a, const nalGenericPose& b);
 
 // ============================================================================
-// nalGenericComponent â€” component type interface (Blend + BlendArray)
+// nalGenericComponent Ã¢â‚¬â€ component type interface (Blend + BlendArray)
 // ============================================================================
 // nalInitList - intrusive list of component init entries (anim.o)
 // ??0nalInitList@@QAE@XZ (0x55E480) / ??1nalInitList@@UAE@XZ (0x55E4A0)
@@ -1056,7 +1056,7 @@ class nalComponentTrajectoryPO      { public: static void ComponentCycleTrajecto
 class nalComponentEntropyTrajectoryPO{ public: static void ComponentCycleTrajectory(nalPositionOrientation*,nalPositionOrientation*,int,void*){} };
 
 // ============================================================================
-// nalStreamInstance â€” streaming animation instance
+// nalStreamInstance Ã¢â‚¬â€ streaming animation instance
 // ============================================================================
 class nalStreamInstance {
 public:
@@ -1067,7 +1067,7 @@ public:
 };
 
 // ============================================================================
-// nalSceneAnim / nalSceneAnimInstance â€” scene animation
+// nalSceneAnim / nalSceneAnimInstance Ã¢â‚¬â€ scene animation
 // ============================================================================
 class nalSceneAnim {
 public:
@@ -1092,7 +1092,7 @@ bool nalSceneAnim::IsLooping() const
 }
 
 // ============================================================================
-// nalSceneAnimInstance â€” runtime scene animation
+// nalSceneAnimInstance Ã¢â‚¬â€ runtime scene animation
 // ============================================================================
 class nalSceneAnimInstance {
 public:
@@ -1132,7 +1132,7 @@ bool nalSceneAnimInstance::IsDone() const
 }
 
 // ============================================================================
-// nalStaticInstance â€” static animation instance
+// nalStaticInstance Ã¢â‚¬â€ static animation instance
 // ============================================================================
 class nalStaticInstance {
 public:
@@ -1943,7 +1943,7 @@ void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton)
 }
 
 extern void ValidatePakId(int pakId);  // g_entity_misc.cpp stub
-extern void DObjInitServerTime(void* d, float dtime);
+extern void DObjInitServerTime(DObj* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
                                  unsigned int animindex);
 extern int _fpclass(double x);  // CRT helper (cg_misc.cpp)
@@ -6061,6 +6061,35 @@ int XAnimSetCompleteGoalWeightKnobAll(
     return error;
 }
 
+// ?g_dtime@@3MA @ 0xF258E8
+float g_dtime = 0.0f;
+
+// ?XAnimUpdateOldServerTime@@YAXPAVXAnimTree@@I@Z (0x541740; real body in
+// xanim.o sibling object - stub here so nal.o links)
+void XAnimUpdateOldServerTime(XAnimTree* tree, unsigned int animIndex)
+{
+    (void)tree; (void)animIndex;
+}
+
+// ea: 0x00543890
+void DObjInitServerTime(DObj* d, float dtime)
+{
+    if (d == nullptr)
+    {
+        XANIM_ASSERT("d", "c:\\cod\\code\\game\\xanim.cpp", 2895,
+                     "old cod assert");
+    }
+    if (d->tree[0] != nullptr || d->animPlayers[0] != nullptr)
+    {
+        g_dtime = dtime;
+        for (int i = 0; i < d->numModels; ++i)
+        {
+            if (d->tree[i] != nullptr)
+                XAnimUpdateOldServerTime((XAnimTree*)d->tree[i], 0);
+        }
+    }
+}
+
 // ea: 0x0054BF0  (XAnimUpdateServerTime)
 void XAnimUpdateServerTime(Entity* e, float deltaT)
 {
@@ -6364,6 +6393,61 @@ void nalMatrix4x4Local::FromQuaternion(const math::Quaternion& q)
     this->z.v.m128_f32[2] = 1.0f - (xx + yy);
     this->z.v.m128_f32[3] = 0.0f;
     this->w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+}
+
+// ea: 0x0054A140
+void DObjGetTrajectory(DObj* obj, float* const rot, float* const trans)
+{
+    nalPositionOrientation po;
+    memset(&po, 0, sizeof(po));
+    po.orient.w = 1.0f;
+    if (obj == nullptr)
+    {
+        XANIM_ASSERT("obj", "c:\\cod\\code\\game\\xanim.cpp", 4272,
+                     "old cod assert");
+    }
+    if (obj->skel != nullptr)
+    {
+        ValidatePakId(obj->models[0].mPakId);
+        void* mValue = obj->models[0].mValue;
+        void** lod = *(void***)((char*)mValue + 0x24);
+        int i = 0;
+        while (lod[i] == nullptr)
+            ++i;
+        void* mAnimDef = *(void**)((char*)*(void**)((char*)mValue + 0x24 + i * 4)
+                                   + 8 + 0x38);
+        if (mAnimDef != nullptr
+            && *(void**)mAnimDef == (void*)0x10E6D04)
+        {
+            nalGenericPose* v7 = (nalGenericPose*)obj->mPose[0];
+            if (v7 != nullptr)
+            {
+                void* Skeleton = *(void**)v7;
+                if (Skeleton != nullptr
+                    && *(void**)Skeleton == (void*)0x10E6D04)
+                {
+                    ((nalGenericSkeleton*)Skeleton)
+                        ->GetTrajectoryUpdate(*v7, po);
+                    if ((_fpclass(po.orient.x) & 0x297) != 0
+                        || (_fpclass(po.orient.y) & 0x297) != 0
+                        || (_fpclass(po.orient.z) & 0x297) != 0)
+                    {
+                        XANIM_ASSERT(
+                            "!IS_NAN((trajectory.o)[0]) && !IS_NAN((trajectory.o)[1]) && !IS_NAN((trajectory.o)[2])",
+                            "c:\\cod\\code\\game\\xanim.cpp", 4285,
+                            "Invalid vector");
+                    }
+                }
+            }
+        }
+    }
+    nalMatrix4x4Local qm;
+    qm.FromQuaternion(po.orient);
+    memcpy(rot, &qm.x, 16);
+    rot[1] = qm.x.v.m128_f32[1];
+    trans[0] = po.pos.v.m128_f32[0];
+    trans[1] = po.pos.v.m128_f32[1];
+    trans[2] = po.pos.v.m128_f32[2];
 }
 
 // ??0nalMatrix4x4@@QAE@ABVnalPositionOrientation@@@Z (game2.o 0x51B400)

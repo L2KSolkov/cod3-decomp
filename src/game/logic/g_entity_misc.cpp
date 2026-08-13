@@ -2520,7 +2520,7 @@ void DObjCreate(DObjModel* models, unsigned short numModels, XAnimTree* tree,
 }
 void DObjCreateSkel(DObj* obj, char* a) { (void)obj; (void)a; }
 void DObjDisplayAnim(DObj* obj) { (void)obj; }
-void DObjDisplayAnim3D(int a, DObj* obj, float* b, int c)
+void DObjDisplayAnim3D(int a, DObj* obj, float* const b, int c)
 {
     (void)a; (void)obj; (void)b; (void)c;
 }
@@ -2541,8 +2541,6 @@ void DObjGetHierarchyBits(DObj* obj, int a, int* b)
 {
     (void)obj; (void)a; (void)b;
 }
-void DObjInitServerTime(DObj* obj, float a) { (void)obj; (void)a; }
-void DObjInitServerTime(void* obj, float a) { (void)obj; (void)a; }
 void DObjTraceline(const DObj* obj, const math::Position3* a,
                    const math::Position3* b, unsigned char* c, DObjTrace_s* d,
                    float e)

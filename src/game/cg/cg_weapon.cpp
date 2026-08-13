@@ -149,7 +149,7 @@ void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
 {
     (void)d; (void)deltaT;
 }
-extern void DObjInitServerTime(void* d, float dtime);
+extern void DObjInitServerTime(DObj* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
                                  unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
 
@@ -1811,7 +1811,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
                               ps->leanf, 16.0f, 20.0f);
             DObjAdvanceAnimationPlayer((DObj*)dword_F6A2A0[802 * currCl],
                                        cgGlobal_frametime * 0.001f);
-            DObjInitServerTime((void*)dword_F6A2A0[802 * currCl],
+            DObjInitServerTime((DObj*)dword_F6A2A0[802 * currCl],
                                cgGlobal_frametime * 0.001f);
             int deltaT;
             switch (dword_F6A2A8[802 * currCl])
