@@ -116,11 +116,16 @@ unsigned int extract_color(const Color& col)
 
 extern int Cmd_Argc();       // core.o
 extern char* Cmd_Argv(int arg);  // core.o
+extern void Com_Printf(const char* fmt, ...);  // core.o
 extern double atof(const char* nptr);
 extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
 extern void tlMemFree(void* ptr);                // tl_system.o
 extern unsigned int AeHash(const char* str);     // ae_hash.cpp
+// InplaceTree<T,K>::Find (tree not ported yet) - file-local stubs
+static unsigned int* InplaceTreeFindUInt(void* tree,
+                                        const unsigned int* key);
+static float* InplaceTreeFindFloat(void* tree, const char* const* key);
 struct cvar_t {
     char*  name;    // +0x00
     char*  string;  // +0x04
@@ -1196,6 +1201,7 @@ public:
     int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
     const StreamZone* GetZoneByIndex(unsigned int index) const;  // ?GetZoneByIndex@StreamZoneManager@@QBEPBVStreamZone@@I@Z
     const StreamZone* FindZone(TPakId pakId) const;  // ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@W4TPakId@@@Z
+    const StreamZone* FindZone(const char* name) const;  // ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@PBD@Z
     const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
     const StreamZone* GetCellZone(unsigned int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@I@Z
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
@@ -1540,6 +1546,38 @@ const StreamZone* StreamZoneManager::FindZone(TPakId pakId) const
         if (i == -1)
             return nullptr;
         mFirstBank = (unsigned int)i;
+    }
+}
+
+// ea: 0x66CEF0
+const StreamZone* StreamZoneManager::FindZone(const char* name) const
+{
+    unsigned int mFirstBank = (unsigned int)this->mFirstBank;
+    if (mFirstBank == (unsigned int)-1)
+        return nullptr;
+    while (1)
+    {
+        if (mFirstBank > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 25;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        ZoneBoundaryBank* v4 = mBankArray.m_elements[mFirstBank];
+        unsigned int* v5 = InplaceTreeFindUInt(
+            (void*)((char*)v4 + 0), (const unsigned int*)&name);
+        if (v5 != nullptr)
+        {
+            const StreamZone* result = v4->mPtrs.mList[*v5];
+            if (result != nullptr)
+                return result;
+        }
+        mFirstBank = (unsigned int)mBankArray.m_elements[mFirstBank]->mNextBank;
+        if (mFirstBank == (unsigned int)-1)
+            return nullptr;
     }
 }
 
@@ -3038,6 +3076,53 @@ void get_context_stack(ae_sized_array<TPakId, 32>* ret)
 {
     if (PakManager::sInst != nullptr)
         PakManager::sInst->CopyContextStack(ret);
+}
+
+// ea: 0x66FA30
+void ConsoleSetPakDistance()
+{
+    if (Cmd_Argc() == 3)
+    {
+        const char* v0 = Cmd_Argv(1);
+        const char* v1 = Cmd_Argv(2);
+        float dist = (float)atof(v1);
+        const PakInfoNode* PakInfo =
+            PakManager::sInst->GetPakInfo(v0);
+        if (PakInfo != nullptr)
+        {
+            const_cast<PakInfoNode*>(PakInfo)->userDistance = dist;
+            ++PakManager::sComputeDistanceKey;
+        }
+        else
+        {
+            Com_Printf("SetPakDistance: Unknown pakfile '%s'\n", v0);
+        }
+    }
+    else
+    {
+        Com_Printf("SetPakDistance: sets pak distance "
+                   "'setpakdistance mons1_zone01 1'\n");
+    }
+}
+
+// ea: 0x66FAB0
+void ConsoleClearPakDistance()
+{
+    if (Cmd_Argc() == 2)
+    {
+        const char* v0 = Cmd_Argv(1);
+        const PakInfoNode* PakInfo =
+            PakManager::sInst->GetPakInfo(v0);
+        if (PakInfo != nullptr)
+            const_cast<PakInfoNode*>(PakInfo)->userDistance = 3.4028235e38f;
+        else
+            Com_Printf("ClearPakDistance: Unknown pakfile '%s'\n", v0);
+    }
+    else
+    {
+        Com_Printf("ClearPakDistance: undo SetPakDistance "
+                   "'clearpakdistance mons1_zone01'\n");
+    }
 }
 
 // ============================================================================
