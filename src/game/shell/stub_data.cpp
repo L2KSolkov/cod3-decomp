@@ -6,10 +6,6 @@
 #include "ngl/ngl_dx_quad.h"
 
 #include <string.h>
-
-enum ELanguage {
-    kLanguageEnglish = 0,
-};
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o
 extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A

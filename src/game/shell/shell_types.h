@@ -15,6 +15,31 @@
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
 
+// Minimal color32 view (class-tagged V in the binary; full union in
+// ui_types.h, which cannot be combined with sv_stubs.h).
+class color32 {
+public:
+    unsigned int i;
+    struct {
+        uint8_t b;
+        uint8_t g;
+        uint8_t r;
+        uint8_t a;
+    } c;
+
+    color32() {}
+    color32(unsigned int ic) { i = ic; }
+};
+
+enum ELanguage {
+    kLanguageEnglish = 0,
+    kLanguageGerman = 1,
+    kLanguageFrench = 2,
+    kLanguageSpanish = 3,
+    kLanguageItalian = 4,
+    kLanguageJapanese = 5,
+};
+
 // Minimal PanelAnimObject/PanelQuad views (full in ui_types.h; sv_stubs.h
 // cannot be combined with ui_types.h because both define FEMenuSystem).
 // The virtual destructor keeps PanelQuad polymorphic so FloatingPQ shares the
