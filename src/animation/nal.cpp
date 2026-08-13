@@ -1328,11 +1328,80 @@ struct DroneAEMap {
 };
 extern DroneAEMap gDroneAEMap;  // ?gDroneAEMap@@3V?$ae_sized_array@... (game2.o @ 0x12F45E0)
 
-// InteractionController (anim.o member mCurState @ +0x14)
+// ============================================================================
+// InteractionController (anim.o; offsets verified vs ctor 0x545D80)
+// ============================================================================
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
-    void* mCurState;  // +0x14
+
+    unsigned int mFlags;        // +0x00
+    void* mCurState;            // +0x04
+    void* mInitialState;        // +0x08
+    struct { unsigned int mVal; } mInteractableH;  // +0x0C
+    int mSelectedInteractWeaponIndex;  // +0x14
+    int mPendingWeaponIndex;    // +0x18
+    int mRestoreWeaponIndex;    // +0x1C
+    int mLastStateWeaponIndex;  // +0x20
+    int mClient;                // +0x24
+    float mHandsAngles[3];      // +0x28
+    float mHandsOrigin[3];      // +0x34
+    float mLastHandsAngles[3];  // +0x40
+    float mLastHandsOrigin[3];  // +0x4C
+    float mCurArmsOffsetX;      // +0x58
+    float mCurArmsOffsetY;      // +0x5C
+    float mCurArmsOffsetZ;      // +0x60
+    float mTargetArmsOffsetX;   // +0x64
+    float mTargetArmsOffsetY;   // +0x68
+    float mTargetArmsOffsetZ;   // +0x6C
+    float mArmsOffsetLerpTime;  // +0x70
+    float mInitialFOV;          // +0x74
+    float mMetaAnimScore;       // +0x78
+    void* mPlayerCallback[3];   // +0x7C (nalAnimCallback*)
+    void* mOtherCallback[3];    // +0x94
+    void* mPlayerPlayMethod[3]; // +0xAC
+    void* mOtherPlayMethod[3];  // +0xC4
+    int mNextPlayerCallbackIndex;    // +0xDC
+    int mNextOtherCallbackIndex;     // +0xE0
+    int mNextPlayerPlayMethodIndex;  // +0xE4
+    int mNextOtherPlayMethodIndex;   // +0xE8
+    int mSoundLoopHandle;       // +0xEC
+    math::Mat43 mScriptOriginMat;    // +0xF0
+    float mScriptOriginAngles[3];    // +0x130
+    struct InteractionQueueEntry {
+        unsigned int mEntityHandle;  // +0x00
+        int mInfoIndex;              // +0x04
+        unsigned int _pad;           // +0x08
+    } mQueue[10];               // +0x13C
+    void* mRenderText[5];       // +0x1B8 (FEMultiLineText*)
+    int mRenderTextPosX[5];     // +0x1CC
+    struct { float mTarget, mDuration, mLerpTimeIn, mLerpTimeOut, mInitialVal, mTimer; } mTimeScaleMgr;  // +0x1E0
+    struct { void* mElements; int mCapacity; int mSize; } mStates;  // +0x1F8
+
+    // ea: 0x0053A3B0
+    void GetInteractableH(void* result);
+    int GetSelectedInteractWeaponIndex();  // 0x53A3D0
+    int GetLastStateWeaponIndex();         // 0x53A3E0
+    void SetSoundLoopHandle(int handle);    // 0x53A3F0
+    int GetSoundLoopHandle();              // 0x53A410
+    void SetHands(float (*handsAngles)[3], float (*handsOrigin)[3]);  // 0x53A420
+    void SetHandsToLast();                 // 0x53A490
+    const float (*GetLastHandsAngles())[3];  // 0x53A4D0
+    const float (*GetLastHandsOrigin())[3];  // 0x53A4E0
+    void SetMetaAnimScore(float score);    // 0x53A4F0
+    void SetScriptOrigin(math::Mat43* mat, float* angles);  // 0x53A510
+    const math::Mat43* GetScriptOriginMat();  // 0x53A5F0
+    const float (*GetScriptOriginAngles())[3];  // 0x53A660
+    const math::Position3* GetScriptOriginPos();  // 0x53A6D0
+    void SetScaledArmsOffsets(float offsetX, float offsetY, float offsetZ);  // 0x53A740
+    void GetScaledArmsOffsets(float* offsetX, float* offsetY, float* offsetZ);  // 0x53A7C0
+    void SetRenderText(const char* text, int y, float flashPeriod);  // 0x53C2E0
+    void SetRenderText(const char* text, int index, int x, int y, float scale, int flashPeriod);  // 0x53C380
+    void SetRenderTextScale(float scale, int index);  // 0x53C450
+    void SetRenderTextAlpha(float alpha, int index);  // 0x53C4C0
+    void ResetAnimationPlayer();           // 0x53F0E0
+    void ClearRenderText(int index);       // 0x53F1E0
+    void ClearAllRenderText();             // 0x53F280
 };
 
 // Stub bodies for the xanim goal-weight internals (ported with the
@@ -5312,4 +5381,376 @@ void* SceneAnimClient_CtorReal(void* self, const nalSceneAnim* anim,
                                float blendOut)
 {
     return new (self) SceneAnimClient(anim, name, blendIn, blendOut);
+}
+
+// ============================================================================
+// InteractionController accessors + Lerper + InputRcvr ctors (anim.o)
+// ============================================================================
+
+// ea: 0x0053A3B0
+void InteractionController::GetInteractableH(void* result)
+{
+    *(unsigned int*)result = mInteractableH.mVal;
+}
+
+// ea: 0x0053A3D0
+int InteractionController::GetSelectedInteractWeaponIndex()
+{
+    return mSelectedInteractWeaponIndex;
+}
+
+// ea: 0x0053A3E0
+int InteractionController::GetLastStateWeaponIndex()
+{
+    return mLastStateWeaponIndex;
+}
+
+// ea: 0x0053A3F0
+void InteractionController::SetSoundLoopHandle(int handle)
+{
+    mSoundLoopHandle = handle;
+}
+
+// ea: 0x0053A410
+int InteractionController::GetSoundLoopHandle()
+{
+    return mSoundLoopHandle;
+}
+
+// ea: 0x0053A420
+void InteractionController::SetHands(float (*handsAngles)[3],
+                                     float (*handsOrigin)[3])
+{
+    mHandsAngles[0] = (*handsAngles)[0];
+    mHandsAngles[1] = (*handsAngles)[1];
+    mHandsAngles[2] = (*handsAngles)[2];
+    mHandsOrigin[0] = (*handsOrigin)[0];
+    mHandsOrigin[1] = (*handsOrigin)[1];
+    mHandsOrigin[2] = (*handsOrigin)[2];
+    mLastHandsAngles[0] = mHandsAngles[0];
+    mLastHandsAngles[1] = mHandsAngles[1];
+    mLastHandsAngles[2] = mHandsAngles[2];
+    mLastHandsOrigin[0] = mHandsOrigin[0];
+    mLastHandsOrigin[1] = mHandsOrigin[1];
+    mLastHandsOrigin[2] = mHandsOrigin[2];
+    mFlags |= 1u;
+}
+
+// ea: 0x0053A490
+void InteractionController::SetHandsToLast()
+{
+    mHandsAngles[0] = mLastHandsAngles[0];
+    mHandsAngles[1] = mLastHandsAngles[1];
+    mHandsAngles[2] = mLastHandsAngles[2];
+    mHandsOrigin[0] = mLastHandsOrigin[0];
+    mHandsOrigin[1] = mLastHandsOrigin[1];
+    mHandsOrigin[2] = mLastHandsOrigin[2];
+    mFlags |= 1u;
+}
+
+// ea: 0x0053A4D0
+const float (*InteractionController::GetLastHandsAngles())[3]
+{
+    return &mLastHandsAngles;
+}
+
+// ea: 0x0053A4E0
+const float (*InteractionController::GetLastHandsOrigin())[3]
+{
+    return &mLastHandsOrigin;
+}
+
+// ea: 0x0053A4F0
+void InteractionController::SetMetaAnimScore(float score)
+{
+    mMetaAnimScore = score;
+}
+
+// ea: 0x0053A510
+void InteractionController::SetScriptOrigin(math::Mat43* mat, float* angles)
+{
+    mScriptOriginMat = *mat;
+    mScriptOriginAngles[0] = angles[0];
+    mScriptOriginAngles[1] = angles[1];
+    mScriptOriginAngles[2] = angles[2];
+    mFlags |= 0x40u;
+}
+
+// ea: 0x0053A5F0
+const math::Mat43* InteractionController::GetScriptOriginMat()
+{
+    if ((mFlags & 0x40) == 0)
+    {
+        XANIM_ASSERT("IsFlagged(kScriptOriginValid)",
+                     "c:\\cod\\code\\game\\InteractionController.h", 153,
+                     "Bad");
+    }
+    return &mScriptOriginMat;
+}
+
+// ea: 0x0053A660
+const float (*InteractionController::GetScriptOriginAngles())[3]
+{
+    if ((mFlags & 0x40) == 0)
+    {
+        XANIM_ASSERT("IsFlagged(kScriptOriginValid)",
+                     "c:\\cod\\code\\game\\InteractionController.h", 154,
+                     "Bad");
+    }
+    return &mScriptOriginAngles;
+}
+
+// ea: 0x0053A6D0
+const math::Position3* InteractionController::GetScriptOriginPos()
+{
+    if ((mFlags & 0x40) == 0)
+    {
+        XANIM_ASSERT("IsFlagged(kScriptOriginValid)",
+                     "c:\\cod\\code\\game\\InteractionController.h", 155,
+                     "Bad");
+    }
+    return &mScriptOriginMat.w;
+}
+
+// ea: 0x0053A740
+void InteractionController::SetScaledArmsOffsets(float offsetX, float offsetY,
+                                                 float offsetZ)
+{
+    mArmsOffsetLerpTime = 0.0f;
+    mTargetArmsOffsetY = offsetY;
+    mTargetArmsOffsetX = offsetX;
+    mTargetArmsOffsetZ = offsetZ;
+    if (offsetX < -15.0f && offsetX != mCurArmsOffsetX)
+    {
+        mCurArmsOffsetX = offsetX - 5.0f;
+        mCurArmsOffsetZ = offsetZ - 5.0f;
+    }
+}
+
+// ea: 0x0053A7C0
+void InteractionController::GetScaledArmsOffsets(float* offsetX,
+                                                 float* offsetY,
+                                                 float* offsetZ)
+{
+    *offsetX = mCurArmsOffsetX;
+    *offsetY = mCurArmsOffsetY;
+    *offsetZ = mCurArmsOffsetZ;
+}
+
+// ea: 0x0053A800 (InteractionController::Lerper)
+struct InteractionController_Lerper {
+    float mTarget;      // +0x00
+    float mDuration;    // +0x04
+    float mLerpTimeIn;  // +0x08
+    float mLerpTimeOut; // +0x0C
+    float mInitialVal;  // +0x10
+    float mTimer;       // +0x14
+};
+
+// ea: 0x0053A800
+void InteractionController_Lerper_Ctor(InteractionController_Lerper* self)
+{
+    self->mTarget = 1.0f;
+    self->mDuration = -1.0f;
+    self->mLerpTimeIn = 0.0f;
+    self->mLerpTimeOut = 0.0f;
+    self->mInitialVal = 0.0f;
+    self->mTimer = 0.0f;
+}
+
+// ea: 0x0053AC40 (InteractState::Lerper)
+struct InteractState_Lerper {
+    float mTarget;      // +0x00
+    float mDuration;    // +0x04
+    float mLerpTimeIn;  // +0x08
+    float mLerpTimeOut; // +0x0C
+    float mInitialVal;  // +0x10
+    float mTimer;       // +0x14
+};
+
+void InteractState_Lerper_Ctor(InteractState_Lerper* self)
+{
+    self->mTarget = 1.0f;
+    self->mDuration = -1.0f;
+    self->mLerpTimeIn = 0.0f;
+    self->mLerpTimeOut = 0.0f;
+    self->mInitialVal = 0.0f;
+    self->mTimer = 0.0f;
+}
+
+// ============================================================================
+// InteractInputRcvr (anim.o InteractionController.cpp)
+// Base layout: mPakId +0, mFlags +4, mInfo +8, mTimer +0xC, mInputRate +0x10,
+// mInputProgress +0x14, mTimeSinceLastInput +0x18, vftable +0x1C, mType +0x20
+// ============================================================================
+class InteractInputRcvr {
+public:
+    enum EInputType {
+        kInputTypeButtonMash = 0,
+        kInputTypeButtonPress = 1,
+        kInputTypeStickSwirl = 2,
+        kInputTypeStickToggleVert = 3,
+        kInputTypeStickToggleHoriz = 4,
+        kInputTypeRowboat = 5,
+        kInputTypeCount = 6,
+    };
+
+    static InteractInputRcvr* sInputRcvrs[kInputTypeCount];  // ?sInputRcvrs@InteractInputRcvr@@1PAPAV1@A @ 0xF23FAC
+
+    int mPakId;          // +0x00
+    unsigned int mFlags; // +0x04
+    void* mInfo;         // +0x08
+    float mTimer;        // +0x0C
+    float mInputRate;    // +0x10
+    float mInputProgress;// +0x14
+    float mTimeSinceLastInput;  // +0x18
+    int mType;           // +0x20
+
+    void ResetInputMeasures();     // 0x53A930
+    float GetInputRate();          // 0x53A950
+    float GetInputProgress();      // 0x53A960
+    float GetTimeSinceLastInput(); // 0x53A970
+    void MeasureInput(float& rate, float& progress, float deltaT);  // 0x53F350
+};
+
+class InteractInputRcvrButtonMash : public InteractInputRcvr {
+public:
+    int mButtonIndex;           // +0x24
+    int mButtonIndex2;          // +0x28
+    int mLastButtonIndexPressed;// +0x2C
+};
+
+class InteractInputRcvrButtonPress : public InteractInputRcvr {
+public:
+    int mButtonIndex;           // +0x24
+};
+
+class InteractInputRcvrStickSwirl : public InteractInputRcvr {};
+
+class InteractInputRcvrStickToggleVert : public InteractInputRcvr {
+public:
+    int mVert;                  // +0x24
+};
+
+class InteractInputRcvrStickToggleHoriz : public InteractInputRcvr {
+public:
+    int mVert;                  // +0x24
+};
+
+class InteractInputRcvrRowboat : public InteractInputRcvr {};
+
+// ea: 0x0053A930
+void InteractInputRcvr::ResetInputMeasures()
+{
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
+}
+
+// ea: 0x0053A950
+float InteractInputRcvr::GetInputRate()
+{
+    return mInputRate;
+}
+
+// ea: 0x0053A960
+float InteractInputRcvr::GetInputProgress()
+{
+    return mInputProgress;
+}
+
+// ea: 0x0053A970
+float InteractInputRcvr::GetTimeSinceLastInput()
+{
+    return mTimeSinceLastInput;
+}
+
+// ea: 0x0053A9E0
+void InteractInputRcvrButtonMash_Ctor(InteractInputRcvrButtonMash* self,
+                                      TPakId curPakId)
+{
+    self->mPakId = curPakId;
+    self->mFlags = 0;
+    self->mInfo = nullptr;
+    self->mTimer = 0.0f;
+    self->mInputRate = 0.0f;
+    self->mInputProgress = 0.0f;
+    self->mButtonIndex = -1;
+    self->mButtonIndex2 = -1;
+    self->mLastButtonIndexPressed = -1;
+    self->mType = InteractInputRcvr::kInputTypeButtonMash;
+}
+
+// ea: 0x0053AA30
+void InteractInputRcvrButtonPress_Ctor(InteractInputRcvrButtonPress* self,
+                                       TPakId curPakId)
+{
+    self->mPakId = curPakId;
+    self->mFlags = 0;
+    self->mInfo = nullptr;
+    self->mTimer = 0.0f;
+    self->mInputRate = 0.0f;
+    self->mInputProgress = 0.0f;
+    self->mButtonIndex = -1;
+    self->mType = InteractInputRcvr::kInputTypeButtonPress;
+}
+
+// ea: 0x0053AA80
+void InteractInputRcvrStickSwirl_Ctor(InteractInputRcvrStickSwirl* self,
+                                      TPakId curPakId)
+{
+    self->mPakId = curPakId;
+    self->mFlags = 0;
+    self->mInfo = nullptr;
+    self->mTimer = 0.0f;
+    self->mInputRate = 0.0f;
+    self->mInputProgress = 0.0f;
+    self->mType = InteractInputRcvr::kInputTypeStickSwirl;
+}
+
+// ea: 0x0053AAD0
+void InteractInputRcvrStickToggleVert_Ctor(
+    InteractInputRcvrStickToggleVert* self, TPakId curPakId)
+{
+    self->mPakId = curPakId;
+    self->mFlags = 0;
+    self->mInfo = nullptr;
+    self->mTimer = 0.0f;
+    self->mInputRate = 0.0f;
+    self->mInputProgress = 0.0f;
+    self->mType = InteractInputRcvr::kInputTypeStickToggleVert;
+    self->mVert = 1;
+}
+
+// ea: 0x0053AB20
+void InteractInputRcvrStickToggleHoriz_Ctor(
+    InteractInputRcvrStickToggleHoriz* self, TPakId curPakId)
+{
+    self->mPakId = curPakId;
+    self->mFlags = 0;
+    self->mInfo = nullptr;
+    self->mTimer = 0.0f;
+    self->mInputRate = 0.0f;
+    self->mInputProgress = 0.0f;
+    self->mType = InteractInputRcvr::kInputTypeStickToggleHoriz;
+    self->mVert = 0;
+}
+
+// ea: 0x0053AB70
+void InteractInputRcvrRowboat_Ctor(InteractInputRcvrRowboat* self,
+                                   TPakId curPakId)
+{
+    self->mPakId = curPakId;
+    self->mFlags = 0;
+    self->mInfo = nullptr;
+    self->mTimer = 0.0f;
+    self->mInputRate = 0.0f;
+    self->mInputProgress = 0.0f;
+    self->mType = InteractInputRcvr::kInputTypeRowboat;
+}
+
+// ea: 0x0053F350
+void InteractInputRcvr::MeasureInput(float& rate, float& progress,
+                                     float deltaT)
+{
+    (void)rate; (void)progress; (void)deltaT;
 }
