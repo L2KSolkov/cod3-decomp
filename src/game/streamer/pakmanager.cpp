@@ -1703,6 +1703,11 @@ public:
 private:
     void SetTopOverrideBrushSet(ZoneBoundaryBank* bank,
                                 ZoneOverrideBrushSet* zob);  // ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
+    void SetDistances(ZoneBoundaryBank* bank, BitSet<64> bits,
+                      InplaceVector<float>* dists,
+                      bool force);  // ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@V?$BitSet@$0EA@@@ABV?$InplaceVector@M@@_N@Z
+    void SetDistances(ZoneBoundaryBank* bank,
+                      ZoneOverrideBrushSet* zob);  // ?SetDistances@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
 };
 
 // SceneBank (scenemanager.cpp; verified IDA: mSceneHeapSize +0x08,
@@ -1725,6 +1730,8 @@ struct InstanceListNode {
 struct SceneEffect {
     uint8_t _pad[0x50];
     unsigned int mEffectHandle;         // +0x50
+    unsigned int mState;                // +0x54 (0 = kStateUninitialized)
+    float        mDelayCountdown;       // +0x58
 };
 // SceneLight (scenemanager.cpp; verified IDA: size 0x30)
 struct SceneLight {
@@ -1808,6 +1815,7 @@ public:
     void UnloadInstanceGroups(TPakId pakId);  // ?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z
     void UnloadBank(TPakId pakId);  // ?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z
     void DebugRenderLights();  // ?DebugRenderLights@SceneManager@@QAEXXZ
+    void ProcessEffects(TPakId pakId, SceneBank* bank);  // ?ProcessEffects@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
     ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
@@ -2623,6 +2631,54 @@ void SceneManager::DebugRenderLights()
             }
         }
     }
+}
+
+// ea: 0x668D80
+void SceneManager::ProcessEffects(TPakId pakId, SceneBank* bank)
+{
+    if (bank->mSceneEffectGroups.mSize != 0)
+    {
+        if (mSceneEffectGroups != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+            AeAssert::gCurrentLine = 308;
+            AeAssert::gCurrentExpr = "!mSceneEffectGroups";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "More than one scene file with an effect group list!"))
+                __debugbreak();
+        }
+        mSceneEffectGroups = (InplaceVector<SceneEffectGroup>*)&bank
+                                 ->mSceneEffectGroups;
+    }
+    InplaceVector<SceneEffect>* p_mSceneEffects = &bank->mSceneEffects;
+    for (unsigned int v5 = 0; v5 < p_mSceneEffects->mSize; ++v5)
+    {
+        SceneEffect* v6 = &p_mSceneEffects->mList[v5];
+        v6->mState = 0;  // kStateUninitialized
+        v6->mDelayCountdown = (float)mEffectDelayFrames;
+        int mEffectCount = this->mEffectCount;
+        this->mEffectCount = mEffectCount + 1;
+        if (mEffectCount > 20)
+        {
+            this->mEffectCount = 0;
+            mEffectDelayFrames = mEffectDelayFrames + 1;
+        }
+    }
+    unsigned int mLoadedIdsCount = this->mLoadedIdsCount;
+    this->mLoadedIdsCount = mLoadedIdsCount + 1;
+    if (mLoadedIdsCount > 0x62)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 154;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    loaded_ids.m_elements[mLoadedIdsCount] = pakId;
 }
 
 // ea: 0x6786A0
@@ -6751,6 +6807,70 @@ void StreamZoneManager::SingletonDebugRender()
 // ea: 0x66CD60 (stub; render pass port later)
 void StreamZoneManager::DebugRender()
 {
+}
+
+// ea: 0x66CCD0
+void StreamZoneManager::SetDistances(ZoneBoundaryBank* bank, BitSet<64> bits,
+                                     InplaceVector<float>* dists, bool force)
+{
+    InplaceVector<const StreamZone*>* p_mPtrs = &bank->mPtrs;
+    bool bConnectPaths = ShouldConnectPaths();
+    unsigned int v6 = 0;
+    for (unsigned int v7 = 0; v7 < p_mPtrs->mSize; ++v7)
+    {
+        if (bits.Test((int)v7))
+        {
+            float v8 =
+                bConnectPaths ? 1.0f : dists->mList[v6++];
+            const StreamZone* zone = p_mPtrs->mList[v7];
+            PakManager::sInst->SetDistance(zone->mPakInfo, v8, force);
+        }
+        else
+        {
+            if (bConnectPaths)
+            {
+                const StreamZone* zone = p_mPtrs->mList[v7];
+                PakManager::sInst->SetDistance(zone->mPakInfo, 1.0f, force);
+            }
+        }
+    }
+}
+
+// ea: 0x671FC0
+void StreamZoneManager::SetDistances(ZoneBoundaryBank* bank,
+                                     ZoneOverrideBrushSet* zob)
+{
+    SetDistances(bank, zob->mZoneBitset, &zob->mZoneDistances, true);
+    InplaceVector<InplaceTriple<InplaceString, const PakInfoNode*, float> >*
+        p_mNonZoneDistances = &zob->mNonZoneDistances;
+    bool v15 = ShouldConnectPaths();
+    for (unsigned int j = 0; j < p_mNonZoneDistances->mSize; ++j)
+    {
+        InplaceTriple<InplaceString, const PakInfoNode*, float>* v5 =
+            &p_mNonZoneDistances->mList[j];
+        const PakInfoNode* second = v5->b;
+        float third = v5->c;
+        if (v15)
+        {
+            third = 1.0f;
+        }
+        else if (third == -1.0f)
+        {
+            third = 3.4028235e38f;
+        }
+        PakManager* v12 = PakManager::sInst;
+        if (second != nullptr)
+        {
+            const_cast<PakInfoNode*>(second)->distance = third;
+            float banka = 3.4028235e38f;
+            if (third != -1.0f)
+                banka = third;
+            for (unsigned int v9 = 0; v9 < second->prereqs.mSize; ++v9)
+            {
+                v12->SetDistance(second->prereqs.mList[v9], banka, false);
+            }
+        }
+    }
 }
 
 // ea: 0x663730
