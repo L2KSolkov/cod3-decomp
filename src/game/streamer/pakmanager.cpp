@@ -37,6 +37,10 @@ struct WorldSpawn {
     InplaceString message;       // +0xE8
     InplaceString gravity;       // +0xEC
     InplaceString northyaw;      // +0xF0
+    float ambient;               // +0xF4
+    uint8_t _padF8[0x10C - 0xF8];
+    float sundiffusecolor[3];    // +0x10C
+    float sundirection[3];       // +0x118
 };
 
 extern void SV_SetConfigstring(int index, const char* val);  // sv.o
@@ -1950,7 +1954,26 @@ public:
     static LightGridMgr* sInst;
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);
+
+    struct TOC;  // LightGrid::TOC (render.o; opaque)
+    const TOC* GetLightGrid(const math::Position3& posArg,
+                            int* pCellNum);  // render.o 0x6C93F0; stub
+    void SampleLightGrid(const TOC& toc, int cellidx,
+                         const math::Position3& pos, math::Mat44* dir,
+                         math::Mat44* color);  // render.o 0x6C9E20; stub
 };
+const LightGridMgr::TOC* LightGridMgr::GetLightGrid(
+    const math::Position3& posArg, int* pCellNum)
+{
+    (void)posArg; (void)pCellNum;
+    return nullptr;  // stub: render.o
+}
+void LightGridMgr::SampleLightGrid(const TOC& toc, int cellidx,
+                                   const math::Position3& pos,
+                                   math::Mat44* dir, math::Mat44* color)
+{
+    (void)toc; (void)cellidx; (void)pos; (void)dir; (void)color;
+}
 class STBManager {
 public:
     static STBManager* sInst;
@@ -2108,6 +2131,11 @@ struct XModelParts {
         int  mSize;   // +0x10
         void* mList;  // +0x14
     } mHierarchy;
+    uint8_t _pad18[0x28 - 0x18];
+    struct {
+        int      mSize;  // +0x28
+        nglMesh** mList; // +0x2C
+    } mMeshes;
 };
 struct XModel {
     const char* name;     // +0x00
@@ -2194,6 +2222,10 @@ IVPointer<XModel> gDefaultXmodel = { nullptr, PAK_ID_INVALID };
 extern void CM_LinkStaticModel(StaticModel* staticModel);  // game.o (g_cm_load.cpp)
 extern math::Position3 native_to_cdl_pos3(const float* v);  // g.o inline 0x4AF1C0
 extern BspTree* g_bspTree;  // game.o @ 0xF743DC
+
+extern void AngleVectors(const float* angles, float* forward, float* right,
+                         float* up);  // core.o (q_math.cpp)
+extern float VectorNormalize(float* v);  // core.o (q_math.cpp)
 
 extern world_t s_worldData;  // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
 world_t s_worldData;
@@ -2354,7 +2386,23 @@ struct cdSimpleInstance {
     int*   cells;          // +0x1C
     void Destroy();  // ?Destroy@cdSimpleInstance@@QAEXXZ (cdSimpleInstance.cpp)
     void Render();   // ?Render@cdSimpleInstance@@QAEXXZ (render.o 0x7C50F0)
+    void Create(nglMesh* mesh, nglMeshSection* section,
+                int numInstances);  // render.o 0x7C4CB0; stub
+    void Add(const math::Mat43& mat, float scale, const math::Mat44& dir,
+             const math::Mat44& color, ae_sized_array<int*, 384>& flags,
+             int cellNum);  // render.o 0x7C4D20; stub
+    void Finalize(ae_sized_array<int*, 384>& flags);  // render.o 0x7C4FD0; stub
 };
+void cdSimpleInstance::Add(const math::Mat43& mat, float scale,
+                           const math::Mat44& dir, const math::Mat44& color,
+                           ae_sized_array<int*, 384>& flags, int cellNum)
+{
+    (void)mat; (void)scale; (void)dir; (void)color; (void)flags; (void)cellNum;
+}
+void cdSimpleInstance::Finalize(ae_sized_array<int*, 384>& flags)
+{
+    (void)flags;
+}
 struct InstanceListNode {
     cdSimpleInstance instance;          // +0x00 (0x20 bytes)
     uint8_t _pad20[0x24 - 0x20];
@@ -4036,10 +4084,297 @@ void SceneManager::PostProcess(TPakId pakId)
     ProcessEffects(pakId, Bank);
 }
 
-// ea: 0x673190 (heavy; port later)
-void SceneManager::ProcessInstanceGroup(TPakId pakId, void* group)
+// ea: 0x673190
+void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
 {
-    (void)pakId; (void)group;
+    InstanceGroup* group = (InstanceGroup*)groupPtr;
+    PakHeapContext heapContext(pakId, false);
+    IVPointer<XModel> model =
+        XModelManager::sInst->GetXModel(pakId, group->modelName.mStr);
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+        model = gDefaultXmodel;
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 1635;
+        AeAssert::gCurrentExpr = "model";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Model does not exist in pak"))
+            __debugbreak();
+        if (heapContext.mPakId != PAK_ID_INVALID)
+        {
+            TlSystemCallbacks::LockTlAllocsToPakHeap(heapContext.mLastState,
+                                                     false);
+            ae_sized_array<TPakId, 128>& stack =
+                (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                    ->GetContextStack();
+            if (stack.m_size != 0)
+                stack.m_size = stack.m_size - 1;
+        }
+        return;
+    }
+
+    ValidatePakId((TPakId)model.mPakId);
+    XModel* xmBase = model.mValue;
+    XModelLod** lod = xmBase->lod;
+
+    auto firstLod = [&]() -> XModelLod* {
+        int idx = 0;
+        if (xmBase->lod[0] == nullptr)
+        {
+            XModelLod** v = xmBase->lod;
+            do
+            {
+                ++v;
+                ++idx;
+            } while (*v == nullptr);
+        }
+        return xmBase->lod[idx];
+    };
+
+    XModelLod* first = firstLod();
+    if (first->xmodelParts != nullptr
+        && first->xmodelParts->mHierarchy.mSize > 32)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 1642;
+        AeAssert::gCurrentExpr = "xmBase->GetNumBones() <= 32";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("static XModel %s has too many bones.",
+                                xmBase->name))
+            __debugbreak();
+    }
+
+    static math::Mat43 bones[64];
+    XModelGetBasePose(model, bones);
+    int lastLodDist = 0;
+    for (int lodIdx = 0;; ++lodIdx)
+    {
+        XModelLod* curLod = firstLod();
+        int boneCount = 0;
+        if (curLod->xmodelParts != nullptr)
+            boneCount = curLod->xmodelParts->mHierarchy.mSize;
+        if (lodIdx >= boneCount)
+            break;
+
+        nglMesh* mesh = curLod->xmodelParts->mMeshes.mList[lodIdx];
+        if (mesh != nullptr)
+        {
+            ae_sized_array<nglMeshLOD, 8> lodMeshes;
+            nglMeshLOD firstLodMesh;
+            firstLodMesh.Mesh = nullptr;
+            firstLodMesh.Range = 0.0f;
+            lodMeshes.push_back(firstLodMesh);
+            lodMeshes.m_elements[lodMeshes.m_size - 1].Mesh = mesh;
+            for (unsigned int v31 = 0; v31 < mesh->NLODs; ++v31)
+                lodMeshes.push_back(mesh->LODs[v31]);
+
+            float prevMax = 0.0f;
+            for (int i = 0; i < lodMeshes.m_size; ++i)
+            {
+                nglMesh* v33 = lodMeshes.m_elements[i].Mesh;
+                if (v33 == nullptr)
+                    continue;
+                nglMeshSection* Section = v33->Sections->Section;
+                InstanceListNode* node = (InstanceListNode*)
+                    PakManager::sInst->MemAlloc(pakId, 0x38, false);
+                InplaceVector<InstanceData>* insts =
+                    (InplaceVector<InstanceData>*)&group->insts;
+                unsigned int mSize = insts->mSize;
+                node->instance.Create(v33, Section, (int)mSize);
+                node->mMinDist = prevMax;
+                float Range = (i >= lodMeshes.m_size - 1)
+                                  ? 99999.0f
+                                  : lodMeshes.m_elements[i + 1].Range;
+                node->mMaxDist = Range;
+                float sectionRadius =
+                    Section->Sphere.v.m128_f32[3];
+                float v39 = Range - sectionRadius;
+                node->mMaxDist = v39;
+                *(InstanceGroup**)((char*)node + 0x2C) = group;
+                node->next = (InstanceListNode*)group->instanceList;
+                group->instanceList = node;
+                prevMax = v39;
+
+                ae_sized_array<int*, 384> flags;
+                flags.m_size = 0;
+                if (insts->mSize != 0)
+                {
+                    for (unsigned int instIdx = 0;
+                         instIdx < insts->mSize; ++instIdx)
+                    {
+                        InstanceData* inst = &insts->mList[instIdx];
+                        math::Position3 origin;
+                        origin.v = _mm_setr_ps(inst->cullA[0], inst->cullA[1],
+                                               inst->cullA[2], 0.0f);
+                        int cellNum = 0;
+                        const LightGridMgr::TOC* LightGrid =
+                            LightGridMgr::sInst->GetLightGrid(origin,
+                                                              &cellNum);
+                        float lightColor[16];
+                        float lightDir[16];
+                        memset(lightColor, 0, sizeof(lightColor));
+                        memset(lightDir, 0, sizeof(lightDir));
+                        WorldSpawn* ws = (WorldSpawn*)mWorldSpawn;
+                        lightColor[12] = ws->ambient;
+                        lightColor[13] = ws->ambient;
+                        lightColor[14] = ws->ambient;
+                        if (LightGrid != nullptr && cellNum >= 0)
+                        {
+                            LightGridMgr::sInst->SampleLightGrid(
+                                *LightGrid, cellNum, origin,
+                                (math::Mat44*)lightDir,
+                                (math::Mat44*)lightColor);
+                        }
+                        else
+                        {
+                            float forward[3], right[3], up[3];
+                            AngleVectors(ws->sundirection, forward, right,
+                                         up);
+                            VectorNormalize(forward);
+                            if (lightDir[0] == 0.0f)
+                            {
+                                lightDir[0] = 0.0f;
+                                lightDir[1] = 0.0f;
+                                lightDir[2] = -1.0f;
+                                lightColor[0] = ws->sundiffusecolor[0];
+                                lightColor[1] = ws->sundiffusecolor[1];
+                                lightColor[2] = ws->sundiffusecolor[2];
+                            }
+                        }
+
+                        __m128 xaxis = _mm_setr_ps(inst->cullB[0],
+                                                   inst->cullB[1],
+                                                   inst->cullB[2], 0.0f);
+                        __m128 yaxis = _mm_setr_ps(inst->worldPos[0],
+                                                   inst->worldPos[1],
+                                                   inst->worldPos[2], 0.0f);
+                        __m128 Mx = bones[0].x.v;
+                        __m128 My = bones[0].y.v;
+                        __m128 Mz = bones[0].z.v;
+                        __m128 Mt = bones[1].x.v;
+                        math::Mat43 instMat;
+                        instMat.x.v = _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(xaxis, xaxis, 0),
+                                           Mx),
+                                _mm_mul_ps(_mm_shuffle_ps(xaxis, xaxis, 0x55),
+                                           My)),
+                            _mm_mul_ps(_mm_shuffle_ps(xaxis, xaxis, 0xAA),
+                                       Mz));
+                        instMat.y.v = _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(yaxis, yaxis, 0),
+                                           Mx),
+                                _mm_mul_ps(_mm_shuffle_ps(yaxis, yaxis, 0x55),
+                                           My)),
+                            _mm_mul_ps(_mm_shuffle_ps(yaxis, yaxis, 0xAA),
+                                       Mz));
+                        instMat.z.v = _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v,
+                                                           0),
+                                           Mx),
+                                _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v,
+                                                           0x55),
+                                           My)),
+                            _mm_add_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v,
+                                                           0xAA),
+                                           Mz),
+                                Mt));
+
+                        __m128 sphere = v33->Sphere.v;
+                        __m128 cross = _mm_sub_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(xaxis, xaxis, 0x09),
+                                       _mm_shuffle_ps(yaxis, yaxis, 0x12)),
+                            _mm_mul_ps(_mm_shuffle_ps(xaxis, xaxis, 0x12),
+                                       _mm_shuffle_ps(yaxis, yaxis, 0x09)));
+                        __m128 cellPos = _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(sphere, sphere, 0), xaxis),
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(sphere, sphere, 0x55),
+                                    yaxis)),
+                            _mm_add_ps(
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(sphere, sphere, 0xAA),
+                                    cross),
+                                origin.v));
+                        math::Position3 cellPos3;
+                        cellPos3.v = cellPos;
+                        int cell = R_CellForPoint(&cellPos3);
+                        node->instance.Add(instMat, inst->pad,
+                                           *(const math::Mat44*)lightDir,
+                                           *(const math::Mat44*)lightColor,
+                                           flags, cell);
+                    }
+                }
+
+                node->instance.Finalize(flags);
+                unsigned int v59 = 4 * insts->mSize;
+                void* v62;
+                if (pakId != PAK_ID_INVALID)
+                {
+                    PakFile* slot = PakManager::sInst->mSlots[pakId];
+                    if (slot == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\PakManager.cpp";
+                        AeAssert::gCurrentLine = 2583;
+                        AeAssert::gCurrentExpr =
+                            "PakManager::Inst()->IsValid( id )";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                   "bad pak id for MemAlloc"))
+                            __debugbreak();
+                    }
+                    PakFile* v61 = pakId > 0x62 ? nullptr : slot;
+                    v62 = v61 ? v61->MemAlloc(0x10, v59, true) : nullptr;
+                }
+                else
+                {
+                    v62 = nullptr;
+                }
+                if (v62 == nullptr)
+                    v62 = mem_heap_malloc(0x10, v59);
+                *(void**)((char*)node + 0x30) = v62;
+                for (unsigned int v65 = 0; v65 < insts->mSize; ++v65)
+                {
+                    if (v65 >= 0x180)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "../ae\\core/ae_array.h";
+                        AeAssert::gCurrentLine = 154;
+                        AeAssert::gCurrentExpr =
+                            "idx >= 0 && idx < _CAPACITY";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("out of bounds"))
+                            __debugbreak();
+                    }
+                    ((int**)v62)[v65] = flags.m_elements[v65];
+                }
+            }
+        }
+    }
+
+    if (heapContext.mPakId != PAK_ID_INVALID)
+    {
+        TlSystemCallbacks::LockTlAllocsToPakHeap(heapContext.mLastState,
+                                                 false);
+        ae_sized_array<TPakId, 128>& stack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        if (stack.m_size != 0)
+            stack.m_size = stack.m_size - 1;
+    }
 }
 
 // ea: 0x66D670
