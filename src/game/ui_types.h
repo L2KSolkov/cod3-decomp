@@ -261,7 +261,18 @@ public:
     virtual void SetColor(color32 c);    // 0x57A1F0
     virtual color32 GetColor();          // 0x5B6620
     virtual void SetVisibility(float alpha);  // 0x57A450
+    virtual void SetAlpha(float alpha);       // ?SetAlpha@PanelQuad@@UAEXM@Z 0x576870
     virtual void SetZvalueAbs(float z);       // 0x57A530
+    virtual float GetCenterX() { return center_point.x; }  // inline 0x5B6490
+    virtual void GetCenterPos(float& cx, float& cy)  // inline 0x5B6470
+    {
+        cx = center_point.x;
+        cy = center_point.y;
+    }
+    virtual void SetCenterPos(float cx, float cy)  // inline 0x5B6430
+    {
+        Shift(cx - center_point.x, cy - center_point.y);
+    }
     virtual void SetMaterialFlags(unsigned int mapflags);  // 0x56AB90
     virtual void SetTexture(nglTexture* tex);              // 0x57A170
     virtual void Init(Broc::vector* xy, color32* col,
@@ -271,10 +282,6 @@ public:
                       int& index,
                       const math::Mat43* parent_matrix);  // 0x58BC10
     virtual void Shift(float off_x, float off_y);  // shell.o 0x57A6A0
-    virtual void SetCenterPos(float cx, float cy)  // vtable slot 39 (0x9C)
-    {
-        Shift(cx - center_point.x, cy - center_point.y);
-    }
     void FormatForSplitScreen(int viewport, int old_viewport);  // 0x57A940
     void MoveForSplitScreen(int viewport, int old_viewport);    // 0x57A9C0
     void FattenMeForWidescreen(bool widescreen, float x);       // 0x57AA40
@@ -1167,3 +1174,174 @@ public:
 };
 static_assert(sizeof(FEMenuListBoxItem) == 28,
               "FEMenuListBoxItem size mismatch");
+
+// ============================================================================
+// UIListBox - 172 bytes (verified against IDA; shell.o owns the impl)
+// ============================================================================
+class UIListBox {
+public:
+    enum EScrollQuads {
+        kScrollBarArrowUp = 0,
+        kScrollBarArrowDown = 1,
+        kScrollBarIndicator = 2,
+        kScrollBarTrack = 3,
+        kScrollBarDetail1 = 4,
+        kScrollBarDetail2 = 5,
+    };
+
+    class UIListBoxRow;
+
+    class UIListBoxData {
+    public:
+        Broc::string mText;   // +0x00
+        int          mState;  // +0x04
+
+        UIListBoxData();      // 0x5AEBB0
+        void SetState(int state);  // 0x5AEBE0
+        void SetText(const char* text);  // 0x5AEC70
+        const char* GetText();  // 0x5B2580
+    };
+    static_assert(sizeof(UIListBoxData) == 8, "UIListBoxData size mismatch");
+
+    class UIListBoxDataRow {
+    public:
+        enum { kTypeNone = 0, kTypeText = 1, kTypeQuad = 2 };
+
+        ae_vector<UIListBoxData> mColumns;  // +0x00 (12 bytes)
+        int  mColumnCount;                  // +0x0C
+        bool mEnabled;                      // +0x10
+
+        UIListBoxDataRow();  // 0x5B6160
+        void ClearItem();    // 0x5B2DB0
+        void SetColumnCount(int columns);  // 0x5B6180
+        void SetItemState(int column, int state);  // 0x5B2BF0
+        void SetText(int column, const char* text);  // 0x5B2C80
+        const char* GetText(int column);  // 0x5B2D10
+    };
+    static_assert(sizeof(UIListBoxDataRow) == 20,
+                  "UIListBoxDataRow size mismatch");
+
+    class UIListBoxItem {
+    public:
+        enum { kTypeNone = 0, kTypeText = 1, kTypeQuad = 2 };
+        friend class UIListBoxRow;
+
+        int          mType;       // +0x00
+        int          mState;      // +0x04
+        int          mStateCount; // +0x08
+        ae_vector<PanelAnimObject*> mObjects;  // +0x0C (12 bytes)
+
+        UIListBoxItem();  // 0x5B4D50
+        void SetState(int state);       // 0x5B1E30
+        void SetStateCount(int count);  // 0x5B4DC0
+        void SetText(const char* text); // 0x5813A0
+        void SetSelected(bool selected, bool flashing);  // 0x581460
+        void SetColor(color32 unselectedColor,
+                      color32 selectedcolor);  // 0x581580
+        void SetEnabled(bool enabled);  // 0x581650
+        void ClearText();               // 0x5B4EC0
+        void RemoveItems();             // 0x5B2070
+        color32 GetColor();             // 0x5B22B0
+        color32 GetUnselectedColor();   // 0x5B23D0
+        float GetY();                   // 0x5B21A0
+    private:
+        void SetObject(PanelAnimObject* object, int state);  // 0x5B24E0
+    };
+    static_assert(sizeof(UIListBoxItem) == 24, "UIListBoxItem size mismatch");
+
+    class UIListBoxRow {
+    public:
+        ae_vector<UIListBoxItem> mColumns;  // +0x00 (12 bytes)
+        int  mColumnCount;                  // +0x0C
+
+        UIListBoxRow();  // 0x5B6E30
+        void ClearItem();                    // 0x5B5390
+        void RemoveItems();                  // 0x5B2630
+        void Draw();                         // 0x5B26D0
+        void Update(float time_delta);       // 0x5B2870
+        void SetColumnCount(int columns);    // 0x5B7580
+        void SetColumnStateCount(int column, int count);  // 0x5B5130
+        void SetItem(int column, FEText* text, int state);   // 0x5B51C0
+        void SetItem(int column, PanelQuad* quad, int state);  // 0x5B5260
+        void SetText(int column, const char* text);  // 0x5B5300
+        void SetItemState(int column, int state);    // 0x5B25A0
+        void SetColumnColor(int column, color32 unselectedColor,
+                            color32 selectedcolor);  // 0x5B5450
+        void SetSelected(int column, bool selected,
+                         bool flashing);             // 0x5B54E0
+        void SetEnabled(bool enabled);               // 0x5B5570
+        float GetY(int column);                      // 0x5B2A20
+        color32 GetColumnSelectedColor(int column);  // 0x5B2AB0
+        color32 GetColumnUnselectedColor(int column);// 0x5B2B40
+    };
+    static_assert(sizeof(UIListBoxRow) == 16, "UIListBoxRow size mismatch");
+
+    // Members
+    ae_vector<UIListBoxRow> mItemRows;        // +0x04
+    ae_vector<UIListBoxDataRow> mDataRows;    // +0x10
+    bool mSelectedFlashing;                   // +0x1C
+    ae_vector<color32> mSelectedRowOriginalColor;      // +0x20
+    ae_vector<bool> mSelectedRowColorChangeColumns;    // +0x2C
+    PanelQuad* mScrollBarQuads[6];            // +0x38
+    int mLastRowContainingData;               // +0x50
+    int mItemRowsCount;                       // +0x54
+    int mItemColumnsCount;                    // +0x58
+    int mDataRowsCount;                       // +0x5C
+    int mTopLine;                             // +0x60
+    int mSelectedLine;                        // +0x64
+    int mScrollBarTopY;                       // +0x68
+    int mScrollBarBottomY;                    // +0x6C
+    float mScrollBarYInc;                     // +0x70
+    bool mIsWrapping;                         // +0x74
+    bool mBlockRefresh;                       // +0x75
+    int mIncrementBy;                         // +0x78
+    struct PanelQuadFader {
+        PanelQuad* mQuad;        // +0x00
+        float mAlpha;            // +0x04
+        float mAlphaTo;          // +0x08
+        float mTime;             // +0x0C
+        float mAlphaDelta;       // +0x10
+        bool  mFading;           // +0x14
+        uint8_t _pad[3];         // +0x15
+    } mScrollBarUpFader;         // +0x7C
+    PanelQuadFader mScrollBarDownFader;  // +0x94
+
+    UIListBox(int visibleRows, int visibleColumns, int maxDataRows,
+              bool bIsWrapping);  // 0x59BB70
+    virtual ~UIListBox();         // 0x5B9BB0
+    virtual void Clear();         // 0x58FFC0
+    virtual void ClearRow(int row);  // 0x590050
+    virtual void SelectLine(int selection, int top_line);  // 0x5904A0
+    virtual void SelectLine(int selection);  // 0x5903F0
+    virtual short OnUp(int c);      // 0x590290
+    virtual short OnDown(int c);    // 0x590340
+    virtual void Update(float time_delta);  // 0x581750
+    virtual void Draw();            // 0x581910
+    virtual void Refresh();         // 0x590520
+
+    void RemoveAllItems();          // 0x5816B0
+    void SetItemState(int row, int column, int state);  // 0x581990
+    void PageDown(int numPageRows);  // 0x581B00
+    void PageUp(int numPageRows);    // 0x581BC0
+    void SetAllColumnsSelectable(bool selectable);  // 0x581D40
+    void SetRowEnabled(int row, bool enabled);      // 0x5878D0
+    void SetColumnStateCount(int column, int count);  // 0x587960
+    void SetItem(int row, int column, FEText* text, int state);  // 0x587BA0
+    void SetItem(int row, int column, PanelQuad* quad, int state); // 0x587CB0
+    void SetText(int row, int column, const char* text);  // 0x587DC0
+    void SetScrollBarQuad(EScrollQuads index, PanelQuad* quad);  // 0x577050
+    void SetScrollBarFromPanelFile(PanelFile* pf);  // 0x598120
+    void FormatForSplitScreen(int viewport, int old_viewport);  // 0x5770B0
+    void FormatForWidescreen(bool widescreen, float about_x);   // 0x5770C0
+    void ResizeDataRows(int rowCount);  // 0x590150
+protected:
+    void MoveUpTo(int newSelectedLine);  // 0x576F70
+    void MoveDownTo(int newSelectedLine);// 0x576FE0
+    short MoveUp(int c);                 // 0x587F00
+    short MoveDown(int c);               // 0x587FF0
+    void DeselectRow();                  // 0x5880E0
+    void SelectRow();                    // 0x588180
+    void UpdateScrollBar();              // 0x581C70
+    void PlayNavigationSound();          // 0x581A90
+};
+static_assert(sizeof(UIListBox) == 0xAC, "UIListBox size mismatch");

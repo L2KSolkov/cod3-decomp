@@ -23,31 +23,6 @@ void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 {
     (void)widescreen;
 }
-UIListBox::~UIListBox() {}
-void UIListBox::OnUp(int a2) { (void)a2; }
-void UIListBox::OnDown(int a2) { (void)a2; }
-void UIListBox::SelectLine(int line) { (void)line; }
-void UIListBox::Update(float time_inc) { (void)time_inc; }
-void UIListBox::SetItem(int row, int column, FEText* text, int state)
-{
-    (void)row; (void)column; (void)text; (void)state;
-}
-void UIListBox::SetText(int row, int column, const char* text)
-{
-    (void)row; (void)column; (void)text;
-}
-void UIListBox::SetAllColumnsSelectable(bool selectable)
-{
-    (void)selectable;
-}
-void UIListBox::Refresh() {}
-void UIListBox::RemoveAllItems() {}
-void UIListBoxCtorThunk(UIListBox* self, int visibleRows, int visibleColumns,
-                        int maxDataRows, bool bIsWrapping)
-{
-    (void)self; (void)visibleRows; (void)visibleColumns;
-    (void)maxDataRows; (void)bIsWrapping;
-}
 void DialogMenuSystem::BringUp(const char* t, bool type_ok, bool type_yn,
                                const char* title_unloc, bool layer1)
 {
@@ -112,19 +87,6 @@ bool InGameLiveOptionsMenu::ResponseNoJoin(int a)
 #include <string.h>
 #include <wchar.h>
 #include <new>
-
-// UIListBox real ctor is provided by shell.o; this file calls it through
-// the member thunk below (m_ListBox has no default ctor in the binary).
-extern void UIListBoxCtorThunk(UIListBox* self, int visibleRows,
-                               int visibleColumns, int maxDataRows,
-                               bool bIsWrapping);
-
-void UIListBox::UIListBoxCtor(int visibleRows, int visibleColumns,
-                              int maxDataRows, bool bIsWrapping)
-{
-    UIListBoxCtorThunk(this, visibleRows, visibleColumns, maxDataRows,
-                       bIsWrapping);
-}
 
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
@@ -236,13 +198,12 @@ int XGetLaunchInfo(unsigned int* pdwLaunchDataType,
 
 // ea: 0x727300
 XboxLiveOptionsMenu::XboxLiveOptionsMenu(FEMenuSystem* s)
-    : FEMenu(s, 0, 320, 240, 8, 0)
+    : FEMenu(s, 0, 320, 240, 8, 0), m_ListBox(5, 1, 5, true)
 {
     *(void***)this = (void**)0;  // vftable set by derived data; overwritten below
     memset(m_pOldTextColor.m_elements, 0, sizeof(m_pOldTextColor.m_elements));
     memset(m_pOldSelectedTextColor.m_elements, 0,
            sizeof(m_pOldSelectedTextColor.m_elements));
-    UIListBoxCtorThunk(&m_ListBox, 5, 1, 5, true);
     mPanel = nullptr;
     m_currSelection = 0;
     mHelpbar = nullptr;

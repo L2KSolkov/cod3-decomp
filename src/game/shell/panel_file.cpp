@@ -295,6 +295,12 @@ void PanelQuad::SetVisibility(float alpha)
     }
 }
 
+// ea: 0x576870
+void PanelQuad::SetAlpha(float alpha)
+{
+    SetVisibility(alpha);
+}
+
 // ea: 0x0057A530
 void PanelQuad::SetZvalueAbs(float z)
 {

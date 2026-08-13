@@ -10,57 +10,6 @@
 #include "MPLiveEngine.h"
 
 // ============================================================================
-// UIListBox - 0xAC bytes (verified against IDA; shell.o owns the impl)
-// ============================================================================
-struct UIListBoxRow;
-struct UIListBoxDataRow;
-struct PanelQuadFader {
-    unsigned char _pad[0x18];
-};
-static_assert(sizeof(PanelQuadFader) == 0x18, "PanelQuadFader size mismatch");
-
-struct UIListBox {
-    void** __vftable;                    // +0x00
-    ae_vector<UIListBoxRow*> mItemRows;  // +0x04
-    ae_vector<UIListBoxDataRow*> mDataRows;  // +0x10
-    bool mSelectedFlashing;              // +0x1C
-    ae_vector<color32> mSelectedRowOriginalColor;      // +0x20
-    ae_vector<bool> mSelectedRowColorChangeColumns;    // +0x2C
-    PanelQuad* mScrollBarQuads[6];       // +0x38
-    int mLastRowContainingData;          // +0x50
-    int mItemRowsCount;                  // +0x54
-    int mItemColumnsCount;               // +0x58
-    int mDataRowsCount;                  // +0x5C
-    int mTopLine;                        // +0x60
-    int mSelectedLine;                   // +0x64
-    int mScrollBarTopY;                  // +0x68
-    int mScrollBarBottomY;               // +0x6C
-    float mScrollBarYInc;                // +0x70
-    bool mIsWrapping;                    // +0x74
-    bool mBlockRefresh;                  // +0x75
-    int mIncrementBy;                    // +0x78
-    PanelQuadFader mScrollBarUpFader;    // +0x7C
-    PanelQuadFader mScrollBarDownFader;  // +0x94
-
-    UIListBox() {}
-    UIListBox(int visibleRows, int visibleColumns, int maxDataRows,
-              bool bIsWrapping);
-    ~UIListBox();
-    void UIListBoxCtor(int visibleRows, int visibleColumns, int maxDataRows,
-                       bool bIsWrapping);
-    void OnUp(int a2);
-    void OnDown(int a2);
-    void SelectLine(int line);
-    void Update(float time_inc);
-    void SetItem(int row, int column, FEText* text, int state);
-    void SetText(int row, int column, const char* text);
-    void SetAllColumnsSelectable(bool selectable);
-    void Refresh();
-    void RemoveAllItems();
-};
-static_assert(sizeof(UIListBox) == 0xAC, "UIListBox size mismatch");
-
-// ============================================================================
 // XboxLiveOptionsMenu - 0x188 (verified)
 // ============================================================================
 class FEComboBox;

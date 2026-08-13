@@ -299,10 +299,9 @@ void JoinGameMenu::SetPanelFile(PanelFile* pf)
 
 // ea: 0x77AB80
 MPMainMenuXBox::MPMainMenuXBox(FEMenuSystem* s)
-    : FEMenu(s, 0, 320, 240, 8, 0)
+    : FEMenu(s, 0, 320, 240, 8, 0), mListBox(3, 1, 3, true)
 {
     mWaitingForSignIn = false;
-    mListBox.UIListBoxCtor(3, 1, 3, true);
     mOptionDescription = nullptr;
     m_currSelection = 0;
     mWidescreen = false;
@@ -705,12 +704,11 @@ void MPMainMenuXBox::Update(float time_inc)
 
 // ea: 0x77AD10
 XBoxLiveIngameOptionsCOD3::XBoxLiveIngameOptionsCOD3(FEMenuSystem* s)
-    : FEMenu(s, 0, 320, 240, 8, 0)
+    : FEMenu(s, 0, 320, 240, 8, 0), m_ListBox(5, 1, 5, true)
 {
     memset(m_pOldTextColor.m_elements, 0, sizeof(m_pOldTextColor.m_elements));
     memset(m_pOldSelectedTextColor.m_elements, 0,
            sizeof(m_pOldSelectedTextColor.m_elements));
-    m_ListBox.UIListBoxCtor(5, 1, 5, true);
     m_currSelection = 0;
     friendIcon = 0;
     wasSignedIn = false;
