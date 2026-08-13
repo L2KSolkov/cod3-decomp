@@ -7,6 +7,7 @@
 #include <new>
 #include <type_traits>
 #include <stdio.h>
+#include <math.h>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
@@ -2049,8 +2050,9 @@ public:
     struct {
         math::Position3 currentOrigin;  // +0x70 within EntityShared
         math::Position3 currentAngles;  // +0x80
+        math::Mat43 currentMat;         // +0x90
     } r;                   // +0x150 (EntityShared r @ +0xE0 + 0x70)
-    unsigned char _padR[0x230 - 0x160];
+    unsigned char _padR[0x230 - 0x1B0];
     struct {
         unsigned int mVal;  // +0x230
     } mHandle;             // +0x230
@@ -6284,8 +6286,11 @@ struct InteractStateInfo {
     float modBlendMax;              // +0x544
     float modBlendScoreDeltaMin;    // +0x548
     float modBlendScoreDeltaMax;    // +0x54C
-    float modAnimThresholdMin[6];   // +0x550
-    float modAnimThresholdMax[6];   // +0x564
+    float modAnimThresholdMin[5];   // +0x550
+    float modAnimThresholdMax[5];   // +0x564
+    float animSpeedInputRateFactor; // +0x578
+    float animSpeedInitial;         // +0x57C
+    float animSpeedMax;             // +0x580
     unsigned int steeringLeftSide;  // +0x584
     float steeringWheelAngleMax;    // +0x588
     float steeringAngleKeepTurn;    // +0x58C
@@ -6877,6 +6882,75 @@ public:
     InteractStateMeleeDropWeapon(TPakId, const InteractStateInfo*,
                                  InteractionController*);
     virtual void Deactivate();
+};
+
+// ============================================================================
+// InteractStatePlayPlayerAnim / PlaceItem / Push (anim.o InteractState.cpp)
+// Layout verified vs IDB: PlayPlayerAnim 0x1A0 / PlaceItem 0x1A0 have no
+// extra fields; Push 0x1C0 adds mOrigin +0x1A0[3], mDir +0x1AC[3],
+// mAnimTimer +0x1B8.  PlaceItem slots 0/2 thunk to PlayPlayerAnim.
+// ============================================================================
+class InteractStatePlayPlayerAnim : public InteractState {
+public:
+    InteractStatePlayPlayerAnim(TPakId curPakId, const InteractStateInfo* info,
+                                InteractionController* controller);
+    virtual void Activate();              // 0x54DFC0
+    virtual void Deactivate();            // 0x53FBB0 (thunk)
+    virtual InteractState* Update(float deltaT);  // 0x546C80
+};
+
+class InteractStatePlaceItem : public InteractStatePlayPlayerAnim {
+public:
+    InteractStatePlaceItem(TPakId curPakId, const InteractStateInfo* info,
+                           InteractionController* controller);
+    virtual void Activate();              // 0x54E3C0 (thunk)
+    virtual void Deactivate();            // 0x555630
+    virtual InteractState* Update(float deltaT);  // 0x546E50 (thunk)
+};
+
+class InteractStatePush : public InteractStatePlayPlayerAnim {
+public:
+    InteractStatePush(TPakId curPakId, const InteractStateInfo* info,
+                      InteractionController* controller);
+    virtual void Activate();              // 0x54E030
+    virtual void Deactivate();            // 0x53FBC0 (thunk)
+    virtual InteractState* Update(float deltaT);  // 0x54E110
+
+    float mOrigin[3];  // +0x1A0
+    float mDir[3];     // +0x1AC
+    float mAnimTimer;  // +0x1B8
+};
+
+// ============================================================================
+// InteractStateScaleAnimSpeed / StrengthTest (anim.o InteractState.cpp)
+// ScaleAnimSpeed 0x1B0 (base InteractStatePlayAnims): mAnimSpeed +0x1A0,
+// mLastAnimSpeed +0x1A4, mStartedNotifySent +0x1A8, mClickTimer +0x1AC.
+// StrengthTest 0x1C0 adds mRateAchieved +0x1B0; Deactivate/Update delegate
+// to ScaleAnimSpeed.
+// ============================================================================
+class InteractStateScaleAnimSpeed : public InteractStatePlayAnims {
+public:
+    InteractStateScaleAnimSpeed(TPakId curPakId, const InteractStateInfo* info,
+                                InteractionController* controller);
+    virtual void Activate();              // 0x54E460
+    virtual void Deactivate();            // 0x53FBE0
+    virtual InteractState* Update(float deltaT);  // 0x54E4A0
+
+    float mAnimSpeed;         // +0x1A0
+    float mLastAnimSpeed;     // +0x1A4
+    int mStartedNotifySent;   // +0x1A8
+    float mClickTimer;        // +0x1AC
+};
+
+class InteractStateStrengthTest : public InteractStateScaleAnimSpeed {
+public:
+    InteractStateStrengthTest(TPakId curPakId, const InteractStateInfo* info,
+                              InteractionController* controller);
+    virtual void Activate();              // 0x54E780
+    virtual void Deactivate();            // 0x54E7C0
+    virtual InteractState* Update(float deltaT);  // 0x54E7E0
+
+    int mRateAchieved;  // +0x1B0
 };
 
 extern void* RumbleManager_Inst(int instance);
@@ -7721,20 +7795,10 @@ void InteractState_Ctor(InteractState* self, TPakId curPakId, void* info,
         curPakId, (const InteractStateInfo*)info, controller);
 }
 
-// 0x546AF0
-INTERACT_STATE_CTOR(InteractStatePlayPlayerAnim, kInteractTypePlayPlayerAnim)
-// 0x546DF0
-INTERACT_STATE_CTOR(InteractStatePush, kInteractTypePush)
-// 0x546E20
-INTERACT_STATE_CTOR(InteractStatePlaceItem, kInteractTypePlaceItem)
 // 0x546E60
 INTERACT_STATE_CTOR(InteractStateVehicleLink, kInteractTypeVehicleLink)
 // 0x546E90
 INTERACT_STATE_CTOR(InteractStateMortarLoad, kInteractTypeMortarLoad)
-// 0x546F50
-INTERACT_STATE_CTOR(InteractStateScaleAnimSpeed, kInteractTypeScaleAnimSpeed)
-// 0x546F80
-INTERACT_STATE_CTOR(InteractStateStrengthTest, kInteractTypeStrengthTest)
 // 0x546FB0
 INTERACT_STATE_CTOR(InteractStateLeverPush, kInteractTypeLeverPush)
 // 0x547630
@@ -8727,6 +8791,15 @@ static void InteractStateRowboatInit_New(InteractState* mem, TPakId curPakId,
 static void InteractStateRowboat_New(InteractState* mem, TPakId curPakId,
                                      void* info,
                                      InteractionController* controller);
+#define PPA_NEW_FWD(NAME)                                                   \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)
+PPA_NEW_FWD(InteractStatePlayPlayerAnim);
+PPA_NEW_FWD(InteractStatePlaceItem);
+PPA_NEW_FWD(InteractStatePush);
+PPA_NEW_FWD(InteractStateStrengthTest);
+PPA_NEW_FWD(InteractStateScaleAnimSpeed);
+#undef PPA_NEW_FWD
 #define MELEE_NEW_FWD(NAME)                                                 \
     static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
                            InteractionController* controller)
@@ -8746,11 +8819,11 @@ static const struct InteractStateCtorEntry {
     void (*ctor)(InteractState*, TPakId, void*, InteractionController*);
 } kInteractStateCtors[25] = {
     { 0, 0x1A0, InteractStatePlayAnims_New },
-    { 1, 0x1A0, InteractStatePlayPlayerAnim_Ctor },
-    { 2, 0x1A0, InteractStatePlaceItem_Ctor },
-    { 3, 0x1C0, InteractStatePush_Ctor },
-    { 4, 0x1C0, InteractStateStrengthTest_Ctor },
-    { 5, 0x1B0, InteractStateScaleAnimSpeed_Ctor },
+    { 1, 0x1A0, InteractStatePlayPlayerAnim_New },
+    { 2, 0x1A0, InteractStatePlaceItem_New },
+    { 3, 0x1C0, InteractStatePush_New },
+    { 4, 0x1C0, InteractStateStrengthTest_New },
+    { 5, 0x1B0, InteractStateScaleAnimSpeed_New },
     { 6, 0x1E0, InteractStateLeverPush_Ctor },
     { 7, 0x220, InteractStateMelee_New },
     { 8, 0x1A0, InteractStateMeleeInitiate_New },
@@ -8787,6 +8860,20 @@ static void InteractStateRowboatInit_New(InteractState* mem, TPakId curPakId,
     new (mem) InteractStateRowboatInit(
         curPakId, (const InteractStateInfo*)info, controller);
 }
+
+#define PPA_NEW(NAME)                                                       \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)               \
+    {                                                                       \
+        new (mem) NAME(curPakId, (const InteractStateInfo*)info,            \
+                       controller);                                         \
+    }
+PPA_NEW(InteractStatePlayPlayerAnim)
+PPA_NEW(InteractStatePlaceItem)
+PPA_NEW(InteractStatePush)
+PPA_NEW(InteractStateStrengthTest)
+PPA_NEW(InteractStateScaleAnimSpeed)
+#undef PPA_NEW
 
 #define MELEE_NEW(NAME)                                                     \
     static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
@@ -11664,6 +11751,540 @@ void InteractStateMeleeDropWeapon::Deactivate()
         if (weapon != 0)
             Drop_Weapon(Player, weapon, nullptr);
     }
+}
+
+// ============================================================================
+// InteractStatePlayPlayerAnim / PlaceItem / Push / ScaleAnimSpeed /
+// StrengthTest (anim.o InteractState.cpp)
+// ============================================================================
+
+// anim.o statics (verified vs IDA)
+float sTotalDistance = 30.0f;          // 0xDF370C
+float sClickTimeMax = 0.5f;            // 0xDF3710
+float sAnimSpeedThresholdStart = 0.1f; // 0xDF3714
+float sAnimSpeedThresholdStop = 0.05f; // 0xDF3718
+
+extern void g_LinkEntity(Entity* ent);  // ?g_LinkEntity@@YAXPAVEntity@@@Z
+struct gitem_s {
+    unsigned char _pad[0x34];  // size verified vs IDB
+};
+extern gitem_s* bg_itemlist;   // ?bg_itemlist@@3PAUgitem_s@@A (g.o)
+extern Entity* Drop_Item(Entity* ent, const gitem_s* item, float angle,
+                         int novelocity);  // ?Drop_Item@@YAPAVEntity@@PAV1@PBUgitem_s@@MH@Z
+extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z
+
+// ea: 0x00546C50
+InteractStatePlayPlayerAnim::InteractStatePlayPlayerAnim(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractState(curPakId, info, controller)
+{
+    mType = kInteractTypePlayPlayerAnim;
+}
+
+// ea: 0x0054DFC0
+void InteractStatePlayPlayerAnim::Activate()
+{
+    InteractState::Activate();
+    if ((mFlags & 0x40) == 0)
+    {
+        InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+        if (mInfo->playerAnim[0] != 0)
+        {
+            tlFixedString name(mInfo->playerAnim);
+            void* Anim = nalGetAnim(name);
+            if (Anim != nullptr)
+            {
+                PlayPlayerAnim(Anim, mController->GetInteractWeaponIndex(),
+                               mInfo->animFadeInTime, 0.0f, 1.0f);
+            }
+        }
+    }
+}
+
+// ea: 0x0053FBB0 (thunk)
+void InteractStatePlayPlayerAnim::Deactivate()
+{
+    InteractState::Deactivate();
+}
+
+// ea: 0x00546C80
+InteractState* InteractStatePlayPlayerAnim::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    if ((mFlags & 0x41) == 0)
+    {
+        InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+        if (mInfo->playerAnim[0] != 0)
+        {
+            tlFixedString name(mInfo->playerAnim);
+            void* Anim = nalGetAnim(name);
+            if (Anim != nullptr)
+            {
+                PlayPlayerAnim(Anim, mController->GetInteractWeaponIndex(),
+                               mInfo->animFadeInTime, 0.0f, 1.0f);
+            }
+        }
+    }
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)this->mInfo;
+    if (info->numAnimRepsBeforeSuccess <= 0 || (mFlags & 1) == 0)
+        return v3;
+    if (mPlayerCallback == nullptr)
+    {
+        XANIM_ASSERT("mPlayerCallback",
+                     "c:\\cod\\code\\game\\InteractState.cpp", 1216,
+                     "Null player callback");
+    }
+    void* mPlayerAnim = this->mPlayerAnim;
+    if (mPlayerAnim != nullptr)
+    {
+        void* curAnim = *(void**)((char*)this->mPlayerCallback + 0x04);
+        if (curAnim != nullptr && mPlayerAnim == curAnim)
+            return v3;
+    }
+    int v11 = mNumAnimRepetitions - 1;
+    bool v12 = mNumAnimRepetitions == 1;
+    mNumAnimRepetitions = v11;
+    if (v11 >= 0 && !v12)
+    {
+        mFlags &= ~1u;
+        tlFixedString name2(info->playerAnim);
+        void* v15 = nalGetAnim(name2);
+        if (v15 != nullptr)
+        {
+            PlayPlayerAnim(v15,
+                           InteractionController::Inst(currCl)
+                               ->GetInteractWeaponIndex(),
+                           info->animFadeInTime, 0.0f, 1.0f);
+        }
+        return v3;
+    }
+    mFlags |= 2u;
+    return mSuccessState[0];
+}
+
+// ea: 0x00546E20
+InteractStatePlaceItem::InteractStatePlaceItem(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStatePlayPlayerAnim(curPakId, info, controller)
+{
+    mType = kInteractTypePlaceItem;
+}
+
+// ea: 0x0054E3C0 (thunk)
+void InteractStatePlaceItem::Activate()
+{
+    InteractStatePlayPlayerAnim::Activate();
+}
+
+// ea: 0x00555630
+void InteractStatePlaceItem::Deactivate()
+{
+    InteractState::Deactivate();
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    InteractionController* mController = this->mController;
+    int mSelectedInteractWeaponIndex =
+        mController->mSelectedInteractWeaponIndex;
+    if (mSelectedInteractWeaponIndex < 1)
+    {
+        Entity* v7 = EntityManager::sInst->GetPlayer(mController->mClient);
+        if (v7 != nullptr && v7->client != nullptr)
+            mSelectedInteractWeaponIndex = *(int*)((char*)v7->client + 0xA4);
+        else
+            mSelectedInteractWeaponIndex = 0;
+    }
+    if (Player != nullptr && mSelectedInteractWeaponIndex > 0)
+    {
+        Entity* v9 = Drop_Item(Player,
+                               &bg_itemlist[mSelectedInteractWeaponIndex],
+                               0.0f, 1);
+        if (v9 != nullptr)
+        {
+            DObj* dobj = (DObj*)dword_F6A2A0[802 * mController->mClient];
+            if (dobj != nullptr)
+            {
+                static unsigned int tagWeaponHash =
+                    HashString::CalcHash("tag_weapon");
+                int BoneIndex = DObjGetBoneIndex(dobj, tagWeaponHash);
+                if (BoneIndex != -1)
+                {
+                    const math::Mat43& mat = dobj->GetMat(BoneIndex);
+                    __m128 x = Player->r.currentMat.x.v;
+                    __m128 y = Player->r.currentMat.y.v;
+                    __m128 z = Player->r.currentMat.z.v;
+                    __m128 w = Player->r.currentMat.w.v;
+                    __m128 m0 = mat.x.v;
+                    __m128 m1 = mat.y.v;
+                    __m128 m2 = mat.z.v;
+                    __m128 m3 = mat.w.v;
+                    m0 = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(m0, m0, 0), x),
+                            _mm_mul_ps(_mm_shuffle_ps(m0, m0, 85), y)),
+                        _mm_mul_ps(_mm_shuffle_ps(m0, m0, 170), z));
+                    m1 = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(m1, m1, 0), x),
+                            _mm_mul_ps(_mm_shuffle_ps(m1, m1, 85), y)),
+                        _mm_mul_ps(_mm_shuffle_ps(m1, m1, 170), z));
+                    m2 = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(m2, m2, 0), x),
+                            _mm_mul_ps(_mm_shuffle_ps(m2, m2, 85), y)),
+                        _mm_mul_ps(_mm_shuffle_ps(m2, m2, 170), z));
+                    m3 = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(m3, m3, 0), x),
+                            _mm_mul_ps(_mm_shuffle_ps(m3, m3, 85), y)),
+                        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(m3, m3, 170), z),
+                                   w));
+                    float axis[4][4];
+                    _mm_storeu_ps(axis[0], m0);
+                    _mm_storeu_ps(axis[1], m1);
+                    _mm_storeu_ps(axis[2], m2);
+                    _mm_storeu_ps(axis[3], m3);
+                    float ang[3];
+                    Axis4ToAngles(axis, ang);
+                    v9->r.currentAngles.v.m128_f32[0] = ang[0];
+                    v9->r.currentAngles.v.m128_f32[1] = ang[1];
+                    v9->r.currentAngles.v.m128_f32[2] = ang[2];
+                    v9->r.currentOrigin.v.m128_f32[0] = axis[3][0];
+                    v9->r.currentOrigin.v.m128_f32[1] = axis[3][1];
+                    float v17 =
+                        *(float*)((char*)Player->client + 0xE0) + axis[3][2];
+                    v9->r.currentOrigin.v.m128_f32[2] = v17;
+                    G_SetAngle(v9, (const float*)&v9->r.currentAngles);
+                    G_SetOrigin(v9, (const float*)&v9->r.currentOrigin);
+                    g_LinkEntity(v9);
+                    *(unsigned char*)((char*)v9 + 0x352) = 0;  // touch
+                    *(int*)((char*)v9 + 0x14) = 0;  // s.pos.trType
+                    *(unsigned int*)((char*)v9 + 0x2C0) |= 1u;  // spawnflags
+                }
+            }
+            DbLinkedHandle<EntityHandleDb, Entity> handle;
+            handle.mVal = *(unsigned int*)((char*)v9 + 0x234);  // mHandle
+            mController->SetInteractableH(handle);
+        }
+    }
+}
+
+// ea: 0x00546E50 (thunk)
+InteractState* InteractStatePlaceItem::Update(float deltaT)
+{
+    return InteractStatePlayPlayerAnim::Update(deltaT);
+}
+
+// ea: 0x00546DF0
+InteractStatePush::InteractStatePush(TPakId curPakId,
+                                     const InteractStateInfo* info,
+                                     InteractionController* controller)
+    : InteractStatePlayPlayerAnim(curPakId, info, controller)
+{
+    mType = kInteractTypePush;
+}
+
+// ea: 0x0054E030
+void InteractStatePush::Activate()
+{
+    InteractStatePlayPlayerAnim::Activate();
+    mAnimTimer = 0.0f;
+    mOrigin[0] = 0.0f;
+    mOrigin[1] = 0.0f;
+    mOrigin[2] = 0.0f;
+    mDir[0] = 0.0f;
+    mDir[1] = 0.0f;
+    mDir[2] = 0.0f;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        mDir[0] = Player->r.currentMat.x.v.m128_f32[0];
+        mDir[1] = Player->r.currentMat.x.v.m128_f32[1];
+        mDir[2] = 0.0f;
+        VectorNormalize(mDir);
+    }
+    unsigned int v3 = mController->mInteractableH.mVal & 0xFFF;
+    if (v3 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            mOrigin[0] = mObject->r.currentOrigin.v.m128_f32[0];
+            mOrigin[1] = mObject->r.currentOrigin.v.m128_f32[1];
+            mOrigin[2] = mObject->r.currentOrigin.v.m128_f32[2];
+        }
+    }
+}
+
+// ea: 0x0053FBC0 (thunk)
+void InteractStatePush::Deactivate()
+{
+    InteractState::Deactivate();
+}
+
+// ea: 0x0054E110
+InteractState* InteractStatePush::Update(float deltaT)
+{
+    InteractState* result = InteractStatePlayPlayerAnim::Update(deltaT);
+    InteractState* nextState = result;
+    if ((mFlags & 1) != 0)
+    {
+        unsigned int v4 = mController->mInteractableH.mVal & 0xFFF;
+        if (v4 < 0x540
+            && mController->mInteractableH.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v4].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+            if (mObject != nullptr)
+            {
+                if (mPlayerAnim == nullptr)
+                {
+                    XANIM_ASSERT("mPlayerAnim",
+                                 "c:\\cod\\code\\game\\InteractState.cpp",
+                                 1300, "Null anim ptr");
+                }
+                float Duration =
+                    ((nalAnimClass<nalAnyPose>*)mPlayerAnim)->GetDuration();
+                float v7 = 0.0f;
+                if (Duration <= 0.0f)
+                {
+                    XANIM_ASSERT("duration > 0.0f",
+                                 "c:\\cod\\code\\game\\InteractState.cpp",
+                                 1302, "Bad duration");
+                    v7 = 0.0f;
+                }
+                if (Duration > 0.0f)
+                {
+                    float timea = mAnimTimer + deltaT;
+                    mAnimTimer = timea;
+                    float time =
+                        (cos(timea * 3.1415927f - 3.1415927f) + 1.0f) * 0.5f;
+                    float frac = time / Duration;
+                    if (frac >= 0.0f)
+                    {
+                        v7 = 1.0f;
+                        if (frac <= 1.0f)
+                            v7 = frac;
+                    }
+                    float v8 = v7 * sTotalDistance;
+                    mObject->r.currentOrigin.v.m128_f32[0] =
+                        mOrigin[0] + (mDir[0] * v8);
+                    mObject->r.currentOrigin.v.m128_f32[1] =
+                        mOrigin[1] + (mDir[1] * v8);
+                    mObject->r.currentOrigin.v.m128_f32[2] =
+                        mOrigin[2] + (mDir[2] * v8);
+                    G_SetOrigin(mObject, (const float*)&mObject->r.currentOrigin);
+                    g_LinkEntity(mObject);
+                }
+            }
+        }
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)this->mInfo;
+        if (info->numAnimRepsBeforeSuccess > 0)
+        {
+            if (mPlayerCallback == nullptr)
+            {
+                XANIM_ASSERT("mPlayerCallback",
+                             "c:\\cod\\code\\game\\InteractState.cpp",
+                             1320, "Null player callback");
+            }
+            void* mPlayerAnim = this->mPlayerAnim;
+            void* curAnim =
+                (mPlayerAnim != nullptr)
+                    ? *(void**)((char*)this->mPlayerCallback + 0x04)
+                    : nullptr;
+            if (mPlayerAnim == nullptr || curAnim == nullptr
+                || mPlayerAnim != curAnim)
+            {
+                int v13 = mNumAnimRepetitions - 1;
+                bool v14 = mNumAnimRepetitions == 1;
+                mNumAnimRepetitions = v13;
+                if (v13 < 0 || v14)
+                {
+                    mFlags |= 2u;
+                    return mSuccessState[0];
+                }
+                mFlags &= ~1u;
+                PlayAnims(InteractionController::Inst(currCl)
+                              ->GetInteractWeaponIndex(),
+                          info->animFadeInTime);
+                return nextState;
+            }
+        }
+        return nextState;
+    }
+    return result;
+}
+
+// ea: 0x00546F50
+InteractStateScaleAnimSpeed::InteractStateScaleAnimSpeed(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStatePlayAnims(curPakId, info, controller)
+{
+    mType = kInteractTypeScaleAnimSpeed;
+}
+
+// ea: 0x0054E460
+void InteractStateScaleAnimSpeed::Activate()
+{
+    InteractStatePlayAnims::Activate();
+    mAnimSpeed = ((InteractStateInfoLocal*)mInfo)->animSpeedInitial;
+    mLastAnimSpeed = 0.0f;
+    mClickTimer = 0.0f;
+}
+
+// ea: 0x0053FBE0
+void InteractStateScaleAnimSpeed::Deactivate()
+{
+    InteractState::Deactivate();
+    if (mStartedNotifySent != 0)
+    {
+        static unsigned int stopHash = HashString::CalcHash("stopped");
+        HashString h;
+        h.mHash = stopHash;
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        Player->Notify(h);
+    }
+}
+
+// ea: 0x0054E4A0
+InteractState* InteractStateScaleAnimSpeed::Update(float deltaT)
+{
+    InteractState* v3 = InteractStatePlayAnims::Update(deltaT);
+    InteractState* nextState = v3;
+    if ((mFlags & 1) == 0)
+        return v3;
+    if (mPlayerAnim == nullptr || mInputRcvr == nullptr)
+        return v3;
+    InteractInputRcvr* mInputRcvr = (InteractInputRcvr*)this->mInputRcvr;
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    float mInputRate = mInputRcvr->mInputRate;
+    mLastAnimSpeed = mAnimSpeed;
+    float animSpeedMax = mInfo->animSpeedInputRateFactor * mInputRate;
+    if (animSpeedMax < 0.0f)
+        animSpeedMax = 0.0f;
+    else if (animSpeedMax > mInfo->animSpeedMax)
+        animSpeedMax = mInfo->animSpeedMax;
+    mAnimSpeed = animSpeedMax;
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client + 0xA4)
+        > 0)
+    {
+        int v9 = dword_F6A2A0[802 * mController->mClient];
+        if (v9 != 0)
+        {
+            ((AnimationPlayer*)*(void**)((char*)v9 + 0x20))
+                ->SetSpeed((nalGeneric::nalGenericAnim*)mPlayerAnim,
+                           mAnimSpeed);
+        }
+    }
+    void* mOtherAnim = this->mOtherAnim;
+    if (mOtherAnim != nullptr)
+    {
+        unsigned int hv = mController->mInteractableH.mVal & 0xFFF;
+        Entity* v11 = nullptr;
+        if (hv < 0x540
+            && mController->mInteractableH.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[hv].mKey)
+            v11 = EntityHandleDb::sInst.mElements[hv].mObject;
+        if (v11 != nullptr)
+        {
+            DObj* mDObj = v11->mDObj;
+            if (mDObj != nullptr)
+            {
+                AnimationPlayer* v13 = (AnimationPlayer*)mDObj->animPlayers[0];
+                if (v13 != nullptr)
+                    v13->SetSpeed((nalGeneric::nalGenericAnim*)mOtherAnim,
+                                  mAnimSpeed);
+            }
+        }
+    }
+    if (mStartedNotifySent != 0)
+    {
+        if (mLastAnimSpeed > sAnimSpeedThresholdStop
+            && sAnimSpeedThresholdStop >= mAnimSpeed)
+        {
+            static unsigned int stopHash_2 = HashString::CalcHash("stopped");
+            HashString h;
+            h.mHash = stopHash_2;
+            GetPlayer(currCl)->Notify(h);
+            mStartedNotifySent = 0;
+        }
+    }
+    else if (sAnimSpeedThresholdStart >= mLastAnimSpeed
+             && mAnimSpeed > sAnimSpeedThresholdStart)
+    {
+        static unsigned int startHash_0 = HashString::CalcHash("started");
+        HashString h;
+        h.mHash = startHash_0;
+        GetPlayer(currCl)->Notify(h);
+        mStartedNotifySent = 1;
+    }
+    float v16 = mClickTimer + (deltaT * mAnimSpeed);
+    mClickTimer = v16;
+    if (!(v16 <= sClickTimeMax))
+    {
+        mClickTimer = 0.0f;
+        static unsigned int clickHash = HashString::CalcHash("click");
+        HashString h;
+        h.mHash = clickHash;
+        EntityManager::sInst->GetPlayer(currCl)->Notify(h);
+    }
+    return nextState;
+}
+
+// ea: 0x00546F80
+InteractStateStrengthTest::InteractStateStrengthTest(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStateScaleAnimSpeed(curPakId, info, controller)
+{
+    mType = kInteractTypeStrengthTest;
+}
+
+// ea: 0x0054E780
+void InteractStateStrengthTest::Activate()
+{
+    InteractStatePlayAnims::Activate();
+    mAnimSpeed = ((InteractStateInfoLocal*)mInfo)->animSpeedInitial;
+    mLastAnimSpeed = 0.0f;
+    mStartedNotifySent = 0;
+    mClickTimer = 0.0f;
+    mRateAchieved = 0;
+}
+
+// ea: 0x0054E7C0
+void InteractStateStrengthTest::Deactivate()
+{
+    InteractStateScaleAnimSpeed::Deactivate();
+    InteractionController::Inst(currCl)->FreeInteractableAnimPlayer();
+}
+
+// ea: 0x0054E7E0
+InteractState* InteractStateStrengthTest::Update(float deltaT)
+{
+    if (mRateAchieved == 0 && (mFlags & 1) != 0)
+    {
+        void* mPlayerAnim = this->mPlayerAnim;
+        if (mPlayerAnim != nullptr)
+        {
+            void* curAnim = *(void**)((char*)mPlayerCallback + 0x04);
+            if (curAnim == nullptr || mPlayerAnim != curAnim)
+            {
+                PlayAnims(InteractionController::Inst(currCl)
+                              ->GetInteractWeaponIndex(),
+                          0.2f);
+            }
+        }
+    }
+    InteractState* result = InteractStateScaleAnimSpeed::Update(deltaT);
+    InteractInputRcvr* mInputRcvr = (InteractInputRcvr*)this->mInputRcvr;
+    if (mInputRcvr != nullptr
+        && mInputRcvr->mInputRate
+               > ((InteractStateInfoLocal*)mInfo)->difficulty * 10.0f * 0.7f)
+        mRateAchieved = 1;
+    return result;
 }
 
 // ============================================================================
