@@ -641,6 +641,8 @@ public:
     void RenderDebug();  // ?RenderDebug@PakFile@@ABEXXZ
     // ea: 0x66E930
     void CreateHeaps();  // ?CreateHeaps@PakFile@@AAEXXZ
+    // ea: 0x674810
+    void InitiateDataLoad();  // ?InitiateDataLoad@PakFile@@AAEXXZ
     // ea: 0x66A120
     void InitiateHeaderRead();  // ?InitiateHeaderRead@PakFile@@AAEXXZ
     // ea: 0x66E540
@@ -741,6 +743,7 @@ struct mem_info {
     unsigned char* data;  // +0x00
     int            size;  // +0x04
 
+    mem_info() : data(nullptr), size(0) {}
     mem_info(unsigned char* data_, int size_);  // ??0mem_info@@QAE@PAEH@Z
 };
 
@@ -5329,6 +5332,288 @@ void PakFile::CreateHeaps()
             ++gPakHeaps.m_size;
         }
     }
+}
+
+// ea: 0x674810
+void PakFile::InitiateDataLoad()
+{
+    ae_sized_array<mem_info, 32> bank_allocations;
+    memset(&bank_allocations, 0, sizeof(bank_allocations));
+    bank_allocations.m_size = 0;
+    mDefaultSectionIdx = -1;
+    for (unsigned int v7 = 0; v7 < mHeader->numSections; ++v7)
+    {
+        if (mHeader->sections[v7].name[0] == 0)
+            mDefaultSectionIdx = (int)v7;
+    }
+    if (mDefaultSectionIdx == -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 468;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("pakfile with no default section?"))
+            __debugbreak();
+        return;
+    }
+    PakHeader::Section* sect = &mHeader->sections[mDefaultSectionIdx];
+
+    if (!mBankAlloc.IsEmpty())
+    {
+        const PakInfoNode* mPakInfo =
+            mPakType == kPakTypeCount
+                ? nullptr
+                : (this->mPakInfo != nullptr
+                       ? this->mPakInfo
+                       : (this->mPakInfo =
+                              PakManager::sInst->GetPakInfo(mPakId)));
+        BankManager::sInst->GetAllocs(mBankAlloc, mPakInfo->numBanks,
+                                      &bank_allocations);
+
+        unsigned int last = BankManager::sInst->mMramBankSize;
+        int numBanks = sect->numBanks;
+        NumBanks needed;
+        needed.xbox = 0.0f;
+        for (int i = 0; i < numBanks; ++i)
+        {
+            unsigned int flags = sect->banks[i].flags;
+            if ((flags & 4) != 0)
+                continue;  // serialized bank does not use mram
+            bool half = (i == numBanks - 1
+                         || ((flags ^ sect->banks[i + 1].flags) & 0x1A) != 0)
+                        && sect->banks[i].size <= (last >> 1);
+            if ((flags & 2) != 0)
+                needed.xbox += half ? 0.5f : 1.0f;
+        }
+
+        if (needed.xbox > mPakInfo->numBanks.xbox)
+        {
+            BankManager::sInst->release(mBankAlloc);
+            const_cast<PakInfoNode*>(mPakInfo)->numBanks.xbox = needed.xbox;
+            NumBanks v74 = mPakInfo->numBanks;
+            if (v74.xbox > BankManager::sInst->get_free_count().xbox)
+            {
+                tlPrintf("pak: cannot allocate pak's actual needed %1.1f "
+                         "banks; aborting load\n",
+                         mPakInfo->numBanks.xbox);
+                CancelLoading();
+                return;
+            }
+            mBankAlloc = BankManager::sInst->Allocate(mPakInfo->numBanks);
+            bank_allocations.m_size = 0;
+            BankManager::sInst->GetAllocs(mBankAlloc, mPakInfo->numBanks,
+                                          &bank_allocations);
+            tlPrintf("pak: Re-allocated to %1.1f banks\n",
+                     mPakInfo->numBanks.xbox);
+        }
+
+        char buf[1024];
+        int last2 = (int)(BankManager::sInst->mNumMramBanks + 0.5f);
+        for (int v34 = 0; v34 < last2; ++v34)
+        {
+            char v36 = '.';
+            if (mBankAlloc.mram_alloc1.Test(v34)
+                && mBankAlloc.mram_alloc2.Test(v34))
+                v36 = 'X';
+            else if (mBankAlloc.mram_alloc1.Test(v34))
+                v36 = '/';
+            else if (mBankAlloc.mram_alloc2.Test(v34))
+                v36 = '\\';
+            buf[v34] = v36;
+        }
+        buf[last2] = 0;
+        tlPrintf("pak: have alloc [%s] from BankManager\n", buf);
+
+        for (int j = 0; j < bank_allocations.m_size; ++j)
+        {
+            if (j >= 0x20)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            tlPrintf("[%X]", bank_allocations.m_elements[j].data);
+            if (bank_allocations.m_elements[j].data == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 619;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error("data is null!"))
+                    __debugbreak();
+            }
+            if (bank_allocations.m_elements[j].size == 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 621;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error("size is 0!"))
+                    __debugbreak();
+            }
+        }
+        tlPrintf("\n");
+    }
+
+    int count = 0;
+    for (int i = 0; i < sect->numBanks; ++i)
+    {
+        PakHeader::Bank* v43 = &sect->banks[i];
+        bool is_serialized = (v43->flags & 4) != 0;
+        bool is_aram = (v43->flags & 8) != 0;
+        if (is_aram)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+            AeAssert::gCurrentLine = 635;
+            AeAssert::gCurrentExpr = "!is_aram";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Aram bank found on non-gc pakfile!"))
+                __debugbreak();
+        }
+        unsigned char* v53 = nullptr;
+        unsigned int v52 = 0;
+        if (!is_serialized)
+        {
+            if (count < bank_allocations.m_size)
+            {
+                unsigned char* v46 = bank_allocations.m_elements[count].data;
+                v43->memptr = v46;
+                if (v46 == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                    AeAssert::gCurrentLine = 642;
+                    AeAssert::gCurrentExpr = "bk.memptr != 0";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Memory NOT Allocated"))
+                        __debugbreak();
+                }
+                unsigned int size = bank_allocations.m_elements[count].size;
+                v43->memsize = size;
+                if (size < v43->size)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                    AeAssert::gCurrentLine = 644;
+                    AeAssert::gCurrentExpr = "bk.memsize >= bk.size";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("bank is too small!"))
+                        __debugbreak();
+                }
+                count = count + 1;
+            }
+        }
+        else if (is_aram)
+        {
+            v52 = (v43->size + 0x7FFF) & 0xFFFF8000;
+            v53 = stream_alloc((int)v52, true);
+        }
+        else
+        {
+            if (v43->size >= BankManager::sInst->mMramBankSize)
+            {
+                tlPrintf("serialized assets too big for bank!");
+            }
+            else
+            {
+                NumBanks one;
+                one.ps2 = 1.0f;
+                one.ps3.main = 1.0f;
+                one.ps3.lram = 0.0f;
+                one.xbox = 1.0f;
+                one.xenon = 1.0f;
+                one.pcx = 1.0f;
+                one.gc.main = 1.0f;
+                one.gc.aram = 0.0f;
+                mSerializedAlloc = BankManager::sInst->Allocate(one);
+                if (mSerializedAlloc.IsEmpty())
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\PakFile.cpp";
+                    AeAssert::gCurrentLine = 675;
+                    AeAssert::gCurrentExpr =
+                        "!mSerializedAlloc.IsEmpty()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Couldn't allocate serialized bank!"))
+                        __debugbreak();
+                }
+                mem_info ser =
+                    BankManager::sInst->get_alloc(mSerializedAlloc, 0, true);
+                v53 = ser.data;
+                v52 = (unsigned int)ser.size;
+            }
+            if (v53 == nullptr)
+            {
+                v52 = (v43->size + 0x7FFF) & 0xFFFF8000;
+                v53 = stream_alloc((int)v52, false);
+                v43->flags |= PAK_BANK_FLAG_MEM;
+            }
+        }
+        v43->memptr = v53;
+        v43->memsize = v52;
+        if (v52 != 0 && v53 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+            AeAssert::gCurrentLine = 703;
+            AeAssert::gCurrentExpr = "bk.memsize == 0 || bk.memptr != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Memory NOT Allocated"))
+                __debugbreak();
+        }
+        v43->requestId = NFL_REQUEST_ID_INVALID;
+    }
+
+    if (sect->numBanks == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 720;
+        AeAssert::gCurrentExpr = "sect.numBanks > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("no banks???"))
+            __debugbreak();
+    }
+
+    unsigned int v66 = (unsigned int)count;
+    for (; v66 < bank_allocations.m_size; ++v66)
+    {
+        if (v66 >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        if (bank_allocations.m_elements[v66].data != nullptr)
+        {
+            int m_size = mHeapList.m_size;
+            mem_heap* v69 =
+                m_size != 0 ? mHeapList.m_elements[m_size - 1] : nullptr;
+            mem_heap* Heap = CreateHeap(
+                bank_allocations.m_elements[v66].data,
+                bank_allocations.m_elements[v66].size);
+            if (Heap != nullptr && v69 != nullptr)
+            {
+                Heap->reserve = v69->reserve;
+                v69->reserve = Heap;
+            }
+        }
+    }
+    mLoadingState = LOADING_DATA;
+    UpdateReads();
+    mCurrentFile = 0;
+    DetermineNextFile();
+    CreateHeaps();
 }
 
 // ea: 0x66A790
