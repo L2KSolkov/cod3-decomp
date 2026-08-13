@@ -33,8 +33,21 @@ struct nglTexture {
     nglTexture*     ZTexture;       // +0x20
     unsigned int    NFrames;        // +0x24
     nglTexture**    Frames;         // +0x28
+
+    int GetWidth() const;   // ?GetWidth@nglTexture@@QBEHXZ (0x6816B0)
+    int GetHeight() const;  // ?GetHeight@nglTexture@@QBEHXZ (0x6816C0)
 };
 static_assert(sizeof(nglTexture) == 0x2C, "nglTexture size mismatch");
+
+inline int nglTexture::GetWidth() const
+{
+    return Width;
+}
+
+inline int nglTexture::GetHeight() const
+{
+    return Height;
+}
 
 // Skip-list key accessor (free function, defined in ngl_internal.cpp).
 const tlFixedString* GetKey(const nglTexture* t);

@@ -597,6 +597,8 @@ struct ThroughputMeasurer {
     float safeGetTime() const;  // ?safeGetTime@ThroughputMeasurer@@QBEMXZ
     void Update(int bytes);     // ?Update@ThroughputMeasurer@@QAEXH@Z
     void stop(int bytes);       // ?stop@ThroughputMeasurer@@QAEXH@Z
+    void start();               // ?start@ThroughputMeasurer@@QAEXXZ (0x681180)
+    void reset();               // ?reset@ThroughputMeasurer@@QAEXXZ (0x6810E0)
 };
 ThroughputMeasurer gThroughputMeasurer;  // ?gThroughputMeasurer@@3UThroughputMeasurer@@A @ 0xF59318
 unsigned int g_bytes_read = 0;           // ?g_bytes_read@@3IA @ 0xF592E4
@@ -633,6 +635,24 @@ void ThroughputMeasurer::Update(int bytes)
         g_throughput = 0.0f;
     else
         g_throughput = (float)g_bytes_read / v4;
+}
+
+// ea: 0x681180
+void ThroughputMeasurer::start()
+{
+    mStart = safeGetTime();
+    mBytes = 0;
+}
+
+// ea: 0x6810E0
+void ThroughputMeasurer::reset()
+{
+    g_throughput = 0.0f;
+    g_bytes_read = 0;
+    mBytes = 0;
+    mTotalBytes = 0;
+    mStart = 0.0f;
+    mTotalTime = 0.0f;
 }
 
 // FEManager (shell.o; DrawDiscError + UnloadBank stubs)
@@ -1418,6 +1438,7 @@ struct InstanceBank {
     eInstanceBankType GetType() const;  // ?GetType@InstanceBank@@QBE?AW4eInstanceBankType@@XZ
     const char* GetTypeStr() const;     // ?GetTypeStr@InstanceBank@@QBEPBDXZ
     int Find(const char* str, unsigned int hash) const;  // ?Find@InstanceBank@@QBEHPBDI@Z
+    unsigned int Size() const;          // ?Size@InstanceBank@@QBEIXZ
     void Enumerate(void (*Callback)(const char*, eInstanceBankType, void*,
                                     void*),
                    void* userdata);  // ?Enumerate@InstanceBank@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
@@ -1953,10 +1974,15 @@ struct InstanceListNode {
     InstanceListNode* next;             // +0x34
 };
 struct SceneEffect {
-    uint8_t _pad[0x50];
+    uint8_t      _pad[0x4C];
+    unsigned short mLoopDelayMin;       // +0x4C
+    unsigned short mLoopDelayMax;       // +0x4E
     unsigned int mEffectHandle;         // +0x50
     unsigned int mState;                // +0x54 (0 = kStateUninitialized)
     float        mDelayCountdown;       // +0x58
+
+    float GetLoopDelayMin() const;  // ?GetLoopDelayMin@SceneEffect@@QBEMXZ
+    float GetLoopDelayMax() const;  // ?GetLoopDelayMax@SceneEffect@@QBEMXZ
 };
 // SceneLight (scenemanager.cpp; verified IDA: size 0x30)
 struct SceneLight {
@@ -1985,7 +2011,27 @@ public:
     InplaceVector<SceneLight> mSceneLights;        // +0x40
     InplaceVector<void*> mPersistentStorage;       // +0x48
     unsigned char* mSceneHeap;    // +0x50
+
+    int GetSceneHeapSize();  // ?GetSceneHeapSize@SceneBank@@QAEHXZ
 };
+
+// ea: 0x681660
+float SceneEffect::GetLoopDelayMin() const
+{
+    return (float)mLoopDelayMin * 0.01f;
+}
+
+// ea: 0x681680
+float SceneEffect::GetLoopDelayMax() const
+{
+    return (float)mLoopDelayMax * 0.01f;
+}
+
+// ea: 0x6816A0
+int SceneBank::GetSceneHeapSize()
+{
+    return mSceneHeapSize;
+}
 
 // SceneEffectGroup (scenemanager.cpp; 12 bytes, verified IDA)
 struct SceneEffectGroup {
@@ -3176,6 +3222,12 @@ void cdDestroyApk(apk::apkFile* file)
     apk::apkDeleteFile(file);
 }
 
+// ea: 0x665C10
+void cdDestroyTexture(nglTexture* tex)
+{
+    apk::apkDeleteFile(tex->File);
+}
+
 unsigned char* gCharSkel = (unsigned char*)-1;  // ?gCharSkel@@3PAEA @ 0xF59314
 
 // ea: 0x665D70
@@ -3687,6 +3739,8 @@ struct nflInitParamsBin {
     unsigned int maxRequests;  // +0x08
     unsigned int bufferMode;   // +0x0C
     unsigned int threadMode;   // +0x10
+
+    nflInitParamsBin();  // ??0nflInitParams@@QAE@XZ (streamer.o 0x681820)
 };
 struct nflMediaAlignmentsBin {
     unsigned int mediaAlignment;        // +0x00
@@ -3696,6 +3750,7 @@ struct nflMediaAlignmentsBin {
 
 enum {
     NFL_BUFFER_MODE_UNALIGNED = 0,
+    NFL_BUFFER_MODE_ALL = 3,
     NFL_THREAD_MODE_SINGLE = 0,
 };
 extern unsigned int nflInit(nflInitParamsBin* ip);  // nfl_common.o
@@ -3708,6 +3763,16 @@ unsigned int gNflAlignment = 0;   // ?gNflAlignment@@3IA
 unsigned int gNflMediaId = 0;
 
 extern void nflShutdown();  // nfl_common.o
+
+// ea: 0x681820
+nflInitParamsBin::nflInitParamsBin()
+{
+    maxFiles = 64;
+    maxStreams = 16;
+    maxRequests = 256;
+    bufferMode = NFL_BUFFER_MODE_ALL;
+    threadMode = NFL_THREAD_MODE_SINGLE;
+}
 
 // ea: 0x6658C0
 void ShutdownNfl()
@@ -10675,6 +10740,12 @@ unsigned int* InstanceBankSet::FindEntry(eInstanceBankType type,
     if (v5 == -1)
         return nullptr;
     return &v4.mEntries.mList[v5].ptr;
+}
+
+// ea: 0x684AC0
+unsigned int InstanceBank::Size() const
+{
+    return mEntries.mSize;
 }
 
 // ea: 0x684AF0
