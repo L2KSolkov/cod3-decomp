@@ -139,9 +139,11 @@ extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_s
 extern void tlMemFree(void* ptr);                // tl_system.o
 extern unsigned int AeHash(const char* str);     // ae_hash.cpp
 struct cvar_t {
-    char*  name;    // +0x00
-    char*  string;  // +0x04
-    float  value;   // +0x08
+    char*  name;      // +0x00
+    char*  string;    // +0x04
+    float  value;     // +0x08
+    uint8_t _pad0C[0x10 - 0x0C];
+    int    integer;   // +0x10
 };
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o cvar.cpp
@@ -1563,6 +1565,7 @@ void LightGridMgr::DecodeBank(const char* name, unsigned char* data,
 class ZoneOverrideBrushSet;
 class StreamZone;
 class ZoneCellDesc;
+class ZdNode;
 
 // Bounds-checked InplaceVector access (InplaceVector.h:81, inlined in release)
 template <typename T>
@@ -1588,22 +1591,38 @@ public:
     InplaceVector<const StreamZone*> mPtrs;  // +0x10 (InplaceAssetBank base)
     uint8_t _pad18[0x1C - 0x18];
     InplaceVector<const ZoneCellDesc*> mCells;  // +0x1C
-    uint8_t _pad20[0x3C - 0x20];
+    uint8_t _pad20[0x34 - 0x20];
+    InplaceVector<ZoneOverrideBrushSet*> mOverrideBoxes;  // +0x34
     InplaceVector<const ZoneOverrideBrushSet*> mToggleableOverrideBoxes;  // +0x3C
     int     mNextBank;             // +0x44
-    uint8_t _pad48[0x50 - 0x48];
+    TPakId  mPakId;                // +0x48
+    const ZdNode* mActiveNode;     // +0x4C
     int     mNumToggleableOverrideBoxesHit;  // +0x50
+
+    const ZdNode* GetZdNode(int cellId,
+                            const math::Position3* position);  // ?GetZdNode@ZoneBoundaryBank@@QAEPBVZdNode@@HABVPosition3@math@@@Z
+};
+
+// ZoneOverrideBrush (streamer.o; mAabb +0x00, mPlanes +0x20, size 0x40)
+struct ZoneOverrideBrush {
+    uint8_t mAabb[0x20];   // +0x00 (BoundingBox)
+    uint8_t mPlanes[0x08]; // +0x20
+    uint8_t _pad28[0x40 - 0x28];
+
+    bool IsInside(const math::Position3& point);  // ?IsInside@ZoneOverrideBrush@@QBE_NABVPosition3@math@@@Z (stub)
 };
 
 // ZoneOverrideBrushSet (streamer.o; mZoneBitset +0x0C, mZoneDistances +0x14)
 class ZoneOverrideBrushSet {
 public:
     unsigned int mWasInside;       // +0x00
-    uint8_t      _pad4[0x0C - 0x04];
+    InplaceVector<ZoneOverrideBrush> mBrushes;  // +0x04
     BitSet<64>   mZoneBitset;      // +0x0C
     InplaceVector<float> mZoneDistances;  // +0x14
     InplaceVector<InplaceTriple<InplaceString, const PakInfoNode*, float> >
         mNonZoneDistances;         // +0x1C
+
+    bool IsInside(const math::Position3& point);  // ?IsInside@ZoneOverrideBrushSet@@QBE_NABVPosition3@math@@@Z (stub)
 
     const BitSet<64>& GetZoneBitset() const;      // ?GetZoneBitset@ZoneOverrideBrushSet@@QBEABV?$BitSet@$0EA@@@XZ
     const InplaceVector<float>& GetZoneDistances() const;  // ?GetZoneDistances@ZoneOverrideBrushSet@@QBEABV?$InplaceVector@M@@XZ
@@ -1657,6 +1676,9 @@ public:
     const StreamZone* mZone;  // +0x2C
 
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
+    bool BoundsIntersect(const math::Position3& p) const;  // stub (BoundingBox::intersect)
+    const ZdNode* GetZdNode(const math::Position3& position,
+                            bool force) const;  // ?GetZdNode@ZoneCellDesc@@QBEPBVZdNode@@ABVPosition3@math@@_N@Z (stub)
 };
 
 // StreamZoneManager (streamer.o; verified IDA: anonymous 0x190-byte head
@@ -1700,6 +1722,9 @@ public:
     const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
     const StreamZone* GetCellZone(unsigned int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@I@Z
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
+    void SetPriorities();           // ?SetPriorities@StreamZoneManager@@QAEXXZ @ 0x675B40
+    void Update(int cellNum, const math::Position3* pos,
+                bool forceReset);   // ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z @ 0x678350
 private:
     void SetTopOverrideBrushSet(ZoneBoundaryBank* bank,
                                 ZoneOverrideBrushSet* zob);  // ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
@@ -6871,6 +6896,233 @@ void StreamZoneManager::SetDistances(ZoneBoundaryBank* bank,
             }
         }
     }
+}
+
+// ea: 0x6849A0
+const ZdNode* ZoneBoundaryBank::GetZdNode(int cellId,
+                                          const math::Position3* position)
+{
+    if (cellId < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ZoneBoundaryBank.h";
+        AeAssert::gCurrentLine = 554;
+        AeAssert::gCurrentExpr = "cellId >= 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid cell id"))
+            __debugbreak();
+    }
+    const ZoneCellDesc* v4 = mCells.mList[cellId];
+    if (!v4->BoundsIntersect(*position))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ZoneBoundaryBank.h";
+        AeAssert::gCurrentLine = 559;
+        AeAssert::gCurrentExpr = "zcd->GetBounds().intersect(position)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bad bounding box on cell?"))
+            __debugbreak();
+    }
+    return v4->GetZdNode(*position, false);
+}
+
+bool ZoneCellDesc::BoundsIntersect(const math::Position3& p) const
+{
+    (void)p;
+    return true;  // stub: BoundingBox::intersect (game.o)
+}
+
+const ZdNode* ZoneCellDesc::GetZdNode(const math::Position3& position,
+                                      bool force) const
+{
+    (void)position; (void)force;
+    return nullptr;  // stub: game.o
+}
+
+bool ZoneOverrideBrushSet::IsInside(const math::Position3& point)
+{
+    (void)point;
+    return false;  // stub: streamer.o 0x686B20
+}
+
+bool ZoneOverrideBrush::IsInside(const math::Position3& point)
+{
+    (void)point;
+    return false;  // stub: streamer.o
+}
+
+// disable_default_streaming (StreamZoneManager.cpp static cvar)
+static cvar_t* disable_default_streaming = nullptr;
+static bool s_disable_default_streaming_init = false;
+
+// ea: 0x675B40
+void StreamZoneManager::SetPriorities()
+{
+    PakManager::sInst->ResetPriorities(false);
+    int mFirstBank = this->mFirstBank;
+    if (mFirstBank == -1)
+        return;
+    while (1)
+    {
+        if (mFirstBank > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        ZoneBoundaryBank* v4 = mBankArray.m_elements[mFirstBank];
+        const ZdNode* mActiveNode = v4->mActiveNode;
+        const ZdNode* zn = mActiveNode;
+        cvar_t* v6;
+        if (s_disable_default_streaming_init)
+        {
+            v6 = disable_default_streaming;
+        }
+        else
+        {
+            s_disable_default_streaming_init = true;
+            v6 = Cvar_Get("disable_default_streaming", "0", 0);
+            disable_default_streaming = v6;
+        }
+        if (mActiveNode != nullptr && v6 != nullptr && v6->integer == 0)
+        {
+            SetDistances(v4, mActiveNode->mZoneBitset,
+                         (InplaceVector<float>*)&mActiveNode->mZoneDistances,
+                         false);
+        }
+        for (int v7 = 0; v7 < v4->mNumToggleableOverrideBoxesHit; ++v7)
+        {
+            SetDistances(v4,
+                         (ZoneOverrideBrushSet*)
+                             v4->mToggleableOverrideBoxes.mList[v7]);
+        }
+        mActiveNode = zn;
+        for (unsigned int v9 = 0; v9 < v4->mOverrideBoxes.mSize; ++v9)
+        {
+            ZoneOverrideBrushSet* zob = v4->mOverrideBoxes.mList[v9];
+            if (zob->mWasInside != 0)
+                SetDistances(v4, zob);
+        }
+        mActiveNode = zn;
+        if (mActiveNode != nullptr)
+        {
+            const StreamZone* mZone = mActiveNode->mZone;
+            if (mZone != nullptr)
+            {
+                const PakInfoNode* mPakInfo = mZone->mPakInfo;
+                if (mPakInfo != nullptr)
+                {
+                    const_cast<PakInfoNode*>(mPakInfo)->distance = 0.0f;
+                    for (unsigned int v16 = 0;
+                         v16 < mPakInfo->prereqs.mSize; ++v16)
+                    {
+                        PakManager::sInst->SetDistance(
+                            mPakInfo->prereqs.mList[v16], 0.0f, false);
+                    }
+                }
+            }
+        }
+        int i = mBankArray.m_elements[mFirstBank]->mNextBank;
+        if (i == -1)
+            break;
+        mFirstBank = i;
+    }
+}
+
+// ea: 0x678350
+void StreamZoneManager::Update(int cellNum, const math::Position3* pos,
+                               bool forceReset)
+{
+    if (cellNum == -1)
+        return;
+    mLastPosition.v = pos->v;
+    int mLastListSize = this->mLastListSize;
+    int mListSize = this->mListSize;
+    bool resetPriorities = mLastListSize != mListSize;
+    this->mLastListSize = mListSize;
+    int mFirstBank = this->mFirstBank;
+    mLastCellNum = cellNum;
+    bool exists_active_zdnode = false;
+    int b = mFirstBank;
+    if (mFirstBank != -1)
+    {
+        while (1)
+        {
+            ZoneBoundaryBank* v12 = mBankArray.m_elements[mFirstBank];
+            const ZdNode* lastNode = v12->mActiveNode;
+            v12->mActiveNode = v12->GetZdNode(cellNum, pos);
+            for (unsigned int v13 = 0; v13 < v12->mOverrideBoxes.mSize;
+                 ++v13)
+            {
+                ZoneOverrideBrushSet* v15 = v12->mOverrideBoxes.mList[v13];
+                bool IsInside = v15->IsInside(*pos);
+                bool v17 = v15->mWasInside != 0;
+                v15->mWasInside = IsInside;
+                if (IsInside != v17)
+                    resetPriorities = true;
+            }
+            for (int o = 0; o < (int)v12->mToggleableOverrideBoxes.mSize;
+                 ++o)
+            {
+                ZoneOverrideBrushSet* v20 =
+                    (ZoneOverrideBrushSet*)
+                        v12->mToggleableOverrideBoxes.mList[o];
+                bool v22 = false;
+                for (unsigned int v30 = 0; v30 < v20->mBrushes.mSize; ++v30)
+                {
+                    if (v20->mBrushes.mList[v30].IsInside(*pos))
+                    {
+                        v22 = true;
+                        break;
+                    }
+                }
+                bool v23 = v20->mWasInside != 0;
+                v20->mWasInside = v22;
+                if (v22 && !v23)
+                {
+                    SetTopOverrideBrushSet(v12, v20);
+                    resetPriorities = true;
+                }
+            }
+            const ZdNode* mActiveNode = v12->mActiveNode;
+            if (lastNode != mActiveNode)
+                resetPriorities = true;
+            if (mActiveNode != nullptr)
+                exists_active_zdnode = true;
+            int v25 = b;
+            if (b > 0x62)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 31;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            b = mBankArray.m_elements[b]->mNextBank;
+            if (mBankArray.m_elements[v25]->mNextBank == -1)
+                break;
+            mFirstBank = b;
+        }
+    }
+    if (this->mFirstBank != -1 && !exists_active_zdnode)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 294;
+        AeAssert::gCurrentExpr = "exists_active_zdnode";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("There must be at least one active ZdNode"))
+            __debugbreak();
+    }
+    if (resetPriorities || forceReset)
+        SetPriorities();
 }
 
 // ea: 0x663730

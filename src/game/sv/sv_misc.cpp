@@ -51,12 +51,6 @@ void PathNodeMgr::CheckpointResetNodes() {}
 // SceneManager stubs (streamer.o; ported later)
 void SceneManager::InstanceEntities() {}
 
-// StreamZoneManager stubs (streamer.o; ported later)
-void StreamZoneManager::Update(int cellNum, const math::Position3* pos,
-                               bool forceReset)
-{
-    (void)cellNum; (void)pos; (void)forceReset;
-}
 
 // movie_manager stubs (shell.o; port later)
 void movie_manager::load_and_play_movie(const char* movie_name,
