@@ -15,6 +15,7 @@
 #include "core/memory_types.h"
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
+#include "ngl/ngl_mesh.h"
 #include "ngl/ngl_dx_quad.h"
 #include "filesystem/apk.h"
 #include "core/ae_fixed_string.h"
@@ -1320,8 +1321,7 @@ ae_vector<GlowSprites> GlowSpritesList;  // ?GlowSpritesList@@3V?$ae_vector@UGlo
 ae_vector<GlowBeam> GlowBeamsList;       // ?GlowBeamsList@@3V?$ae_vector@UGlowBeam@@@@A @ 0xF59334
 
 enum eInstanceBankType {
-    INSTBANK_TYPE_APK = 0,
-    INSTBANK_TYPE_TEXTURE,
+    INSTBANK_TYPE_TEXTURE = 0,
     INSTBANK_TYPE_FONT,
     INSTBANK_TYPE_MESHFILE,
     INSTBANK_TYPE_MESH,
@@ -1335,6 +1335,10 @@ enum eInstanceBankType {
     INSTBANK_TYPE_DISCTEX,
     INSTBANK_TYPE_DISCTEXSIZE,
 };
+
+// Values verified against DecodeInstbank's type-string table (TEXTURE=0 ..
+// DISCTEXSIZE=12) and the raw pushes at the cdGet*/cdLoad* call sites. The
+// earlier "APK=0, TEXTURE=1, ..." layout was shifted by one.
 
 class InstanceBankSet;
 
@@ -1423,6 +1427,10 @@ public:
     unsigned int Add(eInstanceBankType type, TPakId pakId,
                      const tlFixedString& name,
                      unsigned int data);  // ?Add@InstanceBankMgr@@QAEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@I@Z
+    unsigned int Get(eInstanceBankType type, TPakId pakId,
+                     const tlFixedString* name);  // ?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@@Z
+    unsigned int Get(eInstanceBankType type, TPakId pakId,
+                     unsigned int hash);  // ?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@I@Z
     bool GetAnimOffset(const char* name, TPakId pakId, unsigned int* out_offset,
                        unsigned int* out_size);  // ?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z
     bool GetMipScale(const char* texture,
@@ -4399,30 +4407,215 @@ void cdInitApk()
 
 // Resource getters (apkSupport.cpp; decode impls port with the ngl batch)
 struct apsEffectTemplate;
+class nalBaseSkeleton;
+template <typename T> class nalAnimClass;
+struct nalAnyPose;
+struct MultiApk;
+const tlFixedString* GetKey(const nglMesh* m);  // ngl_internal.cpp
+void GetAllPaks(ae_sized_array<TPakId, 32>* ret);  // streamer.o (defined below)
+void GetPakPrerequisites(TPakId pakId,
+                         ae_sized_array<TPakId, 32>* ret);  // streamer.o
+apsEffectTemplate* sMissingParticleEffect =
+    nullptr;  // ?sMissingParticleEffect@@3PAVapsEffectTemplate@@A @ 0xF59310
 static tlFixedString none_tfs("None");
 static tlFixedString null_tfs("(null)");
 struct nglMaterial;
 extern nglMaterial* nglGetMaterial(const tlFixedString* Name, bool Warn);
-void* cdGetTexture(TPakId pakId, const tlFixedString& name)
+
+// ea: 0x677850
+unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
+                                  const tlFixedString* name)
 {
-    (void)pakId; (void)name;
-    return nullptr;
+    ae_sized_array<TPakId, 32> prereqs;
+    prereqs.m_size = 0;
+    if (type == INSTBANK_TYPE_ANIMFILE || type == INSTBANK_TYPE_ANIMOFFSET)
+    {
+        GetAllPaks(&prereqs);
+    }
+    else if (pakId == PAK_ID_INVALID)
+    {
+        if (PakManager::sInst != nullptr)
+            PakManager::sInst->CopyContextStack(&prereqs);
+    }
+    else
+    {
+        GetPakPrerequisites(pakId, &prereqs);
+    }
+    if (prereqs.m_size <= 0)
+        return 0;
+    for (unsigned int v4 = 0; v4 < (unsigned int)prereqs.m_size; ++v4)
+    {
+        if (v4 >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        TPakId v5 = prereqs.m_elements[v4];
+        InstanceBankSet* v6 = mEntries[v5];
+        if (v5 != PAK_ID_INVALID && v6 != nullptr)
+        {
+            unsigned int* Entry =
+                v6->FindEntry(type, name->str, name->hash);
+            if (Entry != nullptr)
+                return *Entry;
+        }
+    }
+    return 0;
 }
-void* cdGetMesh(TPakId pakId, const tlFixedString& name)
+
+// ea: 0x677960
+unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
+                                  unsigned int hash)
 {
-    (void)pakId; (void)name;
-    return nullptr;
+    ae_sized_array<TPakId, 32> prereqs;
+    prereqs.m_size = 0;
+    if (type == INSTBANK_TYPE_ANIMFILE || type == INSTBANK_TYPE_ANIMOFFSET)
+    {
+        GetAllPaks(&prereqs);
+    }
+    else if (pakId == PAK_ID_INVALID)
+    {
+        if (PakManager::sInst != nullptr)
+            PakManager::sInst->CopyContextStack(&prereqs);
+    }
+    else
+    {
+        GetPakPrerequisites(pakId, &prereqs);
+    }
+    if (prereqs.m_size <= 0)
+        return 0;
+    for (unsigned int v4 = 0; v4 < (unsigned int)prereqs.m_size; ++v4)
+    {
+        if (v4 >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        TPakId v5 = prereqs.m_elements[v4];
+        InstanceBankSet* v6 = mEntries[v5];
+        if (v5 != PAK_ID_INVALID && v6 != nullptr)
+        {
+            unsigned int* Entry = v6->FindEntry(type, nullptr, hash);
+            if (Entry != nullptr)
+                return *Entry;
+        }
+    }
+    return 0;
 }
-nglFont* cdGetFont(TPakId pakId, const tlFixedString& name)
+
+// ea: 0x677A60
+nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name)
 {
-    (void)pakId; (void)name;
-    return nullptr;
+    nglTexture* result = (nglTexture*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_TEXTURE, pakId, &name);
+    if (result == nullptr)
+        return nglTextureDirectory.Find(name);
+    return result;
 }
+
+// ea: 0x677A90
+nglMesh* cdGetMesh(TPakId pakId, const tlFixedString& name)
+{
+    nglMesh* result = (nglMesh*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_MESHFILE, pakId, &name);
+    if (result == nullptr)
+        return nglMeshDirectory.Find(name);
+    return result;
+}
+
+// ea: 0x677AC0
 apsEffectTemplate* cdGetEffectTemplate(TPakId pakId,
                                        const tlFixedString& name)
 {
-    (void)pakId; (void)name;
-    return nullptr;
+    apsEffectTemplate* result = (apsEffectTemplate*)
+        InstanceBankMgr::sInst->Get(INSTBANK_TYPE_EFFECT, pakId, &name);
+    if (result == nullptr)
+    {
+        apsEffectTemplate* v3 = sMissingParticleEffect;
+        if (sMissingParticleEffect == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+            AeAssert::gCurrentLine = 827;
+            AeAssert::gCurrentExpr = "tpl";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Couldn't find particle effect %s",
+                                    name.str))
+                __debugbreak();
+        }
+        return v3;
+    }
+    return result;
+}
+
+// ea: 0x677B40
+nglFont* cdGetFont(TPakId pakId, const tlFixedString& name)
+{
+    nglFont* result = (nglFont*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_FONT, pakId, &name);
+    if (result == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 834;
+        AeAssert::gCurrentExpr = "font";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Couldn't find font %s", name.str))
+            __debugbreak();
+        return nglFontDirectory.Find(name);
+    }
+    return result;
+}
+
+// ea: 0x677BC0
+MultiApk* cdGetMeshFile(TPakId pakId, const tlFixedString& name)
+{
+    return (MultiApk*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_MESHFILE, pakId, &name);
+}
+
+// ea: 0x677BE0
+nalAnimClass<nalAnyPose>* cdGetAnim(TPakId pakId,
+                                    const tlFixedString& name)
+{
+    return (nalAnimClass<nalAnyPose>*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_ANIMFILE, pakId, &name);
+}
+
+// ea: 0x677C00
+nalAnimClass<nalAnyPose>* cdGetAnim(unsigned int hash)
+{
+    return (nalAnimClass<nalAnyPose>*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_ANIMFILE, PAK_ID_INVALID, hash);
+}
+
+// ea: 0x677C20
+nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name)
+{
+    unsigned int v2 = InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_SKELETON, pakId, &name);
+    if (v2 == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 871;
+        AeAssert::gCurrentExpr = "skel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Couldn't find skel %s", name.str))
+            __debugbreak();
+    }
+    return (nalBaseSkeleton*)v2;
 }
 
 // ea: 0x678D40
@@ -4958,12 +5151,12 @@ void PakFile::UpdateLoading()
                                                        (char*)v31->shortName);
                                     tlFixedString v66(v31->shortName);
                                     InstanceBankMgr::sInst->Add(
-                                        INSTBANK_TYPE_FX, mPakId, v66,
+                                        INSTBANK_TYPE_DISCTEX, mPakId, v66,
                                         sec->banks[0].fileOffset
                                             + v31->bankOffset);
                                     tlFixedString v65(v31->shortName);
                                     InstanceBankMgr::sInst->Add(
-                                        INSTBANK_TYPE_DISCTEX, mPakId, v65,
+                                        INSTBANK_TYPE_DISCTEXSIZE, mPakId, v65,
                                         v31->fileSize);
                                 }
                             }
@@ -9412,7 +9605,7 @@ struct MultiApk {
 void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)
 {
     tlFixedString result = GetName(name);
-    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, pakId, result,
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESHFILE, pakId, result,
                                 (unsigned int)file);
 }
 

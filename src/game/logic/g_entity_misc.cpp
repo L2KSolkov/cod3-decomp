@@ -2052,12 +2052,12 @@ void BrocString_dtor(void* self)
 {
     (void)self;
 }
-nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name)
+void CL_CubemapShotUsage() {}
+void* cdGetAnim(unsigned int a)
 {
-    (void)pakId; (void)name;
+    (void)a;
     return nullptr;
 }
-void CL_CubemapShotUsage() {}
 void SmokeGrenadeMgr_AddSmokeGrenade(void* mgr, void* info)
 {
     (void)mgr; (void)info;
@@ -2943,11 +2943,6 @@ void* ADSMetaAnimInstance_Ctor(void* self, void* a, void* b, void* c,
 void* AnimBank_GetAnimTree(void* self, const char* name)
 {
     (void)self; (void)name;
-    return nullptr;
-}
-void* cdGetAnim(unsigned int a)
-{
-    (void)a;
     return nullptr;
 }
 void* cdScratchMaterial_Ctor(void* self, void* a, unsigned int b, int c,
