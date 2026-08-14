@@ -6,6 +6,7 @@
 #include "core/math_types.h"
 
 #include <math.h>
+#include <float.h>
 #include <string.h>
 
 // AeAssert (game.o defines the real symbols; local decls only)
@@ -215,6 +216,119 @@ void R_RotateForEntity(trRefEntity* ent, const viewParms_t* viewParms,
         R_RotateForModelEntity(ent, viewParms, orr);
     else
         *orr = viewParms->world;
+}
+
+// ============================================================================
+// R_RotateForViewer - ea: 0x006C12B0
+// ============================================================================
+// CameraShake (cg.o; g_cameraShake[4] @ 0xF056E8)
+class CameraShake {
+public:
+    math::Mat43* CreateCameraShakeMatrix(math::Mat43* pCamLocal);  // ?CreateCameraShakeMatrix@CameraShake@@QAEPAVMat43@math@@PAV23@@Z
+};
+extern CameraShake* g_cameraShake;  // ?g_cameraShake@@3PAVCameraShake@@A @ 0xF056E8
+extern int currCl;  // ?currCl@@3HA @ 0xF1579C
+
+// s_flipMatrix (render.o @ 0xDFB0F8; IDA bytes)
+static const float s_flipMatrix[16] = {
+    0.0f, 0.0f, 1.0f, 0.0f,
+    -1.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f,
+};
+
+void R_RotateForViewer()
+{
+    memset(&tr.orr, 0, sizeof(tr.orr));
+    tr.orr.axis[0][0] = 1.0f;
+    tr.orr.axis[1][1] = 1.0f;
+    tr.orr.axis[2][2] = 1.0f;
+    memcpy(tr.orr.viewOrigin, &tr.viewParms, sizeof(tr.orr.viewOrigin));
+
+    float viewerMatrix[16];
+    viewerMatrix[14] = tr.viewParms.or.origin[0];
+    viewerMatrix[15] = tr.viewParms.or.origin[1];
+    float camZ = tr.viewParms.or.origin[2];
+
+    // pCamLocal = 4x3 camera matrix (3 axis rows + origin row)
+    math::Mat43 camLocal;
+    camLocal.x.v = _mm_setr_ps(tr.viewParms.or.axis[0][0],
+                               tr.viewParms.or.axis[0][1],
+                               tr.viewParms.or.axis[0][2], 0.0f);
+    camLocal.y.v = _mm_setr_ps(tr.viewParms.or.axis[1][0],
+                               tr.viewParms.or.axis[1][1],
+                               tr.viewParms.or.axis[1][2], 0.0f);
+    camLocal.z.v = _mm_setr_ps(tr.viewParms.or.axis[2][0],
+                               tr.viewParms.or.axis[2][1],
+                               tr.viewParms.or.axis[2][2], 0.0f);
+    camLocal.w.v = _mm_setr_ps(tr.viewParms.or.origin[0],
+                               tr.viewParms.or.origin[1],
+                               tr.viewParms.or.origin[2], 0.0f);
+    CameraShake* shake = &g_cameraShake[currCl];
+    math::Mat43 shaken;
+    if (shake != nullptr)
+    {
+        math::Mat43* p = shake->CreateCameraShakeMatrix(&camLocal);
+        if (p != nullptr)
+            shaken = *p;
+        else
+            shaken = camLocal;
+    }
+    else
+    {
+        shaken = camLocal;
+    }
+
+    __m128 row0 = shaken.x.v;
+    __m128 row1 = shaken.y.v;
+    __m128 row2 = shaken.z.v;
+    __m128 row0y = _mm_shuffle_ps(row0, row0, 85);
+    __m128 row0z = _mm_shuffle_ps(row0, row0, 170);
+    viewerMatrix[5] = row0z.m128_f32[0];
+    viewerMatrix[1] = row0y.m128_f32[0];
+    viewerMatrix[9] = 0.0f - (((row0z.m128_f32[0] * camZ)
+                              + (row0y.m128_f32[0] * viewerMatrix[15]))
+                             + (row0.m128_f32[0] * viewerMatrix[14]));
+
+    __m128 row1y = _mm_shuffle_ps(row1, row1, 85);
+    __m128 row1z = _mm_shuffle_ps(row1, row1, 170);
+    viewerMatrix[2] = row1y.m128_f32[0];
+    viewerMatrix[6] = row1z.m128_f32[0];
+    viewerMatrix[10] = 0.0f - (((row1z.m128_f32[0] * camZ)
+                               + (row1y.m128_f32[0] * viewerMatrix[15]))
+                              + (row1.m128_f32[0] * viewerMatrix[14]));
+
+    __m128 row2y = _mm_shuffle_ps(row2, row2, 85);
+    __m128 row2z = _mm_shuffle_ps(row2, row2, 170);
+    viewerMatrix[7] = row2z.m128_f32[0];
+    viewerMatrix[3] = row2y.m128_f32[0];
+    viewerMatrix[0] = 0.0f;
+    viewerMatrix[4] = 0.0f;
+    viewerMatrix[8] = 0.0f;
+    viewerMatrix[11] = 0.0f - (((row2z.m128_f32[0] * camZ)
+                               + (row2y.m128_f32[0] * viewerMatrix[15]))
+                              + (row2.m128_f32[0] * viewerMatrix[14]));
+    viewerMatrix[12] = 1.0f;
+    (void)viewerMatrix;
+
+    // mat4 from the shaken 4x3 rows
+    float mat4[16];
+    memcpy(&mat4[0], &shaken.x, 64);
+    myGlMultMatrix(mat4, s_flipMatrix, tr.orr.modelMatrix);
+    tr.viewParms.world = tr.orr;
+
+    if ((_fpclass((double)tr.orr.axis[0][0]) & 0x297) != 0
+        || (_fpclass((double)tr.viewParms.world.axis[0][1]) & 0x297) != 0
+        || (_fpclass((double)tr.viewParms.world.axis[0][2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_main.cpp";
+        AeAssert::gCurrentLine = 860;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tr.viewParms.world.axis[0])[0]) && !IS_NAN((tr.viewParms.world.axis[0])[1]) && !IS_NAN((tr.viewParms.world.axis[0])[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
 }
 
 // ============================================================================
