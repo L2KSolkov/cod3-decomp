@@ -215,9 +215,19 @@ static_assert(sizeof(ActorLookAt) == 0x3C, "ActorLookAt size mismatch");
 // actor_physics_t — actor physics state (304 bytes)
 // ============================================================================
 struct actor_physics_t {
-    uint8_t _pad[0x40];
-    int     bIsAlive;   // +0x40
-    uint8_t _pad44[0x130 - 0x44];
+    math::Position3 vOrigin;        // +0x00
+    math::Dir3      vVelocity;      // +0x10
+    DbLinkedHandle<EntityHandleDb, Entity> mGroundEntity;  // +0x20
+    int     iFootstepTimer;         // +0x24
+    int     bHasGroundPlane;        // +0x28
+    float   groundplaneSlope;       // +0x2C
+    int     iSurfaceType;           // +0x30
+    float   vWishDelta[3];          // +0x34
+    int     bIsAlive;               // +0x40
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x44
+    int     ePhysicsType;           // +0x48 (aiphys_t)
+    float   fGravity;               // +0x4C
+    uint8_t _pad50[0x130 - 0x50];
 };
 static_assert(sizeof(actor_physics_t) == 0x130, "actor_physics_t size mismatch");
 
@@ -270,11 +280,11 @@ struct sentient_s {
     int32_t    iEnemyNotifyTime;                    // +0x06C
     int16_t    iAttackerCount;                      // +0x070
     int16_t    sFlags;                              // +0x072
-    uint16_t   mClaimedNode;                        // +0x074
+    PathNodes::NodeHandle mClaimedNode;             // +0x074
     int32_t    iLastClaimedNodeTime;                // +0x078
-    uint16_t   mActualChainPos;                     // +0x07C
+    PathNodes::NodeHandle mActualChainPos;          // +0x07C
     int32_t    iActualChainPosTime;                 // +0x080
-    uint16_t   mDesiredChainPos;                    // +0x084
+    PathNodes::NodeHandle mDesiredChainPos;         // +0x084
     int32_t    iDesiredChainPosTime;                // +0x088
     int32_t    iUpdDesiredChainPosTimeMin;          // +0x08C
     int32_t    iUpdDesiredChainPosTimeMax;          // +0x090

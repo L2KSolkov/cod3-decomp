@@ -332,8 +332,8 @@ extern bool  IsPlayerSpotted(Entity* player);      // g.o
 extern bool  IsVehicleTank(Entity* ent);           // g.o
 extern Client g_clients[16];                       // g.o
 extern team_t Sentient_EnemyTeam(team_t eTeam);    // mp_actors.o
-extern void __fastcall Sentient_GetOrigin(sentient_s* pSelf,
-                                          float* vOriginOut);  // mp_actors.o
+extern void __fastcall Sentient_GetOrigin(const sentient_s* pSelf,
+                                          float* const vOriginOut);  // mp_actors.o
 extern bool G_GetTankIndex(DbLinkedHandle<EntityHandleDb, Entity> entity,
                            int* index, bool* enemy);  // g.o
 extern void AddLeanToPosition(float* vPosition, float fViewYaw,

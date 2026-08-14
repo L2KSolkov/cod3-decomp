@@ -14,7 +14,7 @@ extern void  tlMemFree(void* ptr);
 
 // PathNode / checkpoint support externs (mp_actors.o / streamer.o)
 extern void Path_RelinquishNodePermanently(
-    const PathNodes::PathNode* pNode, sentient_s* pClaimer);
+    PathNodes::PathNode* pNode, sentient_s* pClaimer);
     // ?Path_RelinquishNodePermanently@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z
 extern void PathNodeMgr_DissociateSentient(void* self,
                                            sentient_s* pSentient);
@@ -1114,7 +1114,7 @@ void CheckpointMgr::RestoreSceneEntity(Entity* pEnt)
                 sentient_s* sentient = pEnt->sentient;
                 if (sentient != nullptr)
                 {
-                    uint16_t mValue = sentient->mClaimedNode;
+                    uint16_t mValue = sentient->mClaimedNode.mValue;
                     if (mValue != 0
                         && mValue != 0xFFFF
                         && PathNodes_NodeHandle_deref(
@@ -1123,11 +1123,12 @@ void CheckpointMgr::RestoreSceneEntity(Entity* pEnt)
                             != nullptr)
                     {
                         Path_RelinquishNodePermanently(
-                            PathNodes_NodeHandle_deref(
-                                (const PathNodes::NodeHandle*)
-                                    &sentient->mClaimedNode),
+                            (PathNodes::PathNode*)
+                                PathNodes_NodeHandle_deref(
+                                    (const PathNodes::NodeHandle*)
+                                        &sentient->mClaimedNode),
                             sentient);
-                        sentient->mClaimedNode = 0;
+                        sentient->mClaimedNode.mValue = 0;
                     }
                     PathNodeMgr_DissociateSentient(PathNodeMgr::sInst,
                                                    sentient);

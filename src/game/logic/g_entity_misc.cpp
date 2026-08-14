@@ -598,8 +598,8 @@ extern void G_FreeEntityRefs(Entity* ed);           // g.o
 extern actor_s* Actor_FirstActor(int iTeamFlags);   // mp_actors.o
 extern actor_s* Actor_NextActor(actor_s* prev, int iTeamFlags);  // mp_actors.o
 extern void j_nullsub_15(actor_s* self, Entity* other);          // g.o
-extern sentient_s* Sentient_FirstSentient(int iTeamFlags);       // mp_actors.o
-extern sentient_s* Sentient_NextSentient(sentient_s* prev, int iTeamFlags);  // mp_actors.o
+extern sentient_s* __fastcall Sentient_FirstSentient(int iTeamFlags);  // mp_actors.o
+extern sentient_s* __fastcall Sentient_NextSentient(sentient_s* prev, int iTeamFlags);  // mp_actors.o
 extern void Sentient_DissociateEntity(sentient_s* self, Entity* other);  // mp_actors.o
 extern void j_nullsub_77(Entity* ent);              // g.o
 extern void G_FreeTurret(Entity* self);             // g.o
@@ -1663,11 +1663,6 @@ void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int team)
 {
     (void)pNode; (void)team;
 }
-void Path_RelinquishNodePermanently(const PathNodes::PathNode* pNode,
-                                    sentient_s* pSentient)
-{
-    (void)pNode; (void)pSentient;
-}
 void AnimationPlayer_DebugDump(Entity* ent)
 {
     (void)ent;
@@ -2205,25 +2200,6 @@ const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row, int col)
     (void)row; (void)col;
     return nullptr;
 }
-
-struct sentient_s;
-sentient_s* Sentient_Alloc() { return nullptr; }
-sentient_s* Sentient_FirstSentient(int a) { (void)a; return nullptr; }
-sentient_s* Sentient_NextSentient(sentient_s* s, int a)
-{
-    (void)s; (void)a;
-    return nullptr;
-}
-void Sentient_Clean(sentient_s* s) { (void)s; }
-void Sentient_DissociateEntity(sentient_s* s, Entity* e) { (void)s; (void)e; }
-void Sentient_Free(sentient_s* s) { (void)s; }
-void Sentient_GetEyePosition(sentient_s* s, math::Position3& p)
-{
-    (void)s; (void)p;
-}
-void Sentient_GetEyePosition(sentient_s* s, float* p) { (void)s; (void)p; }
-void Sentient_InvalidateNearestNode(sentient_s* s) { (void)s; }
-void Sentient_UpdateActualChainPos(sentient_s* s) { (void)s; }
 
 struct SplineGroup;
 SplineGroup* SplineGroup_GetPath(void* self)

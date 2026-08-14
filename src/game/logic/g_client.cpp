@@ -1454,7 +1454,7 @@ void Player_UpdateLookAtEntity(Entity* pEnt)
     }
     Entity* pLookatEnt = pEnt->client->pLookatEnt;
     if (pLookatEnt == nullptr || pLookatEnt->actor == nullptr)
-        pEnt->sentient->mDesiredChainPos = 0;
+        pEnt->sentient->mDesiredChainPos.mValue = 0;
     pEnt->client->iLookatEntLastTime = 0;
     weaponParms weapParms;
     if (pEnt->active != 0)

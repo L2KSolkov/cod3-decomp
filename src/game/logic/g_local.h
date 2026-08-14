@@ -1195,6 +1195,8 @@ void mem_heap_free(void* ptr);
 void AnglesToForward(const float* const angles, float* const forward);
 int  Q_stricmp(const char* s1, const char* s2);
 void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int eTeam);
+void Path_RelinquishNodePermanently(PathNodes::PathNode* pNode,
+                                    sentient_s* pClaimer);  // mp_actors.o
 const float VectorDistanceSquared(const float* const p1,
                                     const float* const p2);
 
@@ -1906,10 +1908,12 @@ void BG_PlayerStateToEntityStateExtrapolate(PlayerState* ps, EntityState* s,
 void IntermissionClientEndFrame(Entity* ent);  // g.o 0x456A00
 void SpectatorClientEndFrame(Entity* ent);     // g.o 0x456B00
 unsigned char BG_GetWeaponIndexForName(const char* pszName);
-void Sentient_GetEyePosition(sentient_s* pSelf, float* vEyePosOut);      // mp_actors.o
-void Sentient_GetEyePosition(sentient_s* pSelf, math::Position3& vEyePosOut);  // mp_actors.o
+void __fastcall Sentient_GetEyePosition(sentient_s* pSelf,
+                                        float* const vEyePosOut);  // mp_actors.o
+void __fastcall Sentient_GetEyePosition(sentient_s* pSelf,
+                                        math::Position3& vEyePosOut);  // mp_actors.o
 void __fastcall Sentient_GetOrigin(sentient_s* pSelf, float* const vOriginOut); // ?Sentient_GetOrigin@@YIXPAUsentient_s@@QAM@Z (mp_actors.o)
-void Sentient_UpdateActualChainPos(sentient_s* pSelf);                   // mp_actors.o
+void __fastcall Sentient_UpdateActualChainPos(sentient_s* pSelf);        // mp_actors.o
 void G_SetClientContents(Entity* pEnt);                                  // g.o
 void P_DamageFeedback(Entity* player);                                   // g.o
 // ?G_GetNonPVSFriendlyInfo@@YAHQAMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z (mp_actors.o 0x77CA30; stub)
@@ -1921,8 +1925,9 @@ inline int G_GetNonPVSFriendlyInfo(const float* vPosition, int iOldInfo)
 Entity* G_GetFriendlyIndexActor(int iFriendlyIndex);                     // mp_actors.o
 int     G_GetActorFriendlyIndex(Entity* entity);                        // mp_actors.o
 team_t Sentient_EnemyTeam(team_t eTeam);
-sentient_s* Sentient_FirstSentient(int iTeamFlags);
-sentient_s* Sentient_NextSentient(sentient_s* pPrevSentient, int iTeamFlags);
+sentient_s* __fastcall Sentient_FirstSentient(int iTeamFlags);
+sentient_s* __fastcall Sentient_NextSentient(sentient_s* pPrevSentient,
+                                             int iTeamFlags);
 float __fastcall Actor_CanSeePointEx(
     actor_s* pSelf, const float* vPoint, float fFovDot, float fMaxDistSqrd,
     DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity);  // mp_actors.o
@@ -2042,7 +2047,7 @@ void j_nullsub_17(Entity* pOriginator, int eType, int iTeamFlags,
                   math::Position3* vOrigin, float fRadiusSqrd);
 void j_nullsub_60(actor_s* pSelf);
 void j_nullsub_83(ai_orient_t* pOrient, float fAngle);
-void Sentient_InvalidateNearestNode(sentient_s* pSelf);
+void __fastcall Sentient_InvalidateNearestNode(sentient_s* pSelf);
 int  G_TryPushingEntity(Entity* check, Entity* pusher,
                         const math::Position3& move, const math::Position3& amove);
 bool push_entity(Entity* ent, Entity* vehicle);  // g.o 0x463A20

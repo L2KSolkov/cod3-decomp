@@ -1204,16 +1204,6 @@
 {
 }
 
-// ea: 0x0077E000  (?Sentient_UpdatePlayerTrail@@YAXPAVPlayerState@@@Z)
-    void Sentient_UpdatePlayerTrail(PlayerState*)
-{
-}
-
-// ea: 0x0077E020  (?Sentient_ReadGlob@@YAXXZ)
-    void Sentient_ReadGlob(void)
-{
-}
-
 // ea: 0x0077E3F0  (?G_FreePathnodesScriptInfo@@YAXXZ)
     void G_FreePathnodesScriptInfo(void)
 {

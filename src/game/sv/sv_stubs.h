@@ -1034,6 +1034,10 @@ public:
     void CheckpointResetNodes();         // ?CheckpointResetNodes@PathNodeMgr@@QAEXXZ
     int FindZoneIndex(TPakId pakId);     // ?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z
     int FindZoneIndex(const char* zone); // ?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z
+    void DissociateSentient(sentient_s* pSentient);  // ?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z
+    PathNodes::PathNode* GetNode(const PathNodes::NodeHandle& handle);  // ?GetNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z
+    PathNodes::PathNode* FindChainPos(const float* vOrigin,
+                                      PathNodes::PathNode* pPrevChainPos);  // ?FindChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@QBMPAU23@@Z
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
 
