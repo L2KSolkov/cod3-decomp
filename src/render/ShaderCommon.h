@@ -81,6 +81,7 @@ extern unsigned int gShaderSwitchesCount;  // not a real symbol; table size
 extern int sDebugRenderMode;              // @0x10DDB1C
 extern int gTextureSizeMipLevel;          // @0xE3BA10
 extern float gTime;                       // @0x10DDB18
+extern float gGlowIntensity;              // ?gGlowIntensity@ShaderCommon@@3MA
 extern math::Vector4 FarFogColor;         // @0x10DDB30
 
 struct ShaderSwitchPair {
