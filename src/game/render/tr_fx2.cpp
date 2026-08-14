@@ -955,9 +955,11 @@ ParticleEffect* FX_PlayEntityEffectID(
     TPakId pakId, int id, const math::Position3& org,
     const float (*axis)[3],
     DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle,
-    DbLinkedHandle<EntityHandleDb, Entity> boltEntHandle, int boltBoneIndex)
+    DbLinkedHandle<EntityHandleDb, Entity> boltEntHandle, int boltBoneIndex,
+    bool boltAttchedToEnt)
 {
     (void)axis;
+    (void)boltAttchedToEnt;
     orientation_t ori;
     ori.origin[0] = org.v.m128_f32[0];
     ori.origin[1] = org.v.m128_f32[1];
