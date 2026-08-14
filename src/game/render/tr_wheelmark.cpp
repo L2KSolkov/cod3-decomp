@@ -13,6 +13,64 @@
 
 #include <stdint.h>
 
+// AeAssert (game.o defines the real symbols; local decls only)
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmtstring, ...);
+}
+
+// ?to_color32@Color@@QBE?AVColor32@@XZ (render.o 0x6E5A70; inline COMDAT)
+Color32 Color::to_color32() const
+{
+    if (r < 0.0f || r > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/Color.h";
+        AeAssert::gCurrentLine = 152;
+        AeAssert::gCurrentExpr = "r>=0.0f && r<=1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Need assert message"))
+            __debugbreak();
+    }
+    if (g < 0.0f || g > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/Color.h";
+        AeAssert::gCurrentLine = 153;
+        AeAssert::gCurrentExpr = "g>=0.0f && g<=1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Need assert message"))
+            __debugbreak();
+    }
+    if (b < 0.0f || b > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/Color.h";
+        AeAssert::gCurrentLine = 154;
+        AeAssert::gCurrentExpr = "b>=0.0f && b<=1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Need assert message"))
+            __debugbreak();
+    }
+    if (a < 0.0f || a > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/Color.h";
+        AeAssert::gCurrentLine = 155;
+        AeAssert::gCurrentExpr = "a>=0.0f && a<=1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Need assert message"))
+            __debugbreak();
+    }
+    Color32 result;
+    result.c.b = (unsigned char)(b * 255.0f);
+    result.c.g = (unsigned char)(g * 255.0f);
+    result.c.a = (unsigned char)(a * 255.0f);
+    result.c.r = (unsigned char)(r * 255.0f);
+    return result;
+}
+
 struct nglMesh;
 struct nglMeshSection;
 struct nglMaterial;
@@ -147,7 +205,13 @@ public:
     int mNumDecals;                    // +0x08
     int mOldestDecal;                  // +0x0C
     int mNextFree[4];                  // +0x10
-    uint8_t _pad20[0x3C - 0x20];
+    float mOnScreenReplacementScore;   // +0x20
+    float mOffScreenReplacementScore;  // +0x24
+    int mOnScreenReplacement;          // +0x28
+    int mOffScreenReplacement;         // +0x2C
+    int mNumOnScreen;                  // +0x30
+    float mOldestOnScreenAge;          // +0x34
+    int mOldestOnScreen;               // +0x38
     math::Mat43* mViewToWorldMtx;      // +0x3C
     cdDynamicDecalShaderMat mMaterial;  // +0x40
 
@@ -156,6 +220,7 @@ public:
     DynamicDecalSet(nglTexture* texture, float zBias, bool alphaBlend,
                     int maxNum);       // ??0DynamicDecalSet@@QAE@PAUnglTexture@@M_NH@Z
     ~DynamicDecalSet();                // ??1DynamicDecalSet@@QAE@XZ
+    void Render();                     // ?Render@DynamicDecalSet@@QAEXXZ
 };
 
 // ============================================================================
@@ -252,6 +317,257 @@ DynamicDecalSet::~DynamicDecalSet()
 {
     mem_heap_free(mViewToWorldMtx);
     mem_heap_free(mDecals);
+}
+
+// ============================================================================
+// DynamicDecalSet::Render - ea: 0x006C8720
+// ============================================================================
+struct nglScene;
+extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
+const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
+nglMesh* auxCreateScratchMesh(int flags, int num);         // ?auxCreateScratchMesh@@YAPAUnglMesh@@HH@Z
+nglMesh* auxCloseScratchMesh(nglMesh* m);                  // ?auxCloseScratchMesh@@YAPAUnglMesh@@PAU1@@Z
+nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
+                                        gpuVertexFormat* VertexFormat);
+void nglUnlockSectionIndices(void);
+void nglSetMeshSphere(nglMesh* Mesh, const math::Position3* Center, float Radius);
+extern gpuVertexFormat cdDynamicDecalVertexFormat;  // cdDynamicDecalVertexDef.cpp
+nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
+                            nglMeshParams* MeshParams,
+                            nglShaderParamSet* ShaderParams,
+                            void (*fn)(nglMeshNode*));
+
+// fast cos via floor magic (Float4_FloorMagic_10 = 12582912.0)
+static float FastCosAng(float radians)
+{
+    float v14 = -fabsf(radians) * 0.15915494f;
+    float magic = 12582912.0f;
+    float v13 = fabsf(((v14 - magic) + magic) - v14 - 0.5f) - 0.25f;
+    float v15 = v13 * v13;
+    return (((((v13 * (v15 * v15)) * (v15 * v15)) * 39.710659f)
+             + (((v13 * v15) * (v15 * v15)) * -76.574959f))
+            + ((v13 * (v15 * v15)) * 81.602226f))
+           + ((v13 * v15) * -41.341675f)
+           + (v13 * 6.283185f);
+}
+
+void DynamicDecalSet::Render()
+{
+    const math::Mat43* Matrix_ViewToWorld =
+        nglGetMatrix_ViewToWorld(nglBuildScene);
+    mViewToWorldMtx->x = Matrix_ViewToWorld->x;
+    mViewToWorldMtx->y = Matrix_ViewToWorld->y;
+    mViewToWorldMtx->z = Matrix_ViewToWorld->z;
+    mViewToWorldMtx->w = Matrix_ViewToWorld->w;
+
+    mOnScreenReplacementScore = 0.0f;
+    mOffScreenReplacement = -1;
+    mOnScreenReplacement = -1;
+    mOldestOnScreenAge = 0.0f;
+    mOldestOnScreen = -1;
+
+    int visibleCount = 0;
+    if (mNumDecals > 0)
+    {
+        __m128 camPos = mViewToWorldMtx->w.v;
+        __m128 viewZ = mViewToWorldMtx->z.v;
+        mNumOnScreen = 0;
+
+        for (int i = 0; i < mNumDecals; ++i)
+        {
+            Decal* decal = &mDecals[i];
+            if (decal->mIsActive)
+            {
+                __m128 v11 = _mm_sub_ps(decal->mPos.v, camPos);
+                __m128 v12 = _mm_mul_ps(v11, v11);
+                float distSq = v12.m128_f32[0]
+                             + (_mm_shuffle_ps(v12, v12, 85).m128_f32[0]
+                                + _mm_shuffle_ps(v12, v12, 170).m128_f32[0]);
+                if (distSq <= 1394997.1f)
+                {
+                    float dist = sqrtf(distSq);
+                    __m128 dir = _mm_div_ps(v11, _mm_set1_ps(dist));
+                    __m128 v13 = _mm_mul_ps(viewZ, dir);
+                    float angDot = v13.m128_f32[0]
+                                 + (_mm_shuffle_ps(v13, v13, 85).m128_f32[0]
+                                    + _mm_shuffle_ps(v13, v13, 170).m128_f32[0]);
+                    float cosFov = FastCosAng(nglBuildScene->FOV * 0.017453292f);
+                    if (cosFov <= angDot)
+                    {
+                        decal->mIsCulled = false;
+                        ++visibleCount;
+                    }
+                    else
+                    {
+                        decal->mIsCulled = true;
+                    }
+                }
+                else
+                {
+                    decal->mIsCulled = true;
+                }
+
+                float age = decal->mAge;
+                if (decal->mIsCulled)
+                {
+                    if (age > mOffScreenReplacementScore)
+                    {
+                        mOffScreenReplacementScore = age;
+                        mOffScreenReplacement = i;
+                    }
+                }
+                else
+                {
+                    if (age > mOnScreenReplacementScore)
+                    {
+                        mOnScreenReplacementScore = age;
+                        mOnScreenReplacement = i;
+                    }
+                    if (!decal->mDoFadeOut)
+                    {
+                        if (age > mOldestOnScreenAge)
+                        {
+                            mOldestOnScreenAge = age;
+                            mOldestOnScreen = i;
+                        }
+                        ++mNumOnScreen;
+                    }
+                }
+            }
+        }
+    }
+
+    if (mOldestOnScreen != -1)
+    {
+        if (mNumOnScreen > mMaxNumDecals - mMaxNumDecals / 4)
+            mDecals[mOldestOnScreen].mDoFadeOut = true;
+    }
+
+    if (visibleCount != 0)
+    {
+        nglMesh* mesh = auxCreateScratchMesh(0x40000, 1);
+        nglMeshSection* section = nglCreateScratchSection(
+            6, 6 * visibleCount - 2, 4 * visibleCount,
+            &cdDynamicDecalVertexFormat);
+        nglAddMeshSection(mesh, section, &mMaterial, 1);
+
+        unsigned short* indices =
+            (unsigned short*)nglLockSectionIndices(section);
+        float* verts = (float*)nglLockSectionVertices(section);
+
+        int v47 = 0;
+        float* v21 = verts;
+        float minX = 3.4028235e38f;
+        float minY = 3.4028235e38f;
+        float minZ = 3.4028235e38f;
+        float maxX = -3.4028235e38f;
+        float maxY = -3.4028235e38f;
+        float maxZ = -3.4028235e38f;
+        int anyWritten = 0;
+
+        for (int i = 0; i < mNumDecals; ++i)
+        {
+            Decal* decal = &mDecals[i];
+            if (decal->mIsActive && !decal->mIsCulled)
+            {
+                __m128 pos = decal->mPos.v;
+                minX = fminf(minX, pos.m128_f32[0]);
+                minY = fminf(minY, pos.m128_f32[1]);
+                minZ = fminf(minZ, pos.m128_f32[2]);
+                maxX = fmaxf(maxX, pos.m128_f32[0]);
+                maxY = fmaxf(maxY, pos.m128_f32[1]);
+                maxZ = fmaxf(maxZ, pos.m128_f32[2]);
+
+                float savedA = decal->mColor.a;
+                float blended = decal->mFadeOut * decal->mColor.a;
+                decal->mColor.a = blended;
+                Color32 col = decal->mColor.to_color32();
+                decal->mColor.a = savedA;
+
+                int v28 = v47;
+                unsigned short* v29 = indices;
+                if (v28 > 0)
+                {
+                    *v29 = (unsigned short)(v28 - 1);
+                    v29[1] = (unsigned short)v28;
+                    v29 += 2;
+                }
+                indices = v29;
+
+                __m128 corner0 = _mm_sub_ps(_mm_sub_ps(pos, decal->mXoffset.v),
+                                            decal->mYoffset.v);
+                v21[0] = corner0.m128_f32[0];
+                v21[1] = corner0.m128_f32[1];
+                v21[2] = corner0.m128_f32[2];
+                v21[3] = decal->mUstart;
+                v21[4] = 0.0f;
+                v21[5] = (float)col.i;
+                *indices++ = (unsigned short)v28;
+
+                __m128 corner1 = _mm_add_ps(_mm_sub_ps(pos, decal->mXoffset.v),
+                                            decal->mYoffset.v);
+                v21[6] = corner1.m128_f32[0];
+                v21[7] = corner1.m128_f32[1];
+                v21[8] = corner1.m128_f32[2];
+                v21[9] = decal->mUstart;
+                v21[10] = 1.0f;
+                v21[11] = (float)col.i;
+                *indices++ = (unsigned short)(v28 + 1);
+
+                __m128 corner2 = _mm_sub_ps(_mm_add_ps(pos, decal->mXoffset.v),
+                                            decal->mYoffset.v);
+                v21[12] = corner2.m128_f32[0];
+                v21[13] = corner2.m128_f32[1];
+                v21[14] = corner2.m128_f32[2];
+                v21[15] = decal->mUend;
+                v21[16] = 0.0f;
+                v21[17] = (float)col.i;
+                *indices++ = (unsigned short)(v28 + 2);
+
+                __m128 corner3 = _mm_add_ps(_mm_add_ps(pos, decal->mXoffset.v),
+                                            decal->mYoffset.v);
+                v21[18] = corner3.m128_f32[0];
+                v21[19] = corner3.m128_f32[1];
+                v21[20] = corner3.m128_f32[2];
+                v21[21] = decal->mUend;
+                v21[22] = 1.0f;
+                v21[23] = (float)col.i;
+                *indices++ = (unsigned short)(v28 + 3);
+
+                v21 += 24;
+                v47 = v28 + 4;
+                anyWritten = 1;
+            }
+        }
+
+        if (anyWritten)
+        {
+            nglUnlockSectionIndices();
+            nglUnlockSectionVertices();
+
+            math::Position3 center;
+            center.v.m128_f32[0] = (minX + maxX) * 0.5f;
+            center.v.m128_f32[1] = (minY + maxY) * 0.5f;
+            center.v.m128_f32[2] = (minZ + maxZ) * 0.5f;
+            float dx = maxX - minX;
+            float dy = maxY - minY;
+            float dz = maxZ - minZ;
+            float radius = sqrtf(dx * dx + dy * dy + dz * dz);
+            nglSetMeshSphere(mesh, &center, radius);
+
+            math::Mat43 identity;
+            identity.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+            identity.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+            identity.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+            identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+            nglMesh* m = auxCloseScratchMesh(mesh);
+            nglListAddMesh(m, identity, nullptr, nullptr, nullptr);
+        }
+        else
+        {
+            auxCloseScratchMesh(mesh);
+        }
+    }
 }
 
 // ============================================================================

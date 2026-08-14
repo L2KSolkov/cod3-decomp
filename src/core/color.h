@@ -6,6 +6,21 @@
 
 #pragma once
 
+// Color32 (IDA type; class V-tag; 4 bytes)
+class Color32 {
+public:
+    union {
+        struct {
+            unsigned char b;  // +0x00
+            unsigned char g;  // +0x01
+            unsigned char r;  // +0x02
+            unsigned char a;  // +0x03
+        } c;
+        unsigned int i;
+    };
+};
+static_assert(sizeof(Color32) == 4, "Color32 size mismatch");
+
 class Color {
 public:
     float r;  // +0x00
@@ -20,5 +35,6 @@ public:
         r = other.r; g = other.g; b = other.b; a = other.a;
         return *this;
     }
+    Color32 to_color32() const;  // ?to_color32@Color@@QBE?AVColor32@@XZ (render.o 0x6E5A70)
 };
 static_assert(sizeof(Color) == 0x10, "Color size mismatch");

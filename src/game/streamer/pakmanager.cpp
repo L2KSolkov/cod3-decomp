@@ -1562,14 +1562,6 @@ struct mem_info {
     mem_info(unsigned char* data_, int size_);  // ??0mem_info@@QAE@PAEH@Z
 };
 
-// Color32 (streamer.o; 4 bytes)
-struct Color32 {
-    unsigned int i;  // +0x00
-
-    Color32(unsigned int ic);       // ??0Color32@@QAE@I@Z
-    unsigned int to_ulong() const;  // ?to_ulong@Color32@@QBEIXZ
-};
-
 // reserved_dlist<T> (ae/core; intrusive node = T's first member) - verified IDA
 template <typename T>
 struct reserved_dlist {
@@ -10525,18 +10517,6 @@ mem_info::mem_info(unsigned char* data_, int size_)
 {
     data = data_;
     size = size_;
-}
-
-// ea: 0x663200
-Color32::Color32(unsigned int ic)
-{
-    i = ic;
-}
-
-// ea: 0x663220
-unsigned int Color32::to_ulong() const
-{
-    return i;
 }
 
 // ea: 0x663230 / 0x663240
