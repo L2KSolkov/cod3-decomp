@@ -50,6 +50,14 @@ public:
 class ApsGameClient : public apsClient {
 public:
     static ApsGameClient m_client;  // ?m_client@ApsGameClient@@0V1@A (render.o)
+
+    virtual void DebugDrawBox(const math::Dir3& min, const math::Dir3& max,
+                              const math::Vector4& color);  // ?DebugDrawBox@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@@Z
+    virtual void DebugDrawSolidSphere(const math::Dir3& center, float radius,
+                                      const math::Vector4& color);  // ?DebugDrawSolidSphere@ApsGameClient@@UAEXABVDir3@math@@MABVVector4@3@@Z
+    virtual void DebugDrawLine(const math::Dir3& start, const math::Dir3& end,
+                               const math::Vector4& color,
+                               float thickness);  // ?DebugDrawLine@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@M@Z
 };
 
 namespace apsInternal {

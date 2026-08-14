@@ -6,6 +6,8 @@
 
 #include "core/math_types.h"
 #include "core/color.h"
+#include "core/mem_heap.h"
+#include "render/cdDynamicDecalShader.h"
 
 #include <stdint.h>
 
@@ -134,9 +136,15 @@ public:
     int mNumDecals;                    // +0x08
     int mOldestDecal;                  // +0x0C
     int mNextFree[4];                  // +0x10
+    uint8_t _pad20[0x3C - 0x20];
+    math::Mat43* mViewToWorldMtx;      // +0x3C
+    cdDynamicDecalShaderMat mMaterial;  // +0x40
 
     void Update(float deltaTime);      // ?Update@DynamicDecalSet@@QAEXM@Z
     int FindFreeDecal();               // ?FindFreeDecal@DynamicDecalSet@@QAEHXZ
+    DynamicDecalSet(nglTexture* texture, float zBias, bool alphaBlend,
+                    int maxNum);       // ??0DynamicDecalSet@@QAE@PAUnglTexture@@M_NH@Z
+    ~DynamicDecalSet();                // ??1DynamicDecalSet@@QAE@XZ
 };
 
 // ============================================================================
@@ -210,6 +218,29 @@ int DynamicDecalSet::FindFreeDecal()
     if (v1 == 4)
         return -1;
     return mNextFree[v1];
+}
+
+// ============================================================================
+// DynamicDecalSet ctor/dtor - ea: 0x006C3710 / 0x006C3770
+// ============================================================================
+DynamicDecalSet::DynamicDecalSet(nglTexture* texture, float zBias,
+                                 bool alphaBlend, int maxNum)
+{
+    mMaxNumDecals = maxNum;
+    mNumDecals = 0;
+    mOldestDecal = 0;
+    new (&mMaterial) cdDynamicDecalShaderMat();
+    mDecals = (Decal*)mem_heap_malloc(16, 96 * maxNum);
+    mViewToWorldMtx = (math::Mat43*)mem_heap_malloc(16, 0x40u);
+    mMaterial.mTexture = texture;
+    mMaterial.mZbias = zBias;
+    mMaterial.mAlphaBlend = alphaBlend;
+}
+
+DynamicDecalSet::~DynamicDecalSet()
+{
+    mem_heap_free(mViewToWorldMtx);
+    mem_heap_free(mDecals);
 }
 
 // ============================================================================

@@ -388,7 +388,8 @@ add_library(cod3_game_render STATIC
     src/game/render/tr_ui.cpp
     src/game/render/tr_shader.cpp
     src/game/render/tr_stats.cpp
-    src/game/render/tr_wheelmark.cpp)
+    src/game/render/tr_wheelmark.cpp
+    src/game/render/tr_fx2.cpp)
 add_library(cod3_game_anim STATIC src/game/anim/stubs_game.cpp)
 add_library(cod3_game_mpactors STATIC
     src/game/mpactors/stubs_game.cpp
