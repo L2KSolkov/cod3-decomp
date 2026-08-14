@@ -51,13 +51,44 @@ class ApsGameClient : public apsClient {
 public:
     static ApsGameClient m_client;  // ?m_client@ApsGameClient@@0V1@A (render.o)
 
+    struct ApsDebugSphere {
+        math::Dir3::Packed center;   // +0x00
+        math::Vector4::Packed color; // +0x0C
+        float radius;                // +0x1C
+        float lifeTime;              // +0x20
+        float age;                   // +0x24
+    };
+    struct ApsDebugLine {
+        math::Dir3::Packed start;    // +0x00
+        math::Dir3::Packed end;      // +0x0C
+        math::Vector4::Packed color; // +0x18
+        float lifeTime;              // +0x28
+        float thickness;             // +0x2C
+        float age;                   // +0x30
+    };
+    template <typename T>
+    struct DebugVector {
+        T* _Myfirst;  // +0x00
+        T* _Mylast;   // +0x04
+        T* _Myend;    // +0x08
+
+        void push_back(const T& e);
+    };
+    DebugVector<ApsDebugSphere> m_debugSpheres;  // +0x00
+    DebugVector<ApsDebugLine> m_debugLines;      // +0x0C
+
     virtual void DebugDrawBox(const math::Dir3& min, const math::Dir3& max,
                               const math::Vector4& color);  // ?DebugDrawBox@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@@Z
     virtual void DebugDrawSolidSphere(const math::Dir3& center, float radius,
-                                      const math::Vector4& color);  // ?DebugDrawSolidSphere@ApsGameClient@@UAEXABVDir3@math@@MABVVector4@3@@Z
+                                      const math::Vector4& color,
+                                      float lifeTime);  // ?DebugDrawSolidSphere@ApsGameClient@@UAEXABVDir3@math@@MABVVector4@3@M@Z
     virtual void DebugDrawLine(const math::Dir3& start, const math::Dir3& end,
                                const math::Vector4& color,
-                               float thickness);  // ?DebugDrawLine@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@M@Z
+                               float lifeTime,
+                               float thickness);  // ?DebugDrawLine@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@MM@Z
+    virtual apsEffect* CreateSpawnedEffectImmediate(
+        int pakId, const apsEffectTemplate* effectTemplate,
+        float startTime);  // ?CreateSpawnedEffectImmediate@ApsGameClient@@UAEPAVapsEffect@@HPBVapsEffectTemplate@@M@Z
 };
 
 namespace apsInternal {

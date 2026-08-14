@@ -187,19 +187,6 @@ void ApsGameClient::DebugDrawBox(const math::Dir3& min, const math::Dir3& max,
     (void)min; (void)max; (void)color;
 }
 
-void ApsGameClient::DebugDrawSolidSphere(const math::Dir3& center,
-                                         float radius,
-                                         const math::Vector4& color)
-{
-    (void)center; (void)radius; (void)color;
-}
-
-void ApsGameClient::DebugDrawLine(const math::Dir3& start, const math::Dir3& end,
-                                  const math::Vector4& color, float thickness)
-{
-    (void)start; (void)end; (void)color; (void)thickness;
-}
-
 // ============================================================================
 // ParticleEffect - ea: 0x006C3220 / 0x006C32D0
 // ============================================================================
@@ -1271,6 +1258,91 @@ void fx_debug_render()
         DebugRender::RenderSphere(pos, 11.25f, cyan);
         ++mElements;
     } while (mElements != end);
+}
+
+// ============================================================================
+// ApsGameClient debug/effect helpers (class in apsInternal.h)
+// ============================================================================
+template <typename T>
+void ApsGameClient::DebugVector<T>::push_back(const T& e)
+{
+    if (_Mylast == _Myend)
+    {
+        int cap = (int)(_Myend - _Myfirst);
+        int newCap = cap > 0 ? cap * 2 : 4;
+        T* n = (T*)tlMemAlloc(sizeof(T) * newCap, 8u, 0);
+        int count = (int)(_Mylast - _Myfirst);
+        for (int i = 0; i < count; ++i)
+            n[i] = _Myfirst[i];
+        if (_Myfirst != nullptr)
+            tlMemFree(_Myfirst);
+        _Myfirst = n;
+        _Mylast = n + count;
+        _Myend = n + newCap;
+    }
+    *_Mylast++ = e;
+}
+
+// ea: 0x006D76A0
+apsEffect* ApsGameClient::CreateSpawnedEffectImmediate(
+    int pakId, const apsEffectTemplate* effectTemplate, float startTime)
+{
+    (void)startTime;
+    math::Mat43 v7;
+    v7.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v7.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    v7.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    v7.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    ParticleEffect* v5 = PlayEffect(
+        (TPakId)pakId, (int)effectTemplate, v7,
+        DbLinkedHandle<DObjHandleDb, DObj>(),
+        DbLinkedHandle<EntityHandleDb, Entity>(), -1, false);
+    if (v5 != nullptr)
+        return v5->mEffect;
+    return nullptr;
+}
+
+// ea: 0x006DCF40
+void ApsGameClient::DebugDrawSolidSphere(const math::Dir3& center,
+                                         float radius,
+                                         const math::Vector4& color,
+                                         float lifeTime)
+{
+    ApsDebugSphere s;
+    s.age = 0.0f;
+    s.center.x = center.v.m128_f32[0];
+    s.center.y = center.v.m128_f32[1];
+    s.center.z = center.v.m128_f32[2];
+    s.color.x = color.v.m128_f32[0];
+    s.color.y = color.v.m128_f32[1];
+    s.color.z = color.v.m128_f32[2];
+    s.color.w = color.v.m128_f32[3];
+    s.radius = radius;
+    s.lifeTime = lifeTime;
+    m_debugSpheres.push_back(s);
+}
+
+// ea: 0x006DD030
+void ApsGameClient::DebugDrawLine(const math::Dir3& start,
+                                  const math::Dir3& end,
+                                  const math::Vector4& color,
+                                  float lifeTime, float thickness)
+{
+    ApsDebugLine l;
+    l.age = 0.0f;
+    l.start.x = start.v.m128_f32[0];
+    l.start.y = start.v.m128_f32[1];
+    l.start.z = start.v.m128_f32[2];
+    l.end.x = end.v.m128_f32[0];
+    l.end.y = end.v.m128_f32[1];
+    l.end.z = end.v.m128_f32[2];
+    l.color.x = color.v.m128_f32[0];
+    l.color.y = color.v.m128_f32[1];
+    l.color.z = color.v.m128_f32[2];
+    l.color.w = color.v.m128_f32[3];
+    l.lifeTime = lifeTime;
+    l.thickness = thickness;
+    m_debugLines.push_back(l);
 }
 
 // ea: 0x006D3650
