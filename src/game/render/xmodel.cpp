@@ -4,6 +4,7 @@
 
 #include "game/render/xsurface.h"
 #include "game/logic/g_local.h"
+#include "core/tlFixedString.h"
 
 #include <string.h>
 #include <intrin.h>
@@ -14,6 +15,14 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
                                  int line);  // core.o
 extern void Com_Memcpy(void* dest, const void* src, unsigned int count);  // core.o
 extern void ValidatePakId(TPakId pakId);  // streamer.o (pakmanager.cpp)
+class nalBaseSkeleton;
+
+// XModelPartsManager (render.o; matches r_stubs.cpp view)
+class XModelPartsBank;
+class XModelPartsManager {
+private:
+    void PostProcess(XModelPartsBank* xmpBank, TPakId pak_id);
+};
 
 // ea: 0x006BD3B0
 int XModelGetSurfaces(IVPointer<XModel> model, XSurface*** surfaces, int lod)
@@ -297,6 +306,132 @@ void XModelUpdateChildren(IVPointer<XModel> model, DObjSkelMat* mat,
         } while (nextBone < hierarchySize);
     }
 }
+
+// ============================================================================
+// XModelPartsManager::PostProcess - ea: 0x006CBE10
+// ============================================================================
+class XModelPartsBankView {
+public:
+    uint8_t _pad[0x10];
+    InplaceVector<XModelParts*> mPtrs;  // +0x10
+};
+
+nglMesh* cdGetMesh(TPakId pakId, const tlFixedString& name);  // streamer.o
+nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name);  // streamer.o
+
+void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
+{
+    XModelPartsBankView* bank = (XModelPartsBankView*)xmpBank;
+    unsigned int mSize = bank->mPtrs.mSize;
+    unsigned int i = 0;
+    if (mSize != 0)
+    {
+        while (1)
+        {
+            if (i >= mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+                AeAssert::gCurrentLine = 199;
+                AeAssert::gCurrentExpr = "i<mPtrs.size()";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("bounds check"))
+                    __debugbreak();
+            }
+            unsigned int v6 = i;
+            if (i >= bank->mPtrs.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                AeAssert::gCurrentLine = 81;
+                AeAssert::gCurrentExpr = "index < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+                if (i >= bank->mPtrs.mSize)
+                    v6 = 0;
+            }
+            XModelParts* v7 = bank->mPtrs.mList[v6];
+            if (v7->mNumRootBones != 1)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.cpp";
+                AeAssert::gCurrentLine = 163;
+                AeAssert::gCurrentExpr = "xmp->mNumRootBones == 1";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("default"))
+                    __debugbreak();
+            }
+            if (v7->mAnimDefName.mStr != nullptr)
+            {
+                tlFixedString name(v7->mAnimDefName.mStr);
+                v7->mAnimDef = cdGetSkeleton(pak_id, name);
+                if (v7->mAnimDef == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JRS;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.cpp";
+                    AeAssert::gCurrentLine = 168;
+                    AeAssert::gCurrentExpr = "xmp->mAnimDef";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Failed to find animdef %s for %s",
+                                            v7->mAnimDefName.mStr,
+                                            v7->mName.mStr))
+                        __debugbreak();
+                }
+            }
+            for (unsigned int j = 0; j < (unsigned int)v7->mHierarchy.mSize; ++j)
+            {
+                unsigned int v10 = j;
+                if (j >= (unsigned int)v7->mHierarchy.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                    AeAssert::gCurrentLine = 81;
+                    AeAssert::gCurrentExpr = "index < mSize";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                        __debugbreak();
+                    if (j >= (unsigned int)v7->mHierarchy.mSize)
+                        v10 = 0;
+                }
+                char* txt = v7->mHierarchy.mList[v10].mName.mStr;
+                v7->mHierarchy.mList[v10].mNameHash =
+                    (unsigned int)BrocSys::RegisterHashString(txt);
+                if (j >= (unsigned int)v7->mMeshPtrs.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                    AeAssert::gCurrentLine = 81;
+                    AeAssert::gCurrentExpr = "index < mSize";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                        __debugbreak();
+                }
+                if (v7->mMeshPtrs.mList[j] != nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JRS;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.cpp";
+                    AeAssert::gCurrentLine = 176;
+                    AeAssert::gCurrentExpr = "!xmp->mMeshPtrs[j]";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Uninitialized mesh pointer."))
+                        __debugbreak();
+                }
+                if (j < (unsigned int)v7->mMeshNames.mSize
+                    && v7->mMeshNames.mList[j].mStr != nullptr)
+                {
+                    tlFixedString v25(v7->mMeshNames.mList[j].mStr);
+                    v7->mMeshPtrs.mList[j] = cdGetMesh(pak_id, v25);
+                    if (v7->mMeshPtrs.mList[j] == nullptr)
+                    {
+                        tlFixedString v24(v7->mMeshNames.mList[j].mStr);
+                        v7->mMeshPtrs.mList[j] = cdGetMesh(pak_id, v24);
+                    }
+                }
+            }
+            mSize = bank->mPtrs.mSize;
+            ++i;
+            if (i >= mSize)
+                break;
+        }
+    }
+}
+
 
 // ea: 0x006BD3C0
 const char* XModelGetSurfaceName(IVPointer<XModel> model, int subMatIndex,

@@ -1471,7 +1471,7 @@ public:
     void*            mBoneInfos;                     // +0x08 InplaceVector<XBoneInfo>
     InplaceVector<XBoneHierarchy> mHierarchy;        // +0x10 InplaceVector<XBoneHierarchy>
     void*            mPartClassifications;           // +0x18
-    void*            mMeshNames;                     // +0x20
+    InplaceVector<InplaceString> mMeshNames;         // +0x20
     InplaceVector<nglMesh*> mMeshPtrs;               // +0x28
     int              mNumRootBones;                  // +0x30
     InplaceString    mAnimDefName;                   // +0x34
