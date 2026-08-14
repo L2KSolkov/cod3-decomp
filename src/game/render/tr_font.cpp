@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "core/math_types.h"
+#include "ngl/ngl_dx_quad.h"
 
 #include <string.h>
 
@@ -31,6 +32,30 @@ int RE_Text_Width(const char* text, int font, float scale, float charWidth,
                   int limit);  // ?RE_Text_Width@@YAHPBDHMMH@Z (render.o 0x6C5B40)
 nglTexture* GetTextureData(const char* name, int image_type,
                            const char* fromPak);
+
+extern void RE_Text_PaintWithCursor(float x, float y, int font, float scale,
+                                    const float* const color,
+                                    const char* text, int cursorPos,
+                                    char cursor, float depth, int limit,
+                                    int style);  // tr_text.cpp
+extern void RE_SetColor(const float* rgba);  // r_stubs.cpp
+extern nglScene* nglBuildScene;   // ?nglBuildScene@@3PAUnglScene@@A
+extern int sCurColor;             // ?sCurColor@@3IA @ 0xF74290
+extern void nglInitQuad(nglQuad* Quad);  // ngl.o
+extern void nglSetQuadRect(nglQuad* Quad, float x1, float y1, float x2,
+                           float y2);  // ngl.o
+extern void nglSetQuadUV(nglQuad* Quad, float u1, float v1, float u2,
+                         float v2);  // ngl.o
+extern void nglSetQuadColor(nglQuad* Quad, unsigned int c);  // ngl.o
+extern void nglSetQuadZ(nglQuad* Quad, float z);  // ngl.o
+extern void nglListAddQuad(nglQuad* Quad);  // ngl.o
+
+// refimport_t view (AdjustFrom640 +0x80)
+struct refimport_t {
+    uint8_t _pad[0x80];
+    void (*AdjustFrom640)(float* x, float* y, float* w, float* h);  // +0x80
+};
+extern refimport_t ri;  // ?ri@@3Urefimport_t@@A @ 0xF741E8
 
 // static buffer (render.o @ 0xF78370)
 static char szText[256];
@@ -301,4 +326,77 @@ int RE_Text_ConsoleWidth(const short* psString, int font, float scale,
         v5 = psString;
     } while (psString != nullptr);
     return (int)fWidth;
+}
+
+// ============================================================================
+// RE_Text_ConsolePaint - ea: 0x006D2020
+// ============================================================================
+void RE_Text_ConsolePaint(float x, float y, int font, float scale,
+                          const float* color, const short* psString,
+                          float charWidth, int limit, int style)
+{
+    float vColor[4];
+    vColor[0] = color[0];
+    vColor[1] = color[1];
+    vColor[2] = color[2];
+    vColor[3] = color[3];
+    float fXOfs = 0.0f;
+    int v11 = 0;
+    if (psString == nullptr)
+        return;
+    while (1)
+    {
+        const char* pszConvertedString = nullptr;
+        int ConsoleString = R_Text_GetConsoleString(
+            psString, &limit, &pszConvertedString, &psString, vColor);
+        const char* v10 = pszConvertedString;
+        v11 = ConsoleString;
+        if (pszConvertedString == nullptr || *pszConvertedString == 0)
+            break;
+        RE_Text_PaintWithCursor(fXOfs + x, y, font, scale, vColor,
+                                pszConvertedString, -1, 0, charWidth, 0,
+                                style);
+        if (v11 != 0)
+        {
+            fXOfs = RE_Text_Width(v10, font, scale, charWidth, limit) + fXOfs;
+            goto LABEL_7;
+        }
+    LABEL_11:
+        if (psString == nullptr)
+            return;
+    }
+LABEL_7:
+    if (v11 != 0)
+    {
+        float fIconHeight;
+        float fIconWidth;
+        nglTexture* hIconShader = nullptr;
+        const short* psStringEnd = nullptr;
+        R_Text_GetConsoleIcon(psString, &psStringEnd, &limit, scale,
+                              &fIconWidth, &fIconHeight, &hIconShader,
+                              vColor);
+        RE_SetColor(vColor);
+        float v21 = fIconWidth;
+        float v20 = fIconHeight;
+        float v23 = y - (((scale * 19.200001f) + fIconHeight) * 0.5f);
+        float v25 = fXOfs + x;
+        ri.AdjustFrom640(&v25, &v23, &v21, &v20);
+        float x1 = v25;
+        float y1 = v23;
+        float w = v21;
+        float h = v20;
+        if (nglBuildScene != nullptr)
+        {
+            nglQuad Quad;
+            nglInitQuad(&Quad);
+            nglSetQuadRect(&Quad, x1, y1, x1 + w, y1 + h);
+            nglSetQuadUV(&Quad, 0.0f, 0.0f, 1.0f, 1.0f);
+            nglSetQuadColor(&Quad, (unsigned int)sCurColor);
+            nglSetQuadZ(&Quad, 0.0f);
+            Quad.Tex = hIconShader;
+            nglListAddQuad(&Quad);
+        }
+        fXOfs = fIconWidth + fXOfs;
+    }
+    goto LABEL_11;
 }
