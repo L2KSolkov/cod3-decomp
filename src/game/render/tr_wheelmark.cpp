@@ -7,7 +7,9 @@
 #include "core/math_types.h"
 #include "core/color.h"
 #include "core/mem_heap.h"
+#include "core/tlFixedString.h"
 #include "render/cdDynamicDecalShader.h"
+#include "render/cdWheelMarkShader.h"
 
 #include <stdint.h>
 
@@ -80,6 +82,7 @@ public:
     void New();          // ?New@WheelMark@@QAEXXZ
     void UpdateSplash(const math::Position3& Pos);  // ?UpdateSplash@WheelMark@@QAEXABVPosition3@math@@@Z
     void Stop();         // ?Stop@WheelMark@@QAEXXZ
+    void Assign(Entity* owner, wheel_e wheel);  // ?Assign@WheelMark@@QAEXPAVEntity@@W4wheel_e@@@Z
 };
 
 // WheelMarkMgr statics (render.o data; protected -> @@1)
@@ -88,9 +91,14 @@ class WheelMarkMgr {
 protected:
     static unsigned int NMarks;              // ?NMarks@WheelMarkMgr@@1IA (defined in tr_stats.cpp)
     static cdWheelMarkShaderMat* Material;   // ?Material@WheelMarkMgr@@1PAVcdWheelMarkShaderMat@@A @ 0xF7419C
+    static WheelMark Marks[16];              // ?Marks@WheelMarkMgr@@1PAVWheelMark@@A @ 0xF74490
+public:
+    static void Init();                      // ?Init@WheelMarkMgr@@SAXXZ
+    static void Exit();                      // ?Exit@WheelMarkMgr@@SAXXZ
 };
 
 cdWheelMarkShaderMat* WheelMarkMgr::Material;
+WheelMark WheelMarkMgr::Marks[16];
 
 // PostEffectEventScriptCall (sret Handle; game.o)
 class Handle {
@@ -329,4 +337,68 @@ void WheelMark::Stop()
         PrevVertex1 = nullptr;
         PrevVertex0 = nullptr;
     }
+}
+
+// ============================================================================
+// WheelMark::Assign - ea: 0x006C8F80
+// ============================================================================
+void WheelMark::Assign(Entity* owner, wheel_e wheel)
+{
+    cdWheelMarkVertex* PrevVertex0 = this->PrevVertex0;
+    Active = false;
+    if (PrevVertex0 != nullptr)
+    {
+        ((unsigned char*)&PrevVertex0->TexCoord)[3] = 0;
+        ((unsigned char*)&this->PrevVertex1->TexCoord)[3] = 0;
+        PrevVertex1 = nullptr;
+        PrevVertex0 = nullptr;
+    }
+    Owner = owner;
+    Wheel = wheel;
+}
+
+// ============================================================================
+// WheelMarkMgr::Init - ea: 0x006C8E50
+// ============================================================================
+extern void* mem_heap_malloc(unsigned int size);  // core.o
+extern void mem_heap_free(void* ptr);
+void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                       nglMaterial* Material, int Flags);
+void nglMakeSectionUnique(nglMesh* Mesh, int SectionIdx);
+nglTexture* nglGetTexture(const tlFixedString& FileName);
+
+void WheelMarkMgr::Init()
+{
+    void* block = mem_heap_malloc(0x14u);
+    cdWheelMarkShaderMat* v1;
+    if (block != nullptr)
+        v1 = new (block) cdWheelMarkShaderMat();
+    else
+        v1 = nullptr;
+    WheelMarkMgr::Material = v1;
+    tlFixedString FileName("tyretreads");
+    WheelMarkMgr::Material->mTexture = nglGetTexture(FileName);
+    nglMesh** p_Mesh = &WheelMarkMgr::Marks[0].Mesh;
+    for (int i = 16; i != 0; --i)
+    {
+        *p_Mesh = nglCreateMesh(0x80000u, 1u);
+        nglMeshSection* Section = nglCreateSection(6, 0, 1024, &cdWheelMarkVertexFormat);
+        cdWheelMarkShaderMat* v5 = WheelMarkMgr::Material;
+        p_Mesh[1] = (nglMesh*)Section;
+        nglAddMeshSection(*p_Mesh, Section, (nglMaterial*)v5, 1);
+        nglMakeSectionUnique(*p_Mesh, 0);
+        p_Mesh += 28;
+    }
+    WheelMarkMgr::NMarks = 0;
+}
+
+// ============================================================================
+// WheelMarkMgr::Exit - ea: 0x006C8F40
+// ============================================================================
+void WheelMarkMgr::Exit()
+{
+    for (unsigned int i = 0; i < 16; ++i)
+        nglDestroyMesh(WheelMarkMgr::Marks[i].Mesh);
+    mem_heap_free(WheelMarkMgr::Material);
+    WheelMarkMgr::Material = nullptr;
 }

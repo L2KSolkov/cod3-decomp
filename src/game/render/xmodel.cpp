@@ -13,6 +13,7 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
                                  const char* ctx, const char* file,
                                  int line);  // core.o
 extern void Com_Memcpy(void* dest, const void* src, unsigned int count);  // core.o
+extern void ValidatePakId(TPakId pakId);  // streamer.o (pakmanager.cpp)
 
 // ea: 0x006BD3B0
 int XModelGetSurfaces(IVPointer<XModel> model, XSurface*** surfaces, int lod)
@@ -21,6 +22,59 @@ int XModelGetSurfaces(IVPointer<XModel> model, XSurface*** surfaces, int lod)
     (void)lod;
     *surfaces = nullptr;
     return 0;
+}
+
+// ea: 0x006CA460
+int XModelBad(IVPointer<XModel> model)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+        return true;
+    ValidatePakId((TPakId)model.mPakId);
+    XModelLod** lod = model.mValue->lod;
+    int v2 = 0;
+    if (model.mValue->lod[0] == nullptr)
+    {
+        XModelLod* v3;
+        do
+        {
+            v3 = lod[1];
+            ++lod;
+            ++v2;
+        } while (v3 == nullptr);
+    }
+    return model.mValue->lod[v2]->xmodelParts == nullptr;
+}
+
+// ea: 0x006CA4C0
+const char* XModelGetName(IVPointer<XModel> model)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    return model.mValue->name.mStr;
+}
+
+// ea: 0x006CA4E0
+int XModelGetContents(IVPointer<XModel> model)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xmodel.cpp";
+        AeAssert::gCurrentLine = 329;
+        AeAssert::gCurrentExpr = "model";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    ValidatePakId((TPakId)model.mPakId);
+    return model.mValue->contents;
+}
+
+// ea: 0x006CA550
+int XModelGetNumLods(IVPointer<XModel> model)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    return model.mValue->numLods;
 }
 
 // ea: 0x006BD3C0

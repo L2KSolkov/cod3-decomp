@@ -8,6 +8,7 @@
 #include "render/cdDebugShader.h"
 #include "ngl/ngl_lighting.h"
 #include "ngl/nglDebug.h"
+#include "ngl/ngl_dx_quad.h"
 
 #include <math.h>
 #include <intrin.h>
@@ -311,6 +312,73 @@ void DebugRender::RenderText3DOff2D(const char* str, const math::Position3& pos,
         float px = proj.v.m128_f32[0];
         DebugRender::RenderText(str, (int)(off.v.m128_f32[0] + px),
                                 (int)(off.v.m128_f32[1] + py), col, depth, size);
+    }
+}
+
+// ============================================================================
+// DebugRender::RenderTexturedQuad2D - ea: 0x006CA350
+// ============================================================================
+struct DebugTexturedQuad2D {
+    float l;          // +0x00
+    float t;          // +0x04
+    float r;          // +0x08
+    float b;          // +0x0C
+    float z;          // +0x10
+    Color col;        // +0x14
+    nglTexture* nglTex;  // +0x24
+};
+static_assert(sizeof(DebugTexturedQuad2D) == 0x28, "DebugTexturedQuad2D size mismatch");
+
+struct DebugQuadVector {
+    DebugTexturedQuad2D* mElements;  // +0x00
+    int mSize;                       // +0x04
+    int mCapacity;                   // +0x08
+    void push_back(const DebugTexturedQuad2D& e);
+};
+DebugQuadVector gDebugTexturedQuad2Ds;  // ?gDebugTexturedQuad2Ds@@3V?$ae_vector@VDebugTexturedQuad2D@@@@A @ 0xF755F0
+
+void DebugQuadVector::push_back(const DebugTexturedQuad2D& e)
+{
+    if (mSize >= mCapacity)
+    {
+        int newCap = mCapacity > 0 ? mCapacity * 2 : 4;
+        DebugTexturedQuad2D* ne = (DebugTexturedQuad2D*)realloc(mElements,
+                                                               newCap * sizeof(DebugTexturedQuad2D));
+        mElements = ne;
+        mCapacity = newCap;
+    }
+    mElements[mSize++] = e;
+}
+
+void DebugRender::RenderTexturedQuad2D(float l, float t, float r, float b,
+                                       float z, const Color& col,
+                                       nglTexture* nglTex)
+{
+    extern unsigned int extract_color(const Color& col);
+    if (nglBuildScene != nullptr && nglBuildScene->Parent != nullptr)
+    {
+        nglQuad q;
+        nglInitQuad(&q);
+        nglSetQuadZ(&q, z);
+        nglSetQuadRect(&q, l, t, r, b);
+        nglSetQuadColor(&q, extract_color(col));
+        nglSetQuadTex(&q, nglTex);
+        nglListAddQuad(&q);
+    }
+    else
+    {
+        DebugTexturedQuad2D iElement;
+        iElement.l = l;
+        iElement.t = t;
+        iElement.r = r;
+        iElement.b = b;
+        iElement.z = z;
+        iElement.col.r = col.r;
+        iElement.col.g = col.g;
+        iElement.col.b = col.b;
+        iElement.col.a = col.a;
+        iElement.nglTex = nglTex;
+        gDebugTexturedQuad2Ds.push_back(iElement);
     }
 }
 

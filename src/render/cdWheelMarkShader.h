@@ -19,7 +19,9 @@
 // ============================================================================
 // cdWheelMarkShaderMat — wheel mark shader material (20 bytes)
 // ============================================================================
-struct cdWheelMarkShaderMat : nglMaterial {
+// class tag per binary mangling (?PAVcdWheelMarkShaderMat in render.o)
+class cdWheelMarkShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;  // +0x10
 
     cdWheelMarkShaderMat();  // @0x7C92B0

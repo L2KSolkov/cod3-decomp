@@ -2233,6 +2233,7 @@ void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vSt
 Entity* G_TempEntity(const float* origin, int event);
 void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
 extern Entity* g_path_owner;
+struct nglTexture;
 // DebugRender - render.o class with static draw helpers (binary mangling
 // ?RenderX@DebugRender@@SAX...; takes math::Position3 const& + global Color).
 class DebugRender {
@@ -2249,6 +2250,9 @@ public:
     static void RenderText3DOff2D(const char* str, const math::Position3& pos,
                                   const math::Dir3& off, const Color& col,
                                   float depth, float size);  // render.o 0x6C40A0
+    static void RenderTexturedQuad2D(float l, float t, float r, float b,
+                                     float z, const Color& col,
+                                     nglTexture* nglTex);  // render.o 0x6CA350
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& color);  // render.o 0xAC3FF0
     static void RenderLineBox(const math::Mat43& LToW,
