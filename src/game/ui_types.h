@@ -2248,3 +2248,96 @@ public:
 };
 static_assert(sizeof(IGOVoipList) == 0xB8,
               "IGOVoipList size mismatch");
+
+// ============================================================================
+// IGOJeepMapWidget (80 bytes) - verified against IDA
+// ============================================================================
+class IGOJeepMapWidget : public IGOWidget {
+public:
+    static const float mapTopRight[3][2];   // @ 0xDF38C4
+    static const float mapWideHeight[3][2]; // @ 0xDF38DC
+    static const char* mLevelMapName[2];    // @ 0xCEF344
+
+    PanelQuad* icon;         // +0x0C
+    float mapSizeX[3];       // +0x10
+    float mapSizeY[3];       // +0x1C
+    float u[4];              // +0x28
+    float v[4];              // +0x38
+    float hudRange;          // +0x48
+    bool  mTextureSetted;    // +0x4C
+
+    IGOJeepMapWidget(int client);  // 0x5689B0
+    virtual void Init(PanelFile* panel);              // 0x59A250
+    virtual void Update(float time_inc);              // 0x5789A0
+    virtual void Draw();                              // 0x568AD0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583C40
+    void SetLevelMap(int levelIndex, TPakId pakId);   // 0x5689E0
+private:
+    void WithinMap(float x, float y, float& scaleX,
+                   float& scaleY);                    // 0x568A90
+};
+static_assert(sizeof(IGOJeepMapWidget) == 0x50,
+              "IGOJeepMapWidget size mismatch");
+
+// ============================================================================
+// IGOWarStatusWidget (164 bytes) - verified against IDA
+// ============================================================================
+class IGOWarStatusWidget : public IGOWidget {
+public:
+    float  iconWidth;     // +0x0C
+    float  iconHeight;    // +0x10
+    float  neutralWidth;  // +0x14
+    float  neutralHeight; // +0x18
+    float  centerX;       // +0x1C
+    float  centerY;       // +0x20
+    float  zoomPct;       // +0x24
+    int    lastFlag;      // +0x28
+    ae_array<PanelQuad*, 5> m_pObjectiveFrameUS;    // +0x2C
+    ae_array<PanelQuad*, 5> m_pObjectiveFrameGerman;// +0x40
+    ae_array<PanelQuad*, 5> m_pObjectiveGerman;     // +0x54
+    ae_array<PanelQuad*, 5> m_pObjectiveUS;         // +0x68
+    ae_array<PanelQuad*, 5> m_pIconGerman;          // +0x7C
+    ae_array<PanelQuad*, 5> m_pIconUS;              // +0x90
+
+    IGOWarStatusWidget(int client);  // 0x5679F0
+    virtual ~IGOWarStatusWidget();   // 0x577B90
+    virtual void Init(PanelFile* panel);              // 0x598E70
+    virtual void Update(float time_inc);              // 0x567A90
+    virtual void Draw();                              // 0x588C90
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583640
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577FC0
+    void DrawFlag(int iFlag, int iIndexAdjustedFlag, int iContestedFlag,
+                  int numFlags, int myTeam, int notMyTeam,
+                  float capturePct);                  // 0x5834F0
+};
+static_assert(sizeof(IGOWarStatusWidget) == 0xA4,
+              "IGOWarStatusWidget size mismatch");
+
+// ============================================================================
+// IGOGrenadeCookWidget (52 bytes) - verified against IDA
+// ============================================================================
+class IGOGrenadeCookWidget : public IGOWidget {
+public:
+    PanelQuad* grenadeTime[6];  // +0x0C
+    PanelQuad* grenadeRing;     // +0x24
+    float      fuseRemaining;   // +0x28
+    float      fuseTotal;       // +0x2C
+    bool       crossHair;       // +0x30
+    bool       dont_draw;       // +0x31
+
+    IGOGrenadeCookWidget(int client);  // 0x566C50
+    virtual ~IGOGrenadeCookWidget();   // 0x566CE0
+    virtual void Init(PanelFile* panel);              // 0x5988D0
+    virtual void Update(float time_inc);              // 0x566D70
+    virtual void Draw();                              // 0x566F50
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582DF0
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x582E40
+    void SetFuse(float total, float remain);          // 0x566D50
+};
+static_assert(sizeof(IGOGrenadeCookWidget) == 0x34,
+              "IGOGrenadeCookWidget size mismatch");

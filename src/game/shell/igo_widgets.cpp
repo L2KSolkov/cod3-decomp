@@ -7,6 +7,7 @@
 #include "game/client_types.h"
 #include "game/player_types.h"
 #include "game/actor_types.h"
+#include "core/tlFixedString.h"
 
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
@@ -50,6 +51,13 @@ struct BrocAPI {
             const Broc::entity);  // +0x184
         int (*mCallbackGetTeamDestroyingHQPercent)();    // +0x188
         int (*mCallbackGetHQCaptureStatus)();            // +0x18C
+        int (*mCallbackGetFlagCount)();                  // +0x190
+        int (*mCallbackGetTeamControllingFlag)(unsigned int);  // +0x194
+        int (*mCallbackGetFlagBeingCaptured)();          // +0x198
+        int (*mCallbackGetTeamCapturingFlag)();          // +0x19C
+        int (*mCallbackGetCapturingFlagPercent)();       // +0x1A0
+        uint8_t _pad1A4[4];                              // +0x1A4
+        int (*mCallbackGetFlagBreatherTime)();           // +0x1A8
     } mBrocExports;  // +0xBE8
 };
 extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
@@ -127,6 +135,17 @@ struct DObjSkelMat {
 };
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMat);  // g.o
+extern nglTexture* cdGetTexture(TPakId pakId,
+                                const tlFixedString& name);  // core.o
+namespace LocalClient {
+int ClientToPort(int client);  // ?ClientToPort@LocalClient@@YAHH@Z
+}
+
+namespace View {
+float GetCurrentXPos(float pos, int window);  // cg.o
+float GetCurrentYPos(float pos, int window);  // cg.o
+}
+
 
 // mp.o dropped-item helpers (local views; manglings tolerated at link)
 enum EDroppedItemTypes : int {
@@ -3359,4 +3378,651 @@ label_81:
         icons[ci]->SetAlpha(alpha);
     text->SetAlpha(alpha);
     dont_draw = false;
+}
+
+// ============================================================================
+// IGOJeepMapWidget
+// ============================================================================
+
+const float IGOJeepMapWidget::mapTopRight[3][2] = {
+    {32767.0f, -16264.0f},
+    {25952.0f, -28320.0f},
+    {23632.0f, -20288.0f},
+};
+const float IGOJeepMapWidget::mapWideHeight[3][2] = {
+    {49072.0f, 49072.0f},
+    {49072.0f, 49072.0f},
+    {49072.0f, 49072.0f},
+};
+const char* IGOJeepMapWidget::mLevelMapName[2] = {
+    "SP_nightDrop_DriveMap",
+    "SP_fuelPlant_DriveMap",
+};
+
+// ea: 0x005689B0
+IGOJeepMapWidget::IGOJeepMapWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    icon = nullptr;
+    mTextureSetted = false;
+}
+
+// ea: 0x0059A250
+void IGOJeepMapWidget::Init(PanelFile* panel)
+{
+    u[0] = 0.0f;
+    u[1] = 0.0f;
+    v[0] = 0.0f;
+    v[2] = 0.0f;
+    u[2] = 1.0f;
+    u[3] = 1.0f;
+    v[1] = 1.0f;
+    v[3] = 1.0f;
+    hudRange = 0.1f;
+    icon = panel->GetPointer("SP_jeepmap");
+    icon->SetSectionUV(0, u, v);
+    icon->SetZvalueAbs(icon->GetZvalue() + 50.0f);
+}
+
+// ea: 0x005689E0
+void IGOJeepMapWidget::SetLevelMap(int levelIndex, TPakId pakId)
+{
+    if (levelIndex <= 2)
+    {
+        mapSizeX[0] =
+            mapTopRight[levelIndex][0] - mapWideHeight[levelIndex][0];
+        mapSizeX[1] = mapTopRight[levelIndex][0];
+        mapSizeX[2] = mapWideHeight[levelIndex][0];
+        static const float sDF38C8[6] = {
+            -16264.0f, 25952.0f, -28320.0f, 23632.0f, -20288.0f, 49072.0f,
+        };
+        static const float sDF38E0[6] = {
+            49072.0f, 49072.0f, 49072.0f, 49072.0f, 49072.0f, 0.0f,
+        };
+        mapSizeY[0] = sDF38C8[2 * levelIndex];
+        mapSizeY[1] =
+            sDF38E0[2 * levelIndex] + sDF38C8[2 * levelIndex];
+        mapSizeY[2] = sDF38E0[2 * levelIndex];
+        tlFixedString name(mLevelMapName[levelIndex]);
+        icon->SetTexture(cdGetTexture(pakId, name));
+    }
+}
+
+// ea: 0x00568A90
+void IGOJeepMapWidget::WithinMap(float x, float y, float& scaleX,
+                                 float& scaleY)
+{
+    scaleX = (mapSizeX[1] - x) / mapSizeX[2];
+    scaleY = (mapSizeY[1] - y) / mapSizeY[2];
+}
+
+// ea: 0x00578A90
+void IGOJeepMapWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown || icon == nullptr)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player == nullptr || Player->client == nullptr)
+        return;
+    float v4 = (mapSizeX[1] - Player->r.currentOrigin.v.m128_f32[1])
+               / mapSizeX[2];
+    float v5 = (mapSizeY[1] - Player->r.currentOrigin.v.m128_f32[0])
+               / mapSizeY[2];
+    float v6 = v4 - hudRange;
+    if (v6 >= 0.0f)
+    {
+        if (v6 > 1.0f)
+            v6 = 1.0f;
+    }
+    else
+    {
+        v6 = 0.0f;
+    }
+    u[0] = v6;
+    u[1] = v6;
+    float v7 = hudRange + v4;
+    if (v7 >= 0.0f)
+    {
+        if (v7 > 1.0f)
+            v7 = 1.0f;
+    }
+    else
+    {
+        v7 = 0.0f;
+    }
+    float v8 = v5 - hudRange;
+    u[2] = v7;
+    u[3] = v7;
+    float v9;
+    if (v8 >= 0.0f)
+    {
+        v9 = 1.0f;
+        if (v8 <= 1.0f)
+            v9 = v8;
+    }
+    else
+    {
+        v9 = 0.0f;
+    }
+    float v10 = hudRange + v5;
+    v[0] = v9;
+    if (v10 >= 0.0f)
+    {
+        if (v10 > 1.0f)
+            v10 = 1.0f;
+    }
+    else
+    {
+        v10 = 0.0f;
+    }
+    v[1] = v10;
+    v[2] = v9;
+    v[3] = v10;
+    icon->SetSectionUV(0, u, v);
+}
+
+// ea: 0x00568AD0
+void IGOJeepMapWidget::Draw()
+{
+    if (is_shown && icon != nullptr)
+        icon->Draw();
+}
+
+// ea: 0x00583C40
+void IGOJeepMapWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    if (icon != nullptr)
+    {
+        icon->FattenMeForWidescreen(widescreen, about_x);
+        icon->FattenMeForWidescreen(widescreen, about_x);
+    }
+}
+
+// ============================================================================
+// IGOWarStatusWidget
+// ============================================================================
+
+// ea: 0x005679F0
+IGOWarStatusWidget::IGOWarStatusWidget(int client)
+{
+    mClient = client;
+    is_shown = true;
+    force_appear = false;
+    for (int i = 0; i < 5; ++i)
+    {
+        m_pObjectiveFrameUS.m_elements[i] = nullptr;
+        m_pObjectiveFrameGerman.m_elements[i] = nullptr;
+        m_pObjectiveGerman.m_elements[i] = nullptr;
+        m_pObjectiveUS.m_elements[i] = nullptr;
+        m_pIconGerman.m_elements[i] = nullptr;
+        m_pIconUS.m_elements[i] = nullptr;
+    }
+    iconWidth = 0.0f;
+    iconHeight = 0.0f;
+    neutralWidth = 0.0f;
+    neutralHeight = 0.0f;
+    centerX = 0.0f;
+    centerY = 0.0f;
+    zoomPct = 0.0f;
+    lastFlag = 0;
+}
+
+// ea: 0x00577B90
+IGOWarStatusWidget::~IGOWarStatusWidget()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        if (m_pObjectiveFrameUS.m_elements[i] != nullptr)
+            delete m_pObjectiveFrameUS.m_elements[i];
+        if (m_pObjectiveFrameGerman.m_elements[i] != nullptr)
+            delete m_pObjectiveFrameGerman.m_elements[i];
+        if (m_pObjectiveGerman.m_elements[i] != nullptr)
+            delete m_pObjectiveGerman.m_elements[i];
+        if (m_pObjectiveUS.m_elements[i] != nullptr)
+            delete m_pObjectiveUS.m_elements[i];
+        if (m_pIconGerman.m_elements[i] != nullptr)
+            delete m_pIconGerman.m_elements[i];
+        if (m_pIconUS.m_elements[i] != nullptr)
+            delete m_pIconUS.m_elements[i];
+    }
+}
+
+// ea: 0x00598E70
+void IGOWarStatusWidget::Init(PanelFile* panel)
+{
+    char szGeometry[32];
+    for (int i = 0; i < 5; ++i)
+    {
+        snprintf(szGeometry, 30, "war_icon_objective_frame_%02d", i + 1);
+        m_pObjectiveFrameUS.m_elements[i] =
+            panel->GetPointer(szGeometry);
+        if (m_pObjectiveFrameUS.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOWidget.cpp";
+            AeAssert::gCurrentLine = 2531;
+            AeAssert::gCurrentExpr = "m_pObjectiveFrameUS[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("m_pObjectiveFrameUS[i] not valid"))
+                __debugbreak();
+        }
+        snprintf(szGeometry, 30, "war_icon_obj_frame_grm_%02d", i + 1);
+        m_pObjectiveFrameGerman.m_elements[i] =
+            panel->GetPointer(szGeometry);
+        if (m_pObjectiveFrameGerman.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOWidget.cpp";
+            AeAssert::gCurrentLine = 2536;
+            AeAssert::gCurrentExpr = "m_pObjectiveFrameGerman[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "m_pObjectiveFrameGerman[i] not valid"))
+                __debugbreak();
+        }
+        snprintf(szGeometry, 30, "war_icon_objective_german_%02d", i + 1);
+        m_pObjectiveGerman.m_elements[i] = panel->GetPointer(szGeometry);
+        if (m_pObjectiveGerman.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOWidget.cpp";
+            AeAssert::gCurrentLine = 2541;
+            AeAssert::gCurrentExpr = "m_pObjectiveGerman[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("m_pObjectiveGerman[i] not valid"))
+                __debugbreak();
+        }
+        snprintf(szGeometry, 30, "war_icon_objective_us_%02d", i + 1);
+        m_pObjectiveUS.m_elements[i] = panel->GetPointer(szGeometry);
+        if (m_pObjectiveUS.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOWidget.cpp";
+            AeAssert::gCurrentLine = 2546;
+            AeAssert::gCurrentExpr = "m_pObjectiveUS[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("m_pObjectiveUS[i] not valid"))
+                __debugbreak();
+        }
+        snprintf(szGeometry, 30, "war_icon_german_%02d", i + 1);
+        m_pIconGerman.m_elements[i] = panel->GetPointer(szGeometry);
+        if (m_pIconGerman.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOWidget.cpp";
+            AeAssert::gCurrentLine = 2551;
+            AeAssert::gCurrentExpr = "m_pIconGerman[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("m_pIconGerman[i] not valid"))
+                __debugbreak();
+        }
+        snprintf(szGeometry, 30, "war_icon_us_%02d", i + 1);
+        m_pIconUS.m_elements[i] = panel->GetPointer(szGeometry);
+        if (m_pIconUS.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOWidget.cpp";
+            AeAssert::gCurrentLine = 2556;
+            AeAssert::gCurrentExpr = "m_pIconUS[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("m_pIconUS[i] not valid"))
+                __debugbreak();
+        }
+        m_pObjectiveFrameUS.m_elements[i]->SetShown(true);
+        m_pObjectiveFrameGerman.m_elements[i]->SetShown(true);
+        m_pObjectiveGerman.m_elements[i]->SetShown(true);
+        m_pObjectiveUS.m_elements[i]->SetShown(true);
+        m_pIconGerman.m_elements[i]->SetShown(true);
+        m_pIconUS.m_elements[i]->SetShown(true);
+    }
+    if (mClient > 0)
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            m_pObjectiveFrameUS.m_elements[i] =
+                PanelQuad::Clone(m_pObjectiveFrameUS.m_elements[i]);
+            m_pObjectiveFrameGerman.m_elements[i] =
+                PanelQuad::Clone(m_pObjectiveFrameGerman.m_elements[i]);
+            m_pObjectiveGerman.m_elements[i] =
+                PanelQuad::Clone(m_pObjectiveGerman.m_elements[i]);
+            m_pObjectiveUS.m_elements[i] =
+                PanelQuad::Clone(m_pObjectiveUS.m_elements[i]);
+            m_pIconGerman.m_elements[i] =
+                PanelQuad::Clone(m_pIconGerman.m_elements[i]);
+            m_pIconUS.m_elements[i] =
+                PanelQuad::Clone(m_pIconUS.m_elements[i]);
+        }
+    }
+}
+
+// ea: 0x00567A90
+void IGOWarStatusWidget::Update(float time_inc)
+{
+    (void)time_inc;
+}
+
+// ea: 0x005834F0
+void IGOWarStatusWidget::DrawFlag(int iFlag, int iIndexAdjustedFlag,
+                                  int iContestedFlag, int numFlags,
+                                  int myTeam, int notMyTeam,
+                                  float capturePct)
+{
+    (void)numFlags;
+    (void)notMyTeam;
+    PanelQuad* quadContestedFlagFrame;
+    if (iFlag == iContestedFlag
+        && (gpBrocAPI->mBrocExports.mCallbackGetFlagBreatherTime() == 0
+            || cgGlobal.time % 1000 > 500))
+    {
+        float fRenderCapturedFlagTransitionPercentage =
+            (capturePct * 0.625f) + 0.2f;
+        int v10 = gpBrocAPI->mBrocExports.mCallbackGetTeamCapturingFlag();
+        if (myTeam == 1)
+            quadContestedFlagFrame =
+                m_pObjectiveFrameGerman.m_elements[iIndexAdjustedFlag];
+        else
+            quadContestedFlagFrame =
+                m_pObjectiveFrameUS.m_elements[iIndexAdjustedFlag];
+        PanelQuad* v12;
+        if (v10 == -1)
+        {
+            v12 = m_pObjectiveGerman.m_elements[iIndexAdjustedFlag];
+        }
+        else
+        {
+            if (v10 != 1)
+                goto label_13;
+            v12 = m_pObjectiveUS.m_elements[iIndexAdjustedFlag];
+        }
+        if (v12 != nullptr)
+        {
+            quadContestedFlagFrame->Mask(
+                1.0f - fRenderCapturedFlagTransitionPercentage,
+                BOTTOM_MASK, 1.0f);
+            v12->Mask(fRenderCapturedFlagTransitionPercentage, TOP_MASK,
+                      1.0f);
+            v12->Draw();
+        label_14:
+            quadContestedFlagFrame->Draw();
+            goto label_15;
+        }
+    label_13:
+        quadContestedFlagFrame->Mask(1.0f, BOTTOM_MASK, 1.0f);
+        goto label_14;
+    }
+label_15:
+    {
+        int v13 = gpBrocAPI->mBrocExports.mCallbackGetTeamControllingFlag(
+            iFlag);
+        PanelQuad* icon;
+        if (v13 == -1)
+        {
+            icon = m_pIconGerman.m_elements[iIndexAdjustedFlag];
+        }
+        else
+        {
+            if (v13 != 1)
+                return;
+            icon = m_pIconUS.m_elements[iIndexAdjustedFlag];
+        }
+        if (icon != nullptr)
+            icon->Draw();
+    }
+}
+
+// ea: 0x00588C90
+void IGOWarStatusWidget::Draw()
+{
+    if (is_shown && MPUIInterface::mServerParams.mGameType == 0)
+    {
+        if (gpBrocAPI->mBrocExports.mCallbackGetFlagCount != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackGetTeamControllingFlag
+                   != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackGetFlagBeingCaptured
+                   != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackGetTeamCapturingFlag
+                   != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackGetFlagBreatherTime
+                   != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackGetCapturingFlagPercent
+                   != nullptr)
+        {
+            Entity* Player = GetPlayer(currCl);
+            if (Player->client->pers.playerState == 3)
+            {
+                sentient_s* sentient = Player->sentient;
+                int myTeam = 0;
+                int notMyTeam = 0;
+                if (sentient != nullptr)
+                {
+                    if (sentient->eTeam == TEAM_AXIS)
+                    {
+                        myTeam = 1;
+                        notMyTeam = 2;
+                    }
+                    else
+                    {
+                        myTeam = 2;
+                        notMyTeam = 1;
+                    }
+                }
+                int numFlags =
+                    gpBrocAPI->mBrocExports.mCallbackGetFlagCount();
+                if (numFlags != 0)
+                {
+                    int iContestedFlag =
+                        gpBrocAPI->mBrocExports
+                            .mCallbackGetFlagBeingCaptured();
+                    float v6 = (float)gpBrocAPI->mBrocExports
+                                   .mCallbackGetCapturingFlagPercent();
+                    int v7 = (5 - numFlags) / 2;
+                    float capturePct = fabsf(v6 * 0.01f);
+                    if (numFlags > 0)
+                    {
+                        int i = 4 - v7;
+                        int flag = 0;
+                        for (;;)
+                        {
+                            int idx = myTeam == 1 ? i : flag + v7;
+                            DrawFlag(flag++, idx, iContestedFlag, numFlags,
+                                     myTeam, notMyTeam, capturePct);
+                            --i;
+                            if (flag >= numFlags)
+                                break;
+                            v7 = (5 - numFlags) / 2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00583640
+void IGOWarStatusWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        m_pObjectiveFrameUS.m_elements[i]->FattenMeForWidescreen(
+            widescreen, about_x);
+        m_pObjectiveFrameGerman.m_elements[i]->FattenMeForWidescreen(
+            widescreen, about_x);
+        m_pObjectiveGerman.m_elements[i]->FattenMeForWidescreen(
+            widescreen, about_x);
+        m_pObjectiveUS.m_elements[i]->FattenMeForWidescreen(widescreen,
+                                                            about_x);
+        m_pIconGerman.m_elements[i]->FattenMeForWidescreen(widescreen,
+                                                           about_x);
+        m_pIconUS.m_elements[i]->FattenMeForWidescreen(widescreen,
+                                                       about_x);
+    }
+}
+
+// ea: 0x00577FC0
+void IGOWarStatusWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        m_pObjectiveFrameUS.m_elements[i]->FormatForSplitScreen(viewport,
+                                                                old_viewport);
+        m_pObjectiveFrameGerman.m_elements[i]->FormatForSplitScreen(
+            viewport, old_viewport);
+        m_pObjectiveGerman.m_elements[i]->FormatForSplitScreen(
+            viewport, old_viewport);
+        m_pObjectiveUS.m_elements[i]->FormatForSplitScreen(viewport,
+                                                           old_viewport);
+        m_pIconGerman.m_elements[i]->FormatForSplitScreen(viewport,
+                                                          old_viewport);
+        m_pIconUS.m_elements[i]->FormatForSplitScreen(viewport,
+                                                      old_viewport);
+    }
+}
+
+// ============================================================================
+// IGOGrenadeCookWidget
+// ============================================================================
+
+// ea: 0x00566C50
+IGOGrenadeCookWidget::IGOGrenadeCookWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    dont_draw = true;
+    grenadeTime[0] = nullptr;
+    grenadeTime[1] = nullptr;
+    grenadeTime[2] = nullptr;
+    grenadeTime[3] = nullptr;
+    grenadeTime[4] = nullptr;
+    grenadeTime[5] = nullptr;
+    grenadeRing = nullptr;
+    fuseRemaining = -1.0f;
+    fuseTotal = -1.0f;
+    crossHair = gSaveGameData[LocalClient::ClientToPort(client)]
+                    .mStubData.mCrosshair;
+}
+
+// ea: 0x00566CE0
+IGOGrenadeCookWidget::~IGOGrenadeCookWidget()
+{
+    for (int i = 0; i < 6; ++i)
+    {
+        if (grenadeTime[i] != nullptr)
+            delete grenadeTime[i];
+    }
+    if (grenadeRing != nullptr)
+        delete grenadeRing;
+}
+
+// ea: 0x00598D70
+void IGOGrenadeCookWidget::Init(PanelFile* panel)
+{
+    grenadeTime[0] = panel->GetPointer("GrenadeCook1");
+    grenadeTime[1] = panel->GetPointer("GrenadeCook2");
+    grenadeTime[2] = panel->GetPointer("GrenadeCook3");
+    grenadeTime[3] = panel->GetPointer("GrenadeCook4");
+    grenadeTime[4] = panel->GetPointer("GrenadeCook5");
+    grenadeTime[5] = panel->GetPointer("GrenadeCook6");
+    grenadeRing = panel->GetPointer("GrenadeCookring");
+    if (mClient > 0)
+    {
+        grenadeTime[0] = PanelQuad::Clone(grenadeTime[0]);
+        grenadeTime[1] = PanelQuad::Clone(grenadeTime[1]);
+        grenadeTime[2] = PanelQuad::Clone(grenadeTime[2]);
+        grenadeTime[3] = PanelQuad::Clone(grenadeTime[3]);
+        grenadeTime[4] = PanelQuad::Clone(grenadeTime[4]);
+        grenadeTime[5] = PanelQuad::Clone(grenadeTime[5]);
+        grenadeRing = PanelQuad::Clone(grenadeRing);
+    }
+    float ringX = grenadeRing->GetCenterX();
+    float ringY = grenadeRing->GetCenterY();
+    int window = unk_F6A284[802 * mClient];
+    float x = View::GetCurrentXPos(320.0f, window) - ringX;
+    float y = View::GetCurrentYPos(240.0f, window) - ringY;
+    for (int i = 0; i < 6; ++i)
+    {
+        grenadeTime[i]->SetCenterPos(grenadeTime[i]->GetCenterX() + x,
+                                     grenadeTime[i]->GetCenterY() + y);
+        grenadeTime[i]->SetAlpha(0.6f);
+    }
+    grenadeRing->SetCenterPos(grenadeRing->GetCenterX() + x,
+                              grenadeRing->GetCenterY() + y);
+    grenadeRing->SetAlpha(0.6f);
+}
+
+// ea: 0x00566D50
+void IGOGrenadeCookWidget::SetFuse(float total, float remain)
+{
+    fuseRemaining = remain;
+    fuseTotal = total;
+}
+
+// ea: 0x00566D70
+void IGOGrenadeCookWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown)
+        return;
+    if (fuseRemaining < 0.0f || fuseTotal < 0.0f)
+        goto label_24;
+    if (EntityManager::sInst->GetPlayer(currCl) == nullptr
+        || EntityManager::sInst->GetPlayer(currCl)->client == nullptr)
+    {
+        return;
+    }
+    if (((GetPlayerState(currCl).eFlags & 0x100000) != 0
+         && !BG_AllowPlayerWeaponAtVehiclePos(
+             GetPlayerState(currCl).vehType, GetPlayerState(currCl).vehPos))
+        || dword_F62960[1580 * currCl] == 0)
+    {
+    label_24:
+        dont_draw = true;
+        return;
+    }
+    for (int i = 0; i < 6; ++i)
+        grenadeTime[i]->SetVisibility(1.0f);
+    float percentLeft = fuseRemaining / fuseTotal;
+    for (int i = 0; i < 6; ++i)
+        grenadeTime[i]->SetColor(color32(1694433280));
+    if (percentLeft < 0.83f)
+        grenadeTime[0]->SetVisibility(0.0f);
+    if (percentLeft < 0.67f)
+        grenadeTime[1]->SetVisibility(0.0f);
+    if (percentLeft < 0.5f)
+        grenadeTime[2]->SetVisibility(0.0f);
+    if (percentLeft < 0.33f)
+        grenadeTime[3]->SetVisibility(0.0f);
+    if (percentLeft < 0.17f)
+        grenadeTime[4]->SetVisibility(0.0f);
+    dont_draw = false;
+}
+
+// ea: 0x00566F50
+void IGOGrenadeCookWidget::Draw()
+{
+    if (is_shown && !dont_draw)
+    {
+        for (int i = 0; i < 6; ++i)
+            grenadeTime[i]->Draw();
+        grenadeRing->Draw();
+    }
+}
+
+// ea: 0x00582DF0
+void IGOGrenadeCookWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 6; ++i)
+        grenadeTime[i]->FattenMeForWidescreen(widescreen, about_x);
+    grenadeRing->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00582E40
+void IGOGrenadeCookWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    for (int i = 0; i < 6; ++i)
+        grenadeTime[i]->FormatForSplitScreen(viewport, old_viewport);
+    grenadeRing->FormatForSplitScreen(viewport, old_viewport);
 }
