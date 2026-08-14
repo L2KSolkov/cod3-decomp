@@ -877,37 +877,6 @@ void FETextFlashInfo::Reset()
 extern FEMenuColorScheme color_schemes[];  // 0xDF3AE0
 extern const char* const FEMenuColorSchemeText[];  // 0xCEF370 (17 entries)
 
-// ea: 0x0056FB10
-bool FEMenuColorScheme::GetInfo(char index, color32& un, color32& h1,
-                                color32& h2)
-{
-    un.i = color_schemes[index].unselect.i;
-    h1.i = color_schemes[index].high1.i;
-    h2.i = color_schemes[index].high2.i;
-    return color_schemes[index].flash;
-}
-
-// ea: 0x0056FB50
-bool FEMenuColorScheme::GetInfo(char index, color32& un, color32& sel)
-{
-    un.i = color_schemes[index].unselect.i;
-    sel.i = color_schemes[index].high1.i;
-    return color_schemes[index].flash;
-}
-
-// ea: 0x0056FB80
-int FEMenuColorScheme::GetSchemeFromText(Broc::string& schemeText)
-{
-    int v1 = 0;
-    while (!(schemeText == Broc::string(FEMenuColorSchemeText[v1])))
-    {
-        if (++v1 >= 17)
-            return -1;
-    }
-    return v1;
-}
-
-// ============================================================================
 // MultiLineString (32 bytes) - verified against IDA
 // ============================================================================
 struct MultiLineButtons {
@@ -1367,9 +1336,9 @@ void FEMultiLineText::SetTextBox(const char* reference, int w,
     const char* STBString =
         STBManager::sInst->GetSTBString(reference);
     if (STBString != nullptr)
-        SetTextBoxNoLocalize(STBString, w, (int)sc_override);
+        SetTextBoxNoLocalize(Broc::string(STBString), w, sc_override);
     else
-        SetTextBoxNoLocalize(reference, 640, (int)sc_override);
+        SetTextBoxNoLocalize(Broc::string(reference), 640, sc_override);
 }
 
 // ea: 0x0057CFA0
@@ -1401,3 +1370,1258 @@ void FEMultiLineText::SetText(const char* reference)
     else
         SetTextNoLocalize(reference);
 }
+// ============================================================================
+// FEMultiLineText helpers
+// ============================================================================
+extern int currCl;                  // ?currCl@@3HA @ 0xF1579C
+extern nglFont* nglSysFont;         // ?nglSysFont@@3PAVnglFont@@A
+char gResultString[512];            // ?gResultString@@3PADA @ 0xF30B48
+
+struct KeyInfoEntry {
+    int  mKey;           // +0x00
+    char* mBoundCmdName; // +0x04
+};
+struct KeyInfo {
+    struct KeyTable {
+        KeyInfoEntry m_elements[256];
+        int          m_size;
+    };
+    static KeyTable mKeys[1];  // ?mKeys@KeyInfo@@0V?$ae_sized_array@V?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@$00@@A (cl.o)
+    static int GetKey(const char* boundCmdName, int clnt);  // ?GetKey@KeyInfo@@SAHPBDH@Z
+};
+
+// ============================================================================
+// FEMultiLineText (FEText.cpp family)
+// ============================================================================
+
+// ea: 0x0056D180
+void FEMultiLineText::CopyFrom(FEMultiLineText* fet)
+{
+    FEText::CopyFrom(fet);
+    button_color.i = fet->button_color.i;
+    button_scale = fet->button_scale;
+    line_spacing_init = fet->line_spacing_init;
+    line_spacing = fet->line_spacing;
+    button_y_offset = fet->button_y_offset;
+    box_width = fet->box_width;
+    line_num = fet->line_num;
+    line_avail_num = fet->line_avail_num;
+    int line_avail_num = this->line_avail_num;
+    scroll_box_height = fet->scroll_box_height;
+    scroll_first = fet->scroll_first;
+    scroll_last = fet->scroll_last;
+    scroll_offset = fet->scroll_offset;
+    scrollable = fet->scrollable;
+    scroll_edge_based = fet->scroll_edge_based;
+    cut_off_if_too_long = fet->cut_off_if_too_long;
+    int* v5 = (int*)mem_heap_malloc(32 * line_avail_num + 4);
+    MultiLineString* v6;
+    if (v5 != nullptr)
+    {
+        *v5 = line_avail_num;
+        MultiLineString* ia = (MultiLineString*)(v5 + 1);
+        for (int i = 0; i < line_avail_num; ++i)
+            new (&ia[i]) MultiLineString();
+        v6 = ia;
+    }
+    else
+    {
+        v6 = nullptr;
+    }
+    lines = v6;
+    for (int i = 0; i < this->line_avail_num; ++i)
+        lines[i].CopyFrom(&fet->lines[i]);
+}
+
+// ea: 0x0056D2F0
+void FEMultiLineText::Draw(bool selected)
+{
+    (void)selected;
+    if (IsShown())
+    {
+        if (scrollable)
+            Draw(scroll_first, scroll_last);
+        else
+            Draw(0, line_num);
+    }
+}
+
+// ea: 0x0056D340
+float FEMultiLineText::GetWidth()
+{
+    int line_num = this->line_num;
+    int v2 = 0;
+    int max_width = 0;
+    if (line_num > 0)
+    {
+        float* p_total_width = &lines->total_width;
+        do
+        {
+            if (*p_total_width > v2)
+            {
+                v2 = (int)*p_total_width;
+                max_width = v2;
+            }
+            p_total_width += 8;
+            --line_num;
+        }
+        while (line_num != 0);
+    }
+    return (float)max_width;
+}
+
+// ea: 0x0056D380
+void FEMultiLineText::AddFont(int index, font_index f)
+{
+    if (index >= line_num)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1200;
+        AeAssert::gCurrentExpr = "index < line_num";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    lines[index].font = f;
+}
+
+// ea: 0x0056D3F0
+void FEMultiLineText::SetFont(font_index f)
+{
+    int line_num = this->line_num;
+    this->font = f;
+    for (int v3 = 0; v3 < line_num; ++v3)
+        lines[v3].font = this->font;
+}
+
+// ea: 0x0056D430
+void FEMultiLineText::Shift(float x_shift, float y_shift)
+{
+    for (int v3 = 0; v3 < line_num; ++v3)
+    {
+        MultiLineString* lines = this->lines;
+        float x = lines[v3].xy.x;
+        float z = lines[v3].xy.z;
+        lines[v3].xy.x = x + x_shift;
+        lines[v3].xy.y = lines[v3].xy.y + y_shift;
+        lines[v3].xy.z = z;
+    }
+}
+
+// ea: 0x0056D4A0
+void FEMultiLineText::Scroll(float offset)
+{
+    if (scrollable)
+    {
+        float scroll_offset = this->scroll_offset;
+        bool scroll_edge_based = this->scroll_edge_based;
+        int scroll_box_height = this->scroll_box_height;
+        float v6 = (float)line_num * line_spacing;
+        this->scroll_offset = offset + scroll_offset;
+        float v7;
+        if (scroll_edge_based)
+            v7 = v6 + (2 * scroll_box_height);
+        else
+        {
+            v7 = v6 - scroll_box_height;
+            if (scroll_box_height > v7)
+                v7 = (float)scroll_box_height;
+        }
+        float v8 = (float)scroll_box_height;
+        if (!scroll_edge_based)
+            v8 = 0.0f;
+        if ((offset + scroll_offset) > v8)
+            this->scroll_offset = v8;
+        if ((0.0f - v7) > this->scroll_offset)
+            this->scroll_offset = 0.0f - v7;
+        Shift(0.0f, this->scroll_offset - scroll_offset);
+        float v9 = 1.0f / line_spacing;
+        int v10 = (int)(0.0f - (v9 * this->scroll_offset));
+        float v11 = (float)scroll_box_height * v9;
+        scroll_first = v10;
+        scroll_last = (int)((v11 + v10) + 1.0f);
+    }
+}
+
+// ea: 0x0056D5B0
+void FEMultiLineText::SetScrollable(int height, bool edge_based)
+{
+    scrollable = true;
+    scroll_edge_based = edge_based;
+    scroll_box_height = height;
+    float v3 = (float)height;
+    if (!edge_based)
+        v3 = 0.0f;
+    scroll_offset = v3;
+    scroll_first = 0;
+    int v4;
+    if (edge_based)
+        v4 = 0;
+    else
+        v4 = (int)(((float)height / line_spacing) + 1.0f);
+    scroll_last = v4;
+    SetPos(xy.x, xy.y + v3);
+}
+
+// ea: 0x0056D630
+float FEMultiLineText::GetPercentage()
+{
+    float ret = 0.0f;
+    if (scrollable)
+    {
+        float v1 = (float)line_num * line_spacing;
+        if (!scroll_edge_based)
+            v1 = v1 - scroll_box_height;
+        if (v1 <= 0.0f)
+            return 1.0f;
+        float v2 = 0.0f - (scroll_offset / v1);
+        ret = v2;
+        if (v2 > 1.0f)
+            return 1.0f;
+        if (v2 < 0.0f)
+            return 0.0f;
+    }
+    return ret;
+}
+
+// ea: 0x0056D820
+void FEMultiLineText::SetText(unsigned int hash)
+{
+    const char* STBString = STBManager::sInst->GetSTBString(hash);
+    if (STBString != nullptr)
+        SetTextNoLocalize(STBString);
+}
+
+// ea: 0x0056D850
+const char* FEMultiLineText::ConvertActionToButton(const char* stringIn)
+{
+    if (stringIn == nullptr)
+        return nullptr;
+    if (strlen(stringIn) >= 0x200)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1323;
+        AeAssert::gCurrentExpr = "strlen(stringIn)<512";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    char stringHolder[512];
+    strncpy(stringHolder, stringIn, 0x200u);
+    memset(gResultString, 0, sizeof(gResultString));
+    char* v3 = strtok(stringHolder, " ");
+    char* v4 = v3;
+    if (v3 != nullptr)
+    {
+        int iTokenLength = (int)strlen(v3);
+        while (1)
+        {
+            const char* v5 = TranslateAction(v4);
+            if (v5 != nullptr)
+            {
+                strcat(gResultString, v5);
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+                AeAssert::gCurrentLine = 1335;
+                AeAssert::gCurrentExpr = "tokenTranslated";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            char* v7 = v4;
+            char* v8 = strtok(nullptr, " ");
+            v4 = v8;
+            if (v8 == nullptr)
+                break;
+            int v9 = (int)(&v4[-iTokenLength] - v7);
+            if (v7 != nullptr)
+            {
+                if (v9 > 0)
+                {
+                    do
+                    {
+                        --v9;
+                        strcat(gResultString, " ");
+                    }
+                    while (v9 != 0);
+                }
+            }
+            else
+            {
+                strcat(gResultString, " ");
+            }
+            iTokenLength = (int)strlen(v8);
+        }
+    }
+    if (strlen(gResultString) >= 0x200)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1365;
+        AeAssert::gCurrentExpr = "strlen(gResultString)<512";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return gResultString;
+}
+
+// ea: 0x0056DCB0
+const char* FEMultiLineText::TranslateAction(const char* token)
+{
+    if (token == nullptr)
+        return nullptr;
+    if (strcmp(token, "[USE]") == 0 || strcmp(token, "[ACTIVATE]") == 0)
+    {
+        int Key = KeyInfo::GetKey("+activate", currCl);
+        if (Key != -1)
+            goto LABEL_75;
+        goto LABEL_74;
+    }
+    if (strcmp(token, "[ATTACK]") == 0)
+    {
+        KeyInfo::GetKey("+attack", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[AIM]") == 0)
+    {
+        int Key = KeyInfo::GetKey("+speed", currCl);
+        if (Key != -1)
+            goto LABEL_75;
+        goto LABEL_9;
+    }
+    if (strcmp(token, "[MELEE]") == 0)
+    {
+        KeyInfo::GetKey("+melee", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[GRENADE]") == 0)
+    {
+        KeyInfo::GetKey("+grenadeattack", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[TOGGLE_AIM]") == 0)
+    {
+    LABEL_9:
+        KeyInfo::GetKey("toggle cl_run", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[SPRINT]") == 0)
+    {
+        KeyInfo::GetKey("+sprint", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[RELOAD]") == 0)
+    {
+        int Key = KeyInfo::GetKey("+reload", currCl);
+        if (Key == -1)
+        LABEL_74:
+            Key = KeyInfo::GetKey("+activatereload", currCl);
+    LABEL_75:
+        switch (Key)
+        {
+        case 212: return "~cross";
+        case 213: return "~circle";
+        case 214: return "~not_menu_back";
+        case 211: return "~square";
+        case 215: return "~r1";
+        case 217: return "~r2";
+        case 219: return STBManager::sInst->GetSTBString("INGAME_R3");
+        case 216: return "~l1";
+        case 218: return "~l2";
+        case 220: return STBManager::sInst->GetSTBString("INGAME_L3");
+        case 13: return "~start";
+        case 27: return "~select";
+        case 154: return "~forward";
+        case 155: return "~back";
+        case 156: return "~left";
+        case 157: return "~right";
+        default: break;
+        }
+        return token;
+    }
+    if (strcmp(token, "[STANCE_UP]") == 0)
+    {
+        KeyInfo::GetKey("+moveup", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[STANCE_DOWN]") == 0)
+    {
+        KeyInfo::GetKey("lowerstance", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[WEAPON_SWAP]") == 0)
+    {
+        KeyInfo::GetKey("weapnext", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[LEAN_LEFT]") == 0)
+    {
+        KeyInfo::GetKey("+leanleftswitchnext", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[LEAN_RIGHT]") == 0)
+    {
+        KeyInfo::GetKey("+leanrightswitchnext", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[SELECT]") == 0)
+    {
+        KeyInfo::GetKey("togglemenu", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[START]") == 0)
+    {
+        KeyInfo::GetKey("togglepaused", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[CLASS]") == 0)
+    {
+        KeyInfo::GetKey("+class", currCl);
+        goto LABEL_75;
+    }
+    if (strcmp(token, "[PRESS_USE]") == 0
+        || strcmp(token, "[PRESS_ACTIVATE]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+activate", currCl);
+        goto LABEL_55;
+    }
+    if (strcmp(token, "[PRESS_ATTACK]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+attack", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_AIM]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+speed", currCl);
+        if (v4 != -1)
+            goto LABEL_44;
+        goto LABEL_43;
+    }
+    if (strcmp(token, "[PRESS_MELEE]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+melee", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_GRENADE]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+grenadeattack", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_TOGGLE_AIM]") == 0)
+    {
+    LABEL_43:
+        int v4 = KeyInfo::GetKey("toggle cl_run", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_SPRINT]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+sprint", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_RELOAD]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+reload", currCl);
+    LABEL_55:
+        if (v4 == -1)
+            v4 = KeyInfo::GetKey("+activatereload", currCl);
+    LABEL_44:
+        switch (v4)
+        {
+        case 212: return STBManager::sInst->GetSTBString("INGAME_PRESS_CROSS");
+        case 213: return STBManager::sInst->GetSTBString("INGAME_PRESS_CIRCLE");
+        case 211: return STBManager::sInst->GetSTBString("INGAME_PRESS_SQUARE");
+        case 214: return STBManager::sInst->GetSTBString("INGAME_PRESS_TRIANGLE");
+        case 215: return STBManager::sInst->GetSTBString("INGAME_PRESS_R1");
+        case 217: return STBManager::sInst->GetSTBString("INGAME_PRESS_R2");
+        case 219: return STBManager::sInst->GetSTBString("INGAME_PRESS_R3");
+        case 216: return STBManager::sInst->GetSTBString("INGAME_PRESS_L1");
+        case 218: return STBManager::sInst->GetSTBString("INGAME_PRESS_L2");
+        case 220: return STBManager::sInst->GetSTBString("INGAME_PRESS_L3");
+        case 13: return STBManager::sInst->GetSTBString("INGAME_PRESS_START");
+        case 27: return STBManager::sInst->GetSTBString("INGAME_PRESS_SELECT");
+        case 154: return STBManager::sInst->GetSTBString("INGAME_PRESS_FORWARD");
+        case 155: return STBManager::sInst->GetSTBString("INGAME_PRESS_BACK");
+        case 156: return STBManager::sInst->GetSTBString("INGAME_PRESS_LEFT");
+        case 157: return STBManager::sInst->GetSTBString("INGAME_PRESS_RIGHT");
+        default: break;
+        }
+        return token;
+    }
+    if (strcmp(token, "[PRESS_STANCE_UP]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+moveup", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_STANCE_DOWN]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("lowerstance", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_WEAPON_SWAP]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("weapnext", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_LEAN_LEFT]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+leanleftswitchnext", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_LEAN_RIGHT]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+leanrightswitchnext", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_SELECT]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("togglemenu", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_START]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("togglepaused", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[PRESS_CLASS]") == 0)
+    {
+        int v4 = KeyInfo::GetKey("+class", currCl);
+        goto LABEL_44;
+    }
+    if (strcmp(token, "[USE_LEFT_STICK]") == 0)
+        return STBManager::sInst->GetSTBString("INGAME_XBOX_USE_LEFT_STICK");
+    if (strcmp(token, "[USE_RIGHT_STICK]") == 0)
+        return STBManager::sInst->GetSTBString("INGAME_XBOX_USE_RIGHT_STICK");
+    if (strcmp(token, "~l3") == 0)
+        return STBManager::sInst->GetSTBString("INGAME_L3_XBOX");
+    if (strcmp(token, "~r3") == 0)
+        return STBManager::sInst->GetSTBString("INGAME_R3_XBOX");
+    return token;
+}
+
+// ea: 0x0056E600
+bool FEMultiLineText::CheckIfNotTooLong(int num)
+{
+    if (num < line_avail_num)
+        return true;
+    if (!cut_off_if_too_long)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1958;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("MultiLineString is too long"))
+            __debugbreak();
+    }
+    return false;
+}
+
+// ea: 0x0057CD60
+FEText* FEMultiLineText::Clone()
+{
+    FEMultiLineText* v3 = (FEMultiLineText*)mem_heap_malloc(0xA8u);
+    if (v3 != nullptr)
+    {
+        new (v3) FEText();
+        v3->button_color.i = 0;
+    }
+    else
+    {
+        v3 = nullptr;
+    }
+    if (v3 != nullptr)
+        v3->CopyFrom(this);
+    return v3;
+}
+
+// ea: 0x0057CDE0
+void FEMultiLineText::Draw(int start_line, int end_line)
+{
+    if (IsShown())
+    {
+        if (start_line < 0)
+            start_line = 0;
+        if (end_line > line_num)
+            end_line = line_num;
+        color32 tmp_color;
+        tmp_color.i = color1.i;
+        if ((FEText::flags & 8) == 0)
+            tmp_color.i = flash_info->GetColor(color1).i;
+        int v6 = (int)((unsigned char)(tmp_color.c.a * visibility)
+                       | ((tmp_color.c.r | ((tmp_color.c.g
+                                            | (tmp_color.c.b << 8))
+                                           << 8))
+                          << 8));
+        int v7 = HIWORD(button_color.i) << 8;
+        int v8 = (int)((unsigned char)button_color.c.b
+                       | (((unsigned char)button_color.c.g | v7) << 8));
+        if (start_line < end_line)
+        {
+            int v9 = 32 * start_line;
+            int v10 = end_line - start_line;
+            int start_linea = start_line;
+            int end_linea = v10;
+            do
+            {
+                MultiLineString* v11 = &lines[start_linea];
+                if (v11->data.mBlock != nullptr
+                    && !(v11->data == defaultFileName))
+                {
+                    float z = GetZvalue();
+                    lines[start_linea].Draw(z, v6, v8, scale.x, scale.y,
+                                            button_scale, button_y_offset);
+                }
+                v9 = start_linea * 32 + 32;
+                ++start_linea;
+                --end_linea;
+            }
+            while (end_linea != 1);
+        }
+    }
+}
+
+// ea: 0x0057CF20
+float FEMultiLineText::GetHeight()
+{
+    Broc::string::Block* mBlock = text.mBlock;
+    const char* v3;
+    if (mBlock != nullptr)
+        v3 = (const char*)&mBlock[1];
+    else
+        v3 = defaultFileName;
+    unsigned int Width;
+    unsigned int Height;
+    nglFont* Font = g_femanager.GetFont(font);
+    nglGetStringDimensions(Font, v3, &Width, &Height, scale.x, scale.y);
+    return (float)(GetLineNum() - 1) * line_spacing + (float)Height;
+}
+
+// ea: 0x0057D020
+void FEMultiLineText::AdjustForJustification()
+{
+    nglFont* Font = g_femanager.GetFont(font);
+    nglFont* pFont = Font;
+    if (Font == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 2024;
+        AeAssert::gCurrentExpr = "pFont";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "AdjustForJustification: Could not find font: %s",
+                FEManager::font_name_array[this->font].mBuff))
+            __debugbreak();
+        pFont = nglSysFont;
+        if (nglSysFont == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+            AeAssert::gCurrentLine = 2028;
+            AeAssert::gCurrentExpr = "pFont";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "AdjustForJustification: Could not find nglSysFont as fallback. Aborting. "))
+                __debugbreak();
+            return;
+        }
+        Font = nglSysFont;
+    }
+    unsigned int width;
+    unsigned int height;
+    nglGetStringDimensions(Font, " ", &width, &height, scale.x, scale.y);
+    float h = (float)height;
+    int v3 = 0;
+    if (line_num > 0)
+    {
+        for (int v4 = 0; v3 < line_num; ++v4)
+        {
+            float w = lines[v4].total_width;
+            float x;
+            if (GetFlag(16))
+            {
+                x = xy.x;
+            }
+            else
+            {
+                float v7 = xy.x;
+                if (GetFlag(32))
+                    x = v7 - w;
+                else
+                    x = v7 - (w * 0.5f);
+            }
+            float tmp_x = x;
+            float v8;
+            if (GetFlag(64))
+            {
+                v8 = (v3 * line_spacing) + xy.y;
+            }
+            else if (GetFlag(128))
+            {
+                v8 = (((v3 - line_num + 1) * line_spacing) + xy.y) - h;
+            }
+            else
+            {
+                v8 = ((((v3 + 0.5f) - (line_num * 0.5f)) * line_spacing)
+                      + xy.y)
+                     - (h * 0.5f);
+            }
+            lines[v4].xy.x = tmp_x;
+            lines[v4].xy.y = v8;
+            lines[v4].xy.z = 0.0f;
+            ++v3;
+        }
+        Font = pFont;
+    }
+    int FirstGlyph = Font->Header.FirstGlyph;
+    int v11 = Font->Header.NumGlyphs - 1;
+    if (65 - FirstGlyph >= 0)
+    {
+        if (65 - FirstGlyph <= v11)
+            v11 = 65 - FirstGlyph;
+    }
+    else
+    {
+        v11 = 0;
+    }
+    nglGlyphInfo* GlyphInfo = Font->GlyphInfo;
+    float v14 = (float)GlyphInfo[v11].GlyphSize[1];
+    float v15 = (float)GlyphInfo[v11].GlyphOrigin[1];
+    int v16 = g_femanager.fonts[1]->Header.FirstGlyph;
+    int v17 = g_femanager.fonts[1]->Header.NumGlyphs - 1;
+    float v18 = ((v14 * 0.5f) + v15) * scale.y;
+    if (33 - v16 >= 0)
+    {
+        if (33 - v16 <= v17)
+            v17 = 33 - v16;
+    }
+    else
+    {
+        v17 = 0;
+    }
+    button_y_offset =
+        ((((float)g_femanager.fonts[1]->GlyphInfo[v17].GlyphSize[1] * 0.5f)
+          + (float)g_femanager.fonts[1]->GlyphInfo[v17].GlyphOrigin[1])
+         * button_scale)
+            - v18
+        + 1.0f;
+}
+
+// ea: 0x00584ED0
+void FEMultiLineText::SetScaleAdjustButtons(float sx, float sy)
+{
+    float v3 = scale.x == 0.0f ? 1.0f : sx / scale.x;
+    scale.x = sx;
+    scale.y = sy;
+    scale.z = 0.0f;
+    scale_unselected.x = sx;
+    scale_unselected.y = sy;
+    scale_unselected.z = 0.0f;
+    for (int i = 0; i < line_num; ++i)
+    {
+        MultiLineString* v7 = &lines[i];
+        int button_array_size = v7->button_array_size;
+        for (int v8 = 0; v8 < button_array_size; ++v8)
+            v7->button_array[v8].x_offset =
+                (int)(v7->button_array[v8].x_offset * v3);
+    }
+    AdjustForJustification();
+}
+
+// ea: 0x00584FC0
+void FEMultiLineText::SetPos(float x1, float y1)
+{
+    xy.x = x1;
+    xy.y = y1;
+    xy.z = 0.0f;
+    AdjustForJustification();
+}
+
+// ea: 0x00585010
+void FEMultiLineText::Animate(math::Mat43* mat, float vis)
+{
+    char v6 = (char)(PanelAnimObject::flags & 1);
+    float v7 = mat->w.v.m128_f32[1];
+    math::Position3 v8 = mat->w;
+    float v11;
+    float v9;
+    if (v6 != 0)
+    {
+        v11 = xy.x + v8.v.m128_f32[0];
+        v9 = xy.y + v7;
+    }
+    else
+    {
+        v11 = xy_initial.x + v8.v.m128_f32[0];
+        v9 = xy_initial.y + v7;
+    }
+    xy.x = v11;
+    xy.y = v9;
+    xy.z = 0.0f;
+    if (v6 != 0)
+    {
+        scale.x = scale.x * mat->x.v.m128_f32[0];
+        scale.y = 0.0f - (scale.y * mat->y.v.m128_f32[1]);
+    }
+    else
+    {
+        float v12 = mat->y.v.m128_f32[1];
+        scale.x = mat->x.v.m128_f32[0];
+        scale.y = 0.0f - v12;
+        scale.z = 0.0f;
+    }
+    line_spacing = line_spacing_init * scale.y;
+    if (v6 != 0)
+        SetAlpha(visibility * vis);
+    else
+        SetAlpha(vis);
+    AdjustForJustification();
+}
+
+// ea: 0x0058D500
+void FEMultiLineText::SetTextNoLocalize(const char* s)
+{
+    if (line_avail_num == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1669;
+        AeAssert::gCurrentExpr = "line_avail_num != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    const char* v4 = ConvertActionToButton(s);
+    int v5 = (int)strlen(v4);
+    int i = 1;
+    for (int v6 = 0; v6 < v5; ++v6)
+    {
+        if (v4[v6] == 10)
+            ++i;
+    }
+    if (i - 1 < line_avail_num)
+    {
+        line_num = i;
+    }
+    else
+    {
+        if (!cut_off_if_too_long)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+            AeAssert::gCurrentLine = 1958;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("MultiLineString is too long"))
+                __debugbreak();
+        }
+        line_num = line_avail_num;
+    }
+    int j = 0;
+    if (line_num > 0)
+    {
+        int v3 = 0;
+        int v20 = 0;
+        while (1)
+        {
+            size_t v10 = strcspn(&v4[v3], "\n");
+            if (v10 >= 255)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+                AeAssert::gCurrentLine = 1697;
+                AeAssert::gCurrentExpr = "index < 255";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "Single line length over 255.\n %s", v4))
+                    __debugbreak();
+            }
+            char token[256];
+            strncpy(token, &v4[v3], v10);
+            token[v10] = 0;
+            v3 += (int)v10 + 1;
+            lines[v20].Set(token, font, scale.x, button_scale);
+            ++j;
+            v20 += 32;
+            if (j >= line_num)
+                break;
+        }
+    }
+    Broc::string::Block* mBlock = lines->data.mBlock;
+    const char* v14;
+    if (mBlock != nullptr)
+        v14 = (const char*)&mBlock[1];
+    else
+        v14 = defaultFileName;
+    text = v14;
+    AdjustForJustification();
+}
+
+// ea: 0x0058D710
+void FEMultiLineText::SetTextAllocNoLocalize(const char* buffer,
+                                             int buffer_size)
+{
+    (void)buffer_size;
+    const char* v4 = buffer;
+    line_num = 1;
+    for (unsigned char i = (unsigned char)*buffer; i != 0; ++v4)
+    {
+        if (i == 10)
+            ++line_num;
+        i = (unsigned char)v4[1];
+    }
+    if (lines != nullptr)
+    {
+        int count = ((int*)lines)[-1];
+        for (int i = 0; i < count; ++i)
+            lines[i].~MultiLineString();
+        mem_heap_free((int*)lines - 1);
+    }
+    int line_num = this->line_num;
+    int* v9 = (int*)mem_heap_malloc(32 * line_num + 4);
+    MultiLineString* v10;
+    if (v9 != nullptr)
+    {
+        v10 = (MultiLineString*)(v9 + 1);
+        *v9 = line_num;
+        for (int i = 0; i < line_num; ++i)
+            new (&v10[i]) MultiLineString();
+    }
+    else
+    {
+        v10 = nullptr;
+    }
+    int v11 = this->line_num;
+    lines = v10;
+    line_avail_num = v11;
+    if (v11 > 0)
+    {
+        int v12 = 0;
+        do
+        {
+            size_t v14 = strcspn(buffer, "\n");
+            if (v14 >= 255)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+                AeAssert::gCurrentLine = 1787;
+                AeAssert::gCurrentExpr = "index < 255";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            char token[256];
+            strncpy(token, buffer, v14);
+            token[v14] = 0;
+            lines[v12].Set(token, font, scale.x, button_scale);
+            buffer += (int)v14 + 1;
+            ++v12;
+        }
+        while (v12 < this->line_num);
+    }
+    Broc::string::Block* mBlock = lines->data.mBlock;
+    const char* v20;
+    if (mBlock != nullptr)
+        v20 = (const char*)&mBlock[1];
+    else
+        v20 = defaultFileName;
+    text = v20;
+    AdjustForJustification();
+}
+
+// ea: 0x0058D8E0
+int FEMultiLineText::MakeBox(const char* buffer, int buffer_size, int w,
+                             float sc_x, float sc_y, bool save)
+{
+    (void)buffer_size;
+    if (font == FONT_NORMAL)
+        return 0;
+    int v9 = 0;
+    int line_count = 0;
+    float cur_width = 0.0f;
+    Broc::string current(defaultFileName);
+    char lastDelim = 0;
+    if (*buffer != 0)
+    {
+        float v31 = (float)w;
+        unsigned int v35 = 0;
+        while (1)
+        {
+            size_t v12 = strcspn(&buffer[v9], " \n\r");
+            if (v12 >= 255)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+                AeAssert::gCurrentLine = 1863;
+                AeAssert::gCurrentExpr = "index < 255";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            int v13 = (int)v12 + v9;
+            char v40 = buffer[v13];
+            char word[2];
+            strncpy(word, &buffer[v9], v12);
+            word[v12] = 0;
+            int buffer_index;
+            if (v40 != 0)
+            {
+                buffer_index = v13 + 1;
+                if (v40 == 45)
+                    strcat(word, "-");
+                else if (v40 == 32)
+                    strcat(word, " ");
+            }
+            else
+            {
+                buffer_index = v13;
+            }
+            int v18 = strncmp(word, "\x5B", 2u);
+            FEMultiLineText* v20 = this;
+            if (v18 == 0)
+            {
+                char nptr[2];
+                nptr[0] = word[2];
+                nptr[1] = word[3];
+                if (nptr[0] < 48 || nptr[0] > 57)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\FEText.cpp";
+                    AeAssert::gCurrentLine = 1898;
+                    AeAssert::gCurrentExpr =
+                        "word[2] >= '0' && word[2] <= '9' && "
+                        "\"INVALID FONT TOKEN\"";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                font_index v19 = (font_index)atoi(nptr);
+                v20 = this;
+                this->font = v19;
+                if (nptr[1] != 93)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\FEText.cpp";
+                    AeAssert::gCurrentLine = 1900;
+                    AeAssert::gCurrentExpr =
+                        "word[3] == ']' && \"INVALID FONT TOKEN\"";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                memmove(word, word + 4, strlen(word + 4) + 1);
+            }
+            float word_width_f = MultiLineString::GetStringWidth(
+                word, v20->font, v20->scale.x, v20->button_scale);
+            float v30 = word_width_f + cur_width;
+            if (v30 > v31 || lastDelim == 10)
+            {
+                cur_width = word_width_f;
+                current.remove_leading(" \n\t\r");
+                current.remove_trailing(" \n\t\r");
+                if (save && CheckIfNotTooLong(line_count))
+                {
+                    if (v20->lines == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\FEText.cpp";
+                        AeAssert::gCurrentLine = 1916;
+                        AeAssert::gCurrentExpr = "lines";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    const char* v23 = current.mBlock != nullptr
+                                          ? (const char*)&current.mBlock[1]
+                                          : defaultFileName;
+                    v20->lines[v35 / 0x20].Set(
+                        v23, v20->font, v20->scale.x, v20->button_scale);
+                }
+                current = word;
+                ++line_count;
+                v35 += 32;
+            }
+            else
+            {
+                current += word;
+                cur_width = v30;
+            }
+            lastDelim = v40;
+            if (buffer[buffer_index] == 0)
+            {
+                current.remove_leading(" \n\t\r");
+                current.remove_trailing(" \n\t\r");
+                if (current.mBlock != nullptr
+                    && current.mBlock->mLength != 0)
+                {
+                    if (save && CheckIfNotTooLong(line_count))
+                    {
+                        if (v20->lines == nullptr)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::COD3;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\FEText.cpp";
+                            AeAssert::gCurrentLine = 1938;
+                            AeAssert::gCurrentExpr = "lines";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert("old cod assert"))
+                                __debugbreak();
+                        }
+                        const char* v24 =
+                            current.mBlock != nullptr
+                                ? (const char*)&current.mBlock[1]
+                                : defaultFileName;
+                        v20->lines[v35 / 0x20].Set(
+                            v24, v20->font, v20->scale.x,
+                            v20->button_scale);
+                    }
+                    ++line_count;
+                    v35 += 32;
+                }
+            }
+            if (buffer[buffer_index] == 0)
+                break;
+            v9 = buffer_index;
+        }
+    }
+    return line_count;
+}
+
+// ea: 0x005917C0
+void FEMultiLineText::SetTextBoxNoLocalize(Broc::string s, int w,
+                                           float sc_override)
+{
+    if (line_avail_num == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1724;
+        AeAssert::gCurrentExpr = "line_avail_num != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    const char* v5 = s.mBlock != nullptr ? (const char*)&s.mBlock[1]
+                                         : defaultFileName;
+    const char* v6 = ConvertActionToButton(v5);
+    s = v6;
+    int v7 = w;
+    float sc_x = scale.x;
+    float sc_y = scale.y;
+    if (sc_override != -1.0f)
+    {
+        sc_x = sc_override;
+        sc_y = sc_override;
+    }
+    box_width = v7;
+    int mLength = s.mBlock != nullptr ? s.mBlock->mLength : 0;
+    const char* v11 = s.mBlock != nullptr ? (const char*)&s.mBlock[1]
+                                          : defaultFileName;
+    int Box = MakeBox(v11, mLength, v7, sc_x, sc_y, true);
+    if (CheckIfNotTooLong(Box - 1))
+        line_num = Box;
+    else
+        line_num = line_avail_num;
+    Broc::string::Block* mBlock = lines->data.mBlock;
+    const char* v14 = mBlock != nullptr ? (const char*)&mBlock[1]
+                                        : defaultFileName;
+    text = v14;
+    AdjustForJustification();
+}
+
+// ea: 0x00591930
+void FEMultiLineText::SetTextBoxAllocNoLocalize(Broc::string t, int w,
+                                                float sc_override)
+{
+    int v5 = w;
+    float sc_x = scale.x;
+    float sc_y = scale.y;
+    if (sc_override != -1.0f)
+    {
+        sc_x = sc_override;
+        sc_y = sc_override;
+    }
+    box_width = w;
+    int mLength = t.mBlock != nullptr ? t.mBlock->mLength : 0;
+    const char* v9 = t.mBlock != nullptr ? (const char*)&t.mBlock[1]
+                                         : defaultFileName;
+    int Box = MakeBox(v9, mLength, v5, sc_x, sc_y, false);
+    line_num = Box;
+    if (Box <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1820;
+        AeAssert::gCurrentExpr = "line_num > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (lines != nullptr)
+    {
+        int count = ((int*)lines)[-1];
+        for (int i = 0; i < count; ++i)
+            lines[i].~MultiLineString();
+        mem_heap_free((int*)lines - 1);
+    }
+    int line_num = this->line_num;
+    int* v14 = (int*)mem_heap_malloc(32 * line_num + 4);
+    MultiLineString* v16;
+    if (v14 != nullptr)
+    {
+        v16 = (MultiLineString*)(v14 + 1);
+        *v14 = line_num;
+        for (int i = 0; i < line_num; ++i)
+            new (&v16[i]) MultiLineString();
+    }
+    else
+    {
+        v16 = nullptr;
+    }
+    lines = v16;
+    line_avail_num = this->line_num;
+    int mLength2 = t.mBlock != nullptr ? t.mBlock->mLength : 0;
+    const char* v18 = t.mBlock != nullptr ? (const char*)&t.mBlock[1]
+                                          : defaultFileName;
+    MakeBox(v18, mLength2, v5, sc_x, sc_y, true);
+    Broc::string::Block* mBlock = lines->data.mBlock;
+    const char* v20 = mBlock != nullptr ? (const char*)&mBlock[1]
+                                        : defaultFileName;
+    text = v20;
+    AdjustForJustification();
+}
+
+// ea: 0x0056FB10
+bool FEMenuColorScheme::GetInfo(char index, color32& un, color32& h1,
+                                color32& h2)
+{
+    un.i = color_schemes[index].unselect.i;
+    h1.i = color_schemes[index].high1.i;
+    h2.i = color_schemes[index].high2.i;
+    return color_schemes[index].flash;
+}
+
+// ea: 0x0056FB50
+bool FEMenuColorScheme::GetInfo(char index, color32& un, color32& sel)
+{
+    un.i = color_schemes[index].unselect.i;
+    sel.i = color_schemes[index].high1.i;
+    return color_schemes[index].flash;
+}
+
+// ea: 0x0056FB80
+int FEMenuColorScheme::GetSchemeFromText(Broc::string& schemeText)
+{
+    int v1 = 0;
+    while (!(schemeText == Broc::string(FEMenuColorSchemeText[v1])))
+    {
+        if (++v1 >= 17)
+            return -1;
+    }
+    return v1;
+}
+
+// ============================================================================

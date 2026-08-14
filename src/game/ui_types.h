@@ -1255,6 +1255,8 @@ struct MultiLineString;
 // ============================================================================
 class FEMultiLineText : public FEText {
 public:
+    using FEText::Draw;
+
     color32 button_color;              // +0x70
     float   button_scale;              // +0x74
     float   line_spacing_init;         // +0x78
@@ -1273,8 +1275,6 @@ public:
     bool    cut_off_if_too_long;       // +0xA6
     uint8_t _padA7[1];                 // +0xA7
 
-    void Draw();
-    void SetTextBoxNoLocalize(const char* s, int a3, int a4);
     virtual void SetTextBox(const char* reference, int w,
                             float sc_override);  // ?SetTextBox@FEMultiLineText@@UAEXPBDHM@Z 0x56E5A0
     void UpdateForSplitScreen(int viewport, int old_viewport);
@@ -1282,6 +1282,38 @@ public:
     virtual void SetNumLines(int n);      // ?SetNumLines@FEMultiLineText@@UAEXH@Z (0x56D6D0)
     virtual void SetText(const char* s);  // ?SetText@FEMultiLineText@@UAEXPBD@Z (0x56D7E0)
     virtual void SetLineSpacing(int new_spacing);  // 0x57CFA0
+    virtual void Draw(bool selected);      // 0x56D2F0
+    virtual void Draw(int start_line, int end_line);  // 0x57CDE0
+    virtual float GetWidth();             // 0x56D340
+    virtual float GetHeight();            // 0x57CF20
+    virtual void AddFont(int index, font_index f);  // 0x56D380
+    virtual void SetFont(font_index f);   // 0x56D3F0
+    virtual void Shift(float x_shift, float y_shift);  // 0x56D430
+    virtual void Scroll(float offset);    // 0x56D4A0
+    virtual void SetScrollable(int height, bool edge_based);  // 0x56D5B0
+    virtual float GetPercentage();        // 0x56D630
+    virtual void SetText(unsigned int hash);  // 0x56D820
+    virtual const char* ConvertActionToButton(const char* stringIn);  // 0x56D850
+    virtual const char* TranslateAction(const char* token);  // 0x56DCB0
+    virtual FEText* Clone();              // 0x57CD60
+    virtual void SetScaleAdjustButtons(float sx, float sy);  // 0x584ED0
+    virtual void SetPos(float x1, float y1);  // 0x584FC0
+    virtual void SetTextNoLocalize(const char* s);  // 0x58D500
+    virtual void SetTextAllocNoLocalize(const char* buffer,
+                                        int buffer_size);  // 0x58D710
+    virtual void SetTextBoxNoLocalize(Broc::string s, int w,
+                                      float sc_override);  // 0x5917C0
+    virtual void SetTextBoxAllocNoLocalize(Broc::string t, int w,
+                                           float sc_override);  // 0x591930
+    void CopyFrom(FEMultiLineText* fet);  // 0x56D180
+protected:
+    virtual void Animate(math::Mat43* mat, float vis);  // 0x585010 (MAE)
+private:
+    bool CheckIfNotTooLong(int num);      // 0x56E600
+    void AdjustForJustification();        // 0x57D020
+    int  MakeBox(const char* buffer, int buffer_size, int w, float sc_x,
+                 float sc_y, bool save);  // 0x58D8E0
+public:
     virtual void SetBoxWidth(int width)            // inline 0x5B1C30
     {
         box_width = width;

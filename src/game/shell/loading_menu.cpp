@@ -390,8 +390,8 @@ void LoadingMenu::PickTip()
             && AeAssert::Assert("Bad Tip string index"))
             __debugbreak();
     }
-    mTipEntry->SetTextBoxNoLocalize(tipString,
-                                    mWidescreen ? 390 : 520, -1082130432);
+    mTipEntry->SetTextBoxNoLocalize(Broc::string(tipString),
+                                    mWidescreen ? 390 : 520, -1.0f);
 }
 
 // ea: 0x00596FB0

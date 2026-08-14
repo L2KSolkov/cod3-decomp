@@ -105,7 +105,7 @@ void ControllerDisconnectedMenu::Draw()
 
     Broc::string v11(msg);
     Broc::string str = FEMultiLineText::ReplaceEndlines(v11);
-    text->SetTextBoxNoLocalize(str.c_str(), 260, -1082130432);
+    text->SetTextBoxNoLocalize(str, 260, -1.0f);
     text->Draw();
     if (panel != nullptr)
         panel->Draw();

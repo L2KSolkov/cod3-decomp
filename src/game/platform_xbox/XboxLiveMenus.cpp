@@ -10,11 +10,6 @@ int DialogMenuSystem::GetActiveMenu()
 {
     return 0;
 }
-void FEMultiLineText::Draw() {}
-void FEMultiLineText::SetTextBoxNoLocalize(const char* s, int a3, int a4)
-{
-    (void)s; (void)a3; (void)a4;
-}
 void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
 {
     (void)viewport; (void)old_viewport;
@@ -598,7 +593,8 @@ void XboxLiveOptionsMenu::OnActivate()
         STBManager::sInst->GetSTBString(
             szXBoxOptionDescriptionReferences[m_currSelection]);
     int v10 = mWidescreen ? 390 : 520;
-    mInstructionsText->SetTextBoxNoLocalize(STBString, v10, -1082130432);
+    mInstructionsText->SetTextBoxNoLocalize(Broc::string(STBString), v10,
+                                            -1.0f);
 }
 
 // ea: 0x7256A0
@@ -671,7 +667,8 @@ void XboxLiveOptionsMenu::UpdateDynamicText()
         STBManager::sInst->GetSTBString(
             szXBoxOptionDescriptionReferences[m_currSelection]);
     int v5 = mWidescreen ? 390 : 520;
-    mInstructionsText->SetTextBoxNoLocalize(STBString, v5, -1082130432);
+    mInstructionsText->SetTextBoxNoLocalize(Broc::string(STBString), v5,
+                                            -1.0f);
 }
 
 // ea: 0x7261B0

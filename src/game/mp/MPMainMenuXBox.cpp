@@ -645,7 +645,8 @@ void MPMainMenuXBox::SetOptionText()
     const char* STBString =
         STBManager::sInst->GetSTBString(descRefs[m_currSelection]);
     int v6 = mWidescreen ? 390 : 520;
-    mOptionDescription->SetTextBoxNoLocalize(STBString, v6, -1082130432);
+    mOptionDescription->SetTextBoxNoLocalize(Broc::string(STBString), v6,
+                                             -1.0f);
 }
 
 // ea: 0x779C60
