@@ -487,3 +487,39 @@ void R_MirrorVector(float* const in, orientation_t* surface,
 void R_ClearAlpha()
 {
 }
+
+// ============================================================================
+// RE_EndFrame - ea: 0x006D1DB0
+// ============================================================================
+struct TimerRenderBars {
+    void Render();                  // ?Render@TimerRenderBars@@QAEXXZ
+    static TimerRenderBars sInst;   // ?sInst@TimerRenderBars@@2U1@A
+};
+struct TestFPS {
+    void GatherMetrics();           // ?GatherMetrics@TestFPS@@QAEXXZ
+    static TestFPS* sInst;          // ?sInst@TestFPS@@2PAV1@A
+};
+class ServerTime {
+public:
+    uint8_t _pad[0x08];
+    float mTickDelta;               // +0x08
+    static ServerTime sInst;        // ?sInst@ServerTime@@2V1@A
+};
+extern int gDelayRenderForNFrames;  // ?gDelayRenderForNFrames@@3HA @ 0xE92A68
+extern void nglPresent();           // ngl.o
+extern void R_ToggleSmpFrame();     // render.o
+extern void UpdateShotProf(float mTickDelta);  // g.o
+
+void RE_EndFrame(int* frontEndMsec, int* backEndMsec)
+{
+    (void)frontEndMsec;
+    (void)backEndMsec;
+    TimerRenderBars::sInst.Render();
+    if (gDelayRenderForNFrames != 0)
+        --gDelayRenderForNFrames;
+    else
+        nglPresent();
+    R_ToggleSmpFrame();
+    TestFPS::sInst->GatherMetrics();
+    UpdateShotProf(ServerTime::sInst.mTickDelta);
+}
