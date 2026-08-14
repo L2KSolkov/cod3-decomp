@@ -1048,6 +1048,18 @@ void DebugRender::RenderQuad(const math::Position3& pt1,
     nglListAddMesh(v14, mtx, nullptr, shader_params, nullptr);
 }
 
+// ea: 0x006D5A70 (8-arg overload; c2/c3/c4 unused per disasm)
+void DebugRender::RenderQuad(const math::Position3& p1,
+                             const math::Position3& p2,
+                             const math::Position3& p3,
+                             const math::Position3& p4, const Color& c1,
+                             const Color& c2, const Color& c3,
+                             const Color& c4, bool)
+{
+    (void)c2; (void)c3; (void)c4;
+    RenderQuad(p1, p2, p3, p4, c1, false);
+}
+
 // q_math helpers
 void PerpendicularVector(float* dst, const float* src);  // q_math.cpp
 void CrossProduct(const float* v1, const float* v2, float* cross);  // q_math.cpp

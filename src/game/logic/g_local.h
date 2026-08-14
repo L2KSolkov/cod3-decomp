@@ -2392,6 +2392,13 @@ public:
                            const math::Position3& pt4,
                            const Color& col,
                            bool double_sided);  // render.o 0xAC4810
+    static void RenderQuad(const math::Position3& p1,
+                           const math::Position3& p2,
+                           const math::Position3& p3,
+                           const math::Position3& p4, const Color& c1,
+                           const Color& c2, const Color& c3,
+                           const Color& c4,
+                           bool);  // render.o 0xAC4F70
     static void RenderAxis(const math::Mat43& mat, float length,
                            float width);  // render.o 0xAC8870
 };
