@@ -338,6 +338,7 @@ add_library(cod3_game_shell STATIC
     src/game/shell/fe_menu_system.cpp
     src/game/shell/vk_menu.cpp
     src/game/shell/fe_manager.cpp
+    src/game/shell/dialog_menu.cpp
 )
 add_library(cod3_game_game STATIC src/game/game/stubs_game.cpp)
 add_library(cod3_game_core STATIC

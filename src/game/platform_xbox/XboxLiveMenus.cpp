@@ -6,10 +6,6 @@
 
 #include "XboxLiveMenus.h"
 
-int DialogMenuSystem::GetActiveMenu()
-{
-    return 0;
-}
 void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
 {
     (void)viewport; (void)old_viewport;
@@ -18,42 +14,6 @@ void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 {
     (void)widescreen;
 }
-void DialogMenuSystem::BringUp(const char* t, bool type_ok, bool type_yn,
-                               const char* title_unloc, bool layer1)
-{
-    (void)t; (void)type_ok; (void)type_yn; (void)title_unloc; (void)layer1;
-}
-void DialogMenuSystem::AddOption(const char* t, bool (*responseFunc)(int))
-{
-    (void)t; (void)responseFunc;
-}
-void DialogMenuSystem::HighlightOption(int index) { (void)index; }
-void DialogMenuSystem::Reformat(bool vertical) { (void)vertical; }
-DialogMenu* DialogMenuSystem::GetLayer(bool layer1)
-{
-    (void)layer1;
-    return nullptr;
-}
-void DialogMenu::AddOption(const char* t, bool (*responseFunc)(int))
-{
-    (void)t; (void)responseFunc;
-}
-void DialogMenu::Reformat(bool vertical, int viewport)
-{
-    (void)vertical; (void)viewport;
-}
-InGameMenuSystem* FEManager::GetIGMS(int client)
-{
-    (void)client;
-    return nullptr;
-}
-DialogMenuSystem* FEManager::GetDMS(int client)
-{
-    (void)client;
-    return nullptr;
-}
-void FEManager::DrawDiscError() {}
-void FEManager::UpdateLoadingMenu(float percentDone) { (void)percentDone; }
 
 // OverlayMenu / InGameLiveOptionsMenu statics (shell.o; stubs, port later)
 OverlayMenu* OverlayMenu::Me(int version)

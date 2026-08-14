@@ -333,6 +333,7 @@ public:
     void LoadFrontEnd();                  // 0x59ACD0
     void LoadInGameMenus();               // 0x59AD70
     void InitIGO();                       // 0x59D0C0
+    void DrawDiscError();                 // 0x57D8A0
     bool DMSMenusActiveAnyClient();       // ?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ
 protected:
     void GetPanelFileUsers(const char* name,

@@ -119,19 +119,6 @@ struct OverlayMenu {
     int mBackMenu;
     int mGameListingNum;
 };
-struct DialogMenuSystem {
-    void BringUp(const char* t, bool type_ok, bool type_yn,
-                 const char* title_unloc, bool layer1);
-    void AddOption(const char* t, bool (*responseFunc)(int));
-    void HighlightOption(int index);
-    void Reformat(bool vertical);
-    int GetActiveMenu();
-    DialogMenu* GetLayer(bool layer1);
-};
-struct DialogMenu {
-    void AddOption(const char* t, bool (*responseFunc)(int));
-    void Reformat(bool vertical, int viewport);
-};
 struct FEManager {
     FEMenuSystem* fems;
     struct AARMenuSystemView { FEMenu** menus; }* mAARS;

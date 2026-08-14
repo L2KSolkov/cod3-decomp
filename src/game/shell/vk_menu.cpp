@@ -52,28 +52,6 @@ public:
     static void Step();  // ?Step@MPUIInterface@@SAXXZ
 };
 
-// DialogMenuSystem / DialogMenu / DialogMenuDisplay minimal views
-class DialogMenuDisplay {
-public:
-    int mOptionCount;     // +0x? (opaque; used by VKMenu dialog helpers)
-    int mOptionSelected;  // +0x?
-    void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@DialogMenuDisplay@@QAEX_N@Z
-    void Reformat();                          // ?Reformat@DialogMenuDisplay@@QAEXXZ
-    void SetDialogFlash(int entryNum);        // ?SetDialogFlash@DialogMenuDisplay@@QAEXH@Z
-};
-class DialogMenu {
-public:
-    void AddOption(const char* t, bool (*responseFunc)(int));  // ?AddOption@DialogMenu@@QAEXPBDP6A_NH@Z@Z
-};
-class DialogMenuSystem {
-public:
-    DialogMenuDisplay* mDisplay;  // +0x2C
-    FEMenu*            menus;     // +0x04 (FEMenu** view)
-    int GetActiveMenu();          // ?GetActiveMenu@DialogMenuSystem@@UAEHXZ
-    void BringUp(const char* t, bool type_ok, bool type_yn,
-                 const char* title_unloc, bool layer1);  // ?BringUp@DialogMenuSystem@@QAEXPBD_N101@Z
-};
-
 // ============================================================================
 // VKMenu
 // ============================================================================
@@ -643,11 +621,10 @@ void VKMenu::DialogDisplaySaving()
     if (!mSaveDialogDisplayed)
     {
         DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
-        DMS->BringUp("MEM_XBOX_SAVE_WARNING", false, false, defaultFileName,
-                     true);
-        DialogMenuSystem* v3 = g_femanager.GetDMS(currCl);
-        ((DialogMenu*)&v3->menus[v3->GetActiveMenu() != 0])
-            ->AddOption(defaultFileName, (bool (*)(int))j_nullsub_96);
+    DMS->BringUp("MEM_XBOX_SAVE_WARNING", false, false, defaultFileName,
+                 true);
+    DialogMenuSystem* v3 = g_femanager.GetDMS(currCl);
+    v3->AddOption(defaultFileName, (bool (*)(int))j_nullsub_96);
         DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
         v4->mDisplay->Reformat();
         mSaveDialogDisplayed = true;
@@ -661,18 +638,16 @@ void VKMenu::DialogDisplaySaveSuccess()
     DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
     DMS->BringUp("MEM_SAVE_SUCCESS", false, false, defaultFileName, true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
-    ((DialogMenu*)&v2->menus[v2->GetActiveMenu() != 0])
-        ->AddOption("MEM_DIALOG_OK", VKMenu::DialogResponseSaveSuccess);
+    v2->AddOption("MEM_DIALOG_OK", VKMenu::DialogResponseSaveSuccess);
     DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
-    v4->menus[v4->GetActiveMenu() != 0].highlighted = 0;
+    v4->GetLayer(v4->GetActiveMenu() == 0)->highlighted = 0;
     DialogMenuDisplay* mDisplay = v4->mDisplay;
     int mOptionCount = mDisplay->mOptionCount;
     if (mOptionCount > 0 && mOptionCount <= 2)
         mDisplay->mOptionSelected = 0;
     mDisplay->SetDialogFlash(0);
     DialogMenuSystem* v7 = g_femanager.GetDMS(currCl);
-    ((DialogMenu*)&v7->menus[v7->GetActiveMenu() != 0])
-        ->AddOption(defaultFileName, (bool (*)(int))j_nullsub_96);
+    v7->AddOption(defaultFileName, (bool (*)(int))j_nullsub_96);
     DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
     v8->mDisplay->Reformat();
 }
@@ -684,18 +659,16 @@ void VKMenu::DialogDisplayNoMemDevice()
     DMS->BringUp("MEM_ERROR_INSERT_CARD", false, false, defaultFileName,
                  true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
-    ((DialogMenu*)&v2->menus[v2->GetActiveMenu() != 0])
-        ->AddOption("MEM_DIALOG_OK", VKMenu::DialogResponseNoMemCard);
+    v2->AddOption("MEM_DIALOG_OK", VKMenu::DialogResponseNoMemCard);
     DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
-    v4->menus[v4->GetActiveMenu() != 0].highlighted = 0;
+    v4->GetLayer(v4->GetActiveMenu() == 0)->highlighted = 0;
     DialogMenuDisplay* mDisplay = v4->mDisplay;
     int mOptionCount = mDisplay->mOptionCount;
     if (mOptionCount > 0 && mOptionCount <= 2)
         mDisplay->mOptionSelected = 0;
     mDisplay->SetDialogFlash(0);
     DialogMenuSystem* v7 = g_femanager.GetDMS(currCl);
-    ((DialogMenu*)&v7->menus[v7->GetActiveMenu() != 0])
-        ->AddOption(defaultFileName, (bool (*)(int))j_nullsub_96);
+    v7->AddOption(defaultFileName, (bool (*)(int))j_nullsub_96);
     DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
     v8->mDisplay->Reformat();
 }

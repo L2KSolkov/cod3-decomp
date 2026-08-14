@@ -75,16 +75,6 @@ public:
 extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);  // ?GetTextureData@@YAPAUnglTexture@@PBDH0@Z
 
-// DialogMenuSystem minimal view (mDisplay at +0x2C; full class later)
-struct DialogMenuSystem {
-    uint8_t _pad[0x2C];
-    class DialogMenuDisplay* mDisplay;  // +0x2C
-};
-class DialogMenuDisplay {
-public:
-    void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@DialogMenuDisplay@@QAEX_N@Z
-};
-
 // Menu classes owned by other objects (extern ctors / statics; unresolved
 // until those objects land). Manglings from IDA.
 class CreateSessionMenu;

@@ -6,6 +6,7 @@
 #include "game/platform_xbox/MemoryUnitManager.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_scene.h"
+#include "ngl/ngl_dx_core.h"
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
 
@@ -25,6 +26,7 @@ extern const char* GetLanguageId(ELanguage l);  // ?GetLanguageId@@YAPBDW4ELangu
 extern void GetXboxLanguage();         // fe_util.cpp
 extern nglTexture* nglGetTexture(const tlFixedString& FileName);  // ngl_texture.cpp
 extern void* mem_heap_malloc(unsigned int size);  // core.o (1-arg overload)
+extern bool gMPLoadingUnthreaded;      // ?gMPLoadingUnthreaded@@3_NA
 namespace AeStringSupport {
 extern void Concat(char* dst, int* dstLen, int dstCapacity,
                    const char* src);  // core.o
@@ -49,17 +51,6 @@ namespace LocalClient {
 extern int FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHXZ
 extern int PortToClient(int port);   // ?PortToClient@LocalClient@@YAHH@Z
 }
-
-// DialogMenuSystem minimal view (full class later)
-class DialogMenuDisplay;
-class DialogMenu;
-class DialogMenuSystem {
-public:
-    void Update(float time_inc);  // ?Update@DialogMenuSystem@@UAE?A...
-    void Draw();                  // ?Draw@DialogMenuSystem@@UAEXXZ
-    void UpdateSplitScreen();     // ?UpdateSplitScreen@DialogMenuSystem@@UAEXXZ
-    bool IsSystemActive();        // ?IsSystemActive@DialogMenuSystem@@UAE_NXZ
-};
 
 // ProfileManager minimal view (for ReleaseFrontEnd)
 class ProfileManager {
@@ -525,6 +516,92 @@ void FEManager::InitIGO()
         new (IGO) IGOFrontEnd();
     else
         IGO = nullptr;
+}
+
+// ea: 0x004DDB70
+InGameMenuSystem* FEManager::GetIGMS(int client)
+{
+    if (client != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEManager.h";
+        AeAssert::gCurrentLine = 148;
+        AeAssert::gCurrentExpr = "client >= 0 && client < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid client index for dms"))
+            __debugbreak();
+    }
+    return mIGMS[client];
+}
+
+// ea: 0x004DDAF0
+DialogMenuSystem* FEManager::GetDMS(int client)
+{
+    if (client != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEManager.h";
+        AeAssert::gCurrentLine = 147;
+        AeAssert::gCurrentExpr = "client >= 0 && client < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid client index for dms"))
+            __debugbreak();
+    }
+    return mDMS[client];
+}
+
+// ea: 0x0057D6D0
+void FEManager::UpdateLoadingMenu(float percentDone)
+{
+    InGameMenuSystem* igms = g_femanager.GetIGMS(currCl);
+    int v2 = *(int*)&igms->menus[1];
+    if (percentDone > *(float*)(v2 + 132))
+        *(float*)(v2 + 132) = percentDone;
+    MultiplayerMgr::sInst->Step(0, !gMPLoadingUnthreaded, true);
+}
+
+// ea: 0x0057D8A0
+void FEManager::DrawDiscError()
+{
+    if (STBManager::sInst != nullptr && g_femanager.fonts[0] != nullptr)
+    {
+        const char* STBString = STBManager::sInst->GetSTBString(
+            "GAME_DAMAGED_DISC_XBOX_LINEA");
+        const char* v2 = STBManager::sInst->GetSTBString(
+            "GAME_DAMAGED_DISC_XBOX_LINEB");
+        unsigned int y;
+        unsigned int x;
+        nglGetStringDimensions(g_femanager.fonts[0], &x, &y, STBString);
+        x = 640 - x;
+        float v4 = (float)x;
+        x = (unsigned int)(v4 * 0.5f);
+        nglQuad loadImage;
+        nglInitQuad(&loadImage);
+        nglSetQuadRect(&loadImage, 0.0f, 0.0f, 640.0f, 480.0f);
+        nglSetQuadColor(&loadImage, 0);
+        nglSetQuadZ(&loadImage, 300.0f);
+        for (int i = 2; i != 0; --i)
+        {
+            nglListBeginScene(NGLSCENE_DEFAULTS);
+            nglSetClearFlags(0xF3u);
+            nglSetZWriteEnable(false);
+            nglListAddQuad(&loadImage);
+            nglListEndScene();
+            nglPresent();
+        }
+        nglWaitForRendering();
+        for (;;)
+        {
+            nglSetClearFlags(3u);
+            nglListAddQuad(&loadImage);
+            nglListAddString(g_femanager.fonts[0], (float)x, 200.0f, 0.0f,
+                             0xE0FFFFFF, 0.5f, 0.5f, STBString);
+            nglListAddString(g_femanager.fonts[0], (float)x, 230.0f, 0.0f,
+                             0xE0FFFFFF, 0.5f, 0.5f, v2);
+            nglPresent();
+        }
+    }
+    DrawDebugDiscError();
 }
 
 // ea: 0x0056F0F0

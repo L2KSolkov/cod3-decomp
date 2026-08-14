@@ -142,8 +142,8 @@ class PanelFile;
 class FEMenuEntry;
 struct UIListBox;
 struct OverlayMenu;
-struct DialogMenuSystem;
-struct DialogMenu;
+class DialogMenuSystem;
+class DialogMenu;
 class PanelQuad;
 class FEText;
 
@@ -1395,6 +1395,10 @@ public:
     {
         box_width = width;
     }
+    virtual int GetBoxWidth()                      // inline 0x5B1BE0
+    {
+        return box_width;
+    }
     virtual void SetCutOffIfTooLong(bool coitl)    // inline 0x5B1C70
     {
         cut_off_if_too_long = coitl;
@@ -1519,6 +1523,151 @@ private:
     void CompleteName();                // 0x59C4E0
 };
 static_assert(sizeof(VKMenu) == 0x1C8, "VKMenu size mismatch");
+
+// ============================================================================
+// DialogMenuDisplay - 76 bytes (verified against IDA)
+// ============================================================================
+class DialogMenuDisplay : public PanelFileUser {
+public:
+    PanelFile*      mPanel;                    // +0x04
+    PanelFile*      mSplitScreenMenu;          // +0x08
+    FEMultiLineText* mDialogText;              // +0x0C
+    PanelQuad*      mMenuLines[1];             // +0x10
+    FEText*         mMenuOptions[2];           // +0x14
+    FEMultiLineText* mSplitScreenDialogText;   // +0x1C
+    FEText*         mSplitScreenDialogTitle;   // +0x20
+    FEText*         mSplitScreenMenuOptions[2];// +0x24
+    const char*     mOptionText[2];            // +0x2C
+    int             mOptionCount;              // +0x34
+    int             mOptionSelected;           // +0x38
+    int             mViewport;                 // +0x3C
+    bool            mIsClosing;                // +0x40
+    int             mClient;                   // +0x44
+    bool            mWidescreen;               // +0x48
+
+    static const char* const kMenuOptionGeoms[];  // @ 0xCEF3C0
+    static const char* const kMenuLineGeoms[];    // @ 0xCEF3C8
+
+    DialogMenuDisplay(int client);          // 0x5723B0
+    ~DialogMenuDisplay();                   // 0x5922A0
+    virtual void SetPanelFile(PanelFile* pf);      // 0x59AE00
+    virtual void PanelFileUnloaded(PanelFile* pf); // 0x5922E0
+    virtual void UpdateWidescreen(bool ws);        // 0x57EE70
+    void SetText(const char* text);         // 0x572400
+    void SetTitle(const char* text);        // 0x572460
+    void OnActivate();                      // 0x572480
+    static DialogMenuDisplay* Me(int viewport);  // 0x572490
+    void AddOption(const char* text);       // 0x5724B0
+    void Reformat();                        // 0x5725D0
+    void Update(float time_inc);            // 0x57ED70
+    void Draw();                            // 0x57EEB0
+    void OnUp();                            // 0x57EFF0
+    void OnDown();                          // 0x57F020
+    void HighlightEntry(int entryNum);      // 0x57F050
+    void UpdateSplitScreen();               // 0x57F070
+    void SetDialogFlash(int entryNum);      // 0x5724D0
+private:
+    void SetPanelFileSplitScreen(PanelFile* pf);  // 0x57EF80
+    void SetPanelFileMain(PanelFile* pf);         // 0x596030
+};
+static_assert(sizeof(DialogMenuDisplay) == 0x4C,
+              "DialogMenuDisplay size mismatch");
+
+// ============================================================================
+// DialogMenu - 120 bytes (verified against IDA)
+// ============================================================================
+class DialogMenu : public FEMenu {
+public:
+    int    cur_index;       // +0x4C
+    bool (*optionResponses[4])(int);  // +0x50
+    void (*triangleResponse)(int);    // +0x60
+    void (*delayResponse)(int);       // +0x64
+    Broc::string message;   // +0x68
+    Broc::string title;     // +0x6C
+    int    mDelayMs;        // +0x70
+    int    mClient;         // +0x74
+
+    DialogMenu(FEMenuSystem* s);        // 0x592340
+    virtual void OnActivate();          // 0x572BE0
+    virtual void Draw();                // 0x572BF0
+    virtual void Update(float time_inc);// 0x572C00
+    virtual void UpdateWidescreen(bool ws);  // 0x572C60
+    virtual void Select(int entry_num); // 0x572C80
+    virtual void OnTriangle(int c);     // 0x572CC0
+    virtual void UpdateSplitScreen();   // 0x572F90
+    virtual void ButtonHeldAction();    // 0x572FA0
+    virtual void OnUp(int c);           // 0x57F270
+    virtual void OnDown(int c);         // 0x57F2D0
+    void BringUp(Broc::string& mess, Broc::string& t,
+                 int client);           // 0x572CF0
+    void CloseOnDelay(int delaySeconds,
+                      void (*delayResp)(int));  // 0x572F60
+    void AddOption(const char* t,
+                   bool (*responseFunc)(int));  // 0x572EE0
+    void Reformat(bool vertical, int viewport); // 0x572F40
+};
+static_assert(sizeof(DialogMenu) == 0x78, "DialogMenu size mismatch");
+
+// ============================================================================
+// DialogMenuSystem - 68 bytes (verified against IDA)
+// ============================================================================
+class DialogMenuSystem : public FEMenuSystem {
+public:
+    enum eState {
+        DMS_STATE_NONE = 0,
+        DMS_NETWORK_ERROR = 1,
+        DMS_SIGNOUT_CONFIRMATION = 2,
+        DMS_PENDING_SHUTDOWN = 3,
+    };
+
+    DialogMenuDisplay* mDisplay;  // +0x2C
+    char   flags;                 // +0x30
+    int    mClient;               // +0x34
+    bool   mWasIGMSUpWhenLaunched;// +0x38
+    float  mCountDown;            // +0x3C
+    int    mState;                // +0x40
+
+    DialogMenuSystem(int client);  // 0x5940C0
+    virtual ~DialogMenuSystem();   // 0x5941D0
+    virtual void Update(float time_inc);       // 0x57F0B0
+    virtual void OnButtonPress(int b, int c);  // 0x57F160
+    virtual void OnButtonRelease(int b, int c);// 0x572680
+    virtual void MakeActive(int index);        // 0x57F1F0
+    virtual void UpdateSplitScreen();          // 0x57F230
+    virtual void Draw();                       // 0x586570
+    virtual int GetClientFromController(int c);// 0x5728B0
+    virtual int GetCurrentClient();            // 0x5728E0
+    virtual int GetCurrentClientController();  // 0x572900
+    virtual bool GetAnalogPressed(int button,
+                                  int* p_controller);  // 0x572930
+    virtual bool GetButtonPressed(int button,
+                                  int* p_controller);  // 0x572A90
+    virtual int GetStickValueX(int stick,
+                               int* p_controller);     // 0x572B00
+    virtual int GetStickValueY(int stick,
+                               int* p_controller);     // 0x572B70
+
+    void GeneralBringUpStuff(bool layer1);   // 0x5726B0
+    void SetText(const char* t);             // 0x572770
+    void CloseDialog();                      // 0x572790
+    void OnFinish();                         // 0x5727E0
+    DialogMenu* GetLayer(bool layer1);       // 0x572830
+    void UseSmallBackground(bool use);       // 0x572850
+    static bool DefaultNoResponse(int client);  // 0x572860
+    static bool DefaultYesResponse(int client); // 0x586690
+    void OnStart(int c);                     // 0x572880
+    void SetState(eState newState);          // 0x586640
+    void BringUp(const char* t, bool type_ok, bool type_yn,
+                 const char* title_unloc, bool layer1);  // 0x58E3B0
+    void HighlightOption(int index);         // 0x57F1A0
+    void AddOption(const char* t,
+                   bool (*responseFunc)(int));  // 0x5B5670
+    void Reformat(bool vertical);            // 0x4E2A50
+private:
+    void CountDown(float time_inc);          // 0x586470
+};
+static_assert(sizeof(DialogMenuSystem) == 0x44,
+              "DialogMenuSystem size mismatch");
 
 // ============================================================================
 // ControllerDisconnectedMenu - controller error overlay (80 bytes)
