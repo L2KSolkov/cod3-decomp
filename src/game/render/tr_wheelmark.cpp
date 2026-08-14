@@ -141,6 +141,7 @@ public:
     void New();          // ?New@WheelMark@@QAEXXZ
     void UpdateSplash(const math::Position3& Pos);  // ?UpdateSplash@WheelMark@@QAEXABVPosition3@math@@@Z
     void Stop();         // ?Stop@WheelMark@@QAEXXZ
+    void Render();       // ?Render@WheelMark@@QAEXXZ
     void Assign(Entity* owner, wheel_e wheel);  // ?Assign@WheelMark@@QAEXPAVEntity@@W4wheel_e@@@Z
     void AddPoint(const math::Position3& Pos, const math::Dir3& Normal,
                   float Spacing, float Width, unsigned int Material,
@@ -590,6 +591,8 @@ nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams,
                             nglShaderParamSet* ShaderParams,
                             void (*fn)(nglMeshNode*));
+extern void* nglListAlloc(unsigned int size, unsigned int align);  // ngl.o
+extern unsigned int cdWheelMarkShaderDataID;  // ?cdWheelMarkShaderDataID@@3IA (cdWheelMarkShader.cpp)
 
 // fast cos via floor magic (Float4_FloorMagic_10 = 12582912.0)
 static float FastCosAng(float radians)
@@ -872,6 +875,29 @@ void WheelMark::New()
     LastPos.v.m128_f32[3] = 0.0f;
     SplashPos.v.m128_f32[2] = 0.0f;
     SplashPos.v.m128_f32[3] = 0.0f;
+}
+
+// ea: 0x006D4590
+void WheelMark::Render()
+{
+    unsigned int* v3 = (unsigned int*)nglListAlloc(8u, 0x10u);
+    v3[0] = (LastVert - NumVerts) & 0x3FF;
+    v3[1] = NumVerts;
+    nglShaderParamSet* params = (nglShaderParamSet*)nglListAlloc(
+        4 * nglShaderParamSet::NumParams + 8, 8u);
+    params->Array[0] = 0;
+    params->Array[1] = 0;
+    unsigned __int64 mask = 1i64 << cdWheelMarkShaderDataID;
+    params->Array[0] |= (unsigned int)mask;
+    params->Array[1] |= (unsigned int)(mask >> 32);
+    params->Array[cdWheelMarkShaderDataID + 2] = (unsigned int)v3;
+    math::Mat43 mtx;
+    mtx.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    mtx.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    mtx.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    mtx.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    nglListAddMesh(Mesh, mtx, nullptr, params, nullptr);
+    ++TimeStamp;
 }
 
 // ea: 0x006C39F0

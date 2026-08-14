@@ -18,6 +18,7 @@ gpuVertexFormat cdWheelMarkVertexFormat;  // ?cdWheelMarkVertexFormat@@3UgpuVert
 
 // Shader global pointer definitions
 cdWheelMarkShader* gCDWheelMarkShader = nullptr;  // ?gCDWheelMarkShader@@3PAVcdWheelMarkShader@@A
+unsigned int cdWheelMarkShaderDataID;  // ?cdWheelMarkShaderDataID@@3IA @ 0x14CD57C
 
 // Shader static data definitions (render_xboxr cd*Shader.o)
 namespace cdWheelMarkShaderVertex {
