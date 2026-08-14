@@ -332,6 +332,7 @@ add_library(cod3_game_shell STATIC
     src/game/shell/loading_menu.cpp
     src/game/shell/menu_misc.cpp
     src/game/shell/shell_misc.cpp
+    src/game/shell/igo_widgets.cpp
 )
 add_library(cod3_game_game STATIC src/game/game/stubs_game.cpp)
 add_library(cod3_game_core STATIC

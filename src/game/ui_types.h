@@ -274,6 +274,12 @@ public:
     virtual void SetZvalueAbs(float z);       // 0x57A530
     virtual float GetCenterX() { return center_point.x; }  // inline 0x5B6490
     virtual void SetXYInitialToCurrentPos();  // ?SetXYInitialToCurrentPos@PanelQuad@@UAEXXZ 0x57A8A0
+    virtual float GetCenterY() { return center_point.y; }  // inline 0x5B64A0
+    virtual float GetWidth()   // inline 0x5B6710
+    {
+        return GetMax().x - GetMin().x;
+    }
+    static PanelQuad* Clone(PanelQuad* pPQ);  // ?Clone@PanelQuad@@SAPAV1@PAV1@@Z 0x58C450
     void Mask(float percent, mask_type maskType,
               float uv_width);  // ?Mask@PanelQuad@@QAEXMW4mask_type@@M@Z 0x579C40
     virtual void GetCenterPos(float& cx, float& cy)  // inline 0x5B6470
@@ -1255,6 +1261,121 @@ static_assert(sizeof(ControllerDisconnectedMenu) == 0x50,
               "ControllerDisconnectedMenu size mismatch");
 static_assert(offsetof(ControllerDisconnectedMenu, text) == 0x4C,
               "ControllerDisconnectedMenu::text offset mismatch");
+
+// ============================================================================
+// IGOWidget - in-game overlay widget base (12 bytes) - verified against IDA
+// 9-slot vftable: dtor/Init/Update/Draw/IsShown/SetShown/UpdateWidescreen/
+// UpdateSplitScreen/ForceToAppear (Init/Update/Draw/UpdateWidescreen pure)
+// ============================================================================
+class IGOWidget {
+public:
+    bool is_shown;      // +0x04
+    bool force_appear;  // +0x05
+    int  mClient;       // +0x08
+
+    virtual ~IGOWidget() {}                        // inline COMDAT
+    virtual void Init(PanelFile* panel) = 0;
+    virtual void Update(float time_inc) = 0;
+    virtual void Draw() = 0;
+    virtual bool IsShown() { return is_shown; }    // 0x5AEAB0
+    virtual void SetShown(bool s) { is_shown = s; }  // 0x5AEAC0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x) = 0;
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport) {}  // 0x5AEAE0 (empty)
+    virtual void ForceToAppear() { force_appear = true; }  // 0x5AEAF0
+};
+static_assert(sizeof(IGOWidget) == 0xC, "IGOWidget size mismatch");
+static_assert(offsetof(IGOWidget, is_shown) == 0x04,
+              "IGOWidget::is_shown offset mismatch");
+
+// ============================================================================
+// IGOHealthWidget (40 bytes) - verified against IDA
+// ============================================================================
+class IGOHealthWidget : public IGOWidget {
+public:
+    PanelQuad* bar;          // +0x0C
+    PanelQuad* frame;        // +0x10
+    PanelQuad* cross;        // +0x14
+    PanelQuad* flash;        // +0x18
+    float      health;       // +0x1C
+    float      last_health;  // +0x20
+    bool       draw_flash;   // +0x24
+
+    IGOHealthWidget(int client);  // 0x565EA0
+    virtual void Init(PanelFile* panel);              // 0x598330
+    virtual void Update(float time_inc);              // 0x5826B0
+    virtual void Draw();                              // 0x565EE0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582890
+};
+static_assert(sizeof(IGOHealthWidget) == 0x28,
+              "IGOHealthWidget size mismatch");
+
+// ============================================================================
+// IGOTankHealthWidget (32 bytes) - verified against IDA
+// ============================================================================
+class IGOTankHealthWidget : public IGOWidget {
+public:
+    PanelQuad* frame;          // +0x0C
+    PanelQuad* bar;            // +0x10
+    PanelQuad* armor;          // +0x14
+    float      healthMaxWidth; // +0x18
+    float      maxHealth;      // +0x1C
+
+    IGOTankHealthWidget(int client);  // 0x567370
+    virtual void Init(PanelFile* panel);              // 0x598AB0
+    virtual void Update(float time_inc);              // 0x588A30
+    virtual void Draw();                              // 0x5673B0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583170
+};
+static_assert(sizeof(IGOTankHealthWidget) == 0x20,
+              "IGOTankHealthWidget size mismatch");
+
+// ============================================================================
+// IGOVoteWidget (16 bytes) - verified against IDA
+// ============================================================================
+class IGOVoteWidget : public IGOWidget {
+public:
+    PanelQuad* vote;  // +0x0C
+
+    IGOVoteWidget(int client);  // 0x5677A0
+    virtual void Init(PanelFile* panel);              // 0x598D70
+    virtual void Update(float time_inc);              // 0x5677D0
+    virtual void Draw();                              // 0x5677F0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x5832C0
+};
+static_assert(sizeof(IGOVoteWidget) == 0x10,
+              "IGOVoteWidget size mismatch");
+
+// ============================================================================
+// IGORowboatWidget (28 bytes) - verified against IDA
+// ============================================================================
+class IGORowboatWidget : public IGOWidget {
+public:
+    enum ePhase {
+        PHASE_UP_ARROW = 0,
+        PHASE_HALF_CIRCLE = 1,
+        PHASE_FADE_OUT = 2,
+        PHASE_OFF = 3,
+    };
+
+    PanelQuad* mUpArrow;    // +0x0C
+    PanelQuad* mHalfCircle; // +0x10
+    ePhase     mPhase;      // +0x14
+    float      mTimer;      // +0x18
+
+    IGORowboatWidget();     // 0x568FA0
+    virtual void Init(PanelFile* panel);              // 0x59A980
+    virtual void Update(float time_inc);              // 0x568FD0
+    virtual void Draw();                              // 0x569180
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583D60
+};
+static_assert(sizeof(IGORowboatWidget) == 0x1C,
+              "IGORowboatWidget size mismatch");
 
 // ============================================================================
 // FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA

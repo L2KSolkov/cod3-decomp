@@ -318,6 +318,7 @@ struct MultiplayerMgr {
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad2[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
+    bool IsVoteOngoing();           // ?IsVoteOngoing@MultiplayerMgr@@QAE_NXZ
     void setEnableLinkCheck(bool enabled);  // ?setEnableLinkCheck@MultiplayerMgr@@QAEX_N@Z (sv.o 0x528020)
     bool getEnableLinkCheck();              // ?getEnableLinkCheck@MultiplayerMgr@@QAE_NXZ (sv.o 0x528030)
     void ExitLevel();

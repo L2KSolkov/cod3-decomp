@@ -315,6 +315,20 @@ void PanelQuad::SetXYInitialToCurrentPos()
     }
 }
 
+// ea: 0x0058C450
+PanelQuad* PanelQuad::Clone(PanelQuad* pPQ)
+{
+    PanelQuad* v1 = (PanelQuad*)mem_heap_malloc(0x48u);
+    PanelQuad* v2;
+    if (v1 != nullptr)
+        v2 = new (v1) PanelQuad();
+    else
+        v2 = nullptr;
+    if (v2 != nullptr)
+        v2->CopyFrom(pPQ);
+    return v2;
+}
+
 // ea: 0x0057A530
 void PanelQuad::SetZvalueAbs(float z)
 {
