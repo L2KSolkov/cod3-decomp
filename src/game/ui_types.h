@@ -50,6 +50,7 @@ public:
     bool button_released_clear(int index, ButtonIndex btn); // controller.o
     bool button_pressed(ButtonIndex btn, int* p_controller);  // controller.o
     bool button_pressed(int controller, ButtonIndex btn);     // ?button_pressed@controller@@QAE_NHW4ButtonIndex@1@@Z
+    int  button_value(int controller, ButtonIndex btn);       // ?button_value@controller@@QAEHHW4ButtonIndex@1@@Z (controller.o)
     bool button_released(ButtonIndex btn, int* p_controller); // controller.o
     int  stick_value_x(StickIndex stick, int* p_controller);  // controller.o
     int  stick_value_x(int controller, StickIndex stick);     // ?stick_value_x@controller@@QAEHHW4StickIndex@1@@Z

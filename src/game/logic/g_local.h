@@ -909,6 +909,7 @@ struct TimerRenderBars {
     TimerRenderBars();  // ??0TimerRenderBars@@QAE@XZ (render.o 0x6BCE00)
     void Init();        // ?Init@TimerRenderBars@@QAEXXZ (render.o 0x6BCE60)
     void DeltaTimeScale(int d);  // ?DeltaTimeScale@TimerRenderBars@@QAEXH@Z (render.o 0x6BCEE0)
+    void Render();      // ?Render@TimerRenderBars@@QAEXXZ (render.o 0x6C3C70)
     void ToggleActive();  // ?ToggleActive@TimerRenderBars@@QAEXXZ (inline)
     void TimeGameAdvanceBegin() {  // ea: 0x72A9D0 (inline)
         unsigned __int64 t = __rdtsc();

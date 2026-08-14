@@ -397,7 +397,10 @@ add_library(cod3_game_render STATIC
     src/game/render/tr_staticmodel.cpp
     src/game/render/tr_bsp3.cpp
     src/game/render/tr_font.cpp
-    src/game/render/tr_fx4.cpp)
+    src/game/render/tr_fx4.cpp
+    src/game/render/tr_qsort.cpp
+    src/game/render/tr_d3d.cpp
+    src/game/render/tr_bsp4.cpp)
 add_library(cod3_game_anim STATIC src/game/anim/stubs_game.cpp)
 add_library(cod3_game_mpactors STATIC
     src/game/mpactors/stubs_game.cpp

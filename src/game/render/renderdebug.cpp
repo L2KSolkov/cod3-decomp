@@ -7,6 +7,7 @@
 #include "core/tlFixedString.h"
 #include "render/cdDebugShader.h"
 #include "ngl/ngl_lighting.h"
+#include "ngl/nglDebug.h"
 
 #include <math.h>
 #include <intrin.h>
@@ -54,6 +55,18 @@ extern void tlPrint(const char* lpOutputString);  // tl lib
 extern int g_lightGridBlueErrors;   // ?g_lightGridBlueErrors@@3HA (g.o)
 extern int g_bOptimize;             // ?g_bOptimize@@3HA (render.o @ 0xF743D0)
 
+// controller (input/controller.o); minimal view to avoid ui_types.h clash
+class controller {
+public:
+    enum ButtonIndex {
+        L2 = 11,
+        SELECT = 15,
+    };
+    static controller* inst();          // ?inst@controller@@SAPAV1@XZ
+    int  button_value(int controller, ButtonIndex btn);
+    bool button_pressed(int controller, ButtonIndex btn);
+};
+
 // ============================================================================
 // TimerRenderBars
 // ============================================================================
@@ -93,6 +106,95 @@ void TimerRenderBars::DeltaTimeScale(int d)
 {
     if (d > 0 || mRenderTimersScale > 1)
         mRenderTimersScale += d;
+}
+
+// ea: 0x006C3C70
+void TimerRenderBars::Render()
+{
+    controller* v2 = controller::inst();
+    if (v2->button_value(0, controller::SELECT) > 0)
+    {
+        controller* v3 = controller::inst();
+        if (v3->button_pressed(0, controller::L2))
+        {
+            mActive ^= 1u;
+            mCvarEnabled->integer = 0;
+        }
+    }
+    if (mActive != 0 || (mActive = mCvarEnabled->integer, mCvarEnabled->integer != 0))
+    {
+        float v6 = mVSyncLength / (float)mRenderTimersScale;
+        float v7 = (1.0f / v6) * 1000.0f;
+        float hashDelta = 1.0f / v6;
+        float totalMs = v7;
+
+        float curVal;
+        if (mCvarShowAdvance->integer == 0)
+        {
+            curVal = 0.0f;
+        }
+        else
+        {
+            unsigned __int64 elapsed = mFrameAdvance.mLastEnd - mFrameAdvance.mLastBegin;
+            float v10 = (float)((double)elapsed / (double)(totalMs * 733333.31f));
+            curVal = v10;
+            if (v10 < 0.0f)
+                curVal = 0.0f;
+            else if (curVal > 1.0f)
+                curVal = 1.0f;
+        }
+
+        float v12;
+        if (mCvarShowScene->integer == 0)
+            v12 = 0.0f;
+        else
+            v12 = nglPerfInfo.ListSubmitMS / v7;
+        float v13;
+        if (mCvarShowDma->integer != 0)
+            v13 = (nglPerfInfo.ListSendMS / v7) + v12;
+        else
+            v13 = 0.0f;
+
+        float v14 = curVal * 600.0f + 20.0f;
+        float dmaBuildVal = (v13 * 600.0f) + 20.0f;
+        float sceneSubmitVal = (v12 * 600.0f) + 20.0f;
+        float fpsVal = ((v6 / nglPerfInfo.FPS) * 600.0f) + 20.0f;
+
+        Color col;
+        col.r = 1.0f; col.g = 1.0f; col.b = 0.0f; col.a = 0.5f;
+        DebugRender::RenderQuad2D(20.0f, 30.0f, v14, 40.0f, 0.0f, col);
+        col.r = 1.0f; col.g = 0.0f; col.b = 0.0f; col.a = 0.5f;
+        DebugRender::RenderQuad2D(v14, 30.0f, sceneSubmitVal, 40.0f, 0.0f, col);
+        col.r = 1.0f; col.g = 0.0f; col.b = 1.0f; col.a = 0.5f;
+        DebugRender::RenderQuad2D(sceneSubmitVal, 30.0f, dmaBuildVal, 40.0f, 0.0f, col);
+        col.r = 1.0f; col.g = 1.0f; col.b = 1.0f; col.a = 0.5f;
+        DebugRender::RenderQuad2D(dmaBuildVal, 30.0f, fpsVal, 40.0f, 0.0f, col);
+
+        float renderVal = nglPerfInfo.RenderMS / totalMs * 600.0f + 20.0f;
+        col.r = 0.0f; col.g = 1.0f; col.b = 0.0f; col.a = 0.5f;
+        DebugRender::RenderQuad2D(20.0f, 50.0f, renderVal, 60.0f, 0.0f, col);
+        col.r = 1.0f; col.g = 1.0f; col.b = 1.0f; col.a = 0.5f;
+        DebugRender::RenderQuad2D(renderVal, 50.0f, fpsVal, 60.0f, 0.0f, col);
+
+        mFrameAdvance.Next();
+        mUser.Next();
+
+        float v25 = (mVSyncLength * hashDelta) + 0.0099999998f;
+        hashDelta = 600.0f / v25;
+        int v27 = (int)v25 + 1;
+        float curX = 20.0f;
+        if (v27 >= 0)
+        {
+            col.r = 0.0f; col.g = 0.0f; col.b = 1.0f; col.a = 1.0f;
+            int v28 = v27 + 1;
+            do
+            {
+                DebugRender::RenderQuad2D(curX - 1, 30.0f, curX + 1, 60.0f, 0.0f, col);
+                --v28;
+                curX = curX + hashDelta;
+            } while (v28 != 0);
+        }
+    }
 }
 
 // ============================================================================
