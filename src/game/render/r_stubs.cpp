@@ -115,6 +115,8 @@ class XModelPartsManager {
 public:
 private:
     virtual void OnBankUnloaded(XModelPartsBank& xmpBank);  // ?OnBankUnloaded@XModelPartsManager@@EAEXAAVXModelPartsBank@@@Z
+public:
+    void PostProcess(XModelPartsBank* xmpBank, TPakId pak_id);  // ?PostProcess@XModelPartsManager@@AAEXPAVXModelPartsBank@@W4TPakId@@@Z
 };
 
 struct dpvs_plane_t {

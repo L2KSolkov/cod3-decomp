@@ -1484,7 +1484,7 @@ struct XModel {
     XModelParts* parts;        // +0x20
     XModelLod**  lod;          // +0x24
     uint8_t      _pad28[0x38 - 0x28];
-    void*        collSurfs;    // +0x38 InplaceVector<XModelCollSurf const *>
+    InplaceVector<struct XModelCollSurf const*> collSurfs;  // +0x38
     uint8_t      _pad3C[0x40 - 0x3C];
     int          contents;     // +0x40
     uint8_t      _pad41[0x44 - 0x41];

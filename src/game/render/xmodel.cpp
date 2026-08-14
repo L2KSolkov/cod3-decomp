@@ -432,6 +432,72 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
     }
 }
 
+// ============================================================================
+// XModelGetStaticBounds - ea: 0x006CBBA0
+// ============================================================================
+struct XModelCollSurf {
+    math::Position3 mins;   // +0x00
+    math::Position3 maxs;   // +0x10
+    int boneIdx;            // +0x20
+};
+
+int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
+                          math::Position3& mins, math::Position3& maxs,
+                          const math::Mat43* bones, int nbones)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    unsigned int mSize = model.mValue->collSurfs.mSize;
+    if (mSize == 0)
+        return 0;
+    mins.v = _mm_set1_ps(3.4028235e38f);
+    maxs.v = _mm_set1_ps(-3.4028235e38f);
+
+    InplaceVector<XModelCollSurf const*>& collSurfs = model.mValue->collSurfs;
+    for (unsigned int i = 0; i < collSurfs.mSize; ++i)
+    {
+        ValidatePakId((TPakId)model.mPakId);
+        const XModelCollSurf* surf = collSurfs.mList[i];
+        int boneIdx = surf->boneIdx;
+        if (boneIdx < 0 || boneIdx >= nbones)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xmodel.cpp";
+            AeAssert::gCurrentLine = 809;
+            AeAssert::gCurrentExpr = "bone_index >= 0 && bone_index < nbones";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("bad bone index"))
+                __debugbreak();
+        }
+        const math::Mat43& bone = bones[boneIdx];
+        for (int corner = 0; corner < 8; ++corner)
+        {
+            __m128 p = _mm_setr_ps(
+                (corner & 1) != 0 ? surf->mins.v.m128_f32[0]
+                                  : surf->maxs.v.m128_f32[0],
+                (corner & 2) != 0 ? surf->mins.v.m128_f32[1]
+                                  : surf->maxs.v.m128_f32[1],
+                (corner & 4) != 0 ? surf->mins.v.m128_f32[2]
+                                  : surf->maxs.v.m128_f32[2],
+                0.0f);
+            __m128 world = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(p, p, 0), bone.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(p, p, 85), bone.y.v)),
+                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(p, p, 170), bone.z.v),
+                           bone.w.v));
+            float v24[3];
+            MatrixTransformVector(&world.m128_f32[0], axis, v24);
+            for (int j = 0; j < 3; ++j)
+            {
+                if (mins.v.m128_f32[j] > v24[j])
+                    mins.v.m128_f32[j] = v24[j];
+                if (v24[j] > maxs.v.m128_f32[j])
+                    maxs.v.m128_f32[j] = v24[j];
+            }
+        }
+    }
+    return 1;
+}
+
 
 // ea: 0x006BD3C0
 const char* XModelGetSurfaceName(IVPointer<XModel> model, int subMatIndex,
