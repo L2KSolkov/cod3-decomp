@@ -299,8 +299,9 @@ void R_LocalPointToWorld(float* local, float* world)
 }
 
 // ea: 0x006C0BF0
-void R_TransformModelToClip(const float* src, const float* modelMatrix,
-                            const float* projectionMatrix, float* eye, float* dst)
+void R_TransformModelToClip(const float* const src, const float* modelMatrix,
+                            const float* projectionMatrix,
+                            float* const eye, float* const dst)
 {
     *eye = (((modelMatrix[4] * src[1]) + (modelMatrix[8] * src[2]))
             + (*src * *modelMatrix)) + modelMatrix[12];
@@ -321,9 +322,10 @@ void R_TransformModelToClip(const float* src, const float* modelMatrix,
 }
 
 // ea: 0x006C0DA0
-void R_TransformHomogenousModelToClip(const float* src, const float* modelMatrix,
+void R_TransformHomogenousModelToClip(const float* const src,
+                                      const float* modelMatrix,
                                       const float* projectionMatrix,
-                                      float* eye, float* dst)
+                                      float* const eye, float* const dst)
 {
     *eye = (((modelMatrix[8] * src[2]) + (modelMatrix[4] * src[1]))
             + (modelMatrix[12] * src[3])) + (*src * *modelMatrix);
