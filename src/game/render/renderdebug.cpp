@@ -1232,6 +1232,22 @@ void DebugRender::RenderCircle(const math::Position3& center, float radius,
     }
 }
 
+// ea: 0x006DBB70
+void DebugRender::RenderPoly(int count, const math::Position3* vertices,
+                             const Color& col)
+{
+    if (count > 0)
+    {
+        const math::Position3* v3 = vertices;
+        const math::Position3* v5 = &vertices[count - 1];
+        for (int i = count; i != 0; --i)
+        {
+            DebugRender::RenderLine(*v5, *v3, col, 0.050000001f);
+            v5 = v3++;
+        }
+    }
+}
+
 // ============================================================================
 // DebugRender::Render - ea: 0x006D9490 (deferred primitive flush)
 // ============================================================================
