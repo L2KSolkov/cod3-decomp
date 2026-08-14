@@ -12,6 +12,7 @@
 #include "render/cdWheelMarkShader.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
@@ -293,11 +294,27 @@ public:
                     int maxNum);       // ??0DynamicDecalSet@@QAE@PAUnglTexture@@M_NH@Z
     ~DynamicDecalSet();                // ??1DynamicDecalSet@@QAE@XZ
     void Render();                     // ?Render@DynamicDecalSet@@QAEXXZ
+    void Add(const math::Position3& pos, const math::Position3& normal,
+             float radius, float angle, Color color,
+             bool isHighPriority);  // ?Add@DynamicDecalSet@@QAEXABVPosition3@math@@0MMVColor@@_N@Z
 };
 
 // ============================================================================
 // DynamicDecalSet::Update - ea: 0x006C3790
 // ============================================================================
+namespace LightGrid {
+struct TOC;
+}
+class LightGridMgr {
+public:
+    static LightGridMgr* sInst;  // ?sInst@LightGridMgr@@2PAV1@A (pakmanager.cpp)
+    LightGrid::TOC* GetLightGrid(const math::Position3& posArg,
+                                 int* pCellNum);  // renderdebug.cpp
+    void SampleLightGrid(const LightGrid::TOC& toc, int cellidx,
+                         const math::Position3& pos, math::Mat44* dir,
+                         math::Mat44* color);  // lightgrid.cpp
+};
+
 void DynamicDecalSet::Update(float deltaTime)
 {
     mNextFree[0] = -1;
@@ -347,6 +364,171 @@ void DynamicDecalSet::Update(float deltaTime)
             ++i;
         } while (i < mNumDecals);
     }
+}
+
+// ea: 0x006D3FD0
+void DynamicDecalSet::Add(const math::Position3& pos,
+                          const math::Position3& normal, float radius,
+                          float angle, Color color, bool isHighPriority)
+{
+    math::Position3 camPos;
+    camPos.v = mViewToWorldMtx->w.v;
+    __m128 v14 = _mm_sub_ps(pos.v, camPos.v);
+    __m128 v15 = _mm_mul_ps(v14, v14);
+    float dist2 = v15.m128_f32[0]
+                  + (v15.m128_f32[1] + v15.m128_f32[2]);
+    if (!isHighPriority
+        && (mNumOnScreen > mMaxNumDecals - mMaxNumDecals / 4
+            || dist2 > 1394997.1f))
+    {
+        return;
+    }
+    int mNumDecals = this->mNumDecals;
+    if (mNumDecals >= mMaxNumDecals)
+    {
+        int v17 = 0;
+        int* mNextFree = this->mNextFree;
+        while (v17 < 4 && *mNextFree == -1)
+        {
+            ++v17;
+            ++mNextFree;
+        }
+        if (v17 == 4 || (mNumDecals = this->mNextFree[v17]) == -1)
+        {
+            mNumDecals = mOffScreenReplacement;
+            if (mNumDecals == -1)
+            {
+                if (!isHighPriority)
+                    return;
+                mNumDecals = mOnScreenReplacement;
+                if (mNumDecals == -1)
+                    return;
+            }
+        }
+    }
+    else
+    {
+        this->mNumDecals = mNumDecals + 1;
+    }
+    Decal* v19 = &mDecals[mNumDecals];
+    v19->mPos.v = pos.v;
+
+    // Basis: xdir orthogonal to normal, ydir = normal x xdir.
+    __m128 v20 = normal.v;
+    __m128 yAxis = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    __m128 v21 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(v20, v20, 9),
+                   _mm_shuffle_ps(yAxis, yAxis, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(v20, v20, 18),
+                   _mm_shuffle_ps(yAxis, yAxis, 9)));
+    __m128 v22 = _mm_mul_ps(v21, v21);
+    if ((v22.m128_f32[0] + (v22.m128_f32[1] + v22.m128_f32[2])) < 0.2f)
+    {
+        __m128 zAxis = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        v21 = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v20, v20, 9),
+                       _mm_shuffle_ps(zAxis, zAxis, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(v20, v20, 18),
+                       _mm_shuffle_ps(zAxis, zAxis, 9)));
+    }
+    __m128 v23 = _mm_mul_ps(v21, v21);
+    float len = sqrtf(v23.m128_f32[0]
+                      + (v23.m128_f32[1] + v23.m128_f32[2]));
+    __m128 v24 = _mm_div_ps(v21, _mm_set1_ps(len));  // xdir
+    __m128 v25 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(v20, v20, 9),
+                   _mm_shuffle_ps(v24, v24, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(v20, v20, 18),
+                   _mm_shuffle_ps(v24, v24, 9)));
+    __m128 v26 = _mm_mul_ps(v25, v25);
+    float len2 = sqrtf(v26.m128_f32[0]
+                       + (v26.m128_f32[1] + v26.m128_f32[2]));
+    __m128 v27 = _mm_div_ps(v25, _mm_set1_ps(len2));  // ydir
+
+    __m128 v28 = _mm_set1_ps(radius);
+    float cosA = cosf(angle);
+    float sinA = sinf(angle);
+    __m128 v29 = _mm_set1_ps(cosA);
+    __m128 v30 = _mm_set1_ps(sinA);
+    __m128 xoff = _mm_mul_ps(
+        _mm_add_ps(_mm_mul_ps(v24, v29), _mm_mul_ps(v27, v30)), v28);
+    v19->mXoffset.v = xoff;
+    __m128 yoff = _mm_mul_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_xor_ps(_mm_set1_ps(-0.0f), v24), v30),
+                   _mm_mul_ps(v27, v29)),
+        v28);
+    v19->mYoffset.v = yoff;
+
+    float u = (float)(rand() & 3) * 0.25f;
+    v19->mUstart = u;
+    v19->mUend = u + 0.25f;
+
+    float acc[3] = { 1.0f, 1.0f, 1.0f };
+    int cellNum;
+    LightGrid::TOC* LightGrid = LightGridMgr::sInst->GetLightGrid(v19->mPos,
+                                                                  &cellNum);
+    if (LightGrid != nullptr && cellNum >= 0)
+    {
+        math::Mat44 dirMatrix;
+        math::Mat44 colorMatrix;
+        LightGridMgr::sInst->SampleLightGrid(*LightGrid, cellNum, v19->mPos,
+                                             &dirMatrix, &colorMatrix);
+        __m128 v41 = _mm_shuffle_ps(
+            normal.v, _mm_shuffle_ps(_mm_set1_ps(1.0f), normal.v, 160), 52);
+        acc[0] = colorMatrix.w.v.m128_f32[0];
+        acc[1] = colorMatrix.w.v.m128_f32[1];
+        acc[2] = colorMatrix.w.v.m128_f32[2];
+        for (int i = 0; i < 3; ++i)
+        {
+            __m128 dirRow = i == 0 ? dirMatrix.x.v
+                           : i == 1 ? dirMatrix.y.v : dirMatrix.z.v;
+            __m128 v43 = _mm_mul_ps(v41, dirRow);
+            float dot = v43.m128_f32[0]
+                        + (v43.m128_f32[1]
+                           + (v43.m128_f32[2] + v43.m128_f32[3]));
+            float v44 = 0.0f - dot;
+            if (v44 <= 0.0f)
+                v44 = 0.0f;
+            __m128 colorRow = i == 0 ? colorMatrix.x.v
+                              : i == 1 ? colorMatrix.y.v : colorMatrix.z.v;
+            acc[0] = (colorRow.m128_f32[0] * v44) + acc[0];
+            acc[1] = (colorRow.m128_f32[1] * v44) + acc[1];
+            acc[2] = (colorRow.m128_f32[2] * v44) + acc[2];
+        }
+    }
+    float r = color.r * acc[0];
+    float g = color.g * acc[1];
+    float b = color.b * acc[2];
+    float a = color.a;
+    if (r < 0.0f)
+        r = 0.0f;
+    else if (r > 1.0f)
+        r = 1.0f;
+    if (g < 0.0f)
+        g = 0.0f;
+    else if (g > 1.0f)
+        g = 1.0f;
+    if (b < 0.0f)
+        b = 0.0f;
+    else if (b > 1.0f)
+        b = 1.0f;
+    if (a < 0.0f)
+        a = 0.0f;
+    else if (a > 1.0f)
+        a = 1.0f;
+    if (!mMaterial.mAlphaBlend)
+        a = 1.0f;
+    v19->mColor.r = r;
+    v19->mColor.g = g;
+    v19->mColor.b = b;
+    v19->mColor.a = a;
+    v19->mFadeOut = 1.0f;
+    v19->mIsActive = true;
+    v19->mDoFadeOut = false;
+    v19->mIsHighPriority = isHighPriority;
+    v19->mCulledTime = 0.0f;
+    v19->mIsJustAdded = true;
+    v19->mAge = 0.0f;
 }
 
 // ============================================================================
