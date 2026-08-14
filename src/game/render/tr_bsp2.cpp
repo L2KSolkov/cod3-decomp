@@ -133,11 +133,41 @@ struct viewParms_t {
 };
 static_assert(sizeof(viewParms_t) == 0x1E0, "viewParms_t size mismatch");
 
+// trDebug views (render.o data at tr+0x314)
+struct trDebugString_t {
+    float xyz[3];       // +0x00
+    float color[4];     // +0x0C
+    float scale;        // +0x1C
+    char szText[96];    // +0x20
+    int twoD;           // +0x80
+};
+struct trDebugLine_t {
+    float start[3];   // +0x00
+    float end[3];     // +0x0C
+    float color[4];   // +0x18
+    int depthTest;    // +0x28
+};
+struct trDebug_t {
+    uint8_t _pad0[0x18];
+    int numStrings;          // +0x18
+    trDebugString_t* strings;// +0x1C
+    uint8_t _pad1[0x28 - 0x20];
+    int numExternStrings;    // +0x28
+    trDebugString_t* externStrings;  // +0x2C
+    uint8_t _pad2[0x34 - 0x30];
+    int numLines;            // +0x34
+    trDebugLine_t* lines;    // +0x38
+    int numExternLines;      // +0x3C
+    trDebugLine_t* externLines;  // +0x40
+};
+
 struct trGlobals_t {
     uint8_t _pad0[0x10];
     viewParms_t viewParms;     // +0x10
     uint8_t _pad1[0x290 - 0x1F0];
     struct world_t* world;     // +0x290
+    uint8_t _pad2[0x314 - 0x294];
+    trDebug_t debug;           // +0x314
 };
 extern trGlobals_t tr;         // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
@@ -186,14 +216,6 @@ void R_SetupFrustum()
 // ============================================================================
 // RB_DrawDebugStrings - ea: 0x006C4EA0
 // ============================================================================
-struct trDebugString_t {
-    float xyz[3];       // +0x00
-    float color[4];     // +0x0C
-    float scale;        // +0x1C
-    char szText[96];    // +0x20
-    int twoD;           // +0x80
-};
-
 void RB_DrawDebugStrings(trDebugString_t* strings, int numStrings)
 {
     if (numStrings > 0)
@@ -230,6 +252,37 @@ void RB_DrawDebugStrings(trDebugString_t* strings, int numStrings)
             color += 33;
         }
     }
+}
+
+// ============================================================================
+// RB_DrawDebugLines / RB_DrawDebug - ea: 0x006D9A30 / 0x006D9B20
+// ============================================================================
+void RB_DrawDebugLines(trDebugLine_t* lines, int numLines)
+{
+    if (numLines > 0)
+    {
+        trDebugLine_t* p = lines;
+        for (int i = numLines; i != 0; --i)
+        {
+            math::Position3 pt1;
+            pt1.v = _mm_setr_ps(p->start[0], p->start[1], p->start[2], 0.0f);
+            math::Position3 pt2;
+            pt2.v = _mm_setr_ps(p->end[0], p->end[1], p->end[2], 0.0f);
+            Color col(p->color[0], p->color[1], p->color[2], p->color[3]);
+            DebugRender::RenderLine(pt1, pt2, col, 0.25f);
+            ++p;
+        }
+    }
+}
+
+void RB_DrawDebug()
+{
+    RB_DrawDebugLines(tr.debug.lines, tr.debug.numLines);
+    RB_DrawDebugLines(tr.debug.externLines, tr.debug.numExternLines);
+    tr.debug.numLines = 0;
+    RB_DrawDebugStrings(tr.debug.strings, tr.debug.numStrings);
+    RB_DrawDebugStrings(tr.debug.externStrings, tr.debug.numExternStrings);
+    tr.debug.numStrings = 0;
 }
 
 // ============================================================================
