@@ -11,11 +11,40 @@
 #include <math.h>
 #include <intrin.h>
 
+// LightGrid::TOC forward (full layout in lightgrid.cpp)
+namespace LightGrid {
+struct TOC;
+}
+
 // LightGridMgr - minimal render.o view (IDA-verified)
-class LightGridMgr {
+class LightGridMgr : public AssetBankSet {
 public:
+    LightGridMgr();                              // ??0LightGridMgr@@QAE@XZ
     void SetLightGridFailedColor();  // ?SetLightGridFailedColor@LightGridMgr@@QAEXXZ
+    LightGrid::TOC* GetLightGrid(TPakId iPakId); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@W4TPakId@@@Z
+    LightGrid::TOC* GetLightGrid(int cellNum);   // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@H@Z
+private:
+    virtual void UnloadBank(TPakId pakId);       // ?UnloadBank@LightGridMgr@@EAEXW4TPakId@@@Z
+    void* mList[99];                             // ae_array<LightGrid::TOC*, 99>
 };
+
+// BspCell / BspTree views for GetLightGrid(int)
+struct BspCell {
+    uint8_t _pad[0x48];
+    void* mLgridToc;             // +0x48
+};
+class BspTree {
+public:
+    uint8_t _pad[0x18];
+    unsigned int mCellsSize;     // +0x18
+    BspCell* mCellsList;         // +0x1C
+};
+extern BspTree* g_bspTree;       // ?g_bspTree@@3PAVBspTree@@A @ 0xF743DC
+
+// nglProjectPoint (sret form per binary mangling)
+struct nglScene;
+extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
+math::Position3 nglProjectPoint(const math::Position3& In, nglScene* Scene);
 
 extern char* va(const char* fmt, ...);  // core.o
 extern void* mem_heap_malloc(unsigned int size);  // core.o
@@ -101,6 +130,86 @@ void LightGridMgr::SetLightGridFailedColor()
         nglSetAmbientLight(0.0f, 0.0f, 1.0f);
     else
         nglSetAmbientLight(0.80000001f, 0.80000001f, 0.80000001f);
+}
+
+// ea: 0x006C3B20
+LightGridMgr::LightGridMgr() : AssetBankSet()
+{
+    for (int i = 0; i < 99; ++i)
+    {
+        if (i < 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mList[i] = nullptr;
+    }
+}
+
+// ea: 0x006C3BC0
+void LightGridMgr::UnloadBank(TPakId pakId)
+{
+    mList[(int)pakId] = nullptr;
+}
+
+// ea: 0x006C3BE0
+LightGrid::TOC* LightGridMgr::GetLightGrid(TPakId iPakId)
+{
+    if ((int)iPakId == -1)
+        return nullptr;
+    LightGrid::TOC* v3 = (LightGrid::TOC*)mList[(int)iPakId];
+    if (v3 == nullptr)
+    {
+        if (g_lightGridBlueErrors != 0)
+        {
+            nglSetAmbientLight(0.0f, 0.0f, 1.0f);
+            return nullptr;
+        }
+        nglSetAmbientLight(0.80000001f, 0.80000001f, 0.80000001f);
+    }
+    return v3;
+}
+
+// ea: 0x006C3C40
+LightGrid::TOC* LightGridMgr::GetLightGrid(int cellNum)
+{
+    if (cellNum != -1)
+        return (LightGrid::TOC*)g_bspTree->mCellsList[cellNum].mLgridToc;
+    return nullptr;
+}
+
+// ============================================================================
+// DebugRender ctor / RenderText3DOff2D
+// ============================================================================
+
+// ea: 0x006C4060
+DebugRender::DebugRender()
+{
+    mDebugSphereMesh = nullptr;
+    mDebugCylinderMesh = nullptr;
+    mDebugHemisphereMesh = nullptr;
+    mDebugShaderMaterial = nullptr;
+    mRenderFpList.m_size = 0;
+}
+
+// ea: 0x006C40A0
+void DebugRender::RenderText3DOff2D(const char* str, const math::Position3& pos,
+                                    const math::Dir3& off, const Color& col,
+                                    float depth, float size)
+{
+    math::Position3 proj = nglProjectPoint(pos, nglBuildScene);
+    float pz = _mm_shuffle_ps(proj.v, proj.v, 170).m128_f32[0];
+    if (pz > 0.0f)
+    {
+        float py = _mm_shuffle_ps(proj.v, proj.v, 85).m128_f32[0];
+        float px = proj.v.m128_f32[0];
+        DebugRender::RenderText(str, (int)(off.v.m128_f32[0] + px),
+                                (int)(off.v.m128_f32[1] + py), col, depth, size);
+    }
 }
 
 // ============================================================================

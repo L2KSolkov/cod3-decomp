@@ -2243,7 +2243,11 @@ public:
     struct cdDebugShaderMat* mDebugShaderMaterial;  // +0x0C
     ae_sized_array<void (__cdecl*)(void), 32> mRenderFpList;  // +0x10
 
+    DebugRender();  // ??0DebugRender@@QAE@XZ (render.o 0x6C4060)
     void Init();  // ?Init@DebugRender@@QAEXXZ (render.o 0x6BCF00)
+    static void RenderText3DOff2D(const char* str, const math::Position3& pos,
+                                  const math::Dir3& off, const Color& col,
+                                  float depth, float size);  // render.o 0x6C40A0
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& color);  // render.o 0xAC3FF0
     static void RenderLineBox(const math::Mat43& LToW,
