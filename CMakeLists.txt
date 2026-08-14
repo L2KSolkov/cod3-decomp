@@ -376,7 +376,9 @@ add_library(cod3_game_render STATIC
     src/game/render/xmodel.cpp
     src/game/render/dobj.cpp
     src/game/render/r_stubs.cpp
-    src/game/render/re_quad.cpp)
+    src/game/render/re_quad.cpp
+    src/game/render/lightgrid.cpp
+    src/game/render/screenshot.cpp)
 add_library(cod3_game_anim STATIC src/game/anim/stubs_game.cpp)
 add_library(cod3_game_mpactors STATIC
     src/game/mpactors/stubs_game.cpp

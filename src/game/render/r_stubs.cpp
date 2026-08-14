@@ -4,6 +4,9 @@
 
 #include "game/logic/g_local.h"
 #include "game/render/xsurface.h"
+#include "render/ShaderCommon.h"
+#include "ngl/ngl_scene.h"
+#include "ngl/ngl_lighting.h"
 
 #include <string.h>
 #include <intrin.h>
@@ -17,8 +20,10 @@ struct world_t {
 };
 
 struct trGlobals_t {
-    uint8_t _pad[0x40];
-    world_t* world;   // +0x40
+    int registered;      // +0x00
+    int frameCount;      // +0x04
+    uint8_t _pad[0x40 - 0x08];
+    world_t* world;      // +0x40
     struct DebugBlock {
         uint8_t _pad[0x80];
         void* externStrings;   // +0x80
@@ -33,6 +38,21 @@ extern BspTree* g_bspTree;       // ?g_bspTree@@3PAVBspTree@@A @ 0xF743DC
 extern int sCurColor;            // ?sCurColor@@3IA @ 0xF74290
 struct trDebugString_t;
 struct trDebugLine_t;
+
+// ServerTime (cg.o) - tick delta used by RE_BeginFrame
+struct ServerTime_s {
+    float mTickDelta;   // +0x00
+};
+extern ServerTime_s ServerTime_sInst;  // ?sInst@ServerTime@@0V1@A @ 0xDD8B0C
+
+// ModelLightingHack statics (@ 0xF78350 / 0xF78330 / 0xF78364)
+static math::Dir3 s_lightDir;       // dir
+static math::Vector4 s_lightColor;  // color_0
+static unsigned int s_lightInit;    // $S29_4
+
+extern float gLightGridBounceBack;  // ?gLightGridBounceBack@@3MA @ 0xDFA418
+extern void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir,
+                               const math::Vector4& Color);  // ngl.o
 
 // XModelPartsManager / XModelPartsBank (opaque views)
 class XModelPartsBank;
@@ -162,4 +182,100 @@ float RE_GetFarPlaneDist()
     if (g_dpvs_cullDist > zfar)
         return g_dpvs_cullDist;
     return zfar;
+}
+
+// ea: 0x006BEF40
+void RE_BeginFrame()
+{
+    if (tr.registered != 0)
+    {
+        TimerRenderBars::sInst.TimeGameAdvanceEnd();
+        ++tr.frameCount;
+        ShaderCommon::SetupFrame(ServerTime_sInst.mTickDelta);
+        nglSetClearFlags(3u);
+        math::Vector4 FarFogColor;
+        ShaderCommon::GetFarFogColor(&FarFogColor);
+        float v3 = FarFogColor.v.m128_f32[2];
+        float vG = FarFogColor.v.m128_f32[1];
+        float vR = FarFogColor.v.m128_f32[0];
+        nglSetClearColor(vR, vG, v3, 0.0f);
+        nglSetClearZ(1.0f);
+        nglSetView(-1.0f, -1.0f, 1.0f, 1.0f);
+        nglSetScissor(-1.0f, -1.0f, 1.0f, 1.0f);
+    }
+}
+
+// ea: 0x006BEB80
+void ModelLightingHack()
+{
+    unsigned int v1 = s_lightInit;
+    if ((s_lightInit & 1) == 0)
+    {
+        s_lightInit |= 1u;
+        s_lightDir.v.m128_f32[0] = 0.0f;
+        s_lightDir.v.m128_f32[1] = -0.70710999f;
+        s_lightDir.v.m128_f32[2] = -0.70710999f;
+        s_lightDir.v.m128_f32[3] = 0.0f;
+    }
+    math::Vector4 v;
+    if ((v1 & 2) != 0)
+    {
+        v = s_lightColor;
+    }
+    else
+    {
+        s_lightColor.v.m128_f32[0] = 1.07854f;
+        s_lightColor.v.m128_f32[1] = 0.99822003f;
+        s_lightColor.v.m128_f32[2] = 0.80317003f;
+        s_lightColor.v.m128_f32[3] = 0.0f;
+        s_lightInit = v1 | 2;
+        v = s_lightColor;
+    }
+    math::Vector4 scaled;
+    scaled.v.m128_f32[0] = v.v.m128_f32[0] * 0.50265598f;
+    scaled.v.m128_f32[1] = v.v.m128_f32[1] * 0.50265598f;
+    scaled.v.m128_f32[2] = v.v.m128_f32[2] * 0.50265598f;
+    scaled.v.m128_f32[3] = v.v.m128_f32[3] * 0.50265598f;
+    nglListAddDirLight(0xFFFFFFFFu, s_lightDir, scaled);
+    nglSetAmbientLight(s_lightColor.v.m128_f32[0] * gLightGridBounceBack,
+                       s_lightColor.v.m128_f32[1] * gLightGridBounceBack,
+                       s_lightColor.v.m128_f32[2] * gLightGridBounceBack);
+}
+
+// ============================================================================
+// TimerRenderBars (render.o - TimerRenderBars.cpp)
+// ============================================================================
+
+// ea: 0x006E6BF0
+void TimerRenderBars::TimeGameAdvanceEnd()
+{
+    mFrameAdvance.mEnd = __rdtsc();
+}
+
+// ea: 0x006E6C30
+float TimerRenderBars::CalcRenderTimeScale() const
+{
+    return mVSyncLength / mRenderTimersScale;
+}
+
+// ea: 0x006E6C40
+TimerRenderBars::TimedInterval::TimedInterval()
+{
+    mEnd = 0;
+    mBegin = 0;
+    mLastEnd = 0;
+    mLastBegin = 0;
+}
+
+// ea: 0x006E6C70
+unsigned __int64 TimerRenderBars::TimedInterval::LastElapsed() const
+{
+    return mLastEnd - mLastBegin;
+}
+
+// ea: 0x006E6DB0
+void TimerRenderBars::TimedInterval::Next()
+{
+    mLastBegin = mBegin;
+    mLastEnd = mEnd;
 }

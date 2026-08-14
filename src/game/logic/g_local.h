@@ -891,6 +891,9 @@ struct TimerRenderBars {
         unsigned __int64 mLastEnd;    // +0x08
         unsigned __int64 mBegin;      // +0x10
         unsigned __int64 mEnd;        // +0x18
+        TimedInterval();               // ??0TimedInterval@TimerRenderBars@@QAE@XZ
+        unsigned __int64 LastElapsed() const;  // ?LastElapsed@TimedInterval@TimerRenderBars@@QBE_KXZ
+        void Next();                   // ?Next@TimedInterval@TimerRenderBars@@QAEXXZ
     };
     TimedInterval mFrameAdvance;       // +0x00 (0x20 bytes)
     TimedInterval mUser;               // +0x20
@@ -911,6 +914,9 @@ struct TimerRenderBars {
         unsigned __int64 t = __rdtsc();
         mFrameAdvance.mBegin = t;
     }
+    void TimeGameAdvanceEnd();  // ea: 0x6E6BF0 (render.o)
+private:
+    float CalcRenderTimeScale() const;  // ?CalcRenderTimeScale@TimerRenderBars@@ABEMXZ
 };
 
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
