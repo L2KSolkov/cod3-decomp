@@ -7,15 +7,18 @@
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
-enum ECoderId { COD3 = 0 };
+enum ECoderId { COD3 = 0, ARO = 1 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
+bool Assert(const char* fmtstring, ...);
 bool Warning(const char* fmtstring, ...);
 bool Error(const char* fmtstring, ...);
 }
+
+enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 
 // ============================================================================
 // apsCheckErrors - ea: 0x006C71C0
@@ -79,24 +82,99 @@ done:
 }
 
 // ============================================================================
-// XModelManager / XModelPartsManager protected virtual dtors
+// InplaceAssetBankSet<T> + XModelManager / XModelPartsManager (render.o)
 // ============================================================================
+class XModelBank;
+class XModelPartsBank;
+
 class AssetBankSet {
 public:
-    virtual ~AssetBankSet();  // ??1AssetBankSet@@UAE@XZ (streamer.o)
+    AssetBankSet();             // ??0AssetBankSet@@QAE@XZ (streamer.o)
+    virtual ~AssetBankSet();    // ??1AssetBankSet@@UAE@XZ (streamer.o)
 };
 
-class XModelManager : public AssetBankSet {
-private:
-    virtual ~XModelManager();  // ??1XModelManager@@EAE@XZ
+template <typename T>
+class InplaceAssetBankSet : public AssetBankSet {
+public:
+    InplaceAssetBankSet();                 // ??0?$InplaceAssetBankSet@VXModelBank@@@@QAE@XZ
+    virtual ~InplaceAssetBankSet();        // ??1?$InplaceAssetBankSet@VXModelBank@@@@UAE@XZ
+    void AddBank(TPakId pakId, T* bank);   // ?AddBank@?$InplaceAssetBankSet@VXModelBank@@@@QAEXW4TPakId@@PAVXModelBank@@@Z
+protected:
+    virtual void OnBankUnloaded(T& bank);  // ?OnBankUnloaded@?$InplaceAssetBankSet@VXModelBank@@@@MAEXAAVXModelBank@@@Z
+    virtual void UnloadBank(TPakId pakId); // ?UnloadBank@?$InplaceAssetBankSet@VXModelBank@@@@MAEXW4TPakId@@@Z
+    T* mBankArray[99];                     // ae_array<T*,99> mBankArray
 };
 
-class XModelPartsManager : public AssetBankSet {
+template <typename T>
+InplaceAssetBankSet<T>::InplaceAssetBankSet()
+{
+    for (unsigned int i = 0; i < 99; ++i)
+        mBankArray[i] = nullptr;
+}
+
+template <typename T>
+InplaceAssetBankSet<T>::~InplaceAssetBankSet()
+{
+}
+
+template <typename T>
+void InplaceAssetBankSet<T>::AddBank(TPakId pakId, T* bank)
+{
+    if (mBankArray[(int)pakId] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 109;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("We already have a bank for this pak id!"))
+        {
+            __debugbreak();
+        }
+    }
+    mBankArray[(int)pakId] = bank;
+}
+
+template <typename T>
+void InplaceAssetBankSet<T>::UnloadBank(TPakId pakId)
+{
+    if (mBankArray[(int)pakId] != nullptr)
+    {
+        OnBankUnloaded(*mBankArray[(int)pakId]);
+        mBankArray[(int)pakId] = nullptr;
+    }
+}
+
+template <typename T>
+void InplaceAssetBankSet<T>::OnBankUnloaded(T& bank)
+{
+    (void)bank;
+}
+
+template class InplaceAssetBankSet<XModelBank>;
+template class InplaceAssetBankSet<XModelPartsBank>;
+
+class XModelManager : public InplaceAssetBankSet<XModelBank> {
 private:
+    XModelManager();             // ??0XModelManager@@AAE@XZ
+    virtual ~XModelManager();    // ??1XModelManager@@EAE@XZ
+};
+
+class XModelPartsManager : public InplaceAssetBankSet<XModelPartsBank> {
+private:
+    XModelPartsManager();        // ??0XModelPartsManager@@AAE@XZ
     virtual ~XModelPartsManager();  // ??1XModelPartsManager@@EAE@XZ
 };
 
+XModelManager::XModelManager()
+{
+}
+
 XModelManager::~XModelManager()
+{
+}
+
+XModelPartsManager::XModelPartsManager()
 {
 }
 
