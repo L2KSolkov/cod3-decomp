@@ -662,7 +662,7 @@ int turret_canuse_auto(Entity* self, actor_s* pActor)
     sentient_s* pEnemy = pActor->pSentient->pEnemy;
     if (pEnemy == nullptr)
         return true;
-    sentient_info_t* v5 = pActor->sentientInfo[pEnemy - level.sentients];
+    sentient_info_t* v5 = &pActor->sentientInfo[pEnemy - level.sentients];
     if (level.time - v5->iLastKnownPosTime >= 5000)
         return true;
     float v7 = pEnemy->pEnt->r.currentOrigin.v.m128_f32[0] - self->r.currentOrigin.v.m128_f32[0];
@@ -1475,14 +1475,14 @@ int turret_think_auto(Entity* self, actor_s* pActor)
     {
         sentient_s* detachSentient = pTurretInfo->detachSentient;
         if (detachSentient != nullptr
-            && pActor->sentientInfo[detachSentient - level.sentients]->attackTime <= level.time)
+            && pActor->sentientInfo[detachSentient - level.sentients].attackTime <= level.time)
         {
             pTurretInfo->detachSentient = nullptr;
         }
         // Actor_CanAttackAll(pActor) - no-op in release
         goto L53;
     }
-    v46 = pActor->sentientInfo[pEnemy - level.sentients];
+    v46 = &pActor->sentientInfo[pEnemy - level.sentients];
     v46->attackTime = level.time + 2000;
     v42 = pEnemy->pEnt->r.currentOrigin.v.m128_f32[1] - self->r.currentOrigin.v.m128_f32[1];
     vForward[0] = pEnemy->pEnt->r.currentOrigin.v.m128_f32[0] - self->r.currentOrigin.v.m128_f32[0];
@@ -1513,7 +1513,7 @@ int turret_think_auto(Entity* self, actor_s* pActor)
             {
                 if (v16 != pEnemy)
                 {
-                    sentient_info_t* v17 = pActor->sentientInfo[v16 - level.sentients];
+                    sentient_info_t* v17 = &pActor->sentientInfo[v16 - level.sentients];
                     time = level.time;
                     if (v17->attackTime > level.time)
                         goto L30;
@@ -1563,7 +1563,7 @@ L53:
     Entity* target = pTurretInfo->target;
     if (target != nullptr && target->sentient != nullptr)
     {
-        sentient_info_t* v29 = pActor->sentientInfo[target->sentient - level.sentients];
+        sentient_info_t* v29 = &pActor->sentientInfo[target->sentient - level.sentients];
         v46 = v29;
         if (target->sentient->bIgnoreMe == 0 && level.time - v29->iLastKnownPosTime < 5000)
         {
@@ -1610,7 +1610,7 @@ L65:
             sentient_s* v36 = hit->sentient;
             if (v36 != nullptr)
             {
-                if (pActor->sentientInfo[v36 - level.sentients]->VisCache.bVisible != 0
+                if (pActor->sentientInfo[v36 - level.sentients].VisCache.bVisible != 0
                     && turret_aimat_Sentient(self, v36, 1, pTurretInfo->convergenceTime) != 0)
                 {
                     return 1;
@@ -1634,7 +1634,7 @@ L30:
     sentient_s* v19 = pTurretInfo->detachSentient;
     if (v19 != nullptr)
     {
-        sentient_info_t* v20 = pActor->sentientInfo[v19 - level.sentients];
+        sentient_info_t* v20 = &pActor->sentientInfo[v19 - level.sentients];
         if (level.time - v20->iLastKnownPosTime < 5000)
         {
             float dx = v19->pEnt->r.currentOrigin.v.m128_f32[0]
@@ -1739,7 +1739,7 @@ int turret_think_manual(Entity* self, actor_s* pActor)
         pTurretInfo->turret_flags = turret_flags & 0xFFEF;
         if (pEnemy != nullptr)
         {
-            pActor->sentientInfo[pEnemy - level.sentients]->attackTime = level.time + 2000;
+            pActor->sentientInfo[pEnemy - level.sentients].attackTime = level.time + 2000;
         }
         else
         {

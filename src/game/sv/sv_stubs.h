@@ -1021,7 +1021,9 @@ enum EGamePhase {
 
 class PathNodeMgr {
 public:
-    uint8_t _pad[4];
+    uint8_t _pad[4];                 // vtable ptr (AssetBankSet, opaque)
+    PathNodes::TOC1* mLevelTOC;      // +0x04
+    PathNodes::TOC2* mLevelTOC2;     // +0x08
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
     void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
@@ -1038,8 +1040,13 @@ public:
     PathNodes::PathNode* GetNode(const PathNodes::NodeHandle& handle);  // ?GetNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z
     PathNodes::PathNode* FindChainPos(const float* vOrigin,
                                       PathNodes::PathNode* pPrevChainPos);  // ?FindChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@QBMPAU23@@Z
+    bool NodeNumsVisible(const PathNodes::NodeHandle& iNode1,
+                         const PathNodes::NodeHandle& iNode2) const;  // ?NodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z
+    bool ExpandedNodeNumsVisible(const PathNodes::NodeHandle& iNode1,
+                                 const PathNodes::NodeHandle& iNode2) const;  // ?ExpandedNodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z
 };
-static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
+static_assert(sizeof(PathNodeMgr) == 12,
+              "PathNodeMgr size mismatch (opaque)");
 
 // StreamZoneManager - streaming level cell manager (opaque)
 class StreamZoneManager {

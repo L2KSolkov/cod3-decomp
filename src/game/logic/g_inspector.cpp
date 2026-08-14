@@ -1048,13 +1048,10 @@ BadPathManager g_badPathManager;         // ?g_badPathManager@@3VBadPathManager@
 struct PathNodeLevelTOC {
     int mNodeCount;  // +0x00
 };
-extern PathNodes::PathNode* Sentient_NearestNode(sentient_s* pSelf,
-                                                 float (*vNormal)[1],
-                                                 float* fDist,
-                                                 int iPlaneCount,
-                                                 int iCheckDontLink,
-                                                 float distanceThreshold,
-                                                 int ignoreNegotiationBegin);  // ?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z (mp_actors.o)
+extern PathNodes::PathNode* __fastcall Sentient_NearestNode(
+    sentient_s* pSelf, float (*const vNormal)[2], float* const fDist,
+    int iPlaneCount, int iCheckDontLink, float distanceThreshold,
+    int ignoreNegotiationBegin);  // ?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z (mp_actors.o)
 
 // Ocean shader debug globals (render_xboxr:cdOceanShaderDebug.o)
 extern int g_oceanDebug_Enable;            // ?g_oceanDebug_Enable@@3HA

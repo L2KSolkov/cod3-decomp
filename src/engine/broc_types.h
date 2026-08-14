@@ -925,31 +925,185 @@ template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 
 bool IS_NAN(float x);  // global (defined in Broc.cpp)
 
+// Forward (defined in game/actor_types.h)
+struct sentient_s;
+
 // ============================================================================
 // PathNodes namespace — AI path node handles (global scope, verified against IDA)
 // ============================================================================
 namespace PathNodes {
-struct PathNode;  // forward (defined below)
+struct PathNode;
+struct PathLink;
+struct PathLinkInfo;
+struct NodeVariableSaver;
+struct PathNodeTree;
+enum ENodeType : int32_t;
 
 class NodeHandle {
 public:
     uint16_t mValue;  // +0x00
 
     const PathNode* operator*() const;  // ??DNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ (mp_actors.o)
+    PathNode* operator*();             // ??DNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ (mp_actors.o)
+    const PathNode* operator->() const;  // ??CNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ (mp_actors.o)
+    PathNode* operator->();             // ??CNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ (mp_actors.o)
 };
+
+// ============================================================================
+// PathNodeDynamic - per-node runtime state (0x24 bytes) - IDA verified
+// ============================================================================
+struct PathNodeDynamic {
+    sentient_s* mOwner;        // +0x00
+    int   mFreeTime;           // +0x04
+    int   mValidTime[3];       // +0x08
+    int   mSafeTime[3];        // +0x14
+    int16_t mLinkCount;        // +0x20
+    char  mOverlapCount;       // +0x22
+    char  mFlags;              // +0x23
+};
+static_assert(sizeof(PathNodeDynamic) == 0x24,
+              "PathNodeDynamic size mismatch");
+
+// ============================================================================
+// PathNodeConstant - per-node static data (0x48 bytes) - IDA verified
+// ============================================================================
+struct PathNodeConstant {
+    ENodeType mType;                       // +0x00
+    uint16_t mSpawnFlags;                  // +0x04
+    Broc::string mTargetName;              // +0x08
+    Broc::string mScriptNoteWorthy;        // +0x0C
+    Broc::string mTarget;                  // +0x10
+    Broc::string mOnGoalCallback;          // +0x14
+    Broc::string mReserveName;             // +0x18
+    Broc::string mAnimScript;              // +0x1C
+    unsigned int (__cdecl* mAnimScriptFunc)(void*);  // +0x20
+    float mOrigin[3];                      // +0x24
+    float mAngle;                          // +0x30
+    float mRadius;                         // +0x34
+    NodeHandle mOverlapNode[2];            // +0x38
+    int16_t mChainId;                      // +0x3C
+    int16_t mChainDepth;                   // +0x3E
+    NodeHandle mChainParent;               // +0x40
+    int16_t mTotalLinkCount;               // +0x42
+    PathLink* mLinks;                      // +0x44
+};
+static_assert(sizeof(PathNodeConstant) == 0x48,
+              "PathNodeConstant size mismatch");
+
+// ============================================================================
+// PathNodeTransient - per-search state (0x14 bytes) - IDA verified
+// ============================================================================
+struct PathNodeTransient {
+    int   mSearchFrame;        // +0x00
+    PathNode* mParent;         // +0x04
+    float mCost;               // +0x08
+    float mHeuristic;          // +0x0C
+    int   mPriorityQueueIndex; // +0x10
+};
+static_assert(sizeof(PathNodeTransient) == 0x14,
+              "PathNodeTransient size mismatch");
+
+// ============================================================================
+// PathLink - node link (0x0C bytes) - IDA verified
+// ============================================================================
+struct PathLink {
+    NodeHandle mNodeHandle;     // +0x00
+    uint8_t mDisconnectCount;   // +0x02
+    uint8_t mNegotiationLink;   // +0x03
+    uint8_t mBadPlaceCount[4];  // +0x04
+    float  mDist;               // +0x08
+};
+static_assert(sizeof(PathLink) == 0x0C, "PathLink size mismatch");
+
+// ============================================================================
+// PathSort - sorted node search result (8 bytes) - IDA verified
+// ============================================================================
+struct PathSort {
+    PathNode* pNode;   // +0x00
+    float fMetric;     // +0x04
+};
+static_assert(sizeof(PathSort) == 8, "PathSort size mismatch");
+
+// ============================================================================
+// PathNodeTree - spatial tree node (0x10 bytes) - IDA verified
+// ============================================================================
+struct PathNodeTree {
+    int   axis;         // +0x00
+    float dist;         // +0x04
+    union {
+        struct {
+            PathNodeTree* left;   // +0x08
+            PathNodeTree* right;  // +0x0C
+        } children;
+        struct {
+            int count;           // +0x08
+            PathNode** nodes;    // +0x0C
+        } leaf;
+    } u;                // +0x08
+};
+static_assert(sizeof(PathNodeTree) == 0x10, "PathNodeTree size mismatch");
+
+// ============================================================================
+// TOC1 - level path table of contents (0x34 bytes) - IDA verified
+// ============================================================================
+struct TOC1 {
+    int mVersion;          // +0x00
+    int mNodeCount;        // +0x04
+    int mChainNodeCount;   // +0x08
+    int mLinkCount;        // +0x0C
+    int mVariableCount;    // +0x10
+    PathNode* mNodes;      // +0x14
+    NodeHandle* mChainNodes;  // +0x18
+    PathLink* mLinks;      // +0x1C
+    NodeVariableSaver* mVariables;  // +0x20
+    PathLinkInfo* mLinkPool;  // +0x24
+    PathNodeTree* mTree;   // +0x28
+    char* mStrings;        // +0x2C
+    PathNode** mTreeNodes; // +0x30
+
+    TOC1();  // ??0TOC1@PathNodes@@QAE@XZ (mp_actors.o)
+};
+static_assert(sizeof(TOC1) == 0x34, "TOC1 size mismatch");
+
+// ============================================================================
+// TOC2 - level vis table of contents (0x0C bytes) - IDA verified
+// ============================================================================
+struct TOC2 {
+    int mVersion;         // +0x00
+    int mVisSize;         // +0x04
+    uint8_t* mVisData;    // +0x08
+
+    TOC2();  // ??0TOC2@PathNodes@@QAE@XZ (mp_actors.o)
+};
+static_assert(sizeof(TOC2) == 0x0C, "TOC2 size mismatch");
+
+// ============================================================================
+// NodeVariableSaver / PathLinkInfo - checkpoint save structures
+// ============================================================================
+struct NodeVariableSaver {
+    NodeHandle mNode;   // +0x00
+    char mKey[64];      // +0x02
+    char mValue[128];   // +0x42
+};
+static_assert(sizeof(NodeVariableSaver) == 0xC2,
+              "NodeVariableSaver size mismatch");
+
+struct PathLinkInfo {
+    NodeHandle from;    // +0x00
+    NodeHandle to;      // +0x02
+    uint16_t prev;      // +0x04
+    uint16_t next;      // +0x06
+};
+static_assert(sizeof(PathLinkInfo) == 8, "PathLinkInfo size mismatch");
 
 // ============================================================================
 // PathNode - AI path node (0x84 bytes) - verified against IDA
 // ============================================================================
 struct PathNode {
-    NodeHandle mHandle;    // +0x00
-    uint8_t    _pad4[0x24];   // +0x04 (PathNodeDynamic)
-    struct Constant {
-        uint8_t  _pad0[0x24];   // +0x00 (mType .. mAnimScriptFunc)
-        float    mOrigin[3];    // +0x24
-        uint8_t  _pad30[0x18];  // +0x30 (mAngle .. mLinks)
-    } mConstant;               // +0x28 (mOrigin at +0x4C)
-    uint8_t    _pad70[0x14];   // +0x70 (PathNodeTransient)
+    NodeHandle mHandle;         // +0x00
+    PathNodeDynamic mDynamic;   // +0x04
+    PathNodeConstant mConstant; // +0x28
+    PathNodeTransient mTransient;  // +0x70
 };
 } // namespace PathNodes
 COD3_STATIC_ASSERT_32BIT(sizeof(PathNodes::NodeHandle) == 2, "PathNodes::NodeHandle size mismatch");

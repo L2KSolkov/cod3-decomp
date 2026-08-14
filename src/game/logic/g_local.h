@@ -1194,9 +1194,34 @@ void SV_UnlinkEntity(Entity* gEnt);
 void mem_heap_free(void* ptr);
 void AnglesToForward(const float* const angles, float* const forward);
 int  Q_stricmp(const char* s1, const char* s2);
-void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int eTeam);
+void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, team_t eTeam);
 void Path_RelinquishNodePermanently(PathNodes::PathNode* pNode,
                                     sentient_s* pClaimer);  // mp_actors.o
+void Path_RelinquishNodeTemporarily(PathNodes::PathNode* pNode,
+                                    sentient_s* pClaimer);  // mp_actors.o
+int  Path_IsNodeValid(const PathNodes::PathNode* pNode, team_t eTeam);  // mp_actors.o
+void Path_MarkNodeUnsafe(PathNodes::PathNode* pNode, team_t eTeam);     // mp_actors.o
+int  Path_IsNodeUnsafe(const PathNodes::PathNode* pNode, team_t eTeam); // mp_actors.o
+void Path_MarkNodeValid(PathNodes::PathNode* pNode, team_t eTeam);      // mp_actors.o
+void Path_RevokeClaim(PathNodes::PathNode* pNode, sentient_s* pNewClaimer);  // mp_actors.o
+void Path_ForceClaimNode(PathNodes::PathNode* pNode, sentient_s* pClaimer);  // mp_actors.o
+ai_stance_e Path_AllowedStancesForNode(PathNodes::PathNode* pNode);     // mp_actors.o
+ai_stance_e Path_GetAllowedStancesFromSentientFlags(sentient_s* pSent); // mp_actors.o
+void Path_ResetSentientFlags(sentient_s* pSent);                        // mp_actors.o
+void Path_SetSentientFlagsFromNode(sentient_s* pSent,
+                                   const PathNodes::PathNode* pNode);   // mp_actors.o
+void Path_SetSentientFlagsFromPath(sentient_s* pSent, path_t* pPath);   // mp_actors.o
+void Path_GetType(PathNodes::PathNode* pNode, int offset);              // mp_actors.o
+void Path_DrawDebugNode(const PathNodes::PathNode* pNode);              // mp_actors.o
+void Path_DrawVisData();                                                // mp_actors.o
+void Path_DrawFriendlyChain();                                          // mp_actors.o
+int  Path_IsDynamicBlockingEntity(Entity* ent);                         // ?Path_IsDynamicBlockingEntity@@YAHPAVEntity@@@Z (mp_actors.o)
+PathNodes::PathNode* __fastcall Sentient_NearestNode(
+    sentient_s* pSelf, float (*const vNormal)[2], float* const fDist,
+    int iPlaneCount, int iCheckDontLink, float distanceThreshold,
+    int ignoreNegotiationBegin);  // ?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z (mp_actors.o)
+void __fastcall Sentient_NodeClaimRevoked(
+    sentient_s* pSelf, PathNodes::NodeHandle node);  // ?Sentient_NodeClaimRevoked@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z (mp_actors.o)
 const float VectorDistanceSquared(const float* const p1,
                                     const float* const p2);
 
@@ -2582,7 +2607,7 @@ void  UpdateCVars(void);                         // g.o (g_main.cpp)
 void  ShowEntityInfo(void);                      // g.o (g_main.cpp)
 void  G_DrawVehiclePaths(void);                  // g.o
 void  G_DrawEntityBBoxes(void);                  // g.o
-void  Path_DrawDebug(void);                      // g.o
+Entity* Path_DrawDebug(void);                    // ?Path_DrawDebug@@YAPAVEntity@@XZ (mp_actors.o)
 void  ClientEndFrame(Entity* ent, int msec);     // g.o
 void  PlayerAnimMgr_Update(float deltaT);        // game.o
 void  Concussive_think(Entity* ent, int msec);   // g.o 0x462A60
@@ -3056,7 +3081,7 @@ void  ClientEndFrame(Entity* ent, int msec);      // g.o
 // cg.o / anim.o cross-object
 void  CG_DoControllers(Entity* entity);
 void  VEH_UpdateControllers(Entity* entity, int msec);
-void  Path_DrawDebug(void);                       // g.o
+Entity* Path_DrawDebug(void);                     // ?Path_DrawDebug@@YAPAVEntity@@XZ (mp_actors.o)
 void  G_DrawVehiclePaths(void);                   // g.o
 void  G_DrawEntityBBoxes(void);                   // g.o
 void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,

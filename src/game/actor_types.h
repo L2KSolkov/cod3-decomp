@@ -234,8 +234,17 @@ static_assert(sizeof(actor_physics_t) == 0x130, "actor_physics_t size mismatch")
 // ============================================================================
 // path_t — AI path data (1040 bytes)
 // ============================================================================
+struct pathpoint_t {
+    float vOrigPoint[3];           // +0x00
+    float fDir2D[2];               // +0x0C
+    float fOrigLength;             // +0x14
+    PathNodes::NodeHandle mNodeHandle;  // +0x18
+};
+static_assert(sizeof(pathpoint_t) == 0x1C, "pathpoint_t size mismatch");
+
 struct path_t {
-    uint8_t data[0x410];  // placeholder
+    pathpoint_t pts[32];           // +0x000 (0x380 bytes)
+    uint8_t     tail[0x90];        // +0x380 (rest ported with path batch)
 };
 static_assert(sizeof(path_t) == 0x410, "path_t size mismatch");
 
@@ -372,7 +381,7 @@ static_assert(offsetof(sentient_info_t, attackTime) == 0x40,
 struct sentient_info_array {
     sentient_info_t* mInfos[48];  // +0x00
 
-    sentient_info_t* operator[](int idx) { return mInfos[idx]; }
+    sentient_info_t& operator[](int idx) { return *mInfos[idx]; }
     void FreeIndex(int idx);  // mp_actors.o 0x77BE50
 };
 static_assert(sizeof(sentient_info_array) == 0xC0, "sentient_info_array size mismatch");

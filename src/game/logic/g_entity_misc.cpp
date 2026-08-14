@@ -580,13 +580,6 @@ void DisableAI(unsigned int handle)
 
 // ============================================================================
 // Entity::~Entity - ea: 0x642D50 (Entity.cpp)
-// ============================================================================
-// ?Path_IsDynamicBlockingEntity@@YAHPAVEntity@@@Z (mp_actors.o; stub)
-int Path_IsDynamicBlockingEntity(Entity* ent)
-{
-    (void)ent;
-    return 0;
-}
 extern void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* ent);  // mp_actors.o
 extern void G_EntUnlinkFree(Entity* ent);           // g.o
 extern void StopPhysics(Entity* e);                 // g.o
@@ -1636,32 +1629,11 @@ PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h)
     (void)h.mValue;
     return nullptr;
 }
-PathNodes::PathNode* Sentient_NearestNode(sentient_s* pSelf,
-                                          float (*vNormal)[1], float* fDist,
-                                          int a4, int iCheckDontLink,
-                                          float distanceThreshold,
-                                          int ignoreNegotiationBegin)
-{
-    (void)pSelf; (void)vNormal; (void)fDist; (void)a4;
-    (void)iCheckDontLink; (void)distanceThreshold;
-    (void)ignoreNegotiationBegin;
-    return nullptr;
-}
 const PathNodes::PathNode* PathNodes_NodeHandle_deref(
     const PathNodes::NodeHandle* h)
 {
     (void)h;
     return nullptr;
-}
-void Path_DrawDebug() {}
-void Path_DrawDebugNode(const PathNodes::PathNode* pNode)
-{
-    (void)pNode;
-}
-void Path_Init() {}
-void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int team)
-{
-    (void)pNode; (void)team;
 }
 void AnimationPlayer_DebugDump(Entity* ent)
 {
