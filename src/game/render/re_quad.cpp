@@ -85,6 +85,37 @@ void RE_DrawQuadPic(const float (*vVerts)[2], const float (*vST)[2],
     }
 }
 
+// ea: 0x006D1C30
+void RE_StretchPicRotate(float x, float y, float w, float h, float s1,
+                         float t1, float s2, float t2, float fRot,
+                         nglTexture* tex)
+{
+    if (nglBuildScene == nullptr)
+        return;
+    float fSin;
+    float fCos;
+    FastSinCos((fRot * 3.1415927f) * 0.0055555557f, &fSin, &fCos);
+    float hw = w * 0.5f;
+    float hh = h * 0.5f;
+    float xc = (w * 0.5f) + x;
+    float yc = (h * 0.5f) + y;
+    nglQuad q;
+    nglInitQuad(&q);
+    nglSetQuadUV(&q, s1, t1, s2, t2);
+    nglSetQuadColor(&q, (unsigned int)sCurColor);
+    float v10 = 0.0f - (hh * fSin);
+    q.Verts[0].X = (xc - (hw * fCos)) - v10;
+    q.Verts[0].Y = (yc - (hw * fSin)) - (hh * fCos);
+    q.Verts[1].X = ((hw * fCos) + xc) - v10;
+    q.Verts[1].Y = ((hw * fSin) + yc) - (hh * fCos);
+    q.Tex = tex;
+    q.Verts[3].X = (v10 + (hw * fCos)) + xc;
+    q.Verts[3].Y = ((hh * fCos) + (hw * fSin)) + yc;
+    q.Verts[2].X = (xc - (hw * fCos)) + v10;
+    q.Verts[2].Y = (yc - (hw * fSin)) + (hh * fCos);
+    nglListAddQuad(&q);
+}
+
 // ea: 0x006BFF30
 int readInt()
 {
