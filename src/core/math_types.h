@@ -171,7 +171,9 @@ static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
 // Mat44 — 4x4 matrix (64 bytes = 4 * Vector4)
 // Size: 0x40 (64 bytes) — verified against IDA
 // ============================================================================
-struct Mat44 {
+// class tag per binary mangling (?PAVMat44 in render.o/cg.o)
+class Mat44 {
+public:
     Vector4 x;  // +0x00
     Vector4 y;  // +0x10
     Vector4 z;  // +0x20

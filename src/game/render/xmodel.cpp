@@ -100,6 +100,98 @@ int XModelGetLodForDist(IVPointer<XModel> model, float dist)
     return v2;
 }
 
+// ============================================================================
+// XModelGetBasePose - ea: 0x006CAD70
+// ============================================================================
+static const math::Dir3 Float4_XAxis_BasePose = { _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f) };
+static const math::Dir3 Float4_YAxis_BasePose = { _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f) };
+static const math::Dir3 Float4_ZAxis_BasePose = { _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f) };
+
+void XModelGetBasePose(IVPointer<XModel> model, math::Mat43* mat)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    XModelLod** lod = model.mValue->lod;
+    int v3 = 0;
+    if (model.mValue->lod[0] == nullptr)
+    {
+        XModelLod* v4;
+        do
+        {
+            v4 = lod[1];
+            ++lod;
+            ++v3;
+        } while (v4 == nullptr);
+    }
+    XModelParts* xmodelParts = model.mValue->lod[v3]->xmodelParts;
+    InplaceVector<math::Mat43::Packed>* p_mTransforms = &xmodelParts->mTransforms;
+    int mSize = xmodelParts->mHierarchy.mSize;
+    unsigned int numBones = 0;
+    if (mSize > 0)
+    {
+        while (1)
+        {
+            unsigned int v25 = numBones;
+            if (numBones >= xmodelParts->mHierarchy.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                AeAssert::gCurrentLine = 81;
+                AeAssert::gCurrentExpr = "index < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            if (numBones >= xmodelParts->mHierarchy.mSize)
+                v25 = 0;
+            int mParentIndex = xmodelParts->mHierarchy.mList[v25].mParentIndex;
+            math::Dir3* p_z = (math::Dir3*)&mat[numBones].z;
+            if (mParentIndex < 0)
+            {
+                mat[numBones].x.v = Float4_XAxis_BasePose.v;
+                mat[numBones].y.v = Float4_YAxis_BasePose.v;
+                mat[numBones].z.v = Float4_ZAxis_BasePose.v;
+                mat[numBones].w.v = _mm_setzero_ps();
+            }
+            else
+            {
+                math::Mat43::Packed* v8 = &p_mTransforms->mList[numBones];
+                math::Mat43* v9 = &mat[mParentIndex];
+                __m128 tx = _mm_setr_ps(v8->x.x, v8->x.y, v8->x.z, 0.0f);
+                __m128 ty = _mm_setr_ps(v8->y.x, v8->y.y, v8->y.z, 0.0f);
+                __m128 tz = _mm_setr_ps(v8->z.x, v8->z.y, v8->z.z, 0.0f);
+                __m128 tw = _mm_setr_ps(v8->w.x, v8->w.y, v8->w.z, 0.0f);
+                __m128 x = v9->x.v;
+                __m128 y = v9->y.v;
+                __m128 z = v9->z.v;
+                __m128 w = v9->w.v;
+
+                mat[numBones].x.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(tx, tx, 0), x),
+                        _mm_mul_ps(_mm_shuffle_ps(tx, tx, 85), y)),
+                    _mm_mul_ps(_mm_shuffle_ps(tx, tx, 170), z));
+                mat[numBones].y.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(ty, ty, 0), x),
+                        _mm_mul_ps(_mm_shuffle_ps(ty, ty, 85), y)),
+                    _mm_mul_ps(_mm_shuffle_ps(ty, ty, 170), z));
+                mat[numBones].z.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(tz, tz, 0), x),
+                        _mm_mul_ps(_mm_shuffle_ps(tz, tz, 85), y)),
+                    _mm_mul_ps(_mm_shuffle_ps(tz, tz, 170), z));
+                mat[numBones].w.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(tw, tw, 0), x),
+                        _mm_mul_ps(_mm_shuffle_ps(tw, tw, 85), y)),
+                    _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(tw, tw, 170), z), w));
+                (void)p_z;
+            }
+            if (++numBones >= (unsigned int)mSize)
+                break;
+        }
+    }
+}
+
 // ea: 0x006BD3C0
 const char* XModelGetSurfaceName(IVPointer<XModel> model, int subMatIndex,
                                  int lod)
