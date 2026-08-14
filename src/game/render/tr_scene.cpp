@@ -46,7 +46,9 @@ extern nglTexture* gProjShadowTex;  // ?gProjShadowTex@@3PAUnglTexture@@A (cdGla
 
 // refEntity_t view (origin +0x3C, scale +0x38)
 struct refEntity_t {
-    uint8_t _pad0[0x38];
+    int    reType;          // +0x00
+    int    renderfx;        // +0x04
+    uint8_t _pad0[0x38 - 0x08];
     float scale;           // +0x38
     float origin[3];       // +0x3C
 };
@@ -65,12 +67,73 @@ struct viewParms_t {
 };
 
 struct trGlobals_t {
-    uint8_t _pad0[0x10];
+    int      registered;         // +0x00
+    uint8_t  _pad0[0x10 - 0x04];
     viewParms_t viewParms;       // +0x10
 };
 extern trGlobals_t tr;           // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 struct polyVert_t;
+
+// reserved_dlist<trRefEntity> / backEndData views (render.o data)
+struct trRefEntityNode {
+    trRefEntityNode* m_next;  // +0x00
+    trRefEntityNode* m_prev;  // +0x04
+};
+struct reserved_dlist_trRefEntity {
+    int              m_size;  // +0x00
+    trRefEntityNode* m_head;  // +0x04
+    trRefEntityNode* m_end;   // +0x08
+    trRefEntityNode* m_tail;  // +0x0C
+};
+struct backEndData_t {
+    reserved_dlist_trRefEntity entities;    // +0x00
+    reserved_dlist_trRefEntity viewmodels;  // +0x10
+};
+backEndData_t* backEndData;  // ?backEndData@@3PAUbackEndData_t@@A @ 0xDFA438
+
+// refimport_t view (Printf +0x00, Error +0x04)
+struct refimport_t {
+    void (*Printf)(int, const char*, ...);
+    void (*Error)(int, const char*, ...);
+};
+extern refimport_t ri;         // ?ri@@3Urefimport_t@@A @ 0xF741E8
+
+// ============================================================================
+// RE_AddRefEntityToScene - ea: 0x006D2CD0
+// ============================================================================
+void RE_AddRefEntityToScene(refEntity_t* ent, int iCellNum)
+{
+    if (tr.registered == 0)
+        return;
+    if (ent->reType < 0 || ent->reType >= 16)
+        ri.Error(1, "RE_AddRefEntityToScene: bad reType %i", ent->reType);
+    trRefEntityNode* node = (trRefEntityNode*)((char*)ent - 8);
+    *(int*)((char*)node + 0xE8) = iCellNum;
+    *(char*)((char*)node + 0xFA) = 0;
+    node->m_next = backEndData->entities.m_end;
+    node->m_prev = backEndData->entities.m_tail;
+    backEndData->entities.m_tail->m_next = node;
+    backEndData->entities.m_tail = node;
+    ++backEndData->entities.m_size;
+}
+
+// ============================================================================
+// RE_AddViewModelToScene - ea: 0x006D2D30
+// ============================================================================
+void RE_AddViewModelToScene(refEntity_t* ent)
+{
+    if (tr.registered == 0)
+        return;
+    trRefEntityNode* node = (trRefEntityNode*)((char*)ent - 8);
+    *(int*)((char*)node + 0xE8) = 0;
+    *(char*)((char*)node + 0xFA) = 0;
+    node->m_next = backEndData->viewmodels.m_end;
+    node->m_prev = backEndData->viewmodels.m_tail;
+    backEndData->viewmodels.m_tail->m_next = node;
+    backEndData->viewmodels.m_tail = node;
+    ++backEndData->viewmodels.m_size;
+}
 
 // ============================================================================
 // EndOfRenderCallback - ea: 0x006C2370
