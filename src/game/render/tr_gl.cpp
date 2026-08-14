@@ -195,6 +195,41 @@ float R_GetViewModelWeaponScale(int client_index)
     return tr.viewModelInfo[client_index].mWeaponScale;
 }
 
+// ea: 0x006C6AA0
+void R_SetViewModelScale(int client_index, float armsScale, float weaponScale,
+                         int inWorldScene, int scaleWeaponTrans,
+                         math::Mat43* armsOffsetMat)
+{
+    tr.viewModelInfo[client_index].mScaleWeaponTrans = scaleWeaponTrans;
+    tr.viewModelInfo[client_index].mArmsScale = armsScale;
+    tr.viewModelInfo[client_index].mWeaponScale = weaponScale;
+    tr.viewModelInfo[client_index].mInWorldScene = inWorldScene;
+    if (armsOffsetMat != nullptr)
+    {
+        tr.viewModelInfo[client_index].mArmsOffsetMat.x = armsOffsetMat->x;
+        tr.viewModelInfo[client_index].mArmsOffsetMat.y = armsOffsetMat->y;
+        tr.viewModelInfo[client_index].mArmsOffsetMat.z = armsOffsetMat->z;
+        tr.viewModelInfo[client_index].mArmsOffsetMat.w = armsOffsetMat->w;
+    }
+    else
+    {
+        tr.viewModelInfo[client_index].mArmsOffsetMat.x.v =
+            _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        tr.viewModelInfo[client_index].mArmsOffsetMat.y.v =
+            _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        tr.viewModelInfo[client_index].mArmsOffsetMat.z.v =
+            _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        tr.viewModelInfo[client_index].mArmsOffsetMat.w.v =
+            _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+    tr.viewModelInfo[client_index].mDrawBeforeWorld = 0;
+    if (tr.viewModelInfo[client_index].mArmsScale == 1.0f)
+    {
+        tr.viewModelInfo[client_index].mArmsOffsetMat.w.v =
+            _mm_setzero_ps();
+    }
+}
+
 // ea: 0x006C0720
 void nglStartOverExposureEx(float oeBloomRealStart, float oeBloomStart,
                             float oeBloomEnd, float oeBloomInTime,
