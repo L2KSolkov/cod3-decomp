@@ -8,6 +8,7 @@
 
 #include <intrin.h>
 #include <math.h>
+#include <string.h>
 
 // glconfig_t (IDA type, 40 members, size 0xA0; ?glConfig@@3Uglconfig_t@@A @ 0xF74300)
 struct glconfig_t {
@@ -99,6 +100,26 @@ struct trGlobals_t {
     int viewModelInfoIndex;  // +0x310
 };
 extern trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+
+// scene frame counters (tr_scene.cpp)
+extern int r_firstSceneDlight;  // ?r_firstSceneDlight@@3HA @ 0xF74274
+extern int r_numdlights;        // ?r_numdlights@@3HA @ 0xF741E4
+extern int r_firstSceneCorona;  // ?r_firstSceneCorona@@3HA @ 0xF742D0
+extern int r_numcoronas;        // ?r_numcoronas@@3HA @ 0xF741BC
+extern int r_firstScenePoly;    // ?r_firstScenePoly@@3HA @ 0xF742B0
+extern int r_numpolys;          // ?r_numpolys@@3HA @ 0xF742FC
+extern void R_Init();           // render.o 0x6D27F0 (not yet ported)
+
+// ea: 0x006D2970
+void RE_BeginRegistration(glconfig_t* glconfigOut)
+{
+    R_Init();
+    memcpy(glconfigOut, &glConfig, sizeof(glconfig_t));
+    r_firstSceneDlight = r_numdlights;
+    r_firstSceneCorona = r_numcoronas;
+    r_firstScenePoly = r_numpolys;
+    tr.registered = 1;
+}
 
 // nglListAddMesh_GetScaledMatrix static data (render.o @ 0xF782E0 / 0xF7832C)
 static math::Mat43 ScaledLocalToWorld;
