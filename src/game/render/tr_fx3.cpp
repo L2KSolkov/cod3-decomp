@@ -97,7 +97,34 @@ public:
             *p = p[1];
         --mSize;
     }
+
+    // ?push_back@?$ae_vector@PAVParticleEffect@@@@QAEXABQAVParticleEffect@@@Z
+    void push_back(const T& iElement)
+    {
+        if (mSize >= mCapacity)
+        {
+            int v4 = mSize + 4;
+            if (mSize <= 3)
+                v4 = mSize + 1;
+            T* v5 = (T*)tlMemAlloc(sizeof(T) * v4, 8u, 0);
+            for (int i = 0; i < mSize; ++i)
+                v5[i] = mElements[i];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mElements = v5;
+            mCapacity = v4;
+        }
+        mElements[mSize++] = iElement;
+    }
 };
+
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);  // core.o
+extern void tlMemFree(void* p);               // core.o
 
 class PoolAllocator {
 public:

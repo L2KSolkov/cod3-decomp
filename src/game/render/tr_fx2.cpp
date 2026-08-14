@@ -9,8 +9,12 @@
 #include "aeps/apsCommon.h"
 #include "aeps/apsEffect.h"
 #include "core/ae_array.h"
+#include "game/game_types.h"
 
 #include <stdint.h>
+
+class DObjHandleDb;
+class EntityHandleDb;
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
@@ -39,9 +43,30 @@ public:
     T* mElements;   // +0x00
     int mSize;      // +0x04
     int mCapacity;  // +0x08
-};
 
-enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+    // ?push_back@?$ae_vector@PAVParticleEffect@@@@QAEXABQAVParticleEffect@@@Z
+    void push_back(const T& iElement)
+    {
+        if (mSize >= mCapacity)
+        {
+            int v4 = mSize + 4;
+            if (mSize <= 3)
+                v4 = mSize + 1;
+            T* v5 = (T*)tlMemAlloc(sizeof(T) * v4, 8u, 0);
+            for (int i = 0; i < mSize; ++i)
+                v5[i] = mElements[i];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mElements = v5;
+            mCapacity = v4;
+        }
+        mElements[mSize++] = iElement;
+    }
+};
 
 // mem heap helpers (core.o)
 void* mem_heap_malloc(unsigned int size);
@@ -50,6 +75,7 @@ void mem_heap_free(void* ptr);
 
 // tlMemFree (tl library)
 void tlMemFree(void* Ptr);
+void* tlMemAlloc(unsigned int size, unsigned int align, unsigned int flags);
 
 // apsEffect (apsEffect.h) - Delete declared there
 
@@ -444,4 +470,170 @@ void LightEffect::SetColor(float r, float g, float b, float a)
     mColorOriginal[0] = r;
     mColorOriginal[1] = g;
     mColorOriginal[2] = b;
+}
+
+// ============================================================================
+// PlayEffect / FX_Play*EffectID - ea: 0x006D3730 / 0x006D3A00 / 0x006D3A90
+// ============================================================================
+float gFXTime;  // ?gFXTime@@3MA (render.o)
+extern ae_vector<ParticleEffect*> gParticleEffectList;  // tr_fx3.cpp
+extern bool IsOkToSpawnNewEffect(apsEffectTemplate* Tmpl, int juice);  // tr_fx3.cpp
+extern void Com_Printf(const char* fmt, ...);  // core.o
+extern void MakeNormalVectors(const float* const forward, float* const right,
+                              float* const up);  // q_math.cpp
+
+// ea: 0x006D3730
+ParticleEffect* PlayEffect(TPakId pakId, int id, math::Mat43& Mat,
+                           DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle,
+                           DbLinkedHandle<EntityHandleDb, Entity> boltEntHandle,
+                           int boltBoneIndex, bool boltAttchedToEnt)
+{
+    apsEffectTemplate* tmpl = (apsEffectTemplate*)id;
+    if (tmpl == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 1691;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("ParticleEffect.cpp - PlayEffect() :: No effect file found"))
+        {
+            __debugbreak();
+        }
+    }
+    else if (IsOkToSpawnNewEffect(tmpl, 4))
+    {
+        ParticleEffect* v9 = ParticleEffect::New();
+        ParticleEffect* fx = v9;
+        if (v9 != nullptr)
+        {
+            v9->mPakId = (int)pakId;
+            apsEffect* v10;
+            if (pakId == PAK_ID_INVALID)
+            {
+                v10 = apsEffect::New(tmpl, gFXTime);
+            }
+            else
+            {
+                apsMemConfig memCfg(pakId);
+                v10 = apsEffect::New(tmpl, gFXTime);
+            }
+            if (v10 != nullptr)
+            {
+                v9->mEffect = v10;
+                v10->SetLocalToWorldTransform(Mat);
+                if (boltObjHandle.mHandle.mVal != 0
+                    || boltEntHandle.mHandle.mVal != 0)
+                {
+                    v9->mDObjHandle = (void*)boltObjHandle.mHandle.mVal;
+                    v9->mEntHandle = (void*)boltEntHandle.mHandle.mVal;
+                    v9->mBoneIndex = (short)boltBoneIndex;
+                    if (boltAttchedToEnt)
+                        v9->mFlags |= 1u;
+                }
+                int element_num = 0;
+                for (int v11 = 0; v11 < tmpl->mElements.mSize; ++v11)
+                {
+                    if (tmpl->GetElement(v11).mEndTime == 3.4028235e38f)
+                    {
+                        int mEndTime = 0;
+                        bool v20 = true;
+                        for (int v13 = 0; v13 < tmpl->mElements.mSize; ++v13)
+                        {
+                            if (tmpl->GetElement(v13).mEndTime < 3.4028235e38f)
+                            {
+                                if (tmpl->GetElement(v13).mEndTime > mEndTime)
+                                    mEndTime = (int)tmpl->GetElement(v13).mEndTime;
+                                v20 = false;
+                            }
+                        }
+                        if (v20)
+                            mEndTime = 10;
+                        tmpl->SetEndTime(element_num, (float)mEndTime);
+                    }
+                    element_num = v11 + 1;
+                }
+                gParticleEffectList.push_back(fx);
+                v9->mPakId = (int)pakId;
+                return v9;
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+                AeAssert::gCurrentLine = 1743;
+                AeAssert::gCurrentExpr = "pNewEffect != 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Effect could not be created, check aeps memory status (debug menu)"))
+                {
+                    __debugbreak();
+                }
+                Com_Printf("FX_PlayFX:-- %x failed to create apsEffect\n", id);
+                ParticleEffect::Delete(v9);
+                return nullptr;
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+            AeAssert::gCurrentLine = 1712;
+            AeAssert::gCurrentExpr = "fx != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Particle could not be created, check aeps memory status (debug menu)"))
+            {
+                __debugbreak();
+            }
+            Com_Printf("FX_PlayFX:-- %x failed to create ParticleEffect\n", id);
+            return nullptr;
+        }
+    }
+    return nullptr;
+}
+
+// ea: 0x006D3A00
+ParticleEffect* PlayEffect(TPakId pakId, int id, const float* origin)
+{
+    math::Mat43 v7;
+    v7.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v7.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    v7.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    v7.w.v = _mm_setr_ps(origin[0], origin[1], origin[2], 0.0f);
+    return PlayEffect(pakId, id, v7, DbLinkedHandle<DObjHandleDb, DObj>(),
+                      DbLinkedHandle<EntityHandleDb, Entity>(), -1, false);
+}
+
+// ea: 0x006D3A90
+ParticleEffect* PlayEffect(TPakId pakId, int id, const float* origin,
+                           const float (*axis)[3])
+{
+    math::Mat43 Mat;
+    Mat.x.v = _mm_setr_ps(axis[0][0], axis[0][1], axis[0][2], 0.0f);
+    Mat.y.v = _mm_setr_ps(axis[1][0], axis[1][1], axis[1][2], 0.0f);
+    Mat.z.v = _mm_setr_ps(axis[2][0], axis[2][1], axis[2][2], 0.0f);
+    Mat.w.v = _mm_setr_ps(origin[0], origin[1], origin[2], 0.0f);
+    return PlayEffect(pakId, id, Mat, DbLinkedHandle<DObjHandleDb, DObj>(),
+                      DbLinkedHandle<EntityHandleDb, Entity>(), -1, false);
+}
+
+// ea: 0x006D3BA0
+ParticleEffect* FX_PlaySimpleEffectID(TPakId pakId, int id,
+                                      const math::Position3& org)
+{
+    return PlayEffect(pakId, id, org.v.m128_f32);
+}
+
+// ea: 0x006D3BB0
+ParticleEffect* FX_PlayEffectID(TPakId pakId, int id,
+                                const math::Position3& org,
+                                const float* fwd)
+{
+    float axis[3];
+    float up[3];
+    float forward[3];
+    forward[0] = fwd[0];
+    forward[1] = fwd[1];
+    forward[2] = fwd[2];
+    MakeNormalVectors(forward, axis, up);
+    return PlayEffect(pakId, id, org.v.m128_f32, &axis);
 }
