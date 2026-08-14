@@ -24,6 +24,10 @@ struct refexport_t {
     uint8_t _pad2[0x4C - 0x44];
     void (*DrawStretchPic)(float, float, float, float, float, float,
                            float, float, nglTexture*);            // +0x4C
+    uint8_t _pad3[0xA4 - 0x50];
+    void (*Text_PaintWithCursor)(float, float, int, float, const float*,
+                                 const char*, int, char, float, int,
+                                 int);                             // +0xA4
 };
 extern refexport_t re;           // ?re@@3Urefexport_t@@A @ 0xF0CC50
 
@@ -69,6 +73,18 @@ void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
 {
     (void)unused;
     re.DrawStretchPic(x, y, w, h, s1, t1, s2, t2, tex);
+}
+
+// ============================================================================
+// trap_R_Text_PaintWithCursor - ea: 0x006C2D20
+// ============================================================================
+void trap_R_Text_PaintWithCursor(float x, float y, int font, float scale,
+                                 const float* const color, const char* text,
+                                 int cursorPos, char cursor, int limit,
+                                 int style)
+{
+    re.Text_PaintWithCursor(x, y, font, scale, color, text, cursorPos,
+                            cursor, 0.0f, limit, style);
 }
 
 // ============================================================================
