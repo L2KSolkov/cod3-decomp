@@ -12,6 +12,7 @@
 #include "game/game_types.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 
 class DObjHandleDb;
 class EntityHandleDb;
@@ -467,6 +468,7 @@ public:
 class PoolAllocator {
 public:
     void* Allocate(unsigned int s, bool forceHeapAlloc);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
+    void Release(void* ptr);                              // ?Release@PoolAllocator@@QAEXPAX@Z
 };
 
 extern float gNearLightRadius;  // ?gNearLightRadius@@3MA @ 0xF74474
@@ -764,4 +766,123 @@ LightEffect* AddLight(TPakId pakId, LightEffect::eType type,
         gLightEffectList.push_back(fx);
     }
     return fx;
+}
+
+// ea: 0x006D3CF0
+struct PakFile;
+class PakManager {
+public:
+    static PakManager* sInst;  // ?sInst@PakManager@@2PAV1@A
+    uint8_t _pad[0x40];
+    PakFile* mSlots[99];       // +0x40
+};
+extern void nglListAddPointLight(unsigned int LightCat,
+                                 const math::Position3* Pos, float Near,
+                                 float Far, const math::Vector4* Color,
+                                 bool isVertexPointLight);  // ngl_lighting.cpp
+
+void UpdateLights(float timeDeltaMS)
+{
+    LightEffect** mElements = gLightEffectList.mElements;
+    bool v18 = false;
+    LightEffect** end = &gLightEffectList.mElements[gLightEffectList.mSize];
+    if (gLightEffectList.mElements == end)
+        return;
+    do
+    {
+        LightEffect* v3 = *mElements;
+        TPakId mPakId = (TPakId)v3->mPakId;
+        if (mPakId != PAK_ID_INVALID
+            && PakManager::sInst->mSlots[mPakId] != nullptr
+            && !v3->mKill
+            && (v3->mMSecLifetime == -1000.0f || v3->mMSecLifetime >= 0.0f)
+            && v3->mActive)
+        {
+            math::Position3 pos;
+            pos.v = v3->mLightPos.v;
+            math::Vector4 color;
+            color.v.m128_f32[0] = v3->mColor[0] * v3->mScale;
+            color.v.m128_f32[1] = v3->mColor[1] * v3->mScale;
+            color.v.m128_f32[2] = v3->mColor[2] * v3->mScale;
+            color.v.m128_f32[3] = v3->mColor[3] * v3->mScale;
+            if (v3->mType == LightEffect::VERTEX_LIGHT)
+            {
+                nglListAddPointLight(0x40000000u, &pos, v3->mInnerRadius,
+                                     v3->mOuterRadius, &color, true);
+            }
+            else
+            {
+                color.v.m128_f32[0] = 1.0f;
+                color.v.m128_f32[1] = 0.8f;
+                color.v.m128_f32[2] = 0.2f;
+                nglListAddPointLight(0x40000000u, &pos, v3->mInnerRadius,
+                                     220.0f, &color, false);
+            }
+            if (v3->mMSecLifetime != -1000.0f)
+            {
+                float v8 = v3->mMSecLifetime - timeDeltaMS;
+                v3->mMSecLifetime = v8;
+                if (v8 > 0.0f)
+                {
+                    if (v3->mFade)
+                    {
+                        float v9 = v8 / v3->mMSecLifeOrig;
+                        v3->mColor[0] = v3->mColorOriginal[0] * v9;
+                        v3->mColor[1] = v3->mColorOriginal[1] * v9;
+                        v3->mColor[2] = v3->mColorOriginal[2] * v9;
+                    }
+                }
+                else
+                {
+                    v3->mActive = false;
+                    v3->mMSecLifetime = 0.0f;
+                }
+            }
+            if (v3->mFlicker)
+            {
+                if (rand() % 3 == 0)
+                    v3->mFlickerRatio = (rand() * 0.000012207031f) + 0.60000002f;
+                v3->mColor[0] = v3->mColorOriginal[0] * v3->mFlickerRatio;
+                v3->mColor[1] = v3->mColorOriginal[1] * v3->mFlickerRatio;
+                v3->mColor[2] = v3->mColorOriginal[2] * v3->mFlickerRatio;
+            }
+        }
+        else
+        {
+            *mElements = nullptr;
+            LightEffect::sAllocator->Release(v3);
+            v18 = true;
+        }
+        ++mElements;
+    } while (mElements != end);
+    if (!v18)
+        return;
+    {
+        LightEffect** v12 = gLightEffectList.mElements;
+        LightEffect** v11 = &gLightEffectList.mElements[gLightEffectList.mSize];
+        if (gLightEffectList.mElements != v11)
+        {
+            while (*v12 != nullptr)
+            {
+                if (++v12 == v11)
+                    goto LABEL_33;
+            }
+            if (v12 != v11)
+            {
+                LightEffect** i = v12;
+                for (LightEffect** v13 = v12 + 1; v13 != v11; ++v13)
+                {
+                    if (*v13 != nullptr)
+                    {
+                        *i = *v13;
+                        ++i;
+                    }
+                }
+                v12 = i;
+            }
+        }
+    LABEL_33:
+        gLightEffectList.erase(v12,
+                               &gLightEffectList.mElements[gLightEffectList.mSize]);
+    }
 }
