@@ -1032,6 +1032,8 @@ public:
     void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void NodeList();                     // ?NodeList@PathNodeMgr@@QAEXXZ
     void CheckpointResetNodes();         // ?CheckpointResetNodes@PathNodeMgr@@QAEXXZ
+    int FindZoneIndex(TPakId pakId);     // ?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z
+    int FindZoneIndex(const char* zone); // ?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
 

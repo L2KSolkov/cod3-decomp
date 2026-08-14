@@ -290,17 +290,6 @@ bool XAnimNotetrackExists(scr_anim_s anim, const unsigned int& name)
     return XAnimNotetrackExists(Anims, anim.mHandle, name);
 }
 
-// ea: 0x0077C090 (mp_actors.o)
-XAnimTree* G_GetActorAnimTree(actor_s* actor)
-{
-    return nullptr;
-}
-
-// ea: 0x0077C0A0 (mp_actors.o)
-XAnimTree* G_GetActorCorpseAnimTree(Entity* ent)
-{
-    return nullptr;
-}
 
 // ea: 0x004511D0
 float XAnimGetTime(XAnimTree* tree, scr_anim_s anim)

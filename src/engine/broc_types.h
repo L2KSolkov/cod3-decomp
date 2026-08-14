@@ -57,7 +57,7 @@ enum EEndRoundCondition {
 // GetPhysBoneID jump table (physics.o 0x6F2F30): switch covers cases 0..18
 // with 19 cases, HITLOC_NUM == 0x13. PDB member names kept exactly.
 // ============================================================================
-enum EHitLocation {
+enum hitLocation_t {
     HITLOC_NONE = 0,
     HITLOC_HELMET,
     HITLOC_HEAD,
@@ -79,6 +79,8 @@ enum EHitLocation {
     HITLOC_GUN,
     HITLOC_NUM = 0x13,
 };
+
+typedef hitLocation_t EHitLocation;  // alias kept for early ports
 
 enum {
     INVALID_PAK_INFO = 0,

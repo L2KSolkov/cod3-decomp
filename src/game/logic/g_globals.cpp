@@ -215,12 +215,6 @@ int TAG_WHEEL_FRONT_RIGHT = 0;      // ?TAG_WHEEL_FRONT_RIGHT@@3HA (g.o)
 int render = 0;                     // ?render@@3HA (g.o @ 0xDD725C)
 int gLanguage;                      // ?gLanguage@@3HA (core_globals.h typedef twin; real enum in g_entity_misc)
 
-// ea: 0x0077CA20 (mp_actors.o)
-Entity* G_GetFriendlyIndexActor(int iFriendlyIndex)  // ?G_GetFriendlyIndexActor@@YAPAVEntity@@H@Z
-{
-    (void)iFriendlyIndex;
-    return nullptr;
-}
 
 // ea: 0x004A7A10 (mp_actors.o; header inline)
 bool IsVehicleSpotted(Entity* vehicle)  // ?IsVehicleSpotted@@YA_NPAVEntity@@@Z

@@ -99,12 +99,6 @@ static BrocGetEntFn BrocAPI_mGetEnt()
 {
     return *(BrocGetEntFn*)((char*)gpBrocAPI + 0x94);
 }
-// ?G_GetActorFriendlyIndex@@YAHPAVEntity@@@Z (mp_actors.o 0x77CA10)
-int G_GetActorFriendlyIndex(Entity* entity)
-{
-    (void)entity;
-    return 0;
-}
 extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 
 // ============================================================================

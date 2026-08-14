@@ -178,7 +178,7 @@ void MultiplayerMgr::SpotEntity(Entity* ent) { (void)ent; }
 void MultiplayerMgr::PlayerDamage(Entity* h, Entity* a,
                                   const math::Position3& p,
                                   const math::Dir3& n, int w, float d,
-                                  unsigned char m, int df, EHitLocation hl)
+                                  unsigned char m, int df, hitLocation_t hl)
 {
     (void)h; (void)a; (void)p; (void)n; (void)w; (void)d; (void)m;
     (void)df; (void)hl;

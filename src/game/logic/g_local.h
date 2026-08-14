@@ -832,8 +832,9 @@ struct ent_field_t {
 };
 static_assert(sizeof(ent_field_t) == 0x10, "ent_field_t size mismatch");
 
-// hitLocation_t is Broc's EHitLocation (HITLOC_NONE == 0, HITLOC_NUM == 0x13)
-typedef EHitLocation hitLocation_t;
+// hitLocation_t is the binary's damage-location enum (defined in
+// engine/broc_types.h as enum hitLocation_t, HITLOC_NONE == 0,
+// HITLOC_NUM == 0x13).
 
 // Cross-object externs used by g_utils.cpp (game.o / scr.o provide later)
 extern vmCvar_t g_cheats;              // ?g_cheats@@3UvmCvar_t@@A
@@ -1508,12 +1509,7 @@ const float AngleSubtract(float a1, float a2);
 float  PitchForYawOnNormal(float fYaw, const float* const vNormal);
 void   gunrandom(float* x, float* y);
 extern float gTanAimConeSpread;
-// ?Actor_CheckArmor@@YAHPAUactor_s@@HH@Z (mp_actors.o 0x77BE90)
-inline int Actor_CheckArmor(actor_s* pSelf, int damage, int dflags)
-{
-    (void)pSelf; (void)damage; (void)dflags;
-    return 0;
-}
+int    Actor_CheckArmor(actor_s* pSelf, int damage, int dflags);  // mp_actors.o
 int    CheckArmor(Entity* ent, int damage, int dflags);
 int    LogAccuracyHit(Entity* target, Entity* attacker);
 int    G_IsVehicleImmune(Entity* ent, int mod);
@@ -1764,11 +1760,6 @@ enum {
 enum {
     WEAPAMMOTYPE_SMG = 0,  // verified vs disasm PM_BeginWeaponChange
 };
-enum {
-    AI_EV_GRENADE_PING = 0x0E,
-    AI_EV_PROJECTILE_PING = 0x0F,
-    AI_EV_PROJECTILE_IMPACT = 0x0C,
-};
 
 // ============================================================================
 // weaponParms - weapon fire params (0x40 bytes) - verified against IDA
@@ -1784,9 +1775,6 @@ struct weaponParms {
 static_assert(sizeof(weaponParms) == 0x40, "weaponParms size mismatch");
 
 void   j_nullsub_37(actor_s* pSelf, weaponParms* wp);   // g.o
-int Actor_Grenade_IsValidTrajectory(actor_s* pSelf, const float* vFrom,
-                                    const float* vVelocity,
-                                    const float* vGoal);  // mp_actors.o 0x77C4D0
 
 // ============================================================================
 // turretInfo_t - turret runtime state (0x8C bytes) - verified against IDA
@@ -1930,19 +1918,14 @@ inline int G_GetNonPVSFriendlyInfo(const float* vPosition, int iOldInfo)
     (void)vPosition; (void)iOldInfo;
     return 0;
 }
-Entity* G_GetFriendlyIndexActor(int iFriendlyIndex);                     // g.o
+Entity* G_GetFriendlyIndexActor(int iFriendlyIndex);                     // mp_actors.o
+int     G_GetActorFriendlyIndex(Entity* entity);                        // mp_actors.o
 team_t Sentient_EnemyTeam(team_t eTeam);
 sentient_s* Sentient_FirstSentient(int iTeamFlags);
 sentient_s* Sentient_NextSentient(sentient_s* pPrevSentient, int iTeamFlags);
-// ?Actor_CanSeePointEx@@YIMPAUactor_s@@QBMMMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z (mp_actors.o 0x77BFD0)
-inline float Actor_CanSeePointEx(
+float __fastcall Actor_CanSeePointEx(
     actor_s* pSelf, const float* vPoint, float fFovDot, float fMaxDistSqrd,
-    DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity)
-{
-    (void)pSelf; (void)vPoint; (void)fFovDot; (void)fMaxDistSqrd;
-    (void)ignoreEntity;
-    return 0.0f;
-}
+    DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity);  // mp_actors.o
 bool G_IsPlayerDrivingVehicle(Entity* player);
 const float VectorDistanceSquared2D(const math::Position3& p1,
                                     const math::Position3& p2);
@@ -1978,7 +1961,7 @@ int  Pickup_Kit(Entity* ent, Entity* other, int bTouched);           // g.o 0x44
 // ============================================================================
 weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);
 const gitem_s* BG_FindItem(const char* pickupName);
-void SP_actor(Entity* pEnt);
+int  SP_actor(Entity* pEnt);
 void Scr_Notify(Entity* ent, HashString hashValue, unsigned int paramcount);
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                  bool queue, TPakId pakid,
@@ -1999,12 +1982,7 @@ void  vectosignedangles(const float* const vec, float* const angles);
 void  G_DObjCalcBone(Entity* ent, int boneIndex);
 bool  G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex, DObjSkelMat* tagMat);
 void  RegisterItem(unsigned int iItemIndex, int bUpdateCS);
-// ?Actor_IsUsingTurret@@YIHPAUactor_s@@@Z (mp_actors.o 0x77C9F0)
-inline int Actor_IsUsingTurret(actor_s* pSelf)
-{
-    (void)pSelf;
-    return 0;
-}
+int __fastcall Actor_IsUsingTurret(actor_s* pSelf);  // mp_actors.o
 void j_nullsub_74(Entity* pSelf, int bLerp);
 bool Entity_has_zone_collision(const void* self);
 

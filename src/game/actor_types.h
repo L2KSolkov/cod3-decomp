@@ -16,34 +16,135 @@ struct sentient_s;
 // ============================================================================
 // team_t — team enumeration
 // ============================================================================
-typedef int32_t team_t;
-enum {
-    TEAM_NONE = 0,
+enum team_t : int32_t {
+    TEAM_FREE = 0,
+    TEAM_BAD = 0,
     TEAM_AXIS = 1,
     TEAM_ALLIES = 2,
     TEAM_NEUTRAL = 3,
+    TEAM_SPECTATOR = 3,
+    TEAM_DEAD = 4,
+    TEAM_NUM_TEAMS = 5,
 };
 
 // ============================================================================
 // ai_state_e — AI state enum (4 bytes per slot)
 // ============================================================================
-typedef int32_t ai_state_e;
-enum {
-    AIS_TURRET = 0x03,
-    AIS_WOUNDED = 0x0B,  // verified vs disasm G_Damage
+enum ai_state_e : int32_t {
+    AIS_INVALID = 0,
+    AIS_KEEPCURRENT = 0,
+    AIS_SETABLE_FIRST = 1,
+    AIS_COVER = 1,
+    AIS_EXPOSED = 2,
+    AIS_TURRET = 3,
+    AIS_LMG = 4,
+    AIS_NONCOMBAT = 5,
+    AIS_GRENADE_RESPONSE = 6,
+    AIS_FOLLOW = 7,
+    AIS_BLANK = 8,
+    AIS_VEHICLE = 9,
+    AIS_MOVEAWAY = 10,
+    AIS_WOUNDED = 11,
+    AIS_DEATH = 12,
+    AIS_SETABLE_LAST = 12,
+    AIS_PUSHABLE_FIRST = 13,
+    AIS_PAIN = 13,
+    AIS_CRITICAL_SECTION = 14,
+    AIS_SCRIPTEDANIM = 15,
+    AIS_CUSTOMANIM = 16,
+    AIS_INTERACTION = 17,
+    AIS_NEGOTIATION = 18,
+    AIS_PUSHABLE_LAST = 18,
+    AIS_COUNT = 19,
 };
 
 // ============================================================================
 // ai_substate_e — AI sub-state
 // ============================================================================
-typedef int32_t ai_substate_e;
+enum ai_substate_e : int32_t;
 
 // ============================================================================
 // ai_stance_e — stance enum
 // ============================================================================
-typedef int32_t ai_stance_e;
+enum ai_stance_e : int32_t {
+    STANCE_BAD = 0,
+    STANCE_STAND = 1,
+    STANCE_CROUCH = 2,
+    STANCE_PRONE = 4,
+    STANCE_ANY = 7,
+};
 
 // ============================================================================
+// ============================================================================
+// ai_event_t — AI broadcast event enum
+// ============================================================================
+enum ai_event_t : int32_t {
+    AI_EV_BAD = 0,
+    AI_EV_FIRST_POINT_EVENT = 1,
+    AI_EV_FOOTSTEP = 2,
+    AI_EV_FOOTSTEP_LITE = 3,
+    AI_EV_NEW_ENEMY = 4,
+    AI_EV_PAIN = 5,
+    AI_EV_DEATH = 6,
+    AI_EV_GRENADE_COOK = 7,
+    AI_EV_GRENADE_PING = 8,
+    AI_EV_PROJECTILE_PING = 9,
+    AI_EV_GUNSHOT = 10,
+    AI_EV_EXPLOSION = 11,
+    AI_EV_DOOR_OPEN = 12,
+    AI_EV_DOOR_KICK = 13,
+    AI_EV_LAST_POINT_EVENT = 14,
+    AI_EV_FIRST_LINE_EVENT = 15,
+    AI_EV_BULLET = 16,
+    AI_EV_PROJECTILE_IMPACT = 17,
+    AI_EV_LAST_LINE_EVENT = 18,
+    AI_EV_NUM_EVENTS = 19,
+};
+
+// ============================================================================
+// ai_teammove_t — team move result enum
+// ============================================================================
+enum ai_teammove_t : int32_t {
+    AI_TEAMMOVE_INVALID = -1,
+    AI_TEAMMOVE_TRAVEL = 0,
+    AI_TEAMMOVE_WAIT = 1,
+    AI_TEAMMOVE_SLOW_DOWN = 2,
+};
+
+// ============================================================================
+// ai_orient_mode_t — orientation mode enum
+// ============================================================================
+enum ai_orient_mode_t : int32_t {
+    AI_ORIENT_INVALID = 0,
+    AI_ORIENT_DONT_CHANGE = 1,
+    AI_ORIENT_TO_MOTION = 2,
+    AI_ORIENT_TO_ENEMY = 3,
+    AI_ORIENT_TO_ENEMY_OR_MOTION = 4,
+    AI_ORIENT_TO_GOAL = 5,
+    AI_ORIENT_COUNT = 6,
+};
+
+// ============================================================================
+// goalRadiusCheck / canChangeState_t / enumLastShot / enumForceSpawn
+// ============================================================================
+enum goalRadiusCheck : int32_t {
+    GOAL_CHECK_PATH = 0,
+    GOAL_CHECK_NOTIFY = 1,
+};
+enum canChangeState_t : int32_t {
+    CHANGE_COVER_FORBIDDEN = 0,
+    CHANGE_COVER_ALLOWED = 1,
+};
+enum enumLastShot : int32_t {
+    LAST_SHOT_IN_CLIP = 0,
+    NOT_LAST_SHOT_IN_CLIP = 1,
+};
+enum enumForceSpawn : int32_t {
+    CHECK_SPAWN = 0,
+    CHECK_SPAWN_CONSIDER_PLAYER_FACING = 1,
+    FORCE_SPAWN = 2,
+};
+
 // ai_orient_t — orientation data (20 bytes)
 // ============================================================================
 struct ai_orient_t {
@@ -262,8 +363,39 @@ struct sentient_info_array {
     sentient_info_t* mInfos[48];  // +0x00
 
     sentient_info_t* operator[](int idx) { return mInfos[idx]; }
+    void FreeIndex(int idx);  // mp_actors.o 0x77BE50
 };
 static_assert(sizeof(sentient_info_array) == 0xC0, "sentient_info_array size mismatch");
+// ============================================================================
+// BadPlaceArc / BadPathData / BadPathManager - bad-place tracking (mp_actors.o)
+// ============================================================================
+struct BadPlaceArc {
+    float origin[3];     // +0x00
+    float radius;        // +0x0C
+    float halfheight;    // +0x10
+    float angle0;        // +0x14
+    float angle1;        // +0x18
+};
+static_assert(sizeof(BadPlaceArc) == 0x1C, "BadPlaceArc size mismatch");
+
+struct BadPathData {
+    float mStartPos[3];  // +0x00
+    float mGoalPos[3];   // +0x0C
+    float mTime;         // +0x18
+};
+static_assert(sizeof(BadPathData) == 0x1C, "BadPathData size mismatch");
+
+class BadPathManager {
+public:
+    int    mTotalNum;       // +0x00
+    int16_t mNumBadPaths;   // +0x04
+    int16_t mNumQuickExits; // +0x06
+    BadPathData mBadPaths[15];  // +0x08
+
+    void Initialize();  // ?Initialize@BadPathManager@@QAEXXZ (mp_actors.o 0x77CBC0)
+};
+static_assert(sizeof(BadPathManager) == 0x1AC, "BadPathManager size mismatch");
+
 
 // ============================================================================
 // actor_s — full AI actor (2864 bytes)

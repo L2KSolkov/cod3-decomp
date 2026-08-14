@@ -1043,11 +1043,7 @@ extern int IM_RenderGameEntityStats();    // ?IM_RenderGameEntityStats@@YAHXZ (g
 extern Entity* RenderPlayerStats();       // ?RenderPlayerStats@@YAPAVEntity@@XZ (game2.o)
 
 // PathNode / zone / audio-tick helper views (opaque owners)
-class BadPathManager {
-public:
-    int mNumBadPaths;  // +0x00
-    int mTotalNum;     // +0x04
-};
+// BadPathManager defined in game/actor_types.h (mp_actors.o)
 BadPathManager g_badPathManager;         // ?g_badPathManager@@3VBadPathManager@@A (mp_actors.o)
 struct PathNodeLevelTOC {
     int mNodeCount;  // +0x00

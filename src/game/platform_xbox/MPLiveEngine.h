@@ -192,7 +192,7 @@ struct MPPeer {
 
 class Entity;  // game_types.h
 namespace math { class Position3; class Dir3; }
-enum EHitLocation;
+enum hitLocation_t;
 
 struct MultiplayerMgr {
     MPPeer* mPeer;                 // +0x00
@@ -217,7 +217,7 @@ struct MultiplayerMgr {
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,
                       int weapon, float damage, unsigned char mod, int dflags,
-                      EHitLocation hitLocation);
+                      hitLocation_t hitLocation);
     void VehicleDamage(Entity* hitEntity, Entity* attacker,
                        const math::Position3& position, const math::Dir3& normal,
                        float damage, int weapon, unsigned char mod, int dflags);

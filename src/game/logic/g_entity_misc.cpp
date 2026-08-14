@@ -2801,7 +2801,6 @@ void SoundMediaMgr_PlayLandingSound(void* self, Entity* e, int a, bool b)
 {
     (void)self; (void)e; (void)a; (void)b;
 }
-void SP_actor(Entity* e) { (void)e; }
 void StartupNfl(const char* a) { (void)a; }
 void StatusBar_Init(void* self) { (void)self; }
 void StreamZoneManager_Update(void* self, int a, const float* b, bool c)
