@@ -44,9 +44,10 @@ struct nglGlyphInfo {
 static_assert(sizeof(nglGlyphInfo) == 0x1C, "nglGlyphInfo size mismatch");
 
 // ============================================================================
-// nglFont - 56 bytes
+// nglFont - 56 bytes (class tag to match binary PAV manglings)
 // ============================================================================
-struct nglFont {
+class nglFont {
+public:
     tlFixedString* FileName;     // +0x00
     nglTexture*    Texture;      // +0x04
     nglGlyphInfo*  GlyphInfo;    // +0x08

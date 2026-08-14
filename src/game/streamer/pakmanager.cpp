@@ -7013,10 +7013,6 @@ extern void nglListAddQuad(nglQuad* quad);
 extern void ngliProcessTexture(apk::apkFile* File, apk::apkFileEntry* Entry);
 extern void auxFontDirectoryDelete(nglFont* Font);  // ngl_aux.cpp
 extern void FEManagerSetFont(nglFont* f, const char* font_filename);  // shell.o
-void FEManagerSetFont(nglFont* f, const char* font_filename)
-{
-    (void)f; (void)font_filename;  // stub: shell.o
-}
 class apsEffectTemplate;  // class (apsEffect.h); matches ?PAV mangling
 extern apsEffectTemplate* sMissingParticleEffect;  // ?sMissingParticleEffect@@3PAVapsEffectTemplate@@A @ 0xF59310
 extern apsEffectTemplate* apsLoadEffectInplace(apk::apkFile* File,

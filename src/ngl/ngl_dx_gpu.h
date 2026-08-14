@@ -18,7 +18,7 @@ struct jqBatch;
 #include <intrin.h>
 
 struct nglMaterial;
-struct nglFont;
+class nglFont;
 struct nglMorphSet;
 class nglMeshParams;
 class nglShaderParamSet;

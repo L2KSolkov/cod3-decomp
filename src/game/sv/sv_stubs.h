@@ -227,23 +227,28 @@ static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 // ============================================================================
 // FEManager â€” front-end manager (1012 bytes; opaque, only sv.o fields shown)
 // ============================================================================
+class PanelFileUser;
 struct IGOFrontEnd;
 class FEMenuSystem;
 struct DialogMenuSystem;
 struct InGameMenuSystem;
 struct AARMenuSystem {
     bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
+    void Update(float time_inc);  // mp.o
+    void Draw();                  // mp.o
+    void UpdateSplitScreen();     // mp.o
+    bool GetPanelFileUsers(const char* name,
+                           ae_sized_array<PanelFileUser*, 12>& array);  // mp.o
 };
 struct ProfileManager;
 class PanelQuad;
 class PanelFile;
-struct nglFont;
+class nglFont;
 struct ControllerDisconnectedMenu;
 
 struct FEManager {
 public:
     // +0x00 vftable (1 ptr)
-    uint8_t _vftable[4];
     nglFont* fonts[4];                  // +0x04
     IGOFrontEnd* IGO;                   // +0x14
     ControllerDisconnectedMenu* ControllerDisconnected;  // +0x18
@@ -295,6 +300,43 @@ public:
     void SetFrontEndMenusActive(bool active,
                                 int client);  // ?SetFrontEndMenusActive@FEManager@@QAEX_NH@Z (cl.o 0x5283E0)
     AARMenuSystem* GetAARS();                 // ?GetAARS@FEManager@@QAEPAVAARMenuSystem@@XZ (cl.o 0x528400)
+
+    // FEManager.cpp family (shell.o)
+    FEManager();                          // 0x593C90
+    virtual ~FEManager();                 // 0x56F040
+    void LoadFonts();                     // 0x56F0C0
+    void ReleaseFonts();                  // 0x56F0D0
+    void ReleaseFont(font_index f);       // 0x56F0E0
+    void LoadFont(font_index i);          // 0x57D720
+    void UpdateFrontEnd(float time_inc);  // 0x56F0F0
+    void UpdateAARMenus(float time_inc);  // 0x56F1B0
+    void UpdateInGameMenus(float time_inc);  // 0x56F230
+    void DrawIGO(int client);             // 0x56F280
+    void Draw3DWorldSpace();              // 0x56F330
+    void DrawLoadingDots();               // 0x56F3B0
+    void DrawDebugDiscError();            // 0x56F440
+    void PlayFadeInOranScreen();          // 0x56F5F0
+    void DrawFrontEnd();                  // 0x56F820
+    void DrawInGameMenus();               // 0x56F8A0
+    void DrawAARMenus();                  // 0x56F980
+    void PrepareLoadingMenus();           // 0x56FA20
+    void ReleaseInGameMenus();            // 0x56FA30
+    void UpdateSplitScreen();             // 0x56FAE0
+    void Draw3DScreenSpace();             // 0x57D770
+    void DrawLoadingScreen(int alpha);    // 0x57D7A0
+    void DrawControllerError();           // 0x57DA30
+    void UpdateButtonFontForLanguage();   // 0x585260
+    void ReleaseFrontEnd();               // 0x585450
+    nglFont* GetFont(font_index f,
+                     float scale);       // 0x585490
+    void InitDialogMenuSystem();          // 0x5958A0
+    void LoadFrontEnd();                  // 0x59ACD0
+    void LoadInGameMenus();               // 0x59AD70
+    void InitIGO();                       // 0x59D0C0
+    bool DMSMenusActiveAnyClient();       // ?DMSMenusActiveAnyClient@FEManager@@QAE_NXZ
+protected:
+    void GetPanelFileUsers(const char* name,
+                           ae_sized_array<PanelFileUser*, 12>& array);  // 0x5854D0
 };
 static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 
@@ -724,6 +766,7 @@ struct CheckpointMgr {
 // checkpointmgr.cpp disasm)
 
 struct PakInfoNode;
+class PanelFileUser;
 class NumBanks {
 public:
     struct Ps3Banks {
