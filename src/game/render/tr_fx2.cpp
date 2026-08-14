@@ -988,10 +988,16 @@ class DebugRender {
 public:
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& color);  // renderdebug.cpp
+    static void RenderLine(const math::Position3& pt1,
+                           const math::Position3& pt2, const Color& col,
+                           float thickness);  // renderdebug.cpp
+    static void RenderText(const char* str, int x, int y, const Color& col,
+                           float depth, float size);  // renderdebug.cpp
 };
 extern void nglValidateMatrices(nglScene* Scene);  // ngl.o
 extern nglLightContext* nglCreateLightContext();   // ngl_lighting.cpp
 extern void nglSetAmbientLight(float r, float g, float b);  // ngl_lighting.cpp
+extern void profile_reset();  // ?profile_reset@@YAXXZ (cdDebugRender.cpp)
 extern void FX_SortParticleEffectList(int indexLeft,
                                       int indexRight);  // render.o 0x6C7690
 extern void FX_DumpParticleEffectList();               // tr_fx2.cpp 0x6C7620
@@ -1070,6 +1076,199 @@ void RenderEffectsInternal()
 void RenderEffects()
 {
     RenderEffectsInternal();
+}
+
+// ============================================================================
+// FX_ClearFX / FX_InitFX / FX_ReportFX / FX_TermFX
+// ============================================================================
+extern int gParticleBatchGroup;  // ?gParticleBatchGroup@@3HA @ 0xF0C700
+extern int jqCreateBatchGroup();  // jobqueue.o
+extern void jqDestroyBatchGroup(int group);  // jobqueue.o
+extern void mem_heap_free(void* ptr);  // core.o
+void FX_ReportFX();  // forward
+
+// ea: 0x006D77B0
+void FX_ClearFX()
+{
+    apsCommon::ClearSpawnedEffectQueue();
+    ParticleEffect** mElements = gParticleEffectList.mElements;
+    ParticleEffect** v1 =
+        &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    if (gParticleEffectList.mElements != v1)
+    {
+        do
+            ParticleEffect::Delete(*mElements++);
+        while (mElements != v1);
+    }
+    gParticleEffectList.resize(0);
+    gSortedParticleEffectList.resize(0);
+    if (gParticleEffectList.mElements != nullptr)
+        tlMemFree(gParticleEffectList.mElements);
+    gParticleEffectList.mElements = nullptr;
+    gParticleEffectList.mCapacity = 0;
+    gParticleEffectList.mSize = 0;
+    if (gSortedParticleEffectList.mElements != nullptr)
+        tlMemFree(gSortedParticleEffectList.mElements);
+    gSortedParticleEffectList.mElements = nullptr;
+    gSortedParticleEffectList.mCapacity = 0;
+    gSortedParticleEffectList.mSize = 0;
+}
+
+// ea: 0x006D7850
+void FX_InitFX()
+{
+    Com_Printf("^5----- Treyarch Fx System Initialization -----\n");
+    ParticleEffect::InitArray();
+    FX_ClearFX();
+    FX_ReportFX();
+    gParticleBatchGroup = jqCreateBatchGroup();
+    Com_Printf("^5----- Fx System Initialization Complete -----\n");
+}
+
+// ea: 0x006C7B60
+void FX_ReportFX()
+{
+    ParticleEffect** mElements = gSortedParticleEffectList.mElements;
+    ParticleEffect** v1 =
+        &gSortedParticleEffectList.mElements[gSortedParticleEffectList.mSize];
+    if (gSortedParticleEffectList.mElements != v1)
+    {
+        do
+        {
+            apsEffect* mEffect = (*mElements)->mEffect;
+            const char* mName;
+            if (mEffect != nullptr)
+                mName = mEffect->mTemplate->mName;
+            else
+                mName = "";
+            unsigned int _32;
+            if (mEffect != nullptr)
+                _32 = mEffect->mSortKey._32;
+            else
+                _32 = 0xFFFFFFFFu;
+            tlPrintf("0x%08x 0x%08x %s\n", *mElements++, _32, mName);
+        } while (mElements != v1);
+    }
+    apsCommon::Report();
+}
+
+// ea: 0x006C3310
+void FX_TermFX()
+{
+    Com_Printf("^5----- Treyarch Fx System Termination -----\n");
+    if (ParticleEffect::sArrayData != nullptr)
+    {
+        for (int i = 0; i < 256; ++i)
+            ParticleEffect::sArrayData[i].~ParticleEffect();
+        mem_heap_free(&ParticleEffect::sArrayData[-1]);
+        ParticleEffect::sArrayData = nullptr;
+    }
+    jqDestroyBatchGroup(gParticleBatchGroup);
+    Com_Printf("^5----- Fx System Initialization Termination -----\n");
+}
+
+// ea: 0x006DAB90
+struct cdl_proftimer {
+    float value;       // +0x00
+    uint8_t _pad[0x10 - 0x04];
+};
+extern cdl_proftimer cdl_proftimer_fx_all;     // tr_stats.cpp
+extern cdl_proftimer cdl_proftimer_fx_update;  // tr_stats.cpp
+extern cdl_proftimer cdl_proftimer_fx_render;  // tr_stats.cpp
+extern int g_renderPFXStats;  // ?g_renderPFXStats@@3HA
+struct EntityView {
+    uint8_t _pad[0x70];
+    math::Position3 currentOrigin;  // +0x70
+};
+class EntityHandleDb {
+public:
+    struct DbElement {
+        Entity* mObject;  // +0x00
+        int     mKey;     // +0x04
+    };
+    uint8_t mFreeIndices[168];   // +0x00 (BitSet<1344>)
+    DbElement mElements[1344];   // +0xA8
+    static EntityHandleDb sInst; // ?sInst@EntityHandleDb@@2V1@A (g.o)
+};
+
+void fx_debug_render()
+{
+    if (g_renderPFXStats == 0)
+        return;
+    char buf[512];
+    char v20[12];
+    sprintf(v20, "%i paticle effects", gParticleEffectList.mSize);
+    Color white(1.0f, 1.0f, 1.0f, 1.0f);
+    DebugRender::RenderText(v20, 450, 240, white, 0.0f, 1.0f);
+    sprintf(v20, "%5.2f total", cdl_proftimer_fx_all.value * 0.0000013636364f);
+    DebugRender::RenderText(v20, 450, 260, white, 0.0f, 1.0f);
+    sprintf(v20, "%5.2f update",
+            cdl_proftimer_fx_update.value * 0.0000013636364f);
+    DebugRender::RenderText(v20, 450, 280, white, 0.0f, 1.0f);
+    sprintf(v20, "%5.2f render",
+            cdl_proftimer_fx_render.value * 0.0000013636364f);
+    DebugRender::RenderText(v20, 450, 300, white, 0.0f, 1.0f);
+    profile_reset();
+
+    ParticleEffect** mElements = gParticleEffectList.mElements;
+    ParticleEffect** end =
+        &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    if (gParticleEffectList.mElements == end)
+        return;
+    Color yellow(1.0f, 1.0f, 0.0f, 1.0f);
+    Color cyan(1.0f, 0.0f, 0.0f, 1.0f);
+    do
+    {
+        ParticleEffect* v4 = *mElements;
+        DObj* mObject = nullptr;
+        unsigned int mVal = (unsigned int)v4->mDObjHandle;
+        unsigned int v6 = mVal & 0xFFF;
+        if (v6 < 0x540
+            && mVal >> 12
+                   == (unsigned int)DObjHandleDb_SInst()->mElements[v6].mKey)
+        {
+            mObject = DObjHandleDb_SInst()->mElements[v6].mObject;
+        }
+        EntityView* v2 = nullptr;
+        unsigned int entVal = (unsigned int)v4->mEntHandle;
+        unsigned int v7 = entVal & 0xFFF;
+        if (v7 < 0x540
+            && entVal >> 12
+                   == (unsigned int)EntityHandleDb::sInst.mElements[v7].mKey)
+        {
+            v2 = (EntityView*)EntityHandleDb::sInst.mElements[v7].mObject;
+        }
+        math::Position3 pos;
+        if (mObject != nullptr || v2 != nullptr || v4->mPoPtr != nullptr)
+        {
+            if (v4->mPoPtr != nullptr)
+            {
+                pos.v = v4->mPoPtr->w.v;
+            }
+            else if (v4->mBoneIndex < 0)
+            {
+                if (v2 != nullptr)
+                    pos.v = v2->currentOrigin.v;
+            }
+            else
+            {
+                DbLinkedHandle<DObjHandleDb, DObj> bh;
+                bh.mHandle.mVal = (unsigned int)v4->mDObjHandle;
+                if (FX_GetBoneOrientation(bh, v4->mBoneIndex,
+                                          (orientation_t*)(buf + 500)))
+                {
+                    pos.v = _mm_setr_ps(*(float*)(buf + 500),
+                                        *(float*)(buf + 504),
+                                        *(float*)(buf + 508), 0.0f);
+                }
+            }
+        }
+        math::Position3 top = pos;
+        top.v.m128_f32[2] += 3000.0f;
+        DebugRender::RenderLine(pos, top, yellow, 5.0f);
+        DebugRender::RenderSphere(pos, 11.25f, cyan);
+        ++mElements;
+    } while (mElements != end);
 }
 
 // ea: 0x006D3650

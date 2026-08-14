@@ -2272,11 +2272,6 @@ void* FX_PlaySimpleEffectID(TPakId pakId, int id, math::Position3* org)
     (void)pakId; (void)id; (void)org;
     return nullptr;
 }
-void FX_ClearFX() {}
-void FX_InitFX() {}
-void FX_ReportFX() {}
-void FX_TermFX() {}
-void fx_debug_render() {}
 void* GetRefAPI(int version, void* ri)
 {
     (void)version; (void)ri;
