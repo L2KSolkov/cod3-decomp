@@ -11,7 +11,7 @@
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
-enum ECoderId { COD3 = 0 };
+enum ECoderId { COD3 = 0, ARO = 1 };
 extern ECoderId gCurrentAuthor;        // ?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A
 extern const char* gCurrentFile;       // ?gCurrentFile@AeAssert@@3PBDB
 extern int gCurrentLine;               // ?gCurrentLine@AeAssert@@3HA
@@ -389,4 +389,137 @@ refEntity_t::refEntity_t(int foo)
 trRefEntity* refEntity_t::GetTrRefentity()
 {
     return (trRefEntity*)((char*)this - 8);
+}
+
+// ============================================================================
+// R_FilterModelIntoCells_r (trRefEntity variant) - ea: 0x006C57D0
+// ============================================================================
+class BspNode {
+public:
+    short contents;            // +0x00
+    short cellNum;             // +0x02
+    BspNode* children[2];      // +0x04
+    math::Vector4* plane;      // +0x0C
+};
+
+// trRefEntity view with mOccupiedCells (+0xF6)
+struct trRefEntityFilterView {
+    uint8_t _pad[0xF6];
+    unsigned char mOccupiedCells[4];  // +0xF6
+};
+
+// trGlobals view (world +0x290)
+struct trGlobalsFilterView {
+    uint8_t _pad[0x290];
+    void* world;             // +0x290
+};
+extern trGlobalsFilterView tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+
+// world_t view (bspTree +0x100)
+struct worldFilterView {
+    uint8_t _pad[0x100];
+    void* bspTree;           // +0x100
+};
+
+// BspTree view (mCells +0x18)
+struct BspTreeFilterView {
+    uint8_t _pad[0x18];
+    unsigned int mCellsSize;   // +0x18
+    void* mCellsList;          // +0x1C
+};
+
+// BspCell view (modelRefs +0x38) + R_AddModelToCell(cell, re, sphere)
+void R_AddModelToCell(void* cell, trRefEntity* re,
+                      const math::Vector4& sphere);  // tr_dpvs.cpp (0x6BF830)
+
+void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
+                              const math::Vector4& sphere)
+{
+    trRefEntityFilterView* reView = (trRefEntityFilterView*)re;
+    reView->mOccupiedCells[0] = 0xFF;
+    reView->mOccupiedCells[1] = 0xFF;
+    reView->mOccupiedCells[2] = 0xFF;
+    reView->mOccupiedCells[3] = 0xFF;
+
+    BspNode* node_stack[1024];
+    int size = 1;
+    node_stack[0] = startNode;
+    float sphereW = _mm_shuffle_ps(sphere.v, sphere.v, 255).m128_f32[0];
+
+    do
+    {
+        --size;
+        BspNode* node = node_stack[size];
+        if (node->cellNum == -2)
+        {
+            math::Vector4* plane = node->plane;
+            __m128 v19 = _mm_mul_ps(sphere.v, plane->v);
+            float dot = v19.m128_f32[0]
+                      + (_mm_shuffle_ps(v19, v19, 85).m128_f32[0]
+                         + _mm_shuffle_ps(v19, v19, 170).m128_f32[0]);
+            float d = dot - _mm_shuffle_ps(plane->v, plane->v, 255).m128_f32[0];
+            if (d > -sphereW)
+            {
+                node_stack[size++] = node->children[0];
+            }
+            if (sphereW > d)
+            {
+                node_stack[size++] = node->children[1];
+            }
+            if (size >= 1024)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+                AeAssert::gCurrentLine = 904;
+                AeAssert::gCurrentExpr = "node_stack_size < STACK_DEPTH";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("R_FilterModelIntoCells_r: stack overflow"))
+                    __debugbreak();
+            }
+        }
+        else if (node->cellNum >= 0)
+        {
+            int cellNum = node->cellNum;
+            int i = 0;
+            while (1)
+            {
+                unsigned char v11 = reView->mOccupiedCells[i];
+                if (v11 == (unsigned char)cellNum)
+                    break;
+                if (v11 == 0xFF)
+                {
+                    reView->mOccupiedCells[i] = (unsigned char)cellNum;
+                    if (reView->mOccupiedCells[i] != (unsigned char)cellNum)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+                        AeAssert::gCurrentLine = 885;
+                        AeAssert::gCurrentExpr =
+                            "re->mOccupiedCells[i] == node->cellNum";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Too many cells in map!"))
+                            __debugbreak();
+                    }
+                    worldFilterView* world = (worldFilterView*)tr.world;
+                    BspTreeFilterView* bspTree =
+                        (BspTreeFilterView*)world->bspTree;
+                    R_AddModelToCell(
+                        (char*)bspTree->mCellsList + 0x50 * cellNum,
+                        re, sphere);
+                    break;
+                }
+                if (++i >= 4)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+                    AeAssert::gCurrentLine = 892;
+                    AeAssert::gCurrentExpr = "registered";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Model occupies more than MAX_OCCUPIED_CELLS!"))
+                        __debugbreak();
+                    break;
+                }
+            }
+        }
+    } while (size != 0);
 }
