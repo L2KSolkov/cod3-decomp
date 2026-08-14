@@ -429,11 +429,16 @@ void FX_SetRainDrops(bool on)
 // ============================================================================
 // LightEffect - ea: 0x006C3480..0x006C36B0
 // ============================================================================
+class PoolAllocator;
 class LightEffect {
 public:
     enum eType {
         PROJECTED_TEXTURE = 0x0,
         VERTEX_LIGHT = 0x1,
+    };
+    enum eTime : int {
+        FLASH = 0x1,
+        FOREVER = 0xFFFFFFFF,
     };
 
     eType mType;                  // +0x00
@@ -456,6 +461,12 @@ public:
     ~LightEffect();                         // ??1LightEffect@@QAE@XZ
     void Start();                           // ?Start@LightEffect@@QAEXXZ
     void SetColor(float r, float g, float b, float a);  // ?SetColor@LightEffect@@QAEXMMMM@Z
+    static PoolAllocator* sAllocator;       // ?sAllocator@LightEffect@@0PAVPoolAllocator@@A (tr_fx3.cpp)
+};
+
+class PoolAllocator {
+public:
+    void* Allocate(unsigned int s, bool forceHeapAlloc);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
 };
 
 extern float gNearLightRadius;  // ?gNearLightRadius@@3MA @ 0xF74474
@@ -502,6 +513,7 @@ void LightEffect::SetColor(float r, float g, float b, float a)
 // ============================================================================
 float gFXTime;  // ?gFXTime@@3MA (render.o)
 extern ae_vector<ParticleEffect*> gParticleEffectList;  // tr_fx3.cpp
+extern ae_vector<LightEffect*> gLightEffectList;         // tr_fx3.cpp
 extern bool IsOkToSpawnNewEffect(apsEffectTemplate* Tmpl, int juice);  // tr_fx3.cpp
 extern void Com_Printf(const char* fmt, ...);  // core.o
 extern void MakeNormalVectors(const float* const forward, float* const right,
@@ -713,4 +725,43 @@ void RemoveDeadEffects()
         gParticleEffectList.erase(v5,
                                   &gParticleEffectList.mElements[gParticleEffectList.mSize]);
     }
+}
+
+// ea: 0x006D3C10
+LightEffect* AddLight(TPakId pakId, LightEffect::eType type,
+                      const math::Position3& pos, LightEffect::eTime time)
+{
+    float v4;
+    if (time == LightEffect::FOREVER)
+        v4 = -1000.0f;
+    else
+    {
+        v4 = 30.0f;
+        if (time != LightEffect::FLASH)
+            v4 = (float)time;
+    }
+    LightEffect* fx = (LightEffect*)LightEffect::sAllocator->Allocate(0x70u, false);
+    if (fx != nullptr)
+    {
+        fx->mMSecLifetime = v4;
+        fx->mMSecLifeOrig = v4;
+        fx->mInnerRadius = 0.0f;
+        fx->mOuterRadius = 0.0f;
+        fx->mType = type;
+        fx->mFade = false;
+        fx->mKill = false;
+        fx->mScale = 1.0f;
+    }
+    if (fx != nullptr)
+    {
+        fx->mPakId = pakId;
+        fx->mFlicker = false;
+        fx->mActive = true;
+        fx->mKill = false;
+        fx->mInnerRadius = gNearLightRadius;
+        fx->mOuterRadius = gFarLightRadius;
+        fx->mLightPos.v = pos.v;
+        gLightEffectList.push_back(fx);
+    }
+    return fx;
 }
