@@ -1415,6 +1415,93 @@ bool ApsGameClient::GetLightInfoAtPosition(const math::Dir3& pos,
     return true;
 }
 
+// ea: 0x006C3200 (virtual no-op)
+void ApsGameClient::DebugDrawSolidSphere(const math::Dir3& center,
+                                         float radius,
+                                         const math::Vector4& color)
+{
+    (void)center; (void)radius; (void)color;
+}
+
+// ea: 0x006C3210 (virtual no-op)
+void ApsGameClient::DebugDrawLine(const math::Dir3& start,
+                                  const math::Dir3& end,
+                                  const math::Vector4& color,
+                                  float thickness)
+{
+    (void)start; (void)end; (void)color; (void)thickness;
+}
+
+// ea: 0x006DCA30
+void ApsGameClient::UpdateAndRender(float dt)
+{
+    // Age/expire debug spheres, re-render survivors via the virtual overload.
+    ApsDebugSphere* Myfirst = m_debugSpheres._Myfirst;
+    ApsDebugSphere* it = Myfirst;
+    ApsDebugSphere* end = m_debugSpheres._Mylast;
+    if (Myfirst != end)
+    {
+        do
+        {
+            float v7 = 1.0f - (it->age / it->lifeTime);
+            it->color.w = v7;
+            math::Dir3 center;
+            center.v = _mm_setr_ps(it->center.x, it->center.y, it->center.z,
+                                   0.0f);
+            math::Vector4 col;
+            col.v = _mm_setr_ps(it->color.x, it->color.y, it->color.z,
+                                it->color.w);
+            DebugDrawSolidSphere(center, it->radius, col);
+            it->age += dt;
+            if (it->age <= it->lifeTime)
+            {
+                ++it;
+            }
+            else
+            {
+                // erase at it
+                for (ApsDebugSphere* src = it + 1; src != end; ++src)
+                    *(src - 1) = *src;
+                --m_debugSpheres._Mylast;
+            }
+            end = m_debugSpheres._Mylast;
+        } while (it != end);
+    }
+
+    ApsDebugLine* lfirst = m_debugLines._Myfirst;
+    ApsDebugLine* lit = lfirst;
+    ApsDebugLine* lend = m_debugLines._Mylast;
+    if (lfirst != lend)
+    {
+        do
+        {
+            float v16 = 1.0f - (lit->age / lit->lifeTime);
+            lit->color.w = v16;
+            math::Dir3 start;
+            start.v = _mm_setr_ps(lit->start.x, lit->start.y, lit->start.z,
+                                  0.0f);
+            math::Dir3 endv;
+            endv.v = _mm_setr_ps(lit->end.x, lit->end.y, lit->end.z, 0.0f);
+            math::Vector4 col;
+            col.v = _mm_setr_ps(lit->color.x, lit->color.y, lit->color.z,
+                                lit->color.w);
+            DebugDrawLine(start, endv, col, lit->thickness);
+            lit->age += dt;
+            if (lit->age <= lit->lifeTime)
+            {
+                ++lit;
+            }
+            else
+            {
+                for (ApsDebugLine* src = lit + 1; src != lend; ++src)
+                    *(src - 1) = *src;
+                --m_debugLines._Mylast;
+            }
+            lend = m_debugLines._Mylast;
+        } while (lit != lend);
+    }
+}
+
 // ea: 0x006D3650
 void RemoveDeadEffects()
 {

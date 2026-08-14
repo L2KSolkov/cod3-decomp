@@ -87,6 +87,13 @@ public:
                                const math::Vector4& color,
                                float lifeTime,
                                float thickness);  // ?DebugDrawLine@ApsGameClient@@UAEXABVDir3@math@@0ABVVector4@3@MM@Z
+    virtual void DebugDrawSolidSphere(const math::Dir3& center, float radius,
+                                      const math::Vector4& color);  // 0x6C3200 (empty)
+    virtual void DebugDrawLine(const math::Dir3& start,
+                               const math::Dir3& end,
+                               const math::Vector4& color,
+                               float thickness);  // 0x6C3210 (empty)
+    virtual void UpdateAndRender(float dt);       // ?UpdateAndRender@ApsGameClient@@UAEXM@Z (0x6DCA30)
     virtual apsEffect* CreateSpawnedEffectImmediate(
         int pakId, const apsEffectTemplate* effectTemplate,
         float startTime);  // ?CreateSpawnedEffectImmediate@ApsGameClient@@UAEPAVapsEffect@@HPBVapsEffectTemplate@@M@Z
