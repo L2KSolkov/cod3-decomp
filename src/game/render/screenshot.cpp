@@ -12,6 +12,15 @@ extern void Com_sprintf(char* dest, int size, const char* fmt, ...);  // core.o
 extern int currCl;                      // ?currCl@@3HA
 extern int gTakeScreenshot;             // ?gTakeScreenshot@@3HA @ 0xF743E0
 extern int gScreenshotInProgress;       // ?gScreenshotInProgress@@3HA @ 0xF743E4
+extern void nglScreenShot(const char* FileName);  // ngl.o
+int shotNum;                            // ?shotNum@@3HA @ 0xE92A64
+
+// ea: 0x006D2280
+void R_ScreenShot_f()
+{
+    ae_formatted_string<64, unsigned char> pth("sshot%d", ++shotNum);
+    nglScreenShot((const char*)pth.mBuff);
+}
 
 // ea: 0x006C0400
 void GL_CheckErrors(const char* str)
