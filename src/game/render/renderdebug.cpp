@@ -96,6 +96,9 @@ extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
                            bool ExtraSafety);  // streamer.o
 extern void tlPrint(const char* lpOutputString);  // tl lib
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);  // core.o
+extern void tlMemFree(void* Ptr);             // core.o
 extern int g_lightGridBlueErrors;   // ?g_lightGridBlueErrors@@3HA (g.o)
 extern int g_bOptimize;             // ?g_bOptimize@@3HA (render.o @ 0xF743D0)
 extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);  // ngl_scene.cpp
@@ -120,6 +123,80 @@ public:
 extern LightEffect* AddLight(TPakId pakId, LightEffect::eType type,
                              const math::Position3& pos,
                              LightEffect::eTime time);  // ?AddLight@@YAPAVLightEffect@@W4TPakId@@W4eType@1@ABVPosition3@math@@W4eTime@1@@Z
+
+// ============================================================================
+// DebugRender deferred primitives + ae_vector value template
+// ============================================================================
+class DebugSphere {
+public:
+    math::Position3::Packed mPos;   // +0x00
+    float mRadius;                  // +0x0C
+    Color mArgbColor;               // +0x10
+
+    DebugSphere() {}                // ??0DebugSphere@@QAE@XZ (render.o 0x6E7390)
+    DebugSphere(const math::Position3& pos, float radius,
+                const Color& argb_color);  // render.o 0x6E73A0
+};
+
+DebugSphere::DebugSphere(const math::Position3& pos, float radius,
+                         const Color& argb_color)
+{
+    mPos.x = pos.v.m128_f32[0];
+    mPos.y = pos.v.m128_f32[1];
+    mPos.z = pos.v.m128_f32[2];
+    mRadius = radius;
+    mArgbColor = argb_color;
+}
+
+class DebugTri {
+public:
+    math::Position3::Packed mPt1;   // +0x00
+    math::Position3::Packed mPt2;   // +0x0C
+    math::Position3::Packed mPt3;   // +0x18
+    Color mCol;                     // +0x24
+
+    DebugTri() {}                   // ??0DebugTri@@QAE@XZ (render.o 0x6E7460)
+    DebugTri(const math::Position3& pt1, const math::Position3& pt2,
+             const math::Position3& pt3,
+             const Color& col);     // render.o 0x6E7470
+};
+
+DebugTri::DebugTri(const math::Position3& pt1, const math::Position3& pt2,
+                   const math::Position3& pt3, const Color& col)
+{
+    mPt1.x = pt1.v.m128_f32[0];
+    mPt1.y = pt1.v.m128_f32[1];
+    mPt1.z = pt1.v.m128_f32[2];
+    mPt2.x = pt2.v.m128_f32[0];
+    mPt2.y = pt2.v.m128_f32[1];
+    mPt2.z = pt2.v.m128_f32[2];
+    mPt3.x = pt3.v.m128_f32[0];
+    mPt3.y = pt3.v.m128_f32[1];
+    mPt3.z = pt3.v.m128_f32[2];
+    mCol = col;
+}
+
+template class ae_vector<DebugSphere>;
+template class ae_vector<DebugTri>;
+
+ae_vector<DebugSphere> gDebugSpheres;  // @ 0xF0C6C0
+ae_vector<DebugTri> gDebugTris;        // @ 0xF0C6D8
+
+// ngl/render-layer helpers (render_xboxr / ngl_aux.o)
+extern void auxSetScale(nglMeshParams* dest, float src0, float src1,
+                        float src2);  // ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z
+extern void setup_color(const Color& i_col, nglShaderParamSet& o_params);
+extern gpuVertexFormat cddebug_vertex_format;  // ?cddebug_vertex_format@@3UgpuVertexFormat@@A
+extern nglMesh* auxCreateScratchMesh(int flags, int num);   // aux.o
+extern nglMeshSection* nglCreateScratchSection(
+    int Prim, int NIndices, int NVertices, gpuVertexFormat* Fmt);  // ngl.o
+extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                              nglMaterial* Mat, int Count);  // ngl.o
+extern void* nglLockSectionIndices(nglMeshSection* Section);   // ngl.o
+extern void* nglLockSectionVertices(nglMeshSection* Section);  // ngl.o
+extern nglMesh* auxCloseScratchMesh(nglMesh* Mesh);            // aux.o
+extern void j_nullsub_27(nglMeshSection* Section);  // nullsub
+extern void j_nullsub_67(nglMeshSection* Section);  // nullsub
 
 // controller (input/controller.o); minimal view to avoid ui_types.h clash
 class controller {
@@ -729,4 +806,241 @@ void LightGridMgr::RenderLightGridDebugLines()
         }
         ++v11;
     } while (v11 < v10->mNumXRows);
+}
+
+// ============================================================================
+// DebugRender primitives (DebugRender.cpp)
+// ============================================================================
+
+// ea: 0x006D4AF0
+void DebugRender::RenderSphere(const math::Position3& pos, float radius,
+                               const Color& color)
+{
+    if (nglBuildScene != nullptr && nglBuildScene->Parent != nullptr)
+    {
+        math::Mat43 mtx;
+        mtx.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        mtx.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        mtx.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        mtx.w.v = pos.v;
+        nglMeshParams mesh_params;
+        auxSetScale(&mesh_params, radius, radius, radius);
+        nglShaderParamSet* shader_params = (nglShaderParamSet*)nglListAlloc(
+            4 * nglShaderParamSet::NumParams + 8, 8u);
+        shader_params->Array[0] = 0;
+        shader_params->Array[1] = 0;
+        setup_color(color, *shader_params);
+        nglListAddMesh(DebugRender::sInst.mDebugSphereMesh, mtx, &mesh_params,
+                       shader_params, nullptr);
+    }
+    else
+    {
+        DebugSphere sphere(pos, radius, color);
+        gDebugSpheres.push_back(sphere);
+    }
+}
+
+// ea: 0x006D4C10
+void DebugRender::RenderCapsule(const math::Position3& base,
+                                const math::Position3& end, float radius,
+                                const Color& argb_color)
+{
+    math::Position3 center;
+    center.v = _mm_mul_ps(_mm_add_ps(base.v, end.v), _mm_set1_ps(0.5f));
+    math::Dir3 ydir;
+    ydir.v = _mm_sub_ps(end.v, base.v);
+    __m128 len2 = _mm_mul_ps(ydir.v, ydir.v);
+    float height = sqrtf(len2.m128_f32[0]
+                         + (len2.m128_f32[1] + len2.m128_f32[2]));
+    if (height < 0.001f)
+    {
+        DebugRender::RenderSphere(base, radius, argb_color);
+        return;
+    }
+    ydir.v = _mm_mul_ps(ydir.v, _mm_set1_ps(1.0f / height));
+    math::Dir3 xdir = compute_orth_unit_vector(ydir);
+    math::Dir3 zdir;
+    zdir.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(xdir.v, xdir.v, 9),
+                   _mm_shuffle_ps(ydir.v, ydir.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(xdir.v, xdir.v, 18),
+                   _mm_shuffle_ps(ydir.v, ydir.v, 9)));
+    __m128 zlen2 = _mm_mul_ps(zdir.v, zdir.v);
+    float zlen = sqrtf(zlen2.m128_f32[0]
+                       + (zlen2.m128_f32[1] + zlen2.m128_f32[2]));
+    zdir.v = _mm_mul_ps(zdir.v, _mm_set1_ps(1.0f / zlen));
+
+    math::Mat43 mtx;
+    mtx.x.v = xdir.v;
+    mtx.y.v = ydir.v;
+    mtx.z.v = zdir.v;
+    mtx.w.v = center.v;
+
+    nglMeshParams mesh_params;
+    auxSetScale(&mesh_params, radius, height, radius);
+    nglShaderParamSet* shader_params = (nglShaderParamSet*)nglListAlloc(
+        4 * nglShaderParamSet::NumParams + 8, 8u);
+    shader_params->Array[0] = 0;
+    shader_params->Array[1] = 0;
+    setup_color(argb_color, *shader_params);
+    nglListAddMesh(DebugRender::sInst.mDebugCylinderMesh, mtx, &mesh_params,
+                   shader_params, nullptr);
+
+    math::Dir3 halfAxis;
+    halfAxis.v = _mm_mul_ps(ydir.v, _mm_set1_ps(height * 0.5f));
+    mtx.w.v = _mm_add_ps(center.v, halfAxis.v);
+    auxSetScale(&mesh_params, radius, radius, radius);
+    nglListAddMesh(DebugRender::sInst.mDebugHemisphereMesh, mtx, &mesh_params,
+                   shader_params, nullptr);
+
+    mtx.y.v = _mm_xor_ps(ydir.v, _mm_set1_ps(-0.0f));
+    mtx.w.v = _mm_sub_ps(center.v, halfAxis.v);
+    nglListAddMesh(DebugRender::sInst.mDebugHemisphereMesh, mtx, &mesh_params,
+                   shader_params, nullptr);
+}
+
+// ea: 0x006D4EC0
+void DebugRender::RenderCylinder(const math::Position3& base,
+                                 const math::Position3& end, float radius,
+                                 const Color& argb_color)
+{
+    math::Position3 center;
+    center.v = _mm_mul_ps(_mm_add_ps(base.v, end.v), _mm_set1_ps(0.5f));
+    math::Dir3 ydir;
+    ydir.v = _mm_sub_ps(end.v, base.v);
+    __m128 len2 = _mm_mul_ps(ydir.v, ydir.v);
+    float height = sqrtf(len2.m128_f32[0]
+                         + (len2.m128_f32[1] + len2.m128_f32[2]));
+    if (height < 0.001f)
+        return;
+    ydir.v = _mm_mul_ps(ydir.v, _mm_set1_ps(1.0f / height));
+    math::Dir3 xdir = compute_orth_unit_vector(ydir);
+    math::Dir3 zdir;
+    zdir.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(xdir.v, xdir.v, 9),
+                   _mm_shuffle_ps(ydir.v, ydir.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(xdir.v, xdir.v, 18),
+                   _mm_shuffle_ps(ydir.v, ydir.v, 9)));
+    __m128 zlen2 = _mm_mul_ps(zdir.v, zdir.v);
+    float zlen = sqrtf(zlen2.m128_f32[0]
+                       + (zlen2.m128_f32[1] + zlen2.m128_f32[2]));
+    zdir.v = _mm_mul_ps(zdir.v, _mm_set1_ps(1.0f / zlen));
+
+    math::Mat43 mtx;
+    mtx.x.v = xdir.v;
+    mtx.y.v = ydir.v;
+    mtx.z.v = zdir.v;
+    mtx.w.v = center.v;
+
+    nglMeshParams mesh_params;
+    auxSetScale(&mesh_params, radius, height, radius);
+    nglShaderParamSet* shader_params = (nglShaderParamSet*)nglListAlloc(
+        4 * nglShaderParamSet::NumParams + 8, 8u);
+    shader_params->Array[0] = 0;
+    shader_params->Array[1] = 0;
+    setup_color(argb_color, *shader_params);
+    nglListAddMesh(DebugRender::sInst.mDebugCylinderMesh, mtx, &mesh_params,
+                   shader_params, nullptr);
+}
+
+// ea: 0x006D50C0
+void DebugRender::RenderTriangle(const math::Position3& pt1,
+                                 const math::Position3& pt2,
+                                 const math::Position3& pt3,
+                                 const Color& col)
+{
+    if (nglBuildScene != nullptr && nglBuildScene->Parent != nullptr)
+    {
+        nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
+        nglMeshSection* ScratchSection =
+            nglCreateScratchSection(6, 3, 3, &cddebug_vertex_format);
+        nglAddMeshSection(ScratchMesh, ScratchSection,
+                          (nglMaterial*)DebugRender::sInst.mDebugShaderMaterial,
+                          1);
+        unsigned short* indices =
+            (unsigned short*)nglLockSectionIndices(ScratchSection);
+        float* verts = (float*)nglLockSectionVertices(ScratchSection);
+        verts[0] = pt1.v.m128_f32[0];
+        verts[1] = pt1.v.m128_f32[1];
+        verts[2] = pt1.v.m128_f32[2];
+        indices[0] = 0;
+        verts += 3;
+        verts[0] = pt2.v.m128_f32[0];
+        verts[1] = pt2.v.m128_f32[1];
+        verts[2] = pt2.v.m128_f32[2];
+        indices[1] = 1;
+        verts += 3;
+        verts[0] = pt3.v.m128_f32[0];
+        verts[1] = pt3.v.m128_f32[1];
+        verts[2] = pt3.v.m128_f32[2];
+        indices[2] = 2;
+        j_nullsub_67(ScratchSection);
+        j_nullsub_27(ScratchSection);
+        nglShaderParamSet* shader_params = (nglShaderParamSet*)nglListAlloc(
+            4 * nglShaderParamSet::NumParams + 8, 8u);
+        shader_params->Array[0] = 0;
+        shader_params->Array[1] = 0;
+        setup_color(col, *shader_params);
+        math::Mat43 mtx;
+        mtx.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        mtx.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        mtx.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        mtx.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+        nglMesh* v12 = auxCloseScratchMesh(ScratchMesh);
+        nglListAddMesh(v12, mtx, nullptr, shader_params, nullptr);
+    }
+    else
+    {
+        DebugTri tri(pt1, pt2, pt3, col);
+        gDebugTris.push_back(tri);
+    }
+}
+
+// ea: 0x006D5310
+void DebugRender::RenderQuad(const math::Position3& pt1,
+                             const math::Position3& pt2,
+                             const math::Position3& pt3,
+                             const math::Position3& pt4, const Color& col)
+{
+    nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
+    nglMeshSection* ScratchSection =
+        nglCreateScratchSection(6, 4, 4, &cddebug_vertex_format);
+    nglAddMeshSection(ScratchMesh, ScratchSection,
+                      (nglMaterial*)DebugRender::sInst.mDebugShaderMaterial, 1);
+    unsigned short* indices =
+        (unsigned short*)nglLockSectionIndices(ScratchSection);
+    float* verts = (float*)nglLockSectionVertices(ScratchSection);
+    verts[0] = pt1.v.m128_f32[0];
+    verts[1] = pt1.v.m128_f32[1];
+    verts[2] = pt1.v.m128_f32[2];
+    indices[0] = 0;
+    verts += 3;
+    verts[0] = pt2.v.m128_f32[0];
+    verts[1] = pt2.v.m128_f32[1];
+    verts[2] = pt2.v.m128_f32[2];
+    indices[1] = 1;
+    verts += 3;
+    verts[0] = pt4.v.m128_f32[0];
+    verts[1] = pt4.v.m128_f32[1];
+    verts[2] = pt4.v.m128_f32[2];
+    indices[2] = 2;
+    verts += 3;
+    verts[0] = pt3.v.m128_f32[0];
+    verts[1] = pt3.v.m128_f32[1];
+    verts[2] = pt3.v.m128_f32[2];
+    indices[3] = 3;
+    j_nullsub_67(ScratchSection);
+    j_nullsub_27(ScratchSection);
+    nglShaderParamSet* shader_params = (nglShaderParamSet*)nglListAlloc(
+        4 * nglShaderParamSet::NumParams + 8, 8u);
+    shader_params->Array[0] = 0;
+    shader_params->Array[1] = 0;
+    setup_color(col, *shader_params);
+    math::Mat43 mtx;
+    mtx.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    mtx.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    mtx.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    mtx.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    nglMesh* v14 = auxCloseScratchMesh(ScratchMesh);
+    nglListAddMesh(v14, mtx, nullptr, shader_params, nullptr);
 }

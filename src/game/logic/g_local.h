@@ -23,14 +23,103 @@
 #include <intrin.h>
 #include <string.h>
 
+// ae_vector growth helpers (core.o)
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);
+extern void tlMemFree(void* Ptr);
+
 // ae_vector<T> - dynamic array (12 bytes) - verified against IDA
 template <typename T>
 struct ae_vector {
     T*  mElements;  // +0x00
     int mCapacity;  // +0x04
     int mSize;      // +0x08
+
+    ae_vector() : mElements(nullptr), mCapacity(0), mSize(0) {}
+    ~ae_vector() { destroy_all(); }
+    T* begin() { return mElements; }
+    T* end() { return &mElements[mSize]; }
+    void push_back(const T& iElement);
+    void resize(int iNewSize);
+    void clear() { resize(0); }
+
+private:
+    T* construct_array(int iCapacity, int iSize);  // private per binary AAE mangle
+    T* construct_array(int iNumber);               // private per binary AAE mangle
+    void destroy_all();                            // private per binary AAE mangle
 };
 static_assert(sizeof(ae_vector<char>) == 0x0C, "ae_vector size mismatch");
+
+template <typename T>
+T* ae_vector<T>::construct_array(int iCapacity, int iSize)
+{
+    (void)iSize;
+    return (T*)tlMemAlloc(sizeof(T) * iCapacity, 8u, 0);
+}
+
+template <typename T>
+T* ae_vector<T>::construct_array(int iNumber)
+{
+    return (T*)tlMemAlloc(sizeof(T) * iNumber, 8u, 0);
+}
+
+template <typename T>
+void ae_vector<T>::destroy_all()
+{
+    if (mElements != nullptr)
+    {
+        tlMemFree(mElements);
+        mElements = nullptr;
+        mCapacity = 0;
+    }
+}
+
+template <typename T>
+void ae_vector<T>::push_back(const T& iElement)
+{
+    if (mSize >= mCapacity)
+    {
+        int v4 = mSize + 4;
+        if (mSize <= 3)
+            v4 = mSize + 1;
+        T* v5 = (T*)tlMemAlloc(sizeof(T) * v4, 8u, 0);
+        for (int i = 0; i < mSize; ++i)
+            v5[i] = mElements[i];
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
+        }
+        mCapacity = v4;
+        mElements = v5;
+    }
+    mElements[mSize++] = iElement;
+}
+
+template <typename T>
+void ae_vector<T>::resize(int iNewSize)
+{
+    if (iNewSize > mCapacity)
+    {
+        T* v4 = (T*)tlMemAlloc(sizeof(T) * iNewSize, 8u, 0);
+        for (int i = 0; i < mSize; ++i)
+            v4[i] = mElements[i];
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
+        }
+        mElements = v4;
+        mCapacity = iNewSize;
+        mSize = iNewSize;
+    }
+    else
+    {
+        mSize = iNewSize;
+    }
+}
 
 // ============================================================================
 // scr_vehicle_t - vehicle runtime state (infoIdx at +0x178 verified vs disasm)
@@ -2275,6 +2364,21 @@ public:
     static void RenderCone(const math::Position3& pos, const math::Dir3& dir,
                            float angle, float length,
                            const Color& col);  // render.o 0xAC51C0
+    static void RenderCapsule(const math::Position3& base,
+                              const math::Position3& end, float radius,
+                              const Color& col);  // render.o 0xAC4100
+    static void RenderCylinder(const math::Position3& base,
+                               const math::Position3& end, float radius,
+                               const Color& col);  // render.o 0xAC43C0
+    static void RenderTriangle(const math::Position3& pt1,
+                               const math::Position3& pt2,
+                               const math::Position3& pt3,
+                               const Color& col);  // render.o 0xAC45C0
+    static void RenderQuad(const math::Position3& pt1,
+                           const math::Position3& pt2,
+                           const math::Position3& pt3,
+                           const math::Position3& pt4,
+                           const Color& col);  // render.o 0xAC4810
     static void RenderAxis(const math::Mat43& mat, float length,
                            float width);  // render.o 0xAC8870
 };

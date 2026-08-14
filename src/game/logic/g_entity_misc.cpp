@@ -1577,11 +1577,6 @@ void DebugRender::RenderQuad2D(float x, float y, float w, float h, float z,
 {
     (void)x; (void)y; (void)w; (void)h; (void)z; (void)color;
 }
-void DebugRender::RenderSphere(const math::Position3& pos, float radius,
-                               const Color& color)
-{
-    (void)pos; (void)radius; (void)color;
-}
 void DebugRender::RenderLineBox(const math::Mat43& LToW,
                                 const math::DiagMat33& size,
                                 const Color& color)
