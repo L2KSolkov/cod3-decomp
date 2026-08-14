@@ -158,7 +158,6 @@ long __stdcall D3DDevice::PersistDisplay()
 
 // PathNodeMgr stubs (mp_actors.o / path.o; ported later)
 void PathNodeMgr::InitPaths() {}
-void PathNodeMgr::ValidateAllNodes() {}
 void PathNodeMgr::SetCoverNodeStatus(const Broc::string& name, int inValid)
 {
     (void)name; (void)inValid;

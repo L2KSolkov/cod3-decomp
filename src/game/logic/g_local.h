@@ -1216,6 +1216,19 @@ void Path_DrawDebugNode(const PathNodes::PathNode* pNode);              // mp_ac
 void Path_DrawVisData();                                                // mp_actors.o
 void Path_DrawFriendlyChain();                                          // mp_actors.o
 int  Path_IsDynamicBlockingEntity(Entity* ent);                         // ?Path_IsDynamicBlockingEntity@@YAHPAVEntity@@@Z (mp_actors.o)
+void Path_SetupAnimFunc(PathNodes::PathNode* node,
+                        PathNodes::ENodeType* type);                    // mp_actors.o
+int  Path_CanClaimChainNode(const PathNodes::PathNode* pNode,
+                            sentient_s* pClaimer);                      // mp_actors.o
+int  Path_CanClaimNode(const PathNodes::PathNode* pNode,
+                       sentient_s* pClaimer);                           // mp_actors.o
+PathNodes::PathNode* Path_NearestNode(
+    const float* const vOrigin, PathNodes::PathSort* nodes, int iMaxNodes,
+    int iTypeFlags, float fMaxDist, int* returnCount);                  // mp_actors.o
+PathNodes::PathNode* Path_NearestNodeNotCrossPlanes(
+    const float* const vOrigin, PathNodes::PathSort* nodes, int iMaxNodes,
+    int iTypeFlags, float fMaxDist, float (*const vNormal)[2],
+    float* const fDist, int iPlaneCount, int* returnCount);             // mp_actors.o
 PathNodes::PathNode* __fastcall Sentient_NearestNode(
     sentient_s* pSelf, float (*const vNormal)[2], float* const fDist,
     int iPlaneCount, int iCheckDontLink, float distanceThreshold,
@@ -2607,7 +2620,7 @@ void  UpdateCVars(void);                         // g.o (g_main.cpp)
 void  ShowEntityInfo(void);                      // g.o (g_main.cpp)
 void  G_DrawVehiclePaths(void);                  // g.o
 void  G_DrawEntityBBoxes(void);                  // g.o
-Entity* Path_DrawDebug(void);                    // ?Path_DrawDebug@@YAPAVEntity@@XZ (mp_actors.o)
+void  Path_DrawDebug(void);                      // ?Path_DrawDebug@@YAXXZ (mp_actors.o)
 void  ClientEndFrame(Entity* ent, int msec);     // g.o
 void  PlayerAnimMgr_Update(float deltaT);        // game.o
 void  Concussive_think(Entity* ent, int msec);   // g.o 0x462A60
@@ -3081,7 +3094,7 @@ void  ClientEndFrame(Entity* ent, int msec);      // g.o
 // cg.o / anim.o cross-object
 void  CG_DoControllers(Entity* entity);
 void  VEH_UpdateControllers(Entity* entity, int msec);
-Entity* Path_DrawDebug(void);                     // ?Path_DrawDebug@@YAPAVEntity@@XZ (mp_actors.o)
+void  Path_DrawDebug(void);                       // ?Path_DrawDebug@@YAXXZ (mp_actors.o)
 void  G_DrawVehiclePaths(void);                   // g.o
 void  G_DrawEntityBBoxes(void);                   // g.o
 void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,

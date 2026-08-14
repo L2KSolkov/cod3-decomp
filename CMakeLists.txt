@@ -374,7 +374,8 @@ add_library(cod3_game_mpactors STATIC
     src/game/mpactors/stubs_game.cpp
     src/game/mpactors/ai_stubs.cpp
     src/game/mpactors/sentient.cpp
-    src/game/mpactors/pathnode.cpp)
+    src/game/mpactors/pathnode.cpp
+    src/game/mpactors/pathnodemgr.cpp)
 add_library(cod3_game_cg STATIC
     src/game/cg/stubs_game.cpp
     src/game/cg/cg_trap.cpp

@@ -937,7 +937,28 @@ struct PathLink;
 struct PathLinkInfo;
 struct NodeVariableSaver;
 struct PathNodeTree;
-enum ENodeType : int32_t;
+enum ENodeType : int32_t {
+    NODE_BADNODE = 0x0,
+    NODE_PATHNODE = 0x1,
+    NODE_COVER_STAND = 0x2,
+    NODE_COVER_CROUCH = 0x3,
+    NODE_COVER_PRONE = 0x4,
+    NODE_COVER_RIGHT = 0x5,
+    NODE_COVER_LEFT = 0x6,
+    NODE_COVER_WIDE_RIGHT = 0x7,
+    NODE_COVER_WIDE_LEFT = 0x8,
+    NODE_CONCEALMENT_STAND = 0x9,
+    NODE_CONCEALMENT_CROUCH = 0xA,
+    NODE_CONCEALMENT_PRONE = 0xB,
+    NODE_STACK = 0xC,
+    NODE_REACQUIRE = 0xD,
+    NODE_BALCONY = 0xE,
+    NODE_SCRIPTED = 0xF,
+    NODE_NEGOTIATION_BEGIN = 0x10,
+    NODE_NEGOTIATION_END = 0x11,
+    NODE_AMBUSH = 0x12,
+    NODE_NUMTYPES = 0x13,
+};
 
 class NodeHandle {
 public:

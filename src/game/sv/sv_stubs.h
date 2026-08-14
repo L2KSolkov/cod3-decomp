@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <intrin.h>
 #include "engine/broc_types.h"
 #include "game/game_types.h"
 #include "core/ae_array.h"
@@ -1019,31 +1020,166 @@ enum EGamePhase {
     GAME_PHASE_FRONTEND = 2,
 };
 
+struct BadPlaceArc;             // defined in game/actor_types.h
+enum team_t : int32_t;          // defined in game/actor_types.h
+
 class PathNodeMgr {
 public:
-    uint8_t _pad[4];                 // vtable ptr (AssetBankSet, opaque)
     PathNodes::TOC1* mLevelTOC;      // +0x04
     PathNodes::TOC2* mLevelTOC2;     // +0x08
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
-    void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
-    void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
+    PathNodeMgr();                               // ??0PathNodeMgr@@QAE@XZ
+    void InitPaths();                            // ?InitPaths@PathNodeMgr@@QAEXXZ
+    void CleanUpManager();                       // ?CleanUpManager@PathNodeMgr@@QAEXXZ
+    void InitLinkCounts(int zoneIndex);          // ?InitLinkCounts@PathNodeMgr@@QAEXH@Z
     void SetCoverNodeStatus(const Broc::string& name, int inValid);  // ?SetCoverNodeStatus@PathNodeMgr@@QAEXABVstring@Broc@@H@Z
     void AttachSentientToChainNode(sentient_s* pSentient,
                                    const Broc::string& targetname);  // ?AttachSentientToChainNode@PathNodeMgr@@QAEXPAUsentient_s@@ABVstring@Broc@@@Z
     void ConnectPathsForEntity(Entity* ent);     // ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
-    void NodeList();                     // ?NodeList@PathNodeMgr@@QAEXXZ
-    void CheckpointResetNodes();         // ?CheckpointResetNodes@PathNodeMgr@@QAEXXZ
-    int FindZoneIndex(TPakId pakId);     // ?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z
-    int FindZoneIndex(const char* zone); // ?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z
+    void NodeList();                             // ?NodeList@PathNodeMgr@@QAEXXZ
+    void CheckpointResetNodes();                 // ?CheckpointResetNodes@PathNodeMgr@@QAEXXZ
+    void UpdateArcBadPlaceCount(BadPlaceArc* pArc, int a, int b);  // ?UpdateArcBadPlaceCount@PathNodeMgr@@QAEXPAUBadPlaceArc@@HH@Z
+    void FindOverlappingNodes();                 // ?FindOverlappingNodes@PathNodeMgr@@QAEXXZ
+    void ValidateNode(PathNodes::PathNode* pNode) const;   // ?ValidateNode@PathNodeMgr@@QBEXPAUPathNode@PathNodes@@@Z
+    void ValidateAllNodes() const;               // ?ValidateAllNodes@PathNodeMgr@@QBEXXZ
+    void CheckLinkLeaks() const;                 // ?CheckLinkLeaks@PathNodeMgr@@QBEXXZ
+    bool IsConnectedTo(const PathNodes::PathNode* pNode1,
+                       const PathNodes::PathNode* pNode2) const;  // ?IsConnectedTo@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@0@Z
+    bool IsBadPlaceLink(const PathNodes::NodeHandle& iNodeNumFrom,
+                        const PathNodes::NodeHandle& iNodeNumTo,
+                        team_t eTeam) const;     // ?IsBadPlaceLink@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0W4team_t@@@Z
+    bool IsReserveForMe(const PathNodes::PathNode* pNode,
+                        const sentient_s* pClaimer) const;  // ?IsReserveForMe@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@PBUsentient_s@@@Z
+    bool IsReserveForOther(const PathNodes::PathNode* pNode,
+                           const sentient_s* pClaimer) const;  // ?IsReserveForOther@PathNodeMgr@@QBE_NPBUPathNode@PathNodes@@PBUsentient_s@@@Z
+    PathNodes::PathNode* FirstNode(int iTypeFlags);  // ?FirstNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@H@Z
+    PathNodes::PathNode* NextNode(PathNodes::PathNode* pPrevNode,
+                                  int iTypeFlags);   // ?NextNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@H@Z
+    void DisconnectPath(PathNodes::PathNode* pNode,
+                        PathNodes::PathLink* pLink); // ?DisconnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@PAUPathLink@3@@Z
+    void ConnectPath(PathNodes::PathNode* pNode,
+                     PathNodes::PathLink* pLink);   // ?ConnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@PAUPathLink@3@@Z
+    void ConnectPath(PathNodes::PathNode* pNode,
+                     const PathNodes::NodeHandle& toNodeNum);  // ?ConnectPath@PathNodeMgr@@QAEXPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z
+    void DisconnectPath(Entity* ent, PathNodes::PathNode* pNode,
+                        PathNodes::PathLink* pLink); // ?DisconnectPath@PathNodeMgr@@QAEXPAVEntity@@PAUPathNode@PathNodes@@PAUPathLink@4@@Z
+    int  GetNode(const Broc::string& a, const Broc::string& b,
+                 int* c);                           // ?GetNode@PathNodeMgr@@QAEHABVstring@Broc@@0PAH@Z
+    int  GetVehicleNodeIndex(const Broc::string& a, const Broc::string& b,
+                             int* c, int d);        // ?GetVehicleNodeIndex@PathNodeMgr@@QAEHABVstring@Broc@@0PAHH@Z
+    bool NodesVisible(PathNodes::PathNode* p1,
+                      PathNodes::PathNode* p2) const;  // ?NodesVisible@PathNodeMgr@@QBE_NPAUPathNode@PathNodes@@0@Z
+    int  NodesInCylinder(const float* const origin, float maxDist,
+                         float maxHeight, PathNodes::PathSort* nodes,
+                         int maxNodes, int typeFlags);  // ?NodesInCylinder@PathNodeMgr@@QAEHQBMMMPAUPathSort@PathNodes@@HH@Z
+    PathNodes::PathNode* ChooseChainPos(PathNodes::PathNode* pChainPos,
+                                        int iDepthMin, int iDepthMax,
+                                        PathNodes::PathNode* pPrevChainPos,
+                                        sentient_s* pClaimer,
+                                        int refChainNodeIndex);  // ?ChooseChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@HH0PAUsentient_s@@H@Z
+    PathNodes::PathNode* RunToFirstReserveNode(PathNodes::PathNode* pNode,
+                                               sentient_s* pClaimer);  // ?RunToFirstReserveNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z
     void DissociateSentient(sentient_s* pSentient);  // ?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z
-    PathNodes::PathNode* GetNode(const PathNodes::NodeHandle& handle);  // ?GetNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z
+    // PathNodeMgr.h inline (@ 0x4A9860)
+    PathNodes::PathNode* GetNode(const PathNodes::NodeHandle& handle)
+    {
+        uint16_t mValue = handle.mValue;
+        if (handle.mValue == 0 || mValue == 0xFFFF)
+            return nullptr;
+        PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+        if (mLevelTOC == nullptr)
+            return nullptr;
+        if ((mValue - 1) >= mLevelTOC->mNodeCount)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PathNodeMgr.h";
+            AeAssert::gCurrentLine = 257;
+            AeAssert::gCurrentExpr =
+                "handle.GetZoneIndex() < mLevelTOC->mNodeCount";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        return &this->mLevelTOC->mNodes[(mValue - 1)];
+    }
+    // PathNodeMgr.h inline (@ 0x78A850)
+    const PathNodes::PathNode* GetNode(
+        const PathNodes::NodeHandle& handle) const
+    {
+        uint16_t mValue = handle.mValue;
+        if (handle.mValue == 0 || mValue == 0xFFFF)
+            return nullptr;
+        PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+        if (mLevelTOC == nullptr)
+            return nullptr;
+        if ((mValue - 1) >= mLevelTOC->mNodeCount)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PathNodeMgr.h";
+            AeAssert::gCurrentLine = 281;
+            AeAssert::gCurrentExpr =
+                "handle.GetZoneIndex() < mLevelTOC->mNodeCount";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        return &this->mLevelTOC->mNodes[(mValue - 1)];
+    }
     PathNodes::PathNode* FindChainPos(const float* vOrigin,
                                       PathNodes::PathNode* pPrevChainPos);  // ?FindChainPos@PathNodeMgr@@QAEPAUPathNode@PathNodes@@QBMPAU23@@Z
     bool NodeNumsVisible(const PathNodes::NodeHandle& iNode1,
                          const PathNodes::NodeHandle& iNode2) const;  // ?NodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z
     bool ExpandedNodeNumsVisible(const PathNodes::NodeHandle& iNode1,
                                  const PathNodes::NodeHandle& iNode2) const;  // ?ExpandedNodeNumsVisible@PathNodeMgr@@QBE_NABVNodeHandle@PathNodes@@0@Z
+protected:
+    PathNodes::PathNode* ChooseDesperationNewChainNode(
+        int iDepthMin, int iDepthMax, int chainIndex,
+        PathNodes::PathNode* pRefPos, sentient_s* pClaimer);  // ?ChooseDesperationNewChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z
+    PathNodes::PathNode* GetPreviousChainNodeReserveForMe(
+        PathNodes::PathNode* pNode, sentient_s* pClaimer) const;  // ?GetPreviousChainNodeReserveForMe@PathNodeMgr@@IBEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z
+    PathNodes::PathNode* ChooseSubsequentChainNode_r(
+        int iDepthMin, int iDepthMax, int parentIndex,
+        sentient_s* pClaimer);   // ?ChooseSubsequentChainNode_r@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAUsentient_s@@@Z
+    PathNodes::PathNode* ChooseAnyChainNodeIfDeadEnd(
+        int iDepthMin, int iDepthMax, PathNodes::PathNode* pChainPos,
+        sentient_s* pClaimer);   // ?ChooseAnyChainNodeIfDeadEnd@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@PAUsentient_s@@@Z
+    PathNodes::PathNode* ChoosePreviousChainNode(
+        int iDepthMin, int iDepthMax, PathNodes::PathNode* pChainPos,
+        sentient_s* pClaimer);   // ?ChoosePreviousChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@PAUsentient_s@@@Z
+    PathNodes::PathNode* ChooseDesperationChainNode(
+        int iDepthMin, int iDepthMax, int chainIndex,
+        PathNodes::PathNode* pChainPos, sentient_s* pClaimer);  // ?ChooseDesperationChainNode@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHHPAU23@PAUsentient_s@@@Z
+    PathNodes::PathNode* ChooseChainNodeInRange(
+        int iDepthMin, int iDepthMax, PathNodes::PathNode* pChainPos,
+        int refChainNodeIndex, sentient_s* pClaimer);  // ?ChooseChainNodeInRange@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@HPAUsentient_s@@@Z
+    PathNodes::PathNode* ChooseChainPosFromCurrent(
+        int iDepthMin, int iDepthMax, PathNodes::PathNode* pChainPos,
+        PathNodes::PathNode* pPrevChainPos, bool bReserve,
+        sentient_s* pClaimer, int refChainNodeIndex);  // ?ChooseChainPosFromCurrent@PathNodeMgr@@IAEPAUPathNode@PathNodes@@HHPAU23@0_NPAUsentient_s@@H@Z
+    bool SetupLevelPaths();                      // ?SetupLevelPaths@PathNodeMgr@@IAE_NXZ
+    void NodesInCylinder_r(PathNodes::PathNodeTree* tree);  // ?NodesInCylinder_r@PathNodeMgr@@IAEXPAUPathNodeTree@PathNodes@@@Z
+private:
+    int FindZoneIndex(TPakId pakId);             // ?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z
+    int FindZoneIndex(const char* zone);         // ?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z
+    void InitScriptVariables(int zoneIndex);     // ?InitScriptVariables@PathNodeMgr@@AAEXH@Z
+    void InitScriptVariables();                  // ?InitScriptVariables@PathNodeMgr@@AAEXXZ
+    void InitLinkInfoArray();                    // ?InitLinkInfoArray@PathNodeMgr@@AAEXXZ
+    PathNodes::PathNodeTree* CreateTree_r(PathNodes::PathNode** treeNodes,
+                                          PathNodes::PathNodeTree** tree);  // ?CreateTree_r@PathNodeMgr@@AAEPAUPathNodeTree@PathNodes@@PAPAUPathNode@3@PAPAU23@@Z
+    const int NodeVisCacheEntry(const PathNodes::NodeHandle& a,
+                                const PathNodes::NodeHandle& b) const;  // ?NodeVisCacheEntry@PathNodeMgr@@ABE?BHABVNodeHandle@PathNodes@@0@Z
+    const int ExpandedNodeVisCacheEntry(const PathNodes::NodeHandle& a,
+                                        const PathNodes::NodeHandle& b) const;  // ?ExpandedNodeVisCacheEntry@PathNodeMgr@@ABE?BHABVNodeHandle@PathNodes@@0@Z
+    int FindChainIndex(const PathNodes::NodeHandle& handle);  // ?FindChainIndex@PathNodeMgr@@AAEHABVNodeHandle@PathNodes@@@Z
+    unsigned char* LooseFileSupport(unsigned char* data, TPakId pakId,
+                                    const char* fileSuffix, int* sizeInOut);  // ?LooseFileSupport@PathNodeMgr@@AAEPAEPAEW4TPakId@@PBDPAH@Z
+    void InitScriptFunctions(int zoneIndex);     // ?InitScriptFunctions@PathNodeMgr@@AAEXH@Z
+    void InitScriptFunctions();                  // ?InitScriptFunctions@PathNodeMgr@@AAEXXZ
+    void UpdateBestChainNode(int iDepthMin, int iDepthMax,
+                             PathNodes::PathNode* pNode,
+                             PathNodes::PathNode** ppBestNode,
+                             int* piFoundCount,
+                             sentient_s* pClaimer) const;  // ?UpdateBestChainNode@PathNodeMgr@@ABEXHHPAUPathNode@PathNodes@@PAPAU23@PAHPAUsentient_s@@@Z
+    virtual void UnloadBank(TPakId pakId);       // ?UnloadBank@PathNodeMgr@@EAEXW4TPakId@@@Z
 };
 static_assert(sizeof(PathNodeMgr) == 12,
               "PathNodeMgr size mismatch (opaque)");

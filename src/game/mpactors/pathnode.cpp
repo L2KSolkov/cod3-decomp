@@ -35,6 +35,20 @@ extern void FastSinCos(float radians, float* psin, float* pcos);  // core.o
 extern const float nodeColorTable[0x13][4];   // 0xD1F0B8
 extern const char* nodeStringTable[0x13];     // ?nodeStringTable@@3PAPBDA @ 0xE37A20
 
+namespace BrocHelper {
+unsigned int (__cdecl* GetBroFuncByName(const char* name,
+                                        bool enforceExists))(void*);  // ?GetBroFuncByName@BrocHelper@@YAP6AIPAX@ZPBD_N@Z (Broc lib)
+}
+
+PathNodes::PathNode* __cdecl Path_NearestNodeNotCrossPlanes(
+    const float* const vOrigin, PathNodes::PathSort* nodes, int iMaxNodes,
+    int iTypeFlags, float fMaxDist, float (*const vNormal)[2],
+    float* const fDist, int iPlaneCount, int* returnCount);  // ?Path_NearestNodeNotCrossPlanes@@YAPAUPathNode@PathNodes@@QBMPAUPathSort@2@HHMQAY01MQAMHPAH@Z (mp_actors.o)
+
+static bool Path_CanClaimNodeInternal(const PathNodes::PathNode* pNode,
+                                      sentient_s* pClaimer,
+                                      bool bAllowInvalidation);
+
 // ============================================================================
 // pathnode.cpp data (verified VAs)
 // ============================================================================
@@ -117,20 +131,14 @@ void Scr_GetPathnodeField(int entnum, int offset)
 }
 
 // ea: 0x0077E350
-bool GScr_AddFieldsForPathnode()
+void GScr_AddFieldsForPathnode()
 {
     AeAssert::gCurrentAuthor = AeAssert::COD3;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
     AeAssert::gCurrentLine = 425;
     AeAssert::gCurrentExpr = "0";
-    bool result = AeAssert::IsIgnored();
-    if (!result)
-    {
-        result = AeAssert::Assert("ma dead code");
-        if (result)
-            __debugbreak();
-    }
-    return result;
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("ma dead code"))
+        __debugbreak();
 }
 
 // ea: 0x0077E3A0
@@ -217,9 +225,9 @@ void Path_DrawDebugFindPath(actor_s* pSelf, const float* const vGoalPos)
 }
 
 // ea: 0x0077E5C0
-Entity* Path_DrawDebug()
+void Path_DrawDebug()
 {
-    return EntityManager::sInst->GetPlayer(currCl);
+    EntityManager::sInst->GetPlayer(currCl);
 }
 
 // ea: 0x0077E5E0
@@ -1205,4 +1213,149 @@ void Path_DrawVisData()
             }
         }
     }
+}
+
+// ea: 0x00781330
+void Path_SetupAnimFunc(PathNodes::PathNode* node,
+                        PathNodes::ENodeType* type)
+{
+    char tmpstr[256];
+
+    if (node == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+        AeAssert::gCurrentLine = 373;
+        AeAssert::gCurrentExpr = "node";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (node->mConstant.mAnimScript.mBlock == nullptr)
+    {
+        sprintf(tmpstr, "Pathnode (%s) at (%g %g %g) has no animscript "
+                        "specified",
+                nodeStringTable[node->mConstant.mType],
+                node->mConstant.mOrigin[0], node->mConstant.mOrigin[1],
+                node->mConstant.mOrigin[2]);
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+        AeAssert::gCurrentLine = 383;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(tmpstr))
+            __debugbreak();
+        if (type != nullptr)
+            *type = PathNodes::NODE_BADNODE;
+        return;
+    }
+    {
+        const char* v3 =
+            node->mConstant.mAnimScript.mBlock != nullptr
+                ? (const char*)(node->mConstant.mAnimScript.mBlock + 1)
+                : defaultFileName;
+        unsigned int (__cdecl* BroFuncByName)(void*) =
+            BrocHelper::GetBroFuncByName(v3, true);
+        node->mConstant.mAnimScriptFunc = BroFuncByName;
+        if (BroFuncByName == nullptr)
+        {
+            sprintf(tmpstr, "Pathnode (%s) at (%g %g %g) has no animscript "
+                            "specified",
+                    nodeStringTable[node->mConstant.mType],
+                    node->mConstant.mOrigin[0],
+                    node->mConstant.mOrigin[1],
+                    node->mConstant.mOrigin[2]);
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+            AeAssert::gCurrentLine = 405;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(tmpstr))
+                __debugbreak();
+            if (type != nullptr)
+                *type = PathNodes::NODE_BADNODE;
+        }
+    }
+}
+
+// ea: 0x00784910 (static helper, pathnode.cpp)
+static bool Path_CanClaimNodeInternal(const PathNodes::PathNode* pNode,
+                                      sentient_s* pClaimer,
+                                      bool bAllowInvalidation)
+{
+    (void)bAllowInvalidation;
+    if (pNode == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+        AeAssert::gCurrentLine = 1435;
+        AeAssert::gCurrentExpr = "pNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pClaimer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+        AeAssert::gCurrentLine = 1436;
+        AeAssert::gCurrentExpr = "pClaimer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    team_t eTeam = pClaimer->eTeam;
+    if (eTeam != TEAM_AXIS && eTeam != TEAM_ALLIES && eTeam != TEAM_NEUTRAL)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+        AeAssert::gCurrentLine = 1437;
+        AeAssert::gCurrentExpr =
+            "pClaimer->eTeam == TEAM_AXIS || pClaimer->eTeam == TEAM_ALLIES "
+            "|| pClaimer->eTeam == TEAM_NEUTRAL";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", pClaimer->eTeam))
+            __debugbreak();
+    }
+    if (pNode->mDynamic.mOwner == pClaimer)
+        return true;
+    if (PathNodeMgr::sInst->IsReserveForOther(pNode, pClaimer)
+        || Path_IsNodeValid(pNode, pClaimer->eTeam) == 0)
+        return false;
+    return level.time > pNode->mDynamic.mFreeTime;
+}
+
+// ea: 0x00784A30
+int Path_CanClaimChainNode(const PathNodes::PathNode* pNode,
+                           sentient_s* pClaimer)
+{
+    bool bAllowInvalidation;
+    if (Path_CanClaimNodeInternal(pNode, pClaimer, bAllowInvalidation) != 0)
+    {
+        sentient_s* Sentient = Sentient_FirstSentient(4);
+        if (Sentient == nullptr)
+            return 1;
+        while (Sentient == pClaimer
+               || pNode->mHandle.mValue
+                      != Sentient->mDesiredChainPos.mValue)
+        {
+            Sentient = Sentient_NextSentient(Sentient, 4);
+            if (Sentient == nullptr)
+                return 1;
+        }
+    }
+    return 0;
+}
+
+// ea: 0x00784A90
+int Path_CanClaimNode(const PathNodes::PathNode* pNode,
+                      sentient_s* pClaimer)
+{
+    bool bAllowInvalidation;
+    return Path_CanClaimNodeInternal(pNode, pClaimer, bAllowInvalidation);
+}
+
+// ea: 0x007848E0
+PathNodes::PathNode* Path_NearestNode(
+    const float* const vOrigin, PathNodes::PathSort* nodes, int iMaxNodes,
+    int iTypeFlags, float fMaxDist, int* returnCount)
+{
+    return Path_NearestNodeNotCrossPlanes(
+        vOrigin, nodes, iMaxNodes, iTypeFlags, fMaxDist, nullptr, nullptr, 0,
+        returnCount);
 }

@@ -1214,14 +1214,4 @@
 {
 }
 
-// ea: 0x0077F370  (?FindZoneIndex@PathNodeMgr@@AAEHW4TPakId@@@Z)
-    int PathNodeMgr::FindZoneIndex(TPakId)
-{
-    return 0;
-}
 
-// ea: 0x0077F380  (?FindZoneIndex@PathNodeMgr@@AAEHPBD@Z)
-    int PathNodeMgr::FindZoneIndex(const char*)
-{
-    return 0;
-}
