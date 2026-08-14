@@ -329,6 +329,510 @@ PanelQuad* PanelQuad::Clone(PanelQuad* pPQ)
     return v2;
 }
 
+// ea: 0x0056AB80
+void PanelQuad::SetBlend(unsigned int type)
+{
+    quadBlendModeType = type;
+}
+
+// ea: 0x0056ABA0
+void PanelQuad::SetPos(float x1, float y1, float x2, float y2)
+{
+    float x[4] = {x1, x2, x1, x2};
+    float y[4] = {y1, y1, y2, y2};
+    SetPos(x, y);
+}
+
+// ea: 0x00583DF0
+void PanelQuad::SetPos(float* x, float* y)
+{
+    float maxY = y[3];
+    float v5 = y[1];
+    if (y[2] > maxY)
+        maxY = y[2];
+    if (y[0] > v5)
+        v5 = y[0];
+    float v31 = v5;
+    if (v5 <= maxY)
+        v31 = maxY;
+
+    float maxX = x[3];
+    float v9 = x[1];
+    if (x[2] > maxX)
+        maxX = x[2];
+    if (x[0] > v9)
+        v9 = x[0];
+    float v32 = v9;
+    if (v9 <= maxX)
+        v32 = maxX;
+
+    float v10 = y[3];
+    float v11 = y[1];
+    if (v10 > y[2])
+        v10 = y[2];
+    if (v11 > y[0])
+        v11 = y[0];
+    float minY = v11;
+    if (v10 <= v11)
+        minY = v10;
+
+    float v12 = x[3];
+    float v13 = x[1];
+    if (v12 > x[2])
+        v12 = x[2];
+    if (v13 > x[0])
+        v13 = x[0];
+    float minX = v13;
+    if (v12 <= v13)
+        minX = v12;
+
+    if (pqs.mSize == 1)
+    {
+        PanelQuadSection* s = pqs.mElements[0];
+        s->quad.Verts[0].X = x[0];
+        s->quad.Verts[0].Y = y[0];
+        s->quad.Verts[1].X = x[1];
+        s->quad.Verts[1].Y = y[1];
+        s->quad.Verts[2].X = x[2];
+        s->quad.Verts[2].Y = y[2];
+        s->quad.Verts[3].X = x[3];
+        s->quad.Verts[3].Y = y[3];
+    }
+    else
+    {
+        Broc::vector max_coords = GetMax();
+        Broc::vector min_coords = GetMin();
+        float old_width = max_coords.x - min_coords.x;
+        float old_height = max_coords.y - min_coords.y;
+        float new_width = v32 - minX;
+        float new_height = v31 - minY;
+        if (old_width == 0.0f || old_height == 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEPanel.cpp";
+            AeAssert::gCurrentLine = 1159;
+            AeAssert::gCurrentExpr = "old_width != 0.0f && old_height != 0.0f";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            old_height = old_height;
+            old_width = old_width;
+        }
+        for (int i = 0; i < pqs.mSize; ++i)
+        {
+            PanelQuadSection* s = pqs.mElements[i];
+            for (int v = 0; v < 4; ++v)
+            {
+                s->quad.Verts[v].X =
+                    ((s->quad.Verts[v].X - min_coords.x) / old_width)
+                        * new_width
+                    + minX;
+                s->quad.Verts[v].Y =
+                    ((s->quad.Verts[v].Y - min_coords.y) / old_height)
+                        * new_height
+                    + minY;
+            }
+        }
+    }
+    center_point.x = ((v32 - minX) * 0.5f) + minX;
+    center_point.y = ((v31 - minY) * 0.5f) + minY;
+    center_point.z = 0.0f;
+}
+
+// ea: 0x0056AC00
+void PanelQuad::FattenMeForPS2()
+{
+}
+
+// ea: 0x0056AC10
+void PanelQuad::FattenMeForGC()
+{
+}
+
+namespace View {
+float GetXScalingForHUD(int window);       // cg.o
+float GetYScalingForHUD(int window);       // cg.o
+float GetPreviousHUDXPos(float pos, int window, char justification,
+                         float width);    // cg.o
+float GetPreviousHUDYPos(float pos, int window, char justification,
+                         float height);   // cg.o
+float GetCurrentHUDXPos(float pos, int window, char justification,
+                        float width);     // cg.o
+float GetCurrentHUDYPos(float pos, int window, char justification,
+                        float height);    // cg.o
+}
+
+// ea: 0x0056AC20
+void PanelQuad::FormatHUDForSplitScreen(int viewport, int old_viewport,
+                                        int justification, float just_width,
+                                        float just_height)
+{
+    int v6 = viewport;
+    if (viewport != old_viewport)
+    {
+        if (old_viewport != 0)
+        {
+            float x_scale = View::GetXScalingForHUD(0);
+            float y_scale = View::GetYScalingForHUD(0);
+            float cx = GetCenterX();
+            float x_pos = View::GetPreviousHUDXPos(cx, old_viewport,
+                                                   (char)justification,
+                                                   just_width);
+            float cy = GetCenterY();
+            float y_pos = View::GetPreviousHUDYPos(cy, old_viewport,
+                                                   (char)justification,
+                                                   just_height);
+            SetCenterPos(x_pos, y_pos);
+            ScaleAbsoluteCenter(x_scale, y_scale);
+            v6 = viewport;
+        }
+        if (v6 != 0)
+        {
+            float cx = GetCenterX();
+            float x_pos = View::GetCurrentHUDXPos(cx, v6,
+                                                  (char)justification,
+                                                  just_width);
+            float cy = GetCenterY();
+            float y_pos = View::GetCurrentHUDYPos(cy, v6,
+                                                  (char)justification,
+                                                  just_height);
+            float x_scale = View::GetXScalingForHUD(v6);
+            float y_scale = View::GetYScalingForHUD(v6);
+            ScaleAbsoluteCenter(x_scale, y_scale);
+            SetCenterPos(x_pos, y_pos);
+        }
+    }
+}
+
+// ea: 0x005799E0
+void PanelQuad::InstanceFrom(const PanelQuad* pq)
+{
+    visibility = pq->visibility;
+    z_value = pq->z_value;
+    fade_timer = pq->fade_timer;
+    flags = pq->flags;
+    name = pq->name;
+    rotation = pq->rotation;
+    sc_x = pq->sc_x;
+    sc_y = pq->sc_y;
+    if (pq->am_info != nullptr)
+    {
+        PQArcMaskingInfo* v3 =
+            (PQArcMaskingInfo*)mem_heap_malloc(0x34u);
+        if (v3 != nullptr)
+        {
+            memcpy(v3, pq->am_info, sizeof(PQArcMaskingInfo));
+            am_info = v3;
+        }
+        else
+        {
+            am_info = nullptr;
+        }
+    }
+    else
+    {
+        am_info = nullptr;
+    }
+    if (pq->pqs.mSize != pqs.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEPanel.cpp";
+        AeAssert::gCurrentLine = 575;
+        AeAssert::gCurrentExpr = "pq->pqs.size() == pqs.size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Cant use PanelQuad::CopyFrom2 with differing sizes of pqs"))
+            __debugbreak();
+    }
+    for (int i = 0; i < pq->pqs.mSize; ++i)
+        pqs.mElements[i]->CopyFrom(pq->pqs.mElements[i]);
+    center_point.x = pq->center_point.x;
+    center_point.y = pq->center_point.y;
+    center_point.z = 0.0f;
+}
+
+// ea: 0x0058B930
+void PanelQuad::CopyFrom(const PanelQuad* pq)
+{
+    visibility = pq->visibility;
+    z_value = pq->z_value;
+    fade_timer = pq->fade_timer;
+    flags = pq->flags;
+    name = pq->name;
+    rotation = pq->rotation;
+    sc_x = pq->sc_x;
+    sc_y = pq->sc_y;
+    if (pq->am_info != nullptr)
+    {
+        PQArcMaskingInfo* v4 =
+            (PQArcMaskingInfo*)mem_heap_malloc(0x34u);
+        if (v4 != nullptr)
+        {
+            memcpy(v4, pq->am_info, sizeof(PQArcMaskingInfo));
+            am_info = v4;
+        }
+        else
+        {
+            am_info = nullptr;
+        }
+    }
+    else
+    {
+        am_info = nullptr;
+    }
+    for (int i = 0; i < pq->pqs.mSize; ++i)
+    {
+        PanelQuadSection* v6 =
+            (PanelQuadSection*)mem_heap_malloc(0x68u);
+        if (v6 != nullptr)
+            memcpy(v6, pq->pqs.mElements[i], 0x68u);
+        VectorPushBack(pqs, v6);
+    }
+    center_point.x = pq->center_point.x;
+    center_point.y = pq->center_point.y;
+    center_point.z = 0.0f;
+}
+
+// ea: 0x00579D40
+void PanelQuad::Rotate(float rx, float ry, float r, bool absolute)
+{
+    float offset = r;
+    if (absolute)
+        offset = r - rotation;
+    if (pqs.mSize != 0)
+    {
+        float s = sinf(offset);
+        float c = cosf(offset);
+        for (int i = 0; i < pqs.mSize; ++i)
+        {
+            PanelQuadSection* sec = pqs.mElements[i];
+            for (int v = 0; v < 4; ++v)
+            {
+                float dx = sec->quad.Verts[v].X - rx;
+                float dy = sec->quad.Verts[v].Y - ry;
+                sec->quad.Verts[v].X = (c * dx) - (s * dy) + rx;
+                sec->quad.Verts[v].Y = (s * dx) + (c * dy) + ry;
+            }
+        }
+    }
+    rotation += offset;
+}
+
+// ea: 0x00579E70
+void PanelQuad::Scale(float sx, float sy, float scx, float scy, bool absolute)
+{
+    float v6 = scx;
+    if (scx == 0.0f)
+        v6 = 0.01f;
+    float v8 = scy;
+    if (scy == 0.0f)
+        v8 = 0.01f;
+    if (absolute)
+    {
+        v6 = v6 / sc_x;
+        v8 = v8 / sc_y;
+    }
+    for (int i = 0; i < pqs.mSize; ++i)
+    {
+        PanelQuadSection* sec = pqs.mElements[i];
+        for (int v = 0; v < 4; ++v)
+        {
+            sec->quad.Verts[v].X =
+                ((sec->quad.Verts[v].X - sx) * v6) + sx;
+            sec->quad.Verts[v].Y =
+                ((sec->quad.Verts[v].Y - sy) * v8) + sy;
+        }
+    }
+    sc_x = sc_x * v6;
+    sc_y = v8 * sc_y;
+    if (am_info != nullptr)
+    {
+        am_info->arc_radius_x = am_info->arc_radius_x * v6;
+        am_info->arc_radius_y = am_info->arc_radius_y * v8;
+    }
+}
+
+// ea: 0x0057A050
+void PanelQuad::ScaleAbsoluteCenter(float scx, float scy)
+{
+    float v3 = scx;
+    if (scx == 0.0f)
+    {
+        v3 = 0.01f;
+        scx = 0.01f;
+    }
+    float v5 = scy;
+    if (scy == 0.0f)
+    {
+        v5 = 0.01f;
+        scy = 0.01f;
+    }
+    float v7 = v3 / sc_x;
+    float v8 = v5 / sc_y;
+    sc_x = v3;
+    sc_y = v5;
+    for (int i = 0; i < pqs.mSize; ++i)
+        pqs.mElements[i]->ScaleAbsoluteCenter(center_point.x,
+                                              center_point.y, scx, scy);
+    if (am_info != nullptr)
+    {
+        am_info->arc_radius_x = v7 * am_info->arc_radius_x;
+        am_info->arc_radius_y = v8 * am_info->arc_radius_y;
+    }
+    rotation = 0.0f;
+}
+
+// ea: 0x0057A2B0
+void PanelQuad::SetColorNA(color32 c)
+{
+    for (int i = 0; i < pqs.mSize; ++i)
+    {
+        PanelQuadSection* sec = pqs.mElements[i];
+        for (int j = 0; j < 4; ++j)
+        {
+            sec->quad.Verts[j].Color =
+                c.c.b
+                | ((c.c.g
+                    | ((c.c.r
+                        | ((sec->quad.Verts[j].Color >> 24) << 8))
+                       << 8))
+                   << 8);
+        }
+    }
+}
+
+// ea: 0x0057A5C0
+void PanelQuad::GetPos(float* x, float* y)
+{
+    PanelQuadSection* sec = pqs.mElements[0];
+    for (int i = 0; i < 4; ++i)
+    {
+        x[i] = sec->quad.Verts[i].X;
+        y[i] = sec->quad.Verts[i].Y;
+    }
+}
+
+// ea: 0x00584250
+void PanelQuad::ResetToInitialXY()
+{
+    for (int i = 0; i < pqs.mSize; ++i)
+    {
+        PanelQuadSection* sec = pqs.mElements[i];
+        sec->quad.Verts[0].X = sec->x_initial[0];
+        sec->quad.Verts[0].Y = sec->y_initial[0];
+        sec->quad.Verts[1].X = sec->x_initial[1];
+        sec->quad.Verts[1].Y = sec->y_initial[1];
+        sec->quad.Verts[2].X = sec->x_initial[2];
+        sec->quad.Verts[2].Y = sec->y_initial[2];
+        sec->quad.Verts[3].X = sec->x_initial[3];
+        sec->quad.Verts[3].Y = sec->y_initial[3];
+    }
+    Broc::vector min_coords = GetMin();
+    Broc::vector max_coords = GetMax();
+    center_point.x =
+        ((max_coords.x - min_coords.x) * 0.5f) + min_coords.x;
+    center_point.y =
+        ((max_coords.y - min_coords.y) * 0.5f) + min_coords.y;
+    center_point.z =
+        ((max_coords.z - min_coords.z) * 0.5f) + min_coords.z;
+    sc_x = 1.0f;
+    sc_y = 1.0f;
+    rotation = 0.0f;
+}
+
+// ea: 0x0057A7E0
+void PanelQuad::ShiftXYInitial(float off_x, float off_y)
+{
+    for (int i = 0; i < pqs.mSize; ++i)
+    {
+        PanelQuadSection* sec = pqs.mElements[i];
+        for (int j = 0; j < 4; ++j)
+        {
+            sec->x_initial[j] = (short)(sec->x_initial[j] + off_x);
+            sec->y_initial[j] = (short)(sec->y_initial[j] + off_y);
+        }
+    }
+}
+
+// ea: 0x0056A810
+void PanelQuadSection::CopyFrom(PanelQuadSection* pSrc)
+{
+    quad = pSrc->quad;
+}
+
+// ea: 0x005B65A0 (inline COMDAT)
+void PanelQuad::SetAlpha(int pqsIdx, int vertIdx, float alpha)
+{
+    unsigned int c = pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color;
+    pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color =
+        (c & 0xFFFFFF) | ((unsigned int)(alpha * 255.0f) << 24);
+}
+
+// ea: 0x005B64D0 (inline COMDAT)
+void PanelQuad::SetSectionUV(int index, float* u, float* v)
+{
+    PanelQuadSection* s = pqs.mElements[index];
+    for (int i = 0; i < 4; ++i)
+    {
+        s->quad.Verts[i].U = u[i];
+        s->quad.Verts[i].V = v[i];
+    }
+}
+
+// ea: 0x005B6530 (inline COMDAT)
+nglTexture* PanelQuad::GetTexture()
+{
+    if (pqs.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return pqs.mElements[0]->quad.Tex;
+}
+
+// ea: 0x005B66C0 (inline COMDAT)
+color32 PanelQuad::GetColor(int pqsIdx, int vertIdx)
+{
+    color32 result;
+    result.i = pqs.mElements[pqsIdx]->quad.Verts[vertIdx].Color;
+    return result;
+}
+
+// ea: 0x005698B0
+void PanelQuadSection::ScaleAbsoluteCenter(float sx, float sy, float scx,
+                                           float scy)
+{
+    float minX = 1000.0f;
+    float maxX = -1000.0f;
+    float minY = 1000.0f;
+    float maxY = -1000.0f;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (x_initial[i] < minX)
+            minX = (float)x_initial[i];
+        if (x_initial[i] > maxX)
+            maxX = (float)x_initial[i];
+        if (y_initial[i] < minY)
+            minY = (float)y_initial[i];
+        if (y_initial[i] > maxY)
+            maxY = (float)y_initial[i];
+    }
+    float centerX = ((maxX - minX) * 0.5f) + minX;
+    float centerY = ((maxY - minY) * 0.5f) + minY;
+    quad.Verts[0].X = sx - ((centerX - x_initial[0]) * scx);
+    quad.Verts[0].Y = sy - ((centerY - y_initial[0]) * scy);
+    quad.Verts[1].X = sx - ((centerX - x_initial[1]) * scx);
+    quad.Verts[1].Y = sy - ((centerY - y_initial[1]) * scy);
+    quad.Verts[2].X = sx - ((centerX - x_initial[2]) * scx);
+    quad.Verts[2].Y = sy - ((centerY - y_initial[2]) * scy);
+    quad.Verts[3].X = sx - ((centerX - x_initial[3]) * scx);
+    quad.Verts[3].Y = sy - ((centerY - y_initial[3]) * scy);
+}
+
 // ea: 0x0057A530
 void PanelQuad::SetZvalueAbs(float z)
 {

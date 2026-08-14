@@ -10,12 +10,20 @@
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
 extern DbLinkedHandle<EntityHandleDb, Entity> GetPlayersTank();
+extern FEManager g_femanager;
 
 // Binary cgGlobal_t starts with frametime at +0x00 (cg.o @ 0xF5FE30).
 struct cgGlobal_t {
     int frametime;
+    int time;       // +0x04
+    int oldTime;    // +0x08
 };
 extern cgGlobal_t cgGlobal;
+
+extern PlayerState& GetPlayerState(int idx);       // ?GetPlayerState@@YAAAVPlayerState@@H@Z
+extern vmCvar_t g_stanceFadeTime;   // ?g_stanceFadeTime@@3UvmCvar_t@@A @ 0xEAC288
+extern vmCvar_t g_stanceSolidTime;  // ?g_stanceSolidTime@@3UvmCvar_t@@A @ 0xEAE1C8
+extern int unk_F6A284[];            // @ 0xF6A284 (per-client viewport block)
 
 // game.o / core.o externs (link /FORCE-tolerated until those objects land)
 class InteractionController {
@@ -24,6 +32,26 @@ public:
     void SetRenderText(const char* text, int x, int y, float scale,
                        float alpha,
                        int index);  // ?SetRenderText@InteractionController@@QAEXPBDHHMMH@Z
+};
+
+namespace View {
+float GetXScalingForHUD(int window);       // cg.o
+float GetYScalingForHUD(int window);       // cg.o
+float GetPreviousHUDXPos(float pos, int window, char justification,
+                         float width);    // cg.o
+float GetPreviousHUDYPos(float pos, int window, char justification,
+                         float height);   // cg.o
+float GetCurrentHUDXPos(float pos, int window, char justification,
+                        float width);     // cg.o
+float GetCurrentHUDYPos(float pos, int window, char justification,
+                        float height);    // cg.o
+}
+
+// Minimal IGOCompassWidget view for split-screen width lookup
+// (full layout in the IGOFrontEnd batch).
+struct IGOCompassWidget {
+    uint8_t _pad[0x160];
+    PanelQuad* compass;   // +0x160
 };
 
 // IGORowboatWidget fade timing data (shell.o data, copied from IDA)
@@ -380,4 +408,391 @@ void IGORowboatWidget::UpdateWidescreen(bool widescreen, float about_x)
 {
     mUpArrow->FattenMeForWidescreen(widescreen, about_x);
     mHalfCircle->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ============================================================================
+// IGOStanceWidget
+// ============================================================================
+
+// ea: 0x00565CC0
+IGOStanceWidget::IGOStanceWidget(int client)
+{
+    force_appear = false;
+    is_shown = true;
+    mClient = client;
+    icons[0][0] = nullptr;
+    icons[0][1] = nullptr;
+    icons[1][0] = nullptr;
+    icons[1][1] = nullptr;
+    icons[2][0] = nullptr;
+    icons[2][1] = nullptr;
+    flash = nullptr;
+    cur_stance = 0;
+    last_change_time = -1;
+    last_stance = -1;
+    draw_flash = false;
+}
+
+// ea: 0x00598250
+void IGOStanceWidget::Init(PanelFile* panel)
+{
+    icons[0][0] = panel->GetPointer("stance_stand");
+    icons[0][1] = panel->GetPointer("stance_stand_man");
+    icons[1][0] = panel->GetPointer("stance_crouch");
+    icons[1][1] = panel->GetPointer("stance_crouch_man");
+    icons[2][0] = panel->GetPointer("stance_prone");
+    icons[2][1] = panel->GetPointer("stance_prone_man");
+    flash = panel->GetPointer("stance_flash");
+    if (mClient > 0)
+    {
+        icons[0][0] = PanelQuad::Clone(icons[0][0]);
+        icons[0][1] = PanelQuad::Clone(icons[0][1]);
+        icons[1][0] = PanelQuad::Clone(icons[1][0]);
+        icons[1][1] = PanelQuad::Clone(icons[1][1]);
+        icons[2][0] = PanelQuad::Clone(icons[2][0]);
+        icons[2][1] = PanelQuad::Clone(icons[2][1]);
+        flash = PanelQuad::Clone(flash);
+    }
+}
+
+// ea: 0x00565D00
+void IGOStanceWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown
+        || EntityManager::sInst->GetPlayer(currCl) == nullptr
+        || EntityManager::sInst->GetPlayer(currCl)->client == nullptr)
+    {
+        return;
+    }
+    if (force_appear || last_change_time > cgGlobal.time
+        || last_stance
+               != (GetPlayerState(currCl).pm_flags & 0x10003))
+    {
+        last_change_time = cgGlobal.time;
+    }
+    int v3 = GetPlayerState(currCl).pm_flags & 0x10003;
+    last_stance = v3;
+    if ((v3 & 1) != 0)
+        cur_stance = 2;
+    else
+        cur_stance = (v3 & 2) != 0;
+    int last_change_time2 = last_change_time;
+    int time = cgGlobal.time;
+    if (last_change_time2 + 1000 > cgGlobal.time)
+    {
+        icons[cur_stance][1]->SetAlpha(
+            ((float)(last_change_time2 - cgGlobal.time + 1000) * 0.001f)
+            * 0.8f);
+        draw_flash = true;
+        time = cgGlobal.time;
+    }
+    float value = g_stanceFadeTime.value;
+    int v7 = (int)((g_stanceFadeTime.value + g_stanceSolidTime.value)
+                   * 1000.0f)
+             + last_change_time;
+    float stance_alpha = 0.0f;
+    if (v7 <= time)
+    {
+        draw_flash = false;
+    }
+    else
+    {
+        float v8 = (float)(v7 - time) * 0.001f;
+        draw_flash = true;
+        if (v8 <= value)
+            stance_alpha = v8 / value;
+        else
+            stance_alpha = 1.0f;
+    }
+    icons[cur_stance][0]->SetAlpha(stance_alpha);
+}
+
+// ea: 0x00582550
+void IGOStanceWidget::Draw()
+{
+    if (!is_shown)
+        return;
+    Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
+    if (client != nullptr && (client->ps.eFlags & 0x100000) == 0
+        && client->pers.playerState == 3)
+    {
+        if (EntityManager::sInst->GetPlayer(currCl)->client->ps.fatigueScale
+            > 0.0f)
+        {
+            icons[cur_stance][0]->SetAlpha(1.0f);
+            icons[cur_stance][0]->Mask(GetPlayerState(currCl).fatigueScale,
+                                       TOP_MASK, 1.0f);
+            icons[cur_stance][0]->Draw();
+        }
+        icons[cur_stance][0]->Mask(1.0f, TOP_MASK, 1.0f);
+        icons[cur_stance][0]->SetAlpha(0.5f);
+        icons[cur_stance][0]->Draw();
+    }
+}
+
+// ea: 0x00582650
+void IGOStanceWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        icons[i][0]->FattenMeForWidescreen(widescreen, about_x);
+        icons[i][1]->FattenMeForWidescreen(widescreen, about_x);
+    }
+    flash->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x005775D0
+void IGOStanceWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    PanelQuad* compass =
+        ((IGOCompassWidget*)g_femanager.IGO->compassWidget[mClient])->compass;
+    float width;
+    if (compass != nullptr)
+        width = compass->GetInitialWidth() * 0.25f;
+    else
+        width = 0.0f;
+    for (int i = 0; i < 3; ++i)
+    {
+        icons[i][0]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                             width, 0.0f);
+        icons[i][1]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                             width, 0.0f);
+    }
+}
+
+// ============================================================================
+// IGORankWidget
+// ============================================================================
+
+// ea: 0x00567630
+IGORankWidget::IGORankWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    rank = 0;
+    timeForNormalSize = 0;
+    friendlyRanks[0] = nullptr;
+    friendlyRanks[1] = nullptr;
+    friendlyRanks[2] = nullptr;
+}
+
+// ea: 0x00598D00
+void IGORankWidget::Init(PanelFile* panel)
+{
+    friendlyRanks[0] = panel->GetPointer("rank1gold");
+    friendlyRanks[1] = panel->GetPointer("rank2gold");
+    friendlyRanks[2] = panel->GetPointer("rank3gold");
+    if (mClient > 0)
+    {
+        friendlyRanks[0] = PanelQuad::Clone(friendlyRanks[0]);
+        friendlyRanks[1] = PanelQuad::Clone(friendlyRanks[1]);
+        friendlyRanks[2] = PanelQuad::Clone(friendlyRanks[2]);
+    }
+}
+
+// ea: 0x00567660
+void IGORankWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player->sentient != nullptr)
+    {
+        int rank = Player->client->pers.rank;
+        if (rank != this->rank)
+        {
+            this->rank = rank;
+            timeForNormalSize = cgGlobal.time + 3000;
+        }
+        if (timeForNormalSize - cgGlobal.time > 3000)
+            timeForNormalSize = 0;
+        float scale =
+            (float)(timeForNormalSize - cgGlobal.time) * 0.00033333333f
+            + 1.0f;
+        if (scale < 1.0f)
+            scale = 1.0f;
+        int window = unk_F6A284[802 * currCl];
+        float x_scale = View::GetXScalingForHUD(window) * scale;
+        float y_scale = View::GetYScalingForHUD(window) * scale;
+        friendlyRanks[this->rank]->ScaleAbsoluteCenter(x_scale, y_scale);
+    }
+}
+
+// ea: 0x00567760
+void IGORankWidget::Draw()
+{
+    if (!is_shown)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr && Player->client->pers.playerState == 3)
+        friendlyRanks[rank & 3]->Draw();
+}
+
+// ea: 0x00583280
+void IGORankWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    friendlyRanks[0]->FattenMeForWidescreen(widescreen, about_x);
+    friendlyRanks[1]->FattenMeForWidescreen(widescreen, about_x);
+    friendlyRanks[2]->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00577AB0
+void IGORankWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    PanelQuad* compass =
+        ((IGOCompassWidget*)g_femanager.IGO->compassWidget[mClient])->compass;
+    float width;
+    if (compass != nullptr)
+        width = compass->GetInitialWidth() * 0.25f;
+    else
+        width = 0.0f;
+    friendlyRanks[0]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                              width, 0.0f);
+    friendlyRanks[1]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                              width, 0.0f);
+    friendlyRanks[2]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                              width, 0.0f);
+}
+
+// ============================================================================
+// IGOWeaponNameWidget
+// ============================================================================
+
+// ea: 0x00590B00
+IGOWeaponNameWidget::IGOWeaponNameWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    name = (FEText*)mem_heap_malloc(0x70u);
+    if (name != nullptr)
+    {
+        name = new (name) FEText(FONT_GARAMOND, defaultFileName, 537.0f,
+                                 362.0f, 0, PANEL_LAYER_IGO, 0.54f, 32, 64,
+                                 color32(-2961486));
+    }
+    else
+    {
+        name = nullptr;
+    }
+    dont_draw = false;
+    last_weapon_index = -1;
+    background = (PanelQuad*)mem_heap_malloc(0x48u);
+    if (background != nullptr)
+        background = new (background) PanelQuad("weapon_name_background");
+    else
+        background = nullptr;
+}
+
+// ea: 0x00566F90
+void IGOWeaponNameWidget::Init(PanelFile* panel)
+{
+    (void)panel;
+    float xy[12];
+    unsigned char col[16];
+    memset(xy, 0, sizeof(xy));
+    xy[3] = 1.0f;
+    memset(&xy[4], 0, 12);
+    xy[7] = 1.0f;
+    xy[8] = 0.0f;
+    xy[9] = 1.0f;
+    xy[10] = 1.0f;
+    xy[11] = 0.0f;
+    memset(col, 255, sizeof(col));
+    background->Init((Broc::vector*)xy, (color32*)col, (panel_layer)8,
+                     10.0f, "weaponnameback");
+}
+
+// ea: 0x005672E0
+void IGOWeaponNameWidget::Draw()
+{
+    if (is_shown && !dont_draw)
+    {
+        name->Draw();
+        background->Draw();
+    }
+}
+
+// ea: 0x00582E90
+void IGOWeaponNameWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    background->FattenMeForWidescreen(widescreen, about_x);
+    name->UpdateForWidescreen(widescreen, (int)about_x);
+}
+
+// ea: 0x00577980
+void IGOWeaponNameWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    background->FormatHUDForSplitScreen(viewport, old_viewport, 2, 0.0f,
+                                        0.0f);
+    name->UpdateForHUDSplitScreen(viewport, old_viewport, 2, 0.0f, 0.0f);
+}
+
+// ============================================================================
+// IGOAmmoWidget
+// ============================================================================
+
+// ea: 0x00566530
+IGOAmmoWidget::IGOAmmoWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    frame = nullptr;
+    clipAmmo = nullptr;
+    totalAmmo = nullptr;
+    clip_val = 0;
+    ammo_val = 0;
+    dont_draw = false;
+    draw_time = 0.0f;
+}
+
+// ea: 0x00598660
+void IGOAmmoWidget::Init(PanelFile* panel)
+{
+    frame = panel->GetPointer("hudammo");
+    clipAmmo = panel->GetTextPointer("clipammo");
+    clipAmmo->SetNoFlash(color32(-4671333));
+    clipAmmo->SetScale(0.6f);
+    totalAmmo = panel->GetTextPointer("totalammo");
+    totalAmmo->SetNoFlash(color32(-4671333));
+    totalAmmo->SetScale(0.6f);
+    if (mClient > 0)
+    {
+        frame = PanelQuad::Clone(frame);
+        clipAmmo = clipAmmo->Clone();
+        totalAmmo = totalAmmo->Clone();
+    }
+}
+
+// ea: 0x00566560
+void IGOAmmoWidget::Draw()
+{
+    if (is_shown && !dont_draw)
+    {
+        frame->Draw();
+        clipAmmo->Draw();
+        totalAmmo->Draw();
+    }
+}
+
+// ea: 0x00582D30
+void IGOAmmoWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    frame->FattenMeForWidescreen(widescreen, about_x);
+    clipAmmo->UpdateForWidescreen(widescreen, (int)about_x);
+    totalAmmo->UpdateForWidescreen(widescreen, (int)about_x);
+}
+
+// ea: 0x00577840
+void IGOAmmoWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    clipAmmo->UpdateForHUDSplitScreen(viewport, old_viewport, 10, -5.0f,
+                                      -2.0f);
+    totalAmmo->UpdateForHUDSplitScreen(viewport, old_viewport, 10, 5.0f,
+                                       -2.0f);
+    frame->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f, 0.0f);
 }

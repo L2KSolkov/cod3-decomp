@@ -23,7 +23,7 @@ extern const char* const defaultFileName;  // 0xCD67AE
 
 class nglTexture;
 class nglFont;
-struct PanelMaterial;
+class PanelMaterial;
 
 // Minimal controller view (full impl in input/controller.cpp; manglings match)
 class controller {
@@ -149,6 +149,7 @@ enum panel_layer {
     PANEL_LAYER_6 = 6,
     PANEL_LAYER_7 = 7,
     PANEL_LAYER_8 = 8,
+    PANEL_LAYER_IGO = 8,
     PANEL_LAYER_TOTAL = 9,
 };
 
@@ -251,11 +252,33 @@ static_assert(offsetof(PanelAnimObject, visibility) == 0x04, "PanelAnimObject::v
 // ============================================================================
 class PanelQuadSection;
 
+// ============================================================================
+// PQArcMaskingInfo - quad arc-mask data (52 bytes) - verified against IDA
+// ============================================================================
+struct PQArcMaskingInfo {
+    float arc_center_x;       // +0x00
+    float arc_center_y;       // +0x04
+    float arc_center_u;       // +0x08
+    float arc_center_v;       // +0x0C
+    float arc_max_angle;      // +0x10
+    float arc_start_angle;    // +0x14
+    float arc_radius_x;       // +0x18
+    float arc_radius_y;       // +0x1C
+    float arc_radius_u;       // +0x20
+    float arc_radius_v;       // +0x24
+    float arc_start_ang_offset;  // +0x28
+    int   arc_start_position;    // +0x2C
+    bool  arc_clockwise;         // +0x30
+    bool  arc_no_offset;         // +0x31
+};
+static_assert(sizeof(PQArcMaskingInfo) == 0x34,
+              "PQArcMaskingInfo size mismatch");
+
 class PanelQuad : public PanelAnimObject {
 public:
     Broc::vector   center_point;              // +0x14
     ae_vector<PanelQuadSection*> pqs;         // +0x20 (12 bytes)
-    void*          am_info;                   // +0x2C (PQArcMaskingInfo*)
+    PQArcMaskingInfo* am_info;                // +0x2C
     float          rotation;                  // +0x30
     float          sc_x;                      // +0x34
     float          sc_y;                      // +0x38
@@ -265,47 +288,111 @@ public:
 
     PanelQuad();  // ??0PanelQuad@@QAE@XZ (shell.o 0x58B780)
     PanelQuad(char* name);  // ??0PanelQuad@@QAE@PAD@Z (shell.o 0x58B840)
-    virtual ~PanelQuad();   // ??1PanelQuad@@UAE@XZ (shell.o 0x590F70)
-    virtual void Draw();    // ?Draw@PanelQuad@@UAEXXZ (shell.o 0x579BC0)
-    virtual void SetColor(color32 c);    // 0x57A1F0
-    virtual color32 GetColor();          // 0x5B6620
-    virtual void SetVisibility(float alpha);  // 0x57A450
-    virtual void SetAlpha(float alpha);       // ?SetAlpha@PanelQuad@@UAEXM@Z 0x576870
-    virtual void SetZvalueAbs(float z);       // 0x57A530
-    virtual float GetCenterX() { return center_point.x; }  // inline 0x5B6490
-    virtual void SetXYInitialToCurrentPos();  // ?SetXYInitialToCurrentPos@PanelQuad@@UAEXXZ 0x57A8A0
-    virtual float GetCenterY() { return center_point.y; }  // inline 0x5B64A0
-    virtual float GetWidth()   // inline 0x5B6710
+
+    // Vftable order verified against ??_7PanelQuad (55 slots).
+    virtual ~PanelQuad();                     // slot 0 0x590F70
+    virtual void Draw();                      // slot 1 0x579BC0
+protected:
+    virtual void Animate(math::Mat43* mat, float vis);  // slot 6 0x57AB70
+public:
+    virtual void SetZvalueAbs(float z);       // slot 10 0x57A530
+    virtual float GetY() { return center_point.y; }  // slot 12 inline 0x5B64B0
+    virtual void SetColor(color32 c);         // slot 16 0x57A1F0
+    virtual color32 GetColor();               // slot 17 0x5B6620
+    virtual void CopyFrom(const PanelQuad* pq);  // slot 18 0x58B930
+    virtual void InstanceFrom(const PanelQuad* pq);  // slot 19 0x5799E0
+    virtual void Init(Broc::vector* xy, color32* col, panel_layer lay,
+                      float z, const char* filename);  // slot 20 0x58BAC0
+    virtual void Load(PanelMaterial* mats, unsigned char* buffer, int& index,
+                      const math::Mat43* parent_matrix);  // slot 21 0x58BC10
+    virtual void Rotate(float rx, float ry, float r,
+                        bool absolute);      // slot 22 0x579D40
+    virtual void Rotate(float r, bool absolute)  // slot 23 inline 0x5B6350
     {
-        return GetMax().x - GetMin().x;
+        Rotate(center_point.x, center_point.y, r, absolute);
     }
-    static PanelQuad* Clone(PanelQuad* pPQ);  // ?Clone@PanelQuad@@SAPAV1@PAV1@@Z 0x58C450
-    void Mask(float percent, mask_type maskType,
-              float uv_width);  // ?Mask@PanelQuad@@QAEXMW4mask_type@@M@Z 0x579C40
-    virtual void GetCenterPos(float& cx, float& cy)  // inline 0x5B6470
+    virtual void Scale(float sx, float sy, float scx, float scy,
+                       bool absolute);       // slot 24 0x579E70
+    virtual void Scale(float x, float y, float s, bool absolute)  // slot 25 inline 0x5B63E0
+    {
+        Scale(x, y, s, s, absolute);
+    }
+    virtual void Scale(float sx, float sy, bool absolute)  // slot 26 inline 0x5B63B0
+    {
+        Scale(center_point.x, center_point.y, sx, sy, absolute);
+    }
+    virtual void Scale(float s, bool absolute)  // slot 27 inline 0x5B6380
+    {
+        Scale(center_point.x, center_point.y, s, s, absolute);
+    }
+    virtual void ScaleAbsoluteCenter(float scx,
+                                     float scy);  // slot 28 0x57A050
+    virtual void ScaleAbsoluteCenter(float s)  // slot 29 inline 0x5B6410
+    {
+        ScaleAbsoluteCenter(s, s);
+    }
+    virtual void SetTexture(nglTexture* tex);  // slot 30 0x57A170
+    virtual void SetMaterialFlags(unsigned int mapflags);  // slot 31 0x56AB90
+    virtual void SetColorNA(color32 c);        // slot 32 0x57A2B0
+    virtual void SetAlpha(int pqsIdx, int vertIdx,
+                          float alpha);        // slot 33 0x5B65A0
+    virtual void SetAlpha(float alpha);        // slot 34 0x57A370
+    virtual void SetVisibility(float alpha);   // slot 35 0x57A450
+    virtual void SetSectionUV(int index, float* u,
+                              float* v);       // slot 36 0x5B64D0
+    virtual void SetPos(float x1, float y1, float x2,
+                        float y2);            // slot 37 0x56ABA0
+    virtual void SetPos(float* x, float* y);  // slot 38 0x583DF0
+    virtual void SetCenterPos(float cx, float cy)  // slot 39 inline 0x5B6430
+    {
+        Shift(cx - center_point.x, cy - center_point.y);
+    }
+    virtual void ResetToInitialXY();          // slot 40 0x584250
+    virtual void GetPos(float* x, float* y);  // slot 41 0x57A5C0
+    virtual void GetCenterPos(float& cx, float& cy)  // slot 42 inline 0x5B6470
     {
         cx = center_point.x;
         cy = center_point.y;
     }
-    virtual void SetCenterPos(float cx, float cy)  // inline 0x5B6430
+    virtual float GetCenterX() { return center_point.x; }  // slot 43 inline 0x5B6490
+    virtual float GetCenterY() { return center_point.y; }  // slot 44 inline 0x5B64A0
+    virtual nglTexture* GetTexture();          // slot 45 0x5B6530
+    virtual float GetRotation() { return rotation; }  // slot 46 inline 0x5B64C0
+    virtual color32 GetColor(int pqsIdx,
+                             int vertIdx);    // slot 47 0x5B66C0
+    virtual float GetWidth()                  // slot 48 inline 0x5B6710
     {
-        Shift(cx - center_point.x, cy - center_point.y);
+        return GetMax().x - GetMin().x;
     }
-    virtual void SetMaterialFlags(unsigned int mapflags);  // 0x56AB90
-    virtual void SetTexture(nglTexture* tex);              // 0x57A170
-    virtual void Init(Broc::vector* xy, color32* col,
-                      panel_layer lay, float z,
-                      const char* filename);  // 0x58BAC0
-    virtual void Load(PanelMaterial* mats, unsigned char* buffer,
-                      int& index,
-                      const math::Mat43* parent_matrix);  // 0x58BC10
-    virtual void Shift(float off_x, float off_y);  // shell.o 0x57A6A0
+    virtual float GetInitialWidth()           // slot 49 inline 0x5B6750
+    {
+        return GetInitialMax().x - GetInitialMin().x;
+    }
+    virtual float GetHeight()                 // slot 50 inline 0x5B6790
+    {
+        return GetMax().y - GetMin().y;
+    }
+    virtual float GetInitialHeight()          // slot 51 inline 0x5B67D0
+    {
+        return GetInitialMax().y - GetInitialMin().y;
+    }
+    virtual void Shift(float off_x, float off_y);  // slot 52 0x57A6A0
+    virtual void ShiftXYInitial(float off_x,
+                                float off_y);      // slot 53 0x57A7E0
+    virtual void SetXYInitialToCurrentPos();       // slot 54 0x57A8A0
+
+    static PanelQuad* Clone(PanelQuad* pPQ);  // ?Clone@PanelQuad@@SAPAV1@PAV1@@Z 0x58C450
+    void Mask(float percent, mask_type maskType,
+              float uv_width);  // ?Mask@PanelQuad@@QAEXMW4mask_type@@M@Z 0x579C40
+    void SetBlend(unsigned int type);          // 0x56AB80
+    void FattenMeForPS2();                     // 0x56AC00 (empty)
+    void FattenMeForGC();                      // 0x56AC10 (empty)
+    void FormatHUDForSplitScreen(int viewport, int old_viewport,
+                                 int justification, float just_width,
+                                 float just_height);  // 0x56AC20
     void FormatForSplitScreen(int viewport, int old_viewport);  // 0x57A940
     void MoveForSplitScreen(int viewport, int old_viewport);    // 0x57A9C0
     void FattenMeForWidescreen(bool widescreen, float x);       // 0x57AA40
-protected:
-    virtual void Animate(math::Mat43* mat, float vis);  // 0x57AB70
-public:
     Broc::vector GetMax();        // shell.o 0x57AC40
     Broc::vector GetMin();        // shell.o 0x57AF20
     Broc::vector GetInitialMax(); // shell.o 0x57B200
@@ -319,7 +406,8 @@ static_assert(offsetof(PanelQuad, pqs) == 0x20, "PanelQuad::pqs offset mismatch"
 // PanelMaterial â€” per-quad material (16 bytes) â€” verified against IDA
 // (ReadPanelMaterial 0x57BEE0: texture +0, filename +4, color +8, hasmap +0xC)
 // ============================================================================
-struct PanelMaterial {
+class PanelMaterial {
+public:
     nglTexture* texture;         // +0x00
     const char* filename;        // +0x04
     color32     color;           // +0x08
@@ -371,6 +459,9 @@ public:
                       float z);                    // shell.o 0x579550
     void SetColorVert(int i, color32 c);           // shell.o 0x569AB0
     void SetColorNAVert(int i, color32 c);         // shell.o 0x579800
+    void CopyFrom(PanelQuadSection* pSrc);         // shell.o 0x56A810
+    void ScaleAbsoluteCenter(float sx, float sy, float scx,
+                             float scy);           // shell.o 0x5698B0
     color32 GetColor(int index);                   // shell.o 0x579900
     void Animate(math::Mat43* xform, float z_value,
                  bool xform_was_set);              // shell.o 0x56A130
@@ -1376,6 +1467,98 @@ public:
 };
 static_assert(sizeof(IGORowboatWidget) == 0x1C,
               "IGORowboatWidget size mismatch");
+
+// ============================================================================
+// IGOStanceWidget (56 bytes) - verified against IDA
+// ============================================================================
+class IGOStanceWidget : public IGOWidget {
+public:
+    PanelQuad* icons[3][2];    // +0x0C (24 bytes)
+    PanelQuad* flash;          // +0x24
+    int        cur_stance;     // +0x28
+    int        last_change_time;  // +0x2C
+    int        last_stance;    // +0x30
+    bool       draw_flash;     // +0x34
+
+    IGOStanceWidget(int client);  // 0x565CC0
+    virtual void Init(PanelFile* panel);              // 0x598250
+    virtual void Update(float time_inc);              // 0x565D00
+    virtual void Draw();                              // 0x582550
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582650
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x5775D0
+};
+static_assert(sizeof(IGOStanceWidget) == 0x38,
+              "IGOStanceWidget size mismatch");
+
+// ============================================================================
+// IGORankWidget (32 bytes) - verified against IDA
+// ============================================================================
+class IGORankWidget : public IGOWidget {
+public:
+    PanelQuad* friendlyRanks[3];  // +0x0C
+    int        rank;              // +0x18
+    int        timeForNormalSize; // +0x1C
+
+    IGORankWidget(int client);  // 0x567630
+    virtual void Init(PanelFile* panel);              // 0x598D00
+    virtual void Update(float time_inc);              // 0x567660
+    virtual void Draw();                              // 0x567760
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583280
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577AB0
+};
+static_assert(sizeof(IGORankWidget) == 0x20,
+              "IGORankWidget size mismatch");
+
+// ============================================================================
+// IGOWeaponNameWidget (28 bytes) - verified against IDA
+// ============================================================================
+class IGOWeaponNameWidget : public IGOWidget {
+public:
+    FEText*    name;              // +0x0C
+    PanelQuad* background;        // +0x10
+    int        last_weapon_index; // +0x14
+    bool       dont_draw;         // +0x18
+
+    IGOWeaponNameWidget(int client);  // 0x590B00
+    virtual void Init(PanelFile* panel);              // 0x566F90
+    virtual void Update(float time_inc);              // 0x567040
+    virtual void Draw();                              // 0x5672E0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582E90
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577980
+};
+static_assert(sizeof(IGOWeaponNameWidget) == 0x1C,
+              "IGOWeaponNameWidget size mismatch");
+
+// ============================================================================
+// IGOAmmoWidget (40 bytes) - verified against IDA
+// ============================================================================
+class IGOAmmoWidget : public IGOWidget {
+public:
+    PanelQuad* frame;     // +0x0C
+    FEText*    clipAmmo;  // +0x10
+    FEText*    totalAmmo; // +0x14
+    int        clip_val;  // +0x18
+    int        ammo_val;  // +0x1C
+    bool       dont_draw; // +0x20
+    float      draw_time; // +0x24
+
+    IGOAmmoWidget(int client);  // 0x566530
+    virtual void Init(PanelFile* panel);              // 0x598660
+    virtual void Update(float time_inc);              // 0x588510
+    virtual void Draw();                              // 0x566560
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582D30
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577840
+};
+static_assert(sizeof(IGOAmmoWidget) == 0x28,
+              "IGOAmmoWidget size mismatch");
 
 // ============================================================================
 // FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA

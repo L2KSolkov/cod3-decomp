@@ -1008,7 +1008,9 @@ struct VehicleNodeAllocator {
 enum hud_type { kHudTypeNone = 0 };  // full enumerator set from IDA TBD
 
 struct IGOFrontEnd {
-    uint8_t _pad0[0x14];
+    uint8_t _pad0[0x04];
+    void*   compassWidget[1];  // +0x04 (IGOCompassWidget*, indexed by client)
+    uint8_t _pad08[0x14 - 0x08];
     void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
     uint8_t _pad24[0xA8 - 0x24];
     void Update(float time_inc);       // ?Update@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
