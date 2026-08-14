@@ -3776,6 +3776,7 @@ public:
         (void)boneIndex;
         return -1;
     }
+    void SetLOD(int startLod);  // ?SetLOD@DObj@@QAEXH@Z (render.o 0x6EE150)
     const math::Mat43::Packed& GetBaseRelMat(int boneIndex);  // ?GetBaseRelMat@DObj@@QAEABUPacked@Mat43@math@@H@Z (render.o)
 };
 static_assert(sizeof(DObj) == 0xE8, "DObj size mismatch");

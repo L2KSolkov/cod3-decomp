@@ -9,6 +9,17 @@
 
 extern void ValidatePakId(TPakId pakId);  // streamer.o (pakmanager.cpp)
 extern int XModelGetLodForDist(IVPointer<XModel> model, float dist);  // xmodel.cpp
+extern float gZoomRatio;  // cg.o (cg_view.cpp)
+
+namespace nalGeneric {
+class nalGenericSkeleton {
+public:
+    void* __vftable;  // +0x00
+    uint8_t _pad4[0x60 - 0x04];
+    int LODCount;     // +0x60
+    static void* vtbl_ptr;  // ?vtbl_ptr@nalGenericSkeleton@nalGeneric@@2PAXA @ 0x10E6D04
+};
+}
 
 // ea: 0x006BBA40
 const char* XModelParts::GetBoneName(unsigned int i) const
@@ -303,6 +314,117 @@ int DObjBad(DObj* obj)
 int DObjGetLodForDist(DObj* obj, int modelIndex, float dist)
 {
     return XModelGetLodForDist(obj->models[modelIndex], dist);
+}
+
+// ea: 0x006EE150
+void DObj::SetLOD(int startLod)
+{
+    ValidatePakId((TPakId)this->models[0].mPakId);
+    if (this->models[0].mValue == nullptr)
+        return;
+    ValidatePakId((TPakId)this->models[0].mPakId);
+    XModel* mValue = this->models[0].mValue;
+    int v5 = 0;
+    if (mValue->lod[0] == nullptr)
+    {
+        do
+        {
+            ++v5;
+        } while (mValue->lod[v5] == nullptr);
+    }
+    void* mAnimDef = mValue->lod[v5]->xmodelParts->mAnimDef;
+    if (mAnimDef != nullptr
+        && ((nalGeneric::nalGenericSkeleton*)mAnimDef)->__vftable
+               == (void*)nalGeneric::nalGenericSkeleton::vtbl_ptr)
+    {
+        if (startLod == ((nalGeneric::nalGenericSkeleton*)mAnimDef)->LODCount - 1)
+        {
+            this->mLOD = startLod;
+            return;
+        }
+    }
+    int v8 = startLod;
+    this->mLOD = -1;
+    ValidatePakId((TPakId)this->models[0].mPakId);
+    if (v8 >= 5 || this->models[0].mValue->lod[v8] == nullptr)
+    {
+        int v9 = v8 - 1;
+        if (v9 >= 0)
+        {
+            while (1)
+            {
+                ValidatePakId((TPakId)this->models[0].mPakId);
+                if (v9 < 5 && this->models[0].mValue->lod[v9] != nullptr)
+                    break;
+                --v9;
+                if (v9 < 0)
+                    goto LABEL_18;
+            }
+            this->mLOD = v9;
+            if (v9 >= 0)
+                goto LABEL_26;
+        LABEL_18:
+            v8 = startLod;
+        }
+        if (++v8 >= 5)
+            goto LABEL_26;
+        while (1)
+        {
+            ValidatePakId((TPakId)this->models[0].mPakId);
+            if (v8 < 5 && this->models[0].mValue->lod[v8] != nullptr)
+                break;
+            ++v8;
+            if (v8 >= 5)
+                goto LABEL_26;
+        }
+    }
+    this->mLOD = v8;
+LABEL_26:
+    if (this->mLOD < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.h";
+        AeAssert::gCurrentLine = 157;
+        AeAssert::gCurrentExpr = "mLOD >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Model has no LODs?"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x006D1E70
+float computeLOD(DObj* obj, const math::Position3& center)
+{
+    Camera* cam = (Camera*)gCurrentCamera;
+    float v2 = center.v.m128_f32[1] - cam->mPrevViewPos.v.m128_f32[1];
+    float dz = center.v.m128_f32[2] - cam->mPrevViewPos.v.m128_f32[2];
+    float dx = center.v.m128_f32[0] - cam->mPrevViewPos.v.m128_f32[0];
+    float v6 = ((dz * dz) + (v2 * v2) + (dx * dx)) * gZoomRatio;
+    ValidatePakId((TPakId)obj->models[0].mPakId);
+    if (obj->models[0].mValue != nullptr)
+    {
+        XModel* mValue = obj->models[0].mValue;
+        ValidatePakId((TPakId)obj->models[0].mPakId);
+        if (mValue->numLods < 3)
+        {
+            obj->SetLOD(0);
+            return v6;
+        }
+        int v5 = 0;
+        if (v6 >= 518400.0)
+        {
+            obj->SetLOD(4);
+            return v6;
+        }
+        if (v6 >= 230400.0)
+        {
+            obj->SetLOD(3);
+            return v6;
+        }
+        if (v6 >= 57600.0)
+            v5 = 2;
+        obj->SetLOD(v5);
+    }
+    return v6;
 }
 
 // ea: 0x006BDC10
