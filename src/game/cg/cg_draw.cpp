@@ -338,7 +338,10 @@ int SoundDevice_GetNumberOfListeners(void* self)
     (void)self;
     return 1;
 }
-extern void subtitle_manager_render();
+class subtitle_manager {
+public:
+    static void render();  // ?render@subtitle_manager@@SAXXZ
+};
 // ?FEManager_InGameMenusActive@@YA_NPAXH@Z artifact (real member
 // FEManager::InGameMenusActive, shell.o; not ported yet)
 bool FEManager_InGameMenusActive(void* self, int client)
@@ -1698,7 +1701,7 @@ void CG_Draw2D(float a2)
         CG_DrawGameMessages();
         CG_DrawBoldGameMessages();
         CG_DrawMiniConsole();
-        subtitle_manager_render();
+        subtitle_manager::render();
         nglListEndScene();
         int v9 = dword_F64158[1580 * currCl];
         dword_F64158[1580 * currCl] = 1065353216;

@@ -412,7 +412,10 @@ extern void SmokeGrenadeMgr_Update(void* self, float deltaT);
 extern void* SmokeGrenadeMgr_sInst;
 extern void EntityNotifySet_UpdateList();
 extern int update_trigger_notifies();
-extern void subtitle_manager_frame_advance(int time_delta);
+class subtitle_manager {
+public:
+    static void frame_advance(int time_delta);  // ?frame_advance@subtitle_manager@@SAXH@Z
+};
 class InspectorManager;
 extern void InspectorManager_Update(InspectorManager* self);
 extern InspectorManager g_inspectorManager;
@@ -2229,7 +2232,7 @@ void Com_Frame()
     SmokeGrenadeMgr_Update(SmokeGrenadeMgr_sInst, ServerTime_sInst.mTickDelta);
     EntityNotifySet_UpdateList();
     update_trigger_notifies();
-    subtitle_manager_frame_advance(v7);
+    subtitle_manager::frame_advance(v7);
     SV_Frame(v7);
     if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
         InspectorManager_Update(&g_inspectorManager);

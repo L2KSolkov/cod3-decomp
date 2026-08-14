@@ -724,7 +724,20 @@ struct CheckpointMgr {
 struct PakInfoNode;
 class NumBanks {
 public:
-    float v[2];
+    struct Ps3Banks {
+        float main;  // +0x00
+        float lram;  // +0x04
+    };
+    struct GcBanks {
+        float main;  // +0x00
+        float aram;  // +0x04
+    };
+    float    ps2;              // +0x00
+    Ps3Banks ps3;              // +0x04
+    float    xbox;             // +0x0C
+    float    xenon;            // +0x10
+    float    pcx;              // +0x14
+    GcBanks  gc;               // +0x18
 };
 
 class PakManager {
@@ -902,11 +915,75 @@ namespace AeAssert {
 // ============================================================================
 // movie_manager — static movie helpers
 // ============================================================================
-namespace movie_manager {
-    void load_and_play_movie(const char* movie_name, const char* sound_name);
-    void frame_advance();       // ?frame_advance@movie_manager@@YAXXZ
-    void render();              // ?render@movie_manager@@YAXXZ
-}
+struct PakInfoNode;
+struct PakHeader {
+    struct Section;
+};
+enum nvlFrameState : int;
+class nvlMovie;
+struct nglQuad;
+
+class movie_manager {
+public:
+    static void RegisterMovies(const PakInfoNode* paks,
+                               const PakHeader::Section& section);  // 0x56B430
+    static void init_manager();       // 0x56B440
+    static void set_quad_pos(float upper_left_x, float upper_left_y,
+                             float lower_right_x, float lower_right_y);  // 0x56B650
+    static void movie_done(bool clear_backbuffer);  // 0x57C180
+    static void shut_down();          // 0x57C240
+    static void render();             // 0x5843F0
+    static nvlFrameState render2();   // 0x584430
+    static void frame_advance();      // 0x58D330
+    static bool load_movie(const char* movie_name,
+                           const char* sound_name);  // 0x5913B0
+    static void PakLoadCallback(float);  // 0x591640
+    static void continue_playing_wait_for_keypress();  // 0x591690
+    static void load_and_play_movie(const char* movie_name,
+                                    const char* sound_name);  // 0x593AF0
+
+    static nvlMovie* theMovie;    // ?theMovie@movie_manager@@2PAVnvlMovie@@A
+    static bool preloadDone;      // ?preloadDone@movie_manager@@2_NA
+    static bool ignoreLocalizedTrack;  // ?ignoreLocalizedTrack@movie_manager@@2_NA
+    static float wait_timer;      // ?wait_timer@movie_manager@@2MA
+private:
+    static bool force_exit();     // 0x56B450 (CA_N)
+    static bool init_movie(const char* movie_name);  // 0x56B4C0 (CA_NPBD)
+    static bool dont_play_movies();  // 0x56B640 (CA_N)
+    static float delay_timer;     // ?delay_timer@movie_manager@@0MA
+    static nglQuad* theQuad;      // ?theQuad@movie_manager@@0PAUnglQuad@@A
+    static int lastTick;          // ?lastTick@movie_manager@@0HA
+};
+
+class subtitle_manager {
+public:
+    static void stop();                       // 0x56B6A0
+    static int  GetCol(int);                  // 0x56B6B0
+    static char* GetLevelName();              // 0x56B6C0
+    static void render();                     // 0x57C260
+    static bool play_subtitle(const char* tag, char* prefix);  // 0x584460
+    static void frame_advance(int time_delta);  // 0x5848C0
+
+    static char* token1;         // ?token1@subtitle_manager@@0PADA
+    static char* token2;         // ?token2@subtitle_manager@@0PADA
+    static unsigned int m_color; // ?m_color@subtitle_manager@@0IA
+    static float m_scale;        // ?m_scale@subtitle_manager@@0MA
+    static float timeRef;        // ?timeRef@subtitle_manager@@0MA
+    static float timeStart;      // ?timeStart@subtitle_manager@@0MA
+    static float timeEnd;        // ?timeEnd@subtitle_manager@@0MA
+    static unsigned int posX1;   // ?posX1@subtitle_manager@@0IA
+    static unsigned int posY1;   // ?posY1@subtitle_manager@@0IA
+    static unsigned int posX2;   // ?posX2@subtitle_manager@@0IA
+    static unsigned int posY2;   // ?posY2@subtitle_manager@@0IA
+    static char sub_tag[45];     // ?sub_tag@subtitle_manager@@0PADA
+    static unsigned int index;   // ?index@subtitle_manager@@0IA
+    static char mPrefix[16];     // ?mPrefix@subtitle_manager@@0PADA
+    static char sub_text[163];   // ?sub_text@subtitle_manager@@0PADA
+    static short m_token1TooLong;  // ?m_token1TooLong@subtitle_manager@@0FA
+    static short m_token2TooLong;  // ?m_token2TooLong@subtitle_manager@@0FA
+};
+
+extern const char* seps;         // ?seps@@3PBDB @ 0xDF3948
 
 // ============================================================================
 // Misc enums / constants

@@ -173,11 +173,12 @@ namespace LocalClient {
 #define ICON_GAME_INVITE ((char*)0x20000)
 #define ICON_FRIEND_REQUEST ((char*)0x10000)
 
-// movie_manager (mp.o)
-namespace movie_manager {
-void render();
-void frame_advance();
-}
+// movie_manager (shell.o class statics; manglings verified)
+class movie_manager {
+public:
+    static void render();         // ?render@movie_manager@@SAXXZ
+    static void frame_advance();  // ?frame_advance@movie_manager@@SAXXZ
+};
 
 // _LAUNCH_DATA / XGetLaunchInfo (XAPI; stub declared in xlive.h)
 struct _LAUNCH_DATA {

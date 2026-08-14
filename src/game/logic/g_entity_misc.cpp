@@ -2809,8 +2809,6 @@ void StreamZoneManager_Update(void* self, int a, const float* b, bool c)
     (void)self; (void)a; (void)b; (void)c;
 }
 void StubData_ApplyStubOptions(void* a) { (void)a; }
-void subtitle_manager_frame_advance(int a) { (void)a; }
-void subtitle_manager_render() {}
 void sWeaponAnimCallback() {}
 void TaskHandler_Update(TaskHandler* h, float a, TaskFunctor* f)
 {

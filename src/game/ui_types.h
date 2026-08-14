@@ -39,6 +39,9 @@ public:
     };
     static controller* inst();          // ?inst@controller@@SAPAV1@XZ
     static int num_controllers;         // ?num_controllers@controller@@2HA
+    void poll();                        // ?poll@controller@@QAEXXZ
+    bool any_button_pressed(int* p_controller);  // ?any_button_pressed@controller@@QAE_NPAH@Z
+    void button_pressed_clear_all();    // ?button_pressed_clear_all@controller@@QAEXXZ
     bool button_pressed_clear(int index, ButtonIndex btn);  // controller.o
     bool button_released_clear(int index, ButtonIndex btn); // controller.o
     bool button_pressed(ButtonIndex btn, int* p_controller);  // controller.o

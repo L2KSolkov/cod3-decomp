@@ -173,15 +173,6 @@ void PathNodeMgr::DisconnectPathsForEntity(Entity* ent) { (void)ent; }
 void PathNodeMgr::NodeList() {}
 void PathNodeMgr::CheckpointResetNodes() {}
 
-// movie_manager stubs (shell.o; port later)
-void movie_manager::load_and_play_movie(const char* movie_name,
-                                        const char* sound_name)
-{
-    (void)movie_name; (void)sound_name;
-}
-void movie_manager::frame_advance() {}
-void movie_manager::render() {}
-
 // AeThreadManager (core.o; stubs, port later)
 void AeThreadManager::Execute(float deltaT)
 {
