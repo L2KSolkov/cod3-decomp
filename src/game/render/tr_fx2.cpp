@@ -1263,6 +1263,8 @@ void fx_debug_render()
 // ============================================================================
 // ApsGameClient debug/effect helpers (class in apsInternal.h)
 // ============================================================================
+int ApsGameClient::drawDirectionLightDebug;  // ?drawDirectionLightDebug@ApsGameClient@@2HA @ 0x1363948
+
 template <typename T>
 void ApsGameClient::DebugVector<T>::push_back(const T& e)
 {
@@ -1343,6 +1345,74 @@ void ApsGameClient::DebugDrawLine(const math::Dir3& start,
     l.lifeTime = lifeTime;
     l.thickness = thickness;
     m_debugLines.push_back(l);
+}
+
+// ea: 0x006DA0C0
+namespace LightGrid {
+struct TOC;
+}
+class LightGridMgr {
+public:
+    static LightGridMgr* sInst;  // ?sInst@LightGridMgr@@2PAV1@A (pakmanager.cpp)
+    LightGrid::TOC* GetLightGrid(const math::Position3& posArg,
+                                 int* pCellNum);  // renderdebug.cpp
+    void SampleLightGrid(const LightGrid::TOC& toc, int cellidx,
+                         const math::Position3& pos, math::Mat44* dir,
+                         math::Mat44* color);  // lightgrid.cpp
+};
+
+bool ApsGameClient::GetLightInfoAtPosition(const math::Dir3& pos,
+                                           apsLight::LightInfo& outLightInfo)
+{
+    math::Position3 pos3;
+    pos3.v = pos.v;
+    int cellNum;
+    LightGrid::TOC* LightGrid =
+        LightGridMgr::sInst->GetLightGrid(pos3, &cellNum);
+    if (LightGrid != nullptr && cellNum >= 0)
+    {
+        math::Mat44 dir;
+        math::Mat44 color;
+        LightGridMgr::sInst->SampleLightGrid(*LightGrid, cellNum, pos3, &dir,
+                                             &color);
+        outLightInfo.m_lightColor.v.m128_f32[0] = color.x.v.m128_f32[0];
+        outLightInfo.m_lightColor.v.m128_f32[1] = color.x.v.m128_f32[1];
+        outLightInfo.m_lightColor.v.m128_f32[2] = color.x.v.m128_f32[2];
+        outLightInfo.m_lightColor.v.m128_f32[3] = color.x.v.m128_f32[0];
+        outLightInfo.m_ambientColor.v.m128_f32[0] = color.z.v.m128_f32[1];
+        outLightInfo.m_ambientColor.v.m128_f32[1] = color.z.v.m128_f32[2];
+        outLightInfo.m_ambientColor.v.m128_f32[2] = color.z.v.m128_f32[3];
+        outLightInfo.m_ambientColor.v.m128_f32[3] = color.w.v.m128_f32[0];
+        outLightInfo.m_dirToLight.v =
+            _mm_xor_ps(dir.x.v, _mm_set1_ps(-0.0f));
+    }
+    else
+    {
+        outLightInfo.m_lightColor.v = _mm_setzero_ps();
+        outLightInfo.m_ambientColor.v = _mm_set1_ps(1.0f);
+        outLightInfo.m_dirToLight.v = _mm_setzero_ps();
+    }
+    if (drawDirectionLightDebug != 0)
+    {
+        math::Position3 lightPos;
+        lightPos.v = _mm_add_ps(
+            pos3.v,
+            _mm_mul_ps(outLightInfo.m_dirToLight.v, _mm_set1_ps(150.0f)));
+        math::Position3 ambPos;
+        ambPos.v = _mm_add_ps(
+            pos3.v,
+            _mm_mul_ps(outLightInfo.m_ambientColor.v, _mm_set1_ps(150.0f)));
+        Color ambCol(outLightInfo.m_ambientColor.v.m128_f32[0],
+                     outLightInfo.m_ambientColor.v.m128_f32[1],
+                     outLightInfo.m_ambientColor.v.m128_f32[2], 1.0f);
+        Color lightCol(outLightInfo.m_lightColor.v.m128_f32[0],
+                       outLightInfo.m_lightColor.v.m128_f32[1],
+                       outLightInfo.m_lightColor.v.m128_f32[2], 1.0f);
+        DebugRender::RenderSphere(ambPos, 25.0f, ambCol);
+        DebugRender::RenderSphere(lightPos, 25.0f, lightCol);
+        DebugRender::RenderLine(pos3, lightPos, ambCol, 3.0f);
+    }
+    return true;
 }
 
 // ea: 0x006D3650

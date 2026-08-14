@@ -50,6 +50,7 @@ public:
 class ApsGameClient : public apsClient {
 public:
     static ApsGameClient m_client;  // ?m_client@ApsGameClient@@0V1@A (render.o)
+    static int drawDirectionLightDebug;  // ?drawDirectionLightDebug@ApsGameClient@@2HA @ 0x1363948
 
     struct ApsDebugSphere {
         math::Dir3::Packed center;   // +0x00
@@ -89,6 +90,8 @@ public:
     virtual apsEffect* CreateSpawnedEffectImmediate(
         int pakId, const apsEffectTemplate* effectTemplate,
         float startTime);  // ?CreateSpawnedEffectImmediate@ApsGameClient@@UAEPAVapsEffect@@HPBVapsEffectTemplate@@M@Z
+    virtual bool GetLightInfoAtPosition(const math::Dir3& iPosition,
+                                        apsLight::LightInfo& oInfo);  // ?GetLightInfoAtPosition@ApsGameClient@@UAE_NABVDir3@math@@AAULightInfo@apsLight@@@Z
 };
 
 namespace apsInternal {
