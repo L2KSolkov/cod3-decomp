@@ -157,7 +157,8 @@ struct dpvs_plane_t {
 
 PoolAllocator* dpvs_plane_t::sAllocator;
 
-struct BspPortal {
+class BspPortal {
+public:
     int numPortalVerts;      // +0x00
     math::Vector4 plane;     // +0x04
 };
