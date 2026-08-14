@@ -64,11 +64,12 @@ extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
 
 // Minimal weapon-system views (full weaponFileInfo_t lives in game/logic/g_local.h).
 struct weaponFileInfo_t {
-    uint8_t _pad[0xB0];
+    uint8_t _pad[0xAC];
+    int     type;          // +0xAC
     int     weapClass;     // +0xB0
-    uint8_t _pad1[0x594 - 0xB4];
+    uint8_t _pad2a[0x594 - 0xB4];
     char*   szRadiantName;   // +0x594
-    uint8_t _pad2[0x5A0 - 0x598];
+    uint8_t _pad2b[0x5A0 - 0x598];
     char*   szHudIcon;       // +0x5A0
     uint8_t _pad3[0x5C4 - 0x5A4];
     int     iClipSize;       // +0x5C4
@@ -79,6 +80,8 @@ struct weaponFileInfo_t {
     int     bADSFire;        // +0x724
     uint8_t _pad6[0x738 - 0x728];
     int     bDoNotDrop;      // +0x738
+    uint8_t _pad7[0x778 - 0x73C];
+    int     iExplosionRadius;  // +0x778
 };
 // slot is +0xB4; add an accessor via byte offset cast since it precedes
 // szRadiantName in the struct.
@@ -254,6 +257,17 @@ extern vmCvar_t g_ammoSolidTime;  // ?g_ammoSolidTime@@3UvmCvar_t@@A @ 0xEA6668
 extern bool Com_BitCheck(int* array, int bitNum);  // bg_weapons.cpp
 extern int BG_GetTotalAmmoReserve(const PlayerState* pPS,
                                   int iWeaponIndex);  // game.o
+extern float vectoyaw(const float* vec);      // core.o
+extern float AngleNormalize360(float angle);  // core.o
+extern float dword_F63560[];  // @ 0xF63560 (client origin x)
+extern float dword_F63564[];  // @ 0xF63564 (client origin y)
+extern float dword_F63568[];  // @ 0xF63568 (client origin z)
+extern float dword_F63640[];  // @ 0xF63640 (client view height)
+extern float dword_F63C50[];  // @ 0xF63C50 (screen x0)
+extern float dword_F63C54[];  // @ 0xF63C54 (screen y0)
+extern float dword_F63C58[];  // @ 0xF63C58 (screen w)
+extern float dword_F63C5C[];  // @ 0xF63C5C (screen h)
+extern float unk_F63634[];    // @ 0xF63634 (client yaw)
 
 
 struct level_locals_t {
@@ -4518,4 +4532,318 @@ void IGOTankIconWidget::UpdateWidescreen(bool widescreen, float about_x)
             }
         }
     }
+}
+
+// ============================================================================
+// IGOGrenadeIndicator
+// ============================================================================
+
+// ea: 0x00579310
+IGOGrenadeIndicator::IGOGrenadeIndicator(int client)
+{
+    mClient = client;
+    is_shown = true;
+    force_appear = false;
+    memset(mActiveGrenadeList, 0, sizeof(mActiveGrenadeList));
+    mArrowOffset = 0.0f;
+    mMineIcon = nullptr;
+    mGrenadeIcon = nullptr;
+    mGrenadeArrow = nullptr;
+    mGrenadeHold = nullptr;
+    mCurrentGrenadeIcon = nullptr;
+}
+
+// ea: 0x00568BA0
+IGOGrenadeIndicator::~IGOGrenadeIndicator()
+{
+    if (mMineIcon != nullptr)
+        delete mMineIcon;
+    if (mGrenadeIcon != nullptr)
+        delete mGrenadeIcon;
+    if (mGrenadeArrow != nullptr)
+        delete mGrenadeArrow;
+    if (mGrenadeHold != nullptr)
+        delete mGrenadeHold;
+}
+
+// ea: 0x0059A780
+void IGOGrenadeIndicator::Init(PanelFile* panel)
+{
+    if (strcmp(panel->mName, "hud_mp.panel") == 0)
+    {
+        PanelQuad* Pointer = panel->GetPointer("AP_mine_proximity");
+        mMineIcon = Pointer;
+        if (mClient > 0)
+            mMineIcon = PanelQuad::Clone(Pointer);
+    }
+    else
+    {
+        mGrenadeIcon = panel->GetPointer("grenade_proximity_icon");
+        mGrenadeArrow = panel->GetPointer("grenade_proximity_arrow");
+        mGrenadeHold = panel->GetPointer("grenade_hold");
+        if (mClient > 0)
+        {
+            mGrenadeIcon = PanelQuad::Clone(mGrenadeIcon);
+            mGrenadeArrow = PanelQuad::Clone(mGrenadeArrow);
+            mGrenadeHold = PanelQuad::Clone(mGrenadeHold);
+        }
+        mCurrentGrenadeIcon = mGrenadeIcon;
+        float iconX = 0.0f, iconY = 0.0f;
+        float arrowX = 0.0f, arrowY = 0.0f;
+        mGrenadeIcon->GetCenterPos(iconX, iconY);
+        mGrenadeArrow->GetCenterPos(arrowX, arrowY);
+        mArrowOffset = VectorDistance(&arrowX, &iconX);
+    }
+}
+
+// ea: 0x00568C30
+bool IGOGrenadeIndicator::ValidHudGrenade(
+    const Entity* grenade, float splashRadius,
+    float (&grenadeOffset)[3], float& grenadeDistanceSquared) const
+{
+    if ((grenade->s.pos.trDelta[0] * grenade->s.pos.trDelta[0])
+            + (grenade->s.pos.trDelta[1] * grenade->s.pos.trDelta[1])
+            + (grenade->s.pos.trDelta[2] * grenade->s.pos.trDelta[2])
+        > 1.0f)
+    {
+        return false;
+    }
+    int base = 1580 * currCl;
+    grenadeOffset[0] = grenade->s.pos.trBase[0] - dword_F63560[base];
+    grenadeOffset[1] = grenade->s.pos.trBase[1] - dword_F63564[base];
+    float v5 = grenade->s.pos.trBase[2] - dword_F63568[base];
+    grenadeOffset[2] = v5;
+    if (v5 < -104.0f || v5 > dword_F63640[base] + 104.0f)
+        return false;
+    float v6 = (v5 * v5) + (grenadeOffset[1] * grenadeOffset[1])
+               + (grenadeOffset[0] * grenadeOffset[0]);
+    grenadeDistanceSquared = v6;
+    if (grenade->splashMethodOfDeath == 6)
+    {
+        if (v6
+            > ((grenade->r.maxs.v.m128_f32[0] + 72.0f)
+               * (grenade->r.maxs.v.m128_f32[0] + 72.0f)))
+            return false;
+    }
+    else if (v6 > splashRadius * splashRadius)
+    {
+        return false;
+    }
+    return true;
+}
+
+// ea: 0x00568D70
+float IGOGrenadeIndicator::CalcGrenadeAlpha(
+    float grenadeDistanceSquared, float splashInnerRadius,
+    float splashOutterRadius) const
+{
+    float v4;
+    if ((splashInnerRadius * splashInnerRadius) >= 0.0f)
+    {
+        v4 = ((splashOutterRadius * splashOutterRadius)
+              - (splashInnerRadius * splashInnerRadius)
+              - (grenadeDistanceSquared
+                 - (splashInnerRadius * splashInnerRadius)))
+             / ((splashOutterRadius * splashOutterRadius)
+                - (splashInnerRadius * splashInnerRadius));
+    }
+    else
+    {
+        v4 = 1.0f;
+    }
+    float v5 = v4 * 0.6f;
+    if (v5 >= 0.1f)
+        return v5;
+    return 0.1f;
+}
+
+// ea: 0x00568DE0
+void IGOGrenadeIndicator::DrawGrenadeIcon(float sinYaw, float cosYaw,
+                                          float alpha) const
+{
+    int base = 1580 * currCl;
+    mCurrentGrenadeIcon->SetCenterPos(
+        (dword_F63C58[base] * 0.5f) + dword_F63C50[base]
+            - (sinYaw * 60.0f),
+        (dword_F63C5C[base] * 0.5f) + dword_F63C54[base]
+            - (cosYaw * 60.0f));
+    mCurrentGrenadeIcon->SetAlpha(alpha);
+    mCurrentGrenadeIcon->Draw();
+}
+
+// ea: 0x00568E80
+void IGOGrenadeIndicator::DrawGrenadeArrow(float yaw, float sinYaw,
+                                           float cosYaw, float alpha) const
+{
+    int base = 1580 * currCl;
+    mGrenadeArrow->SetCenterPos(
+        (dword_F63C58[base] * 0.5f) + dword_F63C50[base]
+            - ((mArrowOffset + 60.0f) * sinYaw),
+        (dword_F63C5C[base] * 0.5f) + dword_F63C54[base]
+            - ((mArrowOffset + 60.0f) * cosYaw));
+    mGrenadeArrow->Rotate((0.0f - yaw) * 3.1415927f * 0.0055555557f,
+                          true);
+    mGrenadeArrow->SetAlpha(alpha);
+    mGrenadeArrow->Draw();
+}
+
+// ea: 0x00568F50
+bool IGOGrenadeIndicator::CanBePickUp()
+{
+    return false;
+}
+
+// ea: 0x00568F60
+void IGOGrenadeIndicator::SetDefaultIcon()
+{
+    mCurrentGrenadeIcon = mGrenadeIcon;
+}
+
+// ea: 0x005793A0
+void IGOGrenadeIndicator::DrawGrenade(const Entity* grenade)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(grenade->s.weapon);
+    mCurrentGrenadeIcon = mGrenadeIcon;
+    if (InfoForWeapon == nullptr)
+        return;
+    float grenadeOffset[3];
+    float grenadeDistanceSquared;
+    if (!ValidHudGrenade(grenade, (float)InfoForWeapon->iExplosionRadius,
+                         grenadeOffset, grenadeDistanceSquared))
+    {
+        return;
+    }
+    float angle = vectoyaw(grenadeOffset) - unk_F63634[1580 * currCl];
+    float yaw = AngleNormalize360(angle);
+    float radians = yaw * 3.1415927f * 0.0055555557f;
+    float sinYaw, cosYaw;
+    FastSinCos(radians, &sinYaw, &cosYaw);
+    float alpha;
+    if (InfoForWeapon->type == 10 /* WEAPTYPE_NUM */)
+    {
+        float v6 = grenade->r.maxs.v.m128_f32[0]
+                   * grenade->r.maxs.v.m128_f32[0];
+        float v8;
+        if (v6 >= 0.0f)
+        {
+            float v7 = ((grenade->r.maxs.v.m128_f32[0] + 72.0f)
+                        * (grenade->r.maxs.v.m128_f32[0] + 72.0f))
+                       - v6;
+            v8 = (v7 - (grenadeDistanceSquared - v6)) / v7;
+        }
+        else
+        {
+            v8 = 1.0f;
+        }
+        float v9 = v8 * 0.6f;
+        alpha = v9 >= 0.1f ? v9 : 0.1f;
+        mCurrentGrenadeIcon = mMineIcon;
+    }
+    else
+    {
+        float v10 = (float)(InfoForWeapon->iExplosionRadius
+                            * InfoForWeapon->iExplosionRadius);
+        float v11 = ((v10 - grenadeDistanceSquared) / v10) * 0.6f;
+        alpha = v11 >= 0.1f ? v11 : 0.1f;
+    }
+    DrawGrenadeIcon(sinYaw, cosYaw, alpha);
+    DrawGrenadeArrow(yaw, sinYaw, cosYaw, alpha);
+}
+
+// ea: 0x0058A9A0
+void IGOGrenadeIndicator::Update(float time_inc)
+{
+    (void)time_inc;
+    for (int i = 0; i < 10; ++i)
+    {
+        unsigned int v4 = mActiveGrenadeList[i].mHandle.mVal & 0xFFF;
+        if (v4 >= 0x540
+            || mActiveGrenadeList[i].mHandle.mVal >> 12
+                   != (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey
+            || EntityHandleDb::sInst.mElements[v4].mObject == nullptr)
+        {
+            mActiveGrenadeList[i].mHandle.mVal = 0;
+        }
+    }
+}
+
+// ea: 0x0058AAA0
+void IGOGrenadeIndicator::Draw()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        unsigned int v4 = mActiveGrenadeList[i].mHandle.mVal & 0xFFF;
+        if (v4 < 0x540
+            && mActiveGrenadeList[i].mHandle.mVal >> 12
+                   == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+            if (mObject != nullptr && mObject->think != 0x0C)
+                DrawGrenade(mObject);
+        }
+    }
+    if (MultiplayerMgr::sInst->mPeer == nullptr)
+        return;
+    MPPlayerManager* playerManager =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    if (mClient >= 16)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "idx<16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    if (EntityManager::sInst->mPlayers[mClient] == nullptr)
+        return;
+    for (int j = 0; j < 16; ++j)
+    {
+        MPPlayer* Player = playerManager->GetPlayer(j);
+        MpPlayerView2* pv = (MpPlayerView2*)Player;
+        if (Player == nullptr || !pv->IsValid())
+            continue;
+        if (pv->mClientIndex >= 0)
+            EntityManager::sInst->GetPlayer(
+                pv->mClientIndex);
+        for (int k = 0; k < 3; ++k)
+        {
+            Entity* Item = pv->mItems.FindItem(kItemTypeMines, (short)k);
+            if (Item != nullptr && Item->think != 0x0C)
+                DrawGrenade(Item);
+        }
+    }
+}
+
+// ea: 0x0058ABE0
+void IGOGrenadeIndicator::AddActiveGrenade(const Entity* grenade)
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        unsigned int v4 = mActiveGrenadeList[i].mHandle.mVal & 0xFFF;
+        if (v4 >= 0x540
+            || mActiveGrenadeList[i].mHandle.mVal >> 12
+                   != (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey
+            || EntityHandleDb::sInst.mElements[v4].mObject == nullptr)
+        {
+            mActiveGrenadeList[i].mHandle.mVal =
+                grenade->mHandle.mHandle.mVal;
+            return;
+        }
+    }
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOGrenadeIndicator.cpp";
+    AeAssert::gCurrentLine = 240;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert(
+            "Maximum number of grenade indicator widgets (%d) reached", 10))
+        __debugbreak();
+}
+
+// ea: 0x00583CD0
+void IGOGrenadeIndicator::UpdateWidescreen(bool widescreen, float about_x)
+{
+    mCurrentGrenadeIcon->FattenMeForWidescreen(widescreen, about_x);
+    mGrenadeArrow->FattenMeForWidescreen(widescreen, about_x);
 }

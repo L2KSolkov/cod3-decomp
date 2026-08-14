@@ -2368,3 +2368,42 @@ public:
 };
 static_assert(sizeof(IGOTankIconWidget) == 0x9C,
               "IGOTankIconWidget size mismatch");
+
+// ============================================================================
+// IGOGrenadeIndicator (76 bytes) - verified against IDA
+// ============================================================================
+class IGOGrenadeIndicator : public IGOWidget {
+public:
+    DbLinkedHandle<EntityHandleDb, Entity> mActiveGrenadeList[10];  // +0x0C
+    float      mArrowOffset;       // +0x34
+    PanelQuad* mMineIcon;          // +0x38
+    PanelQuad* mGrenadeIcon;       // +0x3C
+    PanelQuad* mGrenadeArrow;      // +0x40
+    PanelQuad* mGrenadeHold;       // +0x44
+    PanelQuad* mCurrentGrenadeIcon;// +0x48
+
+    IGOGrenadeIndicator(int client);  // 0x579310
+    virtual ~IGOGrenadeIndicator();   // 0x568BA0
+    virtual void Init(PanelFile* panel);              // 0x59A780
+    virtual void Update(float time_inc);              // 0x58A9A0
+    virtual void Draw();                              // 0x58AAA0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583CD0
+    bool CanBePickUp();                               // 0x568F50
+    void SetDefaultIcon();                            // 0x568F60
+    void DrawGrenade(const Entity* grenade);          // 0x5793A0
+    void AddActiveGrenade(const Entity* grenade);     // 0x58ABE0
+private:
+    bool ValidHudGrenade(const Entity* grenade, float splashRadius,
+                         float (&grenadeOffset)[3],
+                         float& grenadeDistanceSquared) const;  // 0x568C30
+    float CalcGrenadeAlpha(float grenadeDistanceSquared,
+                           float splashInnerRadius,
+                           float splashOutterRadius) const;     // 0x568D70
+    void DrawGrenadeIcon(float sinYaw, float cosYaw,
+                         float alpha) const;                    // 0x568DE0
+    void DrawGrenadeArrow(float yaw, float sinYaw, float cosYaw,
+                          float alpha) const;                   // 0x568E80
+};
+static_assert(sizeof(IGOGrenadeIndicator) == 0x4C,
+              "IGOGrenadeIndicator size mismatch");
