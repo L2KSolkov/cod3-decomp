@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 extern level_locals_t level;           // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 extern char* va(const char* fmt, ...); // core.o
@@ -33,6 +34,45 @@ void Path_SetupAnimFunc(PathNodes::PathNode* node,
 extern float flrand(float min, float max);  // core.o
 extern const float VectorDistanceSquared(const float* const p1,
                                          const float* const p2);  // core.o
+extern const float VectorDistanceSquared2D(const float* const p1,
+                                           const float* const p2);  // core.o
+extern void YawVectors(float yaw, float* const forward,
+                       float* const right);  // core.o
+extern void G_Printf(const char* fmt, ...);  // g.o
+extern char* vtos(const float* v);           // g.o
+extern const math::Position3 actorMaxs;      // 0xF99330
+extern const math::Position3 actorMins;      // 0xF99510
+extern vmCvar_t g_ignorePathErrors;          // ?g_ignorePathErrors@@3UvmCvar_t@@A @ 0xEAC5E8
+
+// ea: 0x0077F1A0 (static helper, pathnodemgr.cpp)
+static void Path_UpdateBadPlaceCountForLink(PathNodes::PathLink* pLink,
+                                            int teamflags, int delta)
+{
+    int v3 = 0;
+    while (((1 << v3) & teamflags) == 0)
+    {
+        if (++v3 >= 4)
+            return;
+    }
+    while (1)
+    {
+        int v4 = delta + pLink->mBadPlaceCount[v3];
+        if (v4 < 0)
+        {
+            Scr_Error("Bad place underflow -- negative count");
+            return;
+        }
+        if (v4 <= 255)
+        {
+            pLink->mBadPlaceCount[v3] = (uint8_t)v4;
+            if (++v3 >= 4)
+                return;
+            continue;
+        }
+        Scr_Error("Bad place overflow -- count exceeds 255");
+        return;
+    }
+}
 
 // ============================================================================
 // PathNodeMgr
@@ -1816,4 +1856,651 @@ LABEL_46:
         }
     }
     return (PathNodes::PathNode*)v12;
+}
+
+// ea: 0x007824E0
+int PathNodeMgr::GetNode(const Broc::string& name, const Broc::string& key,
+                         int* array)
+{
+    PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+    if (mLevelTOC == nullptr)
+        return 0;
+    int mNodeCount = mLevelTOC->mNodeCount;
+    if (mNodeCount == 0)
+        return 0;
+    int v5 = 0;
+    int count = 0;
+    if (array != nullptr)
+    {
+        for (int v9 = 0; v9 < mLevelTOC->mNodeCount; ++v9)
+            array[v5++] = mLevelTOC->mNodes[v9].mHandle.mValue;
+        return v5;
+    }
+    const char* keyName =
+        key.mBlock != nullptr ? (const char*)(key.mBlock + 1)
+                              : defaultFileName;
+    int v12;
+    if (Q_stricmp("targetname", keyName) == 0)
+        v12 = 48;
+    else if (Q_stricmp("target", keyName) == 0)
+        v12 = 56;
+    else if (Q_stricmp("on_goal", keyName) == 0)
+        v12 = 60;
+    else if (Q_stricmp("reservename", keyName) == 0)
+        v12 = 64;
+    else if (Q_stricmp("animscript", keyName) == 0)
+        v12 = 68;
+    else if (Q_stricmp("script_noteworthy", keyName) == 0)
+        v12 = 52;
+    else if (Q_stricmp("origin", keyName) == 0)
+        v12 = 76;
+    else if (Q_stricmp("angles", keyName) == 0)
+        v12 = 88;
+    else if (Q_stricmp("radius", keyName) == 0)
+        v12 = 92;
+    else if (Q_stricmp("spawnflags", keyName) == 0)
+        v12 = 44;
+    else if (Q_stricmp("type", keyName) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 851;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            if (AeAssert::Warning("Unsupported GetNode field %s", keyName))
+                __debugbreak();
+        }
+        return -1;
+    }
+    else
+        v12 = 40;
+    PathNodes::TOC1* v23 = this->mLevelTOC;
+    PathNodes::PathNode* mNodes = v23->mNodes;
+    while (mNodes < &v23->mNodes[v23->mNodeCount])
+    {
+        char* pField = (char*)mNodes + v12;
+        if (*(int*)pField != 0
+            && Broc::operator==(name, *(Broc::string*)pField))
+        {
+            if (array == nullptr)
+                return mNodes->mHandle.mValue;
+            array[count++] = mNodes->mHandle.mValue;
+        }
+        ++mNodes;
+    }
+    if (array != nullptr)
+        return count;
+    return -1;
+}
+
+// ea: 0x00782810
+int PathNodeMgr::GetVehicleNodeIndex(const Broc::string& name,
+                                     const Broc::string& key, int* array,
+                                     int forceAllNodes)
+{
+    int v5 = 0;
+    if (this->mLevelTOC == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 924;
+        AeAssert::gCurrentExpr = "mLevelTOC";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (array != nullptr)
+    {
+        for (int j = 0; j < s_numNodes; ++j)
+            array[v5++] = j;
+        return v5;
+    }
+    if (forceAllNodes == 0 && name.mBlock != nullptr
+        && key.mBlock != nullptr)
+    {
+        const char* keyName = (const char*)(key.mBlock + 1);
+        int v10;
+        if (Q_stricmp("targetname", keyName) == 0)
+            v10 = 0;
+        else if (Q_stricmp("target", keyName) == 0)
+            v10 = 4;
+        else if (Q_stricmp("origin", keyName) == 0)
+            v10 = 20;
+        else if (Q_stricmp("angles", keyName) == 0)
+            v10 = 44;
+        else if (Q_stricmp("speed", keyName) == 0)
+            v10 = 8;
+        else if (Q_stricmp("lookahead", keyName) == 0)
+            v10 = 12;
+        else if (Q_stricmp("script_noteworthy", keyName) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 950;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                if (AeAssert::Warning(
+                        "Unsupported GetVehicleNode field %s", keyName))
+                    __debugbreak();
+            }
+            return -1;
+        }
+        else
+            v10 = 16;
+        for (int i = 0; i < s_numNodes; ++i)
+        {
+            vehicle_node_t* v18 = s_nodes[i];
+            Broc::string* pStr =
+                (Broc::string*)((char*)&v18->mName + v10);
+            if (pStr->mBlock != 0
+                && ((const char*)(pStr->mBlock + 1))[0] != 0
+                && Broc::operator==(*pStr, name))
+            {
+                if (array == nullptr)
+                    return i;
+                array[v5++] = i;
+            }
+        }
+        if (array != nullptr)
+            return v5;
+        return -1;
+    }
+    // key null or forceAllNodes: field lookup with defaultFileName key
+    {
+        const char* keyName = defaultFileName;
+        int v10;
+        if (Q_stricmp("targetname", keyName) == 0)
+            v10 = 0;
+        else if (Q_stricmp("target", keyName) == 0)
+            v10 = 4;
+        else if (Q_stricmp("origin", keyName) == 0)
+            v10 = 20;
+        else if (Q_stricmp("angles", keyName) == 0)
+            v10 = 44;
+        else if (Q_stricmp("speed", keyName) == 0)
+            v10 = 8;
+        else if (Q_stricmp("lookahead", keyName) == 0)
+            v10 = 12;
+        else if (Q_stricmp("script_noteworthy", keyName) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 950;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                if (AeAssert::Warning(
+                        "Unsupported GetVehicleNode field %s", keyName))
+                    __debugbreak();
+            }
+            return -1;
+        }
+        else
+            v10 = 16;
+        for (int i = 0; i < s_numNodes; ++i)
+        {
+            vehicle_node_t* v18 = s_nodes[i];
+            Broc::string* pStr =
+                (Broc::string*)((char*)&v18->mName + v10);
+            if (pStr->mBlock != 0
+                && ((const char*)(pStr->mBlock + 1))[0] != 0
+                && Broc::operator==(*pStr, name))
+            {
+                if (array == nullptr)
+                    return i;
+                array[v5++] = i;
+            }
+        }
+        if (array != nullptr)
+            return v5;
+        return -1;
+    }
+}
+
+// ea: 0x00780370
+void PathNodeMgr::UpdateArcBadPlaceCount(BadPlaceArc* arc, int teamflags,
+                                         int delta)
+{
+    float angle0 = arc->angle0;
+    float side0[3];
+    float side1[3];
+    YawVectors(angle0, nullptr, side0);
+    YawVectors(arc->angle1, nullptr, side1);
+    side0[1] = -side0[1];
+    side0[0] = -side0[0];
+    side0[2] = (arc->origin[0] * -side0[0])
+               + (side0[1] * arc->origin[1]);
+    side1[2] = (arc->origin[0] * side1[0])
+               + (side1[1] * arc->origin[1]);
+    float angle = arc->angle1 - arc->angle0;
+    if (angle < 0.0f)
+        angle = angle + 360.0f;
+    bool bArcLessThan180 = angle < 180.0f;
+    float forward[3];
+    YawVectors((angle * 0.5f) + arc->angle0, forward, nullptr);
+    PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+    float fRadiusSqrd = arc->radius * arc->radius;
+    float fHeightSqrd = arc->halfheight * arc->halfheight;
+    float fMaxRadiusSqrd =
+        (arc->radius + 256.0f) * (arc->radius + 256.0f);
+    float fMaxHeightSqrd =
+        (arc->halfheight + 128.0f) * (arc->halfheight + 128.0f);
+    float centroid[3];
+    float v13 = sin(angle * 0.0087266462f) / angle * 76.394371f
+                * arc->radius;
+    centroid[0] = forward[0] * v13 + arc->origin[0];
+    centroid[1] = forward[1] * v13 + arc->origin[1];
+    centroid[2] = forward[2] * v13 + arc->origin[2];
+    int mNodeCount = mLevelTOC->mNodeCount;
+    if (mNodeCount > 0)
+    {
+        for (int i = 0; i < mNodeCount; ++i)
+        {
+            PathNodes::PathNode* v18 = &mLevelTOC->mNodes[i];
+            float vPosDelta[3];
+            vPosDelta[0] = v18->mConstant.mOrigin[0] - arc->origin[0];
+            vPosDelta[1] = v18->mConstant.mOrigin[1] - arc->origin[1];
+            vPosDelta[2] = v18->mConstant.mOrigin[2] - arc->origin[2];
+            float fPosDeltaSqrd =
+                (vPosDelta[1] * vPosDelta[1])
+                + (vPosDelta[0] * vPosDelta[0]);
+            if (fPosDeltaSqrd < fMaxRadiusSqrd
+                && (vPosDelta[2] * vPosDelta[2]) < fMaxHeightSqrd)
+            {
+                float fCentroidDeltaSqrd = VectorDistanceSquared2D(
+                    v18->mConstant.mOrigin, centroid);
+                int j = 0;
+                while (j < v18->mConstant.mTotalLinkCount)
+                {
+                    PathNodes::PathLink* pLink =
+                        &v18->mConstant.mLinks[j];
+                    PathNodes::PathNode* Node = GetNode(pLink->mNodeHandle);
+                    float v22 = Node->mConstant.mOrigin[1]
+                                - arc->origin[1];
+                    float vOtherDelta_8 =
+                        Node->mConstant.mOrigin[2] - arc->origin[2];
+                    float fOtherDeltaSqrd =
+                        (v22 * v22)
+                        + ((Node->mConstant.mOrigin[0] - arc->origin[0])
+                           * (Node->mConstant.mOrigin[0]
+                              - arc->origin[0]));
+                    float v23 = VectorDistanceSquared2D(
+                        Node->mConstant.mOrigin, centroid);
+                    if (v23 <= fCentroidDeltaSqrd)
+                    {
+                        bool bInside = true;
+                        if (vPosDelta[2] < arc->halfheight)
+                        {
+                            float v24 = -arc->halfheight;
+                            if (v24 >= vPosDelta[2] && v24 >= vOtherDelta_8)
+                                bInside = false;
+                        }
+                        else if (vOtherDelta_8 >= arc->halfheight)
+                        {
+                            bInside = false;
+                        }
+                        if (bInside
+                            && fPosDeltaSqrd > fRadiusSqrd
+                            && fOtherDeltaSqrd > fRadiusSqrd)
+                        {
+                            float v25 =
+                                Node->mConstant.mOrigin[0]
+                                - v18->mConstant.mOrigin[0];
+                            float v26 =
+                                Node->mConstant.mOrigin[1]
+                                - v18->mConstant.mOrigin[1];
+                            float v27 =
+                                Node->mConstant.mOrigin[2]
+                                - v18->mConstant.mOrigin[2];
+                            float v28 =
+                                -((v26 * vPosDelta[1])
+                                  + (v25 * vPosDelta[0]));
+                            if (v28 > 0.0f)
+                            {
+                                float v29 =
+                                    (v26 * v26) + (v25 * v25);
+                                float fDiscriminant =
+                                    (v28 * v28)
+                                    - ((fPosDeltaSqrd - fRadiusSqrd)
+                                       * v29);
+                                if (fDiscriminant > 0.0f)
+                                {
+                                    float v30 = 1.0f / v29;
+                                    float fSqrtDisc =
+                                        sqrtf(fDiscriminant);
+                                    float v31 =
+                                        (v28 - fSqrtDisc) * v30;
+                                    if (v31 < 1.0f)
+                                    {
+                                        float fHeight0 =
+                                            (v31 * v27) + vPosDelta[2];
+                                        if ((fHeight0 * fHeight0)
+                                            > fHeightSqrd)
+                                        {
+                                            float v32 =
+                                                (fSqrtDisc + v28) * v30;
+                                            if (v32 >= 1.0f)
+                                                bInside = false;
+                                            else
+                                            {
+                                                float v33 =
+                                                    (v32 * v27)
+                                                    + vPosDelta[2];
+                                                if ((v33 * v33)
+                                                        > fHeightSqrd
+                                                    && (v33 * fHeight0)
+                                                           >= 0.0f)
+                                                    bInside = false;
+                                            }
+                                        }
+                                    }
+                                    else
+                                        bInside = false;
+                                }
+                                else
+                                    bInside = false;
+                            }
+                            else
+                                bInside = false;
+                        }
+                        if (bInside
+                            && (arc->angle0 != 0.0f
+                                || arc->angle1 != 360.0f))
+                        {
+                            float v34 =
+                                ((side0[1]
+                                  * v18->mConstant.mOrigin[1])
+                                 + (side0[0]
+                                    * v18->mConstant.mOrigin[0]))
+                                - side0[2];
+                            float v35 =
+                                ((Node->mConstant.mOrigin[1] * side0[1])
+                                 + (Node->mConstant.mOrigin[0] * side0[0]))
+                                - side0[2];
+                            if (bArcLessThan180)
+                            {
+                                if (v34 < 0.0f && v35 < 0.0f)
+                                    bInside = false;
+                            }
+                            else if (v34 < 0.0f && v35 < 0.0f)
+                            {
+                                if (((side1[1]
+                                      * v18->mConstant.mOrigin[1])
+                                     + (side1[0]
+                                        * v18->mConstant.mOrigin[0]))
+                                        - side1[2]
+                                        < 0.0f
+                                    && ((Node->mConstant.mOrigin[1]
+                                         * side1[1])
+                                        + (Node->mConstant.mOrigin[0]
+                                           * side1[0]))
+                                           - side1[2]
+                                           < 0.0f)
+                                    bInside = false;
+                            }
+                        }
+                        if (bInside)
+                            Path_UpdateBadPlaceCountForLink(pLink,
+                                                            teamflags,
+                                                            delta);
+                    }
+                    ++j;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00780940
+void PathNodeMgr::FindOverlappingNodes()
+{
+    PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+    if (mLevelTOC == nullptr)
+        return;
+    if (mLevelTOC->mNodeCount > 0)
+    {
+        for (int i = 0; i < mLevelTOC->mNodeCount; ++i)
+        {
+            this->mLevelTOC->mNodes[i].mConstant.mOverlapNode[0].mValue = 0;
+            this->mLevelTOC->mNodes[i].mConstant.mOverlapNode[1].mValue = 0;
+        }
+    }
+    PathNodes::TOC1* v4 = this->mLevelTOC;
+    int v5 = v4->mNodeCount;
+    float v7 = (actorMaxs.v.m128_f32[1] - actorMins.v.m128_f32[1]) + 1.0f;
+    float v8 = (actorMaxs.v.m128_f32[2] - actorMins.v.m128_f32[2]) + 1.0f;
+    float actorSize = (actorMaxs.v.m128_f32[0] - actorMins.v.m128_f32[0])
+                      + 1.0f;
+    int iErrorCount = 0;
+    for (int i = 0; i < v5; ++i)
+    {
+        PathNodes::PathNode* cur = &v4->mNodes[i];
+        for (int j = 0; j < i; ++j)
+        {
+            PathNodes::PathNode* v15 = &v4->mNodes[j];
+            float v16 = cur->mConstant.mOrigin[0]
+                        - v15->mConstant.mOrigin[0];
+            float v13 = cur->mConstant.mOrigin[1]
+                        - v15->mConstant.mOrigin[1];
+            float v14 = cur->mConstant.mOrigin[2]
+                        - v15->mConstant.mOrigin[2];
+            if (-actorSize <= v16 && v16 <= actorSize
+                && -v7 <= v13 && v13 <= v7
+                && -v8 <= v14 && v14 <= v8)
+            {
+                if (((v13 * v13) + (v16 * v16)) < 1.0f
+                    && ((cur->mConstant.mSpawnFlags
+                         | v15->mConstant.mSpawnFlags)
+                        & 1) == 0)
+                {
+                    G_Printf(
+                        "ERROR:  Duplicate linking nodes at %f %f %f.  "
+                        "Removed dupe node or set DONTLINK.\n",
+                        cur->mConstant.mOrigin[0],
+                        cur->mConstant.mOrigin[1],
+                        cur->mConstant.mOrigin[2]);
+                    ++iErrorCount;
+                }
+                uint16_t v17 = cur->mConstant.mOverlapNode[0].mValue;
+                if (v17 != 0 && v17 != 0xFFFF)
+                {
+                    uint16_t v18 =
+                        cur->mConstant.mOverlapNode[1].mValue;
+                    if (v18 != 0 && v18 != 0xFFFF)
+                    {
+                        G_Printf(
+                            "WARNING: node at %s overlaps more than 2 other "
+                            "nodes\n",
+                            vtos(cur->mConstant.mOrigin));
+                        ++iErrorCount;
+                    }
+                    else
+                    {
+                        cur->mConstant.mOverlapNode[1].mValue =
+                            v15->mHandle.mValue;
+                    }
+                }
+                else
+                {
+                    cur->mConstant.mOverlapNode[0].mValue =
+                        v15->mHandle.mValue;
+                }
+                uint16_t mValue =
+                    v15->mConstant.mOverlapNode[0].mValue;
+                if (mValue != 0 && mValue != 0xFFFF)
+                {
+                    uint16_t v21 =
+                        v15->mConstant.mOverlapNode[1].mValue;
+                    if (v21 != 0 && v21 != 0xFFFF)
+                    {
+                        G_Printf(
+                            "WARNING: node at %s overlaps more than 2 other "
+                            "nodes\n",
+                            vtos(v15->mConstant.mOrigin));
+                        ++iErrorCount;
+                    }
+                    else
+                    {
+                        v15->mConstant.mOverlapNode[1].mValue =
+                            cur->mHandle.mValue;
+                    }
+                }
+                else
+                {
+                    v15->mConstant.mOverlapNode[0].mValue =
+                        cur->mHandle.mValue;
+                }
+            }
+        }
+    }
+    if (iErrorCount != 0)
+    {
+        if (g_ignorePathErrors.integer != 0)
+        {
+            level.pathsInvalid = true;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 3257;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                    "%d duplicate/overlap node errors.  Check log for list "
+                    "to fix.\n",
+                    iErrorCount))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x00784AB0
+bool PathNodeMgr::SetupLevelPaths()
+{
+    InitLinkInfoArray();
+    level.pathsInited = false;
+    level.pathsInvalid = true;
+    level.pathsConnected = false;
+    PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+    if (mLevelTOC == nullptr)
+        return false;
+    PathNodes::TOC2* mLevelTOC2 = this->mLevelTOC2;
+    if (mLevelTOC2 == nullptr)
+        return false;
+    if (mLevelTOC->mVersion != 15)
+    {
+        G_Printf(
+            "^1WARNING: Path data is an old version #%i. Should be #%i. It "
+            "needs to be rebuilt.\n",
+            mLevelTOC->mVersion, 15);
+        return false;
+    }
+    if (mLevelTOC2->mVersion != 15)
+    {
+        G_Printf(
+            "^1WARNING: Path data is an old version #%i. Should be #%i. It "
+            "needs to be rebuilt.\n",
+            15, 15);
+        return false;
+    }
+    if (mLevelTOC->mNodeCount >= 2048)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)9;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 470;
+        AeAssert::gCurrentExpr = "mLevelTOC->mNodeCount < 2048";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("To many path nodes. More then %i", 2048))
+            __debugbreak();
+    }
+    for (int i = 0; i < this->mLevelTOC->mNodeCount; ++i)
+    {
+        PathNodes::TOC1* v6 = this->mLevelTOC;
+        PathNodes::PathNode* mNodes = v6->mNodes;
+        PathNodes::PathLink* mLinks = mNodes[i].mConstant.mLinks;
+        if ((intptr_t)mLinks + mNodes[i].mConstant.mTotalLinkCount - 1
+            >= v6->mLinkCount)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 480;
+            AeAssert::gCurrentExpr =
+                "index + (mLevelTOC->mNodes[i].mConstant.mTotalLinkCount - "
+                "1) < mLevelTOC->mLinkCount";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        this->mLevelTOC->mNodes[i].mConstant.mLinks =
+            &this->mLevelTOC->mLinks[(intptr_t)mLinks];
+    }
+    if (this->mLevelTOC->mTreeNodes == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 485;
+        AeAssert::gCurrentExpr = "mLevelTOC->mTreeNodes";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    for (int j = 0; j < this->mLevelTOC->mNodeCount; ++j)
+    {
+        PathNodes::TOC1* v10 = this->mLevelTOC;
+        PathNodes::PathNode** mTreeNodes = v10->mTreeNodes;
+        mTreeNodes[j] = &v10->mNodes[(intptr_t)mTreeNodes[j]];
+    }
+    PathNodes::TOC1* v14 = this->mLevelTOC;
+    if (v14->mNodeCount != 0)
+    {
+        this->mLevelTOC->mTree =
+            CreateTree_r(v14->mTreeNodes, &this->mLevelTOC->mTree);
+    }
+    else
+    {
+        this->mLevelTOC->mTree = nullptr;
+        this->mLevelTOC->mTreeNodes = nullptr;
+    }
+    PathNodes::TOC1* v15 = this->mLevelTOC;
+    for (int ia = 0; ia < v15->mNodeCount; ++ia)
+    {
+        PathNodes::PathNode* node = &v15->mNodes[ia];
+        if (node->mConstant.mTargetName.mBlock != nullptr)
+            node->mConstant.mTargetName = Broc::string(
+                (const char*)((char*)node->mConstant.mTargetName.mBlock - 1
+                              + (intptr_t)v15->mStrings));
+        if (node->mConstant.mScriptNoteWorthy.mBlock != nullptr)
+            node->mConstant.mScriptNoteWorthy = Broc::string(
+                (const char*)((char*)node->mConstant.mScriptNoteWorthy.mBlock
+                                  - 1
+                              + (intptr_t)this->mLevelTOC->mStrings));
+        if (node->mConstant.mTarget.mBlock != nullptr)
+            node->mConstant.mTarget = Broc::string(
+                (const char*)((char*)node->mConstant.mTarget.mBlock - 1
+                              + (intptr_t)this->mLevelTOC->mStrings));
+        if (node->mConstant.mAnimScript.mBlock != nullptr)
+            node->mConstant.mAnimScript = Broc::string(
+                (const char*)((char*)node->mConstant.mAnimScript.mBlock - 1
+                              + (intptr_t)this->mLevelTOC->mStrings));
+        if (node->mConstant.mOnGoalCallback.mBlock != nullptr)
+            node->mConstant.mOnGoalCallback = Broc::string(
+                (const char*)((char*)node->mConstant.mOnGoalCallback.mBlock
+                                  - 1
+                              + (intptr_t)this->mLevelTOC->mStrings));
+        if (node->mConstant.mReserveName.mBlock != nullptr)
+            node->mConstant.mReserveName = Broc::string(
+                (const char*)((char*)node->mConstant.mReserveName.mBlock - 1
+                              + (intptr_t)this->mLevelTOC->mStrings));
+    }
+    if (level.pathsInited && this->mLevelTOC != nullptr)
+    {
+        InitScriptVariables(0);
+        if (this->mLevelTOC != nullptr)
+            InitScriptFunctions(0);
+    }
+    InitLinkCounts(0);
+    level.pathsInvalid = false;
+    return true;
 }

@@ -536,7 +536,13 @@ struct actor_s {
     int16_t        chainFallback;                // +0x850
     uint8_t        goalRadiusOnly;               // +0x852
     uint8_t        bAtGoal;                      // +0x853
-    uint8_t        _pad854[0x8A8 - 0x854];
+    PathNodes::PathNode* lastStandingNode;       // +0x854
+    actor_s*       pRealCloseActor;              // +0x858
+    int32_t        iCloseActorMoveAwayCheck;     // +0x85C
+    float          fBravery;                     // +0x860
+    int32_t        bPacifist;                    // +0x864
+    int32_t        iPacifistWait;                // +0x868
+    uint8_t        _pad86C[0x8A8 - 0x86C];
     float          fVisibilityThreshold;          // +0x8A8
     float          fFovDot;                      // +0x8AC
     float          fMaxSightDistSqrd;            // +0x8B0
@@ -544,7 +550,12 @@ struct actor_s {
     sentient_info_array sentientInfo;            // +0x8CC (0xC0 bytes)
     uint8_t        _pad98C[0xA2C - 0x98C];
     int            iFollowSlot;                  // +0xA2C
-    uint8_t        _padA30[0xA84 - 0xA30];
+    float          vGrenadeTossPos[3];            // +0xA30
+    int            iGrenadeWeaponIndex;           // +0xA3C
+    Broc::string   mGrenadeTossMethod;            // +0xA40
+    int32_t        bGrenadeTossValid;             // +0xA44
+    int            iGrenadeAmmo;                  // +0xA48
+    uint8_t        _padA4C[0xA84 - 0xA4C];
     int32_t        iSpawnTime;                   // +0xA84
     uint8_t        _padA88[0xA98 - 0xA88];
     uint8_t        mg42stayput;                  // +0xA98
