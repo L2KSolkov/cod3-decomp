@@ -8,8 +8,38 @@
 #include "aeps/apsMemory.h"
 #include "aeps/apsCommon.h"
 #include "aeps/apsEffect.h"
+#include "core/ae_array.h"
 
 #include <stdint.h>
+
+// AeAssert (game.o defines the real symbols; local decls only)
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmtstring, ...);
+bool Warning(const char* fmtstring, ...);
+}
+
+// ae_pair (class tag V per ?sArray@ParticleEffect mangling)
+template <typename A, typename B>
+class ae_pair {
+public:
+    A first;
+    B second;
+};
+
+// ae_vector (ae_array.h-style; ?gSortedParticleEffectList@@3V?$ae_vector@PAVParticleEffect@@@@A)
+template <typename T>
+class ae_vector {
+public:
+    T* mElements;   // +0x00
+    int mSize;      // +0x04
+    int mCapacity;  // +0x08
+};
 
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 
@@ -96,12 +126,201 @@ public:
     void* mRaycastData;        // +0x38
 
     ~ParticleEffect();         // ??1ParticleEffect@@QAE@XZ
+    unsigned int GetSortKey(); // ?GetSortKey@ParticleEffect@@QAEIXZ
+    ParticleEffect(bool bInGame);  // ??0ParticleEffect@@QAE@_N@Z
+    void Report();                 // ?Report@ParticleEffect@@QAEXXZ
     static void DestroyArray();  // ?DestroyArray@ParticleEffect@@SAXXZ
+    static ParticleEffect* New();  // ?New@ParticleEffect@@SAPAV1@XZ
+    static void Delete(ParticleEffect* pEffect);  // ?Delete@ParticleEffect@@SAXPAV1@@Z
+    static bool IsFreePoolEmpty();  // ?IsFreePoolEmpty@ParticleEffect@@SA_NXZ
     static ParticleEffect* sArrayData;  // ?sArrayData@ParticleEffect@@2PAV1@A @ 0xF74460
+    static ae_sized_array<ae_pair<short, short>, 256> sArray;  // ?sArray@ParticleEffect@@2V?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@A @ 0xF751A8
 };
 static_assert(sizeof(ParticleEffect) == 0x3C, "ParticleEffect size mismatch");
 
 ParticleEffect* ParticleEffect::sArrayData;
+ae_sized_array<ae_pair<short, short>, 256> ParticleEffect::sArray;
+
+// ParticleEffect pool statics (render.o data)
+ae_vector<ParticleEffect*> gSortedParticleEffectList;  // @ 0xF74484
+int gDumpParticleEffectList;                           // @ 0xF74464
+
+// tlPrintf (core.o)
+void tlPrintf(const char* fmt, ...);
+
+ParticleEffect::ParticleEffect(bool bInGame)
+{
+    mDObjHandle = nullptr;
+    mEntHandle = nullptr;
+    mFlags = 0;
+    if (!bInGame)
+    {
+        mIndexA = -1;
+        mIndexB = -1;
+    }
+    mEffect = nullptr;
+    mDObjHandle = nullptr;
+    mEntHandle = nullptr;
+    mPoPtr = nullptr;
+    mPakId = -1;
+    mFlags = 0;
+    mFlags |= 0x10u;
+    mRaycastData = nullptr;
+    cached_pos[3] = -1.0f;
+    culled = 0;
+}
+
+void ParticleEffect::Report()
+{
+    const char* mName;
+    if (mEffect != nullptr)
+        mName = mEffect->mTemplate->GetName();
+    else
+        mName = "unknown";
+    if (mEffect != nullptr)
+        tlPrintf("0x%08x 0x%08x %s\n", this, mEffect->mSortKey._32, mName);
+    else
+        tlPrintf("0x%08x 0x%08x %s\n", this, 0xFFFFFFFFu, mName);
+}
+
+ParticleEffect* ParticleEffect::New()
+{
+    if (ParticleEffect::sArrayData == nullptr)
+        return nullptr;
+    if (ParticleEffect::sArray.m_size == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 174;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored() && AeAssert::Warning("ParticleEffect pool is empty"))
+            __debugbreak();
+        return nullptr;
+    }
+    short second = ParticleEffect::sArray.m_elements[--ParticleEffect::sArray.m_size].second;
+    ParticleEffect* v2 = &ParticleEffect::sArrayData[second];
+    if (ParticleEffect::sArray.m_elements[ParticleEffect::sArray.m_size].first != v2->mIndexA
+        || second != v2->mIndexB)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 183;
+        AeAssert::gCurrentExpr = "index == pEffect->mIndex";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("index mismatch"))
+            __debugbreak();
+    }
+    if (v2 != nullptr)
+    {
+        v2->mDObjHandle = nullptr;
+        v2->mEntHandle = nullptr;
+        v2->mFlags = 0;
+        v2->mEffect = nullptr;
+        v2->mDObjHandle = nullptr;
+        v2->mEntHandle = nullptr;
+        v2->mPoPtr = nullptr;
+        v2->mPakId = -1;
+        v2->mFlags = 0;
+        v2->mFlags |= 0x10u;
+        v2->mRaycastData = nullptr;
+        v2->cached_pos[3] = -1.0f;
+        v2->culled = 0;
+    }
+    return v2;
+}
+
+void ParticleEffect::Delete(ParticleEffect* pEffect)
+{
+    if (pEffect != nullptr)
+    {
+        if (pEffect->mIndexA == -1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+            AeAssert::gCurrentLine = 197;
+            AeAssert::gCurrentExpr = "-1 != pEffect->mIndex.first";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("bad index"))
+                __debugbreak();
+        }
+        pEffect->~ParticleEffect();
+        pEffect->mIndexA = (short)ParticleEffect::sArray.m_size;
+        ae_pair<short, short> idx;
+        idx.first = pEffect->mIndexA;
+        idx.second = pEffect->mIndexB;
+        ParticleEffect::sArray.push_back(idx);
+    }
+}
+
+bool ParticleEffect::IsFreePoolEmpty()
+{
+    return ParticleEffect::sArrayData == nullptr || ParticleEffect::sArray.m_size == 0;
+}
+
+// ============================================================================
+// FX_ElectEffectToKill - ea: 0x006C75B0
+// ============================================================================
+ParticleEffect* FX_ElectEffectToKill(apsEffectTemplate* tmpl)
+{
+    if (gSortedParticleEffectList.mSize == 0)
+        return nullptr;
+    ParticleEffect** v1 = &gSortedParticleEffectList.mElements[gSortedParticleEffectList.mSize - 1];
+    if (v1 == gSortedParticleEffectList.mElements)
+        return nullptr;
+    ParticleEffect* result = nullptr;
+    while (1)
+    {
+        apsEffect* mEffect = (*v1)->mEffect;
+        if (mEffect != nullptr)
+        {
+            unsigned int key = mEffect->mSortKey._32;
+            if ((key >> 25) <= (unsigned int)tmpl->mPriority)
+                return result;
+            if ((0x1000000u & key) != 0)
+                break;
+        }
+        ParticleEffect** v5 = v1--;
+        if (v5 == gSortedParticleEffectList.mElements)
+            return result;
+    }
+    return *v1;
+}
+
+// ============================================================================
+// FX_DumpParticleEffectList - ea: 0x006C7620
+// ============================================================================
+void FX_DumpParticleEffectList()
+{
+    if (gDumpParticleEffectList != 0)
+    {
+        ParticleEffect** mElements = gSortedParticleEffectList.mElements;
+        ParticleEffect** end = &gSortedParticleEffectList.mElements[gSortedParticleEffectList.mSize];
+        gDumpParticleEffectList = 0;
+        if (gSortedParticleEffectList.mElements != end)
+        {
+            do
+            {
+                apsEffect* mEffect = (*mElements)->mEffect;
+                const char* mName;
+                if (mEffect != nullptr)
+                    mName = mEffect->mTemplate->GetName();
+                else
+                    mName = "unknown";
+                unsigned int key;
+                if (mEffect != nullptr)
+                    key = mEffect->mSortKey._32;
+                else
+                    key = 0xFFFFFFFFu;
+                tlPrintf("0x%08x 0x%08x %s\n", *mElements++, key, mName);
+            } while (mElements != end);
+        }
+    }
+}
+
+unsigned int ParticleEffect::GetSortKey()
+{
+    if (mEffect != nullptr)
+        return mEffect->mSortKey._32;
+    return 0xFFFFFFFFu;
+}
 
 ParticleEffect::~ParticleEffect()
 {
