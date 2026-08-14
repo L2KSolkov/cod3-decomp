@@ -148,6 +148,7 @@ enum panel_layer {
     PANEL_LAYER_5 = 5,
     PANEL_LAYER_6 = 6,
     PANEL_LAYER_7 = 7,
+    PANEL_LAYER_COMPASS_ICONS = 7,
     PANEL_LAYER_8 = 8,
     PANEL_LAYER_IGO = 8,
     PANEL_LAYER_TOTAL = 9,
@@ -2407,3 +2408,172 @@ private:
 };
 static_assert(sizeof(IGOGrenadeIndicator) == 0x4C,
               "IGOGrenadeIndicator size mismatch");
+
+// ============================================================================
+// hud_type - in-game HUD mode (verified against IDA enum)
+// ============================================================================
+enum hud_type {
+    HUD_TYPE_NORMAL = 0,
+    HUD_TYPE_LIBERATOR_BOMBER = 1,
+    HUD_TYPE_LIBERATOR_GROUND = 2,
+    HUD_TYPE_TUNISIA = 3,
+    HUD_TYPE_SPECTATE = 4,
+    HUD_TYPE_INTERMISSION = 5,
+    HUD_TYPE_NUM = 6,
+};
+
+// ============================================================================
+// IGOCompassWidget (5256 bytes) - verified against IDA
+// ============================================================================
+class IGOCompassWidget : public IGOWidget {
+public:
+    struct WorldIcon {
+        PanelQuad* icon;    // +0x00
+        uint8_t    height;  // +0x04
+        uint8_t    alpha;   // +0x05
+    };
+
+    int16_t  m_hideCompassStarActive;   // +0x0C
+    int16_t  m_hideCompassStarIndex;    // +0x0E
+    int      m_hideUpdatedText;         // +0x10
+    int      m_hideUpdatedTextIndex;    // +0x14
+    bool     mDrawVehMap;               // +0x18
+    PanelQuad* objectiveIcons[27];      // +0x1C
+    WorldIcon worldIcons[27];           // +0x88
+    PanelQuad* compass;                 // +0x160
+    PanelQuad* pointer;                 // +0x164
+    PanelQuad* frame;                   // +0x168
+    float    compass_speed;             // +0x16C
+    float    compass_yaw;               // +0x170
+    bool     DrawObjectivesOnly;        // +0x174
+    struct IGOFriendly {
+        float x;          // +0x00
+        float y;          // +0x04
+        float alpha;      // +0x08
+        bool  draw;       // +0x0C
+        int   last_update;// +0x10
+        float last_yaw;   // +0x14
+        float last_pos[2];// +0x18
+        int   flags;      // +0x20
+    } friendlies[32];     // +0x178 (1152 bytes)
+    struct IGOEnemy {
+        float x;          // +0x00
+        float y;          // +0x04
+        float alpha;      // +0x08
+        bool  draw;       // +0x0C
+        int   last_update;// +0x10
+        float last_yaw;   // +0x14
+        float last_pos[2];// +0x18
+        int   flags;      // +0x20
+        int   last_shot_time;  // +0x24
+    } gEnemies[32];       // +0x5F8 (1280 bytes)
+    struct IGOObjective {
+        float x;          // +0x00
+        float y;          // +0x04
+        float alpha;      // +0x08
+        bool  draw;       // +0x0C
+        float ring_alpha; // +0x10
+        float ring_scale; // +0x14
+        bool  draw_ring;  // +0x18
+        bool  up;         // +0x19
+        bool  down;       // +0x1A
+        int   state;      // +0x1C
+        int   worldState; // +0x20
+    } objectives[17];     // +0x1200 (612 bytes)
+    IGOFriendly enemyTanks[25];  // +0xAF8 (900 bytes)
+    IGOFriendly tanks[25];       // +0xE7C (900 bytes)
+    float global_alpha;   // +0x1464
+    float draw_time;      // +0x1468
+    int   mViewport;      // +0x146C
+    float last_player_pos[3];   // +0x1470
+    float last_player_angles[3];// +0x147C
+
+    IGOCompassWidget(int client);  // 0x567D00
+    virtual void Init(PanelFile* panel);              // 0x598030
+    virtual void Update(float time_inc);              // 0x58ADB0
+    virtual void Draw();                              // 0x58B100
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x5840B0
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x58A050
+    void Draw3DObjectiveLocations();                  // 0x590BF0
+};
+static_assert(sizeof(IGOCompassWidget) == 0x1488,
+              "IGOCompassWidget size mismatch");
+
+// ============================================================================
+// IGOFrontEnd - in-game overlay front end (168 bytes) - verified against IDA
+// ============================================================================
+class IGOFrontEnd : public PanelFileUser {
+public:
+    IGOCompassWidget*  compassWidget[1];       // +0x04
+    IGOJeepMapWidget*  jeepMapWidget[1];       // +0x08
+    IGOStanceWidget*   stanceWidget[1];        // +0x0C
+    IGOHealthWidget*   healthWidget[1];        // +0x10
+    IGOAmmoWidget*     ammoWidget[1];          // +0x14
+    IGOWeaponNameWidget* weaponNameWidget[1];  // +0x18
+    IGOHintWidget*     hintWidget[1];          // +0x1C
+    IGOTankHealthWidget* tankHealthWidget;     // +0x20
+    IGOTankLoadingWidget* tankLoadingWidget[1];// +0x24
+    IGOGrenadeWidget*  grenadeWidget[1];       // +0x28
+    IGOGrenadeCookWidget* grenadeCookWidget[1];// +0x2C
+    IGOTankIconWidget* tankIconWidget[1];      // +0x30
+    FEMultiLineText*   hintText[1];            // +0x34
+    IGOTankReticleWidget* mTankReticleWidget[1];  // +0x38
+    IGOGrenadeIndicator* mGrenadeIndicator[1]; // +0x3C
+    IGOVoipList*       mVoipList[1];           // +0x40
+    int                actionHintText[1];     // +0x44
+    IGOTimerWidget*    mTimerWidget[1];        // +0x48
+    IGOInGameScoreWidget* mGameScoreWidget[1]; // +0x4C
+    IGOHeadIcons*      mHeadIcons[1];          // +0x50
+    IGOItemIcons*      mItemIcons[1];          // +0x54
+    IGORankWidget*     mRankWidget[1];         // +0x58
+    IGOVoteWidget*     mVoteWidget[1];         // +0x5C
+    IGOSpecialWeaponWidget* mSpecialWeaponWidget[1];  // +0x60
+    IGOHQProgressBarWidget* mHQProgressBarWidget[1];  // +0x64
+    IGORaiseFlagWidget* mRaiseFlagWidget[1];   // +0x68
+    IGOWarStatusWidget* mWarStatusWidget[1];   // +0x6C
+    IGOActionHintWidget* actionHintWidget[1];  // +0x70
+    PanelFile*         panel;                  // +0x74
+    PanelFile*         iconsPanel;             // +0x78
+    PanelFile*         mpPanel;                // +0x7C
+    PanelFile*         spJeepMapPanel;         // +0x80
+    char*              activate_key;           // +0x84
+    char*              run_key;                // +0x88
+    char*              speed_key;              // +0x8C
+    bool               key_bindings_set;       // +0x90
+    int                previous_widescreen;    // +0x94
+    int                previous_splitscreen;   // +0x98
+    float              hintTimer[1];           // +0x9C
+    int                actionHintTimer[1];     // +0xA0
+    hud_type           current_type[1];        // +0xA4
+
+    virtual ~IGOFrontEnd();                    // slot 3 0x564F70
+    virtual void Update(float time_inc);        // slot 4 0x5821F0
+    virtual void UpdateInScene(float time_inc); // slot 5 0x565140
+    virtual void Draw(int client);              // slot 6 0x565350
+    virtual void DrawHint(int viewport);        // slot 7 0x565300
+
+    IGOFrontEnd();                              // 0x59CA80
+    virtual void SetPanelFile(PanelFile* pf);   // slot 0 0x59C0F0
+    virtual void PanelFileUnloaded(PanelFile* pf);  // slot 1 0x565110
+    virtual void UpdateWidescreen(bool widescreen); // slot 2 0x577200
+    void SetTutorialText(int ref, int viewport);// 0x565180
+    void SetActionHint(int ref, int viewport);  // 0x565260
+    void Draw3DWorldSpace();                    // 0x565660
+    void Draw3DScreenSpace();                   // 0x5771D0
+    void UpdateSplitScreen();                   // 0x565690
+    void ResetWidgets();                        // 0x565920
+    void TurnOffMostWidgets();                  // 0x565A40
+    void SetForLiberatorBomber();               // 0x565B50
+    void SetForLiberatorGround();               // 0x565B60
+    void SetForTunisia();                       // 0x565BF0
+    void SetHUDType(hud_type ht, int viewport); // 0x565C40
+    void FindKeyBindings();                     // 0x577420
+    void SetFuse(float total, float remain,
+                 int client);                   // 0x5775A0
+    void AddActiveGrenade(const Entity* grenade);  // 0x590AF0
+    void UpdateAfterWeaponsLoaded();            // 0x59C460
+    const char* GetLMGKey();                    // 0x56DE50
+};
+static_assert(sizeof(IGOFrontEnd) == 0xA8, "IGOFrontEnd size mismatch");

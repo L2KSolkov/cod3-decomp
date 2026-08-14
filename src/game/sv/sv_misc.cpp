@@ -117,15 +117,6 @@ bool AARMenuSystem::IsSystemActive()
 {
     return false;
 }
-void IGOFrontEnd::Update(float time_inc)
-{
-    (void)time_inc;
-}
-void IGOFrontEnd::UpdateInScene(float time_inc)
-{
-    (void)time_inc;
-}
-
 // ea: 0x528020
 void MultiplayerMgr::setEnableLinkCheck(bool enabled)
 {
@@ -163,28 +154,6 @@ long __stdcall D3DDevice::PersistDisplay()
 {
     D3DDevice_PersistDisplay();  // void XDK shim (d3d8.h)
     return 0;  // S_OK
-}
-
-// shell.o IGOFrontEnd stubs (real impls in shell.o; ported later)
-void IGOFrontEnd::SetTutorialText(int ref, int viewport)
-{
-    (void)ref; (void)viewport;
-}
-void IGOFrontEnd::SetFuse(float total, float remain, int client)
-{
-    (void)total; (void)remain; (void)client;
-}
-void IGOFrontEnd::AddActiveGrenade(const Entity* grenade)
-{
-    (void)grenade;
-}
-void IGOFrontEnd::SetHUDType(hud_type ht, int viewport)
-{
-    (void)ht; (void)viewport;
-}
-void IGOFrontEnd::UpdateAfterWeaponsLoaded()
-{
-    // stub
 }
 
 // PathNodeMgr stubs (mp_actors.o / path.o; ported later)

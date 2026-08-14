@@ -194,7 +194,16 @@ struct MpPlayerManagerView {
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // mp.o
 };
 
+struct KeyInfoEntry {
+    int   mState;           // +0x00 (low 2 bits down, high 30 repeats)
+    char* mBoundCmdName;    // +0x04
+};
 struct KeyInfo {
+    struct KeyTable {
+        KeyInfoEntry m_elements[256];
+        int          m_size;
+    };
+    static KeyTable mKeys[1];  // ?mKeys@KeyInfo@@0V?$ae_sized_array@V?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@$00@@A (cl.o)
     static int GetKey(const char* boundCmdName, int clnt);  // ?GetKey@KeyInfo@@SAHPBDH@Z
 };
 struct weaponInfo_s {
@@ -268,6 +277,25 @@ extern float dword_F63C54[];  // @ 0xF63C54 (screen y0)
 extern float dword_F63C58[];  // @ 0xF63C58 (screen w)
 extern float dword_F63C5C[];  // @ 0xF63C5C (screen h)
 extern float unk_F63634[];    // @ 0xF63634 (client yaw)
+extern int unk_F6A280[];      // @ 0xF6A280 (previous viewport)
+extern int dword_F64198[];    // @ 0xF64198
+extern vmCvar_t gCvarShowVehMap;  // ?gCvarShowVehMap@@3UvmCvar_t@@A @ 0xEA64B0
+extern int gRenderCG_2D;      // ?gRenderCG_2D@@3HA (g.o)
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);  // g.o
+
+extern char* Key_KeynumToString(int keynum, int bTranslate);  // cl.o
+
+// ngl / view render helpers
+struct nglScene;
+enum nglSceneParamType : int { NGLSCENE_DEFAULTS = 0 };
+extern nglScene* nglListBeginScene(int ParamSource);  // ngl/ngl_scene.h
+extern void nglSetClearFlags(unsigned int ClearFlags);
+extern nglScene* nglListEndScene();
+namespace View {
+void SetViewportClipping(int clientIndex);  // cg.o
+}
+extern int Q_stricmp(const char* s1, const char* s2);  // g.o
+extern vmCvar_t cg_widescreen;  // cg.o
 
 
 struct level_locals_t {
@@ -305,13 +333,6 @@ float GetCurrentHUDXPos(float pos, int window, char justification,
 float GetCurrentHUDYPos(float pos, int window, char justification,
                         float height);    // cg.o
 }
-
-// Minimal IGOCompassWidget view for split-screen width lookup
-// (full layout in the IGOFrontEnd batch).
-struct IGOCompassWidget {
-    uint8_t _pad[0x160];
-    PanelQuad* compass;   // +0x160
-};
 
 // IGORowboatWidget fade timing data (shell.o data, copied from IDA)
 const float sUpArrowFadeInTime = 0.5f;      // 0xDF410C
@@ -816,8 +837,7 @@ void IGOStanceWidget::UpdateWidescreen(bool widescreen, float about_x)
 // ea: 0x005775D0
 void IGOStanceWidget::UpdateSplitScreen(int viewport, int old_viewport)
 {
-    PanelQuad* compass =
-        ((IGOCompassWidget*)g_femanager.IGO->compassWidget[mClient])->compass;
+    PanelQuad* compass = g_femanager.IGO->compassWidget[mClient]->compass;
     float width;
     if (compass != nullptr)
         width = compass->GetInitialWidth() * 0.25f;
@@ -913,8 +933,7 @@ void IGORankWidget::UpdateWidescreen(bool widescreen, float about_x)
 // ea: 0x00577AB0
 void IGORankWidget::UpdateSplitScreen(int viewport, int old_viewport)
 {
-    PanelQuad* compass =
-        ((IGOCompassWidget*)g_femanager.IGO->compassWidget[mClient])->compass;
+    PanelQuad* compass = g_femanager.IGO->compassWidget[mClient]->compass;
     float width;
     if (compass != nullptr)
         width = compass->GetInitialWidth() * 0.25f;
@@ -4461,8 +4480,7 @@ int IGOTankIconWidget::GetVehicleIndex(scr_vehicle_t* vehicle) const
 // ea: 0x005782A0
 void IGOTankIconWidget::UpdateSplitScreen(int viewport, int old_viewport)
 {
-    PanelQuad* compass =
-        ((IGOCompassWidget*)g_femanager.IGO->compassWidget[mClient])->compass;
+    PanelQuad* compass = g_femanager.IGO->compassWidget[mClient]->compass;
     float width;
     if (compass != nullptr)
         width = compass->GetInitialWidth() * 0.5f;
@@ -4846,4 +4864,938 @@ void IGOGrenadeIndicator::UpdateWidescreen(bool widescreen, float about_x)
 {
     mCurrentGrenadeIcon->FattenMeForWidescreen(widescreen, about_x);
     mGrenadeArrow->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ============================================================================
+// IGOFrontEnd
+// ============================================================================
+
+// ea: 0x0059CA80
+IGOFrontEnd::IGOFrontEnd()
+{
+    compassWidget[0] =
+        (IGOCompassWidget*)mem_heap_malloc(0x1488u);
+    if (compassWidget[0] != nullptr)
+        compassWidget[0] =
+            new (compassWidget[0]) IGOCompassWidget(0);
+    else
+        compassWidget[0] = nullptr;
+
+    hintWidget[0] = (IGOHintWidget*)mem_heap_malloc(0x46Cu);
+    if (hintWidget[0] != nullptr)
+        hintWidget[0] = new (hintWidget[0]) IGOHintWidget(0);
+    else
+        hintWidget[0] = nullptr;
+
+    jeepMapWidget[0] = (IGOJeepMapWidget*)mem_heap_malloc(0x50u);
+    if (jeepMapWidget[0] != nullptr)
+        jeepMapWidget[0] = new (jeepMapWidget[0]) IGOJeepMapWidget(0);
+    else
+        jeepMapWidget[0] = nullptr;
+
+    stanceWidget[0] = (IGOStanceWidget*)mem_heap_malloc(0x38u);
+    if (stanceWidget[0] != nullptr)
+        stanceWidget[0] = new (stanceWidget[0]) IGOStanceWidget(0);
+    else
+        stanceWidget[0] = nullptr;
+
+    healthWidget[0] = (IGOHealthWidget*)mem_heap_malloc(0x28u);
+    if (healthWidget[0] != nullptr)
+        healthWidget[0] = new (healthWidget[0]) IGOHealthWidget(0);
+    else
+        healthWidget[0] = nullptr;
+
+    ammoWidget[0] = (IGOAmmoWidget*)mem_heap_malloc(0x28u);
+    if (ammoWidget[0] != nullptr)
+        ammoWidget[0] = new (ammoWidget[0]) IGOAmmoWidget(0);
+    else
+        ammoWidget[0] = nullptr;
+
+    weaponNameWidget[0] = (IGOWeaponNameWidget*)mem_heap_malloc(0x1Cu);
+    if (weaponNameWidget[0] != nullptr)
+        weaponNameWidget[0] =
+            new (weaponNameWidget[0]) IGOWeaponNameWidget(0);
+    else
+        weaponNameWidget[0] = nullptr;
+
+    grenadeWidget[0] = (IGOGrenadeWidget*)mem_heap_malloc(0x44u);
+    if (grenadeWidget[0] != nullptr)
+        grenadeWidget[0] = new (grenadeWidget[0]) IGOGrenadeWidget(0);
+    else
+        grenadeWidget[0] = nullptr;
+
+    grenadeCookWidget[0] = (IGOGrenadeCookWidget*)mem_heap_malloc(0x34u);
+    if (grenadeCookWidget[0] != nullptr)
+        grenadeCookWidget[0] =
+            new (grenadeCookWidget[0]) IGOGrenadeCookWidget(0);
+    else
+        grenadeCookWidget[0] = nullptr;
+
+    hintText[0] = nullptr;
+
+    mGrenadeIndicator[0] = (IGOGrenadeIndicator*)mem_heap_malloc(0x4Cu);
+    if (mGrenadeIndicator[0] != nullptr)
+        mGrenadeIndicator[0] =
+            new (mGrenadeIndicator[0]) IGOGrenadeIndicator(0);
+    else
+        mGrenadeIndicator[0] = nullptr;
+
+    mTankReticleWidget[0] = (IGOTankReticleWidget*)mem_heap_malloc(0x4Cu);
+    if (mTankReticleWidget[0] != nullptr)
+        mTankReticleWidget[0] =
+            new (mTankReticleWidget[0]) IGOTankReticleWidget(0);
+    else
+        mTankReticleWidget[0] = nullptr;
+
+    tankLoadingWidget[0] = (IGOTankLoadingWidget*)mem_heap_malloc(0x18u);
+    if (tankLoadingWidget[0] != nullptr)
+        tankLoadingWidget[0] =
+            new (tankLoadingWidget[0]) IGOTankLoadingWidget(0);
+    else
+        tankLoadingWidget[0] = nullptr;
+
+    tankIconWidget[0] = (IGOTankIconWidget*)mem_heap_malloc(0x9Cu);
+    if (tankIconWidget[0] != nullptr)
+        tankIconWidget[0] = new (tankIconWidget[0]) IGOTankIconWidget(0);
+    else
+        tankIconWidget[0] = nullptr;
+
+    mTimerWidget[0] = (IGOTimerWidget*)mem_heap_malloc(0x24u);
+    if (mTimerWidget[0] != nullptr)
+        mTimerWidget[0] = new (mTimerWidget[0]) IGOTimerWidget(0);
+    else
+        mTimerWidget[0] = nullptr;
+
+    mGameScoreWidget[0] = (IGOInGameScoreWidget*)mem_heap_malloc(0x28u);
+    if (mGameScoreWidget[0] != nullptr)
+        mGameScoreWidget[0] =
+            new (mGameScoreWidget[0]) IGOInGameScoreWidget(0);
+    else
+        mGameScoreWidget[0] = nullptr;
+
+    mRankWidget[0] = (IGORankWidget*)mem_heap_malloc(0x20u);
+    if (mRankWidget[0] != nullptr)
+        mRankWidget[0] = new (mRankWidget[0]) IGORankWidget(0);
+    else
+        mRankWidget[0] = nullptr;
+
+    mVoteWidget[0] = (IGOVoteWidget*)mem_heap_malloc(0x10u);
+    if (mVoteWidget[0] != nullptr)
+        mVoteWidget[0] = new (mVoteWidget[0]) IGOVoteWidget(0);
+    else
+        mVoteWidget[0] = nullptr;
+
+    mSpecialWeaponWidget[0] = (IGOSpecialWeaponWidget*)mem_heap_malloc(0x28u);
+    if (mSpecialWeaponWidget[0] != nullptr)
+        mSpecialWeaponWidget[0] =
+            new (mSpecialWeaponWidget[0]) IGOSpecialWeaponWidget(0);
+    else
+        mSpecialWeaponWidget[0] = nullptr;
+
+    mWarStatusWidget[0] = (IGOWarStatusWidget*)mem_heap_malloc(0xA4u);
+    if (mWarStatusWidget[0] != nullptr)
+        mWarStatusWidget[0] =
+            new (mWarStatusWidget[0]) IGOWarStatusWidget(0);
+    else
+        mWarStatusWidget[0] = nullptr;
+
+    mRaiseFlagWidget[0] = (IGORaiseFlagWidget*)mem_heap_malloc(0x18u);
+    if (mRaiseFlagWidget[0] != nullptr)
+        mRaiseFlagWidget[0] =
+            new (mRaiseFlagWidget[0]) IGORaiseFlagWidget(0);
+    else
+        mRaiseFlagWidget[0] = nullptr;
+
+    mHQProgressBarWidget[0] = (IGOHQProgressBarWidget*)mem_heap_malloc(0x28u);
+    if (mHQProgressBarWidget[0] != nullptr)
+        mHQProgressBarWidget[0] =
+            new (mHQProgressBarWidget[0]) IGOHQProgressBarWidget(0);
+    else
+        mHQProgressBarWidget[0] = nullptr;
+
+    mHeadIcons[0] = (IGOHeadIcons*)mem_heap_malloc(0x10Cu);
+    if (mHeadIcons[0] != nullptr)
+        mHeadIcons[0] = new (mHeadIcons[0]) IGOHeadIcons(0);
+    else
+        mHeadIcons[0] = nullptr;
+
+    mItemIcons[0] = (IGOItemIcons*)mem_heap_malloc(0x1Cu);
+    if (mItemIcons[0] != nullptr)
+        mItemIcons[0] = new (mItemIcons[0]) IGOItemIcons(0);
+    else
+        mItemIcons[0] = nullptr;
+
+    mVoipList[0] = (IGOVoipList*)mem_heap_malloc(0xB8u);
+    if (mVoipList[0] != nullptr)
+        mVoipList[0] = new (mVoipList[0]) IGOVoipList(0);
+    else
+        mVoipList[0] = nullptr;
+
+    actionHintWidget[0] = (IGOActionHintWidget*)mem_heap_malloc(0x20u);
+    if (actionHintWidget[0] != nullptr)
+        actionHintWidget[0] =
+            new (actionHintWidget[0]) IGOActionHintWidget(0);
+    else
+        actionHintWidget[0] = nullptr;
+
+    tankHealthWidget = (IGOTankHealthWidget*)mem_heap_malloc(0x20u);
+    if (tankHealthWidget != nullptr)
+        tankHealthWidget = new (tankHealthWidget) IGOTankHealthWidget(0);
+    else
+        tankHealthWidget = nullptr;
+
+    panel = nullptr;
+    iconsPanel = nullptr;
+    mpPanel = nullptr;
+    spJeepMapPanel = nullptr;
+    activate_key = (char*)mem_heap_malloc(8u);
+    activate_key[0] = 0;
+    run_key = (char*)mem_heap_malloc(8u);
+    run_key[0] = 0;
+    speed_key = (char*)mem_heap_malloc(8u);
+    speed_key[0] = 0;
+    key_bindings_set = false;
+    previous_splitscreen = 0;
+    previous_widescreen = 0;
+    actionHintTimer[0] = -1;
+    current_type[0] = HUD_TYPE_NORMAL;
+    hintTimer[0] = -1.0f;
+}
+
+// ea: 0x00564F70
+IGOFrontEnd::~IGOFrontEnd()
+{
+    if (compassWidget[0] != nullptr)
+        delete compassWidget[0];
+    if (hintWidget[0] != nullptr)
+        delete hintWidget[0];
+    if (jeepMapWidget[0] != nullptr)
+        delete jeepMapWidget[0];
+    if (stanceWidget[0] != nullptr)
+        delete stanceWidget[0];
+    if (healthWidget[0] != nullptr)
+        delete healthWidget[0];
+    if (ammoWidget[0] != nullptr)
+        delete ammoWidget[0];
+    if (weaponNameWidget[0] != nullptr)
+        delete weaponNameWidget[0];
+    if (grenadeWidget[0] != nullptr)
+        delete grenadeWidget[0];
+    if (grenadeCookWidget[0] != nullptr)
+        delete grenadeCookWidget[0];
+    if (hintText[0] != nullptr)
+        delete hintText[0];
+    if (tankLoadingWidget[0] != nullptr)
+        delete tankLoadingWidget[0];
+    if (tankIconWidget[0] != nullptr)
+        delete tankIconWidget[0];
+    if (mTankReticleWidget[0] != nullptr)
+        delete mTankReticleWidget[0];
+    if (mGrenadeIndicator[0] != nullptr)
+        delete mGrenadeIndicator[0];
+    if (mTimerWidget[0] != nullptr)
+        delete mTimerWidget[0];
+    if (mGameScoreWidget[0] != nullptr)
+        delete mGameScoreWidget[0];
+    if (mRankWidget[0] != nullptr)
+        delete mRankWidget[0];
+    if (mVoteWidget[0] != nullptr)
+        delete mVoteWidget[0];
+    if (mSpecialWeaponWidget[0] != nullptr)
+        delete mSpecialWeaponWidget[0];
+    if (mRaiseFlagWidget[0] != nullptr)
+        delete mRaiseFlagWidget[0];
+    if (mHQProgressBarWidget[0] != nullptr)
+        delete mHQProgressBarWidget[0];
+    if (mWarStatusWidget[0] != nullptr)
+        delete mWarStatusWidget[0];
+    if (mHeadIcons[0] != nullptr)
+        delete mHeadIcons[0];
+    if (mItemIcons[0] != nullptr)
+        delete mItemIcons[0];
+    if (mVoipList[0] != nullptr)
+        delete mVoipList[0];
+    if (actionHintWidget[0] != nullptr)
+        delete actionHintWidget[0];
+    if (tankHealthWidget != nullptr)
+        delete tankHealthWidget;
+    mem_heap_free(activate_key);
+    mem_heap_free(run_key);
+    mem_heap_free(speed_key);
+}
+
+// ea: 0x00565110
+void IGOFrontEnd::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    panel = nullptr;
+    if (hintText[0] != nullptr)
+        delete hintText[0];
+    hintText[0] = nullptr;
+}
+
+// ea: 0x00565140
+void IGOFrontEnd::UpdateInScene(float time_inc)
+{
+    if (mHeadIcons[currCl] != nullptr)
+        mHeadIcons[currCl]->Update(time_inc);
+    if (mItemIcons[currCl] != nullptr)
+        mItemIcons[currCl]->Update(time_inc);
+}
+
+// ea: 0x00565180
+void IGOFrontEnd::SetTutorialText(int ref, int viewport)
+{
+    if (viewport != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOFrontEnd.cpp";
+        AeAssert::gCurrentLine = 361;
+        AeAssert::gCurrentExpr = "viewport >= 0 && viewport < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "SetTutorialText called for a non local player"))
+            __debugbreak();
+    }
+    if (viewport == 0)
+    {
+        if (ref == -1)
+        {
+            hintText[0]->SetTextNoLocalize(defaultFileName);
+            hintTimer[0] = -1.0f;
+        }
+        else
+        {
+            const char* STBString =
+                STBManager::sInst->GetSTBString((unsigned int)ref);
+            if (STBString != nullptr)
+                hintText[0]->SetTextBox(STBString, 400, -1082130432);
+            else
+                hintText[0]->SetText("STRING NOT FOUND!");
+            hintTimer[0] = 0.0f;
+        }
+    }
+}
+
+// ea: 0x00565260
+void IGOFrontEnd::SetActionHint(int ref, int viewport)
+{
+    if (viewport != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOFrontEnd.cpp";
+        AeAssert::gCurrentLine = 387;
+        AeAssert::gCurrentExpr = "viewport >= 0 && viewport < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "SetActionHint called for a non local player"))
+            __debugbreak();
+    }
+    if (viewport == 0)
+    {
+        if (ref == -1)
+        {
+            actionHintText[0] = 0;
+            actionHintTimer[0] = -1;
+        }
+        else
+        {
+            actionHintText[0] = ref;
+            actionHintTimer[0] = level.time;
+        }
+    }
+}
+
+// ea: 0x00565300
+void IGOFrontEnd::DrawHint(int viewport)
+{
+    if (dword_F64198[1580 * currCl] == 0 && hintTimer[viewport] > -1.0f)
+    {
+        if (hintText[viewport] != nullptr)
+            hintText[viewport]->Draw();
+    }
+}
+
+// ea: 0x00565350
+void IGOFrontEnd::Draw(int client)
+{
+    if (gRenderCG_2D == 0)
+        return;
+    if (g_femanager.mDontDrawHud)
+        return;
+    if (EntityManager::sInst->GetPlayer(client) != nullptr
+        && EntityManager::sInst->GetPlayer(client)->client != nullptr)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(client);
+        if (!IsPlayerFullySeatedInVehicle(Player))
+            return;
+    }
+    nglListBeginScene(NGLSCENE_DEFAULTS);
+    nglSetClearFlags(3u);
+    View::SetViewportClipping(client);
+    if (compassWidget[currCl] != nullptr)
+    {
+        if (compassWidget[currCl]->IsShown())
+            compassWidget[currCl]->Draw();
+    }
+    if (gCvarShowVehMap.integer == 1)
+    {
+        if (jeepMapWidget[currCl] != nullptr
+            && jeepMapWidget[currCl]->IsShown())
+            jeepMapWidget[currCl]->Draw();
+    }
+    else if (stanceWidget[currCl] != nullptr
+             && stanceWidget[currCl]->IsShown())
+    {
+        stanceWidget[currCl]->Draw();
+    }
+    if (healthWidget[currCl] != nullptr && healthWidget[currCl]->IsShown())
+        healthWidget[currCl]->Draw();
+    if (ammoWidget[currCl] != nullptr && ammoWidget[currCl]->IsShown())
+        ammoWidget[currCl]->Draw();
+    if (weaponNameWidget[currCl] != nullptr
+        && weaponNameWidget[currCl]->IsShown())
+        weaponNameWidget[currCl]->Draw();
+    if (hintWidget[currCl] != nullptr && hintWidget[currCl]->IsShown())
+        hintWidget[currCl]->Draw();
+    if (grenadeWidget[currCl] != nullptr && grenadeWidget[currCl]->IsShown())
+        grenadeWidget[currCl]->Draw();
+    if (tankIconWidget[currCl] != nullptr
+        && tankIconWidget[currCl]->IsShown())
+        tankIconWidget[currCl]->Draw();
+    if (grenadeCookWidget[currCl] != nullptr
+        && grenadeCookWidget[currCl]->IsShown())
+        grenadeCookWidget[currCl]->Draw();
+    if (mGrenadeIndicator[currCl] != nullptr)
+        mGrenadeIndicator[currCl]->Draw();
+    if (mTankReticleWidget[currCl] != nullptr)
+        mTankReticleWidget[currCl]->Draw();
+    if (mTimerWidget[currCl] != nullptr)
+        mTimerWidget[currCl]->Draw();
+    if (mGameScoreWidget[currCl] != nullptr)
+        mGameScoreWidget[currCl]->Draw();
+    if (mRankWidget[currCl] != nullptr)
+        mRankWidget[currCl]->Draw();
+    if (mVoteWidget[currCl] != nullptr)
+        mVoteWidget[currCl]->Draw();
+    if (mSpecialWeaponWidget[currCl] != nullptr)
+        mSpecialWeaponWidget[currCl]->Draw();
+    if (tankLoadingWidget[currCl] != nullptr)
+        tankLoadingWidget[currCl]->Draw();
+    if (mRaiseFlagWidget[currCl] != nullptr)
+        mRaiseFlagWidget[currCl]->Draw();
+    if (mHQProgressBarWidget[currCl] != nullptr)
+        mHQProgressBarWidget[currCl]->Draw();
+    if (mWarStatusWidget[currCl] != nullptr)
+        mWarStatusWidget[currCl]->Draw();
+    if (mVoipList[currCl] != nullptr)
+        mVoipList[currCl]->Draw();
+    if (actionHintWidget[currCl] != nullptr)
+        actionHintWidget[currCl]->Draw();
+    nglListEndScene();
+}
+
+// ea: 0x00565660
+void IGOFrontEnd::Draw3DWorldSpace()
+{
+    if (mHeadIcons[currCl] != nullptr)
+        mHeadIcons[currCl]->Draw();
+    if (mItemIcons[currCl] != nullptr)
+        mItemIcons[currCl]->Draw();
+}
+
+// ea: 0x005771D0
+void IGOFrontEnd::Draw3DScreenSpace()
+{
+    IGOCompassWidget* v2 = compassWidget[currCl];
+    if (v2 != nullptr && v2->IsShown())
+        compassWidget[currCl]->Draw3DObjectiveLocations();
+}
+
+// ea: 0x00565690
+void IGOFrontEnd::UpdateSplitScreen()
+{
+    int v1 = unk_F6A284[0];
+    int v2 = unk_F6A280[0];
+    if (unk_F6A284[0] == unk_F6A280[0])
+        return;
+    if (hintText[0] != nullptr)
+        hintText[0]->UpdateForSplitScreen(v1, v2);
+    if (hintWidget[0] != nullptr)
+        hintWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mTimerWidget[0] != nullptr)
+        mTimerWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mGameScoreWidget[0] != nullptr)
+        mGameScoreWidget[0]->UpdateSplitScreen(v1, v2);
+    if (compassWidget[0] != nullptr)
+        compassWidget[0]->UpdateSplitScreen(v1, v2);
+    if (stanceWidget[0] != nullptr)
+        stanceWidget[0]->UpdateSplitScreen(v1, v2);
+    if (ammoWidget[0] != nullptr)
+        ammoWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mRaiseFlagWidget[0] != nullptr)
+        mRaiseFlagWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mHQProgressBarWidget[0] != nullptr)
+        mHQProgressBarWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mWarStatusWidget[0] != nullptr)
+        mWarStatusWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mVoipList[0] != nullptr)
+        mVoipList[0]->UpdateSplitScreen(v1, v2);
+    if (healthWidget[0] != nullptr)
+        healthWidget[0]->UpdateSplitScreen(v1, v2);
+    if (weaponNameWidget[0] != nullptr)
+        weaponNameWidget[0]->UpdateSplitScreen(v1, v2);
+    if (grenadeWidget[0] != nullptr)
+        grenadeWidget[0]->UpdateSplitScreen(v1, v2);
+    if (grenadeCookWidget[0] != nullptr)
+        grenadeCookWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mRankWidget[0] != nullptr)
+        mRankWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mVoteWidget[0] != nullptr)
+        mVoteWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mSpecialWeaponWidget[0] != nullptr)
+        mSpecialWeaponWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mHeadIcons[0] != nullptr)
+        mHeadIcons[0]->UpdateSplitScreen(v1, v2);
+    if (mItemIcons[0] != nullptr)
+        mItemIcons[0]->UpdateSplitScreen(v1, v2);
+    if (mTankReticleWidget[0] != nullptr)
+        mTankReticleWidget[0]->UpdateSplitScreen(v1, v2);
+    if (mGrenadeIndicator[0] != nullptr)
+        mGrenadeIndicator[0]->UpdateSplitScreen(v1, v2);
+    if (tankIconWidget[0] != nullptr)
+        tankIconWidget[0]->UpdateSplitScreen(v1, v2);
+    if (tankLoadingWidget[0] != nullptr)
+        tankLoadingWidget[0]->UpdateSplitScreen(v1, v2);
+    if (actionHintWidget[0] != nullptr)
+        actionHintWidget[0]->UpdateSplitScreen(v1, v2);
+}
+
+// ea: 0x00565920
+void IGOFrontEnd::ResetWidgets()
+{
+    compassWidget[0]->SetShown(true);
+    compassWidget[0]->DrawObjectivesOnly = false;
+    hintWidget[0]->SetShown(true);
+    jeepMapWidget[0]->SetShown(true);
+    stanceWidget[0]->SetShown(true);
+    healthWidget[0]->SetShown(true);
+    ammoWidget[0]->SetShown(true);
+    weaponNameWidget[0]->SetShown(true);
+    grenadeWidget[0]->SetShown(true);
+    grenadeCookWidget[0]->SetShown(true);
+    tankLoadingWidget[0]->SetShown(false);
+    tankIconWidget[0]->SetShown(false);
+    mTankReticleWidget[0]->SetShown(true);
+    mTimerWidget[0]->SetShown(true);
+    mGameScoreWidget[0]->SetShown(true);
+    mRankWidget[0]->SetShown(true);
+    mVoteWidget[0]->SetShown(true);
+    mSpecialWeaponWidget[0]->SetShown(true);
+    mHQProgressBarWidget[0]->SetShown(true);
+    mRaiseFlagWidget[0]->SetShown(true);
+    mWarStatusWidget[0]->SetShown(true);
+    mVoipList[0]->SetShown(true);
+    mHeadIcons[0]->SetShown(true);
+    mItemIcons[0]->SetShown(true);
+    tankIconWidget[0]->SetShown(true);
+    tankLoadingWidget[0]->SetShown(true);
+    actionHintWidget[0]->SetShown(true);
+    tankHealthWidget->SetShown(false);
+}
+
+// ea: 0x00565A40
+void IGOFrontEnd::TurnOffMostWidgets()
+{
+    compassWidget[0]->SetShown(false);
+    compassWidget[0]->DrawObjectivesOnly = false;
+    jeepMapWidget[0]->SetShown(false);
+    stanceWidget[0]->SetShown(false);
+    healthWidget[0]->SetShown(false);
+    ammoWidget[0]->SetShown(false);
+    weaponNameWidget[0]->SetShown(false);
+    grenadeWidget[0]->SetShown(false);
+    grenadeCookWidget[0]->SetShown(false);
+    hintWidget[0]->SetShown(false);
+    tankLoadingWidget[0]->SetShown(false);
+    tankIconWidget[0]->SetShown(false);
+    mTankReticleWidget[0]->SetShown(false);
+    mTimerWidget[0]->SetShown(false);
+    mGameScoreWidget[0]->SetShown(false);
+    mRankWidget[0]->SetShown(false);
+    mSpecialWeaponWidget[0]->SetShown(false);
+    mRaiseFlagWidget[0]->SetShown(false);
+    mHQProgressBarWidget[0]->SetShown(false);
+    mWarStatusWidget[0]->SetShown(false);
+    mVoipList[0]->SetShown(false);
+    mVoteWidget[0]->SetShown(false);
+    mHeadIcons[0]->SetShown(false);
+    mItemIcons[0]->SetShown(false);
+    actionHintWidget[0]->SetShown(false);
+    tankHealthWidget->SetShown(false);
+}
+
+// ea: 0x00565B50
+void IGOFrontEnd::SetForLiberatorBomber()
+{
+    TurnOffMostWidgets();
+}
+
+// ea: 0x00565B60
+void IGOFrontEnd::SetForLiberatorGround()
+{
+    compassWidget[0]->SetShown(true);
+    compassWidget[0]->DrawObjectivesOnly = true;
+    hintWidget[0]->SetShown(true);
+    jeepMapWidget[0]->SetShown(true);
+    stanceWidget[0]->SetShown(true);
+    healthWidget[0]->SetShown(true);
+    ammoWidget[0]->SetShown(false);
+    weaponNameWidget[0]->SetShown(false);
+    grenadeWidget[0]->SetShown(false);
+    grenadeCookWidget[0]->SetShown(false);
+    tankLoadingWidget[0]->SetShown(false);
+    tankIconWidget[0]->SetShown(false);
+    tankHealthWidget->SetShown(false);
+}
+
+// ea: 0x00565BF0
+void IGOFrontEnd::SetForTunisia()
+{
+    ResetWidgets();
+    stanceWidget[0]->SetShown(false);
+    healthWidget[0]->SetShown(false);
+    grenadeWidget[0]->SetShown(false);
+    grenadeCookWidget[0]->SetShown(false);
+    tankLoadingWidget[0]->SetShown(true);
+    tankIconWidget[0]->SetShown(true);
+    tankHealthWidget->SetShown(true);
+}
+
+// ea: 0x00565C40
+void IGOFrontEnd::SetHUDType(hud_type ht, int viewport)
+{
+    if (ht != current_type[viewport])
+    {
+        current_type[viewport] = ht;
+        if (ht == HUD_TYPE_NORMAL)
+        {
+            ResetWidgets();
+        }
+        else if (ht == HUD_TYPE_TUNISIA)
+        {
+            SetForTunisia();
+        }
+    }
+}
+
+// ea: 0x00577200
+void IGOFrontEnd::UpdateWidescreen(bool widescreen)
+{
+    if (compassWidget[0] != nullptr)
+        compassWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (jeepMapWidget[0] != nullptr)
+        jeepMapWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (stanceWidget[0] != nullptr)
+        stanceWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (healthWidget[0] != nullptr)
+        healthWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (ammoWidget[0] != nullptr)
+        ammoWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (weaponNameWidget[0] != nullptr)
+        weaponNameWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (hintWidget[0] != nullptr)
+        hintWidget[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (tankHealthWidget != nullptr)
+        tankHealthWidget->UpdateWidescreen(widescreen, 512.0f);
+    if (tankLoadingWidget[0] != nullptr)
+        tankLoadingWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (grenadeWidget[0] != nullptr)
+        grenadeWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (grenadeCookWidget[0] != nullptr)
+        grenadeCookWidget[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (tankIconWidget[0] != nullptr)
+        tankIconWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (mGrenadeIndicator[0] != nullptr)
+        mGrenadeIndicator[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (mTankReticleWidget[0] != nullptr)
+        mTankReticleWidget[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (mTimerWidget[0] != nullptr)
+        mTimerWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (mGameScoreWidget[0] != nullptr)
+        mGameScoreWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (mRankWidget[0] != nullptr)
+        mRankWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (mVoteWidget[0] != nullptr)
+        mVoteWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (mSpecialWeaponWidget[0] != nullptr)
+        mSpecialWeaponWidget[0]->UpdateWidescreen(widescreen, 512.0f);
+    if (mRaiseFlagWidget[0] != nullptr)
+        mRaiseFlagWidget[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (mHQProgressBarWidget[0] != nullptr)
+        mHQProgressBarWidget[0]->UpdateWidescreen(widescreen, 50.0f);
+    if (mWarStatusWidget[0] != nullptr)
+        mWarStatusWidget[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (mVoipList[0] != nullptr)
+        mVoipList[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (mHeadIcons[0] != nullptr)
+        mHeadIcons[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (mItemIcons[0] != nullptr)
+        mItemIcons[0]->UpdateWidescreen(widescreen, 320.0f);
+    if (actionHintWidget[0] != nullptr)
+        actionHintWidget[0]->UpdateWidescreen(widescreen, 320.0f);
+}
+
+// ea: 0x00577420
+void IGOFrontEnd::FindKeyBindings()
+{
+    for (int i = 0; i < 256; ++i)
+    {
+        const char* mBoundCmdName =
+            KeyInfo::mKeys[currCl].m_elements[i].mBoundCmdName;
+        if (activate_key[0] == 0 && Q_stricmp(mBoundCmdName, "+activate") == 0)
+        {
+            Q_strncpyz(activate_key, Key_KeynumToString(i, 1), 8);
+        }
+        else if (run_key[0] == 0
+                 && Q_stricmp(mBoundCmdName, "toggle cl_run") == 0)
+        {
+            Q_strncpyz(run_key, Key_KeynumToString(i, 1), 8);
+        }
+        else if (speed_key[0] == 0
+                 && Q_stricmp(mBoundCmdName, "+speed") == 0)
+        {
+            Q_strncpyz(speed_key, Key_KeynumToString(i, 1), 8);
+        }
+    }
+    key_bindings_set = true;
+}
+
+// ea: 0x005775A0
+void IGOFrontEnd::SetFuse(float total, float remain, int client)
+{
+    IGOGrenadeCookWidget* v4 = grenadeCookWidget[client];
+    if (v4 != nullptr)
+    {
+        v4->fuseRemaining = remain;
+        v4->fuseTotal = total;
+    }
+}
+
+// ea: 0x005821F0
+void IGOFrontEnd::Update(float time_inc)
+{
+    if (!key_bindings_set)
+        FindKeyBindings();
+    if (compassWidget[currCl] != nullptr)
+        compassWidget[currCl]->Update(time_inc);
+    if (gCvarShowVehMap.integer != 1)
+    {
+        if (stanceWidget[currCl] != nullptr)
+            stanceWidget[currCl]->Update(time_inc);
+        jeepMapWidget[currCl]->mTextureSetted = false;
+    }
+    else
+    {
+        if (!jeepMapWidget[currCl]->mTextureSetted)
+        {
+            jeepMapWidget[currCl]->mTextureSetted = true;
+            int levelIndex = -1;
+            char mapname[64];
+            Cvar_VariableStringBuffer("mapname", mapname, 64);
+            if (strcmp(mapname, "nightdrop") == 0)
+                levelIndex = 0;
+            else if (strcmp(mapname, "hostage") == 0)
+                levelIndex = 1;
+            else if (strcmp(mapname, "fuelplant") == 0)
+                levelIndex = 2;
+            jeepMapWidget[currCl]->SetLevelMap(levelIndex, (TPakId)-1);
+        }
+        if (jeepMapWidget[currCl] != nullptr)
+            jeepMapWidget[currCl]->Update(time_inc);
+    }
+    if (healthWidget[currCl] != nullptr)
+        healthWidget[currCl]->Update(time_inc);
+    if (ammoWidget[currCl] != nullptr)
+        ammoWidget[currCl]->Update(time_inc);
+    if (weaponNameWidget[currCl] != nullptr)
+        weaponNameWidget[currCl]->Update(time_inc);
+    if (hintWidget[currCl] != nullptr)
+        hintWidget[currCl]->Update(time_inc);
+    if (grenadeWidget[currCl] != nullptr)
+        grenadeWidget[currCl]->Update(time_inc);
+    if (grenadeCookWidget[currCl] != nullptr)
+        grenadeCookWidget[currCl]->Update(time_inc);
+    if (tankIconWidget[currCl] != nullptr)
+        tankIconWidget[currCl]->Update(time_inc);
+    if (previous_widescreen != cg_widescreen.integer)
+    {
+        UpdateWidescreen(cg_widescreen.integer != 0);
+        previous_widescreen = cg_widescreen.integer;
+    }
+    if (hintTimer[currCl] > -1.0f)
+    {
+        hintTimer[currCl] += time_inc;
+        if (hintTimer[currCl] >= 8.0f)
+            hintTimer[currCl] = -1.0f;
+    }
+    if (current_type[currCl] == HUD_TYPE_TUNISIA)
+    {
+        if (tankHealthWidget != nullptr)
+            tankHealthWidget->Update(time_inc);
+        if (tankLoadingWidget[currCl] != nullptr)
+            tankLoadingWidget[currCl]->Update(time_inc);
+    }
+    if (mTankReticleWidget[currCl] != nullptr)
+        mTankReticleWidget[currCl]->Update(time_inc);
+    if (mGrenadeIndicator[currCl] != nullptr)
+        mGrenadeIndicator[currCl]->Update(time_inc);
+    if (mTimerWidget[currCl] != nullptr)
+        mTimerWidget[currCl]->Update(time_inc);
+    if (mGameScoreWidget[currCl] != nullptr)
+        mGameScoreWidget[currCl]->Update(time_inc);
+    if (mRankWidget[currCl] != nullptr)
+        mRankWidget[currCl]->Update(time_inc);
+    if (mVoteWidget[currCl] != nullptr)
+        mVoteWidget[currCl]->Update(time_inc);
+    if (mSpecialWeaponWidget[currCl] != nullptr)
+        mSpecialWeaponWidget[currCl]->Update(time_inc);
+    if (tankLoadingWidget[currCl] != nullptr)
+        tankLoadingWidget[currCl]->Update(time_inc);
+    if (mRaiseFlagWidget[currCl] != nullptr)
+        mRaiseFlagWidget[currCl]->Update(time_inc);
+    if (mHQProgressBarWidget[currCl] != nullptr)
+        mHQProgressBarWidget[currCl]->Update(time_inc);
+    if (mWarStatusWidget[currCl] != nullptr)
+        mWarStatusWidget[currCl]->Update(time_inc);
+    if (actionHintWidget[currCl] != nullptr)
+        actionHintWidget[currCl]->Update(time_inc);
+    if (mVoipList[currCl] != nullptr)
+        mVoipList[currCl]->Update(time_inc);
+}
+
+// ea: 0x00590AF0
+void IGOFrontEnd::AddActiveGrenade(const Entity* grenade)
+{
+    mGrenadeIndicator[0]->AddActiveGrenade(grenade);
+}
+
+// ea: 0x0059C0F0
+void IGOFrontEnd::SetPanelFile(PanelFile* pf)
+{
+    bool icon_panel = false;
+    if (_stricmp(pf->mName, "hud_menu.panel") == 0)
+    {
+        panel = pf;
+        pf->PostUnmashFixup(PANEL_LAYER_IGO);
+    }
+    else if (_stricmp(pf->mName, "hud_icons.panel") == 0)
+    {
+        iconsPanel = pf;
+        pf->PostUnmashFixup(PANEL_LAYER_COMPASS_ICONS);
+        icon_panel = true;
+    }
+    else if (_stricmp(pf->mName, "hud_mp.panel") == 0)
+    {
+        mpPanel = pf;
+        pf->PostUnmashFixup(PANEL_LAYER_IGO);
+        if (tankIconWidget[0] != nullptr)
+            tankIconWidget[0]->Init(pf);
+        if (hintWidget[0] != nullptr)
+            hintWidget[0]->Init(pf);
+        if (grenadeWidget[0] != nullptr)
+            grenadeWidget[0]->Init(pf);
+        if (mTimerWidget[0] != nullptr)
+            mTimerWidget[0]->Init(pf);
+        if (mGameScoreWidget[0] != nullptr)
+            mGameScoreWidget[0]->Init(pf);
+        if (mHQProgressBarWidget[0] != nullptr)
+            mHQProgressBarWidget[0]->Init(pf);
+        if (mRaiseFlagWidget[0] != nullptr)
+            mRaiseFlagWidget[0]->Init(pf);
+        if (mGrenadeIndicator[0] != nullptr)
+            mGrenadeIndicator[0]->Init(pf);
+        if (mVoipList[0] != nullptr)
+            mVoipList[0]->Init(pf);
+        return;
+    }
+    if (compassWidget[0] != nullptr)
+        compassWidget[0]->Init(pf);
+    if (icon_panel)
+    {
+        if (mHeadIcons[0] != nullptr)
+            mHeadIcons[0]->Init(pf);
+        if (mItemIcons[0] != nullptr)
+            mItemIcons[0]->Init(pf);
+    }
+    else
+    {
+        if (stanceWidget[0] != nullptr)
+            stanceWidget[0]->Init(pf);
+        if (healthWidget[0] != nullptr)
+            healthWidget[0]->Init(pf);
+        if (ammoWidget[0] != nullptr)
+            ammoWidget[0]->Init(pf);
+        if (weaponNameWidget[0] != nullptr)
+            weaponNameWidget[0]->Init(pf);
+        if (grenadeCookWidget[0] != nullptr)
+            grenadeCookWidget[0]->Init(pf);
+        if (hintWidget[0] != nullptr)
+            hintWidget[0]->Init(pf);
+        if (tankLoadingWidget[0] != nullptr)
+            tankLoadingWidget[0]->Init(pf);
+        if (mTankReticleWidget[0] != nullptr)
+            mTankReticleWidget[0]->Init(pf);
+        if (mGrenadeIndicator[0] != nullptr)
+            mGrenadeIndicator[0]->Init(pf);
+        if (mRankWidget[0] != nullptr)
+            mRankWidget[0]->Init(pf);
+        if (mVoteWidget[0] != nullptr)
+            mVoteWidget[0]->Init(panel);
+        if (mSpecialWeaponWidget[0] != nullptr)
+            mSpecialWeaponWidget[0]->Init(pf);
+        if (mWarStatusWidget[0] != nullptr)
+            mWarStatusWidget[0]->Init(pf);
+        if (actionHintWidget[0] != nullptr)
+            actionHintWidget[0]->Init(pf);
+        if (tankHealthWidget != nullptr)
+            tankHealthWidget->Init(pf);
+        FEText* TextPointer = panel->GetTextPointer("HintString");
+        if (hintText[0] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOFrontEnd.cpp";
+            AeAssert::gCurrentLine = 239;
+            AeAssert::gCurrentExpr = "!hintText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("no!"))
+                __debugbreak();
+        }
+        hintText[0] = (FEMultiLineText*)mem_heap_malloc(0xA8u);
+        if (hintText[0] != nullptr)
+        {
+            color32 col = TextPointer->GetColor();
+            hintText[0] = new (hintText[0]) FEMultiLineText(
+                TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
+                (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, (int)col.i,
+                col);
+        }
+        hintText[0]->SetNumLines(2);
+        hintText[0]->SetNoFlash(color32(-1));
+    }
+}
+
+// ea: 0x0059C460
+void IGOFrontEnd::UpdateAfterWeaponsLoaded()
+{
+    if (hintWidget[currCl] != nullptr)
+        hintWidget[currCl]->SetWeaponsPQs(panel, iconsPanel);
+}
+
+// ea: 0x005AED20 (inline COMDAT)
+const char* IGOFrontEnd::GetLMGKey()
+{
+    const char* result = run_key;
+    if (*result != 0)
+        return speed_key;
+    return result;
 }

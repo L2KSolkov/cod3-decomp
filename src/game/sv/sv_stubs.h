@@ -1006,6 +1006,7 @@ struct VehicleNodeAllocator {
 // ============================================================================
 // IGOFrontEnd — in-game overlay front end
 // ============================================================================
+#ifndef COD3_FULL_FE_TYPES
 enum hud_type { kHudTypeNone = 0 };  // full enumerator set from IDA TBD
 
 struct IGOFrontEnd {
@@ -1030,6 +1031,7 @@ struct IGOFrontEnd {
     void UpdateAfterWeaponsLoaded();  // ?UpdateAfterWeaponsLoaded@IGOFrontEnd@@QAEXXZ
 };
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
+#endif
 
 // Camera â€” camera state (0x1F0 stride) - full layout from cg.o (cg_misc.cpp)
 class Camera {
