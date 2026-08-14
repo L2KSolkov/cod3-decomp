@@ -363,6 +363,7 @@ struct MultiplayerMgr {
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad2[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
+    static struct kuju_sTime* getLocalTime(MultiplayerMgr* self);  // mp.o
     bool IsVoteOngoing();           // ?IsVoteOngoing@MultiplayerMgr@@QAE_NXZ
     bool IsPlayerTalking(Entity* player);  // ?IsPlayerTalking@MultiplayerMgr@@QAE_NPAVEntity@@@Z (mp.o)
     void setEnableLinkCheck(bool enabled);  // ?setEnableLinkCheck@MultiplayerMgr@@QAEX_N@Z (sv.o 0x528020)

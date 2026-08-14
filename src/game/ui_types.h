@@ -145,6 +145,8 @@ struct OverlayMenu;
 class DialogMenuSystem;
 class DialogMenu;
 class PanelQuad;
+class FEComboBox;
+class FESlider;
 class FEText;
 
 // panel_layer - quad layer enum
@@ -181,6 +183,17 @@ struct ae_array {
 
     T& operator[](int idx) { return m_elements[idx]; }
     const T& operator[](int idx) const { return m_elements[idx]; }
+};
+
+// ae_array_dynamic<T> - small dynamic array (8 bytes: ptr + u16 cap + s16
+// size; ae_array.h 0x14-byte layout verified against IDA)
+template <typename T>
+struct ae_array_dynamic {
+    T*              m_elements;   // +0x00
+    unsigned short  m_capacity;   // +0x04
+    short           m_size;       // +0x06
+
+    T& operator[](int idx) { return m_elements[idx]; }
 };
 
 // ============================================================================
@@ -1668,6 +1681,384 @@ private:
 };
 static_assert(sizeof(DialogMenuSystem) == 0x44,
               "DialogMenuSystem size mismatch");
+
+// ============================================================================
+// FESplitScreenMenu - 104 bytes (verified against IDA)
+// ============================================================================
+class FESplitScreenMenu : public FEMenu {
+public:
+    int       mViewport;           // +0x4C
+    int       mVersion;            // +0x50
+    PanelFile* mSplitScreenMenu;   // +0x54
+    ae_array_dynamic<FEMenuEntry*> mMainTextEntries;          // +0x58
+    ae_array_dynamic<FEMenuEntry*> mSplitScreenTextEntries;   // +0x60
+
+    FESplitScreenMenu(FEMenuSystem* s, int num_entries);  // ?FESplitScreenMenu@@QAE@PAVFEMenuSystem@@H@Z
+    FESplitScreenMenu(const FESplitScreenMenu&);          // copy ctor (asserts)
+    virtual ~FESplitScreenMenu();   // shared dtr slot 3
+    virtual void SetPanelFile(PanelFile* pf);      // slot 0 (empty 0x7930D0)
+    virtual void PanelFileUnloaded(PanelFile* pf); // slot 1 0x7AC280
+    virtual void Draw();            // ?Draw@FESplitScreenMenu@@UAEXXZ
+    virtual void OnActivate();      // ?OnActivate@FESplitScreenMenu@@UAEXXZ
+    virtual void UpdateSplitScreen(); // ?UpdateSplitScreen@FESplitScreenMenu@@UAEXXZ
+    virtual void SwapMenus() = 0;   // slot 63 (pure; empty base 0x7930C0)
+    bool IsSplitScreen();           // 0x5AF6D0
+    void AddMainEntry(int index, FEText* text);            // 0x793150
+    FEComboBox* AddMainComboBox(int index, int numOptions,
+                                FEText* t, FEText* label,
+                                PanelQuad* leftArrow,
+                                PanelQuad* rightArrow);    // 0x793170
+    FESlider* AddMainSlider(int index, PanelQuad* bar,
+                            FEText* label);                // 0x793180
+    FESlider* AddMainSlider(int index, FEText* barText,
+                            FEText* label);                // 0x793190
+    void AddSplitScreenEntry(int index, FEText* text);     // 0x7A7300
+    FEComboBox* AddSplitScreenComboBox(int index,
+                                       int numOptions,
+                                       FEText* t,
+                                       FEText* label,
+                                       PanelQuad* leftArrow,
+                                       PanelQuad* rightArrow);  // 0x7A7330
+    FESlider* AddSplitScreenSlider(int index, PanelQuad* bar,
+                                   FEText* label);          // 0x7A7370
+    FESlider* AddSplitScreenSlider(int index, FEText* barText,
+                                   FEText* label);          // 0x7A73B0
+    static void DrawBackground();   // 0x5B33D0
+    static PanelFile* mBackground;  // ?mBackground@FESplitScreenMenu@@1PAVPanelFile@@A
+protected:
+    void SetPanelFileBackground(PanelFile* pf);  // 0x7931A0
+};
+static_assert(sizeof(FESplitScreenMenu) == 0x68,
+              "FESplitScreenMenu size mismatch");
+
+// PanelQuadFader - scroll-arrow fade state (24 bytes, verified against IDA)
+struct PanelQuadFader {
+    PanelQuad* mQuad;        // +0x00
+    float      mAlphaTo;     // +0x04
+    float      mTime;        // +0x08
+    float      mAlphaDelta;  // +0x0C
+    float      mAlpha;       // +0x10
+    bool       mFading;      // +0x14
+    uint8_t    _pad15[3];    // +0x15
+};
+static_assert(sizeof(PanelQuadFader) == 0x18,
+              "PanelQuadFader size mismatch");
+
+// ============================================================================
+// InGameOptionsMenu - 284 bytes (verified against IDA)
+// ============================================================================
+class InGameOptionsMenu : public FESplitScreenMenu {
+public:
+    int   mScrollBarTopY;       // +0x68
+    int   mScrollBarBottomY;    // +0x6C
+    float mScrollBarYInc;       // +0x70
+    PanelQuad* mScrollBarThumb; // +0x74
+    FEText mSafeText;           // +0x78
+    PanelQuadFader mScrollBarUpFader;    // +0xE8
+    PanelQuadFader mScrollBarDownFader;  // +0x100
+    uint8_t m_ucLastHighlighted;  // +0x118
+
+    InGameOptionsMenu(FEMenuSystem* s);   // 0x56E720
+    virtual ~InGameOptionsMenu();         // 0x56E7F0
+    virtual void Init();                  // 0x56E850
+    virtual void OnActivate();            // 0x56E860
+    virtual void Draw();                  // 0x56EA30
+    virtual void ButtonHeldAction();      // 0x56EA40
+    virtual void OnCross(int c);          // 0x56EB30
+    virtual void OnStart(int c);          // 0x56EBE0
+    virtual void Update(float time_inc);  // 0x57D450
+    virtual void OnDeactivate(FEMenu* m); // 0x57D630
+    virtual void OnTriangle(int c);       // 0x591B00
+    virtual void OnUp(int c);             // 0x595690
+    virtual void OnDown(int c);           // 0x595720
+    virtual void SetPanelFile(PanelFile* pf);  // 0x59AC60
+    static InGameOptionsMenu* Me(int version); // 0x56EB10
+protected:
+    virtual void SetHigh(int index, bool high);  // 0x5851D0
+    virtual void SwapMenus();                     // 0x59ACB0 (overrides slot 63)
+    bool ResponseYesApplyNowHelper();             // 0x56EBF0
+    bool ResponseNoJustGoBackToPauseMenuHelper(); // 0x56EEB0
+    static bool ResponseYesApplyNow(int);         // 0x56EEC0 (protected static)
+    static bool ResponseNoJustGoBackToPauseMenu(int);  // 0x56EEE0
+    void UpdateScrollBar();                       // 0x56EAB0
+    void AddOptionsToCombos();                    // 0x57D300
+    void SetPanelFileMain(PanelFile* pf);         // 0x594900
+    void SetPanelFileSplitScreen(PanelFile* pf);  // 0x594E70
+    void UpdateSplitScreenOptions(int viewport);  // 0x595200
+};
+static_assert(sizeof(InGameOptionsMenu) == 0x11C,
+              "InGameOptionsMenu size mismatch");
+
+// ============================================================================
+// AARInGameOptionsMenu - 284 bytes (verified against IDA; adds timer text)
+// ============================================================================
+class AARInGameOptionsMenu : public InGameOptionsMenu {
+public:
+    AARInGameOptionsMenu(FEMenuSystem* s);     // 0x56EF10
+    virtual ~AARInGameOptionsMenu();           // 0x56EFF0
+    static AARInGameOptionsMenu* Me(int);      // 0x56F000
+    static bool ResponseAARYesApplyNow(int);   // 0x56F010
+    static bool ResponseAARNoJustGoBackToPauseMenu(int);  // 0x56F020
+    virtual void Update(float time_inc);       // 0x585240
+    virtual void OnTriangle(int c);            // 0x591E10
+    virtual void SetPanelFile(PanelFile* pf);  // 0x5957B0
+    virtual void OnActivate();                 // 0x5957E0
+private:
+    void SetTimerText();                       // 0x57D640
+    AARInGameOptionsMenu(const AARInGameOptionsMenu&);  // 0x56EF70
+};
+static_assert(sizeof(AARInGameOptionsMenu) == 0x11C,
+              "AARInGameOptionsMenu size mismatch");
+
+// ============================================================================
+// OptionsGameplayMenu - 176 bytes (verified against IDA)
+// ============================================================================
+class OptionsGameplayMenu : public FEMenu {
+public:
+    PanelFile* mPanel;         // +0x4C
+    FEMultiLineText* mHelpBar; // +0x50
+    FEText* mGameplayText[3];  // +0x54
+    FEText* mGameplayOptionText[4];  // +0x60
+    FEMultiLineText* mGameplayInstructions;  // +0x70
+    FEMenu* mOnOffMenu;       // +0x74
+    FEText* mOnOffText[4];    // +0x78
+    PanelQuad* mOnOffArrows[8]; // +0x88
+    bool mGameplayOptions[4]; // +0xA8
+    float mFlashTimer;        // +0xAC
+
+    static const char* const kGameplayTextGeoms[];           // 0xCEF3CC
+    static const char* const kGameplayOptionGeoms[];         // 0xCEF3D8
+    static const char* const kGameplayOptionToggleGeoms[];   // 0xCEF3E8
+    static const char* const kGameplayArrowGeoms[];          // 0xCEF3F8
+    static const char* const kGameplayOptionStrings[];       // 0xCEF418
+    static const char* const kGameplayOptionToggleStrings[]; // 0xCEF428
+    static const char* const kGameplayInstructionStrings[];  // 0xCEF448
+
+    OptionsGameplayMenu(FEMenuSystem* s);  // 0x592800
+    virtual ~OptionsGameplayMenu();        // 0x5928C0
+    static OptionsGameplayMenu* Me();      // 0x5734A0
+    virtual void OnUp(int c);              // 0x573580
+    virtual void OnDown(int c);            // 0x5735F0
+    virtual void Update(float time_inc);   // 0x573720
+    virtual void ButtonHeldAction();       // 0x5737A0
+    virtual void OnActivate();             // 0x57F6C0
+    virtual void Draw();                   // 0x57F810
+    virtual void UpdateWidescreen(bool ws);// 0x57F840
+    virtual void OnTriangle(int c);        // 0x57F880
+    virtual void SetPanelFile(PanelFile* pf); // 0x596440
+private:
+    void AdjustOptions(bool);   // 0x5734B0
+    void SetDefaultOptions();   // 0x573660
+};
+static_assert(sizeof(OptionsGameplayMenu) == 0xB0,
+              "OptionsGameplayMenu size mismatch");
+
+// ============================================================================
+// OptionsControlsMenu - 232 bytes (verified against IDA)
+// ============================================================================
+class OptionsControlsMenu : public FEMenu {
+public:
+    PanelFile* mPanel;         // +0x4C
+    FEMultiLineText* mHelpBar; // +0x50
+    FEText* mControlsText[3];  // +0x54
+    FEMultiLineText* mInstructionText;  // +0x60
+    FEMenu* mOnOffMenu;        // +0x64
+    FEText* mOnOffText[8];     // +0x68
+    PanelQuad* mOnOffArrows[16]; // +0x88
+    PanelQuad* mHorizontalSensGauge;  // +0xC8
+    PanelQuad* mVerticalSensGauge;    // +0xCC
+    int mStickVal;             // +0xD0
+    int mButtonVal;            // +0xD4
+    int mHorizontalSensVal;    // +0xD8
+    int mVerticalSensVal;      // +0xDC
+    bool mToggleVal[4];        // +0xE0
+    float mFlashTimer;         // +0xE4
+
+    static const char* const kControlsTextGeoms[];           // 0xCEF458
+    static const char* const kControlsOptionGeoms[];         // 0xCEF464
+    static const char* const kControlsOptionToggleGeoms[];   // 0xCEF484
+    static const char* const kControlsArrowGeoms[];          // 0xCEF4A8
+    static const char* const kControlsOptionStrings[];       // 0xCEF4E8
+    static const char* const kButtonLayoutStrings[];   // ?kButtonLayoutStrings@OptionsControlsMenu@@2QBQBDB
+    static const char* const kOptionToggleStrings[];   // ?kOptionToggleStrings@OptionsControlsMenu@@0QBQBDB
+    static const char* const kControlsInstructionStrings[]; // 0xCEF530
+
+    OptionsControlsMenu(FEMenuSystem* s);  // 0x592950
+    virtual ~OptionsControlsMenu();        // 0x592A30
+    static OptionsControlsMenu* Me();      // 0x5737D0
+    virtual void Update(float time_inc);   // 0x5737E0
+    virtual void ButtonHeldAction();       // 0x573860
+    virtual void OnUp(int c);              // 0x5738D0
+    virtual void OnDown(int c);            // 0x5739D0
+    virtual void Select(int entry);        // 0x573AD0
+    virtual void Draw();                   // 0x57F900
+    virtual void UpdateWidescreen(bool ws);// 0x57F930
+    virtual void OnTriangle(int c);        // 0x57F9C0
+    virtual void OnActivate(int c);        // 0x58E630
+    virtual void SetPanelFile(PanelFile* pf); // 0x5966A0
+private:
+    void HighlightDefault(int);  // 0x573B00
+    void AdjustGauge(PanelQuad* gauge, int val);  // 0x57F980
+    void SetDefaultOptions();    // 0x5867A0
+    void AdjustOptions(bool);    // 0x586980
+};
+static_assert(sizeof(OptionsControlsMenu) == 0xE8,
+              "OptionsControlsMenu size mismatch");
+
+// ============================================================================
+// OptionsSoundMenu - 128 bytes (verified against IDA)
+// ============================================================================
+class OptionsSoundMenu : public FEMenu {
+public:
+    PanelFile* mPanel;         // +0x4C
+    FEMultiLineText* mHelpBar; // +0x50
+    FEText* mSoundText[4];     // +0x54
+    FEMenu* mOnOffMenu;        // +0x64
+    PanelQuad* mOnOffArrows[2]; // +0x68
+    PanelQuad* mVolumeGauge;   // +0x70
+    int mOutputVal;            // +0x74
+    int mVolumeVal;            // +0x78
+    float mFlashTimer;         // +0x7C
+
+    static const char* const kSoundTextGeoms[];           // 0xCEF550
+    static const char* const kSoundOptionGeoms[];         // 0xCEF560
+    static const char* const kSoundOptionStrings[];       // 0xCEF568
+    static const char* const kSoundToggleStrings[];       // 0xCEF570
+    static const char* const kSoundInstructionStrings[];  // 0xCEF580
+
+    OptionsSoundMenu(FEMenuSystem* s);  // 0x592AC0
+    virtual ~OptionsSoundMenu();        // 0x592B80
+    static OptionsSoundMenu* Me();      // 0x573B80
+    virtual void Update(float time_inc);   // 0x573B90
+    virtual void OnUp(int c);              // 0x573BF0
+    virtual void OnDown(int c);            // 0x573C80
+    virtual void ButtonHeldAction();       // 0x573D10
+    virtual void Draw();                   // 0x57FA90
+    virtual void UpdateWidescreen(bool ws);// 0x57FAC0
+    virtual void OnTriangle(int c);        // 0x57FB40
+    virtual void OnActivate();             // 0x58E770
+    virtual void SetPanelFile(PanelFile* pf); // 0x596890
+private:
+    void AdjustGauge(PanelQuad* gauge, int val);  // 0x57FB10
+    void SetDefaultOptions();    // 0x586B10
+    void AdjustOptions(bool);    // 0x586B60
+};
+static_assert(sizeof(OptionsSoundMenu) == 0x80,
+              "OptionsSoundMenu size mismatch");
+
+// ============================================================================
+// OptionsStickMenu - 144 bytes (verified against IDA)
+// ============================================================================
+class OptionsStickMenu : public FEMenu {
+public:
+    TPakId mPakId;         // +0x4C
+    PanelFile* mPanel;     // +0x50
+    FEMultiLineText* mHelpBar;  // +0x54
+    FEText* mStickText[3]; // +0x58
+    FEText* mOptionText[6];// +0x64
+    PanelQuad* mStickImage;// +0x7C
+    PanelQuad* mOnOffArrows[2];  // +0x80
+    float mFlashTimer;     // +0x88
+    int mSelectedStickLayout;  // +0x8C
+
+    static const char* const kStickTextGeoms[];           // 0xCEF588
+    static const char* const kStickOptionGeoms[];         // 0xCEF594
+    static const char* const kStickTextures[];            // 0xCEF5AC
+    static const char* const kStickOptionStrings[];       // 0xCEF5BC
+    static const char* const kStickSelectedStrings[];     // 0xCEF5D4
+    static const char* const kStickInstructionsStrings[]; // 0xCEF5E4
+    static const int kStickLayouts[4][6];                 // 0xCEF5F8
+
+    OptionsStickMenu(FEMenuSystem* s);  // 0x592C10
+    virtual ~OptionsStickMenu();        // 0x592C70
+    static OptionsStickMenu* Me();      // 0x573D80
+    virtual void Update(float time_inc);   // 0x573D90
+    virtual void ButtonHeldAction();       // 0x574030
+    virtual void OnActivate();             // 0x57FB80
+    virtual void Draw();                   // 0x57FBC0
+    virtual void UpdateWidescreen(bool ws);// 0x57FBE0
+    virtual void OnTriangle(int c);        // 0x57FC30
+    virtual void SetPanelFile(PanelFile* pf); // 0x596B30
+private:
+    void SetDefaultOptions();    // 0x573DF0
+    void AdjustOptions(bool);    // 0x573ED0
+};
+static_assert(sizeof(OptionsStickMenu) == 0x90,
+              "OptionsStickMenu size mismatch");
+
+// ============================================================================
+// OptionsButtonMenu - 396 bytes (verified against IDA)
+// ============================================================================
+class OptionsButtonMenu : public FEMenu {
+public:
+    int kButtonLayouts[4][14];  // +0x4C (224 bytes)
+    PanelFile* mPanel;     // +0x12C
+    FEMultiLineText* mHelpBar;  // +0x130
+    FEText* mButtonText[3]; // +0x134
+    FEText* mOptionText[14];// +0x140
+    PanelQuad* mOnOffArrows[2];  // +0x178
+    float mFlashTimer;     // +0x180
+    bool mConfigRead;      // +0x184
+    int mSelectedButtonLayout;  // +0x188
+
+    static const char* const kButtonTextGeoms[];           // 0xCEF658
+    static const char* const kButtonOptionGeoms[];         // 0xCEF664
+    static const char* const kButtonOptionStrings[];       // 0xCEF69C
+    static const char* const kButtonSelectedStrings[];     // 0xCEF6D4
+    static const char* const kButtonInstructionsStrings[]; // 0xCEF6E4
+    static const int kButtonMapTable[];                    // 0xCEF6F4 (14)
+
+    OptionsButtonMenu(FEMenuSystem* s);  // 0x592CE0
+    virtual ~OptionsButtonMenu();        // 0x592D40
+    static OptionsButtonMenu* Me();      // 0x574060
+    virtual void Update(float time_inc);   // 0x574070
+    virtual void ButtonHeldAction();       // 0x574270
+    virtual void Draw();                   // 0x57FD40
+    virtual void UpdateWidescreen(bool ws);// 0x57FD70
+    virtual void OnTriangle(int c);        // 0x57FDC0
+    virtual void OnActivate();             // 0x58E8F0
+    virtual void SetPanelFile(PanelFile* pf); // 0x596CB0
+private:
+    void SetDefaultOptions();    // 0x5740D0
+    void AdjustOptions(bool);    // 0x574160
+    int  GetButtonAction(int);   // 0x57FE20
+    void ReadControllerConfig(); // 0x586CD0
+};
+static_assert(sizeof(OptionsButtonMenu) == 0x18C,
+              "OptionsButtonMenu size mismatch");
+
+// ============================================================================
+// GammaScreenMenu - 104 bytes (verified against IDA)
+// ============================================================================
+class GammaScreenMenu : public FEMenu {
+public:
+    PanelFile* mPanel;         // +0x4C
+    FEMultiLineText* mHelpBar; // +0x50
+    PanelQuad* mGauge;         // +0x54
+    PanelQuad* mGaugeArrowLeft;  // +0x58
+    PanelQuad* mGaugeArrowRight; // +0x5C
+    int mCurrentTexture;         // +0x60
+    float mFlashTimer;         // +0x64
+
+    GammaScreenMenu(FEMenuSystem* s);  // 0x592DB0
+    virtual ~GammaScreenMenu();        // 0x592E20
+    static GammaScreenMenu* Me();      // 0x5742A0
+    virtual void Update(float time_inc);   // 0x5742B0
+    virtual void OnTriangle(int c);        // 0x574310
+    virtual void OnLeft(int c);            // 0x574320
+    virtual void OnRight(int c);           // 0x574360
+    virtual void OnSquare(int c);          // 0x5743A0
+    virtual void OnDeactivate(FEMenu* m);  // 0x5743B0
+    virtual void ButtonHeldAction();       // 0x5743C0
+    virtual void Draw();                   // 0x57FED0
+    virtual void OnActivate();             // 0x57FF20
+    virtual void UpdateWidescreen(bool ws);// 0x57FF80
+    virtual void SetPanelFile(PanelFile* pf); // 0x596E20
+private:
+    void AdjustGauge();          // 0x57FEF0
+};
+static_assert(sizeof(GammaScreenMenu) == 0x68,
+              "GammaScreenMenu size mismatch");
 
 // ============================================================================
 // ControllerDisconnectedMenu - controller error overlay (80 bytes)

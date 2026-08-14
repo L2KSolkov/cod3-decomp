@@ -47,12 +47,6 @@ public:
     static void ExitGame();        // ?ExitGame@MPUIInterface@@SAXXZ
 };
 
-// FESplitScreenMenu static
-class FESplitScreenMenu {
-public:
-    static PanelFile* mBackground;  // ?mBackground@FESplitScreenMenu@@1PAVPanelFile@@A
-};
-
 // ProfileManager minimal view
 struct ProfileManager {
     uint8_t _pad[4];
