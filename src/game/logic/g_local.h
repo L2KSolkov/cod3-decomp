@@ -39,6 +39,7 @@ struct ae_vector {
     ~ae_vector() { destroy_all(); }
     T* begin() { return mElements; }
     T* end() { return &mElements[mSize]; }
+    void reserve(int iCapacity);
     void push_back(const T& iElement);
     void resize(int iNewSize);
     void clear() { resize(0); }
@@ -71,6 +72,25 @@ void ae_vector<T>::destroy_all()
         tlMemFree(mElements);
         mElements = nullptr;
         mCapacity = 0;
+    }
+}
+
+template <typename T>
+void ae_vector<T>::reserve(int iCapacity)
+{
+    if (iCapacity > mCapacity)
+    {
+        T* v3 = (T*)tlMemAlloc(sizeof(T) * iCapacity, 8u, 0);
+        for (int i = 0; i < mSize; ++i)
+            v3[i] = mElements[i];
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
+        }
+        mElements = v3;
+        mCapacity = iCapacity;
     }
 }
 

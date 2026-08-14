@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "core/math_types.h"
+#include "core/color.h"
 #include "aeps/apsInternal.h"
 #include "aeps/apsMemory.h"
 #include "aeps/apsCommon.h"
@@ -91,6 +92,47 @@ public:
             for (T* src = iEndErase; src != end; ++src)
                 *dst++ = *src;
             mSize -= (int)(end - dst);
+        }
+    }
+
+    void reserve(int iCapacity)
+    {
+        if (iCapacity > mCapacity)
+        {
+            T* v3 = (T*)tlMemAlloc(sizeof(T) * iCapacity, 8u, 0);
+            for (int i = 0; i < mSize; ++i)
+                v3[i] = mElements[i];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mElements = v3;
+            mCapacity = iCapacity;
+        }
+    }
+
+    void resize(int iNewSize)
+    {
+        if (iNewSize > mCapacity)
+        {
+            T* v4 = (T*)tlMemAlloc(sizeof(T) * iNewSize, 8u, 0);
+            for (int i = 0; i < mSize; ++i)
+                v4[i] = mElements[i];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mElements = v4;
+            mCapacity = iNewSize;
+            mSize = iNewSize;
+        }
+        else
+        {
+            mSize = iNewSize;
         }
     }
 };
@@ -933,6 +975,101 @@ ParticleEffect* FX_PlayEntityEffectID(
     Mat.w.v = _mm_setr_ps(ori.origin[0], ori.origin[1], ori.origin[2], 0.0f);
     return PlayEffect(pakId, id, Mat, boltObjHandle, boltEntHandle,
                       boltBoneIndex, boltBoneIndex != 0);
+}
+
+// ============================================================================
+// FX_BuildSortedParticleEffectList / RenderEffectsInternal / RenderEffects
+// ============================================================================
+namespace VFC {
+struct FrustumInfo;
+void GetFrustumInfo(FrustumInfo& out, const nglScene* Scene);  // ?GetFrustumInfo@VFC@@YAXAAUFrustumInfo@1@PBUnglScene@@@Z
+}
+class DebugRender {
+public:
+    static void RenderSphere(const math::Position3& pos, float radius,
+                             const Color& color);  // renderdebug.cpp
+};
+extern void nglValidateMatrices(nglScene* Scene);  // ngl.o
+extern nglLightContext* nglCreateLightContext();   // ngl_lighting.cpp
+extern void nglSetAmbientLight(float r, float g, float b);  // ngl_lighting.cpp
+extern void FX_SortParticleEffectList(int indexLeft,
+                                      int indexRight);  // render.o 0x6C7690
+extern void FX_DumpParticleEffectList();               // tr_fx2.cpp 0x6C7620
+extern int g_showCulledParticles;  // ?g_showCulledParticles@@3HA
+bool isInit;                       // ?isInit@@3_NA @ 0xF0C748
+int dword_10DDB14;                 // @ 0x10DDB14 (FX render gate)
+
+// ea: 0x006D7710
+void FX_BuildSortedParticleEffectList()
+{
+    if (!isInit)
+    {
+        isInit = true;
+        gParticleEffectList.reserve(176);
+        gSortedParticleEffectList.reserve(176);
+    }
+    ParticleEffect** mElements = gParticleEffectList.mElements;
+    ParticleEffect** v2 =
+        &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    gSortedParticleEffectList.resize(0);
+    for (; mElements != v2; ++mElements)
+    {
+        ParticleEffect* v3 = *mElements;
+        if (v3 != nullptr && v3->mEffect != nullptr)
+            gSortedParticleEffectList.push_back(v3);
+    }
+    if (gSortedParticleEffectList.mSize != 0)
+        FX_SortParticleEffectList(0, gSortedParticleEffectList.mSize - 1);
+    FX_DumpParticleEffectList();
+}
+
+// ea: 0x006D7890
+void RenderEffectsInternal()
+{
+    nglValidateMatrices(nglBuildScene);
+    nglLightContext* LightContext = nglCreateLightContext();
+    nglSetAmbientLight(0.40000001f, 0.40000001f, 0.40000001f);
+    VFC::FrustumInfo frustumInfo;
+    VFC::GetFrustumInfo(frustumInfo, nglBuildScene);
+    ParticleEffect** mElements = gParticleEffectList.mElements;
+    ParticleEffect** v2 =
+        &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    if (gParticleEffectList.mElements != v2)
+    {
+        do
+        {
+            ParticleEffect* v3 = *mElements;
+            if (v3 != nullptr && (v3->mFlags & 2) == 0)
+            {
+                if (v3->culled != 0)
+                {
+                    if (g_showCulledParticles != 0)
+                    {
+                        apsEffect* mEffect = v3->mEffect;
+                        if (mEffect != nullptr)
+                        {
+                            math::Position3 pos;
+                            pos.v = mEffect->mLToW.w.v;
+                            DebugRender::RenderSphere(pos, 15.0f,
+                                                      Color(0.0f, 1.0f, 0.0f,
+                                                            1.0f));
+                        }
+                    }
+                }
+                else if ((dword_10DDB14 & 1) == 0)
+                {
+                    v3->mEffect->Render(LightContext, frustumInfo);
+                }
+            }
+            ++mElements;
+        } while (mElements != v2);
+    }
+}
+
+// ea: 0x006D79C0 (thunk)
+void RenderEffects()
+{
+    RenderEffectsInternal();
 }
 
 // ea: 0x006D3650
