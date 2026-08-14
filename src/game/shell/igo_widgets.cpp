@@ -58,11 +58,23 @@ extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
 struct weaponFileInfo_t {
     uint8_t _pad[0x594];
     char*   szRadiantName;   // +0x594
-    uint8_t _pad2[0x5C4 - 0x598];
+    uint8_t _pad2[0x5A0 - 0x598];
+    char*   szHudIcon;       // +0x5A0
+    uint8_t _pad3[0x5C4 - 0x5A4];
     int     iClipSize;       // +0x5C4
-    uint8_t _pad3[0x5F8 - 0x5C8];
+    uint8_t _pad4[0x5F8 - 0x5C8];
     int     iFireTime;       // +0x5F8
+    uint8_t _pad5[0x720 - 0x5FC];
+    int     bWideListIcon;   // +0x720
+    uint8_t _pad6[0x738 - 0x724];
+    int     bDoNotDrop;      // +0x738
 };
+// slot is +0xB4; add an accessor via byte offset cast since it precedes
+// szRadiantName in the struct.
+static inline int WeaponSlot(weaponFileInfo_t* w)
+{
+    return *(int*)((char*)w + 0xB4);
+}
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // game.o
 extern int BG_ClipForWeapon(int iWeapon);       // game.o
 extern int BG_AmmoForWeapon(int iWeapon);       // game.o
@@ -77,12 +89,99 @@ extern int dword_F641A0[];  // @ 0xF641A0 (special weapon end time)
 extern int dword_F641A4[];  // @ 0xF641A4 (special weapon duration)
 extern float percentToTrimBottom;  // @ 0xDF4460
 extern float percentToTrimTop;     // @ 0xDF445C
+extern int dword_F6355C[];   // @ 0xF6355C
+extern int dword_F63F5C[];   // @ 0xF63F5C (hint icon)
+extern int dword_F63F60[];   // @ 0xF63F60 (hint start time)
+extern int dword_F63F64[];   // @ 0xF63F64 (hint fade time)
+extern int dword_F63F68[];   // @ 0xF63F68
+extern int dword_F63F6C[];   // @ 0xF63F6C
+extern vmCvar_t cg_cursorHints;  // ?cg_cursorHints@@3UvmCvar_t@@A @ 0xF61378
+extern vmCvar_t cg_hintFadeTime; // ?cg_hintFadeTime@@3UvmCvar_t@@A @ 0xF611C8
+extern vmCvar_t mp_headIconReviveMaxAlphaDist;  // @ 0xEAC318
+extern vmCvar_t mp_headIconReviveMinAlphaDist;  // @ 0xEB0DF8
+extern vmCvar_t mp_headIconDistAbovePlayer;   // @ 0xEA7518
+extern vmCvar_t mp_headIconDistAboveVehicle;  // @ 0xEAC3A8
+extern vmCvar_t mp_headIconHeight;            // @ 0xEA6388
+extern vmCvar_t mp_headIconMinScreenSize;     // @ 0xEA65D8
+extern vmCvar_t mp_itemIconHeight;      // @ 0xEA6D38
+extern vmCvar_t mp_itemIconMaxAlphaDist;  // @ 0xEA5E68
+extern vmCvar_t mp_itemIconMinAlphaDist;  // @ 0xEB0F18
+extern vmCvar_t mp_itemIconMinScreenSize; // @ 0xEA51D0
+extern vmCvar_t mp_itemIconDistAboveItem; // @ 0xEA6540
+extern int mpviewport;       // @ 0xF3A574
+extern const char* CG_ConfigString(int index);  // cg.o
+extern int BG_GetNumWeapons();  // game.o
+extern bool IsVehicleSpotted(Entity* vehicle);  // g.o
+extern float VectorDistance(const float* v1, const float* v2);  // core.o
+struct nglScene;
+extern math::Position3* nglProjectPoint(math::Position3* result,
+                                        const math::Position3* In,
+                                        nglScene* Scene);  // ngl/ngl_scene.h
+extern nglScene* nglBuildScene;  // render
+extern unsigned int AeHash(const char* str);  // core/ae_hash.cpp
+
+// DObjSkelMat minimal view (full in core/core_types.h).
+struct DObjSkelMat {
+    uint8_t _pad[0x30];
+    float origin[4];  // +0x30
+};
+extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
+                                   DObjSkelMat* tagMat);  // g.o
+
+// mp.o dropped-item helpers (local views; manglings tolerated at link)
+enum EDroppedItemTypes : int {
+    kItemTypeMines = 0,
+    kItemTypeWeapons = 1,
+    kItemTypeSupport = 2,
+    kItemTypeKits = 3,
+};
+struct MpPlayerItems {
+    struct sDroppedItem {
+        DbLinkedHandle<EntityHandleDb, Entity> handle;  // +0x00
+        unsigned int time;                              // +0x04
+    };
+    ae_vector<sDroppedItem> mDroppedWeapons;  // +0x00
+    ae_vector<sDroppedItem> mDroppedSupport;  // +0x0C
+    ae_vector<sDroppedItem> mDroppedMines;    // +0x18
+    ae_vector<sDroppedItem> mDroppedKits;     // +0x24
+    Entity* FindItem(EDroppedItemTypes item, short id);
+};
+
+// mp.o player view with mItems/mClientIndex fields (full layout in mp.o).
+struct MpPlayerView2 {
+    uint8_t  mId;          // +0x00
+    uint8_t  _pad1[3];     // +0x01
+    void*    mConnection;  // +0x04
+    int      mClientIndex; // +0x08
+    MpPlayerItems mItems;  // +0x0C
+    uint8_t  _pad2[0x68 - 0x3C];
+    char     mName[32];    // +0x68
+    uint8_t  _pad3[0x25C - 0x88];
+    int16_t  mTeam;        // +0x25C
+    bool IsValid() const;  // mp.o
+};
+struct MpPlayerManagerView {
+    MPPlayer* GetPlayer(unsigned char id);  // mp.o
+    MPPlayer* GetLocalPlayer(int nLocalPlayer);  // mp.o
+};
+
+struct KeyInfo {
+    static int GetKey(const char* boundCmdName, int clnt);  // ?GetKey@KeyInfo@@SAHPBDH@Z
+};
+struct weaponInfo_s {
+    uint8_t _pad[0x84];
+    const char* pszTranslatedDisplayName;  // +0x84
+    uint8_t _pad2[0x4];
+    const char* pszTranslatedModename;     // +0x8C
+};
+extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A @ 0xF6AE60
 
 // Minimal scr_vehicle_t view (full in game/logic/g_local.h).
 struct scr_vehicle_t {
     uint8_t _pad[0x180];
     int fireTime;  // +0x180
 };
+
 
 struct level_locals_t {
     int time;   // +0x00
@@ -141,6 +240,7 @@ float IGOTimerWidget::m_StartTime = 0.0f;
 class STBManager {
 public:
     static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A @ 0xF00EA0
+    const char* GetSTBString(const char* pszReference);  // core.o
     const char* GetSTBString(unsigned int hash);  // core.o
 };
 
@@ -2186,4 +2286,1077 @@ void IGOTankReticleWidget::UpdateSplitScreen(int viewport, int old_viewport)
     tic[1]->FormatForSplitScreen(viewport, old_viewport);
     tic[2]->FormatForSplitScreen(viewport, old_viewport);
     tic[3]->FormatForSplitScreen(viewport, old_viewport);
+}
+
+// ============================================================================
+// IGOHeadIcons (render-heavy Update/Draw deferred to renderer batch)
+// ============================================================================
+
+const char* sHeadIconNames[8] = {
+    "i_head_rank_1_w", "i_head_rank_3_w", "i_downed_friend_w",
+    "i_spotted_sniper_w", "i_ammo_box_w", "voip_line_01_icon",
+    "voip_line_03_icon", "voip_line_01_text",
+};
+
+// ea: 0x00568F70
+IGOHeadIcons::IGOHeadIcons(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    memset(mHeadIcons, 0, sizeof(mHeadIcons));
+    memset(mPlayers, 0, sizeof(mPlayers));
+}
+
+// ea: 0x00568F90
+IGOHeadIcons::~IGOHeadIcons()
+{
+}
+
+// ea: 0x0059A8A0
+void IGOHeadIcons::Init(PanelFile* panel)
+{
+    float u[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+    float v[4] = {0.0f, 0.0f, 1.0f, 1.0f};
+    for (int i = 0; i < 8; ++i)
+    {
+        PanelQuad* Pointer = panel->GetPointer(sHeadIconNames[i]);
+        mHeadIcons[i].icon = Pointer;
+        if (g_femanager.GetDefaultPQ() != Pointer)
+        {
+            Pointer->quadBlendModeType = 1691321856;
+            mHeadIcons[i].icon->SetSectionUV(0, u, v);
+            mHeadIcons[i].height =
+                (uint8_t)mHeadIcons[i].icon->GetWidth();
+            mHeadIcons[i].alpha =
+                mHeadIcons[i].icon->GetColor().c.a;
+        }
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        mPlayers[i].show = false;
+        mPlayers[i].index = 0;
+    }
+}
+
+// ea: 0x00583D00
+void IGOHeadIcons::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 8; ++i)
+        mHeadIcons[i].icon->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00583D30
+void IGOHeadIcons::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    for (int i = 0; i < 8; ++i)
+        mHeadIcons[i].icon->FormatForSplitScreen(viewport, old_viewport);
+}
+
+// ea: 0x0058B070
+void IGOHeadIcons::Draw()
+{
+    static int sInitFlags = 0;
+    static unsigned int bip_head_hash = 0;
+    static unsigned int turret_hash = 0;
+    if ((sInitFlags & 1) == 0)
+    {
+        sInitFlags |= 1;
+        bip_head_hash = AeHash("BIP01 HEAD");
+    }
+    if ((sInitFlags & 2) == 0)
+    {
+        sInitFlags |= 2;
+        turret_hash = AeHash("tag_turret");
+    }
+    if (!is_shown
+        || !cgGlobal.teamGame
+        || EntityManager::sInst->GetPlayer(mClient) == nullptr
+        || EntityManager::sInst->GetPlayer(mClient)->sentient == nullptr)
+    {
+        return;
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    if (Player == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOHeadIcons.cpp";
+        AeAssert::gCurrentLine = 242;
+        AeAssert::gCurrentExpr = "localPlayer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Local player is not valid"))
+            __debugbreak();
+    }
+    if (Player->client->ps.pm_type >= 6)
+        return;
+    float distAbovePlayer = (float)mp_headIconDistAbovePlayer.integer;
+    float distAboveVehicle = (float)mp_headIconDistAboveVehicle.integer;
+    float iconHeight = (float)mp_headIconHeight.integer;
+    float minScreenSize = (float)mp_headIconMinScreenSize.integer;
+    for (int i = 0; i < 16; ++i)
+    {
+        if (!mPlayers[i].show)
+            continue;
+        Entity* v6 = EntityManager::sInst->GetPlayer(i);
+        if (v6 == nullptr || v6->sentient == nullptr
+            || v6->client == nullptr)
+        {
+            continue;
+        }
+        float posX, posY, posZ;
+        if (!mPlayers[i].showVehicleIcon
+            || (v6->client->ps.eFlags & 0x100000) == 0)
+        {
+            if (v6->mDObj != nullptr)
+            {
+                DObjSkelMat mat;
+                if (G_DObjGetWorldTagMatrix(v6, bip_head_hash, &mat) != 0)
+                {
+                    posX = mat.origin[0];
+                    posY = mat.origin[1];
+                    posZ = mat.origin[2] + distAbovePlayer;
+                    goto draw_icon;
+                }
+            }
+            posX = v6->r.currentOrigin.v.m128_f32[0];
+            posY = v6->r.currentOrigin.v.m128_f32[1];
+            posZ = v6->r.currentOrigin.v.m128_f32[2] + 72.0f;
+        }
+        else
+        {
+            Entity* owner = EntityHandleDb::sInst.GetObject(
+                v6->r.mOwner.mHandle.mVal);
+            if (owner == nullptr)
+                continue;
+            if (owner->scr_vehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\IGOHeadIcons.cpp";
+                AeAssert::gCurrentLine = 284;
+                AeAssert::gCurrentExpr = "vehicle->scr_vehicle";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Players owner is not a vehicle"))
+                    __debugbreak();
+            }
+            if (owner->mDObj != nullptr)
+            {
+                DObjSkelMat mat;
+                if (G_DObjGetWorldTagMatrix(owner, turret_hash, &mat) != 0)
+                {
+                    posX = mat.origin[0];
+                    posY = mat.origin[1];
+                    posZ = mat.origin[2] + distAboveVehicle;
+                    goto draw_icon;
+                }
+            }
+            posX = owner->r.currentOrigin.v.m128_f32[0];
+            posY = owner->r.currentOrigin.v.m128_f32[1];
+            posZ = owner->r.currentOrigin.v.m128_f32[2] + 140.0f;
+        }
+    draw_icon:
+        {
+            math::Position3 in1;
+            in1.v.m128_f32[0] = posX;
+            in1.v.m128_f32[1] = posY;
+            in1.v.m128_f32[2] = posZ;
+            in1.v.m128_f32[3] = 0.0f;
+            math::Position3 proj1;
+            nglProjectPoint(&proj1, &in1, nglBuildScene);
+            if (proj1.v.m128_f32[2] < 1.0f)
+                continue;
+            math::Position3 in2;
+            in2.v.m128_f32[0] = posX;
+            in2.v.m128_f32[1] = posY;
+            in2.v.m128_f32[2] = posZ + iconHeight;
+            in2.v.m128_f32[3] = 0.0f;
+            math::Position3 proj2;
+            nglProjectPoint(&proj2, &in2, nglBuildScene);
+            if (proj2.v.m128_f32[2] < 1.0f)
+                continue;
+            float screenHeight =
+                proj1.v.m128_f32[1] - proj2.v.m128_f32[1];
+            if (minScreenSize > screenHeight)
+                screenHeight = minScreenSize;
+            int window = unk_F6A284[802 * mClient];
+            float halfW = View::GetXScalingForHUD(window) * screenHeight
+                          * 0.5f;
+            float halfH = View::GetYScalingForHUD(window) * screenHeight
+                          * 0.5f;
+            PanelQuad* icon = mHeadIcons[mPlayers[i].index].icon;
+            icon->SetZvalueAbs(proj1.v.m128_f32[2]);
+            icon->SetPos(proj1.v.m128_f32[0] - halfW,
+                         proj1.v.m128_f32[1] - halfH,
+                         proj1.v.m128_f32[0] + halfW,
+                         proj1.v.m128_f32[1] + halfH);
+            color32 col;
+            col.c.b = 255;
+            col.c.g = 255;
+            col.c.r = 255;
+            col.c.a = (uint8_t)mPlayers[i].alpha;
+            icon->SetColor(col);
+            icon->Draw();
+        }
+    }
+}
+
+// ea: 0x0058AC90
+void IGOHeadIcons::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown
+        || !cgGlobal.teamGame
+        || EntityManager::sInst->GetPlayer(mClient) == nullptr
+        || EntityManager::sInst->GetPlayer(mClient)->sentient == nullptr)
+    {
+        return;
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    if (Player == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOHeadIcons.cpp";
+        AeAssert::gCurrentLine = 80;
+        AeAssert::gCurrentExpr = "localPlayer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Local player is not valid"))
+            __debugbreak();
+    }
+    if (Player->client->ps.pm_type >= 6)
+        return;
+    int localTeam = Player->sentient->eTeam;
+    for (int idx = 0; idx < 16; ++idx)
+    {
+        HeadIconsPlayer* p = &mPlayers[idx];
+        p->show = false;
+        bool showVehicleIcon = false;
+        Entity* v5 = EntityManager::sInst->GetPlayer(idx);
+        if (v5 == nullptr || v5 == Player)
+            continue;
+        sentient_s* sentient = v5->sentient;
+        if (sentient == nullptr)
+            continue;
+        Client* client = v5->client;
+        if (client->pers.connected != 2 /* CON_CONNECTED */)
+            continue;
+        int team = sentient->eTeam;
+        int playerState = client->pers.playerState;
+        int rank = client->pers.rank;
+        float v22 = 1.0f;
+        int minAlphaDist = 0;
+        int maxAlphaDist = 0;
+        if (playerState == 4)
+        {
+            if (*(int*)((char*)Player + 596 + 1904) != 3)
+                continue;
+            maxAlphaDist = mp_headIconReviveMaxAlphaDist.integer;
+            minAlphaDist = mp_headIconReviveMinAlphaDist.integer;
+            rank = 4;
+            int respawnUntilTime = client->ps.respawnUntilTime;
+            if (respawnUntilTime != 0)
+            {
+                int v12 = respawnUntilTime - level.time;
+                if (v12 < 0)
+                    continue;
+                if (v12 < 5000)
+                    v22 = v12 * 0.0002f;
+            }
+        }
+        else
+        {
+            if (playerState != 3)
+                continue;
+            if ((client->ps.eFlags & 0x100000) != 0
+                && client->ps.vehType == 2 && client->ps.vehPos == 0)
+            {
+                Entity* owner = EntityHandleDb::sInst.GetObject(
+                    v5->r.mOwner.mHandle.mVal);
+                if (owner == nullptr || owner->scr_vehicle == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\IGOHeadIcons.cpp";
+                    AeAssert::gCurrentLine = 168;
+                    AeAssert::gCurrentExpr =
+                        "*player->r.mOwner && player->r.mOwner->scr_vehicle";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                            "Invalid vehicle in IGOHeadIcons::Update"))
+                        __debugbreak();
+                }
+                showVehicleIcon = true;
+                if (team != localTeam && IsVehicleSpotted(owner))
+                    rank = 7;
+            }
+            else if (team == localTeam
+                     && MultiplayerMgr::sInst->IsPlayerTalking(v5))
+            {
+                rank = 3;
+            }
+        }
+        if (team != localTeam)
+        {
+            if (rank <= 4)
+                continue;
+        }
+        else
+        {
+            if (rank > 4)
+                continue;
+        }
+        float v14 = mHeadIcons[rank].alpha * v22;
+        float additional_alpha_scalar = v14;
+        if (maxAlphaDist > 0)
+        {
+            float dx = Player->r.currentOrigin.v.m128_f32[0]
+                       - v5->r.currentOrigin.v.m128_f32[0];
+            float dy = Player->r.currentOrigin.v.m128_f32[1]
+                       - v5->r.currentOrigin.v.m128_f32[1];
+            float dz = Player->r.currentOrigin.v.m128_f32[2]
+                       - v5->r.currentOrigin.v.m128_f32[2];
+            float dist = sqrtf(dx * dx + dy * dy + dz * dz);
+            if (dist <= maxAlphaDist)
+            {
+                if (dist > minAlphaDist)
+                {
+                    float a = mHeadIcons[rank].alpha;
+                    additional_alpha_scalar =
+                        a
+                        - (((dist - minAlphaDist)
+                            / (maxAlphaDist - minAlphaDist))
+                           * a);
+                }
+                v14 = additional_alpha_scalar;
+                p->show = true;
+                p->showVehicleIcon = showVehicleIcon;
+                p->alpha = v14;
+                p->index = rank;
+            }
+        }
+        else
+        {
+            p->show = true;
+            p->showVehicleIcon = showVehicleIcon;
+            p->alpha = v14;
+            p->index = rank;
+        }
+    }
+}
+
+// ============================================================================
+// IGOItemIcons (render-heavy Draw deferred to renderer batch)
+// ============================================================================
+
+const char* sItemIconNames[2] = {
+    "i_ammo_box_w", "voip_line_01_icon",
+};
+
+// ea: 0x005691B0
+IGOItemIcons::IGOItemIcons(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    memset(mItemIcons, 0, sizeof(mItemIcons));
+}
+
+// ea: 0x005691D0
+IGOItemIcons::~IGOItemIcons()
+{
+}
+
+// ea: 0x0059AA40
+void IGOItemIcons::Init(PanelFile* panel)
+{
+    float u[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+    float v[4] = {0.0f, 0.0f, 1.0f, 1.0f};
+    for (int i = 0; i < 2; ++i)
+    {
+        PanelQuad* Pointer = panel->GetPointer(sItemIconNames[i]);
+        mItemIcons[i].icon = Pointer;
+        if (g_femanager.GetDefaultPQ() != Pointer)
+        {
+            Pointer->quadBlendModeType = 1691321856;
+            mItemIcons[i].icon->SetSectionUV(0, u, v);
+            mItemIcons[i].height =
+                (uint8_t)mItemIcons[i].icon->GetWidth();
+            mItemIcons[i].alpha =
+                mItemIcons[i].icon->GetColor().c.a;
+        }
+    }
+}
+
+// ea: 0x005691E0
+void IGOItemIcons::Update(float time_inc)
+{
+    (void)time_inc;
+}
+
+// ea: 0x005691F0 (private per-item draw helper)
+void IGOItemIcons::Draw(Entity* pEnt, const math::Position3& playerPosition,
+                        int iconIndex)
+{
+    if (pEnt->s.pos.trType != 0 /* TR_STATIONARY */)
+        return;
+    float fMinIconScreenSize = mItemIcons[iconIndex].alpha;
+    int maxAlphaDist = 0;
+    if (mp_itemIconMaxAlphaDist.integer > 0)
+    {
+        float dx = playerPosition.v.m128_f32[0]
+                   - pEnt->r.currentOrigin.v.m128_f32[0];
+        float dy = playerPosition.v.m128_f32[1]
+                   - pEnt->r.currentOrigin.v.m128_f32[1];
+        float dz = playerPosition.v.m128_f32[2]
+                   - pEnt->r.currentOrigin.v.m128_f32[2];
+        float dist = sqrtf(dx * dx + dy * dy + dz * dz);
+        if (dist > (float)mp_itemIconMaxAlphaDist.integer)
+            return;
+        if (dist > mp_itemIconMinAlphaDist.integer)
+        {
+            fMinIconScreenSize =
+                mItemIcons[iconIndex].alpha
+                - (((dist - mp_itemIconMinAlphaDist.integer)
+                    / (mp_itemIconMaxAlphaDist.integer
+                       - mp_itemIconMinAlphaDist.integer))
+                   * mItemIcons[iconIndex].alpha);
+        }
+    }
+    float itemX = pEnt->r.currentOrigin.v.m128_f32[0];
+    float itemY = pEnt->r.currentOrigin.v.m128_f32[1];
+    float itemZ = pEnt->r.currentOrigin.v.m128_f32[2]
+                  + mp_itemIconDistAboveItem.integer;
+    math::Position3 proj1;
+    math::Position3 in1;
+    in1.v.m128_f32[0] = itemX;
+    in1.v.m128_f32[1] = itemY;
+    in1.v.m128_f32[2] = itemZ;
+    in1.v.m128_f32[3] = 0.0f;
+    nglProjectPoint(&proj1, &in1, nglBuildScene);
+    if (proj1.v.m128_f32[2] < 1.0f)
+        return;
+    math::Position3 proj2;
+    math::Position3 in2;
+    in2.v.m128_f32[0] = itemX;
+    in2.v.m128_f32[1] = itemY;
+    in2.v.m128_f32[2] = itemZ + mp_itemIconHeight.integer;
+    in2.v.m128_f32[3] = 0.0f;
+    nglProjectPoint(&proj2, &in2, nglBuildScene);
+    if (proj2.v.m128_f32[2] < 1.0f)
+        return;
+    float screenHeight = proj1.v.m128_f32[1] - proj2.v.m128_f32[1];
+    if (mp_itemIconMinScreenSize.integer > screenHeight)
+        screenHeight = (float)mp_itemIconMinScreenSize.integer;
+    int window = unk_F6A284[802 * mClient];
+    float halfW = View::GetXScalingForHUD(window) * screenHeight * 0.5f;
+    float halfH = View::GetYScalingForHUD(window) * screenHeight * 0.5f;
+    PanelQuad* icon = mItemIcons[iconIndex].icon;
+    icon->SetZvalueAbs(proj1.v.m128_f32[2]);
+    icon->SetPos(proj1.v.m128_f32[0] - halfW,
+                 proj1.v.m128_f32[1] - halfH,
+                 proj1.v.m128_f32[0] + halfW,
+                 proj1.v.m128_f32[1] + halfH);
+    color32 col;
+    col.c.b = 255;
+    col.c.g = 255;
+    col.c.r = 255;
+    col.c.a = (uint8_t)fMinIconScreenSize;
+    icon->SetColor(col);
+    icon->Draw();
+}
+
+// ea: 0x00569530
+void IGOItemIcons::Draw()
+{
+    if (!is_shown)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOItemIcons.cpp";
+        AeAssert::gCurrentLine = 150;
+        AeAssert::gCurrentExpr = "localPlayer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Local player is not valid"))
+            __debugbreak();
+    }
+    if (Player->client->ps.pm_type >= 6 || Player->sentient == nullptr
+        || MultiplayerMgr::sInst->mPeer == nullptr)
+    {
+        return;
+    }
+    MpPlayerManagerView* playerManager =
+        (MpPlayerManagerView*)MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    for (int j = 0; j < 16; ++j)
+    {
+        MpPlayerView2* v4 = (MpPlayerView2*)playerManager->GetPlayer(
+            (unsigned char)j);
+        if (v4 == nullptr || !v4->IsValid())
+            continue;
+        for (int i = 0; i < 3; ++i)
+        {
+            Entity* Item =
+                v4->mItems.FindItem(kItemTypeSupport, (short)i);
+            if (Item != nullptr)
+                Draw(Item, Player->r.currentOrigin, 0);
+        }
+        if (v4->mClientIndex >= 0)
+        {
+            Entity* v7 = EntityManager::sInst->GetPlayer(v4->mClientIndex);
+            if (v7 != nullptr && v7->sentient != nullptr
+                && v7->sentient->eTeam == Player->sentient->eTeam)
+            {
+                for (int k = 0; k < 3; ++k)
+                {
+                    Entity* v10 =
+                        v4->mItems.FindItem(kItemTypeMines, (short)k);
+                    if (v10 != nullptr && v10->think != 0x0C)
+                        Draw(v10, Player->r.currentOrigin, 1);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00583D90
+void IGOItemIcons::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 2; ++i)
+        mItemIcons[i].icon->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00583DC0
+void IGOItemIcons::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    for (int i = 0; i < 2; ++i)
+        mItemIcons[i].icon->FormatForSplitScreen(viewport, old_viewport);
+}
+
+// ============================================================================
+// IGOVoipList
+// ============================================================================
+
+const char* sVoipIconNames[4] = {
+    "voip_line_01_icon", "voip_line_03_icon", "voip_line_01_text",
+    "voip_line_03_text",
+};
+const char* sVoipTextNames[4] = {
+    "voip_line_01_text", "voip_line_03_text", nullptr, nullptr,
+};
+
+// Minimal MPPlayer view for the mTeam/mName fields (full layout in mp.o).
+struct MpPlayerView {
+    uint8_t _pad0[0x68];
+    char    mName[32];   // +0x68
+    uint8_t _pad2[0x25C - 0x88];
+    int16_t mTeam;       // +0x25C
+};
+
+// ea: 0x0059C480
+IGOVoipList::IGOVoipList(int client)
+    : mListBox(4, 2, 4, true)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+}
+
+// ea: 0x0059AB00
+IGOVoipList::~IGOVoipList()
+{
+    mListBox.~UIListBox();
+}
+
+// ea: 0x0059AB50
+void IGOVoipList::Init(PanelFile* panel)
+{
+    mListBox.SetColumnStateCount(1, 2);
+    for (int i = 0; i < 4; ++i)
+    {
+        PanelQuad* Pointer = panel->GetPointer(sVoipIconNames[i]);
+        FEText* TextPointer = panel->GetTextPointer(sVoipTextNames[i]);
+        mListBox.SetItem(i, 0, TextPointer, 0);
+        mListBox.SetItem(i, 1, Pointer, 1);
+    }
+}
+
+// ea: 0x0058B680
+void IGOVoipList::Update(float time_inc)
+{
+    if (MultiplayerMgr::sInst->mPeer == nullptr)
+        return;
+    MPPlayerManager* PlayerManager =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    MPPlayer* LocalPlayer = PlayerManager->GetLocalPlayer(mClient);
+    int local_team = 2;
+    if (LocalPlayer != nullptr)
+        local_team = ((MpPlayerView*)LocalPlayer)->mTeam;
+    int row = 0;
+    for (int i = 0; i < 16 && row < 4; ++i)
+    {
+        MPPlayer* Player = PlayerManager->GetPlayer(i);
+        if (Player != nullptr
+            && !Player->IsLocalPlayer()
+            && (!cgGlobal.teamGame
+                || local_team == ((MpPlayerView*)Player)->mTeam)
+            && MultiplayerMgr::sInst->mPeer->IsPlayerTalking(Player, 0))
+        {
+            mListBox.SetText(row, 0, ((MpPlayerView*)Player)->mName);
+            mListBox.SetItemState(row, 1, 1);
+            ++row;
+        }
+    }
+    for (int i = row; i < 4; ++i)
+        mListBox.ClearRow(i);
+    mListBox.Update(time_inc);
+}
+
+// ea: 0x005696B0
+void IGOVoipList::Draw()
+{
+    if (is_shown)
+        mListBox.Draw();
+}
+
+// ea: 0x00579530
+void IGOVoipList::UpdateWidescreen(bool widescreen, float about_x)
+{
+    (void)widescreen;
+    (void)about_x;
+}
+
+// ea: 0x00579540
+void IGOVoipList::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    (void)viewport;
+    (void)old_viewport;
+}
+
+// ============================================================================
+// IGOHintWidget (Update deferred pieces use full extern set below)
+// ============================================================================
+
+// ea: 0x00568AF0
+IGOHintWidget::IGOHintWidget(int client)
+{
+    mClient = client;
+    force_appear = false;
+    is_shown = true;
+    memset(icons, 0, sizeof(icons));
+    text = nullptr;
+    dont_draw = false;
+    wide_weapon = false;
+    current_icon = -1;
+    last_icon = -2;
+}
+
+// ea: 0x0059A2E0
+void IGOHintWidget::Init(PanelFile* panel)
+{
+    if (strcmp(panel->mName, "hud_mp.panel") == 0)
+    {
+        icons[5] = panel->GetPointer("ai_driver");
+        icons[6] = panel->GetPointer("ai_flag_pickup");
+        icons[7] = panel->GetPointer("ai_gunner_position");
+        icons[8] = panel->GetPointer("ai_mantel_tank");
+        icons[9] = panel->GetPointer("ai_passenger");
+        if (mpviewport > 0)
+        {
+            icons[5] = PanelQuad::Clone(icons[5]);
+            icons[6] = PanelQuad::Clone(icons[6]);
+            icons[7] = PanelQuad::Clone(icons[7]);
+            icons[8] = PanelQuad::Clone(icons[8]);
+            icons[9] = PanelQuad::Clone(icons[9]);
+        }
+        ++mpviewport;
+    }
+    else
+    {
+        icons[1] = panel->GetPointer("hint_usable");
+        icons[0] = panel->GetPointer("hint_health");
+        icons[2] = panel->GetPointer("hud_ammo2.tga");
+        icons[3] = panel->GetPointer("hint_usable");
+        icons[4] = panel->GetPointer("hint_usable_MG");
+        FEText* TextPointer = panel->GetTextPointer("Press[Use]");
+        if (text != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOHintWidget.cpp";
+            AeAssert::gCurrentLine = 52;
+            AeAssert::gCurrentExpr = "!text";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("no!"))
+                __debugbreak();
+        }
+        text = (FEMultiLineText*)mem_heap_malloc(0xA8u);
+        if (text != nullptr)
+        {
+            color32 col = TextPointer->GetColor();
+            text = new (text) FEMultiLineText(
+                TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
+                (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, (int)col.i,
+                col);
+        }
+        text->SetNumLines(3);
+        if (mClient > 0)
+        {
+            icons[1] = PanelQuad::Clone(icons[1]);
+            icons[0] = PanelQuad::Clone(icons[0]);
+            icons[2] = PanelQuad::Clone(icons[2]);
+            icons[3] = PanelQuad::Clone(icons[3]);
+            icons[4] = PanelQuad::Clone(icons[4]);
+            text = (FEMultiLineText*)mem_heap_malloc(0xA8u);
+            if (text != nullptr)
+            {
+                color32 col2 = TextPointer->GetColor();
+                text = new (text) FEMultiLineText(
+                    TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
+                    (panel_layer)TextPointer->GetScaleX(), 0.0f, 0,
+                    (int)col2.i, col2);
+            }
+            else
+            {
+                text = nullptr;
+            }
+            text->SetNumLines(3);
+        }
+    }
+    memset(current_icon_nudge, 0, sizeof(current_icon_nudge));
+}
+
+// ea: 0x0059A5E0
+void IGOHintWidget::SetWeaponsPQs(PanelFile* panel, PanelFile* panel2)
+{
+    if (icons[10] != nullptr)
+        return;
+    int i = 1;
+    if (BG_GetNumWeapons() >= 1)
+    {
+        int iconIndex = 11;
+        do
+        {
+            weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(i);
+            if (InfoForWeapon->szHudIcon[0] != 0)
+            {
+                char tmp[128];
+                int v6 = 0;
+                while (v6 < 124)
+                {
+                    char v7 = InfoForWeapon->szHudIcon[v6];
+                    if (v7 == 0)
+                        break;
+                    tmp[v6] = v7 == '$' ? '_' : v7;
+                    ++v6;
+                }
+                tmp[v6] = 0;
+                if (panel2 == nullptr
+                    || (icons[iconIndex] = panel2->GetPointer(tmp),
+                        icons[iconIndex] == g_femanager.default_pq))
+                {
+                    icons[iconIndex] = panel->GetPointer(tmp);
+                    if (icons[iconIndex] == g_femanager.default_pq)
+                    {
+                        strcat(tmp, ".tga");
+                        icons[iconIndex] = panel->GetPointer(tmp);
+                        if (icons[iconIndex] == g_femanager.default_pq)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::COD3;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\IGOHintWidget.cpp";
+                            AeAssert::gCurrentLine = 141;
+                            AeAssert::gCurrentExpr = nullptr;
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Warning(
+                                    "could not find pickup hud icon named %s, "
+                                    "using hand icon instead",
+                                    tmp))
+                                __debugbreak();
+                            icons[iconIndex] = nullptr;
+                        }
+                    }
+                }
+            }
+            ++i;
+            ++iconIndex;
+        } while (i <= BG_GetNumWeapons());
+    }
+    for (int j = 0; j < 138; ++j)
+    {
+        if (icons[j] != nullptr)
+            icons[j]->SetColor(color32(-1));
+    }
+}
+
+// ea: 0x00568B50
+void IGOHintWidget::Draw()
+{
+    if (IsShown() && !dont_draw)
+    {
+        if ((unsigned int)current_icon <= 0x89)
+            icons[current_icon]->Draw();
+        text->Draw();
+    }
+}
+
+// ea: 0x005792B0
+void IGOHintWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    for (int i = 0; i < 138; ++i)
+    {
+        if (icons[i] != nullptr)
+            icons[i]->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                              0.0f, 0.0f);
+    }
+    text->UpdateForSplitScreen(viewport, old_viewport);
+}
+
+// ea: 0x00583C70
+void IGOHintWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 138; ++i)
+    {
+        if (icons[i] != nullptr)
+            icons[i]->FattenMeForWidescreen(widescreen, about_x);
+    }
+    if (widescreen)
+        text->SetLineSpacing(20);
+    else
+        text->SetScale(1.1f);
+}
+
+// ea: 0x00578AD0
+void IGOHintWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!IsShown())
+        return;
+    int integer = cg_cursorHints.integer;
+    int v6 = 1580 * mClient;
+    if (integer == 0 || (v6 = 1580 * mClient, dword_F62960[v6] == 0))
+    {
+        dont_draw = true;
+        return;
+    }
+    int cgBase = dword_F62960[v6];
+    if (dword_F6355C[v6] == 0 && *(int*)(cgBase + 1208) != 0)
+    {
+        dword_F63F60[v6] = cgGlobal.time;
+        dword_F63F64[1580 * mClient] = cg_hintFadeTime.integer;
+        dword_F63F5C[1580 * mClient] =
+            *(int*)(dword_F62960[1580 * mClient] + 1208);
+        dword_F63F68[1580 * mClient] =
+            *(int*)(dword_F62960[1580 * mClient] + 1212);
+        dword_F63F6C[1580 * mClient] =
+            *(int*)(dword_F62960[1580 * mClient] + 1216);
+    }
+    int v8 = 1580 * mClient;
+    int v9 = dword_F63F5C[v8];
+    if (v9 <= 1)
+    {
+        dont_draw = true;
+        return;
+    }
+    int v10 = dword_F63F60[v8];
+    float v11 = (float)(v10 + dword_F63F64[v8] - cgGlobal.time);
+    if (v11 <= 0.0f)
+    {
+        dword_F63F5C[v8] = 0;
+        dont_draw = true;
+        return;
+    }
+    float str = 1.0f;
+    if (integer == 2)
+        str = (float)(v10 % 1000) * 0.01f;
+    else if (integer < 2)
+        str = (sinf(cgGlobal.time * 0.0066666668f) + 1.0f) * 5.0f;
+    float alpha = 1.0f;
+    if (v11 < 100.0f)
+        alpha = v11 * 0.01f;
+    int last_icon = this->last_icon;
+    if (v9 == last_icon)
+    {
+        icons[last_icon]->SetAlpha(alpha);
+        float v14 = str;
+        if (wide_weapon)
+            v14 = str * 2.0f;
+        icons[last_icon]->ScaleAbsoluteCenter(v14, v14);
+        text->SetAlpha(alpha);
+        return;
+    }
+    char new_text[256];
+    new_text[0] = 0;
+    const char* activate_key = g_femanager.IGO->activate_key;
+    wide_weapon = false;
+    int v18 = dword_F63F5C[v8];
+    if (v18 >= 17 && v18 <= 144)
+    {
+        int weapon = v18 - 16;
+        current_icon = v18 - 16 + 10;
+        if (icons[current_icon] == nullptr)
+            current_icon = 1;
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weapon);
+        if (WeaponSlot(InfoForWeapon) == 2)
+        {
+            if (BG_GetInfoForWeapon(
+                    GetPlayerState(currCl).weaponslots[3])->bDoNotDrop
+                != 0)
+            {
+                dont_draw = true;
+                return;
+            }
+        }
+        if (InfoForWeapon->bWideListIcon != 0)
+            wide_weapon = true;
+        const char* display = cg_weapons[weapon].pszTranslatedDisplayName;
+        const char* other =
+            cg_weapons[GetPlayerState(currCl).weaponslots[2]]
+                .pszTranslatedDisplayName;
+        const char* fmt = STBManager::sInst->GetSTBString(
+            "INGAME_SWAP_WEAPONS_PS2MP");
+        sprintf(new_text, fmt, other, display);
+        goto label_81;
+    }
+    if (v18 >= 145 && v18 <= 272)
+        goto label_34;
+    if (v18 >= 273 && v18 <= 279)
+    {
+        current_icon = 3;
+        static const char* kitNames[7] = {
+            "MPGAME_ASSAULT", "MPGAME_INFANTRY", "MPGAME_RIFLEMAN",
+            "MPGAME_MEDIC",   "MPGAME_SUPPORT",  "MPGAME_ANTIARMOR",
+            "MPGAME_SCOUT",
+        };
+        const char* kit =
+            STBManager::sInst->GetSTBString(kitNames[v18 - 273]);
+        const char* fmt =
+            STBManager::sInst->GetSTBString("MPGAME_PICKUP_KIT");
+        sprintf(new_text, fmt, kit);
+        goto label_81;
+    }
+    if (v18 >= 3 && v18 <= 6)
+    {
+        switch (v18)
+        {
+        case 3: current_icon = 9; break;
+        case 4: current_icon = 5; break;
+        case 5: current_icon = 7; break;
+        case 6: current_icon = 8; break;
+        }
+        const char* v29 =
+            CG_ConfigString(dword_F63F6C[v8] + 628);
+        const char* v30 =
+            STBManager::sInst->GetSTBString(v29);
+        const char* LMGKey = activate_key;
+        if (v30 == nullptr)
+            v30 = v29;
+        sprintf(new_text, v30, LMGKey);
+        goto label_81;
+    }
+    if (v18 == 12)
+    {
+        current_icon = 4;
+        int Key = KeyInfo::GetKey("+speed", currCl);
+        if (Key == -1)
+            Key = KeyInfo::GetKey("toggle cl_run", currCl);
+        const char* LMGKey;
+        const char* v30;
+        switch (Key)
+        {
+        case 215:
+        case 216:
+            LMGKey = g_femanager.IGO->GetLMGKey();
+            v30 = STBManager::sInst->GetSTBString(
+                "INGAME_XBOX_LMG_MOUNTPOINT_PULL");
+            break;
+        case 219:
+            LMGKey = g_femanager.IGO->GetLMGKey();
+            v30 = STBManager::sInst->GetSTBString(
+                "INGAME_XBOX_LMG_MOUNTPOINT_CLICK_R");
+            break;
+        case 220:
+            LMGKey = g_femanager.IGO->GetLMGKey();
+            v30 = STBManager::sInst->GetSTBString(
+                "INGAME_XBOX_LMG_MOUNTPOINT_CLICK_L");
+            break;
+        default:
+            LMGKey = g_femanager.IGO->GetLMGKey();
+            v30 = STBManager::sInst->GetSTBString(
+                "INGAME_PS2_LMG_MOUNTPOINT");
+            break;
+        }
+        sprintf(new_text, v30, LMGKey);
+        goto label_81;
+    }
+    if (dword_F63F6C[v8] == -1)
+    {
+        if (v18 == 13)
+        {
+            const char* LMGKey = activate_key;
+            current_icon = 0;
+            const char* v30 = STBManager::sInst->GetSTBString(
+                "INGAME_HEALTH_PICKUP");
+            sprintf(new_text, v30, LMGKey);
+            goto label_81;
+        }
+        if (v18 == 2)
+            current_icon = 1;
+        goto label_81;
+    }
+    current_icon = 1;
+    {
+        const char* v33 =
+            STBManager::sInst->GetSTBString((unsigned int)dword_F63F6C[v8]);
+        if (v33 != nullptr)
+        {
+            sprintf(new_text, "%s", v33);
+            goto label_81;
+        }
+        const char* v34 = CG_ConfigString(dword_F63F6C[1580 * mClient] + 628);
+        const char* str2 = v34;
+        if (v34 != nullptr && v34[0] != 0)
+        {
+            if (strcmp(v34, "Press [USE] to plant charge.") == 0)
+            {
+                const char* v35 = STBManager::sInst->GetSTBString(
+                    "GELA_PLANT_CHARGES");
+                if (v35 != nullptr)
+                {
+                    strcpy(new_text, v35);
+                    goto label_81;
+                }
+            }
+            const char* v30 = STBManager::sInst->GetSTBString(str2);
+            const char* LMGKey = activate_key;
+            if (v30 == nullptr)
+                v30 = str2;
+            sprintf(new_text, v30, LMGKey);
+            goto label_81;
+        }
+        new_text[0] = 0;
+        goto label_81;
+    }
+label_34:
+    current_icon = -1;
+label_81:
+    text->SetTextBox(new_text, 450, -1082130432);
+    bool oneLine = text->GetLineNum() <= 1;
+    int ci = current_icon;
+    if (oneLine)
+    {
+        if ((unsigned int)ci <= 0x89 && current_icon_nudge[ci] == 1)
+        {
+            icons[ci]->SetCenterPos(icons[ci]->GetCenterX(),
+                                    icons[ci]->GetCenterY() - 10.0f);
+            current_icon_nudge[ci] = 0;
+        }
+    }
+    else if ((unsigned int)ci <= 0x89 && current_icon_nudge[ci] == 0)
+    {
+        icons[ci]->SetCenterPos(icons[ci]->GetCenterX(),
+                                icons[ci]->GetCenterY() + 10.0f);
+        current_icon_nudge[ci] = 1;
+    }
+    if (ci >= 0)
+        icons[ci]->SetAlpha(alpha);
+    text->SetAlpha(alpha);
+    dont_draw = false;
 }

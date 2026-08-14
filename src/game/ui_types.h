@@ -1269,6 +1269,8 @@ public:
 
     void Draw();
     void SetTextBoxNoLocalize(const char* s, int a3, int a4);
+    virtual void SetTextBox(const char* reference, int w,
+                            float sc_override);  // ?SetTextBox@FEMultiLineText@@UAEXPBDHM@Z 0x56E5A0
     void UpdateForSplitScreen(int viewport, int old_viewport);
     void UpdateForWidescreen(bool widescreen);
     virtual void SetNumLines(int n);      // ?SetNumLines@FEMultiLineText@@UAEXH@Z (0x56D6D0)
@@ -1810,6 +1812,95 @@ static_assert(sizeof(IGOTankReticleWidget) == 0x4C,
               "IGOTankReticleWidget size mismatch");
 
 // ============================================================================
+// IGOHintWidget (1132 bytes) - verified against IDA
+// ============================================================================
+class IGOHintWidget : public IGOWidget {
+public:
+    PanelQuad* icons[138];         // +0x0C
+    FEMultiLineText* text;         // +0x234
+    int        current_icon;       // +0x238
+    int        current_icon_nudge[138];  // +0x23C
+    int        last_icon;          // +0x464
+    bool       dont_draw;          // +0x468
+    bool       wide_weapon;        // +0x469
+
+    IGOHintWidget(int client);  // 0x568AF0
+    virtual void Init(PanelFile* panel);              // 0x59A2E0
+    virtual void Update(float time_inc);              // 0x578AD0
+    virtual void Draw();                              // 0x568B50
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583C70
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x5792B0
+    void SetWeaponsPQs(PanelFile* panel,
+                       PanelFile* panel2);            // 0x59A5E0
+};
+static_assert(sizeof(IGOHintWidget) == 0x46C,
+              "IGOHintWidget size mismatch");
+
+// ============================================================================
+// IGOItemIcons (28 bytes) - verified against IDA
+// ============================================================================
+class IGOItemIcons : public IGOWidget {
+public:
+    struct ItemIcon {
+        PanelQuad* icon;    // +0x00
+        uint8_t    height;  // +0x04
+        uint8_t    alpha;   // +0x05
+    };
+
+    ItemIcon mItemIcons[2];  // +0x0C
+
+    IGOItemIcons(int client);  // 0x5691B0
+    virtual ~IGOItemIcons();   // 0x5691D0
+    virtual void Init(PanelFile* panel);              // 0x59AA40
+    virtual void Update(float time_inc);              // 0x5691E0
+    virtual void Draw();                              // 0x569530
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583D90
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x583DC0
+private:
+    void Draw(Entity* pEnt, const math::Position3& playerPosition,
+              int iconIndex);                         // 0x5691F0
+};
+static_assert(sizeof(IGOItemIcons) == 0x1C,
+              "IGOItemIcons size mismatch");
+
+// ============================================================================
+// IGOHeadIcons (268 bytes) - verified against IDA
+// ============================================================================
+class IGOHeadIcons : public IGOWidget {
+public:
+    struct HeadIcon {
+        PanelQuad* icon;    // +0x00
+        uint8_t    height;  // +0x04
+        uint8_t    alpha;   // +0x05
+    };
+    struct HeadIconsPlayer {
+        bool  show;            // +0x00
+        bool  showVehicleIcon; // +0x01
+        float alpha;           // +0x04
+        int   index;           // +0x08
+    };
+
+    HeadIcon        mHeadIcons[8];      // +0x0C
+    HeadIconsPlayer mPlayers[16];       // +0x4C
+
+    IGOHeadIcons(int client);  // 0x568F70
+    virtual ~IGOHeadIcons();   // 0x568F90
+    virtual void Init(PanelFile* panel);              // 0x59A8A0
+    virtual void Update(float time_inc);              // 0x58AC90
+    virtual void Draw();                              // 0x58B070
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583D00
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x583D30
+};
+static_assert(sizeof(IGOHeadIcons) == 0x10C,
+              "IGOHeadIcons size mismatch");
+
+// ============================================================================
 // FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA
 // ============================================================================
 class FEMenuListBoxItem {
@@ -2137,3 +2228,23 @@ protected:
     void PlayNavigationSound();          // 0x581A90
 };
 static_assert(sizeof(UIListBox) == 0xAC, "UIListBox size mismatch");
+
+// ============================================================================
+// IGOVoipList (184 bytes) - verified against IDA
+// ============================================================================
+class IGOVoipList : public IGOWidget {
+public:
+    UIListBox mListBox;  // +0x0C
+
+    IGOVoipList(int client);  // 0x59C480
+    virtual ~IGOVoipList();   // 0x59AB00
+    virtual void Init(PanelFile* panel);              // 0x59AB50
+    virtual void Update(float time_inc);              // 0x58B680
+    virtual void Draw();                              // 0x5696B0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x579530
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x579540
+};
+static_assert(sizeof(IGOVoipList) == 0xB8,
+              "IGOVoipList size mismatch");

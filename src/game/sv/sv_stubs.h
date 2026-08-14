@@ -319,6 +319,7 @@ struct MultiplayerMgr {
     uint8_t _pad2[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
     bool IsVoteOngoing();           // ?IsVoteOngoing@MultiplayerMgr@@QAE_NXZ
+    bool IsPlayerTalking(Entity* player);  // ?IsPlayerTalking@MultiplayerMgr@@QAE_NPAVEntity@@@Z (mp.o)
     void setEnableLinkCheck(bool enabled);  // ?setEnableLinkCheck@MultiplayerMgr@@QAEX_N@Z (sv.o 0x528020)
     bool getEnableLinkCheck();              // ?getEnableLinkCheck@MultiplayerMgr@@QAE_NXZ (sv.o 0x528030)
     void ExitLevel();
@@ -1014,9 +1015,12 @@ struct IGOFrontEnd {
     void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
     uint8_t _pad24[0x44 - 0x24];
     int     actionHintText[1];  // +0x44 (IGOActionHintWidget::text hash)
-    uint8_t _pad48[0xA0 - 0x48];
+    uint8_t _pad48[0x84 - 0x48];
+    char*   activate_key;       // +0x84
+    uint8_t _pad88[0xA0 - 0x88];
     int     actionHintTimer[1];  // +0xA0
     uint8_t _padA4[0xA8 - 0xA4];
+    const char* GetLMGKey();     // ?GetLMGKey@IGOFrontEnd@@QAEPBDXZ (shell.o 0x56DE50)
     void Update(float time_inc);       // ?Update@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void UpdateInScene(float time_inc);// ?UpdateInScene@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
@@ -1140,6 +1144,7 @@ struct MPPlayer {
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
+    bool IsLocalPlayer() const;        // ?IsLocalPlayer@MPPlayer@@QBE_NXZ (mp.o)
 };
 // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ (mp.o; stub)
 inline Entity* MPPlayer::GetEntity()
@@ -1149,10 +1154,13 @@ inline Entity* MPPlayer::GetEntity()
 
 struct MPPlayerManager {
     MPPlayer* GetPlayer(int id);
+    MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
 };
 
 struct MPPeer {
     MPPlayerManager* GetPlayerManager();
+    bool IsPlayerTalking(MPPlayer* player,
+                         int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z (mp.o)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

@@ -1360,6 +1360,18 @@ void FEMultiLineText::SetNumLines(int n)
     }
 }
 
+// ea: 0x0056E5A0
+void FEMultiLineText::SetTextBox(const char* reference, int w,
+                                 float sc_override)
+{
+    const char* STBString =
+        STBManager::sInst->GetSTBString(reference);
+    if (STBString != nullptr)
+        SetTextBoxNoLocalize(STBString, w, (int)sc_override);
+    else
+        SetTextBoxNoLocalize(reference, 640, (int)sc_override);
+}
+
 // ea: 0x0057CFA0
 void FEMultiLineText::SetLineSpacing(int new_spacing)
 {
