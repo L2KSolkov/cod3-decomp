@@ -108,12 +108,19 @@ private:
 
 struct dpvs_plane_t {
     math::Vector4 data;   // +0x00
-    int side[3];          // +0x10
+    unsigned char side[3]; // +0x10
+    unsigned char frontal; // +0x13
 };
 extern int r_zfar_value;  // float value member of ?r_zfar@@3PAUcvar_t@@A
-extern float g_dpvs_cullDist;  // g_dpvs.cullDist @ 0xF75600
+extern "C" struct dpvs_t g_dpvs;  // plain C symbol @ 0xF75600
 struct drawSurf_s;        // tr renderer surface
 struct trStatistics_t;    // tr renderer statistics
+
+// dpvs_t view (cullDist +0xD8; full layout in tr_dpvs.cpp)
+struct dpvs_t {
+    uint8_t _pad[0xD8];
+    float cullDist;        // +0xD8
+};
 
 // ============================================================================
 // world
@@ -223,8 +230,8 @@ void R_SetPlaneSidesDPVS(dpvs_plane_t* plane)
 float RE_GetFarPlaneDist()
 {
     float zfar = *(float*)&r_zfar_value;
-    if (g_dpvs_cullDist > zfar)
-        return g_dpvs_cullDist;
+    if (g_dpvs.cullDist > zfar)
+        return g_dpvs.cullDist;
     return zfar;
 }
 

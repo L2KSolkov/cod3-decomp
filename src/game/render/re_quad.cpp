@@ -16,6 +16,13 @@ extern float sGlobalFontScale;    // ?sGlobalFontScale@@3MA @ 0xDFA444
 extern unsigned char* fdFile;     // ?fdFile@@3PAEA @ 0xF742AC
 extern int fdOffset;              // ?fdOffset@@3HA @ 0xF743AC
 
+// dpvs_t view (cullDist +0xD8; full layout in tr_dpvs.cpp)
+struct dpvs_t {
+    uint8_t _pad[0xD8];
+    float cullDist;        // +0xD8
+};
+extern "C" dpvs_t g_dpvs;  // plain C symbol @ 0xF75600
+
 // refimport_t ri (cl.o) - UI_GetFontInfo only used here
 struct refimport_t {
     void* (*UI_GetFontInfo)(int font, float scale);
@@ -128,8 +135,7 @@ int RE_Text_Height(int font, float scale)
 // ea: 0x006BFB40
 void RE_SetCullDist(float dist)
 {
-    extern float g_dpvs_cullDist;
-    g_dpvs_cullDist = 0.0f;
+    g_dpvs.cullDist = 0.0f;
     if (dist > 0.0f)
-        g_dpvs_cullDist = dist;
+        g_dpvs.cullDist = dist;
 }
