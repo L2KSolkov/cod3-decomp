@@ -2361,6 +2361,17 @@ public:
     static void RenderLine(const math::Position3& pt1,
                            const math::Position3& pt2, const Color& col,
                            float thickness);  // render.o 0xAC7AB0
+    static void RenderPoint(const math::Position3& pt, const Color& col,
+                            float thickness);  // render.o 0xAC7C90
+    static void RenderLineBox(const math::Position3& tl,
+                              const math::Position3& br, const Color& col,
+                              float thickness);  // render.o 0xAC7D30
+    static void RenderBeamCube(const math::Position3& pt, float radius,
+                               const Color& col,
+                               float thickness);  // render.o 0xAC85E0
+    static void RenderCircle(const math::Position3& center, float radius,
+                             const Color& color,
+                             float thickness);  // render.o 0xAC8670
     static void RenderCone(const math::Position3& pos, const math::Dir3& dir,
                            float angle, float length,
                            const Color& col);  // render.o 0xAC51C0

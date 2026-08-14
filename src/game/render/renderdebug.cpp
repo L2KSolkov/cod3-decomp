@@ -1047,3 +1047,111 @@ void DebugRender::RenderQuad(const math::Position3& pt1,
     nglMesh* v14 = auxCloseScratchMesh(ScratchMesh);
     nglListAddMesh(v14, mtx, nullptr, shader_params, nullptr);
 }
+
+// q_math helpers
+void PerpendicularVector(float* dst, const float* src);  // q_math.cpp
+void CrossProduct(const float* v1, const float* v2, float* cross);  // q_math.cpp
+
+// trGlobals_t view (viewParms.world.modelMatrix +0x8C)
+struct orientationr_t {
+    float origin[3];       // +0x00
+    float axis[3][3];      // +0x0C
+    float viewOrigin[3];   // +0x30
+    float modelMatrix[16]; // +0x3C
+};
+struct viewParms_t {
+    uint8_t _pad[0x7C];
+    orientationr_t world;  // +0x7C
+};
+struct trGlobals_t {
+    uint8_t _pad0[0x10];
+    viewParms_t viewParms;  // +0x10
+};
+extern trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+
+// ea: 0x006D8790
+void DebugRender::RenderPoint(const math::Position3& pt, const Color& col,
+                              float thickness)
+{
+    math::Position3 v8;
+    v8.v.m128_f32[0] = tr.viewParms.world.modelMatrix[1];
+    v8.v.m128_f32[1] = tr.viewParms.world.modelMatrix[5];
+    v8.v.m128_f32[2] = tr.viewParms.world.modelMatrix[9];
+    v8.v.m128_f32[3] = 0.0f;
+    float half = thickness * 0.5f;
+    __m128 v5 = _mm_mul_ps(v8.v, _mm_set1_ps(half));
+    math::Position3 v7;
+    v7.v = _mm_add_ps(pt.v, v5);
+    v8.v = _mm_sub_ps(pt.v, v5);
+    DebugRender::RenderLine(v7, v8, col, thickness);
+}
+
+// ea: 0x006D8830
+void DebugRender::RenderLineBox(const math::Position3& tl,
+                                const math::Position3& br, const Color& col,
+                                float thickness)
+{
+    math::Position3 c[8];
+    c[0].v = _mm_setr_ps(tl.v.m128_f32[0], tl.v.m128_f32[1], tl.v.m128_f32[2], 0.0f);
+    c[1].v = _mm_setr_ps(br.v.m128_f32[0], tl.v.m128_f32[1], tl.v.m128_f32[2], 0.0f);
+    c[2].v = _mm_setr_ps(br.v.m128_f32[0], tl.v.m128_f32[1], br.v.m128_f32[2], 0.0f);
+    c[3].v = _mm_setr_ps(tl.v.m128_f32[0], tl.v.m128_f32[1], br.v.m128_f32[2], 0.0f);
+    c[4].v = _mm_setr_ps(tl.v.m128_f32[0], br.v.m128_f32[1], tl.v.m128_f32[2], 0.0f);
+    c[5].v = _mm_setr_ps(br.v.m128_f32[0], br.v.m128_f32[1], tl.v.m128_f32[2], 0.0f);
+    c[6].v = _mm_setr_ps(br.v.m128_f32[0], br.v.m128_f32[1], br.v.m128_f32[2], 0.0f);
+    c[7].v = _mm_setr_ps(tl.v.m128_f32[0], br.v.m128_f32[1], br.v.m128_f32[2], 0.0f);
+    for (int i = 0; i < 4; ++i)
+    {
+        DebugRender::RenderLine(c[i], c[(i + 1) & 3], col, thickness);
+        DebugRender::RenderLine(c[i + 4], c[((i + 1) & 3) + 4], col, thickness);
+        DebugRender::RenderLine(c[i], c[i + 4], col, thickness);
+    }
+}
+
+// ea: 0x006D90E0
+void DebugRender::RenderBeamCube(const math::Position3& pt, float radius,
+                                 const Color& col, float thickness)
+{
+    __m128 v5 = _mm_mul_ps(_mm_set1_ps(0.57735026f), _mm_set1_ps(radius));
+    math::Position3 v7;
+    v7.v = _mm_sub_ps(pt.v, v5);
+    math::Position3 v8;
+    v8.v = _mm_add_ps(pt.v, v5);
+    DebugRender::RenderLineBox(v7, v8, col, thickness);
+}
+
+// ea: 0x006D9170
+void DebugRender::RenderCircle(const math::Position3& center, float radius,
+                               const Color& color, float thickness)
+{
+    (void)thickness;
+    if (nglBuildScene == nullptr || nglBuildScene->Parent == nullptr)
+        return;
+    float up[3] = { 0.0f, 0.0f, 1.0f };
+    float normal[3];
+    VectorNormalize2(up, normal);
+    float dir[3];
+    PerpendicularVector(dir, normal);
+    float v17[3];
+    CrossProduct(normal, dir, v17);
+    float pts[16][3];
+    float fSin, fCos;
+    for (int i = 0; i < 16; ++i)
+    {
+        FastSinCos(i * 0.39269909f, &fSin, &fCos);
+        float s = fSin * radius;
+        float c = fCos * radius;
+        pts[i][0] = ((dir[0] * c) + (v17[0] * s)) + center.v.m128_f32[0];
+        pts[i][1] = ((dir[1] * c) + (v17[1] * s)) + center.v.m128_f32[1];
+        pts[i][2] = ((dir[2] * c) + (v17[2] * s)) + center.v.m128_f32[2];
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        int j = (i + 1) & 0xF;
+        math::Position3 p1;
+        p1.v = _mm_setr_ps(pts[i][0], pts[i][1], pts[i][2], 0.0f);
+        math::Position3 p2;
+        p2.v = _mm_setr_ps(pts[j][0], pts[j][1], pts[j][2], 0.0f);
+        DebugRender::RenderLine(p1, p2, color, 1.0f);
+    }
+}
