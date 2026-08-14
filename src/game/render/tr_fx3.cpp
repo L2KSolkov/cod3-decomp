@@ -98,6 +98,31 @@ public:
         --mSize;
     }
 
+    // ?erase@?$ae_vector@PAVParticleEffect@@@@QAEXPAPAVParticleEffect@@0@Z
+    void erase(T* iBeginErase, T* iEndErase)
+    {
+        if (mSize <= 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 286;
+            AeAssert::gCurrentExpr = "mSize > 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("can't erase in empty vector"))
+            {
+                __debugbreak();
+            }
+        }
+        T* end = &mElements[mSize];
+        T* dst = iBeginErase;
+        if (iBeginErase != end)
+        {
+            for (T* src = iEndErase; src != end; ++src)
+                *dst++ = *src;
+            mSize -= (int)(end - dst);
+        }
+    }
+
     // ?push_back@?$ae_vector@PAVParticleEffect@@@@QAEXABQAVParticleEffect@@@Z
     void push_back(const T& iElement)
     {

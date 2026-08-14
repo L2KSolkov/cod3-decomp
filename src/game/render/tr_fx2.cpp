@@ -66,6 +66,31 @@ public:
         }
         mElements[mSize++] = iElement;
     }
+
+    // ?erase@?$ae_vector@PAVParticleEffect@@@@QAEXPAPAVParticleEffect@@0@Z
+    void erase(T* iBeginErase, T* iEndErase)
+    {
+        if (mSize <= 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 286;
+            AeAssert::gCurrentExpr = "mSize > 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("can't erase in empty vector"))
+            {
+                __debugbreak();
+            }
+        }
+        T* end = &mElements[mSize];
+        T* dst = iBeginErase;
+        if (iBeginErase != end)
+        {
+            for (T* src = iEndErase; src != end; ++src)
+                *dst++ = *src;
+            mSize -= (int)(end - dst);
+        }
+    }
 };
 
 // mem heap helpers (core.o)
@@ -636,4 +661,56 @@ ParticleEffect* FX_PlayEffectID(TPakId pakId, int id,
     forward[2] = fwd[2];
     MakeNormalVectors(forward, axis, up);
     return PlayEffect(pakId, id, org.v.m128_f32, &axis);
+}
+
+// ea: 0x006D3650
+void RemoveDeadEffects()
+{
+    ParticleEffect** mElements = gParticleEffectList.mElements;
+    bool v1 = false;
+    ParticleEffect** end = &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    if (gParticleEffectList.mElements == end)
+        return;
+    do
+    {
+        ParticleEffect* v2 = *mElements;
+        if (v2 == nullptr)
+            goto LABEL_10;
+        apsEffect* mEffect = v2->mEffect;
+        bool v4 = mEffect != nullptr && mEffect->IsDone() == 0;
+        if ((v2->mFlags & 0x20) != 0 || !v4)
+        {
+            *mElements = nullptr;
+            ParticleEffect::Delete(v2);
+        LABEL_10:
+            v1 = true;
+        }
+        ++mElements;
+    } while (mElements != end);
+    if (v1)
+    {
+        ParticleEffect** v5 = gParticleEffectList.mElements;
+        ParticleEffect** v6 = &gParticleEffectList.mElements[gParticleEffectList.mSize];
+        if (gParticleEffectList.mElements != v6)
+        {
+            while (*v5 != nullptr)
+            {
+                if (++v5 == v6)
+                    goto LABEL_23;
+            }
+            if (v5 != v6)
+            {
+                ParticleEffect** i = v5;
+                for (ParticleEffect** v7 = v5 + 1; v7 != v6; ++v7)
+                {
+                    if (*v7 != nullptr)
+                        *i++ = *v7;
+                }
+                v5 = i;
+            }
+        }
+    LABEL_23:
+        gParticleEffectList.erase(v5,
+                                  &gParticleEffectList.mElements[gParticleEffectList.mSize]);
+    }
 }
