@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(cod3mp VERSION 0.1.0 LANGUAGES CXX)
+project(cod3mp VERSION 0.1.0 LANGUAGES CXX ASM_MASM)
 
 # 32-bit x86 only — the code assumes 4-byte pointers
 set(CMAKE_CXX_STANDARD 14)
@@ -132,6 +132,7 @@ add_library(cod3_render STATIC
 add_library(cod3_animation STATIC
     src/animation/nal.cpp
     src/animation/stubs.cpp
+    src/animation/vecdtors.asm
 )
 add_library(cod3_sound STATIC
     src/sound/nsl.cpp
