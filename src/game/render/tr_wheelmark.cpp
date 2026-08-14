@@ -845,6 +845,42 @@ void DynamicDecalSet::Render()
 }
 
 // ============================================================================
+// DynamicDecalMgr (render.o; std::vector<DecalSet> iteration)
+// ============================================================================
+class DynamicDecalMgr {
+public:
+    struct DecalSet {
+        nglTexture* mTexture;    // +0x00
+        DynamicDecalSet* mDecalSet;  // +0x04
+    };
+    struct VectorView {
+        DecalSet* _Myfirst;  // +0x00
+        DecalSet* _Mylast;   // +0x04
+        DecalSet* _Myend;    // +0x08
+    };
+    VectorView mDecalSets;   // +0x00
+
+    void Render();           // ?Render@DynamicDecalMgr@@QAEXXZ
+    void Update(float deltaTime);  // ?Update@DynamicDecalMgr@@QAEXM@Z
+};
+
+// ea: 0x006D84D0
+void DynamicDecalMgr::Render()
+{
+    DecalSet* Myfirst = mDecalSets._Myfirst;
+    for (DecalSet* i = mDecalSets._Mylast; Myfirst != i; ++Myfirst)
+        Myfirst->mDecalSet->Render();
+}
+
+// ea: 0x006D8500
+void DynamicDecalMgr::Update(float deltaTime)
+{
+    DecalSet* Myfirst = mDecalSets._Myfirst;
+    for (DecalSet* i = mDecalSets._Mylast; Myfirst != i; ++Myfirst)
+        Myfirst->mDecalSet->Update(deltaTime);
+}
+
+// ============================================================================
 // WheelMark methods
 // ============================================================================
 
