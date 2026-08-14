@@ -2373,12 +2373,14 @@ public:
     static void RenderTriangle(const math::Position3& pt1,
                                const math::Position3& pt2,
                                const math::Position3& pt3,
-                               const Color& col);  // render.o 0xAC45C0
+                               const Color& col,
+                               bool double_sided);  // render.o 0xAC45C0
     static void RenderQuad(const math::Position3& pt1,
                            const math::Position3& pt2,
                            const math::Position3& pt3,
                            const math::Position3& pt4,
-                           const Color& col);  // render.o 0xAC4810
+                           const Color& col,
+                           bool double_sided);  // render.o 0xAC4810
     static void RenderAxis(const math::Mat43& mat, float length,
                            float width);  // render.o 0xAC8870
 };

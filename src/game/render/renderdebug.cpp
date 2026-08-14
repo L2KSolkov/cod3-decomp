@@ -947,8 +947,9 @@ void DebugRender::RenderCylinder(const math::Position3& base,
 void DebugRender::RenderTriangle(const math::Position3& pt1,
                                  const math::Position3& pt2,
                                  const math::Position3& pt3,
-                                 const Color& col)
+                                 const Color& col, bool double_sided)
 {
+    (void)double_sided;
     if (nglBuildScene != nullptr && nglBuildScene->Parent != nullptr)
     {
         nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
@@ -1000,8 +1001,10 @@ void DebugRender::RenderTriangle(const math::Position3& pt1,
 void DebugRender::RenderQuad(const math::Position3& pt1,
                              const math::Position3& pt2,
                              const math::Position3& pt3,
-                             const math::Position3& pt4, const Color& col)
+                             const math::Position3& pt4, const Color& col,
+                             bool double_sided)
 {
+    (void)double_sided;
     nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
     nglMeshSection* ScratchSection =
         nglCreateScratchSection(6, 4, 4, &cddebug_vertex_format);
