@@ -1203,6 +1203,8 @@ int  Path_IsNodeValid(const PathNodes::PathNode* pNode, team_t eTeam);  // mp_ac
 void Path_MarkNodeUnsafe(PathNodes::PathNode* pNode, team_t eTeam);     // mp_actors.o
 int  Path_IsNodeUnsafe(const PathNodes::PathNode* pNode, team_t eTeam); // mp_actors.o
 void Path_MarkNodeValid(PathNodes::PathNode* pNode, team_t eTeam);      // mp_actors.o
+void Path_ClaimNode(PathNodes::PathNode* pNode, sentient_s* pClaimer);  // mp_actors.o
+void Path_ForceClaimNode(PathNodes::PathNode* pNode, sentient_s* pClaimer);  // mp_actors.o
 void Path_RevokeClaim(PathNodes::PathNode* pNode, sentient_s* pNewClaimer);  // mp_actors.o
 void Path_ForceClaimNode(PathNodes::PathNode* pNode, sentient_s* pClaimer);  // mp_actors.o
 ai_stance_e Path_AllowedStancesForNode(PathNodes::PathNode* pNode);     // mp_actors.o

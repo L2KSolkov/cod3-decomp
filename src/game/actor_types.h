@@ -533,7 +533,10 @@ struct actor_s {
     Entity*        pPileUpEnt;                   // +0x840
     uint8_t        _pad844[0x84C - 0x844];
     int32_t        bDontAvoidPlayer;             // +0x84C
-    uint8_t        _pad850[0x8A8 - 0x850];
+    int16_t        chainFallback;                // +0x850
+    uint8_t        goalRadiusOnly;               // +0x852
+    uint8_t        bAtGoal;                      // +0x853
+    uint8_t        _pad854[0x8A8 - 0x854];
     float          fVisibilityThreshold;          // +0x8A8
     float          fFovDot;                      // +0x8AC
     float          fMaxSightDistSqrd;            // +0x8B0

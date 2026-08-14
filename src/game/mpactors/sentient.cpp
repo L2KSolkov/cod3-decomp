@@ -7,6 +7,8 @@
 
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
+#include <stdio.h>
 #include <intrin.h>
 
 extern level_locals_t level;           // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
@@ -26,6 +28,31 @@ extern void G_DPrintf(const char* fmt, ...);       // g.o
 extern void G_FreeEntityRefs(Entity* ed);          // g.o
 extern void Scr_FreeSentientFields(sentient_s* pSentient);  // scr.o
 extern int sLatency;                               // @ 0xE37C98
+extern int irand(int min, int max);                // core.o
+extern void Com_Printf(const char* fmt, ...);      // core.o
+extern const float VectorDistanceSquared(const float* const p1,
+                                         const float* const p2);  // core.o
+extern int g_doDontLinkCheck;              // ?g_doDontLinkCheck@@3HA @ 0xE37A1C (pathnodemgr.cpp)
+
+// ea: 0x8990B0 (g.o inline) - returns the null hash (0)
+unsigned int HashString::NullHash()
+{
+    static unsigned int sNull = 0;  // ?sNull@?1??NullHash@HashString@@SAIXZ@4IA
+    return sNull;
+}
+
+// cover-node type flags for Sentient_NearestCoverNode (@ 0x45FFC, BSS)
+static int s_coverNodeTypeFlags = 0;
+
+// ea: 0x00615B20 (g.o) - filter used by the drop-to-floor trace context
+struct ai_collision_context_t : collision_context_t {
+    virtual bool filter(Entity* ent) const;  // ?filter@ai_collision_context_t@@UBE_NPAVEntity@@@Z
+};
+
+void __fastcall Sentient_SetGoalPos(sentient_s* pSelf,
+                                    const math::Position3& vGoalPos,
+                                    bool drop2floor);
+void __fastcall Sentient_UpdateGoalPos(sentient_s* pSelf);
 
 // ============================================================================
 // sentient glob state (anonymous struct @ 0xF992D4, IDA-verified)
@@ -993,5 +1020,769 @@ void __fastcall Sentient_UpdateActualChainPos(sentient_s* pSelf)
             v3->FindChainPos(vOrigin, Node);
         if (ChainPos != nullptr)
             pSelf->mActualChainPos.mValue = ChainPos->mHandle.mValue;
+    }
+}
+
+// ============================================================================
+// Chain / goal setters (sentient.cpp)
+// ============================================================================
+
+// ea: 0x00784110
+void __fastcall Sentient_ClaimNode(sentient_s* pSelf,
+                                   PathNodes::NodeHandle node)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 1400;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 1401;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    uint16_t mValue = node.mValue;
+    PathNodes::NodeHandle* p_mClaimedNode = &pSelf->mClaimedNode;
+    if (node.mValue != pSelf->mClaimedNode.mValue)
+    {
+        if (p_mClaimedNode->mValue != 0
+            && p_mClaimedNode->mValue != 0xFFFF
+            && PathNodeMgr::sInst->GetNode(pSelf->mClaimedNode) != nullptr)
+        {
+            PathNodes::PathNode* v6 =
+                PathNodeMgr::sInst->GetNode(pSelf->mClaimedNode);
+            Path_RelinquishNodePermanently(v6, pSelf);
+        }
+        p_mClaimedNode->mValue = mValue;
+        PathNodes::PathNode* v7 =
+            PathNodeMgr::sInst->GetNode(node);
+        if (v7 != nullptr)
+        {
+            if (v7->mDynamic.mOwner != nullptr)
+                Path_ForceClaimNode(v7, pSelf);
+            else
+                Path_ClaimNode(v7, pSelf);
+            pSelf->iLastClaimedNodeTime = level.time;
+        }
+    }
+}
+
+// ea: 0x00786340
+void __fastcall Sentient_SetDesiredChainNode(sentient_s* pSelf,
+                                             PathNodes::NodeHandle node)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 1323;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::PathNode* v5 = PathNodeMgr::sInst->GetNode(node);
+    if (node.mValue != pSelf->mDesiredChainPos.mValue)
+    {
+        if (v5 != nullptr
+            && v5->mConstant.mOnGoalCallback.mBlock != nullptr)
+        {
+            HashString v7;
+            v7.mHash = HashString::CalcHash(
+                (const char*)(v5->mConstant.mOnGoalCallback.mBlock + 1));
+            Sentient_SetGoalScriptCallback(pSelf, v7);
+            Sentient_ClaimNode(pSelf, v5->mHandle);
+        }
+        else
+        {
+            HashString hs;
+            hs.mHash = HashString::NullHash();
+            Sentient_SetGoalScriptCallback(pSelf, hs);
+        }
+        uint16_t mValue = pSelf->mClaimedNode.mValue;
+        if (mValue != 0 && mValue != 0xFFFF
+            && PathNodeMgr::sInst->GetNode(pSelf->mClaimedNode) != nullptr
+            && pSelf->mDesiredChainPos.mValue
+                   == pSelf->mClaimedNode.mValue)
+        {
+            actor_s* actor = pSelf->pEnt->actor;
+            if (actor != nullptr)
+            {
+                ai_state_e v10 = actor->eSimulatedState[0];
+                if (v10 != AIS_SETABLE_FIRST
+                    && v10 != AIS_GRENADE_RESPONSE)
+                {
+                    PathNodes::NodeHandle zero;
+                    zero.mValue = 0;
+                    Sentient_ClaimNode(pSelf, zero);
+                }
+            }
+        }
+        pSelf->mDesiredChainPos = node;
+    }
+    if (v5 != nullptr && v5->mConstant.mRadius != 0.0f)
+        Sentient_SetGoalRadius(pSelf->pEnt->sentient,
+                               v5->mConstant.mRadius);
+}
+
+// ea: 0x007864A0
+void __fastcall Sentient_ClaimChainNode(sentient_s* pSelf)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 1367;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 1368;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::NodeHandle* p_mDesiredChainPos = &pSelf->mDesiredChainPos;
+    if (pSelf->mClaimedNode.mValue != pSelf->mDesiredChainPos.mValue
+        && p_mDesiredChainPos->mValue != 0
+        && p_mDesiredChainPos->mValue != 0xFFFF
+        && PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos) != nullptr)
+    {
+        const PathNodes::PathNode* Node =
+            PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos);
+        if (Path_CanClaimChainNode(Node, pSelf) != 0)
+            Sentient_ClaimNode(pSelf, *p_mDesiredChainPos);
+    }
+}
+
+// ea: 0x00786BA0
+void __fastcall Sentient_UpdateDesiredChainPos(sentient_s* pSelf,
+                                               int iFollowMin,
+                                               int iFollowMax)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 435;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt->actor == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 436;
+        AeAssert::gCurrentExpr = "pSelf->pEnt->actor";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pGoalEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 437;
+        AeAssert::gCurrentExpr = "pSelf->pGoalEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pGoalEnt->sentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 438;
+        AeAssert::gCurrentExpr = "pSelf->pGoalEnt->sentient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iFollowMin > iFollowMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 439;
+        AeAssert::gCurrentExpr = "iFollowMin <= iFollowMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    team_t eTeam = pSelf->eTeam;
+    if (eTeam != TEAM_AXIS && eTeam != TEAM_ALLIES && eTeam != TEAM_NEUTRAL)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 440;
+        AeAssert::gCurrentExpr =
+            "pSelf->eTeam == TEAM_AXIS || pSelf->eTeam == TEAM_ALLIES || "
+            "pSelf->eTeam == TEAM_NEUTRAL";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", pSelf->eTeam))
+            __debugbreak();
+    }
+    uint16_t mValue = pSelf->mDesiredChainPos.mValue;
+    PathNodes::NodeHandle* v6 = &pSelf->mDesiredChainPos;
+    if (level.time - pSelf->iDesiredChainPosTime <= 0
+        && mValue != 0
+        && mValue != 0xFFFF
+        && PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos) != nullptr
+        && (Path_CanClaimChainNode(
+                PathNodeMgr::sInst->GetNode(*v6),
+                pSelf) != 0))
+    {
+        if (v6->mValue != 0 && v6->mValue != 0xFFFF)
+            PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos);
+    }
+    else
+    {
+        pSelf->iDesiredChainPosTime =
+            level.time
+            + irand(pSelf->iUpdDesiredChainPosTimeMin,
+                    pSelf->iUpdDesiredChainPosTimeMax);
+        Sentient_UpdateActualChainPos(pSelf->pGoalEnt->sentient);
+        PathNodes::PathNode* Node =
+            PathNodeMgr::sInst->GetNode(
+                pSelf->pGoalEnt->sentient->mActualChainPos);
+        if (Node != nullptr)
+        {
+            PathNodes::PathNode* v16 =
+                PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos);
+            PathNodes::PathNode* v17 =
+                PathNodeMgr::sInst->ChooseChainPos(
+                    Node, iFollowMin, iFollowMax, v16, pSelf,
+                    pSelf->pEnt->actor->chainFallback);
+            if (v17 != nullptr)
+            {
+                if (v17->mConstant.mOrigin[0] != pSelf->vGoalPos[0]
+                    || v17->mConstant.mOrigin[1] != pSelf->vGoalPos[1]
+                    || v17->mConstant.mOrigin[2] != pSelf->vGoalPos[2])
+                    return;
+                Sentient_SetDesiredChainNode(pSelf, v17->mHandle);
+            }
+            if (v6->mValue != 0 && v6->mValue != 0xFFFF)
+                PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+            AeAssert::gCurrentLine = 479;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                Entity* pGoalEnt = pSelf->pGoalEnt;
+                Broc::string::Block* mBlock =
+                    pGoalEnt->mClassName.mBlock;
+                const char* v11 =
+                    mBlock != nullptr
+                        ? (const char*)(mBlock + 1)
+                        : defaultFileName;
+                Entity* pEnt = pSelf->pEnt;
+                Broc::string::Block* v13 = pEnt->mClassName.mBlock;
+                const char* v14 =
+                    v13 != nullptr ? (const char*)(v13 + 1)
+                                   : defaultFileName;
+                if (AeAssert::Warning(
+                        "Sentient %s at (%.0f %.0f %.0f) is following the "
+                        "sentient %s at (%.0f %.0f %.0f) that is not on a "
+                        "friendly chain\n",
+                        v14,
+                        pEnt->r.currentOrigin.v.m128_f32[0],
+                        pEnt->r.currentOrigin.v.m128_f32[1],
+                        pEnt->r.currentOrigin.v.m128_f32[2],
+                        v11,
+                        pGoalEnt->r.currentOrigin.v.m128_f32[0],
+                        pGoalEnt->r.currentOrigin.v.m128_f32[1],
+                        pGoalEnt->r.currentOrigin.v.m128_f32[2]))
+                    __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x00787320
+void __fastcall Sentient_SetGoalEntity(sentient_s* pSelf, Entity* pGoalEnt)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 725;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 726;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pGoalEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 727;
+        AeAssert::gCurrentExpr = "pGoalEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    pSelf->pGoalEnt = pGoalEnt;
+    PathNodes::NodeHandle pNodeHandle;
+    pNodeHandle.mValue = 0;
+    PathNodes::PathNode* Node =
+        PathNodeMgr::sInst->GetNode(pGoalEnt->sentient->mActualChainPos);
+    PathNodes::PathNode* ReserveNode =
+        PathNodeMgr::sInst->RunToFirstReserveNode(Node, pSelf);
+    if (ReserveNode != nullptr
+        && ReserveNode->mConstant.mOrigin[0] == pSelf->vGoalPos[0]
+        && ReserveNode->mConstant.mOrigin[1] == pSelf->vGoalPos[1]
+        && ReserveNode->mConstant.mOrigin[2] == pSelf->vGoalPos[2])
+    {
+        pNodeHandle.mValue = ReserveNode->mHandle.mValue;
+        Sentient_SetDesiredChainNode(pSelf, ReserveNode->mHandle);
+    }
+    uint16_t mValue = pSelf->mDesiredChainPos.mValue;
+    if (mValue != 0 && mValue != 0xFFFF)
+        PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos);
+    Sentient_SetDesiredChainNode(pSelf, pNodeHandle);
+    Sentient_UpdateGoalPos(pSelf);
+}
+
+// ea: 0x007874B0
+void __fastcall Sentient_SetGoalNode(sentient_s* pSelf,
+                                     PathNodes::PathNode* pNode)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 795;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 796;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pNode == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 797;
+        AeAssert::gCurrentExpr = "pNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    math::Position3 v9;
+    v9.v.m128_f32[0] = pNode->mConstant.mOrigin[0];
+    v9.v.m128_f32[1] = pNode->mConstant.mOrigin[1];
+    v9.v.m128_f32[2] = pNode->mConstant.mOrigin[2];
+    v9.v.m128_f32[3] = 0.0f;
+    Sentient_SetGoalPos(pSelf, v9, false);
+    if (pNode != nullptr)
+    {
+        Broc::string::Block* mBlock =
+            pNode->mConstant.mOnGoalCallback.mBlock;
+        if (mBlock != nullptr)
+        {
+            HashString v8;
+            v8.mHash = HashString::CalcHash(
+                (const char*)(mBlock + 1));
+            Sentient_SetGoalScriptCallback(pSelf, v8);
+        }
+    }
+    Sentient_ClaimNode(pSelf, pNode->mHandle);
+}
+
+// ea: 0x00786F70
+void __fastcall Sentient_SetGoalPos(sentient_s* pSelf,
+                                    const math::Position3& vGoalPos,
+                                    bool drop2floor)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 853;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 854;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float v19 = vGoalPos.v.m128_f32[0];
+    float v20 = vGoalPos.v.m128_f32[1];
+    float v21 = vGoalPos.v.m128_f32[2];
+    if (drop2floor)
+    {
+        math::Position3 end = vGoalPos;
+        end.v.m128_f32[2] -= 50.0f;
+        ai_collision_context_t context;
+        context.pass_entity1.mHandle.mVal = 0;
+        context.pass_entity2.mHandle.mVal = 0;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        context.contentmask = 0x2820011;
+        trace_t trace;
+        g_TraceCapsule(&trace, vGoalPos, actorMins, actorMaxs, end,
+                       context);
+        if (trace.fraction > 0.0f)
+        {
+            v19 = trace.endpos.v.m128_f32[0];
+            v20 = trace.endpos.v.m128_f32[1];
+            v21 = trace.endpos.v.m128_f32[2];
+        }
+    }
+    Sentient_ClearGoalAngle(pSelf);
+    float vDroppedGoal[3];
+    vDroppedGoal[0] = pSelf->vGoalPos[0];
+    vDroppedGoal[1] = pSelf->vGoalPos[1];
+    vDroppedGoal[2] = pSelf->vGoalPos[2];
+    pSelf->vGoalPos[0] = v19;
+    pSelf->pGoalEnt = nullptr;
+    pSelf->vGoalPos[1] = v20;
+    pSelf->vGoalPos[2] = v21;
+    PathNodes::NodeHandle zero;
+    zero.mValue = 0;
+    Sentient_SetDesiredChainNode(pSelf, zero);
+    HashString hs;
+    hs.mHash = HashString::NullHash();
+    Sentient_SetGoalScriptCallback(pSelf, hs);
+    if (VectorDistanceSquared(pSelf->vGoalPos, vDroppedGoal) > 1.0f)
+    {
+        actor_s* actor = pSelf->pEnt->actor;
+        if (actor != nullptr)
+            actor->bAtGoal = 0;
+    }
+}
+
+// ea: 0x00787190
+void __fastcall Sentient_UpdateGoalPos(sentient_s* pSelf)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 912;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Entity* pGoalEnt = pSelf->pGoalEnt;
+    if (pGoalEnt == nullptr)
+        goto LABEL_17;
+    actor_s* actor = pSelf->pEnt->actor;
+    if (pGoalEnt->sentient == nullptr
+        || actor == nullptr
+        || pGoalEnt->sentient->eTeam == Sentient_EnemyTeam(pSelf->eTeam)
+        || actor->iFollowMin > actor->iFollowMax)
+    {
+        const float* m128_f32 =
+            pGoalEnt->client->ps.origin.v.m128_f32;
+        if (m128_f32 != nullptr)
+        {
+            pSelf->vGoalPos[0] = m128_f32[0];
+            pSelf->vGoalPos[1] =
+                pGoalEnt->client->ps.origin.v.m128_f32[1];
+            pSelf->vGoalPos[2] =
+                pGoalEnt->client->ps.origin.v.m128_f32[2];
+        }
+        else
+        {
+            pSelf->vGoalPos[0] =
+                pSelf->pEnt->r.currentOrigin.v.m128_f32[0];
+            pSelf->vGoalPos[1] =
+                pSelf->pEnt->r.currentOrigin.v.m128_f32[1];
+            pSelf->vGoalPos[2] =
+                pSelf->pEnt->r.currentOrigin.v.m128_f32[2];
+        }
+    LABEL_17:
+        PathNodes::NodeHandle zero;
+        zero.mValue = 0;
+        Sentient_SetDesiredChainNode(pSelf, zero);
+        return;
+    }
+    if (pSelf->eTeam != TEAM_DEAD)
+        Sentient_UpdateDesiredChainPos(pSelf, actor->iFollowMin,
+                                       actor->iFollowMax);
+    if (pSelf->mDesiredChainPos.mValue != 0
+        && pSelf->mDesiredChainPos.mValue != 0xFFFF)
+    {
+        pSelf->vGoalPos[0] =
+            PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos)
+                ->mConstant.mOrigin[0];
+        pSelf->vGoalPos[1] =
+            PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos)
+                ->mConstant.mOrigin[1];
+        pSelf->vGoalPos[2] =
+            PathNodeMgr::sInst->GetNode(pSelf->mDesiredChainPos)
+                ->mConstant.mOrigin[2];
+    }
+}
+
+// ea: 0x00787650
+void __fastcall Sentient_SetGoalFromTarget(sentient_s* pSelf,
+                                           const Broc::string& target)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 656;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (target.mBlock == nullptr
+        || target.mBlock == (Broc::string::Block*)-12
+        || ((const char*)(target.mBlock + 1))[0] == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 657;
+        AeAssert::gCurrentExpr = "!target.is_empty()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Broc::string::Block* mBlock = target.mBlock;
+    const char* v6;
+    if (mBlock != nullptr)
+    {
+        v6 = (const char*)(mBlock + 1);
+        char mBuff = v6[0];
+        if (mBuff == '-' || mBuff == '.')
+            goto parse_coords;
+    }
+    else
+    {
+        v6 = defaultFileName;
+    }
+    if (isdigit((unsigned char)*v6))
+    {
+    parse_coords:
+        float v20, v21, v22;
+        if (sscanf(v6, "%f %f %f", &v20, &v21, &v22) == 3)
+        {
+            math::Position3 v19;
+            v19.v.m128_f32[0] = v20;
+            v19.v.m128_f32[1] = v21;
+            v19.v.m128_f32[2] = v22;
+            v19.v.m128_f32[3] = 0.0f;
+            Sentient_SetGoalPos(pSelf, v19, false);
+            HashString hs;
+            hs.mHash = HashString::NullHash();
+            Sentient_SetGoalScriptCallback(pSelf, hs);
+        }
+        else
+        {
+            Broc::string::Block* v15 = pSelf->pEnt->targetname.mBlock;
+            const char* v18;
+            if (v15 != nullptr
+                && ((const char*)(v15 + 1))[0] != 0)
+            {
+                Broc::string::Block* v17 =
+                    pSelf->pEnt->targetname.mBlock;
+                v18 = v17 != nullptr ? (const char*)(v17 + 1)
+                                     : defaultFileName;
+            }
+            else
+            {
+                v18 = "<noname>";
+            }
+            Com_Printf("^3WARNING: entity '%s' targets bad position '%s'\n",
+                       v18, v6);
+        }
+        return;
+    }
+    Entity* v9 = EntityHandleDb::sInst.Find(0x284, target);
+    if (v9 != nullptr)
+    {
+        if (v9->mClassNameHash.mHash
+            == hash_const.info_player_deathmatch.mHash)
+        {
+            v9 = EntityHandleDb::sInst.Find(0x280,
+                                            hash_const.player);
+            if (v9 == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\sentient.cpp";
+                AeAssert::gCurrentLine = 691;
+                AeAssert::gCurrentExpr = "ent";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+        }
+        Sentient_SetGoalEntity(pSelf, v9);
+    }
+    else
+    {
+        PathNodes::PathNode* Node = PathNodeMgr::sInst->FirstNode(-1);
+        if (Node != nullptr)
+        {
+            while (!Broc::operator==(Node->mConstant.mTargetName, target))
+            {
+                Node = PathNodeMgr::sInst->NextNode(Node, -1);
+                if (Node == nullptr)
+                    goto notfound;
+            }
+            Sentient_SetGoalNode(pSelf, Node);
+        }
+        else
+        {
+        notfound:
+            Broc::string::Block* v11 = pSelf->pEnt->targetname.mBlock;
+            const char* v14;
+            if (v11 != nullptr
+                && ((const char*)(v11 + 1))[0] != 0)
+            {
+                Broc::string::Block* v13 =
+                    pSelf->pEnt->targetname.mBlock;
+                v14 = v13 != nullptr ? (const char*)(v13 + 1)
+                                     : defaultFileName;
+            }
+            else
+            {
+                v14 = "<noname>";
+            }
+            if (target.mBlock != nullptr)
+                Com_Printf(
+                    "^3WARNING: entity '%s' couldn't find target '%s'\n",
+                    v14, (const char*)(target.mBlock + 1));
+            else
+                Com_Printf(
+                    "^3WARNING: entity '%s' couldn't find target '%s'\n",
+                    v14, defaultFileName);
+        }
+    }
+}
+
+// ea: 0x00783CD0
+PathNodes::PathNode* __fastcall Sentient_NearestCoverNode(
+    sentient_s* pSelf, float (*const vNormal)[2], float* const fDist,
+    int iPlaneCount, int iCheckDontLink, float distanceThreshold,
+    bool onlyEmpty)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 515;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::PathSort nodes[64];
+    memset(nodes, 0, sizeof(nodes));
+    float vOrigin[3];
+    Sentient_GetOrigin(pSelf, vOrigin);
+    int v9 = iCheckDontLink;
+    g_doDontLinkCheck = iCheckDontLink;
+    PathNodes::PathNode* result = Path_NearestNodeNotCrossPlanes(
+        vOrigin, nodes, 64, s_coverNodeTypeFlags, distanceThreshold,
+        vNormal, fDist, iPlaneCount, &iCheckDontLink);
+    g_doDontLinkCheck = v9;
+    if (onlyEmpty)
+    {
+        for (unsigned int i = 0; i < 0x40; ++i)
+        {
+            result = nodes[i].pNode;
+            if (result != nullptr && result->mDynamic.mOwner == nullptr)
+                break;
+        }
+    }
+    return result;
+}
+
+// ea: 0x00783FA0
+PathNodes::PathNode* __fastcall Sentient_FindNearestNodeToSentient(
+    sentient_s* pTarget, float (*const vNormal)[2], float* const fDist,
+    int iPlaneCount, int iCheckDontLink)
+{
+    if (pTarget == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 600;
+        AeAssert::gCurrentExpr = "pTarget";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    uint16_t mValue = pTarget->mNearestNode;
+    PathNodes::NodeHandle nearestNode;
+    nearestNode.mValue = pTarget->mNearestNode;
+    if (pTarget->bNearestNodeValid != 0
+        && mValue != 0
+        && mValue != 0xFFFF
+        && PathNodeMgr::sInst->GetNode(nearestNode) != nullptr
+        && PathNodeMgr::sInst->GetNode(nearestNode)
+               ->mDynamic.mLinkCount != 0)
+    {
+        if (pTarget->bNearestNodeValid == 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+            AeAssert::gCurrentLine = 628;
+            AeAssert::gCurrentExpr = "pTarget->bNearestNodeValid";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        return PathNodeMgr::sInst->GetNode(nearestNode);
+    }
+    PathNodes::PathSort nodes[64];
+    float vOrigin[3];
+    Sentient_GetOrigin(pTarget, vOrigin);
+    int v9 = iCheckDontLink;
+    g_doDontLinkCheck = iCheckDontLink;
+    PathNodes::PathNode* result = Path_NearestNodeNotCrossPlanes(
+        vOrigin, nodes, 64, -2, 192.0f, vNormal, fDist, iPlaneCount,
+        &iCheckDontLink);
+    g_doDontLinkCheck = v9;
+    if (result == nullptr)
+        return iCheckDontLink != 0 ? nodes[0].pNode : nullptr;
+    return result;
+}
+
+// ea: 0x00784230
+void Path_AutoDisconnectPaths()
+{
+    AeSizedEntityArray* p = &EntityHandleDb::sInst.mActiveList;
+    for (int i = 0; i < p->m_size; ++i)
+    {
+        Entity* ent = p->m_elements[i];
+        if (ent != nullptr)
+        {
+            int flags = ent->flags;
+            if ((flags & 0x1000) != 0 && (flags & 0x2000) != 0)
+                PathNodeMgr::sInst->DisconnectPathsForEntity(ent);
+        }
     }
 }

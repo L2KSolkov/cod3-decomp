@@ -38,6 +38,7 @@ public:
     HashString() : mHash(0) {}
     HashString(Broc::string& str);  // ea: 0x004C1450
     static unsigned int CalcHash(const char* str);  // ea: 0x004C1540
+    static unsigned int NullHash();  // ea: 0x8990B0 (g.o inline; returns 0)
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashString) == 4, "HashString size mismatch");
 

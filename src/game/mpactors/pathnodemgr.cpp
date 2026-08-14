@@ -24,9 +24,15 @@ struct {
     int   nodeCount;             // +0x24
 } gCircle;                       // ?gCircle@@3U__unnamed@@A @ 0xF992A4
 int g_doDontLinkCheck = 0;       // ?g_doDontLinkCheck@@3HA @ 0xE37A1C
+int sPenaltyNotReserve = 3;      // ?sPenaltyNotReserve@@3HA @ 0xE37CC0
+float sDistMax = 9216.0f;        // ?sDistMax@@3MA @ 0xE37CD4
 
 void Path_SetupAnimFunc(PathNodes::PathNode* node,
                         PathNodes::ENodeType* type);  // pathnode.cpp
+
+extern float flrand(float min, float max);  // core.o
+extern const float VectorDistanceSquared(const float* const p1,
+                                         const float* const p2);  // core.o
 
 // ============================================================================
 // PathNodeMgr
@@ -1072,4 +1078,742 @@ LABEL_leaf:
             }
         }
     }
+}
+
+// ea: 0x00785420
+PathNodes::PathNode* PathNodeMgr::RunToFirstReserveNode(
+    PathNodes::PathNode* parentNode, sentient_s* pClaimer)
+{
+    if (this->mLevelTOC == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1935;
+        AeAssert::gCurrentExpr = "mLevelTOC";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pClaimer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1936;
+        AeAssert::gCurrentExpr = "pClaimer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (parentNode == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1937;
+        AeAssert::gCurrentExpr = "parentNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (parentNode == nullptr)
+        return nullptr;
+    int16_t wChainId = parentNode->mConstant.mChainId;
+    int mChainNodeCount = this->mLevelTOC->mChainNodeCount;
+    PathNodes::PathNode* pFirstResNode = nullptr;
+    for (int v7 = 0; v7 < mChainNodeCount; ++v7)
+    {
+        PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+        int v9 = (mLevelTOC->mChainNodes[v7].mValue - 1);
+        if (v9 >= mLevelTOC->mNodeCount)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 1957;
+            AeAssert::gCurrentExpr =
+                "handle.GetZoneIndex() < mLevelTOC->mNodeCount";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        PathNodes::PathNode* v10 = &this->mLevelTOC->mNodes[v9];
+        if (v10 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 1963;
+            AeAssert::gCurrentExpr = "node";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (v10->mConstant.mChainId == wChainId
+            && (pFirstResNode == nullptr
+                || v10->mConstant.mChainDepth
+                       <= pFirstResNode->mConstant.mChainDepth)
+            && pClaimer != nullptr)
+        {
+            Broc::string::Block* mBlock =
+                v10->mConstant.mReserveName.mBlock;
+            if (mBlock != nullptr)
+            {
+                const char* name = (const char*)(mBlock + 1);
+                if (name != nullptr && name[0] != 0
+                    && Broc::operator==(pClaimer->pEnt->targetname,
+                                        v10->mConstant.mReserveName))
+                    pFirstResNode = v10;
+            }
+        }
+    }
+    return pFirstResNode;
+}
+
+// ea: 0x00785650
+PathNodes::PathNode* PathNodeMgr::ChooseAnyChainNodeIfDeadEnd(
+    int iDepthMin, int iDepthMax, PathNodes::PathNode* pChainPos,
+    sentient_s* pClaimer)
+{
+    if (iDepthMin > iDepthMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2364;
+        AeAssert::gCurrentExpr = "iDepthMin <= iDepthMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pChainPos == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2365;
+        AeAssert::gCurrentExpr = "pChainPos";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pChainPos->mConstant.mChainDepth >= iDepthMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2366;
+        AeAssert::gCurrentExpr =
+            "pChainPos->mConstant.mChainDepth < iDepthMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pClaimer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2367;
+        AeAssert::gCurrentExpr = "pClaimer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    uint16_t mValue = pChainPos->mHandle.mValue;
+    int16_t mChainId = pChainPos->mConstant.mChainId;
+    PathNodes::PathNode* v9 = pChainPos + 1;
+    int16_t wChainId = mChainId;
+    int iFoundCount = 0;
+    PathNodes::PathNode* best = nullptr;
+    if (v9->mConstant.mChainId == mChainId)
+    {
+        do
+        {
+            int mChainDepth = v9->mConstant.mChainDepth;
+            if (mChainDepth > iDepthMax)
+                break;
+            if (mValue == v9->mConstant.mChainParent.mValue)
+                return nullptr;
+            if (mChainDepth >= iDepthMin
+                && Path_CanClaimChainNode(v9, pClaimer) != 0)
+                UpdateBestChainNode(iDepthMin, iDepthMax, v9, &best,
+                                    &iFoundCount, pClaimer);
+            ++v9;
+        } while (v9->mConstant.mChainId == wChainId);
+    }
+    return best;
+}
+
+// ea: 0x00785810
+PathNodes::PathNode* PathNodeMgr::ChoosePreviousChainNode(
+    int iDepthMin, int iDepthMax, PathNodes::PathNode* pChainPos,
+    sentient_s* pClaimer)
+{
+    PathNodes::PathNode* pBestNode = nullptr;
+    if (iDepthMin > iDepthMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2401;
+        AeAssert::gCurrentExpr = "iDepthMin <= iDepthMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pChainPos == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2402;
+        AeAssert::gCurrentExpr = "pChainPos";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return pBestNode;
+    }
+    if (pClaimer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2405;
+        AeAssert::gCurrentExpr = "pClaimer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (IsReserveForMe(pChainPos, pClaimer))
+        pBestNode = pChainPos;
+    PathNodes::PathNode* Node = pChainPos;
+    while (Node->mConstant.mChainDepth > iDepthMax)
+    {
+        Node = PathNodeMgr::sInst->GetNode(Node->mConstant.mChainParent);
+        if (Node == nullptr)
+            return pBestNode;
+    }
+    while (Node->mConstant.mChainDepth >= iDepthMin)
+    {
+        if (Path_CanClaimChainNode(Node, pClaimer) != 0)
+        {
+            if (pClaimer != nullptr)
+            {
+                Broc::string::Block* mBlock =
+                    Node->mConstant.mReserveName.mBlock;
+                if (mBlock != nullptr)
+                {
+                    const char* name = (const char*)(mBlock + 1);
+                    if (name != nullptr && name[0] != 0
+                        && Broc::operator==(pClaimer->pEnt->targetname,
+                                            Node->mConstant.mReserveName))
+                        return Node;
+                }
+            }
+            if (pBestNode == nullptr)
+                pBestNode = Node;
+        }
+        Node = GetNode(Node->mConstant.mChainParent);
+        if (Node == nullptr)
+            return pBestNode;
+    }
+    return pBestNode;
+}
+
+// ea: 0x00784F10
+PathNodes::PathNode* PathNodeMgr::ChooseSubsequentChainNode_r(
+    int iDepthMin, int iDepthMax, int parentIndex, sentient_s* pClaimer)
+{
+    if (this->mLevelTOC == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1823;
+        AeAssert::gCurrentExpr = "mLevelTOC";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iDepthMin > iDepthMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1824;
+        AeAssert::gCurrentExpr = "iDepthMin <= iDepthMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (parentIndex < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1825;
+        AeAssert::gCurrentExpr = "parentIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (parentIndex >= this->mLevelTOC->mChainNodeCount)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1826;
+        AeAssert::gCurrentExpr =
+            "parentIndex < mLevelTOC->mChainNodeCount";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pClaimer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1827;
+        AeAssert::gCurrentExpr = "pClaimer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::TOC1* zone = this->mLevelTOC;
+    if (zone == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1837;
+        AeAssert::gCurrentExpr = "zone";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return nullptr;
+    }
+    if (zone->mNodeCount
+        <= (zone->mChainNodes[parentIndex].mValue - 1))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1844;
+        AeAssert::gCurrentExpr =
+            "zone->mNodeCount > mLevelTOC->mChainNodes[parentIndex]."
+            "GetZoneIndex()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::PathNode* parentNode =
+        &zone->mNodes[zone->mChainNodes[parentIndex].mValue - 1];
+    if (parentNode == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1846;
+        AeAssert::gCurrentExpr = "parentNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (parentNode->mConstant.mChainDepth >= iDepthMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1848;
+        AeAssert::gCurrentExpr =
+            "parentNode->mConstant.mChainDepth < iDepthMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int16_t wChainId = parentNode->mConstant.mChainId;
+    PathNodes::NodeHandle wChainParent;
+    wChainParent.mValue = mLevelTOC->mChainNodes[parentIndex].mValue;
+    int iDepthStop = iDepthMax;
+    if (iDepthMax >= parentNode->mConstant.mChainDepth + 1)
+        iDepthStop = parentNode->mConstant.mChainDepth + 1;
+    int iFoundCount = 0;
+    PathNodes::PathNode* best = nullptr;
+    PathNodes::PathNode* Node = PathNodeMgr::sInst->GetNode(wChainParent);
+    if (IsReserveForMe(Node, pClaimer)
+        && PathNodeMgr::sInst->GetNode(wChainParent)
+               ->mConstant.mChainDepth
+               <= iDepthMax)
+    {
+        PathNodes::PathNode* v13 =
+            PathNodeMgr::sInst->GetNode(wChainParent);
+        UpdateBestChainNode(iDepthMin, iDepthMax, v13, &best, &iFoundCount,
+                            pClaimer);
+    }
+    int count = mLevelTOC->mChainNodeCount;
+    for (int i = parentIndex + 1; i < count; ++i)
+    {
+        PathNodes::TOC1* v15 = this->mLevelTOC;
+        int v16 = (v15->mChainNodes[i].mValue - 1);
+        if (v16 >= v15->mNodeCount)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 1888;
+            AeAssert::gCurrentExpr =
+                "handle.GetZoneIndex() < mLevelTOC->mNodeCount";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        PathNodes::PathNode* v17 = &this->mLevelTOC->mNodes[v16];
+        if (v17 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 1894;
+            AeAssert::gCurrentExpr = "node";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (v17->mConstant.mChainId != wChainId)
+            break;
+        int mChainDepth = v17->mConstant.mChainDepth;
+        if (mChainDepth > iDepthStop)
+            break;
+        if (wChainParent.mValue == v17->mConstant.mChainParent.mValue)
+        {
+            if (mChainDepth < iDepthMax)
+            {
+                PathNodes::PathNode* v19 =
+                    ChooseSubsequentChainNode_r(iDepthMin, iDepthMax, i,
+                                                pClaimer);
+                if (v19 != nullptr)
+                    UpdateBestChainNode(iDepthMin, iDepthMax, v19, &best,
+                                        &iFoundCount, pClaimer);
+                if (IsReserveForMe(v17, pClaimer))
+                    UpdateBestChainNode(iDepthMin, iDepthMax, v17, &best,
+                                        &iFoundCount, pClaimer);
+            }
+            int v20 = v17->mConstant.mChainDepth;
+            if ((v20 == iDepthMax
+                 || (best == nullptr
+                     && (v20 >= iDepthMin
+                         || IsReserveForMe(v17, pClaimer))))
+                && Path_CanClaimChainNode(v17, pClaimer) != 0)
+            {
+                UpdateBestChainNode(iDepthMin, iDepthMax, v17, &best,
+                                    &iFoundCount, pClaimer);
+            }
+        }
+    }
+    return best;
+}
+
+// ea: 0x007859C0
+PathNodes::PathNode* PathNodeMgr::ChooseDesperationChainNode(
+    int iDepthMin, int iDepthMax, int chainIndex,
+    PathNodes::PathNode* pRefPos, sentient_s* pClaimer)
+{
+    if (pRefPos == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2453;
+        AeAssert::gCurrentExpr = "pRefPos";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pClaimer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2454;
+        AeAssert::gCurrentExpr = "pClaimer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iDepthMin > iDepthMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2455;
+        AeAssert::gCurrentExpr = "iDepthMin <= iDepthMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    uint16_t mValue = pRefPos->mConstant.mChainParent.mValue;
+    if (mValue != 0 && mValue != 0xFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2456;
+        AeAssert::gCurrentExpr =
+            "!pRefPos->mConstant.mChainParent.IsAssigned()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+    PathNodes::PathNode* pBestMatch = nullptr;
+    int iMinError = 0x7FFFFFFF;
+    int v8 = chainIndex;
+    if (chainIndex < mLevelTOC->mChainNodeCount)
+    {
+        while (1)
+        {
+            if (mLevelTOC != nullptr)
+            {
+                if (mLevelTOC->mNodeCount
+                    <= (mLevelTOC->mChainNodes[v8].mValue - 1))
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\pathnodemgr.cpp";
+                    AeAssert::gCurrentLine = 2478;
+                    AeAssert::gCurrentExpr =
+                        "zone->mNodeCount > mLevelTOC->mChainNodes[i]."
+                        "GetZoneIndex()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                const PathNodes::PathNode* v9 =
+                    &mLevelTOC->mNodes[
+                        (this->mLevelTOC->mChainNodes[v8].mValue - 1)];
+                if (v9->mConstant.mChainId
+                    != pRefPos->mConstant.mChainId)
+                    return pBestMatch;
+                int mChainDepth = v9->mConstant.mChainDepth;
+                int v11;
+                if (mChainDepth < iDepthMin)
+                {
+                    v11 = iDepthMin - mChainDepth;
+                }
+                else if (mChainDepth > iDepthMax)
+                {
+                    v11 = mChainDepth - iDepthMax;
+                }
+                else
+                {
+                    if (Path_CanClaimChainNode(v9, pClaimer) != 0)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\pathnodemgr.cpp";
+                        AeAssert::gCurrentLine = 2500;
+                        AeAssert::gCurrentExpr =
+                            "!Path_CanClaimChainNode(pNode, pClaimer)";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    goto LABEL_43;
+                }
+                bool isReserve =
+                    pClaimer != nullptr
+                    && v9->mConstant.mReserveName.mBlock != nullptr
+                    && ((const char*)(v9->mConstant.mReserveName.mBlock
+                                      + 1))[0] != 0
+                    && Broc::operator==(pClaimer->pEnt->targetname,
+                                        v9->mConstant.mReserveName);
+                if (!isReserve)
+                    v11 += sPenaltyNotReserve;
+                if (v11 <= iMinError
+                    && Path_CanClaimChainNode(v9, pClaimer) != 0)
+                {
+                    iMinError = v11;
+                    pBestMatch = (PathNodes::PathNode*)v9;
+                    if (v9->mConstant.mChainDepth
+                        > iDepthMax + sPenaltyNotReserve)
+                        return pBestMatch;
+                }
+            }
+        LABEL_43:
+            mLevelTOC = this->mLevelTOC;
+            if (++v8 >= mLevelTOC->mChainNodeCount)
+                return pBestMatch;
+        }
+    }
+    return nullptr;
+}
+
+// ea: 0x007866B0
+PathNodes::PathNode* PathNodeMgr::ChooseChainPosFromCurrent(
+    int iDepthMin, int iDepthMax, PathNodes::PathNode* pRefPos,
+    PathNodes::PathNode* pCurChainPos, bool bPrevChainPosOkay,
+    sentient_s* pClaimer, int chainFallback)
+{
+    if (pCurChainPos != nullptr
+        && pCurChainPos->mConstant.mChainId
+               == pRefPos->mConstant.mChainId)
+    {
+        if (bPrevChainPosOkay
+            && pCurChainPos->mConstant.mChainDepth == iDepthMax
+            && IsReserveForMe(pCurChainPos, pClaimer))
+            return pCurChainPos;
+        if (pCurChainPos->mConstant.mChainDepth < iDepthMax)
+        {
+            int ChainIndex = FindChainIndex(pCurChainPos->mHandle);
+            if (ChainIndex < 0
+                || ChainIndex >= this->mLevelTOC->mChainNodeCount)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\pathnodemgr.cpp";
+                AeAssert::gCurrentLine = 2079;
+                AeAssert::gCurrentExpr =
+                    "previousChainNodeIndex >= 0 && "
+                    "previousChainNodeIndex < "
+                    "mLevelTOC->mChainNodeCount";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            PathNodes::PathNode* v8 =
+                ChooseSubsequentChainNode_r(iDepthMin, iDepthMax,
+                                            ChainIndex, pClaimer);
+            if (v8 == nullptr)
+            {
+                v8 = ChooseAnyChainNodeIfDeadEnd(
+                    iDepthMin, iDepthMax, pCurChainPos, pClaimer);
+                if (v8 == nullptr)
+                    goto LABEL_18;
+            }
+            return v8;
+        }
+    }
+LABEL_18:
+    if (bPrevChainPosOkay)
+    {
+        int mChainDepth = pCurChainPos->mConstant.mChainDepth;
+        if (mChainDepth >= iDepthMin && mChainDepth <= iDepthMax)
+            return pCurChainPos;
+    }
+    if (chainFallback == 0)
+        return pCurChainPos;
+    if (pCurChainPos->mConstant.mChainDepth >= iDepthMin)
+        return ChoosePreviousChainNode(iDepthMin, iDepthMax, pCurChainPos,
+                                       pClaimer);
+    return nullptr;
+}
+
+// ea: 0x007867F0
+PathNodes::PathNode* PathNodeMgr::ChooseChainPos(
+    PathNodes::PathNode* pRefPos, int iFollowMin, int iFollowMax,
+    PathNodes::PathNode* pPrevChainPos, sentient_s* pClaimer,
+    int chainFallback)
+{
+    PathNodes::PathNode* Node = pRefPos;
+    if (pRefPos == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2129;
+        AeAssert::gCurrentExpr = "pRefPos";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iFollowMin > iFollowMax)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2130;
+        AeAssert::gCurrentExpr = "iFollowMin <= iFollowMax";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::PathNode* v8 = pPrevChainPos;
+    if (pPrevChainPos != nullptr && pPrevChainPos->mHandle.mValue == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2131;
+        AeAssert::gCurrentExpr =
+            "pPrevChainPos == 0 || pPrevChainPos->mHandle.GetValue()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int16_t bPrevChainPosOkay = pRefPos->mConstant.mChainId;
+    int mChainDepth = Node->mConstant.mChainDepth;
+    int iDepthMin = mChainDepth + iFollowMin;
+    int iDepthMax = iFollowMax + mChainDepth;
+    bool bPrevChainPosOkaya = false;
+    if (pPrevChainPos != nullptr
+        && Path_CanClaimChainNode(pPrevChainPos, pClaimer) != 0
+        && pPrevChainPos->mConstant.mChainId == bPrevChainPosOkay)
+        bPrevChainPosOkaya = true;
+    const PathNodes::PathNode* v12 = ChooseChainPosFromCurrent(
+        iDepthMin, iDepthMax, Node, pPrevChainPos, bPrevChainPosOkaya,
+        pClaimer, chainFallback);
+    if (v12 == nullptr)
+    {
+        int ChainIndex = FindChainIndex(Node->mHandle);
+        if (ChainIndex < 0 || ChainIndex >= this->mLevelTOC->mChainNodeCount)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 2149;
+            AeAssert::gCurrentExpr =
+                "refChainNodeIndex >= 0 && refChainNodeIndex < "
+                "mLevelTOC->mChainNodeCount";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        v12 = ChooseChainNodeInRange(iDepthMin, iDepthMax, Node,
+                                     ChainIndex, pClaimer);
+        if (v12 == nullptr)
+        {
+            while (1)
+            {
+                uint16_t mValue = Node->mConstant.mChainParent.mValue;
+                if (mValue == 0 || mValue == 0xFFFF)
+                    break;
+                Node = PathNodeMgr::sInst->GetNode(
+                    Node->mConstant.mChainParent);
+                if (Node == nullptr)
+                    goto LABEL_46;
+            }
+            if (Node != nullptr)
+            {
+                PathNodes::TOC1* mLevelTOC = this->mLevelTOC;
+                if (Node->mHandle.mValue
+                    != mLevelTOC->mChainNodes[ChainIndex].mValue)
+                {
+                    int v16 = FindChainIndex(Node->mHandle);
+                    ChainIndex = v16;
+                    if (v16 < 0 || v16 >= mLevelTOC->mChainNodeCount)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\pathnodemgr.cpp";
+                        AeAssert::gCurrentLine = 2171;
+                        AeAssert::gCurrentExpr =
+                            "refChainNodeIndex >= 0 && "
+                            "refChainNodeIndex < "
+                            "mLevelTOC->mChainNodeCount";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                }
+                int v17 = iDepthMax;
+                if (Node->mConstant.mChainDepth >= iDepthMax)
+                    goto LABEL_39;
+                v12 = ChooseSubsequentChainNode_r(iDepthMin, iDepthMax,
+                                                  ChainIndex, pClaimer);
+                if (v12 == nullptr)
+                {
+                    v17 = iDepthMax;
+                LABEL_39:
+                    if (bPrevChainPosOkaya)
+                        return pPrevChainPos;
+                    if (Node->mConstant.mChainParent.mValue != 0
+                        && Node->mConstant.mChainParent.mValue != 0xFFFF)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\pathnodemgr.cpp";
+                        AeAssert::gCurrentLine = 2198;
+                        AeAssert::gCurrentExpr =
+                            "!pRefPos->mConstant.mChainParent.IsAssigned()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    v12 = ChooseDesperationChainNode(
+                        iDepthMin, v17, ChainIndex, Node, pClaimer);
+                }
+            }
+        }
+    }
+LABEL_46:
+    v8 = pPrevChainPos;
+    if (v12 != v8 && bPrevChainPosOkaya)
+    {
+        int v19 = v8->mConstant.mChainDepth;
+        if (v19 >= iDepthMin && v19 <= iDepthMax)
+        {
+            bool IsReserveForMe_ = IsReserveForMe(v8, pClaimer);
+            if (IsReserveForMe_ == IsReserveForMe(
+                                       (PathNodes::PathNode*)v12, pClaimer))
+            {
+                float v21 = VectorDistanceSquared(
+                    v8->mConstant.mOrigin,
+                    pClaimer->pEnt->r.currentOrigin.v.m128_f32);
+                if (sDistMax >= v21)
+                {
+                    float r = flrand(0.0f, 1.0f);
+                    if (pClaimer->fKeepOldDesiredChainOdds > r)
+                        return v8;
+                }
+            }
+            else if (IsReserveForMe_)
+            {
+                return v8;
+            }
+        }
+    }
+    return (PathNodes::PathNode*)v12;
 }
