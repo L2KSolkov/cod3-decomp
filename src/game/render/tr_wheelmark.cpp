@@ -159,6 +159,7 @@ public:
     static void Init();                      // ?Init@WheelMarkMgr@@SAXXZ
     static void Exit();                      // ?Exit@WheelMarkMgr@@SAXXZ
     static WheelMark* Find(Entity* owner, wheel_e wheel);  // ?Find@WheelMarkMgr@@SAPAVWheelMark@@PAVEntity@@W4wheel_e@@@Z
+    static void Render();                    // ?Render@WheelMarkMgr@@SAXXZ
 };
 
 cdWheelMarkShaderMat* WheelMarkMgr::Material;
@@ -233,6 +234,22 @@ LABEL_6:
         return v5;
     }
     return result;
+}
+
+// ea: 0x006D8530
+void WheelMarkMgr::Render()
+{
+    unsigned int v1 = 0;
+    if (WheelMarkMgr::NMarks != 0)
+    {
+        WheelMark* v2 = WheelMarkMgr::Marks;
+        do
+        {
+            v2->Render();
+            ++v1;
+            ++v2;
+        } while (v1 < WheelMarkMgr::NMarks);
+    }
 }
 
 // PostEffectEventScriptCall (sret Handle; game.o)
