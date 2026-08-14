@@ -3727,17 +3727,26 @@ extern void (*controllertable[4])(Entity* ent, int* partBits);
 // DObj - server-side dynamic object (minimal view; full layout in cg_local.h)
 class DObj {
 public:
-    uint8_t      _pad0[0x70];      // +0x00
+    void*        tree[8];          // +0x00
+    void*        animPlayers[8];   // +0x20
+    void*        mPose[8];         // +0x40
+    unsigned char modelParents[8]; // +0x60
+    unsigned char matOffset[8];    // +0x68
     void*        skel;             // +0x70
-    uint8_t      _pad74[0x80 - 0x74];  // +0x74 (animToModel, gameId, ignoreCollision)
+    void*        animToModel;      // +0x74
+    unsigned int gameId;           // +0x78
+    int          ignoreCollision;  // +0x7C
     IVPointer<XModel> models[8];   // +0x80
     int          mPakId;           // +0xC0 (TPakId)
     IVPointerRaw mPhysData;        // +0xC4
-    uint8_t      _padCC[0xCE - 0xCC];
+    unsigned short duplicateParts; // +0xCC
     unsigned char numModels;       // +0xCE
-    uint8_t      _padCF[0xD0 - 0xCF];
+    unsigned char numBones;        // +0xCF
     Entity*      mEntity;          // +0xD0
-    uint8_t      _padD4[0xE4 - 0xD4];
+    unsigned int mHandle;          // +0xD4
+    int          mLOD;             // +0xD8
+    int          mLODOverride;     // +0xDC
+    int          mLODAnim;         // +0xE0
     unsigned int mFlags;           // +0xE4
 
     void* operator new(size_t s);  // ??2DObj@@SAPAXI@Z (render.o)
