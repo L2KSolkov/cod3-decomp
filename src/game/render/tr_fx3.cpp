@@ -166,9 +166,8 @@ extern ParticleEffect* FX_ElectEffectToKill(apsEffectTemplate* tmpl);  // tr_fx2
 ae_vector<ParticleEffect*> gParticleEffectList;  // ?gParticleEffectList@@3V?$ae_vector@PAVParticleEffect@@@@A @ 0xF75174
 void tlPrintf(const char* fmt, ...);  // core.o
 
-int Cmd_PFXReport_f()
+void Cmd_PFXReport_f()
 {
-    int result = gParticleEffectList.mSize;
     for (ParticleEffect** i = gParticleEffectList.mElements;
          i != &gParticleEffectList.mElements[gParticleEffectList.mSize]; ++i)
     {
@@ -179,9 +178,7 @@ int Cmd_PFXReport_f()
         else
             mName = "unknown";
         tlPrintf("0x%08x %s\n", *i, mName);
-        result = gParticleEffectList.mSize;
     }
-    return result;
 }
 
 // ============================================================================

@@ -52,7 +52,7 @@ static unsigned int SortKey(ParticleEffect* pe)
     return 0xFFFFFFFFu;
 }
 
-void FX_SortParticleEffectList(unsigned int indexLeft, int indexRight)
+void FX_SortParticleEffectList(int indexLeft, int indexRight)
 {
     int v2 = (int)indexLeft;
     int v3 = indexRight;
@@ -131,7 +131,7 @@ void FX_SortParticleEffectList(unsigned int indexLeft, int indexRight)
             gSortedParticleEffectList[v18] = gSortedParticleEffectList[indexRight - 1];
             gSortedParticleEffectList[indexRight - 1] = tmp;
             FX_SortParticleEffectList(indexLeft, v16);
-            indexLeft = (unsigned int)(v18 + 1);
+            indexLeft = v18 + 1;
             if ((indexRight - (v18 + 1)) <= 4)
                 break;
             v3 = indexRight;
