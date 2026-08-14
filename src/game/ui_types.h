@@ -1577,6 +1577,134 @@ static_assert(sizeof(IGOAmmoWidget) == 0x28,
               "IGOAmmoWidget size mismatch");
 
 // ============================================================================
+// IGOActionHintWidget (32 bytes) - verified against IDA
+// ============================================================================
+class IGOActionHintWidget : public IGOWidget {
+public:
+    FEText* text;            // +0x0C
+    bool    dont_draw;       // +0x10
+    float   lastAlpha;       // +0x14
+    bool    isFadingDown;    // +0x18
+    int     startHintTime;   // +0x1C
+
+    IGOActionHintWidget(int client);  // 0x5779C0
+    virtual void Init(PanelFile* panel);              // 0x567310
+    virtual void Update(float time_inc);              // 0x582EC0
+    virtual void Draw();                              // 0x567320
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x567340
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x567360
+};
+static_assert(sizeof(IGOActionHintWidget) == 0x20,
+              "IGOActionHintWidget size mismatch");
+
+// ============================================================================
+// IGOHQProgressBarWidget (40 bytes) - verified against IDA
+// ============================================================================
+class IGOHQProgressBarWidget : public IGOWidget {
+public:
+    PanelQuad* loading_bar_bkg_01;  // +0x0C
+    PanelQuad* loading_bar_bkg_02;  // +0x10
+    PanelQuad* loading_bar_bkg_03;  // +0x14
+    PanelQuad* loading_bar_white;   // +0x18
+    PanelQuad* loading_bar_red;     // +0x1C
+    PanelQuad* m_pRadioIcon;        // +0x20
+    bool       m_Draw;              // +0x24
+
+    IGOHQProgressBarWidget(int client);  // 0x565F50
+    virtual ~IGOHQProgressBarWidget();   // 0x565F90
+    virtual void Init(PanelFile* panel);              // 0x598410
+    virtual void Update(float time_inc);              // 0x5828F0
+    virtual void Draw();                              // 0x566020
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582B70
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x582BD0
+};
+static_assert(sizeof(IGOHQProgressBarWidget) == 0x28,
+              "IGOHQProgressBarWidget size mismatch");
+
+// ============================================================================
+// IGOInGameScoreWidget (40 bytes) - verified against IDA
+// ============================================================================
+class IGOInGameScoreWidget : public IGOWidget {
+public:
+    PanelQuad*   m_pAlliesFlagIcon;  // +0x0C
+    PanelQuad*   m_pAxisFlagIcon;    // +0x10
+    FEText*      m_pAlliesScoreText; // +0x14
+    FEText*      m_pAxisScoreText;   // +0x18
+    unsigned int m_AlliesScore;      // +0x1C
+    unsigned int m_AxisScore;        // +0x20
+    bool         m_Draw;             // +0x24
+
+    IGOInGameScoreWidget(int client);  // 0x566340
+    virtual ~IGOInGameScoreWidget();   // 0x566380
+    virtual void Init(PanelFile* panel);              // 0x598540
+    virtual void Update(float time_inc);              // 0x566400
+    virtual void Draw();                              // 0x5664F0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582D00
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x5777D0
+};
+static_assert(sizeof(IGOInGameScoreWidget) == 0x28,
+              "IGOInGameScoreWidget size mismatch");
+
+// ============================================================================
+// IGORaiseFlagWidget (24 bytes) - verified against IDA
+// ============================================================================
+class IGORaiseFlagWidget : public IGOWidget {
+public:
+    PanelQuad* raise_flag_icon;  // +0x0C
+    FEText*    multiplyer_text;  // +0x10
+    int        player_count;     // +0x14
+
+    IGORaiseFlagWidget(int client);  // 0x566070
+    virtual ~IGORaiseFlagWidget();   // 0x5660A0
+    virtual void Init(PanelFile* panel);              // 0x5984D0
+    virtual void Update(float time_inc);              // 0x566100
+    virtual void Draw();                              // 0x5661D0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582C40
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577660
+};
+static_assert(sizeof(IGORaiseFlagWidget) == 0x18,
+              "IGORaiseFlagWidget size mismatch");
+
+// ============================================================================
+// IGOTimerWidget (36 bytes) - verified against IDA
+// ============================================================================
+class IGOTimerWidget : public IGOWidget {
+public:
+    static float m_TimeLimit;  // ?m_TimeLimit@IGOTimerWidget@@0MA @ 0xF30D58
+    static float m_StartTime;  // ?m_StartTime@IGOTimerWidget@@0MA @ 0xF30D54
+
+    FEText*       m_pTimer;     // +0x0C
+    float         m_DeltaTime;  // +0x10
+    unsigned int  m_hour;       // +0x14
+    unsigned int  m_min;        // +0x18
+    int           m_sec;        // +0x1C
+    bool          m_TimerActive;// +0x20
+    bool          m_Draw;       // +0x21
+
+    IGOTimerWidget(int client);  // 0x5661F0
+    virtual ~IGOTimerWidget();   // 0x566230
+    virtual void Init(PanelFile* panel);              // 0x582C70
+    virtual void Update(float time_inc);              // 0x5776A0
+    virtual void Draw();                              // 0x566280
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x5662A0
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x5662C0
+private:
+    void setTimerValues();                            // 0x5662F0
+};
+static_assert(sizeof(IGOTimerWidget) == 0x24,
+              "IGOTimerWidget size mismatch");
+
+// ============================================================================
 // FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA
 // ============================================================================
 class FEMenuListBoxItem {

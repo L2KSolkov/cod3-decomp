@@ -1012,7 +1012,11 @@ struct IGOFrontEnd {
     void*   compassWidget[1];  // +0x04 (IGOCompassWidget*, indexed by client)
     uint8_t _pad08[0x14 - 0x08];
     void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
-    uint8_t _pad24[0xA8 - 0x24];
+    uint8_t _pad24[0x44 - 0x24];
+    int     actionHintText[1];  // +0x44 (IGOActionHintWidget::text hash)
+    uint8_t _pad48[0xA0 - 0x48];
+    int     actionHintTimer[1];  // +0xA0
+    uint8_t _padA4[0xA8 - 0xA4];
     void Update(float time_inc);       // ?Update@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void UpdateInScene(float time_inc);// ?UpdateInScene@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z

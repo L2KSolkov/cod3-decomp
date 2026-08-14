@@ -6,17 +6,26 @@
 #include "game/shell/shell_types.h"
 #include "game/client_types.h"
 #include "game/player_types.h"
+#include "game/actor_types.h"
 
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
 extern DbLinkedHandle<EntityHandleDb, Entity> GetPlayersTank();
 extern FEManager g_femanager;
+extern int dword_F62960[];                        // @ 0xF62960 (cg client base)
 
 // Binary cgGlobal_t starts with frametime at +0x00 (cg.o @ 0xF5FE30).
 struct cgGlobal_t {
-    int frametime;
-    int time;       // +0x04
-    int oldTime;    // +0x08
+    int  frametime;      // +0x00
+    int  time;           // +0x04
+    int  oldTime;        // +0x08
+    int  cubemapShot;    // +0x0C
+    int  cubemapSize;    // +0x10
+    bool teamGame;       // +0x14
+    bool showScore;      // +0x15
+    float gameTime;      // +0x18
+    float gameTimeStartTime;  // +0x1C
+    int  teamScores[5];  // +0x20
 };
 extern cgGlobal_t cgGlobal;
 
@@ -24,6 +33,38 @@ extern PlayerState& GetPlayerState(int idx);       // ?GetPlayerState@@YAAAVPlay
 extern vmCvar_t g_stanceFadeTime;   // ?g_stanceFadeTime@@3UvmCvar_t@@A @ 0xEAC288
 extern vmCvar_t g_stanceSolidTime;  // ?g_stanceSolidTime@@3UvmCvar_t@@A @ 0xEAE1C8
 extern int unk_F6A284[];            // @ 0xF6A284 (per-client viewport block)
+extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z
+
+// Global-scope twin of BrocAPI (broc_types.h's lives in namespace Broc);
+// only the HQ callbacks used here are declared. Offsets verified against IDA.
+struct BrocAPI {
+    uint8_t _pad[0xBE8];
+    struct {
+        uint8_t _pad0[0x17C];
+        int (*mCallbackGetFlagBeingContested)(const Broc::entity);  // +0x17C
+        void (*mCallbackPickupKit)(const Broc::entity,
+                                   const unsigned int);  // +0x180
+        int (*mCallbackGetTeamCapturingHQPercent)(
+            const Broc::entity);  // +0x184
+        int (*mCallbackGetTeamDestroyingHQPercent)();    // +0x188
+        int (*mCallbackGetHQCaptureStatus)();            // +0x18C
+    } mBrocExports;  // +0xBE8
+};
+extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
+
+struct level_locals_t {
+    int time;   // +0x00
+};
+extern level_locals_t level;        // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
+
+// mp.o extern (same minimal view as loading_menu.cpp)
+struct sServerCreateParams {
+    unsigned char mGameType;  // +0x59
+};
+class MPUIInterface {
+public:
+    static sServerCreateParams mServerParams;  // mp.o
+};
 
 // game.o / core.o externs (link /FORCE-tolerated until those objects land)
 class InteractionController {
@@ -59,6 +100,17 @@ const float sUpArrowFadeInTime = 0.5f;      // 0xDF410C
 const float sHalfCircleFadeInTime = 0.5f;   // 0xDF4110
 const float sAllFadeOutTime = 0.2f;         // 0xDF4114 (0x3E4CCCCD)
 const float sMoveX = 17.0f;                 // 0xDF4874
+
+// IGOTimerWidget statics (shell.o data @ 0xF30D58 / 0xF30D54)
+float IGOTimerWidget::m_TimeLimit = 0.0f;
+float IGOTimerWidget::m_StartTime = 0.0f;
+
+// Minimal STBManager view (same pattern as loading_menu.cpp)
+class STBManager {
+public:
+    static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A @ 0xF00EA0
+    const char* GetSTBString(unsigned int hash);  // core.o
+};
 
 // ============================================================================
 // IGOHealthWidget
@@ -795,4 +847,646 @@ void IGOAmmoWidget::UpdateSplitScreen(int viewport, int old_viewport)
     totalAmmo->UpdateForHUDSplitScreen(viewport, old_viewport, 10, 5.0f,
                                        -2.0f);
     frame->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f, 0.0f);
+}
+
+// ============================================================================
+// IGOActionHintWidget
+// ============================================================================
+
+// ea: 0x005779C0
+IGOActionHintWidget::IGOActionHintWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    text = (FEText*)mem_heap_malloc(0x70u);
+    if (text != nullptr)
+    {
+        text = new (text) FEText(FONT_BUTTON, defaultFileName, 325.0f,
+                                 267.0f, 0, PANEL_LAYER_IGO, 0.45f, 0, 64,
+                                 color32(-2961486));
+    }
+    else
+    {
+        text = nullptr;
+    }
+    dont_draw = false;
+    lastAlpha = 0.0f;
+    isFadingDown = false;
+    startHintTime = 0;
+}
+
+// ea: 0x00567310
+void IGOActionHintWidget::Init(PanelFile* panel)
+{
+    (void)panel;
+}
+
+// ea: 0x00582EC0
+void IGOActionHintWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!IsShown()
+        || EntityManager::sInst->GetPlayer(mClient) == nullptr
+        || EntityManager::sInst->GetPlayer(mClient)->client == nullptr)
+    {
+        return;
+    }
+    int mProneBlockedTime =
+        EntityManager::sInst->GetPlayer(mClient)->client->mProneBlockedTime;
+    int hintType = 0;
+    if (EntityManager::sInst->GetPlayer(mClient)->client
+            ->mMedicNobodyToReviveTime
+        > mProneBlockedTime)
+    {
+        mProneBlockedTime =
+            EntityManager::sInst->GetPlayer(currCl)->client
+                ->mMedicNobodyToReviveTime;
+        hintType = 1;
+    }
+    if (EntityManager::sInst->GetPlayer(mClient)->client
+            ->mTankExitBlockedByMantleTime
+        > mProneBlockedTime)
+    {
+        mProneBlockedTime =
+            EntityManager::sInst->GetPlayer(mClient)->client
+                ->mTankExitBlockedByMantleTime;
+        hintType = 2;
+    }
+    int* hintTimer = &g_femanager.IGO->actionHintTimer[mClient];
+    if (*hintTimer > mProneBlockedTime)
+    {
+        if (*hintTimer <= level.time)
+        {
+            mProneBlockedTime = *hintTimer;
+            hintType = 3;
+        }
+        else
+        {
+            *hintTimer = 0;
+        }
+    }
+    int time_left = mProneBlockedTime - level.time + 3000;
+    if (mProneBlockedTime >= 0 && time_left >= 0)
+    {
+        if (dont_draw)
+            startHintTime = level.time;
+        int v8 = level.time - startHintTime;
+        float psin;
+        float fc;
+        FastSinCos(((((v8 % 1000) * 0.001f) * 2.0f) - 1.0f) * 3.1415927f,
+                   &psin, &fc);
+        float v10 = (fc + 1.0f) * 0.5f;
+        if (v8 >= 500)
+            v10 = (v10 + 1.0f) * 0.5f;
+        float v9 = 1.0f;
+        if (time_left < 1000)
+            v9 = time_left * 0.001f;
+        dont_draw = false;
+        text->SetAlpha(v9 * v10);
+        switch (hintType)
+        {
+        case 0:
+            text->SetText("MPGAME_PRONE_BLOCKED");
+            break;
+        case 1:
+            text->SetText("MPGAME_MEDIC_NOBODY_TO_REVIVE");
+            break;
+        case 2:
+            text->SetText("MPGAME_TANK_EXIT_BLOCKED_BY_MANTLE");
+            break;
+        case 3:
+        {
+            const char* STBString = STBManager::sInst->GetSTBString(
+                g_femanager.IGO->actionHintText[currCl]);
+            if (STBString != nullptr)
+                text->SetText(STBString);
+            else
+                text->SetText("UNKNOWN_STRING");
+            break;
+        }
+        }
+    }
+    else
+    {
+        dont_draw = true;
+    }
+}
+
+// ea: 0x00567320
+void IGOActionHintWidget::Draw()
+{
+    if (IsShown() && !dont_draw)
+        text->Draw();
+}
+
+// ea: 0x00567340
+void IGOActionHintWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    text->UpdateForWidescreen(widescreen, (int)about_x);
+}
+
+// ea: 0x00567360
+void IGOActionHintWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    text->UpdateForSplitScreen(viewport, old_viewport);
+}
+
+// ============================================================================
+// IGOHQProgressBarWidget
+// ============================================================================
+
+// ea: 0x00565F50
+IGOHQProgressBarWidget::IGOHQProgressBarWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    loading_bar_bkg_01 = nullptr;
+    loading_bar_bkg_02 = nullptr;
+    loading_bar_bkg_03 = nullptr;
+    loading_bar_white = nullptr;
+    loading_bar_red = nullptr;
+    m_pRadioIcon = nullptr;
+    m_Draw = false;
+}
+
+// ea: 0x00565F90
+IGOHQProgressBarWidget::~IGOHQProgressBarWidget()
+{
+    if (loading_bar_bkg_01 != nullptr)
+        delete loading_bar_bkg_01;
+    if (loading_bar_bkg_02 != nullptr)
+        delete loading_bar_bkg_02;
+    if (loading_bar_bkg_03 != nullptr)
+        delete loading_bar_bkg_03;
+    if (loading_bar_white != nullptr)
+        delete loading_bar_white;
+    if (loading_bar_red != nullptr)
+        delete loading_bar_red;
+    if (m_pRadioIcon != nullptr)
+        delete m_pRadioIcon;
+}
+
+// ea: 0x00598410
+void IGOHQProgressBarWidget::Init(PanelFile* panel)
+{
+    loading_bar_bkg_01 = panel->GetPointer("loading_bar_bkg_01");
+    loading_bar_bkg_02 = panel->GetPointer("loading_bar_bkg_02");
+    loading_bar_bkg_03 = panel->GetPointer("loading_bar_bkg_03");
+    loading_bar_white = panel->GetPointer("loading_bar_use");
+    loading_bar_red = panel->GetPointer("loading_bar_red_use");
+    m_pRadioIcon = panel->GetPointer("radio_icon");
+    if (mClient > 0)
+    {
+        loading_bar_bkg_01 = PanelQuad::Clone(loading_bar_bkg_01);
+        loading_bar_bkg_02 = PanelQuad::Clone(loading_bar_bkg_02);
+        loading_bar_bkg_03 = PanelQuad::Clone(loading_bar_bkg_03);
+        loading_bar_white = PanelQuad::Clone(loading_bar_white);
+        loading_bar_red = PanelQuad::Clone(loading_bar_red);
+        m_pRadioIcon = PanelQuad::Clone(m_pRadioIcon);
+    }
+}
+
+// ea: 0x005828F0
+void IGOHQProgressBarWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    m_pRadioIcon->SetShown(false);
+    if (is_shown
+        && dword_F62960[1580 * currCl] != 0
+        && EntityManager::sInst->GetPlayer(currCl) != nullptr
+        && EntityManager::sInst->GetPlayer(currCl)->sentient != nullptr
+        && MPUIInterface::mServerParams.mGameType == 3
+        && gpBrocAPI->mBrocExports.mCallbackGetTeamCapturingHQPercent
+               != nullptr
+        && gpBrocAPI->mBrocExports.mCallbackGetHQCaptureStatus != nullptr
+        && gpBrocAPI->mBrocExports.mCallbackGetTeamDestroyingHQPercent
+               != nullptr)
+    {
+        Entity* Player = GetPlayer(currCl);
+        float capturePct =
+            (float)gpBrocAPI->mBrocExports
+                .mCallbackGetTeamCapturingHQPercent(
+                    *(Broc::entity*)((char*)dword_F62960 + 1580 * currCl * 4
+                                     + 176))
+            * 0.0001f;
+        int v5 = gpBrocAPI->mBrocExports.mCallbackGetHQCaptureStatus();
+        float v6 =
+            (float)gpBrocAPI->mBrocExports
+                .mCallbackGetTeamDestroyingHQPercent()
+            * 0.0001f;
+        if (Player->key > level.time)
+            Player->key = 0;
+        int key = Player->key;
+        if (key != 0 && key > level.time - 1000)
+            m_pRadioIcon->SetShown(true);
+        if (v5 != 0)
+        {
+            if (capturePct > 0.01f)
+            {
+                loading_bar_white->SetShown(true);
+                loading_bar_red->SetShown(false);
+                loading_bar_white->Mask(1.0f - capturePct, RIGHT_MASK, 1.0f);
+                m_Draw = true;
+                return;
+            }
+            if (v6 > 0.01f
+                && ((Player->sentient->eTeam == TEAM_ALLIES && v5 == 1)
+                    || (Player->sentient->eTeam == TEAM_AXIS && v5 == -1)))
+            {
+                loading_bar_white->SetShown(false);
+                loading_bar_red->SetShown(true);
+                loading_bar_red->Mask(1.0f - v6, RIGHT_MASK, 1.0f);
+                m_Draw = true;
+                return;
+            }
+        }
+        else if (capturePct > 0.01f)
+        {
+            loading_bar_white->SetShown(true);
+            loading_bar_red->SetShown(false);
+            loading_bar_white->Mask(capturePct, RIGHT_MASK, 1.0f);
+            m_Draw = true;
+            return;
+        }
+    }
+    m_Draw = false;
+}
+
+// ea: 0x00566020
+void IGOHQProgressBarWidget::Draw()
+{
+    m_pRadioIcon->Draw();
+    if (is_shown && m_Draw)
+    {
+        loading_bar_white->Draw();
+        loading_bar_red->Draw();
+        loading_bar_bkg_01->Draw();
+        loading_bar_bkg_02->Draw();
+        loading_bar_bkg_03->Draw();
+    }
+}
+
+// ea: 0x00582B70
+void IGOHQProgressBarWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    m_pRadioIcon->FattenMeForWidescreen(widescreen, about_x);
+    loading_bar_bkg_01->SetXYInitialToCurrentPos();
+    loading_bar_bkg_02->SetXYInitialToCurrentPos();
+    loading_bar_bkg_03->SetXYInitialToCurrentPos();
+    loading_bar_white->SetXYInitialToCurrentPos();
+    loading_bar_red->SetXYInitialToCurrentPos();
+}
+
+// ea: 0x00582BD0
+void IGOHQProgressBarWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    loading_bar_bkg_01->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                                0.0f, 0.0f);
+    loading_bar_bkg_02->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                                0.0f, 0.0f);
+    loading_bar_bkg_03->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                                0.0f, 0.0f);
+    loading_bar_white->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                               0.0f, 0.0f);
+    loading_bar_red->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                             0.0f, 0.0f);
+    m_pRadioIcon->FormatForSplitScreen(viewport, old_viewport);
+}
+
+// ============================================================================
+// IGOInGameScoreWidget
+// ============================================================================
+
+// ea: 0x00566340
+IGOInGameScoreWidget::IGOInGameScoreWidget(int client)
+{
+    mClient = client;
+    is_shown = true;
+    force_appear = false;
+    m_pAlliesFlagIcon = nullptr;
+    m_pAxisFlagIcon = nullptr;
+    m_pAlliesScoreText = nullptr;
+    m_pAxisScoreText = nullptr;
+    m_AlliesScore = 0;
+    m_AxisScore = 0;
+    m_Draw = true;
+}
+
+// ea: 0x00566380
+IGOInGameScoreWidget::~IGOInGameScoreWidget()
+{
+    if (m_pAlliesFlagIcon != nullptr)
+        delete m_pAlliesFlagIcon;
+    if (m_pAxisFlagIcon != nullptr)
+        delete m_pAxisFlagIcon;
+    if (m_pAlliesScoreText != nullptr)
+        delete m_pAlliesScoreText;
+    if (m_pAxisScoreText != nullptr)
+        delete m_pAxisScoreText;
+}
+
+// ea: 0x00598540
+void IGOInGameScoreWidget::Init(PanelFile* panel)
+{
+    m_pAlliesFlagIcon = panel->GetPointer("sb_allied_icon");
+    m_pAxisFlagIcon = panel->GetPointer("sb_axis_icon");
+    m_pAlliesScoreText = panel->GetTextPointer("sb_allied_text");
+    m_pAxisScoreText = panel->GetTextPointer("sb_axis_text");
+    if (mClient > 0)
+    {
+        m_pAlliesFlagIcon = PanelQuad::Clone(m_pAlliesFlagIcon);
+        m_pAxisFlagIcon = PanelQuad::Clone(m_pAxisFlagIcon);
+        m_pAlliesScoreText =
+            (FEText*)mem_heap_malloc(0x70u);
+        if (m_pAlliesScoreText != nullptr)
+            m_pAlliesScoreText = new (m_pAlliesScoreText) FEText();
+        else
+            m_pAlliesScoreText = nullptr;
+        m_pAxisScoreText = (FEText*)mem_heap_malloc(0x70u);
+        if (m_pAxisScoreText != nullptr)
+            m_pAxisScoreText = new (m_pAxisScoreText) FEText();
+        else
+            m_pAxisScoreText = nullptr;
+        m_pAlliesScoreText->CopyFrom(
+            panel->GetTextPointer("sb_allied_text"));
+        m_pAxisScoreText->CopyFrom(panel->GetTextPointer("sb_axis_text"));
+    }
+}
+
+// ea: 0x00566400
+void IGOInGameScoreWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (is_shown
+        && dword_F62960[1580 * currCl] != 0
+        && cgGlobal.showScore
+        && EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+               == 3)
+    {
+        if (dword_F62960[1580 * currCl] != -16)
+        {
+            m_AlliesScore = cgGlobal.teamScores[2];
+            m_AxisScore = cgGlobal.teamScores[1];
+            char text[8];
+            sprintf(text, "%i", m_AlliesScore);
+            if (text[0] != 0)
+                m_pAlliesScoreText->SetTextNoLocalize(text);
+            sprintf(text, "%i", m_AxisScore);
+            if (text[0] != 0)
+                m_pAxisScoreText->SetTextNoLocalize(text);
+            m_Draw = true;
+        }
+    }
+    else
+    {
+        m_Draw = false;
+    }
+}
+
+// ea: 0x005664F0
+void IGOInGameScoreWidget::Draw()
+{
+    if (is_shown && m_Draw)
+    {
+        m_pAlliesFlagIcon->Draw();
+        m_pAxisFlagIcon->Draw();
+        m_pAlliesScoreText->Draw();
+        m_pAxisScoreText->Draw();
+    }
+}
+
+// ea: 0x00582D00
+void IGOInGameScoreWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    m_pAlliesFlagIcon->FattenMeForWidescreen(widescreen, about_x);
+    m_pAxisFlagIcon->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x005777D0
+void IGOInGameScoreWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    m_pAlliesFlagIcon->FormatHUDForSplitScreen(viewport, old_viewport, 5,
+                                               0.0f, 22.0f);
+    m_pAxisFlagIcon->FormatHUDForSplitScreen(viewport, old_viewport, 5,
+                                             0.0f, 32.0f);
+    m_pAlliesScoreText->UpdateForHUDSplitScreen(viewport, old_viewport, 5,
+                                                0.0f, 0.0f);
+    m_pAxisScoreText->UpdateForHUDSplitScreen(viewport, old_viewport, 5,
+                                              0.0f, 0.0f);
+}
+
+// ============================================================================
+// IGORaiseFlagWidget
+// ============================================================================
+
+// ea: 0x00566070
+IGORaiseFlagWidget::IGORaiseFlagWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    raise_flag_icon = nullptr;
+    multiplyer_text = nullptr;
+    player_count = 0;
+}
+
+// ea: 0x005660A0
+IGORaiseFlagWidget::~IGORaiseFlagWidget()
+{
+    if (raise_flag_icon != nullptr)
+        delete raise_flag_icon;
+    if (multiplyer_text != nullptr)
+        delete multiplyer_text;
+}
+
+// ea: 0x005984D0
+void IGORaiseFlagWidget::Init(PanelFile* panel)
+{
+    raise_flag_icon = panel->GetPointer("i_raisingflag");
+    multiplyer_text = panel->GetTextPointer("i_raisingflag_text_counter");
+    if (mClient > 0)
+    {
+        raise_flag_icon = PanelQuad::Clone(raise_flag_icon);
+        multiplyer_text = multiplyer_text->Clone();
+    }
+    raise_flag_icon->SetShown(false);
+    multiplyer_text->SetShown(false);
+}
+
+// ea: 0x00566100
+void IGORaiseFlagWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    raise_flag_icon->SetShown(false);
+    multiplyer_text->SetShown(false);
+    if (is_shown)
+    {
+        int v3 = dword_F62960[1580 * currCl];
+        if (v3 != 0
+            && gpBrocAPI->mBrocExports.mCallbackGetFlagBeingContested
+                   != nullptr)
+        {
+            player_count =
+                gpBrocAPI->mBrocExports.mCallbackGetFlagBeingContested(
+                    *(Broc::entity*)((char*)dword_F62960 + 1580 * currCl * 4
+                                     + 176));
+            if (player_count > 0)
+            {
+                raise_flag_icon->SetShown(true);
+                multiplyer_text->SetShown(player_count > 1);
+            }
+            char text[4];
+            sprintf(text, "x%i", player_count);
+            if (text[0] != 0)
+                multiplyer_text->SetTextNoLocalize(text);
+        }
+    }
+}
+
+// ea: 0x005661D0
+void IGORaiseFlagWidget::Draw()
+{
+    if (is_shown)
+    {
+        raise_flag_icon->Draw();
+        multiplyer_text->Draw();
+    }
+}
+
+// ea: 0x00577660
+void IGORaiseFlagWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    raise_flag_icon->FormatHUDForSplitScreen(viewport, old_viewport, 0,
+                                             0.0f, 0.0f);
+    multiplyer_text->UpdateForHUDSplitScreen(viewport, old_viewport, 0, 0.0f,
+                                             0.0f);
+}
+
+// ea: 0x00582C40
+void IGORaiseFlagWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    raise_flag_icon->FattenMeForWidescreen(widescreen, about_x);
+    multiplyer_text->UpdateForWidescreen(widescreen, (int)about_x);
+}
+
+// ============================================================================
+// IGOTimerWidget
+// ============================================================================
+
+// ea: 0x005661F0
+IGOTimerWidget::IGOTimerWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    m_pTimer = nullptr;
+    m_DeltaTime = 0.0f;
+    m_hour = 0;
+    m_min = 0;
+    m_sec = 0;
+    m_TimerActive = false;
+    m_Draw = false;
+}
+
+// ea: 0x00566230
+IGOTimerWidget::~IGOTimerWidget()
+{
+    if (m_pTimer != nullptr)
+        delete m_pTimer;
+}
+
+// ea: 0x00582C70
+void IGOTimerWidget::Init(PanelFile* panel)
+{
+    m_pTimer = panel->GetTextPointer("sb_timer_text");
+    if (mClient > 0)
+    {
+        m_pTimer = (FEText*)mem_heap_malloc(0x70u);
+        if (m_pTimer != nullptr)
+            m_pTimer = new (m_pTimer) FEText();
+        else
+            m_pTimer = nullptr;
+        m_pTimer->CopyFrom(panel->GetTextPointer("sb_timer_text"));
+    }
+}
+
+// ea: 0x005762A0
+void IGOTimerWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown
+        || dword_F62960[1580 * currCl] == 0
+        || EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+               != 3)
+    {
+        m_Draw = false;
+        return;
+    }
+    if (cgGlobal.gameTime > 0.0f)
+    {
+        m_TimeLimit = cgGlobal.gameTime;
+        m_StartTime = cgGlobal.gameTimeStartTime;
+        cgGlobal.gameTime = 0.0f;
+    }
+    float v3 = (float)(cgGlobal.time + 999) - m_StartTime;
+    m_DeltaTime = v3;
+    if (v3 < 0.0f)
+    {
+        m_Draw = false;
+        return;
+    }
+    if (m_TimeLimit < v3 * 0.001f)
+    {
+        cgGlobal.gameTime = 0.0f;
+        m_TimeLimit = 0.0f;
+        m_Draw = false;
+        return;
+    }
+    setTimerValues();
+    char text[8];
+    if (m_hour != 0)
+        sprintf(text, "%i:%02i:%02i", m_hour, m_min, m_sec);
+    else
+        sprintf(text, "%i:%02i", m_min, m_sec);
+    if (text[0] != 0)
+        m_pTimer->SetTextNoLocalize(text);
+    m_Draw = true;
+}
+
+// ea: 0x005662F0
+void IGOTimerWidget::setTimerValues()
+{
+    float v1 = m_DeltaTime * 0.001f;
+    int v2 = (int)(m_TimeLimit - v1);
+    unsigned int v3 = (unsigned int)v2 / 3600;
+    if (v2 / 3600 != 0)
+        v2 = (int)(m_TimeLimit - v1) % 3600;
+    m_hour = v3;
+    m_min = (unsigned int)v2 / 60;
+    if (v2 / 60 != 0)
+        m_sec = v2 % 60;
+    else
+        m_sec = v2;
+}
+
+// ea: 0x00566280
+void IGOTimerWidget::Draw()
+{
+    if (is_shown && m_Draw)
+        m_pTimer->Draw();
+}
+
+// ea: 0x005662A0
+void IGOTimerWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    m_pTimer->UpdateForWidescreen(widescreen, (int)about_x);
+}
+
+// ea: 0x005662C0
+void IGOTimerWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    m_pTimer->UpdateForHUDSplitScreen(viewport, old_viewport, 5, 0.0f,
+                                      10.0f);
 }
