@@ -99,6 +99,7 @@ extern void tlPrint(const char* lpOutputString);  // tl lib
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);  // core.o
 extern void tlMemFree(void* Ptr);             // core.o
+extern void profile_reset();  // ?profile_reset@@YAXXZ (cdDebugRender.cpp)
 extern int g_lightGridBlueErrors;   // ?g_lightGridBlueErrors@@3HA (g.o)
 extern int g_bOptimize;             // ?g_bOptimize@@3HA (render.o @ 0xF743D0)
 extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);  // ngl_scene.cpp
@@ -176,11 +177,39 @@ DebugTri::DebugTri(const math::Position3& pt1, const math::Position3& pt2,
     mCol = col;
 }
 
+class DebugLine {
+public:
+    math::Position3::Packed mPt1;   // +0x00
+    math::Position3::Packed mPt2;   // +0x0C
+    float mThickness;               // +0x18
+    Color mCol;                     // +0x1C
+
+    DebugLine() {}                  // ??0DebugLine@@QAE@XZ (render.o 0x6E7260)
+    DebugLine(const math::Position3& pt1, const math::Position3& pt2,
+              const Color& col,
+              float thickness);     // render.o 0x6E7270
+};
+
+DebugLine::DebugLine(const math::Position3& pt1, const math::Position3& pt2,
+                     const Color& col, float thickness)
+{
+    mPt1.x = pt1.v.m128_f32[0];
+    mPt1.y = pt1.v.m128_f32[1];
+    mPt1.z = pt1.v.m128_f32[2];
+    mPt2.x = pt2.v.m128_f32[0];
+    mPt2.y = pt2.v.m128_f32[1];
+    mPt2.z = pt2.v.m128_f32[2];
+    mCol = col;
+    mThickness = thickness;
+}
+
 template class ae_vector<DebugSphere>;
+template class ae_vector<DebugLine>;
 template class ae_vector<DebugTri>;
 
-ae_vector<DebugSphere> gDebugSpheres;  // @ 0xF0C6C0
-ae_vector<DebugTri> gDebugTris;        // @ 0xF0C6D8
+ae_vector<DebugSphere> gDebugSpheres;  // ?gDebugSpheres@@3V?$ae_vector@VDebugSphere@@@@A @ 0x13641BC
+ae_vector<DebugLine> gDebugLines;      // ?gDebugLines@@3V?$ae_vector@VDebugLine@@@@A @ 0x1366C84
+ae_vector<DebugTri> gDebugTris;        // ?gDebugTris@@3V?$ae_vector@VDebugTri@@@@A @ 0x13642C4
 
 // ngl/render-layer helpers (render_xboxr / ngl_aux.o)
 extern void auxSetScale(nglMeshParams* dest, float src0, float src1,
@@ -506,14 +535,33 @@ struct DebugTexturedQuad2D {
     float z;          // +0x10
     Color col;        // +0x14
     nglTexture* nglTex;  // +0x24
+
+    DebugTexturedQuad2D() {}  // ??0DebugTexturedQuad2D@@QAE@XZ
+    DebugTexturedQuad2D(float l, float t, float r, float b, float z,
+                        const Color& col,
+                        nglTexture* nglTex);  // render.o 0x6E75F0
 };
 static_assert(sizeof(DebugTexturedQuad2D) == 0x28, "DebugTexturedQuad2D size mismatch");
+
+DebugTexturedQuad2D::DebugTexturedQuad2D(float l, float t, float r, float b,
+                                         float z, const Color& col,
+                                         nglTexture* nglTex)
+{
+    this->l = l;
+    this->t = t;
+    this->r = r;
+    this->b = b;
+    this->z = z;
+    this->col = col;
+    this->nglTex = nglTex;
+}
 
 struct DebugQuadVector {
     DebugTexturedQuad2D* mElements;  // +0x00
     int mSize;                       // +0x04
     int mCapacity;                   // +0x08
     void push_back(const DebugTexturedQuad2D& e);
+    void resize(int iNewSize);
 };
 DebugQuadVector gDebugTexturedQuad2Ds;  // ?gDebugTexturedQuad2Ds@@3V?$ae_vector@VDebugTexturedQuad2D@@@@A @ 0xF755F0
 
@@ -528,6 +576,22 @@ void DebugQuadVector::push_back(const DebugTexturedQuad2D& e)
         mCapacity = newCap;
     }
     mElements[mSize++] = e;
+}
+
+void DebugQuadVector::resize(int iNewSize)
+{
+    if (iNewSize > mCapacity)
+    {
+        DebugTexturedQuad2D* ne = (DebugTexturedQuad2D*)realloc(
+            mElements, iNewSize * sizeof(DebugTexturedQuad2D));
+        mElements = ne;
+        mCapacity = iNewSize;
+        mSize = iNewSize;
+    }
+    else
+    {
+        mSize = iNewSize;
+    }
 }
 
 void DebugRender::RenderTexturedQuad2D(float l, float t, float r, float b,
@@ -1166,4 +1230,56 @@ void DebugRender::RenderCircle(const math::Position3& center, float radius,
         p2.v = _mm_setr_ps(pts[j][0], pts[j][1], pts[j][2], 0.0f);
         DebugRender::RenderLine(p1, p2, color, 1.0f);
     }
+}
+
+// ============================================================================
+// DebugRender::Render - ea: 0x006D9490 (deferred primitive flush)
+// ============================================================================
+void DebugRender::Render()
+{
+    for (int i = 0; i < mRenderFpList.m_size; ++i)
+        mRenderFpList.m_elements[i]();
+    profile_reset();
+
+    for (DebugSphere* s = gDebugSpheres.mElements;
+         s != &gDebugSpheres.mElements[gDebugSpheres.mSize]; ++s)
+    {
+        math::Position3 pos;
+        pos.v = _mm_setr_ps(s->mPos.x, s->mPos.y, s->mPos.z, 0.0f);
+        DebugRender::RenderSphere(pos, s->mRadius, s->mArgbColor);
+    }
+    gDebugSpheres.resize(0);
+
+    for (DebugLine* ln = gDebugLines.mElements;
+         ln != &gDebugLines.mElements[gDebugLines.mSize]; ++ln)
+    {
+        math::Position3 p1;
+        p1.v = _mm_setr_ps(ln->mPt1.x, ln->mPt1.y, ln->mPt1.z, 0.0f);
+        math::Position3 p2;
+        p2.v = _mm_setr_ps(ln->mPt2.x, ln->mPt2.y, ln->mPt2.z, 0.0f);
+        DebugRender::RenderLine(p1, p2, ln->mCol, ln->mThickness);
+    }
+    gDebugLines.resize(0);
+
+    for (DebugTri* t = gDebugTris.mElements;
+         t != &gDebugTris.mElements[gDebugTris.mSize]; ++t)
+    {
+        math::Position3 p1;
+        p1.v = _mm_setr_ps(t->mPt1.x, t->mPt1.y, t->mPt1.z, 0.0f);
+        math::Position3 p2;
+        p2.v = _mm_setr_ps(t->mPt2.x, t->mPt2.y, t->mPt2.z, 0.0f);
+        math::Position3 p3;
+        p3.v = _mm_setr_ps(t->mPt3.x, t->mPt3.y, t->mPt3.z, 0.0f);
+        DebugRender::RenderTriangle(p1, p2, p3, t->mCol, true);
+    }
+    gDebugTris.resize(0);
+
+    for (DebugTexturedQuad2D* q = gDebugTexturedQuad2Ds.mElements;
+         q != &gDebugTexturedQuad2Ds.mElements[gDebugTexturedQuad2Ds.mSize];
+         ++q)
+    {
+        DebugRender::RenderTexturedQuad2D(q->l, q->t, q->r, q->b, q->z,
+                                          q->col, q->nglTex);
+    }
+    gDebugTexturedQuad2Ds.resize(0);
 }

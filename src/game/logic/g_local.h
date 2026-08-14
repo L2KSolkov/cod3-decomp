@@ -2372,6 +2372,7 @@ public:
     static void RenderCircle(const math::Position3& center, float radius,
                              const Color& color,
                              float thickness);  // render.o 0xAC8670
+    void Render();  // ?Render@DebugRender@@QAEXXZ (render.o 0x6D9490)
     static void RenderCone(const math::Position3& pos, const math::Dir3& dir,
                            float angle, float length,
                            const Color& col);  // render.o 0xAC51C0
