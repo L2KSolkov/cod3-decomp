@@ -32,20 +32,6 @@ public:
     const char* GetSTBString(unsigned int hash);  // core.o
 };
 
-// Minimal ProfileManager view: only mOperationState is used here (full class
-// arrives with profile.cpp). Offset +0x64 from IDA type_query.
-struct ProfileManager {
-    uint8_t _pad[0x64];
-    int mOperationState;  // +0x64 (ProfileManager::EOperationState)
-};
-
-enum {
-    kOperationNone = 0,
-    kOperationSuccess = 1,
-    kOperationFailure = 2,
-    kOperationEnumProfilesDone = 3,
-};
-
 // ============================================================================
 // GameSettings (672 bytes) - verified against IDA
 // vtable: Callback (slot 0), ~GameSettings (slot 1)
@@ -146,17 +132,17 @@ void GameSettings::Callback(MemoryUnitManager::eOperation operation)
         case MemoryUnitManager::eLoad:
             m_mc_has_save = true;
             g_femanager.mProfileManager->mOperationState =
-                kOperationSuccess;
+                ProfileManager::kOperationSuccess;
             break;
         case MemoryUnitManager::eSave:
             m_mc_has_save = true;
             g_femanager.mProfileManager->mOperationState =
-                kOperationSuccess;
+                ProfileManager::kOperationSuccess;
             break;
         case MemoryUnitManager::eDelete:
         case MemoryUnitManager::eFormat:
             g_femanager.mProfileManager->mOperationState =
-                kOperationSuccess;
+                ProfileManager::kOperationSuccess;
             break;
         default:
             AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -175,13 +161,13 @@ void GameSettings::Callback(MemoryUnitManager::eOperation operation)
         if (LastError == MemoryUnitManager::eCRCFailure
             || LastError == MemoryUnitManager::eFileDoesNotExist)
             m_damaged_save = true;
-        g_femanager.mProfileManager->mOperationState = kOperationFailure;
+        g_femanager.mProfileManager->mOperationState = ProfileManager::kOperationFailure;
     }
     else if (operation == MemoryUnitManager::eSave
              || operation == MemoryUnitManager::eFormat
              || operation == MemoryUnitManager::eDelete)
     {
-        g_femanager.mProfileManager->mOperationState = kOperationFailure;
+        g_femanager.mProfileManager->mOperationState = ProfileManager::kOperationFailure;
     }
     else
     {
@@ -232,7 +218,7 @@ void GameSettings::delete_save()
 {
     if (MemoryUnitManager::DeleteGame("Profiles")
         != MemoryUnitManager::eSuccess)
-        g_femanager.mProfileManager->mOperationState = kOperationFailure;
+        g_femanager.mProfileManager->mOperationState = ProfileManager::kOperationFailure;
     m_damaged_save = false;
 }
 

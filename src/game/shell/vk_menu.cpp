@@ -25,20 +25,6 @@ public:
     const char* GetSTBString(const char* pszReference);  // core.o
 };
 
-// ProfileManager minimal view (mOperationState/mCurrentStatus/countdown)
-struct ProfileManager {
-    uint8_t _pad[0x44];
-    int  mCurrentStatus;          // +0x44
-    uint8_t _pad2[0x64 - 0x48];
-    int  mOperationState;         // +0x64
-    float mCountdownFinishedTime; // +0x68
-
-    void CreateProfile(int slotNum);        // ?CreateProfile@ProfileManager@@QAEXH@Z (profile.o)
-    void FinishOperation();                 // ?FinishOperation@ProfileManager@@AAEXXZ (profile.o)
-    void Reset();                           // ?Reset@ProfileManager@@QAEXXZ (profile.o)
-    void EnumProfiles(SaveGameData** slots);  // ?EnumProfiles@ProfileManager@@QAEXQAPAUSaveGameData@@@Z (profile.o)
-};
-
 // MPProfileMainMenu minimal view (mSaveSlots)
 class MPProfileMainMenu {
 public:
@@ -736,7 +722,8 @@ void VKMenu::Update(float time_inc)
         && Sys_Time() > mProfileManager->mCountdownFinishedTime)
     {
         mProfileManager->FinishOperation();
-        mProfileManager->mOperationState = 0;
+        mProfileManager->mOperationState =
+            ProfileManager::kOperationNone;
     }
     int mCurrentStatus = g_femanager.mProfileManager->mCurrentStatus;
     switch (mCurrentStatus)

@@ -977,7 +977,7 @@ bool MemoryUnitManager::Service()
                 && mInsertRemoveObserver != nullptr)
             {
                 mInsertRemoveObserver->Callback(
-                    InsertRemoveObserver::eRemoved, mActiveMemoryUnit);
+                    MemoryUnitManager::eRemoved, mActiveMemoryUnit);
             }
             return false;
         }

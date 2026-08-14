@@ -52,12 +52,6 @@ extern int FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHX
 extern int PortToClient(int port);   // ?PortToClient@LocalClient@@YAHH@Z
 }
 
-// ProfileManager minimal view (for ReleaseFrontEnd)
-class ProfileManager {
-public:
-    virtual ~ProfileManager();  // slot 0 (opaque)
-};
-
 // Menu class externs (mp.o / game_xbox.o; unresolved until those land)
 class InstantActionMenu;
 class MPMainMenuXBox;
@@ -117,7 +111,6 @@ extern MPOptionsSoundMenu* MPOptionsSoundMenu_Me();
 extern MPOptionsPreferencesMenu* MPOptionsPreferencesMenu_Me();
 extern MPProfileMainMenu* MPProfileMainMenu_Me();
 extern MPProfileEditMenu* MPProfileEditMenu_Me();
-extern ProfileManager* ProfileManager_ctor(void* mem);
 extern AARMenuSystem* AARMenuSystem_ctor(void* mem);
 extern DialogMenuSystem* DialogMenuSystem_ctor(void* mem, int client);
 extern void* ProfileManager_vftable;  // ??_7ProfileManager@@6B@
@@ -485,7 +478,8 @@ void FEManager::InitDialogMenuSystem()
 void FEManager::LoadFrontEnd()
 {
     mProfileManager = nullptr;
-    mProfileManager = ProfileManager_ctor(mem_heap_malloc(0x6Cu));
+    ProfileManager* v2 = (ProfileManager*)mem_heap_malloc(0x6Cu);
+    mProfileManager = v2 != nullptr ? new (v2) ProfileManager() : nullptr;
     fems = (FEMenuSystem*)mem_heap_malloc(16, 0x104u);
     if (fems != nullptr)
         new (fems) FrontEndMenuSystem();

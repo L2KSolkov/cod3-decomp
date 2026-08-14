@@ -21,6 +21,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "game/platform_xbox/MemoryUnitManager.h"
+
 extern const char* const defaultFileName;  // 0xCD67AE
 
 class nglTexture;
@@ -148,6 +150,13 @@ class PanelQuad;
 class FEComboBox;
 class FESlider;
 class FEText;
+class ProfileManager;
+class ProfileMainMenu;
+class ProfileEditMenu;
+class MemCardCheckMenu;
+class GameSettings;
+struct StubData;
+struct SaveGameData;
 
 // panel_layer - quad layer enum
 enum panel_layer {

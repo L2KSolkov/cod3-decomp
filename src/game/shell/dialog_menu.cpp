@@ -47,12 +47,6 @@ public:
     static void ExitGame();        // ?ExitGame@MPUIInterface@@SAXXZ
 };
 
-// ProfileManager minimal view
-struct ProfileManager {
-    uint8_t _pad[4];
-    void Reset();  // ?Reset@ProfileManager@@QAEXXZ (profile.o)
-};
-
 // ============================================================================
 // DialogMenuDisplay data
 // ============================================================================

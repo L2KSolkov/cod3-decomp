@@ -56,14 +56,15 @@ public:
         virtual void Callback(eOperation op) = 0;
     };
 
+    enum eDeviceChange
+    {
+        eInserted = 0,
+        eRemoved = 1,
+    };
+
     struct InsertRemoveObserver
     {
-        enum eChange
-        {
-            eRemoved = 0,
-            eInserted = 1,
-        };
-        virtual void Callback(eChange change, int deviceID) = 0;
+        virtual void Callback(eDeviceChange change, int deviceID) = 0;
     };
 
     // A named save game: up to 8 files per container. Size 0x288.
