@@ -183,6 +183,18 @@ void nglStartOverExposure(float oeBloomStart, float oeBloomEnd,
     bpOe.oeLeadTime = 0.0f;
 }
 
+// ea: 0x006C2380
+float R_GetViewModelArmsScale(int client_index)
+{
+    return tr.viewModelInfo[client_index].mArmsScale;
+}
+
+// ea: 0x006C23A0
+float R_GetViewModelWeaponScale(int client_index)
+{
+    return tr.viewModelInfo[client_index].mWeaponScale;
+}
+
 // ea: 0x006C0720
 void nglStartOverExposureEx(float oeBloomRealStart, float oeBloomStart,
                             float oeBloomEnd, float oeBloomInTime,
