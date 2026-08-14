@@ -192,6 +192,112 @@ void XModelGetBasePose(IVPointer<XModel> model, math::Mat43* mat)
     }
 }
 
+// ============================================================================
+// XModelUpdateChildren - ea: 0x006CB0A0
+// ============================================================================
+static void CopyMatrix(DObjSkelMat* dst, const DObjSkelMat* src)
+{
+    memcpy(dst, src, sizeof(DObjSkelMat));
+}
+
+void XModelUpdateChildren(IVPointer<XModel> model, DObjSkelMat* mat,
+                          int boneIndex)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    XModelLod** lod = model.mValue->lod;
+    int v5 = 0;
+    if (model.mValue->lod[0] == nullptr)
+    {
+        XModelLod* v6;
+        do
+        {
+            v6 = lod[1];
+            ++lod;
+            ++v5;
+        } while (v6 == nullptr);
+    }
+    XModelParts* parts = model.mValue->lod[v5]->xmodelParts;
+    int hierarchySize = parts->mHierarchy.mSize;
+    int nextBone = boneIndex;
+    if (boneIndex < hierarchySize)
+    {
+        do
+        {
+            int lastChild = hierarchySize;
+            for (unsigned int v8 = boneIndex + 1; v8 < (unsigned int)hierarchySize; ++v8)
+            {
+                unsigned int v10 = v8;
+                if (v8 >= (unsigned int)hierarchySize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                    AeAssert::gCurrentLine = 81;
+                    AeAssert::gCurrentExpr = "index < mSize";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                        __debugbreak();
+                }
+                if (v8 >= (unsigned int)hierarchySize)
+                    v10 = 0;
+                int parent = parts->mHierarchy.mList[v10].mParentIndex;
+                if (parent == boneIndex)
+                {
+                    DObjSkelMat parentAbs;
+                    CopyMatrix(&parentAbs, &mat[parent]);
+
+                    unsigned int v12 = v8;
+                    if (v8 >= (unsigned int)parts->mTransforms.mSize)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                        AeAssert::gCurrentLine = 81;
+                        AeAssert::gCurrentExpr = "index < mSize";
+                        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                    }
+                    if (v8 >= (unsigned int)parts->mTransforms.mSize)
+                        v12 = 0;
+                    math::Mat43::Packed* tf = &parts->mTransforms.mList[v12];
+                    __m128 tx = _mm_setr_ps(tf->x.x, tf->x.y, tf->x.z, 0.0f);
+                    __m128 ty = _mm_setr_ps(tf->y.x, tf->y.y, tf->y.z, 0.0f);
+                    __m128 tz = _mm_setr_ps(tf->z.x, tf->z.y, tf->z.z, 0.0f);
+                    __m128 tw = _mm_setr_ps(tf->w.x, tf->w.y, tf->w.z, 0.0f);
+
+                    __m128 pax = _mm_loadu_ps(&parentAbs.axis[0][0]);
+                    __m128 pay = _mm_loadu_ps(&parentAbs.axis[1][0]);
+                    __m128 paz = _mm_loadu_ps(&parentAbs.axis[2][0]);
+                    __m128 paw = _mm_loadu_ps(&parentAbs.origin[0]);
+
+                    DObjSkelMat out;
+                    _mm_storeu_ps(&out.axis[0][0], _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(tx, tx, 0), pax),
+                            _mm_mul_ps(_mm_shuffle_ps(tx, tx, 85), pay)),
+                        _mm_mul_ps(_mm_shuffle_ps(tx, tx, 170), paz)));
+                    _mm_storeu_ps(&out.axis[1][0], _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(ty, ty, 0), pax),
+                            _mm_mul_ps(_mm_shuffle_ps(ty, ty, 85), pay)),
+                        _mm_mul_ps(_mm_shuffle_ps(ty, ty, 170), paz)));
+                    _mm_storeu_ps(&out.axis[2][0], _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(tz, tz, 0), pax),
+                            _mm_mul_ps(_mm_shuffle_ps(tz, tz, 85), pay)),
+                        _mm_mul_ps(_mm_shuffle_ps(tz, tz, 170), paz)));
+                    _mm_storeu_ps(&out.origin[0], _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(tw, tw, 0), pax),
+                            _mm_mul_ps(_mm_shuffle_ps(tw, tw, 85), pay)),
+                        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(tw, tw, 170), paz), paw)));
+                    CopyMatrix(&mat[v8], &out);
+                    lastChild = (int)v8;
+                }
+            }
+            nextBone = lastChild;
+            boneIndex = lastChild;
+        } while (nextBone < hierarchySize);
+    }
+}
+
 // ea: 0x006BD3C0
 const char* XModelGetSurfaceName(IVPointer<XModel> model, int subMatIndex,
                                  int lod)
