@@ -1,5 +1,5 @@
 // ============================================================================
-// sv_stubs.h — minimal cross-object types used by sv.o functions.
+// sv_stubs.h â€” minimal cross-object types used by sv.o functions.
 // These types belong to OTHER (unported) game objects; only the fields that
 // sv.o touches are declared here so the server engine compiles standalone.
 // Full definitions arrive when those objects are ported.
@@ -41,10 +41,10 @@ enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
 enum nslBankID : int { NSL_BANK_ID_INVALID = -1 };
 
 // ============================================================================
-// TPakId — pak archive id enum
+// TPakId â€” pak archive id enum
 // ============================================================================
 // ============================================================================
-// DCGSet â€” collision model (opaque; only fields SV_SetBrushModel touches)
+// DCGSet Ã¢â‚¬â€ collision model (opaque; only fields SV_SetBrushModel touches)
 // The release decompile views the entity as a DCGSet*; fields below mirror the
 // offsets the disassembly reads (ent[2] = +0x20, ent[5] = +0x50, ent[6] = +0x60).
 // Full definition arrives when the collision object is ported.
@@ -83,7 +83,7 @@ static_assert(offsetof(DCGSet, max) == 0x40, "DCGSet::max offset");
 static_assert(offsetof(DCGSet, id) == 0x68, "DCGSet::id offset");
 
 // ============================================================================
-// StubData — per-controller MP save/profile data (1216 bytes) — verified IDA
+// StubData â€” per-controller MP save/profile data (1216 bytes) â€” verified IDA
 // ============================================================================
 struct StubData {
     char    mProfileName[16];          // +0x000
@@ -169,7 +169,7 @@ static_assert(offsetof(StubData, mSec) == 0x28, "StubData::mSec offset mismatch"
 static_assert(offsetof(StubData, mInvertAim) == 0x41, "StubData::mInvertAim offset mismatch");
 
 // ============================================================================
-// SaveGameData — MP save game bundle (7156 bytes) — verified IDA
+// SaveGameData â€” MP save game bundle (7156 bytes) â€” verified IDA
 // ============================================================================
 struct SaveGameData {
     StubData mStubData;         // +0x000
@@ -210,7 +210,7 @@ struct MPPlayerManager;
 struct MPPeer;
 
 // ============================================================================
-// ServerTime — server clock (20 bytes) — verified IDA
+// ServerTime â€” server clock (20 bytes) â€” verified IDA
 // ============================================================================
 class ServerTime {
 public:
@@ -225,7 +225,7 @@ public:
 static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 
 // ============================================================================
-// FEManager — front-end manager (1012 bytes; opaque, only sv.o fields shown)
+// FEManager â€” front-end manager (1012 bytes; opaque, only sv.o fields shown)
 // ============================================================================
 struct IGOFrontEnd;
 class FEMenuSystem;
@@ -286,6 +286,7 @@ public:
         font_name_array[4];  // ?font_name_array@FEManager@@0PAV?$ae_fixed_string@$0CA@E@@A @ 0xF382C0
     void SetInGameMenusActive(bool active,
                               int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
+    InGameMenuSystem* GetIGMS(int client);   // ?GetIGMS@FEManager@@QAEPAVInGameMenuSystem@@H@Z (shell.o 0x57F410)
     void UpdateIGO(float time_inc);           // ?UpdateIGO@FEManager@@QAEXM@Z (cl.o 0x528390)
     void UpdateInSceneIGO(float time_inc);    // ?UpdateInSceneIGO@FEManager@@QAEXM@Z (cl.o 0x5283A0)
     bool AARMenusActive();                    // ?AARMenusActive@FEManager@@QAE_NXZ (cl.o 0x5283B0)
@@ -778,40 +779,14 @@ public:
 // size not asserted (opaque; mActivePaks at +0x70)
 
 // ============================================================================
-// InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
-// ============================================================================
-struct InGameMenuSystem {
-    virtual void Update(float time_inc);       // vftable slot 16 (offset 0x40); ?Update@InGameMenuSystem@@UAEXM@Z
-    void**  menus;                       // +0x04 (FEMenu**)
-    uint8_t _pad8[0x34 - 0x08];
-    bool    is_active;                   // +0x34 (FEMenuSystem field, opaque)
-    uint8_t _pad2[3];                    // +0x35
-    bool IsSystemActive();               // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ
-    void SetActiveMenu(int a2);          // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z
-};
-// ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
-inline bool InGameMenuSystem::IsSystemActive()
-{
-    return is_active;
-}
-// ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
-inline void InGameMenuSystem::SetActiveMenu(int a2)
-{
-    (void)a2;
-}
-static_assert(sizeof(InGameMenuSystem) == 56, "InGameMenuSystem size mismatch (fields used)");
-
-
-
-// ============================================================================
-// EntityHandleDb — entity handle database (opaque; only element lookup used)
+// EntityHandleDb â€” entity handle database (opaque; only element lookup used)
 // HandleDb<Entity,1344,SizedHandle<12,20>>::DbElement = { int mKey; Entity* mObject; }
 // ============================================================================
 struct EntityHandleDbDbElement {
     Entity*        mObject; // +0x00
     int            mKey;    // +0x04
 };
-// ae_sized_array<Entity*, 4096> — fixed-capacity array (16388 bytes)
+// ae_sized_array<Entity*, 4096> â€” fixed-capacity array (16388 bytes)
 struct AeSizedEntityArray {
     Entity*     m_elements[4096];   // +0x00
     int         m_size;             // +0x4000
@@ -852,7 +827,7 @@ static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::
 static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");
 
 // ============================================================================
-// XModelManager — model manager (opaque)
+// XModelManager â€” model manager (opaque)
 // ============================================================================
 struct XModel;
 class XModelManager {
@@ -864,7 +839,7 @@ public:
 static_assert(sizeof(XModelManager) == 4, "XModelManager size mismatch (opaque)");
 
 // ============================================================================
-// EntityManager — entity factory (opaque; only sv.o fields used)
+// EntityManager â€” entity factory (opaque; only sv.o fields used)
 // ============================================================================
 struct AssetBankSet {
     virtual ~AssetBankSet();          // ??1AssetBankSet@@UAE@XZ (streamer.o 0x675850)
@@ -898,7 +873,7 @@ static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld of
 static_assert(sizeof(EntityManager) == 0x48, "EntityManager size mismatch");
 
 // ============================================================================
-// AeAssert — assertion system (namespace-style free functions + globals)
+// AeAssert â€” assertion system (namespace-style free functions + globals)
 // ============================================================================
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
@@ -913,7 +888,7 @@ namespace AeAssert {
 }
 
 // ============================================================================
-// movie_manager — static movie helpers
+// movie_manager â€” static movie helpers
 // ============================================================================
 struct PakInfoNode;
 struct PakHeader {
@@ -1028,7 +1003,7 @@ public:
     const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
 };
 // ============================================================================
-// SceneManager â€” scene/static-model manager (opaque)
+// SceneManager Ã¢â‚¬â€ scene/static-model manager (opaque)
 // ============================================================================
 struct SceneManager {
     uint8_t _pad[4];
@@ -1049,10 +1024,26 @@ public:
     bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)");
+
+#ifndef COD3_FULL_FE_TYPES
+class InGameMenuSystem : public FEMenuSystem {
+public:
+    void SetActiveMenu(int a2);   // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
+    bool IsSystemActive();        // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
+};
+inline bool InGameMenuSystem::IsSystemActive()
+{
+    return is_active;
+}
+inline void InGameMenuSystem::SetActiveMenu(int a2)
+{
+    (void)a2;
+}
+#endif
 #endif
 
 // ============================================================================
-// GamePause — static pause helpers
+// GamePause â€” static pause helpers
 // ============================================================================
 struct GamePause {
     struct GamePauseData {
@@ -1066,7 +1057,7 @@ struct GamePause {
 };
 
 // ============================================================================
-// VehicleNodeAllocator — vehicle node manager
+// VehicleNodeAllocator â€” vehicle node manager
 // ============================================================================
 struct vehicle_node_t;
 struct VehicleNodeAllocator {
@@ -1081,7 +1072,7 @@ struct VehicleNodeAllocator {
 };
 
 // ============================================================================
-// IGOFrontEnd — in-game overlay front end
+// IGOFrontEnd â€” in-game overlay front end
 // ============================================================================
 #ifndef COD3_FULL_FE_TYPES
 enum hud_type { kHudTypeNone = 0 };  // full enumerator set from IDA TBD
@@ -1110,7 +1101,7 @@ struct IGOFrontEnd {
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 #endif
 
-// Camera â€” camera state (0x1F0 stride) - full layout from cg.o (cg_misc.cpp)
+// Camera Ã¢â‚¬â€ camera state (0x1F0 stride) - full layout from cg.o (cg_misc.cpp)
 class Camera {
 public:
     Camera();  // real in cg_misc.cpp (avoids implicit COMDAT vs real def)
@@ -1255,7 +1246,7 @@ extern int              dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 
 extern int              dword_F641E0[];
 
 // ============================================================================
-// XModel â€” minimal view for SV_PointTraceToEntity model scan
+// XModel Ã¢â‚¬â€ minimal view for SV_PointTraceToEntity model scan
 // ============================================================================
 struct XModelLod;
 struct nglMesh;
@@ -1348,7 +1339,7 @@ template <typename T>
 inline T* IVPointer_Deref(const IVPointer<T>& p) { return p.mValue; }
 
 // ============================================================================
-// Client static state (cls) â€” opaque
+// Client static state (cls) Ã¢â‚¬â€ opaque
 // ============================================================================
 enum clientStateCA_t {
     CA_DISCONNECTED = 0,

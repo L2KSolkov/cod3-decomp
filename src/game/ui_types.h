@@ -11,6 +11,7 @@
 #define COD3_FULL_FE_TYPES
 
 #include "core/math_types.h"
+#include "core/ae_array.h"
 #include "engine/broc_types.h"
 #include "game/game_types.h"
 #ifdef _WIN32
@@ -45,9 +46,14 @@ public:
     bool button_pressed_clear(int index, ButtonIndex btn);  // controller.o
     bool button_released_clear(int index, ButtonIndex btn); // controller.o
     bool button_pressed(ButtonIndex btn, int* p_controller);  // controller.o
+    bool button_pressed(int controller, ButtonIndex btn);     // ?button_pressed@controller@@QAE_NHW4ButtonIndex@1@@Z
     bool button_released(ButtonIndex btn, int* p_controller); // controller.o
     int  stick_value_x(StickIndex stick, int* p_controller);  // controller.o
+    int  stick_value_x(int controller, StickIndex stick);     // ?stick_value_x@controller@@QAEHHW4StickIndex@1@@Z
     int  stick_value_y(StickIndex stick, int* p_controller);  // controller.o
+    int  stick_value_y(int controller, StickIndex stick);     // ?stick_value_y@controller@@QAEHHW4StickIndex@1@@Z
+    void stick_value(int controller, StickIndex stick, int& x,
+                     int& y);                                 // ?stick_value@controller@@QAEXHW4StickIndex@1@AAH1@Z
     int  locked_port;
     bool is_locked;
 };
@@ -1069,6 +1075,76 @@ public:
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch");
 static_assert(offsetof(FEMenuSystem, menus) == 0x04, "FEMenuSystem::menus offset mismatch");
 static_assert(offsetof(FEMenuSystem, m_active) == 0x1C, "FEMenuSystem::m_active offset mismatch");
+
+// ============================================================================
+// FrontEndMenuSystem - 260 bytes (verified against IDA)
+// ============================================================================
+class FrontEndMenuSystem : public FEMenuSystem {
+public:
+    FEMultiLineText* yButtonText;    // +0x2C
+    uint8_t         back_top[0x60];  // +0x30 (nglQuad, 96 bytes)
+    uint8_t         back_bottom[0x60];  // +0x90 (nglQuad, 96 bytes)
+    bool            textures_are_good;  // +0xF0
+    int             lastLiveState;   // +0xF4 (ELiveState)
+    int             lastLoginCode;   // +0xF8 (HRESULT)
+    bool            drawYButton;     // +0xFC
+    bool            need_to_play_movies;  // +0xFD
+    int             mPreviousWidescreen;  // +0x100
+
+    static PanelFile* panelFile;  // ?panelFile@FrontEndMenuSystem@@0PAVPanelFile@@A @ 0xF30D84
+    static FEText*    loginText;  // ?loginText@FrontEndMenuSystem@@2PAVFEText@@A @ 0xF30D80
+
+    FrontEndMenuSystem();                          // 0x595900
+    virtual ~FrontEndMenuSystem();                 // 0x57EAA0
+    virtual void SetPanelFile(PanelFile* pf);      // 0x57ED10
+    virtual void PanelFileUnloaded(PanelFile* pf); // 0x5723A0
+    virtual void Update(float time_inc);           // 0x57EB60
+    virtual void Draw();                           // 0x57EB10
+    void SetInitialMenu();                         // 0x5721C0
+    void CheckIfSignedInXBox();                    // 0x5721D0
+    void CheckIfSignedIn();                        // 0x572370
+    void PlayBGMusic();                            // 0x572380
+};
+static_assert(sizeof(FrontEndMenuSystem) == 0x104,
+              "FrontEndMenuSystem size mismatch");
+
+// ============================================================================
+// InGameMenuSystem - 56 bytes (verified against IDA)
+// ============================================================================
+class InGameMenuSystem : public FEMenuSystem {
+public:
+    int  mHotJoinPort;          // +0x2C
+    int  mClient;               // +0x30
+    bool mPreviousWidescreen;   // +0x34
+
+    InGameMenuSystem(int client);                  // 0x5960B0
+    virtual ~InGameMenuSystem();                   // shared dtr slot 3
+    virtual void Update(float time_inc);           // 0x573110
+    virtual void Draw();                           // 0x5730C0
+    virtual void UpdateSplitScreen();              // 0x5732D0
+    virtual void UpdateWidescreen(bool widescreen);  // 0x573450
+    virtual bool GetAnalogPressed(int button,
+                                  int* p_controller);  // 0x5731A0
+    virtual bool GetButtonPressed(int button,
+                                  int* p_controller);  // 0x573300
+    virtual int GetStickValueX(int stick,
+                               int* p_controller);  // 0x573350
+    virtual int GetStickValueY(int stick,
+                               int* p_controller);  // 0x5733A0
+    virtual int GetCurrentClient();                // 0x5733F0
+    virtual int GetCurrentClientController();      // 0x573400
+    virtual int GetClientFromController(int c);    // 0x573410
+    void ActivateMenu(int menu);                   // 0x572FD0
+    void ActivateHotJoinMenu();                    // 0x573030
+    void ActivatePauseMenu();                      // 0x573070
+    bool GetPanelFileUsers(const char* name,
+                           ae_sized_array<PanelFileUser*, 12>& array);  // 0x57F360
+protected:
+    virtual void NewMenuActive();                  // 0x57F330
+    void CheckForNoMenus();                        // 0x573420
+};
+static_assert(sizeof(InGameMenuSystem) == 0x38,
+              "InGameMenuSystem size mismatch");
 
 // ============================================================================
 // FEMenu â€” menu (76 bytes)

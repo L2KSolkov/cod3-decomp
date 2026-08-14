@@ -132,9 +132,6 @@ struct DialogMenu {
     void AddOption(const char* t, bool (*responseFunc)(int));
     void Reformat(bool vertical, int viewport);
 };
-struct InGameMenuSystem {
-    FEMenu** menus;
-};
 struct FEManager {
     FEMenuSystem* fems;
     struct AARMenuSystemView { FEMenu** menus; }* mAARS;
