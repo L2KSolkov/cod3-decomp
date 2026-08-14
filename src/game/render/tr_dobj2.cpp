@@ -13,6 +13,303 @@
 #include "render/cdGlassShader.h"
 
 #include <string.h>
+#include <intrin.h>
+
+extern void tlPrintf(const char* fmt, ...);  // core.o
+
+// ============================================================================
+// SizedHandle / HandleDb (ae/core/HandleDb.h; render.o COMDAT cluster
+// 0x6EA1C0-0x6EF070)
+// ============================================================================
+template <int INDEX_BITS, int KEY_BITS>
+class SizedHandle : public Handle {
+public:
+    SizedHandle() {}
+    SizedHandle(unsigned int index, int key);
+};
+
+template <int INDEX_BITS, int KEY_BITS>
+SizedHandle<INDEX_BITS, KEY_BITS>::SizedHandle(unsigned int index, int key)
+{
+    mVal = index | (key << INDEX_BITS);
+}
+
+template <typename T, int MAX, typename H>
+class HandleDb {
+public:
+    struct DbElement {
+        T* mObject;  // +0x00
+        int mKey;    // +0x04
+        void SetObject(T* obj);        // ?SetObject@DbElement@?$HandleDb@...@@QAEXPAVDObj@@@Z
+        int GetKey() const;            // ?GetKey@DbElement@...@@QBEHXZ
+        void Release();                // ?Release@DbElement@...@@QAEXXZ
+        T* GetObject() const;          // ?GetObject@DbElement@...@@QBEPAVDObj@@XZ
+    };
+
+    unsigned int mFreeIndices[(MAX + 31) / 32];  // +0x00 (BitSet<MAX>)
+    DbElement mElements[MAX];                    // +0xA8
+    void (__cdecl* mDebugCallback)(int, T*);     // +0x1918
+
+    H AllocateHandle();                          // ?AllocateHandle@?$HandleDb@VDObj@@...@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ
+    void BindObjectToHandle(Handle handle, T* obj);  // ?BindObjectToHandle@...@@QAEXVHandle@@PAVDObj@@@Z
+    T* DereferenceHandle(Handle h) const;        // ?DereferenceHandle@...@@QBEPAVDObj@@VHandle@@@Z
+    void ReleaseHandle(Handle h);                // ?ReleaseHandle@...@@QAEXVHandle@@@Z
+    void Dump();                                 // ?Dump@...@@QAEXXZ
+};
+
+template <typename T, int MAX, typename H>
+void HandleDb<T, MAX, H>::DbElement::SetObject(T* obj)
+{
+    mObject = obj;
+}
+
+template <typename T, int MAX, typename H>
+int HandleDb<T, MAX, H>::DbElement::GetKey() const
+{
+    return mKey;
+}
+
+template <typename T, int MAX, typename H>
+void HandleDb<T, MAX, H>::DbElement::Release()
+{
+    ++mKey;
+    mObject = nullptr;
+}
+
+template <typename T, int MAX, typename H>
+T* HandleDb<T, MAX, H>::DbElement::GetObject() const
+{
+    return mObject;
+}
+
+template <typename T, int MAX, typename H>
+void HandleDb<T, MAX, H>::BindObjectToHandle(Handle handle, T* obj)
+{
+    unsigned int v3 = handle.mVal & 0xFFF;
+    if (v3 < (unsigned int)MAX)
+    {
+        if (mElements[v3].mKey != (int)(handle.mVal >> 12))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 123;
+            AeAssert::gCurrentExpr = "element.GetKey() == h.GetKey()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle was not allocated for this object"))
+                __debugbreak();
+        }
+        mElements[v3].mObject = obj;
+    }
+}
+
+template <typename T, int MAX, typename H>
+T* HandleDb<T, MAX, H>::DereferenceHandle(Handle h) const
+{
+    unsigned int v2 = h.mVal & 0xFFF;
+    if (v2 < (unsigned int)MAX
+        && h.mVal >> 12 == (unsigned int)mElements[v2].mKey)
+    {
+        return mElements[v2].mObject;
+    }
+    return nullptr;
+}
+
+template <typename T, int MAX, typename H>
+void HandleDb<T, MAX, H>::ReleaseHandle(Handle h)
+{
+    if (h.mVal != 0)
+    {
+        unsigned int v3 = h.mVal & 0xFFF;
+        if (v3 >= (unsigned int)MAX)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 175;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+        else if (mElements[v3].mKey == (int)(h.mVal >> 12))
+        {
+            mFreeIndices[v3 >> 5] |= 1u << (v3 & 0x1F);  // BitSet::Add
+            mElements[v3].Release();
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 176;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+    }
+}
+
+template <typename T, int MAX, typename H>
+void HandleDb<T, MAX, H>::Dump()
+{
+    if (mDebugCallback != nullptr)
+    {
+        tlPrintf("handle db contents:\n");
+        unsigned int allocated[(MAX + 31) / 32];
+        for (int i = 0; i < (MAX + 31) / 32; ++i)
+            allocated[i] = ~mFreeIndices[i];
+        int word_idx = 0;
+        unsigned int cur_word = allocated[0];
+        int cur_val = -1;
+        if (cur_word == 0)
+        {
+            do
+            {
+                if (word_idx >= (MAX + 31) / 32 - 1)
+                    break;
+                ++word_idx;
+                cur_word = allocated[word_idx];
+            } while (cur_word == 0);
+        }
+        if (cur_word != 0)
+        {
+            unsigned long v6;
+            _BitScanForward(&v6, cur_word);
+            cur_val = (int)v6 + 32 * word_idx;
+            cur_word &= ~(1u << v6);
+        }
+        else
+        {
+            cur_val = -1;
+            word_idx = -1;
+        }
+        while (!(cur_val == -1 && word_idx == -1))
+        {
+            mDebugCallback(cur_val, mElements[cur_val].mObject);
+            if (cur_word != 0)
+            {
+                unsigned long v6;
+                _BitScanForward(&v6, cur_word);
+                cur_val = (int)v6 + 32 * word_idx;
+                cur_word &= ~(1u << v6);
+            }
+            else
+            {
+                do
+                {
+                    if (word_idx >= (MAX + 31) / 32 - 1)
+                        break;
+                    ++word_idx;
+                    cur_word = allocated[word_idx];
+                } while (cur_word == 0);
+                if (cur_word != 0)
+                {
+                    unsigned long v6;
+                    _BitScanForward(&v6, cur_word);
+                    cur_val = (int)v6 + 32 * word_idx;
+                    cur_word &= ~(1u << v6);
+                }
+                else
+                {
+                    cur_val = -1;
+                    word_idx = -1;
+                }
+            }
+        }
+    }
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+    AeAssert::gCurrentLine = 193;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("out of handles! - Tell MikeA (MAX_GENTITIES)"))
+        __debugbreak();
+}
+
+template <typename T, int MAX, typename H>
+H HandleDb<T, MAX, H>::AllocateHandle()
+{
+    int word_idx = 0;
+    unsigned int cur_word = mFreeIndices[0];
+    int cur_val = -1;
+    if (cur_word == 0)
+    {
+        do
+        {
+            if (word_idx >= (MAX + 31) / 32 - 1)
+                break;
+            ++word_idx;
+            cur_word = mFreeIndices[word_idx];
+        } while (cur_word == 0);
+    }
+    if (cur_word != 0)
+    {
+        unsigned long v6;
+        _BitScanForward(&v6, cur_word);
+        cur_val = (int)v6 + 32 * word_idx;
+        cur_word &= ~(1u << v6);
+    }
+    else
+    {
+        cur_val = -1;
+        word_idx = -1;
+    }
+    int m_cur_val = cur_val;
+    if ((unsigned int)m_cur_val >= (unsigned int)MAX)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 98;
+        AeAssert::gCurrentExpr = "nextIndex >= 0 && nextIndex < _MaxEltements";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("index out of bounds!!! ILLEGAL array access!"))
+            __debugbreak();
+    }
+    mFreeIndices[m_cur_val >> 5] &= ~(1u << (m_cur_val & 0x1F));  // BitSet::Rmv
+    if (m_cur_val == -1)
+        Dump();
+    return H((unsigned int)m_cur_val, mElements[m_cur_val].mKey);
+}
+
+template class HandleDb<DObj, 1344, SizedHandle<12, 20>>;
+
+class DObjHandleDb : public HandleDb<DObj, 1344, SizedHandle<12, 20>> {
+private:
+    static DObjHandleDb sInst;  // ?sInst@DObjHandleDb@@0V1@A @ 0x12C2268 (g.o)
+    friend DObjHandleDb* DObjHandleDb_SInst();
+};
+DObjHandleDb DObjHandleDb::sInst;
+DObjHandleDb* DObjHandleDb_SInst()
+{
+    return &DObjHandleDb::sInst;
+}
+
+// ea: 0x006D9920
+DObj::DObj(TPakId pakId)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        models[i].mPakId = (unsigned int)PAK_ID_INVALID;
+        models[i].mValue = nullptr;
+    }
+    mPakId = pakId;
+    mPhysData.mPakId = (unsigned int)PAK_ID_INVALID;
+    mPhysData.mValue = nullptr;
+    mEntity = nullptr;
+    mHandle = 0;
+    mLODOverride = -1;
+    mLODAnim = -1;
+    mLOD = 0;
+    mFlags = 0;
+    Handle handle;
+    handle.mVal = DObjHandleDb_SInst()->AllocateHandle().mVal;
+    mHandle = handle.mVal;
+    DObjHandleDb_SInst()->BindObjectToHandle(handle, this);
+    for (int i = 0; i < 8; ++i)
+    {
+        tree[i] = nullptr;
+        mPose[i] = nullptr;
+        animPlayers[i] = nullptr;
+    }
+}
 
 // ============================================================================
 // DObjFree - ea: 0x006C47A0

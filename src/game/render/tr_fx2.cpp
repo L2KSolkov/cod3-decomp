@@ -730,15 +730,8 @@ public:
     };
     uint8_t mFreeIndices[168];   // +0x00 (BitSet<1344>)
     DbElement mElements[1344];   // +0xA8
-    friend DObjHandleDb* DObjHandleDb_SInst();
-private:
-    static DObjHandleDb sInst;   // ?sInst@DObjHandleDb@@0V1@A @ 0x12C2268 (g.o)
 };
-DObjHandleDb DObjHandleDb::sInst;
-DObjHandleDb* DObjHandleDb_SInst()
-{
-    return &DObjHandleDb::sInst;
-}
+DObjHandleDb* DObjHandleDb_SInst();  // tr_dobj2.cpp (owns ?sInst@DObjHandleDb@@0V1@A)
 
 struct orientation_t {
     float origin[3];   // +0x00

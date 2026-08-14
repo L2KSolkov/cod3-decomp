@@ -6,13 +6,6 @@
 #include "game/logic/g_local.h"
 #include "core/tlFixedString.h"
 
-// ??0DObj@@QAE@H@Z (render.o) - minimal ctor; skel/matrices initialized by
-// DObjCreateSkel at alloc time in the real engine.
-DObj::DObj(int pakId)
-{
-    memset(this, 0, sizeof(DObj));
-    mPakId = pakId;
-}
 // ??1DObj@@QAE@XZ (render.o)
 DObj::~DObj()
 {
@@ -105,7 +98,7 @@ void Entity::CreateDObj(DObjModel* dobjModels, unsigned short numModels,
     {
         void* v6 = DObj::operator new(0xE8u);
         if (v6 != nullptr)
-            this->mDObj = new (v6) DObj(this->mPakId);
+            this->mDObj = new (v6) DObj((TPakId)this->mPakId);
         else
             this->mDObj = nullptr;
         register_dobj(this->mHandle);

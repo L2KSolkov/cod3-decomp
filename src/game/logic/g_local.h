@@ -3886,7 +3886,7 @@ public:
     void* operator new(size_t s, void* p) { return p; }  // placement
     void operator delete(void* p); // ??3DObj@@SAXPAX@Z (render.o)
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
-    DObj(int pakId);               // ??0DObj@@QAE@H@Z (render.o)
+    DObj(TPakId pakId);            // ??0DObj@@QAE@W4TPakId@@@Z (render.o 0x6D9920)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
     // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
     int GetBoneParent(int boneIndex)
