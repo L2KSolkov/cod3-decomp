@@ -156,10 +156,82 @@ protected:
 public:
     static void Init();                      // ?Init@WheelMarkMgr@@SAXXZ
     static void Exit();                      // ?Exit@WheelMarkMgr@@SAXXZ
+    static WheelMark* Find(Entity* owner, wheel_e wheel);  // ?Find@WheelMarkMgr@@SAPAVWheelMark@@PAVEntity@@W4wheel_e@@@Z
 };
 
 cdWheelMarkShaderMat* WheelMarkMgr::Material;
 WheelMark WheelMarkMgr::Marks[16];
+
+// ea: 0x006D44A0
+WheelMark* WheelMarkMgr::Find(Entity* owner, wheel_e wheel)
+{
+    unsigned int v2 = 0;
+    unsigned int v3 = 0;
+    if (WheelMarkMgr::NMarks != 0)
+    {
+        wheel_e* p_Wheel = &WheelMarkMgr::Marks[0].Wheel;
+        while (*((Entity**)p_Wheel - 1) != owner || *p_Wheel != wheel)
+        {
+            ++v3;
+            p_Wheel += 28;
+            if (v3 >= WheelMarkMgr::NMarks)
+                goto LABEL_6;
+        }
+        return &WheelMarkMgr::Marks[v3];
+    }
+LABEL_6:
+    WheelMark* result = nullptr;
+    if (WheelMarkMgr::NMarks >= 0x10)
+    {
+        unsigned int v8 = 0;
+        unsigned int v9 = 0;
+        if (WheelMarkMgr::NMarks != 0)
+        {
+            unsigned int* p_TimeStamp = &WheelMarkMgr::Marks[0].TimeStamp;
+            do
+            {
+                if (*p_TimeStamp >= v2)
+                {
+                    v8 = v9;
+                    v2 = *p_TimeStamp;
+                }
+                ++v9;
+                p_TimeStamp += 28;
+            } while (v9 < WheelMarkMgr::NMarks);
+        }
+        unsigned int v11 = v8;
+        WheelMark* result = &WheelMarkMgr::Marks[v11];
+        WheelMarkMgr::Marks[v11].Active = false;
+        cdWheelMarkVertex* PrevVertex0 = WheelMarkMgr::Marks[v11].PrevVertex0;
+        if (PrevVertex0 != nullptr)
+        {
+            PrevVertex0->TexCoord &= 0x00FFFFFFu;
+            result->PrevVertex1->TexCoord &= 0x00FFFFFFu;
+            result->PrevVertex1 = nullptr;
+            result->PrevVertex0 = nullptr;
+        }
+        result->Owner = owner;
+        result->Wheel = wheel;
+    }
+    else
+    {
+        WheelMark* v5 = &WheelMarkMgr::Marks[WheelMarkMgr::NMarks++];
+        v5->New();
+        v5->Active = false;
+        cdWheelMarkVertex* v6 = v5->PrevVertex0;
+        if (v6 != nullptr)
+        {
+            v6->TexCoord &= 0x00FFFFFFu;
+            v5->PrevVertex1->TexCoord &= 0x00FFFFFFu;
+            v5->PrevVertex1 = nullptr;
+            v5->PrevVertex0 = nullptr;
+        }
+        v5->Owner = owner;
+        v5->Wheel = wheel;
+        return v5;
+    }
+    return result;
+}
 
 // PostEffectEventScriptCall (sret Handle; game.o)
 class Handle {
