@@ -214,7 +214,7 @@ struct weaponInfo_s {
 };
 extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A @ 0xF6AE60
 
-// Minimal scr_vehicle_t view (full in game/logic/g_local.h).
+// Minimal scr_vehicle_t view (full in game/logic/g_local.h); offsets from IDA.
 struct vehicleSeat_t {
     int flags;   // +0x00
     DbLinkedHandle<EntityHandleDb, Entity> occupant;  // +0x04
@@ -236,19 +236,23 @@ struct ScrVehicleLerped {
     float mHatchAngleLeft;           // +0x38
     float _pad3C;                    // +0x3C
 };
-struct scr_vehicle_t {
-    uint8_t _pad[0x180];
-    int fireTime;  // +0x180
+struct scr_vehicle_t {  // 0x750 bytes
+    uint8_t _pad[0x170];
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;       // +0x170
+    DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner; // +0x174
+    int16_t infoIdx;    // +0x178
+    int16_t waitNode;   // +0x17A
+    float   waitSpeed;  // +0x17C
+    int     fireTime;   // +0x180
     uint8_t _pad2[0x1E0 - 0x184];
-    vehicleSeat_t seats[11];  // +0x1E0
-    uint8_t _pad3[0x420 - (0x1E0 + 11 * 28)];
+    vehicleSeat_t seats[11];  // +0x1E0 (308 bytes)
+    uint8_t _pad3[0x3E0 - (0x1E0 + 11 * 28)];
     ScrVehicleLerped current;  // +0x3E0
     ScrVehicleLerped next;     // +0x420
 };
-// infoIdx is at +0x178; accessor via byte offset.
 static inline int16_t ScrVehicleInfoIdx(scr_vehicle_t* v)
 {
-    return *(int16_t*)((char*)v + 0x178);
+    return v->infoIdx;
 }
 
 struct vehicle_info_t {
@@ -297,9 +301,84 @@ void SetViewportClipping(int clientIndex);  // cg.o
 extern int Q_stricmp(const char* s1, const char* s2);  // g.o
 extern vmCvar_t cg_widescreen;  // cg.o
 
+// IGOCompassWidget cvars/data (verified VAs)
+extern vmCvar_t g_compassFadeTime;    // @ 0xEAE770
+extern vmCvar_t g_compassSolidTime;   // @ 0xEA5DD8
+extern vmCvar_t cg_hudObjectiveRingTime;  // @ 0xF5EFA8
+extern vmCvar_t cg_hudObjectiveNumRings;  // @ 0xF606D8
+extern vmCvar_t cg_hudCompassMinRange;    // @ 0xF5D6B0
+extern vmCvar_t cg_hudObjectiveMaxRange;  // @ 0xF5CE38
+extern vmCvar_t cg_hudCompassMaxRange;    // @ 0xF5B6A0
+extern vmCvar_t cg_hudObjectiveMinAlpha;  // @ 0xF5C1D0
+extern vmCvar_t cg_hudCompassMinRadius;   // @ 0xF5EDF8
+extern vmCvar_t cg_hudCompassSize;        // @ 0xF60528
+extern vmCvar_t cg_hudCompassSpringyPointers;  // @ 0xF5CAD8
+extern vmCvar_t cg_hudObjectiveMinHeight;     // @ 0xF5C140
+extern vmCvar_t cg_hudObjectiveMaxHeight;     // @ 0xF5ECD8
+extern vmCvar_t mp_objectiveSize;         // @ 0xEABD78
+extern vmCvar_t mp_objectiveFarAlpha;     // @ 0xEAC8B8
+extern vmCvar_t gCvarShowEnemy;           // @ 0xEA6420
+extern float dword_F63C70[];  // @ 0xF63C70 (client origin x)
+extern float dword_F63C74[];  // @ 0xF63C74 (client origin y)
+extern float dword_F63C78[];  // @ 0xF63C78 (client origin z)
+extern float dword_F64140[];  // @ 0xF64140
+extern int   iLastCompassTime[];  // @ 0xF3A4C4
+extern int   dword_F62964[];  // @ 0xF62964
+extern float unk_F6A2B0[];    // @ 0xF6A2B0 (objective world data block)
+extern float AngleSubtract(float a1, float a2);   // core.o
+extern float AngleNormalize180(float angle);       // core.o
+extern float VectorNormalize2D(float* v);          // core.o
+extern bool  IsPlayerSpotted(Entity* player);      // g.o
+extern bool  IsVehicleTank(Entity* ent);           // g.o
+extern Client g_clients[16];                       // g.o
+extern team_t Sentient_EnemyTeam(team_t eTeam);    // mp_actors.o
+extern void __fastcall Sentient_GetOrigin(sentient_s* pSelf,
+                                          float* vOriginOut);  // mp_actors.o
+extern bool G_GetTankIndex(DbLinkedHandle<EntityHandleDb, Entity> entity,
+                           int* index, bool* enemy);  // g.o
+extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+                              float fLeanFrac, float fViewRoll,
+                              float fLeanDist);      // g.o
 
-struct level_locals_t {
-    int time;   // +0x00
+struct ObjectiveDataView {
+    unsigned int worldState;   // +0x00
+    unsigned int unk4;         // +0x04
+    unsigned int handle;       // +0x08 (DbLinkedHandle raw value)
+    int          state;        // +0x0C
+    float        origin[3];    // +0x10
+    float        ring_time;    // +0x1C
+};
+
+// IGOCompassWidget data arrays (shell.o, copied from IDA)
+const char* sObjectiveIconNames[27] = {
+    "i_guy_bad_c", "i_tank_enemy_c", "i_objective_c_ring", "i_objective_c_up",
+    "i_downed_friend_c", "i_flag_allied_c_up", "i_flag_axis_c",
+    "i_flag_axis_c_down", "i_neutral_allied_c_up", "i_neutral_axis_c",
+    "i_neutral_axis_c_down", "i_HQ_captured_c_up", "i_incoming_artillery_c",
+    "i_incoming_artillery_c", nullptr, "i_tank_enemy_w", nullptr, nullptr,
+    "i_downed_friend_w", nullptr, "i_flag_axis_w", nullptr, nullptr,
+    "i_neutral_axis_w", nullptr, nullptr, nullptr,
+};
+const char* sWorldIconNames[27] = {
+    nullptr, "i_tank_enemy_w", nullptr, nullptr, "i_downed_friend_w",
+    nullptr, "i_flag_axis_w", nullptr, nullptr, "i_neutral_axis_w", nullptr,
+    nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+    nullptr, "i_head_rank_2_w", "i_head_VOIP_w", "i_spotted_enemy_w",
+    "i_tank_enemy_w", "i_AP_mine_w", "voip_line_02_icon",
+    "voip_line_04_icon",
+};
+const int sObjectiveIconRotateable[5] = {0, 1, 2, 3, 8};
+
+
+struct level_locals_t {  // minimal view; offsets from IDA (full 0x2688 bytes)
+    void*          clients;      // +0x00
+    int            num_entities; // +0x04
+    void*          sentients;    // +0x08
+    scr_vehicle_t* vehicles;     // +0x0C
+    uint8_t        _pad[0x9C - 0x10];
+    int            time;         // +0x9C
+    uint8_t        _pad2[0xC10 - 0xA0];
+    uint16_t       MaxVehicles;  // +0xC10
 };
 extern level_locals_t level;        // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 
@@ -5798,4 +5877,1365 @@ const char* IGOFrontEnd::GetLMGKey()
     if (*result != 0)
         return speed_key;
     return result;
+}
+
+// ============================================================================
+// IGOCompassWidget
+// ============================================================================
+
+// ea: 0x005783F0
+IGOCompassWidget::IGOCompassWidget(int client)
+{
+    mClient = client;
+    is_shown = true;
+    force_appear = false;
+    mDrawVehMap = false;
+    compass = nullptr;
+    pointer = nullptr;
+    frame = nullptr;
+    compass_speed = 0.0f;
+    compass_yaw = 0.0f;
+    DrawObjectivesOnly = false;
+    memset(friendlies, 0, sizeof(friendlies));
+    memset(gEnemies, 0, sizeof(gEnemies));
+    memset(enemyTanks, 0, sizeof(enemyTanks));
+    memset(tanks, 0, sizeof(tanks));
+    memset(objectives, 0, sizeof(objectives));
+    memset(objectiveIcons, 0, sizeof(objectiveIcons));
+    memset(worldIcons, 0, sizeof(worldIcons));
+    m_hideCompassStarActive = 0;
+    m_hideCompassStarIndex = 0;
+    m_hideUpdatedText = 0;
+    m_hideUpdatedTextIndex = 0;
+    global_alpha = g_compassFadeTime.value + g_compassSolidTime.value;
+    draw_time = 1.0f;
+    mViewport = 0;
+    last_player_pos[0] = 0.0f;
+    last_player_pos[1] = 0.0f;
+    last_player_pos[2] = 0.0f;
+    last_player_angles[0] = 0.0f;
+    last_player_angles[1] = 0.0f;
+    last_player_angles[2] = 0.0f;
+}
+
+// ea: 0x00567CF0
+IGOCompassWidget::~IGOCompassWidget()
+{
+}
+
+// ea: 0x00599FA0
+void IGOCompassWidget::Init(PanelFile* panel, bool bIconPanel)
+{
+    if (bIconPanel)
+    {
+        float u[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+        float v[4] = {0.0f, 0.0f, 1.0f, 1.0f};
+        for (int i = 0; i < 27; ++i)
+        {
+            PanelQuad* Pointer = panel->GetPointer(sObjectiveIconNames[i]);
+            objectiveIcons[i] = Pointer;
+            if (i == 25 || i == 26)
+                objectiveIcons[i] = PanelQuad::Clone(Pointer);
+            PanelQuad* v8 = panel->GetPointer(sWorldIconNames[i]);
+            worldIcons[i].icon = v8;
+            if (g_femanager.GetDefaultPQ() != v8)
+            {
+                v8->quadBlendModeType = 1691321856;
+                worldIcons[i].icon->SetSectionUV(0, u, v);
+                worldIcons[i].height = (uint8_t)worldIcons[i].icon->GetWidth();
+                worldIcons[i].alpha = worldIcons[i].icon->GetColor().c.a;
+            }
+        }
+    }
+    else
+    {
+        compass = panel->GetPointer("compass");
+        pointer = panel->GetPointer("compassneedle");
+        frame = panel->GetPointer("compassglass");
+        frame->SetZvalueAbs(frame->GetZvalue() + 20.0f);
+    }
+    DrawObjectivesOnly = false;
+    mDrawVehMap = false;
+    for (int j = 0; j < 25; ++j)
+        tanks[j].draw = false;
+    if (mClient > 0)
+    {
+        compass = PanelQuad::Clone(compass);
+        pointer = PanelQuad::Clone(pointer);
+        frame = PanelQuad::Clone(frame);
+        if (bIconPanel)
+        {
+            for (int k = 0; k < 27; ++k)
+            {
+                objectiveIcons[k] = PanelQuad::Clone(objectiveIcons[k]);
+                worldIcons[k].icon = PanelQuad::Clone(worldIcons[k].icon);
+            }
+        }
+    }
+    if (bIconPanel)
+    {
+        for (int m = 0; m < 5; ++m)
+        {
+            if (objectiveIcons[sObjectiveIconRotateable[m]] != nullptr)
+                objectiveIcons[sObjectiveIconRotateable[m]]
+                    ->SetXYInitialToCurrentPos();
+        }
+    }
+    else
+    {
+        compass->SetXYInitialToCurrentPos();
+        pointer->SetXYInitialToCurrentPos();
+        frame->SetXYInitialToCurrentPos();
+    }
+    global_alpha = 1.0f;
+    draw_time = 1.0f;
+    last_player_pos[0] = 0.0f;
+    last_player_pos[1] = 0.0f;
+    last_player_pos[2] = 0.0f;
+    last_player_angles[0] = 0.0f;
+    last_player_angles[1] = 0.0f;
+    last_player_angles[2] = 0.0f;
+}
+
+// ea: 0x00590BF0
+void IGOCompassWidget::Update(float time_inc)
+{
+    if (!is_shown)
+        return;
+    float fade_time = g_compassFadeTime.value;
+    float v3 = g_compassFadeTime.value + g_compassSolidTime.value;
+    if (!force_appear
+        && dword_F63C70[1580 * currCl] == last_player_pos[0]
+        && dword_F63C74[1580 * currCl] == last_player_pos[1]
+        && dword_F63C78[1580 * currCl] == last_player_pos[2])
+    {
+        if (GetPlayer(mClient) == nullptr
+            || GetPlayer(mClient)->r.currentAngles.v.m128_f32[0]
+                   != last_player_angles[0]
+            || GetPlayer(mClient)->r.currentAngles.v.m128_f32[1]
+                   != last_player_angles[1]
+            || GetPlayer(mClient)->r.currentAngles.v.m128_f32[2]
+                   != last_player_angles[2])
+        {
+            goto label_12;
+        }
+        v3 = draw_time - time_inc;
+    }
+    draw_time = v3;
+label_12:
+    force_appear = false;
+    last_player_pos[0] = dword_F63C70[1580 * currCl];
+    last_player_pos[1] = dword_F63C74[1580 * currCl];
+    last_player_pos[2] = dword_F63C78[1580 * currCl];
+    if (EntityManager::sInst->GetPlayer(mClient) != nullptr)
+    {
+        Entity* p = EntityManager::sInst->GetPlayer(mClient);
+        last_player_angles[0] = p->r.currentAngles.v.m128_f32[0];
+        last_player_angles[1] = p->r.currentAngles.v.m128_f32[1];
+        last_player_angles[2] = p->r.currentAngles.v.m128_f32[2];
+    }
+    float v8 = 0.0f;
+    if (draw_time >= 0.0f)
+    {
+        if (draw_time <= fade_time)
+            v8 = draw_time / fade_time;
+        else
+            v8 = 1.0f;
+    }
+    bool DrawObjectivesOnly = this->DrawObjectivesOnly;
+    global_alpha = v8;
+    global_alpha = 1.0f;
+    if (DrawObjectivesOnly)
+    {
+        if (gCvarShowVehMap.integer != 0)
+            UpdateObjectivesABS();
+        else
+            UpdateObjectives();
+    }
+    else if (gCvarShowVehMap.integer != 0)
+    {
+        UpdateObjectivesABS();
+        UpdateEnemiesABS();
+        UpdateTanksABS();
+    }
+    else
+    {
+        UpdateCompassRotation();
+        UpdateFriendlies();
+        UpdateObjectives();
+        UpdateEnemies();
+        UpdateTanks();
+    }
+}
+
+// ea: 0x00590E90
+void IGOCompassWidget::Draw()
+{
+    if (is_shown
+        && EntityManager::sInst->GetPlayer(mClient)->client->pers.playerState
+               == 3)
+    {
+        if (DrawObjectivesOnly)
+        {
+            DrawObjectives();
+        }
+        else
+        {
+            if (gCvarShowVehMap.integer == 1)
+            {
+                DrawVehcile();
+            }
+            else
+            {
+                compass->SetAlpha(global_alpha);
+                compass->Draw();
+                pointer->SetAlpha(global_alpha);
+                pointer->Draw();
+                frame->SetAlpha(global_alpha);
+                frame->Draw();
+                DrawFriendlies();
+            }
+            DrawObjectives();
+            DrawEnemies();
+            DrawTanks();
+        }
+    }
+}
+
+// ea: 0x00567D00
+void IGOCompassWidget::Draw3DObjective(int index)
+{
+    int worldState = objectives[index].worldState;
+    float height = worldIcons[worldState].height;
+    if (mp_objectiveSize.integer > 0)
+        height = (float)mp_objectiveSize.integer;
+    if (worldIcons[worldState].icon == g_femanager.default_pq || worldState >= 24)
+        return;
+    int base = 3208 * mClient + 176 * index;
+    float* objBlock = &unk_F6A2B0[base];
+    if (objBlock[0] < 0.0f)
+        return;
+    float d[3] = {objBlock[4], objBlock[5], objBlock[6]};
+    if (sqrtf(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) < 0.2f)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    float pos[3] = {objBlock[4], objBlock[5], objBlock[6] + objBlock[1]};
+    math::Position3 in;
+    in.v.m128_f32[0] = pos[0];
+    in.v.m128_f32[1] = pos[1];
+    in.v.m128_f32[2] = pos[2];
+    in.v.m128_f32[3] = 0.0f;
+    math::Position3 proj;
+    nglProjectPoint(&proj, &in, nglBuildScene);
+    if (proj.v.m128_f32[2] < 0.0f)
+        return;
+    int window = unk_F6A284[802 * mClient];
+    float halfW = View::GetXScalingForHUD(window) * height * 0.5f;
+    float fullH = View::GetYScalingForHUD(window) * height;
+    float alpha = worldIcons[worldState].alpha;
+    if (mp_objectiveFarAlpha.integer > 0)
+        alpha = (float)mp_objectiveFarAlpha.integer;
+    PanelQuad* icon = worldIcons[worldState].icon;
+    icon->SetZvalueAbs(0.0f);
+    icon->SetPos(proj.v.m128_f32[0] - halfW,
+                 proj.v.m128_f32[1] - fullH,
+                 proj.v.m128_f32[0] + halfW, proj.v.m128_f32[1]);
+    color32 col;
+    col.c.b = 255;
+    col.c.g = 255;
+    col.c.r = 255;
+    col.c.a = (uint8_t)alpha;
+    icon->SetColor(col);
+    icon->Draw();
+}
+
+// ea: 0x00567F80
+void IGOCompassWidget::Draw3DObjectiveLocations()
+{
+    if (EntityManager::sInst->GetPlayer(mClient)->client->pers.playerState
+        == 0)
+    {
+        return;
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        if (objectives[i].draw
+            && worldIcons[objectives[i].worldState].icon->IsShown())
+            Draw3DObjective(i);
+    }
+}
+
+// ea: 0x00567FE0
+void IGOCompassWidget::UpdateCompassDial()
+{
+    if (compass == nullptr)
+        return;
+    compass->ResetToInitialXY();
+    float x_pos = View::GetCurrentHUDXPos(compass->GetCenterX(), mViewport, 1,
+                                          0.0f);
+    float y_pos = View::GetCurrentHUDYPos(compass->GetCenterY(), mViewport, 1,
+                                          0.0f);
+    compass->Rotate(compass_yaw * 0.017453292f, true);
+    compass->SetCenterPos(x_pos, y_pos);
+    compass->Scale(x_pos, y_pos,
+                   View::GetXScalingForHUD(mViewport),
+                   View::GetYScalingForHUD(mViewport), true);
+}
+
+// ea: 0x005680D0
+void IGOCompassWidget::UpdateCompassFrame()
+{
+    if (frame != nullptr)
+    {
+        frame->ResetToInitialXY();
+        float x_pos = View::GetCurrentHUDXPos(frame->GetCenterX(), mViewport,
+                                              1, 0.0f);
+        float y_pos = View::GetCurrentHUDYPos(frame->GetCenterY(), mViewport,
+                                              1, 0.0f);
+        frame->SetCenterPos(x_pos, y_pos);
+        frame->Scale(x_pos, y_pos, View::GetXScalingForHUD(mViewport),
+                     View::GetYScalingForHUD(mViewport), true);
+    }
+    if (pointer != nullptr)
+    {
+        pointer->ResetToInitialXY();
+        float x_pos = View::GetCurrentHUDXPos(pointer->GetCenterX(),
+                                              mViewport, 1, 0.0f);
+        float y_pos = View::GetCurrentHUDYPos(pointer->GetCenterY(),
+                                              mViewport, 1, 0.0f);
+        pointer->SetCenterPos(x_pos, y_pos);
+        pointer->Scale(x_pos, y_pos, View::GetXScalingForHUD(mViewport),
+                       View::GetYScalingForHUD(mViewport), true);
+    }
+}
+
+// ea: 0x00568250
+void IGOCompassWidget::DrawEnemies()
+{
+    if (gCvarShowEnemy.integer != 1)
+        return;
+    for (int i = 0; i < 32; ++i)
+    {
+        IGOEnemy& e = gEnemies[i];
+        if (e.draw && e.alpha >= 0.00001f && (e.flags & 2) != 0)
+        {
+            PanelQuad* v3 = objectiveIcons[0];
+            v3->ResetToInitialXY();
+            float yaw = AngleNormalize360(dword_F63CB4[1580 * currCl]
+                                          - e.last_yaw);
+            v3->SetCenterPos(e.x, e.y);
+            v3->Rotate(yaw * 3.1415927f * 0.0055555557f, true);
+            v3->SetAlpha(global_alpha * e.alpha);
+            v3->Draw();
+        }
+    }
+}
+
+// ea: 0x00568340
+void IGOCompassWidget::DrawFriendlies()
+{
+    for (int i = 0; i < 32; ++i)
+    {
+        IGOFriendly& f = friendlies[i];
+        if (f.draw)
+        {
+            PanelQuad* v3 = objectiveIcons[(f.flags & 0x20) != 0 ? 8 : 1];
+            v3->ResetToInitialXY();
+            float yaw = AngleNormalize360(dword_F63CB4[1580 * currCl]
+                                          - f.last_yaw);
+            v3->SetCenterPos(f.x, f.y);
+            if ((f.flags & 0x20) == 0)
+                v3->Rotate(yaw * 3.1415927f * 0.0055555557f, true);
+            v3->SetAlpha(f.alpha * global_alpha);
+            v3->Draw();
+        }
+    }
+}
+
+// ea: 0x00568440
+void IGOCompassWidget::DrawTanks()
+{
+    for (int i = 0; i < 25; ++i)
+    {
+        IGOFriendly& t = tanks[i];
+        if (t.draw)
+        {
+            int v3 = (t.flags & 2) != 0 ? 2 : 3;
+            float yaw = AngleNormalize360(dword_F63CB4[1580 * currCl]
+                                          - t.last_yaw);
+            objectiveIcons[v3]->ResetToInitialXY();
+            objectiveIcons[v3]->SetCenterPos(t.x, t.y);
+            objectiveIcons[v3]->Rotate(yaw * 3.1415927f * 0.0055555557f,
+                                       true);
+            objectiveIcons[v3]->SetAlpha(t.alpha * global_alpha);
+            objectiveIcons[v3]->Draw();
+        }
+    }
+}
+
+// ea: 0x00568540
+void IGOCompassWidget::DrawObjectives()
+{
+    for (int i = 0; i < 17; ++i)
+    {
+        IGOObjective& o = objectives[i];
+        if (!o.draw)
+            continue;
+        PanelQuad* v4;
+        if (o.up)
+            v4 = objectiveIcons[o.state + 1];
+        else if (o.down)
+            v4 = objectiveIcons[o.state + 2];
+        else
+            v4 = objectiveIcons[o.state];
+        if (v4 != nullptr)
+        {
+            v4->SetCenterPos(o.x, o.y);
+            v4->SetAlpha(o.alpha * global_alpha);
+            v4->Draw();
+        }
+        if (o.draw_ring)
+        {
+            objectiveIcons[4]->ResetToInitialXY();
+            objectiveIcons[4]->SetAlpha(o.ring_alpha * global_alpha);
+            objectiveIcons[4]->SetCenterPos(o.x, o.y);
+            objectiveIcons[4]->Scale(o.ring_scale, true);
+            objectiveIcons[4]->Draw();
+        }
+    }
+}
+
+// ea: 0x00568660
+void IGOCompassWidget::CalculateRing(IGOMapObject* mo, float ring_time)
+{
+    IGOObjective* obj = (IGOObjective*)mo;
+    obj->draw_ring = false;
+    if (cg_hudObjectiveNumRings.integer <= 0
+        || cg_hudObjectiveRingTime.integer <= 0 || ring_time <= -1.0f
+        || cgGlobal.time >= cg_hudObjectiveRingTime.integer + (int)ring_time)
+    {
+        return;
+    }
+    float v4 = (float)cg_hudObjectiveRingTime.integer
+               / (float)cg_hudObjectiveNumRings.integer;
+    if (v4 <= 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOCompassWidget.cpp";
+        AeAssert::gCurrentLine = 1358;
+        AeAssert::gCurrentExpr = "ringLen > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (cgGlobal.time < (int)ring_time)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOCompassWidget.cpp";
+        AeAssert::gCurrentLine = 1359;
+        AeAssert::gCurrentExpr = "cgGlobal.time >= ring_time";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float time = (float)cgGlobal.time - ring_time;
+    int v3 = 0;
+    float i = time;
+    while (i > v4)
+    {
+        i -= v4;
+        ++v3;
+    }
+    if (i < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOCompassWidget.cpp";
+        AeAssert::gCurrentLine = 1369;
+        AeAssert::gCurrentExpr = "time >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        i = time;
+    }
+    float v6 = i / v4;
+    obj->ring_alpha = v6 <= 0.5f ? v6 * 2.0f : 1.0f - ((v6 - 0.5f) * 2.0f);
+    obj->ring_scale = v6;
+    if (v3 != 0)
+        obj->ring_scale = v6 * 0.5f;
+    obj->draw_ring = true;
+}
+
+// ea: 0x00568850
+void IGOCompassWidget::SetHideCompassStar(int active, int index)
+{
+    m_hideCompassStarActive = active;
+    m_hideCompassStarIndex = index;
+}
+
+// ea: 0x00568870
+int IGOCompassWidget::IsCompassStarHidden(int index)
+{
+    return m_hideCompassStarActive != 0 && m_hideCompassStarIndex == index;
+}
+
+// ea: 0x005688A0
+void IGOCompassWidget::SetHideUpdatedText(int active, int objectiveIndex)
+{
+    m_hideUpdatedText = active;
+    m_hideUpdatedTextIndex = objectiveIndex;
+}
+
+// ea: 0x005688C0
+int IGOCompassWidget::IsUpdatedTextHidden(int index)
+{
+    return m_hideUpdatedText != 0 && m_hideUpdatedTextIndex == index;
+}
+
+// ea: 0x005688F0
+int IGOCompassWidget::ObjectiveStateIndexFromString(const char* name)
+{
+    if (name == nullptr || *name == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\IGOCompassWidget.cpp";
+        AeAssert::gCurrentLine = 1540;
+        AeAssert::gCurrentExpr = "name && name[0]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid objective name"))
+            __debugbreak();
+    }
+    int v1 = 0;
+    while (strcmp(sObjectiveIconNames[v1], name) != 0)
+    {
+        if (++v1 >= 27)
+            return 27;
+    }
+    return v1;
+}
+
+// ea: 0x005689A0
+void IGOCompassWidget::UpdateVehcile()
+{
+}
+
+// ea: 0x00578580
+void IGOCompassWidget::UpdateCompassRotation()
+{
+    float fTargetYaw =
+        AngleNormalize360(dword_F63CB4[1580 * currCl]
+                          - dword_F64140[1580 * currCl]);
+    int v3 = iLastCompassTime[currCl];
+    if (v3 > cgGlobal.time || (cgGlobal.time - v3) > 500)
+    {
+        iLastCompassTime[currCl] = cgGlobal.time;
+    }
+    else
+    {
+        int time = cgGlobal.time;
+        iLastCompassTime[currCl] = cgGlobal.time;
+        int v5 = time - v3;
+        float fYawOffset = AngleSubtract(compass_yaw, fTargetYaw);
+        float v6 = fYawOffset;
+        if (v5 <= 0)
+        {
+            compass_yaw = AngleNormalize360(v6 + fTargetYaw);
+            UpdateCompassDial();
+            return;
+        }
+        while (1)
+        {
+            int v7;
+            if (v5 <= 5)
+            {
+                v7 = v5;
+                v5 = 0;
+            }
+            else
+            {
+                v7 = 5;
+                v5 -= 5;
+            }
+            float fTimeStep = v7 * 0.001f;
+            if (fabsf(fYawOffset) < 0.25f && fabsf(compass_speed) < 1.0f)
+                break;
+            fYawOffset = AngleNormalize180((fTimeStep * compass_speed) + v6);
+            v6 = fYawOffset;
+            if (fYawOffset <= 0.0f)
+            {
+                if (fYawOffset < 0.0f)
+                    compass_speed = (fTimeStep * 1000.0f) + compass_speed;
+            }
+            else
+            {
+                compass_speed = compass_speed - (fTimeStep * 1000.0f);
+            }
+            float v8 = compass_speed - ((fTimeStep * compass_speed) * 2.0f);
+            compass_speed = v8;
+            if (v8 <= 0.0f)
+            {
+                if (fYawOffset < 0.0f)
+                    compass_speed = v8 - ((v8 * fTimeStep) * 3.5f);
+                compass_speed = fTimeStep + compass_speed;
+                if (compass_speed > 0.0f)
+                    compass_speed = 0.0f;
+            }
+            else
+            {
+                if (fYawOffset > 0.0f)
+                    compass_speed = v8 - ((v8 * fTimeStep) * 3.5f);
+                compass_speed = compass_speed - fTimeStep;
+                if (compass_speed < 0.0f)
+                    compass_speed = 0.0f;
+            }
+            if (compass_speed > 30000.0f)
+                compass_speed = 30000.0f;
+            else if (compass_speed < -30000.0f)
+                compass_speed = -30000.0f;
+            if (v5 <= 0)
+            {
+                compass_yaw = AngleNormalize360(v6 + fTargetYaw);
+                UpdateCompassDial();
+                return;
+            }
+        }
+    }
+    compass_yaw = fTargetYaw;
+    compass_speed = 0.0f;
+}
+
+// ea: 0x00578800
+void IGOCompassWidget::CheckpointRestart()
+{
+    m_hideCompassStarActive = 0;
+    m_hideCompassStarIndex = 0;
+    m_hideUpdatedText = 0;
+    m_hideUpdatedTextIndex = 0;
+}
+
+// ea: 0x00578820
+void IGOCompassWidget::CalculateMapObjectABS(IGOMapObject* mo, float dist,
+                                             float yaw, float ring_time,
+                                             bool is_objective)
+{
+    int value = cg_hudCompassMinRange.value;
+    float v10 = cg_hudObjectiveMaxRange.value;
+    int v12 = cg_hudCompassMaxRange.value;
+    float v13 = dist;
+    if (dist > v10 || (v10 = (float)v12, v12 > dist))
+        v13 = v10;
+    float v14 = cg_hudObjectiveMaxRange.value - v12;
+    float alpha;
+    if (v14 == 0.0f)
+        alpha = 0.0f;
+    else
+        alpha = (((v13 - v12) / v14)
+                 * (cg_hudObjectiveMinAlpha.value - 1.0f))
+                + 1.0f;
+    float v15 = 4900.0f;
+    if (dist > 4900.0f || (v15 = (float)value, value > dist))
+        dist = v15;
+    float radius_scale = 0.0f;
+    if ((v12 - value) != 0.0f)
+        radius_scale = dist * 0.01122449f;
+    float sinYaw, cosYaw;
+    FastSinCos(yaw * 3.1415927f * 0.0055555557f, &sinYaw, &cosYaw);
+    mo->x = frame->GetCenterX()
+            - View::GetXScalingForHUD(mViewport) * sinYaw * radius_scale;
+    mo->y = frame->GetCenterY()
+            - View::GetYScalingForHUD(mViewport) * cosYaw * radius_scale;
+    mo->alpha = alpha;
+    mo->draw = true;
+    if (is_objective)
+        CalculateRing(mo, ring_time);
+}
+
+// ea: 0x00583AA0
+void IGOCompassWidget::CalculateMapObject(IGOMapObject* mo, float dist,
+                                          float yaw, float ring_time,
+                                          bool is_objective)
+{
+    int value = cg_hudCompassMinRange.value;
+    float v11 = cg_hudObjectiveMaxRange.value;
+    int v13 = cg_hudCompassMaxRange.value;
+    float v14 = dist;
+    if (dist > v11 || (v11 = (float)v13, v13 > dist))
+        v14 = v11;
+    float v15 = cg_hudObjectiveMaxRange.value - v13;
+    float alpha;
+    if (v15 == 0.0f)
+        alpha = 0.0f;
+    else
+        alpha = (((v14 - v13) / v15)
+                 * (cg_hudObjectiveMinAlpha.value - 1.0f))
+                + 1.0f;
+    float v16 = (float)v13;
+    if (dist > v13 || (v16 = (float)value, value > dist))
+        dist = v16;
+    float v17 = (float)(v13 - value);
+    float radius_scale = 0.0f;
+    if (v17 != 0.0f)
+    {
+        radius_scale =
+            (((((dist - value) / v17)
+               * (1.0f - cg_hudCompassMinRadius.value))
+              + cg_hudCompassMinRadius.value)
+             * cg_hudCompassSize.value)
+            * 43.75f;
+    }
+    float sinYaw, cosYaw;
+    FastSinCos(yaw * 3.1415927f * 0.0055555557f, &sinYaw, &cosYaw);
+    mo->x = frame->GetCenterX()
+            - View::GetXScalingForHUD(mViewport) * sinYaw * radius_scale;
+    mo->y = frame->GetCenterY()
+            - View::GetYScalingForHUD(mViewport) * cosYaw * radius_scale;
+    mo->alpha = alpha;
+    mo->draw = true;
+    if (is_objective)
+        CalculateRing(mo, ring_time);
+}
+
+// ea: 0x00583970
+void IGOCompassWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    mViewport = viewport;
+    UpdateCompassDial();
+    UpdateCompassFrame();
+    for (int i = 0; i < 27; ++i)
+    {
+        if (objectiveIcons[i] != nullptr)
+            objectiveIcons[i]->FormatHUDForSplitScreen(viewport, old_viewport,
+                                                       0, 0.0f, 0.0f);
+        if (worldIcons[i].icon != nullptr)
+            worldIcons[i].icon->FormatForSplitScreen(viewport, old_viewport);
+    }
+    for (int j = 0; j < 5; ++j)
+    {
+        if (objectiveIcons[sObjectiveIconRotateable[j]] != nullptr)
+            objectiveIcons[sObjectiveIconRotateable[j]]
+                ->SetXYInitialToCurrentPos();
+    }
+}
+
+// ea: 0x00583A10
+void IGOCompassWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    UpdateCompassDial();
+    UpdateCompassFrame();
+    for (int i = 0; i < 27; ++i)
+    {
+        if (objectiveIcons[i] != nullptr)
+            objectiveIcons[i]->FattenMeForWidescreen(widescreen, about_x);
+        if (worldIcons[i].icon != nullptr)
+            worldIcons[i].icon->FattenMeForWidescreen(widescreen, 0.0f);
+    }
+    for (int j = 0; j < 5; ++j)
+    {
+        if (objectiveIcons[sObjectiveIconRotateable[j]] != nullptr)
+            objectiveIcons[sObjectiveIconRotateable[j]]
+                ->SetXYInitialToCurrentPos();
+    }
+}
+
+// ea: 0x005890A0
+void IGOCompassWidget::UpdateFriendlies()
+{
+    if (dword_F62964[1580 * currCl] == 0)
+        return;
+    Entity* localPlayer = EntityManager::sInst->GetPlayer(mClient);
+    int team = 0;
+    if (localPlayer != nullptr && localPlayer->sentient != nullptr)
+        team = localPlayer->sentient->eTeam;
+    if (!cgGlobal.teamGame)
+        return;
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(i);
+        if (Player == nullptr || Player->client == nullptr
+            || Player->sentient == nullptr || localPlayer == Player
+            || team != Player->sentient->eTeam)
+        {
+            continue;
+        }
+        int playerState = Player->client->pers.playerState;
+        if (playerState == 0 || playerState == 2
+            || (playerState == 1
+                && *(int*)((char*)localPlayer + 596 + 1904) != 3))
+        {
+            continue;
+        }
+        int idx = Player->client - g_clients;
+        if (idx < 0)
+            continue;
+        IGOFriendly& f = friendlies[idx];
+        f.last_update = cgGlobal.time;
+        f.last_yaw = Player->s.lerpAngles.v.m128_f32[1];
+        f.last_pos[0] = Player->s.lerpOrigin.v.m128_f32[0];
+        f.last_pos[1] = Player->s.lerpOrigin.v.m128_f32[1];
+        if (!Player->IsInSnapshot())
+            return;
+        f.flags &= ~0x20;
+        if (*(int*)((char*)Player + 596 + 36) >= 6
+            || *(int*)((char*)Player + 596 + 1908) == 5)
+        {
+            f.flags |= 0x20;
+        }
+        if (*(int*)((char*)localPlayer + 596 + 1904) == 3
+            && *(int*)((char*)Player + 596 + 1908) == 1)
+        {
+            f.flags |= 0x20;
+        }
+        Client* cl = Player->client;
+        Entity* mOwner = nullptr;
+        unsigned int mVal = Player->r.mOwner.mHandle.mVal;
+        unsigned int v6 = mVal & 0xFFF;
+        if (v6 < 0x540
+            && mVal >> 12
+                   == (unsigned int)EntityHandleDb::sInst.mElements[v6].mKey)
+            mOwner = EntityHandleDb::sInst.mElements[v6].mObject;
+        if ((*(int*)((char*)cl + 0xF4) & 0x100000) != 0 && mOwner != nullptr)
+        {
+            if (!IsVehicleTank(mOwner))
+                f.last_yaw = mOwner->r.currentAngles.v.m128_f32[1];
+        }
+        else
+        {
+            f.last_yaw = Player->r.currentAngles.v.m128_f32[1];
+        }
+    }
+    int clientBase = dword_F62964[1580 * currCl];
+    if (*(int*)(clientBase + 0x520) != 0)
+    {
+        int idx = *(int*)(clientBase + 0x520) & 0x3F;
+        IGOFriendly& f = friendlies[idx];
+        f.last_update = cgGlobal.time;
+        float v28 =
+            (float)(4 * ((*(int*)(clientBase + 0x520) >> 6) & 0x1FF) - 1020);
+        float v29 =
+            (float)(4 * ((*(int*)(clientBase + 0x520) >> 15) & 0x1FF) - 1020);
+        if (v28 == 1024.0f || v28 == -1020.0f || v29 == 1024.0f
+            || v29 == -1020.0f)
+        {
+            float pos[2] = {v28, v29};
+            VectorNormalize2D(pos);
+            f.last_pos[0] = pos[0];
+            f.last_pos[1] = pos[1];
+        }
+        else
+        {
+            float pos[3];
+            pos[0] = *(float*)(clientBase + 0x10);
+            pos[1] = *(float*)(clientBase + 0x14);
+            pos[2] =
+                *(float*)(clientBase + 0x18) + *(float*)(clientBase + 0xF0);
+            AddLeanToPosition(pos, *(float*)(clientBase + 0xE4),
+                              *(float*)(clientBase + 0x5C), 16.0f, 20.0f);
+            f.last_pos[0] = pos[0] + v28;
+            f.last_pos[1] = pos[1] + v29;
+        }
+        f.last_yaw =
+            (float)*(signed char*)(clientBase + 0x523) * 1.40625f;
+    }
+    float compass_yaw =
+        cg_hudCompassSpringyPointers.integer != 0
+            ? this->compass_yaw
+            : dword_F63CB4[1580 * currCl];
+    for (int i = 0; i < 32; ++i)
+    {
+        IGOFriendly& f = friendlies[i];
+        f.draw = false;
+        if (f.last_update > cgGlobal.time)
+            f.last_update = 0;
+        if (f.last_update < cgGlobal.time - 800)
+            continue;
+        if (!((SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst)
+                 ->PointCanSeePoint(&dword_F63C70[1580 * currCl],
+                                    f.last_pos, 0.4f))
+        {
+            f.draw = false;
+            continue;
+        }
+        float yaw;
+        float dist;
+        if (fabsf(f.last_pos[0]) > 1.0f || fabsf(f.last_pos[1]) > 1.0f)
+        {
+            float delta[2] = {f.last_pos[0] - dword_F63C70[1580 * currCl],
+                              f.last_pos[1] - dword_F63C74[1580 * currCl]};
+            yaw = AngleNormalize360(vectoyaw(delta) - compass_yaw);
+            dist = sqrtf(delta[1] * delta[1] + delta[0] * delta[0]);
+        }
+        else
+        {
+            yaw = AngleNormalize360(vectoyaw(f.last_pos) - compass_yaw);
+            dist = cg_hudCompassMaxRange.value;
+        }
+        CalculateMapObject(&f, dist, yaw, -1.0f, false);
+    }
+}
+
+// ea: 0x005895F0
+void IGOCompassWidget::UpdateEnemies()
+{
+    if (gCvarShowEnemy.integer != 1
+        || dword_F62964[1580 * currCl] == 0)
+    {
+        return;
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    if (Player == nullptr || Player->sentient == nullptr)
+        return;
+    int enemyTeam = Sentient_EnemyTeam(Player->sentient->eTeam);
+    memset(gEnemies, 0, sizeof(gEnemies));
+    int count = 0;
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v6 = EntityManager::sInst->GetPlayer(i);
+        if (v6 == nullptr || v6->client == nullptr
+            || v6->sentient == nullptr || Player == v6)
+        {
+            continue;
+        }
+        if (enemyTeam != v6->sentient->eTeam && cgGlobal.teamGame)
+            continue;
+        if (count >= 32)
+            break;
+        IGOEnemy& e = gEnemies[count++];
+        e.last_update = cgGlobal.time;
+        e.last_yaw = v6->s.lerpAngles.v.m128_f32[1];
+        float origin[3];
+        Sentient_GetOrigin(v6->sentient, origin);
+        e.last_pos[0] = origin[0];
+        e.last_pos[1] = origin[1];
+        e.flags = 2;
+        e.last_shot_time = v6->sentient->lastShotTime;
+    }
+    float compass_yaw =
+        cg_hudCompassSpringyPointers.integer != 0
+            ? this->compass_yaw
+            : dword_F63CB4[1580 * currCl];
+    for (int i = 0; i < 32; ++i)
+    {
+        IGOEnemy& e = gEnemies[i];
+        if (e.last_update == 0)
+            continue;
+        float yaw;
+        float dist;
+        if (fabsf(e.last_pos[0]) > 1.0f || fabsf(e.last_pos[1]) > 1.0f)
+        {
+            float delta[2] = {e.last_pos[0] - dword_F63C70[1580 * currCl],
+                              e.last_pos[1] - dword_F63C74[1580 * currCl]};
+            yaw = AngleNormalize360(vectoyaw(delta) - compass_yaw);
+            dist = sqrtf(delta[1] * delta[1] + delta[0] * delta[0]);
+        }
+        else
+        {
+            yaw = AngleNormalize360(vectoyaw(e.last_pos) - compass_yaw);
+            dist = cg_hudCompassMaxRange.value;
+        }
+        CalculateMapObject(&e, dist, yaw, -1.0f, false);
+        float v16 = (level.time - e.last_shot_time) * 0.0005f;
+        e.alpha = v16 <= 1.0f ? 1.0f - v16 : 0.0f;
+    }
+}
+
+// ea: 0x00589880
+void IGOCompassWidget::UpdateObjectives()
+{
+    for (int i = 0; i < 17; ++i)
+    {
+        ObjectiveDataView* v4 =
+            (ObjectiveDataView*)&unk_F6A2B0[802 * mClient + 44 * i];
+        IGOObjective& o = objectives[i];
+        o.draw = false;
+        unsigned int v5 = v4->handle;
+        unsigned int v6 = v5 & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v6 < 0x540
+            && v5 >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v6].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+        if (mObject != nullptr)
+        {
+            v4->origin[0] = mObject->r.currentOrigin.v.m128_f32[0];
+            v4->origin[1] = mObject->r.currentOrigin.v.m128_f32[1];
+            v4->origin[2] = mObject->r.currentOrigin.v.m128_f32[2];
+        }
+        if (v4->origin[0] != 0.0f || v4->origin[1] != 0.0f
+            || v4->origin[2] != 0.0f)
+        {
+            float delta = v4->origin[0] - dword_F63C70[1580 * currCl];
+            float v19 = v4->origin[1] - dword_F63C74[1580 * currCl];
+            float delta_z = v4->origin[2] - dword_F63C78[1580 * currCl]
+                            + dword_F63640[1580 * currCl];
+            float compass_yaw =
+                cg_hudCompassSpringyPointers.integer != 0
+                    ? this->compass_yaw
+                    : dword_F63CB4[1580 * currCl];
+            float obj_yaw = AngleNormalize360(vectoyaw(&delta)
+                                              - compass_yaw);
+            float dist = sqrtf(delta * delta + v19 * v19);
+            CalculateMapObject(&o, dist, obj_yaw, v4->ring_time, true);
+            o.state = v4->state;
+            o.worldState = v4->worldState;
+            o.up = false;
+            o.down = false;
+            if (delta_z <= cg_hudObjectiveMaxHeight.value)
+            {
+                if (cg_hudObjectiveMinHeight.value > delta_z)
+                    o.down = true;
+            }
+            else
+            {
+                o.up = true;
+            }
+        }
+    }
+}
+
+// ea: 0x00589AD0
+void IGOCompassWidget::UpdateTanks()
+{
+    if (dword_F62964[1580 * currCl] == 0 || level.vehicles == nullptr)
+        return;
+    for (int i = 0; i < level.MaxVehicles; ++i)
+    {
+        unsigned int v3 =
+            *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal & 0xFFF;
+        if (v3 >= 0x540
+            || *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal >> 12
+                   != (unsigned int)EntityHandleDb::sInst.mElements[v3].mKey)
+        {
+            continue;
+        }
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject == nullptr)
+            continue;
+        int index = 0;
+        bool enemy = false;
+        if (!G_GetTankIndex(mObject->mHandle, &index, &enemy))
+            continue;
+        if (gCvarShowEnemy.integer == 0 && enemy)
+            continue;
+        IGOFriendly& t = tanks[index];
+        t.last_update = cgGlobal.time;
+        t.last_pos[0] = mObject->s.lerpOrigin.v.m128_f32[0];
+        t.last_pos[1] = mObject->s.lerpOrigin.v.m128_f32[1];
+        t.last_yaw = mObject->s.lerpAngles.v.m128_f32[1];
+        t.flags &= ~2;
+        if (enemy)
+            t.flags |= 2;
+    }
+    if (*(int*)(dword_F62964[1580 * currCl] + 1316) != 0)
+    {
+        int idx = *(int*)(dword_F62964[1580 * currCl] + 1316) & 0x3F;
+        IGOFriendly& t = tanks[idx];
+        t.last_update = cgGlobal.time;
+        int v9 = dword_F62964[1580 * currCl];
+        float v10 = (float)(4 * ((*(int*)(v9 + 1316) >> 6) & 0x1FF) - 1020);
+        float v11 = (float)(4 * ((*(int*)(v9 + 1316) >> 15) & 0x1FF) - 1020);
+        if (v10 == 1024.0f || v10 == -1020.0f || v11 == 1024.0f
+            || v11 == -1020.0f)
+        {
+            float v[2] = {v10, v11};
+            VectorNormalize2D(v);
+            t.last_pos[0] = v[0];
+            t.last_pos[1] = v[1];
+        }
+        else
+        {
+            t.last_pos[0] = *(float*)(v9 + 16) + v10;
+            t.last_pos[1] = *(float*)(v9 + 20) + v11;
+        }
+        t.last_yaw = (float)*(signed char*)(v9 + 0x527) * 1.40625f;
+    }
+    float compass_yaw =
+        cg_hudCompassSpringyPointers.integer != 0
+            ? this->compass_yaw
+            : dword_F63CB4[1580 * currCl];
+    for (int i = 0; i < 25; ++i)
+    {
+        IGOFriendly& t = tanks[i];
+        t.draw = false;
+        if (t.last_update > cgGlobal.time)
+            t.last_update = 0;
+        if (t.last_update < cgGlobal.time - 800)
+            continue;
+        if (!((SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst)
+                 ->PointCanSeePoint(&dword_F63C70[1580 * currCl],
+                                    t.last_pos, 0.4f))
+        {
+            t.draw = false;
+            continue;
+        }
+        float yaw;
+        float dist;
+        if (fabsf(t.last_pos[0]) > 1.0f || fabsf(t.last_pos[1]) > 1.0f)
+        {
+            float delta[2] = {t.last_pos[0] - dword_F63C70[1580 * currCl],
+                              t.last_pos[1] - dword_F63C74[1580 * currCl]};
+            yaw = AngleNormalize360(vectoyaw(delta) - compass_yaw);
+            dist = sqrtf(delta[1] * delta[1] + delta[0] * delta[0]);
+        }
+        else
+        {
+            yaw = AngleNormalize360(vectoyaw(t.last_pos) - compass_yaw);
+            dist = cg_hudCompassMaxRange.value;
+        }
+        CalculateMapObject(&t, dist, yaw, -1.0f, false);
+    }
+}
+
+// ea: 0x00589F40
+void IGOCompassWidget::DrawVehcile()
+{
+    if (gCvarShowEnemy.integer == 0)
+        return;
+    PanelQuad* v4 = objectiveIcons[1];
+    v4->ResetToInitialXY();
+    unsigned int mVal =
+        EntityManager::sInst->GetPlayer(mClient)->r.mOwner.mHandle.mVal;
+    unsigned int v6 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v6 < 0x540
+        && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v6].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+    float v8 = 0.0f;
+    if (mObject != nullptr)
+        v8 = 0.0f - mObject->r.currentAngles.v.m128_f32[1];
+    v4->Rotate((v8 * 3.1415927f) * 0.0055555557f, true);
+    v4->SetCenterPos(frame->GetCenterX(), frame->GetCenterY());
+    v4->Draw();
+}
+
+// ea: 0x0058A020
+void IGOCompassWidget::UpdateObjectivesABS()
+{
+    for (int i = 0; i < 17; ++i)
+    {
+        ObjectiveDataView* v3 =
+            (ObjectiveDataView*)&unk_F6A2B0[802 * mClient + 44 * i];
+        IGOObjective& o = objectives[i];
+        o.draw = false;
+        if (v3->origin[0] != 0.0f || v3->origin[1] != 0.0f
+            || v3->origin[2] != 0.0f)
+        {
+            Entity* localPlayer = EntityManager::sInst->GetPlayer(mClient);
+            Entity* mObject = nullptr;
+            if (localPlayer != nullptr)
+            {
+                unsigned int v6 = localPlayer->r.mOwner.mHandle.mVal & 0xFFF;
+                if (v6 < 0x540
+                    && localPlayer->r.mOwner.mHandle.mVal >> 12
+                           == (unsigned int)EntityHandleDb::sInst
+                                  .mElements[v6].mKey)
+                    mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+            }
+            float delta, v15, delta_z;
+            if (mObject != nullptr)
+            {
+                delta = v3->origin[0]
+                        - mObject->r.currentOrigin.v.m128_f32[0];
+                v15 = v3->origin[1]
+                      - mObject->r.currentOrigin.v.m128_f32[1];
+                delta_z = v3->origin[2]
+                          - mObject->r.currentOrigin.v.m128_f32[2];
+            }
+            else
+            {
+                delta = v15 = delta_z = 0.0f;
+            }
+            float obj_yaw = AngleNormalize360(vectoyaw(&delta));
+            float dist = sqrtf(delta * delta + v15 * v15);
+            CalculateMapObjectABS(&o, dist, obj_yaw, v3->ring_time, true);
+            o.state = v3->state;
+            o.up = false;
+            o.down = false;
+            if (delta_z <= cg_hudObjectiveMaxHeight.value)
+            {
+                if (cg_hudObjectiveMinHeight.value > delta_z)
+                    o.down = true;
+            }
+            else
+            {
+                o.up = true;
+            }
+        }
+    }
+}
+
+// ea: 0x0058A230
+void IGOCompassWidget::UpdateEnemiesABS()
+{
+    if (gCvarShowEnemy.integer != 1
+        || dword_F62964[1580 * currCl] == 0)
+    {
+        return;
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    if (Player == nullptr || Player->sentient == nullptr)
+        return;
+    int enemyTeam = Sentient_EnemyTeam(Player->sentient->eTeam);
+    memset(gEnemies, 0, sizeof(gEnemies));
+    int count = 0;
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v7 = EntityManager::sInst->GetPlayer(i);
+        if (v7 == nullptr || v7->client == nullptr
+            || v7->sentient == nullptr || Player == v7
+            || enemyTeam != v7->sentient->eTeam
+            || !IsPlayerSpotted(v7))
+        {
+            continue;
+        }
+        if (count >= 32)
+            break;
+        IGOEnemy& e = gEnemies[count++];
+        e.last_update = cgGlobal.time;
+        e.last_yaw = v7->s.lerpAngles.v.m128_f32[1];
+        float origin[3];
+        Sentient_GetOrigin(v7->sentient, origin);
+        e.last_pos[0] = origin[0];
+        e.last_pos[1] = origin[1];
+        e.flags = 0;
+        e.last_shot_time = v7->sentient->lastShotTime;
+    }
+    for (int i = 0; i < 32; ++i)
+    {
+        IGOEnemy& e = gEnemies[i];
+        if (e.last_update == 0)
+            continue;
+        float yaw;
+        float dist;
+        if (fabsf(e.last_pos[0]) > 1.0f || fabsf(e.last_pos[1]) > 1.0f)
+        {
+            Entity* owner = nullptr;
+            Entity* p = EntityManager::sInst->GetPlayer(mClient);
+            if (p != nullptr)
+            {
+                unsigned int mVal = p->r.mOwner.mHandle.mVal;
+                unsigned int v15 = mVal & 0xFFF;
+                if (v15 < 0x540
+                    && mVal >> 12
+                           == (unsigned int)EntityHandleDb::sInst
+                                  .mElements[v15].mKey)
+                    owner = EntityHandleDb::sInst.mElements[v15].mObject;
+            }
+            float delta[2] = {e.last_pos[0], e.last_pos[1]};
+            if (owner != nullptr)
+            {
+                delta[0] -= owner->r.currentOrigin.v.m128_f32[0];
+                delta[1] -= owner->r.currentOrigin.v.m128_f32[1];
+            }
+            yaw = AngleNormalize360(vectoyaw(delta));
+            dist = sqrtf(delta[1] * delta[1] + delta[0] * delta[0]);
+        }
+        else
+        {
+            yaw = AngleNormalize360(vectoyaw(e.last_pos));
+            dist = cg_hudCompassMaxRange.value;
+        }
+        CalculateMapObjectABS(&e, dist, yaw, -1.0f, false);
+        float v17 = (level.time - e.last_shot_time) * 0.0005f;
+        e.alpha = v17 <= 1.0f ? 1.0f - v17 : 0.0f;
+    }
+}
+
+// ea: 0x0058A4F0
+void IGOCompassWidget::UpdateTanksABS()
+{
+    if (dword_F62964[1580 * currCl] == 0 || level.vehicles == nullptr)
+        return;
+    for (int i = 0; i < level.MaxVehicles; ++i)
+    {
+        unsigned int v4 =
+            *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal & 0xFFF;
+        if (v4 >= 0x540
+            || *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal >> 12
+                   != (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+        {
+            continue;
+        }
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject == nullptr)
+            continue;
+        int index = 0;
+        bool enemy = false;
+        if (!G_GetTankIndex(mObject->mHandle, &index, &enemy))
+            continue;
+        if (gCvarShowEnemy.integer == 0 && enemy)
+            continue;
+        IGOFriendly& t = tanks[index];
+        t.last_update = cgGlobal.time;
+        t.last_pos[0] = mObject->s.lerpOrigin.v.m128_f32[0];
+        t.last_pos[1] = mObject->s.lerpOrigin.v.m128_f32[1];
+        t.last_yaw = mObject->s.lerpAngles.v.m128_f32[1];
+        t.flags &= ~2;
+        if (enemy)
+            t.flags |= 2;
+    }
+    if (*(int*)(dword_F62964[1580 * currCl] + 1316) != 0)
+    {
+        int idx = *(int*)(dword_F62964[1580 * currCl] + 1316) & 0x3F;
+        IGOFriendly& t = tanks[idx];
+        t.last_update = cgGlobal.time;
+        int v8 = dword_F62964[1580 * currCl];
+        float v9 = (float)(4 * ((*(int*)(v8 + 1316) >> 6) & 0x1FF) - 1020);
+        float v10 = (float)(4 * ((*(int*)(v8 + 1316) >> 15) & 0x1FF) - 1020);
+        if (v9 == 1024.0f || v9 == -1020.0f || v10 == 1024.0f
+            || v10 == -1020.0f)
+        {
+            float v[2] = {v9, v10};
+            VectorNormalize2D(v);
+            t.last_pos[0] = v[0];
+            t.last_pos[1] = v[1];
+        }
+        else
+        {
+            t.last_pos[0] = *(float*)(v8 + 16) + v9;
+            t.last_pos[1] = *(float*)(v8 + 20) + v10;
+        }
+        t.last_yaw = (float)*(signed char*)(v8 + 0x527) * 1.40625f;
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    for (int i = 0; i < 25; ++i)
+    {
+        IGOFriendly& t = tanks[i];
+        t.draw = false;
+        if (t.last_update > cgGlobal.time)
+            t.last_update = 0;
+        if (t.last_update < cgGlobal.time - 800)
+            continue;
+        if (!((SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst)
+                 ->PointCanSeePoint(&dword_F63C70[1580 * currCl],
+                                    t.last_pos, 0.4f))
+        {
+            t.draw = false;
+            continue;
+        }
+        float yaw;
+        float dist;
+        if (fabsf(t.last_pos[0]) > 1.0f || fabsf(t.last_pos[1]) > 1.0f)
+        {
+            float delta[2] = {t.last_pos[0], t.last_pos[1]};
+            if (Player != nullptr)
+            {
+                unsigned int mVal = Player->r.mOwner.mHandle.mVal;
+                unsigned int v18 = mVal & 0xFFF;
+                Entity* owner = nullptr;
+                if (v18 < 0x540
+                    && mVal >> 12
+                           == (unsigned int)EntityHandleDb::sInst
+                                  .mElements[v18].mKey)
+                    owner = EntityHandleDb::sInst.mElements[v18].mObject;
+                if (owner != nullptr)
+                {
+                    delta[0] -= owner->r.currentOrigin.v.m128_f32[0];
+                    delta[1] -= owner->r.currentOrigin.v.m128_f32[1];
+                }
+            }
+            yaw = AngleNormalize360(vectoyaw(delta));
+            dist = sqrtf(delta[1] * delta[1] + delta[0] * delta[0]);
+        }
+        else
+        {
+            yaw = AngleNormalize360(vectoyaw(t.last_pos));
+            dist = cg_hudCompassMaxRange.value;
+        }
+        CalculateMapObjectABS(&t, dist, yaw, -1.0f, false);
+    }
 }

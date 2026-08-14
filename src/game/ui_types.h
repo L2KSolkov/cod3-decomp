@@ -2423,6 +2423,18 @@ enum hud_type {
 };
 
 // ============================================================================
+// IGOMapObject - compass map marker base (16 bytes) - verified against IDA
+// ============================================================================
+class IGOMapObject {
+public:
+    float x;      // +0x00
+    float y;      // +0x04
+    float alpha;  // +0x08
+    bool  draw;   // +0x0C
+};
+static_assert(sizeof(IGOMapObject) == 0x10, "IGOMapObject size mismatch");
+
+// ============================================================================
 // IGOCompassWidget (5256 bytes) - verified against IDA
 // ============================================================================
 class IGOCompassWidget : public IGOWidget {
@@ -2431,6 +2443,25 @@ public:
         PanelQuad* icon;    // +0x00
         uint8_t    height;  // +0x04
         uint8_t    alpha;   // +0x05
+    };
+
+    struct IGOFriendly : IGOMapObject {
+        int   last_update;// +0x10
+        float last_yaw;   // +0x14
+        float last_pos[2];// +0x18
+        int   flags;      // +0x20
+    };
+    struct IGOEnemy : IGOFriendly {
+        int   last_shot_time;  // +0x24
+    };
+    struct IGOObjective : IGOMapObject {
+        float ring_alpha; // +0x10
+        float ring_scale; // +0x14
+        bool  draw_ring;  // +0x18
+        bool  up;         // +0x19
+        bool  down;       // +0x1A
+        int   state;      // +0x1C
+        int   worldState; // +0x20
     };
 
     int16_t  m_hideCompassStarActive;   // +0x0C
@@ -2446,40 +2477,9 @@ public:
     float    compass_speed;             // +0x16C
     float    compass_yaw;               // +0x170
     bool     DrawObjectivesOnly;        // +0x174
-    struct IGOFriendly {
-        float x;          // +0x00
-        float y;          // +0x04
-        float alpha;      // +0x08
-        bool  draw;       // +0x0C
-        int   last_update;// +0x10
-        float last_yaw;   // +0x14
-        float last_pos[2];// +0x18
-        int   flags;      // +0x20
-    } friendlies[32];     // +0x178 (1152 bytes)
-    struct IGOEnemy {
-        float x;          // +0x00
-        float y;          // +0x04
-        float alpha;      // +0x08
-        bool  draw;       // +0x0C
-        int   last_update;// +0x10
-        float last_yaw;   // +0x14
-        float last_pos[2];// +0x18
-        int   flags;      // +0x20
-        int   last_shot_time;  // +0x24
-    } gEnemies[32];       // +0x5F8 (1280 bytes)
-    struct IGOObjective {
-        float x;          // +0x00
-        float y;          // +0x04
-        float alpha;      // +0x08
-        bool  draw;       // +0x0C
-        float ring_alpha; // +0x10
-        float ring_scale; // +0x14
-        bool  draw_ring;  // +0x18
-        bool  up;         // +0x19
-        bool  down;       // +0x1A
-        int   state;      // +0x1C
-        int   worldState; // +0x20
-    } objectives[17];     // +0x1200 (612 bytes)
+    IGOFriendly friendlies[32];  // +0x178 (1152 bytes)
+    IGOEnemy    gEnemies[32];    // +0x5F8 (1280 bytes)
+    IGOObjective objectives[17]; // +0x1200 (612 bytes)
     IGOFriendly enemyTanks[25];  // +0xAF8 (900 bytes)
     IGOFriendly tanks[25];       // +0xE7C (900 bytes)
     float global_alpha;   // +0x1464
@@ -2489,14 +2489,48 @@ public:
     float last_player_angles[3];// +0x147C
 
     IGOCompassWidget(int client);  // 0x567D00
-    virtual void Init(PanelFile* panel);              // 0x598030
+    virtual ~IGOCompassWidget();   // 0x567CF0
+    virtual void Init(PanelFile* panel) {}  // nullsub_220 (concrete override)
+    void Init(PanelFile* panel,
+              bool bIconPanel);           // 0x599FA0 (non-virtual)
     virtual void Update(float time_inc);              // 0x58ADB0
     virtual void Draw();                              // 0x58B100
     virtual void UpdateWidescreen(bool widescreen,
                                   float about_x);     // 0x5840B0
     virtual void UpdateSplitScreen(int viewport,
                                    int old_viewport); // 0x58A050
+    void Draw3DObjective(int index);                  // 0x567D00
     void Draw3DObjectiveLocations();                  // 0x590BF0
+    void SetHideCompassStar(int active, int index);      // 0x568850
+    int  IsCompassStarHidden(int index);              // 0x568870
+    void SetHideUpdatedText(int active, int objectiveIndex);  // 0x5688A0
+    int  IsUpdatedTextHidden(int index);              // 0x5688C0
+    static int ObjectiveStateIndexFromString(const char* name);  // 0x5688F0
+    void UpdateCompassRotation();                     // 0x578580
+    void CheckpointRestart();                         // 0x578800
+private:
+    void UpdateCompassDial();                         // 0x567FE0
+    void UpdateCompassFrame();                        // 0x5680D0
+    void DrawEnemies();                               // 0x568250
+    void DrawFriendlies();                            // 0x568340
+    void DrawTanks();                                 // 0x568440
+    void DrawObjectives();                            // 0x568540
+    void CalculateRing(IGOMapObject* mo, float ring_time);  // 0x568660
+    void UpdateVehcile();                             // 0x5689A0
+    void CalculateMapObjectABS(IGOMapObject* mo, float dist,
+                               float yaw, float ring_time,
+                               bool is_objective);    // 0x578820
+    void CalculateMapObject(IGOMapObject* mo, float dist,
+                            float yaw, float ring_time,
+                            bool is_objective);       // 0x583AA0
+    void UpdateFriendlies();                          // 0x5890A0
+    void UpdateEnemies();                             // 0x5895F0
+    void UpdateObjectives();                          // 0x589880
+    void UpdateTanks();                               // 0x589AD0
+    void DrawVehcile();                               // 0x589F40
+    void UpdateObjectivesABS();                       // 0x58A020
+    void UpdateEnemiesABS();                          // 0x58A230
+    void UpdateTanksABS();                            // 0x58A4F0
 };
 static_assert(sizeof(IGOCompassWidget) == 0x1488,
               "IGOCompassWidget size mismatch");
