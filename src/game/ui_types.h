@@ -538,19 +538,21 @@ public:
               int buffer_size);                  // shell.o 0x593A00
     PanelAnimObject* FindAnimObject(const char* search_name);  // 0x5948C0
     ~PanelFile();  // ??1PanelFile@@QAE@XZ
-private:
-    void Cleanup();  // ??0PanelFile... Cleanup@PanelFile@@AAEXXZ (0x58C4C0)
     void LoadPanelGeom(unsigned char* buffer, int& index,
                        const math::Mat43* parent_matrix);  // 0x5910E0
     void LoadPanelObject(unsigned char* buffer, int& index,
                          const math::Mat43* parent_matrix,
-                         const char* name, short widescreen_align);
+                         const char* name, short widescreen_align);  // 0x58C770
     void LoadPanelText(unsigned char* buffer, int& index,
                        const math::Mat43* parent_matrix,
-                       const char* name, short widescreen_align);
+                       const char* name, short widescreen_align);  // 0x58C8E0
     void LoadPanelText2(unsigned char* buffer, int& index,
                         const math::Mat43* parent_matrix,
-                        const char* name, short widescreen_align);
+                        const char* name, short widescreen_align);  // 0x58CCF0
+    void HideQuad(const char* name);              // 0x59ABC0
+    void SetQuadVisible(const char* name, bool visible);  // 0x59AC10
+private:
+    void Cleanup();  // ??0PanelFile... Cleanup@PanelFile@@AAEXXZ (0x58C4C0)
 };
 static_assert(sizeof(PanelFile) == 0x60, "PanelFile size mismatch");
 static_assert(offsetof(PanelFile, pquads) == 0x00, "PanelFile::pquads offset mismatch");

@@ -2397,3 +2397,54 @@ PanelAnimObject* PanelFile::FindAnimObject(const char* search_name)
         return GetTextPointer(search_name);
     return Pointer;
 }
+
+// ea: 0x0059ABC0
+void PanelFile::HideQuad(const char* name)
+{
+    PanelQuad* Pointer = GetPointer(name);
+    PanelQuad** mElements = pquads.mElements;
+    PanelQuad** v5 = &pquads.mElements[pquads.mSize];
+    if (pquads.mElements == v5)
+    {
+        indexHidden = -1;
+    }
+    else
+    {
+        while (Pointer != *mElements)
+        {
+            if (++mElements == v5)
+            {
+                indexHidden = -1;
+                return;
+            }
+        }
+        indexHidden = (int)(mElements - pquads.mElements);
+    }
+}
+
+// ea: 0x0059AC10
+void PanelFile::SetQuadVisible(const char* name, bool visible)
+{
+    PanelQuad* Pointer = GetPointer(name);
+    PanelQuad** mElements = pquads.mElements;
+    PanelQuad** v6 = &pquads.mElements[pquads.mSize];
+    int v7;
+    if (pquads.mElements == v6)
+    {
+        v7 = -1;
+    }
+    else
+    {
+        while (Pointer != *mElements)
+        {
+            if (++mElements == v6)
+            {
+                v7 = -1;
+                goto found;
+            }
+        }
+        v7 = (int)(mElements - pquads.mElements);
+    }
+found:
+    pquads.mElements[v7]->SetShown(visible);
+}
