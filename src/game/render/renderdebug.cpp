@@ -25,6 +25,8 @@ public:
     void SetLightGridFailedColor();  // ?SetLightGridFailedColor@LightGridMgr@@QAEXXZ
     LightGrid::TOC* GetLightGrid(TPakId iPakId); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@W4TPakId@@@Z
     LightGrid::TOC* GetLightGrid(int cellNum);   // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@H@Z
+    LightGrid::TOC* GetLightGrid(const math::Position3& posArg,
+                                 int* pCellNum); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@ABVPosition3@math@@PAH@Z
 private:
     virtual void UnloadBank(TPakId pakId);       // ?UnloadBank@LightGridMgr@@EAEXW4TPakId@@@Z
     void* mList[99];                             // ae_array<LightGrid::TOC*, 99>
@@ -282,6 +284,44 @@ LightGrid::TOC* LightGridMgr::GetLightGrid(int cellNum)
 {
     if (cellNum != -1)
         return (LightGrid::TOC*)g_bspTree->mCellsList[cellNum].mLgridToc;
+    return nullptr;
+}
+
+// ea: 0x006C93F0
+LightGrid::TOC* LightGridMgr::GetLightGrid(const math::Position3& posArg,
+                                           int* pCellNum)
+{
+    struct PakInfoNodeView {
+        uint8_t _pad[0xB4];
+        TPakId pakId;  // +0xB4
+    };
+    math::Position3 v13 = posArg;
+    v13.v.m128_f32[2] += 0.01f;
+    int localCell;
+    int* v7 = pCellNum != nullptr ? pCellNum : &localCell;
+    int v8 = R_CellForPoint(&v13);
+    *v7 = v8;
+    if (v8 == -1)
+    {
+        v13.v.m128_f32[2] += 50.0f;
+        *v7 = R_CellForPoint(&v13);
+    }
+    if (*v7 != -1)
+    {
+        const PakInfoNodeView* CellPakInfo = (const PakInfoNodeView*)
+            StreamZoneManager::sInst->GetCellPakInfo(*v7);
+        if (CellPakInfo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\LightGridMgr.cpp";
+            AeAssert::gCurrentLine = 178;
+            AeAssert::gCurrentExpr = "pakInfo";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no zone for LightGrid cell!!!"))
+                __debugbreak();
+        }
+        return GetLightGrid(CellPakInfo->pakId);
+    }
     return nullptr;
 }
 
