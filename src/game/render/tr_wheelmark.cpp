@@ -857,12 +857,117 @@ public:
         DecalSet* _Myfirst;  // +0x00
         DecalSet* _Mylast;   // +0x04
         DecalSet* _Myend;    // +0x08
+
+        void resize(int iNewSize, int value)
+        {
+            (void)value;
+            if (iNewSize > (int)(_Myend - _Myfirst))
+            {
+                DecalSet* n = (DecalSet*)mem_heap_malloc(
+                    sizeof(DecalSet) * iNewSize);
+                int count = (int)(_Mylast - _Myfirst);
+                for (int i = 0; i < count; ++i)
+                    n[i] = _Myfirst[i];
+                if (_Myfirst != nullptr)
+                    mem_heap_free(_Myfirst);
+                _Myfirst = n;
+                _Mylast = n + count;
+                _Myend = n + iNewSize;
+            }
+            _Mylast = _Myfirst + iNewSize;
+        }
     };
     VectorView mDecalSets;   // +0x00
 
+    DynamicDecalMgr();       // ??0DynamicDecalMgr@@QAE@XZ
+    ~DynamicDecalMgr();      // ??1DynamicDecalMgr@@QAE@XZ
     void Render();           // ?Render@DynamicDecalMgr@@QAEXXZ
     void Update(float deltaTime);  // ?Update@DynamicDecalMgr@@QAEXM@Z
+    void DestroyAllDecals(); // ?DestroyAllDecals@DynamicDecalMgr@@QAEXXZ
+    void Add(nglTexture* texture, float zBias, bool alphaBlend, int maxNum,
+             const math::Position3& pos, const math::Position3& normal,
+             float radius, float angle, const Color& color,
+             bool isHighPriority);  // ?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@_N@Z
 };
+
+// ea: 0x006DCF30
+DynamicDecalMgr::DynamicDecalMgr()
+{
+    mDecalSets._Myfirst = nullptr;
+    mDecalSets._Mylast = nullptr;
+    mDecalSets._Myend = nullptr;
+}
+
+// ea: 0x006DCE20
+DynamicDecalMgr::~DynamicDecalMgr()
+{
+    DestroyAllDecals();
+}
+
+// ea: 0x006DCEC0
+void DynamicDecalMgr::DestroyAllDecals()
+{
+    DecalSet* Mylast = mDecalSets._Mylast;
+    DecalSet* Myfirst = mDecalSets._Myfirst;
+    for (DecalSet* it = Mylast; Myfirst != Mylast; ++Myfirst)
+    {
+        void** p_mDecals = (void**)&Myfirst->mDecalSet->mDecals;
+        if (p_mDecals != nullptr)
+        {
+            mem_heap_free(p_mDecals[15]);  // mViewToWorldMtx (+0x3C)
+            mem_heap_free(*p_mDecals);     // mDecals
+            mem_heap_free(p_mDecals);      // the DynamicDecalSet object
+            Mylast = it;
+        }
+    }
+    if (mDecalSets._Myfirst != nullptr)
+        mem_heap_free(mDecalSets._Myfirst);
+    mDecalSets._Myfirst = nullptr;
+    mDecalSets._Mylast = nullptr;
+    mDecalSets._Myend = nullptr;
+}
+
+// ea: 0x006DD170
+void DynamicDecalMgr::Add(nglTexture* texture, float zBias, bool alphaBlend,
+                          int maxNum, const math::Position3& pos,
+                          const math::Position3& normal, float radius,
+                          float angle, const Color& color,
+                          bool isHighPriority)
+{
+    DecalSet* Myfirst = mDecalSets._Myfirst;
+    DecalSet* Mylast = mDecalSets._Mylast;
+    nglTexture** p_mTexture;
+    if (Myfirst != Mylast)
+    {
+        p_mTexture = (nglTexture**)&Myfirst->mTexture;
+        do
+        {
+            if (*p_mTexture == texture)
+                break;
+            p_mTexture += 2;
+        } while ((DecalSet*)p_mTexture != Mylast);
+    }
+    else
+    {
+        p_mTexture = (nglTexture**)Mylast;
+    }
+    DecalSet* v16 = (DecalSet*)p_mTexture;
+    if ((DecalSet*)p_mTexture == Mylast)
+    {
+        int v17 = Myfirst != nullptr ? (int)(Mylast - Myfirst) : 0;
+        mDecalSets.resize(v17 + 1, 0);
+        v16 = &mDecalSets._Myfirst[v17];
+        DynamicDecalSet* v18 =
+            (DynamicDecalSet*)mem_heap_malloc(0x5Cu);
+        DynamicDecalSet* v19 =
+            v18 != nullptr
+                ? new (v18) DynamicDecalSet(texture, zBias, alphaBlend, maxNum)
+                : nullptr;
+        v16->mDecalSet = v19;
+        v16->mTexture = texture;
+    }
+    v16->mDecalSet->Add(pos, normal, radius, angle, color, isHighPriority);
+}
 
 // ea: 0x006D84D0
 void DynamicDecalMgr::Render()

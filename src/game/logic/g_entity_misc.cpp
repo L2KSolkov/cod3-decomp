@@ -1535,17 +1535,6 @@ void CGBankManager_DebugRender_impl(void* self)
 {
     (void)self;
 }
-// DynamicDecalMgr::Add (render.o; stub - artifact signature matches the
-// void* view in g_local.h until the nglTexture/Color types are wired)
-void DynamicDecalMgr::Add(void* texture, float zBias, bool alphaBlend,
-                          int maxNum, const math::Position3& pos,
-                          const math::Position3& normal, float radius,
-                          float angle, const float* color, bool isHighPriority)
-{
-    (void)texture; (void)zBias; (void)alphaBlend; (void)maxNum;
-    (void)pos; (void)normal; (void)radius; (void)angle; (void)color;
-    (void)isHighPriority;
-}
 
 // DebugRender helpers (render.o; stubs, port later)
 void DebugRender::RenderBox(const math::Position3& mins,
