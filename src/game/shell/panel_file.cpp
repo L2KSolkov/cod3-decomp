@@ -760,6 +760,125 @@ void PanelQuadSection::CopyFrom(PanelQuadSection* pSrc)
     quad = pSrc->quad;
 }
 
+// ea: 0x005696D0
+PanelQuadSection::PanelQuadSection()
+{
+    quad.Z = 0.0f;
+}
+
+// ea: 0x00569720
+void PanelQuadSection::SetXYInitialToCurrentPos()
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        x_initial[i] = (short)quad.Verts[i].X;
+        y_initial[i] = (short)quad.Verts[i].Y;
+    }
+}
+
+// ea: 0x00569750
+void PanelQuadSection::Rotate(float rotate_x, float rotate_y, float rotation)
+{
+    float s = sinf(rotation);
+    float c = cosf(rotation);
+    for (int i = 0; i < 4; ++i)
+    {
+        float dx = quad.Verts[i].X - rotate_x;
+        float dy = quad.Verts[i].Y - rotate_y;
+        quad.Verts[i].X = (c * dx) - (s * dy) + rotate_x;
+        quad.Verts[i].Y = (s * dx) + (c * dy) + rotate_y;
+    }
+}
+
+// ea: 0x005697E0
+void PanelQuadSection::Scale(float sx, float sy, float scx, float scy)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        quad.Verts[i].X = ((quad.Verts[i].X - sx) * scx) + sx;
+        quad.Verts[i].Y = ((quad.Verts[i].Y - sy) * scy) + sy;
+    }
+}
+
+// ea: 0x00569AF0
+void PanelQuadSection::SetUV(float* u, float* v)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        quad.Verts[i].U = u[i];
+        quad.Verts[i].V = v[i];
+    }
+}
+
+// ea: 0x00569B70
+void PanelQuadSection::SetPos(float* x, float* y)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        quad.Verts[i].X = x[i];
+        quad.Verts[i].Y = y[i];
+    }
+}
+
+// ea: 0x00569BF0
+void PanelQuadSection::ResetToInitialXY()
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        quad.Verts[i].X = x_initial[i];
+        quad.Verts[i].Y = y_initial[i];
+    }
+}
+
+// ea: 0x0056A050
+void PanelQuadSection::Shift(float off_x, float off_y)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        quad.Verts[i].X += off_x;
+        quad.Verts[i].Y += off_y;
+    }
+}
+
+// ea: 0x0056A0E0
+void PanelQuadSection::ShiftXYInitial(float off_x, float off_y)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        x_initial[i] = (short)(x_initial[i] + off_x);
+        y_initial[i] = (short)(y_initial[i] + off_y);
+    }
+}
+
+// ea: 0x0056A280
+void PanelQuadSection::Fatten(float fatten_width, float about_x)
+{
+    for (int i = 0; i < 4; ++i)
+        quad.Verts[i].X = ((quad.Verts[i].X - about_x) * fatten_width)
+                          + about_x;
+}
+
+// ea: 0x00579930
+void PanelQuadSection::Fatten(float fatten_width)
+{
+    float minX = 1000.0f;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (x_initial[i] < minX)
+            minX = (float)x_initial[i];
+    }
+    for (int i = 0; i < 4; ++i)
+        quad.Verts[i].X = ((quad.Verts[i].X - minX) * fatten_width) + minX;
+}
+
+// ea: 0x00579840
+void PanelQuadSection::SetAlphaVert(int i, float alpha)
+{
+    unsigned int c = quad.Verts[i].Color;
+    quad.Verts[i].Color =
+        (c & 0xFFFFFF) | ((unsigned int)(alpha * 255.0f) << 24);
+}
+
 // ea: 0x005B65A0 (inline COMDAT)
 void PanelQuad::SetAlpha(int pqsIdx, int vertIdx, float alpha)
 {

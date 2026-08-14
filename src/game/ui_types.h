@@ -446,6 +446,7 @@ public:
     short    y_initial[4];  // +0x08
     QuadData quad;          // +0x10 (88 bytes)
 
+    PanelQuadSection();            // shell.o 0x5696D0
     Broc::vector GetMax();            // shell.o 0x569C60
     Broc::vector GetMin();            // shell.o 0x569D00
     Broc::vector GetInitialMax();     // shell.o 0x569DA0
@@ -453,12 +454,27 @@ public:
     Broc::vector GetMaxUV();          // shell.o 0x569F00
     Broc::vector GetMinUV();          // shell.o 0x569FB0
     void SetInitialXY(Broc::vector* tmp_initial);  // shell.o 0x5696F0
+    void SetXYInitialToCurrentPos();  // shell.o 0x569720
+    void Rotate(float rotate_x, float rotate_y,
+                float rotation);      // shell.o 0x569750
+    void Scale(float sx, float sy, float scx,
+               float scy);            // shell.o 0x5697E0
     void SetUV(Broc::vector* uv);                  // shell.o 0x569B30
+    void SetUV(float* u, float* v);                // shell.o 0x569AF0
     void SetPos(Broc::vector* xy);                 // shell.o 0x569BB0
+    void SetPos(float* x, float* y);               // shell.o 0x569B70
+    void ResetToInitialXY();                       // shell.o 0x569BF0
+    void Shift(float off_x, float off_y);          // shell.o 0x56A050
+    void ShiftXYInitial(float off_x,
+                        float off_y);              // shell.o 0x56A0E0
+    void Fatten(float fatten_width,
+                float about_x);                    // shell.o 0x56A280
+    void Fatten(float fatten_width);               // shell.o 0x579930
     void AddPQSection(Broc::vector* xy, Broc::vector* uv, color32* col,
                       float z);                    // shell.o 0x579550
     void SetColorVert(int i, color32 c);           // shell.o 0x569AB0
     void SetColorNAVert(int i, color32 c);         // shell.o 0x579800
+    void SetAlphaVert(int i, float alpha);         // shell.o 0x579840
     void CopyFrom(PanelQuadSection* pSrc);         // shell.o 0x56A810
     void ScaleAbsoluteCenter(float sx, float sy, float scx,
                              float scy);           // shell.o 0x5698B0
