@@ -11,7 +11,7 @@
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
-enum ECoderId { COD3 = 0 };
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -63,6 +63,13 @@ class trRefEntity {
 public:
     uint8_t _pad0[0x08];
     refEntity_t e;           // +0x08
+    uint8_t _pad1[0xF0 - 0x68];
+    float mAlpha;            // +0xF0
+    uint8_t _pad2[0xFA - 0xF4];
+    unsigned char cull;      // +0xFA
+    unsigned char iAmVisible : 1;  // +0xFB
+    unsigned char noShadow : 1;    // +0xFB
+    unsigned char iflIndex;  // +0xFB
 };
 
 // viewParms_t (IDA type; size 0x1E0)
@@ -72,9 +79,10 @@ struct viewParms_t {
     uint8_t _pad[0x140 - 0xF8];     // pvsOrigin/isPortal/isMirror/frameCount/portalPlane/fov/lod
     float projectionMatrix[16];     // +0x140
     float zFar;                     // +0x180
-    uint8_t _pad2[0x1E0 - 0x184];   // frustum
+    uint8_t _pad2[0x1DC - 0x184];   // frustum
+    unsigned int isPortal : 1;      // +0x1DC
+    unsigned int _pad3;             // +0x1DC (frustum tail)
 };
-static_assert(sizeof(viewParms_t) == 0x1E0, "viewParms_t size mismatch");
 
 // trRefdef_t view (refdef at tr+0x26C)
 struct trRefdef_t {
@@ -636,6 +644,118 @@ void R_Init()
     memset(&tr.debug, 0, sizeof(tr.debug));
     g_bOptimize = 0;
     ri.Printf(0, "----- finished R_Init -----\n");
+}
+
+// ============================================================================
+// R_AddXModelSurfaces - ea: 0x006D1940
+// ============================================================================
+struct scr_vehicle_t;
+struct nglScene;
+class DObj;
+class Entity;
+struct EntityView {
+    uint8_t _pad[0x260];
+    scr_vehicle_t* scr_vehicle;  // +0x260
+};
+struct DObjView {
+    uint8_t _pad[0xCE];
+    unsigned char numModels;  // +0xCE
+    unsigned char numBones;   // +0xCF
+    uint8_t _pad3[0xD8 - 0xD0];
+    int mLOD;             // +0xD8
+    int mLODOverride;     // +0xDC
+    int mLODAnim;         // +0xE0
+    unsigned int mFlags;  // +0xE4
+};
+extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
+struct cdl_proftimer {
+    float value;       // +0x00
+    uint8_t _pad[0x10 - 0x04];
+    static void start(cdl_proftimer*) {}
+    static void stop(cdl_proftimer*) {}
+};
+extern cdl_proftimer cdl_proftimer_temp2;  // ?cdl_proftimer_temp2@@3Ucdl_proftimer@@A (tr_stats.cpp)
+extern void nglValidateMatrices(nglScene* Scene);  // ngl.o
+extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
+extern bool R_AddVehicleSurfaces(DObj* obj, Entity* entity,
+                                 const math::Mat43& matrix, float alpha,
+                                 bool render_shadow);  // 0x6D0B50 (unported)
+extern bool R_AddNonVehicleSurfaces(DObj* obj, Entity* entity,
+                                    const math::Mat43& matrix, float alpha,
+                                    bool render_shadow,
+                                    bool maxLod);  // 0x6D02D0 (unported)
+
+void R_AddXModelSurfaces(trRefEntity* ent)
+{
+    EntityView* entity = (EntityView*)ent->e.entity;
+    if (entity == nullptr || ((unsigned int)entity & 0x200000) == 0)
+    {
+        DObj* obj = ent->e.obj;
+        if (obj == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_xmodel.cpp";
+            AeAssert::gCurrentLine = 1425;
+            AeAssert::gCurrentExpr = "obj";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("we need valid DObj here"))
+                __debugbreak();
+        }
+        if ((g_DOBJF_NOT_RENDERED_LAST_FRAME & ((DObjView*)obj)->mFlags) != 0
+            && ((ent->e.renderfx & 2) == 0 || tr.viewParms.isPortal != 0))
+        {
+            math::Mat43 matrix;
+            matrix.x.v = _mm_setr_ps(ent->e.axis[0][0], ent->e.axis[0][1],
+                                     ent->e.axis[0][2], 0.0f);
+            matrix.y.v = _mm_setr_ps(ent->e.axis[1][0], ent->e.axis[1][1],
+                                     ent->e.axis[1][2], 0.0f);
+            matrix.z.v = _mm_setr_ps(ent->e.axis[2][0], ent->e.axis[2][1],
+                                     ent->e.axis[2][2], 0.0f);
+            matrix.w.v = _mm_setr_ps(ent->e.origin[0], ent->e.origin[1],
+                                     ent->e.origin[2], 0.0f);
+            cdl_proftimer::start(&cdl_proftimer_temp2);
+            nglValidateMatrices(nglBuildScene);
+            if (((DObjView*)obj)->numModels >= 8u)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\tr_xmodel.cpp";
+                AeAssert::gCurrentLine = 1447;
+                AeAssert::gCurrentExpr = "DObjGetNumModels(obj)<DOBJ_MAX_SUBMODELS";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("buffer overflow about to happen!"))
+                    __debugbreak();
+            }
+            bool v12 = false;
+            if (ent->noShadow != 0 || (r_testshadow->integer == 0))
+                v12 = false;
+            else
+                v12 = true;
+            if (ent->e.entity == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\tr_xmodel.cpp";
+                AeAssert::gCurrentLine = 1464;
+                AeAssert::gCurrentExpr = "ent->e.entity";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "this function handles models with valid entity pointer"))
+                    __debugbreak();
+            }
+            EntityView* v6 = (EntityView*)ent->e.entity;
+            float mAlpha = ent->mAlpha;
+            bool v8;
+            if (v6->scr_vehicle != nullptr)
+                v8 = R_AddVehicleSurfaces(obj, (Entity*)v6, matrix, mAlpha,
+                                          v12);
+            else
+                v8 = R_AddNonVehicleSurfaces(obj, (Entity*)v6, matrix, mAlpha,
+                                             v12, false);
+            ent->iAmVisible = (unsigned char)v8;
+            cdl_proftimer::stop(&cdl_proftimer_temp2);
+        }
+    }
 }
 
 // ============================================================================
