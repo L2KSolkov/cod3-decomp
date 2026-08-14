@@ -24,6 +24,13 @@ public:
     static void Report();  // ?Report@apsCommon@@SAXXZ
 };
 
+// apsMemory (aepsMemory)
+class apsMemory {
+public:
+    static void Reset();                // ?Reset@apsMemory@@YAXXZ
+    static unsigned int AddPool(int numBlocks, int blockSize);  // ?AddPool@apsMemory@@YAIHH@Z
+};
+
 // render.o data (scene counters / proj shadow)
 int r_firstSceneDlight;   // ?r_firstSceneDlight@@3HA @ 0xF74274
 int r_numdlights;         // ?r_numdlights@@3HA @ 0xF741E4
@@ -59,6 +66,8 @@ struct trGlobals_t {
     viewParms_t viewParms;       // +0x10
 };
 extern trGlobals_t tr;           // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+
+struct polyVert_t;
 
 // ============================================================================
 // EndOfRenderCallback - ea: 0x006C2370
@@ -107,6 +116,14 @@ void RE_ClearScene()
 }
 
 // ============================================================================
+// RE_AddPolyToScene - ea: 0x006C29D0
+// ============================================================================
+void RE_AddPolyToScene(int numVerts, int type, const polyVert_t* verts)
+{
+    (void)numVerts; (void)type; (void)verts;
+}
+
+// ============================================================================
 // R_GetLodDist(const refEntity_t*) - ea: 0x006C2A00
 // ============================================================================
 float R_GetLodDist(const refEntity_t* ent)
@@ -148,4 +165,56 @@ void apsReportStatus()
 // ============================================================================
 void apsResetPools()
 {
+}
+
+// ============================================================================
+// apsAddPool - ea: 0x006C2EA0
+// ============================================================================
+void apsAddPool(int numBlocks, int blockSize)
+{
+    (void)numBlocks; (void)blockSize;
+}
+
+// ============================================================================
+// apsCreateDefaultPools - ea: 0x006C2EB0
+// ============================================================================
+void apsCreateDefaultPools()
+{
+}
+
+// ============================================================================
+// apsCreateBigBufferPools - ea: 0x006C2EC0
+// ============================================================================
+void apsCreateBigBufferPools()
+{
+    apsMemory::Reset();
+    apsMemory::AddPool(500, 64);
+    apsMemory::AddPool(400, 128);
+    apsMemory::AddPool(400, 256);
+    apsMemory::AddPool(300, 512);
+    apsMemory::AddPool(200, 1024);
+    apsMemory::AddPool(100, 2048);
+    apsMemory::AddPool(60, 3072);
+    apsMemory::AddPool(50, 4096);
+    apsMemory::AddPool(50, 5120);
+    apsMemory::AddPool(30, 6144);
+    apsMemory::AddPool(30, 7168);
+    apsMemory::AddPool(50, 0x2000);
+    apsMemory::AddPool(15, 0x4000);
+}
+
+// ============================================================================
+// apsInitLevelSpecificParticleMemory - ea: 0x006C3070
+// ============================================================================
+void apsInitLevelSpecificParticleMemory(const char* name)
+{
+    (void)name;
+}
+
+// ============================================================================
+// apsUpdate - ea: 0x006C3080
+// ============================================================================
+void apsUpdate(float deltaTime)
+{
+    (void)deltaTime;
 }
