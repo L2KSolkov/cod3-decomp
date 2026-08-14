@@ -11,33 +11,77 @@
 #include <string.h>
 #include <intrin.h>
 
-// Minimal IDA-verified views for render.o globals
+// IDA-verified views for render.o globals
 struct BspTree;
+// world_t (IDA type; size 0x10C)
 struct world_t {
-    void* mSky;      // +0x00
-    BspTree* bspTree;  // +0x04
-    world_t();       // ??0world_t@@QAE@XZ (render.o 0x6BECC0)
+    char name[128];     // +0x00
+    char baseName[128]; // +0x80
+    BspTree* bspTree;   // +0x100
+    char* entityString; // +0x104
+    void* mSky;         // +0x108
+    world_t();          // ??0world_t@@QAE@XZ (render.o 0x6BECC0)
 };
+static_assert(sizeof(world_t) == 0x10C, "world_t size mismatch");
 
-struct trGlobals_t {
-    int registered;      // +0x00
-    int frameCount;      // +0x04
-    uint8_t _pad[0x40 - 0x08];
-    world_t* world;      // +0x40
-    struct DebugBlock {
-        uint8_t _pad[0x80];
-        void* externStrings;   // +0x80
-        int numExternStrings;  // +0x84
-        void* externLines;     // +0x88
-        int numExternLines;    // +0x8C
-    } debug;          // +0x40 region (offsets via disasm)
+struct trDebugString_t;
+struct trDebugLine_t;
+struct trDebugPoly_t;
+struct trDebugPlume_t;
+struct trDebugVert_t;
+struct fontInfo_t;
+// trDebug_t (IDA type; size 0x80)
+struct trDebug_t {
+    int maxVerts;            // +0x00
+    int numVerts;            // +0x04
+    float (*verts)[3];       // +0x08
+    int maxPolys;            // +0x0C
+    int numPolys;            // +0x10
+    trDebugPoly_t* polys;    // +0x14
+    int maxStrings;          // +0x18
+    int numStrings;          // +0x1C
+    trDebugString_t* strings;// +0x20
+    fontInfo_t* font;        // +0x24
+    int numExternStrings;    // +0x28
+    trDebugString_t* externStrings;  // +0x2C
+    int maxLines;            // +0x30
+    int numLines;            // +0x34
+    trDebugLine_t* lines;    // +0x38
+    int numExternLines;      // +0x3C
+    trDebugLine_t* externLines;      // +0x40
+    int numPlumes;           // +0x44
+    int maxPlumes;           // +0x48
+    trDebugPlume_t* plumes;  // +0x4C
+    int bInImmediateMode;    // +0x50
+    int mode;                // +0x54
+    float lineWidth;         // +0x58
+    float st[2];             // +0x5C
+    unsigned char rgba[4];   // +0x64
+    float normal[3];         // +0x68
+    int numDrawVerts;        // +0x74
+    int maxDrawVerts;        // +0x78
+    trDebugVert_t* dv;       // +0x7C
 };
+static_assert(sizeof(trDebug_t) == 0x80, "trDebug_t size mismatch");
+
+// trGlobals_t (IDA type; size 0x3A0)
+struct __declspec(align(16)) trGlobals_t {
+    int registered;          // +0x00
+    int worldMapLoaded;      // +0x04
+    int frameCount;          // +0x08
+    int viewCount;           // +0x0C
+    uint8_t _pad0[0x290 - 0x10];  // viewParms / or / refdef
+    world_t* world;          // +0x290
+    uint8_t _pad1[0x2A0 - 0x294];
+    uint8_t viewModelInfo[0x70];  // +0x2A0 (viewModelInfo_t; see tr_gl.cpp)
+    int viewModelInfoIndex;  // +0x310
+    trDebug_t debug;         // +0x314
+};
+static_assert(sizeof(trGlobals_t) == 0x3A0, "trGlobals_t size mismatch");
 extern trGlobals_t tr;           // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 extern world_t s_worldData;      // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
 extern BspTree* g_bspTree;       // ?g_bspTree@@3PAVBspTree@@A @ 0xF743DC
 extern int sCurColor;            // ?sCurColor@@3IA @ 0xF74290
-struct trDebugString_t;
-struct trDebugLine_t;
 
 // ServerTime (cg.o) - tick delta used by RE_BeginFrame
 struct ServerTime_s {
