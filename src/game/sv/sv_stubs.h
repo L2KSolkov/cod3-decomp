@@ -1463,12 +1463,22 @@ struct XBoneHierarchy {
 };
 static_assert(sizeof(XBoneHierarchy) == 0x0C, "XBoneHierarchy size mismatch");
 
+// XBoneInfo - bone bounds/offset entry (40 bytes) - verified against IDA
+// `class` tag per binary mangling (?PAPAVXBoneInfo in render.o)
+class XBoneInfo {
+public:
+    math::Position3::Packed mBounds[2];  // +0x00
+    math::Dir3::Packed      mOffset;     // +0x18
+    float                   mRadiusSquared;  // +0x24
+};
+static_assert(sizeof(XBoneInfo) == 0x28, "XBoneInfo size mismatch");
+
 // XModelParts - model geometry/anim data (0x40 bytes) - verified against IDA
 // `class` tag per binary mangling (?PAVXModelParts in cg.o/render.o)
 class XModelParts {
 public:
     InplaceVector<math::Mat43::Packed> mTransforms;  // +0x00
-    void*            mBoneInfos;                     // +0x08 InplaceVector<XBoneInfo>
+    InplaceVector<XBoneInfo> mBoneInfos;             // +0x08
     InplaceVector<XBoneHierarchy> mHierarchy;        // +0x10 InplaceVector<XBoneHierarchy>
     void*            mPartClassifications;           // +0x18
     InplaceVector<InplaceString> mMeshNames;         // +0x20
@@ -1477,6 +1487,7 @@ public:
     InplaceString    mAnimDefName;                   // +0x34
     void*            mAnimDef;                       // +0x38 nalBaseSkeleton*
     InplaceString    mName;                          // +0x3C
+    const char* GetBoneName(unsigned int i) const;   // ?GetBoneName@XModelParts@@QBEPBDI@Z
 };
 
 struct XModel {
