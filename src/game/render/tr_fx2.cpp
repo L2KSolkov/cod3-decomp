@@ -12,6 +12,7 @@
 #include "game/game_types.h"
 
 #include <stdint.h>
+#include <float.h>
 #include <stdlib.h>
 
 class DObjHandleDb;
@@ -710,6 +711,235 @@ ParticleEffect* FX_PlayEffectID(TPakId pakId, int id,
     forward[2] = fwd[2];
     MakeNormalVectors(forward, axis, up);
     return PlayEffect(pakId, id, org.v.m128_f32, &axis);
+}
+
+// ============================================================================
+// FX_GetBoneIndex / FX_GetBoneOrientation / FX_PlayEntityEffectID
+// ============================================================================
+class DObj {
+public:
+    uint8_t _pad0[0xCF];
+    unsigned char numBones;  // +0xCF
+};
+
+class DObjHandleDb {
+public:
+    struct DbElement {
+        DObj* mObject;  // +0x00
+        int   mKey;     // +0x04
+    };
+    uint8_t mFreeIndices[168];   // +0x00 (BitSet<1344>)
+    DbElement mElements[1344];   // +0xA8
+    friend DObjHandleDb* DObjHandleDb_SInst();
+private:
+    static DObjHandleDb sInst;   // ?sInst@DObjHandleDb@@0V1@A @ 0x12C2268 (g.o)
+};
+DObjHandleDb DObjHandleDb::sInst;
+DObjHandleDb* DObjHandleDb_SInst()
+{
+    return &DObjHandleDb::sInst;
+}
+
+struct orientation_t {
+    float origin[3];   // +0x00
+    float axis[3][3];  // +0x0C
+};
+struct cvar_t {
+    uint8_t _pad[0x20];
+    int integer;       // +0x20
+};
+struct DObjSkelMat;
+extern cvar_t* fx_debugBolt;  // ?fx_debugBolt@@3PAUcvar_t@@A @ 0x12FC6B8 (cl.o)
+extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);  // render.o
+extern bool FX_GetBoneOrientation(DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle,
+                                  int boltBoneIndex,
+                                  orientation_t* pOrient);  // render.o 0x6D79F0
+extern void CG_GetDObjOrientation(DObj* dobj, float* origin_out,
+                                  float (*axis_out)[3]);  // cg_dobj.cpp
+extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);  // q_shared
+extern void CG_DObjCalcBoneGeneric(DObj* obj, int boneIndex);  // cg.o
+extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);  // render.o
+extern void CL_AddDebugLine(const float* start, const float* end,
+                            const float* color, int a4, int a5, int a6,
+                            int a7);  // cl.o
+extern const float* const colorRed;    // ?colorRed@@3QBMB
+extern const float* const colorGreen;  // ?colorGreen@@3QBMB
+extern const float* const colorBlue;   // ?colorBlue@@3QBMB
+struct vm_s;
+extern vm_s* cgvm;                     // ?cgvm@@3PAUvm_s@@A (cl.o)
+
+cvar_t* fx_debugBolt = nullptr;
+
+// ea: 0x006D79D0
+int FX_GetBoneIndex(const DObj* dobj, unsigned int bone_name_hash)
+{
+    if (dobj != nullptr)
+        return DObjGetBoneIndex(dobj, bone_name_hash);
+    return -1;
+}
+
+// ea: 0x006D79F0
+bool FX_GetBoneOrientation(DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle,
+                           int boltBoneIndex, orientation_t* pOrient)
+{
+    if (boltObjHandle.mHandle.mVal == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 1883;
+        AeAssert::gCurrentExpr = "boltObjHandle != TDObjHandle::NullHandle()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pOrient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 1884;
+        AeAssert::gCurrentExpr = "pOrient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (cgvm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 1885;
+        AeAssert::gCurrentExpr = "cgvm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    unsigned int v3 = boltObjHandle.mHandle.mVal & 0xFFF;
+    if (v3 >= 0x540)
+        return false;
+    if (boltObjHandle.mHandle.mVal >> 12
+        != DObjHandleDb_SInst()->mElements[v3].mKey)
+    {
+        return false;
+    }
+    DObj* mObject = DObjHandleDb_SInst()->mElements[v3].mObject;
+    if (mObject == nullptr)
+        return false;
+    float origin[3];
+    float axis[3][3];
+    CG_GetDObjOrientation(mObject, origin, axis);
+    if ((_fpclass(origin[0]) & 0x297) != 0
+        || (_fpclass(origin[1]) & 0x297) != 0
+        || (_fpclass(origin[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 1899;
+        AeAssert::gCurrentExpr = "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    for (int r = 0; r < 3; ++r)
+    {
+        if ((_fpclass(axis[r][0]) & 0x297) != 0
+            || (_fpclass(axis[r][1]) & 0x297) != 0
+            || (_fpclass(axis[r][2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+            AeAssert::gCurrentLine = 1900 + r;
+            AeAssert::gCurrentExpr = "!IS_NAN((axis[0])[0]) && !IS_NAN((axis[0])[1]) && !IS_NAN((axis[0])[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+    }
+    if (boltBoneIndex < 0)
+    {
+        pOrient->origin[0] = origin[0];
+        pOrient->origin[1] = origin[1];
+        pOrient->origin[2] = origin[2];
+        AxisCopy(axis, pOrient->axis);
+        return true;
+    }
+    if (boltBoneIndex >= mObject->numBones)
+        return false;
+    CG_DObjCalcBoneGeneric(mObject, boltBoneIndex);
+    DObjSkelMat* MatrixArray = DObjGetMatrixArray(mObject, 0);
+    if (MatrixArray == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+        AeAssert::gCurrentLine = 1923;
+        AeAssert::gCurrentExpr = "mtxArray";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    const float* m = (const float*)((const char*)MatrixArray
+                                    + boltBoneIndex * 64);  // DObjSkelMat is 64B
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+            pOrient->axis[j][i] = (m[j * 4 + 0] * axis[0][i])
+                                + (m[j * 4 + 1] * axis[1][i])
+                                + (m[j * 4 + 2] * axis[2][i]);
+        pOrient->origin[i] = (m[12] * axis[0][i]) + (m[13] * axis[1][i])
+                           + (m[14] * axis[2][i]) + origin[i];
+    }
+    for (int c = 0; c < 3; ++c)
+    {
+        if ((_fpclass(pOrient->origin[c]) & 0x297) != 0
+            || (_fpclass(pOrient->axis[0][c]) & 0x297) != 0
+            || (_fpclass(pOrient->axis[1][c]) & 0x297) != 0
+            || (_fpclass(pOrient->axis[2][c]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+            AeAssert::gCurrentLine = 1941;
+            AeAssert::gCurrentExpr = "!IS_NAN((pOrient->origin)[0]) && !IS_NAN((pOrient->origin)[1]) && !IS_NAN((pOrient->origin)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+    }
+    int integer = fx_debugBolt->integer;
+    if (integer != 0)
+    {
+        float end[3];
+        end[0] = (integer * pOrient->axis[0][0]) + pOrient->origin[0];
+        end[1] = (integer * pOrient->axis[0][1]) + pOrient->origin[1];
+        end[2] = (integer * pOrient->axis[0][2]) + pOrient->origin[2];
+        CL_AddDebugLine(pOrient->origin, end, colorRed, 1, 0, 0, 0);
+        end[0] = (fx_debugBolt->integer * pOrient->axis[1][0]) + pOrient->origin[0];
+        end[1] = (fx_debugBolt->integer * pOrient->axis[1][1]) + pOrient->origin[1];
+        end[2] = (fx_debugBolt->integer * pOrient->axis[1][2]) + pOrient->origin[2];
+        CL_AddDebugLine(pOrient->origin, end, colorGreen, 1, 0, 0, 0);
+        end[0] = (fx_debugBolt->integer * pOrient->axis[2][0]) + pOrient->origin[0];
+        end[1] = (fx_debugBolt->integer * pOrient->axis[2][1]) + pOrient->origin[1];
+        end[2] = (fx_debugBolt->integer * pOrient->axis[2][2]) + pOrient->origin[2];
+        CL_AddDebugLine(pOrient->origin, end, colorBlue, 1, 0, 0, 0);
+    }
+    return true;
+}
+
+// ea: 0x006D8310
+ParticleEffect* FX_PlayEntityEffectID(
+    TPakId pakId, int id, const math::Position3& org,
+    const float (*axis)[3],
+    DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle,
+    DbLinkedHandle<EntityHandleDb, Entity> boltEntHandle, int boltBoneIndex)
+{
+    (void)axis;
+    orientation_t ori;
+    ori.origin[0] = org.v.m128_f32[0];
+    ori.origin[1] = org.v.m128_f32[1];
+    ori.origin[2] = org.v.m128_f32[2];
+    memset(&ori.axis[0][0], 0, 36);
+    if (boltObjHandle.mHandle.mVal != 0
+        && !FX_GetBoneOrientation(boltObjHandle, boltBoneIndex, &ori))
+    {
+        return nullptr;
+    }
+    math::Mat43 Mat;
+    Mat.x.v = _mm_setr_ps(ori.axis[0][0], ori.axis[0][1], ori.axis[0][2], 0.0f);
+    Mat.y.v = _mm_setr_ps(ori.axis[1][0], ori.axis[1][1], ori.axis[1][2], 0.0f);
+    Mat.z.v = _mm_setr_ps(ori.axis[2][0], ori.axis[2][1], ori.axis[2][2], 0.0f);
+    Mat.w.v = _mm_setr_ps(ori.origin[0], ori.origin[1], ori.origin[2], 0.0f);
+    return PlayEffect(pakId, id, Mat, boltObjHandle, boltEntHandle,
+                      boltBoneIndex, boltBoneIndex != 0);
 }
 
 // ea: 0x006D3650
