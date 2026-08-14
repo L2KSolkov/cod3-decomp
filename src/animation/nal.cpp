@@ -3651,7 +3651,7 @@ public:
                  unsigned int hint);                              // ea: 0x00545C70
     void ExecuteAndClearAnimation();                              // ea: 0x0054BF00
 
-protected:
+private:
     void ExecGetPose(nalGenericPose* pDestPose, nalGenericPose* pDefaultPose,
                      GetPoseOp& theOp);                           // ea: 0x0053EDA0
     void ExecuteBlendPose(nalGenericPose* pDestPose,
@@ -17753,9 +17753,8 @@ public:
 
     ae_array<AnimBank*, 99> mBankArray;  // +0x04
 
-protected:
-    void UnloadBank(TPakId pakId);  // ?UnloadBank@AnimBankManager@@EAEXW4TPakId@@@Z (0x53EA90)
 private:
+    virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AnimBankManager@@EAEXW4TPakId@@@Z (0x53EA90)
     void AddBank(TPakId pakId, AnimBank* bank);  // ?AddBank@...@@AAEXW4TPakId@@PAVAnimBank@@@Z (0x5456F0)
 public:
     AnimBank* GetBank(TPakId pakId);     // ?GetBank@...@@QAEPAVAnimBank@@W4TPakId@@@Z (0x545760)
