@@ -136,6 +136,110 @@ void RE_AddViewModelToScene(refEntity_t* ent)
 }
 
 // ============================================================================
+// RE_AddPolyToScene - ea: 0x006D29C0
+// ============================================================================
+struct polyVert_t {
+    float xyz[3];
+    float st[2];
+    float lightmap[2];
+    unsigned char modulate[4];
+};
+
+struct nglMeshSection;
+struct gpuVertexFormat;
+struct nglMaterial;
+struct nglMeshNode;
+class cdScratchMaterial {
+public:
+    cdScratchMaterial(nglTexture* tex, unsigned int BlendMode, int a3,
+                      bool a4);  // ??0cdScratchMaterial@@QAE@PAUnglTexture@@IH_N@Z
+};
+extern gpuVertexFormat cdscratch_vertex_format;  // ?cdscratch_vertex_format@@3UgpuVertexFormat@@A
+extern void* nglListAlloc(unsigned int size, unsigned int align);  // ngl.o
+extern nglMesh* auxCreateScratchMesh(int flags, int num);          // aux.o
+extern nglMeshSection* nglCreateScratchSection(int Prim, int NIndices,
+                                               int NVertices,
+                                               gpuVertexFormat* Fmt);  // ngl.o
+extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                              nglMaterial* Mat, int Count);  // ngl.o
+extern void* nglLockSectionIndices(nglMeshSection* Section);   // ngl.o
+extern void* nglLockSectionVertices(nglMeshSection* Section);  // ngl.o
+extern nglMesh* auxCloseScratchMesh(nglMesh* Mesh);            // aux.o
+extern void nglListAddMesh(nglMesh* Mesh, const math::Mat43& Mat,
+                           nglMeshParams* params,
+                           nglShaderParamSet* shaderParams,
+                           void (*callback)(nglMeshNode*));  // ngl.o
+extern void j_nullsub_27(nglMeshSection* Section);  // nullsub
+extern void j_nullsub_67(nglMeshSection* Section);  // nullsub
+
+static inline unsigned int PackModulate(const unsigned char* m)
+{
+    return m[2] | (m[1] << 8) | (m[0] << 16) | (m[3] << 24);
+}
+
+void RE_AddPolyToScene(nglTexture* tex, int numVerts, const polyVert_t* verts)
+{
+    if (numVerts != 4)
+        return;
+    void* matMem = nglListAlloc(0x20u, 0x10u);
+    cdScratchMaterial* mat = nullptr;
+    if (matMem != nullptr)
+        mat = new (matMem) cdScratchMaterial(tex, 0x64078600u, 1, false);
+    nglMesh* TempMesh = auxCreateScratchMesh(0x40000, 1);
+    nglMeshSection* Section = nglCreateScratchSection(6, 4, 4,
+                                                      &cdscratch_vertex_format);
+    nglAddMeshSection(TempMesh, Section, (nglMaterial*)mat, 1);
+    unsigned short* indices = (unsigned short*)nglLockSectionIndices(Section);
+    float* v7 = (float*)nglLockSectionVertices(Section);
+
+    v7[0] = verts[0].xyz[0];
+    v7[1] = verts[0].xyz[1];
+    v7[2] = verts[0].xyz[2];
+    v7[3] = verts[0].st[0];
+    v7[4] = verts[0].st[1];
+    *(unsigned int*)&v7[5] = PackModulate(verts[0].modulate);
+    indices[0] = 0;
+
+    v7 += 6;
+    v7[0] = verts[1].xyz[0];
+    v7[1] = verts[1].xyz[1];
+    v7[2] = verts[1].xyz[2];
+    v7[3] = verts[1].st[0];
+    v7[4] = verts[1].st[1];
+    *(unsigned int*)&v7[5] = PackModulate(verts[1].modulate);
+    indices[1] = 1;
+
+    v7 += 6;
+    v7[0] = verts[3].xyz[0];
+    v7[1] = verts[3].xyz[1];
+    v7[2] = verts[3].xyz[2];
+    v7[3] = verts[3].st[0];
+    v7[4] = verts[3].st[1];
+    *(unsigned int*)&v7[5] = PackModulate(verts[3].modulate);
+    indices[2] = 2;
+
+    v7 += 6;
+    v7[0] = verts[2].xyz[0];
+    v7[1] = verts[2].xyz[1];
+    v7[2] = verts[2].xyz[2];
+    v7[3] = verts[2].st[0];
+    v7[4] = verts[2].st[1];
+    *(unsigned int*)&v7[5] = PackModulate(verts[2].modulate);
+    indices[3] = 3;
+
+    j_nullsub_67(Section);
+    j_nullsub_27(Section);
+
+    math::Mat43 v38;
+    v38.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v38.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    v38.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    v38.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    nglMesh* v36 = auxCloseScratchMesh(TempMesh);
+    nglListAddMesh(v36, v38, nullptr, nullptr, nullptr);
+}
+
+// ============================================================================
 // EndOfRenderCallback - ea: 0x006C2370
 // ============================================================================
 void EndOfRenderCallback(void* Data)
