@@ -6,27 +6,68 @@
 #include "game/logic/g_local.h"
 #include "core/tlFixedString.h"
 #include "render/cdDebugShader.h"
+#include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_lighting.h"
 #include "ngl/nglDebug.h"
 #include "ngl/ngl_dx_quad.h"
 
 #include <math.h>
 #include <intrin.h>
+#include <stdio.h>
 
 // LightGrid::TOC forward (full layout in lightgrid.cpp)
 namespace LightGrid {
-struct TOC;
+struct Light {
+    math::Vector4::Packed mPosition;   // +0x00 (16)
+    math::Position3::Packed mColor;    // +0x10 (12)
+};
+struct Cell {
+    math::Position3::Packed mBase;  // +0x00 (12 bytes)
+    float mXGridDelta;              // +0x0C
+    float mYGridDelta;              // +0x10
+    uint16_t mNumXRows;             // +0x14
+    uint16_t mNumYRows;             // +0x16
+    unsigned int mFirstGridPoint;   // +0x18
+    unsigned int mCellIndex;        // +0x1C
+};
+struct DLightInfo {
+    math::Vector4::Packed mInfo;    // +0x00
+};
+struct GridPoint {
+    unsigned int gridpoint;         // +0x00
+};
+struct TOC {
+    Light* mLights;          // +0x00
+    int mNumLights;          // +0x04
+    GridPoint* mGridPoints;  // +0x08
+    int mNumGridPoints;      // +0x0C
+    void* mLightIndices;     // +0x10
+    int mNumLightIndices;    // +0x14
+    Cell* mCells;            // +0x18
+    int mNumCells;           // +0x1C
+    DLightInfo* mDLightInfos;// +0x20
+    int mNumDLightInfos;     // +0x24
+};
 }
+class LightGridData;
 
 // LightGridMgr - minimal render.o view (IDA-verified)
 class LightGridMgr : public AssetBankSet {
 public:
     LightGridMgr();                              // ??0LightGridMgr@@QAE@XZ
+    static LightGridMgr* sInst;                  // ?sInst@LightGridMgr@@2PAV1@A
     void SetLightGridFailedColor();  // ?SetLightGridFailedColor@LightGridMgr@@QAEXXZ
     LightGrid::TOC* GetLightGrid(TPakId iPakId); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@W4TPakId@@@Z
     LightGrid::TOC* GetLightGrid(int cellNum);   // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@H@Z
     LightGrid::TOC* GetLightGrid(const math::Position3& posArg,
                                  int* pCellNum); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@ABVPosition3@math@@PAH@Z
+    void AddVertexPointLights(TPakId pakId, LightGrid::TOC* toc);  // ?AddVertexPointLights@LightGridMgr@@QAEXW4TPakId@@PAUTOC@LightGrid@@@Z
+    void RenderLightGridDebugSphere(const math::Position3& pos);    // ?RenderLightGridDebugSphere@LightGridMgr@@QAEXABVPosition3@math@@@Z
+    void RenderLightGridDebugSpheres();                             // ?RenderLightGridDebugSpheres@LightGridMgr@@QAEXXZ
+    void RenderLightGridDebugLines();                               // ?RenderLightGridDebugLines@LightGridMgr@@QAEXXZ
+    void SampleLightGrid(const LightGrid::TOC& toc, int cellidx,
+                         const math::Position3& pos,
+                         LightGridData* pLG);  // lightgrid.cpp
 private:
     virtual void UnloadBank(TPakId pakId);       // ?UnloadBank@LightGridMgr@@EAEXW4TPakId@@@Z
     void* mList[99];                             // ae_array<LightGrid::TOC*, 99>
@@ -57,6 +98,28 @@ extern void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
 extern void tlPrint(const char* lpOutputString);  // tl lib
 extern int g_lightGridBlueErrors;   // ?g_lightGridBlueErrors@@3HA (g.o)
 extern int g_bOptimize;             // ?g_bOptimize@@3HA (render.o @ 0xF743D0)
+extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);  // ngl_scene.cpp
+extern void* nglListAlloc(unsigned int size, unsigned int align);     // ngl.o
+extern nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
+                                   nglMeshParams* MeshParams,
+                                   nglShaderParamSet* ShaderParams,
+                                   void (*fn)(nglMeshNode*));  // ngl_mesh.cpp
+float below = 55.0f;  // ?below@@3MA @ 0xE01DE8
+
+// LightEffect / AddLight (tr_fx2.cpp)
+class LightEffect {
+public:
+    enum eType : int { PROJECTED_TEXTURE = 0x0, VERTEX_LIGHT = 0x1 };
+    enum eTime : int { FLASH = 0x1, FOREVER = 0xFFFFFFFF };
+    float mColor[4];          // +0x20
+    bool mFlicker;            // +0x3C
+    float mColorOriginal[4];  // +0x40
+    float mInnerRadius;       // +0x54
+    float mOuterRadius;       // +0x58
+};
+extern LightEffect* AddLight(TPakId pakId, LightEffect::eType type,
+                             const math::Position3& pos,
+                             LightEffect::eTime time);  // ?AddLight@@YAPAVLightEffect@@W4TPakId@@W4eType@1@ABVPosition3@math@@W4eTime@1@@Z
 
 // controller (input/controller.o); minimal view to avoid ui_types.h clash
 class controller {
@@ -475,4 +538,195 @@ const math::Dir3 compute_orth_unit_vector(const math::Dir3& v)
     result.v.m128_f32[1] = c1 * inv;
     result.v.m128_f32[2] = c2 * inv;
     return result;
+}
+
+// ============================================================================
+// LightGridMgr debug rendering (LightGridMgr.cpp)
+// ============================================================================
+
+// ea: 0x006D46A0
+void LightGridMgr::AddVertexPointLights(TPakId pakId, LightGrid::TOC* toc)
+{
+    int mNumLights = toc->mNumLights;
+    LightGrid::Light* mLights = toc->mLights;
+    int v17 = 0;
+    if (mNumLights > 0)
+    {
+        do
+        {
+            float w = mLights->mPosition.w;
+            if (w >= 2.0f)
+            {
+                LightGrid::DLightInfo* mDLightInfos = toc->mDLightInfos;
+                if (mDLightInfos == nullptr)
+                {
+                    printf("Re convert your level , cod2rad and lgridcvt for dynamic lights\n");
+                    return;
+                }
+                math::Position3 pos;
+                pos.v.m128_f32[0] = mLights->mPosition.x;
+                pos.v.m128_f32[1] = mLights->mPosition.y;
+                pos.v.m128_f32[2] = mLights->mPosition.z;
+                pos.v.m128_f32[3] = mLights->mPosition.w;
+                LightGrid::DLightInfo* p_x = &mDLightInfos[(int)w - 2];
+                bool v18 = p_x->mInfo.z >= 1.0f;
+                LightEffect* v10 = AddLight(pakId, LightEffect::VERTEX_LIGHT,
+                                            pos, LightEffect::FOREVER);
+                v10->mColor[0] = mLights->mColor.x;
+                v10->mColor[1] = mLights->mColor.y;
+                v10->mColor[2] = mLights->mColor.z;
+                v10->mColor[3] = 1.0f;
+                v10->mColorOriginal[0] = mLights->mColor.x;
+                v10->mColorOriginal[1] = mLights->mColor.y;
+                v10->mColorOriginal[2] = mLights->mColor.z;
+                v10->mFlicker = v18;
+                v10->mInnerRadius = p_x->mInfo.x;
+                v10->mOuterRadius = p_x->mInfo.y;
+            }
+            ++mLights;
+            ++v17;
+        } while (v17 < toc->mNumLights);
+    }
+}
+
+// ea: 0x006D47E0
+void LightGridMgr::RenderLightGridDebugSphere(const math::Position3& pos)
+{
+    nglMesh* mDebugSphereMesh = DebugRender::sInst.mDebugSphereMesh;
+    if (mDebugSphereMesh != nullptr)
+        mDebugSphereMesh->Flags |= 0x1000000;
+    nglLightContext* lightCtx = nglCreateLightContext();
+    int cellNum;
+    LightGrid::TOC* LightGrid = GetLightGrid(pos, &cellNum);
+    if (LightGrid != nullptr)
+        SampleLightGrid(*LightGrid, cellNum, pos, nullptr);
+
+    math::Mat43 mtx;
+    mtx.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    mtx.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    mtx.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    mtx.w.v = pos.v;
+
+    nglShaderParamSet* ctx = (nglShaderParamSet*)nglListAlloc(
+        4 * nglShaderParamSet::NumParams + 8, 8u);
+    ctx->Array[0] = 0;
+    ctx->Array[1] = 0;
+    unsigned __int64 mask = 1i64 << nglLightContextParamID;
+    ctx->Array[0] |= (unsigned int)mask;
+    ctx->Array[1] |= (unsigned int)(mask >> 32);
+    ctx->Array[nglLightContextParamID + 2] = (unsigned int)lightCtx;
+    nglListAddMesh(mDebugSphereMesh, mtx, nullptr, ctx, nullptr);
+}
+
+// ea: 0x006D4900
+void LightGridMgr::RenderLightGridDebugSpheres()
+{
+    math::Position3 cameraPos;
+    cameraPos.v = nglGetMatrix_ViewToWorld(nglBuildScene)->w.v;
+    int cellNum;
+    LightGrid::TOC* LightGrid = GetLightGrid(cameraPos, &cellNum);
+    if (cellNum < 0)
+        return;
+    int mNumCells = LightGrid->mNumCells;
+    int v8 = 0;
+    if (mNumCells <= 0)
+        return;
+    LightGrid::Cell* mCells = LightGrid->mCells;
+    while (mCells[v8].mCellIndex != (unsigned int)cellNum)
+    {
+        if (++v8 >= mNumCells)
+            return;
+    }
+    LightGrid::Cell* v11 = &mCells[v8];
+    if (v11 == nullptr)
+        return;
+    int v12 = 1;
+    if (v11->mNumXRows - 1 <= 1)
+        return;
+    do
+    {
+        int v14 = 1;
+        if (v11->mNumYRows - 1 > 1)
+        {
+            float cameraZ = cameraPos.v.m128_f32[2];
+            do
+            {
+                math::Position3 pos;
+                pos.v.m128_f32[0] = v11->mBase.x + (float)v12 * v11->mXGridDelta;
+                pos.v.m128_f32[1] = v11->mBase.y + (float)v14 * v11->mYGridDelta;
+                pos.v.m128_f32[2] = cameraZ - below;
+                pos.v.m128_f32[3] = 0.0f;
+                float dx = pos.v.m128_f32[0] - cameraPos.v.m128_f32[0];
+                float dy = pos.v.m128_f32[1] - cameraPos.v.m128_f32[1];
+                float dist2 = (dx * dx) + (dy * dy);
+                if (dist2 < 62500.0f)
+                    RenderLightGridDebugSphere(pos);
+                ++v14;
+            } while (v14 < v11->mNumYRows - 1);
+        }
+        ++v12;
+    } while (v12 < v11->mNumXRows - 1);
+}
+
+// ea: 0x006DAF80
+void LightGridMgr::RenderLightGridDebugLines()
+{
+    math::Position3 cameraPos;
+    cameraPos.v = nglGetMatrix_ViewToWorld(nglBuildScene)->w.v;
+    int cellNum;
+    LightGrid::TOC* LightGrid = GetLightGrid(cameraPos, &cellNum);
+    if (LightGrid == nullptr || cellNum < 0)
+        return;
+    int mNumCells = LightGrid->mNumCells;
+    int v8 = 0;
+    if (mNumCells <= 0)
+        return;
+    unsigned int* i = &LightGrid->mCells->mCellIndex;
+    while (*i != (unsigned int)cellNum)
+    {
+        if (++v8 >= mNumCells)
+            return;
+        i += 8;
+    }
+    LightGrid::Cell* v10 = &LightGrid->mCells[v8];
+    if (v10 == nullptr)
+        return;
+    int v11 = 1;
+    if (v10->mNumXRows <= 1u)
+        return;
+    do
+    {
+        int v13 = 1;
+        if (v10->mNumYRows > 1u)
+        {
+            do
+            {
+                math::Position3 pos;
+                pos.v.m128_f32[0] = v10->mBase.x + (float)v11 * v10->mXGridDelta;
+                pos.v.m128_f32[1] = v10->mBase.y + (float)v13 * v10->mYGridDelta;
+                pos.v.m128_f32[2] = 0.0f;
+                pos.v.m128_f32[3] = 0.0f;
+                float dx = pos.v.m128_f32[0] - cameraPos.v.m128_f32[0];
+                float dy = pos.v.m128_f32[1] - cameraPos.v.m128_f32[1];
+                float dist2 = (dx * dx) + (dy * dy);
+                if (dist2 < 250000.0f)
+                {
+                    LightGrid::GridPoint* mGridPoints = LightGrid->mGridPoints;
+                    unsigned int gridpoint =
+                        mGridPoints[v11 + v10->mFirstGridPoint
+                                    + v13 * v10->mNumXRows].gridpoint;
+                    float r = (float)(gridpoint & 0x1F) * 0.032258064f;
+                    float g = (float)((gridpoint >> 5) & 0x1F) * 0.032258064f;
+                    float b = (float)((gridpoint >> 10) & 0x1F) * 0.032258064f;
+                    math::Position3 p0 = pos;
+                    math::Position3 p1 = pos;
+                    p0.v.m128_f32[2] -= 1000.0f;
+                    p1.v.m128_f32[2] += 1000.0f;
+                    DebugRender::RenderLine(p0, p1, Color(r, g, b, 1.0f), 2.5f);
+                }
+                ++v13;
+            } while (v13 < v10->mNumYRows);
+        }
+        ++v11;
+    } while (v11 < v10->mNumXRows);
 }
