@@ -182,6 +182,7 @@ public:
     ParticleEffect(bool bInGame);  // ??0ParticleEffect@@QAE@_N@Z
     void Report();                 // ?Report@ParticleEffect@@QAEXXZ
     static void DestroyArray();  // ?DestroyArray@ParticleEffect@@SAXXZ
+    static void InitArray();     // ?InitArray@ParticleEffect@@SAXXZ
     static ParticleEffect* New();  // ?New@ParticleEffect@@SAPAV1@XZ
     static void Delete(ParticleEffect* pEffect);  // ?Delete@ParticleEffect@@SAXPAV1@@Z
     static bool IsFreePoolEmpty();  // ?IsFreePoolEmpty@ParticleEffect@@SA_NXZ
@@ -220,6 +221,40 @@ ParticleEffect::ParticleEffect(bool bInGame)
     mRaycastData = nullptr;
     cached_pos[3] = -1.0f;
     culled = 0;
+}
+
+// ea: 0x006D3580
+void ParticleEffect::InitArray()
+{
+    if (ParticleEffect::sArrayData == nullptr)
+    {
+        void* block = mem_heap_malloc(0x3C04u);
+        ParticleEffect* v2;
+        if (block != nullptr)
+        {
+            *(unsigned int*)block = 256;
+            v2 = (ParticleEffect*)((char*)block + 4);
+            for (int i = 0; i < 256; ++i)
+                new (&v2[i]) ParticleEffect(false);
+        }
+        else
+        {
+            v2 = nullptr;
+        }
+        ParticleEffect::sArrayData = v2;
+        ParticleEffect::sArray.m_size = 0;
+        short v0 = 0;
+        for (int i = 0; i < 256; ++i)
+        {
+            ParticleEffect::sArrayData[i].mIndexA = v0;
+            ParticleEffect::sArrayData[i].mIndexB = v0;
+            ae_pair<short, short> idx;
+            idx.first = ParticleEffect::sArrayData[i].mIndexA;
+            idx.second = ParticleEffect::sArrayData[i].mIndexB;
+            ParticleEffect::sArray.push_back(idx);
+            ++v0;
+        }
+    }
 }
 
 void ParticleEffect::Report()
