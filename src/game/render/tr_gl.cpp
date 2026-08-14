@@ -183,6 +183,31 @@ void nglStartOverExposure(float oeBloomStart, float oeBloomEnd,
     bpOe.oeLeadTime = 0.0f;
 }
 
+// ea: 0x006C0720
+void nglStartOverExposureEx(float oeBloomRealStart, float oeBloomStart,
+                            float oeBloomEnd, float oeBloomInTime,
+                            float oeBloomDecay, float oeGammaStart,
+                            float oeGammaDecay)
+{
+    bpOe.oeBloomInTime = (oeBloomStart - oeBloomRealStart) * (1.0f / oeBloomInTime);
+    bpOe.oeBloomStart = oeBloomStart;
+    bpOe.oeGammaLevel = 1.0f;
+    bpOe.oeBloomRealStart = oeBloomRealStart;
+    bpOe.oeGammaInTime = (oeGammaStart - 1.0f) * (1.0f / oeBloomInTime);
+    bpOe.oeLeadTime = oeBloomInTime;
+    bpOe.oeGammaStart = oeGammaStart;
+    bpOe.oeBloomLevel = oeBloomRealStart;
+    bpOe.oeGammaDecay = (1.0f / oeBloomDecay) * (oeGammaStart - 1.0f);
+    bpOe.oeBloomDecay = (oeBloomStart - oeBloomEnd) * (1.0f / oeBloomDecay);
+}
+
+// ea: 0x006C07D0
+void nglCycleOverExposure(BP_OVEREXPOSURE* overExposure, int frameTime)
+{
+    (void)overExposure;
+    (void)frameTime;
+}
+
 // ============================================================================
 // View-model mesh helpers (tr_viewmodel.cpp)
 // ============================================================================

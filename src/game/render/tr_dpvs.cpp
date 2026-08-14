@@ -122,6 +122,9 @@ struct refEntity_t {
     DObj*  obj;              // +0x54
     void*  entity;           // +0x58
     void*  pStaticModel;     // +0x5C
+
+    refEntity_t(int foo);    // ??0refEntity_t@@QAE@H@Z (render.o 0x6C07E0)
+    trRefEntity* GetTrRefentity();  // ?GetTrRefentity@refEntity_t@@QAEPAVtrRefEntity@@XZ
 };
 static_assert(sizeof(refEntity_t) == 0x60, "refEntity_t size mismatch");
 
@@ -372,4 +375,18 @@ void R_XModelDebugAxes(trRefEntity* ent, int* partBits)
             v4 += 16;
         }
     }
+}
+
+// ============================================================================
+// refEntity_t members (render.o 0x6C07E0 / 0x6C0800)
+// ============================================================================
+refEntity_t::refEntity_t(int foo)
+{
+    (void)foo;
+    memset(this, 0, sizeof(refEntity_t));
+}
+
+trRefEntity* refEntity_t::GetTrRefentity()
+{
+    return (trRefEntity*)((char*)this - 8);
 }

@@ -64,13 +64,24 @@ struct trDebug_t {
 };
 static_assert(sizeof(trDebug_t) == 0x80, "trDebug_t size mismatch");
 
+// orientationr_t (IDA type; size 0x7C; tr.or at tr+0x1F0)
+struct orientationr_t {
+    float origin[3];       // +0x00
+    float axis[3][3];      // +0x0C
+    float viewOrigin[3];   // +0x30
+    float modelMatrix[16]; // +0x3C
+};
+static_assert(sizeof(orientationr_t) == 0x7C, "orientationr_t size mismatch");
+
 // trGlobals_t (IDA type; size 0x3A0)
 struct __declspec(align(16)) trGlobals_t {
     int registered;          // +0x00
     int worldMapLoaded;      // +0x04
     int frameCount;          // +0x08
     int viewCount;           // +0x0C
-    uint8_t _pad0[0x290 - 0x10];  // viewParms / or / refdef
+    uint8_t _pad0[0x1F0 - 0x10];  // viewParms
+    orientationr_t orr;      // +0x1F0 (tr.or)
+    uint8_t _pad2[0x290 - 0x26C];  // refdef
     world_t* world;          // +0x290
     uint8_t _pad1[0x2A0 - 0x294];
     uint8_t viewModelInfo[0x70];  // +0x2A0 (viewModelInfo_t; see tr_gl.cpp)
@@ -233,6 +244,123 @@ float RE_GetFarPlaneDist()
     if (g_dpvs.cullDist > zfar)
         return g_dpvs.cullDist;
     return zfar;
+}
+
+// ea: 0x006C0A10
+float R_UpdateOverTime(float fCurrent, float fGoal, int iFadeInTime,
+                       int iFadeOutTime, int frametime)
+{
+    if (fGoal > fCurrent)
+    {
+        if (iFadeInTime > 0)
+        {
+            float v = fCurrent + ((float)frametime / (float)iFadeInTime);
+            fCurrent = v;
+            if (v > fGoal)
+                return fGoal;
+            return fCurrent;
+        }
+        return fGoal;
+    }
+    if (fCurrent > fGoal)
+    {
+        if (iFadeOutTime <= 0)
+            return fGoal;
+        fCurrent = fCurrent - ((float)frametime / (float)iFadeOutTime);
+        if (fGoal > fCurrent)
+            return fGoal;
+    }
+    return fCurrent;
+}
+
+// ea: 0x006C0A80
+void R_LocalNormalToWorld(float* local, float* world)
+{
+    *world = ((*local * tr.orr.axis[0][0]) + (tr.orr.axis[2][0] * local[2]))
+           + (tr.orr.axis[1][0] * local[1]);
+    world[1] = ((*local * tr.orr.axis[0][1]) + (tr.orr.axis[2][1] * local[2]))
+             + (tr.orr.axis[1][1] * local[1]);
+    world[2] = ((*local * tr.orr.axis[0][2]) + (tr.orr.axis[2][2] * local[2]))
+             + (tr.orr.axis[1][2] * local[1]);
+}
+
+// ea: 0x006C0B30
+void R_LocalPointToWorld(float* local, float* world)
+{
+    *world = (((*local * tr.orr.axis[0][0]) + (tr.orr.axis[2][0] * local[2]))
+              + (tr.orr.axis[1][0] * local[1]))
+           + tr.orr.origin[0];
+    world[1] = (((*local * tr.orr.axis[0][1]) + (tr.orr.axis[2][1] * local[2]))
+                + (tr.orr.axis[1][1] * local[1]))
+             + tr.orr.origin[1];
+    world[2] = (((*local * tr.orr.axis[0][2]) + (tr.orr.axis[2][2] * local[2]))
+                + (tr.orr.axis[1][2] * local[1]))
+             + tr.orr.origin[2];
+}
+
+// ea: 0x006C0BF0
+void R_TransformModelToClip(const float* src, const float* modelMatrix,
+                            const float* projectionMatrix, float* eye, float* dst)
+{
+    *eye = (((modelMatrix[4] * src[1]) + (modelMatrix[8] * src[2]))
+            + (*src * *modelMatrix)) + modelMatrix[12];
+    eye[1] = (((modelMatrix[5] * src[1]) + (modelMatrix[1] * *src))
+              + (modelMatrix[9] * src[2])) + modelMatrix[13];
+    eye[2] = (((modelMatrix[6] * src[1]) + (modelMatrix[2] * *src))
+              + (modelMatrix[10] * src[2])) + modelMatrix[14];
+    eye[3] = (((modelMatrix[7] * src[1]) + (modelMatrix[3] * *src))
+              + (modelMatrix[11] * src[2])) + modelMatrix[15];
+    *dst = (((projectionMatrix[12] * eye[3]) + (projectionMatrix[8] * eye[2]))
+            + (projectionMatrix[4] * eye[1])) + (*projectionMatrix * *eye);
+    dst[1] = (((projectionMatrix[13] * eye[3]) + (projectionMatrix[1] * *eye))
+              + (projectionMatrix[9] * eye[2])) + (projectionMatrix[5] * eye[1]);
+    dst[2] = (((projectionMatrix[14] * eye[3]) + (projectionMatrix[2] * *eye))
+              + (projectionMatrix[10] * eye[2])) + (projectionMatrix[6] * eye[1]);
+    dst[3] = (((projectionMatrix[15] * eye[3]) + (projectionMatrix[3] * *eye))
+              + (projectionMatrix[11] * eye[2])) + (projectionMatrix[7] * eye[1]);
+}
+
+// ea: 0x006C0DA0
+void R_TransformHomogenousModelToClip(const float* src, const float* modelMatrix,
+                                      const float* projectionMatrix,
+                                      float* eye, float* dst)
+{
+    *eye = (((modelMatrix[8] * src[2]) + (modelMatrix[4] * src[1]))
+            + (modelMatrix[12] * src[3])) + (*src * *modelMatrix);
+    eye[1] = (((modelMatrix[9] * src[2]) + (modelMatrix[5] * src[1]))
+              + (modelMatrix[1] * *src)) + (modelMatrix[13] * src[3]);
+    eye[2] = (((modelMatrix[10] * src[2]) + (modelMatrix[6] * src[1]))
+              + (modelMatrix[2] * *src)) + (modelMatrix[14] * src[3]);
+    eye[3] = (((modelMatrix[11] * src[2]) + (modelMatrix[7] * src[1]))
+              + (modelMatrix[3] * *src)) + (modelMatrix[15] * src[3]);
+    *dst = (((projectionMatrix[8] * eye[2]) + (projectionMatrix[4] * eye[1]))
+            + (projectionMatrix[12] * eye[3])) + (*projectionMatrix * *eye);
+    dst[1] = (((projectionMatrix[9] * eye[2]) + (projectionMatrix[5] * eye[1]))
+              + (projectionMatrix[1] * *eye)) + (projectionMatrix[13] * eye[3]);
+    dst[2] = (((projectionMatrix[10] * eye[2]) + (projectionMatrix[6] * eye[1]))
+              + (projectionMatrix[2] * *eye)) + (projectionMatrix[14] * eye[3]);
+    dst[3] = (((projectionMatrix[11] * eye[2]) + (projectionMatrix[7] * eye[1]))
+              + (projectionMatrix[3] * *eye)) + (projectionMatrix[15] * eye[3]);
+}
+
+// ea: 0x006C0F70
+void myGlMultMatrix(const float* a, const float* b, float* out)
+{
+    const float* v3 = a + 2;
+    float* v4 = out + 2;
+    for (int i = 4; i != 0; --i)
+    {
+        *(v4 - 2) = (((*v3 * b[8]) + (b[12] * v3[1])) + (b[4] * *(v3 - 1)))
+                  + (*(v3 - 2) * *b);
+        *(v4 - 1) = (((v3[1] * b[13]) + (*(v3 - 1) * b[5])) + (b[9] * *v3))
+                  + (*(v3 - 2) * b[1]);
+        *v4 = (((v3[1] * b[14]) + (*(v3 - 1) * b[6])) + (*(v3 - 2) * b[2]))
+            + (b[10] * *v3);
+        v4[1] = (((b[11] * *v3) + (v3[1] * b[15])) + (*(v3 - 1) * b[7]))
+              + (b[3] * *(v3 - 2));
+        v3 += 4;
+        v4 += 4;
+    }
 }
 
 // ea: 0x006BEF40
