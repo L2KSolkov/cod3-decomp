@@ -1445,7 +1445,7 @@ extern int              dword_F641E0[];
 // ============================================================================
 struct XModelLod;
 struct nglMesh;
-struct XModelParts;
+class XModelParts;
 
 // XModelLod - model LOD entry (12 bytes) - verified against IDA
 struct XModelLod {
@@ -1464,7 +1464,9 @@ struct XBoneHierarchy {
 static_assert(sizeof(XBoneHierarchy) == 0x0C, "XBoneHierarchy size mismatch");
 
 // XModelParts - model geometry/anim data (0x40 bytes) - verified against IDA
-struct XModelParts {
+// `class` tag per binary mangling (?PAVXModelParts in cg.o/render.o)
+class XModelParts {
+public:
     InplaceVector<math::Mat43::Packed> mTransforms;  // +0x00
     void*            mBoneInfos;                     // +0x08 InplaceVector<XBoneInfo>
     InplaceVector<XBoneHierarchy> mHierarchy;        // +0x10 InplaceVector<XBoneHierarchy>

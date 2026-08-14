@@ -606,9 +606,9 @@ void  Scr_Vehicle_OccupantIsOut(scr_vehicle_t* veh, Entity* ent, int seat);
 template <typename T>
 class cFreeList {
 public:
-    int mFree;   // +0x00
+    T*  mpFree;  // +0x00
     int mUsed;   // +0x04
-    T*  mpFree;  // +0x08
+    int mFree;   // +0x08
 
     // core.o template members; stub bodies until the pool allocator is ported
     void Init(int num) { (void)num; }
