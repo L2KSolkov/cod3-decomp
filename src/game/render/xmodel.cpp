@@ -77,6 +77,29 @@ int XModelGetNumLods(IVPointer<XModel> model)
     return model.mValue->numLods;
 }
 
+// ea: 0x006CA570
+int XModelGetLodForDist(IVPointer<XModel> model, float dist)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    int v2 = 0;
+    for (XModelLod** i = model.mValue->lod; ; ++i)
+    {
+        ValidatePakId((TPakId)model.mPakId);
+        if (*i != nullptr)
+        {
+            ValidatePakId((TPakId)model.mPakId);
+            if ((*i)->dist == 0.0f)
+                break;
+            ValidatePakId((TPakId)model.mPakId);
+            if ((*i)->dist > dist)
+                break;
+        }
+        if (++v2 >= 5)
+            return -1;
+    }
+    return v2;
+}
+
 // ea: 0x006BD3C0
 const char* XModelGetSurfaceName(IVPointer<XModel> model, int subMatIndex,
                                  int lod)
