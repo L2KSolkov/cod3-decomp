@@ -93,23 +93,96 @@ struct trGlobals_t {
     viewParms_t viewParms;     // +0x10
     orientationr_t orr;        // +0x1F0 (tr.or)
     trRefdef_t refdef;         // +0x26C
+    uint8_t _pad1[0x314 - 0x284];
+    uint8_t debug[0x80];       // +0x314 (trDebug_t)
 };
 extern trGlobals_t tr;         // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 // cvar_t view (integer +0x20)
 struct cvar_t {
-    uint8_t _pad[0x1C];
+    const char* name;          // +0x00
+    uint8_t _pad[0x1C - 0x04];
     float value;               // +0x1C
     int integer;               // +0x20
 };
-extern cvar_t* r_znear;        // ?r_znear@@3PAUcvar_t@@A @ 0xF743A0
-extern cvar_t* r_speeds;       // ?r_speeds@@3PAUcvar_t@@A @ 0xF742E4
 
 // refimport_t view (Printf +0x00)
 struct refimport_t {
     void (*Printf)(int, const char*, ...);
+    void (*Error)(int, const char*, ...);
+    uint8_t _pad1[0x20 - 0x08];
+    cvar_t* (*Cvar_Get)(const char*, const char*, int);   // +0x20
+    uint8_t _pad2[0x28 - 0x24];
+    void (*Cvar_Set)(const char*, const char*);           // +0x28
+    void (*Cmd_AddCommand)(const char*, void (__cdecl*)());  // +0x2C
 };
 extern refimport_t ri;         // ?ri@@3Urefimport_t@@A @ 0xF741E8
+
+// cvar globals (render.o data; R_Register)
+cvar_t* r_cheats;               // ?r_cheats@@3PAUcvar_t@@A @ 0xF742C4
+cvar_t* r_texturebits;          // ?r_texturebits@@3PAUcvar_t@@A @ 0xF742D8
+cvar_t* r_mode;                 // ?r_mode@@3PAUcvar_t@@A @ 0xF741C0
+cvar_t* r_fullscreen;           // ?r_fullscreen@@3PAUcvar_t@@A @ 0xF7418C
+cvar_t* r_weightMipMaps;        // ?r_weightMipMaps@@3PAUcvar_t@@A @ 0xF7429C
+cvar_t* r_uiFullScreen;         // ?r_uiFullScreen@@3PAUcvar_t@@A @ 0xF74278
+cvar_t* r_fullbright;           // ?r_fullbright@@3PAUcvar_t@@A @ 0xF741E0
+cvar_t* r_lodbias;              // ?r_lodbias@@3PAUcvar_t@@A @ 0xF741B0
+cvar_t* r_flares;               // ?r_flares@@3PAUcvar_t@@A @ 0xF74180
+cvar_t* r_znear;                // ?r_znear@@3PAUcvar_t@@A @ 0xF743A0
+cvar_t* r_zfar;                 // ?r_zfar@@3PAUcvar_t@@A @ 0xF741A0
+cvar_t* r_dynamiclight;         // ?r_dynamiclight@@3PAUcvar_t@@A @ 0xF742A8
+cvar_t* r_finish;               // ?r_finish@@3PAUcvar_t@@A @ 0xF742D4
+cvar_t* r_textureMode;          // ?r_textureMode@@3PAUcvar_t@@A @ 0xF741AC
+cvar_t* r_swapDelay;            // ?r_swapDelay@@3PAUcvar_t@@A @ 0xF742F8
+cvar_t* r_LightScale;           // ?r_LightScale@@3PAUcvar_t@@A @ 0xF741B4
+cvar_t* r_maxEntLights;         // ?r_maxEntLights@@3PAUcvar_t@@A @ 0xF741D0
+cvar_t* r_minEntLightIntensity; // ?r_minEntLightIntensity@@3PAUcvar_t@@A @ 0xF742BC
+cvar_t* r_vc_makelog;           // ?r_vc_makelog@@3PAUcvar_t@@A @ 0xF74270
+cvar_t* r_vc_showlog;           // ?r_vc_showlog@@3PAUcvar_t@@A @ 0xF742E8
+cvar_t* r_vc_compile;           // ?r_vc_compile@@3PAUcvar_t@@A @ 0xF742B4
+cvar_t* r_fog;                  // ?r_fog@@3PAUcvar_t@@A @ 0xF743B4
+cvar_t* r_portalOnly;           // ?r_portalOnly@@3PAUcvar_t@@A @ 0xF741A8
+cvar_t* r_lodscale;             // ?r_lodscale@@3PAUcvar_t@@A @ 0xF741D4
+cvar_t* r_norefresh;            // ?r_norefresh@@3PAUcvar_t@@A @ 0xF7417C
+cvar_t* r_drawentities;         // ?r_drawentities@@3PAUcvar_t@@A @ 0xF74190
+cvar_t* r_nocull;               // ?r_nocull@@3PAUcvar_t@@A @ 0xF74284
+cvar_t* r_outsideMapEnts;       // ?r_outsideMapEnts@@3PAUcvar_t@@A @ 0xF742E0
+cvar_t* r_speeds;               // ?r_speeds@@3PAUcvar_t@@A @ 0xF742E4
+cvar_t* r_verbose;              // ?r_verbose@@3PAUcvar_t@@A @ 0xF73F34
+cvar_t* r_logFile;              // ?r_logFile@@3PAUcvar_t@@A @ 0xF742F0
+cvar_t* r_profileDrawElements;  // ?r_profileDrawElements@@3PAUcvar_t@@A @ 0xF74194
+cvar_t* r_showtris;             // ?r_showtris@@3PAUcvar_t@@A @ 0xF74198
+cvar_t* r_showtricounts;        // ?r_showtricounts@@3PAUcvar_t@@A @ 0xF741C4
+cvar_t* r_showsurfcounts;       // ?r_showsurfcounts@@3PAUcvar_t@@A @ 0xF74184
+cvar_t* r_clear;                // ?r_clear@@3PAUcvar_t@@A @ 0xF7427C
+cvar_t* r_offsetFactor;         // ?r_offsetFactor@@3PAUcvar_t@@A @ 0xF741CC
+cvar_t* r_offsetUnits;          // ?r_offsetUnits@@3PAUcvar_t@@A @ 0xF742A0
+cvar_t* r_lockpvs;              // ?r_lockpvs@@3PAUcvar_t@@A @ 0xF7428C
+cvar_t* r_noportals;            // ?r_noportals@@3PAUcvar_t@@A @ 0xF74298
+cvar_t* r_portalsky;            // ?r_portalsky@@3PAUcvar_t@@A @ 0xF742CC
+cvar_t* r_showportals;          // ?r_showportals@@3PAUcvar_t@@A @ 0xF741B8
+cvar_t* r_cullBModels;          // ?r_cullBModels@@3PAUcvar_t@@A @ 0xF742F4
+cvar_t* r_cullXModels;          // ?r_cullXModels@@3PAUcvar_t@@A @ 0xF74178
+cvar_t* r_showSkeletons;        // ?r_showSkeletons@@3PAUcvar_t@@A @ 0xF743B8
+cvar_t* r_showLocationalDamage; // ?r_showLocationalDamage@@3PAUcvar_t@@A @ 0xF741DC
+cvar_t* r_singlecell;           // ?r_singlecell@@3PAUcvar_t@@A @ 0xF74294
+cvar_t* r_testshadow;           // ?r_testshadow@@3PAUcvar_t@@A @ 0xF742C0
+cvar_t* r_testlight;            // ?r_testlight@@3PAUcvar_t@@A @ 0xF742EC
+cvar_t* r_showlightgrid;        // ?r_showlightgrid@@3PAUcvar_t@@A @ 0xF743A8
+cvar_t* r_drawworld;            // ?r_drawworld@@3PAUcvar_t@@A @ 0xF741D8
+
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
+                        int flags);  // ?Cvar_Get@@YAPAUcvar_t@@PBD0H@Z
+extern void AssertCvarRange(cvar_t* cv, int shouldBeIntegral, float minVal,
+                            float maxVal);  // render.o 0x6C0310
+extern int Swap_Init();                     // render.o
+extern void R_ToggleSmpFrame();             // render.o
+extern void HackUpGLConfig();               // render.o
+extern void R_SetViewModelScale(int a1, float a2, float a3, int a4, int a5,
+                                math::Mat43* a6);  // render.o
+extern void R_ScreenShot_f();               // screenshot.cpp
+extern void R_ScreenShotHigh_f();           // render.o
+extern int g_bOptimize;                     // ?g_bOptimize@@3HA @ 0xF743D0
 
 // glfog_t / glfogType_t (tr_fog.cpp defines the data)
 struct glfog_t {
@@ -140,6 +213,7 @@ enum glfogType_t {
     NUM_FOGS = 0x9,
 };
 extern glfog_t glfogsettings[NUM_FOGS];  // ?glfogsettings@@3PAUglfog_t@@A
+extern glfogType_t glfogNum;             // ?glfogNum@@3W4glfogType_t@@A (tr_fog.cpp)
 
 // r_stubs.cpp
 void myGlMultMatrix(const float* a, const float* b, float* out);
@@ -486,6 +560,82 @@ void R_MirrorVector(float* const in, orientation_t* surface,
 // ============================================================================
 void R_ClearAlpha()
 {
+}
+
+// ============================================================================
+// R_Register / R_Init - ea: 0x006D22B0 / 0x006D27F0
+// ============================================================================
+void R_Register()
+{
+    r_cheats = Cvar_Get("sv_cheats", "0", 72);
+    r_texturebits = ri.Cvar_Get("r_texturebits", "0", 33);
+    r_mode = ri.Cvar_Get("r_mode", "3", 33);
+    r_fullscreen = ri.Cvar_Get("r_fullscreen", "1", 33);
+    r_weightMipMaps = ri.Cvar_Get("r_weightMipMaps", "0", 32);
+    r_uiFullScreen = ri.Cvar_Get("r_uifullscreen", "0", 0);
+    r_fullbright = ri.Cvar_Get("r_fullbright", "0", 544);
+    r_lodbias = ri.Cvar_Get("r_lodbias", "0", 1);
+    r_flares = ri.Cvar_Get("r_flares", "1", 1);
+    r_znear = ri.Cvar_Get("r_znear", "6.0", 256);
+    AssertCvarRange(r_znear, 1, 0.001f, 200.0f);
+    r_zfar = ri.Cvar_Get("r_zfar", "8192", 512);
+    r_dynamiclight = ri.Cvar_Get("r_dynamiclight", "1", 1);
+    r_finish = ri.Cvar_Get("r_finish", "0", 1);
+    r_textureMode = ri.Cvar_Get("r_textureMode", "GL_LINEAR_MIPMAP_NEAREST", 1);
+    r_swapDelay = ri.Cvar_Get("r_swapDelay", "0", 1);
+    r_LightScale = ri.Cvar_Get("r_LightScale", "1.0", 256);
+    r_maxEntLights = ri.Cvar_Get("r_maxEntLights", "8", 1);
+    r_minEntLightIntensity = ri.Cvar_Get("r_minEntLightIntensity", "0.02", 513);
+    r_vc_makelog = ri.Cvar_Get("r_vc_makelog", "0", 32);
+    r_vc_showlog = ri.Cvar_Get("r_vc_showlog", "0", 0);
+    r_vc_compile = ri.Cvar_Get("r_vc_compile", "0", 32);
+    r_fog = ri.Cvar_Get("r_fog", "1", 512);
+    r_portalOnly = ri.Cvar_Get("r_portalOnly", "0", 512);
+    r_lodscale = ri.Cvar_Get("r_lodscale", "1", 1);
+    r_norefresh = ri.Cvar_Get("r_norefresh", "0", 512);
+    r_drawentities = ri.Cvar_Get("r_drawentities", "1", 512);
+    r_nocull = ri.Cvar_Get("r_nocull", "0", 512);
+    r_outsideMapEnts = ri.Cvar_Get("outsideMapEnts", "0", 512);
+    r_speeds = ri.Cvar_Get("r_speeds", "0", 512);
+    r_verbose = ri.Cvar_Get("r_verbose", "0", 0);
+    r_logFile = ri.Cvar_Get("r_logFile", "0", 0);
+    r_profileDrawElements = ri.Cvar_Get("r_profileDrawElements", "0", 512);
+    r_showtris = ri.Cvar_Get("r_showtris", "0", 512);
+    r_showtricounts = ri.Cvar_Get("r_showtricounts", "0", 512);
+    r_showsurfcounts = ri.Cvar_Get("r_showsurfcounts", "0", 512);
+    r_clear = ri.Cvar_Get("r_clear", "0", 512);
+    r_offsetFactor = ri.Cvar_Get("r_offsetfactor", "-1", 512);
+    r_offsetUnits = ri.Cvar_Get("r_offsetunits", "-2", 512);
+    r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 512);
+    r_noportals = ri.Cvar_Get("r_noportals", "0", 512);
+    r_portalsky = ri.Cvar_Get("cg_skybox", "1", 0);
+    r_showportals = ri.Cvar_Get("r_showportals", "0", 512);
+    r_cullBModels = ri.Cvar_Get("r_cullBModels", "1", 0);
+    r_cullXModels = ri.Cvar_Get("r_cullXModels", "1", 0);
+    r_showSkeletons = ri.Cvar_Get("r_showSkeletons", "0", 512);
+    r_showLocationalDamage = ri.Cvar_Get("r_showLocationalDamage", "0", 512);
+    r_singlecell = ri.Cvar_Get("r_singlecell", "0", 512);
+    ri.Cmd_AddCommand("screenshot", R_ScreenShot_f);
+    ri.Cmd_AddCommand("screenshot_high", R_ScreenShotHigh_f);
+    r_testshadow = ri.Cvar_Get("r_testshadow", "1", 256);
+    r_testlight = ri.Cvar_Get("r_testlight", "0", 512);
+    r_showlightgrid = ri.Cvar_Get("r_showlightgrid", "0", 512);
+    r_drawworld = ri.Cvar_Get("r_drawworld", "1", 512);
+}
+
+void R_Init()
+{
+    ri.Printf(0, "----- R_Init -----\n");
+    memset(&tr, 0, sizeof(tr));
+    Swap_Init();
+    R_Register();
+    R_ToggleSmpFrame();
+    HackUpGLConfig();
+    glfogNum = FOG_NONE;
+    R_SetViewModelScale(0, 1.0, 1.0, 0, 0, nullptr);
+    memset(&tr.debug, 0, sizeof(tr.debug));
+    g_bOptimize = 0;
+    ri.Printf(0, "----- finished R_Init -----\n");
 }
 
 // ============================================================================
