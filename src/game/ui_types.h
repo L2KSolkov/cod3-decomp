@@ -16,6 +16,7 @@
 #include "game/game_types.h"
 #ifdef _WIN32
 #include <windows.h>
+#undef PlaySound  // windows.h macro would mangle VKMenu::PlaySound
 #endif
 #include <stddef.h>
 #include <stdint.h>
@@ -1464,6 +1465,60 @@ protected:
     virtual void ButtonHeldAction();                 // slot 62 0x570950
 };
 static_assert(sizeof(FEMultiMenu) == 0x4C, "FEMultiMenu size mismatch");
+
+// ============================================================================
+// VKMenu - virtual keyboard menu (456 bytes) - verified against IDA
+// ============================================================================
+class VKMenu : public FEMultiMenu {
+public:
+    FEText*      profileName;    // +0x4C
+    PanelQuad*   shadow[40];     // +0x50
+    FEText*      word[40];       // +0xF0
+    PanelQuad*   disableShift;   // +0x190
+    PanelQuad*   disableBackspace;  // +0x194
+    PanelQuad*   disableSpace;   // +0x198
+    PanelQuad*   disableDone;    // +0x19C
+    char         mProfileName[16];  // +0x1A0
+    bool         mCapitalized;   // +0x1B0
+    int          mNameLength;    // +0x1B4
+    bool         mNameValid;     // +0x1B8
+    int          mSlotNum;       // +0x1BC
+    bool         mSaveDialogDisplayed;  // +0x1C0
+    int          mPrev;          // +0x1C4
+
+    VKMenu(FEMenuSystem* s);            // 0x5942A0
+    virtual ~VKMenu();                  // 0x5942F0
+    virtual void SetPanelFile(PanelFile* pf);  // 0x597740
+    virtual void UpdateWidescreen(bool widescreen);  // 0x580500
+    virtual void Draw();                // 0x580440
+    virtual void OnActivate();          // 0x5803A0
+    virtual void OnDeactivate(FEMenu* m);  // 0x580420
+    virtual void Select(int entry_num); // 0x59D130
+    virtual void Update(float time_inc);// 0x59D5F0
+    virtual void OnTriangle(int c);     // 0x5744A0
+    virtual void Up();                  // 0x574A50
+    virtual void Down();                // 0x574AC0
+    virtual void Left();                // 0x574B90
+    virtual void Right();               // 0x574C70
+    virtual void ButtonHeldAction();    // 0x574E40
+
+    static VKMenu* Me();                // 0x5744B0
+    static bool DialogResponseSaveSuccess(int);  // 0x574E90
+    static bool DialogResponseNoMemCard(int);    // 0x574EA0
+    void SetEntryPositions();           // 0x5744C0
+    void UpdateShadows();               // 0x574D30
+    void PlaySound();                   // 0x580490
+    void DialogDisplaySaving();         // 0x58E950
+    void DialogDisplaySaveSuccess();    // 0x58EA20
+    void DialogDisplayNoMemDevice();    // 0x58EB70
+    void CreateProfileDone();           // 0x59AE50
+private:
+    void ChangeShift();                 // 0x5749D0
+    void AddCharacter(int c);           // 0x580530
+    void RemoveCharacter();             // 0x580670
+    void CompleteName();                // 0x59C4E0
+};
+static_assert(sizeof(VKMenu) == 0x1C8, "VKMenu size mismatch");
 
 // ============================================================================
 // ControllerDisconnectedMenu - controller error overlay (80 bytes)
