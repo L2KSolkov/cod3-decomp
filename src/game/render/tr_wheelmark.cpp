@@ -83,6 +83,9 @@ public:
     void UpdateSplash(const math::Position3& Pos);  // ?UpdateSplash@WheelMark@@QAEXABVPosition3@math@@@Z
     void Stop();         // ?Stop@WheelMark@@QAEXXZ
     void Assign(Entity* owner, wheel_e wheel);  // ?Assign@WheelMark@@QAEXPAVEntity@@W4wheel_e@@@Z
+    void AddPoint(const math::Position3& Pos, const math::Dir3& Normal,
+                  float Spacing, float Width, unsigned int Material,
+                  float Alpha);  // ?AddPoint@WheelMark@@QAEXABVPosition3@math@@ABVDir3@3@MMIM@Z
 };
 
 // WheelMarkMgr statics (render.o data; protected -> @@1)
@@ -355,6 +358,133 @@ void WheelMark::Assign(Entity* owner, wheel_e wheel)
     }
     Owner = owner;
     Wheel = wheel;
+}
+
+// ============================================================================
+// WheelMark::AddPoint - ea: 0x006C8FB0
+// ============================================================================
+void* nglLockSectionVertices(nglMeshSection* Section);    // ngl_dx_gpu.o
+void nglUnlockSectionVertices();                           // ngl_dx_gpu.o
+
+void WheelMark::AddPoint(const math::Position3& Pos,
+                         const math::Dir3& Normal,
+                         float Spacing, float Width,
+                         unsigned int Material, float Alpha)
+{
+    __m128 P0_4 = _mm_sub_ps(Pos.v, LastPos.v);
+    __m128 v8 = _mm_mul_ps(P0_4, P0_4);
+    float dist = sqrtf(v8.m128_f32[0]
+                     + (_mm_shuffle_ps(v8, v8, 85).m128_f32[0]
+                        + _mm_shuffle_ps(v8, v8, 170).m128_f32[0]));
+    if (Spacing > dist)
+        return;
+    if (dist > 100.0f)
+    {
+        cdWheelMarkVertex* PrevVertex0 = this->PrevVertex0;
+        Active = false;
+        if (PrevVertex0 != nullptr)
+        {
+            ((unsigned char*)&PrevVertex0->TexCoord)[3] = 0;
+            ((unsigned char*)&this->PrevVertex1->TexCoord)[3] = 0;
+            this->PrevVertex1 = nullptr;
+            this->PrevVertex0 = nullptr;
+        }
+    }
+    if (Active && PrevMaterial != Material)
+    {
+        cdWheelMarkVertex* v11 = this->PrevVertex0;
+        Active = false;
+        if (v11 != nullptr)
+        {
+            ((unsigned char*)&v11->TexCoord)[3] = 0;
+            ((unsigned char*)&this->PrevVertex1->TexCoord)[3] = 0;
+            this->PrevVertex1 = nullptr;
+            this->PrevVertex0 = nullptr;
+        }
+    }
+    TimeStamp = 0;
+    LastPos.v = Pos.v;
+    if (!Active)
+    {
+        PrevMaterial = Material;
+        Active = true;
+        if (NumVerts >= 2)
+            StitchStrips = true;
+    }
+    else
+    {
+        cdWheelMarkVertex* v14 = (cdWheelMarkVertex*)nglLockSectionVertices(Section);
+        LastAlpha = (LastAlpha * 0.89999998f) + (Alpha * 0.1f);
+        float v15 = ((dist / (float)Width) * 0.5f) + LastV;
+        float v16 = v15 * 16.0f;
+        VertexBuffer = v14;
+        LastV = v15;
+
+        __m128 v17 = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(P0_4, P0_4, 9),
+                       _mm_shuffle_ps(Normal.v, Normal.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(P0_4, P0_4, 18),
+                       _mm_shuffle_ps(Normal.v, Normal.v, 9)));
+        __m128 v18 = _mm_mul_ps(v17, v17);
+        float crossLen = sqrtf(v18.m128_f32[0]
+                             + (_mm_shuffle_ps(v18, v18, 85).m128_f32[0]
+                                + _mm_shuffle_ps(v18, v18, 170).m128_f32[0]));
+        __m128 v19 = _mm_mul_ps(_mm_div_ps(v17, _mm_set1_ps(crossLen)),
+                                _mm_set1_ps((float)Width));
+        __m128 v20 = _mm_add_ps(Pos.v, Normal.v);
+        __m128 v21 = _mm_sub_ps(v20, v19);
+        __m128 P0_4a = _mm_add_ps(v20, v19);
+
+        unsigned char v35 = (unsigned char)((int)v16 & 0xFF);
+        if (StitchStrips)
+        {
+            cdWheelMarkVertex* v23 = &v14[LastVert];
+            LastVert = (LastVert + 1) & 0x3FF;
+            ++NumVerts;
+            v23->Position_x = StripEnd.v.m128_f32[0];
+            v23->Position_y = StripEnd.v.m128_f32[1];
+            v23->Position_z = StripEnd.v.m128_f32[2];
+            v23->TexCoord = 0;
+            cdWheelMarkVertex* v25 = &VertexBuffer[LastVert];
+            LastVert = (LastVert + 1) & 0x3FF;
+            ++NumVerts;
+            v25->Position_x = v21.m128_f32[0];
+            v25->Position_y = _mm_shuffle_ps(v21, v21, 85).m128_f32[0];
+            v25->Position_z = _mm_shuffle_ps(v21, v21, 170).m128_f32[0];
+            StitchStrips = false;
+        }
+
+        unsigned int alphaInt = (unsigned int)(LastAlpha * 255.0f);
+        unsigned int v29 = alphaInt << 8;
+        cdWheelMarkVertex* v27 = &VertexBuffer[LastVert];
+        LastVert = (LastVert + 1) & 0x3FF;
+        ++NumVerts;
+        v27->Position_x = v21.m128_f32[0];
+        v27->Position_y = _mm_shuffle_ps(v21, v21, 85).m128_f32[0];
+        v27->Position_z = _mm_shuffle_ps(v21, v21, 170).m128_f32[0];
+        unsigned int vertIdx0 = (unsigned int)(v27 - VertexBuffer);
+        v27->TexCoord = Material
+            + (((v35 + ((v29 + ((255 * vertIdx0) >> 10)) << 8)) << 8));
+        PrevVertex0 = v27;
+
+        cdWheelMarkVertex* v26 = &VertexBuffer[LastVert];
+        LastVert = (LastVert + 1) & 0x3FF;
+        ++NumVerts;
+        v26->Position_x = P0_4a.m128_f32[0];
+        v26->Position_y = _mm_shuffle_ps(P0_4a, P0_4a, 85).m128_f32[0];
+        v26->Position_z = _mm_shuffle_ps(P0_4a, P0_4a, 170).m128_f32[0];
+        unsigned int vertIdx1 = (unsigned int)(v26 - VertexBuffer);
+        v26->TexCoord = Material + 1
+            + (((v35 + ((v29 + ((255 * vertIdx1) >> 10)) << 8)) << 8));
+        PrevVertex1 = v26;
+        StripEnd.v = P0_4a;
+
+        unsigned int v30 = NumVerts;
+        if (v30 >= 0x3F8)
+            v30 = 1016;
+        NumVerts = v30;
+        nglUnlockSectionVertices();
+    }
 }
 
 // ============================================================================
