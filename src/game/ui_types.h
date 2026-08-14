@@ -2236,6 +2236,79 @@ protected:
 static_assert(sizeof(UIListBox) == 0xAC, "UIListBox size mismatch");
 
 // ============================================================================
+// _XUID - 12 bytes (verified against IDA / xlive.h)
+// ============================================================================
+#ifndef XUID_TYPE_DEFINED
+#define XUID_TYPE_DEFINED
+#pragma pack(push, 4)
+struct _XUID {
+    union {
+        unsigned long long qwValue;
+        struct {
+            unsigned long dwUserID;  // +0x00
+            unsigned long dwTeamID;  // +0x04
+        };
+    };
+    unsigned long dwUserFlags;  // +0x08
+};
+#pragma pack(pop)
+static_assert(sizeof(_XUID) == 0xC, "_XUID size mismatch");
+#endif
+
+// ============================================================================
+// UIHighlightListBox - 224 bytes (verified against IDA)
+// ============================================================================
+class UIHighlightListBox : public UIListBox {
+public:
+    PanelQuad* mHighlightQuad;   // +0xAC
+    ae_vector<bool> mHighlights; // +0xB0
+    ae_vector<color32> mHighlightedRowOriginalSelectedColor;   // +0xBC
+    ae_vector<color32> mHighlightedRowOriginalUnselectedColor; // +0xC8
+    color32 mHighlightedSelectedTextColor;   // +0xD4
+    color32 mHighlightedUnselectedTextColor; // +0xD8
+    int     mHighlightedRow;                 // +0xDC
+
+    UIHighlightListBox(int visibleRows, int visibleColumns,
+                       int maxDataRows, bool bIsWrapping);  // 0x59BF60
+    virtual void Clear();             // 0x5909B0
+    virtual void Refresh();           // 0x5909D0
+
+    void ClearHighlights();         // 0x581DC0
+    void SetEntryColor(int y, int x, color32 colorUnLit,
+                       color32 colorLit);  // 0x588390
+protected:
+    void UpdateHighlight();         // 0x581E40
+    void SaveHighlightRowColor();   // 0x581F90
+    void RestoreHighlightRowColor();// 0x588220
+    void ColorHighlightRow();       // 0x5882F0
+};
+static_assert(sizeof(UIHighlightListBox) == 0xE0,
+              "UIHighlightListBox size mismatch");
+
+// ============================================================================
+// UIPlayerListBox - 264 bytes (verified against IDA)
+// ============================================================================
+class UIPlayerListBox : public UIHighlightListBox {
+public:
+    int mPlayerRow;          // +0xE0
+    _XUID myXUID;            // +0xE4
+    ae_vector<int> mPlayerIDs;   // +0xF0
+    ae_vector<_XUID> mPlayerXUIDs;  // +0xFC
+
+    UIPlayerListBox(int visibleRows, int visibleColumns,
+                    int maxDataRows, bool bIsWrapping);  // 0x59C020
+    virtual void Clear();        // 0x590A00
+    virtual void ClearRow(int row);  // 0x590AB0
+
+    void SetPlayerID(int row, int id);      // 0x588400
+    void SetPlayerXUID(int row, _XUID id);  // 0x588480
+protected:
+    void CheckIfLocalPlayer(int row);  // 0x5820C0
+};
+static_assert(sizeof(UIPlayerListBox) == 0x108,
+              "UIPlayerListBox size mismatch");
+
+// ============================================================================
 // IGOVoipList (184 bytes) - verified against IDA
 // ============================================================================
 class IGOVoipList : public IGOWidget {

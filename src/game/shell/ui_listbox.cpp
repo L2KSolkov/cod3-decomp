@@ -17,6 +17,23 @@ extern void* tlMemAlloc(unsigned int size, unsigned int align,
 
 extern FEManager g_femanager;
 
+// Minimal LiveWrapper/LivePlayer views (mp.o/game_xbox.o externs; manglings
+// from IDA). Full types live in platform_xbox/XboxLive.h.
+class LiveWrapper;
+class LivePlayer {
+public:
+    virtual const _XUID* __stdcall GetXUID() const;  // ?GetXUID@LivePlayer@@UBGPBU_XUID@@XZ (game_xbox.o)
+};
+class LiveWrapper {
+public:
+    static LiveWrapper* theWrapper;  // ?theWrapper@LiveWrapper@@1PAV1@A
+    LivePlayer* GetLocalPlayer(unsigned int portNumber);  // ?GetLocalPlayer@LiveWrapper@@QAEPAVLivePlayer@@K@Z
+};
+
+// default highlight colors (shell.o data @ 0xDF3BF4)
+static color32 lUIHighlightListBoxDefaultSelectedColor(0xFFFFFFFF);
+static color32 lUIHighlightListBoxDefaultUnselectedColor(0x80808080);
+
 // ============================================================================
 // UIListBoxData
 // ============================================================================
@@ -861,6 +878,406 @@ void UIListBox::SelectLine(int selection, int top_line)
     mSelectedLine = selection;
     SelectRow();
     UpdateScrollBar();
+}
+
+// ============================================================================
+// UIHighlightListBox
+// ============================================================================
+
+// ea: 0x0059BF60
+UIHighlightListBox::UIHighlightListBox(int visibleRows, int visibleColumns,
+                                       int maxDataRows, bool bIsWrapping)
+    : UIListBox(visibleRows, visibleColumns, maxDataRows, bIsWrapping)
+{
+    mHighlightQuad = nullptr;
+    bool fillFalse = false;
+    mHighlights.mElements = (bool*)tlMemAlloc(1 * maxDataRows, 8u, 0);
+    mHighlights.mCapacity = maxDataRows;
+    mHighlights.mSize = maxDataRows;
+    for (int i = 0; i < maxDataRows; ++i)
+        mHighlights.mElements[i] = fillFalse;
+
+    mHighlightedRowOriginalSelectedColor.mElements =
+        (color32*)tlMemAlloc(4 * visibleColumns, 8u, 0);
+    mHighlightedRowOriginalSelectedColor.mCapacity = visibleColumns;
+    mHighlightedRowOriginalSelectedColor.mSize = visibleColumns;
+    for (int i = 0; i < visibleColumns; ++i)
+        mHighlightedRowOriginalSelectedColor.mElements[i].i =
+            lUIHighlightListBoxDefaultSelectedColor.i;
+
+    mHighlightedRowOriginalUnselectedColor.mElements =
+        (color32*)tlMemAlloc(4 * visibleColumns, 8u, 0);
+    mHighlightedRowOriginalUnselectedColor.mCapacity = visibleColumns;
+    mHighlightedRowOriginalUnselectedColor.mSize = visibleColumns;
+    for (int i = 0; i < visibleColumns; ++i)
+        mHighlightedRowOriginalUnselectedColor.mElements[i].i =
+            lUIHighlightListBoxDefaultUnselectedColor.i;
+
+    mHighlightedSelectedTextColor =
+        lUIHighlightListBoxDefaultSelectedColor;
+    mHighlightedUnselectedTextColor =
+        lUIHighlightListBoxDefaultUnselectedColor;
+    mHighlightedRow = -1;
+}
+
+// ea: 0x00581DC0
+void UIHighlightListBox::ClearHighlights()
+{
+    for (int i = 0; i < mDataRowsCount; ++i)
+    {
+        if (i < 0 || i >= mHighlights.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mHighlights.mElements[i] = false;
+    }
+}
+
+// ea: 0x00581E40
+void UIHighlightListBox::UpdateHighlight()
+{
+    bool highlightOnScreen = false;
+    if (mHighlightQuad != nullptr)
+    {
+        int mTopLine = this->mTopLine;
+        int v3 = mTopLine + mItemRowsCount;
+        mHighlightedRow = -1;
+        if (mTopLine < v3)
+        {
+            while (1)
+            {
+                if (mTopLine < 0 || mTopLine >= mHighlights.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                    AeAssert::gCurrentLine = 167;
+                    AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                if (mHighlights.mElements[mTopLine])
+                    break;
+                if (++mTopLine >= mItemRowsCount + this->mTopLine)
+                    goto LABEL_12;
+            }
+            mHighlightedRow = mTopLine - this->mTopLine;
+            highlightOnScreen = true;
+        }
+    LABEL_12:
+        mHighlightQuad->SetShown(highlightOnScreen);
+        if (highlightOnScreen)
+        {
+            UIListBoxRow* v4 = &mItemRows.mElements[mHighlightedRow];
+            if (v4->mColumnCount <= 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+                AeAssert::gCurrentLine = 259;
+                AeAssert::gCurrentExpr =
+                    "column >= 0 && column < mColumnCount";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "UIListBoxRow: Column index invalid"))
+                    __debugbreak();
+            }
+            UIListBoxItem* v5 = &v4->mColumns.mElements[0];
+            float highlightOnScreena = v5->GetY();
+            float v8 = mHighlightQuad->GetCenterX();
+            mHighlightQuad->SetCenterPos(v8, highlightOnScreena);
+        }
+    }
+}
+
+// ea: 0x00581F90
+void UIHighlightListBox::SaveHighlightRowColor()
+{
+    int mHighlightedRow = this->mHighlightedRow;
+    if (mHighlightedRow != -1)
+    {
+        UIListBoxRow* row = &mItemRows.mElements[mHighlightedRow];
+        for (int i = 0; i < mItemColumnsCount; ++i)
+        {
+            if (i < 0 || i >= mHighlightedRowOriginalUnselectedColor.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            color32* v4 = &mHighlightedRowOriginalUnselectedColor
+                               .mElements[i];
+            v4->i = row->GetColumnUnselectedColor(i).i;
+            if (i < 0 || i >= mHighlightedRowOriginalSelectedColor.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            color32* v5 = &mHighlightedRowOriginalSelectedColor.mElements[i];
+            v5->i = row->GetColumnSelectedColor(i).i;
+        }
+    }
+}
+
+// ea: 0x00588220
+void UIHighlightListBox::RestoreHighlightRowColor()
+{
+    int mHighlightedRow = this->mHighlightedRow;
+    if (mHighlightedRow != -1)
+    {
+        UIListBoxRow* row = &mItemRows.mElements[mHighlightedRow];
+        for (int i = 0; i < mItemColumnsCount; ++i)
+        {
+            if (i < 0 || i >= mSelectedRowColorChangeColumns.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            if (mSelectedRowColorChangeColumns.mElements[i])
+            {
+                color32* v4 =
+                    &mHighlightedRowOriginalSelectedColor.mElements[i];
+                color32* v5 =
+                    &mHighlightedRowOriginalUnselectedColor.mElements[i];
+                row->SetColumnColor(i, v5->i, v4->i);
+            }
+        }
+    }
+}
+
+// ea: 0x005882F0
+void UIHighlightListBox::ColorHighlightRow()
+{
+    int mHighlightedRow = this->mHighlightedRow;
+    if (mHighlightedRow != -1)
+    {
+        UIListBoxRow* v3 = &mItemRows.mElements[mHighlightedRow];
+        for (int i = 0; i < mItemColumnsCount; ++i)
+        {
+            if (i < 0 || i >= mSelectedRowColorChangeColumns.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            if (mSelectedRowColorChangeColumns.mElements[i])
+                v3->SetColumnColor(i, mHighlightedUnselectedTextColor,
+                                   mHighlightedSelectedTextColor);
+        }
+    }
+}
+
+// ea: 0x00588390
+void UIHighlightListBox::SetEntryColor(int y, int x, color32 colorUnLit,
+                                       color32 colorLit)
+{
+    if (y < mItemRowsCount && x < mItemColumnsCount)
+    {
+        if (y == mHighlightedRow)
+        {
+            mHighlightedRowOriginalSelectedColor.mElements[x].i =
+                colorLit.i;
+            mHighlightedRowOriginalUnselectedColor.mElements[x].i =
+                colorUnLit.i;
+        }
+        else
+        {
+            UIListBoxRow* v6 = &mItemRows.mElements[y];
+            v6->SetColumnColor(x, colorUnLit, colorLit);
+        }
+    }
+}
+
+// ea: 0x005909B0
+void UIHighlightListBox::Clear()
+{
+    UIListBox::Clear();
+    DeselectRow();
+    ClearHighlights();
+}
+
+// ea: 0x005909D0
+void UIHighlightListBox::Refresh()
+{
+    RestoreHighlightRowColor();
+    UIListBox::Refresh();
+    UpdateHighlight();
+    SaveHighlightRowColor();
+    ColorHighlightRow();
+}
+
+// ============================================================================
+// UIPlayerListBox
+// ============================================================================
+
+// ea: 0x0059C020
+UIPlayerListBox::UIPlayerListBox(int visibleRows, int visibleColumns,
+                                 int maxDataRows, bool bIsWrapping)
+    : UIHighlightListBox(visibleRows, visibleColumns, maxDataRows,
+                         bIsWrapping)
+{
+    mPlayerRow = -1;
+    mPlayerIDs.mElements = nullptr;
+    mPlayerIDs.mCapacity = 0;
+    mPlayerIDs.mSize = 0;
+    mPlayerXUIDs.mElements = nullptr;
+    mPlayerXUIDs.mCapacity = 0;
+    mPlayerXUIDs.mSize = 0;
+
+    int fillId = (int)MPPlayer::GetNullId();
+    mPlayerIDs.mElements = (int*)tlMemAlloc(4 * maxDataRows, 8u, 0);
+    mPlayerIDs.mCapacity = maxDataRows;
+    mPlayerIDs.mSize = maxDataRows;
+    for (int i = 0; i < maxDataRows; ++i)
+        mPlayerIDs.mElements[i] = fillId;
+
+    myXUID.qwValue = 0;
+    myXUID.dwUserFlags = 0;
+
+    _XUID initializer;
+    initializer.qwValue = 0;
+    initializer.dwUserFlags = 0;
+    mPlayerXUIDs.mElements = (_XUID*)tlMemAlloc(12 * maxDataRows, 8u, 0);
+    mPlayerXUIDs.mCapacity = maxDataRows;
+    mPlayerXUIDs.mSize = maxDataRows;
+    for (int i = 0; i < maxDataRows; ++i)
+        mPlayerXUIDs.mElements[i] = initializer;
+}
+
+// ea: 0x005820C0
+void UIPlayerListBox::CheckIfLocalPlayer(int row)
+{
+    int* v4 = &mPlayerIDs.mElements[row];
+    if (*v4 == MPPlayer::GetNullId()
+        && mPlayerXUIDs.mElements[row].qwValue == 0)
+    {
+        mHighlights.mElements[row] = false;
+        return;
+    }
+    if (g_femanager.inGame)
+    {
+        MPPeer* mPeer = MultiplayerMgr::sInst->mPeer;
+        unsigned char v11 = (unsigned char)mPlayerIDs.mElements[row];
+        MPPlayerManager* PlayerManager = mPeer->GetPlayerManager();
+        MPPlayer* Player = PlayerManager->GetPlayer(v11);
+        if (Player != nullptr && Player->IsLocalPlayer())
+        {
+            mHighlights.mElements[row] = true;
+            Refresh();
+            return;
+        }
+        mHighlights.mElements[row] = false;
+        return;
+    }
+    unsigned int i = 0;
+    while (1)
+    {
+        LivePlayer* LocalPlayer =
+            LiveWrapper::theWrapper->GetLocalPlayer(i);
+        _XUID* v9 = &mPlayerXUIDs.mElements[row];
+        const _XUID* v10 = LocalPlayer->GetXUID();
+        if (v10->qwValue == v9->qwValue)
+            break;
+        if (++i >= 4)
+        {
+            mHighlights.mElements[row] = false;
+            return;
+        }
+    }
+    mHighlights.mElements[row] = true;
+    Refresh();
+}
+
+// ea: 0x00588400
+void UIPlayerListBox::SetPlayerID(int row, int id)
+{
+    if (row < 0 || row > mDataRowsCount)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIPlayerListBox.cpp";
+        AeAssert::gCurrentLine = 56;
+        AeAssert::gCurrentExpr = "row >= 0 && row <= mDataRowsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SetItem invalid row index"))
+            __debugbreak();
+    }
+    mPlayerIDs.mElements[row] = id;
+    CheckIfLocalPlayer(row);
+}
+
+// ea: 0x00588480
+void UIPlayerListBox::SetPlayerXUID(int row, _XUID id)
+{
+    if (row < 0 || row > mDataRowsCount)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIPlayerListBox.cpp";
+        AeAssert::gCurrentLine = 66;
+        AeAssert::gCurrentExpr = "row >= 0 && row <= mDataRowsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SetItem invalid row index"))
+            __debugbreak();
+    }
+    mPlayerXUIDs.mElements[row] = id;
+    CheckIfLocalPlayer(row);
+}
+
+// ea: 0x00590A00
+void UIPlayerListBox::Clear()
+{
+    UIListBox::Clear();
+    DeselectRow();
+    ClearHighlights();
+    for (int i = 0; i < mDataRowsCount; ++i)
+    {
+        if (i < 0 || i >= mPlayerIDs.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mPlayerIDs.mElements[i] = MPPlayer::GetNullId();
+    }
+    mPlayerRow = -1;
+    myXUID.qwValue = 0;
+    myXUID.dwUserFlags = 0;
+}
+
+// ea: 0x00590AB0
+void UIPlayerListBox::ClearRow(int row)
+{
+    UIListBox::ClearRow(row);
+    unsigned char NullId = MPPlayer::GetNullId();
+    SetPlayerID(row, (int)NullId);
+    if (row == mPlayerRow)
+        mPlayerRow = -1;
 }
 
 // ea: 0x590290

@@ -1220,6 +1220,7 @@ struct MPPlayer {
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
     void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
     int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
+    static unsigned char GetNullId();  // ?GetNullId@MPPlayer@@SAEXZ (mp.o)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1233,6 +1234,7 @@ inline Entity* MPPlayer::GetEntity()
 
 struct MPPlayerManager {
     MPPlayer* GetPlayer(int id);
+    MPPlayer* GetPlayer(unsigned char id);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z (mp.o)
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
 };
 

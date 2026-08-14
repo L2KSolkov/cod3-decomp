@@ -21,6 +21,8 @@ extern "C" {
 // ============================================================================
 // XUID - 12 bytes (verified against IDA)
 // ============================================================================
+#ifndef XUID_TYPE_DEFINED
+#define XUID_TYPE_DEFINED
 typedef struct _XUID {
     union {
         ULONGLONG qwValue;
@@ -31,6 +33,9 @@ typedef struct _XUID {
     };
     DWORD dwUserFlags;        // +0x08
 } XUID;
+#else
+typedef struct _XUID XUID;
+#endif
 
 // ============================================================================
 // XONLINE_FRIEND - 0x56 bytes (verified against IDA)
