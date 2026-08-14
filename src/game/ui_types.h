@@ -2341,3 +2341,30 @@ public:
 };
 static_assert(sizeof(IGOGrenadeCookWidget) == 0x34,
               "IGOGrenadeCookWidget size mismatch");
+
+// ============================================================================
+// IGOTankIconWidget (156 bytes) - verified against IDA
+// ============================================================================
+class IGOTankIconWidget : public IGOWidget {
+public:
+    PanelQuad* base[4];                  // +0x0C
+    PanelQuad* turret[4];                // +0x1C
+    PanelQuad* occupants[4][3][2];       // +0x2C (96 bytes)
+    int        mVehicleType;             // +0x8C
+    float      mCompassWidth;            // +0x90
+    float      mLastBaseAngles;          // +0x94
+    float      mLastTurretAngles;        // +0x98
+
+    IGOTankIconWidget(int client);  // 0x567AA0
+    virtual void Init(PanelFile* panel);              // 0x599D10
+    virtual void Update(float time_inc);              // 0x588DF0
+    virtual void Draw();                              // 0x567BE0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x583890
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x5782A0
+    void Rotate(PanelQuad* quad, float angle);        // 0x567B00
+    int  GetVehicleIndex(scr_vehicle_t* vehicle) const;  // 0x567CC0
+};
+static_assert(sizeof(IGOTankIconWidget) == 0x9C,
+              "IGOTankIconWidget size mismatch");

@@ -64,7 +64,9 @@ extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
 
 // Minimal weapon-system views (full weaponFileInfo_t lives in game/logic/g_local.h).
 struct weaponFileInfo_t {
-    uint8_t _pad[0x594];
+    uint8_t _pad[0xB0];
+    int     weapClass;     // +0xB0
+    uint8_t _pad1[0x594 - 0xB4];
     char*   szRadiantName;   // +0x594
     uint8_t _pad2[0x5A0 - 0x598];
     char*   szHudIcon;       // +0x5A0
@@ -74,7 +76,8 @@ struct weaponFileInfo_t {
     int     iFireTime;       // +0x5F8
     uint8_t _pad5[0x720 - 0x5FC];
     int     bWideListIcon;   // +0x720
-    uint8_t _pad6[0x738 - 0x724];
+    int     bADSFire;        // +0x724
+    uint8_t _pad6[0x738 - 0x728];
     int     bDoNotDrop;      // +0x738
 };
 // slot is +0xB4; add an accessor via byte offset cast since it precedes
@@ -82,6 +85,10 @@ struct weaponFileInfo_t {
 static inline int WeaponSlot(weaponFileInfo_t* w)
 {
     return *(int*)((char*)w + 0xB4);
+}
+static inline int WeaponClass(weaponFileInfo_t* w)
+{
+    return *(int*)((char*)w + 0xB0);
 }
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // game.o
 extern int BG_ClipForWeapon(int iWeapon);       // game.o
@@ -196,10 +203,57 @@ struct weaponInfo_s {
 extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A @ 0xF6AE60
 
 // Minimal scr_vehicle_t view (full in game/logic/g_local.h).
+struct vehicleSeat_t {
+    int flags;   // +0x00
+    DbLinkedHandle<EntityHandleDb, Entity> occupant;  // +0x04
+    int boneIndex;  // +0x08
+    int weapon;     // +0x0C
+    float heat;     // +0x10
+    Handle overheatEffect;  // +0x14
+    uint8_t gunMounted;  // +0x18
+    uint8_t overheating; // +0x19
+    uint8_t firing;      // +0x1A
+    uint8_t _pad1B;      // +0x1B
+};
+struct ScrVehicleLerped {
+    math::Position3 mBodyPosition;   // +0x00
+    math::Position3 mTurretAngles;   // +0x10
+    math::Position3 mGunnerAngles;   // +0x20
+    float mSteeringAngle;            // +0x30
+    float mHatchAngleRight;          // +0x34
+    float mHatchAngleLeft;           // +0x38
+    float _pad3C;                    // +0x3C
+};
 struct scr_vehicle_t {
     uint8_t _pad[0x180];
     int fireTime;  // +0x180
+    uint8_t _pad2[0x1E0 - 0x184];
+    vehicleSeat_t seats[11];  // +0x1E0
+    uint8_t _pad3[0x420 - (0x1E0 + 11 * 28)];
+    ScrVehicleLerped current;  // +0x3E0
+    ScrVehicleLerped next;     // +0x420
 };
+// infoIdx is at +0x178; accessor via byte offset.
+static inline int16_t ScrVehicleInfoIdx(scr_vehicle_t* v)
+{
+    return *(int16_t*)((char*)v + 0x178);
+}
+
+struct vehicle_info_t {
+    uint8_t _pad[0x22];
+    int16_t subtype;  // +0x22
+    uint8_t _pad2[0x48 - 0x24];
+    int hudIndex;     // +0x48
+};
+extern vehicle_info_t* VEH_GetVehicleInfo(int iIndex);  // g.o
+extern float dword_F63CB4[];  // @ 0xF63CB4
+extern float COMPASS_STOP_OFFSET;  // @ 0xDF4464
+extern int cg_aWeaponSelect[];  // ?cg_aWeaponSelect@@3PAHA @ 0xF5D078
+extern vmCvar_t g_ammoFadeTime;   // ?g_ammoFadeTime@@3UvmCvar_t@@A @ 0xEAE5C0
+extern vmCvar_t g_ammoSolidTime;  // ?g_ammoSolidTime@@3UvmCvar_t@@A @ 0xEA6668
+extern bool Com_BitCheck(int* array, int bitNum);  // bg_weapons.cpp
+extern int BG_GetTotalAmmoReserve(const PlayerState* pPS,
+                                  int iWeaponIndex);  // game.o
 
 
 struct level_locals_t {
@@ -998,6 +1052,157 @@ void IGOAmmoWidget::UpdateSplitScreen(int viewport, int old_viewport)
     totalAmmo->UpdateForHUDSplitScreen(viewport, old_viewport, 10, 5.0f,
                                        -2.0f);
     frame->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f, 0.0f);
+}
+
+// ea: 0x00588510
+void IGOAmmoWidget::Update(float time_inc)
+{
+    if (!is_shown
+        || EntityManager::sInst->GetPlayer(currCl) == nullptr
+        || EntityManager::sInst->GetPlayer(currCl)->client == nullptr)
+    {
+        return;
+    }
+    if (((EntityManager::sInst->GetPlayer(currCl)->client->ps.eFlags
+          & 0x100000)
+             != 0
+         && !BG_AllowPlayerWeaponAtVehiclePos(
+             GetPlayerState(currCl).vehType, GetPlayerState(currCl).vehPos))
+        || dword_F62960[1580 * currCl] == 0
+        || EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+               != 3)
+    {
+        dont_draw = true;
+        return;
+    }
+    int weapon;
+    if (cg_aWeaponSelect[currCl] >= 0
+        && cg_aWeaponSelect[currCl] < BG_GetNumWeapons()
+        && Com_BitCheck(GetPlayerState(currCl).weapons,
+                        cg_aWeaponSelect[currCl]))
+    {
+        weapon = cg_aWeaponSelect[currCl];
+    }
+    else
+    {
+        weapon =
+            EntityManager::sInst->GetPlayer(currCl)->s.weapon;
+    }
+    if (weapon == 0)
+    {
+        dont_draw = true;
+        return;
+    }
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weapon);
+    if (WeaponClass(InfoForWeapon) == 5 /* WEAPCLASS_GRENADE */
+        && (WeaponSlot(InfoForWeapon) == 9 /* WEAPSLOT_SPECIAL */
+            || WeaponSlot(InfoForWeapon) == 8 /* WEAPSLOT_SATCHEL */))
+    {
+        return;
+    }
+    draw_time -= time_inc;
+    float total_draw_time = g_ammoFadeTime.value + g_ammoSolidTime.value;
+    bool lowAmmo = false;
+    int ammo_update_val =
+        BG_GetTotalAmmoReserve(&GetPlayerState(currCl), weapon);
+    bool draw_ammo = false;
+    int clip_update_val = -1;
+    if (!BG_WeaponIsClipOnly(weapon))
+    {
+        int clipIdx = BG_ClipForWeapon(weapon);
+        clip_update_val = GetPlayerState(currCl).ammoclip[clipIdx];
+        draw_ammo = clip_update_val != clip_val;
+    }
+    clip_val = clip_update_val;
+    const char* szRadiantName = InfoForWeapon->szRadiantName;
+    bool v18;
+    if (strcmp(szRadiantName, "weapon_panzerschreck") == 0
+        || strcmp(szRadiantName, "weapon_bazooka") == 0)
+    {
+        v18 = ammo_val <= InfoForWeapon->iClipSize;
+    }
+    else
+    {
+        if (clip_update_val == 1)
+        {
+            lowAmmo = true;
+            goto label_29;
+        }
+        v18 = ammo_val <= InfoForWeapon->iClipSize;
+    }
+    if (!v18)
+    {
+    label_29:
+        int v19 = ammo_update_val;
+        if (ammo_update_val != ammo_val || draw_ammo || lowAmmo
+            || force_appear)
+        {
+            force_appear = false;
+            draw_time = total_draw_time;
+        }
+        bool draw_clip = clip_update_val >= 0;
+        draw_ammo = v19 >= 0;
+        v18 = clip_update_val <= 999;
+        ammo_val = v19;
+        if (!v18)
+            clip_val = 999;
+        if (v19 > 999)
+            ammo_val = 999;
+        if (WeaponClass(InfoForWeapon) == 8 /* WEAPCLASS_SPOTTER */)
+        {
+            draw_clip = false;
+            if (InfoForWeapon->bADSFire == 0)
+                draw_ammo = false;
+        }
+        v18 = draw_time >= 0.0f;
+        char text[32];
+        text[0] = 0;
+        if (!v18)
+            draw_time = 0.0f;
+        frame->SetVisibility(1.0f);
+        color32 lowColor;
+        if (lowAmmo)
+        {
+            lowColor.c.b = 50;
+            lowColor.c.g = 0x8C;
+            lowColor.c.r = 0x8B;
+        }
+        else
+        {
+            lowColor.c.b = 0x9B;
+            lowColor.c.g = 0xB8;
+            lowColor.c.r = 0xFF;
+        }
+        lowColor.c.a = 255;
+        clipAmmo->SetColor(lowColor);
+        totalAmmo->SetColor(lowColor);
+        if (draw_clip)
+        {
+            if (!draw_ammo)
+            {
+                sprintf(text, "%i", clip_val);
+                clipAmmo->SetTextNoLocalize(text);
+                totalAmmo->SetTextNoLocalize(defaultFileName);
+                dont_draw = false;
+                return;
+            }
+            sprintf(text, "%i", clip_val);
+            clipAmmo->SetTextNoLocalize(text);
+            sprintf(text, "%i", ammo_val);
+        }
+        else
+        {
+            if (!draw_ammo)
+            {
+                dont_draw = false;
+                return;
+            }
+            sprintf(text, "%i", ammo_val);
+            clipAmmo->SetTextNoLocalize(defaultFileName);
+        }
+        totalAmmo->SetTextNoLocalize(text);
+        dont_draw = false;
+    }
 }
 
 // ============================================================================
@@ -4025,4 +4230,292 @@ void IGOGrenadeCookWidget::UpdateSplitScreen(int viewport, int old_viewport)
     for (int i = 0; i < 6; ++i)
         grenadeTime[i]->FormatForSplitScreen(viewport, old_viewport);
     grenadeRing->FormatForSplitScreen(viewport, old_viewport);
+}
+
+// ============================================================================
+// IGOTankIconWidget
+// ============================================================================
+
+// ea: 0x00567AA0
+IGOTankIconWidget::IGOTankIconWidget(int client)
+{
+    mClient = client;
+    force_appear = false;
+    is_shown = true;
+    mCompassWidth = 0.0f;
+    mLastBaseAngles = 0.0f;
+    mLastTurretAngles = 0.0f;
+    base[0] = nullptr;
+    base[1] = nullptr;
+    base[2] = nullptr;
+    base[3] = nullptr;
+    turret[0] = nullptr;
+    turret[1] = nullptr;
+    turret[2] = nullptr;
+    turret[3] = nullptr;
+    memset(occupants, 0, sizeof(occupants));
+}
+
+// ea: 0x00599D10
+void IGOTankIconWidget::Init(PanelFile* panel)
+{
+    base[0] = panel->GetPointer("sherman_icon_body");
+    turret[0] = panel->GetPointer("sherman_icon_turret");
+    base[1] = panel->GetPointer("PanzerV_icon_body");
+    turret[1] = panel->GetPointer("PanzerV_icon_turret");
+    base[2] = panel->GetPointer("horch_icon_body");
+    base[3] = panel->GetPointer("horch_icon_body");
+    occupants[0][0][0] = panel->GetPointer("sherman_position_01_off");
+    occupants[0][0][1] = panel->GetPointer("sherman_position_01_on");
+    occupants[0][1][0] = panel->GetPointer("sherman_position_02_off");
+    occupants[0][1][1] = panel->GetPointer("sherman_position_02_on");
+    occupants[1][0][0] = panel->GetPointer("PanzerV_position_01_off");
+    occupants[1][0][1] = panel->GetPointer("PanzerV_position_01_on");
+    occupants[1][1][0] = panel->GetPointer("PanzerV_position_02_off");
+    occupants[1][1][1] = panel->GetPointer("PanzerV_position_02_on");
+    occupants[3][0][0] = panel->GetPointer("horch_position_01_off");
+    occupants[3][0][1] = panel->GetPointer("horch_position_01_on");
+    occupants[3][1][0] = panel->GetPointer("horch_position_03_off");
+    occupants[3][1][1] = panel->GetPointer("horch_position_03_on");
+    occupants[3][2][0] = panel->GetPointer("horch_position_02_off");
+    occupants[3][2][1] = panel->GetPointer("horch_position_02_on");
+    occupants[2][0][0] = PanelQuad::Clone(occupants[3][0][0]);
+    occupants[2][0][1] = PanelQuad::Clone(occupants[3][0][1]);
+    occupants[2][1][0] = PanelQuad::Clone(occupants[3][1][0]);
+    occupants[2][1][1] = PanelQuad::Clone(occupants[3][1][1]);
+    occupants[2][2][0] = PanelQuad::Clone(occupants[3][2][0]);
+    occupants[2][2][1] = PanelQuad::Clone(occupants[3][2][1]);
+    if (mClient > 0)
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            if (base[i] != nullptr)
+                base[i] = PanelQuad::Clone(base[i]);
+            if (turret[i] != nullptr)
+                turret[i] = PanelQuad::Clone(turret[i]);
+            for (int j = 0; j < 3; ++j)
+            {
+                if (occupants[i][j][0] != nullptr)
+                    occupants[i][j][0] =
+                        PanelQuad::Clone(occupants[i][j][0]);
+                if (occupants[i][j][1] != nullptr)
+                    occupants[i][j][1] =
+                        PanelQuad::Clone(occupants[i][j][1]);
+            }
+        }
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        if (base[i] != nullptr)
+            base[i]->SetXYInitialToCurrentPos();
+        if (turret[i] != nullptr)
+            turret[i]->SetXYInitialToCurrentPos();
+        for (int j = 0; j < 3; ++j)
+        {
+            if (occupants[i][j][0] != nullptr)
+                occupants[i][j][0]->SetXYInitialToCurrentPos();
+            if (occupants[i][j][1] != nullptr)
+                occupants[i][j][1]->SetXYInitialToCurrentPos();
+        }
+    }
+}
+
+// ea: 0x00588DF0
+void IGOTankIconWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    DbLinkedHandle<EntityHandleDb, Entity> ent = GetPlayersTank();
+    unsigned int v4 = ent.mHandle.mVal & 0xFFF;
+    if (v4 < 0x540
+        && ent.mHandle.mVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey
+        && EntityHandleDb::sInst.mElements[v4].mObject != nullptr)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        scr_vehicle_t* vehicle = (scr_vehicle_t*)mObject->scr_vehicle;
+        if (VEH_GetVehicleInfo(ScrVehicleInfoIdx(vehicle))->subtype == 2)
+        {
+            SetShown(false);
+            return;
+        }
+        SetShown(true);
+        if (is_shown)
+        {
+            vehicle_info_t* VehicleInfo =
+                VEH_GetVehicleInfo(ScrVehicleInfoIdx(vehicle));
+            int v8 = VehicleInfo != nullptr ? VehicleInfo->hudIndex : 0;
+            mVehicleType = v8;
+            float* v9 = &dword_F63CB4[1580 * currCl];
+            float v10 = *v9
+                        - mObject->r.currentAngles.v.m128_f32[1];
+            float turretAngle =
+                (v10 - vehicle->next.mTurretAngles.v.m128_f32[1])
+                * 0.017453292f;
+            if (COMPASS_STOP_OFFSET <= fabsf(*v9 - mLastBaseAngles)
+                || (turret[v8] != nullptr
+                    && COMPASS_STOP_OFFSET
+                           <= fabsf(
+                               vehicle->next.mTurretAngles.v.m128_f32[1]
+                               - mLastTurretAngles)))
+            {
+                mLastBaseAngles = *v9;
+                mLastTurretAngles =
+                    vehicle->next.mTurretAngles.v.m128_f32[1];
+                Rotate(base[v8], v10 * 0.017453292f);
+                if (turret[mVehicleType] != nullptr)
+                    Rotate(turret[mVehicleType], turretAngle);
+                for (int i = 0; i < 3; ++i)
+                {
+                    PanelQuad** pOff =
+                        &occupants[mVehicleType][i][0];
+                    if (*pOff != nullptr)
+                    {
+                        DbLinkedHandle<EntityHandleDb, Entity>& occupant =
+                            vehicle->seats[i].occupant;
+                        unsigned int v15 = occupant.mHandle.mVal & 0xFFF;
+                        bool occupied =
+                            v15 < 0x540
+                            && occupant.mHandle.mVal >> 12
+                           == (unsigned int)EntityHandleDb::sInst
+                                          .mElements[v15].mKey
+                            && EntityHandleDb::sInst.mElements[v15].mObject
+                                   != nullptr;
+                        (*pOff)->SetShown(!occupied);
+                        PanelQuad* pOn = occupants[mVehicleType][i][1];
+                        pOn->SetShown(occupied);
+                        float angle = v10 * 0.017453292f;
+                        if (i == 1)
+                            angle = turretAngle;
+                        Rotate(occupied ? pOn : *pOff, angle);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00567BE0
+void IGOTankIconWidget::Draw()
+{
+    if (is_shown
+        && EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+               == 3
+        && (EntityManager::sInst->GetPlayer(currCl)->client->ps.eFlags
+            & 0x100000)
+               != 0)
+    {
+        base[mVehicleType]->Draw();
+        if (turret[mVehicleType] != nullptr)
+            turret[mVehicleType]->Draw();
+        for (int i = 0; i < 3; ++i)
+        {
+            if (occupants[mVehicleType][i][0] != nullptr)
+                occupants[mVehicleType][i][0]->Draw();
+            if (occupants[mVehicleType][i][1] != nullptr)
+                occupants[mVehicleType][i][1]->Draw();
+        }
+    }
+}
+
+// ea: 0x00567B00
+void IGOTankIconWidget::Rotate(PanelQuad* quad, float angle)
+{
+    quad->ResetToInitialXY();
+    int window = unk_F6A284[802 * mClient];
+    float x_pos = View::GetCurrentHUDXPos(quad->GetCenterX(), window, 9,
+                                          0.0f);
+    int window2 = unk_F6A284[802 * mClient];
+    float y_pos = View::GetCurrentHUDYPos(quad->GetCenterY(), window2, 9,
+                                          0.0f);
+    quad->Rotate(angle, true);
+    quad->SetCenterPos(x_pos, y_pos);
+    float yScale = View::GetYScalingForHUD(unk_F6A284[802 * mClient]);
+    float xScale = View::GetXScalingForHUD(unk_F6A284[802 * mClient]);
+    quad->Scale(x_pos, y_pos, xScale, yScale, true);
+}
+
+// ea: 0x00567CC0
+int IGOTankIconWidget::GetVehicleIndex(scr_vehicle_t* vehicle) const
+{
+    vehicle_info_t* VehicleInfo =
+        VEH_GetVehicleInfo(ScrVehicleInfoIdx(vehicle));
+    if (VehicleInfo != nullptr)
+        return VehicleInfo->hudIndex;
+    return 0;
+}
+
+// ea: 0x005782A0
+void IGOTankIconWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    PanelQuad* compass =
+        ((IGOCompassWidget*)g_femanager.IGO->compassWidget[mClient])->compass;
+    float width;
+    if (compass != nullptr)
+        width = compass->GetInitialWidth() * 0.5f;
+    else
+        width = 0.0f;
+    mCompassWidth = width;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (base[i] != nullptr)
+        {
+            base[i]->ResetToInitialXY();
+            base[i]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                             mCompassWidth, 0.0f);
+        }
+        if (turret[i] != nullptr)
+        {
+            turret[i]->ResetToInitialXY();
+            turret[i]->FormatHUDForSplitScreen(viewport, old_viewport, 9,
+                                               mCompassWidth, 0.0f);
+        }
+        for (int j = 0; j < 3; ++j)
+        {
+            if (occupants[i][j][0] != nullptr)
+            {
+                occupants[i][j][0]->ResetToInitialXY();
+                occupants[i][j][0]->FormatHUDForSplitScreen(
+                    viewport, old_viewport, 9, mCompassWidth, 0.0f);
+            }
+            if (occupants[i][j][1] != nullptr)
+            {
+                occupants[i][j][1]->ResetToInitialXY();
+                occupants[i][j][1]->FormatHUDForSplitScreen(
+                    viewport, old_viewport, 9, mCompassWidth, 0.0f);
+            }
+        }
+    }
+}
+
+// ea: 0x00583890
+void IGOTankIconWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        if (base[i] != nullptr)
+        {
+            base[i]->ResetToInitialXY();
+            base[i]->FattenMeForWidescreen(widescreen, about_x);
+        }
+        if (turret[i] != nullptr)
+        {
+            turret[i]->ResetToInitialXY();
+            turret[i]->FattenMeForWidescreen(widescreen, about_x);
+        }
+        for (int j = 0; j < 3; ++j)
+        {
+            if (occupants[i][j][0] != nullptr)
+            {
+                occupants[i][j][0]->ResetToInitialXY();
+                occupants[i][j][0]->FattenMeForWidescreen(widescreen,
+                                                          about_x);
+            }
+            if (occupants[i][j][1] != nullptr)
+            {
+                occupants[i][j][1]->ResetToInitialXY();
+                occupants[i][j][1]->FattenMeForWidescreen(widescreen,
+                                                          about_x);
+            }
+        }
+    }
 }
