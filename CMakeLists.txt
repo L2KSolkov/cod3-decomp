@@ -369,7 +369,10 @@ add_library(cod3_game_core STATIC
     src/game/core/spinner_lens.cpp
 )
 add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
-add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)
+add_library(cod3_game_render STATIC
+    src/game/render/stubs_game.cpp
+    src/game/render/fogconfig.cpp
+    src/game/render/renderdebug.cpp)
 add_library(cod3_game_anim STATIC src/game/anim/stubs_game.cpp)
 add_library(cod3_game_mpactors STATIC
     src/game/mpactors/stubs_game.cpp

@@ -886,17 +886,30 @@ extern void*   gShotProf;              // g.o 0x... (ShotPerfTest*)
 extern cvar_t* gStatusBar;             // core.o
 
 struct TimerRenderBars {
-    uint8_t      _pad[0x10];
-    unsigned int mTimeLo;  // +0x10 (rdtsc low at TimeGameAdvanceBegin)
-    unsigned int mTimeHi;  // +0x14 (rdtsc high)
-    uint8_t      _pad2[0x48 - 0x18];
-    int mActive;   // +0x48
+    struct TimedInterval {
+        unsigned __int64 mLastBegin;  // +0x00
+        unsigned __int64 mLastEnd;    // +0x08
+        unsigned __int64 mBegin;      // +0x10
+        unsigned __int64 mEnd;        // +0x18
+    };
+    TimedInterval mFrameAdvance;       // +0x00 (0x20 bytes)
+    TimedInterval mUser;               // +0x20
+    float mVSyncLength;                // +0x40
+    int   mRenderTimersScale;          // +0x44
+    int   mActive;                     // +0x48
+    cvar_t* mCvarEnabled;              // +0x4C
+    cvar_t* mCvarShowAdvance;          // +0x50
+    cvar_t* mCvarShowScene;            // +0x54
+    cvar_t* mCvarShowDma;              // +0x58
+    cvar_t* mCvarShowUser;             // +0x5C
     static TimerRenderBars sInst;  // ?sInst@TimerRenderBars@@0V1@A (render.o 0x011EA668)
+    TimerRenderBars();  // ??0TimerRenderBars@@QAE@XZ (render.o 0x6BCE00)
+    void Init();        // ?Init@TimerRenderBars@@QAEXXZ (render.o 0x6BCE60)
+    void DeltaTimeScale(int d);  // ?DeltaTimeScale@TimerRenderBars@@QAEXH@Z (render.o 0x6BCEE0)
     void ToggleActive();  // ?ToggleActive@TimerRenderBars@@QAEXXZ (inline)
     void TimeGameAdvanceBegin() {  // ea: 0x72A9D0 (inline)
         unsigned __int64 t = __rdtsc();
-        mTimeLo = (unsigned int)t;
-        mTimeHi = (unsigned int)(t >> 32);
+        mFrameAdvance.mBegin = t;
     }
 };
 
@@ -2217,6 +2230,14 @@ extern Entity* g_path_owner;
 // ?RenderX@DebugRender@@SAX...; takes math::Position3 const& + global Color).
 class DebugRender {
 public:
+    // render.o instance state (IDA-verified 0x94 bytes)
+    struct nglMesh* mDebugSphereMesh;       // +0x00
+    struct nglMesh* mDebugCylinderMesh;     // +0x04
+    struct nglMesh* mDebugHemisphereMesh;   // +0x08
+    struct cdDebugShaderMat* mDebugShaderMaterial;  // +0x0C
+    ae_sized_array<void (__cdecl*)(void), 32> mRenderFpList;  // +0x10
+
+    void Init();  // ?Init@DebugRender@@QAEXXZ (render.o 0x6BCF00)
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& color);  // render.o 0xAC3FF0
     static void RenderLineBox(const math::Mat43& LToW,
