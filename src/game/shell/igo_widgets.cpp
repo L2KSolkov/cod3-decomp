@@ -38,7 +38,9 @@ extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z
 // Global-scope twin of BrocAPI (broc_types.h's lives in namespace Broc);
 // only the HQ callbacks used here are declared. Offsets verified against IDA.
 struct BrocAPI {
-    uint8_t _pad[0xBE8];
+    uint8_t _pad[0xB74];
+    bool (*mIsTurretReady)(unsigned int);  // +0xB74
+    uint8_t _pad2[0xBE8 - 0xB78];
     struct {
         uint8_t _pad0[0x17C];
         int (*mCallbackGetFlagBeingContested)(const Broc::entity);  // +0x17C
@@ -51,6 +53,36 @@ struct BrocAPI {
     } mBrocExports;  // +0xBE8
 };
 extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
+
+// Minimal weapon-system views (full weaponFileInfo_t lives in game/logic/g_local.h).
+struct weaponFileInfo_t {
+    uint8_t _pad[0x594];
+    char*   szRadiantName;   // +0x594
+    uint8_t _pad2[0x5C4 - 0x598];
+    int     iClipSize;       // +0x5C4
+    uint8_t _pad3[0x5F8 - 0x5C8];
+    int     iFireTime;       // +0x5F8
+};
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // game.o
+extern int BG_ClipForWeapon(int iWeapon);       // game.o
+extern int BG_AmmoForWeapon(int iWeapon);       // game.o
+extern bool BG_WeaponIsClipOnly(int iWeapon);   // game.o
+extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);  // game.o
+extern int CG_GetGrenadeCount();                // cg.o
+extern int CG_GetSpecialGrenadeCount();         // cg.o
+extern vmCvar_t g_grenadeFadeTime;   // ?g_grenadeFadeTime@@3UvmCvar_t@@A
+extern vmCvar_t g_grenadeSolidTime;  // ?g_grenadeSolidTime@@3UvmCvar_t@@A
+extern int dword_F6419C[];  // @ 0xF6419C (special weapon type)
+extern int dword_F641A0[];  // @ 0xF641A0 (special weapon end time)
+extern int dword_F641A4[];  // @ 0xF641A4 (special weapon duration)
+extern float percentToTrimBottom;  // @ 0xDF4460
+extern float percentToTrimTop;     // @ 0xDF445C
+
+// Minimal scr_vehicle_t view (full in game/logic/g_local.h).
+struct scr_vehicle_t {
+    uint8_t _pad[0x180];
+    int fireTime;  // +0x180
+};
 
 struct level_locals_t {
     int time;   // +0x00
@@ -1068,8 +1100,7 @@ void IGOHQProgressBarWidget::Update(float time_inc)
         float capturePct =
             (float)gpBrocAPI->mBrocExports
                 .mCallbackGetTeamCapturingHQPercent(
-                    *(Broc::entity*)((char*)dword_F62960 + 1580 * currCl * 4
-                                     + 176))
+                    *(Broc::entity*)(dword_F62960[1580 * currCl] + 176))
             * 0.0001f;
         int v5 = gpBrocAPI->mBrocExports.mCallbackGetHQCaptureStatus();
         float v6 =
@@ -1330,8 +1361,7 @@ void IGORaiseFlagWidget::Update(float time_inc)
         {
             player_count =
                 gpBrocAPI->mBrocExports.mCallbackGetFlagBeingContested(
-                    *(Broc::entity*)((char*)dword_F62960 + 1580 * currCl * 4
-                                     + 176));
+                    *(Broc::entity*)(dword_F62960[1580 * currCl] + 176));
             if (player_count > 0)
             {
                 raise_flag_icon->SetShown(true);
@@ -1489,4 +1519,671 @@ void IGOTimerWidget::UpdateSplitScreen(int viewport, int old_viewport)
 {
     m_pTimer->UpdateForHUDSplitScreen(viewport, old_viewport, 5, 0.0f,
                                       10.0f);
+}
+
+// ============================================================================
+// IGOGrenadeWidget
+// ============================================================================
+
+// ea: 0x00566590
+IGOGrenadeWidget::IGOGrenadeWidget(int client)
+{
+    mClient = client;
+    is_shown = true;
+    force_appear = false;
+    grenadeUS = nullptr;
+    grenadeGerman = nullptr;
+    grenadeSmokeL = nullptr;
+    grenadeSmokeR = nullptr;
+    grenadeSticky = nullptr;
+    rifleGrenade = nullptr;
+    apMine = nullptr;
+    ammoLeft = nullptr;
+    ammoRight = nullptr;
+    ammo_left_val = 0;
+    ammo_right_val = 0;
+    showLeft = true;
+    showRight = true;
+    left_draw_time = 0.0f;
+    right_draw_time = 0.0f;
+}
+
+// ea: 0x005665F0
+IGOGrenadeWidget::~IGOGrenadeWidget()
+{
+    if (grenadeUS != nullptr)
+        delete grenadeUS;
+    if (grenadeGerman != nullptr)
+        delete grenadeGerman;
+    if (grenadeSmokeL != nullptr)
+        delete grenadeSmokeL;
+    if (grenadeSmokeR != nullptr)
+        delete grenadeSmokeR;
+    if (grenadeSticky != nullptr)
+        delete grenadeSticky;
+    if (rifleGrenade != nullptr)
+        delete rifleGrenade;
+    if (apMine != nullptr)
+        delete apMine;
+    if (ammoLeft != nullptr)
+        delete ammoLeft;
+    if (ammoRight != nullptr)
+        delete ammoRight;
+}
+
+// ea: 0x00598730
+void IGOGrenadeWidget::Init(PanelFile* panel)
+{
+    grenadeUS = panel->GetPointer("icon_grenade_US_01");
+    grenadeGerman = panel->GetPointer("icon_grenade_german_01");
+    grenadeSmokeL = panel->GetPointer("icon_grenade_smoke_01");
+    grenadeSmokeR = panel->GetPointer("icon_grenade_smoke");
+    grenadeSticky = panel->GetPointer("icon_grenade_sticky_01");
+    rifleGrenade = panel->GetPointer("icon_grenade_rifle_US");
+    apMine = panel->GetPointer("icon_AP_mine");
+    ammoLeft = panel->GetTextPointer("text_grenade_left");
+    ammoRight = panel->GetTextPointer("text_grenade_right");
+    if (mClient > 0)
+    {
+        grenadeUS = PanelQuad::Clone(grenadeUS);
+        grenadeGerman = PanelQuad::Clone(grenadeGerman);
+        grenadeSmokeL = PanelQuad::Clone(grenadeSmokeL);
+        grenadeSmokeR = PanelQuad::Clone(grenadeSmokeR);
+        grenadeSticky = PanelQuad::Clone(grenadeSticky);
+        rifleGrenade = PanelQuad::Clone(rifleGrenade);
+        apMine = PanelQuad::Clone(apMine);
+        ammoLeft = (FEText*)mem_heap_malloc(0x70u);
+        if (ammoLeft != nullptr)
+            ammoLeft = new (ammoLeft) FEText();
+        else
+            ammoLeft = nullptr;
+        ammoRight = (FEText*)mem_heap_malloc(0x70u);
+        if (ammoRight != nullptr)
+            ammoRight = new (ammoRight) FEText();
+        else
+            ammoRight = nullptr;
+        ammoLeft->CopyFrom(panel->GetTextPointer("text_grenade_left"));
+        ammoRight->CopyFrom(panel->GetTextPointer("text_grenade_right"));
+    }
+}
+
+// ea: 0x005666B0
+void IGOGrenadeWidget::Update(float time_inc)
+{
+    if (!is_shown
+        || EntityManager::sInst->GetPlayer(mClient) == nullptr
+        || EntityManager::sInst->GetPlayer(mClient)->client == nullptr)
+    {
+        return;
+    }
+    int cgClientBase = dword_F62960[1580 * currCl];
+    if (((EntityManager::sInst->GetPlayer(mClient)->client->ps.eFlags
+          & 0x100000)
+             != 0
+         && !BG_AllowPlayerWeaponAtVehiclePos(
+             *(int*)(cgClientBase + 1336), *(int*)(cgClientBase + 1332)))
+        || dword_F62960[1580 * currCl] == 0
+        || EntityManager::sInst->GetPlayer(mClient)->client->pers.playerState
+               != 3)
+    {
+        showLeft = false;
+        showRight = false;
+        return;
+    }
+    int v5 = GetPlayerState(currCl).weaponslots[4];
+    int weapRight = GetPlayerState(currCl).weaponslots[9];
+    if (v5 == 0 && weapRight == 0)
+    {
+        showLeft = false;
+        showRight = false;
+        return;
+    }
+    int GrenadeCount = CG_GetGrenadeCount();
+    int SpecialGrenadeCount = CG_GetSpecialGrenadeCount();
+    left_draw_time -= time_inc;
+    right_draw_time -= time_inc;
+    float v11 = g_grenadeFadeTime.value + g_grenadeSolidTime.value;
+    if (GrenadeCount != ammo_left_val || force_appear)
+        left_draw_time = v11;
+    if (SpecialGrenadeCount != ammo_right_val || force_appear)
+        right_draw_time = v11;
+    ammo_left_val = GrenadeCount;
+    ammo_right_val = SpecialGrenadeCount;
+    force_appear = false;
+    showLeft = GrenadeCount > 0;
+    showRight = SpecialGrenadeCount > 0;
+    if (showLeft)
+    {
+        ammoLeft->SetColor(color32(-1));
+        if (ammo_left_val > 999)
+            ammo_left_val = 999;
+        char text[4];
+        sprintf(text, "x%i", ammo_left_val);
+        if (text[0] != 0)
+        {
+            ammoLeft->SetTextNoLocalize(text);
+            ammoLeft->SetShown(true);
+        }
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v5);
+        if (strcmp(InfoForWeapon->szRadiantName, "weapon_smokegrenade") == 0)
+        {
+            grenadeSmokeL->SetVisibility(1.0f);
+            grenadeUS->SetVisibility(0.0f);
+            grenadeGerman->SetVisibility(0.0f);
+            grenadeSticky->SetVisibility(0.0f);
+        }
+        if (strcmp(InfoForWeapon->szRadiantName, "weapon_fraggrenade") == 0)
+        {
+            grenadeUS->SetVisibility(1.0f);
+            grenadeGerman->SetVisibility(0.0f);
+            grenadeSticky->SetVisibility(0.0f);
+            grenadeSmokeL->SetVisibility(0.0f);
+        }
+        else if (strcmp(InfoForWeapon->szRadiantName,
+                        "weapon_stielhandgranate")
+                 == 0)
+        {
+            grenadeUS->SetVisibility(0.0f);
+            grenadeGerman->SetVisibility(1.0f);
+            grenadeSticky->SetVisibility(0.0f);
+            grenadeSmokeL->SetVisibility(0.0f);
+        }
+        else if (strcmp(InfoForWeapon->szRadiantName,
+                        "weapon_stickygrenade")
+                 == 0)
+        {
+            grenadeUS->SetVisibility(0.0f);
+            grenadeGerman->SetVisibility(0.0f);
+            grenadeSmokeL->SetVisibility(0.0f);
+            grenadeSticky->SetVisibility(1.0f);
+        }
+    }
+    else
+    {
+        grenadeSmokeL->SetVisibility(0.0f);
+        grenadeUS->SetVisibility(0.0f);
+        grenadeGerman->SetVisibility(0.0f);
+        grenadeSticky->SetVisibility(0.0f);
+        ammoLeft->SetShown(false);
+    }
+    if (showRight)
+    {
+        ammoRight->SetColor(color32(-1));
+        if (ammo_right_val > 999)
+            ammo_right_val = 999;
+        char text[4];
+        sprintf(text, "x%i", ammo_right_val);
+        if (text[0] != 0)
+        {
+            ammoRight->SetTextNoLocalize(text);
+            ammoRight->SetShown(true);
+        }
+        const char* v18 = BG_GetInfoForWeapon(weapRight)->szRadiantName;
+        if (strcmp(v18, "weapon_m1garand_RG") == 0
+            || strcmp(v18, "weapon_k98_RG") == 0)
+        {
+            grenadeSmokeR->SetVisibility(0.0f);
+            rifleGrenade->SetVisibility(1.0f);
+            apMine->SetVisibility(0.0f);
+        }
+        else if (strcmp(v18, "weapon_mine") == 0)
+        {
+            grenadeSmokeR->SetVisibility(0.0f);
+            rifleGrenade->SetVisibility(0.0f);
+            apMine->SetVisibility(1.0f);
+        }
+        else if (strcmp(v18, "weapon_smokegrenade") == 0)
+        {
+            grenadeSmokeR->SetVisibility(1.0f);
+            rifleGrenade->SetVisibility(0.0f);
+            apMine->SetVisibility(0.0f);
+        }
+    }
+    else
+    {
+        grenadeSmokeR->SetVisibility(0.0f);
+        rifleGrenade->SetVisibility(0.0f);
+        apMine->SetVisibility(0.0f);
+        ammoRight->SetShown(false);
+    }
+}
+
+// ea: 0x00566BC0
+void IGOGrenadeWidget::Draw()
+{
+    if (is_shown
+        && (showLeft || showRight)
+        && EntityManager::sInst->GetPlayer(mClient)->client->pers.playerState
+               == 3)
+    {
+        grenadeUS->Draw();
+        grenadeGerman->Draw();
+        grenadeSmokeL->Draw();
+        grenadeSmokeR->Draw();
+        grenadeSticky->Draw();
+        rifleGrenade->Draw();
+        apMine->Draw();
+        ammoLeft->Draw();
+        ammoRight->Draw();
+    }
+}
+
+// ea: 0x00582D70
+void IGOGrenadeWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    grenadeUS->FattenMeForWidescreen(widescreen, about_x);
+    grenadeGerman->FattenMeForWidescreen(widescreen, about_x);
+    grenadeSmokeL->FattenMeForWidescreen(widescreen, about_x);
+    grenadeSmokeR->FattenMeForWidescreen(widescreen, about_x);
+    grenadeSticky->FattenMeForWidescreen(widescreen, about_x);
+    rifleGrenade->FattenMeForWidescreen(widescreen, about_x);
+    apMine->FattenMeForWidescreen(widescreen, about_x);
+    ammoLeft->UpdateForWidescreen(widescreen, (int)about_x);
+    ammoRight->UpdateForWidescreen(widescreen, (int)about_x);
+}
+
+// ea: 0x005778A0
+void IGOGrenadeWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    grenadeUS->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f,
+                                       -16.0f);
+    grenadeGerman->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f,
+                                           -16.0f);
+    grenadeSmokeL->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f,
+                                           -16.0f);
+    grenadeSmokeR->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f,
+                                           -16.0f);
+    grenadeSticky->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f,
+                                           -16.0f);
+    rifleGrenade->FormatHUDForSplitScreen(viewport, old_viewport, 10, -10.0f,
+                                          -16.0f);
+    apMine->FormatHUDForSplitScreen(viewport, old_viewport, 10, -10.0f,
+                                    -16.0f);
+    ammoLeft->UpdateForHUDSplitScreen(viewport, old_viewport, 10, -10.0f,
+                                      -8.0f);
+    ammoRight->UpdateForHUDSplitScreen(viewport, old_viewport, 10, 3.0f,
+                                       -8.0f);
+}
+
+// ============================================================================
+// IGOSpecialWeaponWidget
+// ============================================================================
+
+// ea: 0x00567820
+IGOSpecialWeaponWidget::IGOSpecialWeaponWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    artillery = nullptr;
+    health = nullptr;
+    ammo = nullptr;
+    percent = 0.0f;
+    hadAmmo = false;
+    timeForNormalSize = 0;
+    scale = 1.0f;
+}
+
+// ea: 0x00598DE0
+void IGOSpecialWeaponWidget::Init(PanelFile* panel)
+{
+    artillery = panel->GetPointer("special_artillery");
+    health = panel->GetPointer("special_health");
+    ammo = panel->GetPointer("special_ammo");
+    if (mClient > 0)
+    {
+        artillery = PanelQuad::Clone(
+            panel->GetPointer("special_artillery"));
+        health = PanelQuad::Clone(panel->GetPointer("special_health"));
+        ammo = PanelQuad::Clone(panel->GetPointer("special_ammo"));
+    }
+}
+
+// ea: 0x00567860
+void IGOSpecialWeaponWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown)
+        return;
+    percent = 0.0f;
+    if (!cgGlobal.teamGame)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player->sentient == nullptr)
+        return;
+    Client* client = Player->client;
+    if (client->pers.playerState != 3)
+        return;
+    int v5 = client->ps.weaponslots[9];
+    if (client->ps.weaponslots[9] != 0)
+    {
+        int v6;
+        if (BG_WeaponIsClipOnly(client->ps.weaponslots[9]))
+            v6 = Player->client->ps.ammoclip[BG_ClipForWeapon(v5)];
+        else
+            v6 = Player->client->ps.ammo[BG_AmmoForWeapon(v5)];
+        if (v6 != 0)
+        {
+            bool hadAmmo = this->hadAmmo;
+            percent = 1.0f;
+            if (!hadAmmo)
+                timeForNormalSize = cgGlobal.time + 2000;
+            this->hadAmmo = true;
+            if (timeForNormalSize - cgGlobal.time > 2000)
+                timeForNormalSize = 0;
+            scale =
+                (((float)(timeForNormalSize - cgGlobal.time) * 0.0005f)
+                 * 0.25f)
+                + 1.0f;
+            if (scale < 1.0f)
+                scale = 1.0f;
+            return;
+        }
+        this->hadAmmo = false;
+    }
+    scale = 1.0f;
+    int v10 = dword_F641A0[1580 * currCl];
+    if (v10 > cgGlobal.time)
+        percent =
+            1.0f
+            - ((float)(v10 - cgGlobal.time)
+               / (float)dword_F641A4[1580 * currCl]);
+    if (percent > 1.0f)
+        percent = 1.0f;
+    if (percent < 0.0f)
+        percent = 0.0f;
+}
+
+// ea: 0x005832D0
+void IGOSpecialWeaponWidget::Draw()
+{
+    if (is_shown
+        && percent >= 0.00001f
+        && (((EntityManager::sInst->GetPlayer(currCl)->client->ps.eFlags
+              & 0x100000)
+                 == 0)
+            || BG_AllowPlayerWeaponAtVehiclePos(
+                *(int*)(dword_F62960[1580 * currCl] + 1336),
+                *(int*)(dword_F62960[1580 * currCl] + 1332))))
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        if (Player->sentient != nullptr
+            && Player->client->pers.playerState == 3)
+        {
+            int v4 = dword_F6419C[1580 * currCl];
+            PanelQuad* quad;
+            switch (v4)
+            {
+            case 6:
+                quad = artillery;
+                break;
+            case 3:
+                quad = health;
+                break;
+            case 4:
+            case 5:
+                quad = ammo;
+                break;
+            default:
+                return;
+            }
+            if (quad != nullptr)
+            {
+                int window = unk_F6A284[802 * currCl];
+                float x_scale = View::GetXScalingForHUD(window) * scale;
+                float y_scale = View::GetYScalingForHUD(window) * scale;
+                quad->ScaleAbsoluteCenter(x_scale, y_scale);
+                quad->Mask(1.0f, TOP_MASK, 1.0f);
+                quad->SetAlpha(0.25f);
+                quad->Draw();
+                quad->Mask(
+                    (percent / (percentToTrimBottom + percentToTrimTop + 1.0f))
+                        + percentToTrimBottom,
+                    TOP_MASK, 1.0f);
+                float alpha = 1.0f;
+                if (percent <= 0.999f)
+                    alpha = 0.8f;
+                quad->SetAlpha(alpha);
+                quad->Draw();
+            }
+        }
+    }
+}
+
+// ea: 0x005834B0
+void IGOSpecialWeaponWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    artillery->FattenMeForWidescreen(widescreen, about_x);
+    health->FattenMeForWidescreen(widescreen, about_x);
+    ammo->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00577B40
+void IGOSpecialWeaponWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    artillery->FormatHUDForSplitScreen(viewport, old_viewport, 2, 0.0f,
+                                       -25.0f);
+    health->FormatHUDForSplitScreen(viewport, old_viewport, 2, 0.0f,
+                                    -25.0f);
+    ammo->FormatHUDForSplitScreen(viewport, old_viewport, 2, 0.0f, -25.0f);
+}
+
+// ============================================================================
+// IGOTankLoadingWidget
+// ============================================================================
+
+// ea: 0x00567420
+IGOTankLoadingWidget::IGOTankLoadingWidget(int client)
+{
+    mClient = client;
+    is_shown = true;
+    force_appear = false;
+    on = nullptr;
+    off = nullptr;
+    is_on = true;
+}
+
+// ea: 0x00598B00
+void IGOTankLoadingWidget::Init(PanelFile* panel)
+{
+    on = panel->GetPointer("tankshells03");
+    off = panel->GetPointer("tankshells02");
+    if (mClient > 0)
+    {
+        on = PanelQuad::Clone(on);
+        off = PanelQuad::Clone(off);
+    }
+}
+
+// ea: 0x00588AF0
+void IGOTankLoadingWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (is_shown && on != nullptr)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity> h = GetPlayersTank();
+        if (h.mHandle.mVal != 0)
+            is_on = gpBrocAPI->mIsTurretReady(h.mHandle.mVal);
+    }
+}
+
+// ea: 0x00567450
+void IGOTankLoadingWidget::Draw()
+{
+    if (is_shown
+        && on != nullptr
+        && EntityManager::sInst->GetPlayer(currCl) != nullptr
+        && EntityManager::sInst->GetPlayer(currCl)->client != nullptr
+        && EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+               == 3
+        && (GetPlayerState(currCl).eFlags & 0x100000) != 0)
+    {
+        if (is_on)
+            on->Draw();
+        else
+            off->Draw();
+    }
+}
+
+// ea: 0x005831B0
+void IGOTankLoadingWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    on->FattenMeForWidescreen(widescreen, about_x);
+    off->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00577A70
+void IGOTankLoadingWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    on->FormatHUDForSplitScreen(viewport, old_viewport, 2, 0.0f, 0.0f);
+    off->FormatHUDForSplitScreen(viewport, old_viewport, 2, 0.0f, 0.0f);
+}
+
+// ============================================================================
+// IGOTankReticleWidget
+// ============================================================================
+
+// ea: 0x00567500
+IGOTankReticleWidget::IGOTankReticleWidget(int client)
+{
+    is_shown = true;
+    force_appear = false;
+    mClient = client;
+    reticle = nullptr;
+    tic[0] = nullptr;
+    tic[1] = nullptr;
+    tic[2] = nullptr;
+    tic[3] = nullptr;
+    ticCount = 0;
+    currentTic = 0;
+    currentAlpha = 0.0f;
+}
+
+// ea: 0x00598B50
+void IGOTankReticleWidget::Init(PanelFile* panel)
+{
+    reticle = panel->GetPointer("tank_reticle");
+    tic[0] = panel->GetPointer("tank_tic1");
+    tic[1] = panel->GetPointer("tank_tic2");
+    tic[2] = panel->GetPointer("tank_tic3");
+    tic[3] = panel->GetPointer("tank_tic4");
+    if (mClient > 0)
+    {
+        reticle = PanelQuad::Clone(reticle);
+        tic[0] = PanelQuad::Clone(tic[0]);
+        tic[1] = PanelQuad::Clone(tic[1]);
+        tic[2] = PanelQuad::Clone(tic[2]);
+        tic[3] = PanelQuad::Clone(tic[3]);
+    }
+    float x = reticle->GetCenterX();
+    float y = reticle->GetCenterY();
+    float tic_x_offset[4];
+    float tic_y_offset[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        tic_x_offset[i] = x - tic[i]->GetCenterX();
+        tic_y_offset[i] = y - tic[i]->GetCenterY();
+    }
+    float ya = 240.0f - (y - reticle->GetHeight() * 0.5f);
+    float v22 = reticle->GetCenterY() + ya;
+    float v23 = reticle->GetCenterX() + 320.0f - x;
+    reticle->SetCenterPos(v23, v22);
+    for (int j = 0; j < 4; ++j)
+    {
+        ticXPosition[j] = reticle->GetCenterX() - tic_x_offset[j];
+        ticYPosition[j] = reticle->GetCenterY() - tic_y_offset[j];
+        tic[j]->SetCenterPos(ticXPosition[j], ticYPosition[j]);
+    }
+    ticCount = 4;
+}
+
+// ea: 0x00588B40
+void IGOTankReticleWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!is_shown || reticle == nullptr)
+        return;
+    DbLinkedHandle<EntityHandleDb, Entity> h = GetPlayersTank();
+    unsigned int mVal = h.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)mObject->scr_vehicle;
+            if (scr_vehicle != nullptr)
+            {
+                weaponFileInfo_t* InfoForWeapon =
+                    BG_GetInfoForWeapon(mObject->s.weapon);
+                int v9 = InfoForWeapon->iFireTime + 2000;
+                currentTic = -1;
+                int fireTime = scr_vehicle->fireTime;
+                int ticTime = v9 / ticCount;
+                if (fireTime > 0)
+                    currentTic = ticCount - fireTime / ticTime - 1;
+                if (currentTic >= 0)
+                {
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        if (i > currentTic)
+                            tic[i]->SetAlpha(1.0f);
+                        if (i < currentTic)
+                            tic[i]->SetAlpha(0.0f);
+                    }
+                    float vehiclea =
+                        (float)(scr_vehicle->fireTime
+                                + ticTime * (currentTic - ticCount + 1))
+                        / (float)ticTime;
+                    currentAlpha = vehiclea;
+                    tic[currentTic]->SetAlpha(vehiclea);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00567530
+void IGOTankReticleWidget::Draw()
+{
+    if (is_shown
+        && reticle != nullptr
+        && EntityManager::sInst->GetPlayer(currCl) != nullptr
+        && EntityManager::sInst->GetPlayer(currCl)->client != nullptr
+        && EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+               == 3
+        && (GetPlayerState(currCl).eFlags & 0x100000) != 0
+        && GetPlayerState(currCl).vehType != 1)
+    {
+        if (GetPlayerState(currCl).vehPos != 1)
+        {
+            reticle->Draw();
+            if (currentTic >= 0)
+            {
+                for (int i = 0; i < 4; ++i)
+                    tic[i]->Draw();
+            }
+        }
+    }
+}
+
+// ea: 0x005831E0
+void IGOTankReticleWidget::UpdateWidescreen(bool widescreen, float about_x)
+{
+    reticle->FattenMeForWidescreen(widescreen, about_x);
+    tic[0]->FattenMeForWidescreen(widescreen, about_x);
+    tic[1]->FattenMeForWidescreen(widescreen, about_x);
+    tic[2]->FattenMeForWidescreen(widescreen, about_x);
+    tic[3]->FattenMeForWidescreen(widescreen, about_x);
+}
+
+// ea: 0x00583230
+void IGOTankReticleWidget::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    reticle->FormatForSplitScreen(viewport, old_viewport);
+    tic[0]->FormatForSplitScreen(viewport, old_viewport);
+    tic[1]->FormatForSplitScreen(viewport, old_viewport);
+    tic[2]->FormatForSplitScreen(viewport, old_viewport);
+    tic[3]->FormatForSplitScreen(viewport, old_viewport);
 }

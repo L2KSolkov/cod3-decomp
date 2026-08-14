@@ -1705,6 +1705,111 @@ static_assert(sizeof(IGOTimerWidget) == 0x24,
               "IGOTimerWidget size mismatch");
 
 // ============================================================================
+// IGOGrenadeWidget (68 bytes) - verified against IDA
+// ============================================================================
+class IGOGrenadeWidget : public IGOWidget {
+public:
+    PanelQuad* grenadeUS;        // +0x0C
+    PanelQuad* grenadeGerman;    // +0x10
+    PanelQuad* grenadeSmokeL;    // +0x14
+    PanelQuad* grenadeSmokeR;    // +0x18
+    PanelQuad* grenadeSticky;    // +0x1C
+    PanelQuad* rifleGrenade;     // +0x20
+    PanelQuad* apMine;           // +0x24
+    FEText*    ammoLeft;         // +0x28
+    FEText*    ammoRight;        // +0x2C
+    int        ammo_left_val;    // +0x30
+    int        ammo_right_val;   // +0x34
+    bool       showLeft;         // +0x38
+    bool       showRight;        // +0x39
+    float      left_draw_time;   // +0x3C
+    float      right_draw_time;  // +0x40
+
+    IGOGrenadeWidget(int client);  // 0x566590
+    virtual ~IGOGrenadeWidget();   // 0x5665F0
+    virtual void Init(PanelFile* panel);              // 0x598730
+    virtual void Update(float time_inc);              // 0x5666B0
+    virtual void Draw();                              // 0x566BC0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x582D70
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x5778A0
+};
+static_assert(sizeof(IGOGrenadeWidget) == 0x44,
+              "IGOGrenadeWidget size mismatch");
+
+// ============================================================================
+// IGOSpecialWeaponWidget (40 bytes) - verified against IDA
+// ============================================================================
+class IGOSpecialWeaponWidget : public IGOWidget {
+public:
+    PanelQuad* artillery;         // +0x0C
+    PanelQuad* health;            // +0x10
+    PanelQuad* ammo;              // +0x14
+    float      percent;           // +0x18
+    bool       hadAmmo;           // +0x1C
+    int        timeForNormalSize; // +0x20
+    float      scale;             // +0x24
+
+    IGOSpecialWeaponWidget(int client);  // 0x567820
+    virtual void Init(PanelFile* panel);              // 0x598DE0
+    virtual void Update(float time_inc);              // 0x567860
+    virtual void Draw();                              // 0x5832D0
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x5834B0
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577B40
+};
+static_assert(sizeof(IGOSpecialWeaponWidget) == 0x28,
+              "IGOSpecialWeaponWidget size mismatch");
+
+// ============================================================================
+// IGOTankLoadingWidget (24 bytes) - verified against IDA
+// ============================================================================
+class IGOTankLoadingWidget : public IGOWidget {
+public:
+    PanelQuad* on;    // +0x0C
+    PanelQuad* off;   // +0x10
+    bool       is_on; // +0x14
+
+    IGOTankLoadingWidget(int client);  // 0x567420
+    virtual void Init(PanelFile* panel);              // 0x598B00
+    virtual void Update(float time_inc);              // 0x588AF0
+    virtual void Draw();                              // 0x567450
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x5831B0
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x577A70
+};
+static_assert(sizeof(IGOTankLoadingWidget) == 0x18,
+              "IGOTankLoadingWidget size mismatch");
+
+// ============================================================================
+// IGOTankReticleWidget (76 bytes) - verified against IDA
+// ============================================================================
+class IGOTankReticleWidget : public IGOWidget {
+public:
+    PanelQuad* reticle;      // +0x0C
+    PanelQuad* tic[4];       // +0x10
+    float      ticXPosition[4];  // +0x20
+    float      ticYPosition[4];  // +0x30
+    int        ticCount;     // +0x40
+    int        currentTic;   // +0x44
+    float      currentAlpha; // +0x48
+
+    IGOTankReticleWidget(int client);  // 0x567500
+    virtual void Init(PanelFile* panel);              // 0x598B50
+    virtual void Update(float time_inc);              // 0x588B40
+    virtual void Draw();                              // 0x567530
+    virtual void UpdateWidescreen(bool widescreen,
+                                  float about_x);     // 0x5831E0
+    virtual void UpdateSplitScreen(int viewport,
+                                   int old_viewport); // 0x583230
+};
+static_assert(sizeof(IGOTankReticleWidget) == 0x4C,
+              "IGOTankReticleWidget size mismatch");
+
+// ============================================================================
 // FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA
 // ============================================================================
 class FEMenuListBoxItem {
