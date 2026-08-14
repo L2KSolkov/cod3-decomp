@@ -21,6 +21,14 @@ public:
 };
 }
 
+class BoundingBox {
+public:
+    math::Position3 vmin;  // +0x00
+    math::Position3 vmax;  // +0x10
+};
+extern void R_GetXModelBounds(XModel* m, float (*const axis)[3],
+                              BoundingBox& bounds);  // tr_shader.cpp
+
 // ea: 0x006BBA40
 const char* XModelParts::GetBoneName(unsigned int i) const
 {
@@ -425,6 +433,26 @@ float computeLOD(DObj* obj, const math::Position3& center)
         obj->SetLOD(v5);
     }
     return v6;
+}
+
+// ea: 0x006D2870
+void R_GetXModelBounds(DObj* obj, float (*const axis)[3],
+                       float* const mins, float* const maxs)
+{
+    BoundingBox bounds;
+    bounds.vmin.v = _mm_set1_ps(3.4028235e38f);
+    bounds.vmax.v = _mm_set1_ps(-3.4028235e38f);
+    for (int i = 0; i < obj->numModels; ++i)
+    {
+        ValidatePakId((TPakId)obj->models[i].mPakId);
+        R_GetXModelBounds(obj->models[i].mValue, axis, bounds);
+    }
+    mins[0] = bounds.vmin.v.m128_f32[0];
+    mins[1] = bounds.vmin.v.m128_f32[1];
+    mins[2] = bounds.vmin.v.m128_f32[2];
+    maxs[0] = bounds.vmax.v.m128_f32[0];
+    maxs[1] = bounds.vmax.v.m128_f32[1];
+    maxs[2] = bounds.vmax.v.m128_f32[2];
 }
 
 // ea: 0x006BDC10
