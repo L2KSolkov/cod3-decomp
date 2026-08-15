@@ -3173,7 +3173,28 @@ float GetAnimLength(unsigned int entityHandleVal,
                     unsigned int broanim);  // 0x5C81D0
 int GetAnimFrameCount(unsigned int entityHandleVal,
                       unsigned int broanim);  // 0x5C8230
+void SetProjectileSpeed(unsigned int entityHandleVal, int speed);  // 0x5C9B20
+void SetWeaponPlayerUpOffset(unsigned int entityHandleVal,
+                             float offset);  // 0x5C9BC0
+int  FollowCycle(unsigned int entityHandleVal, int dir);  // 0x5C9C60
+void EnableWeapon(unsigned int entityHandleVar);  // 0x5C9CA0
+void DisableWeapon(unsigned int entityHandleVar);  // 0x5C9D30
+bool ThreadIsThreadAlive(unsigned int handle);  // 0x5C9E40
+void ThreadKill(unsigned int threadId);  // 0x5C9E80
 }
+
+// Scr_EmitAnimation (0x5C1A60) - global
+void Scr_EmitAnimation(char* a, unsigned short b, unsigned int c);
+// BrocAddEntityThread (0x5BE3D0) - global
+void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
+                         class ScriptEventParams* params);
+// BrocInitEntity (0x5C5790) - global
+void BrocInitEntity(
+    Entity* ent,
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
+        keyValuePairs);
+// VM_Restart (0x5C7940) - global
+vm_s* VM_Restart(vm_s* vm);
 
 static void BrocFree(void* p)
 {
@@ -10550,6 +10571,292 @@ int BrocSys::GetAnimFrameCount(unsigned int entityHandleVal,
         && XAnimIsPrimitive(v3, broanim) == 0)
         Scr_ParamError(0, "non-primitive animation has no concept of length");
     return XAnimGetFrameCount(v3, broanim);
+}
+
+// ============================================================================
+// scr.o batch 41 - weapon/projectile + thread handle wrappers + globals
+// ============================================================================
+
+// ScriptEventParams - script event arguments (verified vs IDA)
+class ScriptEventParams {
+public:
+    unsigned int ent1;  // +0x00
+    unsigned int ent2;  // +0x04
+    float        f1;    // +0x08
+    float        f2;    // +0x0C
+    float        f3;    // +0x10
+    Broc::vector v1;    // +0x14
+};
+
+extern vm_s* VM_Create(const char* name,
+                       int (*entry)(int*));  // sv_decl.h / g_entity_misc.cpp
+
+// ea: 0x005C9B20
+void BrocSys::SetProjectileSpeed(unsigned int entityHandleVal, int speed)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject)
+               != nullptr)
+    {
+        unsigned char weapon = mObject->s.weapon;
+        if (weapon != 0)
+        {
+            weaponFileInfo_t* InfoForWeapon =
+                BG_GetInfoForWeapon(weapon);
+            if (InfoForWeapon != nullptr)
+                InfoForWeapon->iProjectileSpeed = speed;
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 591;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetProjectileSpeed"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C9BC0
+void BrocSys::SetWeaponPlayerUpOffset(unsigned int entityHandleVal,
+                                      float offset)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject)
+               != nullptr)
+    {
+        unsigned char weapon = mObject->s.weapon;
+        if (weapon != 0)
+        {
+            weaponFileInfo_t* InfoForWeapon =
+                BG_GetInfoForWeapon(weapon);
+            if (InfoForWeapon != nullptr)
+                *(float*)((char*)InfoForWeapon + 0x540 + 8) = offset;
+                // vProneOfs[2] (+0x540 per g_weaponfuncs.h)
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 609;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Bad entity passed to SetWeaponPlayerUpOffset"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C9C60
+int BrocSys::FollowCycle(unsigned int entityHandleVal, int dir)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    return Cmd_FollowCycle_f(mObject, dir);
+}
+
+// ea: 0x005C9CA0
+void BrocSys::EnableWeapon(unsigned int entityHandleVar)
+{
+    unsigned int v1 = entityHandleVar & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 >= 0x540
+        || entityHandleVar >> 12
+               != (unsigned int)EntityHandleDb::sInst.mElements[v1].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v1].mObject) == nullptr
+        || mObject->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 867;
+        AeAssert::gCurrentExpr = "ent && ent->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can only call EnableWeapon on a player"))
+            __debugbreak();
+    }
+    mObject->client->ps.pm_flags &= ~0x800000u;
+}
+
+// ea: 0x005C9D30
+void BrocSys::DisableWeapon(unsigned int entityHandleVar)
+{
+    unsigned int v1 = entityHandleVar & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 >= 0x540
+        || entityHandleVar >> 12
+               != (unsigned int)EntityHandleDb::sInst.mElements[v1].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v1].mObject) == nullptr
+        || mObject->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 875;
+        AeAssert::gCurrentExpr = "ent && ent->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can only call DisableWeapon on a player"))
+            __debugbreak();
+    }
+    mObject->client->ps.pm_flags |= 0x800000u;
+}
+
+// ea: 0x005C9E40
+bool BrocSys::ThreadIsThreadAlive(unsigned int handle)
+{
+    unsigned int idx = handle & 0xFF;
+    if (idx >= 0x100)
+        return false;
+    AeThreadManagerLayout* L =
+        (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    auto* db = (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+    return handle >> 8 == (unsigned int)db->mElements[idx].mKey
+           && db->mElements[idx].mObject != nullptr;
+}
+
+// ea: 0x005C9E80
+void BrocSys::ThreadKill(unsigned int threadId)
+{
+    unsigned int idx = threadId & 0xFF;
+    AeThreadManagerLayout* L =
+        (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    auto* db = (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+    if (threadId >> 8 == (unsigned int)db->mElements[idx].mKey)
+    {
+        AeThread* mObject = db->mElements[idx].mObject;
+        if (mObject != nullptr)
+        {
+            unsigned int v2 = mObject->mFlags.mMask | 8;
+            mObject->mFlags.mMask = v2;
+            v2 |= 0x40u;
+            mObject->mFlags.mMask = v2;
+            mObject->mFlags.mMask = v2 | 4;
+        }
+    }
+}
+
+// ea: 0x005C1A60
+void Scr_EmitAnimation(char* a, unsigned short b, unsigned int c)
+{
+    (void)a;
+    (void)b;
+    (void)c;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_animtree.cpp";
+    AeAssert::gCurrentLine = 151;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Is this still used? (CD)"))
+        __debugbreak();
+}
+
+// ea: 0x005BE3D0
+void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
+                         ScriptEventParams* params)
+{
+    if (gpBrocAPI == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 245;
+        AeAssert::gCurrentExpr = "gpBrocAPI";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (gpBrocAPI->mBrocExports.mSpawnScriptThread == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 246;
+        AeAssert::gCurrentExpr =
+            "gpBrocAPI->mBrocExports.mSpawnScriptThread";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int v3;
+    if (params != nullptr)
+    {
+        v3 = (int)gpBrocAPI->mBrocExports.mSpawnScriptThread(
+            fcnHash, 0, Broc::entity(ent->mHandle.mHandle.mVal),
+            Broc::entity(params->ent1), Broc::entity(params->ent1),
+            params->f1, params->f2, params->f3, &params->v1);
+    }
+    else
+    {
+        Broc::vector undefined_vec;
+        undefined_vec.x = sNaN;
+        undefined_vec.y = sNaN;
+        undefined_vec.z = sNaN;
+        v3 = (int)gpBrocAPI->mBrocExports.mSpawnScriptThread(
+            fcnHash, 0, Broc::entity(ent->mHandle.mHandle.mVal),
+            Broc::entity(0), Broc::entity(0), sNaN, sNaN, sNaN,
+            &undefined_vec);
+    }
+    if (v3 == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 260;
+        AeAssert::gCurrentExpr = "found";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Couldn't find AUTO_THREAD "))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C5790
+void BrocInitEntity(
+    Entity* ent,
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
+        keyValuePairs)
+{
+    void* v3 = nullptr;
+    if (gpBrocAPI != nullptr
+        && gpBrocAPI->mBrocExports.mCreateExtendedEntity != nullptr)
+    {
+        const char** pKey = nullptr;
+        if (keyValuePairs.mSize != 0)
+            pKey = (const char**)&keyValuePairs.mList[0].mKey.mStr;
+        v3 = gpBrocAPI->mBrocExports.mCreateExtendedEntity(
+            pKey, keyValuePairs.mSize);
+    }
+    ent->mBrocExtendedEntity = v3;
+    UpdateEntityHash(ent);
+}
+
+// ea: 0x005C7940
+vm_s* VM_Restart(vm_s* vm)
+{
+    if (vm->dllHandle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\vm.cpp";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr = "vm->dllHandle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int (*systemCall)(int*) = vm->systemCall;
+    char name[128];
+    Q_strncpyz(name, vm->name, 128);
+    VM_Free(vm);
+    return VM_Create(name, systemCall);
 }
 
 // ============================================================================

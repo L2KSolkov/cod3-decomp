@@ -1528,7 +1528,12 @@ struct BrocExports {
     bool (*mAnimIndexValidate)();  // +0x5C
     uint8_t _pad60[0x6C - 0x60];
     unsigned int (*mAnimResolver)(const char*, const char*);  // +0x6C
-    uint8_t _pad70[0x90 - 0x70];
+    uint8_t _pad70[0x80 - 0x70];
+    unsigned int (*mSpawnScriptThread)(unsigned int, bool, Broc::entity,
+                                       Broc::entity, Broc::entity, float,
+                                       float, float,
+                                       Broc::vector*);  // +0x80
+    uint8_t _pad84[0x90 - 0x84];
     void (*mAnimDebug)(Broc::entity);       // +0x90 (game2.o inspector)
     uint8_t _pad94[0x518 - 0x94];
     int (*mRumble)(float lowFreqDelay, float lowFreqRumbleIntensity,
