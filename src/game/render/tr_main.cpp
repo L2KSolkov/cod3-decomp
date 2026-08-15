@@ -76,15 +76,22 @@ public:
 struct viewParms_t {
     orientationr_t or;              // +0x00
     orientationr_t world;           // +0x7C
-    uint8_t _pad[0x140 - 0xF8];     // pvsOrigin/isPortal/isMirror/frameCount/portalPlane/fov/lod
+    float pvsOrigin[3];             // +0xF8
+    int isPortal;                   // +0x104
+    int isMirror;                   // +0x108
+    int frameCount;                 // +0x10C
+    uint8_t _pad[0x130 - 0x110];    // portalPlane (dpvs_plane_t)
+    float fovX;                     // +0x130
+    float fovY;                     // +0x134
+    float lodBias;                  // +0x138
+    float lodScale;                 // +0x13C
     float projectionMatrix[16];     // +0x140
     float zFar;                     // +0x180
-    uint8_t _pad2[0x1DC - 0x184];   // frustum
-    unsigned int isPortal : 1;      // +0x1DC
-    unsigned int _pad3;             // +0x1DC (frustum tail)
+    uint8_t _frustum[0x1E0 - 0x184];  // frustum (cplane_s[4])
 };
+static_assert(sizeof(viewParms_t) == 0x1E0, "viewParms_t size mismatch");
 
-// trRefdef_t view (refdef at tr+0x26C)
+// trRefdef_t view (refdef at tr+0x26C; IDA type, size 0x24)
 struct trRefdef_t {
     int x;                     // +0x00
     int y;                     // +0x04
@@ -94,16 +101,34 @@ struct trRefdef_t {
     float fov_y;               // +0x14
     int time;                  // +0x18
     int rdflags;               // +0x1C
+    short num_world_dlights;   // +0x20
+    short num_model_dlights;   // +0x22
+};
+static_assert(sizeof(trRefdef_t) == 0x24, "trRefdef_t size mismatch");
+
+struct BspTreeView;
+struct world_t {
+    char name[128];            // +0x00
+    char baseName[128];        // +0x80
+    BspTreeView* bspTree;      // +0x100
 };
 
+// trGlobals_t (IDA type; size 0x3A0)
 struct trGlobals_t {
-    uint8_t _pad0[0x10];
+    int registered;            // +0x00
+    int worldMapLoaded;        // +0x04
+    int frameCount;            // +0x08
+    int viewCount;             // +0x0C
     viewParms_t viewParms;     // +0x10
     orientationr_t orr;        // +0x1F0 (tr.or)
     trRefdef_t refdef;         // +0x26C
-    uint8_t _pad1[0x314 - 0x284];
-    uint8_t debug[0x80];       // +0x314 (trDebug_t)
+    world_t* world;            // +0x290
+    uint8_t _pad1[0x2A0 - 0x294];
+    uint8_t viewModelInfo[0x70];  // +0x2A0 (viewModelInfo_t[1])
+    int viewModelInfoIndex;    // +0x310
+    uint8_t debug[0x8C];       // +0x314 (trDebug_t)
 };
+static_assert(sizeof(trGlobals_t) == 0x3A0, "trGlobals_t size mismatch");
 extern trGlobals_t tr;         // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 // cvar_t view (integer +0x20)
@@ -756,6 +781,228 @@ void R_AddXModelSurfaces(trRefEntity* ent)
             cdl_proftimer::stop(&cdl_proftimer_temp2);
         }
     }
+}
+
+// ============================================================================
+// R_AddEntitySurfaces - ea: 0x006D7030
+// ============================================================================
+// BspTree.mCells = InplaceVector<BspCell> at +0x18 (mSize +0x18, mList +0x1C)
+struct trModelCellRef_t {
+    math::Vector4 sphere;      // +0x00
+    trRefEntity* re;           // +0x10
+    trModelCellRef_t* next;    // +0x14
+    int viewCount;             // +0x18
+    char pad[4];               // +0x1C
+};
+struct BspCellView {
+    uint8_t _pad[0x30];
+    int viewCount;             // +0x30
+    uint8_t _pad2[0x38 - 0x34];
+    trModelCellRef_t* modelRefs;  // +0x38
+};
+struct BspTreeView {
+    uint8_t _pad[0x18];
+    unsigned int mCellsSize;   // +0x18 (InplaceVector<BspCell>::mSize)
+    BspCellView* mCellsList;   // +0x1C
+};
+extern int g_allVisualCount;  // ?g_allVisualCount@@3HA (g.o)
+extern int g_visualCount;     // ?g_visualCount@@3HA (g.o)
+extern int g_xmodelCount;     // ?g_xmodelCount@@3HA (g.o)
+extern int g_alwaysCount;     // ?g_alwaysCount@@3HA (g.o)
+extern int g_limitVisualRange;  // ?g_limitVisualRange@@3HA
+extern int g_renderSphere;    // ?g_renderSphere@@3HA
+
+// ngl matrix helpers (ngl.o)
+enum nglMatrixType {
+    NGLMTX_VIEW_TO_WORLD = 0,
+};
+extern math::Mat44* nglGetMatrix(math::Mat44* result, nglMatrixType ID,
+                                 nglScene* Scene);  // ngl.o
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);  // ?_tlAssert@@YA_NPBDH00@Z (tl)
+
+// Entity view: mDObj at +0x23C; CalcRotTranMat43 real in g_entity_misc.cpp
+class Entity {
+public:
+    uint8_t _pad[0x23C];
+    DObj* mDObj;                       // +0x23C
+    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
+};
+extern bool R_AddXModelSurfaces_DistanceHack(DObj* obj, Entity* entity,
+                                             const math::Mat43& matrix);  // 0x6CF200 (unported)
+
+class EntityHandleDb {
+public:
+    struct DbElement {
+        void* mObject;  // +0x00
+        int   mKey;     // +0x04
+    };
+    uint8_t _pad[0xA8];              // HandleDb BitSet<1344>
+    DbElement mElements[0x540];      // +0xA8
+    static EntityHandleDb sInst;     // ?sInst@EntityHandleDb@@0V1@A (g.o)
+};
+template <typename HandleDb, typename T>
+class DbLinkedHandle {
+public:
+    unsigned int mVal;               // +0x00
+};
+template <typename T, int CAPACITY>
+class ae_sized_array {
+public:
+    T m_elements[CAPACITY];          // +0x00
+    int m_size;                      // +sizeof(T)*CAPACITY
+};
+extern ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 32>
+    g_AlwaysRenderEnts;  // ?g_AlwaysRenderEnts@@3V?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@A (game.o)
+
+// phys_static_array<trRefEntity*,64>: buffer +0x00, slots +0x100, count +0x104
+struct PhysArrayHugeModels {
+    uint8_t m_buffer[256];           // +0x00
+    trRefEntity* m_slot_array[64];   // +0x100
+    unsigned int m_alloc_count;      // +0x104
+};
+extern PhysArrayHugeModels g_huge_models;  // ?g_huge_models@@3V?$phys_static_array@PAVtrRefEntity@@$0EA@@@A (render.o)
+class Color {
+public:
+    float r, g, b, a;
+    Color(float _r, float _g, float _b, float _a)
+        : r(_r), g(_g), b(_b), a(_a) {}
+};
+class DebugRender {
+public:
+    static void RenderSphere(const math::Position3& pos, float radius,
+                             const Color& color);  // g_entity_misc.cpp
+};
+
+void R_AddEntitySurfaces()
+{
+    if (r_drawentities->integer == 0)
+        return;
+    BspTreeView* bspTree = (BspTreeView*)tr.world->bspTree;
+    unsigned int mSize = bspTree->mCellsSize;
+    unsigned int v4 = 0;
+    if (mSize != 0)
+    {
+        do
+        {
+            trModelCellRef_t* modelRefs =
+                bspTree->mCellsList[v4].modelRefs;
+            if (modelRefs != nullptr)
+            {
+                do
+                {
+                    if (modelRefs->viewCount != tr.viewCount)
+                    {
+                        trRefEntity* re = modelRefs->re;
+                        modelRefs->viewCount = tr.viewCount;
+                        if (re->cull != 2)
+                        {
+                            re->iAmVisible = 0;
+                            ++g_allVisualCount;
+                            math::Position3 pos;
+                            pos.v = _mm_setr_ps(re->e.origin[0],
+                                                re->e.origin[1],
+                                                re->e.origin[2], 0.0f);
+                            math::Mat44 cam;
+                            nglGetMatrix(&cam, NGLMTX_VIEW_TO_WORLD,
+                                         nglBuildScene);
+                            if (g_limitVisualRange != 0)
+                            {
+                                // camera origin = row 3 of view-to-world
+                                __m128 v7 = _mm_sub_ps(cam.w.v, pos.v);
+                                float dx = v7.m128_f32[0];
+                                float dy = v7.m128_f32[1];
+                                if ((dy * dy) + (dx * dx) > 490000.0f)
+                                    goto nextRef;
+                            }
+                            if (g_renderSphere != 0)
+                                DebugRender::RenderSphere(
+                                    pos, 50.0f,
+                                    Color(1.0f, 1.0f, 1.0f, 1.0f));
+                            ++g_visualCount;
+                            if ((re->e.renderfx & 4) == 0
+                                || tr.viewParms.isPortal == 0)
+                            {
+                                if (re->e.reType != RT_XMODEL)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        AeAssert::COD3;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\tr_main.cpp";
+                                    AeAssert::gCurrentLine = 1613;
+                                    AeAssert::gCurrentExpr =
+                                        "ent->e.reType == RT_XMODEL";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert("bad reType"))
+                                        __debugbreak();
+                                }
+                                R_AddXModelSurfaces(re);
+                                ++g_xmodelCount;
+                            }
+                        }
+                    }
+                nextRef:
+                    modelRefs = modelRefs->next;
+                } while (modelRefs != nullptr);
+            }
+            BspTreeView* v8 = (BspTreeView*)tr.world->bspTree;
+            unsigned int v9 = v8->mCellsSize;
+            ++v4;
+            if (v4 >= v9)
+                break;
+        } while (true);
+    }
+
+    for (int v10 = 0; v10 < g_AlwaysRenderEnts.m_size; ++v10)
+    {
+        ++g_alwaysCount;
+        ++g_visualCount;
+        if (v10 >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        unsigned int v11 = g_AlwaysRenderEnts.m_elements[v10].mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v11 >= 0x540
+            || g_AlwaysRenderEnts.m_elements[v10].mVal >> 12
+                   != (unsigned int)EntityHandleDb::sInst
+                          .mElements[v11].mKey
+            || (mObject = (Entity*)EntityHandleDb::sInst
+                              .mElements[v11]
+                              .mObject) == nullptr
+            || mObject->mDObj == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_main.cpp";
+            AeAssert::gCurrentLine = 1629;
+            AeAssert::gCurrentExpr = "ent && ent->GetDObj()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("we need a valid dobj here"))
+                __debugbreak();
+        }
+        if (mObject != nullptr && mObject->mDObj != nullptr)
+        {
+            math::Mat43 matrix = mObject->CalcRotTranMat43();
+            R_AddXModelSurfaces_DistanceHack(mObject->mDObj, mObject,
+                                             matrix);
+        }
+    }
+    unsigned int m_alloc_count = g_huge_models.m_alloc_count;
+    for (unsigned int j = 0; j < m_alloc_count; ++j)
+    {
+        if (_tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                108, "i >= 0 && i < m_alloc_count", ""))
+            __debugbreak();
+        R_AddXModelSurfaces(g_huge_models.m_slot_array[j]);
+    }
+    g_huge_models.m_alloc_count = 0;
 }
 
 // ============================================================================
