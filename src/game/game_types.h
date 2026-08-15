@@ -35,7 +35,7 @@ struct scr_vehicle_t;
 struct turretInfo_t;
 struct trRefEntity;
 struct refEntity_t;
-struct EntityNotify;
+class EntityNotify;
 class XAnimTree;
 class XModel;
 class PoolAllocator;

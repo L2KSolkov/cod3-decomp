@@ -935,6 +935,7 @@ class WaitTilOutput {
 public:
     WaitTilOutput();  // ??0WaitTilOutput@@QAE@XZ (g.o 0x4B1680)
     virtual ~WaitTilOutput();
+    virtual int GetSize();  // ?GetSize@WaitTilOutput@@UAEHXZ
     void* dListNodeFiller1;  // +0x04
     void* dListNodeFiller2;  // +0x08
     static void* operator new(size_t size, bool forceHeapAlloc,

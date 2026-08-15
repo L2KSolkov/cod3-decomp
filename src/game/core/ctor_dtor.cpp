@@ -158,6 +158,10 @@ WaitTilOutput::WaitTilOutput()
     dListNodeFiller1 = nullptr;
     dListNodeFiller2 = nullptr;
 }
+int WaitTilOutput::GetSize()
+{
+    return 0;
+}
 void* WaitTilOutput::operator new(size_t size, bool forceHeapAlloc,
                                   const char* /*file*/, int /*line*/)
 {
@@ -190,6 +194,81 @@ void force_emit_wait_delete(WaitTilOutput* p)
 // g.o explicit instantiations (0x4AE510 / 0x4AE530)
 template class reserved_dlist<WaitTilOutput>;
 template class reserved_dlist<EntityNotify>;
+
+// ============================================================================
+// WaitTilOutputInst1/2 - WaitTilOutput parameter carriers (g.o 0x4B1CD0+)
+// ============================================================================
+template <typename T>
+class WaitTilOutputInst1 : public WaitTilOutput {
+public:
+    T data;  // +0x0C
+
+    WaitTilOutputInst1(const T& d) : WaitTilOutput(), data(d)
+    {
+        dListNodeFiller1 = nullptr;
+        dListNodeFiller2 = nullptr;
+    }
+    virtual int GetSize() { return 1; }           // ?GetSize@...@@UAEHXZ
+    virtual void AssignData(WaitTilOutput* sv)    // ?AssignData@...@@UAEXPAVWaitTilOutput@@@Z
+    {
+        if (sv->GetSize() > GetSize())
+        {
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        *(T*)((char*)sv + 0x0C) = data;
+    }
+    virtual ~WaitTilOutputInst1();                // ??1...@@UAE@XZ
+};
+
+template <typename T>
+WaitTilOutputInst1<T>::~WaitTilOutputInst1()
+{
+}
+
+template <typename T1, typename T2>
+class WaitTilOutputInst2 : public WaitTilOutput {
+public:
+    T1 data1;  // +0x0C
+    T2 data2;  // +0x10
+
+    WaitTilOutputInst2(const T1& d1, const T2& d2)
+        : WaitTilOutput(), data1(d1), data2(d2)
+    {
+        dListNodeFiller1 = nullptr;
+        dListNodeFiller2 = nullptr;
+    }
+    virtual int GetSize() { return 2; }           // ?GetSize@...@@UAEHXZ
+    virtual void AssignData(WaitTilOutput* sv)    // ?AssignData@...@@UAEXPAVWaitTilOutput@@@Z
+    {
+        if (sv->GetSize() > GetSize())
+        {
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (sv->GetSize() == 1)
+        {
+            *(T1*)((char*)sv + 0x0C) = data1;
+        }
+        else if (sv->GetSize() == 2)
+        {
+            *(T1*)((char*)sv + 0x0C) = data1;
+            *(T2*)((char*)sv + 0x10) = data2;
+        }
+    }
+    virtual ~WaitTilOutputInst2();                // ??1...@@UAE@XZ
+};
+
+template <typename T1, typename T2>
+WaitTilOutputInst2<T1, T2>::~WaitTilOutputInst2()
+{
+}
+
+template class WaitTilOutputInst1<Broc::string>;
+template class WaitTilOutputInst1<unsigned int>;
+template class WaitTilOutputInst1<Broc::entity>;
+template class WaitTilOutputInst2<Broc::string, Broc::string>;
+template class WaitTilOutputInst2<int, Broc::entity>;
 
 // ea: 0x004C1D80
 EntityNotifySet::EntityNotifySet(Entity* e)

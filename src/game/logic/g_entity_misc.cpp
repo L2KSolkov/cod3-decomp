@@ -2439,11 +2439,54 @@ void Entity_Notify(void* e, unsigned int a) { (void)e; (void)a; }
 void EntityHandleDb_Compact(void* self) { (void)self; }
 void EntityHandleDb_Init(void* self) { (void)self; }
 void EntityHandleDb_Release(void* self, Entity* e) { (void)self; (void)e; }
+// EntityHandleDb_Find templates (g.o 0x4B1A40 / 0x4B1B00 / 0x4B1B60)
 template <typename T>
-void EntityHandleDb_Find(unsigned int a, T b,
-                         ae_sized_array<Entity*, 4096>& out)
+void EntityHandleDb_Find(unsigned int fieldOfs, T match,
+                         ae_sized_array<Entity*, 4096>& results);
+
+template <>
+void EntityHandleDb_Find<Broc::string>(unsigned int fieldOfs,
+                                       Broc::string match,
+                                       ae_sized_array<Entity*, 4096>& results)
 {
-    (void)a; (void)b; (void)out;
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity* const* end = p + EntityHandleDb::sInst.mActiveList.m_size;
+    for (; p != end; ++p)
+    {
+        Entity* e = *p;
+        if (e != nullptr && Broc::operator==(
+                *(Broc::string*)((char*)&e->s.eType + fieldOfs), match))
+            results.push_back(e);
+    }
+}
+template <>
+void EntityHandleDb_Find<HashString>(unsigned int fieldOfs, HashString match,
+                                     ae_sized_array<Entity*, 4096>& results)
+{
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity* const* end = p + EntityHandleDb::sInst.mActiveList.m_size;
+    for (; p != end; ++p)
+    {
+        Entity* e = *p;
+        if (e != nullptr
+            && *(unsigned int*)((char*)&e->s.eType + fieldOfs) == match.mHash)
+            results.push_back(e);
+    }
+}
+template <>
+void EntityHandleDb_Find<unsigned short>(
+    unsigned int fieldOfs, unsigned short match,
+    ae_sized_array<Entity*, 4096>& results)
+{
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity* const* end = p + EntityHandleDb::sInst.mActiveList.m_size;
+    for (; p != end; ++p)
+    {
+        Entity* e = *p;
+        if (e != nullptr
+            && *(unsigned short*)((char*)&e->s.eType + fieldOfs) == match)
+            results.push_back(e);
+    }
 }
 void EntityManager_CreateWorld() {}
 void EntityNotifySet_dtor(void* self) { (void)self; }
@@ -2458,13 +2501,6 @@ void** InplaceTree_Find_GdbFileRecords(void* tree, const char* const* key)
     (void)tree; (void)key;
     return nullptr;
 }
-
-template void EntityHandleDb_Find<HashString>(
-    unsigned int, HashString, ae_sized_array<Entity*, 4096>&);
-template void EntityHandleDb_Find<Broc::string>(
-    unsigned int, Broc::string, ae_sized_array<Entity*, 4096>&);
-template void EntityHandleDb_Find<unsigned short>(
-    unsigned int, unsigned short, ae_sized_array<Entity*, 4096>&);
 
 struct fe_manager_view;
 void* FEManager_GetDMS(void* self, int client)

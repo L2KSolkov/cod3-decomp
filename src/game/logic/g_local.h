@@ -1707,7 +1707,7 @@ public:
     unsigned int  mNumKeyValues;  // +0x04
     InplaceTree<InplaceString, InplaceString> mStringMap;  // +0x08
 
-    const char* operator[](const char* key);  // ??AConfigString@@QBEPBDPBD@Z (g.o 0x4B22A0)
+    const char* operator[](const char* key) const;  // ??AConfigString@@QBEPBDPBD@Z (g.o 0x4B22A0)
 };
 static_assert(sizeof(ConfigString) == 0x10, "ConfigString size mismatch");
 class ConfigStringManager {

@@ -1591,20 +1591,6 @@ bool Broc::operator!=(const Broc::string& lhs, const Broc::string& rhs)
     return !Broc::operator==(lhs, rhs);
 }
 
-// TaskFunctor1 dtors (g.o 0x4A9F90 / 0x4A9FA0)
-template <typename T, typename U>
-struct TaskFunctor1 : TaskFunctor {
-    void* fn;
-    U     deltaT;
-    virtual ~TaskFunctor1();
-};
-template <typename T, typename U>
-TaskFunctor1<T, U>::~TaskFunctor1()
-{
-}
-template struct TaskFunctor1<AnimationUpdateTask, float>;
-template struct TaskFunctor1<XAnimUpdateTask, float>;
-
 // ============================================================================
 // Batch 24: vehicle/debug/scr ctors + container template instantiations
 // ============================================================================
@@ -2206,21 +2192,31 @@ void EntityHandleDb::BindObjectToHandle(Handle handle, Entity* obj)
 
 // TaskFunctor1 ctors/Update (g.o 0x4B1510-0x4B15C0)
 template <typename T, typename U>
-struct TaskFunctor1Impl : TaskFunctor {
+class TaskFunctor1 {
+public:
     void (__thiscall* mFp)(T*, Entity*, U);
     U  mA1;
 
-    TaskFunctor1Impl(void (__thiscall* fp)(T*, Entity*, U), const U& a1)
+    TaskFunctor1(void (__thiscall* fp)(T*, Entity*, U), const U& a1)
         : mFp(fp), mA1(a1)
     {
     }
+    virtual ~TaskFunctor1() {}
     virtual void Update(Task* t, Entity* e)
     {
         mFp((T*)t, e, mA1);
     }
 };
-template class TaskFunctor1Impl<AnimationUpdateTask, float>;
-template class TaskFunctor1Impl<XAnimUpdateTask, float>;
+template class TaskFunctor1<AnimationUpdateTask, float>;
+template class TaskFunctor1<XAnimUpdateTask, float>;
+void force_taskfunctor1_delete(TaskFunctor1<AnimationUpdateTask, float>* p)
+{
+    delete p;
+}
+void force_taskfunctor1_delete_x(TaskFunctor1<XAnimUpdateTask, float>* p)
+{
+    delete p;
+}
 
 // collision_context_t::filter (g.o 0x4AF020)
 bool collision_context_t::filter(Entity* ent) const
@@ -2489,8 +2485,8 @@ bool rb_vehicle::is_driving_path() const
 }
 
 // local_physic_s ctor (g.o 0x4B0B60) - pmove scratch with groundTrace
-namespace {
-struct local_physic_s {
+class local_physic_s {
+public:
     uint8_t _pad[0x50];  // scratch layout; groundTrace is a trace_t
     trace_t groundTrace; // +0x50
     local_physic_s();
@@ -2500,9 +2496,9 @@ local_physic_s::local_physic_s()
     groundTrace.mEntity.mHandle.mVal = 0;
     groundTrace.partName.mHash = 0;
 }
-}
 // ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
 template class ae_formatted_string<256, unsigned short>;
+
 
 // DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
 template <>
@@ -2530,7 +2526,7 @@ proximity_data_t::~proximity_data_t()
 }
 
 // ConfigString::operator[] (g.o 0x4B22A0)
-const char* ConfigString::operator[](const char* key)
+const char* ConfigString::operator[](const char* key) const
 {
     InplaceString* v2 = mStringMap.Find<const char*>(key);
     if (v2 != nullptr)
@@ -2561,14 +2557,14 @@ vehicle_backup_s::~vehicle_backup_s()
 // AeThreadManager::AddNotify (g.o 0x4B2170) - mPendingNotifys at +0x24
 namespace {
 struct EntityNotifyDListNode {
-    EntityNotifyDListNode* m_next;
-    EntityNotifyDListNode* m_prev;
+    EntityNotifyDListNode* m_next;  // +0x00
+    EntityNotifyDListNode* m_prev;  // +0x04
 };
 struct PendingNotifyList {
+    int m_size;                    // +0x00
     EntityNotifyDListNode* m_head;
     EntityNotifyDListNode* m_end;
     EntityNotifyDListNode* m_tail;
-    int m_size;
 };
 }
 void AeThreadManager::AddNotify(EntityNotify* notify)

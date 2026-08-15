@@ -47,5 +47,13 @@ PUBLIC ??0?$pair@IPBD@std@@QAE@XZ
     jmp ??$?0IPBD$0A@@?$pair@IPBD@std@@QAE@XZ
 ??0?$pair@IPBD@std@@QAE@XZ ENDP
 
+; ea: 0x004B0090 - ??_F?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEXXZ
+; Default-constructor closure: forwards to the default ctor.
+EXTERN ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@XZ : PROC
+PUBLIC ??_F?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEXXZ
+??_F?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEXXZ PROC
+    jmp ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@XZ
+??_F?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEXXZ ENDP
+
 _TEXT ENDS
 END
