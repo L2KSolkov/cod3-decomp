@@ -71,3 +71,34 @@ void XboxNGLMidSceneCallBack(void* Data)
         dword_BC2D1C = FBWriteMask;
     }
 }
+
+// ============================================================================
+// D3DDevice::SetRenderState - ea: 0x006E5650
+// ============================================================================
+void D3DDevice_SetRenderState_Deferred(unsigned int State, unsigned int Value);
+extern unsigned int DSI[0x5C];  // simple-state index table (xbox shim data)
+enum { D3DRS_DEFERRED_MAX_LOCAL = 0x50 };  // D3DRS_DEFERRED_MAX (xbox XDK)
+
+long __stdcall D3DDevice::SetRenderState(_D3DRENDERSTATETYPE State,
+                                         unsigned long Value)
+{
+    if (D3DDevice_SetRenderState_ParameterCheck((unsigned int)State, Value) == 0)
+    {
+        if ((unsigned int)State < D3DRS_SIMPLE_MAX)
+        {
+            D3DDevice_SetRenderState_Simple(DSI[(unsigned int)State], Value);
+            D3D__RenderState[(unsigned int)State] = Value;
+            return 0;
+        }
+        if ((unsigned int)State < D3DRS_DEFERRED_MAX_LOCAL)
+        {
+            unsigned int flags = D3D__DirtyFlags;
+            D3D__RenderState[(unsigned int)State] = Value;
+            D3D__DirtyFlags =
+                flags | (1u << ((unsigned int)State - D3DRS_SIMPLE_MAX));
+            return 0;
+        }
+        D3DDevice_SetRenderState_Deferred((unsigned int)State, Value);
+    }
+    return 0;
+}

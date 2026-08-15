@@ -168,12 +168,11 @@ class tlInitList {
 public:
 private:
     tlInitList* next;                // +0x04
-    static tlInitList* head;         // ?head@tlInitList@@0PAV1@A
+    static tlInitList* head;         // ?head@tlInitList@@0PAV1@A (cdDebugVertexDef.cpp)
     friend class cdAepsShader;
 public:
     virtual ~tlInitList() {}
 };
-tlInitList* tlInitList::head = nullptr;
 class tlFixedString {
 public:
     tlFixedString(const char* str);  // ??0tlFixedString@@QAE@PBD@Z
@@ -217,7 +216,7 @@ void cdAepsShader::operator delete(void* ptr) { mem_heap_free(ptr); }
 class apsClient {
 public:
     apsClient();                     // ??0apsClient@@QAE@XZ @ 0x6E8720
-    virtual ~apsClient() {}          // vtable for ??_EapsClient
+    virtual ~apsClient();            // ??1apsClient@@UAE@XZ (aeps stubs.cpp)
     virtual void UpdateAndRender(float dt);  // ?UpdateAndRender@apsClient@@UAEXM@Z @ 0x6E86C0
 };
 apsClient::apsClient() {}
@@ -414,7 +413,6 @@ public:
     static PoolAllocator* GetAllocator();  // ?GetAllocator@dpvs_plane_t@@SAPAVPoolAllocator@@XZ @ 0x6E5E10
     static void SetAllocator(PoolAllocator* allocator);  // ?SetAllocator@dpvs_plane_t@@SAXPAVPoolAllocator@@@Z @ 0x6E5E20
 };
-dpvs_plane_t::dpvs_plane_t() {}
 PoolAllocator* dpvs_plane_t::GetAllocator() { return sAllocator; }
 void dpvs_plane_t::SetAllocator(PoolAllocator* allocator) { sAllocator = allocator; }
 
@@ -671,8 +669,6 @@ class trModelCellRef_t {
 public:
     trModelCellRef_t();              // ??0trModelCellRef_t@@QAE@XZ @ 0x6E80A0
 };
-trModelCellRef_t::trModelCellRef_t() {}
-
 class dpvs_t {
 public:
     struct __unnamed {
@@ -2464,13 +2460,12 @@ public:
 };
 class LightEffect {
 private:
-    static PoolAllocator* sAllocator;  // ?sAllocator@LightEffect@@0PAVPoolAllocator@@A
+    static PoolAllocator* sAllocator;  // ?sAllocator@LightEffect@@0PAVPoolAllocator@@A (tr_fx3.cpp)
 public:
     ~LightEffect();                  // ??1LightEffect@@QAE@XZ (defined elsewhere)
     static void* operator new(unsigned int size);   // ??2LightEffect@@SAPAXI@Z @ 0x6E66A0
     static void operator delete(void* ptr);         // ??3LightEffect@@SAXPAX@Z @ 0x6E66C0
 };
-PoolAllocator* LightEffect::sAllocator = nullptr;
 void* LightEffect::operator new(unsigned int size)
 {
     return sAllocator->Allocate(size, false);
@@ -3758,6 +3753,62 @@ void std::vector<T, A>::push_back(const T& _Val)  // @ 0x6F0630/0x6F06E0
     else
     {
         this->insert(iterator(this->_Mylast), _Val);
+    }
+}
+
+// std::vector::_Insert_n (real growth logic; sizeof(T) drives the codegen)
+template <class T, class A>
+void std::vector<T, A>::_Insert_n(iterator _Where, unsigned int _Count,
+                                  const T& _Val)  // @ 0x6EF9D0/0x6EFCB0/0x6F0020
+{
+    T* Myfirst = this->_Myfirst;
+    unsigned int cap = Myfirst != nullptr ? (unsigned int)(this->_Myend - Myfirst) : 0;
+    if (_Count == 0)
+        return;
+    unsigned int used = Myfirst != nullptr ? (unsigned int)(this->_Mylast - Myfirst) : 0;
+    if ((unsigned int)(((size_t)-1) / sizeof(T)) - used < _Count)
+        this->_Xlen();
+    if (cap >= _Count + used)
+    {
+        T* Mylast = this->_Mylast;
+        if (Mylast - _Where._Myptr >= (ptrdiff_t)_Count)
+        {
+            // shift tail right
+            T* src = Mylast - _Count;
+            this->_Mylast = std::_Uninit_copy(src, Mylast, Mylast, this->_Alval,
+                                              std::_Nonscalar_ptr_iterator_tag());
+            std::copy_backward(_Where._Myptr, src, Mylast);
+            std::fill(_Where._Myptr, &_Where._Myptr[_Count], _Val);
+        }
+        else
+        {
+            // append tail then fill gap
+            std::_Uninit_copy(_Where._Myptr, Mylast, &_Where._Myptr[_Count],
+                              this->_Alval, std::_Nonscalar_ptr_iterator_tag());
+            unsigned int gap = _Count - (unsigned int)(this->_Mylast - _Where._Myptr);
+            T* v25 = this->_Mylast;
+            this->_Ufill(v25, gap, _Val);
+            this->_Mylast = &this->_Mylast[_Count];
+            std::fill(_Where._Myptr, &this->_Mylast[-_Count], _Val);
+        }
+    }
+    else
+    {
+        unsigned int newCap = cap + (cap >> 1);
+        if (newCap < _Count + used)
+            newCap = _Count + used;
+        T* newVec = (T*)mem_heap_malloc(sizeof(T) * newCap);
+        T* p = std::_Uninit_copy(Myfirst, _Where._Myptr, newVec, this->_Alval,
+                                 std::_Nonscalar_ptr_iterator_tag());
+        std::_Uninit_fill_n(p, _Count, _Val, this->_Alval,
+                            std::_Nonscalar_ptr_iterator_tag());
+        std::_Uninit_copy(_Where._Myptr, this->_Mylast, &p[_Count], this->_Alval,
+                          std::_Nonscalar_ptr_iterator_tag());
+        if (this->_Myfirst != nullptr)
+            mem_heap_free(this->_Myfirst);
+        this->_Myend = &newVec[newCap];
+        this->_Mylast = &newVec[used + _Count];
+        this->_Myfirst = newVec;
     }
 }
 

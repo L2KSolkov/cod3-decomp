@@ -12,6 +12,26 @@
 
 #include <stdint.h>
 
+namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10, MJK = 11 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmtstring, ...);
+}
+
+class cdl_proftimer {
+public:
+    float value;                     // +0x00
+    uint8_t _pad[4];
+    __int64 ticks;                   // +0x08
+    void start();                    // ?start@cdl_proftimer@@QAEXXZ
+    void stop();                     // ?stop@cdl_proftimer@@QAEXXZ
+    float get_elapsed();             // ?get_elapsed@cdl_proftimer@@QAEMXZ
+};
+
 // ============================================================================
 // R_PlaneForSurface - ea: 0x006C1BC0
 // ============================================================================
@@ -292,4 +312,500 @@ bool IsOkToSpawnNewEffect(apsEffectTemplate* Tmpl, int juice)
     }
     v4->mEffect = nullptr;
     return IsOkToSpawnNewEffect(Tmpl, juice - 1);
+}
+
+// ============================================================================
+// batch 93 - render.o fx/lighting/render-state functions
+// ============================================================================
+class ServerTime {
+public:
+    uint8_t _pad[8];
+    float mTickDelta;               // +0x08
+    unsigned int mTickMSec;         // +0x0C
+    static ServerTime sInst;        // ?sInst@ServerTime@@2V1@A
+};
+extern ServerTime ServerTime_sInst;  // g.o
+struct nglSceneView {
+    uint8_t _pad[0x8C];
+    math::Position3 ViewPos;        // +0x8C
+    math::Mat44 Projection;         // +0x9C
+    uint8_t _pad2[0x270 - 0xDC];
+    math::Vector4 ClipPlanes[6];    // +0x270
+};
+class apsCommon2 {
+public:
+    struct PlayerViewPort {
+        uint8_t _pad[0x48];
+        math::Vector4 mClipPlanes[6];  // +0x48
+        math::Position3 mViewPos;      // +0xA8
+        float mProjectionX;            // +0xB8
+        bool mActive;                  // +0xBC
+    };
+    static PlayerViewPort* GetPlayerViewPort(unsigned int idx);  // ?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z
+    static void SubmitSpawnedEffectQueue();  // ?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ
+    static void SetupFrame(const math::Mat43& viewToWorld, float);  // ?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z
+    static void SetCurrentPakId(int pakId);  // ?SetCurrentPakId@apsCommon@@SAXH@Z
+    static void SetPakAllocs(int v);         // ?SetPakAllocs@apsCommon@@SAXH@Z
+};
+struct nglScene;
+extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
+extern void nglValidateMatrices(nglScene* scene);  // ngl.o
+extern bool nglProfileEvalShader(void* shader);    // ?nglProfileEvalShader@@YA_NPAUnglShader@@@Z
+extern void UpdateLights(float mTickMSec);        // ?UpdateLights@@YAXM@Z
+extern void RemoveDeadEffects();                  // ?RemoveDeadEffects@@YAXXZ
+extern void FX_UpdateRainDrops(float dt);         // ?FX_UpdateRainDrops@@YAXM@Z
+extern void ProcessEffectsCollisions();           // ?ProcessEffectsCollisions@@YAXXZ (next in batch)
+extern void UpdateEffects(bool bUpdate);          // ?UpdateEffects@@YAX_N@Z (tr_tiny.cpp)
+extern float gFXTime;                             // ?gFXTime@@3MA
+extern int gScreenshotInProgress;                 // ?gScreenshotInProgress@@3HA
+extern int currCl;                                // g.o
+extern int LocalClient_FirstLocalClientIndex();   // ?FirstLocalClientIndex@LocalClient@@SAHXZ
+extern cdl_proftimer cdl_proftimer_fx_update;     // ?cdl_proftimer_fx_update@@3Ucdl_proftimer@@A
+extern void* gCDAepsShader;                       // ?gCDAepsShader@@3PAVcdAepsShader@@A
+const math::Mat43* nglGetMatrix_WorldToView(nglScene* scene);  // ?nglGetMatrix_WorldToView@@YAPBVMat43@math@@PAUnglScene@@@Z
+
+// ea: 0x006DBC20
+void FX_UpdateFX(bool firstClient)
+{
+    nglValidateMatrices(nglBuildScene);
+    apsCommon2::PlayerViewPort* pvp =
+        apsCommon2::GetPlayerViewPort((unsigned int)currCl);
+    memcpy(pvp->mClipPlanes, ((nglSceneView*)nglBuildScene)->ClipPlanes,
+           sizeof(pvp->mClipPlanes));
+    pvp->mViewPos = ((nglSceneView*)nglBuildScene)->ViewPos;
+    pvp->mProjectionX = ((nglSceneView*)nglBuildScene)->Projection.x.v.m128_f32[0];
+    if (!firstClient || !nglProfileEvalShader(gCDAepsShader))
+        return;
+    apsCommon2::SubmitSpawnedEffectQueue();
+    UpdateLights((float)ServerTime_sInst.mTickMSec);
+    float mTickDelta = ServerTime_sInst.mTickDelta;
+    bool bUpdate = true;
+    float dt = ServerTime_sInst.mTickDelta;
+    if (gScreenshotInProgress != 0)
+    {
+        mTickDelta = 0.0f;
+        dt = 0.0f;
+        bUpdate = false;
+    }
+    else if (ServerTime_sInst.mTickDelta > 0.05f)
+    {
+        dt = 0.05f;
+        mTickDelta = 0.05f;
+    }
+    else if (ServerTime_sInst.mTickDelta <= 0.0f)
+    {
+        bUpdate = false;
+    }
+    gFXTime = gFXTime + mTickDelta;
+    if (currCl != LocalClient_FirstLocalClientIndex())
+        gFXTime = gFXTime - dt;
+    const math::Mat43* worldToView = nglGetMatrix_WorldToView(nglBuildScene);
+    apsCommon2::SetupFrame(*worldToView, -1.0f);
+    apsCommon2::GetPlayerViewPort(0)->mActive = false;  // dword_F6A290[0] == 2 placeholder
+    RemoveDeadEffects();
+    ProcessEffectsCollisions();
+    FX_UpdateRainDrops(dt);
+    cdl_proftimer_fx_update.start();
+    UpdateEffects(bUpdate);
+    cdl_proftimer_fx_update.stop();
+}
+
+
+// ============================================================================
+// calc_lighting - ea: 0x006CEFA0
+// ============================================================================
+class Entity;
+class tagInfoLocal {
+public:
+    Entity* parent;                  // +0x00
+    Entity* next;                    // +0x04
+};
+struct trRefEntityLocal {
+    uint8_t _pad[0x148];
+    float lastPos[3];                // +0x148
+    bool moved;                      // +0x154
+};
+class Entity {
+public:
+    uint8_t _pad0[0xE0];
+    struct refEntityLocal {
+        math::Position3 currentOrigin;  // +0x00
+        math::Position3 currentAngles;  // +0x10
+    } r;                             // +0xE0
+    uint8_t _pad1[0x2C4 - 0x110];
+    int flags;                       // +0x2C4
+    uint8_t _pad2[0x3BC - 0x2C8];
+    short cell_index;                // +0x3BC
+    uint8_t _pad3[0x3D4 - 0x3BE];
+    tagInfoLocal* tagInfo;           // +0x3D4
+};
+struct BspCellLocal {
+    uint8_t _pad[0x48];
+    void* mLgridToc;                 // +0x48
+};
+struct BspTreeLocal2 {
+    uint8_t _pad[0x18];
+    BspCellLocal* mCellsList;        // +0x18
+    unsigned int mCellsSize;         // +0x1C
+};
+extern BspTreeLocal2* g_bspTree;     // ?g_bspTree@@3PAUBspTree@@A
+extern void ModelLightingHack();     // ?ModelLightingHack@@YAXXZ
+struct nglLightContext;
+extern nglLightContext* nglCreateLightContext();  // ?nglCreateLightContext@@YAPAUnglLightContext@@XZ
+extern void nglListAddLight(int type, void* data, int unknown);  // ?nglListAddLight@@YAXW4nglLightType@@PAXH@Z
+class LightGridMgr2 {
+public:
+    void* GetLightGrid(const math::Position3& pos, int* cell);  // ?GetLightGrid@LightGridMgr@@QAEPBUTOC@1@ABVPosition3@math@@PAH@Z
+    void SampleLightGrid(void* toc, int cell, const math::Position3& pos,
+                         void* out);  // ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@1@HABVPosition3@math@@PAVMat44@4@2@Z
+};
+extern LightGridMgr2* LightGridMgr_sInst;  // ?sInst@LightGridMgr@@2V1@A
+extern trRefEntityLocal& Entity_GetRenderEntity(Entity* self);  // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ
+extern unsigned int nglLightContextParamID;   // ngl_lighting.cpp
+extern unsigned int cdSimpleAlphaAlphaParamID;  // tr_tiny.cpp
+
+nglLightContext* calc_lighting(Entity* entity, const math::Mat43* matrix,
+                               float alpha, nglShaderParamSet* shaderParams)  // ?calc_lighting@@YAPAUnglLightContext@@PAVEntity@@ABVMat43@math@@MAAUnglShaderParamSet@@@Z @ 0x6CEFA0
+{
+    nglLightContext* ctx = nglCreateLightContext();
+    float v30 = matrix->w.v.m128_f32[0];
+    float v31 = matrix->w.v.m128_f32[1];
+    float v32 = matrix->w.v.m128_f32[2];
+    float lightW = matrix->w.v.m128_f32[3];
+    int flags = 0;
+    if (entity != nullptr)
+    {
+        flags = entity->flags;
+        tagInfoLocal* tagInfo = entity->tagInfo;
+        if (tagInfo != nullptr)
+        {
+            Entity* parent = tagInfo->parent;
+            v30 = parent->r.currentOrigin.v.m128_f32[0];
+            v31 = parent->r.currentOrigin.v.m128_f32[1];
+            v32 = parent->r.currentOrigin.v.m128_f32[2];
+            lightW = parent->r.currentOrigin.v.m128_f32[3];
+            flags = parent->flags;
+        }
+    }
+    if ((flags & 0x800000) == 0)
+    {
+        if ((flags & 0x200000) != 0)
+        {
+            ModelLightingHack();
+        }
+        else
+        {
+            void* toc = nullptr;
+            int cellNum = 0;
+            if (entity != nullptr)
+            {
+                cellNum = entity->cell_index;
+                if (cellNum != -1)
+                    toc = g_bspTree->mCellsList[cellNum].mLgridToc;
+            }
+            else
+            {
+                toc = LightGridMgr_sInst->GetLightGrid(
+                    *(math::Position3*)&v30, &cellNum);
+            }
+            if (toc != nullptr)
+            {
+                if (entity != nullptr)
+                {
+                    trRefEntityLocal& re = Entity_GetRenderEntity(entity);
+                    trRefEntityLocal* rep = &re;
+                    bool moved = rep->lastPos[0] != v30 || rep->lastPos[1] != v31
+                                || rep->lastPos[2] != v32;
+                    rep->moved = moved;
+                    if (moved)
+                    {
+                        rep->lastPos[0] = v30;
+                        rep->lastPos[1] = v31;
+                        rep->lastPos[2] = v32;
+                    }
+                    LightGridMgr_sInst->SampleLightGrid(
+                        toc, entity->cell_index, *(math::Position3*)&v30, nullptr);
+                }
+                else
+                {
+                    LightGridMgr_sInst->SampleLightGrid(
+                        toc, cellNum, *(math::Position3*)&v30, nullptr);
+                }
+            }
+            else
+            {
+                ModelLightingHack();
+            }
+        }
+    }
+    // add all build-scene lights to the param set
+    unsigned int* Array = shaderParams->Array;
+    unsigned int id = nglLightContextParamID;
+    Array[0] |= (1u << id);
+    Array[1] |= (1u << id) >> 32;
+    shaderParams->Array[id + 2] = (unsigned int)ctx;
+    if (alpha > 0.0f)
+    {
+        unsigned int* arr = shaderParams->Array;
+        unsigned int aid = cdSimpleAlphaAlphaParamID;
+        arr[0] |= (1u << aid);
+        arr[1] |= (1u << aid) >> 32;
+        shaderParams->Array[aid + 2] = *(unsigned int*)&alpha;
+    }
+    return ctx;
+}
+
+// ============================================================================
+// ProcessEffectsCollisions - ea: 0x006DA3F0
+// ============================================================================
+struct apsCollisionData {
+    uint8_t _pad[0x10];
+    unsigned int mNumRaycastRequests;  // +0x10
+    struct RaycastRequest {
+        math::Position3 start;      // +0x00
+        math::Position3 end;        // +0x10
+        math::Position3 result;     // +0x20
+        float fraction;             // +0x30
+        math::Dir3 normal;          // +0x34
+    } mRaycastRequests[1];          // +0x14
+};
+struct ParticleRaycastData {
+    uint8_t _pad[0x20];
+    struct proximity_data_tLocal {
+        uint8_t _pad[0x20];
+    } mProximityData;               // +0x20
+};
+struct trace_tFx {
+    math::Position3 endpos;          // +0x00
+    math::Dir3 normal;               // +0x10
+    float fraction;                  // +0x20
+    int surfaceFlags;                // +0x24
+    int contents;                    // +0x28
+};
+extern void ProximityUpdate(ParticleRaycastData& data,
+                            const apsCollisionData& col);  // ?ProximityUpdate@@YAXAAURaycastData@ParticleEffect@@ABUCollisionData@apsEffect@@@Z
+extern void TracePoint(const void* proximity, trace_tFx* trace,
+                       const math::Position3& start,
+                       const math::Position3& end, int contentmask);
+
+void ProcessEffectsCollisions()  // ?ProcessEffectsCollisions@@YAXXZ @ 0x6DA3F0
+{
+    ParticleEffect** it = gParticleEffectList.mElements;
+    ParticleEffect** end = &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    while (it != end)
+    {
+        ParticleEffect* v2 = *it;
+        if (v2 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ParticleEffect.cpp";
+            AeAssert::gCurrentLine = 1002;
+            AeAssert::gCurrentExpr = "effect";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("ParticleEffect pointer invalid. How did we get here?"))
+                __debugbreak();
+        }
+        apsCollisionData* col = (apsCollisionData*)v2->mEffect->mCollisionData;
+        if (col != nullptr)
+        {
+            if (v2->mRaycastData == nullptr)
+            {
+                ParticleRaycastData* rd =
+                    (ParticleRaycastData*)tlMemAlloc(0x1870u, 0x10u, 0);
+                if (rd != nullptr)
+                {
+                    new (rd) ParticleRaycastData();
+                }
+                v2->mRaycastData = rd;
+            }
+            if (col->mNumRaycastRequests != 0)
+            {
+                ProximityUpdate(*(ParticleRaycastData*)v2->mRaycastData, *col);
+                unsigned int n = col->mNumRaycastRequests;
+                for (unsigned int i = 0; i < n; ++i)
+                {
+                    apsCollisionData::RaycastRequest& req = col->mRaycastRequests[i];
+                    trace_tFx trace;
+                    memset(&trace, 0, sizeof(trace));
+                    TracePoint(&((ParticleRaycastData*)v2->mRaycastData)->mProximityData,
+                               &trace, req.start, req.end, 41951377);
+                    if (trace.fraction == 1.0f || trace.contents == 0)
+                    {
+                        req.fraction = -1.0f;
+                    }
+                    else
+                    {
+                        req.result = trace.endpos;
+                        req.normal = trace.normal;
+                        req.fraction = trace.fraction;
+                    }
+                }
+                col->mNumRaycastRequests = 0;
+            }
+        }
+        ++it;
+    }
+}
+
+// ============================================================================
+// ThreadedUpdateEffects - ea: 0x006DA720
+// ============================================================================
+class DObjHandleDbLocal2 {
+public:
+    struct DbElement {
+        void* mObject;               // +0x00
+        int mKey;                    // +0x04
+    };
+    uint8_t _pad[0xA8];
+    DbElement mElements[0x540];      // +0xA8
+    static DObjHandleDbLocal2 sInst; // ?sInst@DObjHandleDb@@0V1@A
+};
+class EntityHandleDbLocal3 {
+public:
+    struct DbElement {
+        void* mObject;               // +0x00
+        int mKey;                    // +0x04
+    };
+    uint8_t _pad[0xA8];
+    DbElement mElements[0x540];      // +0xA8
+    static EntityHandleDbLocal3 sInst;  // ?sInst@EntityHandleDb@@0V1@A
+};
+extern void apsMemory_ClearBlockAllocator();   // ?ClearBlockAllocator@apsMemory@@SAXXZ
+extern void apsMemory_SetBlockAllocator();     // ?SetBlockAllocator@apsMemory@@SAXXZ
+extern void apsEffect_SetCulled(apsEffect* effect, int v);    // ?SetCulled@apsEffect@@QAEXH@Z
+extern bool FX_GetBoneOrientation2(unsigned int handle, short bone,
+                                   float* ori);  // ?FX_GetBoneOrientation@@YA_NV?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@HPAUorientation_t@@@Z
+extern void AnglesToAxis2(const math::Position3& angles,
+                          const math::Position3& origin, float* out);  // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVnalMatrix4x4@@@Z
+extern void View_IsSplitScreen();               // ?IsSplitScreen@View@@YA_NXZ
+struct jqBatch {
+    void* Input;                     // +0x00
+    void* Output;                    // +0x04
+    void* Scratch;                   // +0x08
+    void* Static;                    // +0x0C
+};
+extern bool level_bMissionFailed;
+extern bool level_bMissionSuccess;
+extern void* gLastAbstractEffectParticle;
+extern void* g_scr_data_debris_bro_func;
+extern void apsCommon_SetCurrentPakId(int pakId);  // ?SetCurrentPakId@apsCommon@@SAXH@Z
+extern void apsCommon_SetPakAllocs(int v);         // ?SetPakAllocs@apsCommon@@SAXH@Z
+
+void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqBatch@@@Z @ 0x6DA720
+{
+    char bUpdate = *(char*)batch->Static;
+    View_IsSplitScreen();
+    ParticleEffect** it = gParticleEffectList.mElements;
+    ParticleEffect** end = &gParticleEffectList.mElements[gParticleEffectList.mSize];
+    while (it != end)
+    {
+        ParticleEffect* v4 = *it;
+        if (v4 != nullptr && (v4->mFlags & 2) != 0)
+        {
+            ++it;
+            continue;
+        }
+        apsEffect* effect = v4->mEffect;
+        void* mObject = nullptr;
+        Entity* v10 = nullptr;
+        unsigned int mVal = (unsigned int)v4->mDObjHandle;
+        unsigned int idx = mVal & 0xFFF;
+        if (idx < 0x540
+            && mVal >> 12 == (unsigned int)DObjHandleDbLocal2::sInst.mElements[idx].mKey)
+            mObject = DObjHandleDbLocal2::sInst.mElements[idx].mObject;
+        unsigned int eidx = (unsigned int)v4->mEntHandle & 0xFFF;
+        if (eidx < 0x540
+            && (unsigned int)v4->mEntHandle >> 12
+                   == (unsigned int)EntityHandleDbLocal3::sInst.mElements[eidx].mKey)
+            v10 = (Entity*)EntityHandleDbLocal3::sInst.mElements[eidx].mObject;
+        if ((v4->mFlags & 1) != 0)
+        {
+            if (mObject == nullptr && v10 == nullptr)
+            {
+                effect->StopEmitting();
+                if (v4->mPoPtr == nullptr)
+                    goto skipUpdate;
+            }
+        }
+        else if (mObject == nullptr && v10 == nullptr)
+        {
+            if (v4->mPoPtr == nullptr)
+                goto skipUpdate;
+        }
+        if (v4->mPoPtr != nullptr)
+        {
+            if ((v4->mFlags & 0x10) != 0)
+            {
+                effect->SetLocalToWorldTransform(*v4->mPoPtr);
+                v4->mFlags &= (unsigned short)~0x10u;
+            }
+            goto skipUpdate;
+        }
+        if (v4->mBoneIndex < 0)
+        {
+            if (v10 != nullptr)
+            {
+                math::Mat43 mat;
+                mat.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+                mat.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+                mat.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+                mat.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 0.0f);
+                if ((v4->mFlags & 4) != 0)
+                {
+                    mat.w.v = v10->r.currentOrigin.v;
+                }
+                else
+                {
+                    AnglesToAxis2(v10->r.currentAngles, v10->r.currentOrigin,
+                                  (float*)&mat);
+                }
+                effect->SetLocalToWorldTransform(mat);
+            }
+        }
+        else
+        {
+            float ori[13];
+            if (FX_GetBoneOrientation2((unsigned int)v4->mDObjHandle,
+                                       v4->mBoneIndex, ori))
+            {
+                math::Mat43 mat;
+                memcpy(&mat, ori, 52);
+                effect->SetLocalToWorldTransform(mat);
+            }
+        }
+    skipUpdate:
+        if ((v4->mFlags & 8) != 0)
+        {
+            v4->mFlags &= (unsigned short)~8u;
+            if (!level_bMissionFailed && !level_bMissionSuccess)
+            {
+                gLastAbstractEffectParticle = v4->mAbstractEffectParticle;
+                ((void (__cdecl*)())g_scr_data_debris_bro_func)();
+            }
+            gLastAbstractEffectParticle = nullptr;
+        }
+        if (bUpdate != 0)
+        {
+            int mPakId = v4->mPakId;
+            if (mPakId == -1)
+            {
+                effect->Update(gFXTime);
+            }
+            else
+            {
+                apsMemory_ClearBlockAllocator();
+                apsCommon_SetCurrentPakId(mPakId);
+                apsCommon_SetPakAllocs(1);
+                v4->culled = 0;
+                apsEffect_SetCulled(effect, 0);
+                effect->Update(gFXTime);
+                apsMemory_SetBlockAllocator();
+                apsCommon_SetCurrentPakId(-1);
+                apsCommon_SetPakAllocs(0);
+            }
+        }
+        effect->CalcSortKey();
+        ++it;
+    }
+    apsCommon2::GetPlayerViewPort(0);  // mBuildScene=nullptr equivalent skipped
 }
