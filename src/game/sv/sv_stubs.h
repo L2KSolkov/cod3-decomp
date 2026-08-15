@@ -24,6 +24,7 @@
 // g_local.h / mp_types.h).
 enum itemType_t : int;
 enum EDroppedItemTypes : int;
+struct MP_ANIM_INDEX;  // full definition in mp_basic.cpp (mp.o anim tables)
 
 // Global net entity handle (g.o 0x4A9700 family) - map mangling uses the
 // global scope (?AVMPEntityHandle@@). Methods defined in g_accessors.cpp.
@@ -459,6 +460,11 @@ public:
     void AttemptHotJoin(int clientIndex);       // ?AttemptHotJoin@MultiplayerMgr@@QAEXH@Z (mp.o 0x751160)
     void RemoveDroppedItems();                  // ?RemoveDroppedItems@MultiplayerMgr@@QAEXXZ (mp.o 0x7614C0)
     bool getValidNetConnection(const char* address);  // ?getValidNetConnection@MultiplayerMgr@@QAE_NPBD@Z (mp.o 0x72C790)
+    ~MultiplayerMgr();                          // ??1MultiplayerMgr@@QAE@XZ (mp.o 0x766060)
+    int GetPlayerId(const Entity* player) const;  // ?GetPlayerId@MultiplayerMgr@@QBEHPBVEntity@@@Z (mp.o 0x740260)
+    int GetLocalPlayerId(int localPlayer) const;  // ?GetLocalPlayerId@MultiplayerMgr@@QBEHH@Z (mp.o 0x7357F0)
+    void ApplyLocalPhysicsToVehicle(Entity* vehicle, const math::Mat43& mat,
+                                    const math::Dir3& velocity);  // ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVMat43@math@@ABVDir3@4@@Z (mp.o 0x75AEB0)
     void HandleDiscError();                    // ?HandleDiscError@MultiplayerMgr@@QAEXXZ (mp.o 0x72C4A0)
     int  AddTestClient();                      // ?AddTestClient@MultiplayerMgr@@QAEHXZ (mp.o 0x72C4E0)
     bool oneOffCheckLinkStatus();              // ?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C6F0)
@@ -1715,6 +1721,9 @@ public:
     void DebugRender();               // ?DebugRender@MPPlayer@@QAEXXZ (mp.o 0x736670)
     void SetAngles(const float* angles);  // ?SetAngles@MPPlayer@@QAEXQBM@Z (mp.o 0x7365F0)
     void SetPosition(const float* position);  // ?SetPosition@MPPlayer@@QAEXQBM@Z (mp.o 0x72DF50)
+    void SetConnection(bdReference<bdConnection> connection);  // ?SetConnection@MPPlayer@@QAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x736110)
+    static MP_ANIM_INDEX* getAnimIndex(int sheet, int row, int col,
+                                       bool useDefault);  // ?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z (mp.o 0x72CBA0)
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
     bdReference<bdConnection> GetConnection() const;  // ?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ (mp.o 0x736190)
     void Reset(bool clearAll);        // ?Reset@MPPlayer@@QAEX_N@Z (mp.o 0x72CC20)
@@ -1787,6 +1796,7 @@ public:
     void DebugRender();                 // ?DebugRender@MPPlayerManager@@QAEXXZ (mp.o 0x75A890)
     void Reset();                       // ?Reset@MPPlayerManager@@QAEXXZ (mp.o 0x75D440)
     void ResetVehicleEventSequenceIds();  // ?ResetVehicleEventSequenceIds@MPPlayerManager@@QAEXXZ (mp.o 0x7394A0)
+    Entity* GetPlayerEntity(unsigned char id);  // ?GetPlayerEntity@MPPlayerManager@@QAEPAVEntity@@E@Z (mp.o 0x72E8E0)
     unsigned int GetPlayerInfo(char* buf);  // ?GetPlayerInfo@MPPlayerManager@@QAEIPAD@Z (mp.o 0x7378D0)
     int  GetCurrentPlayerCount();       // ?GetCurrentPlayerCount@MPPlayerManager@@QAEHXZ (mp.o 0x73A980)
     MPVehicle* GetVehicleFromOccupant(const MPPlayer* player);  // ?GetVehicleFromOccupant@MPPlayerManager@@QAEPAVMPVehicle@@PBVMPPlayer@@@Z (mp.o 0x72EFE0)
@@ -1800,6 +1810,7 @@ public:
                                        Entity* item,
                                        Entity* owner);  // ?FindDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x760590)
     void RemovePlayerFromSession(MPPlayer* player);  // ?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7383F0)
+    bool SendHost(const bdReference<bdMessage> message, bool reliable);  // ?SendHost@MPPlayerManager@@QAE_NV?$bdReference@VbdMessage@@@@_N@Z (mp.o 0x737B90)
 private:
     void AddAcceptCallback(int MESSAGE_ID,
                            void (MPPlayerManager::*callback)(const bdReceivedMessage&));  // ?AddAcceptCallback@MPPlayerManager@@AAEXHP81@AEXABVbdReceivedMessage@@@Z@Z (mp.o 0x72EBB0)
@@ -1942,6 +1953,32 @@ public:
     void VehicleFireMissile(Entity* vehEnt, int weapon,
                             const math::Position3& position,
                             const math::Dir3& dir);  // ?VehicleFireMissile@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z (mp.o 0x75BA50)
+    void SendBombOperationEvent(const Entity* player, bool defusing,
+                                bool success);  // ?SendBombOperationEvent@MPPeer@@QAEXPBVEntity@@_N1@Z (mp.o)
+    void SendGameStateHQ(Entity* player, unsigned int stage,
+                         const math::Position3& pA,
+                         const math::Position3& pB,
+                         unsigned int triggerIndex, bool alliesDefending,
+                         bool pointAIsHQ);  // ?SendGameStateHQ@MPPeer@@QAEXPAVEntity@@IABVPosition3@math@@1I_N2@Z (mp.o)
+    void SendGameStateCTF(Entity* player,
+                          const math::Position3& allied_flag,
+                          const math::Dir3& alliedAngles,
+                          Entity* allied_flag_holder,
+                          const math::Position3& axis_flag,
+                          const math::Dir3& axisAngles,
+                          Entity* axis_flag_holder);  // ?SendGameStateCTF@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z (mp.o)
+    void SendGameStateSCF(Entity* player, int currentFlagIndex,
+                          const math::Position3& flagPosition,
+                          const math::Dir3& flagAngles,
+                          Entity* flagHolder);  // ?SendGameStateSCF@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@0@Z (mp.o)
+    void SendGameStateDOM(Entity* player, int flag0, int flag1, int flag2,
+                          int flag3, int flag4);  // ?SendGameStateDOM@MPPeer@@QAEXPAVEntity@@HHHHH@Z (mp.o)
+    void SendGameStateSD(Entity* player, Entity* planter, Entity* defuser,
+                         bool planting, const math::Position3& bombPosition,
+                         const math::Dir3& bombAngles,
+                         int bombTimeLeft);  // ?SendGameStateSD@MPPeer@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
+    void PlayerRespawn(Entity* player, const math::Position3& position,
+                       const math::Dir3& angles, int team);  // ?PlayerRespawn@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
@@ -1952,6 +1989,7 @@ private:
     virtual void onSessionConnectFail();  // ?onSessionConnectFail@MPPeer@@EAEXXZ (mp.o 0x72C940)
     virtual void onSessionConnectSuccess();  // ?onSessionConnectSuccess@MPPeer@@EAEXXZ (mp.o 0x761910)
     virtual void onSessionJoinRefused(bdReference<bdBitBuffer> userData);  // ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x735AB0)
+    virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x735DE0)
     void ConnectToPeersFinalize(const bdReference<MPGameInfo>& gameInfo);  // ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z (mp.o 0x7616C0)
 };
 

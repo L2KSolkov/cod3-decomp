@@ -47,6 +47,16 @@ extern int dword_F32F40;         // 0xF32F40
 extern int dword_F34B34;         // 0xF34B34
 extern int dword_F36728;         // 0xF36728
 
+extern bool MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YA_ND@Z (mp_shell.o)
+extern const char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
+extern void ByteToDir(int b, float* dir);       // ?ByteToDir@@YAXHQAM@Z (core.o)
+extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,
+                        bool stopPhysics, bool isRevive);  // ?ClientSpawn@@YAXPAVEntity@@QBM1_N2@Z (g.o)
+extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  // core.o
+extern void tlPrintf(const char* format, ...);  // ?tlPrintf@@YAXPBDZZ
+extern void bdCore_quit();  // bdCore::quit
+extern void* gDWHeap;       // ?gDWHeap@@3PAVae_heap@@A
+
 struct scr_vehicle_t;
 
 // MPLiveEngine (platform_xbox) - cross-object extern view; derives from
@@ -2950,6 +2960,9 @@ void MPVehicle::Reset(bool clearOccupant)
 const char* const MPOptionsSoundMenu::kSoundOptionStrings[] = {
     "FEMENU_COP_VOLUME", "FEMENU_SOUND_INST_VOLUME",
 };
+const char* const MPOptionsSoundMenu::kSoundInstructionStrings[] = {
+    "FEMENU_SOUND_INST_VOLUME",
+};
 
 const char* const MPProfileEditMenu::kProfileTextOptionStrings[] = {
     "FEMENU_OP_GAMEPLAY", "FEMENU_OP_CONTROLS", "FEMENU_OP_PREFERENCES",
@@ -5563,6 +5576,796 @@ MPPlayerSet::MPPlayerSet(eDefaultSets e)
     else
     {
         mBitPlayers = 0xFFFF;
+    }
+}
+
+// ============================================================================
+// Batch 14: game-state forwarders, menu up/down, item/qos/voice helpers
+// ============================================================================
+
+// ea: 0x0072F830
+const char* MPUIInterface::GetMapString(unsigned long mapIndex)
+{
+    if (!MI_IsAvailableMap(mapIndex))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPUIInterface.cpp";
+        AeAssert::gCurrentLine = 1335;
+        AeAssert::gCurrentExpr = "MI_IsAvailableMap(mapIndex)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    return MI_GetMapDisplayName(mapIndex);
+}
+
+// ea: 0x00735DE0 (mDisconnectStatusTimerRunning at +0x74A8 etc.)
+void MPPeer::onSessionDisconnect(bdReference<bdConnection> connection)
+{
+    *(bool*)((char*)this + 0x74A8) = true;   // mDisconnectStatusTimerRunning
+    *(float*)((char*)this + 0x74AC) = 0.0f;  // mDisconnectStatusTimer
+    *(float*)((char*)this + 0x74B0) = 0.0f;  // mDisconnectNotReadyTime
+    *(float*)((char*)this + 0x74B4) = 0.0f;  // mBadHashTime
+    if (connection.m_ptr != nullptr
+        && connection.m_ptr->m_refCount-- == 1)
+        delete connection.m_ptr;
+}
+
+// ea: 0x00750C30
+void MultiplayerMgr::AreaCaptured(int netIndex, int itemType, int hostOnly)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1723;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->AreaCaptured(netIndex, itemType, hostOnly);
+}
+
+// ea: 0x00750FC0
+void MultiplayerMgr::SendBombOperationEvent(const Entity* player,
+                                            bool defusing, bool success)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1850;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendBombOperationEvent(player, defusing, success);
+}
+
+// ea: 0x00735250
+void kuju::knetuser::cVoiceNetworkManager::
+    checkForPendingPacketsAwaitingHandling(const kuju::knet::sTime& time)
+{
+    int mTime = mVoiceLifeTime.mTime;
+    unsigned int v4 = 0;
+    do
+    {
+        sVoicePacket* v6 = mPendingVoicePacketList[v4];
+        if (v6 != nullptr)
+        {
+            int v7 = time.mTime - v6->mTimeReceived.mTime;
+            unsigned int mPrevSeqID = v6->mPrevSeqID;
+            if (mPrevSeqID != 0xFFFFFFFFu
+                && mPrevSeqID != (unsigned int)mPendingVoicePacketList[v4 + 16])
+            {
+                if (v7 > mTime)
+                {
+                    ++this->mMissedPackets;
+                    flushFirstPacketInList(v4, 0);
+                    mTime = mVoiceLifeTime.mTime;
+                }
+                ++v4;
+                continue;
+            }
+            if (v7 > mTime)
+                ++this->mMissedPackets;
+            flushFirstPacketInList(v4, 0);
+            mTime = mVoiceLifeTime.mTime;
+        }
+        ++v4;
+    } while (v4 < 0x10);
+}
+
+// ea: 0x007504B0
+void MultiplayerMgr::PlayerRespawn(Entity* player,
+                                   const math::Position3& position,
+                                   const math::Dir3& angles, int team)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+    {
+        mPeer->PlayerRespawn(player, position, angles, team);
+    }
+    else
+    {
+        ClientSpawn(player, position.v.m128_f32, angles.v.m128_f32, true,
+                    false);
+        if (gpBrocAPI->mBrocExports.mCallbackPlayerSpawn != nullptr)
+        {
+            Entity* v6 = EntityManager::sInst->GetPlayer(currCl);
+            gpBrocAPI->mBrocExports.mCallbackPlayerSpawn(
+                v6->mHandle.mHandle.mVal, 0);
+        }
+    }
+}
+
+// ea: 0x007347E0
+bool PlayerStats::IsStatSpecificToAPlayerClass(int stat)
+{
+    if (stat > 0x1C)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ePlayerStats.cpp";
+        AeAssert::gCurrentLine = 53;
+        AeAssert::gCurrentExpr =
+            "stat >= kPlayerStatsMin && stat <= kPlayerStatsMax";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid stat index."))
+            __debugbreak();
+    }
+    return playerStatsInfo[stat].mSpecificToPlayerClass != -1;
+}
+
+// ea: 0x0072DD70
+int MPPlayer::GroundSurfaceType(int surfaceFlags)
+{
+    if ((surfaceFlags & 0x2000) != 0)
+        return 0;
+    if (((surfaceFlags >> 20) & 0x1Fu) >= 0x17)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+        AeAssert::gCurrentLine = 1563;
+        AeAssert::gCurrentExpr = "iSurfType >= 0 && iSurfType < 23";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return (surfaceFlags >> 20) & 0x1F;
+}
+
+// ea: 0x0072D070 (anonymous namespace helper; hash cannot be reproduced)
+namespace {
+void PlayPartialAnimationRate(DObj* dobj, MP_ANIM_INDEX* anim_index,
+                              unsigned int mask, float alpha,
+                              float speedScale)
+{
+    if (dobj != nullptr)
+    {
+        AnimationPlayer* v5 = (AnimationPlayer*)dobj->animPlayers[0];
+        if (v5 != nullptr && anim_index != nullptr)
+        {
+            nalGeneric::nalGenericAnim* anim = anim_index->anim;
+            if (anim != nullptr)
+            {
+                v5->PlayModifier(anim, 1.0f, mask);
+                v5->SetModifierAlpha(mask, 1.0f, anim, alpha);
+                v5->SetModifierSpeed(mask, 1.0f, anim, speedScale);
+            }
+        }
+    }
+}
+}  // namespace
+
+// ea: 0x00750990
+void MultiplayerMgr::SendGameStateSCF(Entity* player, int currentFlagIndex,
+                                      const math::Position3& flagPosition,
+                                      const math::Dir3& flagAngles,
+                                      Entity* flagHolder)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1537;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameStateSCF(player, currentFlagIndex, flagPosition,
+                            flagAngles, flagHolder);
+}
+
+// ea: 0x00735B80 (m_QosAddr +0x10, m_QosLatency +0x2450, etc.)
+void MPPeer::UpdateQosProbe(bdReference<bdCommonAddr> addr, bool bSuccess,
+                            float latency)
+{
+    int v4 = 0;
+    char* m_QosAddr = (char*)this + 0x10;
+    float* m_QosLatency = (float*)((char*)this + 0x2450);
+    do
+    {
+        if (((bdQoSRemoteAddr*)(m_QosAddr + 0x1C * v4))
+                ->m_addr.m_ptr == addr.m_ptr)
+        {
+            *(bool*)((char*)this + 0x690 + v4) = true;   // m_QosIsComplete
+            *(bool*)((char*)this + 0xA90 + v4) = bSuccess;  // m_QosIsSuccessful
+            m_QosLatency[v4] = latency;
+            if (*(bool*)((char*)this + 0x2490 + v4))  // m_QosDeleteProbe
+                *(bool*)((char*)this + 0xE90 + v4) = true;  // m_QosIsAvailable
+        }
+        ++v4;
+    } while (v4 < 800);
+    if (addr.m_ptr != nullptr && addr.m_ptr->m_refCount-- == 1)
+        delete addr.m_ptr;
+}
+
+// ea: 0x00750A00
+void MultiplayerMgr::SendGameStateDOM(Entity* player, int flag0, int flag1,
+                                      int flag2, int flag3, int flag4)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1545;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameStateDOM(player, flag0, flag1, flag2, flag3, flag4);
+}
+
+// ea: 0x00750910
+void MultiplayerMgr::SendGameStateCTF(
+    Entity* player, const math::Position3& allied_flag,
+    const math::Dir3& alliedAngles, Entity* allied_flag_holder,
+    const math::Position3& axis_flag, const math::Dir3& axisAngles,
+    Entity* axis_flag_holder)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1529;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameStateCTF(player, allied_flag, alliedAngles,
+                            allied_flag_holder, axis_flag, axisAngles,
+                            axis_flag_holder);
+}
+
+// ea: 0x00750890
+void MultiplayerMgr::SendGameStateHQ(Entity* player, unsigned int stage,
+                                     const math::Position3& pA,
+                                     const math::Position3& pB,
+                                     unsigned int triggerIndex,
+                                     bool alliesDefending,
+                                     bool pointAIsHQ)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1521;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameStateHQ(player, stage, pA, pB, triggerIndex,
+                           alliesDefending, pointAIsHQ);
+}
+
+// ea: 0x00750A80
+void MultiplayerMgr::SendGameStateSD(Entity* player, Entity* planter,
+                                     Entity* defuser, bool planting,
+                                     const math::Position3& bombPosition,
+                                     const math::Dir3& bombAngles,
+                                     int bombTimeLeft)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1553;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameStateSD(player, planter, defuser, planting, bombPosition,
+                           bombAngles, bombTimeLeft);
+}
+
+// ea: 0x00740310
+bool MultiplayerMgr::IsInVehicle(Entity* player)
+{
+    if (mPeer == nullptr)
+        return false;
+    MPPlayer* v3 =
+        ((MPPlayerManager*)((char*)mPeer + 0x74E0))->GetPlayer(player);
+    return v3 != nullptr && v3->mInVehicle;
+}
+
+// ea: 0x0072CBA0
+MP_ANIM_INDEX* MPPlayer::getAnimIndex(int sheet, int row, int col,
+                                      bool useDefault)
+{
+    MP_ANIM_INDEX* result = nullptr;
+    if (base_anim_indices[38 * sheet + row].anims[col].animIndex != 0)
+    {
+        result =
+            &base_anim_names[base_anim_indices[38 * sheet + row].anims[col]
+                                 .animIndex];
+        if (result->anim == nullptr && useDefault
+            && base_anim_indices[row].anims[col].animIndex != 0)
+            return &base_anim_names[base_anim_indices[row].anims[col]
+                                        .animIndex];
+    }
+    else if (useDefault && base_anim_indices[row].anims[col].animIndex != 0)
+    {
+        return &base_anim_names[base_anim_indices[row].anims[col].animIndex];
+    }
+    return result;
+}
+
+// ea: 0x00766060
+MultiplayerMgr::~MultiplayerMgr()
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        delete mPeer;
+    this->mPeer = nullptr;
+    this->mInitialized = false;
+    MPUIInterface::bdNetStop();
+    WSACleanup();
+    XNetCleanup();
+    bdCore_quit();
+    if (gDWHeap != nullptr)
+        delete gDWHeap;
+}
+
+// ea: 0x0075A4F0
+void MPPlayerManager::ApplyLocalPhysicsToVehicle(
+    Entity* vehicle, const math::Position3& position,
+    const math::Dir3& angles, const math::Dir3& velocity)
+{
+    if (vehicle == nullptr || vehicle->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 7835;
+        AeAssert::gCurrentExpr = "vehicle && vehicle->scr_vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vehicle entity"))
+            __debugbreak();
+    }
+    MPVehicle* v6 = nullptr;
+    for (int veh = 0; veh < 10; ++veh)
+    {
+        MPVehicle* v = (MPVehicle*)((char*)this + 0x4120 + 0x210 * veh);
+        if (v->mEntity == vehicle)
+        {
+            v6 = v;
+            break;
+        }
+    }
+    if (v6 != nullptr)
+        v6->SetPhysicsInfo(position, angles, velocity);
+}
+
+// ea: 0x00736110
+void MPPlayer::SetConnection(bdReference<bdConnection> connection)
+{
+    bdConnection* m_ptr = connection.m_ptr;
+    bdReference<bdConnection>* p_mConnection = &this->mConnection;
+    if (p_mConnection->m_ptr != nullptr)
+    {
+        if (p_mConnection->m_ptr->m_refCount-- == 1
+            && p_mConnection->m_ptr != nullptr)
+            delete p_mConnection->m_ptr;
+    }
+    p_mConnection->m_ptr = m_ptr;
+    if (m_ptr != nullptr)
+        ++m_ptr->m_refCount;
+    if (m_ptr != nullptr && m_ptr->m_refCount-- == 1)
+        delete m_ptr;
+}
+
+// ea: 0x0072E8E0
+Entity* MPPlayerManager::GetPlayerEntity(unsigned char id)
+{
+    if (id > 0x10u)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 406;
+        AeAssert::gCurrentExpr = "id >= 0 && id <= 16";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid player id"))
+            __debugbreak();
+    }
+    MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * id);
+    if (p->mClientIndex >= 0)
+        return EntityManager::sInst->GetPlayer(p->mClientIndex);
+    return nullptr;
+}
+
+// ea: 0x00740260
+int MultiplayerMgr::GetPlayerId(const Entity* player) const
+{
+    int result = (int)mPeer;
+    if (mPeer != nullptr)
+    {
+        if (player != nullptr)
+            return ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                ->GetPlayer(player)->mId;
+        else
+            return 16;
+    }
+    return result;
+}
+
+// ea: 0x00735E50
+MPLanDiscovery::MPLanDiscovery()
+{
+    mNumResults = 0;
+    for (int i = 0; i < 10; ++i)
+        mResults[i].m_ptr = nullptr;
+    m_lastStatus = 0;  // BD_IDLE
+    mDiscoveryClient.registerListener(this);
+}
+
+// ea: 0x0073B090
+bool MPUtility::ReadNormal(bdReference<bdBitBuffer> buffer, float* normal)
+{
+    char temp = 0;
+    bool v2 = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE)
+              && buffer.m_ptr->readBits(&temp, 8u);
+    ByteToDir(temp, normal);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return v2;
+}
+
+// ea: 0x0075AEB0
+void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
+                                                const math::Mat43& mat,
+                                                const math::Dir3& velocity)
+{
+    if (mPeer != nullptr)
+    {
+        float v6[3];
+        memcpy(v6, &vehicle->r.currentAngles, sizeof(v6));
+        Axis4ToAngles((const float(*)[4])&mat, v6);
+        ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+            ->ApplyLocalPhysicsToVehicle(vehicle, mat.w,
+                                         *(math::Dir3*)v6, velocity);
+    }
+}
+
+// ea: 0x007339D0
+MPProfileMainMenu::~MPProfileMainMenu()
+{
+    this->mPanel = nullptr;
+    if (mHelpBar != nullptr)
+        delete mHelpBar;
+    this->mHelpBar = nullptr;
+    for (int i = 0; i < 6; ++i)
+    {
+        mem_heap_free(mSaveSlots[i]);
+        mSaveSlots[i] = nullptr;
+    }
+    FEMenu::~FEMenu();
+}
+
+// ea: 0x00754C00
+MPPlayerItems::MPPlayerItems()
+{
+    mDroppedWeapons.mElements = nullptr;
+    mDroppedWeapons.mCapacity = 0;
+    mDroppedWeapons.mSize = 0;
+    mDroppedSupport.mElements = nullptr;
+    mDroppedSupport.mCapacity = 0;
+    mDroppedSupport.mSize = 0;
+    mDroppedMines.mElements = nullptr;
+    mDroppedMines.mCapacity = 0;
+    mDroppedMines.mSize = 0;
+    mDroppedKits.mElements = nullptr;
+    mDroppedKits.mCapacity = 0;
+    mDroppedKits.mSize = 0;
+    mDroppedWeapons.resize(1);
+    mDroppedSupport.resize(3);
+    mDroppedMines.resize(3);
+    mDroppedKits.resize(1);
+}
+
+// ea: 0x007656C0
+MPProfileEditMenu::MPProfileEditMenu(FEMenuSystem* s)
+    : FEMenu(s, 0, 320, 240, 8, 0)
+{
+    mNeedWrite = false;
+    mWidescreen = false;
+    mInstructionsText = nullptr;
+    flags = (int16_t)(flags | 0x82);
+    mProfileEditText[0] = nullptr;
+    mProfileEditText[1] = nullptr;
+    mProfileEditText[2] = nullptr;
+    mProfileEditText[3] = nullptr;
+    default_color_scheme = 19;
+}
+
+// ea: 0x00764180
+void MPUIInterface::bdNetStart()
+{
+    bdNetStartParams params;
+    params.m_onlineGame = false;
+    bdNetImpl* Instance = bdSingleton<bdNetImpl>::getInstance();
+    Instance->start(params);
+}
+
+// ea: 0x0073BD20
+bool MPUtility::ReadEntityHandle(bdReference<bdBitBuffer> buffer,
+                                 MPEntityHandle& id)
+{
+    unsigned short m_ptr = 0;
+    int v7 = 0;
+    bool v3 = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE)
+              && buffer.m_ptr->readBits(&v7, 0x10u);
+    if (v3)
+        m_ptr = (unsigned short)v7;
+    else
+        m_ptr = (unsigned short)(uintptr_t)buffer.m_ptr;
+    id.mValue = m_ptr;
+    bool v4 = v3;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return v4;
+}
+
+// ea: 0x0073E9F0
+void MPProfileMainMenu::DialogDisplayDeleting()
+{
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    DMS->BringUp("MEM_XBOX_DELETE_WARNING", false, false, defaultFileName,
+                 true);
+    DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
+    int v3 = v2->GetActiveMenu();
+    v2->GetLayer(v3 == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
+    DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
+    int v5 = v4->GetActiveMenu();
+    v4->GetLayer(v5 == 0)->Reformat(true, 0);
+}
+
+// ea: 0x0073E8D0
+void MPProfileMainMenu::DialogDisplayLoading()
+{
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    DMS->BringUp("MEM_XBOX_CHECK_WARNING", false, false, defaultFileName,
+                 true);
+    DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
+    int v3 = v2->GetActiveMenu();
+    v2->GetLayer(v3 == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
+    DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
+    int v5 = v4->GetActiveMenu();
+    v4->GetLayer(v5 == 0)->Reformat(true, 0);
+}
+
+// ea: 0x0073E960
+void MPProfileMainMenu::DialogDisplaySaving()
+{
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    DMS->BringUp("MEM_XBOX_SAVE_WARNING", false, false, defaultFileName,
+                 true);
+    DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
+    int v3 = v2->GetActiveMenu();
+    v2->GetLayer(v3 == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
+    DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
+    int v5 = v4->GetActiveMenu();
+    v4->GetLayer(v5 == 0)->Reformat(true, 0);
+}
+
+// ea: 0x007357F0 (mLocalPlayerIndex at +0x4111)
+int MultiplayerMgr::GetLocalPlayerId(int localPlayer) const
+{
+    int result = (int)mPeer;
+    if (mPeer != nullptr)
+    {
+        unsigned char v4 = *(unsigned char*)((char*)mPeer + 0x74E0 + 0x4111
+                                             + localPlayer);
+        MPPlayer* v5 = nullptr;
+        if (v4 < 0x10u)
+            v5 = (MPPlayer*)((char*)mPeer + 0x74E0 + 0x1010 + 0x310 * v4);
+        return v5->mId;
+    }
+    return result;
+}
+
+// ea: 0x00754FE0
+void MPPlayerItems::RemoveItem(EDroppedItemTypes item, short id)
+{
+    ae_vector<sDroppedItem>* p_mDropped;
+    switch (item)
+    {
+    case (EDroppedItemTypes)2:  // kItemTypeSupport
+        p_mDropped = &mDroppedSupport;
+        break;
+    case kItemTypeMines:
+        p_mDropped = &mDroppedMines;
+        break;
+    case (EDroppedItemTypes)3:  // kItemTypeMax
+        p_mDropped = &mDroppedKits;
+        break;
+    default:
+        p_mDropped = &mDroppedWeapons;
+        break;
+    }
+    int mSize = p_mDropped->mSize;
+    if (mSize <= id)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+        AeAssert::gCurrentLine = 85;
+        AeAssert::gCurrentExpr = "size > id";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("RemoveItem: Invalid ID"))
+            __debugbreak();
+    }
+    if (mSize > id)
+        (*p_mDropped)[id].Destroy();
+}
+
+// ea: 0x007325F0
+void MPOptionsGameplayMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    mGameplayText[2]->SetText(kGameplayOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kGameplayInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x00730C50
+void MPOptionsScreenMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    mScreenText[2]->SetText(kScreenOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kScreenInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x007313B0
+void MPOptionsSoundMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    mSoundText[2]->SetText(kSoundOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kSoundInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x00732560
+void MPOptionsGameplayMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    mGameplayText[2]->SetText(kGameplayOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kGameplayInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x00730BC0
+void MPOptionsScreenMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    mScreenText[2]->SetText(kScreenOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kScreenInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x00731320
+void MPOptionsSoundMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    mSoundText[2]->SetText(kSoundOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kSoundInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x00735F60
+void MPLanDiscovery::onDiscovery(bdReference<bdGameInfo> gameInfo)
+{
+    unsigned int mNumResults = this->mNumResults;
+    bdGameInfo* m_ptr = gameInfo.m_ptr;
+    if (mNumResults < 0xA)
+    {
+        bdReference<bdGameInfo>* v5 = &mResults[mNumResults];
+        if (v5->m_ptr != nullptr)
+        {
+            if (v5->m_ptr->m_refCount-- == 1 && v5->m_ptr != nullptr)
+                delete v5->m_ptr;
+        }
+        v5->m_ptr = m_ptr;
+        if (m_ptr != nullptr)
+            ++m_ptr->m_refCount;
+        ++this->mNumResults;
+    }
+    if (m_ptr != nullptr && m_ptr->m_refCount-- == 1)
+        delete m_ptr;
+}
+
+// ea: 0x00737B90
+bool MPPlayerManager::SendHost(const bdReference<bdMessage> message,
+                               bool reliable)
+{
+    unsigned char Type = message.m_ptr->getType();
+    if (reliable)
+        tlPrintf("Sending reliable message %d to HOST\n", Type);
+    if (message.m_ptr)
+        ++message.m_ptr->m_refCount;
+    bool v4 = ((bdSession*)((char*)this + 0x4114))->sendHost(message,
+                                                              reliable);
+    if (message.m_ptr && message.m_ptr->m_refCount-- == 1)
+        delete message.m_ptr;
+    return v4;
+}
+
+// ea: 0x00764210
+void MPProfileMainMenu::Select(int entry_num)
+{
+    int v3 = mMenuStatus[entry_num];
+    if (v3 != 0)
+    {
+        if (v3 == 1)
+        {
+            DialogDisplayProfileSelected();
+        }
+        else if (v3 != 2)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/MPProfileMainMenu.cpp";
+            AeAssert::gCurrentLine = 278;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Unknown profile menu item: %d", v3))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        int highlighted = this->highlighted;
+        *(int*)((char*)VKMenu::Me() + 0x1BC) = highlighted;
+        this->system->gap1C(this->system, 18);
     }
 }
 
