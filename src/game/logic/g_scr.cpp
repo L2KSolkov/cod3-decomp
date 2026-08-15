@@ -81,7 +81,7 @@ void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
                           const tlFixedString& animation_name,
                           int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
 void AnimationToBroLookup(const char* tree_name, int tree_index,
-                          int animation_name_brohashed,
+                          unsigned int animation_name_brohashed,
                           int animation_index);  // 0x5BE040
 void AnimationValidator(int numTrees);  // ?AnimationValidator@BrocHelper@@YAXH@Z (0x5BE100)
 }
@@ -126,10 +126,6 @@ void HudSetDefaults(game_hudelem_s* hud);  // ?HudSetDefaults@BrocSys@@YAXPAUgam
 void HudSetClockInternal(int elemNum, he_type_t type, const char* cmdName,
                          const char* a4, float fTime, float fDur, int width,
                          int height);  // ?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z
-void HudSetClockInternal(unsigned int elemNum, he_type_t type,
-                         const char* texturename, const char* cmdName,
-                         const float fTime, const float fDur, int width,
-                         int height);  // 0x5C4C50
 }
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (core.o)
@@ -3021,16 +3017,16 @@ void PlayLocalSound(unsigned int entityHandleVal,
                     const Broc::string& pszSoundName);  // 0x5C5D50
 Broc::hudelem gHudElement = { 0xFFFFFFFFu };
     // ?gHudElement@BrocSys@@3Vhudelem@Broc@@A (scr.o data, init -1 per IDA)
-void VM_Clear();  // 0x5C1DB0
+void VM_Clear();  // ?VM_Clear@@YAXXZ (0x5C1DB0, global)
 void SetupLevelSpecificVariables();  // 0x5C20D0
 void ObjectiveAdd3(int iObjective, const Broc::string& inState,
                    const Broc::string& pszString, const char* display,
                    int iChild, int iChildOrder, int clientIndex);  // 0x5C5E10
-int  FindChildObjective(unsigned int iObjective, int iChild,
-                        bool bReportNotFound);  // 0x5C5F50
+const int FindChildObjective(int iObjective, int iChild,
+                             bool bReportNotFound);  // 0x5C5F50
 void ObjectiveChildDelete(int iObjective, int iChild);  // 0x5C60B0
-void ObjectiveDeleteChildren(unsigned int iObjective);  // 0x5C6150
-void ObjectiveDelete(unsigned int iObjective, int clientIndex);  // 0x5C61D0
+void ObjectiveDeleteChildren(int iObjective);  // 0x5C6150
+void ObjectiveDelete(int iObjective, int clientIndex);  // 0x5C61D0
 void ObjectiveChildState(int iObjective, int iChild,
                          const Broc::string& inState,
                          const char* pDisplay);  // 0x5C62C0
@@ -3095,7 +3091,7 @@ void SetSpectateSeconds(int seconds, int viewport);  // 0x5C1780
 void SetSpectateMedic(int medic, int viewport);  // 0x5C17B0
 void SettleMapVote();  // 0x5BC450
 void SettleGameModeVote();  // 0x5BC470
-int  InitMPCallbacks();  // 0x5BDBA0
+void InitMPCallbacks();  // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
 unsigned int Spawn(const Broc::string& classname, const Broc::vector& origin,
                    TPakInfo pakInfo);  // 0x5C2340
 unsigned int SpawnWithFlag(const Broc::string& classname,
@@ -5276,7 +5272,7 @@ float BrocSys::GetAngleDelta(unsigned int anim, float startTime,
 }
 
 // ea: 0x005C4C50
-void BrocSys::HudSetClockInternal(unsigned int elemNum, he_type_t type,
+void BrocSys::HudSetClockInternal(int elemNum, he_type_t type,
                                   const char* texturename,
                                   const char* /*cmdName*/, const float fTime,
                                   const float fDur, int width, int height)
@@ -8022,7 +8018,7 @@ static void ObjectiveInfoClear(objectiveInfoLocal* p)
 }
 
 // ea: 0x005C1DB0
-void BrocSys::VM_Clear()
+void VM_Clear()
 {
     memset(vmTable, 0, sizeof(vmTable));
     currentVM = nullptr;
@@ -8101,8 +8097,8 @@ void BrocSys::ObjectiveAdd3(int iObjective, const Broc::string& inState,
 }
 
 // ea: 0x005C5F50
-int BrocSys::FindChildObjective(unsigned int iObjective, int iChild,
-                                bool bReportNotFound)
+const int BrocSys::FindChildObjective(int iObjective, int iChild,
+                                      bool bReportNotFound)
 {
     if (iObjective > 0x10)
     {
@@ -8184,7 +8180,7 @@ void BrocSys::ObjectiveChildDelete(int iObjective, int iChild)
 }
 
 // ea: 0x005C6150
-void BrocSys::ObjectiveDeleteChildren(unsigned int iObjective)
+void BrocSys::ObjectiveDeleteChildren(int iObjective)
 {
     if (iObjective >= 0x10)
     {
@@ -8206,7 +8202,7 @@ void BrocSys::ObjectiveDeleteChildren(unsigned int iObjective)
 }
 
 // ea: 0x005C61D0
-void BrocSys::ObjectiveDelete(unsigned int iObjective, int clientIndex)
+void BrocSys::ObjectiveDelete(int iObjective, int clientIndex)
 {
     if (iObjective >= 0x10)
     {
@@ -8735,7 +8731,7 @@ bool BrocSys::RecompileScript()
 
 // ea: 0x005BE040
 void BrocHelper::AnimationToBroLookup(const char* tree_name, int tree_index,
-                                      int animation_name_brohashed,
+                                      unsigned int animation_name_brohashed,
                                       int animation_index)
 {
     const char* v4 = _strlwr((char*)tree_name);
@@ -9264,7 +9260,7 @@ void AeThreadManager::UnloadScript(void* p)
 }
 
 // ea: 0x005BDBA0
-int BrocSys::InitMPCallbacks()
+void BrocSys::InitMPCallbacks()
 {
     if (gpBrocAPI != nullptr)
     {
@@ -9332,7 +9328,6 @@ int BrocSys::InitMPCallbacks()
         e.mCallbackPlayerTotalScore = nullptr;
         e.mCallbackDebugRender = nullptr;
     }
-    return 0;
 }
 
 // ea: 0x005C2340
