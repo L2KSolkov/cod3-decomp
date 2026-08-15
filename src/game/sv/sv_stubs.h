@@ -241,6 +241,7 @@ class FEMenuSystem;
 struct DialogMenuSystem;
 struct InGameMenuSystem;
 struct AARMenuSystem {
+    void** menus;           // +0x04 (FEMenu** array)
     bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
     void Update(float time_inc);  // mp.o
     void Draw();                  // mp.o
@@ -361,6 +362,7 @@ public:
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
     static AeThreadManager* Inst(); // ?Inst@AeThreadManager@@SAPAV1@XZ (g.o 0x4A6340)
     void KillAllThreads();
+    void UnloadScript(void* p);  // ?UnloadScript@AeThreadManager@@QAEXPAX@Z (scr.o 0x5C1F30)
     void Execute(float deltaT);     // ?Execute@AeThreadManager@@QAEXM@Z
     void AddNotify(EntityNotify* notify);  // ?AddNotify@AeThreadManager@@QAEXPAVEntityNotify@@@Z (g.o 0x4B2170)
     // scr.o methods (AeThread.cpp; layout overlays defined in g_scr.cpp)

@@ -28,6 +28,22 @@ extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp
 extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z (render.o)
 class AnimBroRef;  // anim.o bro_anim ref (opaque; class tag V per binary)
 
+// mp_level entry (mp_level.xboxd; defined in broc/mp_level.cpp)
+namespace mp_level {
+typedef void (__cdecl* InitScriptFn)();
+InitScriptFn InitScript(BrocAPI** gamesAPIptr,
+                        BrocExports& exports);  // ?InitScript@mp_level@@YAP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@Z
+}
+typedef mp_level::InitScriptFn (__cdecl* BrocEntryFn)(BrocAPI**,
+                                                      BrocExports&);
+
+// ea: 0x005BC1A0
+BrocEntryFn XboxGetEntryFunction(const char* mapname)
+{
+    return _stricmp(mapname, "mp_level") == 0 ? mp_level::InitScript
+                                              : nullptr;
+}
+
 // TPakInfo - opaque pak info enum (scr.o; W4TPakInfo mangling)
 enum TPakInfo {
     kTPakInfoInvalid = 0,
@@ -3077,6 +3093,27 @@ void CloseAllMenus(int viewport);  // 0x5C1730
 void SetSpectateState(int state, int viewport);  // 0x5C1750
 void SetSpectateSeconds(int seconds, int viewport);  // 0x5C1780
 void SetSpectateMedic(int medic, int viewport);  // 0x5C17B0
+void SettleMapVote();  // 0x5BC450
+void SettleGameModeVote();  // 0x5BC470
+int  InitMPCallbacks();  // 0x5BDBA0
+unsigned int Spawn(const Broc::string& classname, const Broc::vector& origin,
+                   TPakInfo pakInfo);  // 0x5C2340
+unsigned int SpawnWithFlag(const Broc::string& classname,
+                           const Broc::vector& origin, int iSpawnFlags,
+                           TPakInfo pakInfo);  // 0x5C2590
+unsigned int SpawnWithFlagAndSize(const Broc::string& classname,
+                                  const Broc::vector& origin,
+                                  Broc::vector& mins, Broc::vector& maxs,
+                                  int iSpawnFlags,
+                                  TPakInfo pakInfo);  // 0x5C27F0
+void GetStartOrigin(Broc::vector& outVec, const Broc::vector& origin,
+                    const Broc::vector& angles,
+                    unsigned int anim);  // 0x5C38D0
+void GetStartAngles(Broc::vector& outVec, const Broc::vector& origin,
+                    const Broc::vector& angles,
+                    unsigned int anim);  // 0x5C3A40
+void GetCycleOriginOffset(Broc::vector& outVec, const Broc::vector& angles,
+                          unsigned int anim);  // 0x5C3B60
 }
 
 static void BrocFree(void* p)
@@ -9187,6 +9224,413 @@ void BrocSys::SetSpectateMedic(int medic, int viewport)
 {
     InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
     ((SpectateMenu*)IGMS->menus[12])->SetMedic(medic != 0);
+}
+
+// ============================================================================
+// scr.o batch 37 - vote settling / InitMPCallbacks / spawn family / anim
+// ============================================================================
+
+extern int G_CallSpawnEntity(Entity* ent);  // ?G_CallSpawnEntity@@YAHPAVEntity@@@Z (g_spawn.cpp)
+
+// AAR vote menus (mp.o views)
+class AARMapVote {
+public:
+    static void TallyVotes(void* self);  // ?TallyVotes@AARMapVote@@SAXPAV1@@Z? (mp.o)
+};
+class AARGameModeVote {
+public:
+    static void TallyVotes(void* self);  // ?TallyVotes@AARGameModeVote@@SAXPAV1@@Z (mp.o)
+};
+
+// ea: 0x005BC450
+void BrocSys::SettleMapVote()
+{
+    if (MultiplayerMgr::sInst->IsHost())
+        AARMapVote::TallyVotes(g_femanager.mAARS->menus[4]);
+}
+
+// ea: 0x005BC470
+void BrocSys::SettleGameModeVote()
+{
+    if (MultiplayerMgr::sInst->IsHost())
+        AARGameModeVote::TallyVotes(g_femanager.mAARS->menus[3]);
+}
+
+// ea: 0x005C1F30 (thunk)
+void AeThreadManager::UnloadScript(void* p)
+{
+    (void)p;
+    BrocSys::InitMPCallbacks();
+}
+
+// ea: 0x005BDBA0
+int BrocSys::InitMPCallbacks()
+{
+    if (gpBrocAPI != nullptr)
+    {
+        BrocExports& e = gpBrocAPI->mBrocExports;
+        e.mCallbackPlayerJoin = nullptr;
+        e.mCallbackPlayerEnter = nullptr;
+        e.mCallbackPlayerLeave = nullptr;
+        e.mCallbackPlayerDamage = nullptr;
+        e.mCallbackPainFlinch = nullptr;
+        e.mCallbackPlayerKilled = nullptr;
+        e.mCallbackPlayerAssist = nullptr;
+        e.mCallbackPlayerRespawnRequest = nullptr;
+        e.mCallbackPlayerSpawn = nullptr;
+        e.mCallbackPlayerRevive = nullptr;
+        e.mCallbackPlayerTeamChange = nullptr;
+        e.mCallbackPlayerClassChange = nullptr;
+        e.mCallbackCanTeamChange = nullptr;
+        e.mCallbackVehicleKilled = nullptr;
+        e.mCallbackVehicleMantled = nullptr;
+        e.mCallbackRoundOver = nullptr;
+        e.mCallbackNextRound = nullptr;
+        e.mCallbackRestartMap = nullptr;
+        e.mCallbackQuitGame = nullptr;
+        e.mCallbackStopFollowing = nullptr;
+        e.mCallbackFireArtillery = nullptr;
+        e.mCallbackFireArtilleryShell = nullptr;
+        e.mCallbackDenyArtillery = nullptr;
+        e.mCallbackSpotted = nullptr;
+        e.mCallbackMineFailed = nullptr;
+        e.mCallbackReviveFailed = nullptr;
+        e.mCallbackHealthRegenRecovering = nullptr;
+        e.mCallbackPickupScriptItem = nullptr;
+        e.mCallbackDropItem = nullptr;
+        e.mCallbackPickupItem = nullptr;
+        e.mCallbackDropFlag = nullptr;
+        e.mCallbackGameState = nullptr;
+        e.mCallbackZonesLoaded = nullptr;
+        e.mCallbackHostOptionsChanged = nullptr;
+        e.mCallbackSDHostBombRequest = nullptr;
+        e.mCallbackSDBombExplosion = nullptr;
+        e.mCallbackSDBombOperation = nullptr;
+        e.mCallbackSDBombOperationEvent = nullptr;
+        e.mCallbackHostDisconnected = nullptr;
+        e.mCallbackHostMigrated = nullptr;
+        e.mCallbackLocalPlayerKicked = nullptr;
+        e.mCallbackGetTeamWeapon = nullptr;
+        e.mCallbackGetGrenadeCount = nullptr;
+        e.mCallbackGetClipCount = nullptr;
+        e.mCallbackGetSlotClipCount = nullptr;
+        e.mCallbackCallForMedic = nullptr;
+        e.mCallbackPunishedForTeamKill = nullptr;
+        e.mCallbackSpawnButtonPressed = nullptr;
+        e.mCallbackGetFlagCount = nullptr;
+        e.mCallbackGetTeamControllingFlag = nullptr;
+        e.mCallbackGetFlagBeingCaptured = nullptr;
+        e.mCallbackGetTeamCapturingFlag = nullptr;
+        e.mCallbackGetFlagBeingContested = nullptr;
+        e.mCallbackGetHQPercent = nullptr;
+        e.mCallbackGetHQCaptureStatus = nullptr;
+        e.mCallbackGetTeamCapturingHQPercent = nullptr;
+        e.mCallbackGetTeamDestroyingHQPercent = nullptr;
+        e.mCallbackGetFlagBreatherTime = nullptr;
+        e.mCallbackShowFlagHint = nullptr;
+        e.mCallbackSetLevelAudio = nullptr;
+        e.mCallbackPlayerTotalScore = nullptr;
+        e.mCallbackDebugRender = nullptr;
+    }
+    return 0;
+}
+
+// ea: 0x005C2340
+unsigned int BrocSys::Spawn(const Broc::string& classname,
+                            const Broc::vector& origin, TPakInfo pakInfo)
+{
+    if (IS_NAN(origin.x) || IS_NAN(origin.y) || IS_NAN(origin.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1628;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("undefined  origin fed to Spawn function"))
+            __debugbreak();
+        return 0;
+    }
+    TPakId v4 = PakInfoToPakId(pakInfo);
+    Entity* v5 = G_Spawn(v4);
+    v5->mClassName = classname;
+    v5->mClassNameHash = HashString(v5->mClassName);
+    v5->r.currentOrigin.v.m128_f32[0] = origin.x;
+    v5->r.currentOrigin.v.m128_f32[1] = origin.y;
+    v5->r.currentOrigin.v.m128_f32[2] = origin.z;
+    if (IS_NAN(v5->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v5->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v5->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1614;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    v5->spawnflags = 0;
+    if (origin.x == sNaN && origin.y == sNaN && origin.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1617;
+        AeAssert::gCurrentExpr = "origin.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Spawn called with undefined input."))
+            __debugbreak();
+    }
+    if (G_CallSpawnEntity(v5) != 0)
+    {
+        return v5->mHandle.mHandle.mVal;
+    }
+    const char* v7 = classname.mBlock != nullptr
+                         ? (const char*)(classname.mBlock + 1)
+                         : defaultFileName;
+    const char* v8 = va("unable to spawn \"%s\" entity", v7);
+    Scr_Error(v8);
+    return 0;
+}
+
+// ea: 0x005C2590
+unsigned int BrocSys::SpawnWithFlag(const Broc::string& classname,
+                                    const Broc::vector& origin,
+                                    int iSpawnFlags, TPakInfo pakInfo)
+{
+    if (IS_NAN(origin.x) || IS_NAN(origin.y) || IS_NAN(origin.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1659;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "undefined origin fed to SpawnWithFlag function"))
+            __debugbreak();
+        return 0;
+    }
+    if (origin.x == sNaN && origin.y == sNaN && origin.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1640;
+        AeAssert::gCurrentExpr = "origin.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SpawnWithFlag called with undefined input."))
+            __debugbreak();
+    }
+    TPakId v5 = PakInfoToPakId(pakInfo);
+    Entity* v6 = G_Spawn(v5);
+    v6->mClassName = classname;
+    v6->mClassNameHash = HashString(v6->mClassName);
+    v6->r.currentOrigin.v.m128_f32[0] = origin.x;
+    v6->r.currentOrigin.v.m128_f32[1] = origin.y;
+    v6->r.currentOrigin.v.m128_f32[2] = origin.z;
+    if (IS_NAN(v6->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1646;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    v6->spawnflags = iSpawnFlags;
+    if (G_CallSpawnEntity(v6) != 0)
+    {
+        UpdateEntityHash(v6);
+        return v6->mHandle.mHandle.mVal;
+    }
+    const char* v8 = classname.mBlock != nullptr
+                         ? (const char*)(classname.mBlock + 1)
+                         : defaultFileName;
+    const char* v9 = va("unable to spawn \"%s\" entity", v8);
+    Scr_Error(v9);
+    return 0;
+}
+
+// ea: 0x005C27F0
+unsigned int BrocSys::SpawnWithFlagAndSize(const Broc::string& classname,
+                                           const Broc::vector& origin,
+                                           Broc::vector& mins,
+                                           Broc::vector& maxs,
+                                           int iSpawnFlags, TPakInfo pakInfo)
+{
+    if (origin.x == sNaN && origin.y == sNaN && origin.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1669;
+        AeAssert::gCurrentExpr = "origin.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SpawnWithFlag called with undefined input."))
+            __debugbreak();
+    }
+    float x = mins.x;
+    if (mins.x > maxs.x)
+    {
+        mins.x = maxs.x;
+        maxs.x = x;
+    }
+    float y = mins.y;
+    if (y > maxs.y)
+    {
+        mins.y = maxs.y;
+        maxs.y = y;
+    }
+    float z = mins.z;
+    if (z > maxs.z)
+    {
+        mins.z = maxs.z;
+        maxs.z = z;
+    }
+    if (IS_NAN(origin.x) || IS_NAN(origin.y) || IS_NAN(origin.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1700;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("undefined origin fed to SpawnWithFlagAndSize"))
+            __debugbreak();
+        return 0;
+    }
+    TPakId v12 = PakInfoToPakId(pakInfo);
+    Entity* v13 = G_Spawn(v12);
+    v13->mClassName = classname;
+    v13->mClassNameHash = HashString(v13->mClassName);
+    v13->r.currentOrigin.v.m128_f32[0] = origin.x;
+    v13->r.currentOrigin.v.m128_f32[1] = origin.y;
+    v13->r.currentOrigin.v.m128_f32[2] = origin.z;
+    if (IS_NAN(v13->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v13->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v13->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1682;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    v13->spawnflags = iSpawnFlags;
+    v13->r.mins.v.m128_f32[0] = mins.x;
+    v13->r.mins.v.m128_f32[1] = mins.y;
+    v13->r.mins.v.m128_f32[2] = mins.z;
+    v13->r.maxs.v.m128_f32[0] = maxs.x;
+    v13->r.maxs.v.m128_f32[1] = maxs.y;
+    v13->r.maxs.v.m128_f32[2] = maxs.z;
+    if (G_CallSpawnEntity(v13) != 0)
+    {
+        UpdateEntityHash(v13);
+        return v13->mHandle.mHandle.mVal;
+    }
+    const char* v16 = classname.mBlock != nullptr
+                          ? (const char*)(classname.mBlock + 1)
+                          : defaultFileName;
+    const char* v17 = va("unable to spawn \"%s\" entity", v16);
+    Scr_Error(v17);
+    return 0;
+}
+
+// ea: 0x005C38D0
+void BrocSys::GetStartOrigin(Broc::vector& outVec,
+                             const Broc::vector& origin,
+                             const Broc::vector& angles, unsigned int anim)
+{
+    float axis[4][3];
+    float trans[3];
+    float rot[2];
+    XAnimGetAbsDelta(nullptr, anim, rot, trans, 0.0f);
+    axis[3][0] = origin.x;
+    axis[3][1] = origin.y;
+    axis[3][2] = origin.z;
+    if (IS_NAN(axis[3][0]) || IS_NAN(axis[3][1]) || IS_NAN(axis[3][2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2323;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((axis[3])[0]) && !IS_NAN((axis[3])[1]) && !IS_NAN((axis[3])[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    AnglesToAxis(&angles.x, axis);
+    MatrixTransformVector43(trans, axis, &outVec.x);
+    if (IS_NAN(outVec.x) || IS_NAN(outVec.y) || IS_NAN(outVec.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2327;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN(((*(vec3_t*)&outVec))[0]) && !IS_NAN(((*(vec3_t*)&outVec))[1]) && !IS_NAN(((*(vec3_t*)&outVec))[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C3A40
+void BrocSys::GetStartAngles(Broc::vector& outVec,
+                             const Broc::vector& origin,
+                             const Broc::vector& angles, unsigned int anim)
+{
+    float startAxis[3][3];
+    float tempAxis[3][3];
+    float axis[4][3];
+    float trans[3];
+    float rot[2];
+    XAnimGetAbsDelta(nullptr, anim, rot, trans, 0.0f);
+    axis[3][0] = origin.x;
+    axis[3][1] = origin.y;
+    axis[3][2] = origin.z;
+    AnglesToAxis(&angles.x, axis);
+    float yaw = vectosignedyaw(rot);
+    YawToAxis(yaw, tempAxis);
+    MatrixMultiply(tempAxis, axis, startAxis);
+    AxisToAngles(startAxis, &outVec.x);
+    if (IS_NAN(outVec.x) || IS_NAN(outVec.y) || IS_NAN(outVec.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2350;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN(((*(vec3_t*)&outVec))[0]) && !IS_NAN(((*(vec3_t*)&outVec))[1]) && !IS_NAN(((*(vec3_t*)&outVec))[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C3B60
+void BrocSys::GetCycleOriginOffset(Broc::vector& outVec,
+                                   const Broc::vector& angles,
+                                   unsigned int anim)
+{
+    float axis[4][3];
+    float startOrigin[3];
+    float trans[3];
+    float endOrigin[3];
+    float rot[2];
+    AnglesToAxis(&angles.x, axis);
+    XAnimGetAbsDelta(nullptr, anim, rot, startOrigin, 0.0f);
+    XAnimGetAbsDelta(nullptr, anim, rot, endOrigin, 1.0f);
+    trans[0] = endOrigin[0] - startOrigin[0];
+    trans[1] = endOrigin[1] - startOrigin[1];
+    trans[2] = endOrigin[2] - startOrigin[2];
+    MatrixTransformVector(trans, axis, &outVec.x);
+    if (IS_NAN(outVec.x) || IS_NAN(outVec.y) || IS_NAN(outVec.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2370;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN(((*(vec3_t*)&outVec))[0]) && !IS_NAN(((*(vec3_t*)&outVec))[1]) && !IS_NAN(((*(vec3_t*)&outVec))[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
 }
 
 // ============================================================================

@@ -1530,15 +1530,7 @@ struct BrocExports {
     unsigned int (*mAnimResolver)(const char*, const char*);  // +0x6C
     uint8_t _pad70[0x90 - 0x70];
     void (*mAnimDebug)(Broc::entity);       // +0x90 (game2.o inspector)
-    uint8_t _pad94[0xD8 - 0x94];
-    void (*mCallbackMineFailed)(unsigned int);            // +0xD8
-    uint8_t _padDC[0x128 - 0xDC];
-    void (*mCallbackHealthRegenRecovering)(Broc::entity); // +0xEC
-    uint8_t _padF0[0x128 - 0xF0];
-    void (*mCallbackDropFlag)(unsigned int);              // +0x128
-    uint8_t _pad12C[0x154 - 0x12C];
-    void (*mCallbackStopFollowing)();  // +0x154
-    uint8_t _pad158[0x518 - 0x158];
+    uint8_t _pad94[0x518 - 0x94];
     int (*mRumble)(float lowFreqDelay, float lowFreqRumbleIntensity,
                    float lowFreqSteadyDuration, float lowFreqRampUpTime,
                    float lowFreqRampDownTime, float highFreqDelay,
@@ -1554,27 +1546,100 @@ struct BrocExports {
     void (*mAnimInitialize)();  // +0xC50
     uint8_t _padC54[0xC58 - 0xC54];
     const char* (*mAnimNameResolver)(unsigned int animHash);  // +0xC58 (DebugThread::Render)
-    uint8_t _padC5C[0xC90 - 0xC5C];
-    void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2, unsigned int a3,
-                                  float* a4, float* a5, int a6, int a7, int a8,
+    uint8_t _padC5C[0xC80 - 0xC5C];
+    void (*mCallbackPlayerJoin)(Broc::entity, unsigned int, int);  // +0xC80
+    void (*mCallbackPlayerEnter)(Broc::entity, int);               // +0xC84
+    void (*mCallbackPlayerLeave)(Broc::entity);                    // +0xC88
+    void (*mCallbackPainFlinch)(Broc::entity, int);                // +0xC8C
+    void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2,
+                                  unsigned int a3, float* a4, float* a5,
+                                  int a6, int a7, int a8,
                                   hitLocation_t a9);  // +0xC90
-    uint8_t _padC94[0xD44 - 0xC94];
-    void (*mCallbackFireArtilleryShell)(unsigned int handle);  // +0xD44
-    uint8_t _padD48[0xD58 - 0xD48];
-    int (*mCallbackGetSlotClipCount)(const char*, unsigned int,
-                                     unsigned int, int);  // +0xD58 (mp_loadout)
-    void (*mCallbackGiveAmmoPack)(unsigned int ent, unsigned int count);  // +0xD5C
-    int (*mCallbackCanPickupAmmoPack)(unsigned int ent);  // +0xD60
-    uint8_t _padD64[0xD68 - 0xD64];
-    void (*mCallbackPickupKit)(unsigned int ent, unsigned int count);  // +0xD68
-    uint8_t _padD6C[0xD98 - 0xD6C];
+    void (*mCallbackPlayerKilled)(Broc::entity, Broc::entity,
+                                  Broc::entity, int, int, int);  // +0xC94
+    void (*mCallbackPlayerAssist)(Broc::entity);        // +0xC98
+    void (*mCallbackPlayerRespawnRequest)(Broc::entity, int);  // +0xC9C
+    void (*mCallbackPlayerSpawn)(Broc::entity, int);    // +0xCA0
+    void (*mCallbackPlayerRevive)(Broc::entity, Broc::entity);  // +0xCA4
+    void (*mCallbackPlayerTeamChange)(Broc::entity, int, int);  // +0xCA8
+    int  (*mCallbackCanTeamChange)(Broc::entity, int);  // +0xCAC
+    void (*mCallbackPlayerClassChange)(Broc::entity,
+                                       unsigned int);   // +0xCB0
+    void (*mCallbackVehicleKilled)(Broc::entity, Broc::entity,
+                                   Broc::entity, int, int, int);  // +0xCB4
+    void (*mCallbackVehicleMantled)(Broc::entity, Broc::entity);  // +0xCB8
+    void (*mCallbackSpotted)(Broc::entity, Broc::entity);  // +0xCBC
+    void (*mCallbackMineFailed)(Broc::entity);            // +0xCC0
+    void (*mCallbackReviveFailed)(Broc::entity);          // +0xCC4
+    void (*mCallbackCallForMedic)(Broc::entity);          // +0xCC8
+    void (*mCallbackPunishedForTeamKill)(Broc::entity, int);  // +0xCCC
+    void (*mCallbackSpawnButtonPressed)(Broc::entity);    // +0xCD0
+    void (*mCallbackHealthRegenRecovering)(Broc::entity); // +0xCD4
+    void (*mCallbackRoundOver)(int, Broc::string);        // +0xCD8
+    void (*mCallbackNextRound)();                         // +0xCDC
+    void (*mCallbackRestartMap)();                        // +0xCE0
+    void (*mCallbackQuitGame)();                          // +0xCE4
+    void (*mCallbackHostOptionsChanged)(int);             // +0xCE8
+    void (*mCallbackGameScore)(int, int);                 // +0xCEC
+    void (*mCallbackGameState)(int, int, int, int, int, int, int, int,
+                               int, int, int, int, int);  // +0xCF0
+    void (*mCallbackGameStateCTF)(Broc::vector, Broc::vector,
+                                  Broc::entity, Broc::vector, Broc::vector,
+                                  Broc::entity);          // +0xCF4
+    void (*mCallbackGameStateHQ)(unsigned int, Broc::vector, Broc::vector,
+                                 unsigned int, unsigned int, int);  // +0xCF8
+    void (*mCallbackGameStateSCF)(int, Broc::vector, Broc::vector,
+                                  Broc::entity);          // +0xCFC
+    void (*mCallbackGameStateDOM)(int, int, int, int, int);  // +0xD00
+    void (*mCallbackGameStateSD)(Broc::entity, Broc::entity, int,
+                                 const Broc::vector*, Broc::vector, int);  // +0xD04
+    void (*mCallbackDropItem)(int, int, Broc::vector, Broc::vector,
+                              Broc::vector);              // +0xD08
+    void (*mCallbackPickupScriptItem)(int, Broc::entity, int);  // +0xD0C
+    void (*mCallbackDropFlag)(Broc::entity);              // +0xD10
+    void (*mCallbackPickupItem)(Broc::entity, Broc::entity);  // +0xD14
+    void (*mCallbackAreaCaptured)(int, int);              // +0xD18
+    void (*mCallbackZonesLoaded)();                       // +0xD1C
+    void (*mCallbackSDHostBombRequest)(Broc::entity, int);  // +0xD20
+    void (*mCallbackSDBombExplosion)();                   // +0xD24
+    void (*mCallbackSDBombOperation)(Broc::entity, int);  // +0xD28
+    void (*mCallbackSDBombOperationEvent)(Broc::entity, int, int);  // +0xD2C
+    void (*mCallbackHostDisconnected)();                  // +0xD30
+    void (*mCallbackHostMigrated)();                      // +0xD34
+    void (*mCallbackLocalPlayerKicked)();                 // +0xD38
+    void (*mCallbackStopFollowing)();                     // +0xD3C
+    void (*mCallbackFireArtillery)(Broc::entity, Broc::vector);  // +0xD40
+    void (*mCallbackFireArtilleryShell)(Broc::entity);    // +0xD44
+    void (*mCallbackDenyArtillery)(Broc::entity);         // +0xD48
+    int  (*mCallbackGetTeamWeapon)(const char*, unsigned int);  // +0xD4C
+    int  (*mCallbackGetGrenadeCount)(unsigned int, unsigned int);  // +0xD50
+    int  (*mCallbackGetClipCount)(unsigned int, unsigned int, int);  // +0xD54
+    int  (*mCallbackGetSlotClipCount)(const char*, unsigned int,
+                                      unsigned int, int);  // +0xD58 (mp_loadout)
+    void (*mCallbackGiveAmmoPack)(Broc::entity, unsigned int);  // +0xD5C
+    int  (*mCallbackCanPickupAmmoPack)(Broc::entity);     // +0xD60
+    int  (*mCallbackGetFlagBeingContested)(Broc::entity); // +0xD64
+    void (*mCallbackPickupKit)(Broc::entity, unsigned int);  // +0xD68
+    int  (*mCallbackGetTeamCapturingHQPercent)(Broc::entity);  // +0xD6C
+    int  (*mCallbackGetTeamDestroyingHQPercent)();        // +0xD70
+    int  (*mCallbackGetHQCaptureStatus)();                // +0xD74
+    int  (*mCallbackGetFlagCount)();                      // +0xD78
+    int  (*mCallbackGetTeamControllingFlag)(unsigned int);  // +0xD7C
+    int  (*mCallbackGetFlagBeingCaptured)();              // +0xD80
+    int  (*mCallbackGetTeamCapturingFlag)();              // +0xD84
+    int  (*mCallbackGetCapturingFlagPercent)();           // +0xD88
+    int  (*mCallbackGetHQPercent)();                      // +0xD8C
+    int  (*mCallbackGetFlagBreatherTime)();               // +0xD90
+    void (*mCallbackPlayerTotalScore)(int, int);          // +0xD94
     void (*mCallbackSetLevelAudio)(const char* bg, const char* reverb,
                                    const char* ambient, int min,
-                                   int max);  // +0xD98
+                                   int max);              // +0xD98
+    int  (*mCallbackShowFlagHint)();                      // +0xD9C
+    void (*mCallbackDebugRender)();                       // +0xDA0
+    uint8_t _padDA4[0x1330 - 0xDA4];
 };
 struct BrocAPI {
     BrocExports mBrocExports;
-    uint8_t _padObj[0x1330 - sizeof(BrocExports)];
     void (*mBrocObjCtor)(void* ptr, void* dtor);  // +0x1330
     void (*mBrocObjDtor)(void* ptr);              // +0x1334
     void (*mKillThread)();                        // +0x1338
