@@ -32,6 +32,7 @@ class MPEntityHandle {
 public:
     unsigned short mValue;  // +0x00
     MPEntityHandle();                                     // ??0MPEntityHandle@@QAE@XZ (g.o 0x4A9700)
+    MPEntityHandle(unsigned short peerId, unsigned short index);  // ??0MPEntityHandle@@QAE@GG@Z (g.o)
     MPEntityHandle(const MPEntityHandle& value);           // ??0MPEntityHandle@@QAE@ABV0@@Z (g.o 0x4A9710)
     MPEntityHandle& operator=(const MPEntityHandle& other);
     unsigned short GetPeerEntityIndex() const;  // ?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ (g.o 0x4A9730)
@@ -539,6 +540,8 @@ public:
     bool IsLocalPlayer(Entity* player);            // ?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z
     bool IsInVehicle(Entity* player);              // ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@@Z
     bool IsInVehicle(Entity* vehicle, Entity* player);  // ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@0@Z
+    bool IsLocalPlayerPhysicsOwner(Entity* vehicle,
+                                   bool current_client_only);  // ?IsLocalPlayerPhysicsOwner@MultiplayerMgr@@QAE_NPAVEntity@@_N@Z (mp.o 0x7501B0)
     bool ChangeTeam(Entity* player, int team, bool hostOnly,
                     bool autoBalance);  // ?ChangeTeam@MultiplayerMgr@@QAE_NPAVEntity@@H_N1@Z
     void SendInitialGameState(Entity* player);  // ?SendInitialGameState@MultiplayerMgr@@QAEXPAVEntity@@@Z
@@ -1701,7 +1704,17 @@ public:
     uint8_t _pad255[0x25C - 0x255];
     short   mTeam;            // +0x25C
     short   mRank;            // +0x25E
-    uint8_t _pad260[0x264 - 0x260];
+    uint8_t _pad260[0x26C - 0x260];
+    bool    bInAir;           // +0x26C
+    uint8_t _pad26D[0x270 - 0x26D];
+    bool    bWasInAir;        // +0x270
+    bool    bJumpPlayed;      // +0x271
+    bool    bLandPlayed;      // +0x272
+    bool    bLanding;         // +0x273
+    uint8_t _pad274[0x280 - 0x274];
+    bool    bWasVehicleAnimating;  // +0x280
+    uint8_t _pad281[0x290 - 0x281];
+    math::Position3 mLastStepPosition;  // +0x290
     bool    bSprinting;     // +0x264
     bool    bWalking;       // +0x265
     bool    bCrouching;     // +0x266
@@ -1722,6 +1735,7 @@ public:
     void SetAngles(const float* angles);  // ?SetAngles@MPPlayer@@QAEXQBM@Z (mp.o 0x7365F0)
     void SetPosition(const float* position);  // ?SetPosition@MPPlayer@@QAEXQBM@Z (mp.o 0x72DF50)
     void SetConnection(bdReference<bdConnection> connection);  // ?SetConnection@MPPlayer@@QAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x736110)
+    void AnimEventSpecial(int animEvent);  // ?AnimEventSpecial@MPPlayer@@QAEXH@Z (mp.o 0x736380)
     static MP_ANIM_INDEX* getAnimIndex(int sheet, int row, int col,
                                        bool useDefault);  // ?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z (mp.o 0x72CBA0)
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
@@ -1778,6 +1792,10 @@ public:
     MPPlayer* GetPlayer(const Entity* entity);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z (mp.o)
     const char* GetPlayerName(unsigned char id);  // ?GetPlayerName@MPPlayerManager@@QAEPBDE@Z (mp.o 0x72E970)
     bool IsLocalId(int Id);             // ?IsLocalId@MPPlayerManager@@QAE_NH@Z (mp.o 0x72EA30)
+    int  GetPlayerIndex(const Entity* entity);  // ?GetPlayerIndex@MPPlayerManager@@QAEHQBVEntity@@@Z (mp.o 0x737830)
+    MPPlayerSet allPlayersButLocal();   // ?allPlayersButLocal@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ (mp.o 0x73A650)
+    void DispatchBufferedMessages();    // ?DispatchBufferedMessages@MPPlayerManager@@QAEXXZ (mp.o 0x7380C0)
+    MPVehicle* GetVehicle(const Entity* vehicle);  // ?GetVehicle@MPPlayerManager@@QAEPAVMPVehicle@@PBVEntity@@@Z (mp.o 0x72EEB0)
     void SendAll(bdReference<bdMessage> message, bool reliable,
                  bool forceSend);  // ?SendAll@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N1@Z (mp.o 0x737930)
     void Send(const bdReference<bdMessage>& message, MPPlayerSet players,
@@ -1811,6 +1829,7 @@ public:
                                        Entity* owner);  // ?FindDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x760590)
     void RemovePlayerFromSession(MPPlayer* player);  // ?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7383F0)
     bool SendHost(const bdReference<bdMessage> message, bool reliable);  // ?SendHost@MPPlayerManager@@QAE_NV?$bdReference@VbdMessage@@@@_N@Z (mp.o 0x737B90)
+    static int sNetworkFrameTime;  // ?sNetworkFrameTime@MPPlayerManager@@0HA @ 0xE36E2C
 private:
     void AddAcceptCallback(int MESSAGE_ID,
                            void (MPPlayerManager::*callback)(const bdReceivedMessage&));  // ?AddAcceptCallback@MPPlayerManager@@AAEXHP81@AEXABVbdReceivedMessage@@@Z@Z (mp.o 0x72EBB0)
@@ -1829,10 +1848,13 @@ private:
     void HandlePlayerState(const bdReceivedMessage& receivedMsg);  // ?HandlePlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x7578D0)
     void HandleVoteEnded(const bdReceivedMessage& receivedMsg);  // ?HandleVoteEnded@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738A40)
     void HandleAreaCaptured(const bdReceivedMessage& receivedMsg);  // ?HandleAreaCaptured@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739350)
+    void HandleWeaponChange(const bdReceivedMessage& receivedMsg);  // ?HandleWeaponChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739260)
+    void HandleServerParams(const bdReceivedMessage& receivedMsg);  // ?HandleServerParams@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x74C750)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x7625E0)
     virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> requestUserData,
                                          bdBitBuffer* replyUserData);  // ?onSessionConnectRequest@MPPlayerManager@@EAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z (mp.o 0x7383C0)
     void ClearStateVariables();  // ?ClearStateVariables@MPPlayerManager@@AAEXXZ (mp.o 0x72F060)
+    int  PickPlayerTeam(MPPlayer* player);  // ?PickPlayerTeam@MPPlayerManager@@AAEHQAVMPPlayer@@@Z (mp.o 0x72F1A0)
     void ClientDisconnect(MPPlayer* player, bool noScript);  // ?ClientDisconnect@MPPlayerManager@@AAEXQAVMPPlayer@@_N@Z (mp.o 0x73A370)
     void DisconnectPlayer(MPPlayer* player);  // ?DisconnectPlayer@MPPlayerManager@@AAEXPAVMPPlayer@@@Z (mp.o)
     void HandleRequestPlayerState(const bdReceivedMessage& receivedMsg);  // ?HandleRequestPlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x73A9F0)
@@ -1977,6 +1999,12 @@ public:
                          bool planting, const math::Position3& bombPosition,
                          const math::Dir3& bombAngles,
                          int bombTimeLeft);  // ?SendGameStateSD@MPPeer@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
+    void SendGameState(Entity* player, int currentTime, int timeLimit,
+                       int scoreLimit, int roundLimit, bool friendlyFire,
+                       bool lastManStanding, bool teamBalance,
+                       int respawnTime, int alliesScore, int axisScore,
+                       bool roundStarted, int roundOver,
+                       int roundCount);  // ?SendGameState@MPPeer@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z (mp.o)
     void PlayerRespawn(Entity* player, const math::Position3& position,
                        const math::Dir3& angles, int team);  // ?PlayerRespawn@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
 
@@ -1991,6 +2019,7 @@ private:
     virtual void onSessionJoinRefused(bdReference<bdBitBuffer> userData);  // ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x735AB0)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x735DE0)
     void ConnectToPeersFinalize(const bdReference<MPGameInfo>& gameInfo);  // ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z (mp.o 0x7616C0)
+    bool CreateLocalGameInfo(bdReference<MPGameInfo>& gameInfo);  // ?CreateLocalGameInfo@MPPeer@@AAE_NAAV?$bdReference@VMPGameInfo@@@@@Z (mp.o)
 };
 
 extern EntityManager*   EntityManager_sInst(void);

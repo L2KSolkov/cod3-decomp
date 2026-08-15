@@ -26,6 +26,7 @@ public:
 
     MPPlayerSet() : mBitPlayers(0) {}
     MPPlayerSet(eDefaultSets e);  // ??0MPPlayerSet@@QAE@W4eDefaultSets@0@@Z (mp.o 0x730260)
+    const char* debugString() const;  // ?debugString@MPPlayerSet@@QBEPBDXZ (mp.o 0x7303F0)
     bool containsPlayer(unsigned int index) const;  // ?containsPlayer@MPPlayerSet@@QBE_NI@Z (mp.o 0x72A580)
     unsigned long numberOfPlayers() const;          // ?numberOfPlayers@MPPlayerSet@@QBEKXZ (mp.o 0x730490)
     unsigned long highestPlayerIndex() const;       // ?highestPlayerIndex@MPPlayerSet@@QBEKXZ (mp.o 0x7302D0)
@@ -127,6 +128,14 @@ void WritePlayerTeam(bdReference<bdBitBuffer> buffer, team_t team);      // ?Wri
     bool ReadNormal(bdReference<bdBitBuffer> buffer, float* normal);  // ?ReadNormal@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z (mp.o 0x73B090)
     bool ReadEntityHandle(bdReference<bdBitBuffer> buffer,
                           MPEntityHandle& id);  // ?ReadEntityHandle@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAVMPEntityHandle@@@Z (mp.o 0x73BD20)
+    bool ReadPositionDelta(bdReference<bdBitBuffer> buffer,
+                           float old_position, float& position);  // ?ReadPositionDelta@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@MAAM@Z (mp.o 0x73AB50)
+    bool ReadAngle(bdReference<bdBitBuffer> buffer, float& angle);  // ?ReadAngle@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAM@Z (mp.o 0x73BC10)
+    bool ReadPlayerTeam(bdReference<bdBitBuffer> buffer, team_t& team);  // ?ReadPlayerTeam@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAW4team_t@@@Z (mp.o 0x73C280)
+    void WriteSnappedPosition(bdReference<bdBitBuffer> buffer,
+                              const math::Position3& position);  // ?WriteSnappedPosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVPosition3@math@@@Z (mp.o 0x73AE10)
+    void WriteSnappedPosition(bdReference<bdBitBuffer> buffer,
+                              const float* position);  // ?WriteSnappedPosition@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73AD70)
 bool ReadPlayerId(bdReference<bdBitBuffer> buffer, unsigned char& id);   // ?ReadPlayerId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73BE10)
 bool ReadVehicleId(bdReference<bdBitBuffer> buffer, unsigned char& id);  // ?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73C0B0)
 bool ReadSeatIndex(bdReference<bdBitBuffer> buffer, int& seatIdx);       // ?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BEF0)
@@ -275,6 +284,7 @@ public:
     void SetPhysicsInfo(const math::Position3& position,
                         const math::Dir3& angles,
                         const math::Dir3& velocity);  // ?SetPhysicsInfo@MPVehicle@@QAEXABVPosition3@math@@ABVDir3@3@1@Z (mp.o 0x755C20)
+    void OnModified();  // ?OnModified@MPVehicle@@QAEXXZ (mp.o 0x72E510)
 };
 static_assert(sizeof(MPVehicle) == 0x210, "MPVehicle size mismatch");
 
@@ -283,6 +293,7 @@ static_assert(sizeof(MPVehicle) == 0x210, "MPVehicle size mismatch");
 // ============================================================================
 class MPPlayerItems {
 public:
+    friend class MPPlayerManager;
     struct sDroppedItem {
         struct {
             unsigned int mVal;  // +0x00
@@ -371,6 +382,11 @@ public:
     MPGameInfo(unsigned int titleID, const XNKID& securityID,
                const XNKEY& securityKey,
                bdReference<bdCommonAddr> hostAddr);  // ??0MPGameInfo@@QAE@IABUXNKID@@ABUXNKEY@@V?$bdReference@VbdCommonAddr@@@@@Z (mp.o 0x73DA50)
+    MPGameInfo();  // ??0MPGameInfo@@QAE@XZ (mp.o 0x73D9A0)
+    MPGameInfo(unsigned int titleID, bdReference<bdCommonAddr> hostAddr,
+               XNKID secID, XNKEY secKey, unsigned char publicOpen,
+               unsigned char privateOpen, unsigned char publicFilled,
+               unsigned char privateFilled);  // ??0MPGameInfo@@QAE@IV?$bdReference@VbdCommonAddr@@@@UXNKID@@UXNKEY@@EEEE@Z (mp.o 0x73DB90)
 
     void getSlots(unsigned char& publicOpen, unsigned char& privateOpen,
                   unsigned char& publicFilled,
@@ -435,6 +451,8 @@ public:
     static const int  GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z (mp.o 0x72FB90)
     static const int  GetRespawnTime(unsigned long index); // ?GetRespawnTime@MPUIInterface@@SA?BHK@Z (mp.o 0x72FC00)
     static const int  GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z (mp.o 0x72F970)
+    static const int  GetScoreLimit(unsigned long index,
+                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z (mp.o 0x72FA00)
     static const int  GetMaxPlayersOptionFromMap(char mapID);  // ?GetMaxPlayersOptionFromMap@MPUIInterface@@SA?BHD@Z (mp.o 0x73D430)
     static void GameListingEnd();        // ?GameListingEnd@MPUIInterface@@SAXXZ
     static void StartDevice();           // ?StartDevice@MPUIInterface@@SAXXZ
@@ -444,6 +462,7 @@ public:
     static void ResolveVote();           // ?ResolveVote@MPUIInterface@@SAXXZ (mp.o 0x73D6C0)
     static void CancelJoin();            // ?CancelJoin@MPUIInterface@@SAXXZ (mp.o 0x72F4A0)
     static void bdNetStop();             // ?bdNetStop@MPUIInterface@@SAXXZ (mp.o 0x766000)
+    static void NextRound();             // ?NextRound@MPUIInterface@@SAXXZ (mp.o 0x75A8E0)
     static void SetServerParams(const sServerCreateParams& a_ServerParams);  // ?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z (mp.o 0x730240)
     static void SetQueryParams(sServerQueryParams& params);  // ?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z (mp.o 0x72F520)
     static bool NextRoundMapChanges();   // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ
@@ -483,6 +502,11 @@ public:
     static const int mRoundLimitList[1];   // ?mRoundLimitList@MPUIInterface@@1QBHB
     static const int mMaxPlayerList[4];    // ?mMaxPlayerList@MPUIInterface@@1QBHB
     static const int mRespawnTimeList[3];  // ?mRespawnTimeList@MPUIInterface@@1QBHB
+    static const int mScoreLimitListWar[5];        // @ 0xD192B8
+    static const int mScoreLimitListHQ[5];         // @ 0xD192CC
+    static const int mScoreLimitListSCFCTF[5];     // @ 0xD192E0
+    static const int mScoreLimitListTeamBattle[6]; // @ 0xD192F4
+    static const int mScoreLimitListBattle[5];     // @ 0xD1930C
 };
 
 // sServerCreateParams - host session setup (mMapID at +0x58)
@@ -598,6 +622,8 @@ public:
     void AddOption(const char* t,
                    bool (*responseFunc)(int));  // ?AddOption@DialogMenu@@QAEXPBDP6A_NH@Z@Z (shell.o 0x572EE0)
     void Reformat(bool vertical, int viewport); // ?Reformat@DialogMenu@@QAEX_NH@Z (shell.o 0x572F40)
+    void CloseOnDelay(int delaySeconds,
+                      void (*delayResp)(int));  // ?CloseOnDelay@DialogMenu@@QAEXHP6AXH@Z@Z (shell.o)
 };
 
 class DialogMenuSystem : public FEMenuSystem {
@@ -676,6 +702,13 @@ public:
     static controller* inst();    // ?inst@controller@@SAPAV1@XZ (controller.o)
 };
 
+// GameSettings - shell.o global settings (temp profile buffer size)
+class GameSettings {
+public:
+    static GameSettings* sInst;  // ?sInst@GameSettings@@2PAV1@A (shell.o @ 0x132028C)
+    unsigned int get_temp_buffer_size() const;  // ?get_temp_buffer_size@GameSettings@@QBEIXZ (shell.o)
+};
+
 class MPOptionsScreenMenu : public FEMenu {
 public:
     FEText* mScreenText[4];     // +0x4C
@@ -749,6 +782,8 @@ public:
     virtual void OnCross(int c);      // ?OnCross@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E3C0)
     virtual void Select(int entry_num);  // ?Select@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E370)
     virtual void Draw();              // ?Draw@MPOptionsControlsMenu@@UAEXXZ (mp.o 0x731B20)
+    virtual void OnUp(int c);         // ?OnUp@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x731CA0)
+    virtual void OnDown(int c);       // ?OnDown@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x731D90)
     static const char* const kControlsOptionStrings[];       // @ 0xD194B8
     static const char* const kControlsInstructionStrings[];  // @ 0xD19500
     static const char* const kStickLayoutStrings[];          // @ 0xD194D8
@@ -800,6 +835,8 @@ public:
     virtual void Draw();  // ?Draw@MPOptionsPreferencesMenu@@UAEXXZ (mp.o 0x732F50)
     virtual void OnUp(int c);  // ?OnUp@MPOptionsPreferencesMenu@@UAEXH@Z
     virtual void OnDown(int c);  // ?OnDown@MPOptionsPreferencesMenu@@UAEXH@Z
+    static const char* const kOptionStrings[5];       // @ 0xD19618
+    static const char* const kInstructionStrings[5];  // @ 0xD1962C
 private:
     void SetOptions();  // ?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ (mp.o 0x732F90)
     bool SaveOptions();  // ?SaveOptions@MPOptionsPreferencesMenu@@AAE_NXZ
@@ -843,6 +880,7 @@ public:
     PanelFile*    mPanel;        // +0x84
     FEMultiLineText* mHelpBar;   // +0x88
 
+    MPProfileMainMenu(FEMenuSystem* s);  // ??0MPProfileMainMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x733920)
     virtual ~MPProfileMainMenu();  // ??1MPProfileMainMenu@@UAE@XZ (mp.o 0x7339D0)
     static MPProfileMainMenu* Me();  // ?Me@MPProfileMainMenu@@SAPAV1@XZ
     static bool DialogResponseDeleteCancel(int index);  // ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z
@@ -852,6 +890,7 @@ public:
     static bool DialogResponseSaveSuccess(int index);   // ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734290)
     static bool DialogResponseDeleteSuccess(int index); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x7342B0)
     static bool DialogResponseDeleteConfirm(int index); // ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z (mp.o 0x74EFD0)
+    static bool DialogResponseDelete(int index);        // ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z (mp.o 0x75A9E0)
     static void LoadProfileData();   // ?LoadProfileData@MPProfileMainMenu@@SAXXZ (mp.o 0x733AF0)
     void ClearEntries();             // ?ClearEntries@MPProfileMainMenu@@QAEXXZ (mp.o 0x733A90)
     void CreateProfile();            // ?CreateProfile@MPProfileMainMenu@@QAEXXZ (mp.o 0x733D90)
@@ -986,6 +1025,7 @@ public:
     unsigned char mRecentlyDispatchedPacketIndex;  // +0x265D
     unsigned int mMissedPackets;                   // +0x2660
     static const kuju::knet::sTime mVoiceLifeTime;  // ?mVoiceLifeTime@cVoiceNetworkManager@knetuser@kuju@@0VsTime@knet@3@B @ 0x12266F4
+    void resetPlayer(unsigned long playerIndex);  // ?resetPlayer@cVoiceNetworkManager@knetuser@kuju@@QAEXK@Z (mp.o 0x74F050)
     void initialise();               // ?initialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o)
     void deinitialise();             // ?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ
     void update(const kuju::knet::sTime& time);             // ?update@cVoiceNetworkManager@knetuser@kuju@@QAEXABVsTime@knet@3@@Z (mp.o 0x7500E0)

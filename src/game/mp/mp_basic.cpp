@@ -56,6 +56,8 @@ extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  /
 extern void tlPrintf(const char* format, ...);  // ?tlPrintf@@YAXPBDZZ
 extern void bdCore_quit();  // bdCore::quit
 extern void* gDWHeap;       // ?gDWHeap@@3PAVae_heap@@A
+extern int gMPIntPositionMin;  // ?gMPIntPositionMin@@3HA @ 0xE370D8
+extern int g_NumMapChanges;    // ?g_NumMapChanges@@3HA @ 0xF93FC0
 
 struct scr_vehicle_t;
 
@@ -92,6 +94,10 @@ public:
     void SetModifierType(unsigned int mask,
                          AnimationPlayerModifierType type);  // ?SetModifierType@AnimationPlayer@@QAEXIW4AnimationPlayerModifierType@1@@Z
     void StopModifiers(unsigned int mask);  // ?StopModifiers@AnimationPlayer@@QAEXI@Z
+    void Play(nalGeneric::nalGenericAnim* anim, bool ForceRestart,
+              float fade_in, void* play_method, float callback_time,
+              void* callback, float speed,
+              float time_in_seconds_to_start);  // ?Play@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@_NMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM@Z
 };
 
 // MP_ANIM_INDEX / MP_ANIM_LOOKUP - mp.o animation tables (IDA types)
@@ -5599,13 +5605,13 @@ const char* MPUIInterface::GetMapString(unsigned long mapIndex)
     return MI_GetMapDisplayName(mapIndex);
 }
 
-// ea: 0x00735DE0 (mDisconnectStatusTimerRunning at +0x74A8 etc.)
+// ea: 0x00735DE0 (mDisconnectStatusTimerRunning at +0xD290 etc.)
 void MPPeer::onSessionDisconnect(bdReference<bdConnection> connection)
 {
-    *(bool*)((char*)this + 0x74A8) = true;   // mDisconnectStatusTimerRunning
-    *(float*)((char*)this + 0x74AC) = 0.0f;  // mDisconnectStatusTimer
-    *(float*)((char*)this + 0x74B0) = 0.0f;  // mDisconnectNotReadyTime
-    *(float*)((char*)this + 0x74B4) = 0.0f;  // mBadHashTime
+    *(bool*)((char*)this + 0xD290) = true;   // mDisconnectStatusTimerRunning
+    *(float*)((char*)this + 0xD294) = 0.0f;  // mDisconnectStatusTimer
+    *(float*)((char*)this + 0xD298) = 0.0f;  // mDisconnectNotReadyTime
+    *(float*)((char*)this + 0xD29C) = 0.0f;  // mBadHashTime
     if (connection.m_ptr != nullptr
         && connection.m_ptr->m_refCount-- == 1)
         delete connection.m_ptr;
@@ -5779,23 +5785,23 @@ void MultiplayerMgr::SendGameStateSCF(Entity* player, int currentFlagIndex,
                             flagAngles, flagHolder);
 }
 
-// ea: 0x00735B80 (m_QosAddr +0x10, m_QosLatency +0x2450, etc.)
+// ea: 0x00735B80 (m_QosAddr +0x10, m_QosIsComplete +0x5AB0, etc.)
 void MPPeer::UpdateQosProbe(bdReference<bdCommonAddr> addr, bool bSuccess,
                             float latency)
 {
     int v4 = 0;
     char* m_QosAddr = (char*)this + 0x10;
-    float* m_QosLatency = (float*)((char*)this + 0x2450);
+    float* m_QosLatency = (float*)((char*)this + 0x6730);
     do
     {
         if (((bdQoSRemoteAddr*)(m_QosAddr + 0x1C * v4))
                 ->m_addr.m_ptr == addr.m_ptr)
         {
-            *(bool*)((char*)this + 0x690 + v4) = true;   // m_QosIsComplete
-            *(bool*)((char*)this + 0xA90 + v4) = bSuccess;  // m_QosIsSuccessful
+            *(bool*)((char*)this + 0x5AB0 + v4) = true;  // m_QosIsComplete
+            *(bool*)((char*)this + 0x5DD0 + v4) = bSuccess;  // m_QosIsSuccessful
             m_QosLatency[v4] = latency;
-            if (*(bool*)((char*)this + 0x2490 + v4))  // m_QosDeleteProbe
-                *(bool*)((char*)this + 0xE90 + v4) = true;  // m_QosIsAvailable
+            if (*(bool*)((char*)this + 0x6410 + v4))  // m_QosDeleteProbe
+                *(bool*)((char*)this + 0x60F0 + v4) = true;  // m_QosIsAvailable
         }
         ++v4;
     } while (v4 < 800);
@@ -6368,6 +6374,1082 @@ void MPProfileMainMenu::Select(int entry_num)
         this->system->gap1C(this->system, 18);
     }
 }
+
+// ============================================================================
+// Batch 15: player/vehicle queries, game-state forwarders, MPUtility reads
+// ============================================================================
+
+// ea: 0x0072EEB0 (mVehicleCount +0x55C0, mVehicles +0x4120, mEntity +0x04)
+MPVehicle* MPPlayerManager::GetVehicle(const Entity* vehicle)
+{
+    if (vehicle == nullptr || vehicle->s.eType != 14)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 7786;
+        AeAssert::gCurrentExpr = "vehicle && vehicle->s.eType == ET_VEHICLE";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vehicle."))
+            __debugbreak();
+    }
+    int mVehicleCount = *(int*)((char*)this + 0x55C0);
+    int v4 = 0;
+    if (mVehicleCount <= 0)
+        return nullptr;
+    for (void** i = (void**)((char*)this + 0x4120 + 0x04);
+         *i != vehicle; i += 33)
+    {
+        if (++v4 >= mVehicleCount)
+            return nullptr;
+    }
+    return (MPVehicle*)((char*)this + 0x4120 + 0x210 * v4);
+}
+
+// ea: 0x0075A8E0
+void MPUIInterface::NextRound()
+{
+    bool mapChanged =
+        mNextServerParams.mMapID != mServerParams.mMapID;
+    bool restart = mNextServerParams.mMapID == mServerParams.mMapID
+                   && mNextServerParams.mGameType != mServerParams.mGameType;
+    mServerParams = mNextServerParams;
+    NextRoundServerParams();
+    if (mapChanged || restart)
+    {
+        tlPrintf("%d Map Rotates", ++g_NumMapChanges);
+        MultiplayerMgr::sInst->LoadLevel(mServerParams.mMapID, restart,
+                                         mapChanged);
+    }
+}
+
+// ea: 0x00733280
+void MPOptionsPreferencesMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    mScreenText[2]->SetText(kOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+// ea: 0x007331E0
+void MPOptionsPreferencesMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    mScreenText[2]->SetText(kOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kInstructionStrings[highlighted]);
+    Broc::string v5(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v5, mWidescreen ? 390 : 520, -1.5f);
+}
+
+const char* const MPOptionsPreferencesMenu::kOptionStrings[5] = {
+    "MPFRONTEND_NUMBER_OF_PLAYERS_ALLCAPS", "MPFRONTEND_GAME_MODE_ALLCAPS",
+    "MPFRONTEND_MAP_NAME_ALLCAPS", "MPFRONTEND_AUTO_TEAM_BALANCE_ALLCAPS",
+    "MPFRONTEND_TEAM_DAMAGE_ALLCAPS",
+};
+const char* const MPOptionsPreferencesMenu::kInstructionStrings[5] = {
+    "MPFRONTEND_SCREEN_INST_NUMBER_OF_PLAYERS",
+    "MPFRONTEND_SCREEN_INST_GAME_MODE", "MPFRONTEND_SCREEN_INST_MAP_NAME",
+    "MPFRONTEND_SCREEN_INST_AUTO_TEAM_BALANCE",
+    "MPFRONTEND_SCREEN_INST_TEAM_DAMAGE",
+};
+
+// ea: 0x0073C280
+bool MPUtility::ReadPlayerTeam(bdReference<bdBitBuffer> buffer, team_t& team)
+{
+    bool v2 = false;
+    bool DataType = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE);
+    if (DataType)
+    {
+        unsigned char v7 = 0;
+        DataType = buffer.m_ptr->readBits(&v7, 1u);
+        if (DataType)
+            v2 = v7 != 0;
+    }
+    bool ok = DataType;
+    team = (team_t)(!v2 + 1);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return ok;
+}
+
+// ea: 0x00750780
+void MultiplayerMgr::SendGameState(
+    Entity* player, int currentTime, int timeLimit, int scoreLimit,
+    int roundLimit, bool friendlyFire, bool lastManStanding,
+    bool teamBalance, int respawnTime, int alliesScore, int axisScore,
+    bool roundStarted, int roundOver, int roundCount)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1505;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameState(player, currentTime, timeLimit, scoreLimit,
+                         roundLimit, friendlyFire, lastManStanding,
+                         teamBalance, respawnTime, alliesScore, axisScore,
+                         roundStarted, roundOver, roundCount);
+}
+
+// ea: 0x0073DB90
+MPGameInfo::MPGameInfo(unsigned int titleID,
+                       bdReference<bdCommonAddr> hostAddr, XNKID secID,
+                       XNKEY secKey, unsigned char publicOpen,
+                       unsigned char privateOpen,
+                       unsigned char publicFilled,
+                       unsigned char privateFilled)
+    : bdGameInfo(titleID, secID, secKey, hostAddr)
+{
+    m_publicOpen = publicOpen;
+    m_privateOpen = privateOpen;
+    m_publicFilled = publicFilled;
+    m_privateFilled = privateFilled;
+}
+
+// ea: 0x00732680
+void MPOptionsGameplayMenu::SetOptions()
+{
+    controller* v2 = controller::inst();
+    this->entries[0]->SetValue(
+        gSaveGameData[v2->locked_port].mStubData.mSubtitles);
+    controller* v3 = controller::inst();
+    this->entries[1]->SetValue(
+        gSaveGameData[v3->locked_port].mStubData.mCrosshair);
+    controller* v4 = controller::inst();
+    this->entries[2]->SetValue(
+        gSaveGameData[v4->locked_port].mStubData.mFriendlyTags);
+    controller* v5 = controller::inst();
+    this->entries[3]->SetValue(
+        gSaveGameData[v5->locked_port].mStubData.mStickyAim);
+}
+
+// ea: 0x0072F1A0 (mNumPlayers +0x4110, mPlayers +0x1010, mTeam +0x25C)
+int MPPlayerManager::PickPlayerTeam(MPPlayer* player)
+{
+    int v2 = 0;
+    int v3 = 0;
+    int mNumPlayers = *(unsigned char*)((char*)this + 0x4110);
+    for (int i = 0; i < mNumPlayers; ++i)
+    {
+        MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * i);
+        if (p != player)
+        {
+            short team = *(short*)((char*)p + 0x25C);
+            if (team != 0)
+            {
+                if (team == 2)
+                    ++v2;
+                else
+                    ++v3;
+            }
+        }
+    }
+    if (mNumPlayers != 0)
+    {
+        if (v2 < v3)
+            return 2;
+        if (v2 > v3)
+            return 1;
+    }
+    if (!cgGlobal.teamGame)
+        return irand(1, 3);
+    if (cgGlobal.teamScores[2] < cgGlobal.teamScores[1])
+        return 2;
+    if (cgGlobal.teamScores[2] > cgGlobal.teamScores[1])
+        return 1;
+    return irand(1, 3);
+}
+
+// ea: 0x0073AB50
+bool MPUtility::ReadPositionDelta(bdReference<bdBitBuffer> buffer,
+                                  float old_position, float& position)
+{
+    bool ok = buffer.m_ptr->readRangedFloat32(position, -512.0f, 512.0f,
+                                              1.0f);
+    position = position + old_position;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return ok;
+}
+
+// ea: 0x0073BC10
+bool MPUtility::ReadAngle(bdReference<bdBitBuffer> buffer, float& angle)
+{
+    short m_ptr = 0;
+    int v7 = 0;
+    bool v3 = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE)
+              && buffer.m_ptr->readBits(&v7, 0x10u);
+    if (v3)
+        m_ptr = (short)v7;
+    else
+        m_ptr = (short)(uintptr_t)buffer.m_ptr;
+    angle = m_ptr * 0.0054931641f;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return v3;
+}
+
+// ea: 0x007303F0
+const char* MPPlayerSet::debugString() const
+{
+    static char buf[64];
+    if (mBitPlayers == 0)
+        return "Empty";
+    unsigned int v3 = (unsigned int)lowestPlayerIndex();
+    unsigned int h = (unsigned int)highestPlayerIndex();
+    int v5 = 0;
+    int first = 1;
+    for (; v3 <= h; ++v3)
+    {
+        if (containsPlayer(v3))
+        {
+            if (first == 0)
+                v5 += sprintf(&buf[v5], ", ");
+            v5 += sprintf(&buf[v5], "%d", v3);
+            first = 0;
+        }
+    }
+    buf[v5] = 0;
+    return buf;
+}
+
+// ea: 0x00737830 (mPlayers +0x1010, mClientIndex +0x08, mId +0x00)
+int MPPlayerManager::GetPlayerIndex(const Entity* entity)
+{
+    unsigned int result = 0;
+    for (; result < 0x10; ++result)
+    {
+        MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * result);
+        Entity* v5 = nullptr;
+        if (p->mClientIndex >= 0)
+        {
+            if (p->mClientIndex >= 16)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EntityManager.h";
+                AeAssert::gCurrentLine = 19;
+                AeAssert::gCurrentExpr = "idx<16";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            v5 = EntityManager::sInst->GetPlayer(p->mClientIndex);
+        }
+        if (p->mId < 0x10u && p->mConnection.m_ptr != nullptr
+            && v5 == entity)
+            break;
+    }
+    return result;
+}
+
+// ea: 0x0073AE10
+void MPUtility::WriteSnappedPosition(bdReference<bdBitBuffer> buffer,
+                                     const math::Position3& position)
+{
+    buffer.m_ptr->writeRangedInt32((int)position.v.m128_f32[0],
+                                   gMPIntPositionMin, 0x1FFF);
+    buffer.m_ptr->writeRangedInt32((int)position.v.m128_f32[1],
+                                   gMPIntPositionMin, 0x1FFF);
+    buffer.m_ptr->writeRangedInt32((int)position.v.m128_f32[2],
+                                   gMPIntPositionMin, 0x1FFF);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x0073AD70
+void MPUtility::WriteSnappedPosition(bdReference<bdBitBuffer> buffer,
+                                     const float* position)
+{
+    buffer.m_ptr->writeRangedInt32((int)position[0], gMPIntPositionMin,
+                                   0x1FFF);
+    buffer.m_ptr->writeRangedInt32((int)position[1], gMPIntPositionMin,
+                                   0x1FFF);
+    buffer.m_ptr->writeRangedInt32((int)position[2], gMPIntPositionMin,
+                                   0x1FFF);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x007342F0
+void kuju::cBezier::reset(const math::Position3& initialPoint,
+                          const math::Dir3& initialInflexion,
+                          const math::Position3& finalPoint,
+                          const math::Dir3& finalInflexion)
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        float v5 = initialPoint.v.m128_f32[i] + initialInflexion.v.m128_f32[i];
+        mCFactor.v.m128_f32[i] = (v5 - initialPoint.v.m128_f32[i]) * 3.0f;
+        mBFactor.v.m128_f32[i] =
+            3.0f * (finalPoint.v.m128_f32[i]
+                    + finalInflexion.v.m128_f32[i] - v5)
+            - mCFactor.v.m128_f32[i];
+        mAFactor.v.m128_f32[i] =
+            finalPoint.v.m128_f32[i] - initialPoint.v.m128_f32[i]
+            - mCFactor.v.m128_f32[i] - mBFactor.v.m128_f32[i];
+    }
+    mInitialPoint = initialPoint;
+}
+
+// ea: 0x00733920
+MPProfileMainMenu::MPProfileMainMenu(FEMenuSystem* s)
+    : FEMenu(s, 6, 320, 240, 8, 0)
+{
+    flags = (int16_t)(flags | 0x82);
+    mSelectedProfile = nullptr;
+    mPanel = nullptr;
+    mHelpBar = nullptr;
+    default_color_scheme = 19;
+    for (int i = 0; i < 6; ++i)
+    {
+        unsigned int temp_buffer_size =
+            GameSettings::sInst->get_temp_buffer_size();
+        mSaveSlots[i] =
+            (SaveGameData*)mem_heap_malloc(32, temp_buffer_size);
+    }
+}
+
+// ea: 0x00763960
+::MPEntityHandle MPPlayerManager::GetNextDroppedItemID(
+    EDroppedItemTypes itemType, Entity* owner)
+{
+    MPPlayer* Player = GetPlayer(owner);
+    if (owner == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 8235;
+        AeAssert::gCurrentExpr = "owner";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "RegisterDroppedItem: Could not get MPPlayer from owner entity"))
+            __debugbreak();
+    }
+    if (Player != nullptr)
+    {
+        MPPlayerItems* items = (MPPlayerItems*)((char*)Player + 0x0C);
+        const ae_vector<MPPlayerItems::sDroppedItem>* p_mDropped;
+        switch (itemType)
+        {
+        case (EDroppedItemTypes)2:  // kItemTypeSupport
+            p_mDropped = &items->mDroppedSupport;
+            break;
+        case kItemTypeMines:
+            p_mDropped = &items->mDroppedMines;
+            break;
+        case (EDroppedItemTypes)3:  // kItemTypeMax
+            p_mDropped = &items->mDroppedKits;
+            break;
+        default:
+            p_mDropped = &items->mDroppedWeapons;
+            break;
+        }
+        unsigned short OldestItem = items->FindOldestItem(*p_mDropped);
+        return MPEntityHandle(Player->mId, OldestItem);
+    }
+    else
+    {
+        return MPEntityHandle();
+    }
+}
+
+// ea: 0x00736030
+bool MPPlayer::IsLocalPlayer() const
+{
+    bool local = false;
+    bdReference<bdCommonAddr> v7;
+    if (mConnection.m_ptr != nullptr)
+    {
+        v7 = mConnection.m_ptr->getAddress();
+        if (v7.m_ptr != nullptr && v7.m_ptr->isLoopback())
+            local = true;
+    }
+    if (v7.m_ptr != nullptr && v7.m_ptr->m_refCount-- == 1)
+        delete v7.m_ptr;
+    return local;
+}
+
+// ea: 0x0072E510
+void MPVehicle::OnModified()
+{
+    if (!mReceived)
+    {
+        mInterpolatedPosition = mNetPosition;
+        mInterpolatedSpeed = mNetSpeed;
+        mInterpolatedHeading = mNetHeading;
+    }
+    mReceived = true;
+    kuju::knet::sTime result = MultiplayerMgr::sInst->getLocalTime();
+    mAverageUpdateInterval = MPPlayerManager::sNetworkFrameTime * 0.001f;
+    mNbReceivedMessages++;
+    mLastReceivedTime.mTime = result.mTime;
+    mInterpolationState =
+        kuju::cBezierTrajectoryInterpolator::kInterpolationStopped;
+}
+
+// ea: 0x0075D250
+MPPlayerItems::~MPPlayerItems()
+{
+    RemoveAll();
+    if (mDroppedKits.mElements != nullptr)
+    {
+        tlMemFree(mDroppedKits.mElements);
+        mDroppedKits.mElements = nullptr;
+        mDroppedKits.mCapacity = 0;
+    }
+    if (mDroppedMines.mElements != nullptr)
+    {
+        tlMemFree(mDroppedMines.mElements);
+        mDroppedMines.mElements = nullptr;
+        mDroppedMines.mCapacity = 0;
+    }
+    if (mDroppedSupport.mElements != nullptr)
+    {
+        tlMemFree(mDroppedSupport.mElements);
+        mDroppedSupport.mElements = nullptr;
+        mDroppedSupport.mCapacity = 0;
+    }
+    if (mDroppedWeapons.mElements != nullptr)
+    {
+        tlMemFree(mDroppedWeapons.mElements);
+        mDroppedWeapons.mElements = nullptr;
+        mDroppedWeapons.mCapacity = 0;
+    }
+}
+
+// ea: 0x0073A650
+MPPlayerSet MPPlayerManager::allPlayersButLocal()
+{
+    MPPlayerSet players;
+    for (int v3 = 0; v3 < 16; ++v3)
+    {
+        MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * v3);
+        if (p->mConnection.m_ptr != nullptr
+            && p->mConnection.m_ptr->getStatus() == bdConnection::BD_CONNECTED
+            && !p->IsLocalPlayer())
+            players.addPlayer(v3);
+    }
+    if (players.mBitPlayers >= 0x10000)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPPlayerSet.h";
+        AeAssert::gCurrentLine = 82;
+        AeAssert::gCurrentExpr = "set.mBitPlayers < (1<<16)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    return players;
+}
+
+// ea: 0x0073D9A0
+MPGameInfo::MPGameInfo()
+{
+    bdCommonAddr* v3 = new bdCommonAddr();
+    if (m_hostAddr.m_ptr != nullptr && m_hostAddr.m_ptr->m_refCount-- == 1)
+        delete m_hostAddr.m_ptr;
+    m_hostAddr.m_ptr = v3;
+    if (v3 != nullptr)
+        ++v3->m_refCount;
+    memset(m_secID.ab, 0, sizeof(m_secID.ab));
+    memset(m_secKey.ab, 0, sizeof(m_secKey.ab));
+}
+
+// ea: 0x00740390
+bool MultiplayerMgr::IsInVehicle(Entity* vehicle, Entity* player)
+{
+    if (mPeer == nullptr)
+        return false;
+    MPPlayerManager* mgr = (MPPlayerManager*)((char*)mPeer + 0x74E0);
+    MPVehicle* v5 = mgr->GetVehicle(vehicle);
+    MPPlayer* v6 = mgr->GetPlayer(player);
+    if (v6 == nullptr || v5 == nullptr)
+        return false;
+    return v6->mInVehicle && v6->mVehicleId == v5->mId;
+}
+
+// ea: 0x0073A8C0
+void MPPlayerManager::LocalPlayerExitGame()
+{
+    MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+    LiveEngine_EndFeature(Handle->uixEngine);
+    for (int i = 0; i < 16; ++i)
+    {
+        MPPlayer* mPlayers = (MPPlayer*)((char*)this + 0x1010 + 0x310 * i);
+        if (mPlayers->mId < 0x10u && mPlayers->mConnection.m_ptr != nullptr)
+            ClientDisconnect(mPlayers, true);
+    }
+    for (int j = 0; j < 10; ++j)
+    {
+        char* v = (char*)this + 0x4120 + 0x210 * j;
+        if (*(unsigned char*)v < 0x0Au)
+        {
+            *(int*)(v + 0x14) = 0;           // mNumOccupants
+            *(int*)(v + 0x08) = 0x10101010;  // seats 0-3
+            *(int*)(v + 0x0C) = 0x10101010;  // seats 4-7
+            *(int*)(v + 0x18) = 0x1010;
+            *(int*)(v + 0x30) = 16;
+            *(int*)(v + 0x10) = 0;
+            *(unsigned char*)v = 10;         // mId
+            *(int*)(v + 0x10) = 0;
+            *(int*)(v + 0x14) = 0;
+        }
+    }
+    *(int*)((char*)this + 0x55C0) = 0;   // mVehicleCount
+    *(int*)((char*)this + 0x4118) = 0;   // mLastSentTime
+    *(bool*)((char*)this + 0x4112) = false;  // mLocalPlayerInGame
+    *(int*)((char*)this + 0x0C) = 0;     // mNumBufferedMessages
+}
+
+// ea: 0x00750000
+void kuju::knetuser::cVoiceNetworkManager::
+    checkForPendingPacketsAwaitingDispatch(const kuju::knet::sTime& time)
+{
+    sVoicePendingDispatchPacket* packet = mVoicePendingDispatchPacketList;
+    unsigned long connectionsLeft = 4;
+    MPPlayerSet connectionsUsed;
+    sVoicePendingDispatchPacket* mNext = nullptr;
+    if (packet != nullptr)
+    {
+        do
+        {
+            mNext = packet->mNext;
+            if (time.mTime - packet->mTimeReceived.mTime > 1000)
+                discardVoicePendingDispatchPacket(packet);
+            packet = mNext;
+        } while (mNext != nullptr);
+    }
+    if (time.mTime - mLastDispatchTime.mTime > 100)
+    {
+        dispatchPendingVoicePackets(time, connectionsUsed, connectionsLeft);
+        int mTime = mLastDispatchTime.mTime;
+        if (mTime != 0)
+        {
+            if (connectionsLeft == 4)
+                mLastDispatchTime.mTime = time.mTime - 100;
+            else
+                mLastDispatchTime.mTime = mTime + 100;
+        }
+        else
+        {
+            mLastDispatchTime.mTime = time.mTime;
+        }
+    }
+}
+
+// ea: 0x00742CC0
+void MPPeer::EnterGame()
+{
+    bdSession* p_mSession = (bdSession*)((char*)this + 0x7448);
+    if (p_mSession->getStatus() != bdSession::BD_SESSION_NOT_CONNECTED)
+    {
+        bdMessage* msg = new bdMessage(0x41u, false);
+        bdReference<bdMessage> message;
+        message.m_ptr = msg;
+        if (msg != nullptr)
+            ++msg->m_refCount;
+        extern int g_NumBdMessages;
+        ++g_NumBdMessages;
+        ((MPPlayerManager*)((char*)this + 0x74E0))->SendAll(message, true,
+                                                            false);
+        if (message.m_ptr != nullptr && message.m_ptr->m_refCount-- == 1)
+            delete message.m_ptr;
+    }
+}
+
+// ea: 0x007375E0
+MPPlayer* MPPlayerManager::GetPlayer(unsigned char id)
+{
+    if (id > 0x10u)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 342;
+        AeAssert::gCurrentExpr = "id >= 0 && id <= 16";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid player id"))
+            __debugbreak();
+    }
+    if (id < 0x10u)
+    {
+        MPPlayer* v4 = (MPPlayer*)((char*)this + 0x1010 + 0x310 * id);
+        if (v4->mId < 0x10u && v4->mConnection.m_ptr != nullptr)
+        {
+            if (v4->mId != id)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                AeAssert::gCurrentLine = 348;
+                AeAssert::gCurrentExpr = "player->GetId() == id";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Player is in the wrong slot."))
+                    __debugbreak();
+            }
+            return v4;
+        }
+    }
+    return nullptr;
+}
+
+// ea: 0x00731250
+void MPOptionsSoundMenu::SetOptions()
+{
+    controller* v2 = controller::inst();
+    this->entries[0]->SetValue(
+        gSaveGameData[v2->locked_port].mStubData.mVolume);
+    mSoundText[2]->SetText(kSoundOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kSoundInstructionStrings[highlighted]);
+    Broc::string v6(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v6, mWidescreen ? 390 : 520, -1.5f);
+    controller* v5 = controller::inst();
+    this->entries[0]->SetValue(
+        gSaveGameData[v5->locked_port].mStubData.mVolume);
+}
+
+// ea: 0x0074EF00
+void MPProfileMainMenu::DialogDisplayProfileLoading(int delaySecs)
+{
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    DMS->BringUp("MEM_XBOX_LOAD_WARNING", false, false, defaultFileName,
+                 true);
+    DialogMenuSystem* v3 = g_femanager.GetDMS(currCl);
+    int v4 = v3->GetActiveMenu();
+    v3->GetLayer(v4 == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
+    DialogMenuSystem* v5 = g_femanager.GetDMS(currCl);
+    int v6 = v5->GetActiveMenu();
+    v5->GetLayer(v6 == 0)->CloseOnDelay(delaySecs,
+                                        DialogDisplayProfileLoadSuccess);
+    DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
+    int v9 = v8->GetActiveMenu();
+    v8->GetLayer(v9 == 0)->Reformat(true, 0);
+}
+
+// ea: 0x00751650
+void MPPeer::InitializeVehicles()
+{
+    const unsigned char* freeBits = (const unsigned char*)&EntityHandleDb::sInst;
+    for (int word = 0; word < 42; ++word)
+    {
+        unsigned int w = 0;
+        memcpy(&w, freeBits + 4 * word, 4);
+        w = ~w;
+        while (w != 0)
+        {
+            unsigned int bit = 0;
+            while ((w & 1) == 0)
+            {
+                w >>= 1;
+                ++bit;
+            }
+            w >>= 1;
+            int idx = word * 32 + (int)bit;
+            if (idx < 0x540u)
+            {
+                if (EntityHandleDb::sInst.mElements[idx].mObject != nullptr
+                    && EntityHandleDb::sInst.mElements[idx].mObject->s.eType
+                           == 14)
+                    ((MPPlayerManager*)((char*)this + 0x74E0))
+                        ->AddVehicle(EntityHandleDb::sInst.mElements[idx]
+                                         .mObject);
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+                AeAssert::gCurrentLine = 78;
+                AeAssert::gCurrentExpr =
+                    "idx >= 0 && idx < _MaxEltements";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("index out of bounds"))
+                    __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x007655E0
+bool MPPeer::CreateGame(bdReference<MPGameInfo>& gameInfo,
+                        EGameConnectionType gameState)
+{
+    bool v10 = false;
+    if (!CreateLocalGameInfo(gameInfo)
+        || !(v10 = true, ConnectToPeers(gameInfo, -1, gameState)))
+        v10 = false;
+    if (gameState != kGameConnectionTypeLocal)
+    {
+        bdNetImpl* Instance = bdSingleton<bdNetImpl>::getInstance();
+        if (!Instance->getParams().m_onlineGame)
+        {
+            if (v10)
+            {
+                bdInetAddr v9 = bdInetAddr::Any();
+                if (!((bdDiscoveryServer*)((char*)this + 0x73B4))
+                         ->start(gameInfo, v9))
+                    v10 = false;
+            }
+            else
+            {
+                v10 = false;
+            }
+        }
+    }
+    return v10;
+}
+
+// ea: 0x0074F030
+void kuju::kvoicemanager::cVoiceManager::evaluatePlayers()
+{
+    MPPlayerManager* mgr =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    unsigned int mBitPlayers = mgr->allPlayersButMe(0).mBitPlayers;
+    for (unsigned int v2 = 0; v2 < 0x10; ++v2)
+    {
+        if (((1 << v2) & mBitPlayers) != 0)
+        {
+            if (mConnectedPlayers.containsPlayer(v2) == 0)
+                mConnectedPlayers.addPlayer(v2);
+        }
+        else
+        {
+            if (mConnectedPlayers.containsPlayer(v2) != 0)
+                mConnectedPlayers.removePlayer(v2);
+            mVoiceNetworkManager.resetPlayer(v2);
+            if (mRemoteListeners.containsPlayer(v2) != 0)
+                mRemoteListeners.removePlayer(v2);
+        }
+    }
+}
+
+// ea: 0x00760FE0
+void MPProfileMainMenu::DialogDisplayProfileSelected()
+{
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    DMS->BringUp("FEMENU_PROFILE_SELECTED", false, false, defaultFileName,
+                 true);
+    DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
+    int v3 = v2->GetActiveMenu();
+    v2->GetLayer(v3 == 0)->AddOption("FEMENU_PROFILE_EDIT",
+                                     DialogResponseProfileEdit);
+    DialogMenuSystem* v5 = g_femanager.GetDMS(currCl);
+    int v6 = v5->GetActiveMenu();
+    v5->GetLayer(v6 == 0)->AddOption("FEMENU_PROFILE_DELETE",
+                                     DialogResponseDelete);
+    DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
+    v8->HighlightOption(0);
+    DialogMenuSystem* v9 = g_femanager.GetDMS(currCl);
+    int v10 = v9->GetActiveMenu();
+    v9->GetLayer(v10 == 0)->Reformat(true, 0);
+}
+
+// ea: 0x0074C750
+void MPPlayerManager::HandleServerParams(const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUIInterface::mServerParams.Deserialize(buffer);
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUIInterface::mNextServerParams.Deserialize(buffer);
+    MPUIInterface::SetupCvars(true);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}
+
+// ea: 0x0072FA00
+const int MPUIInterface::GetScoreLimit(unsigned long index,
+                                       eGameType gameType)
+{
+    if (index >= (unsigned long)GetScoreLimitCount(gameType))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPUIInterface.cpp";
+        AeAssert::gCurrentLine = 1383;
+        AeAssert::gCurrentExpr = "index < GetScoreLimitCount(gameType)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    switch (gameType)
+    {
+    case GAME_TYPE_WAR:
+    case GAME_TYPE_DOM:
+    case GAME_TYPE_SND:
+        return mScoreLimitListWar[index];
+    case GAME_TYPE_CTF:
+    case GAME_TYPE_SCF:
+        return mScoreLimitListSCFCTF[index];
+    case GAME_TYPE_HQ:
+        return mScoreLimitListHQ[index];
+    case GAME_TYPE_TDM:
+        return mScoreLimitListTeamBattle[index];
+    case GAME_TYPE_DM:
+        return mScoreLimitListBattle[index];
+    default:
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPUIInterface.cpp";
+        AeAssert::gCurrentLine = 1400;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return -1;
+    }
+}
+
+// ea: 0x00739260
+void MPPlayerManager::HandleWeaponChange(const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player != nullptr)
+    {
+        if (Player->mConnection.m_ptr != nullptr
+            && Player->mConnection.m_ptr->getStatus() == bdConnection::BD_CONNECTED)
+        {
+            bdReference<bdMessage> msg = receivedMsg.getMessage();
+            bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+            int weapon = 0;
+            buffer.m_ptr->readRangedInt32(weapon, 0, 92);
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+                delete msg.m_ptr;
+        }
+    }
+}
+
+// ea: 0x00736380
+void MPPlayer::AnimEventSpecial(int animEvent)
+{
+    int mClientIndex = this->mClientIndex;
+    Entity* Player = mClientIndex >= 0
+                         ? EntityManager::sInst->GetPlayer(mClientIndex)
+                         : nullptr;
+    DObj* mDObj = Player->mDObj;
+    if (mDObj != nullptr)
+    {
+        AnimationPlayer* v6 = (AnimationPlayer*)mDObj->animPlayers[0];
+        if (v6 != nullptr && animEvent == 9)
+        {
+            MP_ANIM_INDEX* v7 = nullptr;
+            if (base_anim_indices[38 * (mAnimFlags & 0x1F) + 32]
+                    .anims[0].animIndex != 0)
+            {
+                v7 =
+                    &base_anim_names[base_anim_indices
+                                         [38 * (mAnimFlags & 0x1F) + 32]
+                                             .anims[0].animIndex];
+                if (v7->anim == nullptr
+                    && base_anim_indices[32].anims[0].animIndex != 0)
+                    v7 =
+                        &base_anim_names[base_anim_indices[32].anims[0]
+                                             .animIndex];
+            }
+            else if (base_anim_indices[32].anims[0].animIndex != 0)
+            {
+                v7 =
+                    &base_anim_names[base_anim_indices[32].anims[0].animIndex];
+            }
+            if (v7 != nullptr)
+            {
+                nalGeneric::nalGenericAnim* anim = v7->anim;
+                if (anim != nullptr)
+                    v6->Play(anim, true, 0.16f, nullptr, 0.0f, nullptr, 1.0f,
+                             0.0f);
+            }
+            this->bJumpPlayed = true;
+            this->bLanding = false;
+            this->bLandPlayed = false;
+            this->bWasInAir = false;
+            Player->sentient->mEnableTerrainMappingIK = false;
+        }
+    }
+}
+
+// ea: 0x0075A9E0
+bool MPProfileMainMenu::DialogResponseDelete(int index)
+{
+    (void)index;
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    DMS->BringUp("FEMENU_PROFILE_DELETE_TITLE", false, false,
+                 defaultFileName, true);
+    DialogMenuSystem* v1 = g_femanager.GetDMS(currCl);
+    int v2 = v1->GetActiveMenu();
+    v1->GetLayer(v2 == 0)->AddOption("FEMENU_PROFILE_DELETE_CANCEL",
+                                     DialogResponseDeleteCancel);
+    DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
+    int v5 = v4->GetActiveMenu();
+    v4->GetLayer(v5 == 0)->AddOption("FEMENU_PROFILE_DELETE_CONFIRM",
+                                     DialogResponseDeleteConfirm);
+    DialogMenuSystem* v7 = g_femanager.GetDMS(currCl);
+    v7->HighlightOption(0);
+    DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
+    int v9 = v8->GetActiveMenu();
+    v8->GetLayer(v9 == 0)->Reformat(true, 0);
+    return false;
+}
+
+// ea: 0x007380C0 (buffered_message +0x10, buffered_connection +0x810,
+// MP_MessageCallbacks +0x55C8)
+void MPPlayerManager::DispatchBufferedMessages()
+{
+    if (*(bool*)((char*)this + 0x4112))  // mLocalPlayerInGame
+    {
+        int mNumBufferedMessages = *(int*)((char*)this + 0x0C);
+        for (int i = 0; i < mNumBufferedMessages; ++i)
+        {
+            bdMessage* msg_ptr =
+                *(bdMessage**)((char*)this + 0x10 + 4 * i);
+            bdConnection* conn_ptr =
+                *(bdConnection**)((char*)this + 0x810 + 4 * i);
+            bdReference<bdMessage> msgRef;
+            msgRef.m_ptr = msg_ptr;
+            if (msg_ptr != nullptr)
+                ++msg_ptr->m_refCount;
+            bdReference<bdConnection> connRef;
+            connRef.m_ptr = conn_ptr;
+            if (conn_ptr != nullptr)
+                ++conn_ptr->m_refCount;
+            bdReceivedMessage recv_message(msgRef, connRef);
+            unsigned char Type = msg_ptr->getType();
+            void* fn = *(void**)((char*)this + 0x55C8 + 8 * Type);
+            int thisDelta = *(int*)((char*)this + 0x55C8 + 8 * Type + 4);
+            typedef void (__thiscall* CbFn)(void*, bdReceivedMessage*);
+            ((CbFn)fn)((char*)this + thisDelta, &recv_message);
+            if (msg_ptr != nullptr && msg_ptr->m_refCount-- == 1)
+                delete msg_ptr;
+            *(bdMessage**)((char*)this + 0x10 + 4 * i) = nullptr;
+            if (conn_ptr != nullptr && conn_ptr->m_refCount-- == 1)
+                delete conn_ptr;
+        }
+        *(int*)((char*)this + 0x0C) = 0;
+    }
+}
+
+// ea: 0x00731D90
+void MPOptionsControlsMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    mControlsText[2]->SetText(kControlsOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kControlsInstructionStrings[highlighted]);
+    Broc::string v11(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v11, mWidescreen ? 390 : 520, -1.5f);
+    float v5 = 1.0f;
+    if (highlighted != 2)
+        v5 = 0.5f;
+    ((FESlider*)this->entries[2])->mBar->SetAlpha(v5);
+    float v8 = 1.0f;
+    if (highlighted != 3)
+        v8 = 0.5f;
+    ((FESlider*)this->entries[3])->mBar->SetAlpha(v8);
+}
+
+// ea: 0x00731CA0
+void MPOptionsControlsMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    mControlsText[2]->SetText(kControlsOptionStrings[highlighted]);
+    const char* STBString = STBManager::sInst->GetSTBString(
+        kControlsInstructionStrings[highlighted]);
+    Broc::string v11(STBString);
+    mInstructionsText->SetTextBoxNoLocalize(
+        v11, mWidescreen ? 390 : 520, -1.5f);
+    float v5 = 1.0f;
+    if (highlighted != 2)
+        v5 = 0.5f;
+    ((FESlider*)this->entries[2])->mBar->SetAlpha(v5);
+    float v8 = 1.0f;
+    if (highlighted != 3)
+        v8 = 0.5f;
+    ((FESlider*)this->entries[3])->mBar->SetAlpha(v8);
+}
+
+// ea: 0x0073D000
+void MPUIInterface::SetupCvars(bool useCurrent)
+{
+    sServerCreateParams* v1 = &mServerParams;
+    if (!useCurrent)
+        v1 = &mNextServerParams;
+    Cvar_SetValue("mp_friendlyfire", v1->mFriendlyFire);
+    Cvar_SetValue("mp_teambalance", v1->mTeamBalancing);
+    Cvar_SetValue("mp_lastmanstanding", v1->mGameSubType);
+    Cvar_SetValue("mp_scorelimit",
+                  GetScoreLimit(v1->mScoreLimit, (eGameType)v1->mGameType));
+    Cvar_SetValue("mp_roundlimit", GetRoundLimit(v1->mRoundLimit));
+    Cvar_SetValue("mp_timelimit", GetTimeLimit(v1->mTimeLimit));
+    Cvar_SetValue("mp_respawntime", GetRespawnTime(v1->mRespawnTime));
+}
+
+// ea: 0x007501B0
+bool MultiplayerMgr::IsLocalPlayerPhysicsOwner(Entity* vehicle,
+                                               bool current_client_only)
+{
+    if (vehicle != nullptr)
+    {
+        if (!current_client_only)
+        {
+            scr_vehicle_t* scr_vehicle = vehicle->scr_vehicle;
+            unsigned int mVal = scr_vehicle->mPhysicsOwner.mHandle.mVal;
+            unsigned int v6 = mVal & 0xFFF;
+            bool invalid = v6 >= 0x540
+                           || mVal >> 12
+                                  != EntityHandleDb::sInst.mElements[v6].mKey
+                           || EntityHandleDb::sInst.mElements[v6].mObject
+                                  == nullptr;
+            if (!invalid)
+            {
+                Entity* v7 = scr_vehicle->mPhysicsOwner.operator->();
+                if (v7->IsLocalPlayer())
+                    return 1;
+            }
+            return scr_vehicle->mPhysicsOwner.mHandle.mVal == 0
+                   && MultiplayerMgr::sInst->mPeer != nullptr
+                   && ((bdSession*)((char*)MultiplayerMgr::sInst->mPeer
+                                    + 0x7448))
+                          ->getRole() == bdSession::BD_SESSION_HOST;
+        }
+        unsigned int v9 =
+            EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal;
+        unsigned int v10 = vehicle->scr_vehicle->mPhysicsOwner.mHandle.mVal;
+        if (v9 == v10
+            || (v10 == 0 && MultiplayerMgr::sInst->IsLocalClientHost(currCl)))
+            return 1;
+    }
+    return 0;
+}
+
+const int MPUIInterface::mScoreLimitListWar[5] = { 0, 50, 100, 200, 350 };
+const int MPUIInterface::mScoreLimitListHQ[5] = { 0, 100, 300, 500, 1000 };
+const int MPUIInterface::mScoreLimitListSCFCTF[5] = { 0, 3, 5, 10, 20 };
+const int MPUIInterface::mScoreLimitListTeamBattle[6] = {
+    0, 50, 100, 250, 500, 1000,
+};
+const int MPUIInterface::mScoreLimitListBattle[5] = { 0, 10, 20, 50, 100 };
+
+int MPPlayerManager::sNetworkFrameTime;
 
 // ea: 0x00762F20
 void MPPlayerManager::HandleDropWeapon(const bdReceivedMessage& receivedMsg)

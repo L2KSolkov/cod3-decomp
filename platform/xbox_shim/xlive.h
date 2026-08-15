@@ -76,6 +76,7 @@ typedef struct sServerCreateParams {
     unsigned char mEnablePenaltyVote; // +0x67
     unsigned char mMapRotation;       // +0x68
     void SetMapRotation(unsigned char MapRotation);  // mp.o 0x72F3B0
+    void Deserialize(bdReference<bdBitBuffer> buffer);  // ?Deserialize@sServerCreateParams@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
 } sServerCreateParams;
 
 // ============================================================================
