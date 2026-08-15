@@ -11,6 +11,7 @@
 EXTERN ?Die_MineDamaged@@YAXPAVEntity@@00HHHPBM0W4hitLocation_t@@@Z : PROC
 EXTERN ?Pain_trigger_damage@@YAXPAVEntity@@0HPBMH0W4hitLocation_t@@@Z : PROC
 EXTERN ?Die_trigger_damage@@YAXPAVEntity@@00HHHPBM0W4hitLocation_t@@@Z : PROC
+EXTERN ?VEH_GetPlayerFollowGoalPosition@@YAPAY02$$CBMPBUEntity@@0@Z : PROC
 
 _TEXT SEGMENT
 
@@ -31,6 +32,12 @@ PUBLIC ?Die_trigger_damage@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z
 ?Die_trigger_damage@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z PROC
     jmp ?Die_trigger_damage@@YAXPAVEntity@@00HHHPBM0W4hitLocation_t@@@Z
 ?Die_trigger_damage@@YAXPAVEntity@@00HHHQBM1W4hitLocation_t@@@Z ENDP
+
+; ea: 0x0044E6A0 - ?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z
+PUBLIC ?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z
+?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z PROC
+    jmp ?VEH_GetPlayerFollowGoalPosition@@YAPAY02$$CBMPBUEntity@@0@Z
+?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z ENDP
 
 _TEXT ENDS
 END
