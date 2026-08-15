@@ -31,6 +31,7 @@ public:
 
     DiagMat33();                     // ??0DiagMat33@math@@QAE@XZ (anim.o 0x539DC0)
     DiagMat33(const DiagMat33& m);   // ??0DiagMat33@math@@QAE@ABV01@@Z (anim.o 0x539F60)
+    DiagMat33(float _x, float _y, float _z);  // ??0DiagMat33@math@@QAE@MMM@Z (render.o 0x6E6510)
     const DiagMat33& operator=(const DiagMat33& m);  // ??4DiagMat33@math@@QAEABV01@ABV01@@Z (render.o 0x6E66E0)
     Dir3 GetX() const;               // ?GetX@DiagMat33@math@@QBE?AVDir3@2@XZ (anim.o 0x539DD0)
     Dir3 GetY() const;               // anim.o 0x539E10
@@ -50,6 +51,8 @@ public:
 
     // apsMath.o (non-inline): row-vector * 3x3 matrix. Unresolved here.
     const math::Dir3& operator*=(const math::Mat33& m);
+    const math::Dir3& operator+=(float _v);  // ??YDir3@math@@QAEABV01@M@Z (render.o 0x6E6490)
+    const math::Dir3& operator-=(float _v);  // ??ZDir3@math@@QAEABV01@M@Z (render.o 0x6E64D0)
 
     // cg.o inline COMDAT (??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z)
     const math::Dir3& operator-=(const math::Position3& v);
@@ -115,9 +118,6 @@ class Vector4 {
 public:
     __m128 v;
 
-    float operator[](int i) const { return v.m128_f32[i]; }
-    float& operator[](int i) { return v.m128_f32[i]; }
-
     struct Packed {
         float x, y, z, w;
         float GetX() const;  // ?GetX@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6020)
@@ -129,6 +129,15 @@ public:
         void SetZ(float _z);  // ?SetZ@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E5FE0)
         void SetW(float _w);  // ?SetW@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E6000)
     };
+
+    Vector4() {}
+    Vector4(const Dir3& _v, float _w);  // ??0Vector4@math@@QAE@ABVDir3@1@M@Z (render.o 0x6E6110)
+    Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
+    const Vector4& operator=(const Vector4::Packed& _p);  // ??4Vector4@math@@QAEABV01@ABUPacked@01@@Z (render.o 0x6E6220)
+    const Vector4& operator=(const Position3& _v);  // ??4Vector4@math@@QAEABV01@ABVPosition3@1@@Z (render.o 0x6E61D0)
+
+    float operator[](int i) const { return v.m128_f32[i]; }
+    float& operator[](int i) { return v.m128_f32[i]; }
 
     const Vector4& operator*=(const Mat44& m);  // ??XVector4@math@@QAEABV01@ABVMat44@1@@Z (streamer.o)
 };
@@ -209,7 +218,12 @@ static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
 // streamer.o SSE math COMDATs (defined in game/streamer/pakmanager.cpp)
 float    LengthSquared(const Position3& v);                       // ?LengthSquared@math@@YAMABVPosition3@1@@Z
 Vector4  operator+(const Vector4& a, const Position3& b);         // ??Hmath@@YA?AVVector4@0@ABV10@ABVPosition3@0@@Z
+Vector4  operator+(const Dir3& a, const Vector4& b);              // ??Hmath@@YA?AVVector4@0@ABVDir3@0@ABV10@@Z (render.o 0x6E6290)
 Vector4  operator/(const Vector4& a, float b);                    // ??Kmath@@YA?AVVector4@0@ABV10@M@Z
+Vector4  operator*(const Vector4& a, float b);                    // ??Dmath@@YA?AVVector4@0@ABV10@M@Z (render.o 0x6E62E0)
+float    operator*(const Vector4& a, const Vector4& b);           // ??Dmath@@YAMABVVector4@0@0@Z (render.o 0x6E6320)
+Position3 Mul(const Position3& v, const Mat33& m);                // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat33@1@@Z (render.o 0x6E6700)
+Position3 operator*(const Position3& v, const Mat33& m);          // ??Dmath@@YA?AVPosition3@0@ABV10@ABVMat33@0@@Z (render.o 0x6E6770)
 Vector4  Mul(const Position3& v, const Mat44& m);                 // ?Mul@math@@YA?AVVector4@1@ABVPosition3@1@ABVMat44@1@@Z
 Vector4  operator*(const Position3& v, const Mat44& m);           // ??Dmath@@YA?AVVector4@0@ABVPosition3@0@ABVMat44@0@@Z
 Mat44    Mul(const Mat44& a, const Mat33& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z
@@ -223,6 +237,8 @@ Vector4  Vector4_One();                                           // ?Vector4_On
 // ============================================================================
 struct TranMat43 {
     __m128 v;
+    TranMat43() {}
+    TranMat43(float _x, float _y, float _z);  // ??0TranMat43@math@@QAE@MMM@Z (render.o 0x6E6580)
 };
 static_assert(sizeof(TranMat43) == 0x10, "TranMat43 size mismatch");
 

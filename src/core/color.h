@@ -39,6 +39,7 @@ public:
     float get_green() const;  // ?get_green@Color@@QBEMXZ (render.o 0x6E5A40)
     float get_blue() const;   // ?get_blue@Color@@QBEMXZ (render.o 0x6E5A50)
     float get_alpha() const;  // ?get_alpha@Color@@QBEMXZ (render.o 0x6E5A60)
+    Color operator*(const Color& c) const;  // ??DColor@@QBE?AV0@ABV0@@Z (render.o 0x6E5D50)
     Color32 to_color32() const;  // ?to_color32@Color@@QBE?AVColor32@@XZ (render.o 0x6E5A70)
 };
 static_assert(sizeof(Color) == 0x10, "Color size mismatch");

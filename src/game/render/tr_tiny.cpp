@@ -11,6 +11,18 @@
 #include <stddef.h>
 #include <new>
 
+namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmtstring, ...);
+}
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);  // ?_tlAssert@@YA_NPBDH00@Z (tl)
+
 // Param-ID globals (assigned at register time; -1 = unassigned sentinel).
 unsigned int nglTintParamID = 0xFFFFFFFF;          // ?nglTintParamID@@3IA @ 0x10E305C
 unsigned int nglTextureFrameParamID = 0xFFFFFFFF;  // ?nglTextureFrameParamID@@3IA @ 0x10E3040
@@ -56,23 +68,23 @@ struct nglLightContextParamType {
     static unsigned int GetID();     // ?GetID@nglLightContextParamType@@SAIXZ @ 0x6E7720
     nglLightContextParamType operator()(nglLightContext* value);  // ??RnglLightContextParamType@@QAE?AU0@PAUnglLightContext@@@Z @ 0x6E7730
 };
-class TextureMatrixParamType {
+struct TextureMatrixParamType {
 public:
     static unsigned int GetID();  // ?GetID@TextureMatrixParamType@@SAIXZ @ 0x6E7F20
 };
-class isRotatingTextureParamType {
+struct isRotatingTextureParamType {
 public:
     static unsigned int GetID();  // ?GetID@isRotatingTextureParamType@@SAIXZ @ 0x6E7F30
 };
-class cdSimpleAlphaAlphaParamType {
+struct cdSimpleAlphaAlphaParamType {
 public:
     static unsigned int GetID();  // ?GetID@cdSimpleAlphaAlphaParamType@@SAIXZ @ 0x6E7F40
 };
-class cdWheelMarkShaderDataType {
+struct cdWheelMarkShaderDataType {
 public:
     static unsigned int GetID();  // ?GetID@cdWheelMarkShaderDataType@@SAIXZ @ 0x6E84D0
 };
-class cdFlagRandomSeedType {
+struct cdFlagRandomSeedType {
 public:
     static unsigned int GetID();  // ?GetID@cdFlagRandomSeedType@@SAIXZ @ 0x6E85A0
 };
@@ -302,6 +314,33 @@ public:
     struct RaycastData;
     uint8_t _pad[0x14];
     int culled;                      // +0x14
+    short mIndex_first;              // +0x18
+    short mIndex_second;             // +0x1A
+    void* mEffect;                   // +0x1C
+    uint8_t _pad2[0x24 - 0x20];
+    void* mPoPtr;                    // +0x24
+    unsigned int mDObjHandle;        // +0x28
+    unsigned int mEntHandle;         // +0x2C
+    uint8_t _pad3[0x32 - 0x30];
+    unsigned short mMask;            // +0x32
+    int mPakId;                      // +0x34
+    void* mRaycastData;              // +0x38
+    ParticleEffect()                 // ??0ParticleEffect@@QAE@XZ (closure body)
+    {
+        mDObjHandle = 0;
+        mEntHandle = 0;
+        mMask = 0;
+        mIndex_first = -1;
+        mIndex_second = -1;
+        mEffect = nullptr;
+        mPoPtr = nullptr;
+        mPakId = (int)0xFFFFFFFF;
+        mMask = (unsigned short)(mMask | 0x10u);
+        mRaycastData = nullptr;
+        ((float*)this)[3] = -1.0f;   // cached_pos[3]
+        culled = 0;
+    }
+    ~ParticleEffect();               // ??1ParticleEffect@@QAE@XZ (defined elsewhere)
     int IsCulled() const;            // ?IsCulled@ParticleEffect@@QBEHXZ @ 0x6E6660
     void SetCulled(int value);       // ?SetCulled@ParticleEffect@@QAEXH@Z @ 0x6E6620
 };
@@ -481,8 +520,11 @@ void DObj::ClearLODAnim() { mLODAnim = -1; }
 class cdl_proftimer {
 public:
     float value;                     // +0x00
+    uint8_t _pad[4];
+    __int64 ticks;                   // +0x08
     void start();                    // ?start@cdl_proftimer@@QAEXXZ
     void stop();                     // ?stop@cdl_proftimer@@QAEXXZ
+    float get_elapsed();             // ?get_elapsed@cdl_proftimer@@QAEMXZ @ 0x6E7EB0
     void reset();                    // ?reset@cdl_proftimer@@QAEXXZ @ 0x6E7EA0
 };
 void cdl_proftimer::reset() { value = 0; }
@@ -574,6 +616,8 @@ DebugTri::DebugTri() {}
 // ============================================================================
 class ApsGameClient {
 public:
+    ApsGameClient();                 // ??0ApsGameClient@@QAE@XZ @ 0x6F0580
+    virtual ~ApsGameClient() {}      // vtable
     struct ApsDebugSphere {
         uint8_t _pad[0x24];
         float age;                   // +0x24
@@ -584,7 +628,22 @@ public:
         float age;                   // +0x30
         ApsDebugLine();              // ??0ApsDebugLine@ApsGameClient@@QAE@XZ @ 0x6E8710
     };
+    void* m_debugSpheres_Myfirst;    // +0x08
+    void* m_debugSpheres_Mylast;     // +0x0C
+    void* m_debugSpheres_Myend;      // +0x10
+    void* m_debugLines_Myfirst;      // +0x18
+    void* m_debugLines_Mylast;       // +0x1C
+    void* m_debugLines_Myend;        // +0x20
 };
+ApsGameClient::ApsGameClient()
+{
+    m_debugSpheres_Myfirst = nullptr;
+    m_debugSpheres_Mylast = nullptr;
+    m_debugSpheres_Myend = nullptr;
+    m_debugLines_Myfirst = nullptr;
+    m_debugLines_Mylast = nullptr;
+    m_debugLines_Myend = nullptr;
+}
 ApsGameClient::ApsDebugSphere::ApsDebugSphere() { age = 0.0f; }
 ApsGameClient::ApsDebugLine::ApsDebugLine() { age = 0.0f; }
 
@@ -765,6 +824,7 @@ public:
     void set_size(int s);            // ?set_size@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEXH@Z @ 0x6EA1F0
     T& back();                       // ?back@?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@QAEAAULightIndex@LightGrid@@XZ @ 0x6EC900
     T& pop_back();                   // ?pop_back@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEAAV?$ae_pair@FF@@XZ @ 0x6E8EE0
+    T& expand();                     // ?expand@?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@QAEAAULightIndex@LightGrid@@XZ @ 0x6E92F0
     void clear();                    // ?clear@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEXXZ @ 0x6EC6A0
 };
 template <class T, int N>
@@ -811,6 +871,7 @@ template class ae_pair<short, short>;
 class DebugTexturedQuad2D {
 public:
     uint8_t _pad[0x28];
+    DebugTexturedQuad2D& operator=(const DebugTexturedQuad2D& other);  // ??4DebugTexturedQuad2D@@QAEAAV0@ABV0@@Z @ 0x6E9F00
 };
 class LightEffect;
 class ParticleEffect;
@@ -915,6 +976,7 @@ public:
         dlist_node* m_node;          // +0x00
         dlist_node* m_next;          // +0x04
         iterator(dlist_node* cur, dlist_node* next);  // ??0iterator@?$reserved_dlist@VtrRefEntity@@@@QAE@PAUdlist_node@1@0@Z @ 0x6EA480
+        iterator(reserved_dlist& dlist);  // ??0iterator@?$reserved_dlist@VtrRefEntity@@@@QAE@AAV1@@Z @ 0x6ED760
         T* operator*();              // ??Diterator@?$reserved_dlist@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ @ 0x6ED060
         iterator& operator++();      // ??Eiterator@?$reserved_dlist@VtrRefEntity@@@@QAEAAV01@XZ @ 0x6E9AE0
         bool compare(const iterator& rhs) const;  // ?compare@iterator@?$reserved_dlist@VtrRefEntity@@@@QBE_NABV12@@Z @ 0x6EA4A0
@@ -924,6 +986,7 @@ public:
     dlist_node* get_head();          // ?get_head@?$reserved_dlist@VtrRefEntity@@@@QAEPAUdlist_node@1@XZ @ 0x6EA630
     bool empty() const;              // ?empty@?$reserved_dlist@VtrRefEntity@@@@QBE_NXZ @ 0x6EA640
     void clear();                    // ?clear@?$reserved_dlist@VtrRefEntity@@@@QAEXXZ @ 0x6E8CA0
+    iterator begin();                // ?begin@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ @ 0x6EE5B0
     iterator end();                  // ?end@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ @ 0x6EC5C0
     void push_back(T* obj);          // ?push_back@?$reserved_dlist@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z @ 0x6EC590
     static T* node_to_object(dlist_node* node);  // ?node_to_object@?$reserved_dlist@VtrRefEntity@@@@SAPAVtrRefEntity@@PAUdlist_node@1@@Z @ 0x6EA190
@@ -977,6 +1040,8 @@ public:
     phys_static_array();             // ??0?$phys_static_array@...@@QAE@XZ
     ~phys_static_array() {}          // ??1?$phys_static_array@...@@QAE@XZ @ 0x6EC5E0/0x6ED040/0x6EF050
     int get_count() const;           // ?get_count@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QBE?BHXZ @ 0x6E9AD0
+    T* add(bool no_error, const char* error_msg);  // ?add@?$phys_static_array@...@@QAEP...@@_NPBD@Z
+    T& operator[](int i);            // ??A?$phys_static_array@...@@QAEAA...@@H@Z @ 0x6E9A70
     void remove_all();               // ?remove_all@?$phys_static_array@...@@QAEXXZ
 private:
     void call_destructors() {}       // ?call_destructors@?$phys_static_array@...@@AAEXXZ
@@ -1063,6 +1128,8 @@ public:
     unsigned int capacity() const;                // ?capacity@?$vector@...@@std@@QBEIXZ
     iterator begin();                             // ?begin@?$vector@...@@std@@QAE?AViterator@12@XZ
     iterator end();                               // ?end@?$vector@...@@std@@QAE?AViterator@12@XZ
+    iterator erase(iterator _First, iterator _Last);  // ?erase@?$vector@...@@std@@QAE?AViterator@12@V312@0@Z
+    iterator erase(iterator _Where);                  // ?erase@?$vector@...@@std@@QAE?AViterator@12@V312@@Z
     void clear();                                 // ?clear@?$vector@...@@std@@QAEXXZ
     void resize(unsigned int _Newsize);           // ?resize@?$vector@...@@std@@QAEXI@Z
     void resize(unsigned int _Newsize, T _Val);   // 3-arg form (defined elsewhere)
@@ -1073,8 +1140,10 @@ public:
 protected:
     template <class It>
     It _Ucopy(It _First, It _Last, It _Dest);     // ??$_Ucopy@...@?$vector@...@@std@@IAE...@@Z
+    bool _Buy(unsigned int _Capacity);            // ?_Buy@?$vector@...@@std@@IAE_NI@Z
     T* _Ufill(T* _Ptr, unsigned int _Count, const T& _Val);  // ?_Ufill@?$vector@...@@std@@IAEPAU...@@PAU34@IABU34@@Z
     void _Tidy();                                 // ?_Tidy@?$vector@...@@std@@IAEXXZ
+    void _Xlen() const;                           // ?_Xlen@?$vector@...@@std@@IBEXXZ (defined elsewhere)
     void _Destroy(T*, T*) {}                      // ?_Destroy@?$vector@...@@std@@IAEXPAU...@@0@Z
 };
 
@@ -1101,6 +1170,8 @@ void _Construct(T* _Ptr, const U& _Val);          // ??$_Construct@U...@@std@@YA
 
 template <class It, class Pred>
 It find_if(It _First, It _Last, Pred);            // ??$find_if@...@@std@@YA...@@Z
+template <class It, class Pred>
+It remove_if(It _First, It _Last, Pred);          // ??$remove_if@...@@std@@YA...@@Z
 template <class It, class Out, class Pred>
 Out remove_copy_if(It _First, It _Last, Out _Dest, Pred);  // ??$remove_copy_if@...@@std@@YA...@@Z
 template <class It, class T>
@@ -1339,6 +1410,12 @@ class nglParamSet {
 protected:
     unsigned int* Array;              // +0x00
     unsigned int& ArrayEntry(unsigned int Idx);  // ?ArrayEntry@nglParamSet@@IAEAAII@Z @ 0x6E7660
+    void _Set(unsigned int ID, unsigned int Value);  // ?_Set@nglParamSet@@IAEXII@Z @ 0x6EBBD0
+public:
+    template <class T>
+    void Set(const T& param);         // ??$Set@U...@@nglParamSet@@QAEXABU...@@@Z
+    template <class T, class U>
+    void Set(const T& param, U value);  // ??$Set@U...@@nglParamSet@@QAEXABU...@@...@@Z
 };
 unsigned int& nglParamSet::ArrayEntry(unsigned int Idx)
 {
@@ -1429,6 +1506,8 @@ public:
     int cur_index;                   // +0x04
     unsigned short* index;           // +0x08
     T* vertex;                         // +0x0C
+    T* vertex_base;                    // +0x10
+    nglMeshIterator(nglMeshSection* section);  // ??0?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAE@PAUnglMeshSection@@@Z @ 0x6E9B80
     const nglMeshIterator<T, I>& operator++();  // ??E?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAEABV0@XZ @ 0x6E9C90
     void BeginStrip(int strip);      // ?BeginStrip@?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAEXH@Z @ 0x6E9BC0
     void WritePosition(float x, float y, float z);  // ?WritePosition@...@@QAEXMMM@Z @ 0x6E9C00
@@ -2014,6 +2093,26 @@ template void std::_Uninit_fill_n<DynamicDecalMgr::DecalSet*, unsigned int,
                                   std::allocator<DynamicDecalMgr::DecalSet>>(
     DynamicDecalMgr::DecalSet*, unsigned int, const DynamicDecalMgr::DecalSet&,
     std::allocator<DynamicDecalMgr::DecalSet>&, std::_Nonscalar_ptr_iterator_tag);
+template void std::_Uninit_fill_n<ApsGameClient::ApsDebugSphere*, unsigned int,
+                                  ApsGameClient::ApsDebugSphere,
+                                  std::allocator<ApsGameClient::ApsDebugSphere>>(
+    ApsGameClient::ApsDebugSphere*, unsigned int, const ApsGameClient::ApsDebugSphere&,
+    std::allocator<ApsGameClient::ApsDebugSphere>&, std::_Nonscalar_ptr_iterator_tag);
+template void std::_Uninit_fill_n<ApsGameClient::ApsDebugLine*, unsigned int,
+                                  ApsGameClient::ApsDebugLine,
+                                  std::allocator<ApsGameClient::ApsDebugLine>>(
+    ApsGameClient::ApsDebugLine*, unsigned int, const ApsGameClient::ApsDebugLine&,
+    std::allocator<ApsGameClient::ApsDebugLine>&, std::_Nonscalar_ptr_iterator_tag);
+template ApsGameClient::ApsDebugSphere*
+std::_Uninit_copy<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+                  std::allocator<ApsGameClient::ApsDebugSphere>>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+    std::allocator<ApsGameClient::ApsDebugSphere>&, std::_Nonscalar_ptr_iterator_tag);
+template ApsGameClient::ApsDebugLine*
+std::_Uninit_copy<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+                  std::allocator<ApsGameClient::ApsDebugLine>>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+    std::allocator<ApsGameClient::ApsDebugLine>&, std::_Nonscalar_ptr_iterator_tag);
 
 template DynamicDecalMgr::DecalSet*
 std::vector<DynamicDecalMgr::DecalSet,
@@ -2199,3 +2298,411 @@ void force_emit_AnimationPlayer_delete(AnimationPlayer* p) { delete p; }
 void force_emit_cdAepsShader_delete(cdAepsShader* p) { delete p; }
 void force_emit_apsClient_delete(apsClient* p) { delete[] p; }
 void force_emit_physvec_delete(phys_static_array<math::Vector4, 20>* p) { delete p; }
+
+// ============================================================================
+// batch 90 - 46..90 byte render.o symbols
+// ============================================================================
+#include <string.h>
+
+float Clamp01(float iVal)  // ?Clamp01@@YAMM@Z @ 0x6E6DD0
+{
+    if (iVal < 0.0f)
+        return 0.0f;
+    if (iVal <= 1.0f)
+        return iVal;
+    return 1.0f;
+}
+
+struct nglShaderParamSet : public nglParamSet {
+public:
+    static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA
+    void Copy(const nglShaderParamSet& src);  // ?Copy@nglShaderParamSet@@QAEXABU1@@Z @ 0x6E7680
+};
+void nglShaderParamSet::Copy(const nglShaderParamSet& src)
+{
+    memcpy(this->Array, src.Array, NumParams * 4 + 8);
+}
+
+const math::Dir3& math::Dir3::operator+=(float _v)  // 0x6E6490
+{
+    v = _mm_add_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
+const math::Dir3& math::Dir3::operator-=(float _v)  // 0x6E64D0
+{
+    v = _mm_sub_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
+
+math::Vector4 math::operator*(const math::Vector4& _a, float _b)  // 0x6E62E0
+{
+    math::Vector4 result;
+    result.v = _mm_mul_ps(_a.v, _mm_set1_ps(_b));
+    return result;
+}
+float math::operator*(const math::Vector4& _a, const math::Vector4& _b)  // 0x6E6320
+{
+    __m128 v2 = _mm_mul_ps(_a.v, _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+              + (_mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]
+                 + _mm_shuffle_ps(v2, v2, 0xFF).m128_f32[0]));
+}
+math::Vector4 math::operator+(const math::Dir3& _a, const math::Vector4& _b)  // 0x6E6290
+{
+    math::Vector4 result;
+    result.v = _mm_add_ps(
+        _mm_shuffle_ps(_a.v, _mm_shuffle_ps(_mm_setzero_ps(), _a.v, 0xA0), 0x34),
+        _b.v);
+    return result;
+}
+
+math::Vector4::Vector4(const math::Dir3& _v, float _w)  // 0x6E6110
+{
+    __m128 t = _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0);
+    __m128 u = _mm_shuffle_ps(_v.v, t, 0x34);
+    __m128 w2 = _mm_shuffle_ps(_mm_set1_ps(_w), u, 0xA0);
+    v = _mm_shuffle_ps(u, w2, 0x34);
+}
+math::Vector4::Vector4(const math::Vector4::Packed& _p)  // 0x6E6160
+{
+    v = _mm_setr_ps(_p.x, _p.y, _p.z, _p.w);
+}
+const math::Vector4& math::Vector4::operator=(const math::Vector4::Packed& _p)  // 0x6E6220
+{
+    v = _mm_setr_ps(_p.x, _p.y, _p.z, _p.w);
+    return *this;
+}
+const math::Vector4& math::Vector4::operator=(const math::Position3& _v)  // 0x6E61D0
+{
+    __m128 t = _mm_shuffle_ps(_mm_set1_ps(1.0f), _v.v, 0xA0);
+    v = _mm_shuffle_ps(_v.v, t, 0x34);
+    return *this;
+}
+
+math::DiagMat33::DiagMat33(float _x, float _y, float _z)  // 0x6E6510
+{
+    v = _mm_setr_ps(_x, _y, _z, 0.0f);
+}
+math::TranMat43::TranMat43(float _x, float _y, float _z)  // 0x6E6580
+{
+    v = _mm_setr_ps(_x, _y, _z, 0.0f);
+}
+
+math::Position3 math::Mul(const math::Position3& _v, const math::Mat33& _m)  // 0x6E6700
+{
+    math::Position3 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0x55), _m.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0xAA), _m.z.v));
+    return result;
+}
+math::Position3 math::operator*(const math::Position3& _v, const math::Mat33& _m)  // 0x6E6770
+{
+    return math::Mul(_v, _m);
+}
+
+Color Color::operator*(const Color& c) const  // 0x6E5D50
+{
+    Color result;
+    result.r = c.r * this->r;
+    result.g = c.g * this->g;
+    result.b = c.b * this->b;
+    result.a = c.a * this->a;
+    return result;
+}
+
+// nglParamSet::_Set + Set templates
+void nglParamSet::_Set(unsigned int ID, unsigned int Value)  // ?_Set@nglParamSet@@IAEXII@Z @ 0x6EBBD0
+{
+    unsigned int* Array = this->Array;
+    unsigned int v4 = Array[1];
+    *Array = (unsigned int)((1ui64 << ID) | *this->Array);
+    Array[1] = (unsigned int)((1ui64 << ID) >> 32) | v4;
+    this->Array[ID + 2] = Value;
+}
+template <class T>
+void nglParamSet::Set(const T& param)
+{
+    _Set(T::GetID(), (unsigned int)param.Value);
+}
+template <class T, class U>
+void nglParamSet::Set(const T& param, U value)
+{
+    (void)param;
+    _Set(T::GetID(), (unsigned int)value);
+}
+template void nglParamSet::Set<nglLightContextParamType>(const nglLightContextParamType&);
+template void nglParamSet::Set<nglTintParamType>(const nglTintParamType&);
+template void nglParamSet::Set<nglTextureFrameParamType>(const nglTextureFrameParamType&);
+template void nglParamSet::Set<TextureMatrixParamType, math::Mat44*>(
+    const TextureMatrixParamType&, math::Mat44*);
+template void nglParamSet::Set<isRotatingTextureParamType, int>(
+    const isRotatingTextureParamType&, int);
+template void nglParamSet::Set<nglLightContextParamType, nglLightContext*>(
+    const nglLightContextParamType&, nglLightContext*);
+template void nglParamSet::Set<cdFlagRandomSeedType, unsigned int>(
+    const cdFlagRandomSeedType&, unsigned int);
+struct cdWheelMarkShaderStruct;
+template void nglParamSet::Set<cdWheelMarkShaderDataType, cdWheelMarkShaderStruct*>(
+    const cdWheelMarkShaderDataType&, cdWheelMarkShaderStruct*);
+template void nglParamSet::Set<cdSimpleAlphaAlphaParamType, float>(
+    const cdSimpleAlphaAlphaParamType&, float);
+
+float cdl_proftimer::get_elapsed()  // ?get_elapsed@cdl_proftimer@@QAEMXZ @ 0x6E7EB0
+{
+    return (float)((double)ticks * 0.0000013636364);
+}
+void int_clamp(int& ioIVal, float& ioFVal, int iLo, int iHi)  // ?int_clamp@@YAXAAHAAMHH@Z @ 0x6E69A0
+{
+    if (ioIVal < iLo)
+    {
+        ioIVal = iLo;
+        ioFVal = (float)iLo;
+    }
+    if (ioIVal > iHi)
+    {
+        ioIVal = iHi;
+        if (ioFVal >= (float)(iHi + 1))
+            ioFVal = (float)((double)iHi + 0.99900001287460327);
+    }
+}
+
+// nglMeshIterator ctor
+extern void* nglLockSectionIndices(nglMeshSection* section);   // ?nglLockSectionIndices@@YAPAXPAUnglMeshSection@@@Z
+extern void* nglLockSectionVertices(nglMeshSection* section);  // ?nglLockSectionVertices@@YAPAXPAUnglMeshSection@@@Z
+template <class T, class I>
+nglMeshIterator<T, I>::nglMeshIterator(nglMeshSection* section)  // ??0?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAE@PAUnglMeshSection@@@Z @ 0x6E9B80
+{
+    this->section = section;
+    this->index = (unsigned short*)nglLockSectionIndices(section);
+    T* v3 = (T*)nglLockSectionVertices(section);
+    this->vertex_base = v3;
+    this->vertex = v3;
+    this->cur_index = 0;
+}
+template class nglMeshIterator<cdDynamicDecalVertex, unsigned short>;
+
+// backEndData_t
+class backEndData_t {
+public:
+    reserved_dlist<trRefEntity> entities;      // +0x00
+    reserved_dlist<trRefEntity> viewmodels;    // +0x14
+    backEndData_t();                           // ??0backEndData_t@@QAE@XZ @ 0x6EE520
+};
+backEndData_t::backEndData_t()
+{
+    entities.m_size = 0;
+    entities.m_head = (reserved_dlist<trRefEntity>::dlist_node*)&entities.m_end;
+    entities.m_end = nullptr;
+    entities.m_tail = (reserved_dlist<trRefEntity>::dlist_node*)&entities.m_head;
+    viewmodels.m_size = 0;
+    viewmodels.m_head = (reserved_dlist<trRefEntity>::dlist_node*)&viewmodels.m_end;
+    viewmodels.m_end = nullptr;
+    viewmodels.m_tail = (reserved_dlist<trRefEntity>::dlist_node*)&viewmodels.m_head;
+}
+
+// reserved_dlist begin / iterator copy-ctor-from-list
+template <class T>
+typename reserved_dlist<T>::iterator reserved_dlist<T>::begin()  // ?begin@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ @ 0x6EE5B0
+{
+    iterator result(m_head, m_head != nullptr ? m_head->m_next : nullptr);
+    if (m_head == (dlist_node*)&m_end)
+    {
+        result.m_next = nullptr;
+        result.m_node = nullptr;
+    }
+    return result;
+}
+template <class T>
+reserved_dlist<T>::iterator::iterator(reserved_dlist& dlist)  // ??0iterator@?$reserved_dlist@VtrRefEntity@@@@QAE@AAV1@@Z @ 0x6ED760
+{
+    m_node = dlist.m_head;
+    m_next = dlist.m_head != nullptr ? dlist.m_head->m_next : nullptr;
+    if (dlist.m_head == (dlist_node*)&dlist.m_end)
+    {
+        m_next = nullptr;
+        m_node = nullptr;
+    }
+}
+
+// phys_static_array add / operator[]
+extern void tlFatal(const char* fmt, ...);  // ?tlFatal@@YAXPBDZZ
+extern char const* const defaultFileName;   // ?defaultFileName@@3QBDB
+template <class T, int N>
+T* phys_static_array<T, N>::add(bool no_error, const char* error_msg)  // ?add@?$phys_static_array@...@@QAEP...@@_NPBD@Z
+{
+    if (m_alloc_count < N)
+    {
+        T* result = &m_slot_array[m_alloc_count];
+        ++m_alloc_count;
+        return result;
+    }
+    if (!no_error)
+        tlFatal(error_msg);
+    return nullptr;
+}
+template <class T, int N>
+T& phys_static_array<T, N>::operator[](int i)  // ??A?$phys_static_array@...@@QAEAA...@@H@Z @ 0x6E9A70
+{
+    if ((i < 0 || i >= m_alloc_count)
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+               108, "i >= 0 && i < m_alloc_count", defaultFileName))
+    {
+        __debugbreak();
+    }
+    return m_slot_array[i];
+}
+
+// ae_sized_array expand
+template <class T, int N>
+T& ae_sized_array<T, N>::expand()  // ?expand@?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@QAEAAULightIndex@LightGrid@@XZ @ 0x6E92F0
+{
+    if (m_size >= N)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 192;
+        AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no room left in array"))
+            __debugbreak();
+    }
+    int m_size = this->m_size;
+    this->m_size = m_size + 1;
+    return m_elements[m_size];
+}
+
+// std::vector erase/_Buy
+template <class T, class A>
+typename std::vector<T, A>::iterator std::vector<T, A>::erase(iterator _First,
+                                                               iterator _Last)
+{
+    if (_First._Myptr != _Last._Myptr)
+    {
+        T* Myptr = _Last._Myptr;
+        T* Mylast = this->_Mylast;
+        T* v6 = _First._Myptr;
+        if (_Last._Myptr != Mylast)
+        {
+            do
+            {
+                *v6 = *Myptr;
+                ++Myptr;
+                ++v6;
+            } while (Myptr != Mylast);
+        }
+        this->_Mylast = v6;
+    }
+    return iterator(_First._Myptr);
+}
+template <class T, class A>
+typename std::vector<T, A>::iterator std::vector<T, A>::erase(iterator _Where)
+{
+    T* Mylast = this->_Mylast;
+    T* v4 = _Where._Myptr + 1;
+    if (v4 != Mylast)
+    {
+        T* Myptr = _Where._Myptr;
+        do
+        {
+            *Myptr = *v4;
+            ++v4;
+            ++Myptr;
+        } while (v4 != Mylast);
+    }
+    --this->_Mylast;
+    return iterator(_Where._Myptr);
+}
+template <class T, class A>
+bool std::vector<T, A>::_Buy(unsigned int _Capacity)
+{
+    this->_Myfirst = nullptr;
+    this->_Mylast = nullptr;
+    this->_Myend = nullptr;
+    if (_Capacity == 0)
+        return false;
+    if (_Capacity > (unsigned int)(((size_t)-1) / sizeof(T)))
+        this->_Xlen();
+    T* v4 = (T*)mem_heap_malloc(sizeof(T) * _Capacity);
+    this->_Myend = &v4[_Capacity];
+    this->_Myfirst = v4;
+    this->_Mylast = v4;
+    return true;
+}
+
+// std::remove_if
+template <class It, class Pred>
+It std::remove_if(It _First, It _Last, Pred _Pred)  // ??$remove_if@...@@std@@YA...@@Z
+{
+    It result = _First;
+    if (_First != _Last)
+    {
+        while (!_Pred(*result))
+        {
+            if (++result == _Last)
+                return result;
+        }
+        if (result != _Last)
+        {
+            for (It i = result + 1; i != _Last; ++i)
+            {
+                if (!_Pred(*i))
+                    *result++ = *i;
+            }
+        }
+    }
+    return result;
+}
+template ParticleEffect**
+std::remove_if<ParticleEffect**, ParticleEraserPred>(
+    ParticleEffect**, ParticleEffect**, ParticleEraserPred);
+template LightEffect**
+std::remove_if<LightEffect**, LightEraserPred>(
+    LightEffect**, LightEffect**, LightEraserPred);
+
+// DebugTexturedQuad2D assign
+DebugTexturedQuad2D& DebugTexturedQuad2D::operator=(const DebugTexturedQuad2D& other)  // ??4DebugTexturedQuad2D@@QAEAAV0@ABV0@@Z @ 0x6E9F00
+{
+    memcpy(this, &other, sizeof(DebugTexturedQuad2D));
+    return *this;
+}
+
+// ParticleEffect default ctor closure + array new/delete triggers
+class ParticleEffect;
+static volatile int particle_array_count_volatile = 1;
+__declspec(noinline)
+void force_emit_ParticleEffect_arrays(ParticleEffect*& out, ParticleEffect* in,
+                                      int count)
+{
+    (void)count;
+    out = new ParticleEffect[particle_array_count_volatile];
+    delete[] in;
+}
+// DynamicDecalSet scalar deleting destructor trigger
+class DynamicDecalSet {
+public:
+    void* mViewToWorldMtx;           // +0x00
+    void* mDecals;                   // +0x04
+    ~DynamicDecalSet();              // ??1DynamicDecalSet@@QAE@XZ (defined elsewhere)
+    static void operator delete(void* ptr) { mem_heap_free(ptr); }
+};
+void force_emit_DynamicDecalSet_delete(DynamicDecalSet* p) { delete p; }
+void force_emit_ae_vector_pe_delete(ae_vector<ParticleEffect*>* p) { delete p; }
+
+// odr-use triggers for nglParamSet::Set instantiations
+void force_emit_nglParamSet_Sets(nglParamSet* ps, nglTintParamType* tint,
+                                 math::Mat44* mtx, int iVal,
+                                 nglLightContext* lc, unsigned int uVal,
+                                 cdWheelMarkShaderStruct* wms, float fVal)
+{
+    ps->Set(*tint);
+    ps->Set(TextureMatrixParamType(), mtx);
+    ps->Set(isRotatingTextureParamType(), iVal);
+    ps->Set(nglLightContextParamType(), lc);
+    ps->Set(cdFlagRandomSeedType(), uVal);
+    ps->Set(cdWheelMarkShaderDataType(), wms);
+    ps->Set(cdSimpleAlphaAlphaParamType(), fVal);
+}
