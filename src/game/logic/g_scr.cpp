@@ -64,7 +64,7 @@ void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
 void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
                           const tlFixedString& animation_name,
                           int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
-void AnimationToBroLookup(char* tree_name, int tree_index,
+void AnimationToBroLookup(const char* tree_name, int tree_index,
                           int animation_name_brohashed,
                           int animation_index);  // 0x5BE040
 void AnimationValidator(int numTrees);  // ?AnimationValidator@BrocHelper@@YAXH@Z (0x5BE100)
@@ -3037,7 +3037,7 @@ void ObjectiveChildCurrent(int iObjective, int iChild,
                            const char* pDisplay);  // 0x5C6C90
 void ObjectiveCurrent(int iObjective, const char* pDisplay);  // 0x5C6DE0
 void BrocDebugRender();  // 0x5BDEA0
-void* CreateExtendedEntity();  // 0x5BDF00
+void* CreateExtendedEntity(const char** keys, int count);  // 0x5BDF00
 bool RecompileScript();  // 0x5BDFB0
 void GetJoyPos(int stickIndex, float& xPos, float& yPos);  // 0x5BF6A0
 void MPScript_ClearPlayerStats();  // 0x5C0B80
@@ -3060,7 +3060,7 @@ void MPScript_AreaCaptured(int netID, unsigned int team,
                            unsigned int hostOnly);  // 0x5C10C0
 void MPScript_EnterGame();  // 0x5C10E0
 bool MPScript_PositionWouldTelefrag(const Broc::vector& position);  // 0x5C1160
-bool MPScript_SpawnButtonPressed(unsigned int clientIdx);  // 0x5C11D0
+int MPScript_SpawnButtonPressed(unsigned int clientIdx);  // 0x5C11D0
 }
 
 static void BrocFree(void* p)
@@ -8660,8 +8660,10 @@ void BrocSys::BrocDebugRender()
 }
 
 // ea: 0x005BDF00
-void* BrocSys::CreateExtendedEntity()
+void* BrocSys::CreateExtendedEntity(const char** keys, int count)
 {
+    (void)keys;
+    (void)count;
     if (gpBrocAPI != nullptr)
         return gpBrocAPI->mBrocExports.mCreateExtendedEntity(nullptr, 0);
     else
@@ -8675,11 +8677,11 @@ bool BrocSys::RecompileScript()
 }
 
 // ea: 0x005BE040
-void BrocHelper::AnimationToBroLookup(char* tree_name, int tree_index,
+void BrocHelper::AnimationToBroLookup(const char* tree_name, int tree_index,
                                       int animation_name_brohashed,
                                       int animation_index)
 {
-    const char* v4 = _strlwr(tree_name);
+    const char* v4 = _strlwr((char*)tree_name);
     int v5 = HashString::CalcHash(v4);
     if (gpBrocAPI->mBrocExports.mAnimIndexResolver == nullptr)
     {
@@ -8926,15 +8928,15 @@ bool BrocSys::MPScript_PositionWouldTelefrag(const Broc::vector& position)
 }
 
 // ea: 0x005C11D0
-bool BrocSys::MPScript_SpawnButtonPressed(unsigned int clientIdx)
+int BrocSys::MPScript_SpawnButtonPressed(unsigned int clientIdx)
 {
     int v1 = dword_F6A28C[802 * clientIdx];
     if (!Com_ControllerValid(v1))
-        return false;
+        return 0;
     return controller::inst()->button_value(
                v1, (controller::ButtonIndex)(controller::SQUARE
                                              | controller::DOWNBUTTON))
-           > 128;
+           > 128 ? 1 : 0;
 }
 
 // ============================================================================
