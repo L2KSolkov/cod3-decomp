@@ -211,6 +211,10 @@ private:
     static PoolAllocator* sAllocator;  // ?sAllocator@AeThread@@0PAVPoolAllocator@@A @ 0x132A0C4
     friend class AeThreadManager;
 public:
+    static PoolAllocator* GetAllocatorInternal()
+    {
+        return sAllocator;
+    }
     static unsigned int* sBackup;      // ?sBackup@AeThread@@2PAIA @ 0x1329C7C
 };
 
@@ -231,7 +235,17 @@ public:
     AeDListNode m_dlist_node;                                // +0x04
     bool mFinished;                                          // +0x0C
     EAction mResult;                                         // +0x10
+
+private:
+    static PoolAllocator* sAllocator;  // ?sAllocator@AeThreadState@@0PAVPoolAllocator@@A @ 0x132A0D4
+    friend struct AeThreadStateAllocAccess;
 };
+
+struct AeThreadStateAllocAccess {
+    static PoolAllocator* Get() { return AeThreadState::sAllocator; }
+};
+
+PoolAllocator* AeThreadState::sAllocator;
 
 struct AeThreadWaitState : AeThreadState {
     float mTimeRemaining;  // +0x14
@@ -2705,6 +2719,17 @@ unsigned int GetEntNoteWorthy(unsigned int hValue, unsigned int* array,
 unsigned int GetEntGroup(unsigned int hValue, unsigned int* array,
                          int capacity);  // 0x5DD000
 void RegisterHashString(int hash, const char* txt);  // 0x5DFC50
+unsigned int ThreadCreateInternal(const char* file, int line, const char* func,
+                                  unsigned int ehandle,
+                                  AeThreadFunctor* functor,
+                                  bool create_handle);  // 0x5DB3C0
+unsigned int ThreadExecInternal(const char* file, int line, const char* func,
+                                unsigned int ehandle, AeThreadFunctor* functor,
+                                bool create_handle);  // 0x5DB470
+unsigned int ThreadNotifyInternal(const char* file, int line, const char* func,
+                                  unsigned int ehandle, unsigned int notifyEnt,
+                                  unsigned int notify,
+                                  AeThreadFunctor* functor);  // 0x5DB540
 }
 
 static void BrocFree(void* p)
@@ -3692,6 +3717,107 @@ void BrocHelper::Init()
     memset(BrocHelper::broFuncLookupTable, 0,
            sizeof(BrocHelper::broFuncLookupTable));
     BrocHelper::m_treeCount = 0;
+}
+
+// ============================================================================
+// scr.o batch 15 - thread create/exec/notify internals
+// ============================================================================
+
+// ea: 0x005DB3C0
+unsigned int BrocSys::ThreadCreateInternal(const char* file, int line,
+                                           const char* func,
+                                           unsigned int ehandle,
+                                           AeThreadFunctor* functor,
+                                           bool create_handle)
+{
+    AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
+        0x50, false);
+    AeThread* v7 = v6 != nullptr
+                       ? new (v6) AeThread(file, line, func, ehandle, functor,
+                                           false)
+                       : nullptr;
+    AeThreadManager::sInst.AddThread(v7);
+    if (create_handle)
+    {
+        AeThreadManagerLayout* L =
+            (AeThreadManagerLayout*)&AeThreadManager::sInst;
+        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+        Handle mVal = db->AllocateHandle();
+        db->BindObjectToHandle(mVal, v7);
+        v7->mHandle = mVal;
+    }
+    return v7->mHandle.mVal;
+}
+
+// ea: 0x005DB470
+unsigned int BrocSys::ThreadExecInternal(const char* file, int line,
+                                         const char* func,
+                                         unsigned int ehandle,
+                                         AeThreadFunctor* functor,
+                                         bool create_handle)
+{
+    AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
+        0x50, false);
+    AeThread* v7 = v6 != nullptr
+                       ? new (v6) AeThread(file, line, func, ehandle, functor,
+                                           false)
+                       : nullptr;
+    AeThreadManagerLayout* L =
+        (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    v7->m_dlist_node.mNext = L->mExecThreads.m_end;
+    v7->m_dlist_node.mPrev = L->mExecThreads.m_tail;
+    ((AeDListNode*)L->mExecThreads.m_tail)->mNext = &v7->m_dlist_node;
+    L->mExecThreads.m_tail = &v7->m_dlist_node;
+    ++L->mExecThreads.m_size;
+    L->mNewThreadExec = v7;
+    v7->mFlags.mMask |= 0x800;
+    if (create_handle)
+    {
+        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+        Handle mVal = db->AllocateHandle();
+        db->BindObjectToHandle(mVal, v7);
+        v7->mHandle = mVal;
+    }
+    return v7->mHandle.mVal;
+}
+
+// ea: 0x005DB540
+unsigned int BrocSys::ThreadNotifyInternal(const char* file, int line,
+                                           const char* func,
+                                           unsigned int ehandle,
+                                           unsigned int notifyEnt,
+                                           unsigned int notify,
+                                           AeThreadFunctor* functor)
+{
+    AeThread* v7 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
+        0x50, false);
+    AeThread* v8 = v7 != nullptr
+                       ? new (v7) AeThread(file, line, func, ehandle, functor,
+                                           false)
+                       : nullptr;
+    AeThreadEntityNotifyState* v9 =
+        (AeThreadEntityNotifyState*)AeThreadStateAllocAccess::Get()->Allocate(
+            0x20, false);
+    AeThreadEntityNotifyState* v10 =
+        v9 != nullptr
+            ? new (v9) AeThreadEntityNotifyState(
+                  DbLinkedHandle<EntityHandleDb, Entity>(Handle(notifyEnt)),
+                  notify, AeThreadState::kActionWakeUp)
+            : nullptr;
+    unsigned int v11 = v8->mFlags.mMask | 2;
+    v8->mFlags.mMask = v11;
+    v8->mFlags.mMask = v11 | 0x10;
+    AeDListNode* p_node = &v10->m_dlist_node;
+    v8->mFlags.mMask = v11 | 0x210;
+    p_node->mNext = v8->mStateControllers.m_end;
+    p_node->mPrev = v8->mStateControllers.m_tail;
+    ((AeDListNode*)v8->mStateControllers.m_tail)->mNext = p_node;
+    ++v8->mStateControllers.m_size;
+    v8->mStateControllers.m_tail = p_node;
+    AeThreadManager::sInst.AddThread(v8);
+    return 0;
 }
 
 // ea: 0x005C1F40
