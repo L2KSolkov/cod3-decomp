@@ -14,6 +14,7 @@
 #include "core/PoolAllocator.h"
 #include "core/tlFixedString.h"
 #include "core/ae_fixed_string.h"
+#include "core/ae_array.h"
 #include "game/AeThreadFunctor.h"
 #include "game/nextgen/nextgen.h"
 
@@ -103,15 +104,36 @@ struct AeThreadFlagWord {  // Bitmask<unsigned int> layout
     unsigned int mMask;    // +0x00
 };
 
+// ae_pair (class tag V per binary mangling; same shape as g_accessors.cpp)
+template <typename T1, typename T2>
+class ae_pair {
+public:
+    T1 m_first;   // +0x00
+    T2 m_second;  // +0x04
+
+    ae_pair() : m_first(), m_second() {}
+    ae_pair(const T1& f, const T2& s) : m_first(f), m_second(s) {}
+};
+
+// BrocDtorBase (mp_level.xboxd; vtable[0] = Destroy)
+class BrocDtorBase {
+public:
+    virtual void Destroy(void* inst);  // ?Destroy@BrocDtorBase@@UAEXPAX@Z
+};
+
 class AeThreadState;
 class AeThread {
 public:
     struct BackupStack {
+        friend struct BackupStack;
         struct Block {
             uint8_t mBuff[252];  // +0x00
             Block*  mNext;       // +0xFC
 
+        private:
             static PoolAllocator* sAllocator;   // scr.o @ 0x132A0CC
+            friend struct BackupStack;
+        public:
             static PoolAllocator* GetAllocator();  // g.o
             static void SetupAllocator();          // scr.o 0x5C9340
         };
@@ -128,7 +150,10 @@ public:
         void Restore(unsigned int stackBegin) const;                  // 0x5BBF70
     };
 
-    struct BrocObjCreated;  // full definition in the thread-lifecycle batch
+    struct BrocObjCreated {
+        ae_sized_array<ae_pair<void*, unsigned int>, 15> list;  // +0x00
+        BrocObjCreated* next;                                  // +0x7C
+    };
 
     AeDListNode m_dlist_node;                           // +0x00
     DbLinkedHandle<EntityHandleDb, Entity> mOwner;      // +0x08
@@ -145,6 +170,16 @@ public:
 
     void SetKillFlag();  // ?SetKillFlag@AeThread@@QAEXXZ (scr.o 0x5C1F00)
     void Kill();         // ?Kill@AeThread@@QAEXXZ (scr.o 0x5C1F10)
+    void RegisterBrocInst(void* inst, BrocDtorBase* dtor);  // scr.o 0x5C9400
+    void RegisterBrocDtor(void* inst);                      // scr.o 0x5C94C0
+    void DestroyBrocInsts();                                // scr.o 0x5DAF90
+    ~AeThread();                                            // scr.o 0x5DAE30
+
+private:
+    static PoolAllocator* sAllocator;  // ?sAllocator@AeThread@@0PAVPoolAllocator@@A @ 0x132A0C4
+    friend class AeThreadManager;
+public:
+    static unsigned int* sBackup;      // ?sBackup@AeThread@@2PAIA @ 0x1329C7C
 };
 
 class AeThreadState {
@@ -1533,6 +1568,8 @@ void ThreadBackupStack(unsigned int lhs)
     t->mBackupStack.Backup(lhs, t->mStackStart);
 }
 
+// ============================================================================
+
 // ea: 0x005C3340
 void MusicPlay(const Broc::string& pszSoundName)
 {
@@ -2322,3 +2359,550 @@ float SquareRootX(float v)
 }
 
 }  // namespace BrocSys
+// scr.o batch 10 - AeThread lifecycle cluster
+// ============================================================================
+
+// SizedHandle<8,24> - local twin of g_accessors.cpp (same mangling)
+template <int INDEX_BITS, int KEY_BITS>
+class SizedHandle {
+public:
+    unsigned int mVal;  // +0x00
+    SizedHandle() : mVal(0) {}
+    SizedHandle(int index, int key)
+    {
+        mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
+    }
+    SizedHandle(Handle h) { mVal = h.mVal; }
+    operator Handle() const { return Handle((int)mVal); }
+    int GetIndex() const { return (int)(mVal & ((1 << INDEX_BITS) - 1)); }
+    int GetKey() const { return (int)(mVal >> INDEX_BITS); }
+};
+
+// HandleDb<AeThread,256,SizedHandle<8,24>> - local generic twin
+template <typename T, int CAPACITY, typename H>
+class HandleDb {
+public:
+    struct DbElement {
+        T*  mObject;  // +0x00
+        int mKey;     // +0x04
+        DbElement() : mObject(nullptr), mKey(1) {}
+        T* GetObject() const { return mObject; }
+        void SetObject(T* obj) { mObject = obj; }
+        int GetKey() const { return mKey; }
+        void Release() { ++mKey; mObject = nullptr; }
+    };
+    unsigned int mFreeIndices[(CAPACITY + 31) / 32];  // +0x00
+    DbElement mElements[CAPACITY];                    // +0x20
+    void (*mDebugCallback)(int, T*);                  // +0x820
+
+    HandleDb();
+    void ReleaseHandle(Handle h);
+    T* DereferenceHandle(Handle h) const;
+    void BindObjectToHandle(Handle handle, T* obj);
+    H AllocateHandle();
+};
+
+template <typename T, int CAPACITY, typename H>
+HandleDb<T, CAPACITY, H>::HandleDb()
+{
+    for (int i = 0; i < (CAPACITY + 31) / 32; ++i)
+        mFreeIndices[i] = 0;
+    for (int i = 0; i < CAPACITY; ++i)
+    {
+        mElements[i].mObject = nullptr;
+        mElements[i].mKey = 1;
+        mFreeIndices[i >> 5] |= 1u << (i & 0x1F);
+    }
+    mDebugCallback = nullptr;
+}
+
+template <typename T, int CAPACITY, typename H>
+void HandleDb<T, CAPACITY, H>::ReleaseHandle(Handle h)
+{
+    if (h.mVal != 0)
+    {
+        unsigned int v3 = h.mVal & ((1u << 8) - 1);
+        if (v3 >= (unsigned int)CAPACITY)
+        {
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+        else
+        {
+            if (mElements[v3].mKey == (int)(h.mVal >> 8))
+            {
+                mFreeIndices[v3 >> 5] |= 1u << (v3 & 0x1F);
+                mElements[v3].mObject = nullptr;
+                ++mElements[v3].mKey;
+                return;
+            }
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+    }
+}
+
+template <typename T, int CAPACITY, typename H>
+T* HandleDb<T, CAPACITY, H>::DereferenceHandle(Handle h) const
+{
+    unsigned int v2 = h.mVal & ((1u << 8) - 1);
+    if (v2 < (unsigned int)CAPACITY
+        && (h.mVal >> 8) == (unsigned int)mElements[v2].mKey)
+        return mElements[v2].mObject;
+    return nullptr;
+}
+
+template <typename T, int CAPACITY, typename H>
+void HandleDb<T, CAPACITY, H>::BindObjectToHandle(Handle handle, T* obj)
+{
+    unsigned int v3 = handle.mVal & ((1u << 8) - 1);
+    if (v3 < (unsigned int)CAPACITY)
+    {
+        if (mElements[v3].mKey != (int)(handle.mVal >> 8))
+        {
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "handle was not allocated for this object"))
+                __debugbreak();
+        }
+        mElements[v3].mObject = obj;
+    }
+}
+
+template <typename T, int CAPACITY, typename H>
+H HandleDb<T, CAPACITY, H>::AllocateHandle()
+{
+    int idx = -1;
+    for (int w = 0; w < (CAPACITY + 31) / 32; ++w)
+    {
+        unsigned int bits = mFreeIndices[w];
+        if (bits != 0)
+        {
+            int bit = 0;
+            while ((bits & 1u) == 0)
+            {
+                bits >>= 1;
+                ++bit;
+            }
+            idx = w * 32 + bit;
+            break;
+        }
+    }
+    if (idx < 0 || idx >= CAPACITY)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Error("out of handles! - Tell MikeA (MAX_GENTITIES)"))
+            __debugbreak();
+        return H();
+    }
+    mFreeIndices[idx >> 5] &= ~(1u << (idx & 0x1F));
+    H h(idx, mElements[idx].mKey);
+    return h;
+}
+
+// AeThreadManager layout overlay (IDA type 5741)
+struct AeThreadManagerLayout {
+    int            sNumThreads;     // +0x00
+    AeStateList    mThreads;        // +0x04
+    AeStateList    mExecThreads;    // +0x14
+    AeStateList    mPendingNotifys; // +0x24
+    unsigned char  mHandleDb[0x824];// +0x34
+    void*          mThreadExecuting;// +0x858
+    void*          mNewThreadExec;  // +0x85C
+    void*          mScriptToUnload; // +0x860
+};
+
+void BrocDtorBase::Destroy(void* /*inst*/)
+{
+}
+
+// SetJmp/LongJmp (register-snapshot longjmp; transcribed from disasm)
+__declspec(naked) void SetJmp(unsigned int* storageAddr)
+{
+    __asm {
+        pusha
+        pushf
+        mov eax, [esp+28h]      ; storageAddr
+        mov ecx, [esp]
+        mov [eax], ecx          ; [0] = eflags
+        mov ecx, [esp+4]
+        mov [eax+4], ecx        ; [1] = edi
+        mov ecx, [esp+8]
+        mov [eax+8], ecx        ; [2] = esi
+        mov ecx, [esp+0Ch]
+        mov [eax+0Ch], ecx      ; [3] = ebp
+        mov ecx, [esp+10h]
+        mov [eax+10h], ecx      ; [4] = esp snapshot
+        mov ecx, [esp+14h]
+        mov [eax+14h], ecx      ; [5] = ebx
+        mov ecx, [esp+18h]
+        mov [eax+18h], ecx      ; [6] = edx
+        mov ecx, [esp+1Ch]
+        mov [eax+1Ch], ecx      ; [7] = ecx
+        mov ecx, [esp+20h]
+        mov [eax+20h], ecx      ; [8] = eax
+        mov ecx, [esp+24h]
+        mov [eax+24h], ecx      ; [9] = return address
+        popf
+        popa
+        retn
+    }
+}
+
+__declspec(naked) void LongJmp(unsigned int* r)
+{
+    __asm {
+        mov eax, [esp+4]
+        mov ebx, [eax+10h]
+        mov ecx, [eax+24h]
+        mov [ebx], ecx          ; *(saved esp slot) = return address
+        mov esp, [eax+10h]
+        push dword ptr [eax+20h]
+        push dword ptr [eax+1Ch]
+        push dword ptr [eax+18h]
+        push dword ptr [eax+14h]
+        push dword ptr [eax+10h]
+        push dword ptr [eax+0Ch]
+        push dword ptr [eax+8]
+        push dword ptr [eax+4]
+        popf
+        popa
+        retn
+    }
+}
+
+PoolAllocator* AeThread::sAllocator;
+unsigned int* AeThread::sBackup = (unsigned int*)-1;
+
+// DestroyBrocInstsStub (scr.o 0x5BC0E0, empty)
+static void DestroyBrocInstsStub(void*)
+{
+}
+
+namespace BrocSys {
+void BrocObjDtor(void* ptr);  // fwd for DestroyBrocInsts
+void BrocObjCtor(void* ptr, BrocDtorBase* dtor);  // fwd (defined at file end)
+void KillThreadExec();  // fwd (defined at file end)
+void ThreadDebug(unsigned int threadId);  // fwd (defined at file end)
+}
+
+static void BrocFree(void* p)
+{
+    if (gBrocPool->InPool(p))
+        gBrocPool->Release(p);
+    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
+        mem_heap_free(p);
+}
+
+// ea: 0x005C9400
+void AeThread::RegisterBrocInst(void* inst, BrocDtorBase* dtor)
+{
+    if (inst < (void*)(mStackStart - 0x8000) || inst > (void*)mStackStart)
+        return;
+    BrocObjCreated* mBrocCreated = this->mBrocCreated;
+    if (mBrocCreated != nullptr)
+    {
+        while (mBrocCreated->list.m_size == 15)
+        {
+            mBrocCreated = mBrocCreated->next;
+            if (mBrocCreated == nullptr)
+            {
+                mBrocCreated = this->mBrocCreated;
+                while (mBrocCreated->list.m_size == 15)
+                {
+                    mBrocCreated = mBrocCreated->next;
+                    if (mBrocCreated == nullptr)
+                    {
+                        BrocObjCreated* v6 = new BrocObjCreated;
+                        if (v6 == nullptr)
+                            goto alloc_fail;
+                        v6->list.m_size = 0;
+                        v6->next = this->mBrocCreated;
+                        goto have;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    else
+    {
+        BrocObjCreated* v6 = new BrocObjCreated;
+        if (v6 != nullptr)
+        {
+            v6->list.m_size = 0;
+            v6->next = nullptr;
+        }
+        else
+        {
+        alloc_fail:
+            v6 = nullptr;
+        }
+        mBrocCreated = v6;
+    }
+have:
+    this->mBrocCreated = mBrocCreated;
+    if (mBrocCreated == nullptr)
+        return;
+    ae_pair<void*, unsigned int> elt(inst, (unsigned int)(void*)dtor);
+    mBrocCreated->list.push_back(elt);
+}
+
+// ea: 0x005C94C0
+void AeThread::RegisterBrocDtor(void* inst)
+{
+    if (inst < (void*)(mStackStart - 0x8000) || inst > (void*)mStackStart)
+        return;
+    BrocObjCreated* mBrocCreated = this->mBrocCreated;
+    while (mBrocCreated != nullptr)
+    {
+        int v4 = mBrocCreated->list.m_size - 1;
+        while (v4 >= 0)
+        {
+            if (v4 >= 15)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            if (mBrocCreated->list.m_elements[v4].m_first == inst)
+                break;
+            --v4;
+        }
+        if (v4 >= 0)
+        {
+            int m_size = mBrocCreated->list.m_size;
+            if (m_size > 1 && v4 < m_size)
+            {
+                int v6 = m_size - 1 <= 0 ? 0 : m_size - 1;
+                mBrocCreated->list.m_elements[v4] =
+                    mBrocCreated->list.m_elements[v6];
+            }
+            if (mBrocCreated->list.m_size != 0)
+                mBrocCreated->list.m_size = mBrocCreated->list.m_size - 1;
+            if (mBrocCreated->list.m_size == 0
+                && this->mBrocCreated->next != nullptr)
+            {
+                this->mBrocCreated = mBrocCreated->next;
+                BrocFree(mBrocCreated);
+            }
+            return;
+        }
+        mBrocCreated = mBrocCreated->next;
+    }
+}
+
+// ea: 0x005DAF90
+void AeThread::DestroyBrocInsts()
+{
+    gpBrocAPI->mBrocObjDtor = DestroyBrocInstsStub;
+    BrocObjCreated* mBrocCreated = this->mBrocCreated;
+    if (mBrocCreated != nullptr)
+    {
+        do
+        {
+            for (int v2 = 0; v2 < mBrocCreated->list.m_size; ++v2)
+            {
+                if (v2 > 0xE)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 154;
+                    AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                ae_pair<void*, unsigned int>& elt =
+                    mBrocCreated->list.m_elements[v2];
+                BrocDtorBase* dtor = (BrocDtorBase*)elt.m_second;
+                dtor->Destroy(elt.m_first);
+            }
+            BrocObjCreated* v4 = mBrocCreated;
+            mBrocCreated = mBrocCreated->next;
+            BrocFree(v4);
+        } while (mBrocCreated != nullptr);
+        this->mBrocCreated = nullptr;
+    }
+    else
+    {
+        this->mBrocCreated = nullptr;
+    }
+    gpBrocAPI->mBrocObjDtor = BrocSys::BrocObjDtor;
+}
+
+// ea: 0x005DAE30
+AeThread::~AeThread()
+{
+    // safe_for_each(mStateControllers, DelFunctor) - delete each state
+    AeDListNode* node = mStateControllers.m_head;
+    if (node != nullptr && node != mStateControllers.m_end)
+    {
+        while (node != mStateControllers.m_end)
+        {
+            AeDListNode* next = node->mNext;
+            delete (AeThreadState*)node;
+            node = next;
+        }
+    }
+    mStateControllers.m_head->mNext = mStateControllers.m_end;
+    mStateControllers.m_tail = mStateControllers.m_head;
+    mStateControllers.m_size = 0;
+
+    if (mFunctor != nullptr)
+    {
+        mFunctor->~AeThreadFunctor();
+        gCommonPoolAllocator->Release(mFunctor);
+    }
+    if (mHandle.mVal != 0)
+    {
+        AeThreadManagerLayout* L = (AeThreadManagerLayout*)&AeThreadManager::sInst;
+        ((HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb)
+            ->ReleaseHandle(mHandle);
+    }
+    if (((mFlags.mMask & 8) == 0) && (mFlags.mMask & 1) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+        AeAssert::gCurrentLine = 169;
+        AeAssert::gCurrentExpr =
+            "mFlags.Test( kFlagFinished ) | mFlags.Test( kFlagNotStarted )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("thread is still running"))
+            __debugbreak();
+    }
+    BrocObjCreated* mBrocCreated = this->mBrocCreated;
+    while (mBrocCreated != nullptr)
+    {
+        BrocObjCreated* v7 = mBrocCreated;
+        mBrocCreated = mBrocCreated->next;
+        BrocFree(v7);
+    }
+    --((AeThreadManagerLayout*)&AeThreadManager::sInst)->sNumThreads;
+    mBackupStack.~BackupStack();
+}
+
+// ============================================================================
+// AeThreadManager methods (scr.o)
+// ============================================================================
+
+// ea: 0x005C9770
+void AeThreadManager::ReleaseHandle(AeThread* t)
+{
+    if (t->mHandle.mVal != 0)
+    {
+        AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+        ((HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb)
+            ->ReleaseHandle(t->mHandle);
+        t->mHandle.mVal = 0;
+    }
+}
+
+// ea: 0x005C97A0
+void AeThreadManager::ReleaseHandle(Handle h)
+{
+    if (h.mVal != 0)
+    {
+        AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+        ((HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb)
+            ->ReleaseHandle(h);
+    }
+}
+
+// ea: 0x005DB160
+Handle AeThreadManager::AssignHandle(AeThread* t)
+{
+    AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+    HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+        (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+    Handle v4 = db->AllocateHandle();
+    db->BindObjectToHandle(v4, t);
+    t->mHandle = v4;
+    return v4;
+}
+
+// ea: 0x005DC120
+void AeThreadManager::KillThread(AeThread* t)
+{
+    if (t == nullptr)
+        return;
+    AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+    if (L->mThreadExecuting == t)
+        L->mThreadExecuting = nullptr;
+    AeStateList* list = (t->mFlags.mMask & 0x800) != 0
+                            ? &L->mExecThreads
+                            : &L->mThreads;
+    // reserved_dlist<AeThread>::erase inline
+    t->m_dlist_node.mPrev->mNext = t->m_dlist_node.mNext;
+    t->m_dlist_node.mNext->mPrev = t->m_dlist_node.mPrev;
+    --list->m_size;
+    t->~AeThread();
+    AeThread::sAllocator->Release(t);
+}
+
+// ea: 0x005C97C0 (walk per disasm: compare node+0x14 handle, flag node+0x10)
+void AeThreadManager::DebugThread(unsigned int threadId)
+{
+    AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+    if (threadId == 0 && L->mThreadExecuting != nullptr)
+        ((AeThread*)L->mThreadExecuting)->mFlags.mMask |= 0x100;
+    AeDListNode* node = L->mThreads.m_head;
+    if (node != nullptr && node != L->mThreads.m_end)
+    {
+        for (AeDListNode* n = node; n != nullptr; n = n->mNext)
+        {
+            if (*(unsigned int*)((char*)n + 0x14) == threadId)
+            {
+                *(unsigned int*)((char*)n + 0x10) |= 0x100;
+                return;
+            }
+        }
+    }
+    node = L->mExecThreads.m_head;
+    if (node != nullptr && node != L->mExecThreads.m_end)
+    {
+        for (AeDListNode* n = node; n != nullptr; n = n->mNext)
+        {
+            if (*(unsigned int*)((char*)n + 0x14) == threadId)
+            {
+                *(unsigned int*)((char*)n + 0x10) |= 0x100;
+                return;
+            }
+        }
+    }
+}
+
+// ea: 0x005CA300
+void BrocSys::BrocObjCtor(void* ptr, BrocDtorBase* dtor)
+{
+    if (AeThreadManager::sInst.mThreadExecuting != nullptr)
+        ((AeThread*)AeThreadManager::sInst.mThreadExecuting)
+            ->RegisterBrocInst(ptr, dtor);
+}
+
+// ea: 0x005CA320
+void BrocSys::BrocObjDtor(void* ptr)
+{
+    if (AeThreadManager::sInst.mThreadExecuting != nullptr)
+        ((AeThread*)AeThreadManager::sInst.mThreadExecuting)
+            ->RegisterBrocDtor(ptr);
+}
+
+// ea: 0x005DB640
+void BrocSys::KillThreadExec()
+{
+    ((AeThread*)AeThreadManager::sInst.mThreadExecuting)->DestroyBrocInsts();
+    LongJmp(AeThread::sBackup);
+}
+
+// ea: 0x005C9E20
+void BrocSys::ThreadDebug(unsigned int threadId)
+{
+    AeThreadManager::sInst.DebugThread(threadId);
+}

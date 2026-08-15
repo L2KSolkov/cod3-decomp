@@ -352,6 +352,7 @@ static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 // ============================================================================
 // Opaque singleton managers (fields used by sv.o only)
 // ============================================================================
+class AeThread;  // scr.o (AeThread.cpp; full type in g_scr.cpp)
 class AeThreadManager {
 public:
     uint8_t _pad[0x858];
@@ -362,6 +363,14 @@ public:
     void KillAllThreads();
     void Execute(float deltaT);     // ?Execute@AeThreadManager@@QAEXM@Z
     void AddNotify(EntityNotify* notify);  // ?AddNotify@AeThreadManager@@QAEXPAVEntityNotify@@@Z (g.o 0x4B2170)
+    // scr.o methods (AeThread.cpp; layout overlays defined in g_scr.cpp)
+    void DebugThread(unsigned int threadId);   // ?DebugThread@AeThreadManager@@QAEXI@Z (scr.o 0x5C97C0)
+    void ReleaseHandle(AeThread* t);           // ?ReleaseHandle@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5C9770)
+    void ReleaseHandle(Handle h);              // ?ReleaseHandle@AeThreadManager@@QAEXVHandle@@@Z (scr.o 0x5C97A0)
+    Handle AssignHandle(AeThread* t);          // ?AssignHandle@AeThreadManager@@QAE?AVHandle@@PAVAeThread@@@Z (scr.o 0x5DB160)
+private:
+    void KillThread(AeThread* t);              // ?KillThread@AeThreadManager@@AAEXPAVAeThread@@@Z (scr.o 0x5DC120)
+public:
 };
 static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
