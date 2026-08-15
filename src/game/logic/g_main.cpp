@@ -1874,11 +1874,11 @@ void G_ReduceOriginError(float* origin, float* originError, float frametime)
 }
 
 // ea: 0x00456FE0
-void G_DebugAxis(const math::Mat43& mat, unsigned int length, int duration)
+void G_DebugAxis(const math::Mat43& mat, float length, int duration)
 {
     float start[4] = { mat.w.v.m128_f32[0], mat.w.v.m128_f32[1],
                        mat.w.v.m128_f32[2], mat.w.v.m128_f32[3] };
-    float len = (float)length;
+    float len = length;
     float end[3];
     end[0] = start[0] + mat.x.v.m128_f32[0] * len;
     end[1] = start[1] + mat.x.v.m128_f32[1] * len;

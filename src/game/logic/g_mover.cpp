@@ -2899,7 +2899,7 @@ label_17:
 }
 
 // ea: 0x0048C970
-void Touch_DoorTrigger(Entity* ent, Entity* other)
+void Touch_DoorTrigger(Entity* ent, Entity* other, int /*unused*/)
 {
     if (other->sentient == nullptr)
     {

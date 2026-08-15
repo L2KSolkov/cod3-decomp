@@ -2793,7 +2793,7 @@ void  G_RunFrameForEntity(Entity* ent, int msec);   // g.o
 void  VEH_JoltBody(Entity* ent, const math::Position3& dir, float intensity,
                    float speedFrac, float decel);   // g.o
 void  CalcMuzzlePoint(Entity* ent, math::Position3& muzzlePoint);  // g.o 0x4534F0
-void  G_DebugAxis(const math::Mat43& mat, unsigned int length, int duration);  // g.o 0x456FE0
+void  G_DebugAxis(const math::Mat43& mat, float length, int duration);  // g.o 0x456FE0
 void  G_LinkClient(Entity* ent);                 // g.o 0x483480
 void  Spotting(Entity* ent);                     // g.o 0x472130
 void  G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o 0x47BB40
@@ -3513,7 +3513,7 @@ void  update_trigger_notifies(void);               // g.o 0x471100
 void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
 void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
 void  G_EntUnlink(Entity* ent);                  // g.o 0x460190
-void  G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, unsigned short dstNodeIdx);  // g.o 0x452A10
+void  G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, short dstNodeIdx);  // g.o 0x452A10
 void  VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst);  // g.o
 void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                                   const math::Position3& vEnd, int iDamage,

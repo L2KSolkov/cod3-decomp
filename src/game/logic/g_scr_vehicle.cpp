@@ -1481,7 +1481,7 @@ int16_t VEH_GetPlayerVehicleInfo(const char* name)
 
 // ea: 0x0046A370
 void VEH_SetPosition(Entity* ent, const math::Position3& origin,
-                     const math::Position3& angles, const float* vel)
+                     const math::Position3& angles)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
     if (ent->takedamage != 0)
@@ -2311,7 +2311,7 @@ void G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx)
 }
 
 // ea: 0x00452A10
-void G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, unsigned short dstNodeIdx)
+void G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, short dstNodeIdx)
 {
     for (int i = 0; i < 2; ++i)
     {
@@ -2576,7 +2576,7 @@ void VEH_RespawnVehicle(Entity* ent)
     ent->r.currentAngles.v.m128_f32[1] = respawn_angles[1];
     ent->r.currentAngles.v.m128_f32[2] = respawn_angles[2];
     float vel[3] = { 0.0f, 0.0f, 0.0f };
-    VEH_SetPosition(ent, scr_vehicle->phys.origin, scr_vehicle->phys.angles, vel);
+    VEH_SetPosition(ent, scr_vehicle->phys.origin, scr_vehicle->phys.angles);
     scr_vehicle->respawn_origin.v.m128_f32[0] = respawn_origin[0];
     scr_vehicle->respawn_origin.v.m128_f32[1] = respawn_origin[1];
     scr_vehicle->respawn_origin.v.m128_f32[2] = respawn_origin[2];
@@ -2732,7 +2732,7 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         if ((type == 1 || type == 2) && Entity_has_zone_collision(pSelf))
             VEH_GroundPlant(pSelf, 0, 10000);
         float vel[3] = { 0.0f, 0.0f, 0.0f };
-        VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles, vel);
+        VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles);
         scr_vehicle->phys.prevOrigin.v.m128_f32[0] = scr_vehicle->phys.origin.v.m128_f32[0];
         scr_vehicle->phys.prevOrigin.v.m128_f32[1] = scr_vehicle->phys.origin.v.m128_f32[1];
         scr_vehicle->phys.prevOrigin.v.m128_f32[2] = scr_vehicle->phys.origin.v.m128_f32[2];
