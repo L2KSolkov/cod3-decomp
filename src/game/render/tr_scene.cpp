@@ -1088,3 +1088,61 @@ void R_RenderView(viewParms_t* parms)
     apsCheckErrors();
     TlSystemCallbacks::sWarningsEnabled = true;
 }
+
+// ============================================================================
+// R_RenderViewModels - ea: 0x006D7430
+// ============================================================================
+extern int gRenderViewModels;  // ?gRenderViewModels@@3HA @ 0xDFB01C
+extern void nglValidateMatrices(nglScene* Scene);
+class DObj;
+extern int R_AddViewModelSurfaces(int client_index, DObj* obj,
+                                  const math::Mat43& matrix);
+
+void R_RenderViewModels(viewParms_t* parms)
+{
+    if (cgGlobal.cubemapShot == CUBEMAPSHOT_NONE)
+    {
+        if (tr.viewModelInfo[tr.viewModelInfoIndex].mInWorldScene == 0)
+        {
+            nglListBeginScene(NGLSCENE_PARENT);
+            nglSetPerspectiveMatrix(parms->fovY, 0.5f, 128.0f);
+            nglSetClearFlags(3u);
+        }
+        if (gRenderViewModels != 0)
+        {
+            trRefEntityNode* m_head = backEndData->viewmodels.m_head;
+            trRefEntityNode* v3 =
+                (m_head != nullptr) ? m_head->m_next : nullptr;
+            if ((void*)m_head != (void*)&backEndData->viewmodels.m_end
+                && v3 != nullptr)
+            {
+                do
+                {
+                    if ((*(int*)((char*)m_head + 0x0C) & 2) == 0
+                        || tr.viewParms.isPortal != 0)
+                    {
+                        float* f = (float*)m_head;
+                        math::Mat43 matrix;
+                        matrix.x.v = _mm_setr_ps(f[7], f[8], f[9], 0.0f);
+                        matrix.y.v = _mm_setr_ps(f[10], f[11], f[12], 0.0f);
+                        matrix.z.v = _mm_setr_ps(f[13], f[14], f[15], 0.0f);
+                        matrix.w.v = _mm_setr_ps(f[17], f[18], f[19], 0.0f);
+                        nglValidateMatrices(nglBuildScene);
+                        unsigned char* visible =
+                            &((unsigned char*)m_head)[0xFF];
+                        *visible ^= (unsigned char)(
+                            R_AddViewModelSurfaces(
+                                tr.viewModelInfoIndex,
+                                *(DObj**)((char*)m_head + 92), matrix)
+                            ^ *visible)
+                                   & 1;
+                    }
+                    m_head = v3;
+                    v3 = v3->m_next;
+                } while (v3 != nullptr);
+            }
+        }
+        if (tr.viewModelInfo[tr.viewModelInfoIndex].mInWorldScene == 0)
+            nglListEndScene();
+    }
+}
