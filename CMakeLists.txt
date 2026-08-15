@@ -386,6 +386,7 @@ add_library(cod3_game_render STATIC
     src/game/render/tr_tiny.cpp
     src/game/render/tr_calc_lighting.cpp
     src/game/render/tr_xmodel_cluster.cpp
+    src/game/render/particle_effect_closure.asm
     src/game/render/tr_dobj_extra.cpp
     src/game/render/tr_fx.cpp
     src/game/render/tr_scene.cpp

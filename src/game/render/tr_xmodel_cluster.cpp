@@ -1269,3 +1269,211 @@ int R_AddViewModelSurfaces(int client_index, DObj* obj,
     }
     return (obj->mFlags & (unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME) == 0;
 }
+
+// ============================================================================
+// R_AddMenuModelSurfaces - ea: 0x006CF9E0
+// ============================================================================
+int R_AddMenuModelSurfaces(DObj* obj, Entity* entity, const math::Mat43& matrix,
+                           float alpha, nglShaderParamSet& shaderParams,
+                           nglLightContext* ctx, bool render_shadow,
+                           bool maxLod)
+{
+    (void)alpha;
+    (void)ctx;
+    if (entity == nullptr || entity->scr_vehicle != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_xmodel.cpp";
+        AeAssert::gCurrentLine = 904;
+        AeAssert::gCurrentExpr = "entity && !entity->scr_vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("this function is for non-vehicle entities"))
+            __debugbreak();
+    }
+    bool poseLodSet = (entity->flags & EF_NON_EXISTING) == 0
+                      && obj->mPose[0] != nullptr;
+    int lodOverride = obj->mLODOverride;
+    if (lodOverride < 0)
+        lodOverride = obj->mLOD;
+    if (poseLodSet && lodOverride < obj->mPose[0]->LOD)
+        obj->SetLODAnim(obj->mPose[0]->LOD);
+    else
+        obj->mLODAnim = -1;
+
+    int v89 = ((entity->mFlags & 2) != 0) << 6;
+    if (maxLod)
+    {
+        obj->SetLOD(0);
+    }
+    else
+    {
+        computeLOD(obj, *((const math::Position3*)&matrix.w.v));
+    }
+
+    nglMeshParams meshParams = {};
+    int modelIndex = 0;
+    if (obj->numModels != 0)
+    {
+        while (1)
+        {
+            DObjSkelMatLocal* matrixArray =
+                (DObjSkelMatLocal*)DObjGetMatrixArray(obj, modelIndex);
+            int pakId = obj->models[modelIndex].mPakId;
+            XModel* xmodel = (XModel*)obj->models[modelIndex].mValue;
+            int lod = obj->mLODOverride;
+            if (lod >= 0 || (lod = obj->mLODAnim) >= 0
+                || (lod = obj->mLOD) >= 0)
+            {
+                XModelLod** p = &xmodel->lod[lod];
+                do
+                {
+                    ValidatePakId(pakId);
+                    if (lod < 5 && *p != nullptr)
+                        break;
+                    --lod;
+                    --p;
+                } while (lod >= 0);
+            }
+            ValidatePakId(pakId);
+            int v22 = lod;
+            if (lod < 0)
+            {
+                v22 = 0;
+                while (xmodel->lod[v22] == nullptr)
+                    ++v22;
+            }
+            XModelParts* parts =
+                (XModelParts*)((XModelLodLocal*)xmodel->lod[v22])->xmodelParts;
+            ValidatePakId(pakId);
+            int v25 = lod;
+            if (lod < 0)
+            {
+                v25 = 0;
+                while (xmodel->lod[v25] == nullptr)
+                    ++v25;
+            }
+            int meshCount;
+            if (((XModelLodLocal*)xmodel->lod[v25])->xmodelParts != nullptr)
+                meshCount = (int)xmodel->GetXModelParts(lod)->mHierarchy.mSize;
+            else
+                meshCount = 0;
+
+            int t = 0;
+            if (meshCount > 0)
+            {
+                do
+                {
+                    int count = t;
+                    if (t >= (int)parts->mMeshPtrs.mSize)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "../ae\\inplace/InplaceVector.h";
+                        AeAssert::gCurrentLine = 81;
+                        AeAssert::gCurrentExpr = "index < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                        count = 0;
+                    }
+                    nglMesh* mesh = parts->mMeshPtrs.mList[count];
+                    if (mesh != nullptr)
+                    {
+                        math::Mat43 localToWorld;
+                        localToWorld.x.v = matrix.x.v;
+                        localToWorld.y.v = matrix.y.v;
+                        localToWorld.z.v = matrix.z.v;
+                        localToWorld.w.v = matrix.w.v;
+                        meshParams.Flags = (unsigned int)v89;
+                        int nBones = auxGetNBones(mesh);
+                        meshParams.NBones = nBones;
+                        trRefEntityLocal* renderEntity =
+                            (trRefEntityLocal*)entity->mRenderEntity;
+                        if (nBones != 0)
+                        {
+                            ValidatePakId(pakId);
+                            int v44 = 0;
+                            if (xmodel->lod[0] == nullptr)
+                            {
+                                do
+                                {
+                                    ++v44;
+                                } while (xmodel->lod[v44] == nullptr);
+                            }
+                            int numBones2 = 0;
+                            if (((XModelLodLocal*)xmodel->lod[v44])
+                                    ->xmodelParts
+                                != nullptr)
+                            {
+                                int v46 = 0;
+                                if (xmodel->lod[0] == nullptr)
+                                {
+                                    do
+                                    {
+                                        ++v46;
+                                    } while (xmodel->lod[v46] == nullptr);
+                                }
+                                numBones2 = (int)(
+                                    (XModelLodLocal*)xmodel->lod[v46])
+                                               ->xmodelParts->mHierarchy.mSize;
+                            }
+                            if (nBones != numBones2)
+                            {
+                                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\tr_xmodel.cpp";
+                                AeAssert::gCurrentLine = 965;
+                                AeAssert::gCurrentExpr =
+                                    "NBones == xmod->GetNumBones()";
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Assert(
+                                        "Number of bones mismatch in skinned character."))
+                                    __debugbreak();
+                            }
+                            meshParams.Flags |= 8u;
+                            unsigned char iflIndex = renderEntity->iflIndex;
+                            if (iflIndex != 255)
+                            {
+                                unsigned int rid = nglTextureFrameParamID;
+                                unsigned long long bit = 1ULL << rid;
+                                unsigned int* arr =
+                                    (unsigned int*)&shaderParams;
+                                arr[0] |= (unsigned int)bit;
+                                arr[1] |= (unsigned int)(bit >> 32);
+                                arr[2 + rid] = iflIndex;
+                            }
+                        }
+                        else
+                        {
+                            localToWorld =
+                                VehicleWorldMatrix(&matrixArray[t], matrix);
+                            float mScale = renderEntity->mScale;
+                            if (mScale == 1.0f)
+                                mScale = entity->modelscale;
+                            if (mScale != 1.0f)
+                                auxSetScale(&meshParams, mScale, mScale,
+                                            mScale);
+                            meshParams.Flags |= 0x80u;
+                            meshParams.LOD = (unsigned int)GetScaledMeshLOD(
+                                mesh, &localToWorld, &meshParams, gZoomRatio);
+                        }
+                        nglMeshNode* node = _codListAddMesh(
+                            mesh, localToWorld, &meshParams, &shaderParams,
+                            nullptr);
+                        obj->mFlags &=
+                            ~(unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME;
+                        if (render_shadow)
+                            do_shadow(obj, modelIndex, t, mesh, matrix,
+                                      localToWorld, meshParams, shaderParams,
+                                      node);
+                    }
+                    ++t;
+                } while (t < meshCount);
+            }
+            ++modelIndex;
+            if (modelIndex >= obj->numModels)
+                break;
+        }
+    }
+    return (obj->mFlags & (unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME) == 0;
+}

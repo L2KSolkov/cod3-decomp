@@ -209,8 +209,10 @@ public:
 
     ~ParticleEffect();         // ??1ParticleEffect@@QAE@XZ
     unsigned int GetSortKey(); // ?GetSortKey@ParticleEffect@@QAEIXZ
+    ParticleEffect();          // default ctor (array-new closure ??_F)
     ParticleEffect(bool bInGame);  // ??0ParticleEffect@@QAE@_N@Z
     void Report();                 // ?Report@ParticleEffect@@QAEXXZ
+    static void* operator new[](size_t size);  // ??_UParticleEffect@@SAPAXI@Z
     static void DestroyArray();  // ?DestroyArray@ParticleEffect@@SAXXZ
     static void InitArray();     // ?InitArray@ParticleEffect@@SAXXZ
     static ParticleEffect* New();  // ?New@ParticleEffect@@SAPAV1@XZ
@@ -223,6 +225,11 @@ static_assert(sizeof(ParticleEffect) == 0x3C, "ParticleEffect size mismatch");
 
 ParticleEffect* ParticleEffect::sArrayData;
 ae_sized_array<ae_pair<short, short>, 256> ParticleEffect::sArray;
+
+void* ParticleEffect::operator new[](size_t size)
+{
+    return mem_heap_malloc((unsigned int)size);
+}
 
 // ParticleEffect pool statics (render.o data)
 ae_vector<ParticleEffect*> gSortedParticleEffectList;  // @ 0xF74484
@@ -258,19 +265,8 @@ void ParticleEffect::InitArray()
 {
     if (ParticleEffect::sArrayData == nullptr)
     {
-        void* block = mem_heap_malloc(0x3C04u);
-        ParticleEffect* v2;
-        if (block != nullptr)
-        {
-            *(unsigned int*)block = 256;
-            v2 = (ParticleEffect*)((char*)block + 4);
-            for (int i = 0; i < 256; ++i)
-                new (&v2[i]) ParticleEffect(false);
-        }
-        else
-        {
-            v2 = nullptr;
-        }
+        // new ParticleEffect[256] (0x3C04 = 4-byte count prefix + 256 * 0x3C)
+        ParticleEffect* v2 = new ParticleEffect[256];
         ParticleEffect::sArrayData = v2;
         ParticleEffect::sArray.m_size = 0;
         short v0 = 0;
