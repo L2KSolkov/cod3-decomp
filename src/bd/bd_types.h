@@ -373,6 +373,9 @@ public:
 
     void writeDataType(bdBitBufferDataType type);
     void writeBits(const void* data, unsigned int bitCount);
+    void writeRangedInt32(int value, int min, int max);    // ?writeRangedInt32@bdBitBuffer@@QAEXHHH@Z
+    void writeRangedUInt32(unsigned int value, unsigned int min, unsigned int max,
+                           bool typeChecked);              // ?writeRangedUInt32@bdBitBuffer@@QAEXIII_N@Z
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);

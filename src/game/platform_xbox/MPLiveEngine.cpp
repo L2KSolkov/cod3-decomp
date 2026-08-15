@@ -306,10 +306,6 @@ void MultiplayerMgr::SwapKit(int playerClass, int netIndex)
 {
     (void)playerClass; (void)netIndex;
 }
-void MultiplayerMgr::SetPlayerPos(const Entity* player, float* pos)
-{
-    (void)player; (void)pos;
-}
 void MultiplayerMgr::LevelLoaded() {}
 void MultiplayerMgr::BulletHit(const math::Position3& position,
                                const math::Dir3& normal,

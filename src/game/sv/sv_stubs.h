@@ -38,6 +38,10 @@ public:
     bool IsAssigned() const;                   // ?IsAssigned@MPEntityHandle@@QBE_NXZ (g.o 0x4A9750)
 };
 
+class bdQoSProbeInfo;  // bd/bdQoSProbe.h
+class MPGameInfo;      // game/mp/mp_types.h
+enum EGameConnectionType : int;  // game/mp/mp_types.h
+
 struct cdl_object_t;  // full definition in game/logic/g_local.h
 
 // font_index - FE font selection enum (also defined in ui_types.h; guarded
@@ -443,6 +447,12 @@ public:
     void SendGameScore(int alliesScore, int axisScore); // ?SendGameScore@MultiplayerMgr@@QAEXHH@Z (mp.o)
     void AreaCaptured(int netIndex, int itemType, int hostOnly);  // ?AreaCaptured@MultiplayerMgr@@QAEXHHH@Z (mp.o)
     void EnterGame();                                   // ?EnterGame@MultiplayerMgr@@QAEXXZ (mp.o)
+    void Disconnect();                                  // ?Disconnect@MultiplayerMgr@@QAEXXZ (mp.o 0x764310)
+    void SendServerParams();                            // ?SendServerParams@MultiplayerMgr@@QAEXXZ (mp.o 0x761650)
+    void WeaponChange(int weapon);                      // ?WeaponChange@MultiplayerMgr@@QAEXH@Z (mp.o 0x750690)
+    bool CreateGame(bdReference<MPGameInfo>& gameInfo,
+                    EGameConnectionType gameState);     // ?CreateGame@MultiplayerMgr@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z (mp.o 0x765D40)
+    void DropSplitScreenPlayer(int localIndex);         // ?DropSplitScreenPlayer@MultiplayerMgr@@QAEXH@Z (mp.o 0x751190)
     void PlayerRespawn(Entity* player,
                        const math::Position3& position,
                        const math::Dir3& angles,
@@ -548,7 +558,7 @@ public:
     bool IsHost();                  // ?IsHost@MultiplayerMgr@@QAE_NXZ
     void SwapWeapon(int weapon, int netIndex, int clipCount, int ammoCount);  // ?SwapWeapon@MultiplayerMgr@@QAEXHHHH@Z
     void SwapKit(int playerClass, int netIndex);  // ?SwapKit@MultiplayerMgr@@QAEXHH@Z
-    void SetPlayerPos(const Entity* player, float* pos);  // ?SetPlayerPos@MultiplayerMgr@@QAEXPBVEntity@@QAM@Z
+    void SetPlayerPos(const Entity* player, float* const pos);  // ?SetPlayerPos@MultiplayerMgr@@QAEXPBVEntity@@QAM@Z
     void LevelLoaded();  // ?LevelLoaded@MultiplayerMgr@@QAEXXZ
     void BulletHit(const math::Position3& position, const math::Dir3& normal,
                    unsigned char surfaceType, unsigned char weapon,
@@ -1619,6 +1629,11 @@ public:
     uint8_t _pad[3];
     bdReference<bdConnection> mConnection;  // +0x04
     int     mClientIndex;   // +0x08
+    uint8_t _pad0C[0x264 - 0x0C];
+    bool    bSprinting;     // +0x264
+    bool    bWalking;       // +0x265
+    bool    bCrouching;     // +0x266
+    bool    bProne;         // +0x267
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
     void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
     int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
@@ -1631,10 +1646,14 @@ public:
     void GetAngles(float (&angles)[3]) const;  // ?GetAngles@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFD0)
     void GetPosition(float (&position)[3]) const;  // ?GetPosition@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFA0)
     void SetInvalid();                // ?SetInvalid@MPPlayer@@QAEXXZ (mp.o 0x7360E0)
+    void DebugRender();               // ?DebugRender@MPPlayer@@QAEXXZ (mp.o 0x736670)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
     bool IsLocalPlayer() const;        // ?IsLocalPlayer@MPPlayer@@QBE_NXZ (mp.o)
+protected:
+    int FootstepEvent(int surfaceFlags);       // ?FootstepEvent@MPPlayer@@IAEHH@Z (mp.o 0x72DDE0)
+    int GroundSurfaceType(int surfaceFlags);   // ?GroundSurfaceType@MPPlayer@@IAEHH@Z (mp.o 0x72DD70)
 };
 // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ (mp.o; stub)
 inline Entity* MPPlayer::GetEntity()
@@ -1656,6 +1675,12 @@ struct MPPlayerManager {
     void LocalPlayerEnterGame();        // ?LocalPlayerEnterGame@MPPlayerManager@@QAEXXZ (mp.o)
     void DropHotJoiningPlayers();       // ?DropHotJoiningPlayers@MPPlayerManager@@QAEXXZ (mp.o 0x72ED50)
     MPPlayer* GetPlayer(const Entity* entity);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z (mp.o)
+    MPPlayer* GetPlayer(bdReference<bdConnection> connection);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@V?$bdReference@VbdConnection@@@@@Z (mp.o 0x737770)
+    bool IsLocalId(int Id);             // ?IsLocalId@MPPlayerManager@@QAE_NH@Z (mp.o 0x72EA30)
+    void DebugRender();                 // ?DebugRender@MPPlayerManager@@QAEXXZ (mp.o 0x75A890)
+    void Reset();                       // ?Reset@MPPlayerManager@@QAEXXZ (mp.o 0x75D440)
+    unsigned int GetPlayerInfo(char* buf);  // ?GetPlayerInfo@MPPlayerManager@@QAEIPAD@Z (mp.o 0x7378D0)
+    int  GetCurrentPlayerCount();       // ?GetCurrentPlayerCount@MPPlayerManager@@QAEHXZ (mp.o 0x73A980)
     Entity* FindDroppedItem(EDroppedItemTypes itemType, short id,
                             int ownerID);  // ?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z (mp.o 0x760690)
     void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
@@ -1664,6 +1689,8 @@ struct MPPlayerManager {
     ::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType, Entity* owner);  // ?GetNextDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x763960)
 private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
+    void HandleGameEnter(const bdReceivedMessage& receivedMsg);   // ?HandleGameEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x762AE0)
+    void SendDroppedItems(MPPlayer* player);  // ?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z (mp.o 0x760710)
 };
 
 class MPPeer {
@@ -1676,6 +1703,15 @@ public:
     bdSession::bdSessionStatus GetSessionStatus() const;  // ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ (mp.o 0x72C890)
     int  GetQosPing(int qos_handle);       // ?GetQosPing@MPPeer@@QAEHH@Z (mp.o 0x72CA50)
     bdReference<bdConnection> GetConnectionByIndex(unsigned int peerID);  // ?GetConnectionByIndex@MPPeer@@QAE?AV?$bdReference@VbdConnection@@@@I@Z (mp.o 0x735A70)
+    void UpdateQosProbe(bdReference<bdCommonAddr> addr, bool bSuccess,
+                        float latency);   // ?UpdateQosProbe@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@_NM@Z (mp.o 0x735B80)
+    void Disconnect();                    // ?Disconnect@MPPeer@@QAEXXZ (mp.o 0x761710)
+    void DropSplitScreenPlayer(Entity* player);  // ?DropSplitScreenPlayer@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x740610)
+    void SendServerParams();              // ?SendServerParams@MPPeer@@QAEXXZ (mp.o 0x75AF60)
+    void WeaponChange(int weapon);        // ?WeaponChange@MPPeer@@QAEXH@Z (mp.o 0x742BB0)
+    bool CreateGame(bdReference<MPGameInfo>& gameInfo,
+                    EGameConnectionType gameState);  // ?CreateGame@MPPeer@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z (mp.o 0x7655E0)
+    void SetPlayerPos(const Entity* p, float* const pos);  // ?SetPlayerPos@MPPeer@@QAEXPBVEntity@@QAM@Z (mp.o 0x7457A0)
     static void operator delete(void* p);  // ??3MPPeer@@SAXPAX@Z (mp.o 0x72C840)
     static void* operator new(unsigned int s);  // ??2MPPeer@@SAPAXI@Z (mp.o 0x72C820)
     bool IsHost();                          // ?IsHost@MPPeer@@QAE_NXZ (mp.o 0x72C8B0)
@@ -1702,6 +1738,9 @@ public:
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
     static int mRenderSessionInfo;     // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
+private:
+    virtual void onQoSProbeSuccess(const bdQoSProbeInfo& info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
+    void ConnectToPeersFinalize(const bdReference<MPGameInfo>& gameInfo);  // ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z (mp.o 0x7616C0)
 };
 
 extern EntityManager*   EntityManager_sInst(void);

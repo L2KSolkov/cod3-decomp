@@ -30,8 +30,5 @@ public:
         BD_INTERLOCKED_DEC(&m_refCount);
         return m_refCount;
     }
-    bdInt getRefCount() const { return m_refCount; }
-
-protected:
     bdInt m_refCount;
 };

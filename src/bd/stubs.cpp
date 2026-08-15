@@ -5,6 +5,9 @@
 #include <stdio.h>
 
 #include "bd_types.h"
+#include "bd/bdUtilities/bdBitOperations.h"
+
+extern const char* const defaultFileName;
 
 // bdByteBuffer ctor - ?0bdByteBuffer@@QAE@I@Z (bdCore:bdByteBuffer.o)
 bdByteBuffer::bdByteBuffer(unsigned int size)
@@ -59,6 +62,97 @@ void bdBitBuffer::writeBits(const void* data, unsigned int bitCount)
 void bdBitBuffer::writeDataType(bdBitBufferDataType type)
 {
     (void)type;
+}
+
+// bdBitBuffer::writeRangedInt32 - ea: 0x89C1F0
+void bdBitBuffer::writeRangedInt32(int value, int min, int max)
+{
+    do
+    {
+        if (max < min)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "void __thiscall bdBitBuffer::writeRangedInt32(const int,const int,const int)",
+                                 0x76u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedInt32, end of range is less than the begining");
+        }
+    } while (g_assertFalse);
+    if (m_typeChecked)
+    {
+        writeRangedUInt32(0xBu, 0, 0x1Fu, false);
+        if (m_typeChecked)
+        {
+            writeRangedUInt32(7u, 0, 0x1Fu, false);
+            int v = min;
+            writeBits(&v, 0x20);
+            if (m_typeChecked)
+                writeRangedUInt32(7u, 0, 0x1Fu, false);
+            v = max;
+            writeBits(&v, 0x20);
+        }
+    }
+    unsigned int bits = 0;
+    if (max != min)
+        bits = bdHighBitNumber((unsigned int)(max - min)) + 1;
+    int v8 = value;
+    if (value <= max)
+    {
+        if (value < min)
+            v8 = min;
+    }
+    else
+    {
+        v8 = max;
+    }
+    v8 -= min;
+    writeBits(&v8, bits);
+}
+
+// bdBitBuffer::writeRangedUInt32 - ea: 0x89C0D0
+void bdBitBuffer::writeRangedUInt32(unsigned int value, unsigned int min,
+                                    unsigned int max, bool typeChecked)
+{
+    do
+    {
+        if (max < min)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "void __thiscall bdBitBuffer::writeRangedUInt32(const unsigned int,const unsigned int,const unsigned int,const bool)",
+                                 0x54u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedUInt, end of range is less than the begining");
+        }
+    } while (g_assertFalse);
+    if (typeChecked && m_typeChecked)
+    {
+        writeRangedUInt32(0xCu, 0, 0x1Fu, false);
+        if (m_typeChecked)
+        {
+            writeRangedUInt32(8u, 0, 0x1Fu, false);
+            unsigned int v = min;
+            writeBits(&v, 0x20);
+            if (m_typeChecked)
+                writeRangedUInt32(8u, 0, 0x1Fu, false);
+            v = max;
+            writeBits(&v, 0x20);
+        }
+    }
+    unsigned int bits = 0;
+    if (max != min)
+        bits = bdHighBitNumber(max - min) + 1;
+    unsigned int v8 = value;
+    if (value <= max)
+    {
+        if (value < min)
+            v8 = min;
+    }
+    else
+    {
+        v8 = max;
+    }
+    v8 -= min;
+    writeBits(&v8, bits);
 }
 
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)

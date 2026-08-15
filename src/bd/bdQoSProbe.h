@@ -29,7 +29,8 @@ static_assert(sizeof(bdQoSRemoteAddr) == 0x1C, "bdQoSRemoteAddr size mismatch");
 // m_latency +0xC, m_data +0x10, m_dataSize +0x14, m_disabled +0x18,
 // m_bandwidthUp +0x1C, m_bandwidthDown +0x20.
 // ============================================================================
-struct bdQoSProbeInfo {
+class bdQoSProbeInfo {
+public:
     bdReference<bdCommonAddr> m_addr;    // +0x00
     bdAddr m_realAddr;                   // +0x04
     float m_latency;                     // +0x0C
