@@ -370,9 +370,11 @@ public:
         int mVal;
     };  // +0x00 opaque
     MPPeer* mPeer;                  // +0x00
-    uint8_t _pad[0x40 - 0x4];
+    uint8_t _pad[0x35 - 0x4];
+    bool    mRankedGame;            // +0x35
+    uint8_t _pad2[0x40 - 0x36];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
-    uint8_t _pad2[0x50 - 0x41];
+    uint8_t _pad3[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
     static MultiplayerMgr* Inst();  // ?Inst@MultiplayerMgr@@SAPAV1@XZ (g.o 0x4A9780)
     MPPeer* GetPeer();              // ?GetPeer@MultiplayerMgr@@QAEPAVMPPeer@@XZ (g.o 0x4A9790)

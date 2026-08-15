@@ -4,6 +4,16 @@
 
 #include "game/logic/g_local.h"
 
+#include <math.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "core/PoolAllocator.h"
+#include "core/tlFixedString.h"
+
+extern PoolAllocator* gCommonPoolAllocator;  // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A (core.o)
+
 // ?gpBrocAPI@@3PAUBrocAPI@@A (scr.o data @ 0xF3ABDC, BSS)
 BrocAPI* gpBrocAPI = NULL;
 
@@ -486,3 +496,236 @@ void Scr_Notify(Entity* ent, HashString hashValue, unsigned int paramcount)
     }
     ent->Notify(hashValue);
 }
+
+// ============================================================================
+// scr.o batch 1 - MemCount stubs + BrocSys wrappers (smallest first)
+// ============================================================================
+
+extern void tlPrint(const char* text);
+extern bool gCE;               // ?gCE@@3_NA (pakmanager.cpp)
+extern int dword_F6419C[4 * 1580];  // cg_draw.cpp (special recharge block)
+extern int dword_F641A0[4 * 1580];
+extern int dword_F641A4[4 * 1580];
+extern void mem_heap_free(void* ptr);  // ?mem_heap_free@@YAXPAX@Z
+
+namespace MPUIInterface {
+void ExitGame();  // ?ExitGame@MPUIInterface@@SAXXZ (mp.o)
+}
+
+// ae_heap wrapper view (streamer.o 0x684DD0; definition in pakmanager.cpp)
+struct mem_heap;
+struct ae_heap_wrapper {
+    void* __vftable;   // +0x00
+    mem_heap* mHeap;   // +0x04
+    bool CheckFree(void* ptr);  // ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z
+};
+
+namespace MemCount {
+// IDA types: enum MemCount::eGamePhase : int
+enum eGamePhase : int {
+    GAME_PHASE_FRONTEND = 0,
+    GAME_PHASE_LOADING = 1,
+    GAME_PHASE_INGAME = 2,
+};
+void Init();
+void RenderTotals();
+void ReportTotals();
+bool IsRealLeak(const char* type, int start, int end);
+void CheckForMapChangeLeaks();
+void CheckForRoundtripLeaks();
+void SetGamePhase(eGamePhase phase);
+void SetSafeAlloc(bool val);
+}  // namespace MemCount
+
+// ea: 0x005BBC50 (retn stub)
+void MemCount::Init()
+{
+}
+
+// ea: 0x005BBC60 (retn stub)
+void MemCount::RenderTotals()
+{
+}
+
+// ea: 0x005BBC70 (retn stub)
+void MemCount::ReportTotals()
+{
+}
+
+// ea: 0x005BBC80 (mov al,1; ret)
+bool MemCount::IsRealLeak(const char* /*type*/, int /*start*/, int /*end*/)
+{
+    return true;
+}
+
+// ea: 0x005BBC90 (retn stub)
+void MemCount::CheckForMapChangeLeaks()
+{
+}
+
+// ea: 0x005BBCA0 (retn stub)
+void MemCount::CheckForRoundtripLeaks()
+{
+}
+
+// ea: 0x005BBCB0 (retn stub)
+void MemCount::SetGamePhase(MemCount::eGamePhase /*phase*/)
+{
+}
+
+// ea: 0x005BBCC0 (retn stub)
+void MemCount::SetSafeAlloc(bool /*val*/)
+{
+}
+
+// ea: 0x005BBCD0
+void ThreadPrintf(int bitMask, const char* Format, ...)
+{
+    char Work[512];
+    va_list ap;
+    va_start(ap, Format);
+    if ((bitMask & Cvar_Get("g_scriptdebug", "0", 512)->integer) == bitMask)
+    {
+        vsprintf(Work, Format, ap);
+        tlPrint(Work);
+    }
+    va_end(ap);
+}
+
+// ea: 0x005BC1D0 (empty stub)
+void SetDepthOfField(bool, float, float, float, float)
+{
+}
+
+// ea: 0x005BC1E0 (xor eax,eax; ret)
+unsigned int CreateNanoGraph(char* /*id*/, float* const /*param1*/,
+                             float* const /*param2*/)
+{
+    return 0;
+}
+
+namespace BrocSys {
+
+// ea: 0x005BC210
+const unsigned int ConvertStringToHash(const char* str)
+{
+    if (str == nullptr)
+        return 0;
+    tlFixedString tmp(str);
+    return tmp.hash;
+}
+
+// ea: 0x005BC230
+void MemFree(void* p)
+{
+    if (gBrocPool->InPool(p))
+    {
+        gBrocPool->Release(p);
+    }
+    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
+    {
+        mem_heap_free(p);
+    }
+}
+
+// ea: 0x005BC280
+void* PoolAlloc(unsigned int s)
+{
+    return gCommonPoolAllocator->Allocate(s, false);
+}
+
+// ea: 0x005BC2A0
+void PoolFree(void* p)
+{
+    gCommonPoolAllocator->Release(p);
+}
+
+// ea: 0x005BC490
+void SetSpecialRecharge(int start, int length, int playerClass, int playerIndex)
+{
+    int v4 = 1580 * playerIndex;
+    dword_F6419C[v4] = playerClass;
+    dword_F641A0[v4] = length + start;
+    dword_F641A4[v4] = length;
+}
+
+// ea: 0x005BC4C0
+void AdvanceSpecialRecharge(int time)
+{
+    int v1 = 1580 * currCl;
+    int v2 = dword_F641A0[1580 * currCl] - time;
+    dword_F641A0[1580 * currCl] = v2;
+    if (cgGlobal.time > v2)
+    {
+        dword_F641A0[v1] = 0;
+        dword_F641A4[v1] = 0;
+    }
+}
+
+// ea: 0x005BC500
+int GetSpecialRechargePlayerClass()
+{
+    return dword_F6419C[1580 * currCl];
+}
+
+// ea: 0x005BC520
+bool SpecialEditionSkin()
+{
+    return gCE;
+}
+
+// ea: 0x005BC530
+bool IsHost()
+{
+    return MultiplayerMgr::sInst->IsHost();
+}
+
+// ea: 0x005BC540
+bool IsRankedGame()
+{
+    return MultiplayerMgr::sInst->mRankedGame;
+}
+
+// ea: 0x005BC590
+void SetTeamGame(bool teamGame)
+{
+    cgGlobal.teamGame = teamGame;
+}
+
+// ea: 0x005BC5A0
+void SetShowScore(bool showScore)
+{
+    cgGlobal.showScore = showScore;
+}
+
+// ea: 0x005BC5E0
+bool GetTeamGame()
+{
+    return cgGlobal.teamGame;
+}
+
+// ea: 0x005BC6D0 (tail jmp to MPUIInterface::ExitGame)
+void QuitGame()
+{
+    MPUIInterface::ExitGame();
+}
+
+// ea: 0x005BC700 (tail jmp to Com_Printf)
+void Print(const char* txt)
+{
+    Com_Printf(txt);
+}
+
+// ea: 0x005BC710
+void PrintLn(const char* txt)
+{
+    Com_Printf("%s\n", txt);
+}
+
+// ea: 0x005BC810
+float SquareRootX(float v)
+{
+    return sqrtf(v);
+}
+
+}  // namespace BrocSys
