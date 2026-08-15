@@ -820,7 +820,7 @@ private:
 };
 
 template <typename T>
-void EntityHandleDb_Find(unsigned int fieldOfs, T match, ae_sized_array<Entity*, 4096>& results);
+void EntityHandleDb_Find(int fieldOfs, T match, ae_sized_array<Entity*, 4096>& results);
 
 // ============================================================================
 // str_const_t - shared script constant strings (0x2B4) - verified against IDA

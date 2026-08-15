@@ -2441,11 +2441,11 @@ void EntityHandleDb_Init(void* self) { (void)self; }
 void EntityHandleDb_Release(void* self, Entity* e) { (void)self; (void)e; }
 // EntityHandleDb_Find templates (g.o 0x4B1A40 / 0x4B1B00 / 0x4B1B60)
 template <typename T>
-void EntityHandleDb_Find(unsigned int fieldOfs, T match,
+void EntityHandleDb_Find(int fieldOfs, T match,
                          ae_sized_array<Entity*, 4096>& results);
 
 template <>
-void EntityHandleDb_Find<Broc::string>(unsigned int fieldOfs,
+void EntityHandleDb_Find<Broc::string>(int fieldOfs,
                                        Broc::string match,
                                        ae_sized_array<Entity*, 4096>& results)
 {
@@ -2460,7 +2460,7 @@ void EntityHandleDb_Find<Broc::string>(unsigned int fieldOfs,
     }
 }
 template <>
-void EntityHandleDb_Find<HashString>(unsigned int fieldOfs, HashString match,
+void EntityHandleDb_Find<HashString>(int fieldOfs, HashString match,
                                      ae_sized_array<Entity*, 4096>& results)
 {
     Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
@@ -2475,7 +2475,7 @@ void EntityHandleDb_Find<HashString>(unsigned int fieldOfs, HashString match,
 }
 template <>
 void EntityHandleDb_Find<unsigned short>(
-    unsigned int fieldOfs, unsigned short match,
+    int fieldOfs, unsigned short match,
     ae_sized_array<Entity*, 4096>& results)
 {
     Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;

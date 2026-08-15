@@ -2194,17 +2194,17 @@ void EntityHandleDb::BindObjectToHandle(Handle handle, Entity* obj)
 template <typename T, typename U>
 class TaskFunctor1 {
 public:
-    void (__thiscall* mFp)(T*, Entity*, U);
+    void (T::*mFp)(Entity*, U);
     U  mA1;
 
-    TaskFunctor1(void (__thiscall* fp)(T*, Entity*, U), const U& a1)
+    TaskFunctor1(void (T::*fp)(Entity*, U), const U& a1)
         : mFp(fp), mA1(a1)
     {
     }
     virtual ~TaskFunctor1() {}
     virtual void Update(Task* t, Entity* e)
     {
-        mFp((T*)t, e, mA1);
+        (((T*)t)->*mFp)(e, mA1);
     }
 };
 template class TaskFunctor1<AnimationUpdateTask, float>;
