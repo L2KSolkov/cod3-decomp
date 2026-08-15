@@ -3001,6 +3001,37 @@ void PlayLocalSound(unsigned int entityHandleVal,
                     const Broc::string& pszSoundName);  // 0x5C5D50
 Broc::hudelem gHudElement = { 0xFFFFFFFFu };
     // ?gHudElement@BrocSys@@3Vhudelem@Broc@@A (scr.o data, init -1 per IDA)
+void VM_Clear();  // 0x5C1DB0
+void SetupLevelSpecificVariables();  // 0x5C20D0
+void ObjectiveAdd3(int iObjective, const Broc::string& inState,
+                   const Broc::string& pszString, const char* display,
+                   int iChild, int iChildOrder, int clientIndex);  // 0x5C5E10
+int  FindChildObjective(unsigned int iObjective, int iChild,
+                        bool bReportNotFound);  // 0x5C5F50
+void ObjectiveChildDelete(int iObjective, int iChild);  // 0x5C60B0
+void ObjectiveDeleteChildren(unsigned int iObjective);  // 0x5C6150
+void ObjectiveDelete(unsigned int iObjective, int clientIndex);  // 0x5C61D0
+void ObjectiveChildState(int iObjective, int iChild,
+                         const Broc::string& inState,
+                         const char* pDisplay);  // 0x5C62C0
+void ObjectiveState(int iObjective, const Broc::string& inState,
+                    const char* pDisplay, int clientIndex);  // 0x5C6460
+void ObjectiveStringInternal(int iObjective, const Broc::string& text,
+                             int number, bool bMakeUpdateMessage,
+                             bool bChild, const char* pDisplay);  // 0x5C6620
+void ObjectiveString(int iObjective, const Broc::string& text, int number,
+                     const char* pDisplay);  // 0x5C6890
+void ObjectiveString2(int iObjective, int text, int number,
+                      const char* pDisplay);  // 0x5C68C0
+void ObjectiveString_NoMessage(int iObjective, const Broc::string& text,
+                               int number, const char* pDisplay);  // 0x5C6930
+void ObjectivePosition(int iObjective, const Broc::vector& vPos,
+                       int clientIndex);  // 0x5C6960
+void ObjectiveWorldState(int iObjective, const Broc::string& inState,
+                         int clientIndex);  // 0x5C6A80
+void ObjectiveChildCurrent(int iObjective, int iChild,
+                           const char* pDisplay);  // 0x5C6C90
+void ObjectiveCurrent(int iObjective, const char* pDisplay);  // 0x5C6DE0
 }
 
 static void BrocFree(void* p)
@@ -7832,6 +7863,718 @@ void BrocSys::PlayLocalSound(unsigned int entityHandleVal,
     const char* v6 = va("ls %i", v5);
     SV_GameSendServerCommand(
         DbLinkedHandle<EntityHandleDb, Entity>((int)entityHandleVal), v6);
+}
+
+// ============================================================================
+// scr.o batch 34 - VM_Clear / SetupLevelSpecificVariables / objective family
+// ============================================================================
+
+// FogConfig helpers (render.o)
+namespace FogConfig {
+void SetRange(float n, float f);       // ?SetRange@FogConfig@@YAXMM@Z
+void SetColor(float r, float g, float b);  // ?SetColor@FogConfig@@YAXMMM@Z
+void SetVal(float s, float e);         // ?SetVal@FogConfig@@YAXMM@Z
+}
+
+// PakInfoNode layout subset for level audio/fog (verified vs disasm 5C20D0)
+struct PakInfoNodeLocal {
+    unsigned char _pad0[0x38];
+    char*  audioBackgroundTrack;   // +0x38 (InplaceString.mStr)
+    char*  audioReverbSetting;     // +0x3C
+    char*  audioAmbientSetting;    // +0x40
+    int    audioAmbientMin;        // +0x44
+    int    audioAmbientMax;        // +0x48
+    float  cullFog[6];             // +0x4C
+    float  fog[2];                 // +0x64
+    float  zfar;                   // +0x6C
+    unsigned char _pad70[0x74 - 0x70];
+    float  glowParamsXbox[4];      // +0x74
+};
+
+extern int Info_Validate(const char* s);  // g_info.cpp (0x611140)
+extern void Info_SetValueForKey(char* s, const char* key,
+                                const char* value);  // g_info.cpp (0x611170)
+
+// Objective state table (scr.o data @ 0xF6A2B0; _objectiveInfo_t 176 bytes,
+// per-client stride 3208 bytes = 802 ints)
+struct objectiveInfoLocal {
+    int    worldState;     // +0x00
+    float  height;         // +0x04
+    unsigned int entity;   // +0x08
+    int    state;          // +0x0C
+    float  vOrigin[3];     // +0x10
+    int    ringTime;       // +0x1C
+    int    ringToggle;     // +0x20
+    int    displayOrder;   // +0x24
+    void*  pChild;         // +0x28
+    void*  pParent;        // +0x2C
+    char   szString[128];  // +0x30
+};
+extern int dword_F6A2A0[4 * 802];  // cg_draw.cpp (per-client 802-dword block)
+
+static unsigned char* ObjectiveBase()
+{
+    // objective info table @ 0xF6A2B0 (4 dwords past the DObj slot)
+    return (unsigned char*)&dword_F6A2A0[0] + 0x10;
+}
+
+static objectiveInfoLocal* ObjInfo(int clientIndex, int iObjective)
+{
+    return (objectiveInfoLocal*)(ObjectiveBase()
+                                 + 3208 * clientIndex + 176 * iObjective);
+}
+
+static void ObjectiveInfoClear(objectiveInfoLocal* p)
+{
+    p->worldState = 0;
+    p->height = 0.0f;
+    p->entity = 0;
+    p->vOrigin[0] = 0.0f;
+    *(int*)&p->vOrigin[1] = 0;
+    p->ringTime = -1;
+    p->ringToggle = 0;
+    p->displayOrder = -1;
+    p->pChild = nullptr;
+    p->pParent = nullptr;
+    p->szString[0] = 0;
+}
+
+// ea: 0x005C1DB0
+void BrocSys::VM_Clear()
+{
+    memset(vmTable, 0, sizeof(vmTable));
+    currentVM = nullptr;
+}
+
+// ea: 0x005C20D0
+void BrocSys::SetupLevelSpecificVariables()
+{
+    const PakInfoNodeLocal* PakInfo =
+        (const PakInfoNodeLocal*)PakManager::sInst->GetPakInfo(CurPakId());
+    FogConfig::SetRange(PakInfo->cullFog[0], PakInfo->cullFog[1]);
+    FogConfig::SetColor(PakInfo->cullFog[2], PakInfo->cullFog[3],
+                        PakInfo->cullFog[4]);
+    FogConfig::SetVal(PakInfo->fog[0], PakInfo->fog[1]);
+    CVarSetFloat("r_zfar", PakInfo->zfar);
+    ShaderCommon::gGlowIntensity = PakInfo->glowParamsXbox[0];
+    ShaderCommon::gGlowExpansion = PakInfo->glowParamsXbox[1];
+    ShaderCommon::gGlowBrighten = PakInfo->glowParamsXbox[2];
+    ShaderCommon::gGlowPasses = (int)PakInfo->glowParamsXbox[3];
+    void (*result)(const char*, const char*, const char*, int, int) =
+        gpBrocAPI->mBrocExports.mCallbackSetLevelAudio;
+    if (result != nullptr)
+        result(PakInfo->audioBackgroundTrack, PakInfo->audioReverbSetting,
+               PakInfo->audioAmbientSetting, PakInfo->audioAmbientMin,
+               PakInfo->audioAmbientMax);
+}
+
+// ea: 0x005C5E10
+void BrocSys::ObjectiveAdd3(int iObjective, const Broc::string& inState,
+                            const Broc::string& pszString,
+                            const char* display, int iChild,
+                            int iChildOrder, int clientIndex)
+{
+    (void)pszString;
+    (void)display;
+    (void)iChild;
+    (void)iChildOrder;
+    if (iObjective >= 0x10)
+    {
+        char* v10 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v10))  // off_CFBB58 format
+            __debugbreak();
+    }
+    else
+    {
+        if (clientIndex < -1 || clientIndex >= 1)
+        {
+            const char* v9 = va(
+                "index %i is an illegal client index. Valid indexes are -1 to %i\n",
+                clientIndex, 0);
+            Scr_Error(v9);
+        }
+        else
+        {
+            Broc::string state(inState);
+            int iStateIndex;
+            if (ObjectiveStateIndexFromString(&iStateIndex, state))
+            {
+                if (clientIndex >= 0)
+                    *(int*)(ObjectiveBase() + 0x0C
+                            + 3208 * clientIndex + 176 * iObjective) =
+                        iStateIndex;
+                else
+                    *(int*)(ObjectiveBase() + 0x0C
+                            + 176 * iObjective) = iStateIndex;
+            }
+        }
+    }
+}
+
+// ea: 0x005C5F50
+int BrocSys::FindChildObjective(unsigned int iObjective, int iChild,
+                                bool bReportNotFound)
+{
+    if (iObjective > 0x10)
+    {
+        char* v10 = va(
+            "Parent objective %i is out of range.  Range should be 0 to %i\n",
+            iObjective, 16);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v10))
+            __debugbreak();
+        return -1;
+    }
+    bool bParentFound = false;
+    int v4 = 32;
+    do
+    {
+        char szConfigString[259];
+        SV_GetConfigstring(v4, szConfigString, 256);
+        if (szConfigString[0] != 0)
+        {
+            const char* v5 = Info_ValueForKey(szConfigString, "pobj");
+            if (*v5 != 0)
+            {
+                const char* v6 = Info_ValueForKey(szConfigString, "order");
+                if (atoi(v5) == (int)iObjective)
+                {
+                    bParentFound = true;
+                    if (*v6 != 0 && atoi(v6) == iChild)
+                        return v4;
+                }
+            }
+        }
+        ++v4;
+    } while (v4 - 32 < 1);
+    if (bReportNotFound)
+    {
+        const char* v8;
+        if (bParentFound)
+            v8 = va(
+                "Parent objective %i has no child with display index %i\n",
+                iObjective, iChild);
+        else
+            v8 = va(
+                "Parent objective %i not setup/does not exist.  Cannot find it's children.\n",
+                iObjective);
+        Scr_Error(v8);
+    }
+    return -1;
+}
+
+// ea: 0x005C60B0
+void BrocSys::ObjectiveChildDelete(int iObjective, int iChild)
+{
+    if (iChild >= 1)
+    {
+        int ChildObjective = FindChildObjective(iObjective, iChild, true);
+        if (ChildObjective != -1)
+        {
+            char szConfigString[256];
+            SV_GetConfigstring(ChildObjective, szConfigString, 256);
+            szConfigString[0] = 0;
+            SV_SetConfigstring(ChildObjective, szConfigString);
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 946;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C6150
+void BrocSys::ObjectiveDeleteChildren(unsigned int iObjective)
+{
+    if (iObjective >= 0x10)
+    {
+        char* v1 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v1))
+            __debugbreak();
+    }
+    else
+    {
+        DeleteAllChildrenOfObjective(iObjective);
+    }
+}
+
+// ea: 0x005C61D0
+void BrocSys::ObjectiveDelete(unsigned int iObjective, int clientIndex)
+{
+    if (iObjective >= 0x10)
+    {
+        char* v4 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v4))
+            __debugbreak();
+    }
+    else if (clientIndex < -1 || clientIndex >= 1)
+    {
+        const char* v3 = va(
+            "index %i is an illegal client index. Valid indexes are -1 to %i\n",
+            clientIndex, 0);
+        Scr_Error(v3);
+    }
+    else if (clientIndex >= 0)
+    {
+        ObjectiveInfoClear(ObjInfo(clientIndex, iObjective));
+    }
+    else
+    {
+        unsigned char* v2 = ObjectiveBase() + 176 * iObjective;
+        *(int*)(v2 + 48) = 0;
+        *(int*)(v2 + 8) = 0;
+        *(int*)(v2 + 10) = 0;
+        *(int*)(v2 + 11) = 0;
+        *(int*)(v2 + 20) = 0;
+        *(int*)(v2 + 4) = 0;
+        *(int*)(v2 + 7) = -1;
+        *(int*)(v2 + 9) = -1;
+        *(int*)(v2 + 2) = 0;
+        *(int*)(v2 + 0) = 0;
+        *(int*)(v2 + 1) = 0;
+    }
+}
+
+// ea: 0x005C62C0
+void BrocSys::ObjectiveChildState(int iObjective, int iChild,
+                                  const Broc::string& inState,
+                                  const char* pDisplay)
+{
+    Broc::string state((Broc::string::Block*)nullptr);
+    if (iChild >= 1)
+    {
+        state = inState;
+        const char* v4 = state.mBlock != nullptr
+                             ? (const char*)(state.mBlock + 1)
+                             : defaultFileName;
+        int v5 = IGOCompassWidget::ObjectiveStateIndexFromString(v4);
+        if (v5 == 27)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+            AeAssert::gCurrentLine = 1060;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Illegal objective state"))
+                __debugbreak();
+        }
+        else
+        {
+            int ChildObjective = FindChildObjective(iObjective, iChild, true);
+            if (ChildObjective != -1)
+            {
+                char szConfigString[256];
+                SV_GetConfigstring(ChildObjective, szConfigString, 256);
+                const char* v8 = va("%i", v5);
+                Info_SetValueForKey(szConfigString, "state", v8);
+                SV_SetConfigstring(ChildObjective, szConfigString);
+                if (pDisplay == nullptr || *pDisplay != 48)
+                    Info_ValueForKey(szConfigString, "str");
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1053;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C6460
+void BrocSys::ObjectiveState(int iObjective, const Broc::string& inState,
+                             const char* pDisplay, int clientIndex)
+{
+    (void)pDisplay;
+    Broc::string state((Broc::string::Block*)nullptr);
+    if (iObjective >= 0x10)
+    {
+        char* v10 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v10))
+            __debugbreak();
+    }
+    else
+    {
+        if (clientIndex < -1 || clientIndex >= 1)
+        {
+            const char* v9 = va(
+                "index %i is an illegal client index. Valid indexes are -1 to %i\n",
+                clientIndex, 0);
+            Scr_Error(v9);
+        }
+        else
+        {
+            state = inState;
+            int iStateIndex;
+            if (ObjectiveStateIndexFromString(&iStateIndex, state))
+            {
+                int* pState;
+                if (clientIndex >= 0)
+                    pState = (int*)(ObjectiveBase() + 0x0C
+                                    + 3208 * clientIndex + 176 * iObjective);
+                else
+                    pState = (int*)(ObjectiveBase() + 0x0C
+                                    + 176 * iObjective);
+                if (state[0] != 0)
+                    *pState = iStateIndex;
+                else
+                    *pState = 0;
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocObjective.cpp";
+                AeAssert::gCurrentLine = 1115;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Illegal objective state"))
+                    __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x005C6620
+void BrocSys::ObjectiveStringInternal(int iObjective,
+                                      const Broc::string& text, int number,
+                                      bool bMakeUpdateMessage, bool bChild,
+                                      const char* pDisplay)
+{
+    (void)bMakeUpdateMessage;
+    (void)pDisplay;
+    Broc::string state((Broc::string::Block*)nullptr);
+    if ((bChild || iObjective >= 0) && iObjective < 16)
+    {
+        char szConfigString[256];
+        char szString[256];
+        char tmp[16];
+        SV_GetConfigstring(iObjective + 16, szConfigString, 256);
+        tmp[0] = 0;
+        snprintf(tmp, 0xFu, "%d", number);
+        if (text.mBlock)
+            sprintf(szString, (const char*)(text.mBlock + 1), tmp);
+        else
+            sprintf(szString, defaultFileName, tmp);
+        if (strlen(szString) < 256)
+        {
+            if (!Info_Validate(szString) || strchr(szString, 92))
+            {
+                const char* v9 = va(
+                    "Objective strings can not have a \", a ;, or a \\ in them. Illegal objective string: %s\n",
+                    szString);
+                Scr_Error(v9);
+            }
+            else
+            {
+                Info_SetValueForKey(szConfigString, "str", szString);
+                SV_SetConfigstring(iObjective + 16, szConfigString);
+                const char* v7 = Info_ValueForKey(szConfigString, "state");
+                int v8 = *v7 != 0 ? atoi(v7) : 0;
+                switch (v8)
+                {
+                case 0:
+                    state = str_const.empty;
+                    break;
+                case 1:
+                    state = str_const.active;
+                    break;
+                case 2:
+                    state = str_const.invisible;
+                    break;
+                case 3:
+                    state = str_const.done;
+                    break;
+                case 4:
+                    state = str_const.current;
+                    break;
+                case 5:
+                    state = str_const.failed;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        else
+        {
+            const char* v6 = va(
+                "Objective strings is too long (> %i): %s\n", 255, szString);
+            Scr_Error(v6);
+        }
+    }
+    else
+    {
+        char* v5 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v5))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C6890
+void BrocSys::ObjectiveString(int iObjective, const Broc::string& text,
+                              int number, const char* pDisplay)
+{
+    ObjectiveStringInternal(iObjective, text, number, true,
+                            pDisplay != nullptr, "1");
+}
+
+// ea: 0x005C68C0
+void BrocSys::ObjectiveString2(int iObjective, int text, int number,
+                               const char* pDisplay)
+{
+    Broc::string result = GetLocalizedString(text);
+    ObjectiveStringInternal(iObjective, result, number, true,
+                            pDisplay != nullptr, "1");
+}
+
+// ea: 0x005C6930
+void BrocSys::ObjectiveString_NoMessage(int iObjective,
+                                        const Broc::string& text, int number,
+                                        const char* pDisplay)
+{
+    ObjectiveStringInternal(iObjective, text, number, false,
+                            pDisplay != nullptr, "1");
+}
+
+// ea: 0x005C6960
+void BrocSys::ObjectivePosition(int iObjective, const Broc::vector& vPos,
+                                int clientIndex)
+{
+    if (clientIndex < -1 || clientIndex >= 1)
+    {
+        char* v4 = va(
+            "index %i is an illegal client index. Valid indexes are -1 to %i\n",
+            clientIndex, 0);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v4))
+            __debugbreak();
+        return;
+    }
+    if (iObjective >= 0x10)
+    {
+        char tmpstr[256];
+        sprintf(tmpstr,
+                "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+                iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1312;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(tmpstr))
+            __debugbreak();
+        return;
+    }
+    objectiveInfoLocal* p =
+        ObjInfo(clientIndex >= 0 ? clientIndex : 0, iObjective);
+    p->vOrigin[0] = vPos.x;
+    p->vOrigin[1] = vPos.y;
+    p->vOrigin[2] = vPos.z;
+}
+
+// ea: 0x005C6A80
+void BrocSys::ObjectiveWorldState(int iObjective,
+                                  const Broc::string& inState,
+                                  int clientIndex)
+{
+    if (clientIndex < -1 || clientIndex >= 1)
+    {
+        char* v6 = va(
+            "index %i is an illegal client index. Valid indexes are -1 to %i\n",
+            clientIndex, 0);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v6))
+            __debugbreak();
+        return;
+    }
+    if (iObjective >= 0x10)
+    {
+        char tmpstr[256];
+        sprintf(tmpstr,
+                "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+                iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1355;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(tmpstr))
+            __debugbreak();
+        return;
+    }
+    Broc::string state(inState);
+    int iStateIndex;
+    if (!ObjectiveStateIndexFromString(&iStateIndex, state))
+        return;
+    objectiveInfoLocal* p = ObjInfo(0, iObjective);
+    if (clientIndex >= 0)
+    {
+        p = ObjInfo(clientIndex, iObjective);
+        if (state[0] == 0)
+        {
+            p->worldState = 0;
+            return;
+        }
+        p->worldState = iStateIndex;
+    }
+    else
+    {
+        if (state.mBlock != nullptr && state.mBlock->mLength != 0
+            && *(char*)(state.mBlock + 1) != 0)
+            p->worldState = iStateIndex;
+        else
+            p->worldState = 0;
+    }
+}
+
+// ea: 0x005C6C90
+void BrocSys::ObjectiveChildCurrent(int iObjective, int iChild,
+                                    const char* pDisplay)
+{
+    (void)pDisplay;
+    if (iChild >= 1)
+    {
+        if (iObjective >= 0x10)
+        {
+            const char* v4 = va(
+                "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+                iObjective, 15);
+            Scr_Error(v4);
+        }
+        else
+        {
+            int ChildObjective = FindChildObjective(iObjective, iChild, true);
+            if (ChildObjective != -1)
+            {
+                char szConfigString[256];
+                SV_GetConfigstring(ChildObjective, szConfigString, 256);
+                const char* v3 = va("%i", 4);
+                Info_SetValueForKey(szConfigString, "state", v3);
+                SV_SetConfigstring(ChildObjective, szConfigString);
+                Broc::string s((Broc::string::Block*)nullptr);
+                s = str_const.current;
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1404;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C6DE0
+void BrocSys::ObjectiveCurrent(int iObjective, const char* pDisplay)
+{
+    if (iObjective >= 0x10)
+    {
+        char* v8 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v8))
+            __debugbreak();
+    }
+    else
+    {
+        for (int v3 = 0; v3 < 16; ++v3)
+        {
+            char szConfigString[256];
+            SV_GetConfigstring(v3 + 16, szConfigString, 256);
+            const char* v4 = Info_ValueForKey(szConfigString, "state");
+            int v5 = *v4 != 0 ? atoi(v4) : 0;
+            if (v3 == iObjective)
+            {
+                if (v5 != 4)
+                {
+                    const char* v6 = va("%i", 4);
+                    Info_SetValueForKey(szConfigString, "state", v6);
+                }
+                SV_SetConfigstring(iObjective + 16, szConfigString);
+            }
+            else if (v5 == 4)
+            {
+                const char* v7 = va("%i", 1);
+                Info_SetValueForKey(szConfigString, "state", v7);
+                SV_SetConfigstring(v3 + 16, szConfigString);
+            }
+        }
+        if (pDisplay == nullptr || *pDisplay != 48)
+        {
+            Broc::string s((Broc::string::Block*)nullptr);
+            s = str_const.current;
+        }
+    }
 }
 
 // ============================================================================

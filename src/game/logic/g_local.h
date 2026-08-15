@@ -833,11 +833,20 @@ void EntityHandleDb_Find(int fieldOfs, T match, ae_sized_array<Entity*, 4096>& r
 // ============================================================================
 struct str_const_t {
     Broc::string active;              // +0x000
-    uint8_t    _pad[0xB0 - 0x4];      // +0x004
+    uint8_t    _pad004[0x30 - 0x04];
+    Broc::string current;             // +0x030 (12, "current")
+    uint8_t    _pad034[0x4C - 0x34];
+    Broc::string done;                // +0x04C (19, "done")
+    Broc::string empty;               // +0x050 (20, "empty")
+    uint8_t    _pad054[0x64 - 0x54];
+    Broc::string failed;              // +0x064 (25, "failed")
+    uint8_t    _pad068[0xB0 - 0x68];
     Broc::string grenade;             // +0x0B0 (44, "grenade")
     uint8_t    _padB4[0xBC - 0xB4];
     Broc::string info_player_deathmatch;  // +0xBC
-    uint8_t    _padC0[0xF4 - 0xC0];
+    uint8_t    _padC0[0xC4 - 0xC0];
+    Broc::string invisible;           // +0x0C4 (49, "invisible")
+    uint8_t    _padC8[0xF4 - 0xC8];
     Broc::string noclass;             // +0xF4 (verified vs Entity ctor disasm)
     uint8_t    _padF8[0x120 - 0xF8];
     Broc::string player;              // +0x120
@@ -1555,6 +1564,10 @@ struct BrocExports {
     int (*mCallbackCanPickupAmmoPack)(unsigned int ent);  // +0xD60
     uint8_t _padD64[0xD68 - 0xD64];
     void (*mCallbackPickupKit)(unsigned int ent, unsigned int count);  // +0xD68
+    uint8_t _padD6C[0xD98 - 0xD6C];
+    void (*mCallbackSetLevelAudio)(const char* bg, const char* reverb,
+                                   const char* ambient, int min,
+                                   int max);  // +0xD98
 };
 struct BrocAPI {
     BrocExports mBrocExports;
