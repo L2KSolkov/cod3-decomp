@@ -248,14 +248,6 @@ void MultiplayerMgr::PickupItem(int netIndex, int itemType, Entity* player,
 {
     (void)netIndex; (void)itemType; (void)player; (void)scriptFrom;
 }
-void MultiplayerMgr::DropItem(int itemType, const math::Position3* position,
-                              const math::Dir3* angles,
-                              const math::Dir3* velocity, int netIndex,
-                              bool scriptFrom, int typeIndex)
-{
-    (void)itemType; (void)position; (void)angles; (void)velocity;
-    (void)netIndex; (void)scriptFrom; (void)typeIndex;
-}
 void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
                                                 math::Position3* position,
                                                 math::Position3* angles,

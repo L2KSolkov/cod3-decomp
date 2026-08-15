@@ -376,6 +376,11 @@ public:
     void writeRangedInt32(int value, int min, int max);    // ?writeRangedInt32@bdBitBuffer@@QAEXHHH@Z
     void writeRangedUInt32(unsigned int value, unsigned int min, unsigned int max,
                            bool typeChecked);              // ?writeRangedUInt32@bdBitBuffer@@QAEXIII_N@Z
+    void writeRangedFloat32(float value, float min, float max,
+                            float scale);                   // ?writeRangedFloat32@bdBitBuffer@@QAEXMMMM@Z
+    bool readRangedInt32(int& value, int min, int max);     // ?readRangedInt32@bdBitBuffer@@QAE_NAAHHH@Z
+    bool readRangedUInt32(unsigned int& value, unsigned int min,
+                          unsigned int max, bool typeChecked);  // ?readRangedUInt32@bdBitBuffer@@QAE_NAAIII_N@Z
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);

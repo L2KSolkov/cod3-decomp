@@ -3604,7 +3604,7 @@ void Drop_Kit(Entity* pEnt, int iPlayerClass)
     v5b.v.m128_f32[1] = angles[2];
     v5b.v.m128_f32[2] = v8;
     v5b.v.m128_f32[3] = 0.0f;
-    MultiplayerMgr::sInst->DropItem(3, &v5b, &v6b, &vPos, v10.mVal, false, iPlayerClass);
+    MultiplayerMgr::sInst->DropItem(3, v5b, v6b, vPos, v10.mVal, false, iPlayerClass);
 }
 
 // ea: 0x00467BD0

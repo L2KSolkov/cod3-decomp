@@ -194,6 +194,7 @@ public:
 class Entity;  // game_types.h
 namespace math { class Position3; class Dir3; }
 enum hitLocation_t;
+namespace kuju { namespace knet { class sTime; } }
 
 struct MultiplayerMgr {
     MPPeer* mPeer;                 // +0x00
@@ -243,9 +244,6 @@ struct MultiplayerMgr {
                     float* weaponPosition, int weapon, float spread,
                     float coneAngleTangent, int seed);
     void PickupItem(int netIndex, int itemType, Entity* player, bool scriptFrom);
-    void DropItem(int itemType, const math::Position3* position,
-                  const math::Dir3* angles, const math::Dir3* velocity,
-                  int netIndex, bool scriptFrom, int typeIndex);
     void ApplyLocalPhysicsToVehicle(Entity* vehicle, math::Position3* position,
                                     math::Position3* angles, float* velocity);
     void AttemptToGetInVehicle(Entity* vehicle, Entity* player, int seatIdx,
@@ -279,8 +277,20 @@ struct MultiplayerMgr {
     static MultiplayerMgr* sInst;  // mp.o data
     static void Step(MultiplayerMgr* self, int earlyOutInterval,
                      bool fromThread, bool a_bFromGame);
-    static struct kuju_sTime* getLocalTime(MultiplayerMgr* self);
+    kuju::knet::sTime getLocalTime();
 };
+
+#ifndef COD3_KUJU_KNET_SSTIME_DEFINED
+#define COD3_KUJU_KNET_SSTIME_DEFINED
+namespace kuju {
+namespace knet {
+class sTime {
+public:
+    int mTime;
+};
+}
+}
+#endif
 
 struct kuju_sTime {
     int mTime;

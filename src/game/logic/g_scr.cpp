@@ -9800,7 +9800,7 @@ void BrocSys::MPScript_HostDropItem1(int itemType, int netID,
         v7.v.m128_f32[1] = pos.y;
         v7.v.m128_f32[2] = pos.z;
         v7.v.m128_f32[3] = 0.0f;
-        MultiplayerMgr::sInst->DropItem(itemType, &v7, &v5, &v6, netID,
+        MultiplayerMgr::sInst->DropItem(itemType, v7, v5, v6, netID,
                                         true, -1);
     }
 }
@@ -9830,7 +9830,7 @@ void BrocSys::MPScript_HostDropItem2(int itemType, int netID,
         v8.v.m128_f32[1] = pos.y;
         v8.v.m128_f32[2] = pos.z;
         v8.v.m128_f32[3] = 0.0f;
-        MultiplayerMgr::sInst->DropItem(itemType, &v8, &v6, &v7, netID,
+        MultiplayerMgr::sInst->DropItem(itemType, v8, v6, v7, netID,
                                         true, -1);
     }
 }
@@ -9853,7 +9853,7 @@ void BrocSys::MPScript_DropItem1(int itemType, int netID,
     v7.v.m128_f32[1] = pos.y;
     v7.v.m128_f32[2] = pos.z;
     v7.v.m128_f32[3] = 0.0f;
-    MultiplayerMgr::sInst->DropItem(itemType, &v7, &v5, &v6, netID, true, -1);
+    MultiplayerMgr::sInst->DropItem(itemType, v7, v5, v6, netID, true, -1);
 }
 
 // ea: 0x005C0FE0
@@ -9879,7 +9879,7 @@ void BrocSys::MPScript_DropItem2(int itemType, int netID,
     v8.v.m128_f32[1] = pos.y;
     v8.v.m128_f32[2] = pos.z;
     v8.v.m128_f32[3] = 0.0f;
-    MultiplayerMgr::sInst->DropItem(itemType, &v8, &v6, &v7, netID, true, -1);
+    MultiplayerMgr::sInst->DropItem(itemType, v8, v6, v7, netID, true, -1);
 }
 
 // ea: 0x005C10C0
@@ -23177,9 +23177,8 @@ void BrocSys::DisplayScoreBoard(bool show, int time)
         if (IGMS != nullptr)
             IGMS->gap1C(IGMS, -1.0f);
         View::SetNumViewports(1);
-        kuju_sTime* local = MultiplayerMgr::getLocalTime(MultiplayerMgr::sInst);
-        if (local != nullptr)
-            g_MPAARTimer.mTime = local->mTime;
+        kuju::knet::sTime local = MultiplayerMgr::sInst->getLocalTime();
+        g_MPAARTimer.mTime = local.mTime;
         g_MPAARTotalTime = time;
         if (g_femanager.mAARS != nullptr)
         {

@@ -1148,9 +1148,9 @@ void Weapon_ItemAmmo_Fire(Entity* ent, int grenType, weaponParms* wp)
     MultiplayerMgr::MPEntityHandle v29;
     MultiplayerMgr::sInst->GetNextDroppedItemID(&v29, 1 /* kItemTypeSupport */,
                                                 ent);
-    MultiplayerMgr::sInst->DropItem(1, &vTossOrigin,
-                                    (const math::Dir3*)&vTossAngles,
-                                    (const math::Dir3*)&vTossVel,
+    MultiplayerMgr::sInst->DropItem(1, vTossOrigin,
+                                    *(const math::Dir3*)&vTossAngles,
+                                    *(const math::Dir3*)&vTossVel,
                                     v29.mVal, false, -1);
 }
 

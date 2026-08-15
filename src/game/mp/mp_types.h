@@ -12,17 +12,9 @@
 #include "bd/bd_types.h"
 #include "bd/bdDiscovery.h"
 #include "core/ae_array.h"
+#include "game/sv/sv_stubs.h"
 
 class Entity;  // game_types.h
-
-namespace kuju {
-namespace knet {
-class sTime {
-public:
-    int mTime;  // +0x00
-};
-}
-}
 
 // MPPlayerSet - 16-player bitmask (2 bytes)
 class MPPlayerSet {
@@ -32,7 +24,26 @@ public:
     MPPlayerSet() : mBitPlayers(0) {}
     bool containsPlayer(unsigned int index) const;  // ?containsPlayer@MPPlayerSet@@QBE_NI@Z (mp.o 0x72A580)
     unsigned long numberOfPlayers() const;          // ?numberOfPlayers@MPPlayerSet@@QBEKXZ (mp.o 0x730490)
+    unsigned long highestPlayerIndex() const;       // ?highestPlayerIndex@MPPlayerSet@@QBEKXZ (mp.o 0x7302D0)
+    unsigned int containsPlayer(unsigned long index) const;  // ?containsPlayer@MPPlayerSet@@QBEIK@Z (game_xbox.o inline)
+    void addPlayer(unsigned long index);     // ?addPlayer@MPPlayerSet@@QAEXK@Z (mp.o inline)
+    void removePlayer(unsigned long index);  // ?removePlayer@MPPlayerSet@@QAEXK@Z (mp.o inline)
 };
+
+inline unsigned int MPPlayerSet::containsPlayer(unsigned long index) const
+{
+    return (mBitPlayers >> index) & 1;
+}
+
+inline void MPPlayerSet::addPlayer(unsigned long index)
+{
+    mBitPlayers = (unsigned short)(mBitPlayers | (1u << index));
+}
+
+inline void MPPlayerSet::removePlayer(unsigned long index)
+{
+    mBitPlayers = (unsigned short)(mBitPlayers & ~(1u << index));
+}
 
 // ============================================================================
 // eVoteType / MPVote - round vote state (mp.o)
@@ -75,6 +86,18 @@ void WriteVehicleId(bdReference<bdBitBuffer> buffer, unsigned char id); // ?Writ
 void WriteSeatIndex(bdReference<bdBitBuffer> buffer, int seatIdx);      // ?WriteSeatIndex@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73BF70)
 void WriteEntryPoint(bdReference<bdBitBuffer> buffer, int entryIdx);    // ?WriteEntryPoint@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73C050)
 void WritePlayerClass(bdReference<bdBitBuffer> buffer, int playerclass);// ?WritePlayerClass@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73C130)
+void WriteEntityHandle(bdReference<bdBitBuffer> buffer, ::MPEntityHandle id);  // ?WriteEntityHandle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@VMPEntityHandle@@@Z (mp.o 0x73BCB0)
+void WritePositionDelta(bdReference<bdBitBuffer> buffer, float old_position, float position);  // ?WritePositionDelta@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@MM@Z (mp.o 0x73AAE0)
+void WriteNormal(bdReference<bdBitBuffer> buffer, const float* normal);  // ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73AFB0)
+void WriteNormal(bdReference<bdBitBuffer> buffer, const math::Dir3& normal);  // ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z (mp.o 0x73B020)
+void WriteAngle(bdReference<bdBitBuffer> buffer, float angle);           // ?WriteAngle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@M@Z (mp.o 0x73BB90)
+void WritePlayerTeam(bdReference<bdBitBuffer> buffer, team_t team);      // ?WritePlayerTeam@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@W4team_t@@@Z (mp.o 0x73C200)
+void WriteCompressedVector(bdReference<bdBitBuffer> buffer, const float* vec);  // ?WriteCompressedVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73B600)
+bool ReadPlayerId(bdReference<bdBitBuffer> buffer, unsigned char& id);   // ?ReadPlayerId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73BE10)
+bool ReadVehicleId(bdReference<bdBitBuffer> buffer, unsigned char& id);  // ?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73C0B0)
+bool ReadSeatIndex(bdReference<bdBitBuffer> buffer, int& seatIdx);       // ?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BEF0)
+bool ReadEntryPoint(bdReference<bdBitBuffer> buffer, int& entryIdx);     // ?ReadEntryPoint@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BFD0)
+bool ReadPlayerClass(bdReference<bdBitBuffer> buffer, int& playerclass); // ?ReadPlayerClass@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73C190)
 }
 
 // ============================================================================
@@ -85,6 +108,22 @@ public:
     virtual unsigned int run(void* args);  // ?run@MPLevelLoader@@UAEIPAX@Z (mp.o 0x765DB0)
     bool m_stop;  // +0x04 (bdRunnable::m_stop)
 };
+
+// ============================================================================
+// PlayerStats - stat table helpers (mp.o ePlayerStats.cpp)
+// ============================================================================
+struct TPlayerStatsInfo {
+    float mContributesToScore;   // +0x00
+    int   mSpecificToPlayerClass; // +0x04 (EPlayerClass)
+    int   mGametype;             // +0x08 (eGameType)
+    int   mMinRange;             // +0x0C
+    int   mMaxRange;             // +0x10
+};
+
+namespace PlayerStats {
+int ScoreForStat(int stat, int value);  // ?ScoreForStat@PlayerStats@@YAHHH@Z (mp.o 0x734660)
+extern TPlayerStatsInfo playerStatsInfo[];  // ?playerStatsInfo@PlayerStats@@3PAUTPlayerStatsInfo@@A @ 0xE36E90
+}
 
 // ============================================================================
 // cBezierTrajectoryInterpolator - kuju spline interpolation (160 bytes, IDA).
@@ -163,6 +202,8 @@ public:
     MPVehicle();                        // ??0MPVehicle@@QAE@XZ (mp.o 0x7482E0)
     ~MPVehicle();                       // ??1MPVehicle@@QAE@XZ
     void DebugRender();                 // ?DebugRender@MPVehicle@@QAEXXZ (mp.o 0x7565E0)
+    void RespawnVehicle();              // ?RespawnVehicle@MPVehicle@@QAEXXZ (mp.o 0x737210)
+    void UpdateFromLocalVehicle();      // ?UpdateFromLocalVehicle@MPVehicle@@QAEXXZ (mp.o 0x736F10)
 };
 static_assert(sizeof(MPVehicle) == 0x210, "MPVehicle size mismatch");
 
@@ -187,6 +228,7 @@ public:
     Entity* FindItem(EDroppedItemTypes item, short id);  // ?FindItem@MPPlayerItems@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z (mp.o)
     void SetItem(EDroppedItemTypes item, short id, Entity* ent);  // ?SetItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z (mp.o)
     void RemoveAll();  // ?RemoveAll@MPPlayerItems@@QAEXXZ (mp.o 0x754C90)
+    ~MPPlayerItems();  // ??1MPPlayerItems@@QAE@XZ (mp.o 0x75D250)
 
 private:
     ae_vector<sDroppedItem>& GetItemList(EDroppedItemTypes item);  // ?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z (mp.o 0x72E020)
@@ -195,9 +237,8 @@ private:
 // ============================================================================
 // MPLanDiscovery - LAN session discovery results
 // ============================================================================
-class MPLanDiscovery {
+class MPLanDiscovery : public bdDiscoveryListener {
 public:
-    bdDiscoveryListener mListener;   // +0x00 (base)
     uint8_t _pad04[4];               // +0x04
     bdDiscoveryClient mDiscoveryClient;  // +0x08
     unsigned int mNumResults;  // +0x48
@@ -208,6 +249,8 @@ public:
     bool IsDone();                       // ?IsDone@MPLanDiscovery@@QAE_NXZ (mp.o 0x72CB60)
     void GetResult(unsigned int index,
                    bdReference<bdGameInfo>& result) const;  // ?GetResult@MPLanDiscovery@@QBEXIAAV?$bdReference@VbdGameInfo@@@@@Z (mp.o 0x746050)
+    void Start();                        // ?Start@MPLanDiscovery@@QAEXXZ (mp.o 0x72CAF0)
+    virtual ~MPLanDiscovery();           // ??1MPLanDiscovery@@UAE@XZ (mp.o 0x735EE0)
 };
 static_assert(sizeof(MPLanDiscovery) == 120, "MPLanDiscovery size mismatch");
 
@@ -230,9 +273,16 @@ public:
     bool  mEnablePenaltyVote;      // +0x4A
     int   mQosProbeHandle;         // +0x4C
 
+    MPGameInfo(unsigned int titleID, const XNKID& securityID,
+               const XNKEY& securityKey,
+               bdReference<bdCommonAddr> hostAddr);  // ??0MPGameInfo@@QAE@IABUXNKID@@ABUXNKEY@@V?$bdReference@VbdCommonAddr@@@@@Z (mp.o 0x73DA50)
+
     void getSlots(unsigned char& publicOpen, unsigned char& privateOpen,
                   unsigned char& publicFilled,
                   unsigned char& privateFilled) const;  // ?getSlots@MPGameInfo@@QBEXAAE000@Z (mp.o 0x730510)
+    void updateSlots(char publicOpenDelta, char privateOpenDelta,
+                     char publicFilledDelta,
+                     char privateFilledDelta);  // ?updateSlots@MPGameInfo@@QAEXDDDD@Z (mp.o 0x730540)
 };
 static_assert(sizeof(MPGameInfo) == 0x50, "MPGameInfo size mismatch");
 
@@ -241,6 +291,18 @@ enum EGameConnectionType : int {
     kGameConnectionTypeLan = 0,
     kGameConnectionTypeOnline = 1,
     kGameConnectionTypeLocal = 2,
+};
+
+// eGameType - multiplayer game type id (mp.o)
+enum eGameType : int {
+    GAME_TYPE_WAR = 0,
+    GAME_TYPE_CTF = 1,
+    GAME_TYPE_SCF = 2,
+    GAME_TYPE_HQ = 3,
+    GAME_TYPE_TDM = 4,
+    GAME_TYPE_DM = 5,
+    GAME_TYPE_DOM = 6,
+    GAME_TYPE_SND = 7,
 };
 
 struct sServerCreateParams;  // defined below MPUIInterface
@@ -265,11 +327,15 @@ public:
     static const int  GetRoundLimit(unsigned long index);  // ?GetRoundLimit@MPUIInterface@@SA?BHK@Z (mp.o 0x72FB20)
     static const int  GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z (mp.o 0x72FB90)
     static const int  GetRespawnTime(unsigned long index); // ?GetRespawnTime@MPUIInterface@@SA?BHK@Z (mp.o 0x72FC00)
+    static const int  GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z (mp.o 0x72F970)
+    static const int  GetMaxPlayersOptionFromMap(char mapID);  // ?GetMaxPlayersOptionFromMap@MPUIInterface@@SA?BHD@Z (mp.o 0x73D430)
     static void GameListingEnd();        // ?GameListingEnd@MPUIInterface@@SAXXZ
     static void StartDevice();           // ?StartDevice@MPUIInterface@@SAXXZ
     static void PlatformStop();          // ?PlatformStop@MPUIInterface@@SAXXZ
+    static void PlatformStart();         // ?PlatformStart@MPUIInterface@@SAXXZ (mp.o 0x730000)
     static void Reboot();                // ?Reboot@MPUIInterface@@SAXXZ (mp.o 0x72F380)
     static void ResolveVote();           // ?ResolveVote@MPUIInterface@@SAXXZ (mp.o 0x73D6C0)
+    static void CancelJoin();            // ?CancelJoin@MPUIInterface@@SAXXZ (mp.o 0x72F4A0)
     static void bdNetStop();             // ?bdNetStop@MPUIInterface@@SAXXZ (mp.o 0x766000)
     static void SetServerParams(const sServerCreateParams& a_ServerParams);  // ?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z (mp.o 0x730240)
     static void SetQueryParams(sServerQueryParams& params);  // ?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z (mp.o 0x72F520)
@@ -284,6 +350,7 @@ public:
     static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
     static bool mLanDiscoveryActive;  // ?mLanDiscoveryActive@MPUIInterface@@1_NA
     static bool mLiveQueryActive;     // ?mLiveQueryActive@MPUIInterface@@1_NA
+    static bool mInSession;           // ?mInSession@MPUIInterface@@1_NA (defined in MPLiveEngine.cpp)
     static struct sServerQueryParams mQueryParams;  // ?mQueryParams@MPUIInterface@@1UsServerQueryParams@@A
     static const char* mGameTypeStrings[6];       // ?mGameTypeStrings@MPUIInterface@@1PAPBDA
     static const char* mGameTypeShortStrings[6];  // ?mGameTypeShortStrings@MPUIInterface@@1PAPBDA
@@ -323,19 +390,29 @@ enum EDroppedItemTypes : int;
 // MP options menus (shell FE menu subclasses; mp.o vtable overrides)
 // ============================================================================
 // Minimal front-end views (mp.o overrides; full types live in ui_types.h).
-class FEText;
+class FEText {
+public:
+    virtual ~FEText();                      // ??1FEText@@UAE@XZ (shell.o)
+    virtual void SetText(const char* s);    // ?SetText@FEText@@UAEXPBD@Z (shell.o 0x560870)
+};
+
 class FEMultiLineText {
 public:
     virtual ~FEMultiLineText();      // ??1FEMultiLineText@@UAE@XZ (shell.o)
     virtual void UpdateForWidescreen(bool widescreen);  // ?UpdateForWidescreen@FEMultiLineText@@UAEX_N@Z (shell.o)
+    virtual void SetTextBoxNoLocalize(Broc::string text, int width,
+                                      float height);  // ?SetTextBoxNoLocalize@FEMultiLineText@@UAEXVstring@Broc@@HM@Z (shell.o 0x1857C0)
 };
 
 class UIListBox {
 public:
-    uint8_t _pad[0x60];  // +0x00 (full type in ui_types.h)
+    uint8_t _pad[0x60 - 4];  // +0x04 (vtable at +0x00)
     int     mTopLine;    // +0x60
     int     mSelectedLine;  // +0x64
     uint8_t _pad2[172 - 0x68];
+    virtual ~UIListBox();          // ??1UIListBox@@UAE@Z (shell.o)
+    virtual short OnUp(int c);     // ?OnUp@UIListBox@@UAEFH@Z (shell.o 0x184290)
+    virtual short OnDown(int c);   // ?OnDown@UIListBox@@UAEFH@Z (shell.o 0x184340)
     void RemoveAllItems();  // ?RemoveAllItems@UIListBox@@QAEXXZ (shell.o 0x5816B0)
 };
 static_assert(sizeof(UIListBox) == 172, "UIListBox size mismatch");
@@ -354,7 +431,9 @@ public:
     int16_t       highlighted;          // +0x22
     uint8_t       _pad24[0x2A - 0x24];
     int16_t       flags;                // +0x2A
-    uint8_t       _pad2C[0x32 - 0x2C];
+    uint8_t       _pad2C[0x30 - 0x2C];
+    bool          lockInput;            // +0x30
+    uint8_t       _pad31[0x32 - 0x31];
     char          button_held_down;     // +0x32
     uint8_t       _pad33[0x48 - 0x33];
     PanelFile*    panel;                // +0x48
@@ -365,8 +444,15 @@ public:
     virtual void OnUp(int c);                        // slot 32 shell.o 0x5AE910
     virtual void OnDown(int c);                      // slot 33 shell.o 0x5AE920
     virtual void OnTriangle(int c);                  // slot 46 shell.o
-    FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve, int flg);  // ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z (shell.o)
+    virtual void OnLeft(int c);                      // slot 34 shell.o 0x5AF820
+    virtual void OnRight(int c);                     // slot 35 shell.o 0x5AF830
+    virtual void SetHigh(int index, bool anim);      // slot 48 shell.o 0x171C70
     void Cleanup();                 // ?Cleanup@FEMenu@@QAEXXZ (shell.o)
+protected:
+    virtual void Up();              // ?Up@FEMenu@@MAEXXZ (shell.o 0x164020)
+    virtual void Down();            // ?Down@FEMenu@@MAEXXZ (shell.o 0x163F00)
+public:
+    FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve, int flg);  // ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z (shell.o)
 };
 static_assert(sizeof(FEMenu) == 0x4C, "FEMenu size mismatch");
 
@@ -432,6 +518,12 @@ public:
     static MPOptionsSoundMenu* Me();  // ?Me@MPOptionsSoundMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsSoundMenu@@UAEXM@Z
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsSoundMenu@@UAEX_N@Z (mp.o 0x731560)
+    virtual void ButtonHeldAction();  // ?ButtonHeldAction@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x731440)
+    virtual void OnActivate();        // ?OnActivate@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x73E0D0)
+
+    static const char* const kSoundOptionStrings[];  // ?kSoundOptionStrings@MPOptionsSoundMenu@@0QBQBDB @ 0xD193BC
+private:
+    void SetOptions();  // ?SetOptions@MPOptionsSoundMenu@@AAEXXZ (mp.o)
 };
 
 class MPOptionsControlsMenu : public FEMenu {
@@ -445,6 +537,7 @@ public:
     static MPOptionsControlsMenu* Me();  // ?Me@MPOptionsControlsMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsControlsMenu@@UAEXM@Z
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsControlsMenu@@UAEX_N@Z (mp.o 0x7320F0)
+    virtual void ButtonHeldAction();  // ?ButtonHeldAction@MPOptionsControlsMenu@@UAEXXZ (mp.o 0x731E80)
 };
 
 class MPOptionsGameplayMenu : public FEMenu {
@@ -488,11 +581,16 @@ public:
 
     static MPProfileEditMenu* Me();  // ?Me@MPProfileEditMenu@@SAPAV1@XZ
     static bool DialogResponseOk(int index);  // ?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z
+    static const char* const kProfileTextOptionStrings[];        // ?kProfileTextOptionStrings@MPProfileEditMenu@@0QBQBDB @ 0xD19670
+    static const char* const kProfileTextInstructionStrings[];   // ?kProfileTextInstructionStrings@MPProfileEditMenu@@0QBQBDB @ 0xD19684
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x733640)
     virtual void Select(int entry_num);                      // ?Select@MPProfileEditMenu@@UAEXH@Z (mp.o 0x7337B0)
     virtual void OnCross(int c);                             // ?OnCross@MPProfileEditMenu@@UAEXH@Z (mp.o 0x733820)
+    virtual void OnUp(int c);                                // ?OnUp@MPProfileEditMenu@@UAEXH@Z (mp.o 0x733670)
+    virtual void OnDown(int c);                              // ?OnDown@MPProfileEditMenu@@UAEXH@Z (mp.o 0x7336F0)
     virtual void OnTriangle(int c);                          // ?OnTriangle@MPProfileEditMenu@@UAEXH@Z (mp.o 0x733770)
     virtual void ButtonHeldAction();                         // ?ButtonHeldAction@MPProfileEditMenu@@UAEXXZ (mp.o 0x733890)
+    virtual ~MPProfileEditMenu();                            // ??1MPProfileEditMenu@@UAE@XZ (mp.o 0x765750)
 };
 
 class MPProfileMainMenu : public FEMenu {
@@ -591,6 +689,10 @@ public:
 private:
     void checkForPendingPacketsAwaitingHandling(const kuju::knet::sTime& time);  // (mp.o 0x735250)
     void checkForPendingPacketsAwaitingDispatch(const kuju::knet::sTime& time);  // (mp.o 0x750000)
+    void handleDirectDestinations(MPPlayerSet& sendTo, MPPlayerSet& exclude,
+                                  unsigned long destinationPlayer);  // ?handleDirectDestinations@cVoiceNetworkManager@knetuser@kuju@@AAEXAAVMPPlayerSet@@0K@Z (mp.o 0x74F6D0)
+    unsigned char getRoutePlayer(unsigned char sourcePlayer,
+                                 unsigned char destPlayer);  // ?getRoutePlayer@cVoiceNetworkManager@knetuser@kuju@@AAEEEE@Z (mp.o 0x73FC70)
 };
 }
 

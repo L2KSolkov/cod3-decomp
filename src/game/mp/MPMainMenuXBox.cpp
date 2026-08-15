@@ -1151,7 +1151,7 @@ bool AARXBoxLiveIngameOptions::SetTimerText()
     kuju_knet_sTime fSecondsLeftTilNextGame;
     fSecondsLeftTilNextGame.mTime =
         (float)g_MPAARTotalTime
-        - ((float)MultiplayerMgr::getLocalTime(MultiplayerMgr::sInst)->mTime
+        - ((float)MultiplayerMgr::sInst->getLocalTime().mTime
            - (float)g_MPAARTimer.mTime) * 0.001f;
     char szElapsedSeconds[4];
     snprintf(szElapsedSeconds, 3, "%d", (int)fSecondsLeftTilNextGame.mTime);

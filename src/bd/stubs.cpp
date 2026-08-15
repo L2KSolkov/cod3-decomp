@@ -155,6 +155,26 @@ void bdBitBuffer::writeRangedUInt32(unsigned int value, unsigned int min,
     writeBits(&v8, bits);
 }
 
+// bdBitBuffer::writeRangedFloat32 - ea: 0x89C2F0 (stub; port with writeBits)
+void bdBitBuffer::writeRangedFloat32(float value, float min, float max,
+                                     float scale)
+{
+    (void)value; (void)min; (void)max; (void)scale;
+}
+
+bool bdBitBuffer::readRangedInt32(int& value, int min, int max)
+{
+    (void)value; (void)min; (void)max;
+    return true;
+}
+
+bool bdBitBuffer::readRangedUInt32(unsigned int& value, unsigned int min,
+                                   unsigned int max, bool typeChecked)
+{
+    (void)value; (void)min; (void)max; (void)typeChecked;
+    return true;
+}
+
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)
 {
     (void)type;
