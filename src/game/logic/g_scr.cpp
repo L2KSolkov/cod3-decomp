@@ -3291,6 +3291,43 @@ void Detach2(unsigned int entityHandleVal,
              const Broc::string& modelName);  // 0x5CD3D0
 void DetachAll(unsigned int entityHandleVal);  // 0x5CD430
 int  GetAttachSize(unsigned int entityHandleVal);  // 0x5CD470
+void GetAttachModelName(unsigned int entityHandleVal, Broc::string& outStr,
+                        int i);  // 0x5CD4E0
+void GetAttachTagName(unsigned int entityHandleVal, Broc::string& outStr,
+                      int i);  // 0x5CD5C0
+bool GetAttachIgnoreCollision(unsigned int entityHandleVal,
+                              int i);  // 0x5CD6E0
+void LinkTo1(unsigned int entityHandleVal, unsigned int parentEntityHandleVal,
+             const Broc::string& tagName, const Broc::vector& originOffset,
+             const Broc::vector& anglesOffset,
+             bool useAngles);  // 0x5CD7A0
+void LinkTo2(unsigned int entityHandleVal, unsigned int parentEntityHandleVal,
+             const Broc::string& tagName);  // 0x5CDA90
+void LinkTo3(unsigned int entityHandleVal,
+             unsigned int parentEntityHandleVal);  // 0x5CDBB0
+void PlayerLinkTo1(unsigned int entityHandleVal,
+                   unsigned int parentEntityHandleVal,
+                   const Broc::string& tagName,
+                   const Broc::vector& angleFrac);  // 0x5CDCB0
+void PlayerLinkTo2(unsigned int entityHandleVal,
+                   unsigned int parentEntityHandleVal,
+                   const Broc::string& tagName);  // 0x5CDE20
+void PlayerLinkTo3(unsigned int entityHandleVal,
+                   unsigned int parentEntityHandleVal);  // 0x5CDF60
+void UnLink(unsigned int entityHandleVal);  // 0x5CE090
+void EnableLinkTo(unsigned int entityHandleVal);  // 0x5CE120
+unsigned int DoSpawn1(unsigned int entityHandleVal,
+                      const Broc::string& name, TPakInfo whichPak,
+                      enumForceSpawn forceSpawn);  // 0x5CE2E0
+unsigned int DoSpawn2(unsigned int entityHandleVal, TPakInfo whichPak,
+                      enumForceSpawn forceSpawn);  // 0x5CE460
+unsigned int StalinGradSpawn1(unsigned int entityHandleVal,
+                              const Broc::string& name,
+                              TPakInfo whichPak);  // 0x5CE4D0
+unsigned int StalinGradSpawn2(unsigned int entityHandleVal,
+                              TPakInfo whichPak);  // 0x5CE650
+void GetOrigin(unsigned int entityHandleVal,
+               Broc::vector& outVec);  // 0x5CE6C0
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3331,6 +3368,13 @@ extern void G_EntDetachAll(Entity* ent);  // ?G_EntDetachAll@@YAXPAVEntity@@@Z (
 extern void XAnimResetAnimVariationChunkState(
     XAnimTree* tree, unsigned int animIndex);  // ?XAnimResetAnimVariationChunkState@@YAXPAVXAnimTree@@I@Z (nal.cpp)
 extern void* gDebugEntity;  // ?gDebugEntity@@3PAXA @ 0xF3A5CC
+
+// scr.o batch 46 helpers (link / spawn)
+extern const char* G_GetEntityTypeName(Entity* ent);  // ?G_GetEntityTypeName@@YAPBDPAVEntity@@@Z (g_utils.cpp)
+extern void SV_DObjDumpInfo(Entity* entity);  // ?SV_DObjDumpInfo@@YAXPAVEntity@@@Z (sv_game.cpp 0x51EC30)
+extern Entity* SpawnActor(Entity* ent, const Broc::string& targetname,
+                          enumForceSpawn forceSpawn,
+                          TPakId pakId);  // ?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z (ai_stubs.cpp)
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -12900,6 +12944,683 @@ int BrocSys::GetAttachSize(unsigned int entityHandleVal)
     }
     while (v4 < 7);
     return v4;
+}
+
+// ============================================================================
+// scr.o batch 46 - attach getters / link / spawn
+// ============================================================================
+
+// ea: 0x005CD4E0
+void BrocSys::GetAttachModelName(unsigned int entityHandleVal,
+                                 Broc::string& outStr, int i)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            if (i >= 7
+                || (ValidatePakId(
+                        (TPakId)mObject->mAttachModels[i].mModel.mPakId),
+                    mObject->mAttachModels[i].mModel.mValue == nullptr))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+                AeAssert::gCurrentLine = 23;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("\x15%s", "bad index"))
+                    __debugbreak();
+            }
+            ValidatePakId((TPakId)mObject->mAttachModels[i].mModel.mPakId);
+            outStr = mObject->mAttachModels[i].mModel.mValue->name.mStr;
+        }
+    }
+}
+
+// ea: 0x005CD5C0
+void BrocSys::GetAttachTagName(unsigned int entityHandleVal,
+                               Broc::string& outStr, int i)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            if (i >= 7
+                || (ValidatePakId(
+                        (TPakId)mObject->mAttachModels[i].mModel.mPakId),
+                    mObject->mAttachModels[i].mModel.mValue == nullptr))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+                AeAssert::gCurrentLine = 23;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("\x15%s",
+                                         "invalid attach model name or index"))
+                    __debugbreak();
+            }
+            Broc::string::Block* mBlock =
+                mObject->mAttachModels[i].mTag.mBlock;
+            Broc::string* p_mTag = &mObject->mAttachModels[i].mTag;
+            if (mBlock != nullptr)
+            {
+                Broc::string::Block* v7 = mBlock + 1;
+                if (v7 != nullptr && *((const char*)v7) != 0)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntity.cpp";
+                    AeAssert::gCurrentLine = 2397;
+                    AeAssert::gCurrentExpr =
+                        "pEnt->mAttachModels[i].mTag.is_empty()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+            }
+            outStr = *p_mTag;
+        }
+    }
+}
+
+// ea: 0x005CD6E0
+bool BrocSys::GetAttachIgnoreCollision(unsigned int entityHandleVal, int i)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 >= 0x540)
+        return false;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return false;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr)
+        return false;
+    if (i >= 7
+        || (ValidatePakId((TPakId)mObject->mAttachModels[i].mModel.mPakId),
+            mObject->mAttachModels[i].mModel.mValue == nullptr))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "invalid attach model name or index"))
+            __debugbreak();
+    }
+    return ((1 << i) & mObject->attachIgnoreCollision) != 0;
+}
+
+// ea: 0x005CD7A0
+void BrocSys::LinkTo1(unsigned int entityHandleVal,
+                      unsigned int parentEntityHandleVal,
+                      const Broc::string& tagName,
+                      const Broc::vector& originOffset,
+                      const Broc::vector& anglesOffset, bool useAngles)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        unsigned int v8 = parentEntityHandleVal & 0xFFF;
+        Entity* v9;
+        if (v8 < 0x540
+            && parentEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v8].mKey
+            && (v9 = EntityHandleDb::sInst.mElements[v8].mObject) != nullptr)
+        {
+            if ((mObject->flags & 0x8000) == 0)
+            {
+                char tmpstr[256];
+                sprintf(tmpstr, "entity %s: does not support linkTo",
+                        G_GetEntityTypeName(mObject));
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2430;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(tmpstr))
+                    __debugbreak();
+            }
+            const char* v11 = tagName.mBlock != nullptr
+                                  ? (const char*)(tagName.mBlock + 1)
+                                  : defaultFileName;
+            if (G_EntLinkToWithOffset(mObject, v9, v11, &originOffset.x,
+                                      &anglesOffset.x, useAngles) == 0)
+            {
+                if (v9->mDObj != nullptr)
+                {
+                    ValidatePakId((TPakId)v9->mModel.mPakId);
+                    if (v9->mModel.mValue == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 2447;
+                        AeAssert::gCurrentExpr = "pParent->mModel";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    const char* v16 = tagName.mBlock != nullptr
+                                          ? (const char*)(tagName.mBlock + 1)
+                                          : defaultFileName;
+                    unsigned int v17 = HashString::CalcHash(v16);
+                    if (tagName.mBlock != nullptr
+                        && SV_DObjGetBoneIndex(v9, v17) < 0)
+                    {
+                        SV_DObjDumpInfo(v9);
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 2453;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (!AeAssert::IsIgnored())
+                        {
+                            XModel* v18 = v9->mModel.operator->();
+                            if (AeAssert::Warning(
+                                    "failed to link entity since tag '%s' does not exist in parent model '%s'",
+                                    v16, v18->name.mStr))
+                                __debugbreak();
+                        }
+                    }
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntity.cpp";
+                    AeAssert::gCurrentLine = 2456;
+                    AeAssert::gCurrentExpr = nullptr;
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Warning(
+                               "failed to link entity due to link cycle"))
+                        __debugbreak();
+                }
+                else
+                {
+                    TPakId mPakId = (TPakId)v9->mModel.mPakId;
+                    IVPointer<XModel>* p_mModel = &v9->mModel;
+                    ValidatePakId(mPakId);
+                    if (p_mModel->mValue == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 2439;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Warning(
+                                   "failed to link entity since parent has no model"))
+                            __debugbreak();
+                    }
+                    else
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 2443;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (!AeAssert::IsIgnored())
+                        {
+                            XModel* v15 = p_mModel->operator->();
+                            if (AeAssert::Warning(
+                                    "failed to link entity since parent model '%s' is invalid",
+                                    v15->name.mStr))
+                                __debugbreak();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x005CDA90
+void BrocSys::LinkTo2(unsigned int entityHandleVal,
+                      unsigned int parentEntityHandleVal,
+                      const Broc::string& tagName)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        unsigned int v5 = parentEntityHandleVal & 0xFFF;
+        Entity* v6;
+        if (v5 < 0x540
+            && parentEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v5].mKey
+            && (v6 = EntityHandleDb::sInst.mElements[v5].mObject) != nullptr)
+        {
+            if ((mObject->flags & 0x8000) == 0)
+            {
+                char tmpstr[256];
+                sprintf(tmpstr, "entity %s: does not support linkTo",
+                        G_GetEntityTypeName(mObject));
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2476;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(tmpstr))
+                    __debugbreak();
+            }
+            if (tagName.mBlock != nullptr)
+                G_EntLinkTo(mObject, v6, (const char*)(tagName.mBlock + 1));
+            else
+                G_EntLinkTo(mObject, v6, defaultFileName);
+        }
+    }
+}
+
+// ea: 0x005CDBB0
+void BrocSys::LinkTo3(unsigned int entityHandleVal,
+                      unsigned int parentEntityHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int v4 = parentEntityHandleVal & 0xFFF;
+        Entity* v5;
+        if (v4 < 0x540
+            && parentEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v4].mKey
+            && (v5 = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+        {
+            if ((mObject->flags & 0x8000) == 0)
+            {
+                char tmpstr[256];
+                sprintf(tmpstr, "entity %s: does not support linkTo",
+                        G_GetEntityTypeName(mObject));
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2499;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(tmpstr))
+                    __debugbreak();
+            }
+            G_EntLinkTo(mObject, v5, defaultFileName);
+        }
+    }
+}
+
+// ea: 0x005CDCB0
+void BrocSys::PlayerLinkTo1(unsigned int entityHandleVal,
+                            unsigned int parentEntityHandleVal,
+                            const Broc::string& tagName,
+                            const Broc::vector& angleFrac)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        unsigned int v6 = parentEntityHandleVal & 0xFFF;
+        Entity* v7;
+        if (v6 < 0x540
+            && parentEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v6].mKey
+            && (v7 = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+        {
+            if (mObject->client == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2517;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("not a player entity"))
+                    __debugbreak();
+            }
+            if ((mObject->flags & 0x8000) == 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2519;
+                AeAssert::gCurrentExpr = "pEnt->flags & 0x00008000";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            mObject->client->linkAnglesFrac[0] = angleFrac.x;
+            mObject->client->linkAnglesFrac[1] = angleFrac.y;
+            mObject->client->linkAnglesFrac[2] = angleFrac.z;
+            const char* v8 = tagName.mBlock != nullptr
+                                 ? (const char*)(tagName.mBlock + 1)
+                                 : defaultFileName;
+            if (G_EntLinkTo(mObject, v7, v8) == 0)
+                Scr_Error("failed to link entity due to link cycle");
+        }
+    }
+}
+
+// ea: 0x005CDE20
+void BrocSys::PlayerLinkTo2(unsigned int entityHandleVal,
+                            unsigned int parentEntityHandleVal,
+                            const Broc::string& tagName)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        unsigned int v5 = parentEntityHandleVal & 0xFFF;
+        Entity* v6;
+        if (v5 < 0x540
+            && parentEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v5].mKey
+            && (v6 = EntityHandleDb::sInst.mElements[v5].mObject) != nullptr)
+        {
+            if (mObject->client == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2538;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("PlayerLinkTo2: not a player entity"))
+                    __debugbreak();
+            }
+            if ((mObject->flags & 0x8000) == 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2540;
+                AeAssert::gCurrentExpr = "pEnt->flags & 0x00008000";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            const char* v7 = tagName.mBlock != nullptr
+                                 ? (const char*)(tagName.mBlock + 1)
+                                 : defaultFileName;
+            if (G_EntLinkTo(mObject, v6, v7) == 0)
+                Scr_Error("failed to link entity due to link cycle");
+        }
+    }
+}
+
+// ea: 0x005CDF60
+void BrocSys::PlayerLinkTo3(unsigned int entityHandleVal,
+                            unsigned int parentEntityHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int v4 = parentEntityHandleVal & 0xFFF;
+        Entity* v5;
+        if (v4 < 0x540
+            && parentEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v4].mKey
+            && (v5 = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+        {
+            if (mObject->client == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2558;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("PlayerLinkTo3: not a player entity"))
+                    __debugbreak();
+            }
+            if ((mObject->flags & 0x8000) == 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2560;
+                AeAssert::gCurrentExpr = "pEnt->flags & 0x00008000";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (G_EntLinkTo(mObject, v5, defaultFileName) == 0)
+                Scr_Error("failed to link entity due to link cycle");
+        }
+    }
+}
+
+// ea: 0x005CE090
+void BrocSys::UnLink(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if ((mObject->s.eFlags & 0x100000) != 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2573;
+            AeAssert::gCurrentExpr = "!(pEnt->s.eFlags & (1<<20))";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Can't UnLink entity that is using vehicle. Call UseBy."))
+                __debugbreak();
+        }
+        if ((mObject->s.eFlags & 0x100000) == 0)
+            G_EntUnlink(mObject);
+    }
+}
+
+// ea: 0x005CE120
+void BrocSys::EnableLinkTo(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if ((mObject->flags & 0x8000) != 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2587;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("entity already has linkTo enabled"))
+                __debugbreak();
+        }
+        const char* classname = mObject->mClassName.mBlock != nullptr
+                                    ? (const char*)(mObject->mClassName.mBlock
+                                                    + 1)
+                                    : defaultFileName;
+        if (mObject->s.eType != 0 || mObject->physicsObject != 0
+            || ((mObject->nextthink != 0 || mObject->think != THINK__NULL)
+                && _stricmp(classname, "trigger_multiple") != 0))
+        {
+            char tmpstr[256];
+            sprintf(tmpstr, "entity %s:does not support enableLinkTo",
+                    G_GetEntityTypeName(mObject));
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2593;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(tmpstr))
+                __debugbreak();
+        }
+        if (mObject->client != nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2596;
+            AeAssert::gCurrentExpr = "!pEnt->client";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        int v6 = mObject->flags | 0x8000;
+        mObject->nextthink = level.time;
+        mObject->think = THINK__Think_SpawnNewAutoDoorTrigger;
+        mObject->flags = v6;
+    }
+}
+
+// ea: 0x005CE2E0
+unsigned int BrocSys::DoSpawn1(unsigned int entityHandleVal,
+                               const Broc::string& name, TPakInfo whichPak,
+                               enumForceSpawn forceSpawn)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    if (v4 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v4].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    if (mObject == nullptr)
+        return 0;
+    Broc::string targetname((Broc::string::Block*)nullptr);
+    if (name.mBlock != nullptr)
+        targetname = name;
+    if (mObject->s.eType != 12)
+    {
+        const char* v7;
+        if (mObject->targetname.mBlock == (Broc::string::Block*)-12)
+            v7 = "<unnamed>";
+        else
+            v7 = mObject->targetname.mBlock != nullptr
+                     ? (const char*)(mObject->targetname.mBlock + 1)
+                     : defaultFileName;
+        const char* v9 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(
+            va("dospawn can only be called on actor spawners\n"
+               "attempted to call dospawn on entity with name '%s' of type '%s' at (%.0f %.0f %.0f)\n",
+               v7, v9, mObject->r.currentOrigin.v.m128_f32[0],
+               mObject->r.currentOrigin.v.m128_f32[1],
+               mObject->r.currentOrigin.v.m128_f32[2]));
+        return 0;
+    }
+    if (mObject->timestamp >= level.time)
+        return 0;
+    TPakId v12 = whichPak != kTPakInfoInvalid
+                     ? PakInfoToPakId(whichPak)
+                     : PAK_ID_INVALID;
+    Entity* v13 = SpawnActor(mObject, targetname, forceSpawn, v12);
+    if (v13 == nullptr)
+        return 0;
+    mObject->timestamp = level.time;
+    return v13->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005CE460
+unsigned int BrocSys::DoSpawn2(unsigned int entityHandleVal, TPakInfo whichPak,
+                               enumForceSpawn forceSpawn)
+{
+    Broc::string empty((Broc::string::Block*)nullptr);
+    return BrocSys::DoSpawn1(entityHandleVal, empty, whichPak, forceSpawn);
+}
+
+// ea: 0x005CE4D0
+unsigned int BrocSys::StalinGradSpawn1(unsigned int entityHandleVal,
+                                       const Broc::string& name,
+                                       TPakInfo whichPak)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    if (v3 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v3].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (mObject == nullptr)
+        return 0;
+    Broc::string targetname((Broc::string::Block*)nullptr);
+    if (name.mBlock != nullptr)
+        targetname = name;
+    else
+        targetname = defaultFileName;
+    if (mObject->s.eType != 12)
+    {
+        const char* v6;
+        if (mObject->targetname.mBlock == (Broc::string::Block*)-12)
+            v6 = "<unnamed>";
+        else
+            v6 = mObject->targetname.mBlock != nullptr
+                     ? (const char*)(mObject->targetname.mBlock + 1)
+                     : defaultFileName;
+        const char* v8 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(
+            va("dospawn can only be called on actor spawners\n"
+               "attempted to call dospawn on entity with name '%s' of type '%s' at (%.0f %.0f %.0f)\n",
+               v6, v8, mObject->r.currentOrigin.v.m128_f32[0],
+               mObject->r.currentOrigin.v.m128_f32[1],
+               mObject->r.currentOrigin.v.m128_f32[2]));
+        return 0;
+    }
+    if (mObject->timestamp >= level.time)
+        return 0;
+    TPakId v11 = whichPak != kTPakInfoInvalid
+                     ? PakInfoToPakId(whichPak)
+                     : PAK_ID_INVALID;
+    Entity* v12 = SpawnActor(mObject, targetname, FORCE_SPAWN, v11);
+    if (v12 == nullptr)
+        return 0;
+    mObject->timestamp = level.time;
+    return v12->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005CE650
+unsigned int BrocSys::StalinGradSpawn2(unsigned int entityHandleVal,
+                                       TPakInfo whichPak)
+{
+    Broc::string empty((Broc::string::Block*)nullptr);
+    return BrocSys::StalinGradSpawn1(entityHandleVal, empty, whichPak);
+}
+
+// ea: 0x005CE6C0
+void BrocSys::GetOrigin(unsigned int entityHandleVal, Broc::vector& outVec)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        Broc::vector origin;
+        if (mObject->r.bmodel != nullptr)
+        {
+            origin.x =
+                (mObject->r.absmax.v.m128_f32[0]
+                 + mObject->r.absmin.v.m128_f32[0])
+                * 0.5f;
+            origin.y =
+                (mObject->r.absmax.v.m128_f32[1]
+                 + mObject->r.absmin.v.m128_f32[1])
+                * 0.5f;
+            origin.z =
+                (mObject->r.absmax.v.m128_f32[2]
+                 + mObject->r.absmin.v.m128_f32[2])
+                * 0.5f;
+        }
+        else
+        {
+            origin.x = mObject->r.currentOrigin.v.m128_f32[0];
+            origin.y = mObject->r.currentOrigin.v.m128_f32[1];
+            origin.z = mObject->r.currentOrigin.v.m128_f32[2];
+        }
+        outVec = origin;
+    }
 }
 
 // ============================================================================
