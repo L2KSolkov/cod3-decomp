@@ -93,6 +93,9 @@ public:
 
 namespace BrocSys {
 void HudSetDefaults(game_hudelem_s* hud);  // ?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z
+void HudSetClockInternal(int elemNum, he_type_t type, const char* cmdName,
+                         const char* a4, float fTime, float fDur, int width,
+                         int height);  // ?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z
 }
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (core.o)
@@ -2811,6 +2814,16 @@ int  WeaponClipSize(const Broc::string& pszWeaponName);  // 0x5C4520
 int  WeaponIsSemiAuto(const Broc::string& pszWeaponName);  // 0x5C4560
 int  WeaponIsBoltAction(const Broc::string& pszWeaponName);  // 0x5C45A0
 int  GetHudElemAllocIndex();  // 0x5C4970
+void SetClock(const Broc::hudelem& hudElem, float fTime, float fDur,
+              const Broc::string& name, int width, int height);  // 0x5C5360
+void SetClockUp(const Broc::hudelem& hudElem, float fTime, float fDur,
+                const Broc::string& name, int width, int height);  // 0x5C53A0
+void FadeOverTime(const Broc::hudelem& hudElem, float fadeTime);  // 0x5C53E0
+void ScaleOverTime(const Broc::hudelem& hudElem, float scaleTime, int width,
+                   int height);  // 0x5C5510
+void MoveOverTime(const Broc::hudelem& hudElem, float fadeTime);  // 0x5C5650
+void Scr_SetOrigin(Entity* ent, int offset, Broc::vector* val);  // 0x5C57E0
+int  GetNodeClaimer(const Broc::pathnode& nodeIn);  // 0x5C5AE0
 }
 
 static void BrocFree(void* p)
@@ -4668,6 +4681,231 @@ int BrocSys::GetHudElemAllocIndex()
     }
     BrocSys::HudSetDefaults(&g_hudelems[v1]);
     return (int)v1;
+}
+
+// ea: 0x005C5360
+void BrocSys::SetClock(const Broc::hudelem& hudElem, float fTime, float fDur,
+                       const Broc::string& name, int width, int height)
+{
+    const char* v6 = name.mBlock != nullptr
+                         ? (const char*)(name.mBlock + 1)
+                         : defaultFileName;
+    BrocSys::HudSetClockInternal(hudElem.___u0, HE_TYPE_CLOCK_DOWN, v6,
+                                 "setClock", fTime, fDur, width, height);
+}
+
+// ea: 0x005C53A0
+void BrocSys::SetClockUp(const Broc::hudelem& hudElem, float fTime, float fDur,
+                         const Broc::string& name, int width, int height)
+{
+    const char* v6 = name.mBlock != nullptr
+                         ? (const char*)(name.mBlock + 1)
+                         : defaultFileName;
+    BrocSys::HudSetClockInternal(hudElem.___u0, HE_TYPE_CLOCK_UP, v6,
+                                 "setClockUp", fTime, fDur, width, height);
+}
+
+// ea: 0x005C53E0
+void BrocSys::FadeOverTime(const Broc::hudelem& hudElem, float fadeTime)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3544;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    float v3 = fadeTime;
+    game_hudelem_s* v4 = &g_hudelems[mHudIndex];
+    if (fadeTime > 0.0f)
+    {
+        if (fadeTime <= 60.0f)
+            goto ok;
+        Scr_ParamError(0, va("fade time %g > 60", fadeTime));
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 va("fade time %g <= 0", fadeTime)))
+            __debugbreak();
+    }
+    v3 = fadeTime;
+ok:
+    v4->elem.fadeStartTime = level.time;
+    v4->elem.fadeTime = (int)((v3 * 1000.0f) + 0.5f);
+    v4->elem.fromColor[0] = v4->elem.color[0];
+    v4->elem.fromColor[1] = v4->elem.color[1];
+    v4->elem.fromColor[2] = v4->elem.color[2];
+    v4->elem.fromColor[3] = v4->elem.color[3];
+}
+
+// ea: 0x005C5510
+void BrocSys::ScaleOverTime(const Broc::hudelem& hudElem, float scaleTime,
+                            int width, int height)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3577;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    float v5 = scaleTime;
+    game_hudelem_s* v6 = &g_hudelems[mHudIndex];
+    if (scaleTime > 0.0f)
+    {
+        if (scaleTime <= 60.0f)
+            goto ok;
+        Scr_ParamError(0, va("scale time %g > 60", scaleTime));
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 va("scale time %g <= 0", scaleTime)))
+            __debugbreak();
+    }
+    v5 = scaleTime;
+ok:
+    int v8 = v6->elem.width;
+    int v9 = v6->elem.height;
+    v6->elem.scaleStartTime = level.time;
+    v6->elem.scaleTime = (int)((v5 * 1000.0f) + 0.5f);
+    v6->elem.fromWidth = v8;
+    v6->elem.fromHeight = v9;
+    v6->elem.width = width;
+    v6->elem.height = height;
+}
+
+// ea: 0x005C5650
+void BrocSys::MoveOverTime(const Broc::hudelem& hudElem, float fadeTime)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3601;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    float v3 = fadeTime;
+    game_hudelem_s* v4 = &g_hudelems[mHudIndex];
+    if (fadeTime > 0.0f)
+    {
+        if (fadeTime <= 60.0f)
+            goto ok;
+        Scr_ParamError(0, va("move time %g > 60", fadeTime));
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 va("move time %g <= 0", fadeTime)))
+            __debugbreak();
+    }
+    v3 = fadeTime;
+ok:
+    int x = v4->elem.x;
+    int y = v4->elem.y;
+    v4->elem.moveStartTime = level.time;
+    v4->elem.moveTime = (int)((v3 * 1000.0f) + 0.5f);
+    v4->elem.fromX = x;
+    v4->elem.fromY = y;
+}
+
+// ea: 0x005C57E0
+void BrocSys::Scr_SetOrigin(Entity* ent, int /*offset*/, Broc::vector* val)
+{
+    if (IS_NAN(val->x))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 555;
+        AeAssert::gCurrentExpr = "!IS_NAN(val->x)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if (IS_NAN(val->y))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 556;
+        AeAssert::gCurrentExpr = "!IS_NAN(val->y)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if (IS_NAN(val->z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 557;
+        AeAssert::gCurrentExpr = "!IS_NAN(val->z)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    float org[3] = {val->x, val->y, val->z};
+    if (ent->actor != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "%s",
+                "cannot directly set the origin on AI.  Use the teleport command instead.\n"))
+            __debugbreak();
+    }
+    G_SetOrigin(ent, org);
+    if (ent->sentient != nullptr)
+        Sentient_InvalidateNearestNode(ent->sentient);
+    if (ent->r.linked != 0)
+        g_LinkEntity(ent);
+}
+
+// ea: 0x005C5AE0 (mOwner at PathNode+4, pEnt at sentient+0x234 per disasm)
+int BrocSys::GetNodeClaimer(const Broc::pathnode& nodeIn)
+{
+    PathNodes::NodeHandle handle;
+    handle.mValue = (uint16_t)nodeIn.___u0;
+    PathNodes::PathNode* Node = PathNodeMgr::sInst->GetNode(handle);
+    if (Node == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s", "Node does not exist.\n"))
+            __debugbreak();
+        return 0;
+    }
+    sentient_s* mOwner = *(sentient_s**)((char*)Node + 4);
+    if (mOwner == nullptr)
+        return 0;
+    Entity* pEnt = *(Entity**)((char*)mOwner + 0x234);
+    return (int)pEnt->mHandle.mHandle.mVal;
 }
 
 // ============================================================================
