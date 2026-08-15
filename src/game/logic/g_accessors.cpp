@@ -324,6 +324,200 @@ void math::Vector4::SetW(float _w)
     v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_w), v, 0xE0), 0x39);
 }
 
+// Cross-type ctors / assignments (g.o 0x4A5CD0-0x4A5F80)
+const math::Dir3& math::Dir3::operator=(const math::Position3& _v)
+{
+    v = _v.v;
+    return *this;
+}
+math::Dir3::Dir3(const math::Position3& _v)
+{
+    v = _v.v;
+}
+math::Dir3::Dir3(const math::Vector4& _v)
+{
+    v = _v.v;
+}
+math::Dir3::Dir3(const math::Dir3::Packed& _p)
+{
+    v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
+}
+const math::Position3& math::Position3::operator=(const math::Position3::Packed& _p)
+{
+    v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
+    return *this;
+}
+math::Position3::Position3(const math::Dir3& _v)
+{
+    v = _v.v;
+}
+math::Position3::Position3(const math::Position3::Packed& _p)
+{
+    v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
+}
+math::Vector4::Vector4(const math::Dir3& _v)
+{
+    v = _mm_shuffle_ps(_v.v, _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0), 0x34);
+}
+
+// Free-function vector math (g.o 0x4A5FB0-0x4A65E0)
+math::Dir3 math::operator-(const math::Dir3& _v)
+{
+    math::Dir3 r;
+    r.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _v.v);
+    return r;
+}
+math::Position3 math::operator-(const math::Position3& _v)
+{
+    math::Position3 r;
+    r.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _v.v);
+    return r;
+}
+math::Vector4 math::operator-(const math::Vector4& _v)
+{
+    math::Vector4 r;
+    r.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _v.v);
+    return r;
+}
+float math::Length(const math::Dir3& _v)
+{
+    __m128 v1 = _mm_mul_ps(_v.v, _v.v);
+    return (float)sqrt((double)(v1.m128_f32[0]
+                                + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
+                                   + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0])));
+}
+float math::AbsSquared(const math::Dir3& _v)
+{
+    __m128 v1 = _mm_mul_ps(_v.v, _v.v);
+    return v1.m128_f32[0]
+           + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
+              + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0]);
+}
+float math::AbsSquared(const math::Position3& _v)
+{
+    __m128 v1 = _mm_mul_ps(_v.v, _v.v);
+    return v1.m128_f32[0]
+           + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
+              + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0]);
+}
+float math::Abs(const math::Dir3& _v)
+{
+    __m128 v1 = _mm_mul_ps(_v.v, _v.v);
+    return (float)sqrt((double)(v1.m128_f32[0]
+                                + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
+                                   + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0])));
+}
+float math::Abs(const math::Position3& _v)
+{
+    __m128 v1 = _mm_mul_ps(_v.v, _v.v);
+    return (float)sqrt((double)(v1.m128_f32[0]
+                                + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
+                                   + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0])));
+}
+math::Vector4 math::AbsValue(const math::Vector4& _v)
+{
+    math::Vector4 r;
+    r.v = _mm_andnot_ps(_mm_set1_ps(-0.0f), _v.v);
+    return r;
+}
+math::Vector4 math::Ceil(const math::Vector4& _v)
+{
+    static const __m128 FloorMagic = _mm_set1_ps(8388608.0f);
+    math::Vector4 r;
+    r.v = _mm_add_ps(_mm_sub_ps(_v.v, FloorMagic), FloorMagic);
+    return r;
+}
+bool math::operator==(const math::Position3& _a, const math::Position3& _b)
+{
+    return _a.v.m128_f32[0] == _b.v.m128_f32[0]
+        && _a.v.m128_f32[1] == _b.v.m128_f32[1]
+        && _a.v.m128_f32[2] == _b.v.m128_f32[2];
+}
+bool math::operator!=(const math::Position3& _a, const math::Position3& _b)
+{
+    return _a.v.m128_f32[0] != _b.v.m128_f32[0]
+        || _a.v.m128_f32[1] != _b.v.m128_f32[1]
+        || _a.v.m128_f32[2] != _b.v.m128_f32[2];
+}
+math::Dir3 math::operator+(const math::Dir3& _a, const math::Position3& _b)
+{
+    math::Dir3 r;
+    r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+math::Position3 math::operator+(const math::Position3& _a, const math::Dir3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+
+// Broc::vector::Set (g.o 0x4A5DE0)
+void Broc::vector::Set(float X, float Y, float Z)
+{
+    x = X;
+    y = Y;
+    z = Z;
+}
+// Broc::entity ctors (g.o 0x4A6250/0x4A6270)
+Broc::entity::entity(unsigned int v)
+{
+    ___u0 = v;
+}
+Broc::entity::entity(const Broc::entity& rhs)
+{
+    ___u0 = rhs.___u0;
+}
+
+// ScriptEventParams ctor (g.o 0x4A6430)
+struct ScriptEventParams {
+    int ent1;
+    int ent2;
+    float f1, f2, f3;
+    struct { float x, y, z; } v1;
+    ScriptEventParams();
+};
+ScriptEventParams::ScriptEventParams()
+{
+    ent1 = 0;
+    ent2 = 0;
+    f1 = (float)NAN;  // sNaN
+    f2 = (float)NAN;
+    f3 = (float)NAN;
+    v1.x = (float)NAN;
+    v1.y = (float)NAN;
+    v1.z = (float)NAN;
+}
+
+// AeThread / manager accessors (g.o 0x4A6330-0x4A6590)
+namespace AeThread {
+struct BackupStack {
+    struct Block {
+        static PoolAllocator* sAllocator;  // ?sAllocator@Block@BackupStack@AeThread@@2PAVPoolAllocator@@A
+        static PoolAllocator* GetAllocator();  // ?GetAllocator@Block@BackupStack@AeThread@@SAPAVPoolAllocator@@XZ
+    };
+};
+}
+PoolAllocator* AeThread::BackupStack::Block::sAllocator;
+PoolAllocator* AeThread::BackupStack::Block::GetAllocator()
+{
+    return AeThread::BackupStack::Block::sAllocator;
+}
+AeThreadManager* AeThreadManager::Inst()
+{
+    return &AeThreadManager::sInst;
+}
+DestructibleBankManager* DestructibleBankManager::Inst()
+{
+    return DestructibleBankManager::sInst;
+}
+
+// Entity::GetNotifySet (g.o 0x4A6620)
+EntityNotifySet* Entity::GetNotifySet()
+{
+    return mNotifySet;
+}
+
 // EntityState::GetLerpAngles (g.o 0x4A5750)
 math::Position3 EntityState::GetLerpAngles() const
 {

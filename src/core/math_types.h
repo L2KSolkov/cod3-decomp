@@ -54,6 +54,9 @@ public:
     Dir3(float _x, float _y, float _z);  // ??0Dir3@math@@QAE@MMM@Z (g.o 0x4A55D0)
     Dir3(float _x);               // ??0Dir3@math@@QAE@M@Z (g.o 0x4A5640)
     Dir3(const Dir3& other) : v(other.v) {}  // implicit copy (aggregate support)
+    Dir3(const Position3& _v);    // ??0Dir3@math@@QAE@ABVPosition3@1@@Z
+    Dir3(const Vector4& _v);      // ??0Dir3@math@@QAE@ABVVector4@1@@Z
+    const Dir3& operator=(const Position3& _v);  // ??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z
     float GetX() const;           // ?GetX@Dir3@math@@QBEMXZ
     float GetY() const;           // ?GetY@Dir3@math@@QBEMXZ
     float GetZ() const;           // ?GetZ@Dir3@math@@QBEMXZ (g.o 0x4A56A0)
@@ -83,6 +86,7 @@ public:
         float GetY() const;  // ?GetY@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5ED0)
         float GetZ() const;  // ?GetZ@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5EE0)
     };
+    Dir3(const Dir3::Packed& _p);  // ??0Dir3@math@@QAE@ABUPacked@01@@Z
 };
 static_assert(sizeof(Dir3) == 0x10, "Dir3 size mismatch");
 static_assert(sizeof(Dir3::Constant) == 0x10, "Dir3::Constant size mismatch");
@@ -101,6 +105,7 @@ public:
     Position3(float _x, float _y, float _z);  // ??0Position3@math@@QAE@MMM@Z (g.o 0x4A57A0)
     Position3(float _x);           // ??0Position3@math@@QAE@M@Z (g.o 0x4A5830)
     Position3(const Position3& other) : v(other.v) {}  // implicit copy
+    Position3(const Dir3& _v);    // ??0Position3@math@@QAE@ABVDir3@1@@Z
     const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
 
     float GetX() const;           // ?GetX@Position3@math@@QBEMXZ (g.o 0x4A58B0)
@@ -125,6 +130,8 @@ public:
     struct Packed {
         float x, y, z;
     };
+    Position3(const Position3::Packed& _p);  // ??0Position3@math@@QAE@ABUPacked@01@@Z
+    const Position3& operator=(const Position3::Packed& _p);  // ??4Position3@math@@QAEABV01@ABUPacked@01@@Z
 };
 static_assert(sizeof(Position3) == 0x10, "Position3 size mismatch");
 static_assert(sizeof(Position3::Constant) == 0x10, "Position3::Constant size mismatch");
@@ -138,6 +145,22 @@ inline const math::Dir3& Dir3::operator-=(const math::Position3& v)
 }
 
 float Cos(float radians);  // ?Cos@math@@YAMM@Z (render.o 0x6E7120)
+
+// g.o free-function vector math (0x4A5FB0-0x4A65E0)
+Dir3 operator-(const Dir3& _v);  // ??Gmath@@YA?AVDir3@0@ABV10@@Z
+Position3 operator-(const Position3& _v);
+Vector4 operator-(const Vector4& _v);
+float Length(const Dir3& _v);  // ?Length@math@@YAMABVDir3@1@@Z
+float AbsSquared(const Dir3& _v);
+float AbsSquared(const Position3& _v);
+float Abs(const Dir3& _v);
+float Abs(const Position3& _v);
+Vector4 AbsValue(const Vector4& _v);
+Vector4 Ceil(const Vector4& _v);
+bool operator==(const Position3& _a, const Position3& _b);
+bool operator!=(const Position3& _a, const Position3& _b);
+Dir3 operator+(const Dir3& _a, const Position3& _b);
+Position3 operator+(const Position3& _a, const Dir3& _b);
 
 // ============================================================================
 // Vector4 — 4-component float vector (16 bytes)
@@ -175,6 +198,7 @@ public:
     Vector4() {}
     Vector4(__m128 _v) : v(_v) {}
     Vector4(const Vector4& other) : v(other.v) {}  // implicit copy
+    Vector4(const Dir3& _v);  // ??0Vector4@math@@QAE@ABVDir3@1@@Z
     Vector4(const Dir3& _v, float _w);  // ??0Vector4@math@@QAE@ABVDir3@1@M@Z (render.o 0x6E6110)
     Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
     const Vector4& operator=(const Vector4::Packed& _p);  // ??4Vector4@math@@QAEABV01@ABUPacked@01@@Z (render.o 0x6E6220)

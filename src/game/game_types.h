@@ -342,6 +342,7 @@ public:
     uint8_t  _pad23A[2];                          // +0x23A
     DObj*    mDObj;                               // +0x23C
     EntityNotifySet* mNotifySet;                  // +0x240
+    EntityNotifySet* GetNotifySet();              // ?GetNotifySet@Entity@@QAEPAVEntityNotifySet@@XZ (g.o 0x4A6620)
     ScriptEventHandler* mScriptEventHandler;      // +0x244
     biped_phys_info* mBPInfo;                     // +0x248
     IVPointer<Destructible> mDestructible;        // +0x24C (8 bytes)

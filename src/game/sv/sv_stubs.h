@@ -352,6 +352,7 @@ class AeThreadManager {
 public:
     uint8_t _pad[2148];
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
+    static AeThreadManager* Inst(); // ?Inst@AeThreadManager@@SAPAV1@XZ (g.o 0x4A6340)
     void KillAllThreads();
     void Execute(float deltaT);     // ?Execute@AeThreadManager@@QAEXM@Z
 };

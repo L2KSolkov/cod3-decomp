@@ -140,6 +140,7 @@ struct vector {
     vector() : x(0.0f), y(0.0f), z(0.0f) {}
     vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
     float operator[](int i) const { return (&x)[i]; }
+    void Set(float X, float Y, float Z);  // ?Set@vector@Broc@@QAEXMMM@Z (g.o 0x4A5DE0)
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(vector) == 12, "Broc::vector size mismatch");
 
@@ -149,6 +150,10 @@ COD3_STATIC_ASSERT_32BIT(sizeof(vector) == 12, "Broc::vector size mismatch");
 class entity {
 public:
     unsigned int ___u0;  // +0x00
+
+    entity(unsigned int v);  // ??0entity@Broc@@QAE@I@Z (g.o 0x4A6250)
+    entity(const entity& rhs);  // ??0entity@Broc@@QAE@ABV01@@Z (g.o 0x4A6270)
+    entity() : ___u0(0) {}
 
     void UndefineEEField(unsigned int key);
     unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
