@@ -41,6 +41,7 @@ extern bool gGlowGodRays;  // ?gGlowGodRays@ShaderCommon@@3_NA
 extern int  gGlowPasses;   // ?gGlowPasses@ShaderCommon@@3HA
 extern float gGlowIntensity;  // ?gGlowIntensity@ShaderCommon@@3MA
 extern float gGlowExpansion;  // ?gGlowExpansion@ShaderCommon@@3MA
+extern float gGlowBrighten;   // ?gGlowBrighten@ShaderCommon@@3MA
 }
 
 namespace View {
@@ -2877,6 +2878,32 @@ bool IsPakLoaded(TPakInfo handle);  // 0x5BD070
 void SetPakDistance(TPakInfo handle, float dist);  // 0x5BD0D0
 void ClearPakDistance(TPakInfo handle);  // 0x5BD130
 void SyncLoadPak(TPakInfo handle);  // 0x5BD190
+bool GetAnimName(unsigned int anim, char* buff, int buffsize);  // 0x5BC730
+void PrintFloat3D(const Broc::vector& pos, float number,
+                  const Broc::vector& col, float alpha,
+                  float scale);  // 0x5BC790
+void Line(const Broc::vector& start, const Broc::vector& end,
+          const Broc::vector& col, float alpha,
+          int depthtest);  // 0x5BC800
+void ScreenFadeToBlack(unsigned int duration, int viewport);  // 0x5BC5F0
+const char* Localize(const char* txt);  // 0x5BC6E0
+void GetLastParticleInfo(Broc::vector& outVec,
+                         unsigned int& outHash);  // 0x5BCC20
+void RadiusDamage(const Broc::vector& origin, float range,
+                  float max_damage, float min_damage,
+                  int damageType);  // 0x5BCD70
+TPakInfo GetPakVector(float x, float y, float z);  // 0x5BCF40
+void HudFree(game_hudelem_s* hud);  // 0x5BD4D0
+void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);  // 0x5BD810
+void GlowSetBrightnessAux(float val);  // 0x5BDB40
+unsigned int CreateDynamicLight(const Broc::vector& lightpos,
+                                const Broc::vector& color,
+                                float timeInSeconds, float innerRadius,
+                                float outerRadius,
+                                bool flicker);  // 0x5BDA40
+void SetDynamicLightPosition(unsigned int light,
+                             const Broc::vector& lightpos);  // 0x5BD9C0
+Broc::string GetLocalizedString(int stringHash);  // 0x5BDAC0
 }
 
 static void BrocFree(void* p)
@@ -5997,6 +6024,299 @@ void BrocSys::SyncLoadPak(TPakInfo handle)
             && AeAssert::Warning("SyncLoadPak: invalid pak file!"))
             __debugbreak();
     }
+}
+
+// ============================================================================
+// scr.o batch 29 - BrocSys small wrappers (GetAnimName..GetLocalizedString)
+// ============================================================================
+
+// STBManager view (core.o; full class in core/core_systems.h, which cannot
+// be included alongside g_local.h)
+class STBManager {
+public:
+    static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A (XboxLiveMenus.cpp)
+    const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z (stb.cpp)
+    const char* GetSTBString(unsigned int hash);         // ?GetSTBString@STBManager@@QAEPBDI@Z (stb.cpp)
+};
+
+// AbstractEffect view (core.o; full class in core/core_systems.h)
+class AbstractEffect {
+public:
+    math::Position3 GetPosition() const;  // ?GetPosition@AbstractEffect@@QBE?AVPosition3@math@@XZ (core.o 0x4CC230)
+    unsigned char _pad[0x08];
+    unsigned int  mEffectNameHashStr;     // +0x08
+};
+extern AbstractEffect* gLastAbstractEffectParticle;  // aeps.o data
+
+// LightEffect view (core.o; mInnerRadius +0x54, mOuterRadius +0x58,
+// mFlicker +0x3C, mFade +0x60 verified vs IDA)
+struct LightEffectLocal {
+    unsigned char _pad0[0x3C];
+    bool mFlicker;                  // +0x3C
+    unsigned char _pad1[0x54 - 0x3D];
+    float mInnerRadius;             // +0x54
+    float mOuterRadius;             // +0x58
+    unsigned char _pad2[0x60 - 0x5C];
+    bool mFade;                     // +0x60
+};
+
+extern void g_AddDebugString(const float* xyz, const float* color,
+                             float scale, const char* pszText);
+    // ?g_AddDebugString (g_main)
+extern int R_CellForPoint(const float* pos);  // render.o
+extern void* AddLight(TPakId pakId, int type, math::Position3* pos,
+                      int time);  // stub in g_entity_misc.cpp
+extern void LightEffect_SetColor(void* light, float r, float g, float b,
+                                 float a);  // stub in effect_events.cpp
+
+// ea: 0x005BC730
+bool BrocSys::GetAnimName(unsigned int anim, char* buff, int buffsize)
+{
+    const char* v3 = gpBrocAPI->mBrocExports.mAnimNameResolver(anim);
+    if (v3 == nullptr)
+        return false;
+    size_t v4 = buffsize - 1;
+    if (strlen(v3) <= (size_t)(buffsize - 1))
+        v4 = strlen(v3);
+    strncpy(buff, v3, v4);
+    buff[v4] = 0;
+    return true;
+}
+
+// ea: 0x005BC790
+void BrocSys::PrintFloat3D(const Broc::vector& pos, float number,
+                           const Broc::vector& col, float alpha, float scale)
+{
+    float color[4];
+    color[0] = col.x;
+    color[1] = col.y;
+    color[2] = col.z;
+    color[3] = alpha;
+    char text[12];
+    sprintf(text, "%f", number);
+    g_AddDebugString(&pos.x, color, scale, text);
+}
+
+// ea: 0x005BC800 (release stub: single retn)
+void BrocSys::Line(const Broc::vector& start, const Broc::vector& end,
+                   const Broc::vector& col, float alpha, int depthtest)
+{
+    (void)start;
+    (void)end;
+    (void)col;
+    (void)alpha;
+    (void)depthtest;
+}
+
+// ea: 0x005BC5F0
+void BrocSys::ScreenFadeToBlack(unsigned int duration, int viewport)
+{
+    g_femanager.IGO->SetTutorialText(-1, viewport);
+    CG_Fade(0, 0, 0, 255, cgGlobal.time, duration, viewport);
+}
+
+// ea: 0x005BC6E0
+const char* BrocSys::Localize(const char* txt)
+{
+    const char* result = STBManager::sInst->GetSTBString(txt);
+    if (result == nullptr)
+        return txt;
+    return result;
+}
+
+// ea: 0x005BCC20
+void BrocSys::GetLastParticleInfo(Broc::vector& outVec,
+                                  unsigned int& outHash)
+{
+    if (gLastAbstractEffectParticle != nullptr)
+    {
+        outHash = gLastAbstractEffectParticle->mEffectNameHashStr;
+        math::Position3 pos = gLastAbstractEffectParticle->GetPosition();
+        Broc::vector v3;
+        v3.x = pos.v.m128_f32[0];
+        v3.y = pos.v.m128_f32[1];
+        v3.z = pos.v.m128_f32[2];
+        outVec = v3;
+    }
+}
+
+// ea: 0x005BCD70
+void BrocSys::RadiusDamage(const Broc::vector& origin, float range,
+                           float max_damage, float min_damage,
+                           int damageType)
+{
+    level.bPlayerIgnoreRadiusDamage = level.bPlayerIgnoreRadiusDamageLatched;
+    G_RadiusDamage(&origin.x, EntityManager::sInst->mWorld,
+                   EntityManager::sInst->mWorld, max_damage, min_damage,
+                   range, nullptr, damageType);
+    level.bPlayerIgnoreRadiusDamage = 0;
+}
+
+// ea: 0x005BCF40
+TPakInfo BrocSys::GetPakVector(float x, float y, float z)
+{
+    math::Position3 v10;
+    v10.v.m128_f32[0] = x;
+    v10.v.m128_f32[1] = y;
+    v10.v.m128_f32[2] = z;
+    v10.v.m128_f32[3] = 0.0f;
+    int v4 = R_CellForPoint(&v10.v.m128_f32[0]);
+    const PakInfoNode* PakInfo;
+    if (v4 == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3055;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "GetPak(%.2f, %.2f, %.2f)- point is not in world", x, y, z))
+            __debugbreak();
+        PakInfo = PakManager::sInst->GetPakInfo(CurPakId());
+    }
+    else
+    {
+        PakInfo = StreamZoneManager::sInst->GetCellPakInfo(v4);
+    }
+    const PakInfoNode* v8 = PakInfo;
+    if (PakInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3062;
+        AeAssert::gCurrentExpr = "result";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Unknown pak file"))
+            __debugbreak();
+    }
+    return (TPakInfo)(uintptr_t)v8;
+}
+
+// ea: 0x005BD4D0
+void BrocSys::HudFree(game_hudelem_s* hud)
+{
+    game_hudelem_s* v1 = hud;
+    if (hud == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3270;
+        AeAssert::gCurrentExpr = "hud";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((v1 - g_hudelems) >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3271;
+        AeAssert::gCurrentExpr =
+            "hud - g_hudelems >= 0 && hud - g_hudelems < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (v1->elem.type <= HE_TYPE_FREE
+        || v1->elem.type >= (HE_TYPE_COUNT | HE_TYPE_TIMER_UP))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3272;
+        AeAssert::gCurrentExpr =
+            "hud->elem.type > HE_TYPE_FREE && hud->elem.type < HE_TYPE_COUNT";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", v1->elem.type))
+            __debugbreak();
+    }
+    if (v1->elem.type == HE_TYPE_TEXT)
+    {
+        int text = v1->elem.text;
+        if (NRefsToString(text) < 2)
+        {
+            char val = 0;
+            SV_SetConfigstring(text + 660, &val);
+        }
+    }
+    v1->elem.type = HE_TYPE_FREE;
+}
+
+// ea: 0x005BD810
+void BrocSys::ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports)
+{
+    if (sizeofBrocExports != 456)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3637;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error(
+                "Discrepancy between dll's sizeof(BrocExports) (%d) and game's (%d) (script probably needs to be recompiled)\n"
+                "HINT: sync code\\script\\include back to your label, or sync to the latest label",
+                sizeofBrocExports, 456))
+            __debugbreak();
+    }
+    if (sizeofBrocAPI != 4924)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3639;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error(
+                "Discrepancy between dll's sizeof(BrocAPI) (%d) and game's (%d) (script probably needs to be recompiled)\n"
+                "HINT: sync code\\script\\include back to your label, or sync to the latest label",
+                sizeofBrocAPI, 4924))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005BDB40
+void BrocSys::GlowSetBrightnessAux(float val)
+{
+    ShaderCommon::gGlowBrighten = val;
+}
+
+// ea: 0x005BDA40 (binary symbol returns unsigned int; body returns the
+// LightEffect* handle, which the script API treats as a uint)
+unsigned int BrocSys::CreateDynamicLight(const Broc::vector& lightpos,
+                                         const Broc::vector& color,
+                                         float timeInSeconds,
+                                         float innerRadius,
+                                         float outerRadius, bool flicker)
+{
+    if (timeInSeconds <= 0.0f)
+        return 0;
+    TPakId v7 = CurPakId();
+    LightEffectLocal* v8 = (LightEffectLocal*)AddLight(
+        v7, 1 /*VERTEX_LIGHT*/, (math::Position3*)&lightpos,
+        (int)(timeInSeconds * 1000.0f));
+    if (v8 != nullptr)
+    {
+        LightEffect_SetColor(v8, color.x, color.y, color.z, 1.0f);
+        v8->mInnerRadius = innerRadius;
+        v8->mOuterRadius = outerRadius;
+        v8->mFade = true;
+        v8->mFlicker = flicker;
+    }
+    return (unsigned int)v8;
+}
+
+// ea: 0x005BD9C0
+void BrocSys::SetDynamicLightPosition(unsigned int light,
+                                      const Broc::vector& lightpos)
+{
+    if (light != 0)
+    {
+        float* p = (float*)((char*)light + 0x10);  // LightEffect::mLightPos
+        p[0] = lightpos.x;
+        p[1] = lightpos.y;
+        p[2] = lightpos.z;
+    }
+}
+
+// ea: 0x005BDAC0
+Broc::string BrocSys::GetLocalizedString(int stringHash)
+{
+    const char* STBString =
+        STBManager::sInst->GetSTBString((unsigned int)stringHash);
+    return Broc::string(STBString);
 }
 
 // ============================================================================
