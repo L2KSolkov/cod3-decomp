@@ -2518,7 +2518,7 @@ int     Cmd_PFXStats_f(void);                       // g.o 0x44AEA0
 int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o 0x46F9F0
 vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
 int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
-int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
+void    G_InitScrVehicles(void);                    // g.o 0x45E1D0
 // anim.o ?G_InitialParseInteractionInfo@@YAXXZ (stub; port later)
 void G_InitialParseInteractionInfo(void);
 void    G_InitSentients(void);                       // g.o
@@ -2730,8 +2730,8 @@ void  Spotting(Entity* ent);                     // g.o 0x472130
 void  G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o 0x47BB40
 void  G_VehicleClientThink(int msec);            // g.o 0x46DF60
 bool  ValidForGametype(void);                    // g.o 0x4507D0
-void  render_aabb(const math::Position3* bmin, const math::Position3* bmax,
-                  const float* color);           // g.o 0x46A290
+void  render_aabb(const math::Position3& bmin, const math::Position3& bmax,
+                  const Color& color);           // g.o 0x46A290
 Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck);  // g.o 0x480880
 int16_t G_GetVehicleInfoIndex(const char* name); // g.o 0x44F010
 extern int s_clientThink;                        // g.o
@@ -3840,7 +3840,7 @@ struct TaskSys {
 
 struct EntityDeathTask : Task {
     EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // ??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z
-    void Update(Entity* e, float delta);    // ?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z
+    virtual void Update(Entity* e, float delta);  // ?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z
 };
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,

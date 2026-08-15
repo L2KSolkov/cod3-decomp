@@ -37,23 +37,79 @@ void EntityHandleDb::Init()
 }
 
 // ea: 0x00460EC0
-void EntityHandleDb::Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>* results)
+void EntityHandleDb::Find(int fieldOfs, HashString match,
+                          ae_sized_array<Entity*, 4096>& results) const
 {
-    EntityHandleDb_Find<HashString>(fieldOfs, match, *results);
+    EntityHandleDb_Find<HashString>(fieldOfs, match, results);
 }
 
 // ea: 0x00460EE0
 void EntityHandleDb::Find(int fieldOfs, unsigned short match,
-                          ae_sized_array<Entity*, 4096>* results)
+                          ae_sized_array<Entity*, 4096>& results) const
 {
-    EntityHandleDb_Find<unsigned short>(fieldOfs, match, *results);
+    EntityHandleDb_Find<unsigned short>(fieldOfs, match, results);
 }
 
 // ea: 0x00454C80
-Entity** EntityHandleDb::Find(int fieldofs, unsigned short match,
-                              Entity** begin, Entity** end)
+ae_sized_array<Entity*, 4096>::const_iterator EntityHandleDb::Find(
+    int fieldofs, unsigned short match,
+    ae_sized_array<Entity*, 4096>::const_iterator begin,
+    ae_sized_array<Entity*, 4096>::const_iterator end) const
 {
-    Entity** i = begin;
+    Entity* const* i = begin.m_ptr;
+    for (; i != end.m_ptr; ++i)
+    {
+        if (*i != nullptr)
+        {
+            int16_t v7 = *(int16_t*)((char*)&(*i)->s.eType + fieldofs);
+            if (v7 != 0 && v7 == match)
+                break;
+        }
+    }
+    ae_sized_array<Entity*, 4096>::const_iterator result;
+    result.m_ptr = i;
+    return result;
+}
+
+// ea: 0x00454CC0
+ae_sized_array<Entity*, 4096>::const_iterator EntityHandleDb::Find(
+    int fieldofs, HashString match,
+    ae_sized_array<Entity*, 4096>::const_iterator begin,
+    ae_sized_array<Entity*, 4096>::const_iterator end) const
+{
+    Entity* const* i = begin.m_ptr;
+    for (; i != end.m_ptr; ++i)
+    {
+        if (*i != nullptr)
+        {
+            int v7 = *(int*)((char*)&(*i)->s.eType + fieldofs);
+            if (v7 != 0 && v7 == (int)match.mHash)
+                break;
+        }
+    }
+    ae_sized_array<Entity*, 4096>::const_iterator result;
+    result.m_ptr = i;
+    return result;
+}
+
+// ea: 0x00466460
+void EntityHandleDb::Release(Entity& e)
+{
+    if (e.mHandle.mHandle.mVal != 0)
+    {
+        unsigned int idx = e.mHandle.mHandle.mVal & 0xFFF;
+        if (idx < 0x540)
+            EntityHandleDb::sInst.mElements[idx].mKey = 0;  // ReleaseHandle
+        mActiveList.m_elements[e.mEntityArrayIndex] = nullptr;
+    }
+}
+
+// ea: 0x00460D80
+Entity* EntityHandleDb::Find(int fieldofs, unsigned short match) const
+{
+    Entity* const* begin = mActiveList.m_elements;
+    Entity* const* end = begin + mActiveList.m_size;
+    Entity* const* i = begin;
     for (; i != end; ++i)
     {
         if (*i != nullptr)
@@ -63,55 +119,17 @@ Entity** EntityHandleDb::Find(int fieldofs, unsigned short match,
                 break;
         }
     }
-    return i;
-}
-
-// ea: 0x00454CC0
-Entity** EntityHandleDb::Find(int fieldofs, HashString match,
-                              Entity** begin, Entity** end)
-{
-    Entity** i = begin;
-    for (; i != end; ++i)
-    {
-        if (*i != nullptr)
-        {
-            int v7 = *(int*)((char*)&(*i)->s.eType + fieldofs);
-            if (v7 != 0 && v7 == (int)match.mHash)
-                break;
-        }
-    }
-    return i;
-}
-
-// ea: 0x00466460
-void EntityHandleDb::Release(Entity* e)
-{
-    if (e->mHandle.mHandle.mVal != 0)
-    {
-        unsigned int idx = e->mHandle.mHandle.mVal & 0xFFF;
-        if (idx < 0x540)
-            EntityHandleDb::sInst.mElements[idx].mKey = 0;  // ReleaseHandle
-        mActiveList.m_elements[e->mEntityArrayIndex] = nullptr;
-    }
-}
-
-// ea: 0x00460D80
-Entity* EntityHandleDb::Find(int fieldofs, unsigned short match)
-{
-    Entity** begin = mActiveList.m_elements;
-    Entity** end = begin + mActiveList.m_size;
-    Entity** result = Find(fieldofs, match, begin, end);
-    if (result == end)
+    if (i == end)
         return nullptr;
-    return *result;
+    return *i;
 }
 
 // ea: 0x00460DD0
-Entity* EntityHandleDb::Find(int fieldofs, HashString match)
+Entity* EntityHandleDb::Find(int fieldofs, HashString match) const
 {
-    Entity** begin = mActiveList.m_elements;
-    Entity** end = begin + mActiveList.m_size;
-    Entity** i = begin;
+    Entity* const* begin = mActiveList.m_elements;
+    Entity* const* end = begin + mActiveList.m_size;
+    Entity* const* i = begin;
     for (; i != end; ++i)
     {
         if (*i != nullptr)
@@ -127,17 +145,21 @@ Entity* EntityHandleDb::Find(int fieldofs, HashString match)
 }
 
 // ea: 0x00460E30
-Entity* EntityHandleDb::Find(int fieldofs, const Broc::string& match)
+Entity* EntityHandleDb::Find(int fieldofs, const Broc::string& match) const
 {
-    Entity** begin = mActiveList.m_elements;
-    Entity** end = begin + mActiveList.m_size;
-    Entity** i = begin;
+    Entity* const* begin = mActiveList.m_elements;
+    Entity* const* end = begin + mActiveList.m_size;
+    Entity* const* i = begin;
     for (; i != end; ++i)
     {
         if (*i != nullptr)
         {
-            int v6 = *(int*)((char*)&(*i)->s.eType + fieldofs);
-            if (v6 != 0 && v6 == (int)HashString::CalcHash(match.c_str()))
+            Broc::string s = *(Broc::string*)((char*)&(*i)->s.eType + fieldofs);
+            if (s.mBlock != nullptr
+                && s.mBlock != (Broc::string::Block*)-12
+                && s.c_str() != nullptr
+                && s.c_str()[0] != 0
+                && strcmp(s.c_str(), match.c_str()) == 0)
                 break;
         }
     }
@@ -147,15 +169,18 @@ Entity* EntityHandleDb::Find(int fieldofs, const Broc::string& match)
 }
 
 // ea: 0x00454BC0
-Entity** EntityHandleDb::Find(int fieldofs, const Broc::string& match,
-                              Entity** begin, Entity** end)
+ae_sized_array<Entity*, 4096>::const_iterator EntityHandleDb::Find(
+    int fieldofs, Broc::string match,
+    ae_sized_array<Entity*, 4096>::const_iterator begin,
+    ae_sized_array<Entity*, 4096>::const_iterator end) const
 {
-    Entity** m_ptr = begin;
-    for (; m_ptr != end; ++m_ptr)
+    Entity* const* m_ptr = begin.m_ptr;
+    Broc::string s;
+    for (; m_ptr != end.m_ptr; ++m_ptr)
     {
         if (*m_ptr != nullptr)
         {
-            Broc::string s = *(Broc::string*)((char*)&(*m_ptr)->s.eType + fieldofs);
+            s = *(Broc::string*)((char*)&(*m_ptr)->s.eType + fieldofs);
             if (s.mBlock != nullptr
                 && s.mBlock != (Broc::string::Block*)-12
                 && s.c_str() != nullptr
@@ -166,7 +191,9 @@ Entity** EntityHandleDb::Find(int fieldofs, const Broc::string& match,
             }
         }
     }
-    return m_ptr;
+    ae_sized_array<Entity*, 4096>::const_iterator result;
+    result.m_ptr = m_ptr;
+    return result;
 }
 
 // ea: 0x00454B00

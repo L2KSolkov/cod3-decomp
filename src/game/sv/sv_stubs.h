@@ -859,16 +859,25 @@ public:
             return mElements[idx].mObject;
         return NULL;
     }
-    Entity* Find(int fieldofs, HashString match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HVHashString@@@Z
-    void Find(int fieldOfs, unsigned short match, ae_sized_array<Entity*, 4096>* results);  // ?Find@EntityHandleDb@@QBEXGAAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
-    void Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>* results);      // ?Find@EntityHandleDb@@QBEXVHashString@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
-    void Find(int fieldOfs, const Broc::string* match, ae_sized_array<Entity*, 4096>* results);  // ?Find@EntityHandleDb@@QBEXHABVstring@Broc@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
-    Entity** Find(int fieldofs, unsigned short match, Entity** begin, Entity** end);  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HGV23@0@Z
-    Entity** Find(int fieldofs, HashString match, Entity** begin, Entity** end);      // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVHashString@@V23@1@Z
-    void Release(Entity* e);                    // ?Release@EntityHandleDb@@QAEXAAVEntity@@@Z
-    Entity* Find(int fieldofs, unsigned short match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HG@Z
-    Entity* Find(int fieldofs, const Broc::string& match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HABVstring@Broc@@@Z
-    Entity** Find(int fieldofs, const Broc::string& match, Entity** begin, Entity** end);  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVstring@Broc@@V23@1@Z
+    Entity* Find(int fieldofs, HashString match) const;  // ?Find@EntityHandleDb@@QBEPAVEntity@@HVHashString@@@Z
+    void Find(int fieldOfs, unsigned short match, ae_sized_array<Entity*, 4096>& results) const;  // ?Find@EntityHandleDb@@QBEXGAAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
+    void Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>& results) const;      // ?Find@EntityHandleDb@@QBEXVHashString@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
+    void Find(int fieldOfs, const Broc::string& match, ae_sized_array<Entity*, 4096>& results) const;  // ?Find@EntityHandleDb@@QBEXHABVstring@Broc@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
+    ae_sized_array<Entity*, 4096>::const_iterator Find(
+        int fieldofs, unsigned short match,
+        ae_sized_array<Entity*, 4096>::const_iterator begin,
+        ae_sized_array<Entity*, 4096>::const_iterator end) const;  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HGV23@0@Z
+    ae_sized_array<Entity*, 4096>::const_iterator Find(
+        int fieldofs, HashString match,
+        ae_sized_array<Entity*, 4096>::const_iterator begin,
+        ae_sized_array<Entity*, 4096>::const_iterator end) const;  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVHashString@@V23@1@Z
+    void Release(Entity& e);                    // ?Release@EntityHandleDb@@QAEXAAVEntity@@@Z
+    Entity* Find(int fieldofs, unsigned short match) const;  // ?Find@EntityHandleDb@@QBEPAVEntity@@HG@Z
+    Entity* Find(int fieldofs, const Broc::string& match) const;  // ?Find@EntityHandleDb@@QBEPAVEntity@@HABVstring@Broc@@@Z
+    ae_sized_array<Entity*, 4096>::const_iterator Find(
+        int fieldofs, Broc::string match,
+        ae_sized_array<Entity*, 4096>::const_iterator begin,
+        ae_sized_array<Entity*, 4096>::const_iterator end) const;  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVstring@Broc@@V23@1@Z
     void Compact();                         // ?Compact@EntityHandleDb@@QAEXXZ
     void Validate();                        // ?Validate@EntityHandleDb@@AAEXXZ
 };

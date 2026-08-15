@@ -511,7 +511,9 @@ void Use_trigger_damage(Entity* pEnt, Entity* pOther, Entity* /*unused*/)
 }
 
 // ea: 0x00470B50
-void Pain_trigger_damage(Entity* pSelf, Entity* pAttacker, int iDamage, const float* vPoint, int iMod)
+void Pain_trigger_damage(Entity* pSelf, Entity* pAttacker, int iDamage,
+                         const float* vPoint, int iMod, Entity* /*unused*/,
+                         hitLocation_t /*hitLoc*/)
 {
     Activate_trigger_damage(pSelf, pAttacker, iDamage, iMod);
     if (pSelf->count == 0)
@@ -519,7 +521,10 @@ void Pain_trigger_damage(Entity* pSelf, Entity* pAttacker, int iDamage, const fl
 }
 
 // ea: 0x00470B90
-void Die_trigger_damage(Entity* pSelf, Entity* pInflictor, Entity* pAttacker, int iDamage, int iMod)
+void Die_trigger_damage(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
+                        int iDamage, int iMod, int /*unused1*/,
+                        const float* /*unused2*/, Entity* /*unused3*/,
+                        hitLocation_t /*unused4*/)
 {
     Activate_trigger_damage(pSelf, pAttacker, iDamage, iMod);
     if (pSelf->count == 0)

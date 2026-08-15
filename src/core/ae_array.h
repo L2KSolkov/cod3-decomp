@@ -32,6 +32,12 @@ public:
         m_elements[m_size] = val;
         ++m_size;
     }
+
+    // Binary mangle: const_iterator@?$ae_sized_array@...@@ (Entity* const*)
+    class const_iterator {
+    public:
+        const T* m_ptr;  // +0x00
+    };
 };
 
 // ============================================================================

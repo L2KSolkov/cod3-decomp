@@ -384,11 +384,11 @@ void G_ClearLowHunk(void)
 }
 
 // ea: 0x00460E90
-void EntityHandleDb::Find(int fieldOfs, const Broc::string* match,
-                          ae_sized_array<Entity*, 4096>* results)
+void EntityHandleDb::Find(int fieldOfs, const Broc::string& match,
+                          ae_sized_array<Entity*, 4096>& results) const
 {
-    Broc::string v4 = *match;
-    EntityHandleDb_Find<Broc::string>(fieldOfs, v4, *results);
+    Broc::string v4 = match;
+    EntityHandleDb_Find<Broc::string>(fieldOfs, v4, results);
 }
 
 // ea: 0x00460660
@@ -2013,18 +2013,18 @@ bool ValidForGametype(void)
 }
 
 // ea: 0x0046A290
-void render_aabb(const math::Position3* bmin, const math::Position3* bmax,
-                 const float* color)
+void render_aabb(const math::Position3& bmin, const math::Position3& bmax,
+                 const Color& color)
 {
     if (render)
     {
         debug_aabb v5;
-        v5.bmin.v = bmin->v;
-        v5.bmax.v = bmax->v;
-        v5.color[0] = color[0];
-        v5.color[1] = color[1];
-        v5.color[2] = color[2];
-        v5.color[3] = color[3];
+        v5.bmin.v = bmin.v;
+        v5.bmax.v = bmax.v;
+        v5.color[0] = color.r;
+        v5.color[1] = color.g;
+        v5.color[2] = color.b;
+        v5.color[3] = color.a;
         debug_aabbs.mElements[debug_aabbs.mSize++] = v5;
     }
 }

@@ -1669,9 +1669,8 @@ void scr_vehicle_t::Mantled(Entity* player)
 }
 
 // ea: 0x0045E1D0
-int G_InitScrVehicles(void)
+void G_InitScrVehicles(void)
 {
-    int result = 0;
     if (level.MaxVehicles != 0)
     {
         int v0 = 0;
@@ -1682,12 +1681,10 @@ int G_InitScrVehicles(void)
             G_VehInitPathPos(&s_vehicles[v2].pathPos);
             ++v0;
             s_vehicles[v2].mEntity.mHandle.mVal = 0;
-            result = level.MaxVehicles;
             v1 = v0;
         } while (v0 < level.MaxVehicles);
     }
     level.vehicles = s_vehicles;
-    return result;
 }
 
 // ea: 0x0044DBD0
