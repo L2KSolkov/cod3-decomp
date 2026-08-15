@@ -200,6 +200,9 @@ public:
     Vector4& GetY();  // ?GetY@Mat44@math@@QAEAAVVector4@2@XZ
     Vector4& GetZ();  // ?GetZ@Mat44@math@@QAEAAVVector4@2@XZ
     Vector4& GetW();  // ?GetW@Mat44@math@@QAEAAVVector4@2@XZ
+    void SetX(const Vector4& _x);  // ?SetX@Mat44@math@@QAEXABVVector4@2@@Z (render.o 0x6E65F0)
+    void SetY(const Vector4& _y);  // ?SetY@Mat44@math@@QAEXABVVector4@2@@Z (render.o 0x6E6630)
+    void SetZ(const Vector4& _z);  // ?SetZ@Mat44@math@@QAEXABVVector4@2@@Z (render.o 0x6E6670)
 };
 static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
 

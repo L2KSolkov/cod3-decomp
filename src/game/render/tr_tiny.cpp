@@ -114,6 +114,9 @@ class nglDxRenderState {
 public:
     bool GetZWrite();          // ?GetZWrite@nglDxRenderState@@QAE_NXZ @ 0x6E7CA0
     unsigned int GetZFunc();   // ?GetZFunc@nglDxRenderState@@QAEIXZ @ 0x6E7CF0
+    void SetZWrite(bool v);    // ?SetZWrite@nglDxRenderState@@QAEX_N@Z @ 0x6E7C60
+    void SetZFunc(unsigned int v);  // ?SetZFunc@nglDxRenderState@@QAEXI@Z @ 0x6E7CB0
+    void SetColorWrite(unsigned int v);  // ?SetColorWrite@nglDxRenderState@@QAEXI@Z @ 0x6E7D00
 };
 bool nglDxRenderState::GetZWrite() { return dword_BC2D10 != 0; }
 unsigned int nglDxRenderState::GetZFunc() { return dword_BC2CF4; }
@@ -147,18 +150,53 @@ nglMeshParams::nglMeshParams() { Flags = 0; }
 class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
+extern void mem_heap_free(void* ptr);
 class tlInitList {
+public:
+private:
+    tlInitList* next;                // +0x04
+    static tlInitList* head;         // ?head@tlInitList@@0PAV1@A
+    friend class cdAepsShader;
 public:
     virtual ~tlInitList() {}
 };
+tlInitList* tlInitList::head = nullptr;
+class tlFixedString {
+public:
+    tlFixedString(const char* str);  // ??0tlFixedString@@QAE@PBD@Z
+};
+class ShaderCommon {
+public:
+    union ShaderSwitching_t {
+        unsigned char bytes[8];
+    };
+    static ShaderSwitching_t ShaderSwitching;  // ?ShaderSwitching@ShaderCommon@@3TShaderSwitching_t@1@A
+};
+ShaderCommon::ShaderSwitching_t ShaderCommon::ShaderSwitching;
 class cdAepsShader : public tlInitList {
 public:
+    bool Disabled;                   // +0x08
+    cdAepsShader();                  // ??0cdAepsShader@@QAE@XZ @ 0x6E87F0
     virtual ~cdAepsShader();   // ??1cdAepsShader@@UAE@XZ @ 0x6EBF60
     virtual void AddNode(nglMeshNode* node, nglMeshSection* section,
                          nglMaterial* mat);  // ?AddNode@cdAepsShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z @ 0x6E8850
+    virtual tlFixedString GetName();  // ?GetName@cdAepsShader@@UAE?AVtlFixedString@@XZ @ 0x6E8830
+    static void operator delete(void* ptr);  // mem_heap_free
 };
+cdAepsShader::cdAepsShader()
+{
+    next = tlInitList::head;
+    tlInitList::head = this;
+    Disabled = false;
+    ShaderCommon::ShaderSwitching.bytes[4] &= (unsigned char)~1u;
+}
 cdAepsShader::~cdAepsShader() {}
 void cdAepsShader::AddNode(nglMeshNode*, nglMeshSection*, nglMaterial*) {}
+tlFixedString cdAepsShader::GetName()
+{
+    return tlFixedString("Particles");
+}
+void cdAepsShader::operator delete(void* ptr) { mem_heap_free(ptr); }
 
 // ============================================================================
 // apsClient
@@ -166,6 +204,7 @@ void cdAepsShader::AddNode(nglMeshNode*, nglMeshSection*, nglMaterial*) {}
 class apsClient {
 public:
     apsClient();                     // ??0apsClient@@QAE@XZ @ 0x6E8720
+    virtual ~apsClient() {}          // vtable for ??_EapsClient
     virtual void UpdateAndRender(float dt);  // ?UpdateAndRender@apsClient@@UAEXM@Z @ 0x6E86C0
 };
 apsClient::apsClient() {}
@@ -270,17 +309,40 @@ int ParticleEffect::IsCulled() const { return culled; }
 void ParticleEffect::SetCulled(int value) { culled = value; }
 
 struct cdWheelMarkVertex;
+struct cdWheelMarkVertex {
+    uint8_t _pad[0x10];
+};
+class Entity;
+enum wheel_e { wheel_e_0 = 0 };
 class WheelMark {
 public:
     uint8_t _pad[4];
     unsigned int TimeStamp;          // +0x04
-    uint8_t _pad2[0x64 - 0x08];
+    void* Owner;                     // +0x08
+    int Wheel;                       // +0x0C
+    uint8_t _pad3[0x50 - 0x10];
+    int NumVerts;                    // +0x50
+    int LastVert;                    // +0x54
+    uint8_t _pad4[0x64 - 0x58];
     cdWheelMarkVertex* VertexBuffer; // +0x64
     unsigned int GetTimeStamp() const;  // ?GetTimeStamp@WheelMark@@QBEIXZ @ 0x6E8510
+    bool Matches(Entity* owner, wheel_e wheel) const;  // ?Matches@WheelMark@@QBE_NPAVEntity@@W4wheel_e@@@Z @ 0x6E84E0
 protected:
     unsigned char GetId(cdWheelMarkVertex* V);  // ?GetId@WheelMark@@IAEEPAUcdWheelMarkVertex@@@Z @ 0x6E8550
+    cdWheelMarkVertex* AddVertex();  // ?AddVertex@WheelMark@@IAEPAUcdWheelMarkVertex@@XZ @ 0x6E8520
 };
 unsigned int WheelMark::GetTimeStamp() const { return TimeStamp; }
+bool WheelMark::Matches(Entity* owner, wheel_e wheel) const
+{
+    return Owner == owner && Wheel == wheel;
+}
+cdWheelMarkVertex* WheelMark::AddVertex()
+{
+    cdWheelMarkVertex* result = &VertexBuffer[LastVert];
+    LastVert = (LastVert + 1) & 0x3FF;
+    ++NumVerts;
+    return result;
+}
 
 class cdWheelMarkShaderMat;
 class WheelMarkMgr {
@@ -394,18 +456,33 @@ ScopeDisableWarnings::~ScopeDisableWarnings()
 // ============================================================================
 class DObj {
 public:
-    uint8_t _pad[0xDC];
+    uint8_t _pad[0xD8];
+    int mLOD;                        // +0xD8
     int mLODOverride;                // +0xDC
     int mLODAnim;                    // +0xE0
+    int GetLOD() const;              // ?GetLOD@DObj@@QBEHXZ @ 0x6E7770
     void ClearLODOverride();         // ?ClearLODOverride@DObj@@QAEXXZ @ 0x6E77A0
     void ClearLODAnim();             // ?ClearLODAnim@DObj@@QAEXXZ @ 0x6E77B0
 };
+int DObj::GetLOD() const
+{
+    int result = mLODOverride;
+    if (result < 0)
+    {
+        result = mLODAnim;
+        if (result < 0)
+            return mLOD;
+    }
+    return result;
+}
 void DObj::ClearLODOverride() { mLODOverride = -1; }
 void DObj::ClearLODAnim() { mLODAnim = -1; }
 
 class cdl_proftimer {
 public:
     float value;                     // +0x00
+    void start();                    // ?start@cdl_proftimer@@QAEXXZ
+    void stop();                     // ?stop@cdl_proftimer@@QAEXXZ
     void reset();                    // ?reset@cdl_proftimer@@QAEXXZ @ 0x6E7EA0
 };
 void cdl_proftimer::reset() { value = 0; }
@@ -417,6 +494,7 @@ class AnimationPlayer {
 public:
     static void* operator new(unsigned int sz);  // ??2AnimationPlayer@@SAPAXI@Z @ 0x6E7E70
     static void operator delete(void* ptr);  // ??3AnimationPlayer@@SAXPAX@Z @ 0x6E7E90
+    ~AnimationPlayer();      // ??1AnimationPlayer@@QAE@XZ (defined elsewhere)
 };
 void AnimationPlayer::operator delete(void* ptr) { tlMemFree(ptr); }
 
@@ -457,11 +535,18 @@ public:
 };
 viewModelInfo_t::viewModelInfo_t() {}
 
-class trGlobals_t {
-public:
+struct BspTreeView2;
+struct world_t {
+    uint8_t _pad[0x100];
+    BspTreeView2* bspTree;           // +0x100
+};
+struct trGlobals_t {
+    uint8_t _pad[0x290];
+    world_t* world;                  // +0x290
     trGlobals_t();                   // ??0trGlobals_t@@QAE@XZ @ 0x6EBEC0
 };
 trGlobals_t::trGlobals_t() {}
+extern trGlobals_t tr;               // ?tr@@3UtrGlobals_t@@A (tr_main.cpp)
 
 // ============================================================================
 // DebugLine / DebugSphere / DebugTri default ctors
@@ -600,13 +685,22 @@ template unsigned int InplaceVector<const XModel*>::size() const;          // @ 
 // ============================================================================
 class InplaceString;
 template <class Key, class Value>
-class InplaceTree;
+class InplaceTree {
+public:
+    void* mRoot;                     // +0x00
+    int mCount;                      // +0x04
+    template <class T>
+    unsigned int* Find(T const& key) const;  // ?Find@...?$InplaceTree@VInplaceString@@I@@QBEPAIABQ...@@Z
+};
 template <class T, class Tree>
 class InplaceAssetBank {
 public:
-    uint8_t _pad[0x10];
+    uint8_t _pad[0x08];
+    Tree mTree;                      // +0x08
     unsigned int mSize;              // +0x10 (mPtrs.mSize)
     unsigned int Size() const;       // ?Size@?$InplaceAssetBank@...@@QBEIXZ
+    template <class K>
+    bool FindIndex(K const& key, unsigned int* out) const;  // ??$FindIndex@...@?$InplaceAssetBank@...@@QBE_NABQ...@@PAI@Z
 };
 template <class T, class Tree>
 unsigned int InplaceAssetBank<T, Tree>::Size() const
@@ -670,6 +764,7 @@ public:
     bool empty() const;              // ?empty@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBE_NXZ @ 0x6E8E20
     void set_size(int s);            // ?set_size@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEXH@Z @ 0x6EA1F0
     T& back();                       // ?back@?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@QAEAAULightIndex@LightGrid@@XZ @ 0x6EC900
+    T& pop_back();                   // ?pop_back@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEAAV?$ae_pair@FF@@XZ @ 0x6E8EE0
     void clear();                    // ?clear@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEXXZ @ 0x6EC6A0
 };
 template <class T, int N>
@@ -727,12 +822,55 @@ public:
     int mCapacity;                   // +0x04
     int mSize;                       // +0x08
     ae_vector();                     // ??0?$ae_vector@...@@QAE@XZ
+    ~ae_vector();                    // ??1?$ae_vector@...@@QAE@XZ
     T* begin();                      // ?begin@?$ae_vector@...@@QAEP...@@XZ
     T* end();                        // ?end@?$ae_vector@...@@QAEP...@@XZ
     int size() const;                // ?size@?$ae_vector@PAVParticleEffect@@@@QBEHXZ @ 0x6E8F20
+    T* find(T const& iFindVal);      // declared; specialized for ae_vector<LightEffect*>
     void resize(int n) { mSize = n; }
     void clear() { resize(0); }      // ?clear@?$ae_vector@...@@QAEXXZ
+private:
+    T* construct_array(int iCapacity, int iSize);  // ?construct_array@?$ae_vector@...@@AAEP...@@HH@Z
+    T* construct_array(int iNumber);              // ...AAEP...@@H@Z
+    void destroy_all();              // ?destroy_all@?$ae_vector@...@@AAEXXZ
 };
+template <class T>
+ae_vector<T>::~ae_vector()
+{
+    destroy_all();
+}
+template <class T>
+T* ae_vector<T>::construct_array(int iCapacity, int iSize)
+{
+    (void)iSize;
+    return (T*)tlMemAlloc((unsigned int)(sizeof(T) * iCapacity), 8u, 0);
+}
+template <class T>
+T* ae_vector<T>::construct_array(int iNumber)
+{
+    return (T*)tlMemAlloc((unsigned int)(sizeof(T) * iNumber), 8u, 0);
+}
+template <class T>
+void ae_vector<T>::destroy_all()
+{
+    if (mElements != nullptr)
+    {
+        tlMemFree(mElements);
+        mElements = nullptr;
+        mCapacity = 0;
+    }
+}
+template <>
+LightEffect** ae_vector<LightEffect*>::find(LightEffect* const& iFindVal)  // @ 0x6E9220
+{
+    LightEffect** result = mElements;
+    for (LightEffect** i = &mElements[mSize]; result != i; ++result)
+    {
+        if (*result == iFindVal)
+            break;
+    }
+    return result;
+}
 template <class T>
 ae_vector<T>::ae_vector()
     : mElements(nullptr), mCapacity(0), mSize(0)
@@ -770,7 +908,8 @@ public:
     int m_size;                      // +0x00
     dlist_node* m_head;              // +0x04
     dlist_node* m_end;               // +0x08
-    dlist_node** m_tail;             // +0x0C
+    dlist_node* m_tail;              // +0x0C
+    reserved_dlist();                // ??0?$reserved_dlist@VtrRefEntity@@@@QAE@XZ @ 0x6EC570
     class iterator {
     public:
         dlist_node* m_node;          // +0x00
@@ -779,14 +918,34 @@ public:
         T* operator*();              // ??Diterator@?$reserved_dlist@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ @ 0x6ED060
         iterator& operator++();      // ??Eiterator@?$reserved_dlist@VtrRefEntity@@@@QAEAAV01@XZ @ 0x6E9AE0
         bool compare(const iterator& rhs) const;  // ?compare@iterator@?$reserved_dlist@VtrRefEntity@@@@QBE_NABV12@@Z @ 0x6EA4A0
+        bool operator!=(const iterator& rhs) const;  // ??9iterator@?$reserved_dlist@VtrRefEntity@@@@QBE_NABV01@@Z @ 0x6ED070
     };
     void validate() const;           // ?validate@?$reserved_dlist@VtrRefEntity@@@@QBEXXZ @ 0x6EA1A0
     dlist_node* get_head();          // ?get_head@?$reserved_dlist@VtrRefEntity@@@@QAEPAUdlist_node@1@XZ @ 0x6EA630
     bool empty() const;              // ?empty@?$reserved_dlist@VtrRefEntity@@@@QBE_NXZ @ 0x6EA640
     void clear();                    // ?clear@?$reserved_dlist@VtrRefEntity@@@@QAEXXZ @ 0x6E8CA0
     iterator end();                  // ?end@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ @ 0x6EC5C0
+    void push_back(T* obj);          // ?push_back@?$reserved_dlist@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z @ 0x6EC590
     static T* node_to_object(dlist_node* node);  // ?node_to_object@?$reserved_dlist@VtrRefEntity@@@@SAPAVtrRefEntity@@PAUdlist_node@1@@Z @ 0x6EA190
 };
+template <class T>
+reserved_dlist<T>::reserved_dlist()
+{
+    m_size = 0;
+    m_head = (dlist_node*)&m_end;
+    m_end = nullptr;
+    m_tail = (dlist_node*)&m_head;
+}
+template <class T>
+void reserved_dlist<T>::push_back(T* obj)
+{
+    dlist_node* node = (dlist_node*)obj;
+    node->m_next = (dlist_node*)&m_end;
+    node->m_prev = m_tail;
+    m_tail->m_next = node;
+    m_tail = node;
+    ++m_size;
+}
 template <class T>
 T* reserved_dlist<T>::iterator::operator*()
 {
@@ -856,6 +1015,7 @@ public:
     allocator(const allocator&) {}                // ...QAE@ABV01@@Z
     T* allocate(unsigned int _Count);             // ?allocate@...@@std@@QAEPAU...@@I@Z
     void deallocate(T* _Ptr, unsigned int);       // ?deallocate@...@@std@@QAEXPAU...@@I@Z
+    void construct(T* _Ptr, const T& _Val);       // ?construct@...@@std@@QAEXPAU...@@ABU34@@Z
     void destroy(T*) {}                           // ?destroy@...@@std@@QAEXPAU...@@Z
     unsigned int max_size() const                 // ?max_size@...@@std@@QBEIXZ
     {
@@ -872,20 +1032,12 @@ protected:
 template <class T, class A>
 class vector {
 public:
+    A _Alval;                                     // allocator storage
     T* _Myfirst;                                  // +0x00
     T* _Mylast;                                   // +0x04
     T* _Myend;                                    // +0x08
     vector();                                     // ??0?$vector@...@@std@@QAE@XZ
-    class iterator {
-    public:
-        T* _Myptr;                                // +0x00
-        iterator(T* _Ptr);                        // ??0iterator@?$vector@...@@std@@QAE@PAU...@@@Z
-        T& operator*() const { return *_Myptr; }  // ??Diterator@?$vector@...@@std@@QBEAAU...@@XZ
-        iterator& operator++() { ++_Myptr; return *this; }  // ??Eiterator@...@@QAEAAV012@XZ
-        T* operator->() const { return _Myptr; }  // ??Citerator@...@@QBEPAU...@@XZ
-        iterator operator+(int _Off) const;       // ??Hiterator@...@@QBE?AV012@H@Z
-        iterator& operator+=(int _Off);           // ??Yiterator@...@@QAEAAV012@H@Z
-    };
+    ~vector();                                    // ??1?$vector@...@@std@@QAE@XZ
     class const_iterator {
     public:
         T* _Myptr;                                // +0x00
@@ -893,11 +1045,25 @@ public:
         const T& operator*() const { return *_Myptr; }  // ??Dconst_iterator@...@@std@@QBEABU...@@XZ
         bool operator==(const const_iterator& _Right) const;  // ??8const_iterator@...@@std@@QBE_NABV012@@Z
         bool operator!=(const const_iterator& _Right) const;  // ??9const_iterator@...@@std@@QBE_NABV012@@Z
+        int operator-(const const_iterator& _Right) const;    // ??Gconst_iterator@...@@std@@QBEHABV012@@Z
+    };
+    class iterator {
+    public:
+        T* _Myptr;                                // +0x00
+        iterator(T* _Ptr);                        // ??0iterator@?$vector@...@@std@@QAE@PAU...@@@Z
+        T& operator*() const { return *_Myptr; }  // ??Diterator@?$vector@...@@std@@QBEAAU...@@XZ
+        iterator& operator++() { ++_Myptr; return *this; }  // ??Eiterator@...@@QAEAAV012@XZ
+        bool operator!=(const iterator& rhs) const { return _Myptr != rhs._Myptr; }
+        T* operator->() const { return _Myptr; }  // ??Citerator@...@@QBEPAU...@@XZ
+        iterator operator+(int _Off) const;       // ??Hiterator@...@@QBE?AV012@H@Z
+        iterator& operator+=(int _Off);           // ??Yiterator@...@@QAEAAV012@H@Z
+        int operator-(const const_iterator& _Right) const;  // ??Giterator@...@@QBEHABVconst_iterator@12@@Z
     };
     unsigned int size() const;                    // ?size@?$vector@...@@std@@QBEIXZ
     unsigned int capacity() const;                // ?capacity@?$vector@...@@std@@QBEIXZ
     iterator begin();                             // ?begin@?$vector@...@@std@@QAE?AViterator@12@XZ
     iterator end();                               // ?end@?$vector@...@@std@@QAE?AViterator@12@XZ
+    void clear();                                 // ?clear@?$vector@...@@std@@QAEXXZ
     void resize(unsigned int _Newsize);           // ?resize@?$vector@...@@std@@QAEXI@Z
     void resize(unsigned int _Newsize, T _Val);   // 3-arg form (defined elsewhere)
     unsigned int max_size() const                 // ?max_size@?$vector@...@@std@@QBEIXZ
@@ -905,6 +1071,10 @@ public:
         return (unsigned int)(((size_t)-1) / sizeof(T));
     }
 protected:
+    template <class It>
+    It _Ucopy(It _First, It _Last, It _Dest);     // ??$_Ucopy@...@?$vector@...@@std@@IAE...@@Z
+    T* _Ufill(T* _Ptr, unsigned int _Count, const T& _Val);  // ?_Ufill@?$vector@...@@std@@IAEPAU...@@PAU34@IABU34@@Z
+    void _Tidy();                                 // ?_Tidy@?$vector@...@@std@@IAEXXZ
     void _Destroy(T*, T*) {}                      // ?_Destroy@?$vector@...@@std@@IAEXPAU...@@0@Z
 };
 
@@ -928,6 +1098,31 @@ T* _Allocate(unsigned int _Count, T*);            // ??$_Allocate@U...@@std@@YAP
 
 template <class T, class U>
 void _Construct(T* _Ptr, const U& _Val);          // ??$_Construct@U...@@std@@YAXPAU...@@ABU12@@Z
+
+template <class It, class Pred>
+It find_if(It _First, It _Last, Pred);            // ??$find_if@...@@std@@YA...@@Z
+template <class It, class Out, class Pred>
+Out remove_copy_if(It _First, It _Last, Out _Dest, Pred);  // ??$remove_copy_if@...@@std@@YA...@@Z
+template <class It, class T>
+It find(It _First, It _Last, T const& _Val);     // ??$find@...@@std@@YA...@@Z
+template <class It, class T>
+void fill(It _First, It _Last, const T& _Val);    // ??$fill@...@@std@@YAX...@@Z
+template <class It, class Out>
+Out copy(It _First, It _Last, Out _Dest);         // ??$copy@...@@std@@YA...@@Z
+template <class It, class Out>
+Out copy_backward(It _First, It _Last, Out _Dest);  // ??$copy_backward@...@@std@@YA...@@Z
+template <class It, class Out>
+Out _Copy_opt(It _First, It _Last, Out _Dest, _Nonscalar_ptr_iterator_tag);  // ??$_Copy_opt@...@@std@@YA...@@Z
+template <class It, class Out>
+Out _Copy_backward_opt(It _First, It _Last, Out _Dest, _Nonscalar_ptr_iterator_tag);  // ??$_Copy_backward_opt@...@@std@@YA...@@Z
+template <class It, class Out, class A>
+Out _Uninit_copy(It _First, It _Last, Out _Dest, A& _Al, _Nonscalar_ptr_iterator_tag);  // ??$_Uninit_copy@...@@std@@YA...@@Z
+template <class It, class Out, class A>
+Out _Uninitialized_copy(It _First, It _Last, Out _Dest, A& _Al);  // ??$_Uninitialized_copy@...@@std@@YA...@@Z
+template <class It, class Count, class T, class A>
+void _Uninit_fill_n(It _First, Count _Count, const T& _Val, A& _Al, _Nonscalar_ptr_iterator_tag);  // ??$_Uninit_fill_n@...@@std@@YA...@@Z
+template <class It, class Count, class T, class A>
+void _Uninitialized_fill_n(It _First, Count _Count, const T& _Val, A& _Al);  // ??$_Uninitialized_fill_n@...@@std@@YA...@@Z
 
 }  // namespace std
 
@@ -1021,6 +1216,7 @@ public:
     unsigned int mVal;   // +0x00
     explicit DbLinkedHandle(int v);       // ??0?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAE@H@Z @ 0x6E8DE0
     DbLinkedHandle& operator=(Handle rhs);  // ??4?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QAEAAV0@VHandle@@@Z @ 0x6E8E00
+    T* operator*() const;                  // ??D?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QBEPAVDObj@@XZ @ 0x6EE720
 };
 template <class Db, class T>
 DbLinkedHandle<Db, T>::DbLinkedHandle(int v)
@@ -1219,17 +1415,60 @@ template class IVPointer<XModelParts>;
 
 // nglMeshIterator<cdDynamicDecalVertex, unsigned short>
 struct cdDynamicDecalVertex {
-    uint8_t _pad[0x14];
+    float Position_x;                // +0x00
+    float Position_y;                // +0x04
+    float Position_z;                // +0x08
+    float TexCoord_x;                // +0x0C
+    float TexCoord_y;                // +0x10
     unsigned int Color;                // +0x14
 };
 template <class T, class I>
 class nglMeshIterator {
 public:
-    uint8_t _pad[0x0C];
+    void* section;                   // +0x00
+    int cur_index;                   // +0x04
+    unsigned short* index;           // +0x08
     T* vertex;                         // +0x0C
+    const nglMeshIterator<T, I>& operator++();  // ??E?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAEABV0@XZ @ 0x6E9C90
+    void BeginStrip(int strip);      // ?BeginStrip@?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAEXH@Z @ 0x6E9BC0
+    void WritePosition(float x, float y, float z);  // ?WritePosition@...@@QAEXMMM@Z @ 0x6E9C00
+    void WriteTexCoord(float u, float v);           // ?WriteTexCoord@...@@QAEXMM@Z @ 0x6E9C60
     void WriteColor(unsigned int color);   // ?WriteColor@?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAEXI@Z @ 0x6E9C40
     void WriteFlush();                     // ?WriteFlush@?$nglMeshIterator@UcdDynamicDecalVertex@@G@@QAEXXZ @ 0x6E9CC0
 };
+template <class T, class I>
+const nglMeshIterator<T, I>& nglMeshIterator<T, I>::operator++()
+{
+    *index = (unsigned short)cur_index;
+    ++index;
+    ++cur_index;
+    vertex = vertex + 1;
+    return *this;
+}
+template <class T, class I>
+void nglMeshIterator<T, I>::BeginStrip(int)
+{
+    if (cur_index > 0)
+    {
+        *index = (unsigned short)(cur_index - 1);
+        ++index;
+        *index = (unsigned short)cur_index;
+        ++index;
+    }
+}
+template <class T, class I>
+void nglMeshIterator<T, I>::WritePosition(float x, float y, float z)
+{
+    vertex->Position_x = x;
+    vertex->Position_y = y;
+    vertex->Position_z = z;
+}
+template <class T, class I>
+void nglMeshIterator<T, I>::WriteTexCoord(float u, float v)
+{
+    vertex->TexCoord_x = u;
+    vertex->TexCoord_y = v;
+}
 template <class T, class I>
 void nglMeshIterator<T, I>::WriteColor(unsigned int color)
 {
@@ -1254,7 +1493,7 @@ void reserved_dlist<T>::clear()
     m_size = 0;
     m_head = (dlist_node*)&m_end;
     m_end = nullptr;
-    m_tail = &m_head;
+    m_tail = (dlist_node*)&m_head;
 }
 template <class T>
 typename reserved_dlist<T>::iterator reserved_dlist<T>::end()
@@ -1281,6 +1520,11 @@ template <class T>
 bool reserved_dlist<T>::iterator::compare(const iterator& rhs) const
 {
     return m_next == rhs.m_next;
+}
+template <class T>
+bool reserved_dlist<T>::iterator::operator!=(const iterator& rhs) const
+{
+    return m_next != rhs.m_next;
 }
 
 // phys_static_array ctor (slot array points at the embedded buffer)
@@ -1363,6 +1607,7 @@ class LightEffect {
 private:
     static PoolAllocator* sAllocator;  // ?sAllocator@LightEffect@@0PAVPoolAllocator@@A
 public:
+    ~LightEffect();                  // ??1LightEffect@@QAE@XZ (defined elsewhere)
     static void* operator new(unsigned int size);   // ??2LightEffect@@SAPAXI@Z @ 0x6E66A0
     static void operator delete(void* ptr);         // ??3LightEffect@@SAXPAX@Z @ 0x6E66C0
 };
@@ -1402,9 +1647,6 @@ void* AnimationPlayer::operator new(unsigned int sz)  // ??2AnimationPlayer@@SAP
 }
 
 // WheelMark::GetId
-struct cdWheelMarkVertex {
-    uint8_t _pad[0x10];
-};
 unsigned char WheelMark::GetId(cdWheelMarkVertex* V)  // ?GetId@WheelMark@@IAEEPAUcdWheelMarkVertex@@@Z @ 0x6E8550
 {
     return (unsigned char)((255 * (V - VertexBuffer)) >> 10);
@@ -1448,3 +1690,512 @@ template DynamicDecalMgr::DecalSet*
 std::_Allocate<DynamicDecalMgr::DecalSet>(unsigned int, DynamicDecalMgr::DecalSet*);
 template void std::_Construct<DynamicDecalMgr::DecalSet, DynamicDecalMgr::DecalSet>(
     DynamicDecalMgr::DecalSet*, const DynamicDecalMgr::DecalSet&);
+
+// ============================================================================
+// batch 89 - 26..45 byte render.o symbols
+// ============================================================================
+template <class T, int N>
+T& ae_sized_array<T, N>::pop_back()  // @ 0x6E8EE0
+{
+    if (m_size != 0)
+        --m_size;
+    return m_elements[m_size];
+}
+
+void math::Mat44::SetX(const math::Vector4& _x) { x = _x; }  // 0x6E65F0
+void math::Mat44::SetY(const math::Vector4& _y) { y = _y; }  // 0x6E6630
+void math::Mat44::SetZ(const math::Vector4& _z) { z = _z; }  // 0x6E6670
+
+class BspPlane {
+public:
+    math::Dir3 mPlane;               // +0x00
+    math::Dir3 GetNormal() const;    // ?GetNormal@BspPlane@@QBE?AVDir3@math@@XZ @ 0x6E5E30
+};
+math::Dir3 BspPlane::GetNormal() const
+{
+    return mPlane;
+}
+
+// cFreeList<T>::Free
+struct DSkel;
+struct DSkelMax;
+struct DSkel4;
+template <class T>
+class cFreeList {
+public:
+    T* mpFree;                       // +0x00
+    int mUsed;                       // +0x04
+    int mFree;                       // +0x08
+    void Free(T* ptr);               // ?Free@?$cFreeList@...@@QAEXPA...@@@Z
+};
+template <class T>
+void cFreeList<T>::Free(T* ptr)
+{
+    if (ptr != nullptr)
+    {
+        --mUsed;
+        ++mFree;
+        *(void**)ptr = mpFree;
+        mpFree = ptr;
+    }
+}
+template class cFreeList<DObj>;
+template class cFreeList<DSkel>;
+template class cFreeList<DSkelMax>;
+template class cFreeList<DSkel4>;
+
+// std::allocator::construct
+template <class T>
+void std::allocator<T>::construct(T* _Ptr, const T& _Val)
+{
+    if (_Ptr != nullptr)
+        *_Ptr = _Val;
+}
+
+// std::vector additions
+template <class T, class A>
+std::vector<T, A>::~vector()
+{
+    _Tidy();
+}
+template <class T, class A>
+void std::vector<T, A>::clear()
+{
+    _Tidy();
+}
+template <class T, class A>
+void std::vector<T, A>::_Tidy()
+{
+    if (_Myfirst != nullptr)
+        mem_heap_free(_Myfirst);
+    _Myfirst = nullptr;
+    _Mylast = nullptr;
+    _Myend = nullptr;
+}
+template <class T, class A>
+template <class It>
+It std::vector<T, A>::_Ucopy(It _First, It _Last, It _Dest)
+{
+    return std::_Uninit_copy(_First, _Last, _Dest, this->_Alval,
+                             std::_Nonscalar_ptr_iterator_tag());
+}
+template <class T, class A>
+T* std::vector<T, A>::_Ufill(T* _Ptr, unsigned int _Count, const T& _Val)
+{
+    std::_Uninit_fill_n(_Ptr, _Count, _Val, this->_Alval,
+                        std::_Nonscalar_ptr_iterator_tag());
+    return &_Ptr[_Count];
+}
+template <class T, class A>
+int std::vector<T, A>::iterator::operator-(const const_iterator& _Right) const
+{
+    return (int)(_Myptr - _Right._Myptr);
+}
+template <class T, class A>
+int std::vector<T, A>::const_iterator::operator-(const const_iterator& _Right) const
+{
+    return (int)(_Myptr - _Right._Myptr);
+}
+
+// std algorithm templates
+template <class It, class Pred>
+It std::find_if(It _First, It _Last, Pred _Pred)
+{
+    for (; _First != _Last; ++_First)
+    {
+        if (_Pred(*_First))
+            break;
+    }
+    return _First;
+}
+template <class It, class Out, class Pred>
+Out std::remove_copy_if(It _First, It _Last, Out _Dest, Pred _Pred)
+{
+    for (; _First != _Last; ++_First)
+    {
+        if (!_Pred(*_First))
+            *_Dest++ = *_First;
+    }
+    return _Dest;
+}
+template <class It, class T>
+It std::find(It _First, It _Last, T const& _Val)
+{
+    for (; _First != _Last; ++_First)
+    {
+        if ((*_First).mTexture == _Val)
+            break;
+    }
+    return _First;
+}
+template <class It, class T>
+void std::fill(It _First, It _Last, const T& _Val)
+{
+    for (; _First != _Last; ++_First)
+        *_First = _Val;
+}
+template <class It, class Out>
+Out std::_Copy_opt(It _First, It _Last, Out _Dest, std::_Nonscalar_ptr_iterator_tag)
+{
+    for (; _First != _Last; ++_First, ++_Dest)
+        *_Dest = *_First;
+    return _Dest;
+}
+template <class It, class Out>
+Out std::copy(It _First, It _Last, Out _Dest)
+{
+    return std::_Copy_opt(_First, _Last, _Dest, std::_Nonscalar_ptr_iterator_tag());
+}
+template <class It, class Out>
+Out std::_Copy_backward_opt(It _First, It _Last, Out _Dest, std::_Nonscalar_ptr_iterator_tag)
+{
+    while (_First != _Last)
+        *--_Dest = *--_Last;
+    return _Dest;
+}
+template <class It, class Out>
+Out std::copy_backward(It _First, It _Last, Out _Dest)
+{
+    return std::_Copy_backward_opt(_First, _Last, _Dest, std::_Nonscalar_ptr_iterator_tag());
+}
+template <class It, class Out, class A>
+Out std::_Uninit_copy(It _First, It _Last, Out _Dest, A& _Al,
+                      std::_Nonscalar_ptr_iterator_tag)
+{
+    (void)_Al;
+    for (; _First != _Last; ++_First, ++_Dest)
+    {
+        if (_Dest != nullptr)
+            *_Dest = *_First;
+    }
+    return _Dest;
+}
+template <class It, class Out, class A>
+Out std::_Uninitialized_copy(It _First, It _Last, Out _Dest, A& _Al)
+{
+    return std::_Uninit_copy(_First, _Last, _Dest, _Al,
+                             std::_Nonscalar_ptr_iterator_tag());
+}
+template <class It, class Count, class T, class A>
+void std::_Uninit_fill_n(It _First, Count _Count, const T& _Val, A& _Al,
+                         std::_Nonscalar_ptr_iterator_tag)
+{
+    (void)_Al;
+    while (_Count != 0)
+    {
+        if (_First != nullptr)
+            *_First = _Val;
+        ++_First;
+        --_Count;
+    }
+}
+template <class It, class Count, class T, class A>
+void std::_Uninitialized_fill_n(It _First, Count _Count, const T& _Val, A& _Al)
+{
+    std::_Uninit_fill_n(_First, _Count, _Val, _Al,
+                        std::_Nonscalar_ptr_iterator_tag());
+}
+
+// explicit instantiations for batch 89 std templates
+template void std::_Construct<ApsGameClient::ApsDebugSphere, ApsGameClient::ApsDebugSphere>(
+    ApsGameClient::ApsDebugSphere*, const ApsGameClient::ApsDebugSphere&);
+template void std::_Construct<ApsGameClient::ApsDebugLine, ApsGameClient::ApsDebugLine>(
+    ApsGameClient::ApsDebugLine*, const ApsGameClient::ApsDebugLine&);
+template std::vector<DynamicDecalMgr::DecalSet,
+                     std::allocator<DynamicDecalMgr::DecalSet>>::iterator
+std::find<std::vector<DynamicDecalMgr::DecalSet,
+                      std::allocator<DynamicDecalMgr::DecalSet>>::iterator,
+          nglTexture*>(
+    std::vector<DynamicDecalMgr::DecalSet,
+                std::allocator<DynamicDecalMgr::DecalSet>>::iterator,
+    std::vector<DynamicDecalMgr::DecalSet,
+                std::allocator<DynamicDecalMgr::DecalSet>>::iterator,
+    nglTexture* const&);
+template ParticleEffect**
+std::find_if<ParticleEffect**, ParticleEraserPred>(
+    ParticleEffect**, ParticleEffect**, ParticleEraserPred);
+template LightEffect**
+std::find_if<LightEffect**, LightEraserPred>(
+    LightEffect**, LightEffect**, LightEraserPred);
+template ParticleEffect**
+std::remove_copy_if<ParticleEffect**, ParticleEffect**, ParticleEraserPred>(
+    ParticleEffect**, ParticleEffect**, ParticleEffect**, ParticleEraserPred);
+template LightEffect**
+std::remove_copy_if<LightEffect**, LightEffect**, LightEraserPred>(
+    LightEffect**, LightEffect**, LightEffect**, LightEraserPred);
+template void std::fill<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+    const DynamicDecalMgr::DecalSet&);
+template void std::fill<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+    const ApsGameClient::ApsDebugSphere&);
+template void std::fill<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+    const ApsGameClient::ApsDebugLine&);
+template DynamicDecalMgr::DecalSet*
+std::copy<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*);
+template ApsGameClient::ApsDebugSphere*
+std::copy<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*);
+template ApsGameClient::ApsDebugLine*
+std::copy<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*);
+template DynamicDecalMgr::DecalSet*
+std::copy_backward<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*);
+template ApsGameClient::ApsDebugSphere*
+std::copy_backward<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*);
+template ApsGameClient::ApsDebugLine*
+std::copy_backward<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*);
+template DynamicDecalMgr::DecalSet*
+std::_Copy_opt<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+    std::_Nonscalar_ptr_iterator_tag);
+template ApsGameClient::ApsDebugSphere*
+std::_Copy_opt<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+    std::_Nonscalar_ptr_iterator_tag);
+template ApsGameClient::ApsDebugLine*
+std::_Copy_opt<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+    std::_Nonscalar_ptr_iterator_tag);
+template DynamicDecalMgr::DecalSet*
+std::_Copy_backward_opt<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+    std::_Nonscalar_ptr_iterator_tag);
+template ApsGameClient::ApsDebugSphere*
+std::_Copy_backward_opt<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+    std::_Nonscalar_ptr_iterator_tag);
+template ApsGameClient::ApsDebugLine*
+std::_Copy_backward_opt<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+    std::_Nonscalar_ptr_iterator_tag);
+template DynamicDecalMgr::DecalSet*
+std::_Uninitialized_copy<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+                         std::allocator<DynamicDecalMgr::DecalSet>>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+    std::allocator<DynamicDecalMgr::DecalSet>&);
+template ApsGameClient::ApsDebugSphere*
+std::_Uninitialized_copy<ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+                         std::allocator<ApsGameClient::ApsDebugSphere>>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*,
+    std::allocator<ApsGameClient::ApsDebugSphere>&);
+template ApsGameClient::ApsDebugLine*
+std::_Uninitialized_copy<ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+                         std::allocator<ApsGameClient::ApsDebugLine>>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*,
+    std::allocator<ApsGameClient::ApsDebugLine>&);
+template DynamicDecalMgr::DecalSet*
+std::_Uninit_copy<DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+                  std::allocator<DynamicDecalMgr::DecalSet>>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*,
+    std::allocator<DynamicDecalMgr::DecalSet>&, std::_Nonscalar_ptr_iterator_tag);
+template void std::_Uninitialized_fill_n<ApsGameClient::ApsDebugSphere*, unsigned int,
+                                         ApsGameClient::ApsDebugSphere,
+                                         std::allocator<ApsGameClient::ApsDebugSphere>>(
+    ApsGameClient::ApsDebugSphere*, unsigned int, const ApsGameClient::ApsDebugSphere&,
+    std::allocator<ApsGameClient::ApsDebugSphere>&);
+template void std::_Uninitialized_fill_n<ApsGameClient::ApsDebugLine*, unsigned int,
+                                         ApsGameClient::ApsDebugLine,
+                                         std::allocator<ApsGameClient::ApsDebugLine>>(
+    ApsGameClient::ApsDebugLine*, unsigned int, const ApsGameClient::ApsDebugLine&,
+    std::allocator<ApsGameClient::ApsDebugLine>&);
+template void std::_Uninitialized_fill_n<DynamicDecalMgr::DecalSet*, unsigned int,
+                                         DynamicDecalMgr::DecalSet,
+                                         std::allocator<DynamicDecalMgr::DecalSet>>(
+    DynamicDecalMgr::DecalSet*, unsigned int, const DynamicDecalMgr::DecalSet&,
+    std::allocator<DynamicDecalMgr::DecalSet>&);
+template void std::_Uninit_fill_n<DynamicDecalMgr::DecalSet*, unsigned int,
+                                  DynamicDecalMgr::DecalSet,
+                                  std::allocator<DynamicDecalMgr::DecalSet>>(
+    DynamicDecalMgr::DecalSet*, unsigned int, const DynamicDecalMgr::DecalSet&,
+    std::allocator<DynamicDecalMgr::DecalSet>&, std::_Nonscalar_ptr_iterator_tag);
+
+template DynamicDecalMgr::DecalSet*
+std::vector<DynamicDecalMgr::DecalSet,
+            std::allocator<DynamicDecalMgr::DecalSet>>::_Ucopy<DynamicDecalMgr::DecalSet*>(
+    DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*, DynamicDecalMgr::DecalSet*);
+template ApsGameClient::ApsDebugSphere*
+std::vector<ApsGameClient::ApsDebugSphere,
+            std::allocator<ApsGameClient::ApsDebugSphere>>::_Ucopy<ApsGameClient::ApsDebugSphere*>(
+    ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*, ApsGameClient::ApsDebugSphere*);
+template ApsGameClient::ApsDebugLine*
+std::vector<ApsGameClient::ApsDebugLine,
+            std::allocator<ApsGameClient::ApsDebugLine>>::_Ucopy<ApsGameClient::ApsDebugLine*>(
+    ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*, ApsGameClient::ApsDebugLine*);
+
+// ae_pair equality
+template <class A, class B>
+bool operator==(const ae_pair<A, B>& lhs, const ae_pair<A, B>& rhs)  // ??$?8FF@@YA_NABV?$ae_pair@FF@@0@Z @ 0x6EA9B0
+{
+    return lhs.first == rhs.first && lhs.second == rhs.second;
+}
+template bool operator==<short, short>(const ae_pair<short, short>&,
+                                       const ae_pair<short, short>&);
+
+// DbLinkedHandle::operator*
+class DObjHandleDb {
+public:
+    struct DbElement {
+        void* mObject;               // +0x00
+        int mKey;                    // +0x04
+    };
+    uint8_t _pad[0xA8];
+    DbElement mElements[0x540];      // +0xA8
+private:
+    template <class Db, class T>
+    friend class DbLinkedHandle;
+    static DObjHandleDb sInst;       // ?sInst@DObjHandleDb@@0V1@A
+};
+template <class Db, class T>
+T* DbLinkedHandle<Db, T>::operator*() const  // ??D?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QBEPAVDObj@@XZ @ 0x6EE720
+{
+    unsigned int mVal = this->mVal;
+    unsigned int idx = mVal & 0xFFF;
+    if (idx < 0x540
+        && mVal >> 12 == (unsigned int)DObjHandleDb::sInst.mElements[idx].mKey)
+        return (T*)DObjHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
+// InplaceTree::Find + InplaceAssetBank::FindIndex
+template <class T, class Tree>
+template <class K>
+bool InplaceAssetBank<T, Tree>::FindIndex(K const& key, unsigned int* out) const  // ??$FindIndex@...@?$InplaceAssetBank@...@@QBE_NABQ...@@PAI@Z
+{
+    unsigned int* found = mTree.Find(key);
+    if (found == nullptr)
+        return false;
+    *out = *found;
+    return true;
+}
+template bool InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>>::
+    FindIndex<char*>(char* const&, unsigned int*) const;
+template bool InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>>::
+    FindIndex<char const*>(char const* const&, unsigned int*) const;
+template bool InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>>::
+    FindIndex<char const*>(char const* const&, unsigned int*) const;
+
+// jqBatch
+class jqBatch {
+public:
+    uint8_t _pad[0x10];
+    int InputSize;                   // +0x10
+    int OutputSize;                  // +0x14
+    int ScratchSize;                 // +0x18
+    int StaticSize;                  // +0x1C
+    uint8_t _pad2[0x28 - 0x20];
+    int Priority;                    // +0x28
+    int GroupID;                     // +0x2C
+    jqBatch();                       // ??0jqBatch@@QAE@XZ @ 0x6EBC20
+};
+jqBatch::jqBatch()
+{
+    InputSize = 0;
+    OutputSize = 0;
+    ScratchSize = 0;
+    StaticSize = 0;
+    Priority = 1;
+    GroupID = -1;
+}
+
+// codListAddMesh
+class nglMeshNode;
+struct nglMesh;
+class nglMeshParams;
+struct nglShaderParamSet;
+extern nglMeshNode* _codListAddMesh(nglMesh* mesh, const math::Mat43& localToWorld,
+                                    nglMeshParams* meshParams,
+                                    nglShaderParamSet* shaderParams,
+                                    void (__cdecl* fn)(nglMeshNode*));
+nglMeshNode* codListAddMesh(nglMesh* Mesh, const math::Mat43& localToWorld,
+                            nglMeshParams* meshParams,
+                            nglShaderParamSet* shaderParams)  // ?codListAddMesh@@YAPAVnglMeshNode@@PAUnglMesh@@ABVMat43@math@@PAVnglMeshParams@@PAUnglShaderParamSet@@@Z @ 0x6EBB60
+{
+    return _codListAddMesh(Mesh, localToWorld, meshParams, shaderParams, nullptr);
+}
+
+// nglIsSphereVisible(Scene) wrapper
+extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                               const math::Vector4* Clip);  // ?nglIsSphereVisible@@YA_NABVPosition3@math@@MPBVVector4@2@@Z
+struct nglScene {
+    uint8_t _pad[0x270];
+};
+bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                        nglScene* Scene)  // ?nglIsSphereVisible@@YA_NABVPosition3@math@@MPAUnglScene@@@Z @ 0x6E7C30
+{
+    return nglIsSphereVisible(Center, Radius,
+                              (const math::Vector4*)((char*)Scene + 0x270));
+}
+
+// nglDxRenderState setters
+extern unsigned int dword_40354;  // ZFUNC state slot
+extern unsigned int dword_40358;  // COLORWRITE state slot
+extern unsigned int dword_4035C;  // ZWRITE state slot
+extern unsigned int dword_BC2D1C; // COLORWRITE cache
+extern "C" int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State,
+                                                                 unsigned int Value);
+extern "C" void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method,
+                                                           unsigned int Value);
+void nglDxRenderState::SetZWrite(bool v)  // ?SetZWrite@nglDxRenderState@@QAEX_N@Z @ 0x6E7C60
+{
+    if (D3DDevice_SetRenderState_ParameterCheck(0x40, v) == 0)
+    {
+        D3DDevice_SetRenderState_Simple((unsigned int)&dword_4035C, v);
+        dword_BC2D10 = v;
+    }
+}
+void nglDxRenderState::SetZFunc(unsigned int v)  // ?SetZFunc@nglDxRenderState@@QAEXI@Z @ 0x6E7CB0
+{
+    if (D3DDevice_SetRenderState_ParameterCheck(0x39, v) == 0)
+    {
+        D3DDevice_SetRenderState_Simple((unsigned int)&dword_40354, v);
+        dword_BC2CF4 = v;
+    }
+}
+void nglDxRenderState::SetColorWrite(unsigned int v)  // ?SetColorWrite@nglDxRenderState@@QAEXI@Z @ 0x6E7D00
+{
+    if (D3DDevice_SetRenderState_ParameterCheck(0x43, v) == 0)
+    {
+        D3DDevice_SetRenderState_Simple((unsigned int)&dword_40358, v);
+        dword_BC2D1C = v;
+    }
+}
+
+// R_GenerateDrawSurfs / FX_RenderFX wrappers
+extern void R_SetupProjection();  // ?R_SetupProjection@@YAXXZ
+extern int gRenderEntities;       // ?gRenderEntities@@3HA
+extern void R_AddWorldSurfacesDPVS();  // ?R_AddWorldSurfacesDPVS@@YAXXZ (unported)
+void R_GenerateDrawSurfs()  // ?R_GenerateDrawSurfs@@YAXXZ @ 0x6DA090
+{
+    extern void R_AddEntitySurfaces();  // ?R_AddEntitySurfaces@@YAXXZ (tr_main.cpp)
+    R_SetupProjection();
+    if (tr.world != nullptr && tr.world->bspTree != nullptr)
+        R_AddWorldSurfacesDPVS();
+    if (gRenderEntities != 0)
+        R_AddEntitySurfaces();
+}
+
+extern int gParticleBatchGroup;                    // ?gParticleBatchGroup@@3HA
+extern cdl_proftimer cdl_proftimer_fx_render;      // ?cdl_proftimer_fx_render@@3Ucdl_proftimer@@A
+extern void RenderEffectsInternal();               // ?RenderEffectsInternal@@YAXXZ
+extern void FX_BuildSortedParticleEffectList();    // ?FX_BuildSortedParticleEffectList@@YAXXZ
+void FX_RenderFX()  // ?FX_RenderFX@@YAXXZ @ 0x6DA3C0
+{
+    (void)gParticleBatchGroup;  // passed to a no-op callback in the original
+    cdl_proftimer_fx_render.start();
+    RenderEffectsInternal();
+    cdl_proftimer_fx_render.stop();
+    FX_BuildSortedParticleEffectList();
+}
+
+// deleting-destructor emission triggers (??_G / ??_E compiler stubs)
+class AnimationPlayer;
+void force_emit_LightEffect_delete(LightEffect* p) { delete p; }
+void force_emit_AnimationPlayer_delete(AnimationPlayer* p) { delete p; }
+void force_emit_cdAepsShader_delete(cdAepsShader* p) { delete p; }
+void force_emit_apsClient_delete(apsClient* p) { delete[] p; }
+void force_emit_physvec_delete(phys_static_array<math::Vector4, 20>* p) { delete p; }
