@@ -1142,15 +1142,15 @@ void Render()
 }
 
 // ea: 0x0045C5F0
-void prepare_collision_objects(Entity* ent, const math::Position3* p0,
-                               const math::Position3* p1, float radius,
+void prepare_collision_objects(Entity* ent, const math::Position3& p0,
+                               const math::Position3& p1, float radius,
                                int mask, proximity_data_t* proximity_data,
                                TouchEntityData* entities)
 {
     math::Position3 pmin;
-    pmin.v = _mm_min_ps(p0->v, p1->v);
+    pmin.v = _mm_min_ps(p0.v, p1.v);
     math::Position3 pmax;
-    pmax.v = _mm_max_ps(p0->v, p1->v);
+    pmax.v = _mm_max_ps(p0.v, p1.v);
     if (ent != nullptr && ent->proximity_data != nullptr)
     {
         math::Position3 expand;

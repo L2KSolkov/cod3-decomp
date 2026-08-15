@@ -3260,7 +3260,7 @@ void StopFollowing(Entity* ent)
 // ea: 0x00481500
 void Spread_Fire_Fake(Entity* attacker, float gunPitch, float gunYaw,
                       const float* weaponPosition, int weapon, float spread,
-                      float coneAngleTangent, unsigned int seed)
+                      float coneAngleTangent, int seed)
 {
     weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weapon);
     if (InfoForWeapon != nullptr)

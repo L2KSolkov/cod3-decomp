@@ -73,8 +73,8 @@ int Player_GetActivateEnt(Entity* pEnt, useList_t* useList)
             continue;
         if (ent->s.eType == 14 && ent->scr_vehicle != nullptr)
         {
-            if (!ent->scr_vehicle->CanUseVehicle(pEnt, &distToUsePoint,
-                                                 &entryPoint))
+            if (!ent->scr_vehicle->CanUseVehicle(pEnt, distToUsePoint,
+                                                 entryPoint))
                 continue;
             pEnt->client->mVehicleAnimRoute = entryPoint + 1;
             if (pEnt->client->mVehicleAnimRoute < 0)
@@ -409,7 +409,7 @@ void ClientThink_real(Entity* ent)
     }
     ent->r.mins = pm.mins;
     ent->r.maxs = pm.maxs;
-    ClientEvents(ent, (float)oldEventSequence);
+    ClientEvents(ent, (int)oldEventSequence);
     g_LinkEntity(ent);
     if (client->ps.origin.v.m128_f32[0] != client->oldOrigin.v.m128_f32[0]
         || client->ps.origin.v.m128_f32[1] != client->oldOrigin.v.m128_f32[1]
@@ -796,8 +796,8 @@ void Player_UpdateFriendlyOverlay(Entity* pEnt)
 }
 
 // ea: 0x00491F10
-void ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
-                 void* isRevive)
+void ClientSpawn(Entity* ent, const float* origin, const float* angles,
+                 bool stopPhysics, bool isRevive)
 {
     bool v5 = stopPhysics;
     Client* client = ent->client;
@@ -948,16 +948,16 @@ void ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
 }
 
 // ea: 0x0048DE60
-void ClientEvents(Entity* ent, float oldEventSequence)
+void ClientEvents(Entity* ent, int oldEventSequence)
 {
     Client* client = ent->client;
     int eventSequence = client->ps.event.eventSequence;
     if ((int)oldEventSequence < eventSequence - 4)
-        oldEventSequence = (float)(eventSequence - 4);
+        oldEventSequence = (eventSequence - 4);
     unsigned char v6 = (unsigned char)(int)oldEventSequence;
     int iTeamFlags = 0;
     int vSentientPos[3];
-    vSentientPos[2] = (int)oldEventSequence;
+    vSentientPos[2] = oldEventSequence;
     if ((int)oldEventSequence >= eventSequence)
         return;
     while (1)
@@ -1064,42 +1064,43 @@ next_event:
 }
 
 // ea: 0x0048EBF0
-char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
-                  int arg3)
+int game_vmMain(int command, int arg0, int arg1, int arg2, int arg3, int arg4,
+                int arg5, int arg6, int arg7)
 {
+    (void)arg4; (void)arg5; (void)arg6; (void)arg7;
     int v5 = 0;
     switch (command)
     {
     case 0:
-        return (char*)G_InitGame((int)arg0, (int)arg1, arg2, arg3);
+        return G_InitGame(arg0, arg1, arg2, arg3);
     case 1:
-        G_ShutdownGame((int)arg0);
-        return nullptr;
+        G_ShutdownGame(arg0);
+        return 0;
     case 2:
-        return ClientConnect(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+        return (int)ClientConnect(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
     case 3:
         ClientBegin(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
-        return nullptr;
+        return 0;
     case 4:
         ClientDisconnect(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
-        return nullptr;
+        return 0;
     case 5:
         ClientCommand(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
-        return nullptr;
+        return 0;
     case 6:
         ClientThink(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
-        return nullptr;
+        return 0;
     case 7:
-        return (char*)GetFollowPlayerState((int)arg0, arg1);
+        return GetFollowPlayerState(arg0, (PlayerState*)arg1);
     case 8:
-        G_LoadLevel(0);
-        return nullptr;
+        G_LoadLevel(arg0);
+        return 0;
     case 9:
-        G_CheckLoadGame((int)arg0, 0);
-        return nullptr;
+        G_CheckLoadGame(arg0, arg1);
+        return 0;
     case 11:
-        G_RunPreFrame((int)arg0);
-        return nullptr;
+        G_RunPreFrame(arg0);
+        return 0;
     case 12:
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
@@ -1108,33 +1109,32 @@ char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
         AeAssert::gCurrentExpr = nullptr;
         if (AeAssert::IsIgnored()
             || !AeAssert::Warning("G_RunFrame should now be called directly - don't use VM"))
-            return nullptr;
+            return 0;
         __debugbreak();
-        return nullptr;
+        return 0;
     }
     case 13:
-        return (char*)ConsoleCommand();
+        return ConsoleCommand();
     case 14:
-        return nullptr;
+        return 0;
     case 18:
-        return (char*)level.snapTime;
+        return level.snapTime;
     case 19:
     {
         Entity* v7 = HandleDbToEnt(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
         G_DObjCalcPose(v7);
-        return nullptr;
+        return 0;
     }
     case 20:
-        return (char*)level.time;
+        return level.time;
     case 22:
         G_SendClientMessages();
-        return nullptr;
+        return 0;
     default:
         v5 = -1;
-        return (char*)v5;
+        return v5;
     }
 }
-
 // ea: 0x00482C10
 void Player_UpdateCursorHints(Entity* ent)
 {

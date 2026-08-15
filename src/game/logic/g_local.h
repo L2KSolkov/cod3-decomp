@@ -370,12 +370,12 @@ struct scr_vehicle_t {
     void  Mantled(Entity* player);            // ?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z
     bool  SetAnimRouteStage(Entity* player, Entity* ent, int routeIdx,
                             int stageIdx);    // ?SetAnimRouteStage@scr_vehicle_t@@QAE_NPAVEntity@@0HH@Z
-    bool  CanUseVehicle(Entity* player, float* distToUsePoint, int* entryPoint);  // ?CanUseVehicle@scr_vehicle_t@@QAE_NPAVEntity@@AAMAAH@Z
+    bool  CanUseVehicle(Entity* player, float& distToUsePoint, int& entryPoint);  // ?CanUseVehicle@scr_vehicle_t@@QAE_NPAVEntity@@AAMAAH@Z
     bool  CanMantleVehicle(Entity* player);   // ?CanMantleVehicle@scr_vehicle_t@@QAE_NPAVEntity@@@Z
     bool  LetHatchClose();                    // ?LetHatchClose@scr_vehicle_t@@QAE_NXZ
     void  AssignPhysics(Entity* player);      // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
     int   GetEntryRoute(int seatIdx, int entryIdx, bool hasFlag);  // ?GetEntryRoute@scr_vehicle_t@@QAEHHH_N@Z
-    int   GetEntryHintStringIndex(Entity* vehicle, unsigned int entryPosition);  // ?GetEntryHintStringIndex@scr_vehicle_t@@QAEHPAVEntity@@I@Z
+    int   GetEntryHintStringIndex(Entity* vehicle, int entryPosition);  // ?GetEntryHintStringIndex@scr_vehicle_t@@QAEHPAVEntity@@H@Z
     void  CollisionDamage(Entity* ent, const math::Position3& pos,
                           const math::Position3& dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     float GetAverageWheelSpeed();  // ?GetAverageWheelSpeed@scr_vehicle_t@@QAEMXZ (g.o 0x46F4F0)
@@ -2685,12 +2685,12 @@ int   ConsoleCommand(void);                          // g.o 0x470780
 int   G_InitGame(int randomSeed, int restart, int savegame, int checksum);  // g.o 0x476AE0
 void  G_RunPreFrame(int msec);                      // g.o
 void  G_SendClientMessages(void);                   // g.o
-char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
-                  int arg3);                        // g.o 0x48EBF0
+int   game_vmMain(int command, int arg0, int arg1, int arg2,
+                 int arg3, int arg4, int arg5, int arg6, int arg7);  // g.o 0x48EBF0
 void  G_GeneralLink(Entity* ent);                    // g.o 0x482B50
 void  ClientThink(DbLinkedHandle<EntityHandleDb, Entity> entityHandle);  // g.o 0x48EB30
-void  ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
-                  void* isRevive);             // g.o 0x491F10
+void  ClientSpawn(Entity* ent, const float* origin, const float* angles, bool stopPhysics,
+                  bool isRevive);              // g.o 0x491F10
 void  ClientEndFrame(Entity* ent, int msec);   // g.o 0x491B60
 void  G_setfog(const char* fogstring);               // g.o 0x455E80
 void  ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467610
@@ -3288,7 +3288,7 @@ void  G_BulletFireSpread(const Entity* source, Entity* attacker,
 void  Weapon_Melee(Entity* ent, weaponParms* wp);  // g.o 0x4891C0
 void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
 void  FireWeapon(Entity* ent);                     // g.o 0x48DAE0
-void  ClientEvents(Entity* ent, float oldEventSequence);  // g.o 0x48DE60
+void  ClientEvents(Entity* ent, int oldEventSequence);  // g.o 0x48DE60
 void  UpdateAnims(int msec);                      // g.o
 void  AdvanceSceneAnims(float delta);             // g.o
 void  UpdatePlayer(void);                         // g.o 0x458270
@@ -3490,7 +3490,7 @@ int   VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
 void  VP_GetAngles(vehicle_pathpos_t* vpp, float* angles);  // g.o
 int   G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
                          int msec, int waitNode);  // g.o 0x45F030
-unsigned int Scr_Vehicle_SeatChange(Entity* occupant, unsigned int newSeatIdx);  // g.o 0x491980
+int   Scr_Vehicle_SeatChange(Entity* occupant, int newSeatIdx);  // g.o 0x491980
 void  VEH_RespawnVehicle(Entity* ent);           // g.o 0x488ED0
 void  Cmd_Give_f(Entity* ent);                   // g.o 0x48B2F0
 void  SpectatorClientEndFrame(Entity* ent);      // g.o 0x460F00
@@ -3598,7 +3598,7 @@ void  InteractionController_EndInteraction(void* self, int wasInteracting);  // 
 void  InitCvars(int restart);                        // g.o 0x44B950
 void  Cmd_UFO_f(Entity* ent);                        // g.o 0x44A9C0
 bool  G_IsPlayerInVehicle(Entity* player);           // g.o 0x46E0B0
-void  Scr_Vehicle_Use(Entity* pEnt, Entity* pOther);  // g.o 0x480DA0
+void  Scr_Vehicle_Use(Entity* pEnt, Entity* pOther, Entity* unused);  // g.o 0x480DA0
 bool  VEH_AcquirePlayerFollowSlot(Entity* vehicle, Entity* follower);  // g.o 0x44E440
 void  VEH_ReleasePlayerFollowSlot(Entity* vehicle, Entity* follower);  // g.o 0x46CF00
 const float (*VEH_GetPlayerFollowGoalPosition(const Entity* vehicle,

@@ -1880,7 +1880,7 @@ bool G_IsPlayerDrivingVehicle(Entity* player)
 
 // ea: 0x004918E0
 void Scr_Vehicle_GetIn(Entity* vehicle, Entity* occupant, int health,
-                       unsigned int seatIdx, int entryIdx)
+                       int seatIdx, int entryIdx)
 {
     unsigned int v5 = seatIdx;
     if (seatIdx == 0)
@@ -2483,7 +2483,7 @@ int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
 }
 
 // ea: 0x00491980
-unsigned int Scr_Vehicle_SeatChange(Entity* occupant, unsigned int newSeatIdx)
+int Scr_Vehicle_SeatChange(Entity* occupant, int newSeatIdx)
 {
     if (newSeatIdx > 0xA)
     {
@@ -2643,7 +2643,7 @@ void SP_script_vehicle(Entity* pSelf)
 }
 
 // ea: 0x0046FD50
-int scr_vehicle_t::GetEntryHintStringIndex(Entity* vehicle, unsigned int entryPosition)
+int scr_vehicle_t::GetEntryHintStringIndex(Entity* vehicle, int entryPosition)
 {
     if (entryPosition >= 6)
     {
@@ -3616,8 +3616,8 @@ int scr_vehicle_t::sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2H
 int scr_vehicle_t::sDebugAnims;         // ?sDebugAnims@scr_vehicle_t@@2HA
 
 // ea: 0x0046F680
-bool scr_vehicle_t::CanUseVehicle(Entity* player, float* distToUsePoint,
-                                  int* entryPoint)
+bool scr_vehicle_t::CanUseVehicle(Entity* player, float& distToUsePoint,
+                                  int& entryPoint)
 {
     if (player == nullptr)
     {
@@ -3655,7 +3655,7 @@ bool scr_vehicle_t::CanUseVehicle(Entity* player, float* distToUsePoint,
         return false;
     if (!mHasEntryPoints)
     {
-        *distToUsePoint = sqrt(dist2);
+        distToUsePoint = sqrt(dist2);
         return true;
     }
     int numEntryTags = animMap != nullptr ? animMap->numEntryTags : 6;
@@ -3692,8 +3692,8 @@ bool scr_vehicle_t::CanUseVehicle(Entity* player, float* distToUsePoint,
     }
     if (bestPoint < 0)
         return false;
-    *distToUsePoint = sqrt(bestDist);
-    *entryPoint = bestPoint;
+    distToUsePoint = sqrt(bestDist);
+    entryPoint = bestPoint;
     return true;
 }
 
@@ -3880,7 +3880,7 @@ float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker,
 static int last_use;  // @ 0xEF5934 (g_scr_vehicle.cpp local)
 
 // ea: 0x00480DA0
-void Scr_Vehicle_Use(Entity* pEnt, Entity* pOther)
+void Scr_Vehicle_Use(Entity* pEnt, Entity* pOther, Entity* /*unused*/)
 {
     Client* v21 = pOther->client;
     if (v21 == nullptr)
@@ -3936,8 +3936,8 @@ void Scr_Vehicle_Use(Entity* pEnt, Entity* pOther)
                 {
                     float distToUsePoint;
                     int entryPoint;
-                    if (!scr_vehicle->CanUseVehicle(pOther, &distToUsePoint,
-                                                    &entryPoint))
+                    if (!scr_vehicle->CanUseVehicle(pOther, distToUsePoint,
+                                                    entryPoint))
                     {
                         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
                         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
