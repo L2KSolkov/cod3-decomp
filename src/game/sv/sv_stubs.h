@@ -14,6 +14,7 @@
 #include "game/game_types.h"
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
+#include "bd/bdSession.h"
 
 struct cdl_object_t;  // full definition in game/logic/g_local.h
 
@@ -404,6 +405,11 @@ public:
     bool getEnableLinkCheck();              // ?getEnableLinkCheck@MultiplayerMgr@@QAE_NXZ (sv.o 0x528030)
     void ExitLevel();
     void StartDevServer();
+    void HandleDiscError();                    // ?HandleDiscError@MultiplayerMgr@@QAEXXZ (mp.o 0x72C4A0)
+    int  AddTestClient();                      // ?AddTestClient@MultiplayerMgr@@QAEHXZ (mp.o 0x72C4E0)
+    bool oneOffCheckLinkStatus();              // ?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C6F0)
+    bool FromLobby();                          // ?FromLobby@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C7D0)
+    float getSendInterval() const;             // ?getSendInterval@MultiplayerMgr@@QBEMXZ (mp.o 0x72C4D0)
     void MapRestart();                                  // ?MapRestart@MultiplayerMgr@@QAEXXZ (mp.o)
     void RoundOver(int condition, int team);            // ?RoundOver@MultiplayerMgr@@QAEXHH@Z (mp.o)
     void NextRound(bool allowChange);                   // ?NextRound@MultiplayerMgr@@QAEX_N@Z (mp.o)
@@ -1573,12 +1579,15 @@ extern   void   FEManager_PlayFadeInOranScreen(void);
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 // ============================================================================
 struct MPPlayer {
-    uint8_t _pad[4];
+    unsigned char mId;      // +0x00
+    uint8_t _pad[3];
     int     mClientIndex;   // +0x04
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
     void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
     int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
     static unsigned char GetNullId();  // ?GetNullId@MPPlayer@@SAEXZ (mp.o)
+    unsigned char GetId() const;       // ?GetId@MPPlayer@@QBEEXZ (mp.o 0x72CEA0)
+    void SetId(unsigned char id);      // ?SetId@MPPlayer@@QAEXE@Z (mp.o 0x72CE90)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1594,6 +1603,10 @@ struct MPPlayerManager {
     MPPlayer* GetPlayer(int id);
     MPPlayer* GetPlayer(unsigned char id);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z (mp.o)
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
+    bool IsGuest(int controller) const;   // ?IsGuest@MPPlayerManager@@QAE_NH@Z (mp.o 0x72F190)
+    void SendConsistencyUpdates();        // ?SendConsistencyUpdates@MPPlayerManager@@QAEXXZ (mp.o 0x72F240)
+private:
+    void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
 };
 
 class MPPeer {
@@ -1601,6 +1614,9 @@ public:
     MPPlayerManager* GetPlayerManager();
     bool IsPlayerTalking(MPPlayer* player,
                          int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z (mp.o)
+    void DebugPrintTTYSessionInfo();       // ?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ (mp.o 0x72CAE0)
+    bdSession::bdSessionStatus GetSessionStatus() const;  // ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ (mp.o 0x72C890)
+    static void operator delete(void* p);  // ??3MPPeer@@SAXPAX@Z (mp.o 0x72C840)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
