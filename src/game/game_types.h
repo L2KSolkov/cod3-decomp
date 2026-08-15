@@ -346,10 +346,16 @@ public:
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const unsigned int& e);  // ?Notify@Entity@@QAEXVHashString@@ABI@Z
-    void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
-                EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
+    void Notify(HashString h, const int& d, const Broc::entity& e,
+                const int& mod, const int& hitloc,
+                const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z (g.o 0x4B3B40)
     void Notify(HashString h, const int& d, const Broc::entity& e,
                 const int& mod, const int& hitloc);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11@Z
+    void Notify(HashString h, const Broc::entity& e);  // ?Notify@Entity@@QAEXVHashString@@ABVentity@Broc@@@Z (g.o 0x4B38A0)
+    template <typename T>
+    void Notify(HashString h, const T& d);  // ??$Notify@Vstring@Broc@@@Entity@@QAEXVHashString@@ABVstring@Broc@@@Z (g.o 0x4B3560)
+    template <typename T1, typename T2>
+    void Notify(HashString h, const T1& d1, const T2& d2);  // ??$Notify@Vstring@Broc@@V12@@Entity@@QAEXVHashString@@ABVstring@Broc@@1@Z (g.o 0x4B3660)
     void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)

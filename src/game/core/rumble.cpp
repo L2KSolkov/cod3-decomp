@@ -276,13 +276,13 @@ RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect& effect,
                     effect.GetRampDownDuration((ERumbleMotorID)v8), notes,
                     looping);
                 // push into mRumbleLists[v8]
-                inst->m_dlist_node.mNext = mRumbleLists[v8].mRoot.mNext;
-                inst->m_dlist_node.mPrev = mRumbleLists[v8].mRoot.mPrev;
-                if (mRumbleLists[v8].mRoot.mPrev)
-                    mRumbleLists[v8].mRoot.mPrev->mNext = &inst->m_dlist_node;
-                mRumbleLists[v8].mRoot.mPrev = &inst->m_dlist_node;
-                if (!mRumbleLists[v8].mRoot.mNext)
-                    mRumbleLists[v8].mRoot.mNext = &inst->m_dlist_node;
+                inst->m_dlist_node.mNext = mRumbleLists[v8].m_head;
+                inst->m_dlist_node.mPrev = mRumbleLists[v8].m_tail;
+                if (mRumbleLists[v8].m_tail)
+                    mRumbleLists[v8].m_tail->mNext = &inst->m_dlist_node;
+                mRumbleLists[v8].m_tail = &inst->m_dlist_node;
+                if (!mRumbleLists[v8].m_head)
+                    mRumbleLists[v8].m_head = &inst->m_dlist_node;
             }
         }
         return result;
@@ -313,7 +313,7 @@ bool RumbleManager::IsPlaying(RumbleEffectInstanceHandle handle) const
     }
     for (int list = 0; list < 2; ++list)
     {
-        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
+        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
             n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
         {
             if (n->m_handle.mVal == handle.mVal)
@@ -334,7 +334,7 @@ float RumbleManager::TimeLeft(RumbleEffectInstanceHandle handle) const
     float v8 = 0.0f;
     for (int list = 0; list < 2; ++list)
     {
-        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
+        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
              n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
         {
             if (n->m_handle.mVal == handle.mVal)
@@ -363,7 +363,7 @@ void RumbleManager::SetIntensity(RumbleEffectInstanceHandle handle,
     }
     for (int list = 0; list < 2; ++list)
     {
-        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
+        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
              n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
         {
             if (n->m_handle.mVal == handle.mVal)
@@ -386,7 +386,7 @@ void RumbleManager::Reset()
 {
     for (int list = 0; list < 2; ++list)
     {
-        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
+        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
         while (n != nullptr)
         {
             RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
@@ -394,8 +394,8 @@ void RumbleManager::Reset()
             PoolAllocator_Release(RumbleEffectInstance_sAllocator, n);
             n = next;
         }
-        mRumbleLists[list].mRoot.mNext = nullptr;
-        mRumbleLists[list].mRoot.mPrev = nullptr;
+        mRumbleLists[list].m_head = nullptr;
+        mRumbleLists[list].m_tail = nullptr;
     }
     controller_stop_all_rumble(controller::inst());
 }
@@ -410,7 +410,7 @@ void RumbleManager::Remove(RumbleEffectInstanceHandle handle)
     }
     for (int list = 0; list < 2; ++list)
     {
-        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
+        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
         while (n != nullptr)
         {
             RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
@@ -432,7 +432,7 @@ void RumbleManager::FrameAdvance(float delta_time)
     for (int vibrator_id = 0; vibrator_id < 2; ++vibrator_id)
     {
         float max_intensity = 0.0f;
-        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[vibrator_id].mRoot.mNext;
+        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[vibrator_id].m_head;
         while (n != nullptr)
         {
             RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;

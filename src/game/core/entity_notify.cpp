@@ -28,19 +28,19 @@ void EntityNotifySet::AddNotify(const HashString& h,
     n->mOwner.mHandle.mVal = owner.mHandle.mVal;
     n->mParam = nullptr;
     // link into mStrings list
-    n->m_dlist_node.mNext = mStrings.mRoot.mNext;
-    n->m_dlist_node.mPrev = mStrings.mRoot.mPrev;
-    if (mStrings.mRoot.mPrev)
-        mStrings.mRoot.mPrev->mNext = &n->m_dlist_node;
-    mStrings.mRoot.mPrev = &n->m_dlist_node;
-    if (!mStrings.mRoot.mNext)
-        mStrings.mRoot.mNext = &n->m_dlist_node;
+    n->m_dlist_node.mNext = mStrings.m_head;
+    n->m_dlist_node.mPrev = mStrings.m_tail;
+    if (mStrings.m_tail)
+        mStrings.m_tail->mNext = &n->m_dlist_node;
+    mStrings.m_tail = &n->m_dlist_node;
+    if (!mStrings.m_head)
+        mStrings.m_head = &n->m_dlist_node;
 }
 
 // ea: 0x004C6450
 EntityNotify* EntityNotifySet::GetNotify(const HashString& chk) const
 {
-    for (EntityNotify* n = (EntityNotify*)mStrings.mRoot.mNext;
+    for (EntityNotify* n = (EntityNotify*)mStrings.m_head;
          n != nullptr; n = (EntityNotify*)n->m_dlist_node.mNext)
     {
         if (n->mStr == chk.mHash)
@@ -66,7 +66,7 @@ bool EntityNotifySet::AssignScriptVariable(const HashString& chk,
 // ea: 0x004C6500
 bool EntityNotifySet::IsFinished()
 {
-    EntityNotify* n = (EntityNotify*)mStrings.mRoot.mNext;
+    EntityNotify* n = (EntityNotify*)mStrings.m_head;
     while (n != nullptr)
     {
         EntityNotify* next = (EntityNotify*)n->m_dlist_node.mNext;
@@ -79,23 +79,23 @@ bool EntityNotifySet::IsFinished()
         PoolAllocator_Release(EntityNotify_sAllocator, n);
         n = next;
     }
-    mStrings.mRoot.mNext = nullptr;
-    mStrings.mRoot.mPrev = nullptr;
-    return mStrings.mRoot.mNext == nullptr && mEndOnList.mRoot.mNext == nullptr;
+    mStrings.m_head = nullptr;
+    mStrings.m_tail = nullptr;
+    return mStrings.m_head == nullptr && mEndOnList.m_head == nullptr;
 }
 
 // ea: 0x004C6590
 void EntityNotifySet::KillEndOnThreads()
 {
-    mEndOnList.mRoot.mNext = nullptr;
-    mEndOnList.mRoot.mPrev = nullptr;
+    mEndOnList.m_head = nullptr;
+    mEndOnList.m_tail = nullptr;
 }
 
 // ea: 0x004CFBA0
 void EntityNotifySet::UpdateList()
 {
     extern reserved_dlist<EntityNotifySet> sEntityNotifySet;
-    EntityNotifySet* n = (EntityNotifySet*)sEntityNotifySet.mRoot.mNext;
+    EntityNotifySet* n = (EntityNotifySet*)sEntityNotifySet.m_head;
     while (n != nullptr)
     {
         EntityNotifySet* next = (EntityNotifySet*)n->m_dlist_node.mNext;
@@ -105,6 +105,6 @@ void EntityNotifySet::UpdateList()
         }
         n = next;
     }
-    sEntityNotifySet.mRoot.mNext = nullptr;
-    sEntityNotifySet.mRoot.mPrev = nullptr;
+    sEntityNotifySet.m_head = nullptr;
+    sEntityNotifySet.m_tail = nullptr;
 }

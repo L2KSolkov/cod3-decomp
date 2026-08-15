@@ -276,8 +276,12 @@ private:
     static DObjHandleDb sInst;  // ?sInst@DObjHandleDb@@0V1@A @ 0x12C2268 (g.o)
     friend DObjHandleDb* DObjHandleDb_SInst();
 public:
+    DObjHandleDb();  // ??0DObjHandleDb@@QAE@XZ (g.o 0x4B3D40)
     void Init();  // ?Init@DObjHandleDb@@QAEXXZ (g.o 0x448B80)
 };
+DObjHandleDb::DObjHandleDb() : HandleDb<DObj, 1344, SizedHandle<12, 20>>()
+{
+}
 void DObjHandleDb::Init()
 {
 }

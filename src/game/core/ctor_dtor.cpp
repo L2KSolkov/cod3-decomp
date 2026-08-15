@@ -276,6 +276,144 @@ void force_waitinst1e_delete(WaitTilOutputInst1<Broc::entity>* p) { delete p; }
 void force_waitinst2_delete(WaitTilOutputInst2<Broc::string, Broc::string>* p) { delete p; }
 void force_waitinst2e_delete(WaitTilOutputInst2<int, Broc::entity>* p) { delete p; }
 
+// ============================================================================
+// Entity::Notify<...> (g.o 0x4B3560-0x4B3B40)
+// ============================================================================
+namespace {
+// AeThreadManager opaque view (mPendingNotifys at +0x20)
+struct NotifyDListNode {
+    NotifyDListNode* m_next;  // +0x00
+    NotifyDListNode* m_prev;  // +0x04
+};
+struct PendingList {
+    int m_size;                    // +0x00
+    NotifyDListNode* m_head;
+    NotifyDListNode* m_end;
+    NotifyDListNode* m_tail;
+};
+class AeThreadManagerLocal {
+public:
+    uint8_t _pad[0x20];
+    PendingList mPendingNotifys;   // +0x20
+    static AeThreadManagerLocal sInst;  // ?sInst@AeThreadManager@@0V1@A
+};
+AeThreadManagerLocal AeThreadManagerLocal::sInst;
+}
+
+// ScriptEventParams (completed from game_types.h forward decl)
+struct ScriptEventParams {
+    int ent1;
+    int ent2;
+    float f1, f2, f3;
+    struct { float x, y, z; } v1;
+};
+
+static void EntityNotify_Push(EntityNotify* notify)
+{
+    PendingList* list = &AeThreadManagerLocal::sInst.mPendingNotifys;
+    notify->m_dlist_node.mNext = (reserved_dlist<EntityNotify>::dlist_node*)list->m_end;
+    NotifyDListNode* tail = list->m_tail;
+    notify->m_dlist_node.mPrev = (reserved_dlist<EntityNotify>::dlist_node*)tail;
+    tail->m_next = (NotifyDListNode*)&notify->m_dlist_node;
+    list->m_tail = (NotifyDListNode*)&notify->m_dlist_node;
+    ++list->m_size;
+}
+
+template <typename T>
+void Entity::Notify(HashString hashStr, const T& d)
+{
+    EntityNotify* v4 = (EntityNotify*)EntityNotify::sAllocator->Allocate(0x14, false);
+    WaitTilOutputInst1<T>* v5 = nullptr;
+    if (v4 != nullptr)
+    {
+        v5 = (WaitTilOutputInst1<T>*)WaitTilOutput::sAllocator->Allocate(sizeof(WaitTilOutputInst1<T>), false);
+        if (v5 != nullptr)
+            v5 = ::new (v5) WaitTilOutputInst1<T>(d);
+        v4 = ::new (v4) EntityNotify(hashStr.mHash, mHandle, v5);
+    }
+    if (v4 != nullptr)
+        EntityNotify_Push(v4);
+    ExecScriptHandler(hashStr, nullptr);
+}
+template void Entity::Notify<Broc::string>(HashString, const Broc::string&);
+
+template <typename T1, typename T2>
+void Entity::Notify(HashString hashStr, const T1& d1, const T2& d2)
+{
+    EntityNotify* v4 = (EntityNotify*)EntityNotify::sAllocator->Allocate(0x14, false);
+    WaitTilOutputInst2<T1, T2>* v5 = nullptr;
+    if (v4 != nullptr)
+    {
+        v5 = (WaitTilOutputInst2<T1, T2>*)WaitTilOutput::sAllocator->Allocate(sizeof(WaitTilOutputInst2<T1, T2>), false);
+        if (v5 != nullptr)
+            v5 = ::new (v5) WaitTilOutputInst2<T1, T2>(d1, d2);
+        v4 = ::new (v4) EntityNotify(hashStr.mHash, mHandle, v5);
+    }
+    if (v4 != nullptr)
+        EntityNotify_Push(v4);
+    ExecScriptHandler(hashStr, nullptr);
+}
+template void Entity::Notify<Broc::string, Broc::string>(HashString, const Broc::string&, const Broc::string&);
+
+// Entity::Notify(HashString, const Broc::entity&) (g.o 0x4B38A0)
+void Entity::Notify(HashString h, const Broc::entity& e)
+{
+    EntityNotify* v4 = (EntityNotify*)EntityNotify::sAllocator->Allocate(0x14, false);
+    WaitTilOutputInst1<Broc::entity>* v5 = nullptr;
+    if (v4 != nullptr)
+    {
+        v5 = (WaitTilOutputInst1<Broc::entity>*)WaitTilOutput::sAllocator->Allocate(0x10, false);
+        if (v5 != nullptr)
+            v5 = ::new (v5) WaitTilOutputInst1<Broc::entity>(e);
+        v4 = ::new (v4) EntityNotify(h.mHash, mHandle, v5);
+    }
+    if (v4 != nullptr)
+        EntityNotify_Push(v4);
+    ScriptEventParams p;
+    memset(&p, 0, sizeof(p));
+    p.ent1 = e.GetHandle();
+    p.f1 = (float)NAN;
+    p.f2 = (float)NAN;
+    p.f3 = (float)NAN;
+    p.v1.x = (float)NAN;
+    p.v1.y = (float)NAN;
+    p.v1.z = (float)NAN;
+    ExecScriptHandler(h, &p);
+}
+
+// Entity::Notify(HashString, const int&, const Broc::entity&, const int&, const int&, const float*) (g.o 0x4B3B40)
+void Entity::Notify(HashString h, const int& d, const Broc::entity& e,
+                    const int& mod, const int& hitloc, const float* hit_normal)
+{
+    EntityNotify* v7 = (EntityNotify*)EntityNotify::sAllocator->Allocate(0x14, false);
+    WaitTilOutputInst2<int, Broc::entity>* v8 = nullptr;
+    if (v7 != nullptr)
+    {
+        v8 = (WaitTilOutputInst2<int, Broc::entity>*)WaitTilOutput::sAllocator->Allocate(0x14, false);
+        if (v8 != nullptr)
+            v8 = ::new (v8) WaitTilOutputInst2<int, Broc::entity>(d, e);
+        v7 = ::new (v7) EntityNotify(h.mHash, mHandle, v8);
+    }
+    if (v7 != nullptr)
+        EntityNotify_Push(v7);
+    ScriptEventParams p;
+    memset(&p, 0, sizeof(p));
+    p.ent1 = e.GetHandle();
+    p.f1 = (float)d;
+    p.f2 = (float)mod;
+    p.f3 = (float)hitloc;
+    p.v1.x = (float)NAN;
+    p.v1.y = (float)NAN;
+    p.v1.z = (float)NAN;
+    if (hit_normal != nullptr)
+    {
+        p.v1.x = hit_normal[0];
+        p.v1.y = hit_normal[1];
+        p.v1.z = hit_normal[2];
+    }
+    ExecScriptHandler(h, &p);
+}
+
 // ea: 0x004C1D80
 EntityNotifySet::EntityNotifySet(Entity* e)
 {

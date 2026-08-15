@@ -895,6 +895,7 @@ public:
     void     (*mDebugCallback)(int, Entity*);  // +0x2AA8
     AeSizedEntityArray mActiveList;      // +0x2AAC (16388 bytes)
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
+    EntityHandleDb();                    // ??0EntityHandleDb@@QAE@XZ (g.o 0x4B3D50)
     static EntityHandleDb* Inst();       // ?Inst@EntityHandleDb@@SAPAV1@XZ (g.o 0x4A9D40)
     const ae_sized_array<Entity*, 4096>& GetActiveList() const;  // ?GetActiveList@EntityHandleDb@@QBEABV?$ae_sized_array@PAVEntity@@$0BAAA@@@XZ (g.o 0x4A9D50)
     Entity* GetObject(int idx) const;    // ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z (g.o 0x4B0DA0)

@@ -165,17 +165,20 @@ struct BitSet {
 template <typename T>
 struct reserved_dlist {
     struct dlist_node {
-        dlist_node* mPrev;  // +0x00
-        dlist_node* mNext;  // +0x04
+        dlist_node* mNext;  // +0x00
+        dlist_node* mPrev;  // +0x04
 
-        dlist_node() : mPrev(nullptr), mNext(nullptr) {}
+        dlist_node() : mNext(nullptr), mPrev(nullptr) {}
         dlist_node(dlist_node* prev, dlist_node* next)
-            : mPrev(prev), mNext(next) {}  // ??0dlist_node@?$reserved_dlist@VWaitTilOutput@@@@QAE@PAU01@0@Z (g.o 0x4AE510)
+            : mNext(next), mPrev(prev) {}  // ??0dlist_node@?$reserved_dlist@VWaitTilOutput@@@@QAE@PAU01@0@Z (g.o 0x4AE510)
     };
-    dlist_node    mRoot;    // +0x00
-    unsigned char _tail[8]; // +0x08 (TODO verify)
+    int         m_size;  // +0x00
+    dlist_node* m_head;  // +0x04
+    dlist_node* m_end;   // +0x08
+    dlist_node* m_tail;  // +0x0C
 
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
+    void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
 };
 static_assert(sizeof(reserved_dlist<int>) == 0x10,
               "reserved_dlist size mismatch");
@@ -183,6 +186,17 @@ static_assert(sizeof(reserved_dlist<int>) == 0x10,
 template <typename T>
 void reserved_dlist<T>::validate() const
 {
+}
+
+template <typename T>
+void reserved_dlist<T>::push_back(T* obj)
+{
+    dlist_node* node = (dlist_node*)obj;
+    node->mNext = m_end;
+    node->mPrev = m_tail;
+    m_tail->mNext = node;
+    m_tail = node;
+    ++m_size;
 }
 
 template <int N>

@@ -2906,8 +2906,9 @@ void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                                       mObject->mHandle, &context, 1) != 0)
             {
                 int h = pActivator->mHandle.mHandle.mVal;
-                mObject->Notify(hash_const.damage, iDamage, (Broc::entity*)&h,
-                                &iMOD, nullptr, nullptr);
+                Broc::entity eh((unsigned int)h);
+                mObject->Notify(hash_const.damage, iDamage, eh,
+                                iMOD, 0, nullptr);
                 Activate_trigger_damage(mObject, pActivator, iDamage, iMOD);
                 if (mObject->count == 0)
                     mObject->health = 32000;
@@ -2941,8 +2942,9 @@ void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vSta
                                       mObject->mHandle, &context, 1) != 0)
             {
                 int h = pActivator->mHandle.mHandle.mVal;
-                mObject->Notify(hash_const.damage, iDamage, (Broc::entity*)&h,
-                                &iMOD, nullptr, nullptr);
+                Broc::entity eh((unsigned int)h);
+                mObject->Notify(hash_const.damage, iDamage, eh,
+                                iMOD, 0, nullptr);
                 Activate_trigger_damage(mObject, pActivator, iDamage, iMOD);
                 if (mObject->count == 0)
                     mObject->health = 32000;

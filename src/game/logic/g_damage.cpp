@@ -41,7 +41,7 @@ void G_FinishDamage(Entity* targ, Entity* inflictor, Entity* attacker,
         unsigned int mVal = v15->mHandle.mHandle.mVal;
         Broc::entity e;
         e.___u0 = mVal;
-        v10->Notify(hash_const.damage, take, &e, &mod, &hitLoc, nullptr);
+        v10->Notify(hash_const.damage, take, e, mod, hitLoc, nullptr);
         int health = v10->health;
         if (health > 0)
         {
@@ -281,7 +281,7 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
             {
                 Broc::entity e;
                 e.___u0 = mWorld->mHandle.mHandle.mVal;
-                targ->Notify(hash_const.damage, damage, &e, &mod, &hitLoc, dir);
+                targ->Notify(hash_const.damage, damage, e, mod, hitLoc, dir);
                 return;
             }
             if (targ->scr_vehicle != nullptr)
@@ -403,7 +403,7 @@ label_121:
                 targ->health = v36;
                 Broc::entity e2;
                 e2.___u0 = attacker->mHandle.mHandle.mVal;
-                targ->Notify(hash_const.damage, damage, &e2, &mod, &hitLoc, nullptr);
+                targ->Notify(hash_const.damage, damage, e2, mod, hitLoc, nullptr);
                 int health = targ->health;
                 if (health <= 0 && v32 + health > 0)
                 {

@@ -1494,11 +1494,6 @@ void Entity::Notify(HashString h, const unsigned int& e)
 {
     (void)h; (void)e;
 }
-void Entity::Notify(HashString h, const int& d, Broc::entity* e, int* mod,
-                    EHitLocation* hitloc, const float* hit_normal)
-{
-    (void)h; (void)d; (void)e; (void)mod; (void)hitloc; (void)hit_normal;
-}
 void Entity::Notify(HashString h, const int& d, const Broc::entity& e,
                     const int& mod, const int& hitloc)
 {

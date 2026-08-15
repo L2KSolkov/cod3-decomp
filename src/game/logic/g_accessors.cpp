@@ -2464,6 +2464,23 @@ template class SizedHandle<12, 20>;
 template class HandleDb<Entity, 1344, SizedHandle<12, 20>>;
 template class HandleDb<DObj, 1344, SizedHandle<12, 20>>;
 
+// EntityHandleDb ctor (g.o 0x4B3D50)
+EntityHandleDb::EntityHandleDb()
+{
+    unsigned int* bits = (unsigned int*)_pad;
+    for (int i = 0; i < 42; ++i)
+        bits[i] = 0;
+    for (int i = 0; i < 0x540; ++i)
+    {
+        mElements[i].mObject = nullptr;
+        mElements[i].mKey = 1;
+    }
+    mDebugCallback = nullptr;
+    for (int i = 0; i < 0x540; ++i)
+        bits[i >> 5] |= 1u << (i & 0x1F);
+    mActiveList.m_size = 0;
+}
+
 // InteractionController::FreeInteraction (g.o 0x4B00A0)
 void InteractionController::FreeInteraction()
 {
