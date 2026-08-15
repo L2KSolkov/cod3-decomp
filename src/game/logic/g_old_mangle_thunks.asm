@@ -151,5 +151,21 @@ PUBLIC ??_9@$B3AE
     jmp dword ptr [eax+4]
 ??_9@$B3AE ENDP
 
+; ea: 0x0046A370 - ?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@11@Z
+; Old-compiler backref digits (11) vs MSVC 14.51 (1@).
+EXTERN ?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@1@Z : PROC
+PUBLIC ?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@11@Z
+?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@11@Z PROC
+    jmp ?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@1@Z
+?VEH_SetPosition@@YAXPAVEntity@@ABVPosition3@math@@11@Z ENDP
+
+; ea: 0x004B1920 - ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z
+; Old-compiler backref digit (1) vs MSVC 14.51 (01).
+EXTERN ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV01@@Z : PROC
+PUBLIC ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z
+??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z PROC
+    jmp ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV01@@Z
+??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z ENDP
+
 _TEXT ENDS
 END

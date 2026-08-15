@@ -2627,8 +2627,8 @@ void SP_script_vehicle(Entity* pSelf)
         {
             VEH_Backup(pSelf);
             if ((pSelf->flags & 0x400000) == 0)
-                VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles,
-                                scr_vehicle->phys.vel.v.m128_f32);
+                VEH_SetPosition(pSelf, scr_vehicle->phys.origin,
+                                scr_vehicle->phys.angles);
         }
         pSelf->scr_vehicle->respawn_origin.v.m128_f32[0] = pSelf->r.currentOrigin.v.m128_f32[0];
         pSelf->scr_vehicle->respawn_origin.v.m128_f32[1] = pSelf->r.currentOrigin.v.m128_f32[1];
@@ -6409,8 +6409,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
         VEH_VerifyPosition(pSelf);
     }
     if (*(char*)((char*)info + 0x21C) == 0)
-        VEH_SetPosition(pSelf, veh->phys.origin, veh->phys.angles,
-                        veh->phys.vel.v.m128_f32);
+        VEH_SetPosition(pSelf, veh->phys.origin, veh->phys.angles);
     if (pSelf->health > 0)
     {
         collision_context_t context;
