@@ -1504,7 +1504,8 @@ struct MPPlayerManager {
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
 };
 
-struct MPPeer {
+class MPPeer {
+public:
     MPPlayerManager* GetPlayerManager();
     bool IsPlayerTalking(MPPlayer* player,
                          int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z (mp.o)

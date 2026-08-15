@@ -85,8 +85,8 @@ public:
     bool is_locked;
 
     // g.o accessors (?get_is_locked@controller@@QAE_NXZ / ?get_locked_port@controller@@QAEHXZ)
-    bool get_is_locked() { return is_locked; }
-    int  get_locked_port() { return locked_port; }
+    bool get_is_locked();
+    int  get_locked_port();
 
 private:
     struct PadState {
@@ -141,6 +141,8 @@ controller::controller()
 controller::~controller() {}
 
 controller* controller::inst() { return s_instance; }
+bool controller::get_is_locked() { return is_locked; }
+int  controller::get_locked_port() { return locked_port; }
 
 void controller::refresh_device_list() {
     for (int i = 0; i < MAX_CONTROLLERS; ++i) {

@@ -137,5 +137,19 @@ PUBLIC ??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z
     jmp ??_G?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z
 ??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z ENDP
 
+; ea: 0x004A97A0 - ??_H@YGXPAXIHP6EPAX0@Z@Z (vector constructor iterator)
+EXTERN ?vector_ctor_iterator_helper@@YGXPAXIHP6EPAX0@Z@Z : PROC
+PUBLIC ??_H@YGXPAXIHP6EPAX0@Z@Z
+??_H@YGXPAXIHP6EPAX0@Z@Z PROC
+    jmp ?vector_ctor_iterator_helper@@YGXPAXIHP6EPAX0@Z@Z
+??_H@YGXPAXIHP6EPAX0@Z@Z ENDP
+
+; ea: 0x004AEBA0 - ??_9@$B3AE (vcall thunk: virtual at vftable+4)
+PUBLIC ??_9@$B3AE
+??_9@$B3AE PROC
+    mov eax, [ecx]
+    jmp dword ptr [eax+4]
+??_9@$B3AE ENDP
+
 _TEXT ENDS
 END

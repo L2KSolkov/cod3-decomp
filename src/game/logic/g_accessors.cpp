@@ -1596,6 +1596,17 @@ bool Broc::operator!=(const Broc::string& lhs, const Broc::string& rhs)
 // Batch 24: vehicle/debug/scr ctors + container template instantiations
 // ============================================================================
 
+// ??_H vector-ctor-iterator helper (forwarded from MASM thunk)
+void __stdcall vector_ctor_iterator_helper(char* t, unsigned int s, int n,
+                                           void* (__thiscall* f)(void*))
+{
+    for (int i = n; i != 0; --i)
+    {
+        f(t);
+        t += s;
+    }
+}
+
 // scr_animscript_t (g.o 0x4ABF00 / 0x4ABF20)
 scr_animscript_t::scr_animscript_t()
 {
