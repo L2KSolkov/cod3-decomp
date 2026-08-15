@@ -774,7 +774,7 @@ void G_ExplodeMissile(Entity* ent, int msec)
         ent->r.contents = 0;
         ent->r.svFlags = svFlags | 0x20;
         collision_context_t context;
-        context.__vftable = nullptr;
+
         context.pass_entity1.mHandle.mVal = 0;
         context.pass_entity2.mHandle.mVal = clipmask & 0xFDFFFFEE | 0x11;
         math::Position3 end;
@@ -817,7 +817,7 @@ void G_ExplodeMissile(Entity* ent, int msec)
         if (InfoForWeapon->slot == WEAPSLOT_SMOKE_GRENADE || InfoForWeapon->iExplosionInnerDamage != 0)
         {
             collision_context_t ctx3;
-            ctx3.__vftable = nullptr;
+
             ctx3.pass_entity1.mHandle.mVal = 0;
             ctx3.pass_entity2.mHandle.mVal = ent->mHandle.mHandle.mVal;
             ctx3.contentmask = 0;
@@ -929,7 +929,7 @@ label_19:
     float v33[3];
     int v35 = 0;
     Entity* touch = nullptr;
-    ctx.__vftable = nullptr;
+
     ctx.pass_entity1.mHandle.mVal = 0;
     ctx.pass_entity2.mHandle.mVal = 34;
     int contents;
@@ -938,7 +938,7 @@ label_19:
         unsigned int mVal = ent->r.mOwner.mHandle.mVal;
         int clipmask = ent->clipmask;
         collision_context_t ctx2;
-        ctx2.__vftable = nullptr;
+
         ctx2.pass_entity1.mHandle.mVal = mVal;
         ctx2.pass_entity2.mHandle.mVal = clipmask;
         ctx2.contentmask = 0;
@@ -1224,7 +1224,7 @@ label_88:
                             math::Position3 endPos;
                             endPos.v = _mm_add_ps(_mm_mul_ps(normal.v, _mm_set1_ps(4.0f)), trace->endpos.v);
                             collision_context_t ctx;
-                            ctx.__vftable = nullptr;
+
                             ctx.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
                             ctx.pass_entity2.mHandle.mVal = 0;
                             ctx.contentmask = 17;

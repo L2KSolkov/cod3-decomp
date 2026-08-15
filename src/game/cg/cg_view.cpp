@@ -2673,7 +2673,6 @@ int CG_CalcFov()
     y = Atan2Approx(aspectX, v22) * 114.59155f;
     collision_context_t context;
     memset(&context, 0, sizeof(context));
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     context.contentmask = 32;
     int v30;
     if (CG_PointContents((const math::Position3*)&dword_F63C70[v13],

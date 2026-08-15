@@ -259,7 +259,7 @@ bool Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position, m
     start.v.m128_f32[1] = (wp->forward[1] * delta) + wp->muzzleTrace[1];
     start.v.m128_f32[2] = (wp->forward[2] * delta) + wp->muzzleTrace[2];
     collision_context_t context;
-    context.__vftable = nullptr;
+
     context.pass_entity1.mHandle.mVal = 0;
     context.pass_entity2.mHandle.mVal = ent->mHandle.mHandle.mVal;
     context.contentmask = 0;
@@ -492,7 +492,7 @@ bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
         }
     }
     collision_context_t context;
-    context.__vftable = nullptr;
+
     context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
     context.pass_entity2.mHandle.mVal = 0;
     context.pass_owner1.mHandle.mVal = 0;
@@ -868,7 +868,7 @@ void Weapon_ArtilleryStrike_Fire(Entity* ent, float spread, weaponParms* wp)
     start.v.m128_f32[2] = wp->muzzleTrace[2];
     start.v.m128_f32[3] = 0.0f;
     collision_context_t context;
-    context.__vftable = nullptr;
+
     context.pass_entity1.mHandle.mVal = 0;
     context.pass_entity2.mHandle.mVal = 41951283;
     context.pass_owner1.mHandle.mVal = 0;
@@ -1113,7 +1113,7 @@ void Weapon_ItemAmmo_Fire(Entity* ent, int grenType, weaponParms* wp)
     float maxs[3] = {-1.0f, -1.0f, 2.0f};
     float mins[3] = {1.0f, 1.0f, 2.0f};
     collision_context_t context;
-    context.__vftable = nullptr;
+
     context.pass_entity1.mHandle.mVal = 0;
     context.pass_entity2.mHandle.mVal = 41951377;
     context.pass_owner1.mHandle.mVal = ent->mHandle.mHandle.mVal;
@@ -1405,7 +1405,7 @@ void Weapon_Melee(Entity* ent, weaponParms* wp)
     end.v.m128_f32[2] = (wp->forward[2] * 72.0f) + wp->muzzleTrace[2];
     end.v.m128_f32[3] = 0.0f;
     collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
     context.pass_entity1 = ent->mHandle;
     context.pass_entity2.mHandle.mVal = 0;
     context.pass_owner1.mHandle.mVal = 0;
@@ -1640,7 +1640,7 @@ void Bullet_Fire_Fake_Extended(
         return;
     }
     collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
     context.pass_entity1 = sourceEntity;
     context.pass_entity2.mHandle.mVal = 0x2802033;
     context.pass_owner1.mHandle.mVal = 0;
@@ -1894,7 +1894,7 @@ void Bullet_Fire_Extended(
         && attackerClient->ps.vehPos != 0)
         passEnt = 0;
     collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
     context.pass_entity1.mHandle.mVal = passEnt;
     context.pass_entity2.mHandle.mVal = 0x2802033;
     context.pass_owner1.mHandle.mVal = 0;

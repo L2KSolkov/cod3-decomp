@@ -49,26 +49,21 @@ static_assert(offsetof(trace_t, fraction) == 0x20, "trace_t::fraction offset mis
 // ============================================================================
 struct collision_context_t;
 
-struct collision_context_t_vtbl {
-    bool (__cdecl* filter)(collision_context_t* self, Entity* ent);
-};
-
 // ============================================================================
 struct collision_context_t {
-    struct collision_context_t_vtbl* __vftable;  // +0x00
     DbLinkedHandle<EntityHandleDb, Entity> pass_entity1;    // +0x04
     DbLinkedHandle<EntityHandleDb, Entity> pass_entity2;    // +0x08
     DbLinkedHandle<EntityHandleDb, Entity> pass_owner1;     // +0x0C
     DbLinkedHandle<EntityHandleDb, Entity> pass_owner2;     // +0x10
     int   contentmask;                            // +0x14
 
+    virtual bool filter(Entity* ent) const;  // ?filter@collision_context_t@@UBE_NPAVEntity@@@Z (g.o 0x4AF020)
     collision_context_t();                       // ??0collision_context_t@@QAE@XZ
     collision_context_t(int mask);               // ??0collision_context_t@@QAE@H@Z
     collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle, int mask);  // ??0collision_context_t@@QAE@V?$DbLinkedHandle@...@@H@Z
     collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle1,
                         DbLinkedHandle<EntityHandleDb, Entity> handle2,
                         int mask);                // ??0collision_context_t@@QAE@V?$DbLinkedHandle@...@@0H@Z
-    bool filter(Entity* ent);  // ?filter@collision_context_t@@UBE_NPAVEntity@@@Z (g.o 0x4AF020)
 };
 static_assert(sizeof(collision_context_t) == 0x18, "collision_context_t size mismatch");
 static_assert(offsetof(collision_context_t, pass_entity1) == 0x04,

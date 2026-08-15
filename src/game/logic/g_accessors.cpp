@@ -2269,7 +2269,7 @@ template class TaskFunctor1Impl<AnimationUpdateTask, float>;
 template class TaskFunctor1Impl<XAnimUpdateTask, float>;
 
 // collision_context_t::filter (g.o 0x4AF020)
-bool collision_context_t::filter(Entity* ent)
+bool collision_context_t::filter(Entity* ent) const
 {
     (void)ent;
     return false;

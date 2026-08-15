@@ -1304,7 +1304,7 @@ void G_BounceItem(Entity* ent, trace_t* trace)
         vStart.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
         vStart.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2] - 128.0f;
         collision_context_t context;
-        context.__vftable = nullptr;
+
         context.pass_entity1.mHandle.mVal = 0;
         context.pass_entity2.mHandle.mVal = 1041;
         context.contentmask = (int)(ent->r.currentOrigin.v.m128_f32[2] + 64.0f);

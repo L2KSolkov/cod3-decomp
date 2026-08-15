@@ -2743,7 +2743,7 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         MultiplayerMgr::sInst->ApplyLocalPhysicsToVehicle(pSelf, &scr_vehicle->phys.origin,
                                                           &angles, vel);
         collision_context_t context;
-        context.__vftable = nullptr;
+
         context.pass_entity1.mHandle.mVal = 0;
         context.pass_entity2.mHandle.mVal = 0;
         context.pass_owner1.mHandle.mVal = 0;
@@ -4940,7 +4940,7 @@ void VEH_UnlinkPlayer(Entity* player, bool setOrigin)
         VectorNormalize(dirTo);
         int mask = player->clipmask & 0xFDFFFFFF;
         collision_context_t ctx;
-        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
         ctx.pass_entity1.mHandle.mVal = 0;
         ctx.pass_entity2.mHandle.mVal =
             vehEnt->s.eType == 14 ? 0x200051 : 0x200011;
@@ -5179,7 +5179,7 @@ int VEH_SlideMove(Entity* ent, int gravity, int msec)
     }
     VectorNormalize2(veh->phys.vel, veh->phys.vel);
     collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
     context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
     context.pass_entity2.mHandle.mVal = ent->clipmask;
     context.pass_owner1.mHandle.mVal = 0;
@@ -5607,7 +5607,7 @@ int VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
                 delta[2] /= dist;
             }
             collision_context_t ctx;
-            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
             ctx.pass_entity1 = player->mHandle;
             ctx.pass_entity2.mHandle.mVal = 0x2000000;
             ctx.pass_owner1.mHandle.mVal = 0;
@@ -5709,7 +5709,7 @@ int VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
         if (rightDist < 0.0f)
             dr = rightDist;
         collision_context_t ctx;
-        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
         ctx.pass_entity1 = player->mHandle;
         ctx.pass_entity2.mHandle.mVal = 0x2000000;
         ctx.pass_owner1.mHandle.mVal = 0;
@@ -5820,7 +5820,7 @@ int VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
                   + (float)(info->mMantleHintStringIndex + 48);
     }
     collision_context_t ctx;
-    ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
     ctx.pass_entity1 = player->mHandle;
     ctx.pass_entity2.mHandle.mVal = 0x2000000;
     ctx.pass_owner1.mHandle.mVal = 0;
@@ -5987,7 +5987,7 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
         if (t > 0.4f)
         {
             collision_context_t ctx;
-            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
             ctx.pass_entity1.mHandle.mVal = 0;
             ctx.pass_entity2.mHandle.mVal = 0;
             ctx.pass_owner1.mHandle.mVal = 0;
@@ -6414,7 +6414,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
     if (pSelf->health > 0)
     {
         collision_context_t context;
-        context.__vftable = nullptr;
+
         context.pass_entity1.mHandle.mVal = 0;
         context.pass_entity2.mHandle.mVal = 0;
         context.pass_owner1.mHandle.mVal = 0;

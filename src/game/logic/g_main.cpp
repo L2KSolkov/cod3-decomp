@@ -3818,7 +3818,7 @@ void G_Animscripted(Entity* ent, const float* const origin,
         if (has_zone_collision)
         {
             collision_context_t ctx;
-            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
             ctx.pass_entity1 = ent->mHandle;
             ctx.pass_entity2.mHandle.mVal = 0;
             ctx.pass_owner1.mHandle.mVal = 0;
@@ -3872,7 +3872,7 @@ void G_Animscripted(Entity* ent, const float* const origin,
         if (has_zone_collision)
         {
             collision_context_t ctx;
-            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+
             ctx.pass_entity1 = ent->mHandle;
             ctx.pass_entity2.mHandle.mVal = 0;
             ctx.pass_owner1.mHandle.mVal = 0;

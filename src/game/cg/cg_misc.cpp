@@ -4435,7 +4435,6 @@ void Camera::UpdateTankCam()
         trace_t tr;
         collision_context_t ctx;
         memset(&ctx, 0, sizeof(ctx));
-        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
         ctx.pass_entity1.mHandle.mVal =
             EntityManager::sInst->GetPlayer( mClient)->mHandle
                 .mHandle.mVal;
@@ -4535,7 +4534,6 @@ void Camera::UpdateTankCommanderCam()
             tagMtx[10] + info->cameraFPHeightOffset * tagMtx[13]};
         collision_context_t ctx;
         memset(&ctx, 0, sizeof(ctx));
-        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
         ctx.pass_entity1.mHandle.mVal =
             EntityManager::sInst->GetPlayer( mClient)->mHandle
                 .mHandle.mVal;
@@ -5005,7 +5003,6 @@ void Camera::UpdateVehicleDriverCamThird()
     float maxs[3] = {1.0f, 1.0f, 1.0f};
     collision_context_t ctx;
     memset(&ctx, 0, sizeof(ctx));
-    ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     ctx.pass_entity1.mHandle.mVal = client->ps.mViewLockedEntity;
     ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
     trace_t tr;
@@ -5067,7 +5064,6 @@ void Camera::UpdateMPDeathCameraNoKiller()
     float maxs[3] = {1.0f, 1.0f, 1.0f};
     collision_context_t ctx;
     memset(&ctx, 0, sizeof(ctx));
-    ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     ctx.pass_entity1.mHandle.mVal = 0;
     ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
     trace_t tr;
@@ -5146,7 +5142,6 @@ void Camera::UpdateMPDeathCamera()
         float maxs[3] = {1.0f, 1.0f, 1.0f};
         collision_context_t ctx;
         memset(&ctx, 0, sizeof(ctx));
-        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
         ctx.pass_entity1.mHandle.mVal = 0;
         ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
         trace_t tr;
@@ -5227,7 +5222,6 @@ void Camera::UpdateDeathCamera()
             float maxs[3] = {1.0f, 1.0f, 1.0f};
             collision_context_t ctx;
             memset(&ctx, 0, sizeof(ctx));
-            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
             ctx.pass_entity1.mHandle.mVal = 0;
             ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
             trace_t tr;
@@ -5417,8 +5411,6 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                         float maxs[3] = {4.0f, 4.0f, 4.0f};
                         collision_context_t ctx;
                         memset(&ctx, 0, sizeof(ctx));
-                        ctx.__vftable =
-                            (collision_context_t_vtbl*)0x00CD8F6C;
                         ctx.pass_entity1.mHandle.mVal =
                             EntityManager::sInst->GetPlayer(
                                                     mClient)
@@ -5451,8 +5443,6 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                     float maxs[3] = {15.0f, 15.0f, 15.0f};
                     collision_context_t ctx;
                     memset(&ctx, 0, sizeof(ctx));
-                    ctx.__vftable =
-                        (collision_context_t_vtbl*)0x00CD8F6C;
                     ctx.contentmask = 0x802033;
                     float cur[3] = {dword_F63C70[1580 * mClient],
                                     dword_F63C74[1580 * mClient],
@@ -5562,7 +5552,6 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                 float maxs[3] = {4.0f, 4.0f, 4.0f};
                 collision_context_t ctx;
                 memset(&ctx, 0, sizeof(ctx));
-                ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
                 ctx.pass_entity1.mHandle.mVal =
                     EntityManager::sInst->GetPlayer( mClient)
                         ->mHandle.mHandle.mVal;
@@ -6130,7 +6119,6 @@ void Camera::UpdateVehicleAnimCam()
                 float maxs[3] = {1.0f, 1.0f, 1.0f};
                 collision_context_t ctx;
                 memset(&ctx, 0, sizeof(ctx));
-                ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
                 ctx.pass_entity1.mHandle.mVal = client->ps.mViewLockedEntity;
                 ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
                 trace_t tr;

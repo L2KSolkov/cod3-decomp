@@ -186,7 +186,8 @@ struct MPPlayer {
 
 struct MPPlayerManager;
 
-struct MPPeer {
+class MPPeer {
+public:
     MPPlayerManager* GetPlayerManager();  // extern mp.o
 };
 

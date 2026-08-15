@@ -415,8 +415,7 @@ void G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
             continue;
         if (mObject->touch == 0 && ent->touch == 0)
             continue;
-        if (context.__vftable != nullptr
-            && context.__vftable->filter((collision_context_t*)&context, mObject))
+        if (context.filter(mObject))
             continue;
         if (mObject->s.eType == 2)
         {
@@ -544,8 +543,7 @@ void G_TouchVehicles(Entity* ent, const math::Position3& origin,
             continue;
         if (mObject->touch == 0 && ent->touch == 0)
             continue;
-        if (context.__vftable != nullptr
-            && context.__vftable->filter((collision_context_t*)&context, mObject))
+        if (context.filter(mObject))
             continue;
         if (g_EntityContactCapsule(&mins, &maxs, mObject) == 0)
             continue;

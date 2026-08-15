@@ -3457,7 +3457,6 @@ L60:
             PM_UpdateFatigue();
             int tracemask = pm->tracemask;
             collision_context_t context;
-            context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
             context.pass_entity1 = pm->ps->mClient;
             memset(&context.pass_entity2, 0, 12);
             context.contentmask = tracemask;
@@ -3617,7 +3616,6 @@ void PM_FootstepEvent(int iOldBobCycle, int iNewBobCycle, int bFootStep)
                 maxs.v.m128_f32[2] += 6.0f;
                 maxs.v.m128_f32[3] = 8.0f;
                 collision_context_t context;
-                context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
                 context.pass_entity1 = pm->ps->mClient;
                 memset(&context.pass_entity2, 0, 12);
                 context.contentmask = pm->tracemask & 0xFDFE3FFF;
@@ -3720,7 +3718,6 @@ void PM_trace(trace_t* results, const math::Position3& start,
         PM_AddTouchEnt(results->mEntity);
         pm->tracemask &= ~0x2000000u;
         collision_context_t c2;
-        c2.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
         c2.pass_entity1.mHandle.mVal = 0;
         c2.pass_entity2.mHandle.mVal = 0;
         c2.contentmask = context.contentmask & 0xFDFFFFFF;
@@ -4032,8 +4029,7 @@ bool push_in_world(pmove_t& pm, float radius,
                 s_entities_2.touch[i].mHandle.mVal);
             if (ent == nullptr || ent == self)
                 continue;
-            if (context.__vftable->filter((collision_context_t*)&context,
-                                          ent))
+            if (context.filter(ent))
                 continue;
             if (ent->r.bmodel != nullptr)
             {
@@ -4330,7 +4326,6 @@ int PM_SlideMove(int gravity)
         VectorNormalize2((const float*)&vel, (float*)&planes[v2]);
         int v11 = v2 + 1;
         collision_context_t context;
-        context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
         context.pass_entity1 = pm->ps->mClient;
         context.pass_entity2.mHandle.mVal = 0;
         context.contentmask = pm->tracemask;
@@ -4599,7 +4594,6 @@ L9:
     float start_vx = v14 - down_o.v.m128_f32[0];
     float start_vy = v13 - down_o.v.m128_f32[1];
     collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
     context.pass_entity1 = pm->ps->mClient;
     context.pass_entity2.mHandle.mVal = 0;
     context.contentmask = tracemask;
@@ -7715,8 +7709,6 @@ int BG_CheckProneValid(
         float v22 = vPos->v.m128_f32[2];
         collision_context_t boxContext;
         memset(&boxContext, 0, sizeof(boxContext));
-        boxContext.__vftable =
-            (collision_context_t_vtbl*)0x00CD8F6C;
         boxContext.pass_entity1 = passEntity;
         boxContext.contentmask =
             0x81002F + 2 + (proneCheckType != PCT_CLIENT ? 0xFFE0 : 0);
@@ -7741,8 +7733,6 @@ int BG_CheckProneValid(
     {
         player_collision_context_t water_context;
         memset(&water_context, 0, sizeof(water_context));
-        water_context.__vftable =
-            (collision_context_t_vtbl*)0x00CD8F78;
         water_context.pass_owner2 = passEntity;
         water_context.contentmask = 32;
         point.v.m128_f32[0] = vPos->v.m128_f32[0];
@@ -7776,7 +7766,6 @@ int BG_CheckProneValid(
     float v28 = vPos->v.m128_f32[2] + (fHeight - 6.0f);
     vUp[2] = 0.0f;
     memset(&context, 0, sizeof(context));
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     context.pass_entity1 = passEntity;
     v59 = fHeight - 6.0f;
     vEnd.v.m128_f32[1] = v26;
@@ -8847,7 +8836,6 @@ void PM_UpdateLean(PlayerState* ps, usercmd_s* cmd,
         v19.v = v25.v;
         v25.v = _mm_setr_ps(-8.0f, -8.0f, -12.0f, 0.0f);
         player_collision_context_t context;
-        context.__vftable = nullptr;
         context.pass_entity1.mHandle.mVal = 0;
         context.pass_entity2.mHandle.mVal = ps->mClient.mHandle.mVal;
         context.pass_owner1.mHandle.mVal = 0;
@@ -9218,7 +9206,6 @@ void PM_CheckDuck()
     }
 
     player_collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
     context.pass_entity1.mHandle.mVal = pm->ps->mClient.mHandle.mVal;
     context.pass_entity2.mHandle.mVal = 0;
     context.pass_owner1.mHandle.mVal = 0;
@@ -9984,7 +9971,6 @@ bool FindClosestVisibleBone(Entity* closestEnt,
         helmet_hash = HashString::CalcHash("Bip01 Helmet");
     }
     collision_context_t context;
-    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     context.pass_entity1.mHandle.mVal = closestEnt->mHandle.mHandle.mVal;
     context.pass_entity2.mHandle.mVal =
         EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal;

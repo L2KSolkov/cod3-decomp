@@ -9408,8 +9408,7 @@ void CM_PointTraceToEntities_r(pointtrace_t* clip, WorldSector* node,
         {
             if (intersect_segment_aabb(clip->start, clip->end, lo, hi,
                                        entities->absmin, entities->absmax)
-                && !context->__vftable->filter(
-                    context, (Entity*)((char*)entities - 0xE0)))
+                && !context->filter((Entity*)((char*)entities - 0xE0)))
             {
                 SV_PointTraceToEntity(clip, entities);
             }
@@ -9522,8 +9521,7 @@ process:
     {
         if (intersect_segment_aabb(clip->start, clip->end, lo, hi,
                                    entities->absmin, entities->absmax)
-            && !context->__vftable->filter(
-                context, (Entity*)((char*)entities - 0xE0)))
+            && !context->filter((Entity*)((char*)entities - 0xE0)))
         {
             result = SV_PointSightTraceToEntity(clip, entities);
             if (result != 0)
@@ -10193,8 +10191,7 @@ process_entities:
                        < v22->absmax.v.m128_f32[1] + radius
                 && entities.mins.v.m128_f32[2]
                        < v22->absmax.v.m128_f32[2] + radius
-                && !context.__vftable->filter(
-                       const_cast<collision_context_t*>(&context),
+                && !context.filter(
                        (Entity*)((char*)v22 - 0xE0)))
             {
                 if (entities.num == 128)
@@ -10378,9 +10375,7 @@ process_entities:
             && entities->absmin.v.m128_f32[0] < pmax.v.m128_f32[0]
             && entities->absmin.v.m128_f32[1] < pmax.v.m128_f32[1]
             && entities->absmin.v.m128_f32[2] < pmax.v.m128_f32[2]
-            && !context->__vftable->filter(
-                   const_cast<collision_context_t*>(context),
-                   (Entity*)((char*)entities - 0xE0)))
+            && !context->filter((Entity*)((char*)entities - 0xE0)))
         {
             result = SV_ClipSightToEntity(clip, entities);
             if (result != 0)

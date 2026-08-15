@@ -196,7 +196,6 @@ int Player_GetActivateEnt(Entity* pEnt, useList_t* useList)
         if (doTrace)
         {
             collision_context_t context;
-            context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
             context.pass_entity1.mHandle.mVal = 0;
             context.pass_entity2.mHandle.mVal =
                 ent->s.eType == 14 ? 0x200051 : 0x200011;
@@ -302,7 +301,6 @@ void ClientThink_real(Entity* ent)
     pm.capsuletrace = g_TraceCapsule;
     pm.pointcontents = SV_PointContents;
     collision_context_t pmCtx;
-    pmCtx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     pmCtx.pass_entity1 = ent->mHandle;
     pmCtx.pass_entity2.mHandle.mVal = 0;
     pmCtx.pass_owner1.mHandle.mVal = 0;
@@ -508,7 +506,6 @@ void Spotting(Entity* ent)
     end.v.m128_f32[1] = muzzle.v.m128_f32[1] + wp.forward[1] * 3000.0f;
     end.v.m128_f32[2] = muzzle.v.m128_f32[2] + wp.forward[2] * 3000.0f;
     collision_context_t context;
-    context.__vftable = nullptr;
     context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
     context.pass_entity2.mHandle.mVal = 0;
     context.pass_owner1.mHandle.mVal = 0;
@@ -609,7 +606,6 @@ void G_FinishSetupSpawnPoint(Entity* pEnt, int msec)
     if (Entity_has_zone_collision(pEnt))
     {
         collision_context_t context;
-        context.__vftable = nullptr;
         context.pass_entity1.mHandle.mVal = pEnt->mHandle.mHandle.mVal;
         context.pass_entity2.mHandle.mVal = 0;
         context.pass_owner1.mHandle.mVal = 0;
@@ -1473,7 +1469,6 @@ void Player_UpdateLookAtEntity(Entity* pEnt)
     math::Position3 start;
     math::Position3 end;
     collision_context_t context;
-    context.__vftable = nullptr;
     context.pass_entity1.mHandle.mVal = 0;
     context.pass_entity2.mHandle.mVal = 578822145;
     context.pass_owner1.mHandle.mVal = 0;

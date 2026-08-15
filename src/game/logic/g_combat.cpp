@@ -29,7 +29,6 @@ extern "C" int __fpclass(float);
 // ea: 0x004AEFE0
 collision_context_t::collision_context_t()
 {
-    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     this->pass_entity1.mHandle.mVal = 0;
     this->pass_entity2.mHandle.mVal = 0;
     this->pass_owner1.mHandle.mVal = 0;
@@ -40,7 +39,6 @@ collision_context_t::collision_context_t()
 // ea: 0x004AF0C0
 collision_context_t::collision_context_t(int mask)
 {
-    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     this->pass_entity1.mHandle.mVal = 0;
     this->pass_entity2.mHandle.mVal = 0;
     this->pass_owner1.mHandle.mVal = 0;
@@ -52,7 +50,6 @@ collision_context_t::collision_context_t(int mask)
 collision_context_t::collision_context_t(
     DbLinkedHandle<EntityHandleDb, Entity> handle, int mask)
 {
-    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     this->pass_entity1.mHandle.mVal = 0;
     this->pass_entity2.mHandle.mVal = 0;
     this->pass_owner1.mHandle.mVal = 0;
@@ -66,7 +63,6 @@ collision_context_t::collision_context_t(
     DbLinkedHandle<EntityHandleDb, Entity> handle1,
     DbLinkedHandle<EntityHandleDb, Entity> handle2, int mask)
 {
-    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     this->pass_entity1.mHandle.mVal = 0;
     this->pass_entity2.mHandle.mVal = 0;
     this->pass_owner1.mHandle.mVal = 0;
@@ -944,7 +940,6 @@ void G_MissileTrace(trace_t* results, const math::Position3* start,
     v7.pass_entity1 = passEntity;
     v7.pass_entity2.mHandle.mVal = 0;
     v7.contentmask = contentmask;
-    v7.__vftable = nullptr;
     g_LocationalTrace(results, *start, *end, v7, priorityMap, 0.0f);
     if (results->startsolid != 0)
     {
@@ -1118,7 +1113,6 @@ int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
         }
         dest[2][1] = v11;
         collision_context_t context;
-        context.__vftable = nullptr;
         context.pass_entity1.mHandle.mVal = targ->mHandle.mHandle.mVal;
         context.pass_entity2.mHandle.mVal = 0;
         context.pass_owner1.mHandle.mVal = 0;
