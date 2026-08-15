@@ -623,3 +623,4 @@ bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	
 bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	bdInAddr.cpp: IPv4 address (5 funcs) from IDA
 
 
+scr.o		scr.o	game	846	IN_PROGRESS	; scr.o batch 42 (530/846): ThreadSleepFrames/ThreadSleepInternal (AeThreadStateAllocAccess alloc 0x18 + placement-new WaitFrames/WaitState + inline flag sets 2|0x10|0x200 / 2|0x10|0x210 + state-controller push + LongJmp), MemAlloc (mPoolSizes top-size check + PoolAllocator::Allocate + gBrocHeap->Malloc(size,align) + 2-arg mem_heap_malloc fallback), ThreadGetDebugInfo (backslash strip + substr + ae_formatted_string %%s::Line %%d / 0x%%08x), SoundPlay (PlaySound zero pos/dir -1 x4 + GetVolume*volume + SetVolume), Scr_LoadAnimTreeAtIndex (tlFixedString name.mStr + AnimationToBroLookup PBDHIH + ParseNoteTracks + XAnimSetupSyncNodes), Scr_FreeAnimTreeAtIndex (XAnimEntry::Release; int mangle per manifest)

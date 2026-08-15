@@ -443,10 +443,12 @@ struct XAnimEntry {
             unsigned short children; // +0x1A
         } s;
     } u;                      // +0x18
+
+    void Release();          // ?Release@XAnimEntry@@QAEXXZ (anim.o 0x541050)
 };
 class AnimTree {
 public:
-    void* name;               // +0x00 InplaceString
+    InplaceString name;       // +0x00
     struct {
         unsigned int mSize;   // +0x04
         XAnimEntry*  mList;   // +0x08

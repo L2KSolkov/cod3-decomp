@@ -1308,6 +1308,10 @@ bool IsLocalGame();   // mp.o
 
 // ae_heap wrapper view (streamer.o 0x684DD0; definition in pakmanager.cpp)
 struct mem_heap;
+struct ae_heap {
+    void** __vftable;                 // +0x00
+    void* Malloc(unsigned int size, int alignment);  // ?Malloc@ae_heap@@QAEPAXIH@Z
+};
 struct ae_heap_wrapper {
     void* __vftable;   // +0x00
     mem_heap* mHeap;   // +0x04
@@ -3181,7 +3185,19 @@ void EnableWeapon(unsigned int entityHandleVar);  // 0x5C9CA0
 void DisableWeapon(unsigned int entityHandleVar);  // 0x5C9D30
 bool ThreadIsThreadAlive(unsigned int handle);  // 0x5C9E40
 void ThreadKill(unsigned int threadId);  // 0x5C9E80
+void ThreadSleepFrames(int numFrames);  // 0x5C7EC0
+void ThreadSleepInternal(float sleepTime);  // 0x5C7F50
+void* MemAlloc(unsigned int size, unsigned int align);  // 0x5C7D30
+void ThreadGetDebugInfo(Broc::string& fileline, Broc::string& func,
+                        Broc::string& threadId);  // 0x5C7D90
+unsigned int SoundPlay(const Broc::string& name, float volume);  // 0x5C33B0
 }
+
+// Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
+void Scr_LoadAnimTreeAtIndex(int treeindex,
+                             void* (__cdecl* Alloc)(int),
+                             bool restart);
+void Scr_FreeAnimTreeAtIndex(int treeindex);
 
 // Scr_EmitAnimation (0x5C1A60) - global
 void Scr_EmitAnimation(char* a, unsigned short b, unsigned int c);
@@ -10857,6 +10873,185 @@ vm_s* VM_Restart(vm_s* vm)
     Q_strncpyz(name, vm->name, 128);
     VM_Free(vm);
     return VM_Create(name, systemCall);
+}
+
+// ============================================================================
+// scr.o batch 42 - thread sleep / mem / sound / anim-tree load
+// ============================================================================
+
+extern void ParseNoteTracks(XAnimEntry* entry);  // nal.cpp (anim.o)
+extern void XAnimSetupSyncNodes(AnimTree* anims);  // nal.cpp (anim.o)
+
+// ea: 0x005C7EC0
+void BrocSys::ThreadSleepFrames(int numFrames)
+{
+    AeThread* mThreadExecuting =
+        (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+    void* mem = AeThreadStateAllocAccess::Get()->Allocate(0x18u, false);
+    AeThreadState* v2 = mem != nullptr
+                            ? (AeThreadState*)new (mem) AeThreadWaitFramesState(
+                                  numFrames)
+                            : nullptr;
+    unsigned int v5 = mThreadExecuting->mFlags.mMask | 2;
+    mThreadExecuting->mFlags.mMask = v5;
+    v5 |= 0x10u;
+    mThreadExecuting->mFlags.mMask = v5;
+    mThreadExecuting->mFlags.mMask = v5 | 0x200;
+    v2->m_dlist_node.mNext = mThreadExecuting->mStateControllers.m_end;
+    v2->m_dlist_node.mPrev = mThreadExecuting->mStateControllers.m_tail;
+    ((AeDListNode*)mThreadExecuting->mStateControllers.m_tail)->mNext =
+        &v2->m_dlist_node;
+    mThreadExecuting->mStateControllers.m_tail = &v2->m_dlist_node;
+    ++mThreadExecuting->mStateControllers.m_size;
+    LongJmp(AeThread::sBackup);
+}
+
+// ea: 0x005C7F50
+void BrocSys::ThreadSleepInternal(float sleepTime)
+{
+    if (IS_NAN(sleepTime))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1163;
+        AeAssert::gCurrentExpr = "!IS_NAN(sleepTime)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    AeThread* mThreadExecuting =
+        (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+    void* mem = AeThreadStateAllocAccess::Get()->Allocate(0x18u, false);
+    AeThreadState* v2 = mem != nullptr
+                            ? (AeThreadState*)new (mem) AeThreadWaitState(
+                                  sleepTime)
+                            : nullptr;
+    unsigned int v5 = mThreadExecuting->mFlags.mMask | 2;
+    mThreadExecuting->mFlags.mMask = v5;
+    mThreadExecuting->mFlags.mMask = v5 | 0x10;
+    mThreadExecuting->mFlags.mMask = v5 | 0x210;
+    v2->m_dlist_node.mNext = mThreadExecuting->mStateControllers.m_end;
+    v2->m_dlist_node.mPrev = mThreadExecuting->mStateControllers.m_tail;
+    ((AeDListNode*)mThreadExecuting->mStateControllers.m_tail)->mNext =
+        &v2->m_dlist_node;
+    mThreadExecuting->mStateControllers.m_tail = &v2->m_dlist_node;
+    ++mThreadExecuting->mStateControllers.m_size;
+    LongJmp(AeThread::sBackup);
+}
+
+// ea: 0x005C7D30
+void* BrocSys::MemAlloc(unsigned int size, unsigned int align)
+{
+    void* result = nullptr;
+    int last = gBrocPool->mPoolSizes.m_size - 1;
+    if (last <= 0)
+        last = 0;
+    if (size > (unsigned int)gBrocPool->mPoolSizes.m_elements[last]
+        || (result = gBrocPool->Allocate(size, false)) == nullptr)
+    {
+        result = ((ae_heap*)gBrocHeap)->Malloc(size, align);
+        if (result == nullptr)
+            return mem_heap_malloc((int)align, size);
+    }
+    return result;
+}
+
+// ea: 0x005C7D90
+void BrocSys::ThreadGetDebugInfo(Broc::string& fileline,
+                                 Broc::string& func,
+                                 Broc::string& threadId)
+{
+    AeThread* mThreadExecuting =
+        (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+    if (mThreadExecuting != nullptr)
+    {
+        Broc::string fileName(mThreadExecuting->mFile);
+        int v4 = 0;
+        int mLength = fileName.mBlock != nullptr
+                          ? fileName.mBlock->mLength
+                          : 0;
+        int v6 = mLength - 1;
+        if (v6 >= 0)
+        {
+            while (fileName.mBlock == nullptr
+                   || v6 >= fileName.mBlock->mLength
+                   || *(char*)((char*)(fileName.mBlock + 1) + v6) != 92)
+            {
+                if (--v6 < 0)
+                    break;
+            }
+            if (v6 >= 0)
+                v4 = v6;
+        }
+        int v7 = fileName.mBlock != nullptr ? fileName.mBlock->mLength : 0;
+        Broc::string result = fileName.substr(v4 + 1, v7 - v4 - 1);
+        fileName = result;
+        const char* v9 = fileName.mBlock != nullptr
+                             ? (const char*)(fileName.mBlock + 1)
+                             : defaultFileName;
+        ae_formatted_string<128, unsigned char> v12("%s::Line %d", v9,
+                                                    mThreadExecuting->mLine);
+        fileline = (const char*)v12.mBuff;
+        func = mThreadExecuting->mFuncName;
+        ae_formatted_string<128, unsigned char> v13("0x%08x",
+                                                    mThreadExecuting);
+        threadId = (const char*)v13.mBuff;
+    }
+}
+
+// ea: 0x005C33B0
+unsigned int BrocSys::SoundPlay(const Broc::string& name, float volume)
+{
+    const char* v3 = name.mBlock != nullptr
+                         ? (const char*)(name.mBlock + 1)
+                         : defaultFileName;
+    math::Position3 v9;
+    v9.v = _mm_setzero_ps();
+    math::Dir3 v10;
+    v10.v = _mm_setzero_ps();
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> v5 =
+        SoundDevice::sInst->PlaySound(
+            v3, DbLinkedHandle<EntityHandleDb, Entity>(0), false, false, v9,
+            v10, -1.0f, -1.0f, -1.0f, -1.0f);
+    SoundDevice::Sound* SoundForHandle =
+        SoundDevice::sInst->GetSoundForHandle(v5);
+    if (SoundForHandle != nullptr)
+    {
+        float v8 = SoundForHandle->GetVolume() * volume;
+        SoundForHandle->SetVolume(v8);
+    }
+    return v5.mHandle.mVal;
+}
+
+// ea: 0x005C7730
+void Scr_LoadAnimTreeAtIndex(int treeindex, void* (__cdecl* Alloc)(int),
+                             bool restart)
+{
+    (void)Alloc;
+    AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    AnimTree* v4 = &Bank->anims[treeindex];
+    tlFixedString treehash(v4->name.mStr);
+    for (unsigned int i = 0; i < v4->entries.mSize; ++i)
+    {
+        XAnimEntry* v7 = &v4->entries.mList[i];
+        BrocHelper::AnimationToBroLookup(
+            treehash.str, treeindex, v7->hash, (int)i);
+        v7->lastAttempt = 0;
+        v7->anim = nullptr;
+        if (!restart)
+            ParseNoteTracks(v7);
+    }
+    if (!restart)
+        XAnimSetupSyncNodes(v4);
+}
+
+// ea: 0x005C7820
+void Scr_FreeAnimTreeAtIndex(int treeindex)
+{
+    AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    AnimTree* v2 = &Bank->anims[treeindex];
+    for (unsigned int i = 0; i < v2->entries.mSize; ++i)
+        v2->entries.mList[i].Release();
 }
 
 // ============================================================================
