@@ -167,6 +167,119 @@ MPPlayerItems::GetItemList(EDroppedItemTypes item)
     }
 }
 
+// ea: 0x00754BA0
+void MPPlayerItems::sDroppedItem::Destroy()
+{
+    unsigned int v1 = handle.mVal & 0xFFF;
+    if (v1 < 0x540
+        && handle.mVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && EntityHandleDb::sInst.mElements[v1].mObject != nullptr)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        mObject->think = THINK__G_FreeEntity;
+        mObject->nextthink = level.time + 1;
+    }
+    handle.mVal = 0;
+    time = 0;
+}
+
+// ea: 0x00755140
+Entity* MPPlayerItems::FindItem(EDroppedItemTypes item, short id)
+{
+    ae_vector<sDroppedItem>* list;
+    switch (item)
+    {
+    case (EDroppedItemTypes)2:  // kItemTypeSupport
+        list = &mDroppedSupport;
+        break;
+    case kItemTypeMines:
+        list = &mDroppedMines;
+        break;
+    case (EDroppedItemTypes)3:  // kItemTypeMax
+        list = &mDroppedKits;
+        break;
+    default:
+        list = &mDroppedWeapons;
+        break;
+    }
+    if (list->mSize <= id)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+        AeAssert::gCurrentLine = 118;
+        AeAssert::gCurrentExpr = "size > id";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("FindItem: Invalid ID"))
+            __debugbreak();
+    }
+    unsigned int mVal = (*list)[id].handle.mVal;
+    unsigned int v5 = mVal & 0xFFF;
+    if (v5 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey)
+        return EntityHandleDb::sInst.mElements[v5].mObject;
+    return nullptr;
+}
+
+// ea: 0x007551F0
+void MPPlayerItems::SetItem(EDroppedItemTypes item, short id, Entity* ent)
+{
+    if (ent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+        AeAssert::gCurrentLine = 149;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "MPPlayerItems::AddItem invalid entity passed in"))
+            __debugbreak();
+    }
+    ae_vector<sDroppedItem>* list = &mDroppedWeapons;
+    switch (item)
+    {
+    case (EDroppedItemTypes)2:  // kItemTypeSupport
+        list = &mDroppedSupport;
+        break;
+    case kItemTypeMines:
+        list = &mDroppedMines;
+        break;
+    case (EDroppedItemTypes)3:  // kItemTypeMax
+        list = &mDroppedKits;
+        break;
+    default:
+        break;
+    }
+    int mSize = list->mSize;
+    if (id < 0 || id >= mSize)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+        AeAssert::gCurrentLine = 153;
+        AeAssert::gCurrentExpr = "id >= 0 && id < size";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "MPPlayerItems::AddItem invalid id for item type %i", item))
+            __debugbreak();
+    }
+    if (id >= 0 && id < mSize)
+    {
+        (*list)[id].Destroy();
+        (*list)[id].time = level.time;
+        (*list)[id].handle.mVal = ent->mHandle.mHandle.mVal;
+    }
+}
+
+// MPGameInfo (mp.o 0x730510)
+void MPGameInfo::getSlots(unsigned char& publicOpen,
+                          unsigned char& privateOpen,
+                          unsigned char& publicFilled,
+                          unsigned char& privateFilled) const
+{
+    publicOpen = m_publicOpen;
+    privateOpen = m_privateOpen;
+    publicFilled = m_publicFilled;
+    privateFilled = m_privateFilled;
+}
+
 // ============================================================================
 // MPLanDiscovery (mp.o 0x72CB90)
 // ============================================================================
@@ -391,6 +504,46 @@ void MPPlayerManager::RegisterDroppedItem(EDroppedItemTypes itemType,
     if (Player != nullptr)
         ((MPPlayerItems*)((char*)Player + 0x0C))
             ->SetItem(itemType, id, item);
+}
+
+// ea: 0x007376B0
+MPPlayer* MPPlayerManager::GetPlayer(const Entity* const entity)
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * i);
+        int v4 = *(int*)((char*)p + 0x08);
+        Entity* v5 = nullptr;
+        if (v4 >= 0)
+        {
+            if (v4 >= 16)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EntityManager.h";
+                AeAssert::gCurrentLine = 19;
+                AeAssert::gCurrentExpr = "idx<16";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            v5 = EntityManager::sInst->mPlayers[v4];
+        }
+        if (p->mId < 0x10u && p->mConnection.m_ptr != nullptr
+            && v5 == entity)
+            return p;
+    }
+    return nullptr;
+}
+
+// ea: 0x007760450
+void MPPlayerManager::RemoveDroppedItems()
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * i);
+        ((MPPlayerItems*)((char*)p + 0x0C))->RemoveAll();
+    }
 }
 
 // ea: 0x0072EA80 (mPlayers at +0x1010, stride 0x310, mClientIndex +0x08)

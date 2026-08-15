@@ -1642,6 +1642,7 @@ struct MPPlayerManager {
                             int ownerID);  // ?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z (mp.o 0x760690)
     void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
                              Entity* owner, short id);  // ?RegisterDroppedItem@MPPlayerManager@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z (mp.o 0x760480)
+    void RemoveDroppedItems();  // ?RemoveDroppedItems@MPPlayerManager@@QAEXXZ (mp.o 0x760450)
 private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
 };

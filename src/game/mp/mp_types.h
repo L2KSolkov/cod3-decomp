@@ -61,8 +61,11 @@ public:
 class MPPlayerItems {
 public:
     struct sDroppedItem {
-        void* handle;   // +0x00 DbLinkedHandle<EntityHandleDb, Entity>
+        struct {
+            unsigned int mVal;  // +0x00
+        } handle;               // DbLinkedHandle<EntityHandleDb, Entity>
         unsigned int time;  // +0x04
+        void Destroy();  // ?Destroy@sDroppedItem@MPPlayerItems@@QAEXXZ (mp.o 0x754BA0)
     };
 
     ae_vector<sDroppedItem> mDroppedWeapons;  // +0x00
@@ -72,6 +75,7 @@ public:
 
     Entity* FindItem(EDroppedItemTypes item, short id);  // ?FindItem@MPPlayerItems@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z (mp.o)
     void SetItem(EDroppedItemTypes item, short id, Entity* ent);  // ?SetItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z (mp.o)
+    void RemoveAll();  // ?RemoveAll@MPPlayerItems@@QAEXXZ (mp.o 0x754C90)
 
 private:
     ae_vector<sDroppedItem>& GetItemList(EDroppedItemTypes item);  // ?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z (mp.o 0x72E020)
@@ -88,6 +92,22 @@ public:
 
     unsigned int GetNumResults() const;  // ?GetNumResults@MPLanDiscovery@@QBEIXZ
     bool IsDone();                       // ?IsDone@MPLanDiscovery@@QAE_NXZ (mp.o 0x72CB60)
+};
+
+// ============================================================================
+// MPGameInfo - game listing info (bdGameInfo + 4 slot counters at +0x28)
+// ============================================================================
+class MPGameInfo {
+public:
+    uint8_t _pad[0x28];
+    unsigned char m_publicOpen;    // +0x28
+    unsigned char m_privateOpen;   // +0x29
+    unsigned char m_publicFilled;  // +0x2A
+    unsigned char m_privateFilled; // +0x2B
+
+    void getSlots(unsigned char& publicOpen, unsigned char& privateOpen,
+                  unsigned char& publicFilled,
+                  unsigned char& privateFilled) const;  // ?getSlots@MPGameInfo@@QBEXAAE000@Z (mp.o 0x730510)
 };
 
 // EGameConnectionType (mp.o)
