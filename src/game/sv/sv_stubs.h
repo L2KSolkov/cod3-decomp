@@ -358,7 +358,8 @@ public:
 };
 static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
-struct MultiplayerMgr {
+class MultiplayerMgr {
+public:
     class MPEntityHandle {
     public:
         int mVal;
@@ -737,7 +738,8 @@ struct CheckpointVector {
     int mSize;      // +0x08
 };
 
-struct CheckpointMgr {
+class CheckpointMgr {
+public:
     bool         mUsingCheckpoints;       // +0x00 (bool)
     uint8_t      _pad01[3];               // +0x01
     int          mPlayerHealth;           // +0x04

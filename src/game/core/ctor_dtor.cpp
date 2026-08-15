@@ -181,6 +181,10 @@ void force_emit_wait_delete(WaitTilOutput* p)
     delete p;
 }
 
+// g.o explicit instantiations (0x4AE510 / 0x4AE530)
+template class reserved_dlist<WaitTilOutput>;
+template class reserved_dlist<EntityNotify>;
+
 // ea: 0x004C1D80
 EntityNotifySet::EntityNotifySet(Entity* e)
 {

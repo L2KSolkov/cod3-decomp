@@ -14,6 +14,7 @@
 #include <math.h>
 #include <new>
 #include <stdint.h>
+#include <utility>
 
 // ============================================================================
 // trace_t helpers (g.o 0x4A4FD0 / 0x4A4FF0)
@@ -1301,12 +1302,21 @@ bool operator==(Handle lhs, Handle rhs)
 // MPEntityHandle global class (g.o 0x4A9760)
 class MPEntityHandle {
 public:
-    unsigned short mVal;  // +0x00
+    unsigned short mValue;  // +0x00
+    MPEntityHandle();                                     // ??0MPEntityHandle@@QAE@XZ (g.o 0x4A9700)
+    MPEntityHandle(const MPEntityHandle& value) : mValue(value.mValue) {}  // ??0MPEntityHandle@@QAE@ABV0@@Z (g.o 0x4A9710)
     MPEntityHandle& operator=(const MPEntityHandle& other);
+    unsigned short GetPeerEntityIndex() const { return mValue & 0x7FF; }  // ?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ (g.o 0x4A9730)
+    unsigned short GetValue() const { return mValue; }   // ?GetValue@MPEntityHandle@@QBEGXZ (g.o 0x4A9740)
+    bool IsAssigned() const { return mValue != 0; }      // ?IsAssigned@MPEntityHandle@@QBE_NXZ (g.o 0x4A9750)
 };
+MPEntityHandle::MPEntityHandle()
+{
+    mValue = 0;
+}
 MPEntityHandle& MPEntityHandle::operator=(const MPEntityHandle& other)
 {
-    mVal = other.mVal;
+    mValue = other.mValue;
     return *this;
 }
 
@@ -1699,9 +1709,324 @@ template class DbLinkedHandle<EntityHandleDb, Entity>;
 template class ae_fixed_string<64, unsigned char>;
 template class ae_fixed_string<256, unsigned short>;
 template class ae_fixed_string<32, unsigned char>;
-template class IVPointer<XModel>;
-template class IVPointer<PhysData>;
 template class InplaceVector<math::Mat43::Packed>;
 template class InplaceVector<XBoneHierarchy>;
 template class InplaceVector<nglMesh*>;
 template class InplaceVector<XAnimEntry>;
+
+// ============================================================================
+// Batch 25: nal orientation, template container instantiations (g.o 0x4A9180-0x4AE540)
+// ============================================================================
+
+// Handle operator!= (g.o 0x4A9180)
+bool operator!=(Handle lhs, Handle rhs)
+{
+    return lhs.mVal != rhs.mVal;
+}
+
+// nal matrix / position-orientation (g.o 0x4A9240-0x4A96D0)
+class nalMatrix4x4 : public math::Mat44 {
+public:
+    nalMatrix4x4() {}
+};
+class nalPositionOrientation {
+public:
+    math::Quaternion o;  // +0x00
+    math::Dir3 p;        // +0x10
+
+    nalPositionOrientation(const math::Dir3& _p, const math::Quaternion& _o);
+    nalPositionOrientation(const nalMatrix4x4& m);
+};
+math::Quaternion nalQuaternionFromMatrix(const nalMatrix4x4& m)
+{
+    return math::GetQuaternion(
+        math::Mat33(math::Dir3(m.x), math::Dir3(m.y), math::Dir3(m.z)));
+}
+nalPositionOrientation::nalPositionOrientation(const math::Dir3& _p,
+                                               const math::Quaternion& _o)
+{
+    o = _o;
+    p = _p;
+}
+nalPositionOrientation::nalPositionOrientation(const nalMatrix4x4& m)
+{
+    o = nalQuaternionFromMatrix(m);
+    p = math::Dir3(m.w);
+}
+
+// vehicle_physic_t global ctor (g.o 0x4ABF70)
+class vehicle_physic_t {
+public:
+    vehicle_physic_t();
+};
+vehicle_physic_t::vehicle_physic_t()
+{
+}
+
+// debug render assignment (g.o 0x4AE140 / 0x4AE190)
+debug_sphere& debug_sphere::operator=(const debug_sphere& other)
+{
+    x = other.x;
+    y = other.y;
+    z = other.z;
+    radius = other.radius;
+    for (int i = 0; i < 4; ++i)
+        color[i] = other.color[i];
+    return *this;
+}
+debug_aabb& debug_aabb::operator=(const debug_aabb& other)
+{
+    bmin = other.bmin;
+    bmax = other.bmax;
+    for (int i = 0; i < 4; ++i)
+        color[i] = other.color[i];
+    return *this;
+}
+
+// HandleDb template family (g.o 0x4AC530 / 0x4AE210-0x4AE3D0)
+template <int INDEX_BITS, int KEY_BITS>
+class SizedHandle {
+public:
+    unsigned int mVal;  // +0x00
+
+    SizedHandle() : mVal(0) {}
+    SizedHandle(int index, int key)
+    {
+        mVal = 0;
+        if (index >= (1 << INDEX_BITS))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
+            AeAssert::gCurrentLine = 49;
+            AeAssert::gCurrentExpr = "index >= 0 && index <= ((1 << _IndexBits) - 1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle index requires too many bits"))
+                __debugbreak();
+        }
+        if (key < 0 || key > (1 << KEY_BITS) - 1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
+            AeAssert::gCurrentLine = 50;
+            AeAssert::gCurrentExpr = "key >= 0 && key <= ((1 << _KeyBits) - 1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle key requires too many bits"))
+                __debugbreak();
+        }
+        mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
+    }
+    SizedHandle(Handle h) { mVal = h.mVal; }  // ??0?$SizedHandle@$0M@$0BE@@@QAE@VHandle@@@Z (g.o 0x4AE310)
+    unsigned int GetIndex() const { return mVal & ((1 << INDEX_BITS) - 1); }  // g.o 0x4AE330
+    unsigned int GetKey() const { return mVal >> INDEX_BITS; }                // g.o 0x4AE340
+};
+template class SizedHandle<12, 20>;
+
+template <typename T, int CAPACITY, typename H>
+class HandleDb {
+public:
+    struct DbElement {
+        T*  mObject;  // +0x00
+        int mKey;     // +0x04
+
+        DbElement() { mObject = nullptr; mKey = 1; }  // g.o 0x4AE370 / 0x4AE3D0
+        T* GetObject() const { return mObject; }      // g.o 0x4AE390
+        void SetObject(T* obj) { mObject = obj; }     // g.o 0x4AE3A0
+        int GetKey() const { return mKey; }           // g.o 0x4AE3B0
+        void Release() { ++mKey; mObject = nullptr; } // g.o 0x4AE3C0
+    };
+
+    void RegisterDebugCallback(void (*cb)(int, T*)) { mDebugCallback = cb; }  // g.o 0x4AC530
+    void (*mDebugCallback)(int, T*);
+};
+template class HandleDb<Entity, 1344, SizedHandle<12, 20>>;
+template class HandleDb<DObj, 1344, SizedHandle<12, 20>>;
+
+// cdl_array / phys_static_array members (g.o 0x4AC780-0x4AE4B0)
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);
+struct vi4 {
+    int v;  // +0x00
+};
+template <typename T>
+class cdl_array {
+public:
+    unsigned int m_count;    // +0x00
+    T*           m_elements; // +0x04
+
+    unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
+    const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
+};
+template <typename T>
+const T& cdl_array<T>::operator[](unsigned int index) const
+{
+    if (index >= m_count
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    return m_elements[index];
+}
+template class cdl_array<cdl_object_t>;
+template class cdl_array<unsigned char>;
+template class cdl_array<cdlPlane>;
+template class cdl_array<cdl_brush_t>;
+template class cdl_array<cdl_vinfo_t>;
+template class cdl_array<vi4>;
+template class cdl_array<cdl_patch_t>;
+
+// ae_array<T,SIZE> (g.o 0x4AC7E0)
+template <typename T, int SIZE>
+class ae_array {
+public:
+    T m_elements[SIZE];  // +0x00
+
+    T& operator[](int idx) { return m_elements[idx]; }
+};
+
+template <typename T, int CAPACITY>
+const T& phys_static_array<T, CAPACITY>::operator[](int i) const
+{
+    if ((i < 0 || i >= m_alloc_count)
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                     114, "i >= 0 && i < m_alloc_count", "invalid index"))
+        __debugbreak();
+    return m_slot_array[i];
+}
+template <typename T, int CAPACITY>
+void phys_static_array<T, CAPACITY>::call_destructors()
+{
+}
+template <typename T, int CAPACITY>
+void phys_static_array<T, CAPACITY>::reset_buffer()
+{
+    m_alloc_count = 0;
+}
+template class phys_static_array<proxy_obj_t, 256>;
+template class phys_static_array<bounded_proxy_obj_t, 128>;
+
+// cFreeList real bodies (g.o 0x4AD540-0x4ADA70)
+struct DSkel {
+    int animPartBits[4];      // +0x00
+    int controlPartBits[4];   // +0x10
+    int skelPartBits[4];      // +0x20
+    DObjSkelMat mat[1];       // +0x30
+};
+struct DSkelMax {
+    int animPartBits[4];      // +0x00
+    int controlPartBits[4];   // +0x10
+    int skelPartBits[4];      // +0x20
+    DObjSkelMat mat[88];      // +0x30
+};
+struct DSkel4 {
+    int animPartBits[4];      // +0x00
+    int controlPartBits[4];   // +0x10
+    int skelPartBits[4];      // +0x20
+    DObjSkelMat mat[4];       // +0x30
+};
+static_assert(sizeof(DSkel) == 0x70, "DSkel size mismatch");
+static_assert(sizeof(DSkelMax) == 0x1630, "DSkelMax size mismatch");
+static_assert(sizeof(DSkel4) == 0x130, "DSkel4 size mismatch");
+template <typename T>
+void cFreeList<T>::Init(int num)
+{
+    if (mpFree != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 21;
+        AeAssert::gCurrentExpr = "mpFree == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    for (int i = num; i > 0; --i)
+    {
+        T* node = (T*)PakManager::sInst->MemAlloc(
+            PakManager::sInst->FindPakId(kPakTypeGlobal), sizeof(T), false);
+        *(void**)node = mpFree;
+        ++mFree;
+        mpFree = node;
+    }
+}
+template <typename T>
+void cFreeList<T>::Shutdown()
+{
+    if (mUsed != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 33;
+        AeAssert::gCurrentExpr = "mUsed == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    while (mpFree != nullptr)
+    {
+        T* next = (T*)*(void**)mpFree;
+        PakManager::sInst->MemFree(
+            PakManager::sInst->FindPakId(kPakTypeGlobal), mpFree, false);
+        --mFree;
+        mpFree = next;
+    }
+}
+template <typename T>
+void cFreeList<T>::Free(T* ptr)
+{
+    if (ptr != nullptr)
+    {
+        --mUsed;
+        ++mFree;
+        *(void**)ptr = mpFree;
+        mpFree = ptr;
+    }
+}
+template class cFreeList<Entity>;
+template class cFreeList<DSkel>;
+template class cFreeList<DSkelMax>;
+template class cFreeList<DSkel4>;
+
+// ae_vector / ae_sized_array remaining instantiations (g.o 0x4ACF00-0x4AE100)
+template class ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>;
+template class ae_vector<debug_sphere>;
+template class ae_vector<debug_aabb>;
+template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 64>;
+template class ae_sized_array<Entity*, 128>;
+template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
+template class ae_sized_array<int, 45>;
+template class ae_sized_array<ae_fixed_string<512, unsigned short>, 64>;
+template class ae_array<CGBank*, 99>;
+template class InplaceVector<AnimTree>;
+template class InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>;
+template class ae_fixed_string<1024, unsigned short>;
+template class ae_fixed_string<128, unsigned char>;
+template class DbLinkedHandle<TaskSys, Task>;
+
+// ae_pair (g.o 0x4AD2C0-0x4ADFB0)
+template <typename T1, typename T2>
+class ae_pair {
+public:
+    T1 m_first;   // +0x00
+    T2 m_second;  // +0x04
+
+    ae_pair(const T1& f, const T2& s) : m_first(f), m_second(s) {}
+};
+template class ae_pair<const char*, void (*)()>;
+template class ae_pair<const char*, void (*)(Entity*)>;
+template class ae_pair<const char*, unsigned int>;
+
+// std::pair<unsigned int, const char*> default ctor (g.o 0x4ACEE0)
+void force_std_pair_ctor_emit()
+{
+    std::pair<unsigned int, const char*> p;
+    (void)p;
+}
+
+// IVPointer Deref (g.o 0x4AE4C0-0x4AE540)
+extern void ValidatePakId(TPakId pakId);
+template <typename T>
+T* IVPointer<T>::Deref() const
+{
+    ValidatePakId((TPakId)mPakId);
+    return mValue;
+}
+template class IVPointer<XModel>;
+template class IVPointer<PhysData>;
+template class IVPointer<Destructible>;

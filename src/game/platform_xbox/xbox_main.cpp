@@ -42,7 +42,8 @@ extern void nalInit(nalHeap*);  // ?nalInit@@YAXPAVnalHeap@@@Z
 // TimerRenderBars - layout twin (full type in game/logic/g_local.h, which
 // cannot be included alongside MPLiveEngine.h's SaveGameData).
 // ============================================================================
-struct TimerRenderBars {
+class TimerRenderBars {
+public:
     uint8_t      _pad[0x10];
     unsigned int mTimeLo;  // +0x10 (rdtsc low at TimeGameAdvanceBegin)
     unsigned int mTimeHi;  // +0x14 (rdtsc high)

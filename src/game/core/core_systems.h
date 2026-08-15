@@ -81,6 +81,10 @@ template <int N>
 struct BitSet {
     unsigned char mBits[(N + 7) / 8];  // +0x00
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
+
+    // ?GetWord@?$BitSet@$0FEA@@@QBEIH@Z / ?GetNumWords@?$BitSet@$0FEA@@@SAHXZ (g.o)
+    unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
+    static int GetNumWords() { return (N + 31) / 32; }
 };
 
 // ============================================================================
@@ -93,9 +97,15 @@ struct reserved_dlist {
     struct dlist_node {
         dlist_node* mPrev;  // +0x00
         dlist_node* mNext;  // +0x04
+
+        dlist_node() : mPrev(nullptr), mNext(nullptr) {}
+        dlist_node(dlist_node* prev, dlist_node* next)
+            : mPrev(prev), mNext(next) {}  // ??0dlist_node@?$reserved_dlist@VWaitTilOutput@@@@QAE@PAU01@0@Z (g.o 0x4AE510)
     };
     dlist_node    mRoot;    // +0x00
     unsigned char _tail[8]; // +0x08 (TODO verify)
+
+    void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
 };
 static_assert(sizeof(reserved_dlist<int>) == 0x10,
               "reserved_dlist size mismatch");

@@ -640,3 +640,6 @@ void RumbleEffect::Initialize()
 // Bitmask<unsigned int> accessors (g.o 0x4ACD50-0x4ACDF0; emitted here
 // because Bitmask is a core_systems.h type)
 template class Bitmask<unsigned int>;
+
+// BitSet<1344> word accessors (g.o 0x4AE350 / 0x4AE360)
+template class BitSet<1344>;

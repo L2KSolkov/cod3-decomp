@@ -1008,11 +1008,13 @@ void R_AddEntitySurfaces()
 // ============================================================================
 // RE_EndFrame - ea: 0x006D1DB0
 // ============================================================================
-struct TimerRenderBars {
+class TimerRenderBars {
+public:
     void Render();                  // ?Render@TimerRenderBars@@QAEXXZ
     static TimerRenderBars sInst;   // ?sInst@TimerRenderBars@@2U1@A
 };
-struct TestFPS {
+class TestFPS {
+public:
     void GatherMetrics();           // ?GatherMetrics@TestFPS@@QAEXXZ
     static TestFPS* sInst;          // ?sInst@TestFPS@@2PAV1@A
 };

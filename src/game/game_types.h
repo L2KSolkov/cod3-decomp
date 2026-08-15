@@ -83,6 +83,7 @@ public:
 static_assert(sizeof(Handle) == 4, "Handle size mismatch");
 
 bool operator==(Handle lhs, Handle rhs);  // ??8@YA_NVHandle@@0@Z (g.o 0x4A9160)
+bool operator!=(Handle lhs, Handle rhs);  // ??9@YA_NVHandle@@0@Z (g.o 0x4A9180)
 
 // Handle type — wraps a DbLinkedHandle
 template <typename HandleDb, typename T>
@@ -150,6 +151,9 @@ public:
 
     IVPointer() : mValue(nullptr), mPakId(PAK_ID_INVALID) {}  // ??0?$IVPointer@VPhysData@@@@QAE@XZ (g.o 0x4ACE80)
     void clear() { mValue = nullptr; mPakId = PAK_ID_INVALID; }  // ?clear@?$IVPointer@VXModel@@@@QAEXXZ (g.o 0x4ACE20)
+
+private:
+    T* Deref() const;  // ?Deref@?$IVPointer@VXModel@@@@ABEPAVXModel@@XZ (g.o 0x4AE4C0)
 };
 static_assert(sizeof(IVPointer<char>) == 8, "IVPointer size mismatch");
 

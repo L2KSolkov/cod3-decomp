@@ -39,6 +39,8 @@ struct ae_vector {
     ~ae_vector() { destroy_all(); }
     T* begin() { return mElements; }
     T* end() { return &mElements[mSize]; }
+    int size() const { return mSize; }              // ?size@?$ae_vector@...@@QBEHXZ
+    T& operator[](int iIndex) { return mElements[iIndex]; }  // ??A?$ae_vector@...@@QAEAA...@@H@Z
     void reserve(int iCapacity);
     void push_back(const T& iElement);
     void resize(int iNewSize);
@@ -617,6 +619,7 @@ struct debug_sphere {
     debug_sphere();                                   // ??0debug_sphere@@QAE@XZ (g.o 0x4AC060)
     debug_sphere(const math::Position3& center, float _radius,
                  const Color& _color);                // ??0debug_sphere@@QAE@ABVPosition3@math@@MABVColor@@@Z (g.o 0x4AC070)
+    debug_sphere& operator=(const debug_sphere& other);  // ??4debug_sphere@@QAEAAU0@ABU0@@Z (g.o 0x4AE140)
 };
 extern ae_vector<debug_sphere> debug_spheres;  // g.o 0xED2A98
 extern int render;                             // g.o 0xDD725C
@@ -739,15 +742,26 @@ public:
     int mUsed;   // +0x04
     int mFree;   // +0x08
 
-    // core.o template members; stub bodies until the pool allocator is ported
-    void Init(int num) { (void)num; }
-    void Shutdown() {}
-    T* Alloc() { return nullptr; }
+    void Init(int num);   // ?Init@?$cFreeList@UDSkel@@@@QAEXH@Z (g.o 0x4AD6D0)
+    void Shutdown();      // ?Shutdown@?$cFreeList@UDSkel@@@@QAEXXZ (g.o 0x4AD790)
+    void Free(T* ptr);    // ?Free@?$cFreeList@VEntity@@@@QAEXPAVEntity@@@Z (g.o 0x4AD540)
+    T* Alloc()
+    {
+        T* p = mpFree;
+        if (p != nullptr)
+        {
+            mpFree = (T*)*(void**)p;
+            --mFree;
+            ++mUsed;
+        }
+        return p;
+    }
 };
 extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
 
 template <typename K, typename V>
-struct InplaceTreeElement {
+class InplaceTreeElement {
+public:
     K mKey;  // +0x00
     V mVal;  // +0x04
 };
@@ -1014,7 +1028,8 @@ extern PoolAllocator* gBrocPool;       // core.o
 extern void*   gShotProf;              // g.o 0x... (ShotPerfTest*)
 extern cvar_t* gStatusBar;             // core.o
 
-struct TimerRenderBars {
+class TimerRenderBars {
+public:
     struct TimedInterval {
         unsigned __int64 mLastBegin;  // +0x00
         unsigned __int64 mLastEnd;    // +0x08
@@ -2846,6 +2861,7 @@ struct debug_aabb {
     debug_aabb() {}
     debug_aabb(const math::Position3& _bmin, const math::Position3& _bmax,
                const Color& _color);  // ??0debug_aabb@@QAE@ABVPosition3@math@@0ABVColor@@@Z (g.o 0x4AC140)
+    debug_aabb& operator=(const debug_aabb& other);  // ??4debug_aabb@@QAEAAU0@ABU0@@Z (g.o 0x4AE190)
 };
 extern ae_vector<debug_aabb> debug_aabbs;        // g.o
 void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)
@@ -2925,6 +2941,26 @@ struct bounded_proxy_obj_t {
 };
 static_assert(sizeof(bounded_proxy_obj_t) == 0x20,
               "bounded_proxy_obj_t size mismatch");
+
+// phys_static_array<T,CAPACITY> - inline-slot physics proxy array
+template <typename T, int CAPACITY>
+class phys_static_array {
+public:
+    T*  m_slot_array;   // +0x00
+    int m_alloc_count;  // +0x04
+
+    phys_static_array()  // ??0?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4AC860)
+    {
+        m_slot_array = (T*)this;
+        m_alloc_count = 0;
+    }
+    const T& operator[](int i) const;  // ??A?$phys_static_array@...@@QBEABU...@@H@Z
+    const int get_count() const { return m_alloc_count; }  // ?get_count@...@@QBE?BHXZ
+
+private:
+    void call_destructors();  // ?call_destructors@...@@AAEXXZ (g.o 0x4AE490)
+    void reset_buffer();      // ?reset_buffer@...@@AAEXXZ (g.o 0x4AE4B0)
+};
 struct cdl_array_t {
     int   m_count;     // +0x00
     void* m_elements;  // +0x04
@@ -3912,7 +3948,8 @@ void rb_vehicle_update_from_network(rb_vehicle* self, math::Position3* position,
                                     math::Dir3* aVel);                // phys_xboxr
 
 // Task - task system base (28 bytes) - verified against IDA
-struct Task {
+class Task {
+public:
     uint8_t     _dlist[8];         // +0x04
     unsigned int mTaskId;          // +0x0C FourCC
     DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;  // +0x10
@@ -3934,7 +3971,8 @@ struct Task {
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
 
-struct TaskSys {
+class TaskSys {
+public:
     static TaskSys sInst;   // ?sInst@TaskSys@@0V1@A @ 0x012F4120 (object, per binary mangle)
     static TaskSys* Inst(); // ?Inst@TaskSys@@SAPAV1@XZ (g.o 0x4A7550)
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o

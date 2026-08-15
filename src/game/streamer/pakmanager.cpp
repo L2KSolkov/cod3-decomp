@@ -1596,7 +1596,8 @@ public:
         return m_head;
     }
 
-    struct iterator {
+    class iterator {
+    public:
         dlist_node* m_node;  // +0x00
         dlist_node* m_next;  // +0x04
 
@@ -1633,7 +1634,8 @@ public:
         }
     };
 
-    struct const_iterator {
+    class const_iterator {
+    public:
         dlist_node* m_node;  // +0x00
         dlist_node* m_next;  // +0x04
 
@@ -1646,7 +1648,13 @@ public:
         {
             return (const T*)m_node;
         }
+
+        // ??Econst_iterator@?$reserved_dlist@VPakFile@@@@QAEAAV01@XZ (g.o 0x4ACF00)
+        const_iterator& operator++();
     };
+
+    // ?node_to_object@?$reserved_dlist@VPakFile@@@@SAPBVPakFile@@PBUdlist_node@1@@Z (g.o 0x4AE480)
+    static const T* node_to_object(const dlist_node* dlist_node);
 
     // ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ (0x686E60)
     iterator begin()
@@ -1662,6 +1670,33 @@ public:
         return result;
     }
 };
+
+// g.o explicit specializations (0x4ACF00 / 0x4AE480)
+template <>
+reserved_dlist<PakFile>::const_iterator&
+reserved_dlist<PakFile>::const_iterator::operator++()
+{
+    if (m_next == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+        AeAssert::gCurrentLine = 501;
+        AeAssert::gCurrentExpr = "m_next != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    m_node = m_next;
+    m_next = m_next->m_next;
+    return *this;
+}
+
+template <>
+const PakFile* reserved_dlist<PakFile>::node_to_object(
+    const reserved_dlist<PakFile>::dlist_node* dlist_node)
+{
+    return (const PakFile*)dlist_node;
+}
 
 class PakManager {
 public:

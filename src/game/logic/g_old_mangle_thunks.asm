@@ -39,5 +39,13 @@ PUBLIC ?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z
     jmp ?VEH_GetPlayerFollowGoalPosition@@YAPAY02$$CBMPBUEntity@@0@Z
 ?VEH_GetPlayerFollowGoalPosition@@YAAAY02$$CBMPBVEntity@@0@Z ENDP
 
+; ea: 0x004ACEE0 - ??0?$pair@IPBD@std@@QAE@XZ
+; MSVC 14.51 emits the templated-ctor form ??$?0IPBD$0A@@?$pair@IPBD@std@@QAE@XZ.
+EXTERN ??$?0IPBD$0A@@?$pair@IPBD@std@@QAE@XZ : PROC
+PUBLIC ??0?$pair@IPBD@std@@QAE@XZ
+??0?$pair@IPBD@std@@QAE@XZ PROC
+    jmp ??$?0IPBD$0A@@?$pair@IPBD@std@@QAE@XZ
+??0?$pair@IPBD@std@@QAE@XZ ENDP
+
 _TEXT ENDS
 END
