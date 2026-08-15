@@ -5,13 +5,14 @@
 
 #include "core/math_types.h"
 #include "core/mem_heap.h"
+#include "core/PoolAllocator.h"
 #include "ngl/nglDebug.h"
 
 #include <string.h>
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1 };
+enum ECoderId { COD3 = 0, ARO = 1, MJK = 4 };
 extern ECoderId gCurrentAuthor;        // ?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A
 extern const char* gCurrentFile;       // ?gCurrentFile@AeAssert@@3PBDB
 extern int gCurrentLine;               // ?gCurrentLine@AeAssert@@3HA
@@ -88,6 +89,7 @@ struct dpvs_plane_t {
     math::Vector4 data;          // +0x00
     unsigned char side[3];       // +0x10
     unsigned char frontal;       // +0x13
+    static PoolAllocator* sAllocator;  // ?sAllocator@dpvs_plane_t@@2PAVPoolAllocator@@A @ 0xF7442C
 };
 static_assert(sizeof(dpvs_plane_t) == 0x20, "dpvs_plane_t size mismatch");
 
@@ -408,10 +410,18 @@ struct trRefEntityFilterView {
     unsigned char mOccupiedCells[4];  // +0xF6
 };
 
-// trGlobals view (world +0x290)
+// trGlobals view (refdef +0x26C, world +0x290)
+struct trRefdefFilterView {
+    uint8_t _pad[0x1C];
+    int rdflags;              // +0x1C
+    short num_world_dlights;  // +0x20
+    short num_model_dlights;  // +0x22
+};
 struct trGlobalsFilterView {
-    uint8_t _pad[0x290];
-    void* world;             // +0x290
+    uint8_t _pad[0x26C];
+    trRefdefFilterView refdef;   // +0x26C
+    uint8_t _pad2[0x290 - 0x270];
+    void* world;                 // +0x290
 };
 extern trGlobalsFilterView tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
@@ -522,4 +532,135 @@ void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
             }
         }
     } while (size != 0);
+}
+
+// ============================================================================
+// R_AddWorldSurfacesDPVS - ea: 0x006D9E00
+// ============================================================================
+// cvar_t view (integer +0x20)
+struct cvar_t {
+    uint8_t _pad[0x20];
+    int integer;  // +0x20
+};
+
+extern cvar_t* r_drawworld;       // ?r_drawworld@@3PAUcvar_t@@A @ 0xF741D8
+extern cvar_t* r_outsideMapEnts;  // ?r_outsideMapEnts@@3PAUcvar_t@@A @ 0xF742E0
+extern cvar_t* r_singlecell;      // ?r_singlecell@@3PAUcvar_t@@A @ 0xF74294
+extern int g_camera_cell;         // ?g_camera_cell@@3HA @ 0x11E993C
+
+// untracked render.o DPVS helpers (internal in binary; stubs until ported)
+static void R_SetupDPVS() {}
+static int R_CellForCamera(void* frameBase) { (void)frameBase; return -1; }
+static void R_FilterModelsIntoCells(void* frameBase, dpvs_plane_t* planes,
+                                    int iPlaneCount)
+{
+    (void)frameBase; (void)planes; (void)iPlaneCount;
+}
+static void R_AddCellSurfaces(void* frameBase, BspCell* cell,
+                              dpvs_plane_t* planes, int iPlaneCount)
+{
+    (void)frameBase; (void)cell; (void)planes; (void)iPlaneCount;
+}
+static void R_AddStaticModels(BspCell* cell, int iPlaneCount,
+                              dpvs_plane_t* planes)
+{
+    (void)cell; (void)iPlaneCount; (void)planes;
+}
+static void R_RecursivePortalWalk(void* frameBase, BspCell* cell,
+                                  dpvs_plane_t* parentPlane,
+                                  dpvs_plane_t* planes, int iPlaneCount,
+                                  int dlightBits, bool root_level)
+{
+    (void)frameBase; (void)cell; (void)parentPlane; (void)planes;
+    (void)iPlaneCount; (void)dlightBits; (void)root_level;
+}
+
+void R_AddWorldSurfacesDPVS()
+{
+    alignas(16) char pvsPlaneBuffer1[0x8150];
+    char* v0 = pvsPlaneBuffer1;
+    char* alignedBufferPtr1 = pvsPlaneBuffer1;
+
+    ae_sized_array<PoolAllocator::PoolConfig, 16> cfgList;
+    for (int i = 0; i < 16; ++i)
+    {
+        cfgList.m_elements[i].blockSize = 0;
+        cfgList.m_elements[i].numBlocks = 4;
+        cfgList.m_elements[i].blockAlign = 0;
+        cfgList.m_elements[i].block = nullptr;
+    }
+    cfgList.m_size = 0;
+    PoolAllocator::PoolConfig elt;
+    elt.blockSize = 384;
+    elt.blockAlign = 16;
+    elt.numBlocks = 84;
+    elt.block = pvsPlaneBuffer1;
+    cfgList.push_back(elt);
+    PoolAllocator pvsPlanePool(cfgList, 2u);
+    dpvs_plane_t::sAllocator = &pvsPlanePool;
+
+    if (r_drawworld->integer != 0 && (tr.refdef.rdflags & 1) == 0)
+    {
+        int v4 = (1 << (tr.refdef.num_world_dlights & 0xFF)) - 1;
+        R_SetupDPVS();
+        R_FilterModelsIntoCells((void*)0, g_dpvs.frustumPlanes, 4);
+        int v5 = R_CellForCamera((void*)0);
+        g_camera_cell = v5;
+        if (v5 < 0)
+        {
+            BspTreeFilterView* bspTree =
+                (BspTreeFilterView*)((worldFilterView*)tr.world)->bspTree;
+            unsigned int v8 = 0;
+            if (r_outsideMapEnts->integer != 0)
+            {
+                while (v8 < bspTree->mCellsSize)
+                {
+                    BspCell* cell = &((BspCell*)bspTree->mCellsList)[v8];
+                    R_AddCellSurfaces((void*)0, cell, g_dpvs.frustumPlanes, 4);
+                    R_AddStaticModels(cell, 4, g_dpvs.frustumPlanes);
+                    ++v8;
+                }
+            }
+            else
+            {
+                while (v8 < bspTree->mCellsSize)
+                {
+                    BspCell* cell = &((BspCell*)bspTree->mCellsList)[v8];
+                    R_AddCellSurfaces((void*)0, cell, g_dpvs.frustumPlanes, 4);
+                    ++v8;
+                }
+            }
+        }
+        else
+        {
+            BspTreeFilterView* bspTree =
+                (BspTreeFilterView*)((worldFilterView*)tr.world)->bspTree;
+            BspCell* v6 = &((BspCell*)bspTree->mCellsList)[v5];
+            BspCell* v7 = v6;
+            if (r_singlecell->integer != 0)
+            {
+                g_dpvs.farPlane = nullptr;
+                R_AddCellSurfaces((void*)0, v6, g_dpvs.frustumPlanes, 4);
+                R_AddStaticModels(v7, 4, g_dpvs.frustumPlanes);
+            }
+            else
+            {
+                R_RecursivePortalWalk((void*)0, v6, &g_dpvs.viewPlane,
+                                      g_dpvs.frustumPlanes, 4, v4, true);
+            }
+            v0 = alignedBufferPtr1;
+        }
+        dpvs_plane_t::sAllocator = nullptr;
+        if (v0 != pvsPlaneBuffer1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::MJK;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+            AeAssert::gCurrentLine = 1456;
+            AeAssert::gCurrentExpr =
+                "alignedBufferPtr1 == (char*)tl_align((uint)pvsPlaneBuffer1, 0x10)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("pvs plane pool overflow, tell matt"))
+                __debugbreak();
+        }
+    }
 }
