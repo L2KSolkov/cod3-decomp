@@ -19,16 +19,13 @@ static bool IS_NAN(float x) {
 // DObjTrace_s — DObj traceline results (fields used by SV_PointTraceToEntity)
 // ============================================================================
 struct DObjTrace_s {
-    float    normal[3];      // +0x00
-    float    fraction;       // +0x0C
-    float    localHit[3];    // +0x10
-    unsigned char allsolid;  // +0x1C
-    unsigned char startsolid;// +0x1D
-    // +0x1E pad
-    unsigned char _pad[2];   // +0x1E
-    HashString partName;     // +0x20
-    uint32_t   partGroup;    // +0x24
-    uint8_t    _pad2[0];     // +0x28 (end)
+    float          fraction;     // +0x00
+    int            surfaceflags; // +0x04
+    float          normal[3];    // +0x08
+    HashString     partName;     // +0x14
+    uint32_t       partGroup;    // +0x18
+    unsigned char  startsolid;   // +0x1C
+    unsigned char  allsolid;     // +0x1D
 };
 
 // ============================================================================
@@ -124,11 +121,11 @@ int DObjHasContents(const DObj* obj, int contentmask)  // ?DObjHasContents@@YAHP
     }
     return 0;
 }
-extern void          DObjGeomTraceline(const DObj* obj, const math::Position3* localStart,
-                                       const math::Position3* localEnd, int contentmask,
+extern void          DObjGeomTraceline(const DObj* obj, const math::Position3& localStart,
+                                       const math::Position3& localEnd, int contentmask,
                                        struct DObjTrace_s* results, float extraDistanceCheck);
-extern void          DObjTraceline(const DObj* obj, const math::Position3* start,
-                                   const math::Position3* end, unsigned char* priorityMap,
+extern void          DObjTraceline(const DObj* obj, const math::Position3& start,
+                                   const math::Position3& end, unsigned char* priorityMap,
                                    struct DObjTrace_s* trace, float extraDistanceCheck);
 extern void          AnglesToAxis(const float* const angles,
                                   float (*const axis)[3]);
@@ -429,9 +426,9 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                                         clip->trace.fraction) != 0)
                             return;
                     }
-                    DObjGeomTraceline(mDObj, &absmin, &absmax, clip->contentmask, &objTrace, v35);
+                    DObjGeomTraceline(mDObj, absmin, absmax, clip->contentmask, &objTrace, v35);
                 } else {
-                    DObjTraceline(mDObj, &absmin, &absmax, clip->priorityMap, &objTrace, v35);
+                    DObjTraceline(mDObj, absmin, absmax, clip->priorityMap, &objTrace, v35);
                 }
                 if (objTrace.fraction >= clip->trace.fraction) {
                     clip->trace.allsolid |= objTrace.allsolid;
@@ -446,15 +443,11 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                     if (!AeAssert::IsIgnored() && AeAssert::Assert("%f", objTrace.fraction))
                         __debugbreak();
                 }
-                math::Position3 localHit;
-                localHit.v.m128_f32[0] = objTrace.localHit[0];
-                localHit.v.m128_f32[1] = objTrace.localHit[1];
-                localHit.v.m128_f32[2] = objTrace.localHit[2];
                 float normal[3];
                 normal[0] = objTrace.normal[0];
                 normal[1] = objTrace.normal[1];
                 normal[2] = objTrace.normal[2];
-                MatrixTransformVector(localHit.v.m128_f32, (const float(*)[3])v29, normal);
+                MatrixTransformVector(normal, (const float(*)[3])v29, normal);
                 math::Position3 endpos;
                 endpos.v = _mm_add_ps(clip->start.v,
                                       _mm_mul_ps(_mm_sub_ps(clip->end.v, clip->start.v),

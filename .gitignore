@@ -43,3 +43,4 @@ tmp_gds.txt
 *.i64
 # IDA-generated type exports (reference only)
 c3_bin/*.xbe.h
+c3_bin/*.xbe.c

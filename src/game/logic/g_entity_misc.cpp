@@ -1721,12 +1721,7 @@ bool IsLocalPlayer(Entity* entity)
 }
 
 // XModelManager / DestructibleBankManager / PhysDataBankManager accessors
-IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
-{
-    (void)pak_id; (void)name;
-    IVPointer<XModel> r = {};
-    return r;
-}
+// XModelManager::GetXModel defined in tr_aeps2.cpp (render.o canonical)
 IVPointer<Destructible> DestructibleBankManager::GetDestructible(
     TPakId pak_id, const char* name)
 {
@@ -2431,13 +2426,6 @@ void DObjDisplayAnim3D(int a, DObj* obj, float* const b, int c)
 }
 void DObjDumpInfo(DObj* obj) { (void)obj; }
 void DObjFree(void* obj, int a) { (void)obj; (void)a; }
-struct DObjTrace_s;
-void DObjGeomTraceline(const DObj* obj, const math::Position3* a,
-                       const math::Position3* b, int c, DObjTrace_s* d,
-                       float e)
-{
-    (void)obj; (void)a; (void)b; (void)c; (void)d; (void)e;
-}
 void DObjGetBounds(const DObj* obj, math::Position3& a, math::Position3& b)
 {
     (void)obj; (void)a; (void)b;
@@ -2445,12 +2433,6 @@ void DObjGetBounds(const DObj* obj, math::Position3& a, math::Position3& b)
 void DObjGetHierarchyBits(DObj* obj, int a, int* b)
 {
     (void)obj; (void)a; (void)b;
-}
-void DObjTraceline(const DObj* obj, const math::Position3* a,
-                   const math::Position3* b, unsigned char* c, DObjTrace_s* d,
-                   float e)
-{
-    (void)obj; (void)a; (void)b; (void)c; (void)d; (void)e;
 }
 void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
 void DObjUpdateLod(Entity* e) { (void)e; }
