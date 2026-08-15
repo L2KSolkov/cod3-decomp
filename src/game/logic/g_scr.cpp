@@ -3061,6 +3061,22 @@ void MPScript_AreaCaptured(int netID, unsigned int team,
 void MPScript_EnterGame();  // 0x5C10E0
 bool MPScript_PositionWouldTelefrag(const Broc::vector& position);  // 0x5C1160
 int MPScript_SpawnButtonPressed(unsigned int clientIdx);  // 0x5C11D0
+void MPScript_DebugRenderText(const char* text, int x, int y);  // 0x5C1220
+void MPScript_DebugRenderBox(const Broc::vector& min,
+                             const Broc::vector& max,
+                             const Broc::vector& color,
+                             float alpha);  // 0x5C1270
+void MPScript_DebugRenderSphere(const Broc::vector& point, float radius,
+                                const Broc::vector& color,
+                                float alpha);  // 0x5C1330
+int  IsMenuOpen(const Broc::string& str, int viewport);  // 0x5C1430
+int  OpenMenu(const Broc::string& str, int viewport);  // 0x5C14C0
+int  OpenMenuNoMouse(unsigned int i, const Broc::string& str);  // 0x5C15F0
+void CloseMenu2(const Broc::string& str, int viewport);  // 0x5C1640
+void CloseAllMenus(int viewport);  // 0x5C1730
+void SetSpectateState(int state, int viewport);  // 0x5C1750
+void SetSpectateSeconds(int seconds, int viewport);  // 0x5C1780
+void SetSpectateMedic(int medic, int viewport);  // 0x5C17B0
 }
 
 static void BrocFree(void* p)
@@ -8640,6 +8656,10 @@ public:
                      int* o_y);  // ?stick_value@controller@@QAEXHW4StickIndex@1@PAH1@Z
     int button_value(int i_controller_num,
                      ButtonIndex i_button);  // ?button_value@controller@@QAEHHW4ButtonIndex@1@@Z
+    bool button_pressed_clear(int index,
+                              ButtonIndex btn);  // controller.o
+    bool button_released_clear(int index,
+                               ButtonIndex btn);  // controller.o
 };
 
 extern int dword_F6A28C[4 * 802];  // 0xF6A28C (controller-port table)
@@ -8937,6 +8957,236 @@ int BrocSys::MPScript_SpawnButtonPressed(unsigned int clientIdx)
                v1, (controller::ButtonIndex)(controller::SQUARE
                                              | controller::DOWNBUTTON))
            > 128 ? 1 : 0;
+}
+
+// ============================================================================
+// scr.o batch 36 - MPScript debug-render + menu family
+// ============================================================================
+
+// SpectateMenu / PauseMenu (shell.o views)
+class SpectateMenu {
+public:
+    void UpdateState();          // ?UpdateState@SpectateMenu@@QAEXXZ
+    void UpdateSeconds();        // ?UpdateSeconds@SpectateMenu@@QAEXXZ
+    void SetMedic(bool medic);   // ?SetMedic@SpectateMenu@@QAEX_N@Z
+    void Clear();                // ?Clear@SpectateMenu@@QAEXXZ
+};
+class PauseMenu {
+public:
+    void UnPause();              // ?UnPause@PauseMenu@@QAEXXZ
+};
+
+// ea: 0x005C1220
+void BrocSys::MPScript_DebugRenderText(const char* text, int x, int y)
+{
+    Color col;
+    col.r = 1.0f;
+    col.g = 1.0f;
+    col.b = 1.0f;
+    col.a = 1.0f;
+    DebugRender::RenderText(text, x, y, col, 0.5f, 1.0f);
+}
+
+// ea: 0x005C1270
+void BrocSys::MPScript_DebugRenderBox(const Broc::vector& min,
+                                      const Broc::vector& max,
+                                      const Broc::vector& color,
+                                      float alpha)
+{
+    math::Position3 vMin;
+    vMin.v.m128_f32[0] = min.x;
+    vMin.v.m128_f32[1] = min.y;
+    vMin.v.m128_f32[2] = min.z;
+    vMin.v.m128_f32[3] = 0.0f;
+    math::Position3 vMax;
+    vMax.v.m128_f32[0] = max.x;
+    vMax.v.m128_f32[1] = max.y;
+    vMax.v.m128_f32[2] = max.z;
+    vMax.v.m128_f32[3] = 0.0f;
+    Color col;
+    col.r = color.x;
+    col.g = color.y;
+    col.b = color.z;
+    col.a = alpha;
+    DebugRender::RenderBox(vMin, vMax, col);
+}
+
+// ea: 0x005C1330
+void BrocSys::MPScript_DebugRenderSphere(const Broc::vector& point,
+                                         float radius,
+                                         const Broc::vector& color,
+                                         float alpha)
+{
+    math::Position3 vPoint;
+    vPoint.v.m128_f32[0] = point.x;
+    vPoint.v.m128_f32[1] = point.y;
+    vPoint.v.m128_f32[2] = point.z;
+    vPoint.v.m128_f32[3] = 0.0f;
+    Color col;
+    col.r = color.x;
+    col.g = color.y;
+    col.b = color.z;
+    col.a = alpha;
+    DebugRender::RenderSphere(vPoint, radius, col);
+}
+
+// ea: 0x005C1430
+int BrocSys::IsMenuOpen(const Broc::string& str, int viewport)
+{
+    const char* v2 = str.mBlock != nullptr
+                         ? (const char*)(str.mBlock + 1)
+                         : defaultFileName;
+    if (_stricmp(v2, "spectate") == 0)
+    {
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+        return IGMS->IsMenuActive(12);
+    }
+    const char* v5 = str.mBlock != nullptr
+                         ? (const char*)(str.mBlock + 1)
+                         : defaultFileName;
+    if (_stricmp(v5, defaultFileName) == 0)
+    {
+        InGameMenuSystem* v6 = g_femanager.GetIGMS(viewport);
+        return v6->IsMenuActive(-1);
+    }
+    return 0;
+}
+
+// ea: 0x005C14C0
+int BrocSys::OpenMenu(const Broc::string& str, int viewport)
+{
+    int v2 = dword_F6A28C[802 * viewport];
+    controller* v3 = controller::inst();
+    for (controller::ButtonIndex i = controller::LEFTBUTTON; i < (controller::ButtonIndex)16;
+         i = (controller::ButtonIndex)((int)i + 1))
+        v3->button_pressed_clear(v2, i);
+    int v5 = dword_F6A28C[802 * viewport];
+    controller* v6 = controller::inst();
+    for (controller::ButtonIndex j = controller::LEFTBUTTON;
+         j <= controller::SELECT;
+         j = (controller::ButtonIndex)((int)j + 1))
+        v6->button_released_clear(v5, j);
+    const char* v8 = str.mBlock != nullptr
+                         ? (const char*)(str.mBlock + 1)
+                         : defaultFileName;
+    if (_stricmp(v8, "weapon") == 0)
+    {
+        int v9 = viewport;
+        *(int*)((char*)g_femanager.GetIGMS(viewport)->menus[1] + 272) = 0;
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(v9);
+        IGMS->ActivateMenu(1);
+        return 0;
+    }
+    const char* v10 = str.mBlock != nullptr
+                          ? (const char*)(str.mBlock + 1)
+                          : defaultFileName;
+    if (_stricmp(v10, "side_select") == 0)
+    {
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+        IGMS->ActivateMenu(11);
+        return 0;
+    }
+    const char* v12 = str.mBlock != nullptr
+                          ? (const char*)(str.mBlock + 1)
+                          : defaultFileName;
+    if (_stricmp(v12, "spectate") == 0)
+    {
+        InGameMenuSystem* v13 = g_femanager.GetIGMS(viewport);
+        if (!v13->IsMenuActive(12))
+        {
+            InGameMenuSystem* v14 = g_femanager.GetIGMS(viewport);
+            ((SpectateMenu*)v14->menus[12])->Clear();
+            v14->ActivateMenu(12);
+        }
+    }
+    return 0;
+}
+
+// ea: 0x005C15F0
+int BrocSys::OpenMenuNoMouse(unsigned int i, const Broc::string& str)
+{
+    (void)i;
+    (void)str;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+    AeAssert::gCurrentLine = 1513;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("ma dead code"))
+        __debugbreak();
+    return 0;
+}
+
+// ea: 0x005C1640
+void BrocSys::CloseMenu2(const Broc::string& str, int viewport)
+{
+    const char* v2 = str.mBlock != nullptr
+                         ? (const char*)(str.mBlock + 1)
+                         : defaultFileName;
+    if (_stricmp(v2, "weapon") == 0)
+    {
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+        ((PauseMenu*)IGMS->menus[0])->UnPause();
+        return;
+    }
+    const char* v4 = str.mBlock != nullptr
+                         ? (const char*)(str.mBlock + 1)
+                         : defaultFileName;
+    if (_stricmp(v4, "side_select") == 0)
+    {
+        InGameMenuSystem* v5 = g_femanager.GetIGMS(viewport);
+        ((PauseMenu*)v5->menus[0])->UnPause();
+        return;
+    }
+    const char* v6 = str.mBlock != nullptr
+                         ? (const char*)(str.mBlock + 1)
+                         : defaultFileName;
+    if (_stricmp(v6, "spectate") == 0)
+    {
+        InGameMenuSystem* v7 = g_femanager.GetIGMS(viewport);
+        if (v7->IsMenuActive(12))
+        {
+            InGameMenuSystem* v8 = g_femanager.GetIGMS(viewport);
+            v8->MakeActive(-1);
+            InGameMenuSystem* v5 = g_femanager.GetIGMS(viewport);
+            ((PauseMenu*)v5->menus[0])->UnPause();
+            return;
+        }
+        InGameMenuSystem* v9 = g_femanager.GetIGMS(viewport);
+        v9->ClearReturnMenu(12);
+    }
+}
+
+// ea: 0x005C1730
+void BrocSys::CloseAllMenus(int viewport)
+{
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+    ((PauseMenu*)IGMS->menus[0])->UnPause();
+}
+
+// ea: 0x005C1750
+void BrocSys::SetSpectateState(int state, int viewport)
+{
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+    SpectateMenu* v2 = (SpectateMenu*)IGMS->menus[12];
+    *(int*)((char*)v2 + 76) = state;
+    v2->UpdateState();
+}
+
+// ea: 0x005C1780
+void BrocSys::SetSpectateSeconds(int seconds, int viewport)
+{
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+    SpectateMenu* v2 = (SpectateMenu*)IGMS->menus[12];
+    *(int*)((char*)v2 + 0x10) = seconds;  // mSeconds (+0x10 per IDA type)
+    v2->UpdateSeconds();
+}
+
+// ea: 0x005C17B0
+void BrocSys::SetSpectateMedic(int medic, int viewport)
+{
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+    ((SpectateMenu*)IGMS->menus[12])->SetMedic(medic != 0);
 }
 
 // ============================================================================

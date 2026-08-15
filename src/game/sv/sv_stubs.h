@@ -1321,7 +1321,8 @@ public:
 class FEMenuSystem {
 public:
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
-    uint8_t _pad[0x2A - 0x04];
+    void**  menus;                       // +0x04 (FEMenu** array)
+    uint8_t _pad[0x2A - 0x08];
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
     bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
@@ -1334,6 +1335,10 @@ public:
     void SetActiveMenu(int a2);   // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
     bool IsSystemActive();        // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
     int  GetActiveMenu();         // ?GetActiveMenu@InGameMenuSystem@@QAEHXZ (shell.o 0x571370)
+    void ActivateMenu(int menu);  // ?ActivateMenu@InGameMenuSystem@@QAEXH@Z (shell.o 0x572FD0)
+    virtual bool IsMenuActive(int menu);     // ?IsMenuActive@FEMenuSystem@@UAE_NH@Z (0x570BC0)
+    virtual void MakeActive(int index);      // ?MakeActive@FEMenuSystem@@UAEXH@Z (0x570B20)
+    virtual void ClearReturnMenu(int menu);  // ?ClearReturnMenu@FEMenuSystem@@UAEXH@Z (0x570BE0)
 };
 inline bool InGameMenuSystem::IsSystemActive()
 {
