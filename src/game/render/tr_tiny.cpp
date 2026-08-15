@@ -2997,7 +2997,7 @@ template bool InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned 
     FindIndex<char const*>(char const* const&, unsigned int*) const;
 
 // jqBatch
-class jqBatch {
+struct jqBatch {
 public:
     void* Input;                     // +0x00 (jqPtr<void>)
     void* Output;                    // +0x04
