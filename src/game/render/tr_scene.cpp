@@ -333,6 +333,7 @@ void nglListAddDirProjectorLight(unsigned int LightCat,
 
 extern math::Mat43 gProjShadowMat;     // ?gProjShadowMat@@3VMat43@math@@A @ 0xF755B0
 extern float gProjShadowSize;          // ?gProjShadowSize@@3MA @ 0xDFB144
+float gProjShadowAlpha = 0.0f;         // ?gProjShadowAlpha@@3MA (render.o @ 0x11EA640)
 extern float gProjShadowZTop;          // ?gProjShadowZTop@@3MA @ 0xDFB14C
 extern float gProjShadowZBottom;       // ?gProjShadowZBottom@@3MA @ 0xDFB150
 extern nglScene* gProjShadowScene;     // ?gProjShadowScene@@3PAUnglScene@@A @ 0xF74434

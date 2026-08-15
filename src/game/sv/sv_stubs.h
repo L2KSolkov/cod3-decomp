@@ -1290,6 +1290,8 @@ public:
     void ResetAllStaticModels();         // ?ResetAllStaticModels@SceneManager@@QAEXXZ
     void RestartPersistentArray();       // ?RestartPersistentArray@SceneManager@@QAEXXZ
     void InstanceEntities();             // ?InstanceEntities@SceneManager@@QAEXXZ
+    void EnableEffect(unsigned int hash);   // ?EnableEffect@SceneManager@@QAEXI@Z (game.o 0x60CBF0)
+    void DisableEffect(unsigned int hash);  // ?DisableEffect@SceneManager@@QAEXI@Z (game.o 0x60CB80)
 };
 
 #ifndef COD3_FULL_FE_TYPES

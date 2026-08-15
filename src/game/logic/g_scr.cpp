@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "core/PoolAllocator.h"
@@ -66,6 +67,14 @@ class AnimNotifyTask {
 public:
     static void RegisterFunc(const char* pKey, void (__cdecl* cbFunc)(Broc::entity));
     // ?RegisterFunc@AnimNotifyTask@@SAXPBDP6AXVentity@Broc@@@Z@Z
+};
+
+extern const char* nodeStringTable[0x13];  // ?nodeStringTable@@3PAPBDA (mp_actors.o @ 0xE37A20)
+extern float gProjShadowAlpha;             // ?gProjShadowAlpha@@3MA (render.o)
+
+struct IGOCompassWidget {
+    void SetHideCompassStar(int active, int index);  // ?SetHideCompassStar@IGOCompassWidget@@QAEXHH@Z
+    void SetHideUpdatedText(int active, int index);  // ?SetHideUpdatedText@IGOCompassWidget@@QAEXHH@Z
 };
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
@@ -682,6 +691,86 @@ unsigned int CreateNanoGraph(char* /*id*/, float* const /*param1*/,
 namespace BrocSys {
 
 bool allowOverLapping;  // ?allowOverLapping@BrocSys@@3_NA (scr.o @ 0x132A0F8)
+
+// ea: 0x005BC840
+float atoff(const char* s)
+{
+    return (float)atof(s);
+}
+
+// ea: 0x005BC9B0
+float CVarGetFloat(const char* cvarName)
+{
+    return Cvar_VariableValue(cvarName);
+}
+
+// ea: 0x005BECB0
+void SceneEffectEnable(unsigned int groupIdHash)
+{
+    SceneManager::sInst->EnableEffect(groupIdHash);
+}
+
+// ea: 0x005BECD0
+void SceneEffectDisable(unsigned int groupIdHash)
+{
+    SceneManager::sInst->DisableEffect(groupIdHash);
+}
+
+// ea: 0x005BF420 (disasm: write vec->y to pNode+0x58)
+void PathNode_SetAngles(PathNodes::PathNode* pNode, int /*offset*/,
+                        Broc::vector* vec)
+{
+    *(float*)((char*)pNode + 0x58) = vec->y;
+}
+
+// ea: 0x005BF4C0 (disasm: nodeStringTable[pNode+0x28] -> Broc::string)
+void PathNode_GetType(PathNodes::PathNode* pNode, int /*offset*/,
+                      Broc::string* s)
+{
+    *s = nodeStringTable[*(int*)((char*)pNode + 0x28)];
+}
+
+// ea: 0x005BF560
+void SentientScr_ConvertSentient(sentient_s* pSelf, int /*offset*/,
+                                 Broc::entity* pEnt)
+{
+    if (pSelf->pEnt != nullptr)
+        pEnt->___u0 = pSelf->pEnt->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005BF820
+void ObjectiveHideStar(unsigned int hideStar, unsigned int objectiveIndex)
+{
+    ((IGOCompassWidget*)g_femanager.IGO->compassWidget[0])
+        ->SetHideCompassStar(hideStar, objectiveIndex);
+}
+
+// ea: 0x005BF840
+void ObjectiveHideUpdatedText(unsigned int hideText,
+                              unsigned int objectiveIndex)
+{
+    ((IGOCompassWidget*)g_femanager.IGO->compassWidget[0])
+        ->SetHideUpdatedText(hideText, objectiveIndex);
+}
+
+// ea: 0x005BF890
+void SetHUDType(hud_type type, int viewport)
+{
+    g_femanager.IGO->SetHUDType(type, viewport);
+}
+
+// ea: 0x005BF920
+void SetTutorialTextAllPlayers(int hash)
+{
+    if (g_femanager.IGO != nullptr)
+        g_femanager.IGO->SetTutorialText(hash, 0);
+}
+
+// ea: 0x005BFB40
+void SetShadowIntensity(float i)
+{
+    gProjShadowAlpha = i;
+}
 
 // ea: 0x005BDB90 (thunk to CG_MotionBlur::End)
 void StopCurGenMotionBlur()
