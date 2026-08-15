@@ -269,8 +269,8 @@ void G_EntUnlink(Entity* ent)
     tagInfo_t* tagInfo = ent->tagInfo;
     if (tagInfo == nullptr)
         return;
-    G_SetOrigin(ent, &ent->r.currentOrigin);
-    G_SetAngle(ent, &ent->r.currentAngles);
+    G_SetOrigin(ent, ent->r.currentOrigin);
+    G_SetAngle(ent, ent->r.currentAngles);
     Entity* parent = tagInfo->parent;
     if (parent == nullptr)
     {

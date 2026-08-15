@@ -587,7 +587,7 @@ Entity* fire_rocket(Entity* self, float* start, float* dir, float lifetime)
     v6->r.currentOrigin.v.m128_f32[1] = start[1];
     v6->r.currentOrigin.v.m128_f32[2] = start[2];
     vectoangles(dir, v6->r.currentAngles.v.m128_f32);
-    G_SetAngle(v6, &v6->r.currentAngles);
+    G_SetAngle(v6, v6->r.currentAngles);
     ValidatePakId((TPakId)v6->mModel.mPakId);
     if (v6->mModel.mValue != nullptr)
     {
@@ -664,7 +664,7 @@ Entity* fire_mine(Entity* self, float* position, float* dir, int weapon)
     v6->s.apos.trTime = level.time;
     vectoangles(dir, v6->r.currentAngles.v.m128_f32);
     v6->r.currentAngles.v.m128_f32[0] += 90.0f;
-    G_SetAngle(v6, &v6->r.currentAngles);
+    G_SetAngle(v6, v6->r.currentAngles);
     if (IS_NAN(v6->r.currentOrigin.v.m128_f32[0])
         || IS_NAN(v6->r.currentOrigin.v.m128_f32[1])
         || IS_NAN(v6->r.currentOrigin.v.m128_f32[2]))
@@ -746,7 +746,7 @@ Entity* fire_artillery(Entity* i_Self, float* i_StrikePoint, int i_Delay)
     v7->r.currentOrigin.v.m128_f32[1] = i_StrikePoint[1];
     v7->r.currentOrigin.v.m128_f32[2] = i_StrikePoint[2];
     vectoangles(dir, v7->r.currentAngles.v.m128_f32);
-    G_SetAngle(v7, &v7->r.currentAngles);
+    G_SetAngle(v7, v7->r.currentAngles);
     if (InfoForWeapon->szProjectileModel[0] != 0)
     {
         ValidatePakId((TPakId)v7->mModel.mPakId);

@@ -2218,8 +2218,8 @@ void G_SpawnTurret(Entity* self, const char* weaponinfoname)
     self->r.maxs.v.m128_f32[0] = 32.0f;
     self->r.maxs.v.m128_f32[1] = 32.0f;
     self->r.maxs.v.m128_f32[2] = 56.0f;
-    G_SetOrigin(self, &self->r.currentOrigin);
-    G_SetAngle(self, &self->r.currentAngles);
+    G_SetOrigin(self, self->r.currentOrigin);
+    G_SetAngle(self, self->r.currentAngles);
     self->s.angles2.v.m128_f32[1] = 0.0f;
     self->s.angles2.v.m128_f32[0] = 0.0f;
     self->think = THINK__turret_think_init;

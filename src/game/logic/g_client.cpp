@@ -645,11 +645,11 @@ void G_FinishSetupSpawnPoint(Entity* pEnt, int msec)
                        (int)pEnt->r.currentOrigin.v.m128_f32[1],
                        (int)pEnt->r.currentOrigin.v.m128_f32[2]);
         }
-        G_SetOrigin(pEnt, (const math::Position3*)&trace.endpos);
+        G_SetOrigin(pEnt, trace.endpos);
     }
     else
     {
-        G_SetOrigin(pEnt, &pEnt->r.currentOrigin);
+        G_SetOrigin(pEnt, pEnt->r.currentOrigin);
     }
 }
 

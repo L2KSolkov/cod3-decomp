@@ -761,7 +761,7 @@ void G_ExplodeMissile(Entity* ent, int msec)
         {
             math::Position3 pos;
             BG_EvaluateTrajectory(&ent->s.pos, level.time, pos);
-            G_SetOrigin(ent, &pos);
+            G_SetOrigin(ent, pos);
         }
         j_nullsub_120(ent);
         int eFlags = ent->s.eFlags;
@@ -808,7 +808,7 @@ void G_ExplodeMissile(Entity* ent, int msec)
         origin.v.m128_f32[0] = v18;
         origin.v.m128_f32[1] = v19;
         origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
-        G_SetOrigin(ent, &origin);
+        G_SetOrigin(ent, origin);
         Entity::SetLerpOrigin(&ent->s, &origin);
         Entity* v21 = HandleDbToEnt(ent->r.mOwner);
         MultiplayerMgr::sInst->ProjectileExplosion(ent, ent->s.weapon, origin,
@@ -1212,7 +1212,7 @@ label_88:
                         ent->s.surfType = (surfaceFlags >> 20) & 0x1F;
                         ent->s.eType = 0;
                         ent->nextthink = level.time + 60000;
-                        G_SetOrigin(ent, &trace->endpos);
+                        G_SetOrigin(ent, trace->endpos);
                         Entity::SetLerpOrigin(&ent->s, &trace->endpos);
                         MultiplayerMgr::sInst->ProjectileExplosion(ent, ent->s.weapon,
                                                                    trace->endpos, trace->normal,

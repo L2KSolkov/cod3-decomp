@@ -4314,8 +4314,8 @@ void rb_vehicle::update_from_network(const math::Position3& position,
                                      const math::Dir3& vel,
                                      const math::Dir3& aVel)
 {
-    G_SetOrigin(m_owner, &position);
-    G_SetAngle(m_owner, &angles);
+    G_SetOrigin(m_owner, position);
+    G_SetAngle(m_owner, angles);
     m_owner->CalcRotTranMat43();
     rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
     if (m_chassis_rbinf != nullptr)
@@ -4397,8 +4397,8 @@ void rb_vehicle::update_from_scene_anim(const math::Position3& position,
                                         const math::Position3& angles,
                                         const math::Dir3& vel)
 {
-    G_SetOrigin(m_owner, &position);
-    G_SetAngle(m_owner, &angles);
+    G_SetOrigin(m_owner, position);
+    G_SetAngle(m_owner, angles);
     m_owner->CalcRotTranMat43();
     rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
     if (m_chassis_rbinf != nullptr)

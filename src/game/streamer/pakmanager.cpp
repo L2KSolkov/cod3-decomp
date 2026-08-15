@@ -133,8 +133,8 @@ extern int currCl;  // ?currCl@@3HA (platform_xbox/XboxLiveMenus.cpp)
 
 extern int dword_F6A290[4 * 0x322];  // Xbox dev/retail flag array @ 0xF6A290 (defined in effect_events.cpp)
 extern int R_CellForPoint(const math::Position3* pos);  // render.o (g_entity_misc.cpp)
-extern void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o (g_active.cpp)
-extern void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o (g_active.cpp)
+extern void G_SetOrigin(Entity* ent, const math::Position3& origin);  // g.o (g_active.cpp)
+extern void G_SetAngle(Entity* ent, const math::Position3& angle);    // g.o (g_active.cpp)
 extern unsigned short G_NewString(const char* str);  // g.o (g_utils.cpp)
 extern const float VectorNormalize(math::Dir3& v);  // core.o (q_math.cpp)
 extern unsigned char bulletPriorityMap[];     // g.o (g_game2_misc.cpp)
@@ -4276,8 +4276,8 @@ void SceneManager::InstanceEntities()
         Entity* player = EntityManager::sInst->mPlayers[0];
         if (player != nullptr && dword_F6A290[0] == 2)
         {
-            G_SetOrigin(player, &pos);
-            G_SetAngle(player, &angles);
+            G_SetOrigin(player, pos);
+            G_SetAngle(player, angles);
         }
     }
 }
@@ -5119,8 +5119,8 @@ void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
         G_FreeEntity(v32, 0);
         goto ProcessEntity_Done;
     }
-    G_SetOrigin(v32, &v32->r.currentOrigin);
-    G_SetAngle(v32, &v32->r.currentAngles);
+    G_SetOrigin(v32, v32->r.currentOrigin);
+    G_SetAngle(v32, v32->r.currentAngles);
     BrocInitEntity(
         v32,
         (const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*)

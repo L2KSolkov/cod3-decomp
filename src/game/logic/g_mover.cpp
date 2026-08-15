@@ -2548,7 +2548,7 @@ void SP_func_door(Entity* ent)
     v1->pos1.v.m128_f32[1] = v1->r.currentOrigin.v.m128_f32[1];
     v1->pos1.v.m128_f32[2] = v1->r.currentOrigin.v.m128_f32[2];
     SV_SetBrushModel(v1);
-    G_SetMovedir(&v1->r.currentAngles, &v1->movedir);
+    G_SetMovedir(v1->r.currentAngles, v1->movedir);
     float abs_movedir = (float)fabs(v1->movedir.v.m128_f32[0]);
     float v10 = (float)fabs(v1->movedir.v.m128_f32[1]);
     float v11 = (float)fabs(v1->movedir.v.m128_f32[2]);
@@ -2629,8 +2629,8 @@ void G_RunMover(Entity* ent, int msec)
     if (ent->scripted != nullptr)
     {
         G_Animscripted_Think(ent);
-        G_SetOrigin(ent, &ent->r.currentOrigin);
-        G_SetAngle(ent, &ent->r.currentAngles);
+        G_SetOrigin(ent, ent->r.currentOrigin);
+        G_SetAngle(ent, ent->r.currentAngles);
         g_LinkEntity(ent);
         if (ent->scripted != nullptr)
         {

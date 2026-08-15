@@ -378,13 +378,13 @@ void Entity::operator delete(void* ptr)
 // ea: 0x00458730
 void SP_info_notnull(Entity* self)
 {
-    G_SetOrigin(self, &self->r.currentOrigin);
+    G_SetOrigin(self, self->r.currentOrigin);
 }
 
 // ea: 0x00458750
 void SP_info_notnull_big(Entity* self)
 {
-    G_SetOrigin(self, &self->r.currentOrigin);
+    G_SetOrigin(self, self->r.currentOrigin);
 }
 
 // ea: 0x004587A0

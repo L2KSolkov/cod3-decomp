@@ -224,7 +224,7 @@ void G_SpawnItem(Entity* ent, const gitem_s* item)
     v2->use = 8;
     if (level.spawning != 0)
     {
-        G_SetAngle(v2, &v2->r.currentAngles);
+        G_SetAngle(v2, v2->r.currentAngles);
         v2->nextthink = level.time + 200;
         v2->think = THINK__FinishSpawningItem;
     }
@@ -236,8 +236,8 @@ void G_SpawnItem(Entity* ent, const gitem_s* item)
             if (v3->giType == IT_WEAPON)
                 v2->r.currentAngles.v.m128_f32[2] += 90.0f;
         }
-        G_SetAngle(v2, &v2->r.currentAngles);
-        G_SetOrigin(v2, &v2->r.currentOrigin);
+        G_SetAngle(v2, v2->r.currentAngles);
+        G_SetOrigin(v2, v2->r.currentOrigin);
         g_LinkEntity(v2);
     }
 }
@@ -462,7 +462,7 @@ Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex, const char* pszTag)
             yaw = pEnt->r.currentAngles.v.m128_f32[2];
         }
         angles[2] = yaw + 90.0f;
-        G_SetAngle(pDrop, &pEnt->r.currentAngles);
+        G_SetAngle(pDrop, pEnt->r.currentAngles);
         pDrop->s.apos.trType = TR_LINEAR;
         pDrop->s.apos.trTime = level.time;
         pDrop->s.apos.trDelta[0] = ((rand() * 0.000061035156f) - 1.0f) * 50.0f;
@@ -815,7 +815,7 @@ clip_stage:
             vPos[1] = ent->r.currentOrigin.v.m128_f32[1];
             vPos[2] = ent->r.currentOrigin.v.m128_f32[2];
             G_SetOrigin(pDropped, vPos);
-            G_SetAngle(pDropped, &ent->r.currentAngles);
+            G_SetAngle(pDropped, ent->r.currentAngles);
             g_LinkEntity(pDropped);
             if (iWeap != 0)
             {
@@ -1331,7 +1331,7 @@ void G_BounceItem(Entity* ent, trace_t* trace)
     }
     else if (ent->s.eType == 13)
     {
-        G_SetOrigin(ent, &trace->endpos);
+        G_SetOrigin(ent, trace->endpos);
         ent->s.mGroundEntity.mHandle.mVal = trace->mEntity.mHandle.mVal;
         j_nullsub_74(ent, 0);
         g_LinkEntity(ent);
@@ -1339,7 +1339,7 @@ void G_BounceItem(Entity* ent, trace_t* trace)
     else
     {
         trace->endpos.v.m128_f32[2] = ((float)rand() * 0.000015258789f) + 0.5f + trace->endpos.v.m128_f32[2];
-        G_SetOrigin(ent, &trace->endpos);
+        G_SetOrigin(ent, trace->endpos);
         ent->s.mGroundEntity.mHandle.mVal = trace->mEntity.mHandle.mVal;
         float normal[3];
         normal[0] = trace->normal.v.m128_f32[0];
@@ -1470,7 +1470,7 @@ void FinishSpawningItem(Entity* ent, int msec)
             if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
                 __debugbreak();
         }
-        G_SetOrigin(ent, &ent->r.currentOrigin);
+        G_SetOrigin(ent, ent->r.currentOrigin);
         g_LinkEntity(ent);
         return;
     }
@@ -1519,7 +1519,7 @@ void FinishSpawningItem(Entity* ent, int msec)
     if (placed)
     {
         ent->s.mGroundEntity = trace.mEntity;
-        G_SetOrigin(ent, &trace.endpos);
+        G_SetOrigin(ent, trace.endpos);
         if (trace.fraction < 1.0f)
         {
             float fwd[3];

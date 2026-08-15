@@ -1136,10 +1136,10 @@ void       G_EntUnlink(Entity* ent);
 // g_active.cpp / g_spawn.cpp helpers (defined within g.o)
 // ============================================================================
 void G_SetOrigin(Entity* ent, const float* origin);
-void G_SetOrigin(Entity* ent, const math::Position3* origin);
+void G_SetOrigin(Entity* ent, const math::Position3& origin);
 void G_SetAngle(Entity* ent, const float* angle);
-void G_SetAngle(Entity* ent, const math::Position3* angle);
-void G_SetMovedir(math::Position3* angles, math::Position3* movedir);
+void G_SetAngle(Entity* ent, const math::Position3& angle);
+void G_SetMovedir(math::Position3& angles, math::Position3& movedir);
 void g_LinkEntity(Entity* ent);
 void g_UnlinkEntity(Entity* ent);
 void G_FreeEntity(Entity* e, int msec);

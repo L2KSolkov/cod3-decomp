@@ -231,7 +231,7 @@ void InitTrigger(Entity* self)
         || self->r.currentAngles.v.m128_f32[1] != 0.0f
         || self->r.currentAngles.v.m128_f32[2] != 0.0f)
     {
-        G_SetMovedir(&self->r.currentAngles, &self->movedir);
+        G_SetMovedir(self->r.currentAngles, self->movedir);
     }
     SV_SetBrushModel(self);
     self->s.eFlags |= 2;

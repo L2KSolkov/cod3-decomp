@@ -107,9 +107,9 @@ void G_SetOrigin(Entity* ent, const float* origin)
 }
 
 // ea: 0x004545B0
-void G_SetOrigin(Entity* ent, const math::Position3* origin)
+void G_SetOrigin(Entity* ent, const math::Position3& origin)
 {
-    if (IS_NAN(origin->v.m128_f32[0]) || IS_NAN(origin->v.m128_f32[1]) || IS_NAN(origin->v.m128_f32[2]))
+    if (IS_NAN(origin.v.m128_f32[0]) || IS_NAN(origin.v.m128_f32[1]) || IS_NAN(origin.v.m128_f32[2]))
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
@@ -118,7 +118,7 @@ void G_SetOrigin(Entity* ent, const math::Position3* origin)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
             __debugbreak();
     }
-    memcpy(ent->s.pos.trBase, origin, sizeof(ent->s.pos.trBase));
+    memcpy(ent->s.pos.trBase, &origin, sizeof(ent->s.pos.trBase));
     ent->s.pos.trType = TR_STATIONARY;
     ent->s.pos.trTime = 0;
     ent->s.pos.trDuration = 0;
@@ -135,9 +135,9 @@ void G_SetOrigin(Entity* ent, const math::Position3* origin)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
             __debugbreak();
     }
-    ent->r.currentOrigin.v.m128_f32[0] = origin->v.m128_f32[0];
-    ent->r.currentOrigin.v.m128_f32[1] = origin->v.m128_f32[1];
-    ent->r.currentOrigin.v.m128_f32[2] = origin->v.m128_f32[2];
+    ent->r.currentOrigin.v.m128_f32[0] = origin.v.m128_f32[0];
+    ent->r.currentOrigin.v.m128_f32[1] = origin.v.m128_f32[1];
+    ent->r.currentOrigin.v.m128_f32[2] = origin.v.m128_f32[2];
 }
 
 // ea: 0x00454720
@@ -177,9 +177,9 @@ void G_SetAngle(Entity* ent, const float* angle)
 }
 
 // ea: 0x00454890
-void G_SetAngle(Entity* ent, const math::Position3* angle)
+void G_SetAngle(Entity* ent, const math::Position3& angle)
 {
-    memcpy(ent->s.apos.trBase, angle, sizeof(ent->s.apos.trBase));
+    memcpy(ent->s.apos.trBase, &angle, sizeof(ent->s.apos.trBase));
     ent->s.apos.trType = TR_STATIONARY;
     ent->s.apos.trTime = 0;
     ent->s.apos.trDuration = 0;
@@ -196,7 +196,7 @@ void G_SetAngle(Entity* ent, const math::Position3* angle)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
             __debugbreak();
     }
-    if (IS_NAN(angle->v.m128_f32[0]) || IS_NAN(angle->v.m128_f32[1]) || IS_NAN(angle->v.m128_f32[2]))
+    if (IS_NAN(angle.v.m128_f32[0]) || IS_NAN(angle.v.m128_f32[1]) || IS_NAN(angle.v.m128_f32[2]))
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
@@ -205,39 +205,39 @@ void G_SetAngle(Entity* ent, const math::Position3* angle)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
             __debugbreak();
     }
-    ent->r.currentAngles.v.m128_f32[0] = angle->v.m128_f32[0];
-    ent->r.currentAngles.v.m128_f32[1] = angle->v.m128_f32[1];
-    ent->r.currentAngles.v.m128_f32[2] = angle->v.m128_f32[2];
+    ent->r.currentAngles.v.m128_f32[0] = angle.v.m128_f32[0];
+    ent->r.currentAngles.v.m128_f32[1] = angle.v.m128_f32[1];
+    ent->r.currentAngles.v.m128_f32[2] = angle.v.m128_f32[2];
 }
 
 // ea: 0x00460410
-void G_SetMovedir(math::Position3* angles, math::Position3* movedir)
+void G_SetMovedir(math::Position3& angles, math::Position3& movedir)
 {
-    if (angles->v.m128_f32[0] == VEC_UP[0]
-        && angles->v.m128_f32[1] == VEC_UP[1]
-        && angles->v.m128_f32[2] == VEC_UP[2])
+    if (angles.v.m128_f32[0] == VEC_UP[0]
+        && angles.v.m128_f32[1] == VEC_UP[1]
+        && angles.v.m128_f32[2] == VEC_UP[2])
     {
-        memcpy(movedir, MOVEDIR_UP, 12);
+        memcpy(&movedir, MOVEDIR_UP, 12);
     }
-    else if (angles->v.m128_f32[0] == VEC_DOWN[0]
-             && angles->v.m128_f32[1] == VEC_DOWN[1]
-             && angles->v.m128_f32[2] == VEC_DOWN[2])
+    else if (angles.v.m128_f32[0] == VEC_DOWN[0]
+             && angles.v.m128_f32[1] == VEC_DOWN[1]
+             && angles.v.m128_f32[2] == VEC_DOWN[2])
     {
-        memcpy(movedir, MOVEDIR_DOWN, 12);
+        memcpy(&movedir, MOVEDIR_DOWN, 12);
     }
     else
     {
         float tmp[3];
-        tmp[0] = movedir->v.m128_f32[0];
-        tmp[1] = movedir->v.m128_f32[1];
-        tmp[2] = movedir->v.m128_f32[2];
-        AnglesToForward(angles->v.m128_f32, tmp);
-        movedir->v.m128_f32[0] = tmp[0];
-        movedir->v.m128_f32[1] = tmp[1];
-        movedir->v.m128_f32[2] = tmp[2];
+        tmp[0] = movedir.v.m128_f32[0];
+        tmp[1] = movedir.v.m128_f32[1];
+        tmp[2] = movedir.v.m128_f32[2];
+        AnglesToForward(angles.v.m128_f32, tmp);
+        movedir.v.m128_f32[0] = tmp[0];
+        movedir.v.m128_f32[1] = tmp[1];
+        movedir.v.m128_f32[2] = tmp[2];
     }
-    angles->v.m128_f32[1] = 0.0f;
-    angles->v.m128_f32[0] = 0.0f;
+    angles.v.m128_f32[1] = 0.0f;
+    angles.v.m128_f32[0] = 0.0f;
 }
 
 // ea: 0x00460540

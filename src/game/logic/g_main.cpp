@@ -1674,8 +1674,8 @@ void G_GeneralLink(Entity* ent)
             __debugbreak();
     }
     G_SetFixedLink(ent, 0);
-    G_SetOrigin(ent, &ent->r.currentOrigin);
-    G_SetAngle(ent, &ent->r.currentAngles);
+    G_SetOrigin(ent, ent->r.currentOrigin);
+    G_SetAngle(ent, ent->r.currentAngles);
     memcpy(ent->s.pos.trDelta, &ent->r.currentOrigin, sizeof(ent->s.pos.trDelta));
     memcpy(ent->s.apos.trDelta, &ent->r.currentAngles, sizeof(ent->s.apos.trDelta));
     ent->s.pos.trType = TR_INTERPOLATE;
@@ -1910,7 +1910,7 @@ void G_LinkClient(Entity* ent)
                 v4 = 1;
             v1->ps.pm_type = v4;
             G_SetFixedLink(ent, 0);
-            G_SetOrigin(ent, &ent->r.currentOrigin);
+            G_SetOrigin(ent, ent->r.currentOrigin);
             ent->s.pos.trType = TR_INTERPOLATE;
             ent->s.apos.trType = TR_INTERPOLATE;
             g_LinkEntity(ent);

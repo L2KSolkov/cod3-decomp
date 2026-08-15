@@ -1534,8 +1534,8 @@ void VEH_SetPosition(Entity* ent, const math::Position3* origin,
         Entity* v7 = HandleDbToEnt(scr_vehicle->mIdleSndEnt);
         if (v7 != nullptr)
         {
-            G_SetOrigin(v7, origin);
-            G_SetAngle(v7, angles);
+            G_SetOrigin(v7, *origin);
+            G_SetAngle(v7, *angles);
             v7->s.pos.trType = TR_INTERPOLATE;
             v7->s.apos.trType = TR_INTERPOLATE;
             g_LinkEntity(v7);
@@ -1543,8 +1543,8 @@ void VEH_SetPosition(Entity* ent, const math::Position3* origin,
         Entity* v9 = HandleDbToEnt(scr_vehicle->mEngineSndEnt);
         if (v9 != nullptr)
         {
-            G_SetOrigin(v9, origin);
-            G_SetAngle(v9, angles);
+            G_SetOrigin(v9, *origin);
+            G_SetAngle(v9, *angles);
             v9->s.pos.trType = TR_INTERPOLATE;
             v9->s.apos.trType = TR_INTERPOLATE;
             g_LinkEntity(v9);

@@ -1014,10 +1014,10 @@ int G_BounceMissile(Entity* ent, trace_t* trace)
                     + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1]
                     + ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0]) < 20.0f)
         {
-            G_SetOrigin(ent, &ent->r.currentOrigin);
+            G_SetOrigin(ent, ent->r.currentOrigin);
             math::Position3 vAngles;
             G_MissileLandAngles(ent, trace, &vAngles, 1);
-            G_SetAngle(ent, &vAngles);
+            G_SetAngle(ent, vAngles);
             return 0;
         }
     }
