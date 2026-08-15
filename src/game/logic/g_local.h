@@ -936,9 +936,11 @@ struct hash_const_t {
     HashString fireSpecial;             // +0x138 (78)
     uint8_t    _pad13C[0x144 - 0x13C];
     HashString rotatedone;         // +0x144
-    uint8_t    _pad148[0x150 - 0x148];
+    uint8_t    _pad148[0x14C - 0x148];
+    HashString script_brushmodel;  // +0x14C (83)
     HashString script_model;       // +0x150
-    uint8_t    _pad154[0x204 - 0x154];
+    HashString script_origin;      // +0x154 (85)
+    uint8_t    _pad158[0x204 - 0x158];
     HashString touch;              // +0x204 (81)
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C

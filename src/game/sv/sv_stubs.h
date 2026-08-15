@@ -1323,6 +1323,7 @@ class InGameMenuSystem : public FEMenuSystem {
 public:
     void SetActiveMenu(int a2);   // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
     bool IsSystemActive();        // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
+    int  GetActiveMenu();         // ?GetActiveMenu@InGameMenuSystem@@QAEHXZ (shell.o 0x571370)
 };
 inline bool InGameMenuSystem::IsSystemActive()
 {

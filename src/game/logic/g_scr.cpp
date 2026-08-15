@@ -2730,6 +2730,41 @@ unsigned int ThreadNotifyInternal(const char* file, int line, const char* func,
                                   unsigned int ehandle, unsigned int notifyEnt,
                                   unsigned int notify,
                                   AeThreadFunctor* functor);  // 0x5DB540
+void Mover_SetupMove(trajectory_t* pTr, const math::Position3& vPos,
+                     float fTotalTime, float fAccelTime, float fDecelTime,
+                     math::Position3& vCurrPos, float* pfSpeed,
+                     float* pfMidTime, float* pfDecelTime,
+                     math::Position3& vPos1, math::Position3& vPos2,
+                     math::Position3& vPos3);  // 0x5BFBF0
+void Mover_Move(Entity* pEnt, const math::Position3& vPos, float fTotalTime,
+                float fAccelTime, float fDecelTime);  // 0x5C08B0
+void Mover_Rotate(Entity* pEnt, const math::Position3& vRot,
+                  float fTotalTime, float fAccelTime,
+                  float fDecelTime);  // 0x5C0A30
+void MoveAxis(unsigned int entityHandleVal, int iAxis, float fMove,
+              float fTotalTime, float fAccelTime, float fDecelTime);  // 0x5D3180
+void RotateAxis(unsigned int entityHandleVal, int iAxis, float fMove,
+                float fTotalTime, float fAccelTime,
+                float fDecelTime);  // 0x5D3270
+void MoveX(unsigned int entityHandleVal, float fMove, float fTotalTime,
+           float fAccelTime, float fDecelTime);  // 0x5D34D0
+void MoveY(unsigned int entityHandleVal, float fMove, float fTotalTime,
+           float fAccelTime, float fDecelTime);  // 0x5D3500
+void MoveZ(unsigned int entityHandleVal, float fMove, float fTotalTime,
+           float fAccelTime, float fDecelTime);  // 0x5D3530
+void RotatePitch(unsigned int entityHandleVal, float fMove, float fTotalTime,
+                 float fAccelTime, float fDecelTime);  // 0x5D3980
+void RotateYaw(unsigned int entityHandleVal, float fMove, float fTotalTime,
+               float fAccelTime, float fDecelTime);  // 0x5D39B0
+void RotateRoll(unsigned int entityHandleVal, float fMove, float fTotalTime,
+                float fAccelTime, float fDecelTime);  // 0x5D39E0
+void SetShowTime(float time);  // 0x5BC5B0
+int  ActiveMenu();             // 0x5BC660
+bool Error(const char* file, int line, const char* msg);  // 0x5BC930
+void Scr_ReadOnlyField(Entity* ent, int offset, void* val);  // 0x5BE7D0
+void SentientScr_ReadOnly(sentient_s* pSelf, int offset, void* val);  // 0x5BF4E0
+void MPScript_GetWeaponName(unsigned int weaponIndex,
+                            Broc::string& weapon);  // 0x5C1120
 }
 
 static void BrocFree(void* p)
@@ -3818,6 +3853,425 @@ unsigned int BrocSys::ThreadNotifyInternal(const char* file, int line,
     v8->mStateControllers.m_tail = p_node;
     AeThreadManager::sInst.AddThread(v8);
     return 0;
+}
+
+// ============================================================================
+// scr.o batch 16 - mover cluster + misc wrappers
+// ============================================================================
+
+extern unsigned int AeHash(const char* str);  // ae_hash.cpp (core_xboxr)
+
+// ea: 0x005BFBF0
+void BrocSys::Mover_SetupMove(trajectory_t* pTr, const math::Position3& vPos,
+                              float fTotalTime, float fAccelTime,
+                              float fDecelTime, math::Position3& vCurrPos,
+                              float* pfSpeed, float* pfMidTime,
+                              float* pfDecelTime, math::Position3& vPos1,
+                              math::Position3& vPos2, math::Position3& vPos3)
+{
+    bool stationary = pTr->trType == TR_STATIONARY;
+    float vMove = vPos.v.m128_f32[0] - vCurrPos.v.m128_f32[0];
+    float v35 = vPos.v.m128_f32[1] - vCurrPos.v.m128_f32[1];
+    float v36 = vPos.v.m128_f32[2] - vCurrPos.v.m128_f32[2];
+    if (!stationary)
+        BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+    if (fAccelTime == 0.0f && fDecelTime == 0.0f)
+    {
+        pTr->trTime = level.time;
+        pTr->trDuration = (int)(fTotalTime * 1000.0f);
+        *pfMidTime = fTotalTime;
+        *pfDecelTime = 0.0f;
+        vPos3.v.m128_f32[0] = vPos.v.m128_f32[0];
+        vPos3.v.m128_f32[1] = vPos.v.m128_f32[1];
+        vPos3.v.m128_f32[2] = vPos.v.m128_f32[2];
+        pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+        pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+        pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+        if (pTr->trDuration == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+            AeAssert::gCurrentLine = 76;
+            AeAssert::gCurrentExpr = "pTr->trDuration";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        float v15 = 1000.0f / pTr->trDuration;
+        float v16 = v15 * vMove;
+        pTr->trDelta[0] = v15 * vMove;
+        pTr->trDelta[1] = v15 * v35;
+        pTr->trDelta[2] = v15 * v36;
+        if (IS_NAN(v16) || IS_NAN(pTr->trDelta[1])
+            || IS_NAN(pTr->trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+            AeAssert::gCurrentLine = 79;
+            AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        pTr->trType = TR_LINEAR_STOP;
+        BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+    }
+    else
+    {
+        float v19 = v36 * v36 + v35 * v35 + vMove * vMove;
+        *pfMidTime = (fTotalTime - fAccelTime) - fDecelTime;
+        *pfDecelTime = fDecelTime;
+        float fDist = sqrtf(v19);
+        if (((fTotalTime * 2.0f) - fAccelTime) - fDecelTime == 0.0f)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+            AeAssert::gCurrentLine = 91;
+            AeAssert::gCurrentExpr =
+                "(2.0f * fTotalTime) - fAccelTime - fDecelTime";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        *pfSpeed = (fDist * 2.0f)
+                   / (((fTotalTime * 2.0f) - fAccelTime) - fDecelTime);
+        float unit[3];
+        VectorNormalize2((const float*)&vMove, unit);
+        float v20 = *pfSpeed * unit[0];
+        float v21 = *pfSpeed * unit[1];
+        float v22 = *pfSpeed * unit[2];
+        if (fAccelTime == 0.0f)
+        {
+            vPos1.v.m128_f32[0] = vCurrPos.v.m128_f32[0];
+            vPos1.v.m128_f32[1] = vCurrPos.v.m128_f32[1];
+            vPos1.v.m128_f32[2] = vCurrPos.v.m128_f32[2];
+            if (*pfMidTime == 0.0f)
+            {
+                float v30 = v20;
+                pTr->trTime = level.time;
+                pTr->trDuration = (int)(*pfDecelTime * 1000.0f);
+                pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+                pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+                pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+                pTr->trDelta[0] = v20;
+                pTr->trDelta[1] = v21;
+                pTr->trDelta[2] = v22;
+                if (IS_NAN(v30) || IS_NAN(pTr->trDelta[1])
+                    || IS_NAN(pTr->trDelta[2]))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 134;
+                    AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                pTr->trType = TR_DECCELERATE;
+            }
+            else
+            {
+                pTr->trTime = level.time;
+                pTr->trDuration = (int)(*pfMidTime * 1000.0f);
+                pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+                pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+                pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+                int v25 = pTr->trDuration;
+                float v26 = *pfMidTime * v20;
+                float v27 = *pfMidTime * v21;
+                float v28 = *pfMidTime * v22;
+                if (v25 == 0)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 120;
+                    AeAssert::gCurrentExpr = "pTr->trDuration";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                float v29 = 1000.0f / pTr->trDuration;
+                pTr->trDelta[0] = v29 * v26;
+                pTr->trDelta[1] = v29 * v27;
+                pTr->trDelta[2] = v29 * v28;
+                if (IS_NAN(v29 * v26) || IS_NAN(pTr->trDelta[1])
+                    || IS_NAN(pTr->trDelta[2]))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 123;
+                    AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                pTr->trType = TR_LINEAR_STOP;
+            }
+        }
+        else
+        {
+            pTr->trTime = level.time;
+            pTr->trDuration = (int)(fAccelTime * 1000.0f);
+            pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+            pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+            pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+            pTr->trDelta[0] = v20;
+            pTr->trDelta[1] = v21;
+            pTr->trDelta[2] = v22;
+            if (IS_NAN(v20) || IS_NAN(pTr->trDelta[1])
+                || IS_NAN(pTr->trDelta[2]))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                AeAssert::gCurrentLine = 103;
+                AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid vector"))
+                    __debugbreak();
+            }
+            int v24 = pTr->trDuration;
+            pTr->trType = TR_ACCELERATE;
+            BG_EvaluateTrajectory(pTr, level.time + v24, vPos1);
+        }
+        vPos2.v.m128_f32[0] = (*pfMidTime * v20) + vPos1.v.m128_f32[0];
+        vPos2.v.m128_f32[1] = (*pfMidTime * v21) + vPos1.v.m128_f32[1];
+        vPos2.v.m128_f32[2] = (*pfMidTime * v22) + vPos1.v.m128_f32[2];
+        vPos3.v.m128_f32[0] = vPos.v.m128_f32[0];
+        vPos3.v.m128_f32[1] = vPos.v.m128_f32[1];
+        vPos3.v.m128_f32[2] = vPos.v.m128_f32[2];
+        BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+    }
+}
+
+// ea: 0x005C08B0
+void BrocSys::Mover_Move(Entity* pEnt, const math::Position3& vPos,
+                         float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    BrocSys::Mover_SetupMove(&pEnt->s.pos, vPos, fTotalTime, fAccelTime,
+                             fDecelTime, pEnt->r.currentOrigin, &pEnt->speed,
+                             &pEnt->wait, &pEnt->delay, pEnt->pos1,
+                             pEnt->pos2, pEnt->pos3);
+    g_LinkEntity(pEnt);
+}
+
+// ea: 0x005C0A30
+void BrocSys::Mover_Rotate(Entity* pEnt, const math::Position3& vRot,
+                           float fTotalTime, float fAccelTime,
+                           float fDecelTime)
+{
+    BrocSys::Mover_SetupMove(&pEnt->s.apos, vRot, fTotalTime, fAccelTime,
+                             fDecelTime, pEnt->r.currentAngles,
+                             &pEnt->closespeed, &pEnt->angle, &pEnt->random,
+                             pEnt->movedir, pEnt->rotate, pEnt->TargetAngles);
+    g_LinkEntity(pEnt);
+}
+
+// ea: 0x005D3180
+void BrocSys::MoveAxis(unsigned int entityHandleVal, int iAxis, float fMove,
+                       float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    if (v7 < 0x540
+        && entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v7].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+        if (mObject != nullptr)
+        {
+            unsigned int mHash = mObject->mClassNameHash.mHash;
+            if (mHash == hash_const.script_brushmodel.mHash
+                || mHash == hash_const.script_model.mHash
+                || mHash == hash_const.script_origin.mHash)
+            {
+                if ((mObject->flags & 0x10) == 0)
+                {
+                    math::Position3 v11;
+                    v11.v.m128_f32[0] =
+                        mObject->r.currentOrigin.v.m128_f32[0];
+                    v11.v.m128_f32[1] =
+                        mObject->r.currentOrigin.v.m128_f32[1];
+                    v11.v.m128_f32[2] =
+                        mObject->r.currentOrigin.v.m128_f32[2];
+                    v11.v.m128_f32[iAxis] =
+                        v11.v.m128_f32[iAxis] + fMove;
+                    BrocSys::Mover_Move(mObject, v11, fTotalTime, fAccelTime,
+                                        fDecelTime);
+                }
+            }
+            else
+            {
+                Scr_Error(va("entity is not a script_brushmodel, script_model, or script_origin"));
+            }
+        }
+    }
+}
+
+// ea: 0x005D3270
+void BrocSys::RotateAxis(unsigned int entityHandleVal, int iAxis, float fMove,
+                         float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    if (v7 < 0x540
+        && entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v7].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+        if (mObject != nullptr)
+        {
+            unsigned int mHash = mObject->mClassNameHash.mHash;
+            if (mHash == hash_const.script_brushmodel.mHash
+                || mHash == hash_const.script_model.mHash
+                || mHash == hash_const.script_origin.mHash)
+            {
+                if ((mObject->flags & 0x10) == 0)
+                {
+                    math::Position3 v11;
+                    v11.v.m128_f32[0] =
+                        mObject->r.currentAngles.v.m128_f32[0];
+                    v11.v.m128_f32[1] =
+                        mObject->r.currentAngles.v.m128_f32[1];
+                    v11.v.m128_f32[2] =
+                        mObject->r.currentAngles.v.m128_f32[2];
+                    v11.v.m128_f32[iAxis] =
+                        v11.v.m128_f32[iAxis] + fMove;
+                    BrocSys::Mover_Rotate(mObject, v11, fTotalTime, fAccelTime,
+                                          fDecelTime);
+                }
+            }
+            else
+            {
+                Scr_Error(va("entity is not a script_brushmodel, script_model, or script_origin"));
+            }
+        }
+    }
+}
+
+// ea: 0x005D34D0
+void BrocSys::MoveX(unsigned int entityHandleVal, float fMove,
+                    float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    BrocSys::MoveAxis(entityHandleVal, 0, fMove, fTotalTime, fAccelTime,
+                      fDecelTime);
+}
+
+// ea: 0x005D3500
+void BrocSys::MoveY(unsigned int entityHandleVal, float fMove,
+                    float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    BrocSys::MoveAxis(entityHandleVal, 1, fMove, fTotalTime, fAccelTime,
+                      fDecelTime);
+}
+
+// ea: 0x005D3530
+void BrocSys::MoveZ(unsigned int entityHandleVal, float fMove,
+                    float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    BrocSys::MoveAxis(entityHandleVal, 2, fMove, fTotalTime, fAccelTime,
+                      fDecelTime);
+}
+
+// ea: 0x005D3980
+void BrocSys::RotatePitch(unsigned int entityHandleVal, float fMove,
+                          float fTotalTime, float fAccelTime,
+                          float fDecelTime)
+{
+    BrocSys::RotateAxis(entityHandleVal, 0, fMove, fTotalTime, fAccelTime,
+                        fDecelTime);
+}
+
+// ea: 0x005D39B0
+void BrocSys::RotateYaw(unsigned int entityHandleVal, float fMove,
+                        float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    BrocSys::RotateAxis(entityHandleVal, 1, fMove, fTotalTime, fAccelTime,
+                        fDecelTime);
+}
+
+// ea: 0x005D39E0
+void BrocSys::RotateRoll(unsigned int entityHandleVal, float fMove,
+                         float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    BrocSys::RotateAxis(entityHandleVal, 2, fMove, fTotalTime, fAccelTime,
+                        fDecelTime);
+}
+
+// ea: 0x005BC5B0
+void BrocSys::SetShowTime(float time)
+{
+    cgGlobal.gameTime = time;
+    cgGlobal.gameTimeStartTime = (float)cgGlobal.time;
+}
+
+// ea: 0x005BC660
+int BrocSys::ActiveMenu()
+{
+    InGameMenuSystem* v0 = g_femanager.mIGMS[currCl];
+    if (v0 == nullptr || !v0->IsSystemActive())
+        return -1;
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(currCl);
+    return IGMS->GetActiveMenu();
+}
+
+// ea: 0x005BC930
+bool BrocSys::Error(const char* file, int line, const char* msg)
+{
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = file;
+    AeAssert::gCurrentLine = line;
+    AeAssert::gCurrentExpr = defaultFileName;
+    return AeAssert::Error(msg);
+}
+
+// ea: 0x005BE7D0
+void BrocSys::Scr_ReadOnlyField(Entity* /*ent*/, int /*offset*/, void* /*val*/)
+{
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 543;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("This field is read-only!"))
+        __debugbreak();
+}
+
+// ea: 0x005BF4E0
+void BrocSys::SentientScr_ReadOnly(sentient_s* /*pSelf*/, int /*offset*/,
+                                   void* /*val*/)
+{
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5598;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Sentient field is read only!"))
+        __debugbreak();
+}
+
+// ea: 0x005C1120
+void BrocSys::MPScript_GetWeaponName(unsigned int weaponIndex,
+                                     Broc::string& weapon)
+{
+    weaponFileInfo_t* InfoForWeapon =
+        weaponIndex != 0 ? BG_GetInfoForWeapon((int)weaponIndex) : nullptr;
+    if (InfoForWeapon != nullptr)
+        weapon = InfoForWeapon->szInternalName;
+    else
+        weapon = "none";
+}
+
+// ea: 0x005C1880
+void ObjectiveUpdatedNotify()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        HashString v1;
+        v1.mHash = AeHash("ObjectiveUpdated");
+        Player->Notify(v1);
+    }
 }
 
 // ea: 0x005C1F40
