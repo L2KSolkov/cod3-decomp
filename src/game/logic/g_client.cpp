@@ -1092,7 +1092,7 @@ char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
     case 7:
         return (char*)GetFollowPlayerState((int)arg0, arg1);
     case 8:
-        G_LoadLevel();
+        G_LoadLevel(0);
         return nullptr;
     case 9:
         G_CheckLoadGame((int)arg0, 0);
@@ -1334,15 +1334,14 @@ void Player_UpdateCursorHints(Entity* ent)
                         {
                             if (v13->scr_vehicle->CanMantleVehicle(ent))
                             {
-                                if (G_IsVehicleUsable(v13, ent, true) != nullptr)
+                                if (G_IsVehicleUsable(v13, ent, true) != 0)
                                 {
                                     hintType = 6;
                                     hintString =
                                         v13->scr_vehicle->GetMantleHintStringIndex();
                                 }
                             }
-                            else if (G_IsVehicleUsable(v13, ent, true)
-                                     != nullptr)
+                            else if (G_IsVehicleUsable(v13, ent, true) != 0)
                             {
                                 int mVehicleEntryPoint =
                                     ent->client->mVehicleEntryPoint;

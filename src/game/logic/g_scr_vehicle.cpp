@@ -2041,7 +2041,7 @@ void Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int /*damage*/,
 }
 
 // ea: 0x00480880
-Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck)
+int G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck)
 {
     Client* result = player->client;
     if (result != nullptr)
@@ -2052,7 +2052,7 @@ Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck)
             || HandleDbToEnt(player->r.mOwner) != nullptr
             || ent->scr_vehicle->noEntryTime + 200 > level.time)
         {
-            return nullptr;
+            return 0;
         }
         vehicle_info_t* VehicleInfo = G_GetVehicleInfo(ent);
         scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
@@ -2065,11 +2065,11 @@ Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck)
             && (ent->r.contents & 0x200000) != 0
             && (!speedCheck || (ent->speed <= 100.0f && ent->health > 0)))
         {
-            return result;
+            return 1;
         }
-        return nullptr;
+        return 0;
     }
-    return result;
+    return 0;
 }
 
 // ea: 0x0044F010
@@ -6423,7 +6423,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
         G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, &context);
     }
     if (g_vehicleDebug.integer != 0)
-        VEH_DebugBox(&veh->phys.origin, 4.0f, 1.0f, 1.0f, 0.0f);
+        VEH_DebugBox(veh->phys.origin, 4.0f, 1.0f, 1.0f, 0.0f);
     veh->barrelBlocked = 0;
     if (pSelf->active == 2 && HandleDbToEnt(pSelf->r.mOwner) != nullptr)
         VEH_UpdateWeapon(pSelf);
@@ -6547,7 +6547,7 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
     vel[1] = veh->phys.vel.v.m128_f32[1];
     vel[2] = veh->phys.vel.v.m128_f32[2];
     if (sqrtf(vel[0] * vel[0] + vel[1] * vel[1] + vel[2] * vel[2]) < 1.0f
-        && G_TestEntityPosition(pOther, &pOther->r.currentOrigin) == nullptr)
+        && G_TestEntityPosition(pOther, pOther->r.currentOrigin) == nullptr)
         return;
     float delta[3];
     delta[0] = veh->phys.origin.v.m128_f32[0] - veh->phys.prevOrigin.v.m128_f32[0];
@@ -6821,7 +6821,7 @@ void VEH_UpdatePath(Entity* ent, int msec)
             math::Position3 tmp;
             tmp = native_to_cdl_pos3(scr_vehicle->pathPos.lookPos);
             const math::Position3* pos = &tmp;
-            VEH_DebugBox(pos, 8.0f, 0.0f, 1.0f, 1.0f);
+            VEH_DebugBox(*pos, 8.0f, 0.0f, 1.0f, 1.0f);
         }
         float invMsec = 1.0f / (msec * 0.001f);
         scr_vehicle->phys.vel.v.m128_f32[0] =
@@ -6964,15 +6964,15 @@ void VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex)
 }
 
 // ea: 0x0045C3A0
-void VEH_DebugBox(const math::Position3* pos, float width, float r, float g, float b)
+void VEH_DebugBox(const math::Position3& pos, float width, float r, float g, float b)
 {
     float color[4] = {1.0f,
-                      pos->v.m128_f32[0] + width * 0.5f,
-                      pos->v.m128_f32[1] + width * 0.5f,
-                      pos->v.m128_f32[2] + width * 0.5f};
-    float mins[3] = {pos->v.m128_f32[0] - width * 0.5f,
-                     pos->v.m128_f32[1] - width * 0.5f,
-                     pos->v.m128_f32[2] - width * 0.5f};
+                      pos.v.m128_f32[0] + width * 0.5f,
+                      pos.v.m128_f32[1] + width * 0.5f,
+                      pos.v.m128_f32[2] + width * 0.5f};
+    float mins[3] = {pos.v.m128_f32[0] - width * 0.5f,
+                     pos.v.m128_f32[1] - width * 0.5f,
+                     pos.v.m128_f32[2] - width * 0.5f};
     float boxColor[3] = {r, g, b};
     G_DebugBox(&color[1], mins, boxColor, 1, 0, 0);
 }

@@ -1874,23 +1874,23 @@ void G_ReduceOriginError(float* origin, float* originError, float frametime)
 }
 
 // ea: 0x00456FE0
-void G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration)
+void G_DebugAxis(const math::Mat43& mat, unsigned int length, int duration)
 {
-    float start[4] = { mat->w.v.m128_f32[0], mat->w.v.m128_f32[1],
-                       mat->w.v.m128_f32[2], mat->w.v.m128_f32[3] };
+    float start[4] = { mat.w.v.m128_f32[0], mat.w.v.m128_f32[1],
+                       mat.w.v.m128_f32[2], mat.w.v.m128_f32[3] };
     float len = (float)length;
     float end[3];
-    end[0] = start[0] + mat->x.v.m128_f32[0] * len;
-    end[1] = start[1] + mat->x.v.m128_f32[1] * len;
-    end[2] = start[2] + mat->x.v.m128_f32[2] * len;
+    end[0] = start[0] + mat.x.v.m128_f32[0] * len;
+    end[1] = start[1] + mat.x.v.m128_f32[1] * len;
+    end[2] = start[2] + mat.x.v.m128_f32[2] * len;
     CL_AddDebugLine(start, end, colorRed, 1, duration, 1, 0);
-    end[0] = start[0] + mat->y.v.m128_f32[0] * len;
-    end[1] = start[1] + mat->y.v.m128_f32[1] * len;
-    end[2] = start[2] + mat->y.v.m128_f32[2] * len;
+    end[0] = start[0] + mat.y.v.m128_f32[0] * len;
+    end[1] = start[1] + mat.y.v.m128_f32[1] * len;
+    end[2] = start[2] + mat.y.v.m128_f32[2] * len;
     CL_AddDebugLine(start, end, colorGreen, 1, duration, 1, 0);
-    end[0] = start[0] + mat->z.v.m128_f32[0] * len;
-    end[1] = start[1] + mat->z.v.m128_f32[1] * len;
-    end[2] = start[2] + mat->z.v.m128_f32[2] * len;
+    end[0] = start[0] + mat.z.v.m128_f32[0] * len;
+    end[1] = start[1] + mat.z.v.m128_f32[1] * len;
+    end[2] = start[2] + mat.z.v.m128_f32[2] * len;
     CL_AddDebugLine(start, end, colorBlue, 1, duration, 1, 0);
 }
 
@@ -2093,7 +2093,7 @@ Entity* SelectRandomDeathmatchSpawnPoint(void)
     for (int i = 0; i < entList.m_size; ++i)
     {
         Entity* spot = entList.m_elements[i];
-        if (!SpotWouldTelefrag(&spot->r.currentOrigin))
+        if (!SpotWouldTelefrag(spot->r.currentOrigin))
             spotList.m_elements[spotList.m_size++] = spot;
     }
     if (spotList.m_size == 0)
@@ -2194,7 +2194,7 @@ Entity* SelectInitialSpawnPoint(float* origin, float* angles)
         if ((v2->spawnflags & 1) != 0)
             break;
     }
-    if (v2 == nullptr || SpotWouldTelefrag(&v2->r.currentOrigin))
+    if (v2 == nullptr || SpotWouldTelefrag(v2->r.currentOrigin))
         return SelectSpawnPoint(vec3_origin, origin, angles);
     origin[0] = v2->r.currentOrigin.v.m128_f32[0];
     origin[1] = v2->r.currentOrigin.v.m128_f32[1];
@@ -2258,7 +2258,7 @@ void DebugDumpEnts(int /*a1*/, Entity* e)
 }
 
 // ea: 0x00468D00
-void G_LoadLevel(void)
+void G_LoadLevel(int /*unused*/)
 {
     level.initializing = 1;
     level.loading = 0;
@@ -2352,16 +2352,16 @@ void G_ShutdownGame(int restart)
 }
 
 // ea: 0x00466E00
-bool SpotWouldTelefrag(const math::Position3* origin)
+bool SpotWouldTelefrag(const math::Position3& origin)
 {
     math::Position3 mins;
     math::Position3 maxs;
-    mins.v.m128_f32[0] = playerMins.v.m128_f32[0] + origin->v.m128_f32[0];
-    mins.v.m128_f32[1] = playerMins.v.m128_f32[1] + origin->v.m128_f32[1];
-    mins.v.m128_f32[2] = playerMins.v.m128_f32[2] + origin->v.m128_f32[2];
-    maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0] + origin->v.m128_f32[0];
-    maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1] + origin->v.m128_f32[1];
-    maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2] + origin->v.m128_f32[2];
+    mins.v.m128_f32[0] = playerMins.v.m128_f32[0] + origin.v.m128_f32[0];
+    mins.v.m128_f32[1] = playerMins.v.m128_f32[1] + origin.v.m128_f32[1];
+    mins.v.m128_f32[2] = playerMins.v.m128_f32[2] + origin.v.m128_f32[2];
+    maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0] + origin.v.m128_f32[0];
+    maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1] + origin.v.m128_f32[1];
+    maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2] + origin.v.m128_f32[2];
     DbLinkedHandle<EntityHandleDb, Entity> entityList[256];
     int num = CM_AreaEntities(mins, maxs, entityList, 256, 33555025);
     for (int v3 = 0; v3 < num; ++v3)
@@ -3127,10 +3127,10 @@ char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity)
 }
 
 // ea: 0x004698C0
-Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin)
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3& origin)
 {
-    if (IS_NAN(origin->v.m128_f32[0]) || IS_NAN(origin->v.m128_f32[1])
-        || IS_NAN(origin->v.m128_f32[2]))
+    if (IS_NAN(origin.v.m128_f32[0]) || IS_NAN(origin.v.m128_f32[1])
+        || IS_NAN(origin.v.m128_f32[2]))
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_mover.cpp";
@@ -3165,13 +3165,13 @@ Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin)
         mVal = 0;
     }
     math::Position3 end;
-    end.v.m128_f32[0] = origin->v.m128_f32[0];
-    end.v.m128_f32[1] = origin->v.m128_f32[1];
-    end.v.m128_f32[2] = origin->v.m128_f32[2] + 16.0f;
+    end.v.m128_f32[0] = origin.v.m128_f32[0];
+    end.v.m128_f32[1] = origin.v.m128_f32[1];
+    end.v.m128_f32[2] = origin.v.m128_f32[2] + 16.0f;
     collision_context_t context(DbLinkedHandle<EntityHandleDb, Entity>(), (int)clipmask);
     trace_t tr;
     memset(&tr, 0, sizeof(tr));
-    SV_Trace(&tr, origin, &ent->r.mins, &ent->r.maxs, &end, &context,
+    SV_Trace(&tr, &origin, &ent->r.mins, &ent->r.maxs, &end, &context,
              capsule, 0, nullptr, 0, 0.0f);
     if (tr.mEntity.mHandle.mVal == 0)
         return nullptr;

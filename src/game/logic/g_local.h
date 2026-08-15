@@ -2238,7 +2238,7 @@ void __fastcall Sentient_InvalidateNearestNode(sentient_s* pSelf);
 int  G_TryPushingEntity(Entity* check, Entity* pusher,
                         const math::Position3& move, const math::Position3& amove);
 bool push_entity(Entity* ent, Entity* vehicle);  // g.o 0x463A20
-Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin);
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3& origin);
 int  G_MoverPush(Entity* pusher, const float* move, const float* amove);
 
 // g_combat.cpp (unported; declared for g_mover callers)
@@ -2554,7 +2554,7 @@ void    VEH_UpdateSounds(Entity* ent, int msec);   // g.o 0x46D560
 void    VEH_Strcpy(unsigned char* pMember, const char* pKeyValue, int);  // g.o 0x44D350
 void    ParseVehicleConfigString(const char* name, const ConfigString* cfgstr);  // g.o 0x44EC90
 void    ParseVehiclePhysicsConfigString(const char* name, const ConfigString* cfgstr);  // g.o 0x463730
-void    VEH_DebugBox(const math::Position3* pos, float width, float r,
+void    VEH_DebugBox(const math::Position3& pos, float width, float r,
                      float g, float b);             // g.o 0x45C3A0
 extern int g_renderPFXStats;                        // game2.o
 extern int sEntryPointSeatAssociation[4];           // g.o
@@ -2726,7 +2726,7 @@ void  G_RunFrameForEntity(Entity* ent, int msec);   // g.o
 void  VEH_JoltBody(Entity* ent, const math::Position3& dir, float intensity,
                    float speedFrac, float decel);   // g.o
 void  CalcMuzzlePoint(Entity* ent, math::Position3& muzzlePoint);  // g.o 0x4534F0
-void  G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration);  // g.o 0x456FE0
+void  G_DebugAxis(const math::Mat43& mat, unsigned int length, int duration);  // g.o 0x456FE0
 void  G_LinkClient(Entity* ent);                 // g.o 0x483480
 void  Spotting(Entity* ent);                     // g.o 0x472130
 void  G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o 0x47BB40
@@ -2734,7 +2734,7 @@ void  G_VehicleClientThink(int msec);            // g.o 0x46DF60
 bool  ValidForGametype(void);                    // g.o 0x4507D0
 void  render_aabb(const math::Position3& bmin, const math::Position3& bmax,
                   const Color& color);           // g.o 0x46A290
-Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck);  // g.o 0x480880
+int    G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck);  // g.o 0x480880
 int16_t G_GetVehicleInfoIndex(const char* name); // g.o 0x44F010
 extern int s_clientThink;                        // g.o
 extern int lastGunnerCrouchMsg;                  // g.o
@@ -3241,10 +3241,10 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                     math::Position3& outcenter);  // g.o 0x46B3C0
 void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
-void  G_LoadLevel(void);                           // g.o 0x468D00
+void  G_LoadLevel(int unused);                     // g.o 0x468D00
 void  ClientCommand(DbLinkedHandle<EntityHandleDb, Entity> ent);  // g.o 0x4678C0
 void  G_ShutdownGame(int restart);                 // g.o 0x457FE0
-bool  SpotWouldTelefrag(const math::Position3* origin);  // g.o 0x466E00
+bool  SpotWouldTelefrag(const math::Position3& origin);  // g.o 0x466E00
 void  G_AddLean(Entity* ent, float* point);        // g.o 0x44A050
 void  AddLeanToPosition(float* const vPosition, float fViewYaw,
                         float fLeanFrac, float fViewRoll,
@@ -3432,7 +3432,7 @@ inline int Client_GetPushed(Entity* pSelf, Entity* pOther)
 }
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o (redecl)
 char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x4673B0
-Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin);  // g.o 0x4698C0
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3& origin);  // g.o 0x4698C0
 Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType, weaponParms* wp);  // g.o 0x4816E0
 void  StopFollowing(Entity* ent);                // g.o 0x456160
 void  Spread_Fire_Fake(Entity* attacker, float gunPitch, float gunYaw,
