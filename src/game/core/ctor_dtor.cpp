@@ -129,6 +129,37 @@ EntityNotify::~EntityNotify()
     mParam = nullptr;
 }
 
+// WaitTilOutput memory ops / dtor (g.o 0x4A5810-0x4A5980)
+PoolAllocator* WaitTilOutput::sAllocator;
+void* WaitTilOutput::operator new(size_t size, bool forceHeapAlloc,
+                                  const char* /*file*/, int /*line*/)
+{
+    return WaitTilOutput::sAllocator->Allocate((unsigned int)size,
+                                               forceHeapAlloc);
+}
+void* WaitTilOutput::operator new(size_t size)
+{
+    return WaitTilOutput::sAllocator->Allocate((unsigned int)size, false);
+}
+void WaitTilOutput::operator delete(void* ptr, bool /*forceHeapAlloc*/,
+                                    const char* /*file*/, int /*line*/)
+{
+    WaitTilOutput::sAllocator->Release(ptr);
+}
+void WaitTilOutput::operator delete(void* ptr)
+{
+    WaitTilOutput::sAllocator->Release(ptr);
+}
+WaitTilOutput::~WaitTilOutput()
+{
+}
+
+// Force emission of WaitTilOutput scalar deleting destructor (??_G)
+void force_emit_wait_delete(WaitTilOutput* p)
+{
+    delete p;
+}
+
 // ea: 0x004C1D80
 EntityNotifySet::EntityNotifySet(Entity* e)
 {

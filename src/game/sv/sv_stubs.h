@@ -1513,7 +1513,7 @@ public:
 struct XModel {
     uint8_t      _pad0[0x20];  // +0x00
     XModelParts* parts;        // +0x20
-    XModelLod**  lod;          // +0x24
+    XModelLod*   lod[5];       // +0x24
     uint8_t      _pad28[0x38 - 0x28];
     InplaceVector<struct XModelCollSurf const*> collSurfs;  // +0x38
     uint8_t      _pad3C[0x40 - 0x3C];
@@ -1524,6 +1524,8 @@ struct XModel {
     InplaceString name;        // +0x48
     unsigned int iflFrames;    // +0x4C (Bitmask<unsigned int>)
     const char* GetName() const;  // ?GetName@XModel@@QBEPBDXZ
+    XModelParts* GetXModelParts(int lodIndex);        // ?GetXModelParts@XModel@@QAEPAVXModelParts@@H@Z
+    const XModelParts* GetXModelParts(int lodIndex) const;  // ?GetXModelParts@XModel@@QBEPBVXModelParts@@H@Z
     static int GetNumBones(XModel* model, int lodIndex);
 };
 

@@ -786,6 +786,13 @@ public:
     virtual ~WaitTilOutput();
     void* dListNodeFiller1;  // +0x04
     void* dListNodeFiller2;  // +0x08
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);  // ??2WaitTilOutput@@SAPAXI_NPBDH@Z
+    static void* operator new(size_t size);  // ??2WaitTilOutput@@SAPAXI@Z
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);  // ??3WaitTilOutput@@SAXPAX_NPBDH@Z
+    static void operator delete(void* ptr);  // ??3WaitTilOutput@@SAXPAX@Z
+    static PoolAllocator* sAllocator;  // ?sAllocator@WaitTilOutput@@0PAVPoolAllocator@@A
 };
 static_assert(sizeof(WaitTilOutput) == 0xC, "WaitTilOutput size mismatch");
 

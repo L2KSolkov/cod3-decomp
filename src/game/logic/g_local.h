@@ -376,8 +376,9 @@ struct scr_vehicle_t {
     void  AssignPhysics(Entity* player);      // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
     int   GetEntryRoute(int seatIdx, int entryIdx, bool hasFlag);  // ?GetEntryRoute@scr_vehicle_t@@QAEHHH_N@Z
     int   GetEntryHintStringIndex(Entity* vehicle, unsigned int entryPosition);  // ?GetEntryHintStringIndex@scr_vehicle_t@@QAEHPAVEntity@@I@Z
-    void  CollisionDamage(Entity* ent, const math::Position3* pos,
-                          const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
+    void  CollisionDamage(Entity* ent, const math::Position3& pos,
+                          const math::Position3& dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
+    float GetAverageWheelSpeed();  // ?GetAverageWheelSpeed@scr_vehicle_t@@QAEMXZ (g.o 0x46F4F0)
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
     void  DebugRender();                      // ?DebugRender@scr_vehicle_t@@QAEXXZ
     void  UpdateAnimRoute(Entity* ent, Entity* player);  // ?UpdateAnimRoute@scr_vehicle_t@@QAEXPAVEntity@@0@Z
@@ -3672,7 +3673,7 @@ void  Cmd_TextureMip_f(void);                                  // g.o 0x44ABD0
 void  SP_sd_axis(Entity* ent);                                 // g.o 0x4499E0
 void  G_FreeScrVehicleInfo(void);                              // g.o 0x44EFD0
 void  G_FreeScrVehicles(void);                                 // g.o 0x45E240
-int   G_FreeVehiclePaths(void);                                // g.o 0x4523F0
+void  G_FreeVehiclePaths(void);                                // g.o 0x4523F0
 bool  IsVehicleTank(Entity* ent);                              // g.o 0x44D320
 bool  Is4WheeledVehicle(Entity* ent);                          // g.o 0x44D2F0
 void  UpdatePaths(Entity* ent);                                // g.o 0x44C7E0

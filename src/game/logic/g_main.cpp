@@ -2751,35 +2751,6 @@ void Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
     }
 }
 
-// ea: 0x0046F4F0
-float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh)
-{
-    rb_vehicle* mRBVeh = (rb_vehicle*)veh->mRBVeh;
-    if (mRBVeh != nullptr)
-    {
-        float total = 0.0f;
-        int count = 0;
-        for (int i = 0; i < 6; ++i)
-        {
-            rigid_body_constraint_wheel* v = mRBVeh->m_wheels[i];
-            if (v != nullptr && (v->m_wheel_flags & 0x10) != 0)
-            {
-                total += v->m_wheel_vel;
-                ++count;
-            }
-        }
-        if (count > 0)
-            return total / count;
-    }
-    else
-    {
-        Entity* mObject = HandleDbToEnt(veh->mEntity);
-        if (mObject != nullptr)
-            return (mObject->speed * 0.1f) / 1.0f;
-    }
-    return 0.0f;
-}
-
 // ea: 0x00449A30
 void SetClientOrigin(Entity* ent, const float* origin)
 {

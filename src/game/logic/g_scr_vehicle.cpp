@@ -1384,23 +1384,20 @@ void G_FreeScrVehicles(void)
 }
 
 // ea: 0x004523F0
-int G_FreeVehiclePaths(void)
+void G_FreeVehiclePaths(void)
 {
-    int result = s_numNodes;
     int v1 = 0;
     if (s_numNodes > 0)
     {
-        result = 0;
         do
         {
-            vehicle_node_t* v2 = s_nodes[result];
+            vehicle_node_t* v2 = s_nodes[v1];
             v2->mName.clear();
             v2->mTarget.clear();
-            result = ++v1;
+            ++v1;
         } while (v1 < s_numNodes);
     }
     s_numNodes = 0;
-    return result;
 }
 
 // ea: 0x0046F300
@@ -1412,15 +1409,6 @@ bool scr_vehicle_t::IsPhysicsPaused()
     Entity* mObject = HandleDbToEnt(
         *(DbLinkedHandle<EntityHandleDb, Entity>*)((char*)this + 0x1E0));  // seats[0].occupant
     return mObject == nullptr;
-}
-
-// ea: 0x004890C0
-void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3* pos,
-                                    const math::Position3* dir, float intensity)
-{
-    float damage = *(float*)((char*)s_vehicleInfos[infoIdx] + 0x68) * intensity;
-    G_Damage(ent, nullptr, nullptr, dir->v.m128_f32, pos->v.m128_f32,
-             (int)damage, 32, 27, HITLOC_NONE, -1);
 }
 
 // ea: 0x0044FB30

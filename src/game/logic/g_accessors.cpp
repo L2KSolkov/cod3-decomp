@@ -118,6 +118,70 @@ void force_emit_task_vec_dtor(Task* p)
     delete[] p;
 }
 
+// ============================================================================
+// XModel::GetXModelParts (g.o 0x4A5170 / 0x4A51D0)
+// ============================================================================
+XModelParts* XModel::GetXModelParts(int lodIndex)
+{
+    if (lodIndex >= 0)
+        return lod[lodIndex]->xmodelParts;
+    int v3 = 0;
+    if (lod[0] != nullptr)
+        return lod[0]->xmodelParts;
+    do
+    {
+        ++v3;
+    } while (lod[v3] == nullptr);
+    return lod[v3]->xmodelParts;
+}
+const XModelParts* XModel::GetXModelParts(int lodIndex) const
+{
+    if (lodIndex >= 0)
+        return lod[lodIndex]->xmodelParts;
+    int v3 = 0;
+    if (lod[0] != nullptr)
+        return lod[0]->xmodelParts;
+    do
+    {
+        ++v3;
+    } while (lod[v3] == nullptr);
+    return lod[v3]->xmodelParts;
+}
+
+// ============================================================================
+// scr_vehicle_t CollisionDamage / GetAverageWheelSpeed (g.o)
+// ============================================================================
+void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3& pos,
+                                    const math::Position3& dir,
+                                    float intensity)
+{
+    G_Damage(ent, nullptr, nullptr, dir.v.m128_f32, pos.v.m128_f32,
+             (int)(s_vehicleInfos[this->infoIdx]->collisionDamage * intensity),
+             32, 27, HITLOC_NONE, -1);
+}
+
+float scr_vehicle_t::GetAverageWheelSpeed()
+{
+    rb_vehicle* mRBVeh = (rb_vehicle*)this->mRBVeh;
+    float m_wheel_vel = 0.0f;
+    int totalWheels = 0;
+    if (mRBVeh != nullptr)
+    {
+        for (int i = 0; i < 6; ++i)
+        {
+            rigid_body_constraint_wheel* w = mRBVeh->m_wheels[i];
+            if (w != nullptr && (w->m_wheel_flags & 0x10) != 0)
+            {
+                m_wheel_vel += w->m_wheel_vel;
+                ++totalWheels;
+            }
+        }
+        if (totalWheels > 0)
+            return m_wheel_vel / (float)totalWheels;
+    }
+    return 0.0f;
+}
+
 float cos(float x) { return (float)cos((double)x); }
 float fabs(float x) { return (float)fabs((double)x); }
 float pow(float x, float y) { return (float)pow((double)x, (double)y); }
