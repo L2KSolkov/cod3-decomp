@@ -22,11 +22,35 @@ extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z 
 namespace ShaderCommon {
 extern bool gGlowGodRays;  // ?gGlowGodRays@ShaderCommon@@3_NA
 extern int  gGlowPasses;   // ?gGlowPasses@ShaderCommon@@3HA
+extern float gGlowIntensity;  // ?gGlowIntensity@ShaderCommon@@3MA
+extern float gGlowExpansion;  // ?gGlowExpansion@ShaderCommon@@3MA
 }
 
 namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
 }
+
+extern void __fastcall Sentient_SetGoalRadius(sentient_s* pSelf, float fRadius);  // ?Sentient_SetGoalRadius@@YIXPAUsentient_s@@M@Z
+extern void __fastcall Sentient_SetGoalAngleTolerance(sentient_s* pSelf, float fTolerance);  // ?Sentient_SetGoalAngleTolerance@@YIXPAUsentient_s@@M@Z
+extern bool g_controllerConnectedErrorShown[4];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
+
+// MusicMgr view (game.o; class lives in g_entity_misc.cpp)
+class MusicMgr {
+public:
+    static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A
+    void Stop(float fadeOutTime);         // ?Stop@MusicMgr@@QAEXM@Z
+    void StopIndoor(float fadeOutTime);   // ?StopIndoor@MusicMgr@@QAEXM@Z
+};
+
+// CurveManager view (game.o; class lives in g_cmd.cpp)
+typedef float (__cdecl* CurveEvalFunc)(unsigned int, unsigned int, unsigned int,
+                                       float, float, unsigned int);
+class CurveManager {
+public:
+    static CurveManager* sInst;  // ?sInst@CurveManager@@2PAV1@A
+    void AddKeyFunc(unsigned int type, CurveEvalFunc function);        // ?AddKeyFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z
+    void AddConditionFunc(unsigned int type, CurveEvalFunc function);  // ?AddConditionFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z
+};
 
 // ?gpBrocAPI@@3PAUBrocAPI@@A (scr.o data @ 0xF3ABDC, BSS)
 BrocAPI* gpBrocAPI = NULL;
@@ -622,6 +646,160 @@ unsigned int CreateNanoGraph(char* /*id*/, float* const /*param1*/,
 }
 
 namespace BrocSys {
+
+// ea: 0x005BCB70
+void MusicStop(float fadeOutTime)
+{
+    MusicMgr::sInst->Stop(fadeOutTime);
+}
+
+// ea: 0x005BCB90
+void MusicIndoorStop(float fadeOutTime)
+{
+    MusicMgr::sInst->StopIndoor(fadeOutTime);
+}
+
+// ea: 0x005BCBB0
+void SoundFadeIn(unsigned int handle, float time)
+{
+    SoundDevice::sInst->CrossFade(0, handle, time);
+}
+
+// ea: 0x005BCBD0
+void SoundFadeOut(unsigned int handle, float time)
+{
+    SoundDevice::sInst->CrossFade(handle, 0, time);
+}
+
+// ea: 0x005BD440
+bool HudIsPanelType(game_hudelem_s* hud)
+{
+    return hud->elem.type >= HE_TYPE_COUNT
+           && hud->elem.type <= (HE_TYPE_COUNT | HE_TYPE_TIMER_DOWN);
+}
+
+// ea: 0x005BD600
+void HudSetIsVisible(bool vla)
+{
+    g_femanager.mDontDrawHud = !vla;
+}
+
+// ea: 0x005BDB00
+void GlowSetIntensityAux(float val)
+{
+    ShaderCommon::gGlowIntensity = val;
+}
+
+// ea: 0x005BDB20
+void GlowSetExpansionAux(float val)
+{
+    ShaderCommon::gGlowExpansion = val;
+}
+
+// ea: 0x005BE7B0
+unsigned int GetPlayer()
+{
+    Entity* p = EntityManager::sInst->GetPlayer(currCl);
+    return p->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005BEA60
+void Scr_SetByte(Entity* ent, int offset, int* val)
+{
+    *((unsigned char*)ent + offset) = (unsigned char)*val;
+}
+
+// ea: 0x005BEA80
+void Scr_GetByte(Entity* ent, int offset, int* val)
+{
+    *val = *((unsigned char*)ent + offset);
+}
+
+// ea: 0x005BEAA0
+void Scr_SetWord(Entity* ent, int offset, int* val)
+{
+    *(int*)((unsigned char*)ent + offset) = *val;
+}
+
+// ea: 0x005BEAC0
+void Scr_GetWord(Entity* ent, int offset, int* val)
+{
+    *val = *(int*)((unsigned char*)ent + offset);
+}
+
+// ea: 0x005BED40
+bool BROC_AddCurveKeyEvaluator(unsigned int type, CurveEvalFunc function)
+{
+    CurveManager::sInst->AddKeyFunc(type, function);
+    return true;
+}
+
+// ea: 0x005BED60
+bool BROC_AddCurveConditionEvaluator(unsigned int type, CurveEvalFunc function)
+{
+    CurveManager::sInst->AddConditionFunc(type, function);
+    return true;
+}
+
+// ea: 0x005BEDC0
+int IsPathNodeDefined(unsigned int handle)
+{
+    return handle != 0 && handle != (unsigned int)-1;
+}
+
+// ea: 0x005BF210
+void ActorScr_SetGoalRadius(actor_s* a, int /*offset*/, const float* val)
+{
+    Sentient_SetGoalRadius(a->pSentient, *val);
+}
+
+// ea: 0x005BF680
+void SentientScr_SetGoalAngleTolerance(sentient_s* pSelf, int /*offset*/,
+                                       float* val)
+{
+    Sentient_SetGoalAngleTolerance(pSelf, *val);
+}
+
+// ea: 0x005C10F0
+bool MPScript_ControllerErrorMessageUp()
+{
+    int v0 = 0;
+    while (!g_controllerConnectedErrorShown[v0])
+    {
+        if (++v0 >= 4)
+            return false;
+    }
+    return true;
+}
+
+// ea: 0x005BF9B0
+void OverrideTriggerLookAtRadius(float radius)
+{
+    gTriggerLookAtOverride = radius;
+}
+
+// ea: 0x005BF9D0
+void SaveCheckpoint(const char* checkpointName)
+{
+    CheckpointMgr::sInst->SaveCheckpoint(checkpointName, true);
+}
+
+// ea: 0x005BF9F0
+void SetGameUnsignedVar(unsigned int hashVarName, unsigned int iVal)
+{
+    CheckpointMgr::sInst->SetGameVar(hashVarName, &iVal, 1u);
+}
+
+// ea: 0x005BFA10
+void SetGameFloatVar(unsigned int hashVarName, float fVal)
+{
+    CheckpointMgr::sInst->SetGameVar(hashVarName, (unsigned int*)&fVal, 1u);
+}
+
+// ea: 0x005C1A40 (empty stub)
+void UpdateNPCtoVehicleMovement(unsigned int, unsigned int)
+{
+}
 
 // ea: 0x005BC580 (thunk to View::IsSplitScreen)
 bool IsSplitScreen()

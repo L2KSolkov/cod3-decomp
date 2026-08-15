@@ -1247,7 +1247,16 @@ void TraceDebugLine(const math::Position3& start, const math::Position3& end,
 enum animScrMode_t : int32_t { ASM_NORMAL = 0x0, ASM_DEATHPLANT = 0x1 };
 enum he_type_t {
     HE_TYPE_FREE = 0,
-    HE_TYPE_COUNT = 0x0F,
+    HE_TYPE_TEXT = 1,
+    HE_TYPE_VALUE = 2,
+    HE_TYPE_SHADER = 3,
+    HE_TYPE_TIMER_DOWN = 4,
+    HE_TYPE_TIMER_UP = 5,
+    HE_TYPE_TENTHS_TIMER_DOWN = 6,
+    HE_TYPE_TENTHS_TIMER_UP = 7,
+    HE_TYPE_CLOCK_DOWN = 8,
+    HE_TYPE_CLOCK_UP = 9,
+    HE_TYPE_COUNT = 0x0A,
 };
 struct hudelem_t {
     int   type;         // +0x00
