@@ -4,7 +4,7 @@
 
 #include "game/logic/g_local.h"
 
-int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
+bool Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
                      math::Dir3* normal);
 
 // ea: 0x0077C4D0 (mp_actors.o)
@@ -252,7 +252,7 @@ void Think_EnableMine(Entity* ent, int /*unused*/)
 }
 
 // ea: 0x0045F980
-int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position, math::Dir3* normal)
+bool Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position, math::Dir3* normal)
 {
     math::Position3 start;
     start.v.m128_f32[0] = (wp->forward[0] * delta) + wp->muzzleTrace[0];

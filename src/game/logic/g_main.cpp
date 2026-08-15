@@ -4186,7 +4186,7 @@ skip_fill:
     CheckpointMgr::sInst->RestoreExplodedExploders();
     MultiplayerMgr::sInst->LevelLoaded();
     MP_ResolveAnims();
-    G_SetupVehiclePaths(0.0f);
+    G_SetupVehiclePaths();
     G_SetupScrVehicles();
     G_FindTeams();
     level.bRegisterItems = 1;

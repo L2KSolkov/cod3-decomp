@@ -354,7 +354,7 @@ void clamp_playerbehindgun(Entity* self, Entity* other)
 }
 
 // ea: 0x00458CE0
-int turret_CanTargetPoint(Entity* self, const math::Position3* vPoint,
+int turret_CanTargetPoint(Entity* self, const math::Position3& vPoint,
                           float* vSource, float* localAngles)
 {
     turretInfo_t* pTurretInfo = self->pTurretInfo;
@@ -381,18 +381,18 @@ int turret_CanTargetPoint(Entity* self, const math::Position3* vPoint,
             return 0;
         DObjSkelMat tagFlashMat;
         G_DObjGetWorldBoneIndexMatrix(self, BoneIndex, &tagFlashMat);
-        vDelta[0] = vPoint->v.m128_f32[0] - tagFlashMat.origin[0];
-        vDelta[1] = vPoint->v.m128_f32[1] - tagFlashMat.origin[1];
-        vDelta[2] = vPoint->v.m128_f32[2] - tagFlashMat.origin[2];
+        vDelta[0] = vPoint.v.m128_f32[0] - tagFlashMat.origin[0];
+        vDelta[1] = vPoint.v.m128_f32[1] - tagFlashMat.origin[1];
+        vDelta[2] = vPoint.v.m128_f32[2] - tagFlashMat.origin[2];
         vSource[0] = tagFlashMat.origin[0];
         vSource[1] = tagFlashMat.origin[1];
         vSource[2] = tagFlashMat.origin[2];
     }
     else
     {
-        vDelta[0] = vPoint->v.m128_f32[0] - self->r.currentOrigin.v.m128_f32[0];
-        vDelta[1] = vPoint->v.m128_f32[1] - self->r.currentOrigin.v.m128_f32[1];
-        vDelta[2] = vPoint->v.m128_f32[2] - self->r.currentOrigin.v.m128_f32[2];
+        vDelta[0] = vPoint.v.m128_f32[0] - self->r.currentOrigin.v.m128_f32[0];
+        vDelta[1] = vPoint.v.m128_f32[1] - self->r.currentOrigin.v.m128_f32[1];
+        vDelta[2] = vPoint.v.m128_f32[2] - self->r.currentOrigin.v.m128_f32[2];
         vSource[0] = self->r.currentOrigin.v.m128_f32[0];
         vSource[1] = self->r.currentOrigin.v.m128_f32[1];
         vSource[2] = self->r.currentOrigin.v.m128_f32[2];
@@ -1097,7 +1097,7 @@ int turret_aimat_vector(Entity* self, const math::Position3* origin,
                         int bShoot, float* desiredAngles)
 {
     float vSource[3];
-    if (turret_CanTargetPoint(self, origin, vSource, desiredAngles) != 0)
+    if (turret_CanTargetPoint(self, *origin, vSource, desiredAngles) != 0)
     {
         turret_aimat_vector_internal(self, origin, bShoot, desiredAngles);
         return 1;
@@ -1302,7 +1302,7 @@ int turret_isTargetVisable(Entity* self, Entity* target, float* distSqr)
     }
     else
     {
-        if (turret_CanTargetPoint(self, &target->r.currentOrigin, vSource, localAngles) == 0)
+        if (turret_CanTargetPoint(self, target->r.currentOrigin, vSource, localAngles) == 0)
             return 0;
         flashOrigin[0] = target->r.currentOrigin.v.m128_f32[0];
         flashOrigin[1] = target->r.currentOrigin.v.m128_f32[1];

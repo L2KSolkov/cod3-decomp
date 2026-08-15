@@ -487,7 +487,10 @@ int G_PredictMissile(const Entity* ent, int duration, float* endPos,
 }
 
 // ea: 0x0044C8C0
-void Static_Pain(Entity* ent)
+void Static_Pain(Entity* ent, Entity* /*unused1*/, int /*unused2*/,
+                 const float* /*unused3*/, int /*unused4*/, int /*unused5*/,
+                 const float* /*unused6*/, Entity* /*unused7*/,
+                 hitLocation_t /*unused8*/)
 {
     bool v2 = (ent->spawnflags & 4) == 0;
     float enta = (float)level.time;

@@ -695,7 +695,7 @@ label_24:
 }
 
 // ea: 0x00452440
-void G_SetupVehiclePaths(float v)
+void G_SetupVehiclePaths(void)
 {
     for (int16_t i = 0; i < s_numNodes;)
     {
@@ -1201,7 +1201,7 @@ void G_FreeVehicle(Entity* ent)
 }
 
 // ea: 0x0046FF60
-void vehicle_InitDynamicBuffers(unsigned short vehicles)
+void vehicle_InitDynamicBuffers(int vehicles)
 {
     scr_vehicle_t* v1 = s_vehicles;
     scr_vehicle_t* old_vehicles = nullptr;

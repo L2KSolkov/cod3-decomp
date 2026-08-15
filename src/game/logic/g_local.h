@@ -2050,7 +2050,7 @@ int  turret_IsFiringInternal(int state);
 void turret_SetTargetEnt(Entity* self, Entity* pEnt);
 int  turret_behind(Entity* self, Entity* other);
 int  G_IsTurretUsable(Entity* self, Entity* owner);
-int  turret_CanTargetPoint(Entity* self, const math::Position3* vPoint,
+int  turret_CanTargetPoint(Entity* self, const math::Position3& vPoint,
                            float* vSource, float* localAngles);
 int  turret_CanTargetSentient(Entity* self, sentient_s* sentient,
                               float* vPoint, float* vSource, float* localAngles);
@@ -2484,7 +2484,7 @@ int   VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
                                 bool bOriginInput);  // g.o 0x45CE60
 void  G_UpdateVehicleTags(Entity* ent);                 // g.o 0x45E290
 void  G_FreeVehicle(Entity* ent);                       // g.o 0x46DC50
-void  vehicle_InitDynamicBuffers(unsigned short vehicles);  // g.o 0x46FF60
+void  vehicle_InitDynamicBuffers(int vehicles);  // g.o 0x46FF60
 void  G_DrawVehiclePaths(void);                         // g.o 0x464980
 void  VP_DrawPath(const vehicle_pathpos_t* vpp);        // g.o 0x464710
 void  VP_AddDebugLine(const float* start, const float* end, int forceDraw);  // g.o
@@ -3615,7 +3615,7 @@ int16_t VP_GetNodeIndex(const Broc::string& name, float* origin);  // g.o 0x4519
 float VP_CalcNodeSpeed(int16_t nodeIdx);            // g.o 0x451A50
 float VP_CalcNodeLookAhead(int16_t nodeIdx);        // g.o 0x451B60
 void  VP_CalcNodeAngles(int16_t nodeIdx, float* angles);  // g.o 0x451C70
-void  G_SetupVehiclePaths(float v);                  // g.o 0x452440
+void  G_SetupVehiclePaths(void);                     // g.o 0x452440
 void  ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467570
 extern cvar_t* g_gameskill;           // g.o (cvar_t* per sv_decl.h)
 extern vmCvar_t g_player_maxhealth;   // g.o
