@@ -83,6 +83,18 @@ extern void __fastcall Sentient_SetGoalAngleTolerance(sentient_s* pSelf, float f
 extern bool g_controllerConnectedErrorShown[4];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
 extern bool gNANO_Animate;                       // ?gNANO_Animate@@3_NA (g.o)
 
+// AudioBankMgr view (game.o; full class in g_entity_misc.cpp)
+extern void* AudioBankMgr_sInst;  // ?sInst@AudioBankMgr@@2PAV1@A @ 0xF4EBD8
+class AudioBankMgrLocal {
+public:
+    void LoadWbk(const tlFixedString& name, bool async);  // ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z
+    void FreeWbk(const tlFixedString& name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z
+};
+
+namespace BrocSys {
+void HudSetDefaults(game_hudelem_s* hud);  // ?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z
+}
+
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (core.o)
 extern void tlFatal(const char* fmt, ...);   // ?tlFatal@@YAXPBDZZ (core.o)
 
@@ -739,6 +751,7 @@ class MusicMgr {
 public:
     static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A
     void Play(const char* name);          // ?Play@MusicMgr@@QAEXPBD@Z
+    void PlayIndoor(const char* name, float fadeInTime);  // ?PlayIndoor@MusicMgr@@QAEXPBDM@Z
     void Stop(float fadeOutTime);         // ?Stop@MusicMgr@@QAEXM@Z
     void StopIndoor(float fadeOutTime);   // ?StopIndoor@MusicMgr@@QAEXM@Z
 };
@@ -2789,6 +2802,15 @@ void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
                         int intOut);  // 0x5CA0F0
 void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
                         float floatOut, unsigned int outEnt);  // 0x5CA1A0
+void ObjectiveCompletedNotify();  // ?ObjectiveCompletedNotify@@YAXXZ (0x5C18C0)
+void MusicIndoorPlay(const Broc::string& pszSoundName, float fadeInTime);  // 0x5C3370
+void ReverbSetParams(const Broc::string& name, bool immediate);  // 0x5C35D0
+void LoadWbk(const Broc::string& name);  // 0x5C3610
+void FreeWbk(const Broc::string& name);  // 0x5C3650
+int  WeaponClipSize(const Broc::string& pszWeaponName);  // 0x5C4520
+int  WeaponIsSemiAuto(const Broc::string& pszWeaponName);  // 0x5C4560
+int  WeaponIsBoltAction(const Broc::string& pszWeaponName);  // 0x5C45A0
+int  GetHudElemAllocIndex();  // 0x5C4970
 }
 
 static void BrocFree(void* p)
@@ -4543,6 +4565,109 @@ void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
         v6 = nullptr;
     }
     NotifyPendingPush(v6);
+}
+
+// ea: 0x005C18C0
+void ObjectiveCompletedNotify()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        HashString v1;
+        v1.mHash = AeHash("ObjectiveCompleted");
+        Player->Notify(v1);
+    }
+}
+
+// ea: 0x005C3370
+void BrocSys::MusicIndoorPlay(const Broc::string& pszSoundName,
+                              float fadeInTime)
+{
+    if (pszSoundName.mBlock != nullptr)
+        MusicMgr::sInst->PlayIndoor((const char*)(pszSoundName.mBlock + 1),
+                                    fadeInTime);
+    else
+        MusicMgr::sInst->PlayIndoor(defaultFileName, fadeInTime);
+}
+
+// ea: 0x005C35D0
+void BrocSys::ReverbSetParams(const Broc::string& name, bool immediate)
+{
+    if (name.mBlock != nullptr)
+        SoundDevice::sInst->SetReverb((const char*)(name.mBlock + 1),
+                                      immediate);
+    else
+        SoundDevice::sInst->SetReverb(defaultFileName, immediate);
+}
+
+// ea: 0x005C3610
+void BrocSys::LoadWbk(const Broc::string& name)
+{
+    const char* v1 = name.mBlock != nullptr
+                         ? (const char*)(name.mBlock + 1)
+                         : defaultFileName;
+    tlFixedString v2(v1);
+    ((AudioBankMgrLocal*)AudioBankMgr_sInst)->LoadWbk(v2, true);
+}
+
+// ea: 0x005C3650
+void BrocSys::FreeWbk(const Broc::string& name)
+{
+    const char* v1 = name.mBlock != nullptr
+                         ? (const char*)(name.mBlock + 1)
+                         : defaultFileName;
+    tlFixedString v2(v1);
+    ((AudioBankMgrLocal*)AudioBankMgr_sInst)->FreeWbk(v2, true);
+}
+
+// ea: 0x005C4520
+int BrocSys::WeaponClipSize(const Broc::string& pszWeaponName)
+{
+    const char* v1 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    int result = BG_GetWeaponIndexForName(v1);
+    if (result != 0)
+        return BG_GetAmmoClipSize(BG_ClipForWeapon(result));
+    return result;
+}
+
+// ea: 0x005C4560
+int BrocSys::WeaponIsSemiAuto(const Broc::string& pszWeaponName)
+{
+    const char* v1 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    int result = BG_GetWeaponIndexForName(v1);
+    if (result != 0)
+        return BG_GetInfoForWeapon(result)->bSemiAuto;
+    return result;
+}
+
+// ea: 0x005C45A0
+int BrocSys::WeaponIsBoltAction(const Broc::string& pszWeaponName)
+{
+    const char* v1 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    int result = BG_GetWeaponIndexForName(v1);
+    if (result != 0)
+        return BG_GetInfoForWeapon(result)->bBoltAction;
+    return result;
+}
+
+// ea: 0x005C4970
+int BrocSys::GetHudElemAllocIndex()
+{
+    unsigned int v1 = 0;
+    while (g_hudelems[v1].elem.type != HE_TYPE_FREE)
+    {
+        ++v1;
+        if (v1 >= 16)
+            return -1;
+    }
+    BrocSys::HudSetDefaults(&g_hudelems[v1]);
+    return (int)v1;
 }
 
 // ============================================================================
