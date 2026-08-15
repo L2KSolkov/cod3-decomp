@@ -3630,6 +3630,38 @@ int IsAds(unsigned int entityHandleVal);  // 0x5D63E0
 int IsOnGround(unsigned int entityHandleVal);  // 0x5D6440
 void SetViewModel(unsigned int entityHandleVal,
                   const Broc::string& modelName);  // 0x5D64A0
+void AllowUse(unsigned int entityHandleVal, bool activate);  // 0x5D6530
+void AllowStand(unsigned int entityHandleVal, bool bUnused);  // 0x5D65A0 (_N mangle)
+void AllowCrouch(unsigned int entityHandleVal, bool bUnused);  // 0x5D65E0
+void AllowProne(unsigned int entityHandleVal, bool bUnused);  // 0x5D6620
+void AllowLeanLeft(unsigned int entityHandleVal, bool bUnused);  // 0x5D6660
+void AllowLeanRight(unsigned int entityHandleVal, bool bUnused);  // 0x5D66A0
+void SetSpectateTeamKill(int TeamKill, unsigned int killer,
+                         int viewport);  // 0x5D66E0
+void FreezeControls(unsigned int entityHandleVal, bool freeze);  // 0x5D6740
+bool IsLookingAt(unsigned int entityHandleVal,
+                 unsigned int otherEntityHandleVal);  // 0x5D6790
+void SetAutoPickup(unsigned int entityHandleVal, bool autoPickUp);  // 0x5D6810
+void GetWeaponSlotWeapon(unsigned int entityHandleVal,
+                         const Broc::string& sSlot,
+                         Broc::string& outStr);  // 0x5D6880
+void SetWeaponSlotWeapon(unsigned int entityHandleVal,
+                         const Broc::string& sSlot,
+                         const Broc::string& pszWeaponName);  // 0x5D6950
+int GetWeaponSlotAmmo(unsigned int entityHandleVal,
+                      const Broc::string& sSlot);  // 0x5D6B50
+void SetWeaponSlotAmmo(unsigned int entityHandleVal,
+                       const Broc::string& sSlot,
+                       int iSetAmmo);  // 0x5D6C40
+int GetWeaponSlotClipAmmo(unsigned int entityHandleVal,
+                          const Broc::string& sSlot);  // 0x5D6DA0
+void SetWeaponSlotClipAmmo(unsigned int entityHandleVal,
+                           const Broc::string& sSlot,
+                           int iSetClipAmmo);  // 0x5D6E60
+int GetFullClipAmmoCount(unsigned int entityHandleVal,
+                         const Broc::string& sSlot);  // 0x5D6F40
+int GetMaxAmmo(unsigned int entityHandleVal,
+               const Broc::string& sSlot);  // 0x5D6FF0
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -3765,6 +3797,8 @@ int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQA
 }
 extern void CG_Obituary(Entity* target, Entity* attacker, int parm,
                         bool teamGame);  // ?CG_Obituary@@YAXPAVEntity@@0H_N@Z
+extern int BG_GetWeaponSlotForName(const char* pszSlotName);  // ?BG_GetWeaponSlotForName@@YAHPBD@Z
+extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // ?BG_GetWeaponSlotNameForIndex@@YAPBDH@Z
 
 // level.cachedTagMat (level_locals_t +0xC30, 0x4C bytes) - IDA verified
 struct CachedTagMatLocal {
@@ -10167,6 +10201,7 @@ public:
     void UpdateSeconds();        // ?UpdateSeconds@SpectateMenu@@QAEXXZ
     void SetMedic(bool medic);   // ?SetMedic@SpectateMenu@@QAEX_N@Z
     void Clear();                // ?Clear@SpectateMenu@@QAEXXZ
+    void SetTeamKill(bool team_kill, Entity* killer);  // ?SetTeamKill@SpectateMenu@@QAEX_NPAVEntity@@@Z
 };
 class PauseMenu {
 public:
@@ -18929,6 +18964,520 @@ void BrocSys::SetViewModel(unsigned int entityHandleVal,
             XModelManager::sInst->GetXModel(mPakId, v4);
         mObject->client->ps.viewmodel = model;
     }
+}
+
+// ============================================================================
+// scr.o batch 56 - player controls / weapon slots
+// ============================================================================
+
+// ea: 0x005D6530
+void BrocSys::AllowUse(unsigned int entityHandleVal, bool activate)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        int flags = mObject->flags;
+        if (activate)
+            mObject->flags = flags & 0xFFEFFFFF;
+        else
+            mObject->flags = 0x100000 | flags;
+    }
+}
+
+// ea: 0x005D65A0
+void BrocSys::AllowStand(unsigned int entityHandleVal, bool bUnused)
+{
+    (void)bUnused;
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    BrocSys::IsValidClientType(mObject);
+}
+
+// ea: 0x005D65E0
+void BrocSys::AllowCrouch(unsigned int entityHandleVal, bool bUnused)
+{
+    (void)bUnused;
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    BrocSys::IsValidClientType(mObject);
+}
+
+// ea: 0x005D6620
+void BrocSys::AllowProne(unsigned int entityHandleVal, bool bUnused)
+{
+    (void)bUnused;
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    BrocSys::IsValidClientType(mObject);
+}
+
+// ea: 0x005D6660
+void BrocSys::AllowLeanLeft(unsigned int entityHandleVal, bool bUnused)
+{
+    (void)bUnused;
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    BrocSys::IsValidClientType(mObject);
+}
+
+// ea: 0x005D66A0
+void BrocSys::AllowLeanRight(unsigned int entityHandleVal, bool bUnused)
+{
+    (void)bUnused;
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    BrocSys::IsValidClientType(mObject);
+}
+
+// ea: 0x005D66E0
+void BrocSys::SetSpectateTeamKill(int TeamKill, unsigned int killer,
+                                  int viewport)
+{
+    unsigned int v3 = killer & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && killer >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
+        SpectateMenu* spectate = (SpectateMenu*)IGMS->menus[12];
+        spectate->SetTeamKill(TeamKill != 0, mObject);
+    }
+}
+
+// ea: 0x005D6740
+void BrocSys::FreezeControls(unsigned int entityHandleVal, bool freeze)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        mObject->client->bFrozen = freeze;
+}
+
+// ea: 0x005D6790
+bool BrocSys::IsLookingAt(unsigned int entityHandleVal,
+                          unsigned int otherEntityHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    unsigned int v4;
+    Entity* v5;
+    return BrocSys::IsValidClientType(mObject)
+        && (v4 = otherEntityHandleVal & 0xFFF) < 0x540
+        && otherEntityHandleVal >> 12
+               == EntityHandleDb::sInst.mElements[v4].mKey
+        && (v5 = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr
+        && mObject->client->pLookatEnt == v5;
+}
+
+// ea: 0x005D6810
+void BrocSys::SetAutoPickup(unsigned int entityHandleVal, bool autoPickUp)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        mObject->client->bDisableAutoPickup = !autoPickUp;
+}
+
+// ea: 0x005D6880
+void BrocSys::GetWeaponSlotWeapon(unsigned int entityHandleVal,
+                                  const Broc::string& sSlot,
+                                  Broc::string& outStr)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        const char* v5 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        int WeaponSlotForName = BG_GetWeaponSlotForName(v5);
+        if (WeaponSlotForName == 0)
+        {
+            const char* v7 = sSlot.mBlock != nullptr
+                                 ? (const char*)(sSlot.mBlock + 1)
+                                 : defaultFileName;
+            Scr_ParamError(
+                0,
+                va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+                   v7));
+        }
+        if (mObject->client->ps.weaponslots[WeaponSlotForName] != 0)
+        {
+            weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(
+                mObject->client->ps.weaponslots[WeaponSlotForName]);
+            outStr = InfoForWeapon->szInternalName;
+        }
+        else
+        {
+            outStr = str_const.none;
+        }
+    }
+}
+
+// ea: 0x005D6950
+void BrocSys::SetWeaponSlotWeapon(unsigned int entityHandleVal,
+                                  const Broc::string& sSlot,
+                                  const Broc::string& pszWeaponName)
+{
+    Entity* v3 = nullptr;
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    int v5 = 0;
+    Entity* mObject = nullptr;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        v3 = mObject;
+    }
+    if (BrocSys::IsValidClientType(v3))
+    {
+        int bSwapToSecondPrimary = 0;
+        const char* v6 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        int iWeapSlot = BG_GetWeaponSlotForName(v6);
+        if (iWeapSlot == 0)
+        {
+            const char* v7 = sSlot.mBlock != nullptr
+                                 ? (const char*)(sSlot.mBlock + 1)
+                                 : defaultFileName;
+            Scr_ParamError(
+                0,
+                va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+                   v7));
+        }
+        const char* v9 = pszWeaponName.mBlock != nullptr
+                             ? (const char*)(pszWeaponName.mBlock + 1)
+                             : defaultFileName;
+        if (Q_stricmp(v9, "none") != 0)
+        {
+            const char* v10 = pszWeaponName.mBlock != nullptr
+                                  ? (const char*)(pszWeaponName.mBlock + 1)
+                                  : defaultFileName;
+            unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v10);
+            v5 = WeaponIndexForName;
+            if (WeaponIndexForName == 0)
+            {
+                const char* v12 = pszWeaponName.mBlock != nullptr
+                                      ? (const char*)(pszWeaponName.mBlock + 1)
+                                      : defaultFileName;
+                Scr_ParamError(1, va("Unknown weapon %s.", v12));
+            }
+            weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v5);
+            int slot = InfoForWeapon->slot;
+            if (slot != iWeapSlot
+                && (slot != WEAPSLOT_PRIMARY && slot != WEAPSLOT_PRIMARYB
+                    || iWeapSlot != 1 && iWeapSlot != 2))
+            {
+                const char* v16 = pszWeaponName.mBlock != nullptr
+                                      ? (const char*)(pszWeaponName.mBlock + 1)
+                                      : defaultFileName;
+                const char* WeaponSlotNameForIndex =
+                    BG_GetWeaponSlotNameForIndex(iWeapSlot);
+                const char* v17 =
+                    BG_GetWeaponSlotNameForIndex(InfoForWeapon->slot);
+                Scr_ParamError(
+                    1,
+                    va("Weapon %s goes in the %s weaponslot, not the %s weaponslot.",
+                       v16, v17, WeaponSlotNameForIndex));
+            }
+            v3 = mObject;
+        }
+        PlayerState* p_ps = &v3->client->ps;
+        if (p_ps->weaponslots[iWeapSlot] != 0)
+            BG_TakePlayerWeapon(p_ps, p_ps->weaponslots[iWeapSlot]);
+        if (v5 != 0)
+        {
+            if (iWeapSlot == 2 && v3->client->ps.weaponslots[1] == 0)
+                bSwapToSecondPrimary = 1;
+            BG_GivePlayerWeapon(&v3->client->ps, v5);
+            if (bSwapToSecondPrimary != 0)
+            {
+                v3->client->ps.weaponslots[2] =
+                    v3->client->ps.weaponslots[1];
+                v3->client->ps.weaponslots[1] = 0;
+            }
+        }
+    }
+}
+
+// ea: 0x005D6B50
+int BrocSys::GetWeaponSlotAmmo(unsigned int entityHandleVal,
+                               const Broc::string& sSlot)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0;
+    const char* v5 = sSlot.mBlock != nullptr
+                         ? (const char*)(sSlot.mBlock + 1)
+                         : defaultFileName;
+    int WeaponSlotForName = BG_GetWeaponSlotForName(v5);
+    if (WeaponSlotForName == 0)
+    {
+        const char* v7 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        Scr_ParamError(
+            0,
+            va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+               v7));
+    }
+    int v9 = mObject->client->ps.weaponslots[WeaponSlotForName];
+    if (v9 == 0)
+        return 0;
+    if (BG_WeaponIsClipOnly(v9) != 0)
+        return mObject->client->ps.ammoclip[BG_ClipForWeapon(v9)];
+    return mObject->client->ps.ammo[BG_AmmoForWeapon(v9)];
+}
+
+// ea: 0x005D6C40
+void BrocSys::SetWeaponSlotAmmo(unsigned int entityHandleVal,
+                                const Broc::string& sSlot, int iSetAmmo)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        const char* v5 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        int WeaponSlotForName = BG_GetWeaponSlotForName(v5);
+        if (WeaponSlotForName == 0)
+        {
+            const char* v7 = sSlot.mBlock != nullptr
+                                 ? (const char*)(sSlot.mBlock + 1)
+                                 : defaultFileName;
+            Scr_ParamError(
+                0,
+                va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+                   v7));
+        }
+        int v9 = mObject->client->ps.weaponslots[WeaponSlotForName];
+        if (v9 != 0)
+        {
+            if (BG_WeaponIsClipOnly(v9) != 0)
+            {
+                int v10 = BG_ClipForWeapon(v9);
+                int v11 = v10;
+                if (v10 != 0)
+                {
+                    int AmmoClipSize = iSetAmmo;
+                    if (iSetAmmo >= 0)
+                    {
+                        if (iSetAmmo > BG_GetAmmoClipSize(v10))
+                            AmmoClipSize = BG_GetAmmoClipSize(v11);
+                        mObject->client->ps.ammoclip[v11] = AmmoClipSize;
+                    }
+                    else
+                    {
+                        mObject->client->ps.ammoclip[v10] = 0;
+                    }
+                }
+            }
+            else
+            {
+                int v13 = BG_AmmoForWeapon(v9);
+                int v14 = v13;
+                if (v13 != 0)
+                {
+                    int AmmoTypeMax = iSetAmmo;
+                    if (iSetAmmo >= 0)
+                    {
+                        if (iSetAmmo > BG_GetAmmoTypeMax(v13))
+                            AmmoTypeMax = BG_GetAmmoTypeMax(v14);
+                        mObject->client->ps.ammo[v14] = AmmoTypeMax;
+                    }
+                    else
+                    {
+                        mObject->client->ps.ammo[v13] = 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x005D6DA0
+int BrocSys::GetWeaponSlotClipAmmo(unsigned int entityHandleVal,
+                                   const Broc::string& sSlot)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0;
+    const char* v4 = sSlot.mBlock != nullptr
+                         ? (const char*)(sSlot.mBlock + 1)
+                         : defaultFileName;
+    int WeaponSlotForName = BG_GetWeaponSlotForName(v4);
+    if (WeaponSlotForName == 0)
+    {
+        const char* v6 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        Scr_ParamError(
+            0,
+            va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+               v6));
+    }
+    int v8;
+    if (mObject->client->ps.weaponslots[WeaponSlotForName] != 0
+        && (v8 = BG_ClipForWeapon(
+                mObject->client->ps.weaponslots[WeaponSlotForName])) != 0)
+    {
+        return mObject->client->ps.ammoclip[v8];
+    }
+    return 0;
+}
+
+// ea: 0x005D6E60
+void BrocSys::SetWeaponSlotClipAmmo(unsigned int entityHandleVal,
+                                    const Broc::string& sSlot,
+                                    int iSetClipAmmo)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        const char* v5 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        int WeaponSlotForName = BG_GetWeaponSlotForName(v5);
+        if (WeaponSlotForName == 0)
+        {
+            const char* v7 = sSlot.mBlock != nullptr
+                                 ? (const char*)(sSlot.mBlock + 1)
+                                 : defaultFileName;
+            Scr_ParamError(
+                0,
+                va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+                   v7));
+        }
+        if (mObject->client->ps.weaponslots[WeaponSlotForName] != 0)
+        {
+            int v9 = BG_ClipForWeapon(
+                mObject->client->ps.weaponslots[WeaponSlotForName]);
+            int v10 = v9;
+            if (v9 != 0)
+            {
+                int AmmoClipSize = iSetClipAmmo;
+                if (iSetClipAmmo < 0)
+                    AmmoClipSize = 0;
+                if (AmmoClipSize > BG_GetAmmoClipSize(v9))
+                    AmmoClipSize = BG_GetAmmoClipSize(v10);
+                mObject->client->ps.ammoclip[v10] = AmmoClipSize;
+            }
+        }
+    }
+}
+
+// ea: 0x005D6F40
+int BrocSys::GetFullClipAmmoCount(unsigned int entityHandleVal,
+                                  const Broc::string& sSlot)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0;
+    const char* v4 = sSlot.mBlock != nullptr
+                         ? (const char*)(sSlot.mBlock + 1)
+                         : defaultFileName;
+    int WeaponSlotForName = BG_GetWeaponSlotForName(v4);
+    if (WeaponSlotForName == 0)
+    {
+        const char* v6 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        Scr_ParamError(
+            0,
+            va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+               v6));
+    }
+    if (mObject->client->ps.weaponslots[WeaponSlotForName] != 0)
+        return BG_GetInfoForWeapon(
+                   mObject->client->ps.weaponslots[WeaponSlotForName])
+            ->iClipSize;
+    return 0;
+}
+
+// ea: 0x005D6FF0
+int BrocSys::GetMaxAmmo(unsigned int entityHandleVal,
+                        const Broc::string& sSlot)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0;
+    const char* v4 = sSlot.mBlock != nullptr
+                         ? (const char*)(sSlot.mBlock + 1)
+                         : defaultFileName;
+    int WeaponSlotForName = BG_GetWeaponSlotForName(v4);
+    if (WeaponSlotForName == 0)
+    {
+        const char* v6 = sSlot.mBlock != nullptr
+                             ? (const char*)(sSlot.mBlock + 1)
+                             : defaultFileName;
+        Scr_ParamError(
+            0,
+            va("Unknown weaponslot name %s. Valid weaponslots are \"primary\", \"primaryb\", \"pistol\", \"grenade\", and \"smokegrenade\"",
+               v6));
+    }
+    if (mObject->client->ps.weaponslots[WeaponSlotForName] != 0)
+        return BG_GetInfoForWeapon(
+                   mObject->client->ps.weaponslots[WeaponSlotForName])
+            ->iMaxAmmo;
+    return 0;
 }
 
 // ============================================================================
