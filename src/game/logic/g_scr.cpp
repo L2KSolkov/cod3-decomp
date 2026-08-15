@@ -43,8 +43,14 @@ bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
 
 namespace BrocHelper {
 int m_treeCount;  // ?m_treeCount@BrocHelper@@3HA (scr.o @ 0x1329E78)
+struct brocFunctionLookup {  // IDA type 5907
+    unsigned int mHashedName;                  // +0x00
+    unsigned int (__cdecl* mFunction)(void*);  // +0x04
+};
+extern brocFunctionLookup broFuncLookupTable[70];  // ?broFuncLookupTable@BrocHelper@@3PAUbrocFunctionLookup@1@A @ 0x1329E80
 void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
 int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
+void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
 void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
                           const tlFixedString& animation_name,
                           int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
@@ -301,6 +307,8 @@ struct AeThreadEntityNotifyState : AeThreadState {
         AeThreadState::EAction result);  // 0x5DB280
     ~AeThreadEntityNotifyState();   // 0x5C9880
     EAction NewAction(AeThread& t) override;  // 0x5C9920
+    void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF580
+    void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF680
 };
 
 struct AeThreadEntityNotifyTimeoutState : AeThreadState {
@@ -312,6 +320,8 @@ struct AeThreadEntityNotifyTimeoutState : AeThreadState {
         DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label,
         float t, AeThreadState::EAction result);  // 0x5C1F40
     EAction NewAction(AeThread& t) override;  // 0x5C99A0
+    void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF780
+    void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF8B0
 };
 
 struct AeThreadEntityNotifyMatchState : AeThreadState {
@@ -326,6 +336,8 @@ struct AeThreadEntityNotifyMatchState : AeThreadState {
         unsigned int label2, unsigned int label3, unsigned int label4,
         AeThreadState::EAction result, bool waitForAll);  // 0x5C7C10
     EAction NewAction(AeThread& t) override;  // 0x5C9A40
+    void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF9E0
+    void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DFB40
 };
 
 // PakInfoNode view (streamer.o; full layout in pakmanager.cpp)
@@ -2692,6 +2704,7 @@ unsigned int GetEntNoteWorthy(unsigned int hValue, unsigned int* array,
                               int capacity);  // 0x5DCFE0
 unsigned int GetEntGroup(unsigned int hValue, unsigned int* array,
                          int capacity);  // 0x5DD000
+void RegisterHashString(int hash, const char* txt);  // 0x5DFC50
 }
 
 static void BrocFree(void* p)
@@ -3320,14 +3333,9 @@ AeThreadState::EAction AeThreadEntityNotifyState::NewAction(AeThread& t)
 // scr.o batch 13 - GetEnt* entity-lookup family (BrocEntity.cpp)
 // ============================================================================
 
-// Resolve a registered hash to its string. sHashStrings (stdext hash_map at
-// 0xF3B478) is ported in a later batch; the error path degrades to nullptr.
-static const char* BrocSysHashLookup(unsigned int /*hash*/)
-{
-    return nullptr;  // TODO: sHashStrings map port (batch pending)
-}
-
 // ea: 0x005DCE70 (mangle YAIHIPAIH: int, uint, uint*, int)
+static const char* BrocSysHashLookup(unsigned int hash);
+
 unsigned int BrocSys::GetEntByFieldAndHash(int offsetIntoEnt,
                                            unsigned int hValue,
                                            unsigned int* array, int capacity)
@@ -3414,6 +3422,276 @@ unsigned int BrocSys::GetEntGroup(unsigned int hValue, unsigned int* array,
                                   int capacity)
 {
     return BrocSys::GetEntByFieldAndHash(664, hValue, array, capacity);
+}
+
+// ============================================================================
+// scr.o batch 14 - sHashStrings map + RegisterHashString + debug text
+// ============================================================================
+
+// BrocSys::sHashStrings (binary: stdext::hash_map<int,
+// ae_fixed_string<32,unsigned char>> at 0xF3B478). Win32 port: fixed-capacity
+// linear-probe map preserving register/lookup semantics.
+class BrocSysHashStrings {
+public:
+    struct Entry {
+        unsigned int mHash;                        // +0x00
+        ae_fixed_string<32, unsigned char> mStr;   // +0x04
+    };
+
+    Entry mEntries[2048];  // +0x00
+    int   mCount;          // +0x14000
+
+    BrocSysHashStrings() : mCount(0) {}
+
+    Entry* find(unsigned int hash)
+    {
+        for (int i = 0; i < mCount; ++i)
+        {
+            if (mEntries[i].mHash == hash)
+                return &mEntries[i];
+        }
+        return nullptr;
+    }
+
+    const char* lookup(unsigned int hash)
+    {
+        Entry* e = find(hash);
+        return e != nullptr ? (const char*)e->mStr.mBuff : nullptr;
+    }
+
+    void set(unsigned int hash, const ae_fixed_string<32, unsigned char>& s)
+    {
+        Entry* e = find(hash);
+        if (e != nullptr)
+        {
+            e->mStr = s;
+            return;
+        }
+        if (mCount < 2048)
+        {
+            mEntries[mCount].mHash = hash;
+            mEntries[mCount].mStr = s;
+            ++mCount;
+        }
+    }
+};
+
+// Binary: ?sHashStrings@BrocSys@@3V?$hash_map@...@@A @ 0xF3B478
+BrocSysHashStrings sHashStrings;
+
+// ea: 0x005DFD00
+void BrocSys::RegisterHashString(int hash, const char* txt)
+{
+    BrocSysHashStrings::Entry* existing = sHashStrings.find((unsigned int)hash);
+    if (existing != nullptr
+        && _strnicmp((const char*)existing->mStr.mBuff, txt, 31) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 409;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Hash collision: '%s' and '%s'", txt,
+                                 existing->mStr.mBuff))
+            __debugbreak();
+    }
+    ae_fixed_string<32, unsigned char> val(txt);
+    sHashStrings.set((unsigned int)hash, val);
+}
+
+// Real lookup backing GetEntByFieldAndHash's error path
+static const char* BrocSysHashLookup(unsigned int hash)
+{
+    return sHashStrings.lookup(hash);
+}
+
+// ea: 0x005DF580
+void AeThreadEntityNotifyState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult == kActionWakeUp)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+    else if (mResult == kActionSleep)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "(s) ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+}
+
+// ea: 0x005DF680
+void AeThreadEntityNotifyState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    const char* prefix = nullptr;
+    if (mResult == kActionWakeUp)
+        prefix = "waking up for ";
+    else if (mResult == kActionTerminate)
+        prefix = "terminating for ";
+    else
+        return;
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, prefix);
+    str.mLength = (unsigned char)len;
+    const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+    int len2 = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                            s != nullptr ? s : "");
+    str.mLength = (unsigned char)len2;
+}
+
+// ea: 0x005DF780
+void AeThreadEntityNotifyTimeoutState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    ae_formatted_string<64, unsigned char> v10(",(s) %04.3f", mTimeRemaining);
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, (const char*)v10.mBuff);
+    str.mLength = (unsigned char)len;
+    if (mResult == kActionWakeUp)
+    {
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63, ",(w) ");
+        str.mLength = (unsigned char)len2;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len3 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len3;
+    }
+    else if (mResult == kActionSleep)
+    {
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63, "(s) ");
+        str.mLength = (unsigned char)len2;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len3 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len3;
+    }
+}
+
+// ea: 0x005DF8B0
+void AeThreadEntityNotifyTimeoutState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult == kActionWakeUp)
+    {
+        int len = str.mLength;
+        if (mTimeRemaining <= 0.0f)
+        {
+            AeStringSupport::Concat((char*)str.mBuff, len, 63,
+                                    "waking up from time wait");
+            str.mLength = (unsigned char)len;
+            return;
+        }
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+    else if (mResult == kActionTerminate)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "terminating for ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+}
+
+// ea: 0x005DF9E0
+void AeThreadEntityNotifyMatchState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult != kActionWakeUp)
+        return;
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
+    str.mLength = (unsigned char)len;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (mDebugNotifys[i].mHash == 0)
+            break;
+        if (i != 0)
+        {
+            int len2 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " & ");
+            str.mLength = (unsigned char)len2;
+        }
+        const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+        if ((mEventMask & (1 << i)) == 0)
+        {
+            int len3 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(0)");
+            str.mLength = (unsigned char)len3;
+        }
+        else
+        {
+            int len3 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(1)");
+            str.mLength = (unsigned char)len3;
+        }
+    }
+}
+
+// ea: 0x005DFB40
+void AeThreadEntityNotifyMatchState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult != kActionWakeUp)
+        return;
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+    str.mLength = (unsigned char)len;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (i != 0)
+        {
+            int len2 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " and ");
+            str.mLength = (unsigned char)len2;
+        }
+        const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+}
+
+// ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
+BrocHelper::brocFunctionLookup BrocHelper::broFuncLookupTable[70];
+void BrocHelper::Init()
+{
+    memset(BrocHelper::broFuncLookupTable, 0,
+           sizeof(BrocHelper::broFuncLookupTable));
+    BrocHelper::m_treeCount = 0;
 }
 
 // ea: 0x005C1F40
