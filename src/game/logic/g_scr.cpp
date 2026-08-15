@@ -120,6 +120,13 @@ public:
     unsigned int mStr;         // +0x08
     DbLinkedHandle<EntityHandleDb, Entity> mOwner;  // +0x0C
     void* mParam;              // +0x10
+    EntityNotifyLocal(unsigned int hashStr,
+                      DbLinkedHandle<EntityHandleDb, Entity> ent, void* param)
+        : mStr(hashStr), mOwner(ent), mParam(param)
+    {
+        m_dlist_node.mNext = nullptr;
+        m_dlist_node.mPrev = nullptr;
+    }
     ~EntityNotifyLocal();      // ?~EntityNotify@@QAE@XZ (g.o)
     static PoolAllocator* sAllocator;  // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A @ 0xF00E28
 };
@@ -2773,6 +2780,15 @@ void Scr_ReadOnlyField(Entity* ent, int offset, void* val);  // 0x5BE7D0
 void SentientScr_ReadOnly(sentient_s* pSelf, int offset, void* val);  // 0x5BF4E0
 void MPScript_GetWeaponName(unsigned int weaponIndex,
                             Broc::string& weapon);  // 0x5C1120
+void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId);  // 0x5C9ED0
+void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                        unsigned int entityOut);  // 0x5C9F90
+void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                        const Broc::string& strOut);  // 0x5CA040
+void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                        int intOut);  // 0x5CA0F0
+void ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                        float floatOut, unsigned int outEnt);  // 0x5CA1A0
 }
 
 static void BrocFree(void* p)
@@ -4333,6 +4349,200 @@ void Scr_EmitAnimation(char* animName, unsigned int animType,
     if (!AeAssert::IsIgnored()
         && AeAssert::Assert("Is this still used? (CD)"))
         __debugbreak();
+}
+
+// ============================================================================
+// scr.o batch 19 - ThreadEntityNotify family (BrocSys.cpp)
+// ============================================================================
+
+extern PoolAllocator* WaitTilOutput_sAllocator;  // ?sAllocator@WaitTilOutput@@0PAVPoolAllocator@@A
+extern PoolAllocator* EntityNotify_sAllocator;   // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A
+
+// WaitTilOutput local layout (core_systems.h; 0xC bytes + virtuals)
+class WaitTilOutputLocal {
+public:
+    virtual ~WaitTilOutputLocal() {}
+    virtual int GetSize() { return 0; }
+    void* dListNodeFiller1;  // +0x04
+    void* dListNodeFiller2;  // +0x08
+};
+
+template <typename T>
+class WaitTilOutputInst1Local : public WaitTilOutputLocal {
+public:
+    T data;  // +0x0C
+    WaitTilOutputInst1Local(const T& d) : data(d)
+    {
+        dListNodeFiller1 = nullptr;
+        dListNodeFiller2 = nullptr;
+    }
+    virtual int GetSize() { return 1; }
+    virtual ~WaitTilOutputInst1Local() {}
+};
+
+template <typename T1, typename T2>
+class WaitTilOutputInst2Local : public WaitTilOutputLocal {
+public:
+    T1 data1;  // +0x0C
+    T2 data2;  // +0x10
+    WaitTilOutputInst2Local(const T1& d1, const T2& d2) : data1(d1), data2(d2)
+    {
+        dListNodeFiller1 = nullptr;
+        dListNodeFiller2 = nullptr;
+    }
+    virtual int GetSize() { return 2; }
+    virtual ~WaitTilOutputInst2Local() {}
+};
+
+static void NotifyPendingPush(EntityNotifyLocal* v5)
+{
+    AeThreadManagerLayout* L =
+        (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    v5->m_dlist_node.mNext = L->mPendingNotifys.m_end;
+    v5->m_dlist_node.mPrev = L->mPendingNotifys.m_tail;
+    ((AeDListNode*)L->mPendingNotifys.m_tail)->mNext =
+        &v5->m_dlist_node;
+    L->mPendingNotifys.m_tail = &v5->m_dlist_node;
+    ++L->mPendingNotifys.m_size;
+}
+
+// ea: 0x005C9ED0 (2-arg: entity, notifyId)
+void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId)
+{
+    EntityNotifyLocal* v2 =
+        (EntityNotifyLocal*)EntityNotify_sAllocator->Allocate(0x14, false);
+    EntityNotifyLocal* v3 =
+        v2 != nullptr
+            ? new (v2) EntityNotifyLocal(
+                  (unsigned int)notifyId,
+                  DbLinkedHandle<EntityHandleDb, Entity>(
+                      Handle(entityHandleVal)),
+                  nullptr)
+            : nullptr;
+    NotifyPendingPush(v3);
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    if (v5 < 0x540
+        && entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v5].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+        if (mObject != nullptr)
+            mObject->ExecScriptHandler(HashString((unsigned int)notifyId),
+                                       nullptr);
+    }
+}
+
+// ea: 0x005C9F90 (3-arg: entity, notify, uint out)
+void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                                 unsigned int entityOut)
+{
+    EntityNotifyLocal* v3 =
+        (EntityNotifyLocal*)EntityNotify_sAllocator->Allocate(0x14, false);
+    EntityNotifyLocal* v5;
+    if (v3 != nullptr)
+    {
+        WaitTilOutputInst1Local<unsigned int>* v4 =
+            (WaitTilOutputInst1Local<unsigned int>*)WaitTilOutput_sAllocator
+                ->Allocate(0x10, false);
+        v5 = v4 != nullptr
+                 ? new (v3) EntityNotifyLocal(
+                       notifyId,
+                       DbLinkedHandle<EntityHandleDb, Entity>(
+                           Handle(entityHandleVal)),
+                       (void*)(WaitTilOutputLocal*)new (v4)
+                           WaitTilOutputInst1Local<unsigned int>(entityOut))
+                 : nullptr;
+    }
+    else
+    {
+        v5 = nullptr;
+    }
+    NotifyPendingPush(v5);
+}
+
+// ea: 0x005CA040 (3-arg: entity, notify, Broc::string out)
+void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                                 const Broc::string& strOut)
+{
+    EntityNotifyLocal* v3 =
+        (EntityNotifyLocal*)EntityNotify_sAllocator->Allocate(0x14, false);
+    EntityNotifyLocal* v6;
+    if (v3 != nullptr)
+    {
+        WaitTilOutputInst1Local<Broc::string>* v4 =
+            (WaitTilOutputInst1Local<Broc::string>*)WaitTilOutput_sAllocator
+                ->Allocate(0x10, false);
+        v6 = v4 != nullptr
+                 ? new (v3) EntityNotifyLocal(
+                       notifyId,
+                       DbLinkedHandle<EntityHandleDb, Entity>(
+                           Handle(entityHandleVal)),
+                       (void*)(WaitTilOutputLocal*)new (v4)
+                           WaitTilOutputInst1Local<Broc::string>(strOut))
+                 : nullptr;
+    }
+    else
+    {
+        v6 = nullptr;
+    }
+    NotifyPendingPush(v6);
+}
+
+// ea: 0x005CA0F0 (3-arg: entity, notify, int out)
+void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                                 int intOut)
+{
+    EntityNotifyLocal* v3 =
+        (EntityNotifyLocal*)EntityNotify_sAllocator->Allocate(0x14, false);
+    EntityNotifyLocal* v5;
+    if (v3 != nullptr)
+    {
+        WaitTilOutputInst1Local<int>* v4 =
+            (WaitTilOutputInst1Local<int>*)WaitTilOutput_sAllocator->Allocate(
+                0x10, false);
+        v5 = v4 != nullptr
+                 ? new (v3) EntityNotifyLocal(
+                       notifyId,
+                       DbLinkedHandle<EntityHandleDb, Entity>(
+                           Handle(entityHandleVal)),
+                       (void*)(WaitTilOutputLocal*)new (v4)
+                           WaitTilOutputInst1Local<int>(intOut))
+                 : nullptr;
+    }
+    else
+    {
+        v5 = nullptr;
+    }
+    NotifyPendingPush(v5);
+}
+
+// ea: 0x005CA1A0 (4-arg: entity, notify, float out, uint outEnt)
+void BrocSys::ThreadEntityNotify(unsigned int entityHandleVal, int notifyId,
+                                 float floatOut, unsigned int outEnt)
+{
+    EntityNotifyLocal* v4 =
+        (EntityNotifyLocal*)EntityNotify_sAllocator->Allocate(0x14, false);
+    EntityNotifyLocal* v6;
+    if (v4 != nullptr)
+    {
+        WaitTilOutputInst2Local<float, unsigned int>* v5 =
+            (WaitTilOutputInst2Local<float, unsigned int>*)
+                WaitTilOutput_sAllocator->Allocate(0x14, false);
+        v6 = v5 != nullptr
+                 ? new (v4) EntityNotifyLocal(
+                       (unsigned int)notifyId,
+                       DbLinkedHandle<EntityHandleDb, Entity>(
+                           Handle(entityHandleVal)),
+                       (void*)(WaitTilOutputLocal*)new (v5)
+                           WaitTilOutputInst2Local<float, unsigned int>(
+                               floatOut, outEnt))
+                 : nullptr;
+    }
+    else
+    {
+        v6 = nullptr;
+    }
+    NotifyPendingPush(v6);
 }
 
 // ============================================================================
