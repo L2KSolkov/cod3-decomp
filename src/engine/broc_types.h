@@ -363,7 +363,8 @@ COD3_STATIC_ASSERT_32BIT(sizeof(vehiclenode) == 4, "Broc::vehiclenode size misma
 // ============================================================================
 // Broc::hudelem - HUD element handle (4 bytes).
 // ============================================================================
-struct hudelem {
+class hudelem {
+public:
     unsigned int ___u0;
 
     void SetUndefined();             // ea: 0x92F7D0

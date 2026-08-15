@@ -58,6 +58,11 @@ namespace AeAssert {
 extern bool gAssertsEnabled;  // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr)
 }
 
+// Binary BrocSys.cpp forward-declared hudelem as class (mangle ABVhudelem@Broc)
+namespace Broc {
+class hudelem;
+}
+
 extern void EffectEventPlayQueuedEffect(Handle effect);  // ?EffectEventPlayQueuedEffect@@YAXVHandle@@@Z (game.o)
 extern bool EffectEventIsPlaying(Handle effect);         // ?EffectEventIsPlaying@@YA_NVHandle@@@Z (game.o)
 extern void EffectEventStopEmitting(Handle effect);      // ?EffectEventStopEmitting@@YAXVHandle@@@Z (game.o)
@@ -71,11 +76,14 @@ public:
 
 extern const char* nodeStringTable[0x13];  // ?nodeStringTable@@3PAPBDA (mp_actors.o @ 0xE37A20)
 extern float gProjShadowAlpha;             // ?gProjShadowAlpha@@3MA (render.o)
+extern float gProjShadowSize;              // ?gProjShadowSize@@3MA (render.o)
 
 struct IGOCompassWidget {
     void SetHideCompassStar(int active, int index);  // ?SetHideCompassStar@IGOCompassWidget@@QAEXHH@Z
     void SetHideUpdatedText(int active, int index);  // ?SetHideUpdatedText@IGOCompassWidget@@QAEXHH@Z
 };
+
+extern actor_s* __fastcall Actor_Get(DbLinkedHandle<EntityHandleDb, Entity> ent);  // ?Actor_Get@@YIPAUactor_s@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z (mp_actors.o)
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
 class MusicMgr {
@@ -770,6 +778,102 @@ void SetTutorialTextAllPlayers(int hash)
 void SetShadowIntensity(float i)
 {
     gProjShadowAlpha = i;
+}
+
+// ea: 0x005BFB60
+void SetShadowRadius(float r)
+{
+    gProjShadowSize = r;
+}
+
+// ea: 0x005C3460
+void SoundStop(unsigned int handle)
+{
+    SoundDevice::sInst->ReleaseSound(
+        DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>(
+            Handle(handle)));
+}
+
+// ea: 0x005C4C20
+void HudSetTimerInternal(int elemNum, he_type_t type,
+                         const char* /*cmdName*/, float fVal)
+{
+    if (elemNum >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3307;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", elemNum))
+            __debugbreak();
+    }
+    if (type != HE_TYPE_TIMER_DOWN && type != HE_TYPE_TIMER_UP
+        && type != HE_TYPE_TENTHS_TIMER_DOWN
+        && type != HE_TYPE_TENTHS_TIMER_UP)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3308;
+        AeAssert::gCurrentExpr = "type == HE_TYPE_TIMER_DOWN || type == HE_TYPE_TIMER_UP || type == HE_TYPE_TENTHS_TIMER_DOWN || type == HE_TYPE_TENTHS_TIMER_UP";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", type))
+            __debugbreak();
+    }
+    float v4 = fVal * 1000.0f;
+    game_hudelem_s* v5 = &g_hudelems[elemNum];
+    int v6 = (int)ceilf(v4);
+    if (v6 <= 0 && type != HE_TYPE_TIMER_UP)
+        Scr_ParamError(0, va("time %g should be > 0", v6 * 0.001f));
+    int time = level.time;
+    v5->elem.width = 0;
+    v5->elem.height = 0;
+    v5->elem.mTexture = nullptr;
+    v5->elem.fromWidth = 0;
+    v5->elem.fromHeight = 0;
+    v5->elem.scaleStartTime = 0;
+    v5->elem.scaleTime = 0;
+    v5->elem.duration = 0;
+    v5->elem.text = 0;
+    v5->elem.value = 0.0f;
+    v5->elem.type = type;
+    v5->elem.time = v6 + time;
+}
+
+// ea: 0x005C5180
+void SetTimer(const Broc::hudelem& hudElem, float fVal)
+{
+    HudSetTimerInternal(hudElem.___u0, HE_TYPE_TIMER_DOWN, "setTimer", fVal);
+}
+
+// ea: 0x005C5260
+void SetTenthsTimer(const Broc::hudelem& hudElem, float fVal)
+{
+    HudSetTimerInternal(hudElem.___u0, HE_TYPE_TENTHS_TIMER_DOWN,
+                        "setTenthsTimer", fVal);
+}
+
+// ea: 0x005C5BE0
+int IsExploded(int exploderNumber)
+{
+    return CheckpointMgr::sInst->mCurrentScriptExploded
+        .mElements[exploderNumber];
+}
+
+// ea: 0x005C5C00
+void SetWalkRunLoopAnimNode(unsigned int entityHandleVal,
+                            unsigned int animWalkRunLoop)
+{
+    actor_s* v2 = Actor_Get(DbLinkedHandle<EntityHandleDb, Entity>(
+        Handle(entityHandleVal)));
+    if (v2 != nullptr)
+        v2->animWalkRunLoop.mHandle = animWalkRunLoop;
+}
+
+// ea: 0x005C5CF0
+void CloseMenu1(unsigned int entityHandleVal)
+{
+    SV_GameSendServerCommand(
+        DbLinkedHandle<EntityHandleDb, Entity>(Handle(entityHandleVal)),
+        "popupclose");
 }
 
 // ea: 0x005BDB90 (thunk to CG_MotionBlur::End)
