@@ -176,6 +176,9 @@ static_assert(sizeof(scr_anim_s) == 4, "scr_anim_s size mismatch");
 // ============================================================================
 struct scr_animscript_t {
     uint8_t data[12];  // placeholder — exact layout TBD
+
+    scr_animscript_t();   // ??0scr_animscript_t@@QAE@XZ (g.o 0x4ABF00)
+    ~scr_animscript_t();  // ??1scr_animscript_t@@QAE@XZ (g.o 0x4ABF20)
 };
 static_assert(sizeof(scr_animscript_t) == 0x0C, "scr_animscript_t size mismatch");
 

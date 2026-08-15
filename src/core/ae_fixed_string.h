@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdarg.h>
+#include <string.h>
 #include <stdio.h>
 
 namespace AeStringSupport {
@@ -45,6 +46,7 @@ public:
     }
 
     const char* c_str() const { return (const char*)mBuff; }
+    char* c_str() { return (char*)mBuff; }
     int length() const { return mLength; }
     static int capacity() {
         return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
@@ -59,6 +61,24 @@ public:
                 return i;
         }
         return -1;
+    }
+
+    // ?rfind@?$ae_fixed_string@$0EA@E@@QBEHD@Z (g.o 0x4AC740)
+    int rfind(char c) const {
+        if (mLength == 0)
+            return -1;
+        int result = mLength - 1;
+        while (((const char*)mBuff)[result] != c)
+        {
+            if (--result < 0)
+                return -1;
+        }
+        return result;
+    }
+
+    // ?to_lower@?$ae_fixed_string@$0CA@E@@QAEXXZ (g.o 0x4ACE50)
+    void to_lower() {
+        _strlwr((char*)mBuff);
     }
 
     // ea: 0x4E48D0 — SubStr into dst, then store output length

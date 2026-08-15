@@ -33,6 +33,12 @@ public:
         ++m_size;
     }
 
+    T& pop_back() {
+        if (m_size != 0)
+            --m_size;
+        return m_elements[m_size];
+    }
+
     // Binary mangle: const_iterator@?$ae_sized_array@...@@ (Entity* const*)
     class const_iterator {
     public:

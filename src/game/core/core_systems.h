@@ -65,6 +65,13 @@ struct Bitmask {
     T mVal;  // +0x00
     Bitmask() : mVal(0) {}
     explicit Bitmask(T v) : mVal(v) {}
+
+    // ?Test@?$Bitmask@I@@QBE_NH@Z (g.o 0x4ACD50)
+    bool Test(int b) const { return ((1 << b) & mVal) != 0; }
+    // ?IsEmpty@?$Bitmask@I@@QBE_NXZ (g.o 0x4ACDE0)
+    bool IsEmpty() const { return mVal == 0; }
+    // ?Clear@?$Bitmask@I@@QAEXXZ (g.o 0x4ACDF0)
+    void Clear() { mVal = 0; }
 };
 
 // ============================================================================

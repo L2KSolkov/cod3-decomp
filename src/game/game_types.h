@@ -91,6 +91,13 @@ public:
     Handle mHandle;  // +0x00 — wrapped handle
 
     DbLinkedHandle() { mHandle.mVal = 0; }
+    DbLinkedHandle(int v) { mHandle.mVal = (unsigned int)v; }  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@H@Z (g.o 0x4AC6C0)
+    DbLinkedHandle(Handle h) { mHandle = h; }                  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@VHandle@@@Z (g.o 0x4AC6E0)
+    DbLinkedHandle& operator=(Handle rhs)                      // ??4?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEAAV0@VHandle@@@Z (g.o 0x4AC700)
+    {
+        mHandle = rhs;
+        return *this;
+    }
     bool IsValid() const { return mHandle.mVal != 0; }
 };
 static_assert(sizeof(DbLinkedHandle<void, void>) == 4, "DbLinkedHandle size mismatch");
@@ -113,6 +120,8 @@ struct tagInfo_t {
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);  // ??3tagInfo_t@@SAXPAX_NPBDH@Z (g.o 0x4A7780)
     static void operator delete(void* ptr);  // ??3tagInfo_t@@SAXPAX@Z (g.o 0x4A77A0)
+
+    tagInfo_t();  // ??0tagInfo_t@@QAE@XZ (g.o 0x4AC460)
 };
 static_assert(sizeof(tagInfo_t) == 0x70, "tagInfo_t size mismatch");
 static_assert(offsetof(tagInfo_t, name) == 0x08, "tagInfo_t::name offset mismatch");
@@ -126,6 +135,8 @@ public:
     T*           mList;  // +0x04
 
     T& operator[](unsigned int i) { return mList[i]; }
+    const T& operator[](unsigned int i) const { return mList[i]; }
+    unsigned int size() const { return mSize; }
 };
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
 
@@ -136,6 +147,9 @@ class IVPointer {
 public:
     T*           mValue;   // +0x00 — actual pointer data
     unsigned int mPakId;   // +0x04 — pak id (TPakId)
+
+    IVPointer() : mValue(nullptr), mPakId(PAK_ID_INVALID) {}  // ??0?$IVPointer@VPhysData@@@@QAE@XZ (g.o 0x4ACE80)
+    void clear() { mValue = nullptr; mPakId = PAK_ID_INVALID; }  // ?clear@?$IVPointer@VXModel@@@@QAEXXZ (g.o 0x4ACE20)
 };
 static_assert(sizeof(IVPointer<char>) == 8, "IVPointer size mismatch");
 

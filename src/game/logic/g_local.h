@@ -602,6 +602,10 @@ struct vehicle_node_t {
     float        angles[3];         // +0x2C
     float        length;            // +0x38
     int          nextIdx;           // +0x3C
+
+    vehicle_node_t();                             // ??0vehicle_node_t@@QAE@XZ (g.o 0x4ABF80)
+    vehicle_node_t(const vehicle_node_t& that);   // ??0vehicle_node_t@@QAE@ABU0@@Z (g.o 0x4AC1C0)
+    vehicle_node_t& operator=(const vehicle_node_t& rhs);  // ??4vehicle_node_t@@QAEAAU0@ABU0@@Z (g.o 0x4AC310)
 };
 static_assert(sizeof(vehicle_node_t) == 0x40, "vehicle_node_t size mismatch");
 
@@ -609,6 +613,10 @@ static_assert(sizeof(vehicle_node_t) == 0x40, "vehicle_node_t size mismatch");
 struct debug_sphere {
     float x, y, z, radius;  // +0x00
     float color[4];         // +0x10
+
+    debug_sphere();                                   // ??0debug_sphere@@QAE@XZ (g.o 0x4AC060)
+    debug_sphere(const math::Position3& center, float _radius,
+                 const Color& _color);                // ??0debug_sphere@@QAE@ABVPosition3@math@@MABVColor@@@Z (g.o 0x4AC070)
 };
 extern ae_vector<debug_sphere> debug_spheres;  // g.o 0xED2A98
 extern int render;                             // g.o 0xDD725C
@@ -2834,6 +2842,10 @@ struct debug_aabb {
     math::Position3 bmin;  // +0x00
     math::Position3 bmax;  // +0x10
     float color[4];        // +0x20
+
+    debug_aabb() {}
+    debug_aabb(const math::Position3& _bmin, const math::Position3& _bmax,
+               const Color& _color);  // ??0debug_aabb@@QAE@ABVPosition3@math@@0ABVColor@@@Z (g.o 0x4AC140)
 };
 extern ae_vector<debug_aabb> debug_aabbs;        // g.o
 void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)

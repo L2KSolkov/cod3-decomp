@@ -1607,6 +1607,15 @@ void Cmd_Init()
 // ============================================================================
 // PadAliasMgr - vehicle/context button & stick alias tables (PadAliasMgr.cpp)
 // ============================================================================
+enum EPadAliasContext : int32_t {
+    kPadAliasCtxVehicle = 0x0,
+    kPadAliasCtxVehicleTank = 0x1,
+    kPadAliasCtxOnFoot = 0x2,
+    kPadAliasCtxCount = 0x3,
+    kPadAliasCtxMin = 0x0,
+    kPadAliasCtxMax = 0x2,
+    kPadAliasCtxInvalid = -1,
+};
 enum EPadAliasButton {
     kPadAliasButtonInvalid = -1,
     kPadAliasButtonGas = 0,
@@ -1715,12 +1724,22 @@ public:
     };
     Context mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
     static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
+    static PadAliasMgr* Inst();  // ?Inst@PadAliasMgr@@SAPAV1@XZ (g.o 0x4ABF30)
+    Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
     void WriteBindings(int f);  // ?WriteBindings@PadAliasMgr@@QAEXH@Z (game.o 0x62B520)
 };
 static_assert(sizeof(PadAliasMgr::Context) == 0x148, "PadAliasMgr::Context size mismatch");
 static_assert(sizeof(PadAliasMgr) == 0x3D8, "PadAliasMgr size mismatch");
 PadAliasMgr* PadAliasMgr::sInst = nullptr;
+PadAliasMgr* PadAliasMgr::Inst()
+{
+    return PadAliasMgr::sInst;
+}
+PadAliasMgr::Context& PadAliasMgr::GetCtx(EPadAliasContext ctxIndex)
+{
+    return mCtx[ctxIndex];
+}
 
 extern int LocalClient_ClientToPort(int client);  // cl.o
 extern int cvar_modifiedFlags;  // ?cvar_modifiedFlags@@3HA (core.o @ 0xEF8194)

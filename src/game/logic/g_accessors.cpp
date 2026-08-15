@@ -12,6 +12,7 @@
 #include <intrin.h>
 #include <float.h>
 #include <math.h>
+#include <new>
 #include <stdint.h>
 
 // ============================================================================
@@ -1577,3 +1578,130 @@ TaskFunctor1<T, U>::~TaskFunctor1()
 }
 template struct TaskFunctor1<AnimationUpdateTask, float>;
 template struct TaskFunctor1<XAnimUpdateTask, float>;
+
+// ============================================================================
+// Batch 24: vehicle/debug/scr ctors + container template instantiations
+// ============================================================================
+
+// scr_animscript_t (g.o 0x4ABF00 / 0x4ABF20)
+scr_animscript_t::scr_animscript_t()
+{
+    new (data) Broc::string((Broc::string::Block*)nullptr);
+}
+scr_animscript_t::~scr_animscript_t()
+{
+    ((Broc::string*)data)->~string();
+}
+
+// vehSqr (g.o 0x4ABF60)
+float vehSqr(float x)
+{
+    return x * x;
+}
+
+// vehicle_node_t (g.o 0x4ABF80 / 0x4AC1C0 / 0x4AC310)
+vehicle_node_t::vehicle_node_t()
+{
+    new (&mName) Broc::string((Broc::string::Block*)nullptr);
+    new (&mTarget) Broc::string((Broc::string::Block*)nullptr);
+    new (&script_noteworthy) Broc::string((Broc::string::Block*)nullptr);
+}
+vehicle_node_t::vehicle_node_t(const vehicle_node_t& that)
+{
+    new (&mName) Broc::string(that.mName);
+    new (&mTarget) Broc::string(that.mTarget);
+    speed = that.speed;
+    lookAhead = that.lookAhead;
+    new (&script_noteworthy) Broc::string(that.script_noteworthy);
+    origin[0] = that.origin[0];
+    origin[1] = that.origin[1];
+    origin[2] = that.origin[2];
+    dir[0] = that.dir[0];
+    dir[1] = that.dir[1];
+    dir[2] = that.dir[2];
+    angles[0] = that.angles[0];
+    angles[1] = that.angles[1];
+    angles[2] = that.angles[2];
+    length = that.length;
+    unsigned int dst = (unsigned int)nextIdx;
+    dst = ((unsigned int)that.nextIdx & 0x3FFF) | (dst & ~0x3FFF);
+    dst = ((unsigned int)that.nextIdx & 0xFFFC000) | (dst & ~0xFFFC000);
+    dst = ((unsigned int)that.nextIdx & 0x30000000) | (dst & ~0x30000000);
+    dst = ((unsigned int)that.nextIdx & 0x3FFFFFFF) | (dst & ~0x3FFFFFFF);
+    nextIdx = (int)dst;
+}
+vehicle_node_t& vehicle_node_t::operator=(const vehicle_node_t& rhs)
+{
+    mName = rhs.mName;
+    mTarget = rhs.mTarget;
+    speed = rhs.speed;
+    lookAhead = rhs.lookAhead;
+    script_noteworthy = rhs.script_noteworthy;
+    origin[0] = rhs.origin[0];
+    origin[1] = rhs.origin[1];
+    origin[2] = rhs.origin[2];
+    dir[0] = rhs.dir[0];
+    dir[1] = rhs.dir[1];
+    dir[2] = rhs.dir[2];
+    angles[0] = rhs.angles[0];
+    angles[1] = rhs.angles[1];
+    angles[2] = rhs.angles[2];
+    length = rhs.length;
+    unsigned int dst = (unsigned int)nextIdx;
+    dst = ((unsigned int)rhs.nextIdx & 0x3FFF) | (dst & ~0x3FFF);
+    dst = ((unsigned int)rhs.nextIdx & 0xFFFC000) | (dst & ~0xFFFC000);
+    dst = ((unsigned int)rhs.nextIdx & 0x30000000) | (dst & ~0x30000000);
+    dst = ((unsigned int)rhs.nextIdx & 0x3FFFFFFF) | (dst & ~0x3FFFFFFF);
+    nextIdx = (int)dst;
+    return *this;
+}
+
+// debug render primitives (g.o 0x4AC060-0x4AC140)
+debug_sphere::debug_sphere()
+{
+    radius = 0.0f;
+}
+debug_sphere::debug_sphere(const math::Position3& center, float _radius,
+                           const Color& _color)
+{
+    x = center.v.m128_f32[0];
+    y = center.v.m128_f32[1];
+    z = center.v.m128_f32[2];
+    radius = _radius;
+    color[0] = _color.r;
+    color[1] = _color.g;
+    color[2] = _color.b;
+    color[3] = _color.a;
+}
+debug_aabb::debug_aabb(const math::Position3& _bmin,
+                       const math::Position3& _bmax, const Color& _color)
+{
+    bmin.v = _bmin.v;
+    bmax.v = _bmax.v;
+    color[0] = _color.r;
+    color[1] = _color.g;
+    color[2] = _color.b;
+    color[3] = _color.a;
+}
+
+// tagInfo_t ctor (g.o 0x4AC460)
+tagInfo_t::tagInfo_t()
+{
+    name.mHash = 0;
+}
+
+// Explicit template instantiations (g.o 0x4AC4A0-0x4ACE80)
+class ae_heap_base;
+class PhysData;
+template class ae_sized_array<ae_heap_base*, 32>;
+template class ae_sized_array<Entity*, 4096>;
+template class DbLinkedHandle<EntityHandleDb, Entity>;
+template class ae_fixed_string<64, unsigned char>;
+template class ae_fixed_string<256, unsigned short>;
+template class ae_fixed_string<32, unsigned char>;
+template class IVPointer<XModel>;
+template class IVPointer<PhysData>;
+template class InplaceVector<math::Mat43::Packed>;
+template class InplaceVector<XBoneHierarchy>;
+template class InplaceVector<nglMesh*>;
+template class InplaceVector<XAnimEntry>;

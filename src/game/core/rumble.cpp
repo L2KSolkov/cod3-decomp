@@ -636,3 +636,7 @@ void RumbleEffect::Initialize()
 
 #undef RUMBLE_RANGE_ASSERT
 #undef RUMBLE_VALUE_ASSERT
+
+// Bitmask<unsigned int> accessors (g.o 0x4ACD50-0x4ACDF0; emitted here
+// because Bitmask is a core_systems.h type)
+template class Bitmask<unsigned int>;
