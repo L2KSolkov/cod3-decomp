@@ -2799,7 +2799,8 @@ struct gdDecal {
     void*  level3_ng_texture;  // +0x20
 };
 static_assert(sizeof(gdDecal) == 0x24, "gdDecal size mismatch");
-struct DynamicDecalMgr {
+class DynamicDecalMgr {
+public:
     static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A @ 0xF74478
     static DynamicDecalMgr* Inst();  // ?Inst@DynamicDecalMgr@@SAPAV1@XZ (g.o 0x4A9E70)
     void Add(void* texture, float zBias, bool alphaBlend, int maxNum,
@@ -3748,7 +3749,8 @@ extern void SubStr(char* oBuff, int* oLen, const char* src, int begin,
 }
 
 
-struct rb_extra_info {
+class rb_extra_info {
+public:
     void* m_rb;              // +0x00 rb_vehicle*
     uint8_t _pad04[0x40 - 0x04];
     void* m_gjk_geom_list;   // +0x40
@@ -3813,7 +3815,6 @@ struct vehicleVarConfig_t {
 extern vehicleVarConfig_t sVehicleVarConfig[27];  // g.o @ 0xDD7608
 // rb_vehicle is a class in the binary (QAV1/PAV1 manglings); shared view.
 class vehicle_rb_parameter;
-class rb_extra_info;
 class rigid_body;
 struct rigid_body_constraint {
     rigid_body* b1;                 // +0x00

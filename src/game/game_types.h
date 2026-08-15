@@ -120,7 +120,8 @@ static_assert(offsetof(tagInfo_t, index) == 0x0C, "tagInfo_t::index offset misma
 
 // Inplace vector
 template <typename T>
-struct InplaceVector {
+class InplaceVector {
+public:
     unsigned int mSize;  // +0x00
     T*           mList;  // +0x04
 
