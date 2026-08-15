@@ -343,6 +343,9 @@ public:
     DObj*    mDObj;                               // +0x23C
     EntityNotifySet* mNotifySet;                  // +0x240
     EntityNotifySet* GetNotifySet();              // ?GetNotifySet@Entity@@QAEPAVEntityNotifySet@@XZ (g.o 0x4A6620)
+    DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;  // ?GetHandle@Entity@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ (g.o 0x4A67B0)
+    void SetEntityArrayIndex(int v);              // ?SetEntityArrayIndex@Entity@@QAEXH@Z (g.o 0x4A67D0)
+    int GetEntityArrayIndex() const;              // ?GetEntityArrayIndex@Entity@@QBEHXZ (g.o 0x4A67F0)
     ScriptEventHandler* mScriptEventHandler;      // +0x244
     biped_phys_info* mBPInfo;                     // +0x248
     IVPointer<Destructible> mDestructible;        // +0x24C (8 bytes)

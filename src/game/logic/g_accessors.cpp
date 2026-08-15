@@ -451,6 +451,48 @@ math::Position3 math::operator+(const math::Position3& _a, const math::Dir3& _b)
     r.v = _mm_add_ps(_a.v, _b.v);
     return r;
 }
+math::Position3 math::operator+(const math::Position3& _a, const math::Position3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+math::Vector4 math::operator+(const math::Vector4& _a, const math::Vector4& _b)
+{
+    math::Vector4 r;
+    r.v = _mm_add_ps(_a.v, _b.v);
+    return r;
+}
+math::Dir3 math::operator-(const math::Dir3& _a, const math::Position3& _b)
+{
+    math::Dir3 r;
+    r.v = _mm_sub_ps(_a.v, _b.v);
+    return r;
+}
+math::Position3 math::operator-(const math::Position3& _a, const math::Dir3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_sub_ps(_a.v, _b.v);
+    return r;
+}
+math::Position3 math::operator-(const math::Position3& _a, const math::Position3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_sub_ps(_a.v, _b.v);
+    return r;
+}
+math::Dir3 math::operator/(const math::Dir3& _a, float _b)
+{
+    math::Dir3 r;
+    r.v = _mm_div_ps(_a.v, _mm_shuffle_ps(_mm_set_ss(_b), _mm_set_ss(_b), 0));
+    return r;
+}
+
+// Vector4(const Constant&) (g.o 0x4A5F80)
+math::Vector4::Vector4(const math::Vector4::Constant& _c)
+{
+    v = _mm_loadu_ps(&_c.x);
+}
 
 // Broc::vector::Set (g.o 0x4A5DE0)
 void Broc::vector::Set(float X, float Y, float Z)
@@ -516,6 +558,22 @@ DestructibleBankManager* DestructibleBankManager::Inst()
 EntityNotifySet* Entity::GetNotifySet()
 {
     return mNotifySet;
+}
+
+// Entity handle / array-index accessors (g.o 0x4A67B0-0x4A67F0)
+DbLinkedHandle<EntityHandleDb, Entity> Entity::GetHandle() const
+{
+    DbLinkedHandle<EntityHandleDb, Entity> result;
+    result.mHandle = mHandle.mHandle;
+    return result;
+}
+void Entity::SetEntityArrayIndex(int v)
+{
+    mEntityArrayIndex = (int16_t)v;
+}
+int Entity::GetEntityArrayIndex() const
+{
+    return mEntityArrayIndex;
 }
 
 // EntityState::GetLerpAngles (g.o 0x4A5750)

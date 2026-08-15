@@ -161,6 +161,12 @@ bool operator==(const Position3& _a, const Position3& _b);
 bool operator!=(const Position3& _a, const Position3& _b);
 Dir3 operator+(const Dir3& _a, const Position3& _b);
 Position3 operator+(const Position3& _a, const Dir3& _b);
+Position3 operator+(const Position3& _a, const Position3& _b);  // ??Hmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6630)
+Vector4 operator+(const Vector4& _a, const Vector4& _b);        // ??Hmath@@YA?AVVector4@0@ABV10@0@Z (g.o 0x4A6670)
+Dir3 operator-(const Dir3& _a, const Position3& _b);            // ??Gmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z (g.o 0x4A66B0)
+Position3 operator-(const Position3& _a, const Dir3& _b);       // ??Gmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z (g.o 0x4A66F0)
+Position3 operator-(const Position3& _a, const Position3& _b);  // ??Gmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6730)
+Dir3 operator/(const Dir3& _a, float _b);                       // ??Kmath@@YA?AVDir3@0@ABV10@M@Z (g.o 0x4A6770)
 
 // ============================================================================
 // Vector4 — 4-component float vector (16 bytes)
@@ -195,9 +201,14 @@ public:
         const Packed& operator=(const Vector4& v);  // ??4Packed@Vector4@math@@QAEABU012@ABV12@@Z (render.o 0x6E6060)
     };
 
+    struct Constant {
+        float x, y, z, w;
+    };
+
     Vector4() {}
     Vector4(__m128 _v) : v(_v) {}
     Vector4(const Vector4& other) : v(other.v) {}  // implicit copy
+    Vector4(const Vector4::Constant& _c);  // ??0Vector4@math@@QAE@ABUConstant@01@@Z (g.o 0x4A5F80)
     Vector4(const Dir3& _v);  // ??0Vector4@math@@QAE@ABVDir3@1@@Z
     Vector4(const Dir3& _v, float _w);  // ??0Vector4@math@@QAE@ABVDir3@1@M@Z (render.o 0x6E6110)
     Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
