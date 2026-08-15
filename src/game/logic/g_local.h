@@ -1681,7 +1681,8 @@ struct BrocExports {
     void (*mGetWeaponName)(unsigned int, Broc::string&);  // +0x3CC
     uint8_t _pad3D0[0x3E0 - 0x3D0];
     bool (*mPositionWouldTelefrag)(const Broc::vector&);  // +0x3E0
-    uint8_t _pad3E4[0x428 - 0x3E4];
+    uint8_t _pad3E4[0x424 - 0x3E4];
+    void (*mRespawnVehicle)(unsigned int);            // +0x424
     void (*mSetCompassVisibilty)(unsigned int, bool); // +0x428
     int (*mSpawnButtonPressed)(unsigned int);         // +0x42C
     int (*mNextButtonPressed)(unsigned int);          // +0x430
@@ -1789,9 +1790,46 @@ struct BrocExports {
     int (*mGetFullClipAmmoCount)(unsigned int,
                                  const Broc::string&);      // +0xAEC
     int (*mGetMaxAmmo)(unsigned int, const Broc::string&);  // +0xAF0
-    uint8_t _padAF4[0xB70 - 0xAF4];
+    void (*mAttachPath)(unsigned int, const Broc::vehiclenode&, int);  // +0xAF4
+    void (*mStartPath)(unsigned int);                       // +0xAF8
+    void (*mEndPath)(unsigned int);                         // +0xAFC
+    void (*mSetSwitchNode)(unsigned int, const Broc::vehiclenode&,
+                           const Broc::vehiclenode&);       // +0xB00
+    void (*mSetWaitNode)(unsigned int, const Broc::vehiclenode&);  // +0xB04
+    void (*mSetWaitSpeed)(unsigned int, float);             // +0xB08
+    void (*mSetSpeed)(unsigned int, float, float);          // +0xB0C
+    void (*mResumeSpeed)(unsigned int, float);              // +0xB10
+    void (*mJoltBody)(unsigned int, const Broc::vector&, float, float,
+                      float);                               // +0xB14
+    void (*mFreeVehicle)(unsigned int);                     // +0xB18
+    void (*mGetWheelSurface)(unsigned int, unsigned int, Broc::string&);  // +0xB1C
+    float (*mGetSpeedMph)(unsigned int);                    // +0xB20
+    unsigned int (*mGetVehicleOwner)(unsigned int);         // +0xB24
+    void (*mSetMaxSpeed)(unsigned int, float);              // +0xB28
+    void (*mSetBrake)(unsigned int, bool);                  // +0xB2C
+    void (*mSetStabilityEnabled)(unsigned int, bool);       // +0xB30
+    bool (*mIsVehicleFlipped)(unsigned int);                // +0xB34
+    void (*mSetVehicleGoal)(unsigned int, const Broc::vector&, float,
+                            float);                         // +0xB38
+    void (*mUpdateNPCtoVehicleMovement)();                  // +0xB3C
+    void (*mStartEngineSound)(unsigned int);                // +0xB40
+    void (*mStopEngineSound)(unsigned int);                 // +0xB44
+    void (*mSetVehicleMountPos)(unsigned int, int);        // +0xB48
+    void (*mMakeVehicleUsable)(unsigned int);               // +0xB4C
+    void (*mMakeVehicleUnusable)(unsigned int);             // +0xB50
+    void (*mEjectDriver)(unsigned int);                     // +0xB54
+    void (*mAddVehicleToCompass)(unsigned int, bool);       // +0xB58
+    void (*mRemoveVehicleFromCompass)(unsigned int);        // +0xB5C
+    void (*mSetTurretRotRate)(unsigned int, float);         // +0xB60
+    void (*mSetTurretTargetVec)(unsigned int, const Broc::vector&, bool);  // +0xB64
+    void (*mSetTurretTargetEnt)(unsigned int, unsigned int,
+                                const Broc::vector&, bool); // +0xB68
+    void (*mClearTurretTarget)(unsigned int, bool);         // +0xB6C
     void (*mFireTurret)(unsigned int ent, bool fire);      // +0xB70
-    uint8_t _padB74[0xB88 - 0xB74];
+    bool (*mIsTurretReady)(unsigned int);                   // +0xB74
+    void (*mGetTurretRelAngles)(unsigned int, Broc::vector&, bool);  // +0xB78
+    void (*mSetVehicleName)(unsigned int, const Broc::string&);  // +0xB7C
+    uint8_t _padB80[0xB88 - 0xB80];
     void (*mToggleCloth)(bool);                             // +0xB88
     uint8_t _padB8C[0xC50 - 0xB8C];
     void (*mAnimInitialize)();  // +0xC50
@@ -2061,7 +2099,9 @@ struct vehicle_info_t {
     float   boundsHeight;           // +0x78
     float   boundsLength;           // +0x7C
     int     health;                 // +0x80
-    uint8_t _pad84[0x180 - 0x84];
+    uint8_t _pad84[0x174 - 0x84];
+    float   turretRotRate;          // +0x174
+    uint8_t _pad178[0x180 - 0x178];
     float   turretGunnerVertSpanUp; // +0x180
     float   turretGunnerVertSpanDown; // +0x184
     float   engineSndSpeed;         // +0x188

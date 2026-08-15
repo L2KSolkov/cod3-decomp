@@ -3696,6 +3696,38 @@ void SetStabilityEnabled(unsigned int entityHandleVal,
 bool IsVehicleFlipped(unsigned int entityHandleVal);  // 0x5D90D0
 void SetVehicleGoal(unsigned int vehHandleVal, const Broc::vector& tgtPos,
                     float goalRadius, float goalSpeed);  // 0x5D9190
+void StartEngineSound(unsigned int entityHandleVal);  // 0x5D9400
+void StopEngineSound(unsigned int entityHandleVal);  // 0x5D94F0
+void SetVehicleMountPos(unsigned int entityHandleVal,
+                        int mountPos);  // 0x5D95E0 (H mangle)
+void MakeVehicleUsable(unsigned int entityHandleVal);  // 0x5D9730
+void MakeVehicleUnusable(unsigned int entityHandleVal);  // 0x5D97D0
+void EjectDriver(unsigned int entityHandleVal);  // 0x5D9870
+void AddVehicleToCompass(unsigned int entityHandleVal,
+                         bool asEnemy);  // 0x5D9970
+void RemoveVehicleFromCompass(unsigned int entityHandleVal);  // 0x5D9A70
+void RespawnVehicle(unsigned int entityHandleVal);  // 0x5D9B60
+void SetTurretRotRate(unsigned int entityHandleVal,
+                      float rotRate);  // 0x5D9BA0
+void SetTurretTargetVec(unsigned int entityHandleVal,
+                        const Broc::vector& tgtPos,
+                        bool gunner);  // 0x5D9CF0
+void SetTurretTargetEnt(unsigned int entityHandleVal,
+                        unsigned int targeTHandleValVal,
+                        const Broc::vector& tgtOff,
+                        bool gunner);  // 0x5D9EA0 (ABUvector mangle)
+void ClearTurretTarget(unsigned int entityHandleVal,
+                       bool gunner);  // 0x5DA0B0
+bool IsTurretReady(unsigned int entityHandleVal);  // 0x5DA8C0
+void SetVehicleName(unsigned int entityHandleVal,
+                    const Broc::string& name);  // 0x5DA9D0
+void GetTurretRelAngles(unsigned int entityHandleVal, Broc::vector& vec,
+                        bool gunner);  // 0x5DAAC0
+void InitVehicle();  // 0x5DABF0 (void mangle)
+void AttachPath(unsigned int entityHandleVal,
+                const Broc::vehiclenode& node,
+                int attach_mode);  // 0x5D7930
+void FireTurret(unsigned int entityHandleVal, bool gunner);  // 0x5DA230
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -3731,6 +3763,7 @@ static void nullsub_65(void* /*actor*/) {}
 static void nullsub_106(void* /*actor*/, int /*eState*/) {}
 static void nullsub_79(sentient_s* /*pSelf*/, sentient_s* /*pEnemy*/,
                        int /*bNotify*/) {}
+static void nullsub_100() {}
 
 // scr.o batch 45 helpers (vehicle follow / attach)
 extern bool VEH_AcquirePlayerFollowSlot(Entity* vehicle,
@@ -20727,6 +20760,828 @@ void BrocSys::SetVehicleGoal(unsigned int vehHandleVal,
             ctrl->SetScriptTarget(*rbveh, v10, goalRadius, goalSpeed);
         }
     }
+}
+
+// ============================================================================
+// scr.o batch 58 - vehicle misc / InitVehicle
+// ============================================================================
+
+// ea: 0x005D9400
+void BrocSys::StartEngineSound(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            scr_vehicle->playEngineSound = 1;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 721;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v5 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to StartEngineSound",
+                        v5))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 715;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to StartEngineSound"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D94F0
+void BrocSys::StopEngineSound(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            scr_vehicle->playEngineSound = 0;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 740;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v5 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to StopEngineSound",
+                        v5))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 734;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to StopEngineSound"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D95E0
+void BrocSys::SetVehicleMountPos(unsigned int entityHandleVal,
+                                 int mountPos)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v2].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 753;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetVehicleMountPos"))
+            __debugbreak();
+    }
+    if (mountPos > 2)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 754;
+        AeAssert::gCurrentExpr =
+            "mountPos == VEHPOS_DRIVER || mountPos == VEHPOS_GUNNER || mountPos == VEHPOS_PASSENGER_1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad vehicle mount position."))
+            __debugbreak();
+    }
+    if (mObject != nullptr)
+    {
+        if (mObject->scr_vehicle == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 758;
+            AeAssert::gCurrentExpr = "ent->scr_vehicle";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Non-vehicle passed to SetVehicleMountPos"))
+                __debugbreak();
+        }
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            vehicle_info_t* Info = VEH_GetInfo(scr_vehicle->infoIdx);
+            if (Info != nullptr && mountPos <= 2)
+                Info->spClientSeat = (int)mountPos;
+        }
+    }
+}
+
+// ea: 0x005D9730
+void BrocSys::MakeVehicleUsable(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        mObject->spawnflags |= 1u;
+        mObject->r.contents = 0x200000 | mObject->r.contents;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 773;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to MakeVehicleUsable"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D97D0
+void BrocSys::MakeVehicleUnusable(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        mObject->spawnflags &= ~1u;
+        mObject->r.contents = mObject->r.contents & 0xFFDFFFFF;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 787;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to MakeVehicleUnusable"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D9870
+void BrocSys::EjectDriver(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* v2;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (v2 = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        unsigned int mVal = v2->r.mOwner.mHandle.mVal;
+        unsigned int v4 = mVal & 0xFFF;
+        if (v4 < 0x540
+            && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+            && EntityHandleDb::sInst.mElements[v4].mObject != nullptr)
+        {
+            unsigned int v6 = mVal & 0xFFF;
+            Entity* mObject = nullptr;
+            if (v6 < 0x540
+                && mVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+            if (mObject->client != nullptr)
+                VEH_UnlinkPlayer(mObject, true);
+        }
+        else
+        {
+            Scr_Error(va("No driver to eject"));
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 804;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to EjectDriver"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D9970
+void BrocSys::AddVehicleToCompass(unsigned int entityHandleVal, bool asEnemy)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            scr_vehicle->drawOnCompass = 1;
+            scr_vehicle->drawAsEnemy = asEnemy;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 835;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to AddVehicleToCompass",
+                        v6))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 829;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to AddVehicleToCompass"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D9A70
+void BrocSys::RemoveVehicleFromCompass(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            scr_vehicle->drawOnCompass = 0;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 855;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v5 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to RemoveVehicleFromCompass",
+                        v5))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 849;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Bad entity passed to RemoveVehicleFromCompass"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D9B60
+void BrocSys::RespawnVehicle(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        VEH_RespawnVehicle(mObject);
+}
+
+// ea: 0x005D9BA0
+void BrocSys::SetTurretRotRate(unsigned int entityHandleVal, float rotRate)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v2].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 880;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetTurretRotRate"))
+            __debugbreak();
+    }
+    if (IS_NAN(rotRate))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 881;
+        AeAssert::gCurrentExpr = "!IS_NAN(rotRate)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if (mObject != nullptr)
+    {
+        if (mObject->scr_vehicle == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 885;
+            AeAssert::gCurrentExpr = "ent->scr_vehicle";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Non-vehicle passed to SetTurretRotRate"))
+                __debugbreak();
+        }
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            vehicle_info_t* Info = VEH_GetInfo(scr_vehicle->infoIdx);
+            if (Info != nullptr)
+                Info->turretRotRate = rotRate;
+        }
+    }
+}
+
+// ea: 0x005D9CF0
+void BrocSys::SetTurretTargetVec(unsigned int entityHandleVal,
+                                 const Broc::vector& tgtPos, bool gunner)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (mObject->health <= 0)
+            {
+                Scr_Error(
+                    "Vehicle must have health to control the turret");
+            }
+            if (gunner)
+            {
+                scr_vehicle->hasGunnerTarget = 1;
+                scr_vehicle->mGunnerTargetEnt.mHandle.mVal = 0;
+                scr_vehicle->gunnerTargetOrigin[0] = tgtPos.x;
+                scr_vehicle->gunnerTargetOrigin[1] = tgtPos.y;
+                scr_vehicle->gunnerTargetOrigin[2] = tgtPos.z;
+                scr_vehicle->gunnerTargetOffset[0] = 0.0f;
+                scr_vehicle->gunnerTargetOffset[1] = 0.0f;
+                scr_vehicle->gunnerTargetOffset[2] = 0.0f;
+            }
+            else
+            {
+                scr_vehicle->hasTarget = 1;
+                scr_vehicle->mTargetEnt.mHandle.mVal = 0;
+                scr_vehicle->targetOrigin[0] = tgtPos.x;
+                scr_vehicle->targetOrigin[1] = tgtPos.y;
+                scr_vehicle->targetOrigin[2] = tgtPos.z;
+                scr_vehicle->targetOffset[0] = 0.0f;
+                scr_vehicle->targetOffset[1] = 0.0f;
+                scr_vehicle->targetOffset[2] = 0.0f;
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 906;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v7 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetTurretTargetVec",
+                        v7))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 900;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetTurretTargetVec"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D9EA0
+void BrocSys::SetTurretTargetEnt(unsigned int entityHandleVal,
+                                 unsigned int targeTHandleValVal,
+                                 const Broc::vector& tgtOff, bool gunner)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* v5;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (v5 = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = v5->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (v5->health <= 0)
+            {
+                Scr_Error(
+                    "Vehicle must have health to control the turret");
+            }
+            unsigned int v10 = targeTHandleValVal & 0xFFF;
+            if (v10 < 0x540
+                && targeTHandleValVal >> 12
+                       == EntityHandleDb::sInst.mElements[v10].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v10].mObject;
+                if (mObject != nullptr)
+                {
+                    if (gunner)
+                    {
+                        scr_vehicle->hasGunnerTarget = 1;
+                        scr_vehicle->mGunnerTargetEnt.mHandle.mVal =
+                            mObject->mHandle.mHandle.mVal;
+                        if (!(tgtOff.x == sNaN && tgtOff.y == sNaN
+                              && tgtOff.z == sNaN))
+                        {
+                            scr_vehicle->gunnerTargetOffset[0] = tgtOff.x;
+                            scr_vehicle->gunnerTargetOffset[1] = tgtOff.y;
+                            scr_vehicle->gunnerTargetOffset[2] = tgtOff.z;
+                        }
+                        else
+                        {
+                            scr_vehicle->gunnerTargetOffset[0] = 0.0f;
+                            scr_vehicle->gunnerTargetOffset[1] = 0.0f;
+                            scr_vehicle->gunnerTargetOffset[2] = 0.0f;
+                        }
+                    }
+                    else
+                    {
+                        scr_vehicle->hasTarget = 1;
+                        scr_vehicle->mTargetEnt.mHandle.mVal =
+                            mObject->mHandle.mHandle.mVal;
+                        if (!(tgtOff.x == sNaN && tgtOff.y == sNaN
+                              && tgtOff.z == sNaN))
+                        {
+                            scr_vehicle->targetOffset[0] = tgtOff.x;
+                            scr_vehicle->targetOffset[1] = tgtOff.y;
+                            scr_vehicle->targetOffset[2] = tgtOff.z;
+                        }
+                        else
+                        {
+                            scr_vehicle->targetOffset[0] = 0.0f;
+                            scr_vehicle->targetOffset[1] = 0.0f;
+                            scr_vehicle->targetOffset[2] = 0.0f;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 941;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v8 = v5->mClassName.mBlock != nullptr
+                                     ? (const char*)(v5->mClassName.mBlock + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetTurretTargetEnt",
+                        v8))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 935;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetTurretTargetEnt"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DA0B0
+void BrocSys::ClearTurretTarget(unsigned int entityHandleVal, bool gunner)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (gunner)
+            {
+                scr_vehicle->hasGunnerTarget = 0;
+                scr_vehicle->mGunnerTargetEnt.mHandle.mVal = 0;
+                scr_vehicle->gunnerTargetOrigin[0] = 0.0f;
+                scr_vehicle->gunnerTargetOrigin[1] = 0.0f;
+                scr_vehicle->gunnerTargetOrigin[2] = 0.0f;
+                scr_vehicle->gunnerTargetOffset[0] = 0.0f;
+                scr_vehicle->gunnerTargetOffset[1] = 0.0f;
+                scr_vehicle->gunnerTargetOffset[2] = 0.0f;
+            }
+            else
+            {
+                scr_vehicle->hasTarget = 0;
+                scr_vehicle->mTargetEnt.mHandle.mVal = 0;
+                scr_vehicle->targetOrigin[0] = 0.0f;
+                scr_vehicle->targetOrigin[1] = 0.0f;
+                scr_vehicle->targetOrigin[2] = 0.0f;
+                scr_vehicle->targetOffset[0] = 0.0f;
+                scr_vehicle->targetOffset[1] = 0.0f;
+                scr_vehicle->targetOffset[2] = 0.0f;
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 986;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to ClearTurretTarget",
+                        v6))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 980;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to ClearTurretTarget"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DA8C0
+bool BrocSys::IsTurretReady(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (mObject->active != 2)
+            {
+                Scr_Error(
+                    "Must be called on a player controlled vehicle");
+            }
+            return scr_vehicle->fireTime <= 0;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 1203;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to IsTurretReady", v6))
+                    __debugbreak();
+            }
+            return false;
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 1197;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to IsTurretReady"))
+            __debugbreak();
+        return false;
+    }
+}
+
+// ea: 0x005DA9D0
+void BrocSys::SetVehicleName(unsigned int entityHandleVal,
+                             const Broc::string& name)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            scr_vehicle->mProperName = name;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 1228;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetVehicleName", v6))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 1222;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetVehicleName"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DAAC0
+void BrocSys::GetTurretRelAngles(unsigned int entityHandleVal,
+                                 Broc::vector& vec, bool gunner)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            math::Position3* src = gunner
+                                       ? &scr_vehicle->next.mGunnerAngles
+                                       : &scr_vehicle->next.mTurretAngles;
+            vec.x = src->v.m128_f32[0];
+            vec.y = src->v.m128_f32[1];
+            vec.z = src->v.m128_f32[2];
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 1247;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v7 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to GetTurretAngles",
+                        v7))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 1241;
+        AeAssert::gCurrentExpr = "pEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to GetTurretAngles"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DABF0
+void BrocSys::InitVehicle()
+{
+    gpBrocAPI->mBrocExports.mAttachPath = BrocSys::AttachPath;
+    gpBrocAPI->mBrocExports.mStartPath = BrocSys::StartPath;
+    gpBrocAPI->mBrocExports.mEndPath = BrocSys::EndPath;
+    gpBrocAPI->mBrocExports.mSetSwitchNode = BrocSys::SetSwitchNode;
+    gpBrocAPI->mBrocExports.mSetWaitNode = BrocSys::SetWaitNode;
+    gpBrocAPI->mBrocExports.mSetWaitSpeed = BrocSys::SetWaitSpeed;
+    gpBrocAPI->mBrocExports.mSetSpeed = BrocSys::SetSpeed;
+    gpBrocAPI->mBrocExports.mResumeSpeed = BrocSys::ResumeSpeed;
+    gpBrocAPI->mBrocExports.mJoltBody = BrocSys::JoltBody;
+    gpBrocAPI->mBrocExports.mFreeVehicle = BrocSys::FreeVehicle;
+    gpBrocAPI->mBrocExports.mGetWheelSurface = BrocSys::GetWheelSurface;
+    gpBrocAPI->mBrocExports.mGetSpeedMph = BrocSys::GetSpeedMph;
+    gpBrocAPI->mBrocExports.mGetVehicleOwner = BrocSys::GetVehicleOwner;
+    gpBrocAPI->mBrocExports.mSetMaxSpeed = BrocSys::SetMaxSpeed;
+    gpBrocAPI->mBrocExports.mSetBrake = BrocSys::SetBrake;
+    gpBrocAPI->mBrocExports.mSetStabilityEnabled =
+        BrocSys::SetStabilityEnabled;
+    gpBrocAPI->mBrocExports.mIsVehicleFlipped =
+        BrocSys::IsVehicleFlipped;
+    gpBrocAPI->mBrocExports.mSetVehicleGoal = BrocSys::SetVehicleGoal;
+    gpBrocAPI->mBrocExports.mUpdateNPCtoVehicleMovement =
+        (void (*)())nullsub_100;
+    gpBrocAPI->mBrocExports.mStartEngineSound = BrocSys::StartEngineSound;
+    gpBrocAPI->mBrocExports.mStopEngineSound = BrocSys::StopEngineSound;
+    gpBrocAPI->mBrocExports.mSetVehicleMountPos =
+        BrocSys::SetVehicleMountPos;
+    gpBrocAPI->mBrocExports.mMakeVehicleUsable =
+        BrocSys::MakeVehicleUsable;
+    gpBrocAPI->mBrocExports.mMakeVehicleUnusable =
+        BrocSys::MakeVehicleUnusable;
+    gpBrocAPI->mBrocExports.mEjectDriver = BrocSys::EjectDriver;
+    gpBrocAPI->mBrocExports.mAddVehicleToCompass =
+        BrocSys::AddVehicleToCompass;
+    gpBrocAPI->mBrocExports.mRemoveVehicleFromCompass =
+        BrocSys::RemoveVehicleFromCompass;
+    gpBrocAPI->mBrocExports.mSetTurretRotRate =
+        BrocSys::SetTurretRotRate;
+    gpBrocAPI->mBrocExports.mSetTurretTargetVec =
+        BrocSys::SetTurretTargetVec;
+    gpBrocAPI->mBrocExports.mSetTurretTargetEnt =
+        BrocSys::SetTurretTargetEnt;
+    gpBrocAPI->mBrocExports.mClearTurretTarget =
+        BrocSys::ClearTurretTarget;
+    gpBrocAPI->mBrocExports.mFireTurret = BrocSys::FireTurret;
+    gpBrocAPI->mBrocExports.mIsTurretReady = BrocSys::IsTurretReady;
+    gpBrocAPI->mBrocExports.mSetVehicleName = BrocSys::SetVehicleName;
+    gpBrocAPI->mBrocExports.mGetTurretRelAngles =
+        BrocSys::GetTurretRelAngles;
+    gpBrocAPI->mBrocExports.mRespawnVehicle = BrocSys::RespawnVehicle;
 }
 
 // ============================================================================
