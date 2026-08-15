@@ -864,6 +864,7 @@ public:
     void* MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap);  // ?MemAlloc@PakManager@@QAEPAXW4TPakId@@I_N@Z
     bool IsLoaded(TPakId id) const;  // ?IsLoaded@PakManager@@QBE_NW4TPakId@@@Z
     bool IsUnloaded(TPakId id) const;  // ?IsUnloaded@PakManager@@QBE_NW4TPakId@@@Z (streamer.o)
+    bool IsLoading(TPakId id) const;   // ?IsLoading@PakManager@@QBE_NW4TPakId@@@Z (streamer.o)
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     void SetSoundProgress(float t);      // ?SetSoundProgress@PakManager@@QAEXM@Z (streamer.o 0x665710)

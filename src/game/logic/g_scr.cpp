@@ -2863,6 +2863,20 @@ unsigned int SpawnVehicle(const Broc::string& modelname,
                           const Broc::vector& origin,
                           const Broc::vector& angles,
                           TPakInfo pakInfo);  // 0x5CA340
+bool Assert(const char* file, int line, const char* msg);  // 0x5BC890
+bool Warning(const char* file, int line, const char* msg);  // 0x5BC8E0
+void CVarGetString(Broc::string& valueOut, const char* cvarName);  // 0x5BC970
+void CVarSetString(const char* cvarName, const char* value);  // 0x5BC9D0
+void CVarSetInt(const char* cvarName, int iString);  // 0x5BCA50
+void CVarSetFloat(const char* cvarName, float fString);  // 0x5BCAE0
+void GetDifficulty(Broc::string& outStr);  // 0x5BCCA0
+void Lightning(const Broc::vector& source);  // 0x5BCDE0
+void SetMissileActiveTime(float timeSec);  // 0x5BCEA0
+int  ProfTick();  // 0x5BCEF0
+bool IsPakLoaded(TPakInfo handle);  // 0x5BD070
+void SetPakDistance(TPakInfo handle, float dist);  // 0x5BD0D0
+void ClearPakDistance(TPakInfo handle);  // 0x5BD130
+void SyncLoadPak(TPakInfo handle);  // 0x5BD190
 }
 
 static void BrocFree(void* p)
@@ -5744,6 +5758,244 @@ unsigned int BrocSys::SpawnVehicle(const Broc::string& modelname,
         }
         G_FreeEntity(v8, 0);
         return 0;
+    }
+}
+
+// ============================================================================
+// scr.o batch 28 - small BrocSys wrappers (Assert..SyncLoadPak)
+// ============================================================================
+
+namespace BrocSys {
+const char* difficultyStrings[4] = {"easy", "medium", "hard", "fu"};
+}
+
+// ea: 0x005BC890
+bool BrocSys::Assert(const char* file, int line, const char* msg)
+{
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = file;
+    AeAssert::gCurrentLine = line;
+    AeAssert::gCurrentExpr = defaultFileName;
+    return !AeAssert::IsIgnored() && AeAssert::Assert(msg);
+}
+
+// ea: 0x005BC8E0
+bool BrocSys::Warning(const char* file, int line, const char* msg)
+{
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = file;
+    AeAssert::gCurrentLine = line;
+    AeAssert::gCurrentExpr = defaultFileName;
+    return !AeAssert::IsIgnored() && AeAssert::Warning(msg);
+}
+
+// ea: 0x005BC970
+void BrocSys::CVarGetString(Broc::string& valueOut, const char* cvarName)
+{
+    char szVar[128];
+    Cvar_VariableStringBuffer(cvarName, szVar, 128);
+    valueOut = szVar;
+}
+
+// ea: 0x005BC9D0
+void BrocSys::CVarSetString(const char* cvarName, const char* value)
+{
+    char szOutString[1024];
+    int v2 = 0;
+    while (v2 < 1024)
+    {
+        if (value[v2] == 0)
+            break;
+        char v5 = Q_CleanCharacter(value[v2]);
+        szOutString[v2] = v5;
+        if (v5 == 34)
+            szOutString[v2] = 39;
+        ++v2;
+    }
+    Cvar_Register(nullptr, cvarName, value, 4096);
+    Cvar_Set(cvarName, value);
+}
+
+// ea: 0x005BCA50
+void BrocSys::CVarSetInt(const char* cvarName, int iString)
+{
+    char szString[1024];
+    char szOutString[1024];
+    sprintf(szString, "%d", iString);
+    for (int i = 0; i < 1024; ++i)
+    {
+        if (szString[i] == 0)
+            break;
+        char v3 = Q_CleanCharacter(szString[i]);
+        szOutString[i] = v3;
+        if (v3 == 34)
+            szOutString[i] = 39;
+    }
+    Cvar_Register(nullptr, cvarName, szString, 4096);
+    Cvar_Set(cvarName, szString);
+}
+
+// ea: 0x005BCAE0
+void BrocSys::CVarSetFloat(const char* cvarName, float fString)
+{
+    char szString[1024];
+    char szOutString[1024];
+    sprintf(szString, "%f", fString);
+    for (int i = 0; i < 1024; ++i)
+    {
+        if (szString[i] == 0)
+            break;
+        char v3 = Q_CleanCharacter(szString[i]);
+        szOutString[i] = v3;
+        if (v3 == 34)
+            szOutString[i] = 39;
+    }
+    Cvar_Register(nullptr, cvarName, szString, 4096);
+    Cvar_Set(cvarName, szString);
+}
+
+// ea: 0x005BCCA0
+void BrocSys::GetDifficulty(Broc::string& outStr)
+{
+    if ((unsigned int)g_gameskill->integer >= 4u)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2055;
+        AeAssert::gCurrentExpr =
+            "g_gameskill . integer >= DIFFICULTY_EASY && g_gameskill . integer <= DIFFICULTY_FU";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    outStr = BrocSys::difficultyStrings[g_gameskill->integer];
+}
+
+// ea: 0x005BCDE0
+void BrocSys::Lightning(const Broc::vector& source)
+{
+    if (source.x == sNaN && source.y == sNaN && source.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2680;
+        AeAssert::gCurrentExpr = "source.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Lightning called with undefined vector."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005BCEA0
+void BrocSys::SetMissileActiveTime(float timeSec)
+{
+    level.MissleOnlyActiveForTime = timeSec * 1000.0;
+}
+
+// ea: 0x005BCEF0
+int BrocSys::ProfTick()
+{
+    return (int)__rdtsc();
+}
+
+// ea: 0x005BD070
+bool BrocSys::IsPakLoaded(TPakInfo handle)
+{
+    if (handle != kTPakInfoInvalid)
+    {
+        return PakManager::sInst->IsLoaded(
+            *(TPakId*)((char*)handle + 0xB4));
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+    AeAssert::gCurrentLine = 3089;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("IsPakLoaded: invalid pak file!"))
+        __debugbreak();
+    return false;
+}
+
+// ea: 0x005BD0D0
+void BrocSys::SetPakDistance(TPakInfo handle, float dist)
+{
+    if (handle != kTPakInfoInvalid)
+    {
+        PakManager::sInst->SetUserDistance((const PakInfoNode*)handle, dist);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3104;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("SetPakDistance: invalid pak file!"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005BD130
+void BrocSys::ClearPakDistance(TPakInfo handle)
+{
+    if (handle != kTPakInfoInvalid)
+    {
+        PakManager::sInst->ClearUserDistance((const PakInfoNode*)handle);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3117;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("ClearPakDistance: invalid pak file!"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005BD190
+void BrocSys::SyncLoadPak(TPakInfo handle)
+{
+    if (handle != kTPakInfoInvalid)
+    {
+        const PakInfoNode* pak = (const PakInfoNode*)handle;
+        PakManager::sInst->SetUserDistance(pak, 0.0);
+        int v1 = 0;
+        if (!PakManager::sInst->IsLoaded(*(TPakId*)((char*)pak + 0xB4)))
+        {
+            for (;;)
+            {
+                PakManager::sInst->Update(false);
+                if (!PakManager::sInst->IsLoading(
+                        *(TPakId*)((char*)pak + 0xB4)))
+                {
+                    int v2 = v1++;
+                    if (v2 > 10000)
+                        break;
+                }
+                if (PakManager::sInst->IsLoaded(
+                        *(TPakId*)((char*)pak + 0xB4)))
+                    return;
+            }
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 3141;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("Not possible to syncload '%s'!",
+                                     pak->longName.c_str()))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3130;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("SyncLoadPak: invalid pak file!"))
+            __debugbreak();
     }
 }
 
