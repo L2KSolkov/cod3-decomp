@@ -551,7 +551,8 @@ struct actor_s {
     float          fMaxSightDistSqrd;            // +0x8B0
     uint8_t        _pad8B4[0x8CC - 0x8B4];
     sentient_info_array sentientInfo;            // +0x8CC (0xC0 bytes)
-    uint8_t        _pad98C[0xA0C - 0x98C];
+    sentient_s*    pFavoriteEnemy;              // +0x98C
+    uint8_t        _pad990[0xA0C - 0x990];
     DbLinkedHandle<EntityHandleDb, Entity> hVehicle;  // +0xA0C
     uint8_t        _padA10[0xA20 - 0xA10];
     uint8_t        bVehicleSeatExitRequest;     // +0xA20

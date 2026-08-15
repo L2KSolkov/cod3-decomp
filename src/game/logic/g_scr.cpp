@@ -3459,6 +3459,28 @@ void Launch(unsigned int entityHandleVal,
 void LocalToWorldCoords(unsigned int entityHandleVal,
                         const Broc::vector& vLocal,
                         Broc::vector& vWorld);  // 0x5D2400
+int GetEntityNumber(unsigned int entityHandleVal);  // 0x5D2490
+void EnableGrenadeTouchDamage(unsigned int entityHandleVal);  // 0x5D24D0
+void DisableGrenadeTouchDamage(unsigned int entityHandleVal);  // 0x5D2530
+void EnableGrenadeBounce(unsigned int entityHandleVal);  // 0x5D2590
+void DisableGrenadeBounce(unsigned int entityHandleVal);  // 0x5D25D0
+void MakeFakeAi(unsigned int entityHandleVal);  // 0x5D2610
+void SetSpawnerTeam(unsigned int entityHandleVal,
+                    const Broc::string& pszTeam);  // 0x5D2790
+void SetRightArc(unsigned int entityHandleVal, float fVal);  // 0x5D2890
+void SetLeftArc(unsigned int entityHandleVal, float fVal);  // 0x5D2900
+void SetTopArc(unsigned int entityHandleVal, float fVal);  // 0x5D2960
+void SetBottomArc(unsigned int entityHandleVal, float fVal);  // 0x5D29C0
+void SetTurretPitch(unsigned int entityHandleVal, float fVal);  // 0x5D2A20
+void SetTurretYaw(unsigned int entityHandleVal, float fVal);  // 0x5D2A80
+void SetCharacter(unsigned int entityHandleVal,
+                  const Broc::string& pszCharacter);  // 0x5D2B10
+void ActorScr_SetFavoriteEnemy(actor_s* a, int offset,
+                               Broc::entity* val);  // 0x5D2B60
+void ScriptExplode(unsigned int num, float damage);  // 0x5D2C00
+void SetEntityLODOverride(unsigned int entHandle,
+                          unsigned int lodLevel);  // 0x5D2D70
+void SetEntityFlagDrone(unsigned int entityHandleVal);  // 0x5D2E40
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3554,6 +3576,7 @@ extern void CG_SetShellShockParmsFromCvars(
 extern char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS (cg_ents.cpp)
 extern void Axis4ToAngles(const float (*const axis)[4],
                           float* const angles);  // ?Axis4ToAngles@@YAXQAY03$$CBMQAM@Z (q_math.cpp)
+extern void GetAllPaks(ae_sized_array<TPakId, 32>* ret);  // ?GetAllPaks@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z (pakmanager.cpp)
 
 // level.cachedTagMat (level_locals_t +0xC30, 0x4C bytes) - IDA verified
 struct CachedTagMatLocal {
@@ -16271,6 +16294,445 @@ void BrocSys::LocalToWorldCoords(unsigned int entityHandleVal,
         vWorld.x = mObject->r.currentOrigin.v.m128_f32[0] + vWorld.x;
         vWorld.y = mObject->r.currentOrigin.v.m128_f32[1] + vWorld.y;
         vWorld.z = mObject->r.currentOrigin.v.m128_f32[2] + vWorld.z;
+    }
+}
+
+// ============================================================================
+// scr.o batch 51 - entity flags / turret arcs / misc
+// ============================================================================
+
+// ea: 0x005D2490
+int BrocSys::GetEntityNumber(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        return (int)mObject->mHandle.mHandle.mVal;
+    }
+    return 0;
+}
+
+// ea: 0x005D24D0
+void BrocSys::EnableGrenadeTouchDamage(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->mClassNameHash.mHash != hash_const.trigger_damage.mHash)
+            Scr_Error("Currently on supported on damage triggers");
+        mObject->flags |= 0x40000u;
+    }
+}
+
+// ea: 0x005D2530
+void BrocSys::DisableGrenadeTouchDamage(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->mClassNameHash.mHash != hash_const.trigger_damage.mHash)
+            Scr_Error("Currently on supported on damage triggers");
+        mObject->flags &= ~0x40000u;
+    }
+}
+
+// ea: 0x005D2590
+void BrocSys::EnableGrenadeBounce(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        mObject->flags &= ~0x80000u;
+}
+
+// ea: 0x005D25D0
+void BrocSys::DisableGrenadeBounce(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        mObject->flags |= 0x80000u;
+}
+
+// ea: 0x005D2610
+void BrocSys::MakeFakeAi(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->s.eType == 7 && (mObject->flags & 0x20000) != 0)
+        {
+            int eFlags = mObject->s.eFlags;
+            mObject->r.svFlags &= ~0x10u;
+            mObject->s.eFlags = eFlags | 0x10;
+            mObject->r.mins.v.m128_f32[0] = actorMins.v.m128_f32[0];
+            mObject->r.mins.v.m128_f32[1] = actorMins.v.m128_f32[1];
+            mObject->r.mins.v.m128_f32[2] = actorMins.v.m128_f32[2];
+            mObject->r.maxs.v.m128_f32[0] = actorMaxs.v.m128_f32[0];
+            mObject->r.maxs.v.m128_f32[1] = actorMaxs.v.m128_f32[1];
+            mObject->r.maxs.v.m128_f32[2] = actorMaxs.v.m128_f32[2];
+            int contents = mObject->r.contents;
+            mObject->takedamage = 1;
+            mObject->maxHealth = 50;
+            mObject->health = 50;
+            mObject->r.contents = contents | 0x8000;
+            mObject->r.mins.v.m128_f32[0] = actorMins.v.m128_f32[0];
+            mObject->r.mins.v.m128_f32[1] = actorMins.v.m128_f32[1];
+            mObject->r.mins.v.m128_f32[2] = actorMins.v.m128_f32[2];
+            mObject->r.maxs.v.m128_f32[0] = actorMaxs.v.m128_f32[0];
+            mObject->r.maxs.v.m128_f32[1] = actorMaxs.v.m128_f32[1];
+            mObject->r.maxs.v.m128_f32[2] = actorMaxs.v.m128_f32[2];
+            mObject->clipmask = 42074129;
+            g_LinkEntity(mObject);
+        }
+        else
+        {
+            Scr_Error("makeFakeAI must be applied to a script_model");
+        }
+    }
+}
+
+// ea: 0x005D2790
+void BrocSys::SetSpawnerTeam(unsigned int entityHandleVal,
+                             const Broc::string& pszTeam)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        if (mObject->s.eType == 12)
+        {
+            const char* v4 = pszTeam.mBlock != nullptr
+                                 ? (const char*)(pszTeam.mBlock + 1)
+                                 : defaultFileName;
+            if (_stricmp(v4, "axis") == 0)
+            {
+                mObject->key = 1;
+            }
+            else
+            {
+                const char* v5 = pszTeam.mBlock != nullptr
+                                     ? (const char*)(pszTeam.mBlock + 1)
+                                     : defaultFileName;
+                if (_stricmp(v5, "allies") == 0)
+                {
+                    mObject->key = 2;
+                }
+                else
+                {
+                    const char* v6 = pszTeam.mBlock != nullptr
+                                         ? (const char*)(pszTeam.mBlock + 1)
+                                         : defaultFileName;
+                    if (_stricmp(v6, "neutral") == 0)
+                    {
+                        mObject->key = 3;
+                    }
+                    else
+                    {
+                        Scr_ParamError(
+                            0,
+                            va("unknown team '%s', should be axis, allies, or neutral",
+                               pszTeam.mBlock));
+                    }
+                }
+            }
+        }
+        else
+        {
+            Scr_Error("setspawnerteam can only be applied to AI spawners");
+        }
+    }
+}
+
+// ea: 0x005D2890
+void BrocSys::SetRightArc(unsigned int entityHandleVal, float fVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->arcmin[1] = 0.0f - fVal;
+            if ((0.0f - fVal) > 0.0f)
+                pTurretInfo->arcmin[1] = 0.0f;
+        }
+        else
+        {
+            Scr_Error("entity is not a turret");
+        }
+    }
+}
+
+// ea: 0x005D2900
+void BrocSys::SetLeftArc(unsigned int entityHandleVal, float fVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->arcmax[1] = fVal;
+            if (fVal < 0.0f)
+                pTurretInfo->arcmax[1] = 0.0f;
+        }
+        else
+        {
+            Scr_Error("entity is not a turret");
+        }
+    }
+}
+
+// ea: 0x005D2960
+void BrocSys::SetTopArc(unsigned int entityHandleVal, float fVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+            pTurretInfo->arcmin[0] = 0.0f - fVal;
+        else
+            Scr_Error("entity is not a turret");
+    }
+}
+
+// ea: 0x005D29C0
+void BrocSys::SetBottomArc(unsigned int entityHandleVal, float fVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->arcmax[0] = fVal;
+            if (fVal < 0.0f)
+                pTurretInfo->arcmax[0] = 0.0f;
+        }
+        else
+        {
+            Scr_Error("entity is not a turret");
+        }
+    }
+}
+
+// ea: 0x005D2A20
+void BrocSys::SetTurretPitch(unsigned int entityHandleVal, float fVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+            pTurretInfo->defaultPitch = fVal;
+        else
+            Scr_Error("entity is not a turret");
+    }
+}
+
+// ea: 0x005D2A80
+void BrocSys::SetTurretYaw(unsigned int entityHandleVal, float fVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->defaultYaw = fVal;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 5377;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("NOT A TURRET"))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x005D2B10
+void BrocSys::SetCharacter(unsigned int entityHandleVal,
+                           const Broc::string& pszCharacter)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && EntityHandleDb::sInst.mElements[v2].mObject != nullptr)
+    {
+        BrocSys::SetModel(entityHandleVal, pszCharacter, kTPakInfoInvalid);
+    }
+}
+
+// ea: 0x005D2B60
+void BrocSys::ActorScr_SetFavoriteEnemy(actor_s* a, int offset,
+                                        Broc::entity* val)
+{
+    (void)offset;
+    unsigned int v3 = val->GetHandle() & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && val->GetHandle() >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (a != nullptr)
+    {
+        if (mObject != nullptr)
+            a->pFavoriteEnemy = mObject->sentient;
+        else
+            a->pFavoriteEnemy = nullptr;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5547;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("trying to set field on null actor"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D2C00
+void BrocSys::ScriptExplode(unsigned int num, float damage)
+{
+    if (num != 0)
+    {
+        char v10[16];
+        snprintf(v10, 0xFu, "%d", num);
+        ae_sized_array<TPakId, 32> pakIds;
+        GetAllPaks(&pakIds);
+        if (pakIds.m_size > 0)
+        {
+            unsigned int v3 = 0;
+            IVPointer<Destructible> Destructible;
+            TPakId mPakId = PAK_ID_INVALID;
+            for (;;)
+            {
+                if (v3 >= 0x20)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 154;
+                    AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                Destructible = DestructibleBankManager::sInst->GetDestructible(
+                    pakIds[v3], v10);
+                mPakId = (TPakId)Destructible.mPakId;
+                ValidatePakId(mPakId);
+                if (Destructible.mValue != nullptr)
+                    break;
+                if (++v3 >= (unsigned int)pakIds.m_size)
+                    return;
+            }
+            math::Position3 hitp;
+            math::Dir3 hitd;
+            hitp.v = _mm_setzero_ps();
+            hitp.v.m128_f32[2] = 1.0f;
+            hitd.v = _mm_setzero_ps();
+            hitd.v.m128_f32[2] = 1.0f;
+            ValidatePakId(mPakId);
+            Destructible.mValue->DoDamage(nullptr, damage, hitp, hitd, 0,
+                                          true);
+        }
+    }
+}
+
+// ea: 0x005D2D70
+void BrocSys::SetEntityLODOverride(unsigned int entHandle,
+                                   unsigned int lodLevel)
+{
+    unsigned int v2 = entHandle & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entHandle >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        DObj* mDObj = mObject->mDObj;
+        if (mDObj != nullptr)
+        {
+            mDObj->SetLODOverride((int)lodLevel);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 6603;
+            AeAssert::gCurrentExpr = "pObj";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "INVALID ENTITY PASSED INTO SetEntityLOD"))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6595;
+        AeAssert::gCurrentExpr = "pEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("NULL ENTITY PASSED INTO SetEntityLOD"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D2E40
+void BrocSys::SetEntityFlagDrone(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        int v3 = mObject->r.svFlags | 8;
+        mObject->flags |= 0x2000000u;
+        mObject->r.svFlags = v3;
     }
 }
 
