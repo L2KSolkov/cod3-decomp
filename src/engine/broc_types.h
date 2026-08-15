@@ -350,9 +350,11 @@ COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity::KVPair) == 8, "Broc::ExtendedEnt
 // ============================================================================
 // Broc::pathnode / Broc::vehiclenode — node handles (4 bytes each)
 // ============================================================================
-struct pathnode {
+class pathnode {
+public:
     unsigned int ___u0;
 };
+// Binary mangle uses class tag V for pathnode (PAVpathnode@Broc@@).
 COD3_STATIC_ASSERT_32BIT(sizeof(pathnode) == 4, "Broc::pathnode size mismatch");
 
 struct vehiclenode {

@@ -918,6 +918,7 @@ public:
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
     EntityHandleDb();                    // ??0EntityHandleDb@@QAE@XZ (g.o 0x4B3D50)
     static EntityHandleDb* Inst();       // ?Inst@EntityHandleDb@@SAPAV1@XZ (g.o 0x4A9D40)
+    Entity* Find(int fieldofs, HashString match);  // ?Find@EntityHandleDb@@QAEPAVEntity@@HVHashString@@@Z (g.o 0x4B0F80)
     const ae_sized_array<Entity*, 4096>& GetActiveList() const;  // ?GetActiveList@EntityHandleDb@@QBEABV?$ae_sized_array@PAVEntity@@$0BAAA@@@XZ (g.o 0x4A9D50)
     Entity* GetObject(int idx) const;    // ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z (g.o 0x4B0DA0)
     void BindObjectToHandle(Handle handle, Entity* obj);  // ?BindObjectToHandle@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVEntity@@@Z (g.o 0x4B0E20)
@@ -1011,7 +1012,9 @@ static_assert(sizeof(EntityManager) == 0x48, "EntityManager size mismatch");
 // AeAssert â€” assertion system (namespace-style free functions + globals)
 // ============================================================================
 namespace AeAssert {
-    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, MJK = 4, MJU = 5,
+                    MM = 6, TPB = 7, SLB = 8, AC = 9, JSV = 0xA, DK = 0xB,
+                    PL = 0xC, DL = 0xD };
     extern ECoderId gCurrentAuthor;  // ?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A
     extern const char* gCurrentFile;  // ?gCurrentFile@AeAssert@@3PBDB
     extern int  gCurrentLine;         // ?gCurrentLine@AeAssert@@3HA

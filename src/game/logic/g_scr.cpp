@@ -26,6 +26,7 @@ extern bool g_indoor;                              // ?g_indoor@@3_NA (core.o)
 extern float CG_GetNorthDirection();               // ?CG_GetNorthDirection@@YAMXZ (cg.o)
 extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp_actors.o)
 extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z (render.o)
+class AnimBroRef;  // anim.o bro_anim ref (opaque; class tag V per binary)
 
 // TPakInfo - opaque pak info enum (scr.o; W4TPakInfo mangling)
 enum TPakInfo {
@@ -2947,6 +2948,39 @@ bool IsValidClientType(Entity* pEnt);  // 0x5C0B00
 void MPScript_RequestRespawn(unsigned int playerID);  // 0x5C0B60
 void Mover_GravityMove(Entity* pEnt, const float* const vVel,
                        float fTotalTime, float gravityOverride);  // 0x5C0910
+void AnimScripted1(unsigned int entityHandleVal, unsigned int notifyName,
+                   const Broc::vector& origin, const Broc::vector& angles,
+                   unsigned int broanim);  // 0x5BEE00
+void ActorScr_SetAnimPos(actor_s* a, int offset,
+                         const unsigned int* val);  // 0x5BF320
+void ActorScr_GetFavoriteEnemy(actor_s* a, int offset,
+                               Broc::entity* val);  // 0x5BF3B0
+void PathNode_SetType(PathNodes::PathNode* pNode, int offset,
+                      Broc::string* val);  // 0x5BF470
+void SentientScr_ConvertNode(sentient_s* pSelf, int offset,
+                             Broc::pathnode* pNode);  // 0x5BF520
+void SentientScr_GetTeam(sentient_s* pSelf, int offset,
+                         Broc::string* val);  // 0x5BF5B0
+void SentientScr_SetGoalRadius(sentient_s* pSelf, int offset,
+                               float* val);  // 0x5BF650
+void GetSplineData(const char* splineName, Broc::vector*& origins,
+                   unsigned int*& eventIndices,
+                   unsigned int*& eventHashes);  // 0x5BF750
+void ToggleClip();  // 0x5C1800
+void CloseAllMenus(int viewport);  // 0x5C1730
+int  FindUnusedChildObjective();  // 0x5C1980
+void DeleteAllChildrenOfObjective(int iObjective);  // 0x5C19D0
+void IPrintLn(const char* txt);  // 0x5C21C0
+void IPrintLnBold(const char* txt);  // 0x5C2210
+void RegisterAnimation(AnimBroRef* animBroRef);  // 0x5C2260
+void ThreadDebugNotice(const char* msg);  // 0x5C22E0
+int  GetTeamFlags(const Broc::string& teamName,
+                  const Broc::string& caller);  // 0x5C3690
+Broc::string GetWeaponClassName(unsigned int weaponName);  // 0x5C3750
+Broc::string GetWeaponClassNameStr(unsigned int weaponName);  // 0x5C3810
+void MissionFailed(const Broc::string& reason);  // 0x5C3EB0
+void Cinematic1(const Broc::string& pszCinematic, float fVal);  // 0x5C3F40
+void Cinematic2(const Broc::string& pszCinematic);  // 0x5C3FF0
 }
 
 static void BrocFree(void* p)
@@ -6963,6 +6997,494 @@ void BrocSys::Mover_GravityMove(Entity* pEnt, const float* const vVel,
     pEnt->s.pos.trGravityOverride = (int)gravityOverride;
     BG_EvaluateTrajectory(p_pos, level.time, pEnt->r.currentOrigin);
     g_LinkEntity(pEnt);
+}
+
+// ============================================================================
+// scr.o batch 32 - BrocSys wrappers (AnimScripted1..Cinematic2)
+// ============================================================================
+
+extern unsigned int AeHash(const char* str);  // ?AeHash@@YAIPBD@Z (core.o)
+extern const char* Info_ValueForKey(const char* s, const char* key);  // core.o
+extern void Q_strncpyz(char* dest, const char* src, int destsize);  // core.o
+extern vmCvar_t g_changelevel_time;  // ?g_changelevel_time@@3UvmCvar_t@@A
+
+// SplineMgr / SplinePath view (game2.o; full in g_game2_misc.cpp)
+struct SplinePath {
+    void*         mSpline;       // +0x00
+    unsigned int* mEventIndices; // +0x04
+    unsigned int* mEventHashes;  // +0x08
+};
+class SplineMgr {
+public:
+    static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A (g_game2_misc.cpp)
+    void GetSpline(const char* name, SplinePath* splinePath);  // ?GetSpline@SplineMgr@@QAEXPBDPAUSplinePath@@@Z (game2.o 0x5045C0)
+};
+
+// AnimBroRef registration list (scr.o data)
+template <typename T>
+struct ae_array_dynamic {
+    T**            m_elements;  // +0x00
+    unsigned short m_capacity;  // +0x04
+    short          m_size;      // +0x06
+    void push_back(T const* elt);
+};
+ae_array_dynamic<AnimBroRef*> gAnimRefRegList;  // scr.o data
+
+// ea: 0x005BEE00
+void BrocSys::AnimScripted1(unsigned int entityHandleVal,
+                            unsigned int notifyName,
+                            const Broc::vector& origin,
+                            const Broc::vector& angles,
+                            unsigned int broanim)
+{
+    (void)entityHandleVal;
+    (void)notifyName;
+    (void)origin;
+    (void)angles;
+    Broc::string s((Broc::string::Block*)nullptr);
+    if ((unsigned short)broanim == 0xFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::DK;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1691;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Animation passed into AnimScripted was not fixed up.  You probably ignored the warning when the game loaded! FOO"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005BF320
+void BrocSys::ActorScr_SetAnimPos(actor_s* a, int offset,
+                                  const unsigned int* val)
+{
+    (void)offset;
+    int IsProne = BG_ActorGoalIsProne(&a->ProneInfo);
+    if (val == nullptr)
+    {
+        a->mAnimPose = 0;
+        return;
+    }
+    if (*val == hash_const.prone.mHash)
+    {
+        if (IsProne != 0)
+            goto set_pose;
+    }
+    else if (IsProne == 0)
+    {
+        goto set_pose;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5515;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning(
+               "Entnum %d is attempting to change to bad anim_pose.",
+               a->pEnt->mHandle.mHandle.mVal))
+        __debugbreak();
+    return;
+set_pose:
+    a->mAnimPose = *val;
+}
+
+// ea: 0x005BF3B0
+void BrocSys::ActorScr_GetFavoriteEnemy(actor_s* a, int offset,
+                                        Broc::entity* val)
+{
+    (void)offset;
+    unsigned int mVal = 0;
+    if (a != nullptr)
+    {
+        sentient_s* pSentient = a->pSentient;
+        if (pSentient != nullptr)
+            mVal = pSentient->pEnt->mHandle.mHandle.mVal;
+        val->___u0 = mVal;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5565;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("trying to get field off null actor"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005BF470
+void BrocSys::PathNode_SetType(PathNodes::PathNode* pNode, int offset,
+                               Broc::string* val)
+{
+    (void)pNode;
+    (void)offset;
+    (void)val;
+    AeAssert::gCurrentAuthor = AeAssert::JRS;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5586;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("PathNode.type is read-only"))
+        __debugbreak();
+}
+
+// ea: 0x005BF520
+void BrocSys::SentientScr_ConvertNode(sentient_s* pSelf, int offset,
+                                      Broc::pathnode* pNode)
+{
+    (void)offset;
+    unsigned short mValue = pSelf->mClaimedNode.mValue;
+    if (mValue != 0 && mValue != 0xFFFF
+        && pSelf->mClaimedNode.operator->() != nullptr)
+        pNode->___u0 = mValue;
+    else
+        pNode->___u0 = 0;  // INVALID_PATHNODE_HANDLE
+}
+
+// ea: 0x005BF5B0
+void BrocSys::SentientScr_GetTeam(sentient_s* pSelf, int offset,
+                                  Broc::string* val)
+{
+    (void)offset;
+    switch (pSelf->eTeam)
+    {
+    case TEAM_AXIS:
+        *val = str_const.axis;
+        break;
+    case TEAM_ALLIES:
+        *val = str_const.allies;
+        break;
+    case TEAM_NEUTRAL:
+        *val = str_const.neutral;
+        break;
+    case TEAM_DEAD:
+        *val = str_const.dead;
+        break;
+    default:
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5677;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "SentientScr_GetTeam: default case (shouldn't happen"))
+            __debugbreak();
+        break;
+    }
+}
+
+// ea: 0x005BF650
+void BrocSys::SentientScr_SetGoalRadius(sentient_s* pSelf, int offset,
+                                        float* val)
+{
+    (void)offset;
+    float v3 = 0.0f;
+    if (*val >= 0.0f)
+        v3 = *val;
+    Sentient_SetGoalRadius(pSelf, v3);
+}
+
+// ea: 0x005BF750
+void BrocSys::GetSplineData(const char* splineName, Broc::vector*& origins,
+                            unsigned int*& eventIndices,
+                            unsigned int*& eventHashes)
+{
+    SplinePath splinePath;
+    SplineMgr::sInst->GetSpline(splineName, &splinePath);
+    if (splinePath.mSpline != nullptr)
+    {
+        origins = (Broc::vector*)splinePath.mSpline;
+        eventIndices = splinePath.mEventIndices;
+        eventHashes = splinePath.mEventHashes;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6552;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "no spline named %s found, DRONES/SHRIMPS ON SPLINE WILL NOT WORK!!! See STAVRO",
+                   splineName))
+            __debugbreak();
+        origins = nullptr;
+        eventIndices = nullptr;
+        eventHashes = nullptr;
+    }
+}
+
+// ea: 0x005C1800
+void BrocSys::ToggleClip()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        const char* v1;
+        if (Player->client->noclip != 0)
+        {
+            v1 = "GAME_NOCLIPOFF";
+            gNoClipEnabled = false;
+        }
+        else
+        {
+            v1 = "GAME_NOCLIPON";
+            gNoClipEnabled = true;
+        }
+        Player->client->noclip = Player->client->noclip == 0;
+        DbLinkedHandle<EntityHandleDb, Entity> v2;
+        v2.mHandle.mVal = Player->mHandle.mHandle.mVal;
+        const char* v3 = va("print \"%s\"", v1);
+        SV_GameSendServerCommand(v2, v3);
+    }
+}
+
+// ea: 0x005C1900
+void ObjectiveFailedNotify()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        HashString v1;
+        v1.mHash = AeHash("ObjectiveFailed");
+        Player->Notify(v1);
+    }
+}
+
+// ea: 0x005C1980
+int BrocSys::FindUnusedChildObjective()
+{
+    int v0 = 0;
+    for (;;)
+    {
+        char szConfigString[256];
+        SV_GetConfigstring(v0 + 32, szConfigString, 256);
+        if (szConfigString[0] == 0)
+            break;
+        if (++v0 >= 1)
+            return -1;
+    }
+    return v0;
+}
+
+// ea: 0x005C19D0
+void BrocSys::DeleteAllChildrenOfObjective(int iObjective)
+{
+    char szConfigString[256];
+    SV_GetConfigstring(32, szConfigString, 256);
+    if (szConfigString[0] != 0)
+    {
+        const char* v1 = Info_ValueForKey(szConfigString, "pobj");
+        if (*v1 != 0 && atoi(v1) == iObjective)
+        {
+            szConfigString[0] = 0;
+            SV_SetConfigstring(32, szConfigString);
+        }
+    }
+}
+
+// ea: 0x005C21C0
+void BrocSys::IPrintLn(const char* txt)
+{
+    char buff[8192];
+    sprintf(buff, "%s\n", txt);
+    const char* v1 = va("%s \"%s\"", "gm", buff);
+    SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(0), v1);
+}
+
+// ea: 0x005C2210
+void BrocSys::IPrintLnBold(const char* txt)
+{
+    char buff[8192];
+    sprintf(buff, "%s\n", txt);
+    const char* v1 = va("%s \"%s\"", "gmb", buff);
+    SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(0), v1);
+}
+
+// ea: 0x005C2260
+void BrocSys::RegisterAnimation(struct AnimBroRef* animBroRef)
+{
+    gAnimRefRegList.push_back(&animBroRef);
+}
+
+// ea: 0x005C22E0
+void BrocSys::ThreadDebugNotice(const char* msg)
+{
+    if (((AeThread*)AeThreadManager::sInst.mThreadExecuting)
+            ->mFlags.mMask
+        & 0x100)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1225;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("0x%08x %s",
+                                 AeThreadManager::sInst.mThreadExecuting,
+                                 msg))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C3690
+int BrocSys::GetTeamFlags(const Broc::string& teamName,
+                          const Broc::string& caller)
+{
+    if (teamName == str_const.axis)
+        return 2;
+    if (teamName == str_const.allies)
+        return 4;
+    if (teamName == str_const.neutral)
+        return 8;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+    AeAssert::gCurrentLine = 2075;
+    AeAssert::gCurrentExpr = nullptr;
+    const char* v3 = caller.mBlock != nullptr
+                         ? (const char*)(caller.mBlock + 1)
+                         : defaultFileName;
+    const char* v4 = teamName.mBlock != nullptr
+                         ? (const char*)(teamName.mBlock + 1)
+                         : defaultFileName;
+    if (AeAssert::Error(
+            "unknown team '%s' in %s (should be axis, allies, or neutral)",
+            v4, v3))
+        __debugbreak();
+    return 0;
+}
+
+// ea: 0x005C3750
+Broc::string BrocSys::GetWeaponClassName(unsigned int weaponName)
+{
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(weaponName);
+    int v3 = WeaponIndexForName;
+    if (WeaponIndexForName != 0)
+    {
+        int iAltWeaponIndex = WeaponIndexForName;
+        while (*BG_GetInfoForWeapon(iAltWeaponIndex)->szRadiantName == 0)
+        {
+            iAltWeaponIndex =
+                BG_GetInfoForWeapon(iAltWeaponIndex)->iAltWeaponIndex;
+            if (iAltWeaponIndex == 0 || iAltWeaponIndex == v3)
+            {
+                const char* v4 = va(
+                    "^3WARNING^7: no Radiant name found for weapon '%d' in getWeaponClassname\n",
+                    weaponName);
+                Com_Printf(v4);
+                return Broc::string(defaultFileName);
+            }
+        }
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon(iAltWeaponIndex);
+        return Broc::string(InfoForWeapon->szRadiantName);
+    }
+    else
+    {
+        if (weaponName != 0xFEFEFEFE
+            && weaponName != hash_const.none.mHash)
+        {
+            const char* v4 = va(
+                "unknown weapon '%s' in getWeaponClassname\n", weaponName);
+            Com_Printf(v4);
+        }
+        return Broc::string(defaultFileName);
+    }
+}
+
+// ea: 0x005C3810
+Broc::string BrocSys::GetWeaponClassNameStr(unsigned int weaponName)
+{
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(weaponName);
+    int v3 = WeaponIndexForName;
+    if (WeaponIndexForName != 0)
+    {
+        int iAltWeaponIndex = WeaponIndexForName;
+        while (*BG_GetInfoForWeapon(iAltWeaponIndex)->szRadiantName == 0)
+        {
+            iAltWeaponIndex =
+                BG_GetInfoForWeapon(iAltWeaponIndex)->iAltWeaponIndex;
+            if (iAltWeaponIndex == 0 || iAltWeaponIndex == v3)
+            {
+                const char* v4 = va(
+                    "^3WARNING^7: no Radiant name found for weapon '%d' in getWeaponClassname\n",
+                    weaponName);
+                Com_Printf(v4);
+                return Broc::string(defaultFileName);
+            }
+        }
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon(iAltWeaponIndex);
+        return Broc::string(InfoForWeapon->szRadiantName);
+    }
+    else
+    {
+        if (weaponName != 0xFEFEFEFE
+            && weaponName != hash_const.none.mHash)
+        {
+            const char* v4 = va(
+                "unknown weapon '%s' in getWeaponClassname\n", weaponName);
+            Com_Printf(v4);
+        }
+        return Broc::string(defaultFileName);
+    }
+}
+
+// ea: 0x005C3EB0
+void BrocSys::MissionFailed(const Broc::string& reason)
+{
+    Entity* v1 = EntityHandleDb::sInst.Find(640, hash_const.player);
+    if (v1 != nullptr && (v1->flags & 1) == 0)
+    {
+        // j_nullsub_24(v1) - empty stub in binary
+        level.bMissionSuccess = 0;
+        level.bMissionFailed = 1;
+        level.strMissionFailedReason.clear();
+        if (reason == "INGAME_MISSIONFAIL_FF")
+        {
+            const char* v2 = reason.mBlock != nullptr
+                                 ? (const char*)(reason.mBlock + 1)
+                                 : defaultFileName;
+            const char* STBString = STBManager::sInst->GetSTBString(v2);
+            if (STBString != nullptr)
+                level.strMissionFailedReason = STBString;
+        }
+    }
+}
+
+// ea: 0x005C3F40
+void BrocSys::Cinematic1(const Broc::string& pszCinematic, float fVal)
+{
+    if (g_reloading.integer == 0)
+    {
+        level.exitTime = (int)((fVal * 1000.0) + 0.5);
+        if ((int)((fVal * 1000.0) + 0.5) < 0)
+            Scr_ParamError(1u, "exitTime cannot be negative");
+        if (g_changelevel_time.value >= 0.0)
+            level.exitTime =
+                (int)((g_changelevel_time.value * 1000.0) + 0.5);
+        level.changelevel = 1;
+        const char* v2 = pszCinematic.mBlock != nullptr
+                             ? (const char*)(pszCinematic.mBlock + 1)
+                             : defaultFileName;
+        Q_strncpyz(level.nextMap, v2, 256);
+        level.bMissionSuccess = 1;
+    }
+}
+
+// ea: 0x005C3FF0
+void BrocSys::Cinematic2(const Broc::string& pszCinematic)
+{
+    if (g_reloading.integer == 0)
+    {
+        level.changelevel = 1;
+        const char* v1 = pszCinematic.mBlock != nullptr
+                             ? (const char*)(pszCinematic.mBlock + 1)
+                             : defaultFileName;
+        Q_strncpyz(level.nextMap, v1, 256);
+        level.bMissionSuccess = 1;
+    }
 }
 
 // ============================================================================

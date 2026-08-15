@@ -958,7 +958,8 @@ struct hash_const_t {
     uint8_t    _padF0[0x11C - 0xF0];
     HashString pickup;             // +0x11C
     HashString player;             // +0x120
-    uint8_t    _pad124[0x12C - 0x124];
+    HashString prone;              // +0x128 (74)
+    uint8_t    _pad124[0x12C - 0x128];
     HashString reached_end_node;   // +0x12C
     HashString reached_wait_node;  // +0x130
     HashString reached_wait_speed; // +0x134
@@ -985,7 +986,9 @@ struct hash_const_t {
     HashString turretstatechange;  // +0x250 (148)
     HashString turretownerchange;  // +0x254 (149)
     HashString killanimscript;     // +0x258 (150)
-    uint8_t    _pad25C[0x284 - 0x25C];
+    uint8_t    _pad25C[0x260 - 0x25C];
+    HashString none;               // +0x260 (152)
+    uint8_t    _pad264[0x284 - 0x264];
     HashString overheated;         // +0x284 (161)
     uint8_t    _pad288[0x2B4 - 0x288];
 };
