@@ -75,6 +75,7 @@ typedef struct sServerCreateParams {
     unsigned char mEnableAARVote; // +0x66
     unsigned char mEnablePenaltyVote; // +0x67
     unsigned char mMapRotation;       // +0x68
+    void SetMapRotation(unsigned char MapRotation);  // mp.o 0x72F3B0
 } sServerCreateParams;
 
 // ============================================================================

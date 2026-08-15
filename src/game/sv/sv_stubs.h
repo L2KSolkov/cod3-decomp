@@ -251,6 +251,7 @@ static_assert(offsetof(SaveGameData, mFriendlies) == 0x7E0,
 
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 class MPPlayer;
+class MPPlayerSet;   // game/mp/mp_types.h
 struct MPPlayerManager;
 class MPPeer;
 class MPVehicle;
@@ -425,6 +426,14 @@ static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
 class MultiplayerMgr {
 public:
+    class MPLogSubscriber {
+    public:
+        virtual ~MPLogSubscriber();  // ??1MPLogSubscriber@MultiplayerMgr@@UAE@XZ
+    private:
+        virtual void publish(const char* fullChannelName, const char* file,
+                             const char* function, unsigned int line,
+                             const char* msg);  // ?publish@MPLogSubscriber@MultiplayerMgr@@EAEXQBD00I0@Z (mp.o 0x72C610)
+    };
     class MPEntityHandle {
     public:
         int mVal;
@@ -461,6 +470,12 @@ public:
                       const math::Position3& position,
                       const math::Dir3& angles);  // ?PlayerRevive@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@@Z (mp.o 0x750520)
     void updateLinkStatus();   // ?updateLinkStatus@MultiplayerMgr@@QAEXXZ (mp.o 0x72C700)
+    void AddVehicle(Entity* vehicle);  // ?AddVehicle@MultiplayerMgr@@QAEXPAVEntity@@@Z (mp.o 0x7358E0)
+    int  GetCurrentPlayerCount();      // ?GetCurrentPlayerCount@MultiplayerMgr@@QAEHXZ (mp.o 0x73FFB0)
+    void PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
+                    int damage, int meansOfDeath, int weapon,
+                    const float* position, const float* dir,
+                    EHitLocation hitLoc);  // ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z (mp.o 0x7503F0)
     void NextRound(bool allowChange);                   // ?NextRound@MultiplayerMgr@@QAEX_N@Z (mp.o)
     void SendRespawnRequest(unsigned int clientID);     // ?SendRespawnRequest@MultiplayerMgr@@QAEXI@Z (mp.o)
     void SendGameScore(int alliesScore, int axisScore); // ?SendGameScore@MultiplayerMgr@@QAEXHH@Z (mp.o)
@@ -1442,6 +1457,7 @@ public:
 class FEMenuSystem {
 public:
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
+    virtual void Update(float time_inc);  // ?Update@FEMenuSystem@@UAEXM@Z (shell.o 0x570DD0)
     void**  menus;                       // +0x04 (FEMenu** array)
     uint8_t _pad08[0x1C - 0x08];
     void (*gap1C)(void* self, float a2); // +0x1C (shell.o update slot)
@@ -1701,6 +1717,15 @@ struct MPPlayerManager {
     MPPlayer* GetPlayer(const Entity* entity);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z (mp.o)
     const char* GetPlayerName(unsigned char id);  // ?GetPlayerName@MPPlayerManager@@QAEPBDE@Z (mp.o 0x72E970)
     bool IsLocalId(int Id);             // ?IsLocalId@MPPlayerManager@@QAE_NH@Z (mp.o 0x72EA30)
+    void SendAll(bdReference<bdMessage> message, bool reliable,
+                 bool forceSend);  // ?SendAll@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N1@Z (mp.o 0x737930)
+    void Send(const bdReference<bdMessage>& message, MPPlayerSet players,
+              bool reliable);  // ?Send@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@VMPPlayerSet@@_N@Z (mp.o 0x73A700)
+    MPPlayerSet allPlayers();       // ?allPlayers@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ (mp.o 0x73A4B0)
+    MPPlayerSet allPlayersButMe(int localPlayer);  // ?allPlayersButMe@MPPlayerManager@@QAE?AVMPPlayerSet@@H@Z (mp.o 0x73A590)
+    void AddVehicle(Entity* vehicle);  // ?AddVehicle@MPPlayerManager@@QAEXPAVEntity@@@Z (mp.o)
+    void SendPlayer(const MPPlayer* player, const bdReference<bdMessage>& message,
+                    bool reliable);  // ?SendPlayer@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@_N@Z (mp.o)
     void DebugRender();                 // ?DebugRender@MPPlayerManager@@QAEXXZ (mp.o 0x75A890)
     void Reset();                       // ?Reset@MPPlayerManager@@QAEXXZ (mp.o 0x75D440)
     void ResetVehicleEventSequenceIds();  // ?ResetVehicleEventSequenceIds@MPPlayerManager@@QAEXXZ (mp.o 0x7394A0)
@@ -1719,6 +1744,8 @@ private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
     void HandleGameEnter(const bdReceivedMessage& receivedMsg);   // ?HandleGameEnter@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x762AE0)
     void HandleMapRestart(const bdReceivedMessage& receivedMsg);  // ?HandleMapRestart@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x75ED70)
+    void HandleSessionID(const bdReceivedMessage& receivedMsg);   // ?HandleSessionID@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738B90)
+    void HandleJoinableFlag(const bdReceivedMessage& receivedMsg); // ?HandleJoinableFlag@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738DD0)
     void SendDroppedItems(MPPlayer* player);  // ?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z (mp.o 0x760710)
 };
 
@@ -1772,6 +1799,13 @@ public:
     void RoundOver(int condition, int team); // ?RoundOver@MPPeer@@QAEXHH@Z (mp.o 0x7427C0)
     void FireMissile(int weapon, const math::Position3& position, const math::Dir3& dir,
                      ::MPEntityHandle handle);  // ?FireMissile@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z (mp.o 0x75B920)
+    void PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
+                    int damage, int meansOfDeath, int weapon,
+                    const float* position, const float* dir,
+                    EHitLocation hitLoc);  // ?PlayerDead@MPPeer@@QAEXPAVEntity@@00HHHQBM1H@Z (mp.o 0x735B70)
+    bool ConnectToPeers(const bdReference<MPGameInfo>& gameInfo,
+                        int nGameIndex,
+                        EGameConnectionType gameState);  // ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z (mp.o 0x764620)
     void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
     void MapRestart();                      // ?MapRestart@MPPeer@@QAEXXZ (mp.o 0x742DA0)
 
@@ -1781,6 +1815,9 @@ public:
 private:
     virtual void onQoSProbeSuccess(const bdQoSProbeInfo& info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
     virtual void onQoSProbeFail(bdReference<bdCommonAddr> addr);  // ?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z (mp.o 0x735C40)
+    virtual void onSessionConnectFail();  // ?onSessionConnectFail@MPPeer@@EAEXXZ (mp.o 0x72C940)
+    virtual void onSessionConnectSuccess();  // ?onSessionConnectSuccess@MPPeer@@EAEXXZ (mp.o 0x761910)
+    virtual void onSessionJoinRefused(bdReference<bdBitBuffer> userData);  // ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x735AB0)
     void ConnectToPeersFinalize(const bdReference<MPGameInfo>& gameInfo);  // ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z (mp.o 0x7616C0)
 };
 

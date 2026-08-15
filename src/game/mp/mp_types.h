@@ -25,14 +25,24 @@ public:
     bool containsPlayer(unsigned int index) const;  // ?containsPlayer@MPPlayerSet@@QBE_NI@Z (mp.o 0x72A580)
     unsigned long numberOfPlayers() const;          // ?numberOfPlayers@MPPlayerSet@@QBEKXZ (mp.o 0x730490)
     unsigned long highestPlayerIndex() const;       // ?highestPlayerIndex@MPPlayerSet@@QBEKXZ (mp.o 0x7302D0)
+    unsigned long lowestPlayerIndex() const;        // ?lowestPlayerIndex@MPPlayerSet@@QBEKXZ (mp.o inline)
     unsigned int containsPlayer(unsigned long index) const;  // ?containsPlayer@MPPlayerSet@@QBEIK@Z (game_xbox.o inline)
     void addPlayer(unsigned long index);     // ?addPlayer@MPPlayerSet@@QAEXK@Z (mp.o inline)
     void removePlayer(unsigned long index);  // ?removePlayer@MPPlayerSet@@QAEXK@Z (mp.o inline)
+    void addPlayers(const MPPlayerSet& set);  // ?addPlayers@MPPlayerSet@@QAEXABV1@@Z (mp.o inline)
 };
 
 inline unsigned int MPPlayerSet::containsPlayer(unsigned long index) const
 {
     return (mBitPlayers >> index) & 1;
+}
+
+inline unsigned long MPPlayerSet::lowestPlayerIndex() const
+{
+    unsigned long i = 0;
+    while (i < 16 && ((mBitPlayers >> i) & 1) == 0)
+        ++i;
+    return i;
 }
 
 inline void MPPlayerSet::addPlayer(unsigned long index)
@@ -43,6 +53,11 @@ inline void MPPlayerSet::addPlayer(unsigned long index)
 inline void MPPlayerSet::removePlayer(unsigned long index)
 {
     mBitPlayers = (unsigned short)(mBitPlayers & ~(1u << index));
+}
+
+inline void MPPlayerSet::addPlayers(const MPPlayerSet& set)
+{
+    mBitPlayers = (unsigned short)(mBitPlayers | set.mBitPlayers);
 }
 
 // ============================================================================
@@ -85,14 +100,18 @@ void WritePlayerId(bdReference<bdBitBuffer> buffer, unsigned char id);  // ?Writ
 void WriteVehicleId(bdReference<bdBitBuffer> buffer, unsigned char id); // ?WriteVehicleId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z (mp.o 0x73BE90)
 void WriteSeatIndex(bdReference<bdBitBuffer> buffer, int seatIdx);      // ?WriteSeatIndex@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73BF70)
 void WriteEntryPoint(bdReference<bdBitBuffer> buffer, int entryIdx);    // ?WriteEntryPoint@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73C050)
-void WritePlayerClass(bdReference<bdBitBuffer> buffer, int playerclass);// ?WritePlayerClass@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73C130)
-void WriteEntityHandle(bdReference<bdBitBuffer> buffer, ::MPEntityHandle id);  // ?WriteEntityHandle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@VMPEntityHandle@@@Z (mp.o 0x73BCB0)
-void WritePositionDelta(bdReference<bdBitBuffer> buffer, float old_position, float position);  // ?WritePositionDelta@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@MM@Z (mp.o 0x73AAE0)
-void WriteNormal(bdReference<bdBitBuffer> buffer, const float* normal);  // ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73AFB0)
+    void WritePlayerClass(bdReference<bdBitBuffer> buffer, int playerclass);// ?WritePlayerClass@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73C130)
+    void WriteEntityHandle(bdReference<bdBitBuffer> buffer, ::MPEntityHandle id);  // ?WriteEntityHandle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@VMPEntityHandle@@@Z (mp.o 0x73BCB0)
+    void WritePositionDelta(bdReference<bdBitBuffer> buffer, float old_position, float position);  // ?WritePositionDelta@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@MM@Z (mp.o 0x73AAE0)
+    bool ReadPosition(bdReference<bdBitBuffer> buffer, float* position);  // ?ReadPosition@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z (mp.o 0x73ACA0)
+    void WriteNormal(bdReference<bdBitBuffer> buffer, const float* normal);  // ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73AFB0)
 void WriteNormal(bdReference<bdBitBuffer> buffer, const math::Dir3& normal);  // ?WriteNormal@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z (mp.o 0x73B020)
 void WriteAngle(bdReference<bdBitBuffer> buffer, float angle);           // ?WriteAngle@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@M@Z (mp.o 0x73BB90)
 void WritePlayerTeam(bdReference<bdBitBuffer> buffer, team_t team);      // ?WritePlayerTeam@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@W4team_t@@@Z (mp.o 0x73C200)
-void WriteCompressedVector(bdReference<bdBitBuffer> buffer, const float* vec);  // ?WriteCompressedVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73B600)
+    void WriteCompressedVector(bdReference<bdBitBuffer> buffer, const float* vec);  // ?WriteCompressedVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73B600)
+    void WriteVector(bdReference<bdBitBuffer> buffer, const float* vec);    // ?WriteVector@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73B400)
+    void WriteAngles(bdReference<bdBitBuffer> buffer, const float* angles); // ?WriteAngles@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@QBM@Z (mp.o 0x73B120)
+    void WriteAngles(bdReference<bdBitBuffer> buffer, const math::Dir3& angles);  // ?WriteAngles@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABVDir3@math@@@Z (mp.o 0x73B1F0)
 bool ReadPlayerId(bdReference<bdBitBuffer> buffer, unsigned char& id);   // ?ReadPlayerId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73BE10)
 bool ReadVehicleId(bdReference<bdBitBuffer> buffer, unsigned char& id);  // ?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73C0B0)
 bool ReadSeatIndex(bdReference<bdBitBuffer> buffer, int& seatIdx);       // ?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BEF0)
@@ -122,6 +141,7 @@ struct TPlayerStatsInfo {
 
 namespace PlayerStats {
 int ScoreForStat(int stat, int value);  // ?ScoreForStat@PlayerStats@@YAHHH@Z (mp.o 0x734660)
+int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o 0x7346D0)
 extern TPlayerStatsInfo playerStatsInfo[];  // ?playerStatsInfo@PlayerStats@@3PAUTPlayerStatsInfo@@A @ 0xE36E90
 }
 
@@ -130,9 +150,11 @@ extern TPlayerStatsInfo playerStatsInfo[];  // ?playerStatsInfo@PlayerStats@@3PA
 // Ctor (0x73EF10) zeroes mInitialDate/mTimeInterval only.
 // ============================================================================
 namespace kuju {
+class cBezier;  // full definition below (mp.o)
+
 class cBezierTrajectoryInterpolator {
 public:
-    uint8_t mBezier[64];          // +0x00 kuju::cBezier
+    uint8_t mBezier[64];          // +0x00 kuju::cBezier (64 bytes)
     uint8_t mLinear[64];          // +0x40 tLinearInterpolator<math::Position3>
     uint8_t mLinearSpeed[16];     // +0x80 math::Dir3
     int     mInterpolationType;   // +0x90
@@ -141,6 +163,13 @@ public:
     uint8_t _pad9C[0xA0 - 0x9C];
 
     cBezierTrajectoryInterpolator();  // ??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ (mp.o 0x73EF10)
+    math::Position3 position(float date) const;  // ?position@cBezierTrajectoryInterpolator@kuju@@QBE?AVPosition3@math@@M@Z (mp.o 0x73F180)
+
+    enum EInterpolationType {
+        kInterpolationStopped = 0,
+        kInterpolationLinear = 1,
+        kInterpolationBezier = 2,
+    };
 };
 static_assert(sizeof(cBezierTrajectoryInterpolator) == 160,
               "cBezierTrajectoryInterpolator size mismatch");
@@ -228,10 +257,14 @@ public:
     Entity* FindItem(EDroppedItemTypes item, short id);  // ?FindItem@MPPlayerItems@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z (mp.o)
     void SetItem(EDroppedItemTypes item, short id, Entity* ent);  // ?SetItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z (mp.o)
     void RemoveAll();  // ?RemoveAll@MPPlayerItems@@QAEXXZ (mp.o 0x754C90)
+    bool FindItemID(EDroppedItemTypes item, Entity* ent, short& id);  // ?FindItemID@MPPlayerItems@@QAE_NW4EDroppedItemTypes@@PAVEntity@@AAF@Z (mp.o 0x755070)
+    void RemoveAll(EDroppedItemTypes item);  // ?RemoveAll@MPPlayerItems@@QAEXW4EDroppedItemTypes@@@Z (mp.o 0x754F00)
+    short AddItem(EDroppedItemTypes item, Entity* ent);  // ?AddItem@MPPlayerItems@@QAEFW4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x75D300)
     ~MPPlayerItems();  // ??1MPPlayerItems@@QAE@XZ (mp.o 0x75D250)
 
 private:
     ae_vector<sDroppedItem>& GetItemList(EDroppedItemTypes item);  // ?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z (mp.o 0x72E020)
+    short FindOldestItem(const ae_vector<sDroppedItem>& list);  // ?FindOldestItem@MPPlayerItems@@AAEFABV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@@Z (mp.o 0x755300)
 };
 
 // ============================================================================
@@ -283,6 +316,11 @@ public:
     void updateSlots(char publicOpenDelta, char privateOpenDelta,
                      char publicFilledDelta,
                      char privateFilledDelta);  // ?updateSlots@MPGameInfo@@QAEXDDDD@Z (mp.o 0x730540)
+    MPGameInfo(unsigned int titleID, bdReference<bdCommonAddr> hostAddr,
+               unsigned char publicOpen, unsigned char privateOpen,
+               unsigned char publicFilled,
+               unsigned char privateFilled);  // ??0MPGameInfo@@QAE@IV?$bdReference@VbdCommonAddr@@@@EEEE@Z (mp.o 0x73DAD0)
+    bool operator==(const MPGameInfo& other) const;  // ??8MPGameInfo@@QBE_NABV0@@Z (mp.o 0x73DFF0)
 };
 static_assert(sizeof(MPGameInfo) == 0x50, "MPGameInfo size mismatch");
 
@@ -362,12 +400,8 @@ public:
 };
 
 // sServerCreateParams - host session setup (mMapID at +0x58)
-struct sServerCreateParams {
-    char mRandomMapList[64];  // +0x00
-    char mName[24];           // +0x40
-    unsigned char mMapID;     // +0x58
-    unsigned char mGameType;  // +0x59
-};
+// sServerCreateParams - host session setup; full layout in platform/xbox_shim/xlive.h
+struct sServerCreateParams;
 
 // sServerQueryParams - LAN query filters (44 bytes)
 struct sServerQueryParams {
@@ -423,9 +457,10 @@ public:
 };
 
 // FEMenu base (0x4C) - minimal view; members/virtuals used by mp.o overrides
+class FEMenuEntry;  // full minimal view below
 class FEMenu {
 public:
-    void**        entries;              // +0x04
+    FEMenuEntry** entries;              // +0x04
     FEMenuSystem* system;               // +0x08
     uint8_t       _pad0C[0x22 - 0x0C];
     int16_t       highlighted;          // +0x22
@@ -441,6 +476,7 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pf);  // slot 1 shell.o 0x5B7570
     virtual void UpdateWidescreen(bool widescreen); // slot 2 shell.o 0x57DF20
     virtual ~FEMenu();                               // slot 3 shell.o 0x592150
+    virtual void OnActivate();                       // slot 28 shell.o 0x570750
     virtual void OnUp(int c);                        // slot 32 shell.o 0x5AE910
     virtual void OnDown(int c);                      // slot 33 shell.o 0x5AE920
     virtual void OnTriangle(int c);                  // slot 46 shell.o
@@ -456,7 +492,36 @@ public:
 };
 static_assert(sizeof(FEMenu) == 0x4C, "FEMenu size mismatch");
 
-// ProfileManager (shell.o) - methods used by mp.o profile menus
+// DialogMenu / DialogMenuSystem - shell.o dialog views (minimal)
+class DialogMenu : public FEMenu {
+public:
+    void (*triangleResponse)(int);   // +0x60
+    void AddOption(const char* t,
+                   bool (*responseFunc)(int));  // ?AddOption@DialogMenu@@QAEXPBDP6A_NH@Z@Z (shell.o 0x572EE0)
+    void Reformat(bool vertical, int viewport); // ?Reformat@DialogMenu@@QAEX_NH@Z (shell.o 0x572F40)
+};
+
+class DialogMenuSystem : public FEMenuSystem {
+public:
+    DialogMenu* GetLayer(bool layer1);       // ?GetLayer@DialogMenuSystem@@QAEPAVDialogMenu@@_N@Z (shell.o 0x572830)
+    void BringUp(const char* t, bool type_ok, bool type_yn,
+                 const char* title_unloc, bool layer1);  // ?BringUp@DialogMenuSystem@@QAEXPBD_N101@Z (shell.o 0x58E3B0)
+    void HighlightOption(int index);         // ?HighlightOption@DialogMenuSystem@@QAEXH@Z (shell.o 0x57F1A0)
+    int  GetActiveMenu();                    // ?GetActiveMenu@FEMenuSystem@@UAEHXZ (shell.o 0x571370)
+};
+
+// FEMenuEntry - one menu row (vtable + 20 bytes; SetValue/GetValue at slots
+// 49/50, i.e. +0xC4/+0xC8)
+class FEMenuEntry {
+public:
+    virtual ~FEMenuEntry();              // ??1FEMenuEntry@@UAE@Z (shell.o)
+    virtual void SetValue(int value);    // ?SetValue@FEMenuEntry@@UAEXH@Z (shell.o 0x5AE840)
+    virtual int  GetValue();             // ?GetValue@FEMenuEntry@@UAEHXZ (shell.o 0x5AE850)
+    uint8_t _pad[0x18 - 0x04];
+};
+static_assert(sizeof(FEMenuEntry) == 0x18, "FEMenuEntry size mismatch");
+
+// ProfileManager / ProfileEditMenu (shell.o) - methods used by mp.o
 class ProfileManager {
 public:
     static ProfileManager* Me();             // ?Me@ProfileManager@@SAPAV1@XZ (shell.o 0x5751D0)
@@ -466,21 +531,26 @@ public:
     void SetProfile(SaveGameData* sv);       // ?SetProfile@ProfileManager@@QAEXPAUSaveGameData@@@Z (shell.o 0x580F00)
 };
 
-// MusicMgr (game.o) - used by MPUIInterface::Reboot
+class ProfileEditMenu : public FEMenu {
+public:
+    bool mNeedWrite;              // +0x4C
+    static ProfileEditMenu* Me(); // ?Me@ProfileEditMenu@@SAPAV1@XZ (shell.o 0x574FA0)
+};
+
+// MusicMgr / STBManager / controller - cross-object extern views
 class MusicMgr {
 public:
     static MusicMgr* sInst;   // ?sInst@MusicMgr@@2PAV1@A (game.o)
     void Stop(float fadeOutTime);  // ?Stop@MusicMgr@@QAEXM@Z (game.o 0x221830)
+    void ScaleVolume(float scale); // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o 0x2216D0)
 };
 
-// STBManager (core.o) - string table lookup for ClearEntries
 class STBManager {
 public:
     static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A @ 0xF00EA0
     const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z (core.o)
 };
 
-// controller (controller.o) - locked_port at +0x18 (IDA)
 class controller {
 public:
     uint8_t _pad[0x18];
@@ -502,6 +572,11 @@ public:
     virtual void Update(float time_inc); // ?Update@MPOptionsScreenMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x7309B0)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsScreenMenu@@UAEX_N@Z (mp.o 0x730D30)
+    virtual void OnActivate();  // ?OnActivate@MPOptionsScreenMenu@@UAEXXZ (mp.o 0x7309D0)
+    static const char* const kScreenOptionStrings[4];        // @ 0xD19378
+    static const char* const kScreenInstructionStrings[4];   // @ 0xD1939C
+private:
+    bool SaveOptions();         // ?SaveOptions@MPOptionsScreenMenu@@AAE_NXZ (mp.o 0x730B00)
 };
 
 class MPOptionsSoundMenu : public FEMenu {
@@ -524,6 +599,8 @@ public:
     static const char* const kSoundOptionStrings[];  // ?kSoundOptionStrings@MPOptionsSoundMenu@@0QBQBDB @ 0xD193BC
 private:
     void SetOptions();  // ?SetOptions@MPOptionsSoundMenu@@AAEXXZ (mp.o)
+    bool SaveOptions();               // ?SaveOptions@MPOptionsSoundMenu@@AAE_NXZ (mp.o 0x7314B0)
+    void AdjustOptions(bool up);      // ?AdjustOptions@MPOptionsSoundMenu@@AAEX_N@Z (mp.o 0x73E140)
 };
 
 class MPOptionsControlsMenu : public FEMenu {
@@ -552,6 +629,11 @@ public:
     virtual void Update(float time_inc);  // ?Update@MPOptionsGameplayMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732540)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsGameplayMenu@@UAEX_N@Z (mp.o 0x732890)
+    virtual void OnActivate();  // ?OnActivate@MPOptionsGameplayMenu@@UAEXXZ (mp.o 0x73E400)
+    static const char* const kGameplayOptionStrings[4];       // @ 0xD19578
+    static const char* const kGameplayInstructionStrings[4];  // @ 0xD195A8
+private:
+    void SetOptions();  // ?SetOptions@MPOptionsGameplayMenu@@AAEXXZ (mp.o)
 };
 
 class MPOptionsPreferencesMenu : public FEMenu {
@@ -566,6 +648,8 @@ public:
     virtual ~MPOptionsPreferencesMenu();        // ??1MPOptionsPreferencesMenu@@UAE@XZ (mp.o 0x732940)
     static MPOptionsPreferencesMenu* Me();  // ?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsPreferencesMenu@@UAEXM@Z
+private:
+    void SetOptions();  // ?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ (mp.o 0x732F90)
 };
 
 // ============================================================================
@@ -606,9 +690,18 @@ public:
     static bool DialogResponseDeleteCancel(int index);  // ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z
     static bool DialogResponseProfileEdit(int index);   // ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z
     static bool DialogResponseNoMemCard(int index);     // ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z
+    static bool DialogResponseProfileLoadOk(int index); // ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734250)
+    static bool DialogResponseSaveSuccess(int index);   // ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734290)
+    static bool DialogResponseDeleteSuccess(int index); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x7342B0)
     static void LoadProfileData();   // ?LoadProfileData@MPProfileMainMenu@@SAXXZ (mp.o 0x733AF0)
     void ClearEntries();             // ?ClearEntries@MPProfileMainMenu@@QAEXXZ (mp.o 0x733A90)
     void DialogDisplayProfileLoading(int delaySecs);  // ?DialogDisplayProfileLoading@MPProfileMainMenu@@QAEXH@Z (shell.o)
+    static void DialogDisplayProfileLoadSuccess(int index);  // ?DialogDisplayProfileLoadSuccess@MPProfileMainMenu@@SAXH@Z (mp.o 0x73E7F0)
+    void DialogDisplaySaveSuccess();  // ?DialogDisplaySaveSuccess@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EA80)
+    void DialogDisplayDeleteSuccess(); // ?DialogDisplayDeleteSuccess@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EB60)
+    void DialogDisplayNoMemDevice();  // ?DialogDisplayNoMemDevice@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EC40)
+    void DialogDisplayDataCorrupt();  // ?DialogDisplayDataCorrupt@MPProfileMainMenu@@QAEXXZ (mp.o 0x73ED20)
+    void DialogDisplayNoFreeSpace();  // ?DialogDisplayNoFreeSpace@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EE00)
     virtual void Select(int entry_num);  // ?Select@MPProfileMainMenu@@UAEXH@Z (mp.o 0x764210)
     virtual void OnCross(int c);         // ?OnCross@MPProfileMainMenu@@UAEXH@Z (mp.o 0x733D80)
     virtual void OnTriangle(int c);      // ?OnTriangle@MPProfileMainMenu@@UAEXH@Z (mp.o 0x760F90)
@@ -629,6 +722,13 @@ namespace kuju {
 class cBezier {
 public:
     cBezier();  // ??0cBezier@kuju@@QAE@XZ
+    math::Dir3 mAFactor;     // +0x00
+    math::Dir3 mBFactor;     // +0x10
+    math::Dir3 mCFactor;     // +0x20
+    math::Position3 mInitialPoint;  // +0x30
+
+    math::Position3 position(float time) const;  // ?position@cBezier@kuju@@QBE?AVPosition3@math@@M@Z (mp.o 0x7343A0)
+    math::Dir3 speed(float time) const;          // ?speed@cBezier@kuju@@QBE?AVDir3@math@@M@Z (mp.o 0x734480)
 };
 
 namespace knetuser {
@@ -686,13 +786,25 @@ public:
     void deinitialise();             // ?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ
     void update(const kuju::knet::sTime& time);             // ?update@cVoiceNetworkManager@knetuser@kuju@@QAEXABVsTime@knet@3@@Z (mp.o 0x7500E0)
     void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
+    void check_for_looped();  // ?check_for_looped@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o 0x734EC0)
 private:
     void checkForPendingPacketsAwaitingHandling(const kuju::knet::sTime& time);  // (mp.o 0x735250)
     void checkForPendingPacketsAwaitingDispatch(const kuju::knet::sTime& time);  // (mp.o 0x750000)
+    void addVoicePendingDispatchPacket(sVoicePendingDispatchPacket* packet);  // ?addVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z (mp.o 0x734FA0)
+private:
     void handleDirectDestinations(MPPlayerSet& sendTo, MPPlayerSet& exclude,
                                   unsigned long destinationPlayer);  // ?handleDirectDestinations@cVoiceNetworkManager@knetuser@kuju@@AAEXAAVMPPlayerSet@@0K@Z (mp.o 0x74F6D0)
     unsigned char getRoutePlayer(unsigned char sourcePlayer,
                                  unsigned char destPlayer);  // ?getRoutePlayer@cVoiceNetworkManager@knetuser@kuju@@AAEEEE@Z (mp.o 0x73FC70)
+    void dispatchPacketDirectToPlayer(const kuju::knet::sTime& time,
+                                      sVoicePendingDispatchPacket* packet,
+                                      unsigned char player);  // ?dispatchPacketDirectToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@E@Z (mp.o 0x74FB00)
+    void dispatchPendingVoicePackets(const kuju::knet::sTime& time,
+                                     MPPlayerSet& connectionsUsed,
+                                     unsigned long& connectionsLeft);  // ?dispatchPendingVoicePackets@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@AAVMPPlayerSet@@AAK@Z (mp.o 0x74FF40)
+    void dispatchVoicePendingDispatchPacket(sVoicePendingDispatchPacket* packet,
+                                            unsigned int destinationPlayer);  // ?dispatchVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@K@Z (mp.o)
+    void discardVoicePendingDispatchPacket(sVoicePendingDispatchPacket* packet);  // ?discardVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z (mp.o)
 };
 }
 

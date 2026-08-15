@@ -381,6 +381,8 @@ public:
     bool readRangedInt32(int& value, int min, int max);     // ?readRangedInt32@bdBitBuffer@@QAE_NAAHHH@Z
     bool readRangedUInt32(unsigned int& value, unsigned int min,
                           unsigned int max, bool typeChecked);  // ?readRangedUInt32@bdBitBuffer@@QAE_NAAIII_N@Z
+    bool readRangedFloat32(float& value, float min, float max,
+                           float scale);                   // ?readRangedFloat32@bdBitBuffer@@QAE_NAAMMMM@Z
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);
