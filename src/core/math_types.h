@@ -61,6 +61,9 @@ public:
     // Packed layout (3 floats, 12 bytes — for network/disk)
     struct Packed {
         float x, y, z;
+        float GetX() const;  // ?GetX@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5EC0)
+        float GetY() const;  // ?GetY@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5ED0)
+        float GetZ() const;  // ?GetZ@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5EE0)
     };
 };
 static_assert(sizeof(Dir3) == 0x10, "Dir3 size mismatch");
@@ -116,6 +119,10 @@ public:
 
     struct Packed {
         float x, y, z, w;
+        float GetX() const;  // ?GetX@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6020)
+        float GetY() const;  // ?GetY@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6030)
+        float GetZ() const;  // ?GetZ@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6040)
+        float GetW() const;  // ?GetW@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6050)
     };
 
     const Vector4& operator*=(const Mat44& m);  // ??XVector4@math@@QAEABV01@ABVMat44@1@@Z (streamer.o)

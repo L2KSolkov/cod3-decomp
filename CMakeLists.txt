@@ -383,6 +383,7 @@ add_library(cod3_game_render STATIC
     src/game/render/tr_dpvs.cpp
     src/game/render/tr_fog.cpp
     src/game/render/tr_main.cpp
+    src/game/render/tr_tiny.cpp
     src/game/render/tr_fx.cpp
     src/game/render/tr_scene.cpp
     src/game/render/tr_ui.cpp

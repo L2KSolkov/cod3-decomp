@@ -35,6 +35,10 @@ public:
         r = other.r; g = other.g; b = other.b; a = other.a;
         return *this;
     }
+    float get_red() const;    // ?get_red@Color@@QBEMXZ (render.o 0x6E5A30)
+    float get_green() const;  // ?get_green@Color@@QBEMXZ (render.o 0x6E5A40)
+    float get_blue() const;   // ?get_blue@Color@@QBEMXZ (render.o 0x6E5A50)
+    float get_alpha() const;  // ?get_alpha@Color@@QBEMXZ (render.o 0x6E5A60)
     Color32 to_color32() const;  // ?to_color32@Color@@QBE?AVColor32@@XZ (render.o 0x6E5A70)
 };
 static_assert(sizeof(Color) == 0x10, "Color size mismatch");
