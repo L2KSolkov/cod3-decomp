@@ -49,6 +49,20 @@ class Dir3 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
 
+    Dir3();                       // ??0Dir3@math@@QAE@XZ (g.o 0x4A55C0)
+    Dir3(__m128 _v) : v(_v) {}
+    Dir3(float _x, float _y, float _z);  // ??0Dir3@math@@QAE@MMM@Z (g.o 0x4A55D0)
+    Dir3(float _x);               // ??0Dir3@math@@QAE@M@Z (g.o 0x4A5640)
+    Dir3(const Dir3& other) : v(other.v) {}  // implicit copy (aggregate support)
+    float GetX() const;           // ?GetX@Dir3@math@@QBEMXZ
+    float GetY() const;           // ?GetY@Dir3@math@@QBEMXZ
+    float GetZ() const;           // ?GetZ@Dir3@math@@QBEMXZ (g.o 0x4A56A0)
+    void SetX(float _x);          // ?SetX@Dir3@math@@QAEXM@Z
+    void SetY(float _y);          // ?SetY@Dir3@math@@QAEXM@Z
+    void SetZ(float _z);          // ?SetZ@Dir3@math@@QAEXM@Z (g.o 0x4A56F0)
+    float& operator[](unsigned int i);        // ??ADir3@math@@QAEAAMI@Z
+    const float& operator[](unsigned int i) const;  // ??ADir3@math@@QBEABMI@Z
+
     // apsMath.o (non-inline): row-vector * 3x3 matrix. Unresolved here.
     const math::Dir3& operator*=(const math::Mat33& m);
     const math::Dir3& operator+=(float _v);  // ??YDir3@math@@QAEABV01@M@Z (render.o 0x6E6490)
@@ -84,7 +98,19 @@ public:
 
     Position3() {}
     Position3(__m128 _v) : v(_v) {}
+    Position3(float _x, float _y, float _z);  // ??0Position3@math@@QAE@MMM@Z (g.o 0x4A57A0)
+    Position3(float _x);           // ??0Position3@math@@QAE@M@Z (g.o 0x4A5830)
+    Position3(const Position3& other) : v(other.v) {}  // implicit copy
     const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
+
+    float GetX() const;           // ?GetX@Position3@math@@QBEMXZ (g.o 0x4A58B0)
+    float GetY() const;           // ?GetY@Position3@math@@QBEMXZ (g.o 0x4A58D0)
+    float GetZ() const;           // ?GetZ@Position3@math@@QBEMXZ (g.o 0x4A5930)
+    void SetX(float _x);          // ?SetX@Position3@math@@QAEXM@Z (g.o 0x4A59B0)
+    void SetY(float _y);          // ?SetY@Position3@math@@QAEXM@Z (g.o 0x4A59F0)
+    void SetZ(float _z);          // ?SetZ@Position3@math@@QAEXM@Z (g.o 0x4A5A30)
+    float& operator[](unsigned int i);        // ??APosition3@math@@QAEAAMI@Z (g.o 0x4A5A70)
+    const float& operator[](unsigned int i) const;  // ??APosition3@math@@QBEABMI@Z (g.o 0x4A5A80)
 
     // ??0Position3@math@@QAE@ABVVector4@1@@Z (anim.o 0x539D60)
     Position3(const Vector4& v);
@@ -121,6 +147,17 @@ class Vector4 {
 public:
     __m128 v;
 
+    Vector4(float _x, float _y, float _z, float _w);  // ??0Vector4@math@@QAE@MMMM@Z (g.o 0x4A5AA0)
+    Vector4(float _x);           // ??0Vector4@math@@QAE@M@Z (g.o 0x4A5B10)
+    float GetX() const;           // ?GetX@Vector4@math@@QBEMXZ (g.o 0x4A5B80)
+    float GetY() const;           // ?GetY@Vector4@math@@QBEMXZ (g.o 0x4A5BA0)
+    float GetZ() const;           // ?GetZ@Vector4@math@@QBEMXZ
+    float GetW() const;           // ?GetW@Vector4@math@@QBEMXZ
+    void SetX(float _x);          // ?SetX@Vector4@math@@QAEXM@Z
+    void SetY(float _y);          // ?SetY@Vector4@math@@QAEXM@Z
+    void SetZ(float _z);          // ?SetZ@Vector4@math@@QAEXM@Z
+    void SetW(float _w);          // ?SetW@Vector4@math@@QAEXM@Z
+
     struct Packed {
         float x, y, z, w;
         float GetX() const;  // ?GetX@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6020)
@@ -136,6 +173,8 @@ public:
     };
 
     Vector4() {}
+    Vector4(__m128 _v) : v(_v) {}
+    Vector4(const Vector4& other) : v(other.v) {}  // implicit copy
     Vector4(const Dir3& _v, float _w);  // ??0Vector4@math@@QAE@ABVDir3@1@M@Z (render.o 0x6E6110)
     Vector4(const Vector4::Packed& _p); // ??0Vector4@math@@QAE@ABUPacked@01@@Z (render.o 0x6E6160)
     const Vector4& operator=(const Vector4::Packed& _p);  // ??4Vector4@math@@QAEABV01@ABUPacked@01@@Z (render.o 0x6E6220)

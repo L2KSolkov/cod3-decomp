@@ -183,6 +183,7 @@ class EntityState {
 public:
     EntityState();                            // ??0EntityState@@QAE@XZ (game.o 0x620480)
     void SetLerpAngles(const math::Position3& angles);  // ?SetLerpAngles@EntityState@@QAEXABVPosition3@math@@@Z (cg.o 0x6BBAC0)
+    math::Position3 GetLerpAngles() const;    // ?GetLerpAngles@EntityState@@QBE?BVPosition3@math@@XZ (g.o 0x4A5750)
 
     uint8_t  eType;                               // +0x00
     uint8_t  loopSound;                           // +0x01

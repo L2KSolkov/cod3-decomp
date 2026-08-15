@@ -129,6 +129,144 @@ float RSqrt(float a) { return 1.0f / (float)sqrt((double)a); }
 }
 
 // ============================================================================
+// math vector accessors (g.o 0x4A55C0-0x4A5BA0)
+// ============================================================================
+math::Dir3::Dir3()
+{
+}
+math::Dir3::Dir3(float _x, float _y, float _z)
+{
+    v.m128_f32[0] = _x;
+    v.m128_f32[1] = _y;
+    v.m128_f32[2] = _z;
+    v.m128_f32[3] = 0.0f;
+}
+math::Dir3::Dir3(float _x)
+{
+    v.m128_f32[0] = _x;
+    v.m128_f32[1] = _x;
+    v.m128_f32[2] = _x;
+    v.m128_f32[3] = 0.0f;
+}
+float math::Dir3::GetX() const { return v.m128_f32[0]; }
+float math::Dir3::GetY() const
+{
+    return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
+}
+float math::Dir3::GetZ() const
+{
+    return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
+}
+void math::Dir3::SetX(float _x)
+{
+    __m128 t = v;
+    t.m128_f32[0] = _x;
+    v = t;
+}
+void math::Dir3::SetY(float _y)
+{
+    v = _mm_shuffle_ps(_mm_shuffle_ps(_mm_set1_ps(_y), v, 0), v, 0xE2);
+}
+void math::Dir3::SetZ(float _z)
+{
+    v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_z), v, 0xF0), 0xC4);
+}
+float& math::Dir3::operator[](unsigned int i) { return v.m128_f32[i]; }
+const float& math::Dir3::operator[](unsigned int i) const { return v.m128_f32[i]; }
+
+math::Position3::Position3(float _x, float _y, float _z)
+{
+    v.m128_f32[0] = _x;
+    v.m128_f32[1] = _y;
+    v.m128_f32[2] = _z;
+    v.m128_f32[3] = 0.0f;
+}
+math::Position3::Position3(float _x)
+{
+    v.m128_f32[0] = _x;
+    v.m128_f32[1] = _x;
+    v.m128_f32[2] = _x;
+    v.m128_f32[3] = 0.0f;
+}
+float math::Position3::GetX() const { return v.m128_f32[0]; }
+float math::Position3::GetY() const
+{
+    return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
+}
+float math::Position3::GetZ() const
+{
+    return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
+}
+void math::Position3::SetX(float _x)
+{
+    __m128 t = v;
+    t.m128_f32[0] = _x;
+    v = t;
+}
+void math::Position3::SetY(float _y)
+{
+    v = _mm_shuffle_ps(_mm_shuffle_ps(_mm_set1_ps(_y), v, 0), v, 0xE2);
+}
+void math::Position3::SetZ(float _z)
+{
+    v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_z), v, 0xF0), 0xC4);
+}
+float& math::Position3::operator[](unsigned int i) { return v.m128_f32[i]; }
+const float& math::Position3::operator[](unsigned int i) const
+{
+    return v.m128_f32[i];
+}
+
+math::Vector4::Vector4(float _x, float _y, float _z, float _w)
+{
+    v.m128_f32[0] = _x;
+    v.m128_f32[1] = _y;
+    v.m128_f32[2] = _z;
+    v.m128_f32[3] = _w;
+}
+math::Vector4::Vector4(float _x)
+{
+    v = _mm_set1_ps(_x);
+}
+float math::Vector4::GetX() const { return v.m128_f32[0]; }
+float math::Vector4::GetY() const
+{
+    return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
+}
+float math::Vector4::GetZ() const
+{
+    return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
+}
+float math::Vector4::GetW() const
+{
+    return _mm_shuffle_ps(v, v, 0xFF).m128_f32[0];
+}
+void math::Vector4::SetX(float _x)
+{
+    __m128 t = v;
+    t.m128_f32[0] = _x;
+    v = t;
+}
+void math::Vector4::SetY(float _y)
+{
+    v = _mm_shuffle_ps(_mm_shuffle_ps(_mm_set1_ps(_y), v, 0), v, 0xE2);
+}
+void math::Vector4::SetZ(float _z)
+{
+    v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_z), v, 0xF0), 0xC4);
+}
+void math::Vector4::SetW(float _w)
+{
+    v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_w), v, 0xE0), 0x39);
+}
+
+// EntityState::GetLerpAngles (g.o 0x4A5750)
+math::Position3 EntityState::GetLerpAngles() const
+{
+    return lerpAngles;
+}
+
+// ============================================================================
 // Misc accessors (g.o)
 // ============================================================================
 unsigned __int64 tlGetTick()
