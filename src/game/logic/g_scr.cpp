@@ -35,6 +35,9 @@ namespace BrocHelper {
 int m_treeCount;  // ?m_treeCount@BrocHelper@@3HA (scr.o @ 0x1329E78)
 void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
 int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
+void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
+                          const tlFixedString& animation_name,
+                          int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
 }
 
 // ea: 0x005BE020
@@ -47,6 +50,16 @@ void BrocHelper::SetLoadedTrees(int num)
 int BrocHelper::GetLoadedTrees()
 {
     return BrocHelper::m_treeCount;
+}
+
+// ea: 0x005BE0D0
+void BrocHelper::AnimationToBroLookup(const tlFixedString& tree_name,
+                                      int tree_index,
+                                      const tlFixedString& animation_name,
+                                      int animation_index)
+{
+    gpBrocAPI->mBrocExports.mAnimIndexResolver(
+        tree_name.hash, tree_index, animation_name.hash, animation_index);
 }
 
 extern void __fastcall Sentient_SetGoalRadius(sentient_s* pSelf, float fRadius);  // ?Sentient_SetGoalRadius@@YIXPAUsentient_s@@M@Z
@@ -81,9 +94,16 @@ extern float gProjShadowSize;              // ?gProjShadowSize@@3MA (render.o)
 struct IGOCompassWidget {
     void SetHideCompassStar(int active, int index);  // ?SetHideCompassStar@IGOCompassWidget@@QAEXHH@Z
     void SetHideUpdatedText(int active, int index);  // ?SetHideUpdatedText@IGOCompassWidget@@QAEXHH@Z
+    static int ObjectiveStateIndexFromString(const char* name);  // ?ObjectiveStateIndexFromString@IGOCompassWidget@@SAHPBD@Z
 };
 
 extern actor_s* __fastcall Actor_Get(DbLinkedHandle<EntityHandleDb, Entity> ent);  // ?Actor_Get@@YIPAUactor_s@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z (mp_actors.o)
+
+extern void CG_Fade(int r, int g, int b, int a, int time, int duration,
+                    int viewport);  // ?CG_Fade@@YAXHHHHHHH@Z (cg.o)
+extern bool XAnimNotetrackExists(scr_anim_s anim,
+                                 const unsigned int& name);  // ?XAnimNotetrackExists@@YA_NUscr_anim_s@@ABI@Z
+extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
 class MusicMgr {
@@ -874,6 +894,176 @@ void CloseMenu1(unsigned int entityHandleVal)
     SV_GameSendServerCommand(
         DbLinkedHandle<EntityHandleDb, Entity>(Handle(entityHandleVal)),
         "popupclose");
+}
+
+// ea: 0x005BC630
+void ScreenFadeUp(unsigned int duration, int viewport)
+{
+    CG_Fade(0, 0, 0, 0, cgGlobal.time, duration, viewport);
+}
+
+// ea: 0x005BCBF0
+void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time)
+{
+    SoundDevice::sInst->CrossFade(handle1, handle2, time);
+}
+
+// ea: 0x005BCD40
+void SetCullDist(float cullDist)
+{
+    SV_SetConfigstring(9, va("%g", cullDist));
+}
+
+// ea: 0x005BCE70
+void SetFootSplashEffect(const Broc::string& effectname)
+{
+    gFootSplashEffect = effectname;
+}
+
+// ea: 0x005BD2F0
+void HudClearTypeSettings(game_hudelem_s* hud)
+{
+    hud->elem.width = 0;
+    hud->elem.height = 0;
+    hud->elem.mTexture = nullptr;
+    hud->elem.fromWidth = 0;
+    hud->elem.fromHeight = 0;
+    hud->elem.scaleStartTime = 0;
+    hud->elem.scaleTime = 0;
+    hud->elem.time = 0;
+    hud->elem.duration = 0;
+    hud->elem.value = 0.0f;
+    hud->elem.text = 0;
+}
+
+// ea: 0x005BE7A0
+unsigned int GetLevel()
+{
+    return EntityManager::sInst->mWorld->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005BF050
+void PlaySubtitle(const Broc::string& str)
+{
+    if (str.mBlock != nullptr)
+        subtitle_manager::play_subtitle((const char*)(str.mBlock + 1),
+                                        nullptr);
+    else
+        subtitle_manager::play_subtitle(defaultFileName, nullptr);
+}
+
+// ea: 0x005BF080
+bool AnimHasNotetrack(unsigned int /*entityHandleVal*/, unsigned int broanim,
+                      const unsigned int& name)
+{
+    return XAnimNotetrackExists(scr_anim_s{broanim}, name);
+}
+
+// ea: 0x005BF230
+void ActorScr_SetTime(actor_s* a, int offset, const int* val)
+{
+    *(int*)((char*)a + offset) = (int)((*val * 1000.0) + 0.5);
+}
+
+// ea: 0x005BF260
+void ActorScr_GetTime(actor_s* a, int offset, int* val)
+{
+    *val = (int)(*(int*)((char*)a + offset) * 0.001);
+}
+
+// ea: 0x005BF290
+void ActorScr_SetWeapon(actor_s* a, int offset, const Broc::string* val)
+{
+    const char* v3 = val->mBlock != nullptr
+                         ? (const char*)(val->mBlock + 1)
+                         : defaultFileName;
+    *(int*)((char*)a + offset) = BG_GetWeaponIndexForName(v3);
+}
+
+// ea: 0x005BF2C0
+void ActorScr_GetWeapon(actor_s* a, int offset, Broc::string* val)
+{
+    weaponFileInfo_t* InfoForWeapon =
+        BG_GetInfoForWeapon(*(int*)((char*)a + offset));
+    if (InfoForWeapon != nullptr)
+        *val = InfoForWeapon->szInternalName;
+}
+
+// ea: 0x005BF2F0
+void ActorScr_GetGroundType(actor_s* a, int /*offset*/, Broc::string* val)
+{
+    if (a->Physics.iSurfaceType != 0)
+        *val = Com_SurfaceTypeToName(a->Physics.iSurfaceType);
+}
+
+// ea: 0x005BF440 (disasm: read pNode+0x58 into vec->y)
+void PathNode_GetAngles(PathNodes::PathNode* pNode, int /*offset*/,
+                        Broc::vector* vec)
+{
+    float mAngle = *(float*)((char*)pNode + 0x58);
+    vec->x = 0.0f;
+    vec->y = mAngle;
+    vec->z = 0.0f;
+}
+
+// ea: 0x005BF580
+void SentientScr_ConvertSentientEnemy(sentient_s* pSelf, int /*offset*/,
+                                      Broc::entity* pEnt)
+{
+    sentient_s* pEnemy = pSelf->pEnemy;
+    if (pSelf->pEnt != nullptr && pEnemy != nullptr)
+    {
+        Entity* v4 = pEnemy->pEnt;
+        if (v4 != nullptr)
+            pEnt->___u0 = v4->mHandle.mHandle.mVal;
+    }
+}
+
+// ea: 0x005BFA70
+unsigned int GetGameUnsignedVar(unsigned int hashVarName)
+{
+    unsigned int iVal = 0;
+    if (!CheckpointMgr::sInst->GetGameVar(hashVarName, &iVal, 1u))
+        return 0xFEFEFEFEu;
+    return iVal;
+}
+
+// ea: 0x005BFAA0
+float GetGameFloatVar(unsigned int hashVarName)
+{
+    float val = 0.0f;
+    if (CheckpointMgr::sInst->GetGameVar(hashVarName,
+                                         (unsigned int*)&val, 1u))
+        return val;
+    return (float)NAN;
+}
+
+// ea: 0x005C1950
+bool ObjectiveStateIndexFromString(int* piStateIndex,
+                                   Broc::string& stateString)
+{
+    const char* v2 = stateString.mBlock != nullptr
+                         ? (const char*)(stateString.mBlock + 1)
+                         : defaultFileName;
+    int v3 = IGOCompassWidget::ObjectiveStateIndexFromString(v2);
+    *piStateIndex = v3;
+    return v3 != 27;
+}
+
+// ea: 0x005C20A0
+int GetWeaponIndex(const Broc::string& weaponName)
+{
+    if (weaponName.mBlock != nullptr)
+        return BG_GetWeaponIndexForName((const char*)(weaponName.mBlock + 1));
+    return BG_GetWeaponIndexForName(defaultFileName);
+}
+
+// ea: 0x005C2190
+void MakeGameMessage(const char* pszString, const char* pszCmd)
+{
+    SV_GameSendServerCommand(
+        DbLinkedHandle<EntityHandleDb, Entity>(Handle(0)),
+        va("%s \"%s\"", pszCmd, pszString));
 }
 
 // ea: 0x005BDB90 (thunk to CG_MotionBlur::End)
