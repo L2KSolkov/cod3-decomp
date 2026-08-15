@@ -408,6 +408,11 @@ public:
     void SendGameScore(int alliesScore, int axisScore); // ?SendGameScore@MultiplayerMgr@@QAEXHH@Z (mp.o)
     void AreaCaptured(int netIndex, int itemType, int hostOnly);  // ?AreaCaptured@MultiplayerMgr@@QAEXHHH@Z (mp.o)
     void EnterGame();                                   // ?EnterGame@MultiplayerMgr@@QAEXXZ (mp.o)
+    void PlayerRespawn(Entity* player,
+                       const math::Position3& position,
+                       const math::Dir3& angles,
+                       int team);  // ?PlayerRespawn@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
+    const char* GetPlayerName(Entity* player) const;  // ?GetPlayerName@MultiplayerMgr@@QBEPBDPBVEntity@@@Z (mp.o)
     void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,

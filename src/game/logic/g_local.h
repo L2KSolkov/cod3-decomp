@@ -409,7 +409,8 @@ void RespawnItem(Entity* ent, int unused);
 // ============================================================================
 class trRefEntity {
 public:
-    uint8_t _pad[0xF0];      // +0x00
+    uint8_t _pad[0xEC];      // +0x00
+    float   mScale;          // +0xEC
     float   mAlpha;          // +0xF0
     int16_t mWaterHeightOffset;  // +0xF4
     uint8_t _padF6[0xFC - 0xF6];
@@ -1600,7 +1601,30 @@ struct BrocExports {
     uint8_t _pad5A8[0x81C - 0x5A8];
     void (*mShellShock)(unsigned int ent, Broc::string* shock,
                         float fVal);                       // +0x81C
-    uint8_t _pad820[0xB70 - 0x820];
+    uint8_t _pad820[0x9E8 - 0x820];
+    void (*mMoveTo)(unsigned int, const Broc::vector&, float, float,
+                    float);                                // +0x9E8
+    void (*mMoveX)(unsigned int, float, float, float,
+                   float);                                  // +0x9EC
+    void (*mMoveY)(unsigned int, float, float, float,
+                   float);                                  // +0x9F0
+    void (*mMoveZ)(unsigned int, float, float, float,
+                   float);                                  // +0x9F4
+    void (*mMoveGravity)(unsigned int, const Broc::vector&, float,
+                         float);                            // +0x9F8
+    void (*mRotateTo)(unsigned int, const Broc::vector&, float, float,
+                      float);                               // +0x9FC
+    void (*mRotatePitch)(unsigned int, float, float, float,
+                         float);                            // +0xA00
+    void (*mRotateYaw)(unsigned int, float, float, float,
+                       float);                              // +0xA04
+    void (*mRotateRoll)(unsigned int, float, float, float,
+                        float);                             // +0xA08
+    void (*mRotateVelocity)(unsigned int, const Broc::vector&, float, float,
+                            float);                         // +0xA0C
+    void (*mSolid)(unsigned int);                           // +0xA10
+    void (*mNotSolid)(unsigned int);                        // +0xA14
+    uint8_t _padA18[0xB70 - 0xA18];
     void (*mFireTurret)(unsigned int ent, bool fire);      // +0xB70
     uint8_t _padB74[0xC50 - 0xB74];
     void (*mAnimInitialize)();  // +0xC50

@@ -3481,6 +3481,49 @@ void ScriptExplode(unsigned int num, float damage);  // 0x5D2C00
 void SetEntityLODOverride(unsigned int entHandle,
                           unsigned int lodLevel);  // 0x5D2D70
 void SetEntityFlagDrone(unsigned int entityHandleVal);  // 0x5D2E40
+int IsEntityVisible(unsigned int entityHandleVal);  // 0x5D2E90
+void EntityIgnoreDanger(unsigned int entityHandleVal, bool ignoreAI,
+                        bool ignoreGrenades, bool clearEnemy);  // 0x5D2ED0
+void SetGetOceanHeight(unsigned int entityHandleVal, int setFlag,
+                       int offset);  // 0x5D2F60
+void ScaleEntity(unsigned int entityHandleVal, float scale);  // 0x5D3030
+void SwapColMaps(unsigned int entityHandleVal0,
+                 unsigned int entityHandleVal1);  // 0x5D3080
+void MoveTo(unsigned int entityHandleVal, const Broc::vector& vPos,
+            float fTotalTime, float fAccelTime,
+            float fDecelTime);  // 0x5D3360
+void MoveGravity(unsigned int entityHandleVal, const Broc::vector& vVel,
+                 float fTotalTime, float gravityOverride);  // 0x5D3560
+void RotateTo(unsigned int entityHandleVal, const Broc::vector& vDest,
+              float fTotalTime, float fAccelTime,
+              float fDecelTime);  // 0x5D3670
+void RotateVelocity(unsigned int entityHandleVal, const Broc::vector& vSpeed,
+                    float fTotalTime, float fAccelTime,
+                    float fDecelTime);  // 0x5D3A10
+void Solid(unsigned int entityHandleVal);  // 0x5D3B50
+void NotSolid(unsigned int entityHandleVal);  // 0x5D3BF0
+void InitEntityMove();  // 0x5D3C90 (void mangle per manifest)
+void MPScript_PlayerRespawn(unsigned int entityHandleVal,
+                            const Broc::vector& origin,
+                            const Broc::vector& angles,
+                            const Broc::string& team);  // 0x5D3D50
+void MPScript_PlayerSpawn(unsigned int entityHandleVal,
+                          const Broc::vector& origin,
+                          const Broc::vector& angles,
+                          bool stopPhysics);  // 0x5D3ED0
+void MPScript_SetPlayerAlive(unsigned int entityHandleVal,
+                             int health);  // 0x5D3FD0
+void SetRespawnMaxTime(unsigned int entityHandleVal, int time);  // 0x5D4050
+const char* MPScript_GetPlayerName(unsigned int entityHandleVal);  // 0x5D40A0
+void MPScript_FinishDamage(unsigned int targHandleVal,
+                           unsigned int inflictorHandleVal,
+                           unsigned int attackerHandleVal,
+                           const Broc::vector& dir, const Broc::vector& point,
+                           int damage, int mod, int weapon,
+                           int hitLoc);  // 0x5D4130 (int mangle per manifest)
+void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
+                       float fTotalTime, float fAccelTime,
+                       float fDecelTime);  // g_physics.cpp 0x5C0A90
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3511,6 +3554,8 @@ extern void XAnimSetCompleteGoalWeight(XAnimTree* tree,
 static void nullsub_59(void* /*actor*/) {}
 static void nullsub_65(void* /*actor*/) {}
 static void nullsub_106(void* /*actor*/, int /*eState*/) {}
+static void nullsub_79(sentient_s* /*pSelf*/, sentient_s* /*pEnemy*/,
+                       int /*bNotify*/) {}
 
 // scr.o batch 45 helpers (vehicle follow / attach)
 extern bool VEH_AcquirePlayerFollowSlot(Entity* vehicle,
@@ -16733,6 +16778,641 @@ void BrocSys::SetEntityFlagDrone(unsigned int entityHandleVal)
         int v3 = mObject->r.svFlags | 8;
         mObject->flags |= 0x2000000u;
         mObject->r.svFlags = v3;
+    }
+}
+
+// ============================================================================
+// scr.o batch 52 - visibility / movers / player respawn
+// ============================================================================
+
+// ea: 0x005D2E90
+int BrocSys::IsEntityVisible(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        return mObject->IsVisible();
+    }
+    return 0;
+}
+
+// ea: 0x005D2ED0
+void BrocSys::EntityIgnoreDanger(unsigned int entityHandleVal, bool ignoreAI,
+                                 bool ignoreGrenades, bool clearEnemy)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        int flags = mObject->flags;
+        unsigned int v7;
+        if (ignoreAI)
+            v7 = flags | 0x10000000;
+        else
+            v7 = flags & 0xEFFFFFFF;
+        mObject->flags = v7;
+        int v8 = mObject->flags;
+        unsigned int v9;
+        if (ignoreGrenades)
+            v9 = v8 | 0x8000000;
+        else
+            v9 = v8 & 0xF7FFFFFF;
+        mObject->flags = v9;
+        if (clearEnemy)
+        {
+            sentient_s* sentient = mObject->sentient;
+            if (sentient != nullptr)
+                nullsub_79(sentient, nullptr, 0);
+        }
+    }
+}
+
+// ea: 0x005D2F60
+void BrocSys::SetGetOceanHeight(unsigned int entityHandleVal, int setFlag,
+                                int offset)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        int flags = mObject->flags;
+        mObject->flags = setFlag != 0 ? flags | 0x20000000
+                                      : flags & 0xDFFFFFFF;
+        if (mObject->mRenderEntity != nullptr)
+        {
+            if (offset <= -32768 || offset >= 0x7FFF)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 6752;
+                AeAssert::gCurrentExpr = "offset > -32768 && offset < 32767";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "OFFSET FOR OCEANT HIEGHT OUT OF RANGE: -32,768 to 32,767"))
+                    __debugbreak();
+            }
+            mObject->mRenderEntity->mWaterHeightOffset =
+                (int16_t)offset;
+        }
+    }
+}
+
+// ea: 0x005D3030
+void BrocSys::ScaleEntity(unsigned int entityHandleVal, float scale)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        trRefEntity* mRenderEntity = mObject->mRenderEntity;
+        if (mRenderEntity != nullptr)
+            mRenderEntity->mScale = scale;
+    }
+}
+
+// ea: 0x005D3080
+void BrocSys::SwapColMaps(unsigned int entityHandleVal0,
+                          unsigned int entityHandleVal1)
+{
+    unsigned int v2 = entityHandleVal0 & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal0 >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    unsigned int v4 = entityHandleVal1 & 0xFFF;
+    Entity* v5 = nullptr;
+    if (v4 < 0x540
+        && entityHandleVal1 >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+        v5 = EntityHandleDb::sInst.mElements[v4].mObject;
+    if (mObject != nullptr && v5 != nullptr)
+    {
+        TPakId mPakId = (TPakId)mObject->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        TPakId v7 = mPakId;
+        TPakId v8 = (TPakId)v5->mPakId;
+        if (v8 == PAK_ID_INVALID)
+            v8 = CurPakId();
+        if (v7 == v8)
+        {
+            DCGSet* bmodel = mObject->r.bmodel;
+            mObject->r.bmodel = v5->r.bmodel;
+            v5->r.bmodel = bmodel;
+            CM_ModelBounds(mObject->r.bmodel, mObject->r.mins,
+                           mObject->r.maxs);
+            CM_ModelBounds(v5->r.bmodel, v5->r.mins, v5->r.maxs);
+            mObject->r.pos_cache.v.m128_f32[3] = 0.0f;
+            v5->r.pos_cache.v.m128_f32[3] = 0.0f;
+            SV_LinkEntity(mObject);
+            SV_LinkEntity(v5);
+        }
+    }
+}
+
+// ea: 0x005D3360
+void BrocSys::MoveTo(unsigned int entityHandleVal, const Broc::vector& vPos,
+                     float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.script_brushmodel.mHash
+            || mHash == hash_const.script_model.mHash
+            || mHash == hash_const.script_origin.mHash)
+        {
+            if ((mObject->flags & 0x10) == 0)
+            {
+                if (vPos.x == sNaN && vPos.y == sNaN && vPos.z == sNaN)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 355;
+                    AeAssert::gCurrentExpr = "vPos.IsDefined()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Undefined vector passed to MoveTo."))
+                        __debugbreak();
+                }
+                if (vPos.x != sNaN || vPos.y != sNaN || vPos.z != sNaN)
+                {
+                    math::Position3 v12 = native_to_cdl_pos3(&vPos.x);
+                    BrocSys::Mover_Move(mObject, v12, fTotalTime, fAccelTime,
+                                        fDecelTime);
+                }
+            }
+        }
+        else
+        {
+            Scr_Error(
+                "entity is not a script_brushmodel, script_model, or script_origin");
+        }
+    }
+}
+
+// ea: 0x005D3560
+void BrocSys::MoveGravity(unsigned int entityHandleVal,
+                          const Broc::vector& vVel, float fTotalTime,
+                          float gravityOverride)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.script_brushmodel.mHash
+            || mHash == hash_const.script_model.mHash
+            || mHash == hash_const.script_origin.mHash)
+        {
+            if ((mObject->flags & 0x10) == 0)
+            {
+                if (vVel.x == sNaN && vVel.y == sNaN && vVel.z == sNaN)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 389;
+                    AeAssert::gCurrentExpr = "vVel.IsDefined()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Undefined vector passed to MoveGravity."))
+                        __debugbreak();
+                }
+                BrocSys::Mover_GravityMove(mObject, &vVel.x, fTotalTime,
+                                           gravityOverride);
+            }
+        }
+        else
+        {
+            Scr_Error(
+                "entity is not a script_brushmodel, script_model, or script_origin");
+        }
+    }
+}
+
+// ea: 0x005D3670
+void BrocSys::RotateTo(unsigned int entityHandleVal, const Broc::vector& vDest,
+                       float fTotalTime, float fAccelTime, float fDecelTime)
+{
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v7 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v7].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.script_brushmodel.mHash
+            || mHash == hash_const.script_model.mHash
+            || mHash == hash_const.script_origin.mHash)
+        {
+            if ((mObject->flags & 0x10) == 0)
+            {
+                if (vDest.x == sNaN && vDest.y == sNaN && vDest.z == sNaN)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 404;
+                    AeAssert::gCurrentExpr = "vDest.IsDefined()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Undefined vector passed to RotateTo."))
+                        __debugbreak();
+                }
+                float v17 = AngleSubtract(vDest.x,
+                                          mObject->r.currentAngles.v
+                                              .m128_f32[0])
+                            + mObject->r.currentAngles.v.m128_f32[0];
+                float v18 = AngleSubtract(vDest.y,
+                                          mObject->r.currentAngles.v
+                                              .m128_f32[1])
+                            + mObject->r.currentAngles.v.m128_f32[1];
+                float v19 = AngleSubtract(vDest.z,
+                                          mObject->r.currentAngles.v
+                                              .m128_f32[2])
+                            + mObject->r.currentAngles.v.m128_f32[2];
+                if (IS_NAN(v17) || IS_NAN(v18) || IS_NAN(v19))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 413;
+                    AeAssert::gCurrentExpr = "!IS_NAN((vRot)[0]) && !IS_NAN((vRot)[1]) && !IS_NAN((vRot)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                if (IS_NAN(fTotalTime))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 414;
+                    AeAssert::gCurrentExpr = "!IS_NAN(fTotalTime)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                if (IS_NAN(fAccelTime))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 415;
+                    AeAssert::gCurrentExpr = "!IS_NAN(fAccelTime)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                if (IS_NAN(fDecelTime))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 416;
+                    AeAssert::gCurrentExpr = "!IS_NAN(fDecelTime)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                math::Position3 vRot;
+                vRot.v.m128_f32[0] = v17;
+                vRot.v.m128_f32[1] = v18;
+                vRot.v.m128_f32[2] = v19;
+                BrocSys::Mover_Rotate(mObject, vRot, fTotalTime, fAccelTime,
+                                      fDecelTime);
+            }
+        }
+        else
+        {
+            Scr_Error(
+                "entity is not a script_brushmodel, script_model, or script_origin");
+        }
+    }
+}
+
+// ea: 0x005D3A10
+void BrocSys::RotateVelocity(unsigned int entityHandleVal,
+                             const Broc::vector& vSpeed, float fTotalTime,
+                             float fAccelTime, float fDecelTime)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.script_brushmodel.mHash
+            || mHash == hash_const.script_model.mHash
+            || mHash == hash_const.script_origin.mHash)
+        {
+            if ((mObject->flags & 0x10) == 0)
+            {
+                if (vSpeed.x == sNaN && vSpeed.y == sNaN && vSpeed.z == sNaN)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 446;
+                    AeAssert::gCurrentExpr = "vSpeed.IsDefined()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Undefined vector passed to RotateVelocity."))
+                        __debugbreak();
+                }
+                math::Position3 v11 = native_to_cdl_pos3(&vSpeed.x);
+                BrocSys::Mover_RotateSpeed(mObject, v11, fTotalTime,
+                                           fAccelTime, fDecelTime);
+            }
+        }
+        else
+        {
+            Scr_Error(
+                "entity is not a script_brushmodel, script_model, or script_origin");
+        }
+    }
+}
+
+// ea: 0x005D3B50
+void BrocSys::Solid(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash != hash_const.script_brushmodel.mHash
+            && mHash != hash_const.script_model.mHash)
+        {
+            if (mHash != hash_const.script_origin.mHash)
+            {
+                Scr_Error(
+                    "entity is not a script_brushmodel, script_model, or script_origin");
+                return;
+            }
+            G_DPrintf(
+                "cannot use the solid/notsolid commands on a script_origin entity");
+            return;
+        }
+        if (mHash == hash_const.script_origin.mHash)
+        {
+            G_DPrintf(
+                "cannot use the solid/notsolid commands on a script_origin entity");
+            return;
+        }
+        unsigned int v5 = mObject->s.eFlags & 0xFFFFFFFD;
+        mObject->r.contents = 1;
+        mObject->s.eFlags = v5;
+        g_LinkEntity(mObject);
+    }
+}
+
+// ea: 0x005D3BF0
+void BrocSys::NotSolid(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash != hash_const.script_brushmodel.mHash
+            && mHash != hash_const.script_model.mHash)
+        {
+            if (mHash != hash_const.script_origin.mHash)
+            {
+                Scr_Error(
+                    "entity is not a script_brushmodel, script_model, or script_origin");
+                return;
+            }
+            G_DPrintf(
+                "cannot use the solid/notsolid commands on a script_origin entity");
+            return;
+        }
+        if (mHash == hash_const.script_origin.mHash)
+        {
+            G_DPrintf(
+                "cannot use the solid/notsolid commands on a script_origin entity");
+            return;
+        }
+        int v5 = mObject->s.eFlags | 2;
+        mObject->r.contents = 0;
+        mObject->s.eFlags = v5;
+        g_LinkEntity(mObject);
+    }
+}
+
+// ea: 0x005D3C90
+void BrocSys::InitEntityMove()
+{
+    gpBrocAPI->mBrocExports.mMoveTo = BrocSys::MoveTo;
+    gpBrocAPI->mBrocExports.mMoveX = BrocSys::MoveX;
+    gpBrocAPI->mBrocExports.mMoveY = BrocSys::MoveY;
+    gpBrocAPI->mBrocExports.mMoveZ = BrocSys::MoveZ;
+    gpBrocAPI->mBrocExports.mMoveGravity = BrocSys::MoveGravity;
+    gpBrocAPI->mBrocExports.mRotateTo = BrocSys::RotateTo;
+    gpBrocAPI->mBrocExports.mRotatePitch = BrocSys::RotatePitch;
+    gpBrocAPI->mBrocExports.mRotateYaw = BrocSys::RotateYaw;
+    gpBrocAPI->mBrocExports.mRotateRoll = BrocSys::RotateRoll;
+    gpBrocAPI->mBrocExports.mRotateVelocity = BrocSys::RotateVelocity;
+    gpBrocAPI->mBrocExports.mSolid = BrocSys::Solid;
+    gpBrocAPI->mBrocExports.mNotSolid = BrocSys::NotSolid;
+}
+
+// ea: 0x005D3D50
+void BrocSys::MPScript_PlayerRespawn(unsigned int entityHandleVal,
+                                     const Broc::vector& origin,
+                                     const Broc::vector& angles,
+                                     const Broc::string& team)
+{
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v5 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v5].mObject) != nullptr)
+    {
+        int v7 = 3;
+        if (team == "axis")
+        {
+            v7 = 1;
+        }
+        else if (team == "allies")
+        {
+            v7 = 2;
+        }
+        else if (team == "neutral")
+        {
+            v7 = 3;
+        }
+        if (mObject->client == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+            AeAssert::gCurrentLine = 90;
+            AeAssert::gCurrentExpr = "ent->client";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid player trying to be respawned"))
+                __debugbreak();
+        }
+        math::Position3 v9;
+        math::Dir3 v8;
+        v8.v.m128_f32[0] = angles.x;
+        v8.v.m128_f32[1] = angles.y;
+        v8.v.m128_f32[2] = angles.z;
+        v8.v.m128_f32[3] = 0.0f;
+        v9.v.m128_f32[0] = origin.x;
+        v9.v.m128_f32[1] = origin.y;
+        v9.v.m128_f32[2] = origin.z;
+        v9.v.m128_f32[3] = 0.0f;
+        MultiplayerMgr::sInst->PlayerRespawn(mObject, v9, v8, v7);
+    }
+}
+
+// ea: 0x005D3ED0
+void BrocSys::MPScript_PlayerSpawn(unsigned int entityHandleVal,
+                                   const Broc::vector& origin,
+                                   const Broc::vector& angles,
+                                   bool stopPhysics)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr
+        && mObject->sentient != nullptr)
+    {
+        if (mObject->client == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+            AeAssert::gCurrentLine = 104;
+            AeAssert::gCurrentExpr = "ent->client";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid player trying to be respawned"))
+                __debugbreak();
+        }
+        Broc::vector pos = origin;
+        Broc::vector dir = angles;
+        ClientSpawn(mObject, &pos.x, &dir.x, stopPhysics, false);
+    }
+}
+
+// ea: 0x005D3FD0
+void BrocSys::MPScript_SetPlayerAlive(unsigned int entityHandleVal,
+                                      int health)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        Client* client = mObject->client;
+        if (client != nullptr)
+        {
+            if (health <= 0)
+            {
+                client->ps.pm_type = 6;
+                mObject->client->ps.stats[0] = 0;
+                mObject->health = 0;
+            }
+            else
+            {
+                client->ps.pm_type = 0;
+                mObject->client->ps.stats[0] = health;
+                mObject->health = health;
+            }
+        }
+    }
+}
+
+// ea: 0x005D4050
+void BrocSys::SetRespawnMaxTime(unsigned int entityHandleVal, int time)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        Client* client = mObject->client;
+        if (client != nullptr)
+            client->ps.respawnUntilTime = time;
+    }
+}
+
+// ea: 0x005D40A0
+const char* BrocSys::MPScript_GetPlayerName(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return nullptr;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return nullptr;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return nullptr;
+    if (mObject->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 165;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid player"))
+            __debugbreak();
+    }
+    return MultiplayerMgr::sInst->GetPlayerName(mObject);
+}
+
+// ea: 0x005D4130
+void BrocSys::MPScript_FinishDamage(unsigned int targHandleVal,
+                                    unsigned int inflictorHandleVal,
+                                    unsigned int attackerHandleVal,
+                                    const Broc::vector& dir,
+                                    const Broc::vector& point, int damage,
+                                    int mod, int weapon, int hitLoc)
+{
+    unsigned int v9 = targHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v9 < 0x540
+        && targHandleVal >> 12 == EntityHandleDb::sInst.mElements[v9].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v9].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        unsigned int v11 = inflictorHandleVal & 0xFFF;
+        Entity* v12 = nullptr;
+        if (v11 < 0x540
+            && inflictorHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v11].mKey)
+            v12 = EntityHandleDb::sInst.mElements[v11].mObject;
+        unsigned int v13 = attackerHandleVal & 0xFFF;
+        Entity* v14 = nullptr;
+        if (v13 < 0x540
+            && attackerHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v13].mKey)
+            v14 = EntityHandleDb::sInst.mElements[v13].mObject;
+        G_FinishDamage(mObject, v12, v14, &dir.x, &point.x, damage, mod,
+                       weapon, (hitLocation_t)hitLoc);
     }
 }
 
