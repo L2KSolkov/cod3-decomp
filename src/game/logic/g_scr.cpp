@@ -4283,6 +4283,59 @@ void ObjectiveUpdatedNotify()
 }
 
 // ============================================================================
+// scr.o batch 18 - VM glue (vm.cpp) + scr_vm error helpers
+// ============================================================================
+
+// vm_s local view (vm.cpp; 0x8C bytes stride, name[128] at +0)
+struct vm_s_local {
+    char name[128];                                  // +0x00
+    int (*systemCall)(int*);                         // +0x80
+    int (__cdecl* entryPoint)(int, ...);             // +0x84
+    void* dllHandle;                                 // +0x88
+};
+static_assert(sizeof(vm_s_local) == 0x8C, "vm_s_local size mismatch");
+
+// ?vmTable@@3PAUvm_s@@A @ 0x1329AD0 (3 entries, 140-byte stride)
+vm_s_local vmTable[3];
+
+extern void game_dllEntry(int (*syscallptr)(int, ...));  // ?game_dllEntry@@YAXP6AHHZZ@Z
+extern int cg_vmMain(int command, int arg0, void* arg1, int* arg2, int arg3,
+                     int arg4, int arg5, int arg6, int arg7, int arg8,
+                     int arg9, int arg10, int arg11, int arg12,
+                     int arg13);  // ?cg_vmMain@@YAHHHHHHHHHHHHHH@Z
+extern void cg_dllEntry(int (*syscallptr)(int, ...));  // ?cg_dllEntry@@YAXP6AHHZZ@Z
+extern void Q_strncpyz(char* dest, const char* src, int destsize);  // ?Q_strncpyz@@YAXPADPBDH@Z
+
+// ea: 0x005C1B80
+int VM_DllSyscall(int arg, ...)
+{
+    if (currentVM == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\vm.cpp";
+        AeAssert::gCurrentLine = 89;
+        AeAssert::gCurrentExpr = "currentVM";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return ((vm_s_local*)currentVM)->systemCall(&arg);
+}
+
+// ea: 0x005C1A60
+void Scr_EmitAnimation(char* animName, unsigned int animType,
+                       unsigned int animIndex)
+{
+    (void)animName; (void)animType; (void)animIndex;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_animtree.cpp";
+    AeAssert::gCurrentLine = 151;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Is this still used? (CD)"))
+        __debugbreak();
+}
+
+// ============================================================================
 // scr.o batch 17 - AeThread execution core
 // ============================================================================
 
