@@ -7,9 +7,11 @@
 
 #include <stdint.h>
 #include <math.h>
+#include <string.h>
+#include <intrin.h>
 
 namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1, JRS = 3 };
+enum ECoderId { COD3 = 0, ARO = 1, JRS = 3, JSV = 0xA };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -21,12 +23,30 @@ bool Assert(const char* fmtstring, ...);
 struct nglScene;
 struct nglMesh;
 class nglMeshParams;
-struct nglShaderParamSet;
+struct nglShaderParamSet {
+    unsigned char mData[4];
+    static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA (ngl_dx_core.cpp)
+};
+static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");
 class nglMeshNode;
 class DObj;
 class XModel;
 class XModelParts;
+class Entity;
 struct XModelLod;
+struct DObjSkelMat;
+struct nglLightContext;
+
+// nglMeshParams (IDA type; size 0x20) - class V tag per binary manglings
+class nglMeshParams {
+public:
+    unsigned int Flags;   // +0x00
+    int NBones;           // +0x04
+    void* Bones;          // +0x08
+    unsigned int LOD;     // +0x0C
+    float Scale[4];       // +0x10
+};
+static_assert(sizeof(nglMeshParams) == 0x20, "nglMeshParams size mismatch");
 
 struct nglSceneLocal {
     uint8_t _pad[0x8C];
@@ -51,6 +71,21 @@ extern math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43& m,
                                                    nglMeshParams* p,
                                                    float* scale);  // ?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@PAM@Z
 extern void DObj_SetLODOverride(DObj* obj, int lod);  // ?SetLODOverride@DObj@@QAEXH@Z
+extern void* nglListAlloc(unsigned int size, unsigned int align);  // ?nglListAlloc@@YAPAXII@Z
+extern nglMeshNode* _codListAddMesh(nglMesh* mesh,
+                                    const math::Mat43& localToWorld,
+                                    nglMeshParams* meshParams,
+                                    nglShaderParamSet* shaderParams,
+                                    void (__cdecl* fn)(nglMeshNode*));  // tr_dpvs.cpp
+extern nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
+                                      float alpha,
+                                      nglShaderParamSet& shaderParams);  // ?calc_lighting@@YAPAUnglLightContext@@PAVEntity@@ABVMat43@math@@MAAUnglShaderParamSet@@@Z
+extern bool AddTextureMatrix(Entity* ent, unsigned int boneNameHash,
+                             nglShaderParamSet& shaderParams);  // ?AddTextureMatrix@@YA_NPAVEntity@@IAAUnglShaderParamSet@@@Z
+extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);  // ?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z
+extern unsigned int isRotatingTextureParamID;  // ?isRotatingTextureParamID@@3IA
+extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;    // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA
+extern float gZoomRatio;                       // ?gZoomRatio@@3MA (cg.o)
 
 struct nglMeshLocal {
     uint8_t _pad[0x0C];
@@ -140,13 +175,38 @@ public:
         void* mValue;                // +0x00
         int mPakId;                  // +0x04
     } models[8];                     // +0x80
+    uint8_t _padC0[0xCE - 0xC0];
+    unsigned char numModels;         // +0xCE
+    unsigned char numBones;          // +0xCF
+    uint8_t _padD0[0xD8 - 0xD0];
     int mLOD;                        // +0xD8
     int mLODOverride;                // +0xDC
     int mLODAnim;                    // +0xE0
     unsigned int mFlags;             // +0xE4
 };
+
+// Entity view (scr_vehicle +0x260) - class V tag
+class EntityLocal {
+public:
+    uint8_t _pad[0x260];
+    void* scr_vehicle;  // +0x260
+};
+
+struct DObjSkelMatLocal {
+    float axis[3][4];  // +0x00
+    float origin[4];   // +0x30
+};
 struct XModelPartsLocal {
-    uint8_t _pad[0x28];
+    uint8_t _pad0[0x10];
+    struct Hierarchy {
+        unsigned int mSize;  // +0x10
+        struct BoneHier {
+            unsigned int mName;      // +0x00 (InplaceString::mStr)
+            unsigned int mNameHash;  // +0x04
+            int mParentIndex;        // +0x08
+        }* mList;                    // +0x14
+    } mHierarchy;
+    uint8_t _pad2[0x28 - 0x18];
     struct MeshPtrs {
         unsigned int mSize;          // +0x28
         nglMesh** mList;             // +0x2C
@@ -235,4 +295,277 @@ void do_shadow(DObj* obj, int model_index, int bone_index,
         nglListSelectScene(oldScene);
         dobj->mLODOverride = -1;
     }
+}
+
+// ============================================================================
+// R_AddVehicleSurfaces - ea: 0x006D0B50
+// ============================================================================
+static math::Mat43 VehicleWorldMatrix(const DObjSkelMatLocal* bone,
+                                      const math::Mat43& matrix)
+{
+    // world = bone * matrix (row-vector); w row = origin * axis + translation.
+    math::Mat43 world;
+    world.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[0][0],
+                                                  bone->axis[0][1],
+                                                  bone->axis[0][2], 0.0f),
+                                      _mm_setr_ps(bone->axis[0][0],
+                                                  bone->axis[0][1],
+                                                  bone->axis[0][2], 0.0f),
+                                      0),
+                       matrix.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[0][0],
+                                                  bone->axis[0][1],
+                                                  bone->axis[0][2], 0.0f),
+                                      _mm_setr_ps(bone->axis[0][0],
+                                                  bone->axis[0][1],
+                                                  bone->axis[0][2], 0.0f),
+                                      0x55),
+                       matrix.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[0][0],
+                                              bone->axis[0][1],
+                                              bone->axis[0][2], 0.0f),
+                                  _mm_setr_ps(bone->axis[0][0],
+                                              bone->axis[0][1],
+                                              bone->axis[0][2], 0.0f),
+                                  0xAA),
+                   matrix.z.v));
+    world.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[1][0],
+                                                  bone->axis[1][1],
+                                                  bone->axis[1][2], 0.0f),
+                                      _mm_setr_ps(bone->axis[1][0],
+                                                  bone->axis[1][1],
+                                                  bone->axis[1][2], 0.0f),
+                                      0),
+                       matrix.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[1][0],
+                                                  bone->axis[1][1],
+                                                  bone->axis[1][2], 0.0f),
+                                      _mm_setr_ps(bone->axis[1][0],
+                                                  bone->axis[1][1],
+                                                  bone->axis[1][2], 0.0f),
+                                      0x55),
+                       matrix.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[1][0],
+                                              bone->axis[1][1],
+                                              bone->axis[1][2], 0.0f),
+                                  _mm_setr_ps(bone->axis[1][0],
+                                              bone->axis[1][1],
+                                              bone->axis[1][2], 0.0f),
+                                  0xAA),
+                   matrix.z.v));
+    world.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[2][0],
+                                                  bone->axis[2][1],
+                                                  bone->axis[2][2], 0.0f),
+                                      _mm_setr_ps(bone->axis[2][0],
+                                                  bone->axis[2][1],
+                                                  bone->axis[2][2], 0.0f),
+                                      0),
+                       matrix.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[2][0],
+                                                  bone->axis[2][1],
+                                                  bone->axis[2][2], 0.0f),
+                                      _mm_setr_ps(bone->axis[2][0],
+                                                  bone->axis[2][1],
+                                                  bone->axis[2][2], 0.0f),
+                                      0x55),
+                       matrix.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->axis[2][0],
+                                              bone->axis[2][1],
+                                              bone->axis[2][2], 0.0f),
+                                  _mm_setr_ps(bone->axis[2][0],
+                                              bone->axis[2][1],
+                                              bone->axis[2][2], 0.0f),
+                                  0xAA),
+                   matrix.z.v));
+    world.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->origin[0],
+                                                  bone->origin[1],
+                                                  bone->origin[2], 0.0f),
+                                      _mm_setr_ps(bone->origin[0],
+                                                  bone->origin[1],
+                                                  bone->origin[2], 0.0f),
+                                      0),
+                       matrix.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->origin[0],
+                                                  bone->origin[1],
+                                                  bone->origin[2], 0.0f),
+                                      _mm_setr_ps(bone->origin[0],
+                                                  bone->origin[1],
+                                                  bone->origin[2], 0.0f),
+                                      0x55),
+                       matrix.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_mm_setr_ps(bone->origin[0],
+                                                  bone->origin[1],
+                                                  bone->origin[2], 0.0f),
+                                      _mm_setr_ps(bone->origin[0],
+                                                  bone->origin[1],
+                                                  bone->origin[2], 0.0f),
+                                      0xAA),
+                       matrix.z.v),
+            matrix.w.v));
+    return world;
+}
+
+int R_AddVehicleSurfaces(DObj* obj, Entity* entity, const math::Mat43& matrix,
+                         float alpha, bool render_shadow)
+{
+    if (entity == nullptr || ((EntityLocal*)entity)->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_xmodel.cpp";
+        AeAssert::gCurrentLine = 1249;
+        AeAssert::gCurrentExpr = "entity && entity->scr_vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("this function is for dobjs with valid entity"))
+            __debugbreak();
+    }
+    nglShaderParamSet* shadowParams =
+        (nglShaderParamSet*)nglListAlloc(4 * nglShaderParamSet::NumParams + 8, 8);
+    *(unsigned int*)shadowParams = 0;
+    *((unsigned int*)shadowParams + 1) = 0;
+    calc_lighting(entity, matrix, alpha, *shadowParams);
+
+    DObjLocal* dobj = (DObjLocal*)obj;
+    nglMeshParams meshParams = {};
+    meshParams.Flags = 0x80;
+    int modelIndex = 0;
+    if (dobj->numModels != 0)
+    {
+        while (1)
+        {
+            DObjSkelMatLocal* matrixArray =
+                (DObjSkelMatLocal*)DObjGetMatrixArray(obj, modelIndex);
+            int pakId = dobj->models[modelIndex].mPakId;
+            XModel* xmodel = (XModel*)dobj->models[modelIndex].mValue;
+            int mLOD;
+            if (modelIndex != 0)
+            {
+                mLOD = -1;
+            }
+            else if (dobj->mLODOverride < 0)
+            {
+                if (dobj->mLODAnim < 0)
+                    mLOD = dobj->mLOD;
+                else
+                    mLOD = dobj->mLODAnim;
+            }
+            else
+            {
+                mLOD = dobj->mLODOverride;
+            }
+            ValidatePakId(pakId);
+            int lodIndex = mLOD;
+            if (mLOD < 0)
+            {
+                lodIndex = 0;
+                if (((XModelLocal*)xmodel)->lod[0] == nullptr)
+                {
+                    do
+                    {
+                        ++lodIndex;
+                    } while (((XModelLocal*)xmodel)->lod[lodIndex] == nullptr);
+                }
+            }
+            XModelPartsLocal* parts =
+                (XModelPartsLocal*)((XModelLocal*)xmodel)->lod[lodIndex]
+                    ->xmodelParts;
+            int mi = 0;
+            for (;;)
+            {
+                ValidatePakId(pakId);
+                int v16 = mLOD;
+                if (mLOD < 0)
+                {
+                    v16 = 0;
+                    while (((XModelLocal*)xmodel)->lod[v16] == nullptr)
+                        ++v16;
+                }
+                XModelPartsLocal* parts2 =
+                    (XModelPartsLocal*)((XModelLocal*)xmodel)->lod[v16]
+                        ->xmodelParts;
+                unsigned int meshCount =
+                    (parts2 != nullptr) ? parts2->mHierarchy.mSize : 0;
+                if (mi >= (int)meshCount)
+                    break;
+                if (mi >= (int)parts->mMeshPtrs.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "../ae\\inplace/InplaceVector.h";
+                    AeAssert::gCurrentLine = 81;
+                    AeAssert::gCurrentExpr = "index < mSize";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Bounds check"))
+                        __debugbreak();
+                }
+                nglMesh* mesh = parts->mMeshPtrs.mList[mi];
+                if (mesh != (nglMesh*)(uintptr_t)-1)
+                {
+                    math::Mat43 worldMatrix =
+                        VehicleWorldMatrix(&matrixArray[mi], matrix);
+                    meshParams.LOD = (unsigned int)GetScaledMeshLOD(
+                        mesh, &worldMatrix, &meshParams, gZoomRatio);
+                    if (mi >= (int)parts->mHierarchy.mSize)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::JRS;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\XModelParts.h";
+                        AeAssert::gCurrentLine = 216;
+                        AeAssert::gCurrentExpr =
+                            "i >= 0 && i < mHierarchy.size()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bad Bone Index"))
+                            __debugbreak();
+                    }
+                    if (mi >= (int)parts->mHierarchy.mSize)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "../ae\\inplace/InplaceVector.h";
+                        AeAssert::gCurrentLine = 91;
+                        AeAssert::gCurrentExpr = "index < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                    }
+                    unsigned int boneNameHash =
+                        parts->mHierarchy.mList[mi].mNameHash;
+                    nglShaderParamSet* drawParams =
+                        (nglShaderParamSet*)nglListAlloc(
+                            4 * nglShaderParamSet::NumParams + 8, 8);
+                    memcpy(drawParams, shadowParams,
+                           4 * nglShaderParamSet::NumParams + 8);
+                    AddTextureMatrix(entity, boneNameHash, *drawParams);
+                    nglMeshNode* node = _codListAddMesh(
+                        mesh, worldMatrix, &meshParams, drawParams, nullptr);
+                    dobj->mFlags &= ~(unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME;
+                    if (render_shadow)
+                    {
+                        unsigned int rid = isRotatingTextureParamID;
+                        unsigned long long bit = 1ULL << rid;
+                        *(unsigned int*)shadowParams |= (unsigned int)bit;
+                        *((unsigned int*)shadowParams + 1) |=
+                            (unsigned int)(bit >> 32);
+                        ((unsigned int*)shadowParams)[2 + rid] = 0;
+                        do_shadow(obj, modelIndex, mi, mesh, matrix,
+                                  worldMatrix, meshParams, *shadowParams,
+                                  node);
+                    }
+                }
+                ++mi;
+            }
+            ++modelIndex;
+            if (modelIndex >= dobj->numModels)
+                break;
+        }
+    }
+    return (dobj->mFlags & (unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME) == 0;
 }
