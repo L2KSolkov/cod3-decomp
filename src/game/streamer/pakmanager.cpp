@@ -1242,6 +1242,7 @@ public:
         void* m_next;  // +0x00
         void* m_prev;  // +0x04
     } m_dlist_node;                    // +0x00 (reserved_dlist node)
+    static int get_dlist_node_offset();  // ?get_dlist_node_offset@PakFile@@SAHXZ
     const char*  mCurrDecodeFile;       // +0x08
     struct {
         char           mBuff[63];  // ae_fixed_string<64,unsigned char>
@@ -1564,7 +1565,8 @@ struct mem_info {
 
 // reserved_dlist<T> (ae/core; intrusive node = T's first member) - verified IDA
 template <typename T>
-struct reserved_dlist {
+class reserved_dlist {
+public:
     struct dlist_node {
         dlist_node* m_next;  // +0x00
         dlist_node* m_prev;  // +0x04
@@ -1720,6 +1722,9 @@ public:
     int mNumZonesLoaded;              // +0x45A0
 
     static PakManager* sInst;          // ?sInst@PakManager@@2PAV1@A (sv_globals.cpp)
+    static PakManager* Inst();         // ?Inst@PakManager@@SAPAV1@XZ
+    void ToggleEnabled();              // ?ToggleEnabled@PakManager@@QAEXXZ
+    const reserved_dlist<PakFile>& GetActivePaks() const;  // ?GetActivePaks@PakManager@@QBEABV?$reserved_dlist@VPakFile@@@@XZ
     static unsigned int sComputeDistanceKey;  // ?sComputeDistanceKey@PakManager@@0IA
     static float sBrocPercentage;      // ?sBrocPercentage@PakManager@@0MA
     static float sWbkPercentage;       // ?sWbkPercentage@PakManager@@0MA
@@ -3022,6 +3027,25 @@ ae_heap* gActorHeap = nullptr;
 void PakManager::CreateInst()
 {
     // stub: sInst = new PakManager
+}
+
+// ea: 0x004A5020 / 0x004A5030 / 0x004A5040 (g.o accessors; defined here
+// against the real streamer.o class)
+PakManager* PakManager::Inst()
+{
+    return PakManager::sInst;
+}
+void PakManager::ToggleEnabled()
+{
+    this->mEnabled ^= 1u;
+}
+const reserved_dlist<PakFile>& PakManager::GetActivePaks() const
+{
+    return this->mActivePaks;
+}
+int PakFile::get_dlist_node_offset()
+{
+    return 0;
 }
 
 // ea: 0x8D4D40 (core.o inline)

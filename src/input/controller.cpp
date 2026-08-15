@@ -84,6 +84,10 @@ public:
     int  locked_port;
     bool is_locked;
 
+    // g.o accessors (?get_is_locked@controller@@QAE_NXZ / ?get_locked_port@controller@@QAEHXZ)
+    bool get_is_locked() { return is_locked; }
+    int  get_locked_port() { return locked_port; }
+
 private:
     struct PadState {
         bool      connected;

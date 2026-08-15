@@ -893,6 +893,7 @@ class XModelManager {
 public:
     uint8_t _pad[4];
     static XModelManager* sInst;           // ?sInst@XModelManager@@2PAV1@A
+    static XModelManager* Inst();          // ?Inst@XModelManager@@SAPAV1@XZ
     IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);
 };
 static_assert(sizeof(XModelManager) == 4, "XModelManager size mismatch (opaque)");
@@ -1522,6 +1523,7 @@ struct XModel {
     uint16_t     collLod;      // +0x46
     InplaceString name;        // +0x48
     unsigned int iflFrames;    // +0x4C (Bitmask<unsigned int>)
+    const char* GetName() const;  // ?GetName@XModel@@QBEPBDXZ
     static int GetNumBones(XModel* model, int lodIndex);
 };
 

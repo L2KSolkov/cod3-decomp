@@ -2986,6 +2986,7 @@ static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 class CGBankManager : public AssetBankSet {
 public:
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
+    static CGBankManager* Inst();  // ?Inst@CGBankManager@@SAPAV1@XZ
     unsigned int mDebugRenderMode;  // +0x04 (bitmask; verified vs DebugRender)
     float        scale;             // +0x08 (perf graph zoom; verified vs ZoomIn)
     int mCount;                     // +0x0C
@@ -3322,6 +3323,7 @@ extern cdl_proftimer cdl_proftimer_dobj_anim;     // game.o
 struct TaskHandler;
 struct TaskFunctor {
     void* __vftable;
+    virtual ~TaskFunctor();  // ??1TaskFunctor@@UAE@XZ (g.o 0x4A5320)
 };
 struct TaskFunctor1_Anim : TaskFunctor {
     void* fn;
@@ -3829,6 +3831,14 @@ struct Task {
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o 0x4F9970
     virtual ~Task();  // ??1Task@@UAE@XZ (game2.o)
+    virtual void Update(Entity* e, float deltaT);  // ?Update@Task@@UAEXPAVEntity@@M@Z (g.o 0x4A52E0)
+    static void* operator new(size_t size);  // ??2Task@@SAPAXI@Z
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);  // ??2Task@@SAPAXI_NPBDH@Z
+    static void operator delete(void* ptr);  // ??3Task@@SAXPAX@Z
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);  // ??3Task@@SAXPAX_NPBDH@Z
+    static void* operator new(size_t, void* p) { return p; }  // placement
     static class PoolAllocator* sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
@@ -3877,6 +3887,7 @@ public:
 class PhysDataBankManager {
 public:
     static PhysDataBankManager* sInst;
+    static PhysDataBankManager* Inst();  // ?Inst@PhysDataBankManager@@SAPAV1@XZ
     IVPointer<PhysData> GetPhysData(TPakId pak_id, const char* name);
 };
 void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData);  // physics.o 0x7030B0

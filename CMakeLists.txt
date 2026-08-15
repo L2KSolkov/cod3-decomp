@@ -291,7 +291,9 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_turret.cpp
     src/game/logic/g_client.cpp
     src/game/logic/g_main.cpp
+    src/game/logic/g_accessors.cpp
     src/game/logic/placement_delete.asm
+    src/game/logic/g_math_shims.asm
     src/game/logic/g_scr_vehicle.cpp
     src/game/logic/g_testfps.cpp
     src/game/logic/g_inspector.cpp

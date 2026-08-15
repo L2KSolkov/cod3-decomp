@@ -27,6 +27,7 @@ public:
     // ??BtlFixedString@@QBEPBDXZ (anim.o 0x539D30)
     operator const char*() const { return str; }
 
+
     tlFixedString() {
         memset(this, 0, 32);
     }
@@ -76,7 +77,7 @@ public:
     char* c_str() { return str; }
     const char* c_str() const { return str; }
 
-    uint32_t* value() { return (uint32_t*)this; }
+    uint32_t* value();  // ?value@tlFixedString@@QAEPAIXZ (g.o 0x4A53E0)
     const uint32_t* value() const { return (const uint32_t*)this; }
 
     unsigned int GetHash() const { return hash; }
