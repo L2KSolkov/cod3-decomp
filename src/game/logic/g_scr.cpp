@@ -739,8 +739,10 @@ extern bool EffectEventIsPlaying(Handle effect);         // ?EffectEventIsPlayin
 extern void EffectEventStopEmitting(Handle effect);      // ?EffectEventStopEmitting@@YAXVHandle@@@Z (game.o)
 extern void EffectEventFF(Handle effect, float deltaT);  // ?EffectEventFF@@YAXVHandle@@M@Z (game.o)
 
-class AnimNotifyTask {
+class AnimNotifyTask : public Task {
 public:
+    AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
+                   unsigned int animHash, unsigned int killHash);
     static void RegisterFunc(const char* pKey, void (__cdecl* cbFunc)(Broc::entity));
     // ?RegisterFunc@AnimNotifyTask@@SAXPBDP6AXVentity@Broc@@@Z@Z
 };
@@ -2981,6 +2983,24 @@ Broc::string GetWeaponClassNameStr(unsigned int weaponName);  // 0x5C3810
 void MissionFailed(const Broc::string& reason);  // 0x5C3EB0
 void Cinematic1(const Broc::string& pszCinematic, float fVal);  // 0x5C3F40
 void Cinematic2(const Broc::string& pszCinematic);  // 0x5C3FF0
+Broc::hudelem NewHudElem(int panelType);  // 0x5C49B0
+TPakInfo GetPak(const Broc::string& longname);  // 0x5C4A80
+void SetTimerUp(const Broc::hudelem& hudElem, float fVal);  // 0x5C51A0
+void SetTenthsTimerUp(const Broc::hudelem& hudElem, float fVal);  // 0x5C5280
+void Scr_SetHealth(Entity* ent, int offset, int* val);  // 0x5C5990
+void CreateAnimNotifyTask(const Broc::entity& ent, unsigned int animHash,
+                          unsigned int killHash);  // 0x5C5A70
+void SentientScr_SetTeam(sentient_s* pSelf, int offset,
+                         Broc::string* val);  // 0x5C5B60
+void SetExploderState(int exploderNumber, int state);  // 0x5C5BB0
+bool IsValidMoverType(Entity* pEnt);  // 0x5C5C20
+void GiveWeapon(Entity* pSelf, const char* pszWeaponName);  // 0x5C5C60
+void SetReverb(unsigned int entityHandleVal, const Broc::string& pszReverb,
+               float wetlevel, float fadetime);  // 0x5C5D10
+void PlayLocalSound(unsigned int entityHandleVal,
+                    const Broc::string& pszSoundName);  // 0x5C5D50
+Broc::hudelem gHudElement = { 0xFFFFFFFFu };
+    // ?gHudElement@BrocSys@@3Vhudelem@Broc@@A (scr.o data, init -1 per IDA)
 }
 
 static void BrocFree(void* p)
@@ -7485,6 +7505,333 @@ void BrocSys::Cinematic2(const Broc::string& pszCinematic)
         Q_strncpyz(level.nextMap, v1, 256);
         level.bMissionSuccess = 1;
     }
+}
+
+// ============================================================================
+// scr.o batch 33 - BrocSys wrappers (NewHudElem..PlayLocalSound)
+// ============================================================================
+
+// weaponInfo_s view (cg.o; hADSOverlay +0xC0 verified vs disasm)
+struct weaponInfo_s {
+    unsigned char _pad[0xC0];
+    void* hADSOverlay;  // +0xC0
+};
+extern weaponInfo_s* cg_weapons;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
+
+// ea: 0x005C49B0
+Broc::hudelem BrocSys::NewHudElem(int panelType)
+{
+    unsigned int HudElemAllocIndex = GetHudElemAllocIndex();
+    Broc::hudelem result;
+    if (HudElemAllocIndex == 0xFFFFFFFF)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3014;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Out of Hudelements. Returning global element which will result in unknown script/hud behavior."))
+            __debugbreak();
+        result.___u0 = BrocSys::gHudElement.___u0;
+        return result;
+    }
+    game_hudelem_s* v3 = &g_hudelems[HudElemAllocIndex];
+    switch (panelType)
+    {
+    case 0:
+        v3->elem.type = HE_TYPE_COUNT;
+        result.___u0 = HudElemAllocIndex;
+        break;
+    case 1:
+        v3->elem.type = HE_TYPE_COUNT | HE_TYPE_TEXT;
+        result.___u0 = HudElemAllocIndex;
+        break;
+    case 2:
+        v3->elem.type = HE_TYPE_CLOCK_DOWN | HE_TYPE_TIMER_DOWN;
+        result.___u0 = HudElemAllocIndex;
+        break;
+    case 3:
+        v3->elem.type = HE_TYPE_CLOCK_UP | HE_TYPE_TIMER_DOWN;
+        result.___u0 = HudElemAllocIndex;
+        break;
+    case 4:
+        v3->elem.type = HE_TYPE_COUNT | HE_TYPE_TIMER_DOWN;
+        result.___u0 = HudElemAllocIndex;
+        break;
+    default:
+        result.___u0 = HudElemAllocIndex;
+        break;
+    }
+    return result;
+}
+
+// ea: 0x005C4A80
+TPakInfo BrocSys::GetPak(const Broc::string& longname)
+{
+    const char* v1 = longname.mBlock != nullptr
+                         ? (const char*)(longname.mBlock + 1)
+                         : defaultFileName;
+    const PakInfoNode* PakInfo = PakManager::sInst->GetPakInfo(v1);
+    if (PakInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3043;
+        AeAssert::gCurrentExpr = "result";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v3 = longname.mBlock != nullptr
+                                 ? (const char*)(longname.mBlock + 1)
+                                 : defaultFileName;
+            if (AeAssert::Assert("Unknown pak file '%s'", v3))
+                __debugbreak();
+        }
+    }
+    return (TPakInfo)(uintptr_t)PakInfo;
+}
+
+// ea: 0x005C51A0
+void BrocSys::SetTimerUp(const Broc::hudelem& hudElem, float fVal)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3307;
+        AeAssert::gCurrentExpr =
+            "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    double v3 = fVal * 1000.0;
+    game_hudelem_s* v4 = &g_hudelems[mHudIndex];
+    int time = level.time;
+    v4->elem.width = 0;
+    v4->elem.height = 0;
+    v4->elem.mTexture = nullptr;
+    v4->elem.fromWidth = 0;
+    v4->elem.fromHeight = 0;
+    v4->elem.scaleStartTime = 0;
+    v4->elem.scaleTime = 0;
+    v4->elem.duration = 0;
+    v4->elem.text = 0;
+    v4->elem.value = 0.0f;
+    v4->elem.type = HE_TYPE_TIMER_UP;
+    v4->elem.time = (int)ceil(v3) + time;
+}
+
+// ea: 0x005C5280
+void BrocSys::SetTenthsTimerUp(const Broc::hudelem& hudElem, float fVal)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3307;
+        AeAssert::gCurrentExpr =
+            "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    double v3 = fVal * 1000.0;
+    game_hudelem_s* v4 = &g_hudelems[mHudIndex];
+    int v5 = (int)ceil(v3);
+    if (v5 <= 0)
+    {
+        const char* v6 = va("time %g should be > 0", v5 * 0.001);
+        Scr_ParamError(0, v6);
+    }
+    int time = level.time;
+    v4->elem.width = 0;
+    v4->elem.height = 0;
+    v4->elem.mTexture = nullptr;
+    v4->elem.fromWidth = 0;
+    v4->elem.fromHeight = 0;
+    v4->elem.scaleStartTime = 0;
+    v4->elem.scaleTime = 0;
+    v4->elem.duration = 0;
+    v4->elem.text = 0;
+    v4->elem.value = 0.0f;
+    v4->elem.type = HE_TYPE_TENTHS_TIMER_UP;
+    v4->elem.time = v5 + time;
+}
+
+// ea: 0x005C5990
+void BrocSys::Scr_SetHealth(Entity* ent, int offset, int* val)
+{
+    (void)offset;
+    int v3 = *val;
+    Client* client = ent->client;
+    if (client != nullptr)
+    {
+        ent->health = v3;
+        client->ps.stats[0] = v3;
+    }
+    else
+    {
+        if (v3 <= 0)
+        {
+            const char* v6;
+            if (ent->targetname.mBlock == (Broc::string::Block*)-12)
+            {
+                v6 = "<not set>";
+            }
+            else
+            {
+                Broc::string::Block* mBlock = ent->targetname.mBlock;
+                if (mBlock != nullptr)
+                    v6 = (const char*)(mBlock + 1);
+                else
+                    v6 = defaultFileName;
+            }
+            const char* v7 = va(
+                "self.health must be greater than 0 (tried to set %i on ent %i, name %s)\n",
+                v3, ent->mHandle.mHandle.mVal, v6);
+            Scr_Error(v7);
+        }
+        int health = ent->health;
+        if (health <= 0 && ent->maxHealth != 0)
+        {
+            const char* v11;
+            if (ent->targetname.mBlock == (Broc::string::Block*)-12)
+            {
+                v11 = "<not set>";
+            }
+            else
+            {
+                Broc::string::Block* v10 = ent->targetname.mBlock;
+                if (v10 != nullptr)
+                    v11 = (const char*)(v10 + 1);
+                else
+                    v11 = defaultFileName;
+            }
+            G_DPrintf(
+                "^2Cannot set health on dead entities (health %i, max %i, ent %i, name %s)\n",
+                health, ent->maxHealth, ent->mHandle.mHandle.mVal, v11);
+        }
+        else
+        {
+            ent->maxHealth = v3;
+            ent->health = v3;
+        }
+    }
+}
+
+// ea: 0x005C5A70
+void BrocSys::CreateAnimNotifyTask(const Broc::entity& ent,
+                                   unsigned int animHash,
+                                   unsigned int killHash)
+{
+    AnimNotifyTask* v3 =
+        (AnimNotifyTask*)Task::sAllocator->Allocate(0x24u, false);
+    AnimNotifyTask* v4;
+    if (v3 != nullptr)
+        v4 = new (v3) AnimNotifyTask(
+            DbLinkedHandle<EntityHandleDb, Entity>((int)ent.___u0),
+            animHash, killHash);
+    else
+        v4 = nullptr;
+    TaskSys::sInst.PostTask(v4);
+}
+
+// ea: 0x005C5B60
+void BrocSys::SentientScr_SetTeam(sentient_s* pSelf, int offset,
+                                  Broc::string* val)
+{
+    (void)pSelf;
+    (void)offset;
+    (void)val;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5605;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert(
+               "Can not set the team from script this way in multiplayer. Call ChangePlayerTeam() instead."))
+        __debugbreak();
+}
+
+// ea: 0x005C5BB0
+void BrocSys::SetExploderState(int exploderNumber, int state)
+{
+    CheckpointMgr::sInst->mCurrentScriptExploded
+        .mElements[exploderNumber] = (unsigned short)state;
+}
+
+// ea: 0x005C5C20
+bool BrocSys::IsValidMoverType(Entity* pEnt)
+{
+    unsigned int mHash = pEnt->mClassNameHash.mHash;
+    if (mHash == hash_const.script_brushmodel.mHash
+        || mHash == hash_const.script_model.mHash
+        || mHash == hash_const.script_origin.mHash)
+    {
+        return true;
+    }
+    const char* v2 =
+        va("entity is not a script_brushmodel, script_model, or script_origin");
+    Scr_Error(v2);
+    return false;
+}
+
+// ea: 0x005C5C60
+void BrocSys::GiveWeapon(Entity* pSelf, const char* pszWeaponName)
+{
+    if (IsValidClientType(pSelf))
+    {
+        int WeaponIndexForName = BG_GetWeaponIndexForName(pszWeaponName);
+        Com_BitCheck(pSelf->client->ps.weapons, WeaponIndexForName);
+        if (!BG_GetEmptySlotForWeapon(&pSelf->client->ps,
+                                      WeaponIndexForName))
+            Scr_ParamError(
+                0, "Can not give player weapon without having an empty weapon slot\n");
+        if (BG_GetInfoForWeapon(WeaponIndexForName)->type != WEAPTYPE_SPOTTER
+            || cg_weapons[WeaponIndexForName].hADSOverlay)
+            BG_GivePlayerWeapon(&pSelf->client->ps, WeaponIndexForName);
+    }
+}
+
+// ea: 0x005C5D10
+void BrocSys::SetReverb(unsigned int entityHandleVal,
+                        const Broc::string& pszReverb, float wetlevel,
+                        float fadetime)
+{
+    const char* v4 = va("reverb \"%s\" %g %g", pszReverb.mBlock, wetlevel,
+                        fadetime);
+    SV_GameSendServerCommand(
+        DbLinkedHandle<EntityHandleDb, Entity>((int)entityHandleVal), v4);
+}
+
+// ea: 0x005C5D50
+void BrocSys::PlayLocalSound(unsigned int entityHandleVal,
+                             const Broc::string& pszSoundName)
+{
+    const char* v2 = pszSoundName.mBlock != nullptr
+                         ? (const char*)(pszSoundName.mBlock + 1)
+                         : defaultFileName;
+    if (SoundDevice::sInst->FindWave(v2) == NSL_WAVE_ID_INVALID)
+    {
+        char* v3 = va("unknown sound alias '%s'", pszSoundName.mBlock);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v3))  // off_CFBB58 format
+            __debugbreak();
+    }
+    const char* v4 = pszSoundName.mBlock != nullptr
+                         ? (const char*)(pszSoundName.mBlock + 1)
+                         : defaultFileName;
+    unsigned char v5 = G_SoundAliasIndex(v4);
+    const char* v6 = va("ls %i", v5);
+    SV_GameSendServerCommand(
+        DbLinkedHandle<EntityHandleDb, Entity>((int)entityHandleVal), v6);
 }
 
 // ============================================================================
