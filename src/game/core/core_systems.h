@@ -828,7 +828,8 @@ public:
 };
 static_assert(sizeof(EntityNotify) == 0x14, "EntityNotify size mismatch");
 
-struct EntityNotifySet {
+class EntityNotifySet {
+public:
     reserved_dlist<EntityNotifySet>::dlist_node m_dlist_node;  // +0x00
     DbLinkedHandle<void, void> mEnt;      // +0x08
     reserved_dlist<EntityNotify> mStrings;  // +0x0C

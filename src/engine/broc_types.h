@@ -37,10 +37,19 @@ public:
     unsigned int mHash;  // +0x00
     HashString() : mHash(0) {}
     HashString(Broc::string& str);  // ea: 0x004C1450
+    HashString(const char* str);    // ??0HashString@@QAE@PBD@Z (g.o 0x4A9B60)
+    HashString(int hash);           // ??0HashString@@QAE@H@Z (g.o 0x4A9B90)
     static unsigned int CalcHash(const char* str);  // ea: 0x004C1540
     static unsigned int NullHash();  // ea: 0x8990B0 (g.o inline; returns 0)
+    unsigned int GetHash() const;          // ?GetHash@HashString@@QBEIXZ (g.o 0x4A9BC0)
+    static bool Compare(const HashString& lhs, const HashString& rhs);  // ?Compare@HashString@@SA_NABV1@0@Z (g.o 0x4A9BD0)
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashString) == 4, "HashString size mismatch");
+
+bool operator==(const HashString& lhs, const HashString& rhs);  // ??8@YA_NABVHashString@@0@Z (g.o 0x4A9BF0)
+bool operator!=(const HashString& lhs, const HashString& rhs);  // ??9@YA_NABVHashString@@0@Z (g.o 0x4A9C10)
+bool operator==(const HashString& lhs, unsigned int rhs);       // ??8@YA_NABVHashString@@I@Z (g.o 0x4A9C30)
+bool operator!=(const HashString& lhs, unsigned int rhs);       // ??9@YA_NABVHashString@@I@Z (g.o 0x4A9C50)
 
 // ============================================================================
 // EEndRoundCondition — round-end reason (global enum, verified values in bin).
@@ -190,6 +199,7 @@ public:
         void DecrementCount(void);
         void Append(const char* txt, unsigned short strLen);
         static char* GetBuff(Block* block);
+        char* GetBuff();  // ?GetBuff@Block@string@Broc@@QAEPADXZ (g.o 0x4A9C70)
     };
     Block* mBlock;  // +0x00
 
@@ -232,6 +242,9 @@ public:
     // --- access ---
     const char* c_str() const;
     char* GetBuff();
+    char operator[](unsigned int idx);  // ??Astring@Broc@@QAEDI@Z (g.o 0x4A9C80)
+    bool IsDefined() const;             // ?IsDefined@string@Broc@@QBE_NXZ (g.o 0x4A9CD0)
+    void SetUndefined();                // ?SetUndefined@string@Broc@@QAEXXZ (g.o 0x4A9CE0)
 
     // --- operations ---
     void  clear();

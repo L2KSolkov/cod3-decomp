@@ -2228,9 +2228,9 @@ bool VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item)
         rigid_body_constraint_wheel* wheel = mRBVeh->m_wheels[v7];
         if (wheel != nullptr)
         {
-            float wx = v12[0] - wheel->m_origin[0];
-            float wy = v12[1] - wheel->m_origin[1];
-            float wz = v12[2] - wheel->m_origin[2];
+            float wx = v12[0] - wheel->m_b2_hitp_loc.v.m128_f32[0];
+            float wy = v12[1] - wheel->m_b2_hitp_loc.v.m128_f32[1];
+            float wz = v12[2] - wheel->m_b2_hitp_loc.v.m128_f32[2];
             if (v4 > ((wx * wx) + (wy * wy)) + (wz * wz))
                 return true;
         }

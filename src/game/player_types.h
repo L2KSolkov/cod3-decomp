@@ -191,6 +191,8 @@ struct usercmd_s {
     float   gunXOfs;         // +0x24
     float   gunYOfs;         // +0x28
     float   gunZOfs;         // +0x2C
+
+    void Clear();  // ?Clear@usercmd_s@@QAEXXZ (g.o 0x4A9AC0)
 };
 static_assert(sizeof(usercmd_s) == 0x30, "usercmd_s size mismatch");
 static_assert(offsetof(usercmd_s, serverTime) == 0x00, "usercmd_s::serverTime offset mismatch");

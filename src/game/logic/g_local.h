@@ -1032,6 +1032,8 @@ struct TimerRenderBars {
     void DeltaTimeScale(int d);  // ?DeltaTimeScale@TimerRenderBars@@QAEXH@Z (render.o 0x6BCEE0)
     void Render();      // ?Render@TimerRenderBars@@QAEXXZ (render.o 0x6C3C70)
     void ToggleActive();  // ?ToggleActive@TimerRenderBars@@QAEXXZ (inline)
+    int IsActive() const;                 // ?IsActive@TimerRenderBars@@QBEHXZ (g.o 0x4A9D80)
+    static TimerRenderBars* Inst();       // ?Inst@TimerRenderBars@@SAPAV1@XZ (g.o 0x4A9D60)
     void TimeGameAdvanceBegin() {  // ea: 0x72A9D0 (inline)
         unsigned __int64 t = __rdtsc();
         mFrameAdvance.mBegin = t;
@@ -1675,8 +1677,16 @@ class ConfigStringManager {
 public:
     unsigned char mData[0x190];
     static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@0PAV1@A
+    static ConfigStringManager* Inst();  // ?Inst@ConfigStringManager@@SAPAV1@XZ (g.o 0x4A9D90)
     void CallbackSearch(TPakId pakId, const char* type,
                         void (*callback)(const char*, const ConfigString*));
+};
+
+// PlayerAnimMgr (anim.o; g.o singleton accessor)
+class PlayerAnimMgr {
+public:
+    static PlayerAnimMgr* sInst;  // ?sInst@PlayerAnimMgr@@2PAV1@A @ 0xF25A28
+    static PlayerAnimMgr* Inst();  // ?Inst@PlayerAnimMgr@@SAPAV1@XZ (g.o 0x4A9E60)
 };
 
 // cspField_t - config-string parse field (12 bytes) - verified against IDA
@@ -2791,6 +2801,7 @@ struct gdDecal {
 static_assert(sizeof(gdDecal) == 0x24, "gdDecal size mismatch");
 struct DynamicDecalMgr {
     static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A @ 0xF74478
+    static DynamicDecalMgr* Inst();  // ?Inst@DynamicDecalMgr@@SAPAV1@XZ (g.o 0x4A9E70)
     void Add(void* texture, float zBias, bool alphaBlend, int maxNum,
              const math::Position3& pos, const math::Position3& normal,
              float radius, float angle, const float* color,
@@ -3801,33 +3812,86 @@ struct vehicleVarConfig_t {
 };
 extern vehicleVarConfig_t sVehicleVarConfig[27];  // g.o @ 0xDD7608
 // rb_vehicle is a class in the binary (QAV1/PAV1 manglings); shared view.
+class vehicle_rb_parameter;
+class rb_extra_info;
+class rigid_body;
+struct rigid_body_constraint {
+    rigid_body* b1;                 // +0x00
+    rigid_body* b2;                 // +0x04
+    rigid_body_constraint* m_next;  // +0x08
+};
+class rigid_body {
+public:
+    uint8_t _pad[0x144];
+    unsigned int m_flags;  // +0x144
+
+    void add_force(const math::Dir3& force);  // ?add_force@rigid_body@@QAEXABVDir3@math@@@Z
+    const unsigned int get_flag(unsigned int f) const;  // ?get_flag@rigid_body@@QBE?BII@Z (g.o 0x4A9970)
+    const unsigned int is_stable() const;               // ?is_stable@rigid_body@@QBE?BIXZ (g.o 0x4A9990)
+};
+class rigid_body_constraint_wheel : public rigid_body_constraint {
+public:
+    math::Dir3 m_b2_hitp_loc;  // +0x10
+    uint8_t _pad20[0x90 - 0x20];
+    float   m_wheel_vel;       // +0x90
+    uint8_t _pad94[0xA8 - 0x94];
+    unsigned int m_wheel_flags;  // +0xA8
+
+    enum wheel_flags_e : int {
+        WHEEL_FLAG_HAS_TURNING = 0x8,
+        WHEEL_FLAG_HAS_POWER = 0x10,
+        WHEEL_FLAG_HAS_POWER_BRAKING = 0x20,
+        WHEEL_FLAG_HAS_BRAKING = 0x40,
+    };
+    const unsigned int get_wheel_flag(wheel_flags_e f) const;  // ?get_wheel_flag@rigid_body_constraint_wheel@@QBE?BIW4wheel_flags_e@1@@Z (g.o 0x4A99A0)
+    const math::Dir3 get_hitp_loc() const;                     // ?get_hitp_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ (g.o 0x4A99C0)
+    const float get_wheel_vel() const;                         // ?get_wheel_vel@rigid_body_constraint_wheel@@QBE?BMXZ (g.o 0x4A99F0)
+};
 class rb_vehicle {
 public:
     uint8_t _pad[0x250];
     vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
-    uint8_t _pad258[0x274 - 0x258];
+    uint8_t _pad258[0x264 - 0x258];
+    float   m_steer_factor;  // +0x264
+    float   m_forward_vel;   // +0x268
+    uint8_t _pad26C[0x274 - 0x26C];
     void*   m_chassis_rbinf;  // +0x274 (rb_extra_info*)
     uint8_t _pad278[0x280 - 0x278];
     unsigned int m_flags;  // +0x280
     uint8_t _pad284[0x320 - 0x284];
     struct rigid_body_constraint_wheel* m_wheels[8];  // +0x320
-    uint8_t _pad320[0x388 - 0x320];
+    uint8_t _pad320[0x384 - 0x320];
+    unsigned int m_state_flags;  // +0x384
     void*   m_vci;  // +0x388 (vehicle_collision_info*)
 
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o 0x6FC200)
 
+    float get_throttle() const;          // ?get_throttle@rb_vehicle@@QBEMXZ (g.o 0x4A9E80)
+    float get_steer_factor() const;      // ?get_steer_factor@rb_vehicle@@QBEMXZ (g.o 0x4A9E90)
+    float get_forward_vel() const;       // ?get_forward_vel@rb_vehicle@@QBEMXZ (g.o 0x4A9EA0)
+    vehicle_rb_parameter* get_parameter() const;      // ?get_parameter@rb_vehicle@@QBEPAVvehicle_rb_parameter@@XZ (g.o 0x4A9EB0)
+    const rb_extra_info* get_chassis_rbinf() const;   // ?get_chassis_rbinf@rb_vehicle@@QBEPBVrb_extra_info@@XZ (g.o 0x4A9EC0)
+    rigid_body_constraint_wheel* get_wheel(int i);    // ?get_wheel@rb_vehicle@@QAEPAVrigid_body_constraint_wheel@@H@Z (g.o 0x4A9EF0)
+    const unsigned int get_braking() const;           // ?get_braking@rb_vehicle@@QBE?BIXZ (g.o 0x4A9F10)
+    const float get_max_speed() const;                // ?get_max_speed@rb_vehicle@@QBE?BMXZ (g.o 0x4A9F20)
+
+    enum rb_vehicle_model_flags_e : int {
+        FLAG_IS_POWER_BRAKING = 0x1,
+        FLAG_IS_BRAKING = 0x2,
+        FLAG_IS_FORWARD_ACCELERATION = 0x4,
+        FLAG_IS_REVERSE_ACCELERATION = 0x8,
+        FLAG_IS_COASTING = 0x10,
+    };
+
+private:
+    const unsigned int get_flag(rb_vehicle_model_flags_e f) const;  // ?get_flag@rb_vehicle@@ABE?BIW4rb_vehicle_model_flags_e@1@@Z (g.o 0x4A9ED0)
+
+public:
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
     static void remove_vehicle(rb_vehicle* const v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
     void end_path();                            // physics.o ?end_path@rb_vehicle@@QAEXXZ
     void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
-};
-
-struct rigid_body_constraint_wheel {
-    float   m_origin[4];   // +0x00
-    float   m_wheel_vel;   // +0x10
-    uint8_t _pad14[0x30 - 0x14];
-    unsigned int m_wheel_flags;  // +0x30
 };
 void rb_vehicle_unpause_physics(rb_vehicle* self);                    // phys_xboxr
 void rb_vehicle_update_from_network(rb_vehicle* self, math::Position3* position,

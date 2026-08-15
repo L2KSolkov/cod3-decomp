@@ -2057,10 +2057,6 @@ void TaskSys::PostTask(Task* t) { (void)t; }
 void TaskSys_PostTask_glue(Task* t) { (void)t; }
 void TaskSys_DeliverTasks_glue() {}
 
-class rigid_body {
-public:
-    void add_force(const math::Dir3& f);
-};
 void rigid_body::add_force(const math::Dir3& f) { (void)f; }
 struct rigid_body_constraint_ragdoll {
     void set_joint_limit_active(unsigned int a, bool b);

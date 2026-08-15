@@ -368,6 +368,8 @@ struct MultiplayerMgr {
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad2[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
+    static MultiplayerMgr* Inst();  // ?Inst@MultiplayerMgr@@SAPAV1@XZ (g.o 0x4A9780)
+    MPPeer* GetPeer();              // ?GetPeer@MultiplayerMgr@@QAEPAVMPPeer@@XZ (g.o 0x4A9790)
     static struct kuju_sTime* getLocalTime(MultiplayerMgr* self);  // mp.o
     bool IsVoteOngoing();           // ?IsVoteOngoing@MultiplayerMgr@@QAE_NXZ
     bool IsPlayerTalking(Entity* player);  // ?IsPlayerTalking@MultiplayerMgr@@QAE_NPAVEntity@@@Z (mp.o)
@@ -759,6 +761,10 @@ struct CheckpointMgr {
     float        mPlayerOrientation[3];   // +0x55C
     math::Position3 mOrigin;              // +0x568 (checkpoint player origin)
     bool         mCheckpointSaveExists;   // +0x574 (bool)
+    static CheckpointMgr* Inst();                  // ?Inst@CheckpointMgr@@SAPAV1@XZ (g.o 0x4A9920)
+    bool CheckpointSaveExists();                   // ?CheckpointSaveExists@CheckpointMgr@@QAE_NXZ (g.o 0x4A9930)
+    bool IsRestoringCheckpoint() const;            // ?IsRestoringCheckpoint@CheckpointMgr@@QBE_NXZ (g.o 0x4A9940)
+    const float (&GetPlayerPosition() const)[3];   // ?GetPlayerPosition@CheckpointMgr@@QBEAAY02$$CBMXZ (g.o 0x4A9960)
     struct SEntitySaveInfo {
         char  mTargetname[32];            // +0x00
         float mOrientation[3];            // +0x20
@@ -881,6 +887,8 @@ public:
     void     (*mDebugCallback)(int, Entity*);  // +0x2AA8
     AeSizedEntityArray mActiveList;      // +0x2AAC (16388 bytes)
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
+    static EntityHandleDb* Inst();       // ?Inst@EntityHandleDb@@SAPAV1@XZ (g.o 0x4A9D40)
+    const ae_sized_array<Entity*, 4096>& GetActiveList() const;  // ?GetActiveList@EntityHandleDb@@QBEABV?$ae_sized_array@PAVEntity@@$0BAAA@@@XZ (g.o 0x4A9D50)
     void Init();                         // ?Init@EntityHandleDb@@QAEXXZ
     void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
     // Inline handle lookup (used at every call site in the binary)
@@ -1072,6 +1080,8 @@ public:
     PathNodes::TOC1* mLevelTOC;      // +0x04
     PathNodes::TOC2* mLevelTOC2;     // +0x08
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
+    static PathNodeMgr* Inst();          // ?Inst@PathNodeMgr@@SAPAV1@XZ (g.o 0x4A97D0)
+    int GetTotalNodeCount() const;       // ?GetTotalNodeCount@PathNodeMgr@@QBEHXZ (g.o 0x4A97E0)
     PathNodeMgr();                               // ??0PathNodeMgr@@QAE@XZ
     void InitPaths();                            // ?InitPaths@PathNodeMgr@@QAEXXZ
     void CleanUpManager();                       // ?CleanUpManager@PathNodeMgr@@QAEXXZ
@@ -1255,6 +1265,8 @@ struct SceneManager {
     uint8_t _pad[4];
     static SceneManager* sInst;          // ?sInst@SceneManager@@2PAV1@A
     InplaceVector<unsigned char>* mPersistantStorage;
+    static SceneManager* Inst();                 // ?Inst@SceneManager@@SAPAV1@XZ (g.o 0x4A9E40)
+    InplaceVector<unsigned char>* GetPersistantStorage();  // ?GetPersistantStorage@SceneManager@@QAEPAV?$InplaceVector@E@@XZ (g.o 0x4A9E50)
     void ResetAllStaticModels();         // ?ResetAllStaticModels@SceneManager@@QAEXXZ
     void RestartPersistentArray();       // ?RestartPersistentArray@SceneManager@@QAEXXZ
     void InstanceEntities();             // ?InstanceEntities@SceneManager@@QAEXXZ

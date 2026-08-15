@@ -10,6 +10,7 @@
 #include "game/logic/g_local.h"
 
 #include <intrin.h>
+#include <float.h>
 #include <math.h>
 #include <stdint.h>
 
@@ -1096,7 +1097,7 @@ int GetPlayerIndex(Entity* player)
 }
 
 // EntityState::GetLerpAngles (g.o 0x4A5750)
-math::Position3 EntityState::GetLerpAngles() const
+const math::Position3 EntityState::GetLerpAngles() const
 {
     return lerpAngles;
 }
@@ -1291,3 +1292,288 @@ bool operator==(Handle lhs, Handle rhs)
 {
     return lhs.mVal == rhs.mVal;
 }
+
+// ============================================================================
+// Batch 23: managers / physics accessors / string & hash helpers
+// ============================================================================
+
+// MPEntityHandle global class (g.o 0x4A9760)
+class MPEntityHandle {
+public:
+    unsigned short mVal;  // +0x00
+    MPEntityHandle& operator=(const MPEntityHandle& other);
+};
+MPEntityHandle& MPEntityHandle::operator=(const MPEntityHandle& other)
+{
+    mVal = other.mVal;
+    return *this;
+}
+
+// Manager singletons (g.o 0x4A9780-0x4A9E70)
+MultiplayerMgr* MultiplayerMgr::Inst()
+{
+    return MultiplayerMgr::sInst;
+}
+MPPeer* MultiplayerMgr::GetPeer()
+{
+    return mPeer;
+}
+PathNodeMgr* PathNodeMgr::Inst()
+{
+    return PathNodeMgr::sInst;
+}
+int PathNodeMgr::GetTotalNodeCount() const
+{
+    if (mLevelTOC != nullptr)
+        return mLevelTOC->mNodeCount;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PathNodeMgr.h";
+    AeAssert::gCurrentLine = 208;
+    AeAssert::gCurrentExpr = "mLevelTOC";
+    if (AeAssert::IsIgnored())
+        return mLevelTOC->mNodeCount;
+    if (AeAssert::Assert("old cod assert"))
+    {
+        __debugbreak();
+        return mLevelTOC->mNodeCount;
+    }
+    return mLevelTOC->mNodeCount;
+}
+CheckpointMgr* CheckpointMgr::Inst()
+{
+    return CheckpointMgr::sInst;
+}
+bool CheckpointMgr::CheckpointSaveExists()
+{
+    return mCheckpointSaveExists;
+}
+bool CheckpointMgr::IsRestoringCheckpoint() const
+{
+    return mCheckpointSaveExists && mUsingCheckpoints;
+}
+const float (&CheckpointMgr::GetPlayerPosition() const)[3]
+{
+    return *(const float (*)[3])&mOrigin;
+}
+EntityHandleDb* EntityHandleDb::Inst()
+{
+    return &EntityHandleDb::sInst;
+}
+const ae_sized_array<Entity*, 4096>& EntityHandleDb::GetActiveList() const
+{
+    return *(const ae_sized_array<Entity*, 4096>*)&mActiveList;
+}
+TimerRenderBars* TimerRenderBars::Inst()
+{
+    return &TimerRenderBars::sInst;
+}
+void TimerRenderBars::ToggleActive()
+{
+    mActive ^= 1;
+}
+int TimerRenderBars::IsActive() const
+{
+    return mActive;
+}
+ConfigStringManager* ConfigStringManager::Inst()
+{
+    return ConfigStringManager::sInst;
+}
+SceneManager* SceneManager::Inst()
+{
+    return SceneManager::sInst;
+}
+InplaceVector<unsigned char>* SceneManager::GetPersistantStorage()
+{
+    return mPersistantStorage;
+}
+PlayerAnimMgr* PlayerAnimMgr::sInst;
+PlayerAnimMgr* PlayerAnimMgr::Inst()
+{
+    return PlayerAnimMgr::sInst;
+}
+DynamicDecalMgr* DynamicDecalMgr::Inst()
+{
+    return (DynamicDecalMgr*)DynamicDecalMgr::sInst;
+}
+
+// Physics accessors (g.o 0x4A9970-0x4A9F20)
+const unsigned int rigid_body::get_flag(unsigned int f) const
+{
+    return f & m_flags;
+}
+const unsigned int rigid_body::is_stable() const
+{
+    return m_flags & 4;
+}
+const unsigned int rigid_body_constraint_wheel::get_wheel_flag(
+    rigid_body_constraint_wheel::wheel_flags_e f) const
+{
+    return f & m_wheel_flags;
+}
+const math::Dir3 rigid_body_constraint_wheel::get_hitp_loc() const
+{
+    return m_b2_hitp_loc;
+}
+const float rigid_body_constraint_wheel::get_wheel_vel() const
+{
+    return m_wheel_vel;
+}
+float rb_vehicle::get_throttle() const
+{
+    return m_throttle;
+}
+float rb_vehicle::get_steer_factor() const
+{
+    return m_steer_factor;
+}
+float rb_vehicle::get_forward_vel() const
+{
+    return m_forward_vel;
+}
+vehicle_rb_parameter* rb_vehicle::get_parameter() const
+{
+    return m_parameter;
+}
+const rb_extra_info* rb_vehicle::get_chassis_rbinf() const
+{
+    return (const rb_extra_info*)m_chassis_rbinf;
+}
+rigid_body_constraint_wheel* rb_vehicle::get_wheel(int i)
+{
+    return m_wheels[i];
+}
+const unsigned int rb_vehicle::get_braking() const
+{
+    return m_state_flags & 2;
+}
+const float rb_vehicle::get_max_speed() const
+{
+    return m_parameter->m_speed_max;
+}
+const unsigned int rb_vehicle::get_flag(rb_vehicle_model_flags_e f) const
+{
+    return f & m_state_flags;
+}
+
+// Scalar helpers (g.o 0x4A9A00-0x4A9A70)
+bool IS_NAN(const float& x)
+{
+    return (_fpclass((double)x) & 0x297) != 0;
+}
+int FastRound(float x)
+{
+    return (int)(x + 0.5f);
+}
+float Q_fabs(float f)
+{
+    return (float)fabs((double)f);
+}
+
+// usercmd_s::Clear (g.o 0x4A9AC0)
+void usercmd_s::Clear()
+{
+    serverTime = 0;
+    buttons = 0;
+    weapon = 0;
+    angles[0] = 0;
+    angles[1] = 0;
+    angles[2] = 0;
+    forwardmove = 0;
+    rightmove = 0;
+    upmove = 0;
+    gunPitch = 0.0f;
+    gunYaw = 0.0f;
+    gunXOfs = 0.0f;
+    gunYOfs = 0.0f;
+    gunZOfs = 0.0f;
+}
+
+// trajectory_t ctor (g.o 0x4A9B10)
+trajectory_t::trajectory_t()
+{
+    trType = TR_STATIONARY;
+    trTime = 0;
+    trDuration = 0;
+    trGravityOverride = 0;
+    trBase[1] = 0.0f;
+    trBase[0] = 0.0f;
+    trDelta[1] = 0.0f;
+    trDelta[0] = 0.0f;
+}
+
+// HashString (g.o 0x4A9B60-0x4A9C50)
+HashString::HashString(const char* str)
+{
+    mHash = HashString::CalcHash(str);
+}
+HashString::HashString(int hash)
+{
+    mHash = (unsigned int)hash;
+}
+unsigned int HashString::GetHash() const
+{
+    return mHash;
+}
+bool HashString::Compare(const HashString& lhs, const HashString& rhs)
+{
+    return lhs.mHash == rhs.mHash;
+}
+bool operator==(const HashString& lhs, const HashString& rhs)
+{
+    return lhs.mHash == rhs.mHash;
+}
+bool operator!=(const HashString& lhs, const HashString& rhs)
+{
+    return lhs.mHash != rhs.mHash;
+}
+bool operator==(const HashString& lhs, unsigned int rhs)
+{
+    return lhs.mHash == rhs;
+}
+bool operator!=(const HashString& lhs, unsigned int rhs)
+{
+    return lhs.mHash != rhs;
+}
+
+// Broc::string helpers (g.o 0x4A9C70-0x4A9D20)
+char* Broc::string::Block::GetBuff()
+{
+    return (char*)(this + 1);
+}
+char Broc::string::operator[](unsigned int idx)
+{
+    if (mBlock != nullptr && idx < mBlock->mLength)
+        return *(mBlock->GetBuff() + idx);
+    return 0;
+}
+bool Broc::string::IsDefined() const
+{
+    return mBlock != nullptr;
+}
+void Broc::string::SetUndefined()
+{
+    if (mBlock != nullptr)
+    {
+        mBlock->DecrementCount();
+        mBlock = nullptr;
+    }
+}
+bool Broc::operator!=(const Broc::string& lhs, const Broc::string& rhs)
+{
+    return !Broc::operator==(lhs, rhs);
+}
+
+// TaskFunctor1 dtors (g.o 0x4A9F90 / 0x4A9FA0)
+template <typename T, typename U>
+struct TaskFunctor1 : TaskFunctor {
+    void* fn;
+    U     deltaT;
+    virtual ~TaskFunctor1();
+};
+template <typename T, typename U>
+TaskFunctor1<T, U>::~TaskFunctor1()
+{
+}
+template struct TaskFunctor1<AnimationUpdateTask, float>;
+template struct TaskFunctor1<XAnimUpdateTask, float>;
