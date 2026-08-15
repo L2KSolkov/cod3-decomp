@@ -25,6 +25,11 @@ extern float CG_GetNorthDirection();               // ?CG_GetNorthDirection@@YAM
 extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp_actors.o)
 extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z (render.o)
 
+// TPakInfo - opaque pak info enum (scr.o; W4TPakInfo mangling)
+enum TPakInfo {
+    kTPakInfoInvalid = 0,
+};
+
 namespace AeStringSupport {
 void Concat(char* dst, int& dstLen, int dstCapacity,
             const char* src);  // ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z
@@ -2831,6 +2836,17 @@ int  GetNodeClaimer(const Broc::pathnode& nodeIn);  // 0x5C5AE0
 void GetMoveDelta(Broc::vector& outVec, unsigned int anim, float startTime,
                   float endTime);  // 0x5C3C70
 float GetAngleDelta(unsigned int anim, float startTime, float endTime);  // 0x5C3DD0
+unsigned int SpawnTriggerMount(Broc::vector& mins, Broc::vector& maxs,
+                               bool crouch, TPakInfo pakInfo);  // 0x5C2BF0
+unsigned int SpawnTurret(const Broc::string& classname,
+                         const Broc::vector& origin,
+                         const Broc::string& weaponinfoname,
+                         TPakInfo pakInfo);  // 0x5C2E00
+unsigned int SpawnTurretWithAngles(const Broc::string& classname,
+                                   const Broc::vector& origin,
+                                   const Broc::string& weaponinfoname,
+                                   const Broc::vector& angles,
+                                   TPakInfo pakInfo);  // 0x5C3030
 }
 
 static void BrocFree(void* p)
@@ -5080,6 +5096,205 @@ void BrocSys::HudSetClockInternal(unsigned int elemNum, he_type_t type,
     v9->elem.duration = duration;
     v9->elem.mTexture = texture;
     v9->elem.width = width;
+}
+
+// ============================================================================
+// scr.o batch 24 - spawn family (SpawnTriggerMount / SpawnTurret)
+// ============================================================================
+
+extern void SP_trigger_mount_no_brush(Entity* pSelf, int crouch);  // ?SP_trigger_mount_no_brush@@YAXPAVEntity@@H@Z (g.o)
+extern float sNaN;  // ?sNaN@@3MA (core.o)
+
+static TPakId PakInfoToPakId(TPakInfo pakInfo)
+{
+    // binary: *(pakInfo + 180) when pakInfo != INVALID_PAK_INFO
+    return pakInfo != kTPakInfoInvalid
+               ? *(TPakId*)((char*)pakInfo + 0xB4)
+               : PAK_ID_INVALID;
+}
+
+// ea: 0x005C2BF0
+unsigned int BrocSys::SpawnTriggerMount(Broc::vector& mins,
+                                        Broc::vector& maxs, bool crouch,
+                                        TPakInfo pakInfo)
+{
+    Broc::vector* v4 = &maxs;
+    Broc::vector* v5 = &mins;
+    float x = mins.x;
+    if (mins.x > maxs.x)
+    {
+        mins.x = maxs.x;
+        v4->x = x;
+    }
+    float y = v5->y;
+    if (y > v4->y)
+    {
+        v5->y = v4->y;
+        v4->y = y;
+    }
+    float z = v5->z;
+    if (z > v4->z)
+    {
+        v5->z = v4->z;
+        v4->z = z;
+    }
+    TPakId v9 = PakInfoToPakId(pakInfo);
+    Entity* v10 = G_Spawn(v9);
+    v10->mClassName = str_const.trigger_mount;
+    v10->mClassNameHash = HashString(v10->mClassName);
+    v10->r.mins.v.m128_f32[0] = v5->x;
+    v10->r.mins.v.m128_f32[1] = v5->y;
+    v10->r.mins.v.m128_f32[2] = v5->z;
+    v10->r.maxs.v.m128_f32[0] = v4->x;
+    v10->r.maxs.v.m128_f32[1] = v4->y;
+    v10->r.maxs.v.m128_f32[2] = v4->z;
+    if (IS_NAN(v10->r.mins.v.m128_f32[0])
+        || IS_NAN(v10->r.mins.v.m128_f32[1])
+        || IS_NAN(v10->r.mins.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1735;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.mins)[0]) && !IS_NAN((ent->r.mins)[1]) && !IS_NAN((ent->r.mins)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (IS_NAN(v10->r.maxs.v.m128_f32[0])
+        || IS_NAN(v10->r.maxs.v.m128_f32[1])
+        || IS_NAN(v10->r.maxs.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1736;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.maxs)[0]) && !IS_NAN((ent->r.maxs)[1]) && !IS_NAN((ent->r.maxs)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    SP_trigger_mount_no_brush(v10, crouch);
+    UpdateEntityHash(v10);
+    return v10->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005C2E00
+unsigned int BrocSys::SpawnTurret(const Broc::string& classname,
+                                  const Broc::vector& origin,
+                                  const Broc::string& weaponinfoname,
+                                  TPakInfo pakInfo)
+{
+    if (origin.x == sNaN && origin.y == sNaN && origin.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1791;
+        AeAssert::gCurrentExpr = "origin.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SpawnTurret called with undefined input."))
+            __debugbreak();
+    }
+    if (IS_NAN(origin.x) || IS_NAN(origin.y) || IS_NAN(origin.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1807;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("undefined origin passed to SpawnTurret"))
+            __debugbreak();
+        return 0;
+    }
+    TPakId v5 = PakInfoToPakId(pakInfo);
+    Entity* v6 = G_Spawn(v5);
+    v6->mClassName = classname;
+    v6->mClassNameHash = HashString(v6->mClassName);
+    v6->r.currentOrigin.v.m128_f32[0] = origin.x;
+    v6->r.currentOrigin.v.m128_f32[1] = origin.y;
+    v6->r.currentOrigin.v.m128_f32[2] = origin.z;
+    if (IS_NAN(v6->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1799;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    const char* v7 = weaponinfoname.mBlock != nullptr
+                         ? (const char*)(weaponinfoname.mBlock + 1)
+                         : defaultFileName;
+    G_SpawnTurret(v6, v7);
+    UpdateEntityHash(v6);
+    return v6->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005C3030
+unsigned int BrocSys::SpawnTurretWithAngles(
+    const Broc::string& classname, const Broc::vector& origin,
+    const Broc::string& weaponinfoname, const Broc::vector& angles,
+    TPakInfo pakInfo)
+{
+    if ((origin.x == sNaN && origin.y == sNaN && origin.z == sNaN)
+        || (angles.x == sNaN && angles.y == sNaN && angles.z == sNaN))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1816;
+        AeAssert::gCurrentExpr = "origin.IsDefined() && angles.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Spawn called with undefined input."))
+            __debugbreak();
+    }
+    if (IS_NAN(origin.x) || IS_NAN(origin.y) || IS_NAN(origin.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1834;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "undefined origin passed to SpawnTurretWithAngles"))
+            __debugbreak();
+        return 0;
+    }
+    TPakId v6 = PakInfoToPakId(pakInfo);
+    Entity* v7 = G_Spawn(v6);
+    v7->mClassName = classname;
+    v7->mClassNameHash = HashString(v7->mClassName);
+    v7->r.currentOrigin.v.m128_f32[0] = origin.x;
+    v7->r.currentOrigin.v.m128_f32[1] = origin.y;
+    v7->r.currentOrigin.v.m128_f32[2] = origin.z;
+    v7->r.currentAngles.v.m128_f32[0] = angles.x;
+    v7->r.currentAngles.v.m128_f32[1] = angles.y;
+    v7->r.currentAngles.v.m128_f32[2] = angles.z;
+    if (IS_NAN(v7->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v7->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v7->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1825;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (IS_NAN(v7->r.currentAngles.v.m128_f32[0])
+        || IS_NAN(v7->r.currentAngles.v.m128_f32[1])
+        || IS_NAN(v7->r.currentAngles.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1833;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentAngles)[0]) && !IS_NAN((ent->r.currentAngles)[1]) && !IS_NAN((ent->r.currentAngles)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    const char* v9 = weaponinfoname.mBlock != nullptr
+                         ? (const char*)(weaponinfoname.mBlock + 1)
+                         : defaultFileName;
+    G_SpawnTurret(v7, v9);
+    UpdateEntityHash(v7);
+    return v7->mHandle.mHandle.mVal;
 }
 
 // ============================================================================

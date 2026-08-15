@@ -834,7 +834,7 @@ void EntityHandleDb_Find(int fieldOfs, T match, ae_sized_array<Entity*, 4096>& r
 struct str_const_t {
     Broc::string active;              // +0x000
     uint8_t    _pad[0xB0 - 0x4];      // +0x004
-    Broc::string grenade;             // +0x0B0
+    Broc::string grenade;             // +0x0B0 (44, "grenade")
     uint8_t    _padB4[0xBC - 0xB4];
     Broc::string info_player_deathmatch;  // +0xBC
     uint8_t    _padC0[0xF4 - 0xC0];
@@ -864,12 +864,26 @@ struct str_const_t {
     Broc::string spawn_war_allies;         // +0x1A4
     Broc::string spawn_war_axis;           // +0x1A8
     Broc::string spawn_sd_allies;          // +0x1AC
-    Broc::string spawn_sd_axis;            // +0x1B0
-    Broc::string hq_point;                 // +0x1B4
-    uint8_t    _pad1B8[0x1FC - 0x1B8];
-    Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x23C - 0x200];
-    Broc::string worldspawn;          // +0x23C
+     Broc::string spawn_sd_axis;            // +0x1B0
+     Broc::string hq_point;                 // +0x1B4
+     uint8_t    _pad1B8[0x1FC - 0x1B8];
+     Broc::string tempEntity;          // +0x1FC
+     Broc::string muzzleEntity;        // +0x200 (129)
+     Broc::string touch;               // +0x204 (130)
+     Broc::string trigger;             // +0x208 (131)
+     Broc::string trigger_use;         // +0x20C (132)
+     Broc::string trigger_damage;      // +0x210
+     Broc::string trigger_lookat;      // +0x214
+     Broc::string trigger_mount;       // +0x218 (134, "trigger_mount")
+     Broc::string truck_cam;           // +0x21C
+     Broc::string turret_fire;         // +0x220
+     Broc::string turret_on_target;    // +0x224
+     Broc::string player_on_vehicle;   // +0x228
+     Broc::string player_off_vehicle;  // +0x22C
+     Broc::string turret_on_vistarget; // +0x230
+     Broc::string xmodel_airborne;     // +0x234
+     Broc::string xmodel_wehrmacht;    // +0x238
+     Broc::string worldspawn;          // +0x23C
     uint8_t    _pad240[0x298 - 0x240];
     Broc::string smoke_grenade;       // +0x298
     uint8_t    _pad29C[0x2B4 - 0x29C];
