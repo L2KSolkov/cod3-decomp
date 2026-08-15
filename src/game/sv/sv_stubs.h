@@ -435,6 +435,31 @@ public:
                      MultiplayerMgr::MPEntityHandle handle);  // ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z
     void Step(int earlyOutInterval, bool fromThread, bool a_bFromGame);  // ?Step@MultiplayerMgr@@QAEXH_N0@Z
     bool IsLocalPlayer(Entity* player);            // ?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z
+    bool IsInVehicle(Entity* player);              // ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@@Z
+    bool IsInVehicle(Entity* vehicle, Entity* player);  // ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@0@Z
+    bool ChangeTeam(Entity* player, int team, bool hostOnly,
+                    bool autoBalance);  // ?ChangeTeam@MultiplayerMgr@@QAE_NPAVEntity@@H_N1@Z
+    void SendInitialGameState(Entity* player);  // ?SendInitialGameState@MultiplayerMgr@@QAEXPAVEntity@@@Z
+    void SendVehicleStates(Entity* player);  // ?SendVehicleStates@MultiplayerMgr@@QAEXPAVEntity@@@Z
+    void BroadcastVehicleRespawn(Entity* vehicle);  // ?BroadcastVehicleRespawn@MultiplayerMgr@@QAEXPAVEntity@@@Z
+    void SendGameState(Entity* player, int currentTime, int timeLimit,
+                       int scoreLimit, int roundLimit, bool friendlyFire,
+                       bool lastManStanding, bool teamBalance,
+                       int respawnTime, int alliesScore, int axisScore,
+                       bool roundStarted, int roundOver,
+                       int roundCount);  // ?SendGameState@MultiplayerMgr@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z
+    void SendGameStateHQ(Entity* player, unsigned int stage,
+                         const math::Position3& pA,
+                         const math::Position3& pB,
+                         unsigned int triggerIndex, bool alliesDefending,
+                         bool pointAIsHQ);  // ?SendGameStateHQ@MultiplayerMgr@@QAEXPAVEntity@@IABVPosition3@math@@1I_N2@Z
+    void SendGameStateCTF(Entity* player,
+                          const math::Position3& allied_flag,
+                          const math::Dir3& alliedAngles,
+                          Entity* allied_flag_holder,
+                          const math::Position3& axis_flag,
+                          const math::Dir3& axisAngles,
+                          Entity* axis_flag_holder);  // ?SendGameStateCTF@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z
     void DropWeapon(int weapon, int netIndex, const math::Position3* position,
                     const math::Position3* angles, const math::Dir3* velocity,
                     int clipCount, int ammoCount);  // ?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@1ABVDir3@2@HH@Z

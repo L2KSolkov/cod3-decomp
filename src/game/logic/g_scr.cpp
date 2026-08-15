@@ -3521,6 +3521,48 @@ void MPScript_FinishDamage(unsigned int targHandleVal,
                            const Broc::vector& dir, const Broc::vector& point,
                            int damage, int mod, int weapon,
                            int hitLoc);  // 0x5D4130 (int mangle per manifest)
+bool MPScript_IsLocalPlayer(unsigned int entityHandleVal);  // 0x5D41F0
+bool MPScript_IsInVehicle1(unsigned int entityHandleVal);  // 0x5D4230
+bool MPScript_IsInVehicle2(unsigned int vehicleHandleVal,
+                           unsigned int entityHandleVal);  // 0x5D4290
+unsigned int MPScript_GetPlayerInSeat(unsigned int vehicleHandleVal,
+                                      unsigned int seat);  // 0x5D4320
+void MPScript_GetOutOfVehicle(unsigned int entityHandleVal);  // 0x5D4370
+bool MPScript_SetPlayerTeam(unsigned int entityHandleVal,
+                            const Broc::string& team);  // 0x5D4400
+void MPScript_Obituary(unsigned int target, unsigned int attacker,
+                       const Broc::string& pszWeaponName, int mod,
+                       bool teamGame);  // 0x5D4450
+void MPScript_IncPlayerStat(unsigned int playerHandle, unsigned int statIndex,
+                            short value);  // 0x5D4590
+void MPScript_SetPlayerStat(unsigned int playerHandle, unsigned int statIndex,
+                            short value);  // 0x5D4750
+short MPScript_GetPlayerStat(unsigned int playerHandle,
+                             unsigned int statIndex);  // 0x5D4910
+int MPScript_GetPlayerTotalScore(unsigned int playerHandle);  // 0x5D4A10
+void MPScript_ChangePlayerTeam(unsigned int entityHandleVal,
+                               const Broc::string& team,
+                               bool autoBalance);  // 0x5D4AE0
+void MPScript_SendInitialGameState(unsigned int player);  // 0x5D4BC0
+void MPScript_SendVehicleStates(unsigned int player);  // 0x5D4C10
+void MPScript_BroadcastVehicleRespawn(unsigned int vehicle);  // 0x5D4C60
+void MPScript_SendGameState(unsigned int player, int currentTime,
+                            int timeLimit, int scoreLimit, int roundLimit,
+                            bool friendlyFire, bool lastManStanding,
+                            bool teamBalance, int respawnTime,
+                            int alliesScore, int axisScore, bool roundStarted,
+                            int roundOver, int roundCount);  // 0x5D4CB0
+void MPScript_SendGameStateHQ(unsigned int player, unsigned int stage,
+                              const Broc::vector vA, const Broc::vector vB,
+                              unsigned int triggerIndex, bool alliesDefending,
+                              bool pointAIsHQ);  // 0x5D4D30
+void MPScript_SendGameStateCTF(unsigned int player,
+                               const Broc::vector vAlliedFlagOrigin,
+                               const Broc::vector vAlliedFlagAngles,
+                               unsigned int AlliedFlagHolder,
+                               const Broc::vector vAxisFlagOrigin,
+                               const Broc::vector vAxisFlagAngles,
+                               unsigned int AxisFlagHolder);  // 0x5D4E20
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -3622,6 +3664,40 @@ extern char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS (cg_ents.cpp)
 extern void Axis4ToAngles(const float (*const axis)[4],
                           float* const angles);  // ?Axis4ToAngles@@YAXQAY03$$CBMQAM@Z (q_math.cpp)
 extern void GetAllPaks(ae_sized_array<TPakId, 32>* ret);  // ?GetAllPaks@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z (pakmanager.cpp)
+
+// scr.o batch 53 helpers (mp player stats / obituary)
+enum EPlayerClass : int {
+    kPlayerClassAssault = 0x0,
+    kPlayerClassInfantry = 0x1,
+    kPlayerClassRifleman = 0x2,
+    kPlayerClassMedic = 0x3,
+    kPlayerClassSupport = 0x4,
+    kPlayerClassAntiArmor = 0x5,
+    kPlayerClassScout = 0x6,
+    kPlayerClassCount = 0x7,
+    kPlayerClassInvalid = -1,
+};
+enum {
+    MOD_MORTAR = 0xB,
+    MOD_MORTAR_SPLASH = 0xC,
+    MOD_WATER = 0x11,
+    MOD_CRUSH = 0x12,
+    MOD_CRUSH_TANK = 0x13,
+    MOD_CRUSH_JEEP = 0x14,
+    MOD_TELEFRAG = 0x15,
+    MOD_FALLING = 0x16,
+    MOD_TRIGGER_HURT = 0x18,
+    MOD_EXPLOSIVE = 0x19,
+    MOD_PHYSICS_IMPACT = 0x1E,
+    MOD_NUM = 0x1F,
+};
+namespace PlayerStats {
+bool IsStatSpecificToAPlayerClass(int stat);  // ?IsStatSpecificToAPlayerClass@PlayerStats@@YA_NH@Z
+EPlayerClass GetStatSpecificToAPlayerClass(int stat);  // ?GetStatSpecificToAPlayerClass@PlayerStats@@YA?AW4EPlayerClass@@H@Z
+int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z
+}
+extern void CG_Obituary(Entity* target, Entity* attacker, int parm,
+                        bool teamGame);  // ?CG_Obituary@@YAXPAVEntity@@0H_N@Z
 
 // level.cachedTagMat (level_locals_t +0xC30, 0x4C bytes) - IDA verified
 struct CachedTagMatLocal {
@@ -17413,6 +17489,565 @@ void BrocSys::MPScript_FinishDamage(unsigned int targHandleVal,
             v14 = EntityHandleDb::sInst.mElements[v13].mObject;
         G_FinishDamage(mObject, v12, v14, &dir.x, &point.x, damage, mod,
                        weapon, (hitLocation_t)hitLoc);
+    }
+}
+
+// ============================================================================
+// scr.o batch 53 - MPScript player/vehicle/stat wrappers
+// ============================================================================
+
+// ea: 0x005D41F0
+bool BrocSys::MPScript_IsLocalPlayer(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    return v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr
+        && MultiplayerMgr::sInst->IsLocalPlayer(mObject);
+}
+
+// ea: 0x005D4230
+bool BrocSys::MPScript_IsInVehicle1(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    return BrocSys::IsValidClientType(mObject)
+        && mObject != nullptr
+        && MultiplayerMgr::sInst->IsInVehicle(mObject);
+}
+
+// ea: 0x005D4290
+bool BrocSys::MPScript_IsInVehicle2(unsigned int vehicleHandleVal,
+                                    unsigned int entityHandleVal)
+{
+    unsigned int v2 = vehicleHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && vehicleHandleVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* v5 = nullptr;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+        v5 = EntityHandleDb::sInst.mElements[v4].mObject;
+    return mObject != nullptr
+        && mObject->scr_vehicle != nullptr
+        && BrocSys::IsValidClientType(v5)
+        && v5 != nullptr
+        && MultiplayerMgr::sInst->IsInVehicle(mObject, v5);
+}
+
+// ea: 0x005D4320
+unsigned int BrocSys::MPScript_GetPlayerInSeat(unsigned int vehicleHandleVal,
+                                               unsigned int seat)
+{
+    unsigned int v2 = vehicleHandleVal & 0xFFF;
+    Entity* mObject;
+    scr_vehicle_t* scr_vehicle;
+    if (v2 < 0x540
+        && vehicleHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr
+        && (scr_vehicle = mObject->scr_vehicle) != nullptr
+        && seat <= 0xB)
+    {
+        return scr_vehicle->seats[seat].occupant.mHandle.mVal;
+    }
+    return 0;
+}
+
+// ea: 0x005D4370
+void BrocSys::MPScript_GetOutOfVehicle(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (BrocSys::IsValidClientType(mObject) && mObject->IsLocalPlayer())
+    {
+        unsigned int v3 = mObject->r.mOwner.mHandle.mVal & 0xFFF;
+        if (v3 < 0x540
+            && mObject->r.mOwner.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v3].mKey)
+        {
+            Entity* v4 = EntityHandleDb::sInst.mElements[v3].mObject;
+            if (v4 != nullptr)
+                MultiplayerMgr::sInst->GetOutOfVehicle(
+                    v4, mObject->client->ps.vehPos);
+        }
+    }
+}
+
+// ea: 0x005D4400
+bool BrocSys::MPScript_SetPlayerTeam(unsigned int entityHandleVal,
+                                     const Broc::string& team)
+{
+    (void)team;
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    return !BrocSys::IsValidClientType(mObject)
+        || MultiplayerMgr::sInst->IsLocalPlayer(mObject);
+}
+
+// ea: 0x005D4450
+void BrocSys::MPScript_Obituary(unsigned int target, unsigned int attacker,
+                                const Broc::string& pszWeaponName, int mod,
+                                bool teamGame)
+{
+    Entity* v5 = nullptr;
+    unsigned int v6 = target & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v6 >= 0x540
+        || target >> 12 != EntityHandleDb::sInst.mElements[v6].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v6].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 269;
+        AeAssert::gCurrentExpr = "targetEntity";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid obituary entity"))
+            __debugbreak();
+    }
+    unsigned int v7 = attacker & 0xFFF;
+    if (v7 < 0x540
+        && attacker >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
+        v5 = EntityHandleDb::sInst.mElements[v7].mObject;
+    int v10;
+    if (pszWeaponName == "none"
+        || (BG_GetWeaponIndexForName(
+                pszWeaponName.mBlock != nullptr
+                    ? (const char*)(pszWeaponName.mBlock + 1)
+                    : defaultFileName))
+               == 0
+        || mod == MOD_MORTAR
+        || mod == MOD_PHYSICS_IMPACT
+        || mod == MOD_MORTAR_SPLASH
+        || mod == MOD_WATER
+        || mod == MOD_CRUSH
+        || mod == MOD_EXPLOSIVE
+        || mod == MOD_NUM
+        || mod == MOD_TRIGGER_HURT
+        || mod == MOD_CRUSH_JEEP
+        || mod == MOD_TELEFRAG
+        || mod == MOD_FALLING
+        || mod == MOD_CRUSH_TANK)
+    {
+        v10 = mod | 0x80;
+    }
+    else
+    {
+        v10 = BG_GetWeaponIndexForName(
+            pszWeaponName.mBlock != nullptr
+                ? (const char*)(pszWeaponName.mBlock + 1)
+                : defaultFileName);
+    }
+    CG_Obituary(mObject, v5, v10, teamGame);
+}
+
+// ea: 0x005D4590
+void BrocSys::MPScript_IncPlayerStat(unsigned int playerHandle,
+                                     unsigned int statIndex, short value)
+{
+    unsigned int v3 = playerHandle & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 >= 0x540
+        || playerHandle >> 12 != EntityHandleDb::sInst.mElements[v3].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v3].mObject) == nullptr
+        || mObject->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 311;
+        AeAssert::gCurrentExpr = "player && player->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Invalid player passed into IncPlayerStat"))
+            __debugbreak();
+    }
+    if (statIndex >= 0x1D)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 312;
+        AeAssert::gCurrentExpr =
+            "statIndex >= 0 && statIndex < kPlayerStatsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid stat passed into IncPlayerStat"))
+            __debugbreak();
+    }
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        EPlayerClass playerClass =
+            (EPlayerClass)mObject->client->pers.playerClass;
+        if (PlayerStats::IsStatSpecificToAPlayerClass((int)statIndex))
+        {
+            playerClass =
+                PlayerStats::GetStatSpecificToAPlayerClass((int)statIndex);
+            if (playerClass == kPlayerClassInvalid)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+                AeAssert::gCurrentLine = 322;
+                AeAssert::gCurrentExpr =
+                    "playerClass != kPlayerClassInvalid";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Invalid class specific stat class."))
+                    __debugbreak();
+                return;
+            }
+        }
+        else if (playerClass == kPlayerClassInvalid)
+        {
+            return;
+        }
+        if (playerClass > kPlayerClassScout)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+            AeAssert::gCurrentLine = 329;
+            AeAssert::gCurrentExpr =
+                "playerClass >= 0 && playerClass < kPlayerClassCount";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Invalid player class in IncPlayerStat"))
+                __debugbreak();
+        }
+        mObject->client->pers.mStats[playerClass][statIndex] += value;
+    }
+}
+
+// ea: 0x005D4750
+void BrocSys::MPScript_SetPlayerStat(unsigned int playerHandle,
+                                     unsigned int statIndex, short value)
+{
+    unsigned int v3 = playerHandle & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 >= 0x540
+        || playerHandle >> 12 != EntityHandleDb::sInst.mElements[v3].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v3].mObject) == nullptr
+        || mObject->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 337;
+        AeAssert::gCurrentExpr = "player && player->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Invalid player passed into SetPlayerStat"))
+            __debugbreak();
+    }
+    if (statIndex >= 0x1D)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 338;
+        AeAssert::gCurrentExpr =
+            "statIndex >= 0 && statIndex < kPlayerStatsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid stat passed into SetPlayerStat"))
+            __debugbreak();
+    }
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        EPlayerClass playerClass =
+            (EPlayerClass)mObject->client->pers.playerClass;
+        if (PlayerStats::IsStatSpecificToAPlayerClass((int)statIndex))
+        {
+            playerClass =
+                PlayerStats::GetStatSpecificToAPlayerClass((int)statIndex);
+            if (playerClass == kPlayerClassInvalid)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+                AeAssert::gCurrentLine = 348;
+                AeAssert::gCurrentExpr =
+                    "playerClass != kPlayerClassInvalid";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Invalid class specific stat class."))
+                    __debugbreak();
+                return;
+            }
+        }
+        else if (playerClass == kPlayerClassInvalid)
+        {
+            return;
+        }
+        if (playerClass > kPlayerClassScout)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+            AeAssert::gCurrentLine = 355;
+            AeAssert::gCurrentExpr =
+                "playerClass >= 0 && playerClass < kPlayerClassCount";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Invalid player class in IncPlayerStat"))
+                __debugbreak();
+        }
+        mObject->client->pers.mStats[playerClass][statIndex] = value;
+    }
+}
+
+// ea: 0x005D4910
+short BrocSys::MPScript_GetPlayerStat(unsigned int playerHandle,
+                                      unsigned int statIndex)
+{
+    unsigned int v2 = playerHandle & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 >= 0x540
+        || playerHandle >> 12 != EntityHandleDb::sInst.mElements[v2].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v2].mObject) == nullptr
+        || mObject->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 363;
+        AeAssert::gCurrentExpr = "player && player->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Invalid player passed into GetPlayerStat"))
+            __debugbreak();
+    }
+    if (statIndex >= 0x1D)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 364;
+        AeAssert::gCurrentExpr =
+            "statIndex >= 0 && statIndex < kPlayerStatsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid stat passed into GetPlayerStat"))
+            __debugbreak();
+    }
+    if (BrocSys::IsValidClientType(mObject))
+        return mObject->client->pers.GetStat((int)statIndex);
+    return 0;
+}
+
+// ea: 0x005D4A10
+int BrocSys::MPScript_GetPlayerTotalScore(unsigned int playerHandle)
+{
+    unsigned int v1 = playerHandle & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 >= 0x540
+        || playerHandle >> 12 != EntityHandleDb::sInst.mElements[v1].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v1].mObject) == nullptr
+        || !mObject->client)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 375;
+        AeAssert::gCurrentExpr = "player && player->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Invalid player passed into GetPlayerStat"))
+            __debugbreak();
+    }
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0;
+    int mBaseScore = mObject->client->pers.mBaseScore;
+    short* p_pers = &mObject->client->pers.mStats[0][0];
+    int v6 = 7;
+    do
+    {
+        mBaseScore += PlayerStats::TotalScoreForStats(p_pers);
+        p_pers += 29;
+        --v6;
+    }
+    while (v6);
+    return mBaseScore;
+}
+
+// ea: 0x005D4AE0
+void BrocSys::MPScript_ChangePlayerTeam(unsigned int entityHandleVal,
+                                        const Broc::string& team,
+                                        bool autoBalance)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (BrocSys::IsValidClientType(mObject) && mObject != nullptr)
+    {
+        int v5 = 3;
+        if (team == "axis")
+        {
+            v5 = 1;
+        }
+        else if (team == "allies")
+        {
+            v5 = 2;
+        }
+        else if (team == "neutral")
+        {
+            v5 = 3;
+        }
+        else
+        {
+            const char* v6 = team.mBlock != nullptr
+                                 ? (const char*)(team.mBlock + 1)
+                                 : defaultFileName;
+            Scr_Error(
+                va("unknown team '%s', should be axis, allies, or neutral\n",
+                   v6));
+        }
+        MultiplayerMgr::sInst->ChangeTeam(mObject, v5, true, autoBalance);
+    }
+}
+
+// ea: 0x005D4BC0
+void BrocSys::MPScript_SendInitialGameState(unsigned int player)
+{
+    unsigned int v1 = player & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && player >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        MultiplayerMgr::sInst->SendInitialGameState(mObject);
+}
+
+// ea: 0x005D4C10
+void BrocSys::MPScript_SendVehicleStates(unsigned int player)
+{
+    unsigned int v1 = player & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && player >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        MultiplayerMgr::sInst->SendVehicleStates(mObject);
+}
+
+// ea: 0x005D4C60
+void BrocSys::MPScript_BroadcastVehicleRespawn(unsigned int vehicle)
+{
+    unsigned int v1 = vehicle & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && vehicle >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr
+        && mObject->scr_vehicle != nullptr)
+        MultiplayerMgr::sInst->BroadcastVehicleRespawn(mObject);
+}
+
+// ea: 0x005D4CB0
+void BrocSys::MPScript_SendGameState(
+    unsigned int player, int currentTime, int timeLimit, int scoreLimit,
+    int roundLimit, bool friendlyFire, bool lastManStanding, bool teamBalance,
+    int respawnTime, int alliesScore, int axisScore, bool roundStarted,
+    int roundOver, int roundCount)
+{
+    unsigned int v14 = player & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v14 < 0x540
+        && player >> 12 == EntityHandleDb::sInst.mElements[v14].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v14].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        MultiplayerMgr::sInst->SendGameState(
+            mObject, currentTime, timeLimit, scoreLimit, roundLimit,
+            friendlyFire, lastManStanding, teamBalance, respawnTime,
+            alliesScore, axisScore, roundStarted, roundOver, roundCount);
+}
+
+// ea: 0x005D4D30
+void BrocSys::MPScript_SendGameStateHQ(unsigned int player, unsigned int stage,
+                                       const Broc::vector vA,
+                                       const Broc::vector vB,
+                                       unsigned int triggerIndex,
+                                       bool alliesDefending,
+                                       bool pointAIsHQ)
+{
+    unsigned int v8 = player & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v8 < 0x540
+        && player >> 12 == EntityHandleDb::sInst.mElements[v8].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+    if (BrocSys::IsValidClientType(mObject)
+        && MultiplayerMgr::sInst->IsHost())
+    {
+        math::Position3 pA;
+        pA.v.m128_f32[0] = vA.x;
+        pA.v.m128_f32[1] = vA.y;
+        pA.v.m128_f32[2] = vA.z;
+        pA.v.m128_f32[3] = 0.0f;
+        math::Position3 pB;
+        pB.v.m128_f32[0] = vB.x;
+        pB.v.m128_f32[1] = vB.y;
+        pB.v.m128_f32[2] = vB.z;
+        pB.v.m128_f32[3] = 0.0f;
+        MultiplayerMgr::sInst->SendGameStateHQ(mObject, stage, pA, pB,
+                                               triggerIndex, alliesDefending,
+                                               pointAIsHQ);
+    }
+}
+
+// ea: 0x005D4E20
+void BrocSys::MPScript_SendGameStateCTF(
+    unsigned int player, const Broc::vector vAlliedFlagOrigin,
+    const Broc::vector vAlliedFlagAngles, unsigned int AlliedFlagHolder,
+    const Broc::vector vAxisFlagOrigin, const Broc::vector vAxisFlagAngles,
+    unsigned int AxisFlagHolder)
+{
+    unsigned int v8 = player & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v8 < 0x540
+        && player >> 12 == EntityHandleDb::sInst.mElements[v8].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+    if (BrocSys::IsValidClientType(mObject)
+        && MultiplayerMgr::sInst->IsHost())
+    {
+        unsigned int v10 = AlliedFlagHolder & 0xFFF;
+        Entity* v11 = nullptr;
+        if (v10 < 0x540
+            && AlliedFlagHolder >> 12
+                   == EntityHandleDb::sInst.mElements[v10].mKey)
+            v11 = EntityHandleDb::sInst.mElements[v10].mObject;
+        unsigned int v12 = AxisFlagHolder & 0xFFF;
+        Entity* v13 = nullptr;
+        if (v12 < 0x540
+            && AxisFlagHolder >> 12
+                   == EntityHandleDb::sInst.mElements[v12].mKey)
+            v13 = EntityHandleDb::sInst.mElements[v12].mObject;
+        math::Position3 allied_flag;
+        math::Dir3 alliedAngles;
+        math::Position3 axis_flag;
+        math::Dir3 axisAngles;
+        allied_flag.v.m128_f32[0] = vAlliedFlagOrigin.x;
+        allied_flag.v.m128_f32[1] = vAlliedFlagOrigin.y;
+        allied_flag.v.m128_f32[2] = vAlliedFlagOrigin.z;
+        allied_flag.v.m128_f32[3] = 0.0f;
+        alliedAngles.v.m128_f32[0] = vAlliedFlagAngles.x;
+        alliedAngles.v.m128_f32[1] = vAlliedFlagAngles.y;
+        alliedAngles.v.m128_f32[2] = vAlliedFlagAngles.z;
+        alliedAngles.v.m128_f32[3] = 0.0f;
+        axis_flag.v.m128_f32[0] = vAxisFlagOrigin.x;
+        axis_flag.v.m128_f32[1] = vAxisFlagOrigin.y;
+        axis_flag.v.m128_f32[2] = vAxisFlagOrigin.z;
+        axis_flag.v.m128_f32[3] = 0.0f;
+        axisAngles.v.m128_f32[0] = vAxisFlagAngles.x;
+        axisAngles.v.m128_f32[1] = vAxisFlagAngles.y;
+        axisAngles.v.m128_f32[2] = vAxisFlagAngles.z;
+        axisAngles.v.m128_f32[3] = 0.0f;
+        MultiplayerMgr::sInst->SendGameStateCTF(
+            mObject, allied_flag, alliedAngles, v11, axis_flag, axisAngles,
+            v13);
     }
 }
 
