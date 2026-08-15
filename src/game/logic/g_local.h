@@ -2723,9 +2723,9 @@ void  G_DebugSphere(const float* center, float radius, const float* color,
 void  UpdateShotProf(float deltaT);                  // g.o 0x4677E0
 void  G_ReduceOriginError(float* origin, float* originError, float frametime);  // g.o 0x4491D0
 void  G_RunFrameForEntity(Entity* ent, int msec);   // g.o
-void  VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
+void  VEH_JoltBody(Entity* ent, const math::Position3& dir, float intensity,
                    float speedFrac, float decel);   // g.o
-void  CalcMuzzlePoint(Entity* ent, math::Position3* muzzlePoint);  // g.o 0x4534F0
+void  CalcMuzzlePoint(Entity* ent, math::Position3& muzzlePoint);  // g.o 0x4534F0
 void  G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration);  // g.o 0x456FE0
 void  G_LinkClient(Entity* ent);                 // g.o 0x483480
 void  Spotting(Entity* ent);                     // g.o 0x472130
@@ -3477,12 +3477,12 @@ void  Scr_Vehicle_Think(Entity* pSelf, int msec); // g.o 0x490ED0
 void  VEH_UpdatePath(Entity* ent, int msec);     // g.o 0x47F8B0
 void  VEH_UpdateOverHeat(Entity* self, int msec);// g.o 0x47F630
 void  ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf);  // g.o 0x488420
-void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
-                      const math::Position3* angles,
+void  VEH_SetPosition(Entity* ent, const math::Position3& origin,
+                      const math::Position3& angles,
                       const float* vel);  // g.o 0x46A370
 void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
 void  VEH_Backup(Entity* ent);                   // g.o
-int16_t VP_GetNodeIndex(const Broc::string* name, float* origin);  // g.o ?VP_GetNodeIndex@@YAFPBUstring@Broc@@PAM@Z
+int16_t VP_GetNodeIndex(const Broc::string& name, float* origin);  // g.o ?VP_GetNodeIndex@@YAFABVstring@Broc@@QAM@Z
 void  VP_GetLookAheadXYZ(const vehicle_pathpos_t* vpp, float* lookXYZ);  // g.o
 void  vectoangles(const float* const vec, float* const angles);  // core.o
 int   VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
@@ -3611,7 +3611,7 @@ int   VEH_GetGenericDistancedFollowHistoryIndex(scr_vehicle_t* veh,
                                                 int startingIndex);  // g.o 0x44E120
 vehicle_node_t* SP_create_info_vehicle_node(void);   // g.o 0x45F210
 float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle);  // g.o 0x44F3D0
-int16_t VP_GetNodeIndex(const Broc::string* name, float* origin);  // g.o 0x451950
+int16_t VP_GetNodeIndex(const Broc::string& name, float* origin);  // g.o 0x451950
 float VP_CalcNodeSpeed(int16_t nodeIdx);            // g.o 0x451A50
 float VP_CalcNodeLookAhead(int16_t nodeIdx);        // g.o 0x451B60
 void  VP_CalcNodeAngles(int16_t nodeIdx, float* angles);  // g.o 0x451C70

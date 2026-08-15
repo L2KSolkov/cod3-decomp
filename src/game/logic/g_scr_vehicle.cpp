@@ -382,13 +382,13 @@ void G_VehFreePathPos(vehicle_pathpos_t* vpp)
 }
 
 // ea: 0x00451950
-int16_t VP_GetNodeIndex(const Broc::string* name, float* origin)
+int16_t VP_GetNodeIndex(const Broc::string& name, float* origin)
 {
-    if (name->mBlock == nullptr)
+    if (name.mBlock == nullptr)
         return -1;
-    const char* v3 = (const char*)&name->mBlock[1];
+    const char* v3 = (const char*)&name.mBlock[1];
     const char* v8 = v3;
-    if (name->mBlock == (Broc::string::Block*)-12 || *v3 == 0)
+    if (name.mBlock == (Broc::string::Block*)-12 || *v3 == 0)
         return -1;
     int16_t i = 0;
     if (s_numNodes <= 0)
@@ -707,7 +707,7 @@ void G_SetupVehiclePaths(float v)
         {
             Broc::string::Block* v5 = mBlock + 1;
             if (v5 != nullptr && ((char*)&v5->mBuff)[0] != 0)
-                node->nextIdx = (node->nextIdx ^ (node->nextIdx ^ VP_GetNodeIndex(p_mName + 1, nullptr)) & 0x3FFF);
+                node->nextIdx = (node->nextIdx ^ (node->nextIdx ^ VP_GetNodeIndex(*(p_mName + 1), nullptr)) & 0x3FFF);
         }
         int16_t v6 = 0;
         if (s_numNodes > 0)
@@ -1480,8 +1480,8 @@ int16_t VEH_GetPlayerVehicleInfo(const char* name)
 }
 
 // ea: 0x0046A370
-void VEH_SetPosition(Entity* ent, const math::Position3* origin,
-                     const math::Position3* angles, const float* vel)
+void VEH_SetPosition(Entity* ent, const math::Position3& origin,
+                     const math::Position3& angles, const float* vel)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
     if (ent->takedamage != 0)
@@ -1489,9 +1489,9 @@ void VEH_SetPosition(Entity* ent, const math::Position3* origin,
         ent->s.pos.trBase[0] = ent->r.currentOrigin.v.m128_f32[0];
         ent->s.pos.trBase[1] = ent->r.currentOrigin.v.m128_f32[1];
         ent->s.pos.trBase[2] = ent->r.currentOrigin.v.m128_f32[2];
-        ent->s.pos.trDelta[0] = origin->v.m128_f32[0];
-        ent->s.pos.trDelta[1] = origin->v.m128_f32[1];
-        ent->s.pos.trDelta[2] = origin->v.m128_f32[2];
+        ent->s.pos.trDelta[0] = origin.v.m128_f32[0];
+        ent->s.pos.trDelta[1] = origin.v.m128_f32[1];
+        ent->s.pos.trDelta[2] = origin.v.m128_f32[2];
         if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
             || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
             || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
@@ -1503,18 +1503,18 @@ void VEH_SetPosition(Entity* ent, const math::Position3* origin,
             if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
                 __debugbreak();
         }
-        ent->r.currentOrigin.v.m128_f32[0] = origin->v.m128_f32[0];
-        ent->r.currentOrigin.v.m128_f32[1] = origin->v.m128_f32[1];
-        ent->r.currentOrigin.v.m128_f32[2] = origin->v.m128_f32[2];
+        ent->r.currentOrigin.v.m128_f32[0] = origin.v.m128_f32[0];
+        ent->r.currentOrigin.v.m128_f32[1] = origin.v.m128_f32[1];
+        ent->r.currentOrigin.v.m128_f32[2] = origin.v.m128_f32[2];
         ent->s.apos.trBase[0] = ent->r.currentAngles.v.m128_f32[0];
         ent->s.apos.trBase[1] = ent->r.currentAngles.v.m128_f32[1];
         ent->s.apos.trBase[2] = ent->r.currentAngles.v.m128_f32[2];
-        ent->s.apos.trDelta[0] = angles->v.m128_f32[0];
-        ent->s.apos.trDelta[1] = angles->v.m128_f32[1];
-        ent->s.apos.trDelta[2] = angles->v.m128_f32[2];
-        ent->r.currentAngles.v.m128_f32[0] = angles->v.m128_f32[0];
-        ent->r.currentAngles.v.m128_f32[1] = angles->v.m128_f32[1];
-        ent->r.currentAngles.v.m128_f32[2] = angles->v.m128_f32[2];
+        ent->s.apos.trDelta[0] = angles.v.m128_f32[0];
+        ent->s.apos.trDelta[1] = angles.v.m128_f32[1];
+        ent->s.apos.trDelta[2] = angles.v.m128_f32[2];
+        ent->r.currentAngles.v.m128_f32[0] = angles.v.m128_f32[0];
+        ent->r.currentAngles.v.m128_f32[1] = angles.v.m128_f32[1];
+        ent->r.currentAngles.v.m128_f32[2] = angles.v.m128_f32[2];
         ent->s.pos.trType = TR_INTERPOLATE;
         ent->s.apos.trType = TR_INTERPOLATE;
         if (ent->takedamage != 0)
@@ -1522,8 +1522,8 @@ void VEH_SetPosition(Entity* ent, const math::Position3* origin,
         Entity* v7 = HandleDbToEnt(scr_vehicle->mIdleSndEnt);
         if (v7 != nullptr)
         {
-            G_SetOrigin(v7, *origin);
-            G_SetAngle(v7, *angles);
+            G_SetOrigin(v7, origin);
+            G_SetAngle(v7, angles);
             v7->s.pos.trType = TR_INTERPOLATE;
             v7->s.apos.trType = TR_INTERPOLATE;
             g_LinkEntity(v7);
@@ -1531,8 +1531,8 @@ void VEH_SetPosition(Entity* ent, const math::Position3* origin,
         Entity* v9 = HandleDbToEnt(scr_vehicle->mEngineSndEnt);
         if (v9 != nullptr)
         {
-            G_SetOrigin(v9, *origin);
-            G_SetAngle(v9, *angles);
+            G_SetOrigin(v9, origin);
+            G_SetAngle(v9, angles);
             v9->s.pos.trType = TR_INTERPOLATE;
             v9->s.apos.trType = TR_INTERPOLATE;
             g_LinkEntity(v9);
@@ -2031,7 +2031,7 @@ void Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int /*damage*/,
             v8.v.m128_f32[1] = dir[1];
             v8.v.m128_f32[2] = dir[2];
             v8.v.m128_f32[3] = 0.0f;
-            VEH_JoltBody(pSelf, &v8, 1.0f, 0.0f, 0.0f);
+            VEH_JoltBody(pSelf, v8, 1.0f, 0.0f, 0.0f);
             break;
         }
         default:
@@ -2436,7 +2436,7 @@ int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
     vehicle_path_node_t* switchNode = &vpp->switchNode[0];
     if (switchNode->mName.mBlock != nullptr && switchNode->mName.c_str()[0] != 0)
     {
-        int NodeIndex = VP_GetNodeIndex(&switchNode->mName, nullptr);
+        int NodeIndex = VP_GetNodeIndex(switchNode->mName, nullptr);
         if (NodeIndex >= 0)
         {
             VP_CopyNode(s_nodes[NodeIndex], &vpp->switchNode[0]);
@@ -2475,7 +2475,7 @@ int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
         && switchNode->mName.mBlock != (Broc::string::Block*)-12
         && switchNode->mName.c_str()[0] != 0)
     {
-        int v18 = VP_GetNodeIndex(&switchNode->mName, nullptr);
+        int v18 = VP_GetNodeIndex(switchNode->mName, nullptr);
         if (v18 >= 0)
             VP_CopyNode(s_nodes[v18], &vpp->switchNode[1]);
     }
@@ -2576,7 +2576,7 @@ void VEH_RespawnVehicle(Entity* ent)
     ent->r.currentAngles.v.m128_f32[1] = respawn_angles[1];
     ent->r.currentAngles.v.m128_f32[2] = respawn_angles[2];
     float vel[3] = { 0.0f, 0.0f, 0.0f };
-    VEH_SetPosition(ent, &scr_vehicle->phys.origin, &scr_vehicle->phys.angles, vel);
+    VEH_SetPosition(ent, scr_vehicle->phys.origin, scr_vehicle->phys.angles, vel);
     scr_vehicle->respawn_origin.v.m128_f32[0] = respawn_origin[0];
     scr_vehicle->respawn_origin.v.m128_f32[1] = respawn_origin[1];
     scr_vehicle->respawn_origin.v.m128_f32[2] = respawn_origin[2];
@@ -2627,7 +2627,7 @@ void SP_script_vehicle(Entity* pSelf)
         {
             VEH_Backup(pSelf);
             if ((pSelf->flags & 0x400000) == 0)
-                VEH_SetPosition(pSelf, &scr_vehicle->phys.origin, &scr_vehicle->phys.angles,
+                VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles,
                                 scr_vehicle->phys.vel.v.m128_f32);
         }
         pSelf->scr_vehicle->respawn_origin.v.m128_f32[0] = pSelf->r.currentOrigin.v.m128_f32[0];
@@ -2732,7 +2732,7 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         if ((type == 1 || type == 2) && Entity_has_zone_collision(pSelf))
             VEH_GroundPlant(pSelf, 0, 10000);
         float vel[3] = { 0.0f, 0.0f, 0.0f };
-        VEH_SetPosition(pSelf, &scr_vehicle->phys.origin, &scr_vehicle->phys.angles, vel);
+        VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles, vel);
         scr_vehicle->phys.prevOrigin.v.m128_f32[0] = scr_vehicle->phys.origin.v.m128_f32[0];
         scr_vehicle->phys.prevOrigin.v.m128_f32[1] = scr_vehicle->phys.origin.v.m128_f32[1];
         scr_vehicle->phys.prevOrigin.v.m128_f32[2] = scr_vehicle->phys.origin.v.m128_f32[2];
@@ -5546,7 +5546,7 @@ int VEH_Slide(Entity* ent, int gravity, int msec, int move, int allowHit)
                     dot = 1.0f;
                 intensity *= dot;
                 veh->crashVolume = intensity;
-                VEH_JoltBody(ent, (math::Position3*)hitNormal, intensity,
+                VEH_JoltBody(ent, *((const math::Position3*)hitNormal), intensity,
                              0.0f, 0.0f);
                 veh->crashSound = 1;
             }
@@ -6409,7 +6409,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
         VEH_VerifyPosition(pSelf);
     }
     if (*(char*)((char*)info + 0x21C) == 0)
-        VEH_SetPosition(pSelf, &veh->phys.origin, &veh->phys.angles,
+        VEH_SetPosition(pSelf, veh->phys.origin, veh->phys.angles,
                         veh->phys.vel.v.m128_f32);
     if (pSelf->health > 0)
     {
@@ -6476,7 +6476,7 @@ void VEH_Backup(Entity* ent)
 }
 
 // ea: 0x0044D8F0
-void VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
+void VEH_JoltBody(Entity* ent, const math::Position3& dir, float intensity,
                   float speedFrac, float decel)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
@@ -6490,7 +6490,7 @@ void VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
             hitp.v = _mm_setzero_ps();
             hitp.v.m128_f32[2] = hit_offset;
             math::Position3 hitd;
-            hitd.v = dir->v;
+            hitd.v = dir.v;
             ApplyPhysics(ent, &hitp, (const math::Dir3*)&hitd,
                          intensity_scale * intensity, true, HITLOC_TORSO_UPR);
         }
@@ -6500,12 +6500,12 @@ void VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
             intensity = 1.0f;
         float axis[3][3];
         AnglesToAxis(scr_vehicle->phys.angles, axis);
-        scr_vehicle->joltDir[0] = (dir->v.m128_f32[0] * axis[0][0])
-                                + (dir->v.m128_f32[1] * axis[0][1])
-                                + (dir->v.m128_f32[2] * axis[0][2]);
-        scr_vehicle->joltDir[1] = -((dir->v.m128_f32[0] * axis[1][0])
-                                  + (dir->v.m128_f32[1] * axis[1][1])
-                                  + (dir->v.m128_f32[2] * axis[1][2]));
+        scr_vehicle->joltDir[0] = (dir.v.m128_f32[0] * axis[0][0])
+                                + (dir.v.m128_f32[1] * axis[0][1])
+                                + (dir.v.m128_f32[2] * axis[0][2]);
+        scr_vehicle->joltDir[1] = -((dir.v.m128_f32[0] * axis[1][0])
+                                  + (dir.v.m128_f32[1] * axis[1][1])
+                                  + (dir.v.m128_f32[2] * axis[1][2]));
         scr_vehicle->joltTime = 0.80000001f;
         scr_vehicle->joltWave = 0.0f;
         VectorNormalize2D(scr_vehicle->joltDir);

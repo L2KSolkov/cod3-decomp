@@ -107,7 +107,7 @@ void CalcMuzzlePoints(Entity* ent, weaponParms* wp)
     }
     AngleVectors(tmp, wp->forward, wp->right, wp->up);
     math::Position3 muzzlePoint;
-    CalcMuzzlePoint(ent, &muzzlePoint);
+    CalcMuzzlePoint(ent, muzzlePoint);
     wp->muzzleTrace[0] = muzzlePoint.v.m128_f32[0];
     wp->muzzleTrace[1] = muzzlePoint.v.m128_f32[1];
     wp->muzzleTrace[2] = muzzlePoint.v.m128_f32[2];
@@ -154,32 +154,32 @@ void Weapon_ItemHealth_Fire(Entity* /*ent*/, int /*grenType*/, weaponParms* wp)
 }
 
 // ea: 0x004534F0
-void CalcMuzzlePoint(Entity* ent, math::Position3* muzzlePoint)
+void CalcMuzzlePoint(Entity* ent, math::Position3& muzzlePoint)
 {
     if ((0x100000 & ent->client->ps.eFlags) != 0)
     {
-        muzzlePoint->v.m128_f32[0] = dword_F63C70[1580 * currCl];
-        muzzlePoint->v.m128_f32[1] = dword_F63C70[1580 * currCl + 1];
-        muzzlePoint->v.m128_f32[2] = dword_F63C70[1580 * currCl + 2];
+        muzzlePoint.v.m128_f32[0] = dword_F63C70[1580 * currCl];
+        muzzlePoint.v.m128_f32[1] = dword_F63C70[1580 * currCl + 1];
+        muzzlePoint.v.m128_f32[2] = dword_F63C70[1580 * currCl + 2];
     }
     else
     {
-        muzzlePoint->v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
-        muzzlePoint->v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
-        muzzlePoint->v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2];
-        muzzlePoint->v.m128_f32[2] = ent->client->ps.viewHeightCurrent + muzzlePoint->v.m128_f32[2];
+        muzzlePoint.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+        muzzlePoint.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+        muzzlePoint.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2];
+        muzzlePoint.v.m128_f32[2] = ent->client->ps.viewHeightCurrent + muzzlePoint.v.m128_f32[2];
     }
     float tmp[3];
-    tmp[0] = muzzlePoint->v.m128_f32[0];
-    tmp[1] = muzzlePoint->v.m128_f32[1];
-    tmp[2] = muzzlePoint->v.m128_f32[2];
+    tmp[0] = muzzlePoint.v.m128_f32[0];
+    tmp[1] = muzzlePoint.v.m128_f32[1];
+    tmp[2] = muzzlePoint.v.m128_f32[2];
     G_AddLean(ent, tmp);
-    muzzlePoint->v.m128_f32[0] = tmp[0];
-    muzzlePoint->v.m128_f32[1] = tmp[1];
-    muzzlePoint->v.m128_f32[2] = tmp[2];
-    muzzlePoint->v.m128_f32[0] = ent->client->fGunXOfs + muzzlePoint->v.m128_f32[0];
-    muzzlePoint->v.m128_f32[1] = ent->client->fGunYOfs + muzzlePoint->v.m128_f32[1];
-    muzzlePoint->v.m128_f32[2] = ent->client->fGunZOfs + muzzlePoint->v.m128_f32[2];
+    muzzlePoint.v.m128_f32[0] = tmp[0];
+    muzzlePoint.v.m128_f32[1] = tmp[1];
+    muzzlePoint.v.m128_f32[2] = tmp[2];
+    muzzlePoint.v.m128_f32[0] = ent->client->fGunXOfs + muzzlePoint.v.m128_f32[0];
+    muzzlePoint.v.m128_f32[1] = ent->client->fGunYOfs + muzzlePoint.v.m128_f32[1];
+    muzzlePoint.v.m128_f32[2] = ent->client->fGunZOfs + muzzlePoint.v.m128_f32[2];
 }
 
 // ea: 0x004536F0
@@ -436,7 +436,7 @@ void FireWeaponMelee(Entity* ent)
         wp.pWeapInfo = BG_GetInfoForWeapon(weapon);
         AngleVectors(ent->client->ps.viewangles, wp.forward, wp.right, wp.up);
         math::Position3 muzzlePoint;
-        CalcMuzzlePoint(ent, &muzzlePoint);
+        CalcMuzzlePoint(ent, muzzlePoint);
         wp.muzzleTrace[0] = muzzlePoint.v.m128_f32[0];
         wp.muzzleTrace[1] = muzzlePoint.v.m128_f32[1];
         wp.muzzleTrace[2] = muzzlePoint.v.m128_f32[2];
@@ -450,7 +450,7 @@ bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
     Client* client = ent->client;
     AngleVectors(client->ps.viewangles, wp->forward, wp->right, wp->up);
     math::Position3 muzzle;
-    CalcMuzzlePoint(ent, &muzzle);
+    CalcMuzzlePoint(ent, muzzle);
     math::Position3 end;
     end.v.m128_f32[0] = wp->forward[0] * 100.0f + muzzle.v.m128_f32[0];
     end.v.m128_f32[1] = wp->forward[1] * 100.0f + muzzle.v.m128_f32[1];

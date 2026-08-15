@@ -2724,7 +2724,7 @@ void Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
     {
         int time = level.time;
         math::Position3 muzzlePoint;
-        CalcMuzzlePoint(attacker, &muzzlePoint);
+        CalcMuzzlePoint(attacker, muzzlePoint);
         MultiplayerMgr::sInst->SpreadFire(attacker, attacker->client->fGunPitch,
                                           attacker->client->fGunYaw,
                                           muzzlePoint.v.m128_f32, pWeapInfo->index,

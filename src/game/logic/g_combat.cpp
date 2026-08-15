@@ -121,11 +121,11 @@ int CheckArmor(Entity* ent, int damage, int dflags)
 }
 
 // ea: 0x0044C1B0
-void G_MissileLandAngles(Entity* ent, trace_t* trace, math::Position3* vAngles,
+void G_MissileLandAngles(Entity* ent, trace_t* trace, math::Position3& vAngles,
                          int bForceAlign)
 {
     int v7 = level.previousTime + (int)((level.time - level.previousTime) * trace->fraction);
-    BG_EvaluateTrajectory(&ent->s.apos, v7, *vAngles);
+    BG_EvaluateTrajectory(&ent->s.apos, v7, vAngles);
     if (trace->normal.v.m128_f32[2] <= 0.1f)
     {
         if (bForceAlign == 0)
@@ -136,14 +136,14 @@ void G_MissileLandAngles(Entity* ent, trace_t* trace, math::Position3* vAngles,
     }
     else
     {
-        float fSurfacePitch = PitchForYawOnNormal(vAngles->v.m128_f32[1], trace->normal.v.m128_f32);
-        float fAngleDelta = AngleSubtract(fSurfacePitch, vAngles->v.m128_f32[0]);
+        float fSurfacePitch = PitchForYawOnNormal(vAngles.v.m128_f32[1], trace->normal.v.m128_f32);
+        float fAngleDelta = AngleSubtract(fSurfacePitch, vAngles.v.m128_f32[0]);
         float fAbsAngDelta = (float)fabs(fAngleDelta);
         if (bForceAlign == 0)
         {
-            ent->s.apos.trBase[0] = vAngles->v.m128_f32[0];
-            ent->s.apos.trBase[1] = vAngles->v.m128_f32[1];
-            ent->s.apos.trBase[2] = vAngles->v.m128_f32[2];
+            ent->s.apos.trBase[0] = vAngles.v.m128_f32[0];
+            ent->s.apos.trBase[1] = vAngles.v.m128_f32[1];
+            ent->s.apos.trBase[2] = vAngles.v.m128_f32[2];
             ent->s.apos.trTime = v7;
             float v8;
             if (fAbsAngDelta >= 80.0f)
@@ -152,22 +152,22 @@ void G_MissileLandAngles(Entity* ent, trace_t* trace, math::Position3* vAngles,
                 v8 = (((float)rand() * 0.0000091552738f + 0.85000002f) * ent->s.apos.trDelta[0]) * -1.0f;
             ent->s.apos.trDelta[0] = v8;
         }
-        float tracea = AngleNormalize180(vAngles->v.m128_f32[0]);
-        vAngles->v.m128_f32[0] = tracea;
+        float tracea = AngleNormalize180(vAngles.v.m128_f32[0]);
+        vAngles.v.m128_f32[0] = tracea;
         if (bForceAlign != 0 || fAbsAngDelta < 45.0f)
         {
             if ((float)fabs(tracea) <= 90.0f)
-                vAngles->v.m128_f32[0] = AngleNormalize360(fSurfacePitch);
+                vAngles.v.m128_f32[0] = AngleNormalize360(fSurfacePitch);
             else
-                vAngles->v.m128_f32[0] = AngleNormalize360(fSurfacePitch + 180.0f);
+                vAngles.v.m128_f32[0] = AngleNormalize360(fSurfacePitch + 180.0f);
         }
         else if (fAbsAngDelta >= 80.0f)
         {
-            vAngles->v.m128_f32[0] = AngleNormalize360(tracea);
+            vAngles.v.m128_f32[0] = AngleNormalize360(tracea);
         }
         else
         {
-            vAngles->v.m128_f32[0] = AngleNormalize360((fAngleDelta * 0.25f) + tracea);
+            vAngles.v.m128_f32[0] = AngleNormalize360((fAngleDelta * 0.25f) + tracea);
         }
     }
 }
@@ -1016,7 +1016,7 @@ int G_BounceMissile(Entity* ent, trace_t* trace)
         {
             G_SetOrigin(ent, ent->r.currentOrigin);
             math::Position3 vAngles;
-            G_MissileLandAngles(ent, trace, &vAngles, 1);
+            G_MissileLandAngles(ent, trace, vAngles, 1);
             G_SetAngle(ent, vAngles);
             return 0;
         }
@@ -1033,7 +1033,7 @@ int G_BounceMissile(Entity* ent, trace_t* trace)
     memcpy(ent->s.pos.trBase, &ent->r.currentOrigin, sizeof(ent->s.pos.trBase));
     ent->s.pos.trTime = level.time;
     math::Position3 vAngles;
-    G_MissileLandAngles(ent, trace, &vAngles, 0);
+    G_MissileLandAngles(ent, trace, vAngles, 0);
     ent->s.apos.trBase[0] = vAngles.v.m128_f32[0];
     ent->s.apos.trBase[1] = vAngles.v.m128_f32[1];
     ent->s.apos.trBase[2] = vAngles.v.m128_f32[2];

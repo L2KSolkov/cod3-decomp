@@ -502,7 +502,7 @@ void Spotting(Entity* ent)
     wp.pWeapInfo = BG_GetInfoForWeapon(ent->s.weapon);
     AngleVectors(ent->client->ps.viewangles, wp.forward, wp.right, wp.up);
     math::Position3 muzzle;
-    CalcMuzzlePoint(ent, &muzzle);
+    CalcMuzzlePoint(ent, muzzle);
     math::Position3 end;
     end.v.m128_f32[0] = muzzle.v.m128_f32[0] + wp.forward[0] * 3000.0f;
     end.v.m128_f32[1] = muzzle.v.m128_f32[1] + wp.forward[1] * 3000.0f;

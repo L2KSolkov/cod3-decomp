@@ -6632,8 +6632,8 @@ extern void XModelTransform(IVPointer<XModel> model, DObjSkelMat* mat,
 extern void AnglesToAxis(const math::Position3& angles,
                          float (*const axis)[3]);  // q_math.cpp (real)
 extern void G_GeneralLink(Entity* ent);      // ?G_GeneralLink@@YAXPAVEntity@@@Z (g_main.cpp)
-extern void VEH_SetPosition(Entity* ent, const math::Position3* origin,
-                            const math::Position3* angles,
+extern void VEH_SetPosition(Entity* ent, const math::Position3& origin,
+                            const math::Position3& angles,
                             const float* vel);  // g_scr_vehicle.cpp
 extern void g_LinkEntity(Entity* ent);       // ?g_LinkEntity@@YAXPAVEntity@@@Z
 
@@ -7406,7 +7406,7 @@ void SceneAnimClient::Advance(
             }
             else
             {
-                VEH_SetPosition(v19, &newOrigin, &vehAngles,
+                VEH_SetPosition(v19, newOrigin, vehAngles,
                                 (const float*)&velocity.v);
             }
         }
