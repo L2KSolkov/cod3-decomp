@@ -1752,11 +1752,6 @@ const PakInfoNode* PakFile::GetInfo(PakFile* self)
     return nullptr;
 }
 
-// level_locals_t::Clear (g.o; stub)
-void level_locals_t::Clear(level_locals_t* self)
-{
-    (void)self;
-}
 
 // DObj operator new/delete (render.o; stubs)
 void* DObj::operator new(size_t s)

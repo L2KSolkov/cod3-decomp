@@ -4088,7 +4088,7 @@ skip_fill:
     bool pathsInited = level.pathsInited;
     bool pathsInvalid = level.pathsInvalid;
     bool pathsConnected = level.pathsConnected;
-    level_locals_t::Clear(&level);
+    level.Clear();
     level.pathsConnected = pathsConnected;
     level.initializing = 1;
     level.pathsInited = pathsInited;

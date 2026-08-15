@@ -2499,6 +2499,74 @@ local_physic_s::local_physic_s()
 // ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
 template class ae_formatted_string<256, unsigned short>;
 
+// level_locals_t::__unnamed ctor (g.o 0x4B0570)
+level_locals_t::__unnamed::__unnamed()
+{
+    v = 0;
+}
+
+// level_locals_t::Clear (g.o 0x4AFD40)
+void level_locals_t::Clear()
+{
+    clients = nullptr;
+    num_entities = 0;
+    sentients = nullptr;
+    vehicles = nullptr;
+    turrets = nullptr;
+    for (int i = 0; i < 32; ++i)
+        actors[i] = nullptr;
+    maxclients = 0;
+    framenum = 0;
+    time = 0;
+    previousTime = 0;
+    snapTime = 0;
+    numActorCorpses = 0;
+    spawning = 0;
+    numSpawnVars = 0;
+    numSpawnVarChars = 0;
+    memset(spawnVarChars, 0, sizeof(spawnVarChars));
+    reloadDelayTime = 0;
+    iNextObjectiveTime = 0;
+    changelevel = 0;
+    endgame = 0;
+    bMissionSuccess = 0;
+    bMissionFailed = 0;
+    strMissionFailedReason = "";
+    savepersist = 0;
+    exitTime = 0;
+    memset(nextMap, 0, sizeof(nextMap));
+    fFogOpaqueDist = 0.0f;
+    fFogOpaqueDistSqrd = 0.0f;
+    remapCount = 0;
+    iSearchFrame = 0;
+    loading = 0;
+    actorPredictDepth = 0;
+    bounds_width = 0.0f;
+    bounds_height_standing = 0.0f;
+    viewheight_standing = 0.0f;
+    viewheight_crouched = 0.0f;
+    viewheight_prone = 0.0f;
+    MissleOnlyActiveForTime = 0.0f;
+    MaxVehicles = 0;
+    bRegisterItems = 0;
+    bDrawCompassFriendlies = 0;
+    bPlayerIgnoreRadiusDamage = 0;
+    bPlayerIgnoreRadiusDamageLatched = 0;
+    pathsInvalid = false;
+    pathsInited = false;
+    pathsConnected = false;
+    initializing = 0;
+    newAssetLoaded = 0;
+    memset(cachedTagMat, 0, sizeof(cachedTagMat));
+    for (int i = 0; i < 256; ++i)
+        triggerList[i].Clear();
+    triggerListSize = 0;
+    delayFreeAnimTreeCount = 0;
+    memset(delayFreeAnimTree, 0, sizeof(delayFreeAnimTree));
+    delayClearAnimTreeCount = 0;
+    memset(delayClearAnimTree, 0, sizeof(delayClearAnimTree));
+}
+
 // PlayerState::Clear (g.o 0x4AF3C0)
 void PlayerState::Clear(bool clearWeapons)
 {

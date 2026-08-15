@@ -524,6 +524,11 @@ struct level_locals_t {
     uint8_t  _padC27;                              // +0xC27
     int      initializing;                         // +0xC28
     int      newAssetLoaded;                       // +0xC2C
+    struct __unnamed {
+        uint8_t _pad[4];
+        int     v;
+        __unnamed();  // ??0__unnamed@level_locals_t@@QAE@XZ (g.o 0x4B0570)
+    };
     uint8_t  cachedTagMat[0x4C];                   // +0xC30
     trigger_info_t triggerList[256];               // +0xC7C (0x1000 bytes)
     int      triggerListSize;                      // +0x1C7C
@@ -532,7 +537,7 @@ struct level_locals_t {
     int      delayClearAnimTreeCount;              // +0x2484
     XAnimTree* delayClearAnimTree[128];            // +0x2488 (0x200 bytes)
 
-    static void Clear(level_locals_t* self);       // ?Clear@level_locals_t@@QAEXXZ
+    void Clear();       // ?Clear@level_locals_t@@QAEXXZ (g.o 0x4AFD40)
 };
 static_assert(sizeof(level_locals_t) == 0x2688, "level_locals_t size mismatch");
 static_assert(offsetof(level_locals_t, time) == 0x09C, "level_locals_t::time offset mismatch");
