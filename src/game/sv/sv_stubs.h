@@ -451,8 +451,14 @@ public:
                     int damage, int mod, int weapon, const float* position,
                     const float* dir, int hitLoc);   // ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z
     void AttemptToRevivePlayer(Entity* player, Entity* medic);  // ?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z
-    void RegisterDroppedItem(int itemType, Entity* item, Entity* owner, int a4);  // ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1H@Z
+    void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
+                             Entity* owner, short id);  // ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z (mp.o 0x7614F0)
     MPEntityHandle RegisterDroppedItem(int itemType, Entity* item, Entity* owner);  // ?RegisterDroppedItem@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z
+    Entity* FindDroppedItem(EDroppedItemTypes item, int id,
+                            int ownerID);  // ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HH@Z (mp.o 0x761550)
+    Entity* FindDroppedItem(EDroppedItemTypes item, int id,
+                            Entity* owner);  // ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HPAV2@@Z (mp.o 0x761570)
+    void EnterLevel();                       // ?EnterLevel@MultiplayerMgr@@QAEXXZ (mp.o 0x7613D0)
     void FireMissile(int weapon, const math::Position3& position, const math::Dir3& dir,
                      MultiplayerMgr::MPEntityHandle handle);  // ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z
     void Step(int earlyOutInterval, bool fromThread, bool a_bFromGame);  // ?Step@MultiplayerMgr@@QAEXH_N0@Z
@@ -1607,6 +1613,7 @@ public:
     static bool IsValid(unsigned char id);  // ?IsValid@MPPlayer@@SA_NE@Z (mp.o 0x72CE70)
     bool IsConnected() const;          // ?IsConnected@MPPlayer@@QBE_NXZ (mp.o 0x736010)
     void GetAngles(float (&angles)[3]) const;  // ?GetAngles@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFD0)
+    void GetPosition(float (&position)[3]) const;  // ?GetPosition@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFA0)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1628,6 +1635,13 @@ struct MPPlayerManager {
     bool IsLocalPlayer(const Entity* const entity);  // ?IsLocalPlayer@MPPlayerManager@@QAE_NQBVEntity@@@Z (mp.o 0x72EA80)
     bool AnyLocalPlayers();             // ?AnyLocalPlayers@MPPlayerManager@@QAE_NXZ (mp.o 0x72EA10)
     int  GetLocalId(const MPPlayer* player);  // ?GetLocalId@MPPlayerManager@@QAEHPBVMPPlayer@@@Z (mp.o 0x72EB80)
+    void LocalPlayerExitGame();         // ?LocalPlayerExitGame@MPPlayerManager@@QAEXXZ (mp.o 0x73A8C0)
+    void LocalPlayerEnterGame();        // ?LocalPlayerEnterGame@MPPlayerManager@@QAEXXZ (mp.o)
+    MPPlayer* GetPlayer(const Entity* entity);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z (mp.o)
+    Entity* FindDroppedItem(EDroppedItemTypes itemType, short id,
+                            int ownerID);  // ?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z (mp.o 0x760690)
+    void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
+                             Entity* owner, short id);  // ?RegisterDroppedItem@MPPlayerManager@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z (mp.o 0x760480)
 private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
 };
@@ -1653,6 +1667,8 @@ public:
     void CancelJoin();                      // ?CancelJoin@MPPeer@@QAEXXZ (mp.o 0x72C870)
     int  FindAvailableQosSlot();            // ?FindAvailableQosSlot@MPPeer@@QAEHXZ (mp.o 0x72CAC0)
     bool IsQosSuccessful(int qos_handle);   // ?IsQosSuccessful@MPPeer@@QAE_NH@Z (mp.o 0x72CA20)
+    void ExitLevel();                       // ?ExitLevel@MPPeer@@QAEXXZ (mp.o 0x742D80)
+    void EnterLevel();                      // ?EnterLevel@MPPeer@@QAEXXZ (mp.o 0x75BDE0)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

@@ -30,7 +30,8 @@ extern void tlMemFree(void* Ptr);
 
 // ae_vector<T> - dynamic array (12 bytes) - verified against IDA
 template <typename T>
-struct ae_vector {
+class ae_vector {
+public:
     T*  mElements;  // +0x00
     int mCapacity;  // +0x04
     int mSize;      // +0x08

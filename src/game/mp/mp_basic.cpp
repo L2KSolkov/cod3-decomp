@@ -71,6 +71,14 @@ void MPPlayer::GetAngles(float (&angles)[3]) const
     angles[1] = *(float*)((char*)this + 0x218);
 }
 
+// ea: 0x0072DFA0 (mInterpolatedPosition at +0x1F0)
+void MPPlayer::GetPosition(float (&position)[3]) const
+{
+    position[0] = *(float*)((char*)this + 0x1F0);
+    position[1] = *(float*)((char*)this + 0x1F4);
+    position[2] = *(float*)((char*)this + 0x1F8);
+}
+
 // ============================================================================
 // MPVehicle (mp.o)
 // ============================================================================
@@ -124,9 +132,39 @@ bool MPVehicle::IsFullyOccupied() const
     return mNumOccupants == G_GetVehicleSeatCount((Entity*)mEntity);
 }
 
+// ea: 0x0072E4A0 (seats at +0x08, 1-byte occupant; empty slot = 16)
+bool MPVehicle::IsSeatOccupied(int vehSeatIdx,
+                               bool ConsiderEachPositionUnique) const
+{
+    bool result = *(unsigned char*)((char*)this + 0x08 + vehSeatIdx) != 16;
+    if (!ConsiderEachPositionUnique && !result && vehSeatIdx == 1)
+        result = *(unsigned char*)((char*)this + 0x0E) != 16;
+    return result;
+}
+
 // ea: 0x0072E190
 MPVehicle::~MPVehicle()
 {
+}
+
+// ============================================================================
+// MPPlayerItems (mp.o)
+// ============================================================================
+// ea: 0x0072E020
+ae_vector<MPPlayerItems::sDroppedItem>&
+MPPlayerItems::GetItemList(EDroppedItemTypes item)
+{
+    switch (item)
+    {
+    case (EDroppedItemTypes)2:  // kItemTypeSupport
+        return mDroppedSupport;
+    case kItemTypeMines:
+        return mDroppedMines;
+    case (EDroppedItemTypes)3:  // kItemTypeMax
+        return mDroppedKits;
+    default:
+        return mDroppedWeapons;
+    }
 }
 
 // ============================================================================
@@ -135,6 +173,16 @@ MPVehicle::~MPVehicle()
 unsigned int MPLanDiscovery::GetNumResults() const
 {
     return mNumResults;
+}
+
+// ea: 0x0072CB60
+bool MPLanDiscovery::IsDone()
+{
+    bdDiscoveryStatus Status = mDiscoveryClient.getStatus();
+    if (Status == BD_DISCOVERY_IDLE || Status == BD_DISCOVERY_ERROR)
+        return true;
+    mDiscoveryClient.update();
+    return false;
 }
 
 // ============================================================================
@@ -215,6 +263,12 @@ const bool MPUIInterface::IsGameListingComplete()
     return !v1;
 }
 
+// ea: 0x00730240
+void MPUIInterface::SetServerParams(const sServerCreateParams& a_ServerParams)
+{
+    mServerParams = a_ServerParams;
+}
+
 struct sServerCreateParams MPUIInterface::mServerParams;
 struct sServerCreateParams MPUIInterface::mNextServerParams;
 bool MPUIInterface::mLanDiscoveryActive;
@@ -265,6 +319,78 @@ int MPPlayerManager::GetLocalId(const MPPlayer* player)
             return i;
     }
     return -1;
+}
+
+// ea: 0x0072E9E0
+MPPlayer* MPPlayerManager::GetLocalPlayer(int nLocalPlayer)
+{
+    unsigned char v2 = *(unsigned char*)((char*)this + 0x4111 + nLocalPlayer);
+    if (v2 < 0x10u)
+        return (MPPlayer*)((char*)this + 0x1010 + 0x310 * v2);
+    return nullptr;
+}
+
+// ea: 0x00760690
+Entity* MPPlayerManager::FindDroppedItem(EDroppedItemTypes itemType, short id,
+                                         int ownerID)
+{
+    if (ownerID >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 8283;
+        AeAssert::gCurrentExpr = "ownerID >= 0 && ownerID < 16";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("FindDroppedItem: Invalid Player ID"))
+            __debugbreak();
+    }
+    MPPlayer* Player = GetPlayer((unsigned char)ownerID);
+    if (Player != nullptr)
+        return ((MPPlayerItems*)((char*)Player + 0x0C))
+            ->FindItem(itemType, id);
+    return nullptr;
+}
+
+// ea: 0x00760480
+void MPPlayerManager::RegisterDroppedItem(EDroppedItemTypes itemType,
+                                          Entity* item, Entity* owner,
+                                          short id)
+{
+    if (item == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 8218;
+        AeAssert::gCurrentExpr = "item";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("RegisterDroppedItem: Invalid item entity."))
+            __debugbreak();
+    }
+    if (owner == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 8219;
+        AeAssert::gCurrentExpr = "owner";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("RegisterDroppedItem: Invalid owner entity."))
+            __debugbreak();
+    }
+    MPPlayer* Player = GetPlayer(owner);
+    if (owner == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 8222;
+        AeAssert::gCurrentExpr = "owner";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "RegisterDroppedItem: Could not get MPPlayer from owner entity"))
+            __debugbreak();
+    }
+    if (Player != nullptr)
+        ((MPPlayerItems*)((char*)Player + 0x0C))
+            ->SetItem(itemType, id, item);
 }
 
 // ea: 0x0072EA80 (mPlayers at +0x1010, stride 0x310, mClientIndex +0x08)
@@ -365,6 +491,22 @@ void MPPeer::CancelJoin()
 {
     ((bdSession*)((char*)this + 0x7448))->leave();
     *(bool*)((char*)this + 0xD278) = false;
+}
+
+// ea: 0x00742D80
+void MPPeer::ExitLevel()
+{
+    if (((bdSession*)((char*)this + 0x7448))->getStatus()
+        != bdSession::BD_SESSION_NOT_CONNECTED)
+        ((MPPlayerManager*)((char*)this + 0x74E0))->LocalPlayerExitGame();
+}
+
+// ea: 0x0075BDE0
+void MPPeer::EnterLevel()
+{
+    if (((bdSession*)((char*)this + 0x7448))->getStatus()
+        != bdSession::BD_SESSION_NOT_CONNECTED)
+        ((MPPlayerManager*)((char*)this + 0x74E0))->LocalPlayerEnterGame();
 }
 
 // ea: 0x0072CAC0 (m_QosIsAvailable at +0x60F0, 800 slots)
@@ -562,6 +704,50 @@ bool MultiplayerMgr::FromLobby()
 bool MultiplayerMgr::getLinkStatus()
 {
     return !mLinkCheckEnabled || *(bool*)((char*)this + 0x4D);
+}
+
+// ea: 0x007613D0
+void MultiplayerMgr::EnterLevel()
+{
+    if (mPeer != nullptr
+        && ((bdSession*)((char*)mPeer + 0x7448))->getStatus()
+               != bdSession::BD_SESSION_NOT_CONNECTED)
+        ((MPPlayerManager*)((char*)mPeer + 0x74E0))->LocalPlayerEnterGame();
+}
+
+// ea: 0x00761550
+Entity* MultiplayerMgr::FindDroppedItem(EDroppedItemTypes item, int id,
+                                        int ownerID)
+{
+    if (mPeer != nullptr)
+        return ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+            ->FindDroppedItem(item, id, ownerID);
+    return nullptr;
+}
+
+// ea: 0x00761590
+Entity* MultiplayerMgr::FindDroppedItem(EDroppedItemTypes item, int id,
+                                        Entity* owner)
+{
+    if (mPeer != nullptr)
+    {
+        MPPlayer* Player =
+            ((MPPlayerManager*)((char*)mPeer + 0x74E0))->GetPlayer(owner);
+        if (Player != nullptr)
+            return ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                ->FindDroppedItem(item, id, Player->mId);
+    }
+    return nullptr;
+}
+
+// ea: 0x007614F0
+void MultiplayerMgr::RegisterDroppedItem(EDroppedItemTypes itemType,
+                                         Entity* item, Entity* owner,
+                                         short id)
+{
+    if (mPeer != nullptr)
+        ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+            ->RegisterDroppedItem(itemType, item, owner, id);
 }
 
 // ea: 0x0072C4B0 (mSendInterval at +0x2C)

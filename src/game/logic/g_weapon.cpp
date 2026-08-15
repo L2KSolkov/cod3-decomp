@@ -84,7 +84,7 @@ Entity* weapon_mine_fire(Entity* ent, int weapon, weaponParms* wp)
     {
         v4 = fire_mine(ent, v6, &position.v.m128_f32[1], weapon);
         MultiplayerMgr::MPEntityHandle v8;
-        MultiplayerMgr::sInst->RegisterDroppedItem(kItemTypeMines, v4, ent, 0);
+        MultiplayerMgr::sInst->RegisterDroppedItem((EDroppedItemTypes)kItemTypeMines, v4, ent, 0);
         MultiplayerMgr::sInst->FireMissile(weapon, *(math::Position3*)v6,
                                            *(math::Dir3*)&position.v.m128_f32[1], v8);
     }

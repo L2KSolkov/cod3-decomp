@@ -2643,7 +2643,7 @@ void TossClientItems(Entity* self)
                 if (v5 != nullptr)
                 {
                     MultiplayerMgr::MPEntityHandle v16;
-                    MultiplayerMgr::sInst->RegisterDroppedItem(1, v5, self, 0);
+                    MultiplayerMgr::sInst->RegisterDroppedItem((EDroppedItemTypes)1, v5, self, 0);
                     math::Position3 v14;
                     v14 = native_to_cdl_pos3(v6->s.apos.trBase);
                     int count = v6->count;

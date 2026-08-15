@@ -616,7 +616,7 @@ int Pickup_Kit(Entity* ent, Entity* other, int bTouched)
                 handle.mVal = v6.mVal;
             }
         }
-        MultiplayerMgr::sInst->RegisterDroppedItem(kItemTypeMax, ent, other,
+        MultiplayerMgr::sInst->RegisterDroppedItem((EDroppedItemTypes)kItemTypeMax, ent, other,
                                                    handle.mVal & 0x7FF);
         MultiplayerMgr::sInst->SwapKit(other->client->pers.playerClass,
                                        handle.mVal);
@@ -847,7 +847,7 @@ clip_stage:
                 }
                 Entity* owner3 = HandleDbToEnt(ent->r.mOwner);
                 MultiplayerMgr::sInst->RegisterDroppedItem(
-                    kItemTypeWeapons, pDropped, owner3,
+                    (EDroppedItemTypes)kItemTypeWeapons, pDropped, owner3,
                     handle.mVal & 0x7FF);
                 MultiplayerMgr::sInst->SwapWeapon(
                     iWeap, handle.mVal, pDropped->count2, pDropped->count);
@@ -855,7 +855,7 @@ clip_stage:
             else
             {
                 Entity* owner = HandleDbToEnt(ent->r.mOwner);
-                MultiplayerMgr::sInst->RegisterDroppedItem(kItemTypeWeapons,
+                MultiplayerMgr::sInst->RegisterDroppedItem((EDroppedItemTypes)kItemTypeWeapons,
                                                            pDropped, owner);
             }
         }

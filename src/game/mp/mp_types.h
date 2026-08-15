@@ -10,6 +10,10 @@
 
 #include "bd/bdSession.h"
 #include "bd/bd_types.h"
+#include "bd/bdDiscovery.h"
+#include "core/ae_array.h"
+
+class Entity;  // game_types.h
 
 // MPPlayerSet - 16-player bitmask (2 bytes)
 class MPPlayerSet {
@@ -47,7 +51,30 @@ public:
     void ClearOccupants();              // ?ClearOccupants@MPVehicle@@QAEXXZ (mp.o 0x72E1A0)
     void SetInvalid();                  // ?SetInvalid@MPVehicle@@QAEXXZ (mp.o 0x736EC0)
     bool IsFullyOccupied() const;       // ?IsFullyOccupied@MPVehicle@@QBE_NXZ (mp.o 0x72E480)
+    bool IsSeatOccupied(int vehSeatIdx, bool ConsiderEachPositionUnique) const;  // ?IsSeatOccupied@MPVehicle@@QBE_NH_N@Z (mp.o 0x72E4A0)
     ~MPVehicle();                       // ??1MPVehicle@@QAE@XZ
+};
+
+// ============================================================================
+// MPPlayerItems - per-player dropped item lists (4 x ae_vector, 48 bytes)
+// ============================================================================
+class MPPlayerItems {
+public:
+    struct sDroppedItem {
+        void* handle;   // +0x00 DbLinkedHandle<EntityHandleDb, Entity>
+        unsigned int time;  // +0x04
+    };
+
+    ae_vector<sDroppedItem> mDroppedWeapons;  // +0x00
+    ae_vector<sDroppedItem> mDroppedSupport;  // +0x0C
+    ae_vector<sDroppedItem> mDroppedMines;    // +0x18
+    ae_vector<sDroppedItem> mDroppedKits;     // +0x24
+
+    Entity* FindItem(EDroppedItemTypes item, short id);  // ?FindItem@MPPlayerItems@@QAEPAVEntity@@W4EDroppedItemTypes@@F@Z (mp.o)
+    void SetItem(EDroppedItemTypes item, short id, Entity* ent);  // ?SetItem@MPPlayerItems@@QAEXW4EDroppedItemTypes@@FPAVEntity@@@Z (mp.o)
+
+private:
+    ae_vector<sDroppedItem>& GetItemList(EDroppedItemTypes item);  // ?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z (mp.o 0x72E020)
 };
 
 // ============================================================================
@@ -55,10 +82,12 @@ public:
 // ============================================================================
 class MPLanDiscovery {
 public:
-    uint8_t _pad[0x48];
+    uint8_t _pad[0x40];
+    bdDiscoveryClient mDiscoveryClient;  // +0x40
     unsigned int mNumResults;  // +0x48
 
     unsigned int GetNumResults() const;  // ?GetNumResults@MPLanDiscovery@@QBEIXZ
+    bool IsDone();                       // ?IsDone@MPLanDiscovery@@QAE_NXZ (mp.o 0x72CB60)
 };
 
 // EGameConnectionType (mp.o)
@@ -67,6 +96,8 @@ enum EGameConnectionType : int {
     kGameConnectionTypeOnline = 1,
     kGameConnectionTypeLocal = 2,
 };
+
+struct sServerCreateParams;  // defined below MPUIInterface
 
 // ============================================================================
 // MPUIInterface - multiplayer shell/UI static interface
@@ -83,6 +114,7 @@ public:
     static void GameListingEnd();        // ?GameListingEnd@MPUIInterface@@SAXXZ
     static void StartDevice();           // ?StartDevice@MPUIInterface@@SAXXZ
     static void PlatformStop();          // ?PlatformStop@MPUIInterface@@SAXXZ
+    static void SetServerParams(const sServerCreateParams& a_ServerParams);  // ?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z (mp.o 0x730240)
     static bool NextRoundMapChanges();   // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ
     static bool NextRoundMapRestart();   // ?NextRoundMapRestart@MPUIInterface@@SA_NXZ (mp.o 0x7300A0)
     static const bool IsGameListingComplete(); // ?IsGameListingComplete@MPUIInterface@@SA?B_NXZ (mp.o 0x72F730)
