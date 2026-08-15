@@ -3600,6 +3600,36 @@ void TakeWeapon(unsigned int entityHandleVal,
 void TakeAllWeapons(unsigned int entityHandleVal);  // 0x5D58E0
 void GetCurrentWeapon(unsigned int entityHandleVal,
                       Broc::string& weapon);  // 0x5D59A0
+bool HasWeaponAndAmmo(unsigned int entityHandleVal,
+                      const Broc::string& pszWeaponName,
+                      int& ammo);  // 0x5D5A20
+bool HasWeapon(unsigned int entityHandleVal,
+               const Broc::string& pszWeaponName);  // 0x5D5AF0
+bool SwitchToWeapon(unsigned int entityHandleVal,
+                    const Broc::string& pszWeaponName);  // 0x5D5B70
+bool SwitchToLastWeapon(unsigned int entityHandleVal);  // 0x5D5C50 (_N mangle)
+void GiveStartAmmo(unsigned int entityHandleVal,
+                   const Broc::string& pszWeaponName);  // 0x5D5CF0
+void GiveMaxAmmo(unsigned int entityHandleVal,
+                 const Broc::string& pszWeaponName);  // 0x5D5DA0
+float GetFractionStartAmmo(unsigned int entityHandleVal,
+                           const Broc::string& pszWeaponName);  // 0x5D5E60
+float GetFractionMaxAmmo(unsigned int entityHandleVal,
+                         const Broc::string& pszWeaponName);  // 0x5D5F40
+void SetOrigin(unsigned int entityHandleVal,
+               const Broc::vector& vNewOrigin);  // 0x5D60A0
+void SetVelocity(unsigned int entityHandleVal,
+                 const Broc::vector& vel);  // 0x5D60F0
+void SetPlayerAngles(unsigned int entityHandleVal,
+                     const Broc::vector& angles);  // 0x5D6160
+Broc::vector GetPlayerAngles(unsigned int entityHandleVal);  // 0x5D6230
+int UseButtonPressed(unsigned int entityHandleVal);  // 0x5D62C0
+int AttackButtonPressed(unsigned int entityHandleVal);  // 0x5D6320
+int MeleeButtonPressed(unsigned int entityHandleVal);  // 0x5D6380
+int IsAds(unsigned int entityHandleVal);  // 0x5D63E0
+int IsOnGround(unsigned int entityHandleVal);  // 0x5D6440
+void SetViewModel(unsigned int entityHandleVal,
+                  const Broc::string& modelName);  // 0x5D64A0
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -18481,6 +18511,423 @@ void BrocSys::GetCurrentWeapon(unsigned int entityHandleVal,
                 BG_GetInfoForWeapon(mObject->client->ps.weapon);
             weapon = InfoForWeapon->szInternalName;
         }
+    }
+}
+
+// ============================================================================
+// scr.o batch 55 - weapon queries / client setters
+// ============================================================================
+
+// ea: 0x005D5A20
+bool BrocSys::HasWeaponAndAmmo(unsigned int entityHandleVal,
+                               const Broc::string& pszWeaponName, int& ammo)
+{
+    ammo = 0;
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    bool result = BrocSys::IsValidClientType(mObject);
+    if (result)
+    {
+        const char* v6 = pszWeaponName.mBlock != nullptr
+                             ? (const char*)(pszWeaponName.mBlock + 1)
+                             : defaultFileName;
+        int WeaponIndexForName = BG_GetWeaponIndexForName(v6);
+        if (Com_BitCheck(mObject->client->ps.weapons,
+                         WeaponIndexForName) != 0)
+        {
+            int v8 = BG_ClipForWeapon(WeaponIndexForName);
+            ammo = mObject->client->ps.ammo[BG_AmmoForWeapon(
+                       WeaponIndexForName)]
+                 + mObject->client->ps.ammoclip[v8];
+            return true;
+        }
+        return false;
+    }
+    return result;
+}
+
+// ea: 0x005D5AF0
+bool BrocSys::HasWeapon(unsigned int entityHandleVal,
+                        const Broc::string& pszWeaponName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    bool result = BrocSys::IsValidClientType(mObject);
+    if (result)
+    {
+        const char* v5 = pszWeaponName.mBlock != nullptr
+                             ? (const char*)(pszWeaponName.mBlock + 1)
+                             : defaultFileName;
+        unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v5);
+        return Com_BitCheck(mObject->client->ps.weapons,
+                            WeaponIndexForName) != 0;
+    }
+    return result;
+}
+
+// ea: 0x005D5B70
+bool BrocSys::SwitchToWeapon(unsigned int entityHandleVal,
+                             const Broc::string& pszWeaponName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    bool result = BrocSys::IsValidClientType(mObject);
+    if (result)
+    {
+        const char* v5 = pszWeaponName.mBlock != nullptr
+                             ? (const char*)(pszWeaponName.mBlock + 1)
+                             : defaultFileName;
+        unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v5);
+        unsigned int v7 = WeaponIndexForName;
+        if (WeaponIndexForName == 0)
+        {
+            Scr_ParamError(
+                (unsigned int)v7,
+                va("unknown weapon '%s'", pszWeaponName.mBlock));
+        }
+        if (mObject->IsLocalPlayer())
+        {
+            if (mObject->IsLocalPlayer()
+                && Com_BitCheck(mObject->client->ps.weapons, v7) != 0)
+            {
+                int PlayerIndex = mObject->GetPlayerIndex();
+                BG_SelectWeaponIndex(v7, PlayerIndex);
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            Client* client = mObject->client;
+            mObject->s.weapon = (uint8_t)v7;
+            client->ps.weapon = v7;
+            return true;
+        }
+    }
+    return result;
+}
+
+// ea: 0x005D5C50
+bool BrocSys::SwitchToLastWeapon(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (!BrocSys::IsValidClientType(mObject) || !mObject->IsLocalPlayer())
+        return 0;
+    Client* client = mObject->client;
+    int lastWeapon = client->ps.lastWeapon;
+    if (lastWeapon == 0
+        || Com_BitCheck(client->ps.weapons, client->ps.lastWeapon) == 0
+        || (client->ps.weaponslots[1] != lastWeapon
+            && client->ps.weaponslots[2] != lastWeapon))
+    {
+        return 0;
+    }
+    int PlayerIndex = mObject->GetPlayerIndex();
+    BG_SelectWeaponIndex(lastWeapon, PlayerIndex);
+    return 1;
+}
+
+// ea: 0x005D5CF0
+void BrocSys::GiveStartAmmo(unsigned int entityHandleVal,
+                            const Broc::string& pszWeaponName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        const char* v4 = pszWeaponName.mBlock != nullptr
+                             ? (const char*)(pszWeaponName.mBlock + 1)
+                             : defaultFileName;
+        int WeaponIndexForName = BG_GetWeaponIndexForName(v4);
+        if (Com_BitCheck(mObject->client->ps.weapons,
+                         WeaponIndexForName) != 0)
+        {
+            weaponFileInfo_t* InfoForWeapon =
+                BG_GetInfoForWeapon(WeaponIndexForName);
+            int v7 = InfoForWeapon->iStartAmmo
+                     - mObject->client->ps.ammo[InfoForWeapon->iAmmoIndex];
+            if (v7 > 0)
+                Add_Ammo(mObject, WeaponIndexForName, v7, 0);
+        }
+    }
+}
+
+// ea: 0x005D5DA0
+void BrocSys::GiveMaxAmmo(unsigned int entityHandleVal,
+                          const Broc::string& pszWeaponName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        const char* v4 = pszWeaponName.mBlock != nullptr
+                             ? (const char*)(pszWeaponName.mBlock + 1)
+                             : defaultFileName;
+        int WeaponIndexForName = BG_GetWeaponIndexForName(v4);
+        if (Com_BitCheck(mObject->client->ps.weapons,
+                         WeaponIndexForName) != 0)
+        {
+            weaponFileInfo_t* InfoForWeapon =
+                BG_GetInfoForWeapon(WeaponIndexForName);
+            int v7 = BG_GetAmmoTypeMax(InfoForWeapon->iAmmoIndex)
+                     - mObject->client->ps.ammo[InfoForWeapon->iAmmoIndex];
+            if (v7 > 0)
+                Add_Ammo(mObject, WeaponIndexForName, v7, 0);
+        }
+    }
+}
+
+// ea: 0x005D5E60
+float BrocSys::GetFractionStartAmmo(unsigned int entityHandleVal,
+                                    const Broc::string& pszWeaponName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0.0f;
+    const char* v5 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    int WeaponIndexForName = BG_GetWeaponIndexForName(v5);
+    if (Com_BitCheck(mObject->client->ps.weapons,
+                     WeaponIndexForName) == 0)
+        return 1.0f;
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(WeaponIndexForName);
+    if (InfoForWeapon->iStartAmmo < 1)
+        return 1.0f;
+    int ammo = mObject->client->ps.ammo[InfoForWeapon->iAmmoIndex];
+    if (ammo >= 1)
+        return (float)ammo / InfoForWeapon->iStartAmmo;
+    return 0.0f;
+}
+
+// ea: 0x005D5F40
+float BrocSys::GetFractionMaxAmmo(unsigned int entityHandleVal,
+                                  const Broc::string& pszWeaponName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+        return 0.0f;
+    const char* v5 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    int WeaponIndexForName = BG_GetWeaponIndexForName(v5);
+    if (Com_BitCheck(mObject->client->ps.weapons,
+                     WeaponIndexForName) == 0)
+        return 1.0f;
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(WeaponIndexForName);
+    if (InfoForWeapon->bClipOnly == 0)
+    {
+        if (BG_GetAmmoTypeMax(InfoForWeapon->iAmmoIndex) >= 1)
+        {
+            Client* client = mObject->client;
+            int iAmmoIndex = InfoForWeapon->iAmmoIndex;
+            if (client->ps.ammo[iAmmoIndex] < 1)
+                return 0.0f;
+            return (float)client->ps.ammo[iAmmoIndex]
+                 / BG_GetAmmoTypeMax(iAmmoIndex);
+        }
+        return 1.0f;
+    }
+    if (BG_GetAmmoClipSize(InfoForWeapon->iClipIndex) < 1)
+        return 1.0f;
+    Client* v8 = mObject->client;
+    if (v8->ps.ammoclip[InfoForWeapon->iClipIndex] < 1)
+        return 0.0f;
+    int iClipIndex = InfoForWeapon->iClipIndex;
+    return (float)v8->ps.ammoclip[iClipIndex]
+         / BG_GetAmmoClipSize(iClipIndex);
+}
+
+// ea: 0x005D60A0
+void BrocSys::SetOrigin(unsigned int entityHandleVal,
+                        const Broc::vector& vNewOrigin)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        SetClientOrigin(mObject, &vNewOrigin.x);
+}
+
+// ea: 0x005D60F0
+void BrocSys::SetVelocity(unsigned int entityHandleVal,
+                          const Broc::vector& vel)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        mObject->client->ps.velocity.v.m128_f32[0] = vel.x;
+        mObject->client->ps.velocity.v.m128_f32[1] = vel.y;
+        mObject->client->ps.velocity.v.m128_f32[2] = vel.z;
+    }
+}
+
+// ea: 0x005D6160
+void BrocSys::SetPlayerAngles(unsigned int entityHandleVal,
+                              const Broc::vector& angles)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        if (angles.x == sNaN && angles.y == sNaN && angles.z == sNaN)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+            AeAssert::gCurrentLine = 1285;
+            AeAssert::gCurrentExpr = "angles.IsDefined()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Undefined angles passed to SetPlayerAngles"))
+                __debugbreak();
+        }
+        SetClientViewAngle(mObject, &angles.x);
+    }
+}
+
+// ea: 0x005D6230
+Broc::vector BrocSys::GetPlayerAngles(unsigned int entityHandleVal)
+{
+    Broc::vector result;
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (!BrocSys::IsValidClientType(mObject))
+    {
+        result.x = sNaN;
+        result.y = sNaN;
+        result.z = sNaN;
+    }
+    else
+    {
+        Client* client = mObject->client;
+        result.x = client->ps.viewangles[0];
+        result.y = client->ps.viewangles[1];
+        result.z = client->ps.viewangles[2];
+    }
+    return result;
+}
+
+// ea: 0x005D62C0
+int BrocSys::UseButtonPressed(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    return BrocSys::IsValidClientType(mObject)
+        && (mObject->client->buttons & 0x60) != 0;
+}
+
+// ea: 0x005D6320
+int BrocSys::AttackButtonPressed(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        return mObject->client->buttons & 1;
+    return 0;
+}
+
+// ea: 0x005D6380
+int BrocSys::MeleeButtonPressed(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+        return (mObject->client->buttons & 0x10) >> 4;
+    return 0;
+}
+
+// ea: 0x005D63E0
+int BrocSys::IsAds(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    return BrocSys::IsValidClientType(mObject)
+        && (mObject->client->ps.pm_flags & 0x20) != 0;
+}
+
+// ea: 0x005D6440
+int BrocSys::IsOnGround(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    return BrocSys::IsValidClientType(mObject)
+        && mObject->client->ps.mGroundEntity.mHandle.mVal != 0;
+}
+
+// ea: 0x005D64A0
+void BrocSys::SetViewModel(unsigned int entityHandleVal,
+                           const Broc::string& modelName)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (BrocSys::IsValidClientType(mObject))
+    {
+        const char* v4 = modelName.mBlock != nullptr
+                             ? (const char*)(modelName.mBlock + 1)
+                             : defaultFileName;
+        TPakId mPakId = (TPakId)mObject->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        IVPointer<XModel> model =
+            XModelManager::sInst->GetXModel(mPakId, v4);
+        mObject->client->ps.viewmodel = model;
     }
 }
 
