@@ -19,6 +19,17 @@ int XNetCleanup()
     return 0;
 }
 
+extern void nslUpdate();   // nsl_xboxr (nsl.cpp)
+extern char byte_1869F;    // unnamed byte global referenced by GetQosPing
+extern bool gSkipMovies;   // GameXbox.cpp (?gSkipMovies@@3_NA)
+
+// ea: 0x0072E8A0 (playerState values 4/5/1 from the release binary)
+bool IsACorpse(const Entity* player)
+{
+    int playerState = player->client->pers.playerState;
+    return playerState == 4 || playerState == 5 || playerState == 1;
+}
+
 // ============================================================================
 // cThreadSleep (mp.o 0x7305B0) - release no-ops (disasm: retn)
 // ============================================================================
@@ -61,6 +72,21 @@ bool MPPlayer::IsConnected() const
 {
     return mConnection.m_ptr != nullptr
            && mConnection.m_ptr->getStatus() == bdConnection::BD_CONNECTED;
+}
+
+// ea: 0x007360E0 (refcount at m_ptr+0x04; virtual dtor release)
+void MPPlayer::SetInvalid()
+{
+    bdConnection* m_ptr = mConnection.m_ptr;
+    if (m_ptr != nullptr && --*(int*)((char*)m_ptr + 0x04) == 0)
+    {
+        bdConnection* v4 = mConnection.m_ptr;
+        if (v4 != nullptr)
+            delete v4;
+    }
+    mConnection.m_ptr = nullptr;
+    mId = 16;
+    mClientIndex = -1;
 }
 
 // ea: 0x0072DFD0 (mInterpolatedHeading.mAngle at +0x218)
@@ -124,6 +150,20 @@ void MPVehicle::SetInvalid()
     mNumOccupants = 0;
     mId = 10;
     memset((char*)this + 0x08, 0x10, 0x0C);
+}
+
+// ea: 0x007482E0 (mInterpolator at +0x80; mInitialDate/mTimeInterval floats at
+// +0x114/+0x118)
+MPVehicle::MPVehicle()
+{
+    mId = 10;
+    mEntity = nullptr;
+    mNumOccupants = 0;
+    mLastReceivedTime.mTime = 0;
+    mInterpolator.mInitialDate = 0.0f;
+    mInterpolator.mTimeInterval = 0.0f;
+    mLastInterpolatedTime.mTime = 0;
+    Reset(true);
 }
 
 // ea: 0x0072E480
@@ -395,6 +435,16 @@ void MPUIInterface::PlatformStop()
     XNetCleanup();
 }
 
+// ea: 0x0072F380
+void MPUIInterface::Reboot()
+{
+    MusicMgr::sInst->Stop(0.0f);
+    nslUpdate();
+    gSkipMovies = true;
+    gReturnToMenu = true;
+    Cmd_ExecuteServerString("reboot");
+}
+
 void MPUIInterface::getLocalAddresses(bdArray<bdInetAddr>&)
 {
 }
@@ -604,6 +654,19 @@ void MPPlayerManager::RemoveDroppedItems()
     }
 }
 
+// ea: 0x0072ED50 (mLocalPlayerIndex at +0x4111; vtable slot 7 = MakeActive)
+void MPPlayerManager::DropHotJoiningPlayers()
+{
+    if (*(unsigned char*)((char*)this + 0x4111) != 17
+        && dword_F6A290[0] == 1)
+    {
+        dword_F6A290[0] = 0;
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(0);
+        IGMS->gap1C(IGMS, -1);
+    }
+    View::UpdateNumViewports();
+}
+
 // ea: 0x0072EA80 (mPlayers at +0x1010, stride 0x310, mClientIndex +0x08)
 bool MPPlayerManager::IsLocalPlayer(const Entity* const entity)
 {
@@ -737,6 +800,30 @@ bool MPPeer::IsLocalPlayer(Entity* player)
     return ((MPPlayerManager*)((char*)this + 0x74E0))->IsLocalPlayer(player);
 }
 
+// ea: 0x0072CA50 (m_QosIsComplete +0x5AB0, m_QosIsSuccessful +0x5DD0,
+// m_QosLatency +0x6730; returns int per ?GetQosPing@MPPeer@@QAEHH@Z)
+int MPPeer::GetQosPing(int qos_handle)
+{
+    if (*(bool*)((char*)this + 0x5AB0 + qos_handle)
+        && *(bool*)((char*)this + 0x5DD0 + qos_handle))
+        return (int)*(float*)((char*)this + 0x6730 + qos_handle * 4);
+    return (int)(intptr_t)&byte_1869F;
+}
+
+// ea: 0x00735A70 (mSession at +0x7448)
+bdReference<bdConnection> MPPeer::GetConnectionByIndex(unsigned int peerID)
+{
+    return ((bdSession*)((char*)this + 0x7448))->getConnection(peerID);
+}
+
+// ea: 0x00740730 (mPlayerManager at +0x74E0)
+bool MPPeer::IsPlayerTalking(Entity* player, int local_controller)
+{
+    MPPlayer* v4 = ((MPPlayerManager*)((char*)this + 0x74E0))
+                       ->GetPlayer(player);
+    return v4 != nullptr && IsPlayerTalking(v4, local_controller);
+}
+
 // ea: 0x00745E80 (mpVoiceManager at +0xD270)
 void MPPeer::shutdownVoiceSubsystem()
 {
@@ -829,6 +916,101 @@ void MPProfileMainMenu::OnCross(int)
     Select(*(short*)((char*)this + 0x22));
 }
 
+// ea: 0x00731560 (mWidescreen at +0x6C; FEMenu::UpdateWidescreen + panel)
+void MPOptionsSoundMenu::UpdateWidescreen(bool widescreen)
+{
+    if (mWidescreen != widescreen)
+    {
+        FEMenu::UpdateWidescreen(widescreen);
+        FEMultiLineText* mInstructionsText = this->mInstructionsText;
+        if (mInstructionsText != nullptr)
+            mInstructionsText->UpdateForWidescreen(widescreen);
+        if (this->panel != nullptr)
+            mWidescreen = widescreen;
+    }
+}
+
+// ea: 0x007320F0 (mWidescreen at +0x60)
+void MPOptionsControlsMenu::UpdateWidescreen(bool widescreen)
+{
+    if (mWidescreen != widescreen)
+    {
+        FEMenu::UpdateWidescreen(widescreen);
+        FEMultiLineText* mInstructionsText = this->mInstructionsText;
+        if (mInstructionsText != nullptr)
+            mInstructionsText->UpdateForWidescreen(widescreen);
+        if (this->panel != nullptr)
+            mWidescreen = widescreen;
+    }
+}
+
+// ea: 0x00733AF0 (menus[27] mSaveSlots at +104)
+void MPProfileMainMenu::LoadProfileData()
+{
+    ProfileManager* v0 = ProfileManager::Me();
+    v0->Reset();
+    SaveGameData** v2 =
+        (SaveGameData**)((char*)g_femanager.fems->menus[27] + 104);
+    ProfileManager* v1 = ProfileManager::Me();
+    v1->EnumProfiles(v2);
+}
+
+// ea: 0x00733B20 (mPanel at +0x84, mHelpBar at +0x88)
+void MPProfileMainMenu::UpdateWidescreen(bool widescreen)
+{
+    PanelFile* mPanel = this->mPanel;
+    if (mPanel != nullptr)
+    {
+        mPanel->UpdateWidescreen(widescreen, 320.0f);
+        this->mHelpBar->UpdateForWidescreen(widescreen);
+    }
+}
+
+// ea: 0x00733640 (mInstructionsText at +0x60, mListBox at +0x64)
+void MPProfileEditMenu::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    (void)pPanelFile;
+    Cleanup();
+    FEMultiLineText* mInstructionsText = this->mInstructionsText;
+    if (mInstructionsText != nullptr)
+        delete mInstructionsText;
+    this->mInstructionsText = nullptr;
+    mListBox.RemoveAllItems();
+}
+
+// ea: 0x00733770 (vtable slot 7 = MakeActive; menu 27/8)
+void MPProfileEditMenu::OnTriangle(int c)
+{
+    (void)c;
+    ProfileManager* v3 = ProfileManager::Me();
+    const char* LoadedProfile = v3->GetLoadedProfile();
+    FEMenuSystem* system = this->system;
+    if (LoadedProfile != nullptr)
+    {
+        this->mNeedWrite = false;
+        system->gap1C(system, 27);
+    }
+    else
+    {
+        system->gap1C(system, 8);
+    }
+}
+
+// ea: 0x00733890 (button_held_down at +0x32; OnUp/OnDown via controller)
+void MPProfileEditMenu::ButtonHeldAction()
+{
+    if (button_held_down == 4)
+    {
+        controller* v3 = controller::inst();
+        this->OnUp(v3->locked_port);
+    }
+    else if (button_held_down == 8)
+    {
+        controller* v4 = controller::inst();
+        this->OnDown(v4->locked_port);
+    }
+}
+
 // ============================================================================
 // kuju (mp.o)
 // ============================================================================
@@ -885,6 +1067,17 @@ void kuju::kvoicemanager::cVoiceManager::receiveVoiceData(
     mRemoteListeners.containsPlayer(fromPlayerIndex);
 }
 
+// ea: 0x00734910
+void kuju::kvoicemanager::cVoiceManager::startSystem()
+{
+    memset(mEncodeBuffer, 0, sizeof(mEncodeBuffer));
+    mEncodeDstOffset = 0;
+    mNetworkDispatchOffset = 0;
+    mLastNetworkDispatchTime.mTime = 0;
+    mRealLastNetworkDispatchTime.mTime = 0;
+    mRemoteListeners.mBitPlayers = 0;
+}
+
 // ea: 0x007500E0
 void kuju::knetuser::cVoiceNetworkManager::update(
     const kuju::knet::sTime& time)
@@ -903,8 +1096,8 @@ void kuju::knetuser::cVoiceNetworkManager::updateVoiceNetwork(
 
 kuju::cBezierTrajectoryInterpolator::cBezierTrajectoryInterpolator()
 {
-    mInitialDate = 0.0;
-    mTimeInterval = 0.0;
+    mInitialDate = 0.0f;
+    mTimeInterval = 0.0f;
 }
 
 // ============================================================================
@@ -952,6 +1145,115 @@ void MultiplayerMgr::EnterLevel()
         && ((bdSession*)((char*)mPeer + 0x7448))->getStatus()
                != bdSession::BD_SESSION_NOT_CONNECTED)
         ((MPPlayerManager*)((char*)mPeer + 0x74E0))->LocalPlayerEnterGame();
+}
+
+// ea: 0x007612F0
+void MultiplayerMgr::FireMissile(int weapon, const math::Position3& position,
+                                 const math::Dir3& dir,
+                                 ::MPEntityHandle handle)
+{
+    if (mPeer != nullptr)
+        mPeer->FireMissile(weapon, position, dir, handle);
+}
+
+// ea: 0x007613A0 (mSession at +0x7448)
+void MultiplayerMgr::EnterGame()
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+    {
+        mPeer->EnterGame();
+        if (((bdSession*)((char*)mPeer + 0x7448))->getStatus()
+            != bdSession::BD_SESSION_NOT_CONNECTED)
+            ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                ->LocalPlayerEnterGame();
+    }
+}
+
+// ea: 0x007401E0 (mName at +0x68)
+const char* MultiplayerMgr::GetPlayerName(const Entity* player) const
+{
+    if (mPeer != nullptr)
+    {
+        MPPlayer* v2 = ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                           ->GetPlayer(player);
+        if (v2 != nullptr)
+            return (const char*)((char*)v2 + 0x68);
+    }
+    return (const char*)&defaultFileName;
+}
+
+// ea: 0x00740450 (mName at +0x68; &defaultFileName fallback)
+const char* MultiplayerMgr::getVoiceConnection(const Entity* player)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (player != nullptr && mPeer != nullptr)
+    {
+        MPPlayerManager* pm = (MPPlayerManager*)((char*)mPeer + 0x74E0);
+        if (pm != nullptr)
+        {
+            MPPlayer* v3 = pm->GetPlayer(player);
+            if (v3 != nullptr)
+                return (const char*)((char*)v3 + 0x68);
+        }
+    }
+    return (const char*)&defaultFileName;
+}
+
+// ea: 0x007358A0 (mSession at +0x7448; getRole == BD_SESSION_HOST)
+bool MultiplayerMgr::IsLocalClientHost(int client)
+{
+    return mPeer == nullptr
+        || ((bdSession*)((char*)mPeer + 0x7448))->getRole()
+               == bdSession::BD_SESSION_HOST
+           && (MPUIInterface::mGameConnectionType == kGameConnectionTypeOnline
+               || client == LocalClient::FirstLocalClientIndex());
+}
+
+// ea: 0x00735990 (currVote at mPlayerManager + 0x5914; kNoVote == 0)
+bool MultiplayerMgr::IsVoteOngoing()
+{
+    MPPeer* mPeer = this->mPeer;
+    bool result = false;
+    if (mPeer != nullptr)
+    {
+        MPPlayerManager* pm = (MPPlayerManager*)((char*)mPeer + 0x74E0);
+        if (pm != nullptr)
+        {
+            MPVote* p_currVote = (MPVote*)((char*)pm + 0x5914);
+            if (p_currVote != nullptr)
+            {
+                if (p_currVote->mVoteType != kNoVote
+                    && !p_currVote->localVoted)
+                    return true;
+            }
+        }
+    }
+    return result;
+}
+
+// ea: 0x00750600 (currVote.voteStartTime at mPlayerManager + 0x5914)
+void MultiplayerMgr::RoundOver(int condition, int team)
+{
+    if (mPeer != nullptr)
+    {
+        MPVote* pVote = (MPVote*)((char*)((char*)mPeer + 0x74E0) + 0x5914);
+        if (pVote->voteStartTime.mTime != 0)
+            MPUIInterface::ResolveVote();
+        mPeer->RoundOver(condition, team);
+    }
+}
+
+// ea: 0x007643B0
+::MPEntityHandle MultiplayerMgr::GetNextDroppedItemID(
+    EDroppedItemTypes itemType, Entity* owner)
+{
+    ::MPEntityHandle result;
+    if (mPeer != nullptr)
+        return ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+            ->GetNextDroppedItemID(itemType, owner);
+    result.mValue = 0;
+    return result;
 }
 
 // ea: 0x00761550

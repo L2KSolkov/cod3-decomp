@@ -39,7 +39,8 @@ struct bdSingleton {
 // bdReference<T> — intrusive reference wrapper (4 bytes) — verified against IDA
 // ============================================================================
 template <typename T>
-struct bdReference {
+class bdReference {
+public:
     T* m_ptr;  // +0x00
 
     bdReference() : m_ptr(NULL) {}

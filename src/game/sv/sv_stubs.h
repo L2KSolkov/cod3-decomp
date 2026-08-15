@@ -25,6 +25,19 @@
 enum itemType_t : int;
 enum EDroppedItemTypes : int;
 
+// Global net entity handle (g.o 0x4A9700 family) - map mangling uses the
+// global scope (?AVMPEntityHandle@@). Methods defined in g_accessors.cpp.
+class MPEntityHandle {
+public:
+    unsigned short mValue;  // +0x00
+    MPEntityHandle();                                     // ??0MPEntityHandle@@QAE@XZ (g.o 0x4A9700)
+    MPEntityHandle(const MPEntityHandle& value);           // ??0MPEntityHandle@@QAE@ABV0@@Z (g.o 0x4A9710)
+    MPEntityHandle& operator=(const MPEntityHandle& other);
+    unsigned short GetPeerEntityIndex() const;  // ?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ (g.o 0x4A9730)
+    unsigned short GetValue() const;           // ?GetValue@MPEntityHandle@@QBEGXZ (g.o 0x4A9740)
+    bool IsAssigned() const;                   // ?IsAssigned@MPEntityHandle@@QBE_NXZ (g.o 0x4A9750)
+};
+
 struct cdl_object_t;  // full definition in game/logic/g_local.h
 
 // font_index - FE font selection enum (also defined in ui_types.h; guarded
@@ -434,7 +447,9 @@ public:
                        const math::Position3& position,
                        const math::Dir3& angles,
                        int team);  // ?PlayerRespawn@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
-    const char* GetPlayerName(Entity* player) const;  // ?GetPlayerName@MultiplayerMgr@@QBEPBDPBVEntity@@@Z (mp.o)
+    const char* GetPlayerName(const Entity* player) const;  // ?GetPlayerName@MultiplayerMgr@@QBEPBDPBVEntity@@@Z (mp.o)
+    const char* getVoiceConnection(const Entity* player);  // ?getVoiceConnection@MultiplayerMgr@@QAEPBDPBVEntity@@@Z (mp.o 0x740450)
+    bool IsLocalClientHost(int client);              // ?IsLocalClientHost@MultiplayerMgr@@QAE_NH@Z (mp.o 0x7358A0)
     void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,
@@ -460,7 +475,7 @@ public:
                             Entity* owner);  // ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HPAV2@@Z (mp.o 0x761570)
     void EnterLevel();                       // ?EnterLevel@MultiplayerMgr@@QAEXXZ (mp.o 0x7613D0)
     void FireMissile(int weapon, const math::Position3& position, const math::Dir3& dir,
-                     MultiplayerMgr::MPEntityHandle handle);  // ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z
+                     ::MPEntityHandle handle);  // ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z
     void Step(int earlyOutInterval, bool fromThread, bool a_bFromGame);  // ?Step@MultiplayerMgr@@QAEXH_N0@Z
     bool IsLocalPlayer(Entity* player);            // ?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z
     bool IsInVehicle(Entity* player);              // ?IsInVehicle@MultiplayerMgr@@QAE_NPAVEntity@@@Z
@@ -510,6 +525,7 @@ public:
                     float* weaponPosition, int weapon, float spread,
                     float coneAngleTangent, int seed);  // ?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMQAMHMHH@Z
     void GetNextDroppedItemID(void* result, int itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAEXAAVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z
+    ::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x7643B0)
     int  GetDroppedItemType(int itemType);   // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z
     MPEntityHandle FindDroppedItemID(int itemType, Entity* item, Entity* owner);  // ?FindDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z
     void PickupItem(int netIndex, int itemType, Entity* player, bool scriptFrom);  // ?PickupItem@MultiplayerMgr@@QAEXHHPAVEntity@@_N@Z
@@ -1614,6 +1630,7 @@ public:
     bool IsConnected() const;          // ?IsConnected@MPPlayer@@QBE_NXZ (mp.o 0x736010)
     void GetAngles(float (&angles)[3]) const;  // ?GetAngles@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFD0)
     void GetPosition(float (&position)[3]) const;  // ?GetPosition@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFA0)
+    void SetInvalid();                // ?SetInvalid@MPPlayer@@QAEXXZ (mp.o 0x7360E0)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1637,12 +1654,14 @@ struct MPPlayerManager {
     int  GetLocalId(const MPPlayer* player);  // ?GetLocalId@MPPlayerManager@@QAEHPBVMPPlayer@@@Z (mp.o 0x72EB80)
     void LocalPlayerExitGame();         // ?LocalPlayerExitGame@MPPlayerManager@@QAEXXZ (mp.o 0x73A8C0)
     void LocalPlayerEnterGame();        // ?LocalPlayerEnterGame@MPPlayerManager@@QAEXXZ (mp.o)
+    void DropHotJoiningPlayers();       // ?DropHotJoiningPlayers@MPPlayerManager@@QAEXXZ (mp.o 0x72ED50)
     MPPlayer* GetPlayer(const Entity* entity);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@QBVEntity@@@Z (mp.o)
     Entity* FindDroppedItem(EDroppedItemTypes itemType, short id,
                             int ownerID);  // ?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z (mp.o 0x760690)
     void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
                              Entity* owner, short id);  // ?RegisterDroppedItem@MPPlayerManager@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z (mp.o 0x760480)
     void RemoveDroppedItems();  // ?RemoveDroppedItems@MPPlayerManager@@QAEXXZ (mp.o 0x760450)
+    ::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType, Entity* owner);  // ?GetNextDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x763960)
 private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
 };
@@ -1652,8 +1671,11 @@ public:
     MPPlayerManager* GetPlayerManager();
     bool IsPlayerTalking(MPPlayer* player,
                          int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z (mp.o)
+    bool IsPlayerTalking(Entity* player, int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVEntity@@H@Z (mp.o 0x740730)
     void DebugPrintTTYSessionInfo();       // ?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ (mp.o 0x72CAE0)
     bdSession::bdSessionStatus GetSessionStatus() const;  // ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ (mp.o 0x72C890)
+    int  GetQosPing(int qos_handle);       // ?GetQosPing@MPPeer@@QAEHH@Z (mp.o 0x72CA50)
+    bdReference<bdConnection> GetConnectionByIndex(unsigned int peerID);  // ?GetConnectionByIndex@MPPeer@@QAE?AV?$bdReference@VbdConnection@@@@I@Z (mp.o 0x735A70)
     static void operator delete(void* p);  // ??3MPPeer@@SAXPAX@Z (mp.o 0x72C840)
     static void* operator new(unsigned int s);  // ??2MPPeer@@SAPAXI@Z (mp.o 0x72C820)
     bool IsHost();                          // ?IsHost@MPPeer@@QAE_NXZ (mp.o 0x72C8B0)
@@ -1670,6 +1692,10 @@ public:
     bool IsQosSuccessful(int qos_handle);   // ?IsQosSuccessful@MPPeer@@QAE_NH@Z (mp.o 0x72CA20)
     void ExitLevel();                       // ?ExitLevel@MPPeer@@QAEXXZ (mp.o 0x742D80)
     void EnterLevel();                      // ?EnterLevel@MPPeer@@QAEXXZ (mp.o 0x75BDE0)
+    void EnterGame();                       // ?EnterGame@MPPeer@@QAEXXZ (mp.o 0x742CC0)
+    void RoundOver(int condition, int team); // ?RoundOver@MPPeer@@QAEXHH@Z (mp.o 0x7427C0)
+    void FireMissile(int weapon, const math::Position3& position, const math::Dir3& dir,
+                     ::MPEntityHandle handle);  // ?FireMissile@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z (mp.o 0x75B920)
     void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
     void MapRestart();                      // ?MapRestart@MPPeer@@QAEXXZ (mp.o 0x742DA0)
 

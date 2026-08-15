@@ -1286,17 +1286,7 @@ bool operator==(Handle lhs, Handle rhs)
 // Batch 23: managers / physics accessors / string & hash helpers
 // ============================================================================
 
-// MPEntityHandle global class (g.o 0x4A9760)
-class MPEntityHandle {
-public:
-    unsigned short mValue;  // +0x00
-    MPEntityHandle();                                     // ??0MPEntityHandle@@QAE@XZ (g.o 0x4A9700)
-    MPEntityHandle(const MPEntityHandle& value);           // ??0MPEntityHandle@@QAE@ABV0@@Z (g.o 0x4A9710)
-    MPEntityHandle& operator=(const MPEntityHandle& other);
-    unsigned short GetPeerEntityIndex() const;  // ?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ (g.o 0x4A9730)
-    unsigned short GetValue() const;           // ?GetValue@MPEntityHandle@@QBEGXZ (g.o 0x4A9740)
-    bool IsAssigned() const;                   // ?IsAssigned@MPEntityHandle@@QBE_NXZ (g.o 0x4A9750)
-};
+// MPEntityHandle global class (g.o 0x4A9760) - definition lives in sv_stubs.h
 MPEntityHandle::MPEntityHandle()
 {
     mValue = 0;

@@ -212,12 +212,6 @@ void MultiplayerMgr::AttemptToRevivePlayer(Entity* player, Entity* medic)
 {
     (void)player; (void)medic;
 }
-void MultiplayerMgr::FireMissile(int weapon, const math::Position3& position,
-                                 const math::Dir3& dir,
-                                 MultiplayerMgr::MPEntityHandle handle)
-{
-    (void)weapon; (void)position; (void)dir; (void)handle.mVal;
-}
 void MultiplayerMgr::Step(int earlyOutInterval, bool fromThread,
                           bool a_bFromGame)
 {

@@ -3208,8 +3208,8 @@ Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType, weaponParms* wp)
     pos.v.m128_f32[0] = start[0];
     pos.v.m128_f32[1] = start[1];
     pos.v.m128_f32[2] = start[2];
-    MultiplayerMgr::MPEntityHandle h;
-    h.mVal = 0;
+    MPEntityHandle h;
+    h.mValue = 0;
     MultiplayerMgr::sInst->FireMissile(grenType, pos, dir, h);
     return v7;
 }
@@ -4373,8 +4373,8 @@ void Weapon_RocketLauncher_Fire(Entity* ent, float spread, weaponParms* wp,
     posv.v.m128_f32[0] = start[0];
     posv.v.m128_f32[1] = start[1];
     posv.v.m128_f32[2] = start[2];
-    MultiplayerMgr::MPEntityHandle h;
-    h.mVal = 0;
+    MPEntityHandle h;
+    h.mValue = 0;
     MultiplayerMgr::sInst->FireMissile(ent->s.weapon, posv, dirv, h);
 }
 
