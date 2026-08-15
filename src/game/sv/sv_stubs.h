@@ -410,6 +410,7 @@ public:
     bool oneOffCheckLinkStatus();              // ?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C6F0)
     bool FromLobby();                          // ?FromLobby@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C7D0)
     float getSendInterval() const;             // ?getSendInterval@MultiplayerMgr@@QBEMXZ (mp.o 0x72C4D0)
+    bool getLinkStatus();                      // ?getLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C780)
     void MapRestart();                                  // ?MapRestart@MultiplayerMgr@@QAEXXZ (mp.o)
     void RoundOver(int condition, int team);            // ?RoundOver@MultiplayerMgr@@QAEXHH@Z (mp.o)
     void NextRound(bool allowChange);                   // ?NextRound@MultiplayerMgr@@QAEX_N@Z (mp.o)
@@ -1579,15 +1580,18 @@ extern   void   FEManager_PlayFadeInOranScreen(void);
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 // ============================================================================
 struct MPPlayer {
-    unsigned char mId;      // +0x00
+    unsigned char mId;                 // +0x00
     uint8_t _pad[3];
-    int     mClientIndex;   // +0x04
+    bdReference<bdConnection> mConnection;  // +0x04
+    int     mClientIndex;   // +0x08
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
     void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
     int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
     static unsigned char GetNullId();  // ?GetNullId@MPPlayer@@SAEXZ (mp.o)
     unsigned char GetId() const;       // ?GetId@MPPlayer@@QBEEXZ (mp.o 0x72CEA0)
     void SetId(unsigned char id);      // ?SetId@MPPlayer@@QAEXE@Z (mp.o 0x72CE90)
+    bool IsValid() const;              // ?IsValid@MPPlayer@@QBE_NXZ (mp.o 0x735FF0)
+    static bool IsValid(unsigned char id);  // ?IsValid@MPPlayer@@SA_NE@Z (mp.o 0x72CE70)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1605,6 +1609,8 @@ struct MPPlayerManager {
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
     bool IsGuest(int controller) const;   // ?IsGuest@MPPlayerManager@@QAE_NH@Z (mp.o 0x72F190)
     void SendConsistencyUpdates();        // ?SendConsistencyUpdates@MPPlayerManager@@QAEXXZ (mp.o 0x72F240)
+    unsigned char getPlayerIndex(int localPlayer);  // ?getPlayerIndex@MPPlayerManager@@QAEEH@Z (mp.o 0x72ED90)
+    bool IsLocalPlayer(const Entity* const entity);  // ?IsLocalPlayer@MPPlayerManager@@QAE_NQBVEntity@@@Z (mp.o 0x72EA80)
 private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
 };
@@ -1617,6 +1623,15 @@ public:
     void DebugPrintTTYSessionInfo();       // ?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ (mp.o 0x72CAE0)
     bdSession::bdSessionStatus GetSessionStatus() const;  // ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ (mp.o 0x72C890)
     static void operator delete(void* p);  // ??3MPPeer@@SAXPAX@Z (mp.o 0x72C840)
+    static void* operator new(unsigned int s);  // ??2MPPeer@@SAPAXI@Z (mp.o 0x72C820)
+    bool IsHost();                          // ?IsHost@MPPeer@@QAE_NXZ (mp.o 0x72C8B0)
+    bool IsQosComplete(int qos_handle);     // ?IsQosComplete@MPPeer@@QAE_NH@Z (mp.o 0x72CA00)
+    bool IsLocalPlayer(Entity* player);     // ?IsLocalPlayer@MPPeer@@QAE_NPAVEntity@@@Z (mp.o 0x735AA0)
+    void shutdownVoiceSubsystem();          // ?shutdownVoiceSubsystem@MPPeer@@QAEXXZ (mp.o 0x745E80)
+    void InitializeVehicles();              // ?InitializeVehicles@MPPeer@@QAEXXZ (mp.o 0x72...)
+    void AnimEvent(int animEvent);          // ?AnimEvent@MPPeer@@QAEXH@Z (mp.o)
+    void SpotEntity(Entity* ent);           // ?SpotEntity@MPPeer@@QAEXPAVEntity@@@Z (mp.o)
+    void DebugRender();                     // ?DebugRender@MPPeer@@QAEXXZ (mp.o)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

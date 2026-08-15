@@ -11,6 +11,14 @@
 #include "bd/bdSession.h"
 #include "bd/bd_types.h"
 
+// MPPlayerSet - 16-player bitmask (2 bytes)
+class MPPlayerSet {
+public:
+    unsigned short mBitPlayers;  // +0x00
+
+    MPPlayerSet() : mBitPlayers(0) {}
+};
+
 // ============================================================================
 // cThreadSleep - release no-op sleep helpers (mp.o 0x7305B0)
 // ============================================================================
@@ -35,6 +43,7 @@ public:
     unsigned char GetId() const;        // ?GetId@MPVehicle@@QBEEXZ
     void SetId(unsigned char id);       // ?SetId@MPVehicle@@QAEXE@Z
     bool IsOccupied() const;            // ?IsOccupied@MPVehicle@@QBE_NXZ
+    static bool IsValid(unsigned char id);  // ?IsValid@MPVehicle@@SA_NE@Z
     ~MPVehicle();                       // ??1MPVehicle@@QAE@XZ
 };
 
@@ -64,9 +73,19 @@ public:
     static void GameListingEnd();        // ?GameListingEnd@MPUIInterface@@SAXXZ
     static void StartDevice();           // ?StartDevice@MPUIInterface@@SAXXZ
     static void PlatformStop();          // ?PlatformStop@MPUIInterface@@SAXXZ
+    static bool NextRoundMapChanges();   // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ
 
     static int  mReturnMenu;  // ?mReturnMenu@MPUIInterface@@1HA @ 0xF0A124
     static bool mKicked;      // ?mKicked@MPUIInterface@@1_NA @ 0xF0A128
+    static struct sServerCreateParams mServerParams;     // ?mServerParams@MPUIInterface@@1UsServerCreateParams@@A
+    static struct sServerCreateParams mNextServerParams; // ?mNextServerParams@MPUIInterface@@1UsServerCreateParams@@A
+};
+
+// sServerCreateParams - host session setup (mMapID at +0x58)
+struct sServerCreateParams {
+    char mRandomMapList[64];  // +0x00
+    char mName[24];           // +0x40
+    unsigned char mMapID;     // +0x58
 };
 
 // ============================================================================
@@ -74,6 +93,7 @@ public:
 // ============================================================================
 class MPOptionsScreenMenu {
 public:
+    static MPOptionsScreenMenu* Me();  // ?Me@MPOptionsScreenMenu@@SAPAV1@XZ
     virtual void Select(int entry_num);  // ?Select@MPOptionsScreenMenu@@UAEXH@Z
     virtual void OnCross(int c);         // ?OnCross@MPOptionsScreenMenu@@UAEXH@Z
     virtual void Update(float time_inc); // ?Update@MPOptionsScreenMenu@@UAEXM@Z
@@ -81,21 +101,25 @@ public:
 
 class MPOptionsSoundMenu {
 public:
+    static MPOptionsSoundMenu* Me();  // ?Me@MPOptionsSoundMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsSoundMenu@@UAEXM@Z
 };
 
 class MPOptionsControlsMenu {
 public:
+    static MPOptionsControlsMenu* Me();  // ?Me@MPOptionsControlsMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsControlsMenu@@UAEXM@Z
 };
 
 class MPOptionsGameplayMenu {
 public:
+    static MPOptionsGameplayMenu* Me();  // ?Me@MPOptionsGameplayMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsGameplayMenu@@UAEXM@Z
 };
 
 class MPOptionsPreferencesMenu {
 public:
+    static MPOptionsPreferencesMenu* Me();  // ?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsPreferencesMenu@@UAEXM@Z
 };
 
@@ -104,12 +128,18 @@ public:
 // ============================================================================
 class MPProfileEditMenu {
 public:
+    static MPProfileEditMenu* Me();  // ?Me@MPProfileEditMenu@@SAPAV1@XZ
     static bool DialogResponseOk(int index);  // ?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z
 };
 
 class MPProfileMainMenu {
 public:
+    static MPProfileMainMenu* Me();  // ?Me@MPProfileMainMenu@@SAPAV1@XZ
     static bool DialogResponseDeleteCancel(int index);  // ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z
+    static bool DialogResponseProfileEdit(int index);   // ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z
+    static bool DialogResponseNoMemCard(int index);     // ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z
+    virtual void Select(int entry_num);  // ?Select@MPProfileMainMenu@@UAEXH@Z (mp.o 0x764210)
+    virtual void OnCross(int c);         // ?OnCross@MPProfileMainMenu@@UAEXH@Z (mp.o 0x733D80)
 };
 
 // ============================================================================
@@ -133,12 +163,15 @@ public:
 namespace kvoicemanager {
 class cVoiceManager {
 public:
-    uint8_t _pad[4];
-    int     mInitialised;  // +0x04
+    uint8_t         _pad[4];
+    int             mInitialised;  // +0x04
     kuju::knetuser::cVoiceNetworkManager mVoiceNetworkManager;  // +0x08
+    uint8_t         _pad2[0x266C - (0x08 + sizeof(kuju::knetuser::cVoiceNetworkManager))];
+    unsigned short  mRemoteListeners;  // +0x266C
 
     void deinitialise();   // ?deinitialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ
     void loadIRXModules(); // ?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ
+    void setRemoteListeners(MPPlayerSet& players);  // ?setRemoteListeners@cVoiceManager@kvoicemanager@kuju@@QAEXAAVMPPlayerSet@@@Z
 private:
     void stopSystem();     // ?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ
     void startLoopback();  // ?startLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ
@@ -146,4 +179,14 @@ private:
     void updateLoopback(); // ?updateLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ
 };
 }
+
+// cBezierTrajectoryInterpolator - kuju spline interpolation (ctor zeros two
+// doubles at 0x73EF10).
+class cBezierTrajectoryInterpolator {
+public:
+    double mInitialDate;   // +0x00
+    double mTimeInterval;  // +0x08
+
+    cBezierTrajectoryInterpolator();  // ??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ
+};
 }
