@@ -322,9 +322,9 @@ void LiveWrapper::ToggleNotificationFlag(unsigned int portNumber,
 }
 
 // ea: 0x71F9D0
-void LiveWrapper::SetSessionID(const XNKID* newSessionID)
+void LiveWrapper::SetSessionID(const XNKID& newSessionID)
 {
-    sessionID = *newSessionID;
+    sessionID = newSessionID;
     for (int v3 = 0; v3 < 4; ++v3)
     {
         // disasm: eax=[ebx-38h]; or eax,[ebx-34h] -> (voiceStatus|bitflags)!=0

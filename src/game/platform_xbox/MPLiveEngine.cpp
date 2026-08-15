@@ -656,7 +656,7 @@ void MPLiveEngine::LeaveLiveSession()
             LiveEngine_SetProperty(uixEngine,
                                    UIX_PROPERTY_ALLOW_GAME_INVITES, 0);
         }
-        LiveWrapper::SetSessionID(&nullSession);
+        LiveWrapper::SetSessionID(nullSession);
     }
 }
 
@@ -891,13 +891,13 @@ void MPLiveEngine::StartLiveSession(sServerCreateParams* sessionParams,
 }
 
 // ea: 0x721880
-void MPLiveEngine::SubmitVoiceData(const XUID* talker, void* buffer,
-                                   unsigned int bufferLength)
+void MPLiveEngine::SubmitVoiceData(const XUID& talker, void* buffer,
+                                   unsigned long bufferLength)
 {
     XHVEngine* voiceEngine = this->voiceEngine;
     if (voiceEngine != nullptr)
     {
-        XHVEngine_SubmitIncomingVoicePacket(voiceEngine, *talker, buffer,
+        XHVEngine_SubmitIncomingVoicePacket(voiceEngine, talker, buffer,
                                             bufferLength);
     }
 }

@@ -379,7 +379,7 @@ public:
     void StartLiveSession(sServerCreateParams* sessionParams,
                           unsigned char publicOccupied,
                           unsigned char privateOccupied);
-    void SubmitVoiceData(const XUID* talker, void* buffer,
-                         unsigned int bufferLength);
+    void SubmitVoiceData(const XUID& talker, void* buffer,
+                         unsigned long bufferLength);  // ?SubmitVoiceData@MPLiveEngine@@UAEXABU_XUID@@PAXK@Z
 };
 static_assert(sizeof(MPLiveEngine) == 0x4600, "MPLiveEngine size mismatch");

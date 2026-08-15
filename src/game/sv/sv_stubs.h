@@ -1665,7 +1665,22 @@ public:
     uint8_t _pad[3];
     bdReference<bdConnection> mConnection;  // +0x04
     int     mClientIndex;   // +0x08
-    uint8_t _pad0C[0x264 - 0x0C];
+    uint8_t mItems[0x30];   // +0x0C MPPlayerItems (48 bytes; full type in mp_types.h)
+    unsigned char mVehicleId;  // +0x3C
+    int     mVehSeatIdx;       // +0x40
+    bool    mInVehicle;        // +0x44
+    uint8_t _pad45[0x50 - 0x45];
+    unsigned int mAnimFlags;   // +0x50
+    uint8_t _pad54[0x88 - 0x54];
+    uint8_t xuid[12];          // +0x88 (XUID, 12 bytes)
+    uint8_t _pad94[0xDC - 0x94];
+    int     mLastVoiceReceivedTime;  // +0xDC
+    uint8_t _padE0[0x254 - 0xE0];
+    bool    mPlayerInfoSet;   // +0x254
+    uint8_t _pad255[0x25C - 0x255];
+    short   mTeam;            // +0x25C
+    short   mRank;            // +0x25E
+    uint8_t _pad260[0x264 - 0x260];
     bool    bSprinting;     // +0x264
     bool    bWalking;       // +0x265
     bool    bCrouching;     // +0x266
@@ -1684,6 +1699,11 @@ public:
     void SetInvalid();                // ?SetInvalid@MPPlayer@@QAEXXZ (mp.o 0x7360E0)
     void DebugRender();               // ?DebugRender@MPPlayer@@QAEXXZ (mp.o 0x736670)
     void SetAngles(const float* angles);  // ?SetAngles@MPPlayer@@QAEXQBM@Z (mp.o 0x7365F0)
+    void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
+    bdReference<bdConnection> GetConnection() const;  // ?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ (mp.o 0x736190)
+    void Reset(bool clearAll);        // ?Reset@MPPlayer@@QAEX_N@Z (mp.o 0x72CC20)
+    bool deserialize(bdReference<bdBitBuffer> buffer);  // ?deserialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
+    void OnModified();                // ?OnModified@MPPlayer@@QAEXXZ (mp.o 0x73073E)
     ~MPPlayer();                      // ??1MPPlayer@@QAE@XZ (mp.o 0x761E30)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1692,6 +1712,10 @@ public:
 protected:
     int FootstepEvent(int surfaceFlags);       // ?FootstepEvent@MPPlayer@@IAEHH@Z (mp.o 0x72DDE0)
     int GroundSurfaceType(int surfaceFlags);   // ?GroundSurfaceType@MPPlayer@@IAEHH@Z (mp.o 0x72DD70)
+    int  ChooseFootYawSide(float maxYawForceThreshold);  // ?ChooseFootYawSide@MPPlayer@@IAEHM@Z (mp.o 0x72D9A0)
+    void PlayAnimFlagAnim(DObj* dobj, unsigned int packBit, int sheet,
+                          int row, int col, bool doStopAnim, float alpha,
+                          float speed, bool force, bool force_val);  // ?PlayAnimFlagAnim@MPPlayer@@IAEXPAVDObj@@IHHH_NMM11@Z (mp.o 0x72D100)
 };
 // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ (mp.o; stub)
 inline Entity* MPPlayer::GetEntity()
@@ -1721,9 +1745,15 @@ struct MPPlayerManager {
                  bool forceSend);  // ?SendAll@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N1@Z (mp.o 0x737930)
     void Send(const bdReference<bdMessage>& message, MPPlayerSet players,
               bool reliable);  // ?Send@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@VMPPlayerSet@@_N@Z (mp.o 0x73A700)
+    void SendOthers(bdReference<bdMessage> message, const MPPlayer* excludePlayer,
+                    bool reliable);  // ?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@QBVMPPlayer@@_N@Z (mp.o 0x748A20)
+    void SendPlayerEnter(MPPlayer* player);  // ?SendPlayerEnter@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7577C0)
     MPPlayerSet allPlayers();       // ?allPlayers@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ (mp.o 0x73A4B0)
     MPPlayerSet allPlayersButMe(int localPlayer);  // ?allPlayersButMe@MPPlayerManager@@QAE?AVMPPlayerSet@@H@Z (mp.o 0x73A590)
     void AddVehicle(Entity* vehicle);  // ?AddVehicle@MPPlayerManager@@QAEXPAVEntity@@@Z (mp.o)
+    ::MPEntityHandle RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
+                                         Entity* owner);  // ?RegisterDroppedItem@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x763830)
+    void FlushBufferedMessages(bdReference<bdConnection> connection);  // ?FlushBufferedMessages@MPPlayerManager@@QAEXV?$bdReference@VbdConnection@@@@@Z (mp.o)
     void SendPlayer(const MPPlayer* player, const bdReference<bdMessage>& message,
                     bool reliable);  // ?SendPlayer@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@_N@Z (mp.o)
     void DebugRender();                 // ?DebugRender@MPPlayerManager@@QAEXXZ (mp.o 0x75A890)
@@ -1746,6 +1776,20 @@ private:
     void HandleMapRestart(const bdReceivedMessage& receivedMsg);  // ?HandleMapRestart@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x75ED70)
     void HandleSessionID(const bdReceivedMessage& receivedMsg);   // ?HandleSessionID@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738B90)
     void HandleJoinableFlag(const bdReceivedMessage& receivedMsg); // ?HandleJoinableFlag@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738DD0)
+    void HandleMute(const bdReceivedMessage& receivedMsg);  // ?HandleMute@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739E90)
+    void HandleFireMissile(const bdReceivedMessage& receivedMsg);  // ?HandleFireMissile@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x7629D0)
+    void HandleDropWeapon(const bdReceivedMessage& receivedMsg);  // ?HandleDropWeapon@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x762F20)
+    void HandleVoiceData(const bdReceivedMessage& receivedMsg);  // ?HandleVoiceData@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739D60)
+    void HandleVehicleRespawn(const bdReceivedMessage& receivedMsg);  // ?HandleVehicleRespawn@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x74DFB0)
+    void HandleGameScore(const bdReceivedMessage& receivedMsg);  // ?HandleGameScore@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739A90)
+    void HandleSDHostBombRequest(const bdReceivedMessage& receivedMsg);  // ?HandleSDHostBombRequest@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738EC0)
+    void HandlePlayerState(const bdReceivedMessage& receivedMsg);  // ?HandlePlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x7578D0)
+    void HandleVoteEnded(const bdReceivedMessage& receivedMsg);  // ?HandleVoteEnded@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738A40)
+    void HandleAreaCaptured(const bdReceivedMessage& receivedMsg);  // ?HandleAreaCaptured@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739350)
+    virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x7625E0)
+    void ClearStateVariables();  // ?ClearStateVariables@MPPlayerManager@@AAEXXZ (mp.o 0x72F060)
+    void ClientDisconnect(MPPlayer* player, bool noScript);  // ?ClientDisconnect@MPPlayerManager@@AAEXQAVMPPlayer@@_N@Z (mp.o 0x73A370)
+    void DisconnectPlayer(MPPlayer* player);  // ?DisconnectPlayer@MPPlayerManager@@AAEXPAVMPPlayer@@@Z (mp.o)
     void SendDroppedItems(MPPlayer* player);  // ?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z (mp.o 0x760710)
 };
 
@@ -1761,6 +1805,9 @@ public:
     bdReference<bdConnection> GetConnectionByIndex(unsigned int peerID);  // ?GetConnectionByIndex@MPPeer@@QAE?AV?$bdReference@VbdConnection@@@@I@Z (mp.o 0x735A70)
     void UpdateQosProbe(bdReference<bdCommonAddr> addr, bool bSuccess,
                         float latency);   // ?UpdateQosProbe@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@_NM@Z (mp.o 0x735B80)
+    int  FindActiveQosProbe(bdReference<bdCommonAddr> address,
+                            const XNKID& SecurityID,
+                            const XNKEY& SecurityKey);  // ?FindActiveQosProbe@MPPeer@@QAEHV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z (mp.o 0x735CC0)
     void Disconnect();                    // ?Disconnect@MPPeer@@QAEXXZ (mp.o 0x761710)
     void DropSplitScreenPlayer(Entity* player);  // ?DropSplitScreenPlayer@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x740610)
     void SendServerParams();              // ?SendServerParams@MPPeer@@QAEXXZ (mp.o 0x75AF60)
@@ -1779,6 +1826,17 @@ public:
                   const math::Dir3& angles, const math::Dir3& velocity,
                   int netIndex, bool fromScript,
                   int typeIndex);  // ?DropItem@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@1H_NH@Z (mp.o 0x...)
+    void DropWeapon(int weapon, int netIndex, const math::Position3& position,
+                    const math::Dir3& angles, const math::Dir3& velocity,
+                    int clipCount, int ammoCount);  // ?DropWeapon@MPPeer@@QAEXHHABVPosition3@math@@ABVDir3@3@1HH@Z (mp.o 0x75C160)
+    void SwapKit(int playerClass, int netIndex);  // ?SwapKit@MPPeer@@QAEXHH@Z (mp.o 0x7442C0)
+    void SendCallForMedic(const Entity* player);  // ?SendCallForMedic@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x745510)
+    void SendBombOperation(const Entity* player, bool defusing);  // ?SendBombOperation@MPPeer@@QAEXPBVEntity@@_N@Z (mp.o 0x745090)
+    void PlayerReviveRequest(Entity* player, Entity* medic);  // ?PlayerReviveRequest@MPPeer@@QAEXPAVEntity@@0@Z (mp.o 0x742670)
+    void SendGameScore(int alliesScore, int axisScore);  // ?SendGameScore@MPPeer@@QAEXHH@Z (mp.o 0x7432F0)
+    void AreaCaptured(int netIndex, int team, int hostOnly);  // ?AreaCaptured@MPPeer@@QAEXHHH@Z (mp.o 0x744400)
+    void MapRestart();  // ?MapRestart@MPPeer@@QAEXXZ (mp.o 0x742DA0)
+    virtual ~MPPeer();  // ??1MPPeer@@UAE@XZ (mp.o 0x7643F0)
     static void operator delete(void* p);  // ??3MPPeer@@SAXPAX@Z (mp.o 0x72C840)
     static void* operator new(unsigned int s);  // ??2MPPeer@@SAPAXI@Z (mp.o 0x72C820)
     bool IsHost();                          // ?IsHost@MPPeer@@QAE_NXZ (mp.o 0x72C8B0)
@@ -1807,7 +1865,6 @@ public:
                         int nGameIndex,
                         EGameConnectionType gameState);  // ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z (mp.o 0x764620)
     void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
-    void MapRestart();                      // ?MapRestart@MPPeer@@QAEXXZ (mp.o 0x742DA0)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

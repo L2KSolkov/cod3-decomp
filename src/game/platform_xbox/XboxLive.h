@@ -184,7 +184,7 @@ public:
                              bool flagState);
     bool GetNotificationFlag(unsigned int portNumber, unsigned int flagID);
     void ToggleNotificationFlag(unsigned int portNumber, unsigned int flagID);
-    void SetSessionID(const XNKID* newSessionID);
+    void SetSessionID(const XNKID& newSessionID);  // ?SetSessionID@LiveWrapper@@QAEXABUXNKID@@@Z
     bool IsTalking(XUID talker, unsigned int controllerIndex);
     HRESULT __stdcall LocalChatDataReady(unsigned int dwLocalPort,
                                          unsigned int dwSize, void* pData);

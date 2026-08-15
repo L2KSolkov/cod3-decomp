@@ -328,6 +328,7 @@ public:
     bdByteBuffer(unsigned int size);
     unsigned int getMaxReadSize() const { return m_size + (unsigned int)(m_data - m_readPtr); }
     const unsigned char* getData() const { return m_data; }
+    bool read(void* data, unsigned int size);              // ?read@bdByteBuffer@@QAE_NPAXI@Z
 };
 static_assert(sizeof(bdByteBuffer) == 0x18, "bdByteBuffer size mismatch");
 static_assert(offsetof(bdByteBuffer, m_size) == 0x08, "bdByteBuffer::m_size offset mismatch");
@@ -383,6 +384,8 @@ public:
                           unsigned int max, bool typeChecked);  // ?readRangedUInt32@bdBitBuffer@@QAE_NAAIII_N@Z
     bool readRangedFloat32(float& value, float min, float max,
                            float scale);                   // ?readRangedFloat32@bdBitBuffer@@QAE_NAAMMMM@Z
+    bool readInt32(int& value);                            // ?readInt32@bdBitBuffer@@QAE_NAAH@Z
+    bool testBool();                                       // ?testBool@bdBitBuffer@@QAE_NXZ
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);

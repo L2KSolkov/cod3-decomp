@@ -182,6 +182,24 @@ bool bdBitBuffer::readRangedFloat32(float& value, float min, float max,
     return true;
 }
 
+bool bdBitBuffer::readInt32(int& value)
+{
+    (void)value;
+    return true;
+}
+
+bool bdBitBuffer::testBool()
+{
+    return true;
+}
+
+bool bdByteBuffer::read(void* data, unsigned int size)
+{
+    (void)data;
+    (void)size;
+    return true;
+}
+
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)
 {
     (void)type;
