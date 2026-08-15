@@ -80,11 +80,26 @@ struct Bitmask {
 template <int N>
 struct BitSet {
     unsigned char mBits[(N + 7) / 8];  // +0x00
+
+    enum EInitializer : int32_t {
+        UNINITIALIZED = 0x0,
+    };
+
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
+    BitSet(EInitializer) {}  // ??0?$BitSet@$0FEA@@@QAE@W4EInitializer@0@@Z (g.o 0x4AE780)
 
     // ?GetWord@?$BitSet@$0FEA@@@QBEIH@Z / ?GetNumWords@?$BitSet@$0FEA@@@SAHXZ (g.o)
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
     static int GetNumWords() { return (N + 31) / 32; }
+    void Clear();  // ?Clear@?$BitSet@$0FEA@@@QAEXXZ (g.o 0x4AE790)
+
+    class iterator {
+    public:
+        unsigned int m_cur_val;  // +0x00
+        int m_word_idx;          // +0x04
+
+        bool compare(const iterator& rhs);  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
+    };
 };
 
 // ============================================================================
@@ -109,6 +124,24 @@ struct reserved_dlist {
 };
 static_assert(sizeof(reserved_dlist<int>) == 0x10,
               "reserved_dlist size mismatch");
+
+template <typename T>
+void reserved_dlist<T>::validate() const
+{
+}
+
+template <int N>
+void BitSet<N>::Clear()
+{
+    for (int i = GetNumWords() - 1; i >= 0; --i)
+        ((unsigned int*)mBits)[i] = 0;
+}
+
+template <int N>
+bool BitSet<N>::iterator::compare(const BitSet<N>::iterator& rhs)
+{
+    return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
+}
 
 // ============================================================================
 // SimpleCollisionDesc - impact point + normal (32 bytes)

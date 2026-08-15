@@ -453,6 +453,8 @@ struct trigger_info_t {
     DbLinkedHandle<EntityHandleDb, Entity> mOtherEntity;  // +0x04
     int useCount;                                         // +0x08
     int otherUseCount;                                    // +0x0C
+
+    void Clear();  // ?Clear@trigger_info_t@@QAEXXZ (g.o 0x4AFD20)
 };
 static_assert(sizeof(trigger_info_t) == 0x10, "trigger_info_t size mismatch");
 
@@ -2157,7 +2159,7 @@ float __fastcall Actor_CanSeePointEx(
 bool G_IsPlayerDrivingVehicle(Entity* player);
 const float VectorDistanceSquared2D(const math::Position3& p1,
                                     const math::Position3& p2);
-math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
+const math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
 void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
                                  Entity* ent, int a5);
 
@@ -2915,6 +2917,10 @@ struct cdl_object_t {
     float    center[3];     // +0x08 (Position3::Packed)
     float    box_radius[3]; // +0x14 (Dir3::Packed)
     float    sphere_radius; // +0x20
+
+    const math::Position3 get_center_local() const;  // ?get_center_local@cdl_object_t@@QBE?BVPosition3@math@@XZ (g.o 0x4AECC0)
+    math::Dir3 get_box_radius() const;               // ?get_box_radius@cdl_object_t@@QBE?AVDir3@math@@XZ (g.o 0x4AED30)
+    math::Position3 get_max() const;                 // ?get_max@cdl_object_t@@QBE?AVPosition3@math@@XZ (g.o 0x4AEDA0)
 };
 static_assert(sizeof(cdl_object_t) == 0x24, "cdl_object_t size mismatch");
 struct cdl_brush_t {
@@ -3049,6 +3055,9 @@ public:
     rtree_root_t rtree_root;  // +0x90 (traverse_rtree root; verified disasm)
     uint8_t _padC0[0xC4 - 0xC0];
     void*   rtree_data;       // +0xC4
+
+    unsigned int size() const;              // ?size@CGBank@@QBEIXZ (g.o 0x4AEF00)
+    const cdl_object_t& get_object(unsigned short index) const;  // ?get_object@CGBank@@QBEABUcdl_object_t@@G@Z (g.o 0x4AEF10)
 };
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 class CGBankManager : public AssetBankSet {
@@ -3062,6 +3071,7 @@ public:
     int     mIds[99];       // +0x19C (pak ids per bank slot)
     CGBankManager();        // ??0CGBankManager@@QAE@XZ (game.o 0x6492D0)
     virtual ~CGBankManager();  // ??1CGBankManager@@UAE@XZ (game.o 0x611B70)
+    CGBank* GetBank(TPakId pakId);  // ?GetBank@CGBankManager@@QAEPAVCGBank@@W4TPakId@@@Z (g.o 0x4AEFC0)
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
 private:
     void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)
@@ -3955,6 +3965,8 @@ public:
     DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;  // +0x10
     Handle      mTaskHandle;       // +0x14
     unsigned int mFlags;           // +0x18 Bitmask<unsigned int>
+
+    bool IsActive() const;  // ?IsActive@Task@@QBE_NXZ (g.o 0x4AF150)
 
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o 0x4F9970

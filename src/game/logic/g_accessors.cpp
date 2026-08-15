@@ -1816,8 +1816,8 @@ public:
         mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
     }
     SizedHandle(Handle h) { mVal = h.mVal; }  // ??0?$SizedHandle@$0M@$0BE@@@QAE@VHandle@@@Z (g.o 0x4AE310)
-    unsigned int GetIndex() const { return mVal & ((1 << INDEX_BITS) - 1); }  // g.o 0x4AE330
-    unsigned int GetKey() const { return mVal >> INDEX_BITS; }                // g.o 0x4AE340
+    int GetIndex() const { return (int)(mVal & ((1 << INDEX_BITS) - 1)); }  // g.o 0x4AE330
+    int GetKey() const { return (int)(mVal >> INDEX_BITS); }                // g.o 0x4AE340
 };
 template class SizedHandle<12, 20>;
 
@@ -2030,3 +2030,170 @@ T* IVPointer<T>::Deref() const
 template class IVPointer<XModel>;
 template class IVPointer<PhysData>;
 template class IVPointer<Destructible>;
+
+// ============================================================================
+// Batch 26a: misc small accessors (g.o 0x4AD340-0x4B0100)
+// ============================================================================
+
+// cFreeList<DObj>/<trRefEntity> (g.o 0x4AD560-0x4ADBE0)
+template class cFreeList<DObj>;
+template class cFreeList<trRefEntity>;
+
+// tl_clamp / ae_max / ae_min (g.o 0x4AEA60-0x4AEAB0)
+template <typename T, typename U, typename V>
+T tl_clamp(const T& v, const U& mn, const V& mx)
+{
+    if (mn > v)
+        return (T)mn;
+    if (v > mx)
+        return (T)mx;
+    return v;
+}
+template float tl_clamp<float, float, float>(const float&, const float&,
+                                             const float&);
+template <typename T>
+T ae_max(const T& lhs, const T& rhs)
+{
+    return (lhs <= rhs) ? rhs : lhs;
+}
+template int ae_max<int>(const int&, const int&);
+template <typename T>
+T ae_min(const T& lhs, const T& rhs)
+{
+    return (lhs >= rhs) ? rhs : lhs;
+}
+template int ae_min<int>(const int&, const int&);
+
+// PakDelete (g.o 0x4AEAD0)
+template <typename T>
+void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
+{
+    if (obj != nullptr)
+        PakManager::sInst->MemFree(id, obj, bUseActorHeap);
+}
+template void PakDelete<vehicle_follow>(TPakId, vehicle_follow*, bool);
+
+// inside_aabb_aabb (g.o 0x4AEBB0)
+bool inside_aabb_aabb(const math::Position3& min0, const math::Position3& max0,
+                      const math::Position3& min1, const math::Position3& max1)
+{
+    __m128 d = _mm_max_ps(_mm_sub_ps(min1.v, min0.v),
+                          _mm_sub_ps(max0.v, max1.v));
+    return (_mm_movemask_ps(_mm_cmplt_ps(d, _mm_setzero_ps())) & 7) == 7;
+}
+
+// trace_t::Clear (g.o 0x4AEC20)
+void trace_t::Clear()
+{
+    normal.v = _mm_setzero_ps();
+    endpos.v = _mm_setzero_ps();
+    fraction = 0.0f;
+    surfaceFlags = 0;
+    contents = 0;
+    shader = nullptr;
+    mEntity.mHandle.mVal = 0;
+    partName.mHash = 0;
+    partGroup = HITLOC_NONE;
+    allsolid = 0;
+    startsolid = 0;
+    check_decal = false;
+}
+
+// cdl_object_t accessors (g.o 0x4AECC0-0x4AEDA0)
+const math::Position3 cdl_object_t::get_center_local() const
+{
+    math::Position3 r;
+    r.v = _mm_set_ps(0.0f, center[2], 0.0f, center[0]);
+    return r;
+}
+math::Dir3 cdl_object_t::get_box_radius() const
+{
+    math::Dir3 r;
+    r.v = _mm_set_ps(0.0f, box_radius[2], 0.0f, box_radius[0]);
+    return r;
+}
+math::Position3 cdl_object_t::get_max() const
+{
+    math::Position3 r;
+    r.v = _mm_add_ps(_mm_set_ps(0.0f, center[2], 0.0f, center[0]),
+                     _mm_set_ps(0.0f, box_radius[2], 0.0f, box_radius[0]));
+    return r;
+}
+
+// DCGSet / CGBank (g.o 0x4AEE40-0x4AEFC0)
+unsigned int DCGSet::size() const
+{
+    return (unsigned int)objects_m_count;
+}
+const cdl_object_t& DCGSet::get_object(unsigned short index) const
+{
+    return ((const cdl_object_t*)objects_m_elements)[index];
+}
+unsigned int CGBank::size() const
+{
+    return (unsigned int)objects.m_count;
+}
+const cdl_object_t& CGBank::get_object(unsigned short index) const
+{
+    return ((const cdl_object_t*)objects.m_elements)[index];
+}
+CGBank* CGBankManager::GetBank(TPakId pakId)
+{
+    return mBankArray[pakId];
+}
+
+// XModel / XModelParts (g.o 0x4AF100 / 0x4AF110)
+int XModelParts::GetNumBones() const
+{
+    return (int)mHierarchy.mSize;
+}
+int XModel::GetNumBones(int lodIndex) const
+{
+    const XModelParts* parts = GetXModelParts(lodIndex);
+    if (parts != nullptr)
+        return (int)parts->mHierarchy.mSize;
+    return 0;
+}
+
+// Task::IsActive (g.o 0x4AF150)
+bool Task::IsActive() const
+{
+    return (mFlags & 4) == 0;
+}
+
+// EntityState::SetLerpOrigin (g.o 0x4AF2A0)
+void EntityState::SetLerpOrigin(const math::Position3& origin)
+{
+    if (lerpOrigin.v.m128_f32[0] != origin.v.m128_f32[0]
+        || lerpOrigin.v.m128_f32[1] != origin.v.m128_f32[1]
+        || lerpOrigin.v.m128_f32[2] != origin.v.m128_f32[2])
+    {
+        lerpOrigin.v = origin.v;
+        eFlags |= 0x40000000;
+    }
+}
+
+// Entity::AssignHandle (g.o 0x4AF3A0)
+void Entity::AssignHandle(Handle h)
+{
+    mHandle.mHandle.mVal = h.mVal;
+}
+
+// trigger_info_t::Clear (g.o 0x4AFD20)
+void trigger_info_t::Clear()
+{
+    mEntity.mHandle.mVal = 0;
+    mOtherEntity.mHandle.mVal = 0;
+    useCount = 0;
+    otherUseCount = 0;
+}
+
+// VehicleNodeAllocator ctor (g.o 0x4B0040)
+VehicleNodeAllocator::VehicleNodeAllocator()
+{
+    m_numNodes = 0;
+    m_numBlocks = 0;
+    m_currentBlockIndex = 0;
+    for (int i = 0; i < 16; ++i)
+        m_pNodeBlocks[i] = nullptr;
+}

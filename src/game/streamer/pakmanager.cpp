@@ -1639,6 +1639,9 @@ public:
         dlist_node* m_node;  // +0x00
         dlist_node* m_next;  // +0x04
 
+        // ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@PBUdlist_node@1@0@Z (g.o 0x4AE560)
+        const_iterator(const dlist_node* cur, const dlist_node* next);
+
         // ??0const_iterator@...@QAE@ABViterator@1@@Z (0x6837A0)
         const_iterator(const iterator& it)
             : m_node(it.m_node), m_next(it.m_next) {}
@@ -1651,10 +1654,20 @@ public:
 
         // ??Econst_iterator@?$reserved_dlist@VPakFile@@@@QAEAAV01@XZ (g.o 0x4ACF00)
         const_iterator& operator++();
+
+        // ?compare@const_iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV12@@Z (g.o 0x4AE580)
+        bool compare(const const_iterator& rhs) const;
     };
 
     // ?node_to_object@?$reserved_dlist@VPakFile@@@@SAPBVPakFile@@PBUdlist_node@1@@Z (g.o 0x4AE480)
     static const T* node_to_object(const dlist_node* dlist_node);
+
+    // ?get_head@?$reserved_dlist@VPakFile@@@@QBEPBUdlist_node@1@XZ (g.o 0x4AE7B0)
+    const dlist_node* get_head() const { return m_head; }
+    // ?empty@?$reserved_dlist@VPakFile@@@@QBE_NXZ (g.o 0x4AE7C0)
+    bool empty() const { return m_head == &m_end; }
+    // ?validate@?$reserved_dlist@VPakFile@@@@QBEXXZ (g.o 0x4AE7E0)
+    void validate() const;
 
     // ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ (0x686E60)
     iterator begin()
@@ -1696,6 +1709,26 @@ const PakFile* reserved_dlist<PakFile>::node_to_object(
     const reserved_dlist<PakFile>::dlist_node* dlist_node)
 {
     return (const PakFile*)dlist_node;
+}
+
+template <>
+reserved_dlist<PakFile>::const_iterator::const_iterator(
+    const reserved_dlist<PakFile>::dlist_node* cur,
+    const reserved_dlist<PakFile>::dlist_node* next)
+    : m_node((dlist_node*)cur), m_next((dlist_node*)next)
+{
+}
+
+template <>
+bool reserved_dlist<PakFile>::const_iterator::compare(
+    const reserved_dlist<PakFile>::const_iterator& rhs) const
+{
+    return rhs.m_next == m_next;
+}
+
+template <>
+void reserved_dlist<PakFile>::validate() const
+{
 }
 
 class PakManager {

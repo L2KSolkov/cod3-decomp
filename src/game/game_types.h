@@ -218,6 +218,7 @@ public:
     EntityState();                            // ??0EntityState@@QAE@XZ (game.o 0x620480)
     void SetLerpAngles(const math::Position3& angles);  // ?SetLerpAngles@EntityState@@QAEXABVPosition3@math@@@Z (cg.o 0x6BBAC0)
     const math::Position3 GetLerpAngles() const;  // ?GetLerpAngles@EntityState@@QBE?BVPosition3@math@@XZ (g.o 0x4A5750)
+    void SetLerpOrigin(const math::Position3& origin);  // ?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z (g.o 0x4AF2A0)
 
     uint8_t  eType;                               // +0x00
     uint8_t  loopSound;                           // +0x01
@@ -380,6 +381,7 @@ public:
     DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;  // ?GetHandle@Entity@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ (g.o 0x4A67B0)
     void SetEntityArrayIndex(int v);              // ?SetEntityArrayIndex@Entity@@QAEXH@Z (g.o 0x4A67D0)
     int GetEntityArrayIndex() const;              // ?GetEntityArrayIndex@Entity@@QBEHXZ (g.o 0x4A67F0)
+    void AssignHandle(Handle h);                  // ?AssignHandle@Entity@@QAEXVHandle@@@Z (g.o 0x4AF3A0)
     TPakId GetPakId() const;                      // ?GetPakId@Entity@@QBE?AW4TPakId@@XZ (g.o 0x4A6800)
     DObj* GetDObj();                              // ?GetDObj@Entity@@QAEPAVDObj@@XZ (g.o 0x4A6820)
     void SetDestructible(IVPointer<Destructible> d);  // ?SetDestructible@Entity@@QAEXV?$IVPointer@VDestructible@@@@@Z (g.o 0x4A68B0)

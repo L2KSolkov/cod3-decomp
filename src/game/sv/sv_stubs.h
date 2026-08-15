@@ -15,6 +15,8 @@
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
 
+struct cdl_object_t;  // full definition in game/logic/g_local.h
+
 // font_index - FE font selection enum (also defined in ui_types.h; guarded
 // because sv_stubs.h is included by many TUs that cannot take ui_types.h).
 #ifndef COD3_FONT_INDEX_DEFINED
@@ -76,6 +78,8 @@ public:
     int      _6C;                      // +0x6C
 
     int get_contents() const;          // ?get_contents@DCGSet@@QBEHXZ
+    unsigned int size() const;              // ?size@DCGSet@@QBEIXZ (g.o 0x4AEE40)
+    const cdl_object_t& get_object(unsigned short index) const;  // ?get_object@DCGSet@@QBEABUcdl_object_t@@G@Z (g.o 0x4AEE50)
 };
 static_assert(sizeof(DCGSet) == 0x70, "DCGSet size mismatch");
 static_assert(offsetof(DCGSet, objects_m_count) == 0x04, "DCGSet::objects offset");
@@ -1327,6 +1331,8 @@ struct VehicleNodeAllocator {
     uint16_t m_currentBlockIndex;  // +0x04
     uint16_t spad;              // +0x06
     void*    m_pNodeBlocks[16]; // +0x08 (64 bytes)
+
+    VehicleNodeAllocator();  // ??0VehicleNodeAllocator@@QAE@XZ (g.o 0x4B0040)
     void FreeAll();   // ?FreeAll@VehicleNodeAllocator@@QAEXXZ
     void Initialize();  // ?Initialize@VehicleNodeAllocator@@QAEXXZ
     vehicle_node_t* AllocNode();  // ?AllocNode@VehicleNodeAllocator@@QAEPAUvehicle_node_t@@XZ
@@ -1558,9 +1564,11 @@ public:
     void*            mAnimDef;                       // +0x38 nalBaseSkeleton*
     InplaceString    mName;                          // +0x3C
     const char* GetBoneName(unsigned int i) const;   // ?GetBoneName@XModelParts@@QBEPBDI@Z
+    int GetNumBones() const;  // ?GetNumBones@XModelParts@@QBEHXZ (g.o 0x4AF100)
 };
 
-struct XModel {
+class XModel {
+public:
     uint8_t      _pad0[0x20];  // +0x00
     XModelParts* parts;        // +0x20
     XModelLod*   lod[5];       // +0x24
@@ -1576,6 +1584,7 @@ struct XModel {
     const char* GetName() const;  // ?GetName@XModel@@QBEPBDXZ
     XModelParts* GetXModelParts(int lodIndex);        // ?GetXModelParts@XModel@@QAEPAVXModelParts@@H@Z
     const XModelParts* GetXModelParts(int lodIndex) const;  // ?GetXModelParts@XModel@@QBEPBVXModelParts@@H@Z
+    int GetNumBones(int lodIndex) const;  // ?GetNumBones@XModel@@QBEHH@Z (g.o 0x4AF110)
     static int GetNumBones(XModel* model, int lodIndex);
 };
 

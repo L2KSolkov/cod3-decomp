@@ -37,6 +37,7 @@ struct trace_t {
 
     void check_for_decal(float radius);  // ?check_for_decal@trace_t@@QAEXM@Z (g.o 0x4A4FD0)
     bool decal_ok();                     // ?decal_ok@trace_t@@QAE_NXZ (g.o 0x4A4FF0)
+    void Clear();                        // ?Clear@trace_t@@QAEXXZ (g.o 0x4AEC20)
 };
 static_assert(sizeof(trace_t) == 0x50, "trace_t size mismatch");
 static_assert(offsetof(trace_t, endpos) == 0x00, "trace_t::endpos offset mismatch");

@@ -1159,7 +1159,8 @@ static_assert(sizeof(PathNodes::PathNode) == 0x84, "PathNode size mismatch");
 // ============================================================================
 // InplaceString — in-place char* (4 bytes)
 // ============================================================================
-struct InplaceString {
+class InplaceString {
+public:
     char* mStr;  // +0x00
 
     bool empty() const;  // ?empty@InplaceString@@QBE_NXZ (streamer.o 0x6631D0)
