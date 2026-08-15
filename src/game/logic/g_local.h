@@ -2348,6 +2348,7 @@ struct nglTexture;
 class DebugRender {
 public:
     static DebugRender sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20 (physics.o)
+    static DebugRender* Inst();  // ?Inst@DebugRender@@SAPAV1@XZ
     // render.o instance state (IDA-verified 0x94 bytes)
     struct nglMesh* mDebugSphereMesh;       // +0x00
     struct nglMesh* mDebugCylinderMesh;     // +0x04
@@ -3679,15 +3680,16 @@ void  G_ParseScrVehicleInfo(void);                                 // g.o 0x4639
 void  ParseVehicleConfigString(const char* szKey, const ConfigString* pCfgStr);        // g.o 0x44EC90
 void  ParseVehiclePhysicsConfigString(const char* szKey, const ConfigString* pCfgStr); // g.o 0x463730
 
-struct StatusBar {
-    static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
-    static void Init();               // ?Init@StatusBar@@YAXXZ
-    static void Render();             // ?Render@StatusBar@@SAXXZ
-};
+namespace StatusBar {
+extern cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
+void Init();                      // ?Init@StatusBar@@YAXXZ
+void Render();                    // ?Render@StatusBar@@YAXXZ
+}
 
-struct MemGraph {
-    static void Render();             // ?Render@MemGraph@@SAXXZ
-};
+namespace MemGraph {
+void Render();           // ?Render@MemGraph@@YAXXZ
+void RenderResources();  // ?RenderResources@MemGraph@@YAXXZ
+}
 
 namespace AeStringSupport {
 extern void CStrToAeStr(char* oBuff, int* oLen, int capacity,

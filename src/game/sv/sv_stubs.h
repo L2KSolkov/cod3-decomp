@@ -222,6 +222,9 @@ public:
     float        mElapsedTime;      // +0x10
 
     static ServerTime sInst;        // ?sInst@ServerTime@@0V1@A
+    static ServerTime* Inst();      // ?Inst@ServerTime@@SAPAV1@XZ
+    int GetTickMSec() const;        // ?GetTickMSec@ServerTime@@QBEHXZ
+    float GetTickDelta() const;     // ?GetTickDelta@ServerTime@@QBEMXZ
 };
 static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 
@@ -1184,14 +1187,21 @@ private:
 static_assert(sizeof(PathNodeMgr) == 12,
               "PathNodeMgr size mismatch (opaque)");
 
-// StreamZoneManager - streaming level cell manager (opaque)
+// StreamZoneManager - streaming level cell manager (opaque; real layout
+// verified against IDA in pakmanager.cpp: mInitialPosition +0x1A0,
+// mLastPosition +0x1B0, mInitialCell +0x1C0, mLastCellNum +0x1C4)
 class StreamZoneManager {
 public:
-    uint8_t _pad[0x8];
-    int          mLastCellNum;      // +0x08
-    math::Position3 mInitialPosition;  // +0x0C
-    int          mInitialCell;      // +0x1C
+    uint8_t _pad[0x1A0];
+    math::Position3 mInitialPosition;  // +0x1A0
+    uint8_t _pad2[0x1C0 - 0x1B0];
+    int          mInitialCell;      // +0x1C0
+    int          mLastCellNum;      // +0x1C4
     static StreamZoneManager* sInst;  // ?sInst@StreamZoneManager@@2PAV1@A
+    static StreamZoneManager* Inst();  // ?Inst@StreamZoneManager@@SAPAV1@XZ
+    int GetLastCellNum() const;     // ?GetLastCellNum@StreamZoneManager@@QBEHXZ
+    int GetInitialCell() const;     // ?GetInitialCell@StreamZoneManager@@QBEHXZ
+    math::Position3 GetInitialPosition() const;  // ?GetInitialPosition@StreamZoneManager@@QBE?AVPosition3@math@@XZ
     int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
     void Update(int cellNum, const math::Position3* pos, bool forceReset);  // ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ

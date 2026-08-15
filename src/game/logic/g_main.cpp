@@ -23,6 +23,70 @@ class controller { public:
 };
 
 // ?sInstHolder@InteractionController@@2UInstanceHolder@1@A (g.o BSS @ 0xF25AE0)
+
+// ============================================================================
+// g.o accessor cluster (Inst / InplaceString / ServerTime / StreamZoneManager)
+// ============================================================================
+// ea: 0x00448B20 / 0x00448B30 / 0x00448B40
+ServerTime* ServerTime::Inst()
+{
+    return &sInst;
+}
+int ServerTime::GetTickMSec() const
+{
+    return mTickMSec;
+}
+float ServerTime::GetTickDelta() const
+{
+    return mTickDelta;
+}
+
+// ea: 0x0044AAB0
+DebugRender* DebugRender::Inst()
+{
+    return &DebugRender::sInst;
+}
+
+// ea: 0x00448AB0 / 0x00448AC0 / 0x00448AD0 / 0x00448AE0
+StreamZoneManager* StreamZoneManager::Inst()
+{
+    return StreamZoneManager::sInst;
+}
+int StreamZoneManager::GetLastCellNum() const
+{
+    return mLastCellNum;
+}
+int StreamZoneManager::GetInitialCell() const
+{
+    return mInitialCell;
+}
+math::Position3 StreamZoneManager::GetInitialPosition() const
+{
+    return mInitialPosition;
+}
+
+// ea: 0x00448A00 / 0x00448A10 / 0x00448A20 / 0x00448A50 / 0x00448A80
+const char* InplaceString::c_str() const
+{
+    return mStr;
+}
+InplaceString::operator const char*() const
+{
+    return mStr;
+}
+bool InplaceString::operator<(const char* rhs) const
+{
+    return _stricmp(mStr, rhs) < 0;
+}
+bool InplaceString::operator==(const char* rhs) const
+{
+    return _stricmp(mStr, rhs) == 0;
+}
+bool InplaceString::operator!=(const char* rhs) const
+{
+    return _stricmp(mStr, rhs) != 0;
+}
+
 InteractionController::InstanceHolder InteractionController::sInstHolder;
 
 // ea: 0x004A81E0 (g.o inline COMDAT)
@@ -76,9 +140,11 @@ extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 
 // ea: 0x00448B70
-void MemGraph_RenderResources(void)
+namespace MemGraph {
+void RenderResources(void)
 {
     ;
+}
 }
 
 // ea: 0x0044AB50
@@ -287,9 +353,11 @@ void G_SendClientMessages(void)
 }
 
 // ea: 0x00448B50
-void StatusBar::Init()
+namespace StatusBar {
+void Init()
 {
     sStatusBarActive = Cvar_Get("statusbar", "1", 256);
+}
 }
 
 // ea: 0x00450CF0

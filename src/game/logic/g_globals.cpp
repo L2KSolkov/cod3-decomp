@@ -282,7 +282,9 @@ TestFPS* TestFPS::sInst;                     // ?sInst@TestFPS@@2PAV1@A
 TimerRenderBars TimerRenderBars::sInst;      // ?sInst@TimerRenderBars@@0V1@A
 TaskSys* TaskSys::sInst;                     // ?sInst@TaskSys@@0V1@A
 void* DynamicDecalMgr::sInst;                // ?sInst@DynamicDecalMgr@@2PAV1@A
-cvar_t* StatusBar::sStatusBarActive = nullptr;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
+namespace StatusBar {
+cvar_t* sStatusBarActive = nullptr;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
+}
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;

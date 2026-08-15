@@ -885,7 +885,8 @@ draw_box:
 }
 
 // ea: 0x00460860
-void StatusBar::Render()
+namespace StatusBar {
+void Render()
 {
     if (StatusBar::sStatusBarActive->integer == 0)
         return;
@@ -987,9 +988,11 @@ void StatusBar::Render()
     DebugRender::RenderText(txt, 65, yOff + 440, Color(txtCol[0], txtCol[1], txtCol[2], txtCol[3]), 1.0f,
                             textScale);
 }
+}
 
 // ea: 0x00465710
-void MemGraph::Render()
+namespace MemGraph {
+void Render()
 {
     if (gRenderMemGraph == 0)
         return;
@@ -1135,6 +1138,7 @@ void MemGraph::Render()
         }
         node = node->m_dlist_node.m_next;
     }
+}
 }
 
 // ea: 0x0045C5F0

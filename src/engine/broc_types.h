@@ -1138,6 +1138,11 @@ struct InplaceString {
     char* mStr;  // +0x00
 
     bool empty() const;  // ?empty@InplaceString@@QBE_NXZ (streamer.o 0x6631D0)
+    const char* c_str() const;            // ?c_str@InplaceString@@QBEPBDXZ
+    operator const char*() const;         // ??BInplaceString@@QBEPBDXZ
+    bool operator<(const char* rhs) const;    // ??MInplaceString@@QBE_NPBD@Z
+    bool operator==(const char* rhs) const;   // ??8InplaceString@@QBE_NPBD@Z
+    bool operator!=(const char* rhs) const;   // ??9InplaceString@@QBE_NPBD@Z
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(InplaceString) == 4, "InplaceString size mismatch");
 
