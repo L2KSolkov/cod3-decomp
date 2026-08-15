@@ -929,7 +929,11 @@ public:
         ae_sized_array<Entity*, 4096>::const_iterator begin,
         ae_sized_array<Entity*, 4096>::const_iterator end) const;  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVstring@Broc@@V23@1@Z
     void Compact();                         // ?Compact@EntityHandleDb@@QAEXXZ
+
+private:
     void Validate();                        // ?Validate@EntityHandleDb@@AAEXXZ
+
+public:
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");

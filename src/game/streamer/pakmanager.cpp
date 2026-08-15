@@ -1646,8 +1646,7 @@ public:
         const_iterator(const iterator& it)
             : m_node(it.m_node), m_next(it.m_next) {}
         // ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z (g.o 0x4B1920)
-        const_iterator(const const_iterator& rhs)
-            : m_node(rhs.m_node), m_next(rhs.m_next) {}
+        const_iterator(const const_iterator& rhs);
 
         // ??Dconst_iterator@...@QBEPBVT@@XZ (0x686200)
         const T* operator*() const
@@ -1741,6 +1740,13 @@ bool reserved_dlist<PakFile>::const_iterator::compare(
     const reserved_dlist<PakFile>::const_iterator& rhs) const
 {
     return rhs.m_next == m_next;
+}
+
+template <>
+reserved_dlist<PakFile>::const_iterator::const_iterator(
+    const reserved_dlist<PakFile>::const_iterator& rhs)
+    : m_node(rhs.m_node), m_next(rhs.m_next)
+{
 }
 
 template <>
