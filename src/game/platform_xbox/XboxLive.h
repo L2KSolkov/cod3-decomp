@@ -224,7 +224,7 @@ public:
                     bool shouldMute);
     void SetRemoteVoiceComm(const XUID* remoteID,
                             UIX_VOICE_STATUS_TYPE commStatus);
-    void RemoveRemotePlayer(const XUID* remotePlayer);
+    void RemoveRemotePlayer(const XUID& remotePlayer);  // ?RemoveRemotePlayer@LiveWrapper@@QAEXABU_XUID@@@Z
     void ClearRemotePlayers();
     void SetVTS(unsigned int controllerIndex, bool vtsOn);
     void ToggleVTS(unsigned int controllerIndex);

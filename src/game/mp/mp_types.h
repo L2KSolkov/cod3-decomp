@@ -20,8 +20,12 @@ class Entity;  // game_types.h
 class MPPlayerSet {
 public:
     unsigned short mBitPlayers;  // +0x00
+    enum eDefaultSets : int {
+        eEveryone = 0,
+    };
 
     MPPlayerSet() : mBitPlayers(0) {}
+    MPPlayerSet(eDefaultSets e);  // ??0MPPlayerSet@@QAE@W4eDefaultSets@0@@Z (mp.o 0x730260)
     bool containsPlayer(unsigned int index) const;  // ?containsPlayer@MPPlayerSet@@QBE_NI@Z (mp.o 0x72A580)
     unsigned long numberOfPlayers() const;          // ?numberOfPlayers@MPPlayerSet@@QBEKXZ (mp.o 0x730490)
     unsigned long highestPlayerIndex() const;       // ?highestPlayerIndex@MPPlayerSet@@QBEKXZ (mp.o 0x7302D0)
@@ -147,10 +151,26 @@ struct TPlayerStatsInfo {
     int   mMaxRange;             // +0x10
 };
 
+// EPlayerClass - player classes (mp.o ePlayerStats.cpp)
+enum EPlayerClass : int {
+    kPlayerClassAssault = 0,
+    kPlayerClassInfantry = 1,
+    kPlayerClassRifleman = 2,
+    kPlayerClassMedic = 3,
+    kPlayerClassSupport = 4,
+    kPlayerClassAntiArmor = 5,
+    kPlayerClassScout = 6,
+    kPlayerClassCount = 7,
+    kPlayerClassMin = 0,
+    kPlayerClassMax = 6,
+    kPlayerClassInvalid = -1,
+};
+
 namespace PlayerStats {
 int ScoreForStat(int stat, int value);  // ?ScoreForStat@PlayerStats@@YAHHH@Z (mp.o 0x734660)
 int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o 0x7346D0)
 int TotalScoreForSingleStat(int stat, int value);  // ?TotalScoreForSingleStat@PlayerStats@@YAHHH@Z (mp.o 0x7347C0)
+EPlayerClass GetStatSpecificToAPlayerClass(int stat);  // ?GetStatSpecificToAPlayerClass@PlayerStats@@YA?AW4EPlayerClass@@H@Z (mp.o 0x734850)
 extern TPlayerStatsInfo playerStatsInfo[];  // ?playerStatsInfo@PlayerStats@@3PAUTPlayerStatsInfo@@A @ 0xE36E90
 }
 
@@ -245,6 +265,9 @@ public:
     void SeatChange(MPPlayer* player, int newSeatIdx);  // ?SeatChange@MPVehicle@@QAEXPAVMPPlayer@@H@Z (mp.o 0x72E780)
     void GetOutOfVehicle(MPPlayer* player, int health, bool unlinkVehicle);  // ?GetOutOfVehicle@MPVehicle@@QAEXPAVMPPlayer@@H_N@Z (mp.o)
     bool IsPhysicsPaused() const;       // ?IsPhysicsPaused@MPVehicle@@QBE_NXZ (mp.o 0x736EE0)
+    void Step();                        // ?Step@MPVehicle@@QAEXXZ (mp.o 0x75D410)
+    void SetGunnerState(int state);     // ?SetGunnerState@MPVehicle@@QAEXH@Z (mp.o 0x72E4D0)
+    void UpdateInterpolation(const kuju::knet::sTime& time);  // ?UpdateInterpolation@MPVehicle@@QAEXABVsTime@knet@kuju@@@Z (mp.o 0x755D80)
 };
 static_assert(sizeof(MPVehicle) == 0x210, "MPVehicle size mismatch");
 
@@ -286,6 +309,7 @@ public:
     static bool DeserializeFireMissile(bdReference<bdBitBuffer> buffer,
                                        bool do_effects);  // ?DeserializeFireMissile@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@_N@Z (mp.o 0x7621A0)
     static bool DeserializeDropWeapon(bdReference<bdBitBuffer> buffer);  // ?DeserializeDropWeapon@MPPlayerItems@@SA_NV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x761EA0)
+    short FindFreeSlot(EDroppedItemTypes item);  // ?FindFreeSlot@MPPlayerItems@@QAEFW4EDroppedItemTypes@@@Z (mp.o 0x75D3C0)
     ~MPPlayerItems();  // ??1MPPlayerItems@@QAE@XZ (mp.o 0x75D250)
 
 private:
@@ -420,6 +444,10 @@ public:
     static void SetupCvars(bool useCurrent);   // ?SetupCvars@MPUIInterface@@SAX_N@Z (mp.o)
     static const bool IsLANGame();  // ?IsLANGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F470)
     static const bool IsLocalGame();  // ?IsLocalGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F490)
+    static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z (mp.o 0x765FC0)
+    static bool BlockUntilNetReady();  // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ
+    static void LoadMap(int map, bool restart, bool mapRot);  // ?LoadMap@MPUIInterface@@SAXH_N0@Z
+    static void ExitFrontend(int returnMenu);  // ?ExitFrontend@MPUIInterface@@SAXH@Z (mp.o 0x74ED40)
 
     static int  mReturnMenu;  // ?mReturnMenu@MPUIInterface@@1HA @ 0xF0A124
     static bool mKicked;      // ?mKicked@MPUIInterface@@1_NA @ 0xF0A128
@@ -431,6 +459,8 @@ public:
     static bool mInSession;           // ?mInSession@MPUIInterface@@1_NA (defined in MPLiveEngine.cpp)
     static bool mHostMigrated;        // ?mHostMigrated@MPUIInterface@@1_NA
     static bool mHostDisconnected;    // ?mHostDisconnected@MPUIInterface@@1_NA
+    static unsigned long mGameListingNumGames;  // ?mGameListingNumGames@MPUIInterface@@1KA @ 0xF93FB0
+    static unsigned char mGameListings[];       // ?mGameListings@MPUIInterface@@1PAEA @ 0xF93DC8
     static struct sServerQueryParams mQueryParams;  // ?mQueryParams@MPUIInterface@@1UsServerQueryParams@@A
     static const char* mGameTypeStrings[6];       // ?mGameTypeStrings@MPUIInterface@@1PAPBDA
     static const char* mGameTypeShortStrings[6];  // ?mGameTypeShortStrings@MPUIInterface@@1PAPBDA
@@ -626,6 +656,8 @@ class controller {
 public:
     uint8_t _pad[0x18];
     int     locked_port;          // +0x18
+    uint8_t is_locked;            // +0x1C
+    uint8_t accepting_input_from_controller[4];  // +0x1D
     static controller* inst();    // ?inst@controller@@SAPAV1@XZ (controller.o)
 };
 
@@ -644,6 +676,8 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x7309B0)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsScreenMenu@@UAEX_N@Z (mp.o 0x730D30)
     virtual void OnActivate();  // ?OnActivate@MPOptionsScreenMenu@@UAEXXZ (mp.o 0x7309D0)
+    virtual void OnTriangle(int c);  // ?OnTriangle@MPOptionsScreenMenu@@UAEXH@Z (mp.o 0x730CE0)
+    virtual void Draw();  // ?Draw@MPOptionsScreenMenu@@UAEXXZ (mp.o 0x730AC0)
     static const char* const kScreenOptionStrings[4];        // @ 0xD19378
     static const char* const kScreenInstructionStrings[4];   // @ 0xD1939C
 private:
@@ -667,6 +701,8 @@ public:
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsSoundMenu@@UAEX_N@Z (mp.o 0x731560)
     virtual void ButtonHeldAction();  // ?ButtonHeldAction@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x731440)
     virtual void OnActivate();        // ?OnActivate@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x73E0D0)
+    virtual void OnTriangle(int c);   // ?OnTriangle@MPOptionsSoundMenu@@UAEXH@Z (mp.o 0x73E200)
+    virtual void Draw();              // ?Draw@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x731210)
 
     static const char* const kSoundOptionStrings[];  // ?kSoundOptionStrings@MPOptionsSoundMenu@@0QBQBDB @ 0xD193BC
 private:
@@ -690,6 +726,9 @@ public:
     virtual void ButtonHeldAction();  // ?ButtonHeldAction@MPOptionsControlsMenu@@UAEXXZ (mp.o 0x731E80)
     virtual void OnActivate(int previous);  // ?OnActivate@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E230)
     virtual void OnTriangle(int c);   // ?OnTriangle@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E340)
+    virtual void OnCross(int c);      // ?OnCross@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E3C0)
+    virtual void Select(int entry_num);  // ?Select@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E370)
+    virtual void Draw();              // ?Draw@MPOptionsControlsMenu@@UAEXXZ (mp.o 0x731B20)
     static const char* const kControlsOptionStrings[];       // @ 0xD194B8
     static const char* const kControlsInstructionStrings[];  // @ 0xD19500
     static const char* const kStickLayoutStrings[];          // @ 0xD194D8
@@ -713,6 +752,7 @@ public:
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsGameplayMenu@@UAEX_N@Z (mp.o 0x732890)
     virtual void OnActivate();  // ?OnActivate@MPOptionsGameplayMenu@@UAEXXZ (mp.o 0x73E400)
     virtual void OnTriangle(int c);  // ?OnTriangle@MPOptionsGameplayMenu@@UAEXH@Z (mp.o 0x73E4B0)
+    virtual void Draw();  // ?Draw@MPOptionsGameplayMenu@@UAEXXZ (mp.o 0x7321F0)
     static const char* const kGameplayOptionStrings[4];       // @ 0xD19578
     static const char* const kGameplayInstructionStrings[4];  // @ 0xD195A8
 private:
@@ -733,8 +773,12 @@ public:
     static MPOptionsPreferencesMenu* Me();  // ?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsPreferencesMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732F30)
+    virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsPreferencesMenu@@UAEX_N@Z (mp.o 0x733350)
+    virtual void OnTriangle(int c);  // ?OnTriangle@MPOptionsPreferencesMenu@@UAEXH@Z (mp.o 0x733320)
+    virtual void Draw();  // ?Draw@MPOptionsPreferencesMenu@@UAEXXZ (mp.o 0x732F50)
 private:
     void SetOptions();  // ?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ (mp.o 0x732F90)
+    bool SaveOptions();  // ?SaveOptions@MPOptionsPreferencesMenu@@AAE_NXZ
 };
 
 // ============================================================================
@@ -761,6 +805,8 @@ public:
     virtual void ButtonHeldAction();                         // ?ButtonHeldAction@MPProfileEditMenu@@UAEXXZ (mp.o 0x733890)
     virtual ~MPProfileEditMenu();                            // ??1MPProfileEditMenu@@UAE@XZ (mp.o 0x765750)
     virtual void Update(float time_inc);  // ?Update@MPProfileEditMenu@@UAEXM@Z (mp.o 0x7333D0)
+    virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPProfileEditMenu@@UAEX_N@Z (mp.o 0x7338D0)
+    virtual void Draw();  // ?Draw@MPProfileEditMenu@@UAEXXZ (mp.o 0x7333A0)
 };
 
 class MPProfileMainMenu : public FEMenu {
@@ -794,6 +840,7 @@ public:
     virtual void Select(int entry_num);  // ?Select@MPProfileMainMenu@@UAEXH@Z (mp.o 0x764210)
     virtual void OnCross(int c);         // ?OnCross@MPProfileMainMenu@@UAEXH@Z (mp.o 0x733D80)
     virtual void OnTriangle(int c);      // ?OnTriangle@MPProfileMainMenu@@UAEXH@Z (mp.o 0x760F90)
+    virtual void OnUp(int c);            // ?OnUp@MPProfileMainMenu@@UAEXH@Z (mp.o 0x7341E0)
     virtual void ButtonHeldAction();     // ?ButtonHeldAction@MPProfileMainMenu@@UAEXXZ (mp.o 0x734220)
     virtual void OnActivate(int previous);  // ?OnActivate@MPProfileMainMenu@@UAEXH@Z (mp.o 0x73E7C0)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPProfileMainMenu@@UAEX_N@Z (mp.o 0x733B20)
@@ -915,6 +962,8 @@ public:
     void check_for_looped();  // ?check_for_looped@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o 0x734EC0)
 private:
     void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
+    unsigned int seqIDInList(unsigned long seqID,
+                             unsigned long listIndex);  // ?seqIDInList@cVoiceNetworkManager@knetuser@kuju@@AAEIKK@Z (mp.o 0x734D50)
     void flushFirstPacketInList(unsigned long listIndex,
                                 unsigned int discardData);  // ?flushFirstPacketInList@cVoiceNetworkManager@knetuser@kuju@@AAEXKI@Z (mp.o 0x734D90)
     void determineClosestDestination(sVoicePendingDispatchPacket* packet,
@@ -960,6 +1009,7 @@ public:
     static_assert(sizeof(sDiagnostics) == 224, "sDiagnostics size mismatch");
 
     virtual ~cVoiceManager();  // ??1cVoiceManager@kvoicemanager@kuju@@UAE@XZ (mp.o 0x7348B0)
+    cVoiceManager();           // ??0cVoiceManager@kvoicemanager@kuju@@QAE@XZ (mp.o 0x74EFF0)
     int             mInitialised;  // +0x04
     kuju::knetuser::cVoiceNetworkManager mVoiceNetworkManager;  // +0x08
     MPPlayerSet     mRemoteListeners;  // +0x266C

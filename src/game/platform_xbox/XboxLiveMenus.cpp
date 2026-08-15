@@ -675,7 +675,7 @@ LABEL_9:
     {
         if (!MPUIInterface::mLiveQueryActive || !MPUIInterface::mQueryFromID)
         {
-            unsigned int numGames = 0;
+              unsigned long numGames = 0;
             MPUIInterface::GameListingGet(numGames);
             if (numGames == 0)
             {

@@ -457,6 +457,8 @@ public:
     void StartDevServer();
     void Stop();                                // ?Stop@MultiplayerMgr@@QAEXXZ (mp.o 0x72C480)
     void AttemptHotJoin(int clientIndex);       // ?AttemptHotJoin@MultiplayerMgr@@QAEXH@Z (mp.o 0x751160)
+    void RemoveDroppedItems();                  // ?RemoveDroppedItems@MultiplayerMgr@@QAEXXZ (mp.o 0x7614C0)
+    bool getValidNetConnection(const char* address);  // ?getValidNetConnection@MultiplayerMgr@@QAE_NPBD@Z (mp.o 0x72C790)
     void HandleDiscError();                    // ?HandleDiscError@MultiplayerMgr@@QAEXXZ (mp.o 0x72C4A0)
     int  AddTestClient();                      // ?AddTestClient@MultiplayerMgr@@QAEHXZ (mp.o 0x72C4E0)
     bool oneOffCheckLinkStatus();              // ?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C6F0)
@@ -495,6 +497,7 @@ public:
                        const math::Dir3& angles,
                        int team);  // ?PlayerRespawn@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
     const char* GetPlayerName(const Entity* player) const;  // ?GetPlayerName@MultiplayerMgr@@QBEPBDPBVEntity@@@Z (mp.o)
+    const char* GetPlayerName(int clientIndex) const;  // ?GetPlayerName@MultiplayerMgr@@QBEPBDH@Z (mp.o 0x740210)
     const char* getVoiceConnection(const Entity* player);  // ?getVoiceConnection@MultiplayerMgr@@QAEPBDPBVEntity@@@Z (mp.o 0x740450)
     bool IsLocalClientHost(int client);              // ?IsLocalClientHost@MultiplayerMgr@@QAE_NH@Z (mp.o 0x7358A0)
     void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
@@ -516,7 +519,9 @@ public:
     void AttemptToRevivePlayer(Entity* player, Entity* medic);  // ?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z
     void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
                              Entity* owner, int id);  // ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1H@Z (mp.o 0x7614F0)
-    MPEntityHandle RegisterDroppedItem(int itemType, Entity* item, Entity* owner);  // ?RegisterDroppedItem@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z
+    ::MPEntityHandle RegisterDroppedItem(EDroppedItemTypes itemType,
+                                         Entity* item,
+                                         Entity* owner);  // ?RegisterDroppedItem@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x764370)
     Entity* FindDroppedItem(EDroppedItemTypes item, int id,
                             int ownerID);  // ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HH@Z (mp.o 0x761550)
     Entity* FindDroppedItem(EDroppedItemTypes item, int id,
@@ -576,7 +581,9 @@ public:
     void GetNextDroppedItemID(void* result, int itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAEXAAVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z
     ::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x7643B0)
     int  GetDroppedItemType(int itemType);   // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z
-    MPEntityHandle FindDroppedItemID(int itemType, Entity* item, Entity* owner);  // ?FindDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z
+    ::MPEntityHandle FindDroppedItemID(EDroppedItemTypes itemType,
+                                       Entity* item,
+                                       Entity* owner);  // ?FindDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x761510)
     void PickupItem(int netIndex, int itemType, Entity* player, bool scriptFrom);  // ?PickupItem@MultiplayerMgr@@QAEXHHPAVEntity@@_N@Z
     void DropItem(int itemType, const math::Position3& position,
                   const math::Dir3& angles, const math::Dir3& velocity,
@@ -1707,6 +1714,7 @@ public:
     void SetInvalid();                // ?SetInvalid@MPPlayer@@QAEXXZ (mp.o 0x7360E0)
     void DebugRender();               // ?DebugRender@MPPlayer@@QAEXXZ (mp.o 0x736670)
     void SetAngles(const float* angles);  // ?SetAngles@MPPlayer@@QAEXQBM@Z (mp.o 0x7365F0)
+    void SetPosition(const float* position);  // ?SetPosition@MPPlayer@@QAEXQBM@Z (mp.o 0x72DF50)
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
     bdReference<bdConnection> GetConnection() const;  // ?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ (mp.o 0x736190)
     void Reset(bool clearAll);        // ?Reset@MPPlayer@@QAEX_N@Z (mp.o 0x72CC20)
@@ -1730,6 +1738,8 @@ inline Entity* MPPlayer::GetEntity()
 {
     return nullptr;
 }
+
+struct MPVehicleEvent;  // full definition below
 
 class MPPlayerManager {
 public:
@@ -1786,6 +1796,10 @@ public:
                              Entity* owner, short id);  // ?RegisterDroppedItem@MPPlayerManager@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z (mp.o 0x760480)
     void RemoveDroppedItems();  // ?RemoveDroppedItems@MPPlayerManager@@QAEXXZ (mp.o 0x760450)
     ::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType, Entity* owner);  // ?GetNextDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x763960)
+    ::MPEntityHandle FindDroppedItemID(EDroppedItemTypes itemType,
+                                       Entity* item,
+                                       Entity* owner);  // ?FindDroppedItemID@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x760590)
+    void RemovePlayerFromSession(MPPlayer* player);  // ?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7383F0)
 private:
     void AddAcceptCallback(int MESSAGE_ID,
                            void (MPPlayerManager::*callback)(const bdReceivedMessage&));  // ?AddAcceptCallback@MPPlayerManager@@AAEXHP81@AEXABVbdReceivedMessage@@@Z@Z (mp.o 0x72EBB0)
@@ -1805,11 +1819,30 @@ private:
     void HandleVoteEnded(const bdReceivedMessage& receivedMsg);  // ?HandleVoteEnded@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738A40)
     void HandleAreaCaptured(const bdReceivedMessage& receivedMsg);  // ?HandleAreaCaptured@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739350)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x7625E0)
+    virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> requestUserData,
+                                         bdBitBuffer* replyUserData);  // ?onSessionConnectRequest@MPPlayerManager@@EAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z (mp.o 0x7383C0)
     void ClearStateVariables();  // ?ClearStateVariables@MPPlayerManager@@AAEXXZ (mp.o 0x72F060)
     void ClientDisconnect(MPPlayer* player, bool noScript);  // ?ClientDisconnect@MPPlayerManager@@AAEXQAVMPPlayer@@_N@Z (mp.o 0x73A370)
     void DisconnectPlayer(MPPlayer* player);  // ?DisconnectPlayer@MPPlayerManager@@AAEXPAVMPPlayer@@@Z (mp.o)
+    void HandleRequestPlayerState(const bdReceivedMessage& receivedMsg);  // ?HandleRequestPlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x73A9F0)
+    void VehicleEventProcessAllEvents();  // ?VehicleEventProcessAllEvents@MPPlayerManager@@AAEXXZ (mp.o 0x7397A0)
+    bool VehicleEventProcessEvent(MPVehicleEvent* event);  // ?VehicleEventProcessEvent@MPPlayerManager@@AAE_NPAUMPVehicleEvent@@@Z (mp.o)
     void SendDroppedItems(MPPlayer* player);  // ?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z (mp.o 0x760710)
 };
+
+// MPVehicleEvent - queued vehicle event (32 bytes, IDA)
+struct MPVehicleEvent {
+    bool bUsed;               // +0x00
+    int  eventType;           // +0x04 (MPVehicleEventType)
+    unsigned char vehicleId;  // +0x08
+    unsigned char playerId;   // +0x09
+    unsigned int  sequence;   // +0x0C
+    int  health;              // +0x10
+    int  seatIdx;             // +0x14
+    int  entryIdx;            // +0x18
+    int  expireTime;          // +0x1C
+};
+static_assert(sizeof(MPVehicleEvent) == 0x20, "MPVehicleEvent size mismatch");
 
 class MPPeer {
 public:
@@ -1883,6 +1916,13 @@ public:
                         int nGameIndex,
                         EGameConnectionType gameState);  // ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z (mp.o 0x764620)
     void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
+    void NextRound(bool allowChange);  // ?NextRound@MPPeer@@QAEX_N@Z (mp.o 0x742910)
+    void SendInitialGameState(Entity* player);  // ?SendInitialGameState@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x742EB0)
+    void SendVehicleStates(Entity* player);  // ?SendVehicleStates@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x75BE00)
+    void BroadcastVehicleRespawn(Entity* vehicle);  // ?BroadcastVehicleRespawn@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x75BF90)
+    void SendHostBombRequest(const Entity* player, bool defusing);  // ?SendHostBombRequest@MPPeer@@QAEXPBVEntity@@_N@Z (mp.o 0x744F10)
+    void SendRespawnRequest(unsigned int clientID);  // ?SendRespawnRequest@MPPeer@@QAEXI@Z (mp.o 0x743F30)
+    void DeleteQosProbes();  // ?DeleteQosProbes@MPPeer@@QAEXXZ (mp.o 0x72CA90)
     void FireArtillery(Entity* player, int weapon,
                        const math::Position3& position, int seed,
                        bool fire);  // ?FireArtillery@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z (mp.o 0x7410A0)
@@ -1920,6 +1960,7 @@ extern int              currCl;      // ?currCl@@3HA
 extern bool             gExitGame;   // ?gExitGame@@3_NA
 extern int              dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 extern int              dword_F641E0[];
+extern unsigned int     ValidAddress[];  // ?ValidAddress@@3PAIA @ 0xE36DD0
 
 // ============================================================================
 // XModel Ã¢â‚¬â€ minimal view for SV_PointTraceToEntity model scan

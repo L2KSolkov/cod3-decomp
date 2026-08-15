@@ -120,8 +120,7 @@ bool InSession();
 void ExitGame();
 void QueryFromID(XNKID* sessionID);
 void Step();
-void GameListingGet(int* numGames);
-void bdNetStop();
+  void bdNetStop();
 void PlatformStop();
 void PlatformStart();
 void Reboot();
@@ -222,9 +221,9 @@ void JoinGameMenu::Update(float time_inc)
         {
             if (!MPUIInterface::mLiveQueryActive || !MPUIInterface::mQueryFromID)
             {
-                float numGames = 0.0f;
-                MPUIInterface::GameListingGet((int*)&numGames);
-                if (numGames == 0.0f)
+                  unsigned long numGames = 0;
+                  MPUIInterface::GameListingGet(numGames);
+                  if (numGames == 0)
                 {
                     ClearSavedInviteTime(&gSaveGameData[0]);
                     mJoiningGame = false;

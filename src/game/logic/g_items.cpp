@@ -595,10 +595,10 @@ int Pickup_Kit(Entity* ent, Entity* other, int bTouched)
         int count = ent->count;
         if (other->client->pers.playerClass == count)
             return 0;
-        MultiplayerMgr::MPEntityHandle handle =
-            MultiplayerMgr::sInst->FindDroppedItemID(kItemTypeMax, ent,
-                                                     nullptr);
-        if (handle.mVal == 0)
+        ::MPEntityHandle handle =
+            MultiplayerMgr::sInst->FindDroppedItemID(
+                (EDroppedItemTypes)kItemTypeMax, ent, nullptr);
+        if (handle.mValue == 0)
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
@@ -608,18 +608,18 @@ int Pickup_Kit(Entity* ent, Entity* other, int bTouched)
                 && AeAssert::Assert("Pickup_Weapon could not find the "
                                     "network entity from the dropped weapon"))
                 __debugbreak();
-            if (handle.mVal == 0)
+            if (handle.mValue == 0)
             {
                 MultiplayerMgr::MPEntityHandle v6;
                 MultiplayerMgr::sInst->GetNextDroppedItemID(
                     &v6, kItemTypeMax, nullptr);
-                handle.mVal = v6.mVal;
+                handle.mValue = v6.mVal;
             }
         }
         MultiplayerMgr::sInst->RegisterDroppedItem((EDroppedItemTypes)kItemTypeMax, ent, other,
-                                                   handle.mVal & 0x7FF);
+                                                   handle.mValue & 0x7FF);
         MultiplayerMgr::sInst->SwapKit(other->client->pers.playerClass,
-                                       handle.mVal);
+                                       handle.mValue);
         gpBrocAPI->mBrocExports.mCallbackPickupKit(
             other->mHandle.mHandle.mVal, count);
     }
@@ -821,10 +821,10 @@ clip_stage:
             {
                 pDropped->r.mOwner = ent->r.mOwner;
                 Entity* owner = HandleDbToEnt(ent->r.mOwner);
-                MultiplayerMgr::MPEntityHandle handle =
+                ::MPEntityHandle handle =
                     MultiplayerMgr::sInst->FindDroppedItemID(
-                        kItemTypeWeapons, ent, owner);
-                if (handle.mVal == 0)
+                        (EDroppedItemTypes)kItemTypeWeapons, ent, owner);
+                if (handle.mValue == 0)
                 {
                     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
                     AeAssert::gCurrentFile =
@@ -836,21 +836,21 @@ clip_stage:
                                             "network entity from the dropped "
                                             "weapon"))
                         __debugbreak();
-                    if (handle.mVal == 0)
+                    if (handle.mValue == 0)
                     {
                         MultiplayerMgr::MPEntityHandle v85;
                         Entity* owner2 = HandleDbToEnt(ent->r.mOwner);
                         MultiplayerMgr::sInst->GetNextDroppedItemID(
                             &v85, kItemTypeWeapons, owner2);
-                        handle.mVal = v85.mVal;
+                        handle.mValue = v85.mVal;
                     }
                 }
                 Entity* owner3 = HandleDbToEnt(ent->r.mOwner);
                 MultiplayerMgr::sInst->RegisterDroppedItem(
                     (EDroppedItemTypes)kItemTypeWeapons, pDropped, owner3,
-                    handle.mVal & 0x7FF);
+                    handle.mValue & 0x7FF);
                 MultiplayerMgr::sInst->SwapWeapon(
-                    iWeap, handle.mVal, pDropped->count2, pDropped->count);
+                    iWeap, handle.mValue, pDropped->count2, pDropped->count);
             }
             else
             {
@@ -1048,13 +1048,14 @@ void Touch_Item(Entity* ent, Entity* other, int bTouched)
                                 MultiplayerMgr::sInst->GetDroppedItemType(
                                     ent->item->giType);
                             Entity* owner = HandleDbToEnt(ent->r.mOwner);
-                            MultiplayerMgr::MPEntityHandle netIndex =
+                            ::MPEntityHandle netIndex =
                                 MultiplayerMgr::sInst->FindDroppedItemID(
-                                    droppedType, ent, owner);
-                            if (netIndex.mVal != 0)
+                                    (EDroppedItemTypes)droppedType, ent,
+                                    owner);
+                            if (netIndex.mValue != 0)
                             {
                                 MultiplayerMgr::sInst->PickupItem(
-                                    netIndex.mVal, droppedType, other, false);
+                                    netIndex.mValue, droppedType, other, false);
                             }
                             void* mem = Task::sAllocator->Allocate(0x1C, false);
                             EntityDeathTask* task =

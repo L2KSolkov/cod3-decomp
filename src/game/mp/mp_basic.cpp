@@ -59,6 +59,7 @@ public:
     void SubmitVoiceData(const XUID& talker, void* buffer,
                          unsigned long bufferLength);  // ?SubmitVoiceData@MPLiveEngine@@UAEXABU_XUID@@PAXK@Z
     unsigned int actualPort;           // +0x45D4
+    bool invited;                      // +0x45D8
 };
 
 // AnimationPlayer (anim.o) - minimal view used by PlayAnimFlagAnim
@@ -623,6 +624,8 @@ int MPUIInterface::mReturnMenu;
 bool MPUIInterface::mKicked;
 bool MPUIInterface::mHostMigrated;
 bool MPUIInterface::mHostDisconnected;
+unsigned long MPUIInterface::mGameListingNumGames;
+unsigned char MPUIInterface::mGameListings[1] = { 0 };
 
 const int MPUIInterface::GetTimeLimitCount()
 {
@@ -4950,6 +4953,617 @@ kuju::cBezier::cBezier(const math::Position3& initialPoint,
                        const math::Dir3& finalInflexion)
 {
     reset(initialPoint, initialInflexion, finalPoint, finalInflexion);
+}
+
+// ============================================================================
+// Batch 13: menu draw/triangle/widescreen virtuals, game-state forwarders
+// ============================================================================
+
+// ea: 0x00733320
+void MPOptionsPreferencesMenu::OnTriangle(int c)
+{
+    (void)c;
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    this->system->gap1C(this->system, 29);
+}
+
+// ea: 0x00730CE0
+void MPOptionsScreenMenu::OnTriangle(int c)
+{
+    (void)c;
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    this->system->gap1C(this->system, 29);
+}
+
+// ea: 0x0073E200
+void MPOptionsSoundMenu::OnTriangle(int c)
+{
+    (void)c;
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    this->system->gap1C(this->system, 29);
+}
+
+// ea: 0x0072CA90 (m_QosIsAvailable +0x60F0, m_QosIsComplete +0x5AB0)
+void MPPeer::DeleteQosProbes()
+{
+    for (int i = 0; i < 800; ++i)
+    {
+        if (!*(bool*)((char*)this + 0x60F0 + i)
+            && *(bool*)((char*)this + 0x5AB0 + i))
+            *(bool*)((char*)this + 0x60F0 + i) = true;
+    }
+}
+
+// ea: 0x007614C0 (mPlayers at +0x1010, stride 0x310, mItems at +0x0C)
+void MultiplayerMgr::RemoveDroppedItems()
+{
+    if (mPeer != nullptr)
+    {
+        char* mgr = (char*)mPeer + 0x74E0;
+        for (int i = 0; i < 16; ++i)
+            ((MPPlayerItems*)(mgr + 0x1010 + 0x310 * i + 0x0C))->RemoveAll();
+    }
+}
+
+// ea: 0x0075D410
+void MPVehicle::Step()
+{
+    kuju::knet::sTime time = MultiplayerMgr::sInst->getLocalTime();
+    UpdateInterpolation(time);
+}
+
+// ea: 0x00731B20 (mInstructionsText vtable slot 19 = Draw(bool))
+void MPOptionsControlsMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    if (mInstructionsText != nullptr)
+    {
+        typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+        ((DrawFn)((void**)mInstructionsText)[19])(mInstructionsText, false);
+    }
+    FEMenu::Draw();
+}
+
+// ea: 0x007321F0
+void MPOptionsGameplayMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    if (mInstructionsText != nullptr)
+    {
+        typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+        ((DrawFn)((void**)mInstructionsText)[19])(mInstructionsText, false);
+    }
+    FEMenu::Draw();
+}
+
+// ea: 0x00732F50
+void MPOptionsPreferencesMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    if (mInstructionsText != nullptr)
+    {
+        typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+        ((DrawFn)((void**)mInstructionsText)[19])(mInstructionsText, false);
+    }
+    FEMenu::Draw();
+}
+
+// ea: 0x00730AC0
+void MPOptionsScreenMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    if (mInstructionsText != nullptr)
+    {
+        typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+        ((DrawFn)((void**)mInstructionsText)[19])(mInstructionsText, false);
+    }
+    FEMenu::Draw();
+}
+
+// ea: 0x00731210
+void MPOptionsSoundMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    if (mInstructionsText != nullptr)
+    {
+        typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+        ((DrawFn)((void**)mInstructionsText)[19])(mInstructionsText, false);
+    }
+    FEMenu::Draw();
+}
+
+// ea: 0x007333A0
+void MPProfileEditMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    if (mInstructionsText != nullptr)
+    {
+        typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+        ((DrawFn)((void**)mInstructionsText)[19])(mInstructionsText, false);
+    }
+    FEMenu::Draw();
+}
+
+// ea: 0x007383C0 (mNumPlayers at +0x4110)
+bool MPPlayerManager::onSessionConnectRequest(
+    bdReference<bdBitBuffer> requestUserData, bdBitBuffer* replyUserData)
+{
+    (void)replyUserData;
+    bool v3 = *(unsigned char*)((char*)this + 0x4110)
+              < MPUIInterface::mServerParams.mMaxPlayers;
+    if (requestUserData.m_ptr != nullptr
+        && requestUserData.m_ptr->m_refCount-- == 1)
+        delete requestUserData.m_ptr;
+    return v3;
+}
+
+// ea: 0x0073A9F0
+void MPPlayerManager::HandleRequestPlayerState(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player != nullptr)
+    {
+        if (Player->mConnection.m_ptr != nullptr)
+            Player->mConnection.m_ptr->getStatus();
+    }
+}
+
+// ea: 0x00761510
+::MPEntityHandle MultiplayerMgr::FindDroppedItemID(
+    EDroppedItemTypes itemType, Entity* item, Entity* owner)
+{
+    ::MPEntityHandle result;
+    if (mPeer != nullptr)
+    {
+        result = ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                     ->FindDroppedItemID(itemType, item, owner);
+        return result;
+    }
+    else
+    {
+        result.mValue = 0;
+        return result;
+    }
+}
+
+// ea: 0x00764370
+::MPEntityHandle MultiplayerMgr::RegisterDroppedItem(
+    EDroppedItemTypes itemType, Entity* item, Entity* owner)
+{
+    ::MPEntityHandle result;
+    if (mPeer != nullptr)
+    {
+        result = ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                     ->RegisterDroppedItem(itemType, item, owner);
+        return result;
+    }
+    else
+    {
+        result.mValue = 0;
+        return result;
+    }
+}
+
+// ea: 0x00734D50
+unsigned int kuju::knetuser::cVoiceNetworkManager::seqIDInList(
+    unsigned long seqID, unsigned long listIndex)
+{
+    for (sVoicePacket* i = mPendingVoicePacketList[listIndex];
+         i != nullptr; i = i->mNext)
+    {
+        unsigned int mSeqID = i->mSeqID;
+        if (seqID < mSeqID)
+            break;
+        if (seqID == mSeqID)
+            return 1;
+    }
+    return 0;
+}
+
+// ea: 0x00750170
+bool MultiplayerMgr::IsPlayerTalking(Entity* player)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (this->mPeer == nullptr)
+        return true;
+    MPPlayer* v4 =
+        ((MPPlayerManager*)((char*)mPeer + 0x74E0))->GetPlayer(player);
+    return v4 != nullptr && mPeer->IsPlayerTalking(v4, 0);
+}
+
+// ea: 0x007341E0
+void MPProfileMainMenu::OnUp(int c)
+{
+    (void)c;
+    if (highlighted != 0)
+    {
+        Up();
+    }
+    else
+    {
+        highlighted = 5;
+        SetHigh(5, true);
+    }
+    OnSelectionChange();
+}
+
+// ea: 0x0072E4D0
+void MPVehicle::SetGunnerState(int state)
+{
+    Entity* mEntity = (Entity*)this->mEntity;
+    this->mGunnerState = state;
+    if (mEntity != nullptr)
+    {
+        mEntity->scr_vehicle->seats[1].firing = state == 1;
+        mEntity->scr_vehicle->seats[1].overheating = state == 2;
+    }
+}
+
+// ea: 0x007338D0
+void MPProfileEditMenu::UpdateWidescreen(bool widescreen)
+{
+    if (mWidescreen != widescreen)
+    {
+        if (mInstructionsText != nullptr)
+            mInstructionsText->UpdateForWidescreen(widescreen);
+        if (panel != nullptr)
+        {
+            mWidescreen = widescreen;
+            panel->UpdateWidescreen(widescreen, 320.0f);
+        }
+    }
+}
+
+// ea: 0x00733350
+void MPOptionsPreferencesMenu::UpdateWidescreen(bool widescreen)
+{
+    if (mWidescreen != widescreen)
+    {
+        if (mInstructionsText != nullptr)
+            mInstructionsText->UpdateForWidescreen(widescreen);
+        if (panel != nullptr)
+        {
+            mWidescreen = widescreen;
+            panel->UpdateWidescreen(widescreen, 320.0f);
+        }
+    }
+}
+
+// ea: 0x0072C790
+bool MultiplayerMgr::getValidNetConnection(const char* address)
+{
+    if (address == nullptr || *address == 0)
+        return 0;
+    unsigned int v2 = HashString::CalcHash(address);
+    unsigned int* v3 = ValidAddress;
+    while (*v3 != v2)
+    {
+        if (++v3 > (unsigned int*)&g_networkOwner)
+            return 0;
+    }
+    return 1;
+}
+
+// ea: 0x0074EFF0
+kuju::kvoicemanager::cVoiceManager::cVoiceManager()
+{
+    mInitialised = 0;
+    mRemoteListeners.mBitPlayers = 0;
+    mConnectedPlayers.mBitPlayers = 0;
+    mLastNetworkDispatchTime.mTime = 0;
+    mRealLastNetworkDispatchTime.mTime = 0;
+    mPlaybackDataAvailableStartTime.mTime = 0;
+}
+
+// ea: 0x00765FC0
+sGameListing* MPUIInterface::GameListingGet(unsigned long& numGames)
+{
+    if (mGameConnectionType == kGameConnectionTypeLocal)
+        return nullptr;
+    if (mGameConnectionType != kGameConnectionTypeLan)
+        BlockUntilNetReady();
+    numGames = mGameListingNumGames;
+    return (sGameListing*)mGameListings;
+}
+
+// ea: 0x0073E3C0
+void MPOptionsControlsMenu::OnCross(int c)
+{
+    (void)c;
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    if (highlighted != 0)
+    {
+        if (highlighted == 1)
+            this->system->gap1C(this->system, 25);
+    }
+    else
+    {
+        this->system->gap1C(this->system, 24);
+    }
+}
+
+// ea: 0x007397A0 (mVehicleEvents at +0x5970)
+void MPPlayerManager::VehicleEventProcessAllEvents()
+{
+    for (int i = 0; i < 32; ++i)
+    {
+        MPVehicleEvent* v = &((MPVehicleEvent*)((char*)this + 0x5970))[i];
+        if (v->bUsed && VehicleEventProcessEvent(v))
+            i = -1;
+    }
+}
+
+// ea: 0x0073E370
+void MPOptionsControlsMenu::Select(int entry_num)
+{
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    if (entry_num != 0)
+    {
+        if (entry_num == 1)
+            this->system->gap1C(this->system, 25);
+    }
+    else
+    {
+        this->system->gap1C(this->system, 24);
+    }
+}
+
+// ea: 0x0075D3C0
+short MPPlayerItems::FindFreeSlot(EDroppedItemTypes item)
+{
+    switch (item)
+    {
+    case (EDroppedItemTypes)2:  // kItemTypeSupport
+        return FindOldestItem(mDroppedSupport);
+    case kItemTypeMines:
+        return FindOldestItem(mDroppedMines);
+    case (EDroppedItemTypes)3:  // kItemTypeMax
+        return FindOldestItem(mDroppedKits);
+    default:
+        return FindOldestItem(mDroppedWeapons);
+    }
+}
+
+// ea: 0x00740210
+const char* MultiplayerMgr::GetPlayerName(int clientIndex) const
+{
+    const Entity* Player = nullptr;
+    if (mPeer != nullptr)
+        Player = EntityManager::sInst->GetPlayer(clientIndex);
+    MPPlayer* v5 = nullptr;
+    if (mPeer != nullptr && Player != nullptr)
+        v5 = ((MPPlayerManager*)((char*)mPeer + 0x74E0))->GetPlayer(Player);
+    if (v5 != nullptr)
+        return (const char*)((char*)v5 + 0x68);  // mName
+    return defaultFileName;
+}
+
+// ea: 0x007383F0
+void MPPlayerManager::RemovePlayerFromSession(MPPlayer* player)
+{
+    if (player != nullptr
+        && MPUIInterface::mGameConnectionType == kGameConnectionTypeOnline)
+    {
+        XUID remotePlayer = *(XUID*)((char*)player + 0x88);
+        MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+        Handle->RemoveRemotePlayer(remotePlayer);
+    }
+}
+
+// ea: 0x0074ED40 (accepting_input_from_controller at +0x1D)
+void MPUIInterface::ExitFrontend(int returnMenu)
+{
+    mReturnMenu = returnMenu;
+    *(int*)((char*)controller::inst() + 0x1D) = 0x01010101;
+    LoadMap(mServerParams.mMapID, false, false);
+    MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+    if (Handle != nullptr)
+        Handle->invited = false;
+}
+
+// ea: 0x0072DF50 (mNetPosition +0xA0, mInterpolatedPosition +0x1F0)
+void MPPlayer::SetPosition(const float* position)
+{
+    math::Position3* mNetPosition =
+        (math::Position3*)((char*)this + 0xA0);
+    math::Position3* mInterpolatedPosition =
+        (math::Position3*)((char*)this + 0x1F0);
+    mNetPosition->v.m128_f32[0] = position[0];
+    mNetPosition->v.m128_f32[1] = position[1];
+    mNetPosition->v.m128_f32[2] = position[2];
+    mInterpolatedPosition->v.m128_f32[0] = mNetPosition->v.m128_f32[0];
+    mInterpolatedPosition->v.m128_f32[1] = mNetPosition->v.m128_f32[1];
+    mInterpolatedPosition->v.m128_f32[2] = mNetPosition->v.m128_f32[2];
+    mInterpolatedPosition->v.m128_f32[3] = mNetPosition->v.m128_f32[3];
+}
+
+// ea: 0x00750B00
+void MultiplayerMgr::SendRespawnRequest(unsigned int clientID)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+    {
+        mPeer->SendRespawnRequest(clientID);
+    }
+    else if (gpBrocAPI->mBrocExports.mCallbackPlayerRespawnRequest != nullptr)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        gpBrocAPI->mBrocExports.mCallbackPlayerRespawnRequest(
+            Player->mHandle.mHandle.mVal, 1);
+    }
+}
+
+// ea: 0x00761460
+void MultiplayerMgr::BroadcastVehicleRespawn(Entity* vehicle)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1495;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->BroadcastVehicleRespawn(vehicle);
+}
+
+// ea: 0x00750630
+void MultiplayerMgr::NextRound(bool allowChange)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1334;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->NextRound(allowChange);
+}
+
+// ea: 0x00750720
+void MultiplayerMgr::SendInitialGameState(Entity* player)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1479;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendInitialGameState(player);
+}
+
+// ea: 0x00761400
+void MultiplayerMgr::SendVehicleStates(Entity* player)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1487;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendVehicleStates(player);
+}
+
+// ea: 0x00734850
+EPlayerClass PlayerStats::GetStatSpecificToAPlayerClass(int stat)
+{
+    if (stat > 0x1C)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ePlayerStats.cpp";
+        AeAssert::gCurrentLine = 62;
+        AeAssert::gCurrentExpr =
+            "stat >= kPlayerStatsMin && stat <= kPlayerStatsMax";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid stat index."))
+            __debugbreak();
+    }
+    return (EPlayerClass)playerStatsInfo[stat].mSpecificToPlayerClass;
+}
+
+// ea: 0x0072C8D0
+bool MPPeer::IsPlayerTalking(MPPlayer* player, int local_controller)
+{
+    if (LiveWrapper::theWrapper != nullptr
+        && LiveWrapper::theWrapper->sessionState == kInSession)
+        return LiveWrapper::theWrapper->IsTalking(
+            *(XUID*)((char*)player + 0x88), (unsigned int)local_controller);
+    else
+        return *(int*)((char*)player + 0xDC) + 250 > level.time;
+}
+
+// ea: 0x00750F50
+void MultiplayerMgr::SendBombOperation(const Entity* player, bool defusing)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1841;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendBombOperation(player, defusing);
+}
+
+// ea: 0x00750820
+void MultiplayerMgr::SendGameScore(int alliesScore, int axisScore)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1513;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendGameScore(alliesScore, axisScore);
+}
+
+// ea: 0x00750EE0
+void MultiplayerMgr::SendHostBombRequest(const Entity* player, bool defusing)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1832;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendHostBombRequest(player, defusing);
+}
+
+// ea: 0x00730260
+MPPlayerSet::MPPlayerSet(eDefaultSets e)
+{
+    if (e != eEveryone)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerSet.cpp";
+        AeAssert::gCurrentLine = 41;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("OUCHA: UNknown enum!"))
+            __debugbreak();
+        return;
+    }
+    else
+    {
+        mBitPlayers = 0xFFFF;
+    }
 }
 
 // ea: 0x00762F20

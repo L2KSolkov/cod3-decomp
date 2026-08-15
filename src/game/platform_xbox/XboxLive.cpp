@@ -953,25 +953,25 @@ void LiveWrapper::SetRemoteVoiceComm(const XUID* remoteID,
 }
 
 // ea: 0x723320
-void LiveWrapper::RemoveRemotePlayer(const XUID* remotePlayer)
+void LiveWrapper::RemoveRemotePlayer(const XUID& remotePlayer)
 {
     int v3 = 0;
     XUID* i;
     for (i = &remotePlayers[0].xuid;
-         (unsigned int)i->qwValue != (unsigned int)remotePlayer->qwValue
+         (unsigned int)i->qwValue != (unsigned int)remotePlayer.qwValue
              || (unsigned int)(i->qwValue >> 32)
-                    != (unsigned int)(remotePlayer->qwValue >> 32);
+                    != (unsigned int)(remotePlayer.qwValue >> 32);
          i += 6)
     {
         if (++v3 >= 15)
             return;
     }
     --numRemotePlayers;
-    if ((remotePlayer->dwUserFlags & 0x10003) == 0)
+    if ((remotePlayer.dwUserFlags & 0x10003) == 0)
     {
         XHVEngine* voiceEngine = this->voiceEngine;
         if (voiceEngine != nullptr)
-            XHVEngine_UnregisterRemoteTalker(voiceEngine, *remotePlayer);
+            XHVEngine_UnregisterRemoteTalker(voiceEngine, remotePlayer);
     }
     LiveRemote* v6 = &remotePlayers[v3];
     uixPlayersList->UnregisterPlayer(uixPlayersList, v6);
@@ -989,7 +989,7 @@ void LiveWrapper::ClearRemotePlayers()
     for (int i = 0; i < 15; ++i)
     {
         if (remotePlayers[i].xuid.qwValue != 0)
-            RemoveRemotePlayer(&remotePlayers[i].xuid);
+            RemoveRemotePlayer(remotePlayers[i].xuid);
     }
 }
 
@@ -1304,7 +1304,7 @@ void LiveWrapper::PreLogoff()
     for (int i = 15; i != 0; --i)
     {
         if (remotePlayers[15 - i].xuid.qwValue != 0)
-            RemoveRemotePlayer(&remotePlayers[15 - i].xuid);
+            RemoveRemotePlayer(remotePlayers[15 - i].xuid);
     }
     if (voiceEngine != nullptr)
     {

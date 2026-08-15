@@ -308,6 +308,8 @@ struct MPPlayerManager {
 
 // MPUIInterface - class statics/methods owned by mp.o (mangled as class
 // statics: ?x@MPUIInterface@@1..., methods ?x@MPUIInterface@@SA...).
+struct sGameListing;
+
 class MPUIInterface {
 public:
     enum EGameConnectionType : int {
@@ -320,7 +322,7 @@ public:
     static void ExitGame();                // ?ExitGame@MPUIInterface@@SAXXZ
     static void QueryFromID(XNKID* sessionID);  // ?QueryFromID@MPUIInterface@@SAXPAUXNKID@@@Z
     static void Step();                    // ?Step@MPUIInterface@@SAXXZ
-    static bool GameListingGet(unsigned int& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
+    static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
     static bool BlockUntilNetReady();      // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ
     static bool mLiveQueryActive;   // ?mLiveQueryActive@MPUIInterface@@1_NA
     static bool mQueryFromID;       // ?mQueryFromID@MPUIInterface@@1_NA
