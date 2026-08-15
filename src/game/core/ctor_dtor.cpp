@@ -152,6 +152,12 @@ void EntityNotify::operator delete(void* ptr, bool /*forceHeapAlloc*/,
 
 // WaitTilOutput memory ops / dtor (g.o 0x4A5810-0x4A5980)
 PoolAllocator* WaitTilOutput::sAllocator;
+// WaitTilOutput ctor (g.o 0x4B1680)
+WaitTilOutput::WaitTilOutput()
+{
+    dListNodeFiller1 = nullptr;
+    dListNodeFiller2 = nullptr;
+}
 void* WaitTilOutput::operator new(size_t size, bool forceHeapAlloc,
                                   const char* /*file*/, int /*line*/)
 {

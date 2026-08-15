@@ -99,6 +99,8 @@ public:
         mHandle = rhs;
         return *this;
     }
+    T* operator*() const;  // ??D?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QBEPAVEntity@@XZ (g.o 0x4B2670)
+    T* operator->() const; // ??C?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QBEPAVEntity@@XZ (g.o 0x4B26B0)
     bool IsValid() const { return mHandle.mVal != 0; }
 };
 static_assert(sizeof(DbLinkedHandle<void, void>) == 4, "DbLinkedHandle size mismatch");
@@ -154,6 +156,9 @@ public:
 
     T* operator*() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??D?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1240)
     T* operator->() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1260)
+    const T* operator->() const { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QBEPBVXModel@@XZ (g.o 0x4B18C0)
+    operator bool() const { ValidatePakId((TPakId)mPakId); return mValue != nullptr; }  // ??B?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27B0)
+    bool operator!() const { ValidatePakId((TPakId)mPakId); return mValue == nullptr; }  // ??7?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27D0)
 
 private:
     T* Deref() const;  // ?Deref@?$IVPointer@VXModel@@@@ABEPAVXModel@@XZ (g.o 0x4AE4C0)

@@ -92,18 +92,69 @@ struct BitSet {
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
     static int GetNumWords() { return (N + 31) / 32; }
     void Clear();  // ?Clear@?$BitSet@$0FEA@@@QAEXXZ (g.o 0x4AE790)
+    void Add(int v);  // ?Add@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B1750)
+    void Rmv(int v);  // ?Rmv@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B17E0)
+    BitSet<N> operator~() const;  // ??S?$BitSet@$0FEA@@@QBE?AV0@XZ (g.o 0x4B1870)
 
     class iterator {
     public:
         BitSet<N>* m_src;        // +0x00
         int m_word_idx;          // +0x04
         unsigned int m_cur_val;  // +0x08
+        unsigned int m_cur_word; // +0x0C
 
-        bool compare(const iterator& rhs);  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
-        bool operator!=(const iterator& rhs);  // ??9iterator@?$BitSet@$0FEA@@@QAE_NABV01@@Z (g.o 0x4B1400)
+        iterator() : m_src(nullptr), m_word_idx(0), m_cur_val(0), m_cur_word(0) {}
+        iterator(const BitSet<N>* src)  // ??0iterator@?$BitSet@$0FEA@@@QAE@ABV1@@Z (g.o 0x4B1970)
+        {
+            m_src = (BitSet<N>*)src;
+            m_cur_word = ((const unsigned int*)src->mBits)[0];
+            m_word_idx = 0;
+            m_cur_val = (unsigned int)-1;
+            operator++();
+        }
+        bool compare(const iterator& rhs)  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
+        {
+            return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
+        }
+        bool operator!=(const iterator& rhs)  // ??9iterator@?$BitSet@$0FEA@@@QAE_NABV01@@Z (g.o 0x4B1400)
+        {
+            return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
+        }
+        void operator++()  // ??Eiterator@?$BitSet@$0FEA@@@QAEXXZ
+        {
+            while (m_word_idx < GetNumWords())
+            {
+                if (m_cur_word != 0)
+                {
+                    unsigned long idx;
+                    _BitScanForward(&idx, m_cur_word);
+                    m_cur_val = m_word_idx * 32 + (int)idx;
+                    m_cur_word &= m_cur_word - 1;
+                    return;
+                }
+                ++m_word_idx;
+                if (m_word_idx < GetNumWords())
+                    m_cur_word = ((const unsigned int*)m_src->mBits)[m_word_idx];
+            }
+            m_cur_val = (unsigned int)-1;
+            m_word_idx = -1;
+        }
     };
 
-    iterator end() const;  // ?end@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B0EC0)
+    iterator begin() const  // ?begin@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B2630)
+    {
+        iterator it(this);
+        return it;
+    }
+    iterator end() const  // ?end@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B0EC0)
+    {
+        iterator it;
+        it.m_src = nullptr;
+        it.m_word_idx = -1;
+        it.m_cur_val = (unsigned int)-1;
+        it.m_cur_word = 0;
+        return it;
+    }
 };
 
 // ============================================================================
@@ -142,15 +193,44 @@ void BitSet<N>::Clear()
 }
 
 template <int N>
-bool BitSet<N>::iterator::compare(const BitSet<N>::iterator& rhs)
+void BitSet<N>::Add(int v)
 {
-    return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
+    if ((v >> 5) >= GetNumWords())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+        AeAssert::gCurrentLine = 99;
+        AeAssert::gCurrentExpr = "idx < GetNumWords()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    ((unsigned int*)mBits)[v >> 5] |= 1u << (v & 0x1F);
 }
 
 template <int N>
-bool BitSet<N>::iterator::operator!=(const BitSet<N>::iterator& rhs)
+void BitSet<N>::Rmv(int v)
 {
-    return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
+    if ((v >> 5) >= GetNumWords())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+        AeAssert::gCurrentLine = 107;
+        AeAssert::gCurrentExpr = "idx < GetNumWords()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    ((unsigned int*)mBits)[v >> 5] &= ~(1u << (v & 0x1F));
+}
+
+template <int N>
+BitSet<N> BitSet<N>::operator~() const
+{
+    BitSet<N> r;
+    for (int i = 0; i < GetNumWords(); ++i)
+        ((unsigned int*)r.mBits)[i] = ~((const unsigned int*)mBits)[i];
+    return r;
 }
 
 
@@ -853,6 +933,7 @@ public:
 // ============================================================================
 class WaitTilOutput {
 public:
+    WaitTilOutput();  // ??0WaitTilOutput@@QAE@XZ (g.o 0x4B1680)
     virtual ~WaitTilOutput();
     void* dListNodeFiller1;  // +0x04
     void* dListNodeFiller2;  // +0x08

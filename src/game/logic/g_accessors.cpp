@@ -2287,3 +2287,88 @@ player_collision_context_t::player_collision_context_t(
     pass_entity1 = handle;
     contentmask = mask;
 }
+
+// ============================================================================
+// Batch 28: HandleDb/DbLinkedHandle/IVPointer/BitSet/WaitTilOutput cluster
+// ============================================================================
+
+// DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
+template <>
+Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator*() const
+{
+    unsigned int mVal = mHandle.mVal;
+    unsigned int v2 = mVal & 0xFFF;
+    if (v2 < 0x540 && (mVal >> 12) == (unsigned int)EntityHandleDb::sInst.mElements[v2].mKey)
+        return EntityHandleDb::sInst.mElements[v2].mObject;
+    return nullptr;
+}
+template <>
+Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator->() const
+{
+    unsigned int mVal = mHandle.mVal;
+    unsigned int v2 = mVal & 0xFFF;
+    if (v2 < 0x540 && (mVal >> 12) == (unsigned int)EntityHandleDb::sInst.mElements[v2].mKey)
+        return EntityHandleDb::sInst.mElements[v2].mObject;
+    return nullptr;
+}
+
+// proximity_data_t dtor (g.o 0x4B2290)
+proximity_data_t::~proximity_data_t()
+{
+}
+
+// ConfigString::operator[] (g.o 0x4B22A0)
+const char* ConfigString::operator[](const char* key)
+{
+    InplaceString* v2 = mStringMap.Find<const char*>(key);
+    if (v2 != nullptr)
+        return v2->mStr;
+    return nullptr;
+}
+
+// vehicle_backup_s ctor/dtor (g.o 0x4B2430 / 0x4B2460)
+class vehicle_backup_s {
+public:
+    uint8_t data[0xB8 + 0xB0];  // vehicle_pathpos_t + vehicle_physic_t
+    vehicle_backup_s();
+    ~vehicle_backup_s();
+};
+vehicle_backup_s::vehicle_backup_s()
+{
+    vehicle_node_t* nodes = (vehicle_node_t*)&((vehicle_pathpos_t*)data)->switchNode;
+    for (int i = 0; i < 2; ++i)
+        new (&nodes[i]) vehicle_node_t();
+}
+vehicle_backup_s::~vehicle_backup_s()
+{
+    vehicle_node_t* nodes = (vehicle_node_t*)&((vehicle_pathpos_t*)data)->switchNode;
+    for (int i = 1; i >= 0; --i)
+        nodes[i].~vehicle_node_t();
+}
+
+// AeThreadManager::AddNotify (g.o 0x4B2170) - mPendingNotifys at +0x24
+namespace {
+struct EntityNotifyDListNode {
+    EntityNotifyDListNode* m_next;
+    EntityNotifyDListNode* m_prev;
+};
+struct PendingNotifyList {
+    int m_size;
+    EntityNotifyDListNode* m_head;
+    EntityNotifyDListNode* m_end;
+    EntityNotifyDListNode* m_tail;
+};
+}
+void AeThreadManager::AddNotify(EntityNotify* notify)
+{
+    PendingNotifyList* list = (PendingNotifyList*)((char*)this + 0x24);
+    // EntityNotify's first member is its dlist node (next +0, prev +4).
+    struct RawNode { void* next; void* prev; };
+    RawNode* node = (RawNode*)notify;
+    EntityNotifyDListNode* m_tail = list->m_tail;
+    node->next = list->m_end;
+    node->prev = m_tail;
+    m_tail->m_next = (EntityNotifyDListNode*)node;
+    list->m_tail = (EntityNotifyDListNode*)node;
+    ++list->m_size;
+}
