@@ -451,7 +451,7 @@ void G_SetSoundBlend(Entity* ent, int alias0, int alias1, float lerp)
 }
 
 // ea: 0x00458970
-void use_corona(Entity* ent)
+void use_corona(Entity* ent, Entity* /*unused1*/, Entity* /*unused2*/)
 {
     if (ent->r.linked != 0)
     {
@@ -465,7 +465,7 @@ void use_corona(Entity* ent)
 }
 
 // ea: 0x00459780
-void misc_spawner_use(Entity* ent)
+void misc_spawner_use(Entity* ent, Entity* /*unused1*/, Entity* /*unused2*/)
 {
     ent->think = THINK__turret_think_init;
     ent->nextthink = level.time + 1;
@@ -483,7 +483,8 @@ void SP_misc_spawner(Entity* ent)
     else
     {
         G_Printf("-----> WARNING <-------\n");
-        G_Printf("misc_spawner at loc %s has no spawnitem!\n", vtos(&ent->r.currentOrigin));
+        G_Printf("misc_spawner at loc %s has no spawnitem!\n",
+                 vtos(ent->r.currentOrigin));
     }
 }
 
@@ -635,7 +636,8 @@ void misc_spawner_think(Entity* ent)
     if (Drop_Item(ent, Item, 0.0f, 0) == nullptr)
     {
         G_Printf("-----> WARNING <-------\n");
-        G_Printf("misc_spawner used at %s failed to drop!\n", vtos(&ent->r.currentOrigin));
+        G_Printf("misc_spawner used at %s failed to drop!\n",
+                 vtos(ent->r.currentOrigin));
     }
 }
 

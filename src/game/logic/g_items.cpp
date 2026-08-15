@@ -1545,7 +1545,8 @@ void FinishSpawningItem(Entity* ent, int msec)
         const char* classname = ent->mClassName.mBlock != nullptr
                                     ? (const char*)(ent->mClassName.mBlock + 1)
                                     : &defaultFileName[0];
-        G_Printf("FinishSpawningItem: %s startsolid at %s\n", classname, vtos(&ent->r.currentOrigin));
+        G_Printf("FinishSpawningItem: %s startsolid at %s\n", classname,
+                 vtos(ent->r.currentOrigin));
         G_FreeEntity(ent, msec);
     }
 }

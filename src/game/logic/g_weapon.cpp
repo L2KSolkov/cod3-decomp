@@ -1430,7 +1430,7 @@ void Weapon_Melee(Entity* ent, weaponParms* wp)
         start.v.m128_f32[1] = wp->muzzleTrace[1];
         start.v.m128_f32[2] = wp->muzzleTrace[2];
         start.v.m128_f32[3] = 0.0f;
-        g_LocationalTrace(&tr, &start, &end, &context, bulletPriorityMap, 0.0f);
+        g_LocationalTrace(&tr, start, end, context, bulletPriorityMap, 0.0f);
         hitHandle = tr.mEntity.mHandle.mVal;
     }
     else
@@ -1663,7 +1663,7 @@ void Bullet_Fire_Fake_Extended(
     e.v.m128_f32[1] = end[1];
     e.v.m128_f32[2] = end[2];
     e.v.m128_f32[3] = 0.0f;
-    g_LocationalTrace(&tr, &s, &e, &context, prioMap, coneAngleTangent);
+    g_LocationalTrace(&tr, s, e, context, prioMap, coneAngleTangent);
     if (g_debugBullets.integer > 0)
     {
         CL_AddDebugLine(start, &tr.endpos.v.m128_f32[0], colorGreen, 1, 20,
@@ -1915,7 +1915,7 @@ void Bullet_Fire_Extended(
     e.v.m128_f32[1] = end[1];
     e.v.m128_f32[2] = end[2];
     e.v.m128_f32[3] = 0.0f;
-    g_LocationalTrace(&tr, &s, &e, &context, prioMap, coneAngleTangent);
+    g_LocationalTrace(&tr, s, e, context, prioMap, coneAngleTangent);
     int debugBullets = g_debugBullets.integer;
     if (g_debugBullets.integer > 0)
     {

@@ -495,19 +495,20 @@ int G_ClientCanSpectateTeam(Entity* ent, team_t team)
 }
 
 // ea: 0x0046A250
-void render_sphere(const math::Position3* center, float radius, const float* color)
+void render_sphere(const math::Position3& center, float radius,
+                   const Color& color)
 {
     if (render)
     {
         debug_sphere v4;
-        v4.x = center->v.m128_f32[0];
-        v4.y = center->v.m128_f32[1];
-        v4.z = center->v.m128_f32[2];
+        v4.x = center.v.m128_f32[0];
+        v4.y = center.v.m128_f32[1];
+        v4.z = center.v.m128_f32[2];
         v4.radius = radius;
-        v4.color[0] = color[0];
-        v4.color[1] = color[1];
-        v4.color[2] = color[2];
-        v4.color[3] = color[3];
+        v4.color[0] = color.r;
+        v4.color[1] = color.g;
+        v4.color[2] = color.b;
+        v4.color[3] = color.a;
         debug_spheres.mElements[debug_spheres.mSize++] = v4;
     }
 }
@@ -918,9 +919,9 @@ void Cmd_Where_f(Entity* ent)
         if (client != nullptr)
         {
             unsigned int mVal = ent->mHandle.mHandle.mVal;
-            char* v3 = vtos(&client->ps.origin);
+            char* v3 = vtos(client->ps.origin);
             SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), va("print \"%s\"", v3));
-            strcpy(cg_drawPosition.string, vtos(&ent->client->ps.origin));
+            strcpy(cg_drawPosition.string, vtos(ent->client->ps.origin));
         }
     }
 }

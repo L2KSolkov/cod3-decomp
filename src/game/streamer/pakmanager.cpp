@@ -143,9 +143,9 @@ bool IsSplitScreen();  // cg_misc.cpp ?IsSplitScreen@View@@YA_NXZ
 }
 struct trace_t;
 struct collision_context_t;
-void g_LocationalTrace(trace_t* results, const math::Position3* start,
-                       const math::Position3* end,
-                       const collision_context_t* context,
+void g_LocationalTrace(trace_t* results, const math::Position3& start,
+                       const math::Position3& end,
+                       const collision_context_t& context,
                        unsigned char* priorityMap,
                        float coneAngleTangent);  // g.o (g_trace.cpp)
 
@@ -6086,7 +6086,7 @@ void SceneManager::RenderLightGlows()
                     context.contentmask = 0x2802033;
 
                     trace_t trace;
-                    g_LocationalTrace(&trace, &start, &end, &context,
+                    g_LocationalTrace(&trace, start, end, context,
                                       bulletPriorityMap, 0.0f);
 
                     float fade = light->mGlowFade;

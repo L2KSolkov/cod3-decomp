@@ -1165,7 +1165,7 @@ void G_DPrintf(const char* fmt, ...);
 void G_Error(const char* fmt, ...);
 void G_Error_Localized(const char* fmt, ...);
 char* vtos(const float* v);
-char* vtos(const math::Position3* v);
+char* vtos(const math::Position3& v);
 void G_CleanupAnimTrees();
 
 // sv.o
@@ -1176,14 +1176,22 @@ void g_Trace(trace_t* results, const math::Position3& start, const math::Positio
 void g_TraceCapsule(trace_t* results, const math::Position3& start, const math::Position3& mins,
                     const math::Position3& maxs, const math::Position3& end,
                     const collision_context_t& context);
-void g_LocationalTrace(trace_t* results, const math::Position3* start,
-                       const math::Position3* end, const collision_context_t* context,
+void g_LocationalTrace(trace_t* results, const math::Position3& start,
+                       const math::Position3& end, const collision_context_t& context,
                        unsigned char* priorityMap, float coneAngleTangent);
+int  g_EntityContact(const math::Position3& mins, const math::Position3& maxs,
+                     const Entity* ent);
 int  SV_PointContents(const math::Position3& p, const collision_context_t& context);
-void g_SightTrace(int* hitNum, const math::Position3* start, const math::Position3* mins,
-                  const math::Position3* maxs, const math::Position3* end,
-                  const collision_context_t* context);
-void TraceDebugLine(const math::Position3* start, const math::Position3* end,
+void g_SightTrace(int* hitNum, const math::Position3& start,
+                  const math::Position3& mins, const math::Position3& maxs,
+                  const math::Position3& end,
+                  const collision_context_t& context);
+void g_SightTraceCapsule(int* hitNum, const math::Position3& start,
+                         const math::Position3& mins,
+                         const math::Position3& maxs,
+                         const math::Position3& end,
+                         const collision_context_t& context);
+void TraceDebugLine(const math::Position3& start, const math::Position3& end,
                     int hitNum, DbLinkedHandle<EntityHandleDb, Entity> entityHandle);
 
 // ============================================================================
@@ -2592,7 +2600,7 @@ extern int gEnableMeshFlash;                         // g.o
 const float AngleNormalize360Accurate(float angle);        // core.o
 void  SV_DObjDisplayAnim(Entity* entity);            // sv.o
 void  j_nullsub_93(void);                            // g.o
-int   HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
+void  HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
 extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 extern float r;                                      // g.o @ 0xDD8228
@@ -3637,7 +3645,8 @@ void  ClientIntermissionThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x448F20
 void  SP_intermission(Entity* ent);                          // g.o 0x449410
 void  Cmd_SetSpawnPoint_f(void);                             // g.o 0x44AAB0
 void  G_XAnimUpdateEnt(Entity* ent);                         // g.o 0x4581C0
-void  render_sphere(const math::Position3* center, float radius, const float* color);  // g.o 0x46A250
+void  render_sphere(const math::Position3& center, float radius,
+                    const Color& color);  // g.o 0x46A250
 int   G_EntLinkTo(Entity* ent, Entity* parent, const char* tagName);      // g.o 0x48AFF0
 int   G_EntLinkTo(Entity* ent, Entity* parent, unsigned int tag_name_hash);  // g.o 0x48B030
 int   G_EntLinkToWithOffsetHash(Entity* ent, Entity* parent, unsigned int tag_name_hash,

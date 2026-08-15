@@ -2465,9 +2465,9 @@ void FN_DebugAnims_Select_Target()
 // ============================================================================
 extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);  // ?CalcMuzzlePoints (game.o)
 extern void g_LocationalTrace(trace_t* results,
-                              const math::Position3* start,
-                              const math::Position3* end,
-                              const collision_context_t* context,
+                              const math::Position3& start,
+                              const math::Position3& end,
+                              const collision_context_t& context,
                               unsigned char* priorityMap,
                               float coneAngleTangent);
 // ?bulletPriorityMap@@3PAEA / ?riflePriorityMap@@3PAEA (g.o @ 0xDD55D0)
@@ -2511,8 +2511,8 @@ Entity* _Return_MF_UnderCrossHair()
     ctx[1] = (void*)mVal;
     ctx[2] = nullptr;
     int result;
-    g_LocationalTrace((trace_t*)&result, &start, &end,
-                      (collision_context_t*)ctx, v4, 0.0f);
+    g_LocationalTrace((trace_t*)&result, start, end,
+                      *((collision_context_t*)ctx), v4, 0.0f);
 
     unsigned int hit = result;
     if (hit == EntityManager::sInst->mWorld->mHandle.mHandle.mVal || hit == 0)

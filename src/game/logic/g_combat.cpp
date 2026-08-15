@@ -714,7 +714,8 @@ float Damage_Falloff(float fDistance, float fDamage, float fMinDamagePercent,
 }
 
 // ea: 0x004533B0
-bool Bullet_ShouldGoThroughFriend()
+bool Bullet_ShouldGoThroughFriend(const Entity* /*attacker*/,
+                                  const Entity* /*victim*/)
 {
     return false;
 }
@@ -941,7 +942,7 @@ void G_MissileTrace(trace_t* results, const math::Position3* start,
     v7.pass_entity2.mHandle.mVal = 0;
     v7.contentmask = contentmask;
     v7.__vftable = nullptr;
-    g_LocationalTrace(results, start, end, &v7, priorityMap, 0.0f);
+    g_LocationalTrace(results, *start, *end, v7, priorityMap, 0.0f);
     if (results->startsolid != 0)
     {
         if ((results->contents & 0x800) != 0)

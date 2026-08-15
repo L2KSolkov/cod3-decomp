@@ -718,7 +718,7 @@ int turret_canuse_auto(Entity* self, actor_s* pActor)
     mins.v = _mm_setzero_ps();
     maxs.v = _mm_setzero_ps();
     int hit = 0;
-    g_SightTrace(&hit, (const math::Position3*)&tmp[2], &mins, &maxs, &end, &context);
+    g_SightTrace(&hit, *((const math::Position3*)&tmp[2]), mins, maxs, end, context);
     return hit != 0;
 }
 
@@ -1320,7 +1320,7 @@ int turret_isTargetVisable(Entity* self, Entity* target, float* distSqr)
     int hit = 0;
     collision_context_t context(self->mHandle, target->mHandle, 0x801003);
     SV_SightTrace(&hit, &start, &mins, &maxs, &end, &context, 0);
-    TraceDebugLine(&start, &end, hit, self->mHandle);
+    TraceDebugLine(start, end, hit, self->mHandle);
     if (hit != 0)
         return 0;
     pTurretInfo->obstruction = nullptr;
@@ -1548,7 +1548,7 @@ int turret_think_auto(Entity* self, actor_s* pActor)
             mins.v = _mm_setzero_ps();
             maxs.v = _mm_setzero_ps();
             int hitNum = 0;
-            g_SightTrace(&hitNum, &v39, &mins, &maxs, &source, &context);
+            g_SightTrace(&hitNum, v39, mins, maxs, source, context);
             if (hitNum != 0)
                 goto L30;
             pTurretInfo->detachSentient = pEnemy;
@@ -1654,7 +1654,7 @@ L30:
                 mins.v = _mm_setzero_ps();
                 maxs.v = _mm_setzero_ps();
                 int hitNum = 0;
-                g_SightTrace(&hitNum, &v39, &mins, &maxs, &source, &context);
+                g_SightTrace(&hitNum, v39, mins, maxs, source, context);
                 if (hitNum == 0)
                 {
                     if (pTurretInfo->detachSentient == pEnemy)

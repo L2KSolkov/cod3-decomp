@@ -942,8 +942,8 @@ label_19:
         ctx2.pass_entity1.mHandle.mVal = mVal;
         ctx2.pass_entity2.mHandle.mVal = clipmask;
         ctx2.contentmask = 0;
-        g_LocationalTrace((trace_t*)v33, &ent->r.currentOrigin,
-                          (const math::Position3*)vReflect, &ctx2,
+        g_LocationalTrace((trace_t*)v33, ent->r.currentOrigin,
+                          *((const math::Position3*)vReflect), ctx2,
                           bulletPriorityMap, 0.0f);
     }
     else

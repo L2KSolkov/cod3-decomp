@@ -4394,8 +4394,8 @@ no_target:
                     end.v.m128_f32[0] = tgtDir[0];
                     end.v.m128_f32[1] = tgtDir[1];
                     end.v.m128_f32[2] = tgtDir[2];
-                    g_SightTrace(&scr_vehicle->turretHitNum, &start, &zeroA,
-                                 &zeroB, &end, &ctx);
+                    g_SightTrace(&scr_vehicle->turretHitNum, start, zeroA,
+                                 zeroB, end, ctx);
                     if (scr_vehicle->turretHitNum == 0)
                         Scr_Notify(ent, hash_const.turret_on_vistarget, 0);
                 }

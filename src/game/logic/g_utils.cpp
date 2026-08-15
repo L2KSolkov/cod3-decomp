@@ -715,11 +715,12 @@ char* vtos(const float* v)
 }
 
 // ea: 0x004540D0
-char* vtos(const math::Position3* v)
+char* vtos(const math::Position3& v)
 {
     char* v1 = str_0[index_0];
     index_0 = (index_0 + 1) & 7;
-    Com_sprintf(v1, 32, "(%i %i %i)", (int)v->v.m128_f32[0], (int)v->v.m128_f32[1], (int)v->v.m128_f32[2]);
+    Com_sprintf(v1, 32, "(%i %i %i)", (int)v.v.m128_f32[0],
+                (int)v.v.m128_f32[1], (int)v.v.m128_f32[2]);
     return v1;
 }
 

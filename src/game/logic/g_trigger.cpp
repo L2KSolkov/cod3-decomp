@@ -445,7 +445,7 @@ add_new:
 }
 
 // ea: 0x00470970
-void Touch_Multi(Entity* self, Entity* other)
+void Touch_Multi(Entity* self, Entity* other, int /*unused*/)
 {
     G_Trigger(self, other);
     multi_trigger(self, other);
@@ -505,7 +505,7 @@ void Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMOD
 }
 
 // ea: 0x00470B30
-void Use_trigger_damage(Entity* pEnt, Entity* pOther)
+void Use_trigger_damage(Entity* pEnt, Entity* pOther, Entity* /*unused*/)
 {
     Activate_trigger_damage(pEnt, pOther, pEnt->count + 1, -1);
 }
@@ -527,7 +527,7 @@ void Die_trigger_damage(Entity* pSelf, Entity* pInflictor, Entity* pAttacker, in
 }
 
 // ea: 0x00470F20
-void Touch_trigger_mount(Entity* self, Entity* other)
+void Touch_trigger_mount(Entity* self, Entity* other, int /*unused*/)
 {
     G_Trigger(self, other);
 }

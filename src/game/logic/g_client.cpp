@@ -1495,7 +1495,7 @@ void Player_UpdateLookAtEntity(Entity* pEnt)
         end.v.m128_f32[2] = forward[2] * 8192.0f + start.v.m128_f32[2];
         end.v.m128_f32[3] = 0.0f;
         context.pass_entity1.mHandle.mVal = pEnt->r.mOwner.mHandle.mVal;
-        g_LocationalTrace(&trace, &start, &end, &context, v6, 0.0f);
+        g_LocationalTrace(&trace, start, end, context, v6, 0.0f);
     }
     else
     {
@@ -1508,7 +1508,7 @@ void Player_UpdateLookAtEntity(Entity* pEnt)
         end.v.m128_f32[2] = weapParms.forward[2] * 8192.0f + start.v.m128_f32[2];
         end.v.m128_f32[3] = 0.0f;
         context.pass_entity1.mHandle.mVal = pEnt->mHandle.mHandle.mVal;
-        g_LocationalTrace(&trace, &start, &end, &context, v6, 0.0f);
+        g_LocationalTrace(&trace, start, end, context, v6, 0.0f);
     }
     pEnt->client->fLastTraceDist = trace.normal.v.m128_f32[1] * 8192.0f;
     if (trace.mEntity.mHandle.mVal

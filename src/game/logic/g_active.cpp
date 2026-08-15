@@ -65,7 +65,7 @@ int G_EntIsLinkedTo(Entity* ent, Entity* parent)
 }
 
 // ea: 0x00453C10
-void Think_GeneralLink(Entity* ent)
+void Think_GeneralLink(Entity* ent, int /*unused*/)
 {
     ent->nextthink = level.time + 1;
 }

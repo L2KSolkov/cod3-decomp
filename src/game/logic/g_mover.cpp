@@ -1490,19 +1490,19 @@ void MatchTeamReverseAngleOnSlaves(Entity* teamLeader, moverState_t moverState, 
 }
 
 // ea: 0x0045A4E0
-void ReturnToPos1(Entity* ent)
+void ReturnToPos1(Entity* ent, int /*unused*/)
 {
     MatchTeam(ent, MOVER_2TO1, level.time);
 }
 
 // ea: 0x0045A500
-void ReturnToPos2(Entity* ent)
+void ReturnToPos2(Entity* ent, int /*unused*/)
 {
     MatchTeam(ent, MOVER_3TO2, level.time);
 }
 
 // ea: 0x0045A520
-void GotoPos3(Entity* ent)
+void GotoPos3(Entity* ent, int /*unused*/)
 {
     MatchTeam(ent, MOVER_2TO3, level.time);
 }
@@ -1738,7 +1738,7 @@ static Entity* Think_SpawnNewDoorTriggerInternal(Entity* ent)
 }
 
 // ea: 0x0045AE60
-void Think_SpawnNewDoorTrigger(Entity* ent)
+void Think_SpawnNewDoorTrigger(Entity* ent, int /*unused*/)
 {
     Think_SpawnNewDoorTriggerInternal(ent);
 }
@@ -1832,7 +1832,7 @@ done:
 }
 
 // ea: 0x0045B110
-void Think_SpawnNewAutoDoorTrigger(Entity* ent)
+void Think_SpawnNewAutoDoorTrigger(Entity* ent, int /*unused*/)
 {
     Think_SpawnNewDoorTriggerInternal(ent)->r.contents = 0x1C0000;
     if ((ent->spawnflags & 1) != 0)
@@ -1840,13 +1840,13 @@ void Think_SpawnNewAutoDoorTrigger(Entity* ent)
 }
 
 // ea: 0x0045B140
-void Think_MatchTeam(Entity* ent)
+void Think_MatchTeam(Entity* ent, int /*unused*/)
 {
     MatchTeam(ent, (moverState_t)ent->moverState, level.time);
 }
 
 // ea: 0x0045B160
-void Use_Static(Entity* ent)
+void Use_Static(Entity* ent, Entity* /*unused1*/, Entity* /*unused2*/)
 {
     if (ent->r.linked != 0)
         SV_UnlinkEntity(ent);
@@ -1898,7 +1898,7 @@ void SP_func_static(Entity* ent)
 }
 
 // ea: 0x0045B2C0
-void Use_Func_Rotate(Entity* ent)
+void Use_Func_Rotate(Entity* ent, Entity* /*unused1*/, Entity* /*unused2*/)
 {
     int spawnflags = ent->spawnflags;
     float speed = ent->speed;

@@ -10017,8 +10017,8 @@ bool FindClosestVisibleBone(Entity* closestEnt,
             spinePos.v.m128_f32[1] = spineMat.origin[1];
             spinePos.v.m128_f32[2] = spineMat.origin[2];
             spinePos.v.m128_f32[3] = spineMat.origin[3];
-            g_SightTrace(&hit, &playerPosition, &zeroMins, &zeroMaxs,
-                         &spinePos, &context);
+            g_SightTrace(&hit, playerPosition, zeroMins, zeroMaxs,
+                         spinePos, context);
             if (hit != 0)
             {
                 bSpine = false;
@@ -10037,8 +10037,8 @@ bool FindClosestVisibleBone(Entity* closestEnt,
             helmetPos.v.m128_f32[1] = helmetMat.origin[1];
             helmetPos.v.m128_f32[2] = helmetMat.origin[2];
             helmetPos.v.m128_f32[3] = helmetMat.origin[3];
-            g_SightTrace(&hit, &playerPosition, &zeroMins, &zeroMaxs,
-                         &helmetPos, &context);
+            g_SightTrace(&hit, playerPosition, zeroMins, zeroMaxs,
+                         helmetPos, context);
             if (hit == 0)
             {
                 __m128 v10 = _mm_sub_ps(helmetPos.v, hitPosition.v);
@@ -10068,7 +10068,7 @@ LABEL_24:
         return false;
     }
     math::Position3 end;
-    g_SightTrace(&hit, &playerPosition, &zeroMins, &zeroMaxs, &end, &context);
+    g_SightTrace(&hit, playerPosition, zeroMins, zeroMaxs, end, context);
     if (hit == 0)
     {
         enemyOrigin = closestEnt->r.currentOrigin;
