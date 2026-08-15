@@ -277,7 +277,9 @@ struct scr_vehicle_t {
     uint8_t _pad19C[0x1A0 - 0x19C];
     int     gunnerWeapon;     // +0x1A0
     int     shooter;          // +0x1A4
-    uint8_t _pad1A8[0x1B4 - 0x1A8];
+    uint8_t _pad1A8[0x1AC - 0x1A8];
+    int     spotTime;         // +0x1AC
+    DbLinkedHandle<EntityHandleDb, Entity> mLastSpotter;  // +0x1B0
     int     mMantleTime;  // +0x1B4
     DbLinkedHandle<EntityHandleDb, Entity> mMantleEntity;  // +0x1B8
     math::Position3 respawn_origin;  // +0x1C0

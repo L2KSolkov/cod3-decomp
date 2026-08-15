@@ -460,6 +460,21 @@ public:
                           const math::Position3& axis_flag,
                           const math::Dir3& axisAngles,
                           Entity* axis_flag_holder);  // ?SendGameStateCTF@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@0120@Z
+    void SendGameStateSCF(Entity* player, int currentFlagIndex,
+                          const math::Position3& flagPosition,
+                          const math::Dir3& flagAngles,
+                          Entity* flagHolder);  // ?SendGameStateSCF@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@0@Z
+    void SendGameStateDOM(Entity* player, int flag0, int flag1, int flag2,
+                          int flag3, int flag4);  // ?SendGameStateDOM@MultiplayerMgr@@QAEXPAVEntity@@HHHHH@Z
+    void SendGameStateSD(Entity* player, Entity* planter, Entity* defuser,
+                         bool planting, const math::Position3& bombPosition,
+                         const math::Dir3& bombAngles,
+                         int bombTimeLeft);  // ?SendGameStateSD@MultiplayerMgr@@QAEXPAVEntity@@00_NABVPosition3@math@@ABVDir3@4@H@Z
+    void SendHostBombRequest(const Entity* player, bool defusing);  // ?SendHostBombRequest@MultiplayerMgr@@QAEXPBVEntity@@_N@Z
+    void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MultiplayerMgr@@QAEXPBVEntity@@@Z
+    void SendBombOperation(const Entity* player, bool defusing);  // ?SendBombOperation@MultiplayerMgr@@QAEXPBVEntity@@_N@Z
+    void SendBombOperationEvent(const Entity* player, bool defusing,
+                                bool success);  // ?SendBombOperationEvent@MultiplayerMgr@@QAEXPBVEntity@@_N1@Z
     void DropWeapon(int weapon, int netIndex, const math::Position3* position,
                     const math::Position3* angles, const math::Dir3* velocity,
                     int clipCount, int ammoCount);  // ?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@1ABVDir3@2@HH@Z
