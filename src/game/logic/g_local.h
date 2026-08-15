@@ -409,7 +409,8 @@ void RespawnItem(Entity* ent, int unused);
 // ============================================================================
 class trRefEntity {
 public:
-    uint8_t _pad[0xF4];      // +0x00
+    uint8_t _pad[0xF0];      // +0x00
+    float   mAlpha;          // +0xF0
     int16_t mWaterHeightOffset;  // +0xF4
     uint8_t _padF6[0xFC - 0xF6];
     uint8_t iflIndex;        // +0xFC

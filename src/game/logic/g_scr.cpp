@@ -3328,6 +3328,36 @@ unsigned int StalinGradSpawn2(unsigned int entityHandleVal,
                               TPakInfo whichPak);  // 0x5CE650
 void GetOrigin(unsigned int entityHandleVal,
                Broc::vector& outVec);  // 0x5CE6C0
+void GetEye(unsigned int entityHandleVal,
+            Broc::vector& outVec);  // 0x5CE7A0
+unsigned int UseBy(unsigned int entityHandleVal,
+                    unsigned int otherEntityHandleVal);  // 0x5CE8B0
+bool IsTouching(unsigned int entityHandleVal,
+                unsigned int otherEntityHandleVal);  // 0x5CE9A0
+void LockDoor(unsigned int entityHandleVal);  // 0x5CEE40
+void UnLockDoor(unsigned int entityHandleVal);  // 0x5CEEA0
+bool IsDoorLocked(unsigned int entityHandleVal);  // 0x5CEF00
+void Delete(unsigned int entityHandleVal);  // 0x5CEF60
+void SetTransparent(unsigned int entityHandleVal,
+                    bool isTransparent);  // 0x5CEFD0
+void SetAiType(unsigned int entityHandleVal, const Broc::string& modelName,
+               TPakInfo pakInfo);  // 0x5CF250
+void SetModelIndex(unsigned int entityHandleVal,
+                   int iflIndex);  // 0x5CF410
+float GetNormalHealth(unsigned int entityHandleVal);  // 0x5CF4A0
+void SetNormalHealth(unsigned int entityHandleVal,
+                     float fNormalHealth);  // 0x5CF520
+void DoDamage(unsigned int entityHandleVal, float damage,
+              const Broc::vector& vecIn, hitLocation_t hitLoc);  // 0x5CF6B0
+void SetTakeDamage(unsigned int entityHandleVal,
+                   int damage);  // 0x5CF840 (int mangle per manifest)
+void InvulnerableForTime(unsigned int entityHandleVal,
+                         float time);  // 0x5CF880
+bool IsEntityInvulnerable(unsigned int entityHandleVal);  // 0x5CF8D0
+void SetAlwaysRender(unsigned int entityHandleVal, int r);  // 0x5CF920
+void Show(unsigned int entityHandleVal);  // 0x5CF960
+void Hide(unsigned int entityHandleVal);  // 0x5CF9A0
+int  SetContents(unsigned int entityHandleVal, int contents);  // 0x5CF9E0
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3375,6 +3405,7 @@ extern void SV_DObjDumpInfo(Entity* entity);  // ?SV_DObjDumpInfo@@YAXPAVEntity@
 extern Entity* SpawnActor(Entity* ent, const Broc::string& targetname,
                           enumForceSpawn forceSpawn,
                           TPakId pakId);  // ?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z (ai_stubs.cpp)
+extern void G_SetModelIndex(Entity* ent, int iflIndex);  // ?G_SetModelIndex@@YAXPAVEntity@@H@Z (g_dobj.cpp 0x453BC0)
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -13621,6 +13652,666 @@ void BrocSys::GetOrigin(unsigned int entityHandleVal, Broc::vector& outVec)
         }
         outVec = origin;
     }
+}
+
+// ============================================================================
+// scr.o batch 47 - entity state / use / health wrappers
+// ============================================================================
+
+// ea: 0x005CE7A0
+void BrocSys::GetEye(unsigned int entityHandleVal, Broc::vector& outVec)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        sentient_s* sentient = mObject->sentient;
+        if (sentient != nullptr)
+        {
+            float eye[3];
+            Sentient_GetEyePosition(sentient, eye);
+            outVec.x = eye[0];
+            outVec.y = eye[1];
+            outVec.z = eye[2];
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2765;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                const char* classname = mObject->mClassName.mBlock != nullptr
+                                            ? (const char*)(mObject
+                                                                ->mClassName
+                                                                .mBlock
+                                                            + 1)
+                                            : defaultFileName;
+                if (AeAssert::Warning(
+                        "getEye must be called on an AI or player, not on a '%s'",
+                        classname))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 2759;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("getEye being called on a NULL entityt"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CE8B0
+unsigned int BrocSys::UseBy(unsigned int entityHandleVal,
+                            unsigned int otherEntityHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr)
+        return 0;
+    unsigned int v5 = otherEntityHandleVal & 0xFFF;
+    if (v5 >= 0x540)
+        return 0;
+    if (otherEntityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey)
+        return 0;
+    Entity* v6 = EntityHandleDb::sInst.mElements[v5].mObject;
+    if (v6 == nullptr)
+        return 0;
+    Scr_NotifyFromEnt(mObject, hash_const.trigger, v6);
+    unsigned char use = mObject->use;
+    if (use != 0)
+    {
+        if (use >= 0xE)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2791;
+            AeAssert::gCurrentExpr = "pEnt->use > 0 && pEnt->use < USE_MAX";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        usetable[mObject->use](mObject, v6, v6);
+    }
+    return v6->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005CE9A0
+bool BrocSys::IsTouching(unsigned int entityHandleVal,
+                         unsigned int otherEntityHandleVal)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (mObject == nullptr)
+        return false;
+    const Entity* v5;
+    if (mObject->r.bmodel != nullptr)
+    {
+        v5 = mObject;
+        unsigned int v6 = otherEntityHandleVal & 0xFFF;
+        mObject = nullptr;
+        if (v6 < 0x540
+            && otherEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v6].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+        if (mObject == nullptr)
+            return false;
+    }
+    else
+    {
+        unsigned int v8 = otherEntityHandleVal & 0xFFF;
+        Entity* v9 = nullptr;
+        if (v8 < 0x540
+            && otherEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v8].mKey)
+            v9 = EntityHandleDb::sInst.mElements[v8].mObject;
+        v5 = v9;
+        if (v9 == nullptr)
+            return false;
+    }
+    if (mObject->r.maxs.v.m128_f32[0] < mObject->r.mins.v.m128_f32[0])
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 2826;
+        AeAssert::gCurrentExpr = "pEnt->r.maxs[0] >= pEnt->r.mins[0]";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* classname = mObject->mClassName.mBlock != nullptr
+                                        ? (const char*)(mObject->mClassName
+                                                            .mBlock
+                                                        + 1)
+                                        : defaultFileName;
+            if (AeAssert::Assert(
+                    va("entnum: %d, origin: %g %g %g, classname: %s",
+                       mObject->mHandle.mHandle.mVal,
+                       mObject->r.currentOrigin.v.m128_f32[0],
+                       mObject->r.currentOrigin.v.m128_f32[1],
+                       mObject->r.currentOrigin.v.m128_f32[2], classname)))
+                __debugbreak();
+        }
+    }
+    if (mObject->r.maxs.v.m128_f32[1] < mObject->r.mins.v.m128_f32[1])
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 2827;
+        AeAssert::gCurrentExpr = "pEnt->r.maxs[1] >= pEnt->r.mins[1]";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* classname = mObject->mClassName.mBlock != nullptr
+                                        ? (const char*)(mObject->mClassName
+                                                            .mBlock
+                                                        + 1)
+                                        : defaultFileName;
+            if (AeAssert::Assert(
+                    va("entnum: %d, origin: %g %g %g, classname: %s",
+                       mObject->mHandle.mHandle.mVal,
+                       mObject->r.currentOrigin.v.m128_f32[0],
+                       mObject->r.currentOrigin.v.m128_f32[1],
+                       mObject->r.currentOrigin.v.m128_f32[2], classname)))
+                __debugbreak();
+        }
+    }
+    if (mObject->r.maxs.v.m128_f32[2] < mObject->r.mins.v.m128_f32[2])
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 2828;
+        AeAssert::gCurrentExpr = "pEnt->r.maxs[2] >= pEnt->r.mins[2]";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* classname = mObject->mClassName.mBlock != nullptr
+                                        ? (const char*)(mObject->mClassName
+                                                            .mBlock
+                                                        + 1)
+                                        : defaultFileName;
+            if (AeAssert::Assert(
+                    va("entnum: %d, origin: %g %g %g, classname: %s",
+                       mObject->mHandle.mHandle.mVal,
+                       mObject->r.currentOrigin.v.m128_f32[0],
+                       mObject->r.currentOrigin.v.m128_f32[1],
+                       mObject->r.currentOrigin.v.m128_f32[2], classname)))
+                __debugbreak();
+        }
+    }
+    float v20 = mObject->r.mins.v.m128_f32[0]
+                + mObject->r.currentOrigin.v.m128_f32[0];
+    float v21 = mObject->r.mins.v.m128_f32[1]
+                + mObject->r.currentOrigin.v.m128_f32[1];
+    float v22 = mObject->r.currentOrigin.v.m128_f32[2]
+                + mObject->r.mins.v.m128_f32[2];
+    float v23 = mObject->r.currentOrigin.v.m128_f32[0]
+                + mObject->r.maxs.v.m128_f32[0];
+    float v24 = mObject->r.maxs.v.m128_f32[1]
+                + mObject->r.currentOrigin.v.m128_f32[1];
+    float v25 = mObject->r.maxs.v.m128_f32[2]
+                + mObject->r.currentOrigin.v.m128_f32[2];
+    float v34[4], vMins[4];
+    v34[1] = v20;
+    v34[2] = v21;
+    v34[3] = v22;
+    vMins[1] = v23;
+    vMins[2] = v24;
+    vMins[3] = v25;
+    if (mObject->r.bmodel != nullptr && v5->r.bmodel != nullptr)
+    {
+        float v26 = v5->r.currentOrigin.v.m128_f32[1]
+                    + v5->r.maxs.v.m128_f32[1];
+        float v27 = v5->r.currentOrigin.v.m128_f32[2]
+                    + v5->r.maxs.v.m128_f32[2];
+        vMins[0] = v34[0] = v5->r.currentOrigin.v.m128_f32[0]
+                            + v5->r.maxs.v.m128_f32[0];
+        vMins[1] = v34[1] = v26;
+        vMins[2] = v34[2] = v27;
+        vMins[3] = v34[3] = 0.0f;
+        float v32[4] = { v20, v21, v22, 0.0f };
+        float v33[4] = { v23, v24, v25, 0.0f };
+        // SSE AABB overlap: max(vMins - v33, v32 - v34) < 0 on all 3 axes
+        return vMins[0] < v33[0] && v32[0] < v34[0]
+            && vMins[1] < v33[1] && v32[1] < v34[1]
+            && vMins[2] < v33[2] && v32[2] < v34[2];
+    }
+    if ((mObject->r.svFlags & 0x200) != 0)
+    {
+        math::Position3 maxs = native_to_cdl_pos3(&vMins[1]);
+        math::Position3 mins = native_to_cdl_pos3(&v34[1]);
+        return g_EntityContactCapsule(mins, maxs, v5) != 0;
+    }
+    math::Position3 maxs = native_to_cdl_pos3(&vMins[1]);
+    math::Position3 mins = native_to_cdl_pos3(&v34[1]);
+    return g_EntityContact(mins, maxs, v5) != 0;
+}
+
+// ea: 0x005CEE40
+void BrocSys::LockDoor(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.func_door_rotating.mHash
+            || mHash == hash_const.func_door.mHash)
+        {
+            mObject->key = 1;
+            UpdatePaths(mObject);
+        }
+    }
+}
+
+// ea: 0x005CEEA0
+void BrocSys::UnLockDoor(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.func_door_rotating.mHash
+            || mHash == hash_const.func_door.mHash)
+        {
+            mObject->key = 0;
+            UpdatePaths(mObject);
+        }
+    }
+}
+
+// ea: 0x005CEF00
+bool BrocSys::IsDoorLocked(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    unsigned int mHash;
+    return v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr
+        && ((mHash = mObject->mClassNameHash.mHash)
+                == hash_const.func_door_rotating.mHash
+            || mHash == hash_const.func_door.mHash)
+        && mObject->key != 0;
+}
+
+// ea: 0x005CEF60
+void BrocSys::Delete(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->client != nullptr)
+            Scr_Error("Cannot delete a client entity");
+        Scr_Notify(mObject, hash_const.death, 0);
+        G_FreeEntity(mObject, 0);
+    }
+}
+
+// ea: 0x005CEFD0
+void BrocSys::SetTransparent(unsigned int entityHandleVal, bool isTransparent)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        trRefEntity& RenderEntity = mObject->GetRenderEntity();
+        if (isTransparent)
+            RenderEntity.mAlpha = 0.5f;
+        else
+            RenderEntity.mAlpha = 1.0f;
+    }
+}
+
+// ea: 0x005CF250
+void BrocSys::SetAiType(unsigned int entityHandleVal,
+                        const Broc::string& modelName, TPakInfo pakInfo)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        if (modelName.mBlock == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 3032;
+            AeAssert::gCurrentExpr = "modelName.IsDefined()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("SetModel: model name undefined."))
+                __debugbreak();
+        }
+        if (modelName.mBlock != nullptr)
+        {
+            TPakId mPakId;
+            if (pakInfo != kTPakInfoInvalid)
+                mPakId = PakInfoToPakId(pakInfo);
+            else
+            {
+                mPakId = (TPakId)mObject->mPakId;
+                if (mPakId == PAK_ID_INVALID)
+                    mPakId = CurPakId();
+            }
+            bool v6 = false;
+            if (mObject->client != nullptr)
+            {
+                mPakId = CurPakId();
+                v6 = (mObject->flags & 0x400000) != 0;
+                StopPhysics(mObject);
+                mObject->flags &= ~0x400000u;
+            }
+            const char* v7 = modelName.mBlock != nullptr
+                                 ? (const char*)(modelName.mBlock + 1)
+                                 : defaultFileName;
+            IVPointer<AIType> ait =
+                AITypeManager::sInst->GetAIType(mPakId, v7, 0);
+            ValidatePakId((TPakId)ait.mPakId);
+            if (ait.mValue != nullptr)
+            {
+                ValidatePakId((TPakId)ait.mPakId);
+                ait.mValue->InitPlayer(mObject, mPakId);
+            }
+            mObject->s.brushmodel = 0;
+            SV_SetBrushModel(mObject);
+            G_DObjUpdate(mObject, false);
+            if (v6)
+                g_UnlinkEntity(mObject);
+            else
+                g_LinkEntity(mObject);
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 3028;
+        AeAssert::gCurrentExpr = "pEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Failed to set model on NULL entitiy."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CF410
+void BrocSys::SetModelIndex(unsigned int entityHandleVal, int iflIndex)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        G_SetModelIndex(mObject, iflIndex);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 3090;
+        AeAssert::gCurrentExpr = "pEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Failed to set model index on NULL entitiy."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CF4A0
+float BrocSys::GetNormalHealth(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        Client* client = mObject->client;
+        if (client != nullptr)
+        {
+            int entityHandleVala = mObject->health;
+            if (entityHandleVala != 0)
+                return (float)entityHandleVala / client->pers.maxHealth;
+        }
+        int entityHandleValb = mObject->maxHealth;
+        if (entityHandleValb != 0)
+            return (float)mObject->health / entityHandleValb;
+        Com_Printf(
+            "WARNING: GetNormalHealth called on entity with 0 maxHealth.\n");
+    }
+    return 0.0f;
+}
+
+// ea: 0x005CF520
+void BrocSys::SetNormalHealth(unsigned int entityHandleVal,
+                              float fNormalHealth)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 >= 0x540)
+        return;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr)
+        return;
+    if (fNormalHealth <= 1.0f)
+    {
+        if (fNormalHealth <= 0.0f)
+        {
+            const char* name;
+            if (mObject->targetname.mBlock == (Broc::string::Block*)-12)
+                name = "<not set>";
+            else
+                name = mObject->targetname.mBlock != nullptr
+                           ? (const char*)(mObject->targetname.mBlock + 1)
+                           : defaultFileName;
+            Scr_Error(
+                va("setNormalHealth must be greater than 0 (tried to set %g on ent %i, name %s)\n",
+                   fNormalHealth, mObject->mHandle.mHandle.mVal, name));
+        }
+    }
+    else
+    {
+        fNormalHealth = 1.0f;
+    }
+    Client* client = mObject->client;
+    if (client != nullptr)
+    {
+        float maxHealth = client->pers.maxHealth;
+        int v13 = (int)((maxHealth * fNormalHealth) + 0.5f);
+        if (v13 < 1)
+            v13 = 1;
+        mObject->health = v13;
+        return;
+    }
+    int v9 = mObject->maxHealth;
+    if (v9 > 0)
+    {
+        int health = mObject->health;
+        if (health <= 0)
+        {
+            const char* name;
+            if (mObject->targetname.mBlock == (Broc::string::Block*)-12)
+                name = "<not set>";
+            else
+                name = mObject->targetname.mBlock != nullptr
+                           ? (const char*)(mObject->targetname.mBlock + 1)
+                           : defaultFileName;
+            G_DPrintf(
+                "^2Cannot setNormalHealth on dead entities (health %i, max %i, ent %i, name %s)\n",
+                health, v9, mObject->mHandle.mHandle.mVal, name);
+        }
+        float maxHealth = (float)mObject->maxHealth;
+        int v13 = (int)((maxHealth * fNormalHealth) + 0.5f);
+        if (v13 < 1)
+            v13 = 1;
+        mObject->health = v13;
+        return;
+    }
+    const char* name;
+    if (mObject->targetname.mBlock == (Broc::string::Block*)-12)
+        name = "<not set>";
+    else
+        name = mObject->targetname.mBlock != nullptr
+                   ? (const char*)(mObject->targetname.mBlock + 1)
+                   : defaultFileName;
+    Scr_Error(
+        va("entity's max health must be greater than 0 to call setNormalHealth (ent %i, name %s)\n",
+           mObject->mHandle.mHandle.mVal, name));
+}
+
+// ea: 0x005CF6B0
+void BrocSys::DoDamage(unsigned int entityHandleVal, float damage,
+                       const Broc::vector& vecIn, hitLocation_t hitLoc)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        if (vecIn.x == sNaN && vecIn.y == sNaN && vecIn.z == sNaN)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 3191;
+            AeAssert::gCurrentExpr = "vecIn.IsDefined()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Undefined direction passed to DoDamage"))
+                __debugbreak();
+        }
+        float x = vecIn.x;
+        float y = vecIn.y;
+        float z = vecIn.z;
+        float source[3] = { vecIn.x, y, z };
+        float from[3];
+        float v10;
+        if (mObject->client != nullptr)
+        {
+            from[0] = mObject->client->ps.origin.v.m128_f32[0] - x;
+            from[1] = mObject->client->ps.origin.v.m128_f32[1] - y;
+            v10 = mObject->client->ps.origin.v.m128_f32[2];
+        }
+        else
+        {
+            from[0] = mObject->r.currentOrigin.v.m128_f32[0] - x;
+            from[1] = mObject->r.currentOrigin.v.m128_f32[1] - y;
+            v10 = mObject->r.currentOrigin.v.m128_f32[2];
+        }
+        from[2] = v10 - z;
+        const float* v11;
+        if (0.0f == VectorNormalize(from))
+            v11 = nullptr;
+        else
+            v11 = from;
+        G_Damage(mObject, nullptr, nullptr, v11, source, (int)damage, 0, 31,
+                 hitLoc, -1);
+    }
+}
+
+// ea: 0x005CF840
+void BrocSys::SetTakeDamage(unsigned int entityHandleVal, int damage)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+        mObject->takedamage = damage;
+}
+
+// ea: 0x005CF880
+void BrocSys::InvulnerableForTime(unsigned int entityHandleVal, float time)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+        mObject->invulnerability_timeout =
+            (unsigned int)(level.time - (time * -1000.0f));
+}
+
+// ea: 0x005CF8D0
+bool BrocSys::IsEntityInvulnerable(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    return v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr
+        && level.time < (int)mObject->invulnerability_timeout;
+}
+
+// ea: 0x005CF920
+void BrocSys::SetAlwaysRender(unsigned int entityHandleVal, int r)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+        mObject->SetAlwaysRender(r != 0);
+}
+
+// ea: 0x005CF960
+void BrocSys::Show(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        mObject->flags &= ~0x400u;
+}
+
+// ea: 0x005CF9A0
+void BrocSys::Hide(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        mObject->flags |= 0x400u;
+}
+
+// ea: 0x005CF9E0
+int BrocSys::SetContents(unsigned int entityHandleVal, int contents)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr)
+        return 0;
+    int v5 = mObject->r.contents;
+    mObject->r.contents = contents;
+    g_LinkEntity(mObject);
+    return v5;
 }
 
 // ============================================================================
