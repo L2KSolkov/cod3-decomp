@@ -36,6 +36,10 @@ struct DLightInfo {
 struct GridPoint {
     unsigned int gridpoint;         // +0x00
 };
+struct LightIndex {
+    unsigned short mIndex;          // +0x00
+    unsigned short mAttenuationInt; // +0x02
+};
 struct TOC {
     Light* mLights;          // +0x00
     int mNumLights;          // +0x04
@@ -65,10 +69,17 @@ public:
     void RenderLightGridDebugSphere(const math::Position3& pos);    // ?RenderLightGridDebugSphere@LightGridMgr@@QAEXABVPosition3@math@@@Z
     void RenderLightGridDebugSpheres();                             // ?RenderLightGridDebugSpheres@LightGridMgr@@QAEXXZ
     void RenderLightGridDebugLines();                               // ?RenderLightGridDebugLines@LightGridMgr@@QAEXXZ
+    void RenderDebugText();                                         // ?RenderDebugText@LightGridMgr@@QAEXXZ @ 0x6DB240
     void SampleLightGrid(const LightGrid::TOC& toc, int cellidx,
                          const math::Position3& pos,
                          LightGridData* pLG);  // lightgrid.cpp
 private:
+    void GetAmbientColors(const LightGrid::GridPoint** grid,
+                          math::Position3* ambientColors);  // lightgrid.cpp
+    void GetLightListForGrid(
+        const LightGrid::TOC& toc, const LightGrid::GridPoint** grid,
+        float* weights,
+        ae_sized_array<LightGrid::LightIndex, 12>& lights);  // lightgrid.cpp
     virtual void UnloadBank(TPakId pakId);       // ?UnloadBank@LightGridMgr@@EAEXW4TPakId@@@Z
     void* mList[99];                             // ae_array<LightGrid::TOC*, 99>
 };
@@ -1298,4 +1309,178 @@ void DebugRender::Render()
                                           q->col, q->nglTex);
     }
     gDebugTexturedQuad2Ds.resize(0);
+}
+
+// ============================================================================
+// LightGridMgr::RenderDebugText - ea: 0x006DB240
+// ============================================================================
+void LightGridMgr::RenderDebugText()  // ?RenderDebugText@LightGridMgr@@QAEXXZ @ 0x6DB240
+{
+    Color col(1.0f, 1.0f, 1.0f, 1.0f);
+    math::Position3 cameraPos = nglGetMatrix_ViewToWorld(nglBuildScene)->w;
+    int cellIndex = 0;
+    LightGrid::TOC* toc = GetLightGrid(cameraPos, &cellIndex);
+    if (toc == nullptr)
+        return;
+
+    int v8 = 0;
+    LightGrid::Cell* cell = toc->mCells;
+    if (toc->mNumCells > 0)
+    {
+        while (cell->mCellIndex != (unsigned int)cellIndex)
+        {
+            ++v8;
+            if (v8 >= toc->mNumCells)
+                return;
+            ++cell;
+        }
+        char tmp[256];
+        sprintf(tmp, "Camera Position: %.2f %.2f %.2f",
+                cameraPos.v.m128_f32[0], cameraPos.v.m128_f32[1],
+                cameraPos.v.m128_f32[2]);
+        DebugRender::RenderText(tmp, 25, 15, col, 0.0f, 0.6f);
+
+        float gx = cameraPos.v.m128_f32[0] - cell->mBase.x;
+        float gy = cameraPos.v.m128_f32[1] - cell->mBase.y;
+        float ax = gx / cell->mXGridDelta;
+        float ay = gy / cell->mYGridDelta;
+        int xi = (int)ax;
+        int yi = (int)ay;
+        int maxX = cell->mNumXRows - 1;
+        int maxY = cell->mNumYRows - 1;
+        if (ax < 0.0f)
+        {
+            ax = 0.0f;
+            xi = 0;
+        }
+        if (xi > maxX)
+        {
+            xi = maxX;
+            if (ax >= (float)(maxX + 1))
+                ax = (float)(maxX + 1) - 0.001f;
+        }
+        if (ay < 0.0f)
+        {
+            ay = 0.0f;
+            yi = 0;
+        }
+        if (yi > maxY)
+        {
+            yi = maxY;
+            if (ay >= (float)(maxY + 1))
+                ay = (float)(maxY + 1) - 0.001f;
+        }
+        float fx = ax - xi;
+        float fy = ay - yi;
+        unsigned int gridBase =
+            cell->mFirstGridPoint + (unsigned int)xi
+            + (unsigned int)yi * cell->mNumXRows;
+        const LightGrid::GridPoint* gp[4];
+        gp[0] = &toc->mGridPoints[gridBase];
+        gp[1] = &toc->mGridPoints[gridBase + 1];
+        gp[2] = &toc->mGridPoints[gridBase + cell->mNumXRows];
+        gp[3] = &toc->mGridPoints[gridBase + cell->mNumXRows + 1];
+        float w0 = (1.0f - fx) * (1.0f - fy);
+        float w1 = fx * (1.0f - fy);
+        float w2 = (1.0f - fx) * fy;
+        float w3 = fx * fy;
+        float weights[4] = { w0, w1, w2, w3 };
+        math::Position3 ambient[4];
+        GetAmbientColors(gp, ambient);
+        math::Position3 ave;
+        ave.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(ambient[0].v, _mm_set1_ps(w0)),
+                _mm_mul_ps(ambient[1].v, _mm_set1_ps(w1))),
+            _mm_add_ps(
+                _mm_mul_ps(ambient[2].v, _mm_set1_ps(w2)),
+                _mm_mul_ps(ambient[3].v, _mm_set1_ps(w3))));
+
+        const PakInfoNode* pakInfo =
+            StreamZoneManager::sInst->GetCellPakInfo(cellIndex);
+        const char* zoneName = pakInfo->longName.mBlock != nullptr
+            ? Broc::string::Block::GetBuff(pakInfo->longName.mBlock) : "";
+        sprintf(tmp, "Zone: %s", zoneName);
+        DebugRender::RenderText(tmp, 25, 29, col, 0.0f, 0.6f);
+        sprintf(tmp, "CellIndex: %d", cellIndex);
+        DebugRender::RenderText(tmp, 25, 43, col, 0.0f, 0.6f);
+        sprintf(tmp, "CellRowsXY: %d %d", cell->mNumXRows, cell->mNumYRows);
+        DebugRender::RenderText(tmp, 25, 57, col, 0.0f, 0.6f);
+        sprintf(tmp, "GridXY: %d %d %d", xi, yi, gridBase);
+        DebugRender::RenderText(tmp, 25, 71, col, 0.0f, 0.6f);
+        sprintf(tmp, "amb0: %.3f %.3f %.3f",
+                ambient[0].v.m128_f32[0], ambient[0].v.m128_f32[1],
+                ambient[0].v.m128_f32[2]);
+        DebugRender::RenderText(tmp, 25, 99, col, 0.0f, 0.6f);
+        sprintf(tmp, "amb1: %.3f %.3f %.3f",
+                ambient[1].v.m128_f32[0], ambient[1].v.m128_f32[1],
+                ambient[1].v.m128_f32[2]);
+        DebugRender::RenderText(tmp, 25, 113, col, 0.0f, 0.6f);
+        sprintf(tmp, "amb2: %.3f %.3f %.3f",
+                ambient[2].v.m128_f32[0], ambient[2].v.m128_f32[1],
+                ambient[2].v.m128_f32[2]);
+        DebugRender::RenderText(tmp, 25, 127, col, 0.0f, 0.6f);
+        sprintf(tmp, "amb3: %.3f %.3f %.3f",
+                ambient[3].v.m128_f32[0], ambient[3].v.m128_f32[1],
+                ambient[3].v.m128_f32[2]);
+        DebugRender::RenderText(tmp, 25, 141, col, 0.0f, 0.6f);
+        sprintf(tmp, "ave: %.3f %.3f %.3f",
+                ave.v.m128_f32[0], ave.v.m128_f32[1], ave.v.m128_f32[2]);
+        DebugRender::RenderText(tmp, 25, 155, col, 0.0f, 0.6f);
+
+        ae_sized_array<LightGrid::LightIndex, 12> lights;
+        lights.m_size = 0;
+        GetLightListForGrid(*toc, gp, weights, lights);
+        DebugRender::RenderText("Lights", 25, 183, col, 0.0f, 0.6f);
+        int ypos = 197;
+        for (int l = 0; l < lights.m_size && l < 3; ++l)
+        {
+            int bestIdx = -1;
+            unsigned int bestAtten = 0;
+            for (int k = 0; k < lights.m_size; ++k)
+            {
+                if (lights.m_elements[k].mAttenuationInt > bestAtten)
+                {
+                    bestAtten = lights.m_elements[k].mAttenuationInt;
+                    bestIdx = k;
+                }
+            }
+            if (bestIdx < 0)
+                break;
+            lights.m_elements[bestIdx].mAttenuationInt = 0;
+            LightGrid::Light* light = &toc->mLights[lights.m_elements[bestIdx].mIndex];
+            Color lightCol(light->mColor.x / 65535.0f,
+                           light->mColor.y / 65535.0f,
+                           light->mColor.z / 65535.0f, 1.0f);
+            if (light->mPosition.w == 0.0f)
+            {
+                sprintf(tmp, "dir: %.2f %.2f %.2f",
+                        light->mPosition.x, light->mPosition.y,
+                        light->mPosition.z);
+            }
+            else
+            {
+                math::Position3 lightPos;
+                lightPos.v = _mm_setr_ps(light->mPosition.x,
+                                         light->mPosition.y,
+                                         light->mPosition.z, 0.0f);
+                math::Position3 end;
+                end.v = _mm_setr_ps(cameraPos.v.m128_f32[0],
+                                    cameraPos.v.m128_f32[1],
+                                    cameraPos.v.m128_f32[2] - 55.0f, 0.0f);
+                DebugRender::RenderSphere(lightPos, 2.0f, lightCol);
+                Color white(1.0f, 1.0f, 1.0f, 1.0f);
+                DebugRender::RenderLine(end, lightPos, white, 0.5f);
+                sprintf(tmp, "pos: %.2f %.2f %.2f",
+                        light->mPosition.x, light->mPosition.y,
+                        light->mPosition.z);
+            }
+            DebugRender::RenderText(tmp, 25, ypos, col, 0.0f, 0.6f);
+            ypos += 14;
+            sprintf(tmp, "col: %.2f %.2f %.2f",
+                    lightCol.r, lightCol.g, lightCol.b);
+            DebugRender::RenderText(tmp, 25, ypos, col, 0.0f, 0.6f);
+            ypos += 14;
+        }
+    }
 }
