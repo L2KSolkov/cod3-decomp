@@ -419,10 +419,11 @@ void TakeCubeMapShot()
 // ============================================================================
 int PlayRumble()
 {
-    return gpBrocAPI->mBrocExports.mRumble(
+    gpBrocAPI->mBrocExports.mRumble(
         gLowFreqDelay, gLowFreqRumbleIntensity, gLowFreqSteadyDuration,
         gLowFreqRampUpTime, gLowFreqRampDownTime, gHighFreqDelay,
         gHighFreqDuration, 0);
+    return 0;
 }
 
 // ============================================================================

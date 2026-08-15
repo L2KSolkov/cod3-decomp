@@ -110,13 +110,31 @@ enum EUndefined { UNDEFINED };
 // Broc::dyn_array<T> - dynamic array (12 bytes: mElements/mCapacity/mSize).
 // ============================================================================
 template <typename T>
-struct dyn_array {
+class dyn_array {
+public:
     T*           mElements;   // +0x00
     unsigned int mCapacity;   // +0x04
     unsigned int mSize;       // +0x08
 
     dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
     ~dyn_array();  // ea: 0x933129
+
+    void reserve(unsigned int newCapacity) {
+        if (newCapacity > mCapacity) {
+            T* ne = new T[newCapacity];
+            for (unsigned int k = 0; k < mSize; k++)
+                ne[k] = mElements[k];
+            delete[] mElements;
+            mElements = ne;
+            mCapacity = newCapacity;
+        }
+    }
+
+    void resize(unsigned int newSize, unsigned int newCapacity) {
+        if (newCapacity > mCapacity)
+            reserve(newCapacity);
+        mSize = newSize;
+    }
 
     void push_back(const T& elt) {
         if (mSize >= mCapacity) {
@@ -169,6 +187,7 @@ public:
     bool IsDefined() const { return ___u0 != 0; }     // ea: 0x92F170
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(entity) == 4, "Broc::entity size mismatch");
+
 
 inline bool operator==(const entity& lhs, const entity& rhs) {
     return lhs.___u0 == rhs.___u0;
@@ -266,6 +285,15 @@ private:
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(string) == 4, "Broc::string size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(string::Block) == 12, "Broc::string::Block size mismatch");
+
+// Broc::collResult — script trace result (IDA type 5174)
+struct collResult {
+    float mFraction;     // +0x00
+    Broc::vector mPosition;  // +0x04
+    Broc::entity mEnt;   // +0x10
+    Broc::vector mNormal;  // +0x14
+    Broc::string mSurfaceType;  // +0x20
+};
 
 // ============================================================================
 // Broc utility functions

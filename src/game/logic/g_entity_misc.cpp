@@ -2076,6 +2076,7 @@ void verify_is_in_physics_system(rigid_body_constraint_contact* a,
 struct actor_s;
 actor_s* Actor_FirstActor(int a) { (void)a; return nullptr; }
 actor_s* Actor_NextActor(actor_s* a, int b) { (void)a; (void)b; return nullptr; }
+Entity* Actor_GetEnt(actor_s* a) { (void)a; return nullptr; }
 struct biped_phys_info;
 biped_phys_info* create_biped_phys_info(Entity* e)
 {

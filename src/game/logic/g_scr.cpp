@@ -7,6 +7,7 @@
 
 #include <math.h>
 #include <new>
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -2806,7 +2807,7 @@ unsigned int ThreadExecInternal(const char* file, int line, const char* func,
                                 bool create_handle);  // 0x5DB470
 unsigned int ThreadNotifyInternal(const char* file, int line, const char* func,
                                   unsigned int ehandle, unsigned int notifyEnt,
-                                  unsigned int notify,
+                                  int notify,
                                   AeThreadFunctor* functor);  // 0x5DB540
 void Mover_SetupMove(trajectory_t* pTr, const math::Position3& vPos,
                      float fTotalTime, float fAccelTime, float fDecelTime,
@@ -3728,6 +3729,75 @@ void AttachPath(unsigned int entityHandleVal,
                 const Broc::vehiclenode& node,
                 int attach_mode);  // 0x5D7930
 void FireTurret(unsigned int entityHandleVal, bool gunner);  // 0x5DA230
+void ThreadSleepUntilNotify(unsigned int entityHandleVal, TPakInfo pakfile,
+                            int labelHash1, int labelHash2, int labelHash3,
+                            int labelHash4, bool waitForAll,
+                            float timeOut);  // 0x5DB660
+unsigned int ThreadGetId();  // 0x5DB870
+int GetKeyBinding(Broc::dyn_array<Broc::string>& array,
+                  const Broc::string& pszBinding);  // 0x5DB8C0
+void ObjectiveChildAdd4(int iObjective, int iChild,
+                        const Broc::string& state, int iString,
+                        const Broc::vector& vPos,
+                        const char* display);  // 0x5DB9D0
+void ObjectiveAdd4(int iObjective, const Broc::string& state, int iString,
+                   const Broc::vector& vPos, const char* display, int iChild,
+                   int iChildOrder);  // 0x5DBB80
+void ObjectiveChildAdd7(int iObjective, int iChild,
+                        const Broc::string& state, int pszString,
+                        const Broc::vector& vPos,
+                        const char* display);  // 0x5DBCC0
+void ObjectiveAdd7(int iObjective, const Broc::string& inState,
+                   int pszString, const Broc::vector& vPos,
+                   const char* display, int iChild,
+                   int iChildOrder);  // 0x5DBDF0
+void ObjectiveChildAdd5(int iObjective, int iChild,
+                        const Broc::string& state,
+                        const Broc::string& pszString,
+                        const Broc::vector& vPos,
+                        const char* display);  // 0x5DBE60
+void InitObjective();  // 0x5DBF20
+bool RemoveHashString(int hash);  // 0x5DC5E0
+bool RemoveHashString(const char* txt);  // 0x5DC620
+void ThreadTerminateOnNotify(unsigned int entityHandleVal,
+                             int labelHash);  // 0x5DC680
+void GetAiArray1(Broc::dyn_array<Broc::entity>& array,
+                 const Broc::string& teamName);  // 0x5DC800
+void GetAiArray2(Broc::dyn_array<Broc::entity>& array);  // 0x5DC8F0
+void CopyEntArray(Broc::dyn_array<Broc::entity>& array,
+                  const ae_sized_array<Broc::entity, 512>& entList);  // 0x5DC950
+void GetSpawnerArray(Broc::dyn_array<Broc::entity>& array);  // 0x5DC9A0
+void GetSpawnerTeamArray(Broc::dyn_array<Broc::entity>& array,
+                         const Broc::string& teamName);  // 0x5DCA40
+unsigned int GetWeaponModel(unsigned int weaponName);  // 0x5DCB90
+Broc::string GetWeaponModelName(unsigned int weaponName);  // 0x5DCBF0
+void GetPartName(Broc::string& outName, const Broc::string& modelName,
+                 int index);  // 0x5DCCA0
+unsigned int GetEnt(const Broc::string& value, int fieldnameHash,
+                    unsigned int* array, int capacity,
+                    int flags);  // 0x5DD020
+unsigned int CalcStringHash(const char* str);  // 0x5DFD70
+void DisplayScoreBoard(bool show, int time);  // 0x5BC350
+void RumbleNotes(const Broc::string& lowFreqNotes, float lowFreqDuraton,
+                 const Broc::string& highFreqNotes, float highFreqDuration,
+                 int player_index);  // 0x5C8290
+void Rumble(float lowFrequencyDelay, float lowFrequencyRumbleIntensity,
+            float lowFrequencyRumbleSteadyDuration,
+            float lowFrequencyRumbleRampUpTime,
+            float lowFrequencyRumbleRampDownTime, float highFrequencyDelay,
+            float highFrequencyDuration, int player_index);  // 0x5C84E0
+void Trace(Broc::collResult& result, const Broc::vector& vStart,
+           const Broc::vector& vEnd);  // 0x5CB840
+void BulletTrace(Broc::collResult& result, const Broc::vector& vStart,
+                 const Broc::vector& vEnd, bool bHitCharacters,
+                 unsigned int entityHandleVal);  // 0x5CBA30
+void SetFlaggedAnimAligned(unsigned int entityHandleVal,
+                           unsigned int notifyName,
+                           const Broc::vector& origin,
+                           const Broc::vector& angles,
+                           unsigned int broanim);  // 0x5CC890
+void InitEntity();  // 0x5DD690 (void mangle)
+void InitAPI();     // 0x5DFDB0 (void mangle)
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -3764,6 +3834,16 @@ static void nullsub_106(void* /*actor*/, int /*eState*/) {}
 static void nullsub_79(sentient_s* /*pSelf*/, sentient_s* /*pEnemy*/,
                        int /*bNotify*/) {}
 static void nullsub_100() {}
+static void nullsub_101(unsigned int /*ent*/, bool /*flag*/) {}
+static void nullsub_102(const char* /*a1*/, const char* /*a2*/, int /*a3*/,
+                        int /*a4*/, int /*a5*/, float /*a6*/, float /*a7*/,
+                        bool /*a8*/, bool /*a9*/) {}
+static void nullsub_103(const char* /*a1*/) {}
+static void nullsub_104(const char* /*a1*/) {}
+static void nullsub_105(unsigned int /*ent*/, unsigned int /*notify*/,
+                        const Broc::vector& /*origin*/,
+                        const Broc::vector& /*angles*/,
+                        unsigned int /*anim*/) {}
 
 // scr.o batch 45 helpers (vehicle follow / attach)
 extern bool VEH_AcquirePlayerFollowSlot(Entity* vehicle,
@@ -4530,441 +4610,12 @@ AeThreadState::EAction AeThreadEntityNotifyState::NewAction(AeThread& t)
     return kActionTerminate;
 }
 
-// ============================================================================
-// scr.o batch 13 - GetEnt* entity-lookup family (BrocEntity.cpp)
-// ============================================================================
-
-// ea: 0x005DCE70 (mangle YAIHIPAIH: int, uint, uint*, int)
-static const char* BrocSysHashLookup(unsigned int hash);
-
-unsigned int BrocSys::GetEntByFieldAndHash(int offsetIntoEnt,
-                                           unsigned int hValue,
-                                           unsigned int* array, int capacity)
-{
-    (void)capacity;
-    unsigned int result = 0;
-    AeSizedEntityArray& active = EntityHandleDb::sInst.mActiveList;
-    Entity** p = active.m_elements;
-    Entity** end = p + active.m_size;
-    unsigned int entHandleToRet = 0;
-    int entityCount = 0;
-    while (p != end)
-    {
-        Entity* v6 = *p;
-        if (v6 != nullptr
-            && *(unsigned int*)((char*)&v6->s.eType + offsetIntoEnt)
-                   == hValue)
-        {
-            if (array != nullptr)
-            {
-                array[result++] = v6->mHandle.mHandle.mVal;
-            }
-            else
-            {
-                if (v6->scr_vehicle != nullptr)
-                    v6->scr_vehicle->playEngineSound = 1;
-                entHandleToRet = v6->mHandle.mHandle.mVal;
-                ++entityCount;
-            }
-        }
-        ++p;
-    }
-    if (array == nullptr)
-    {
-        if (entityCount > 1)
-        {
-            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
-            AeAssert::gCurrentLine = 394;
-            AeAssert::gCurrentExpr = "entityCount<=1";
-            if (!AeAssert::IsIgnored())
-            {
-                const char* v9 = BrocSysHashLookup(hValue);
-                if (AeAssert::Assert(
-                        "More than one entity with key %s value exists", v9))
-                    __debugbreak();
-            }
-        }
-        return entHandleToRet;
-    }
-    return result;
-}
-
-// ea: 0x005DCF80
-unsigned int BrocSys::GetEntTarget(unsigned int hValue, unsigned int* array,
-                                  int capacity)
-{
-    return BrocSys::GetEntByFieldAndHash(656, hValue, array, capacity);
-}
-
-// ea: 0x005DCFA0
-unsigned int BrocSys::GetEntTargetName(unsigned int hValue,
-                                       unsigned int* array, int capacity)
-{
-    return BrocSys::GetEntByFieldAndHash(648, hValue, array, capacity);
-}
-
-// ea: 0x005DCFC0
-unsigned int BrocSys::GetEntClassname(unsigned int hValue,
-                                      unsigned int* array, int capacity)
-{
-    return BrocSys::GetEntByFieldAndHash(640, hValue, array, capacity);
-}
-
-// ea: 0x005DCFE0
-unsigned int BrocSys::GetEntNoteWorthy(unsigned int hValue,
-                                       unsigned int* array, int capacity)
-{
-    return BrocSys::GetEntByFieldAndHash(672, hValue, array, capacity);
-}
-
-// ea: 0x005DD000
-unsigned int BrocSys::GetEntGroup(unsigned int hValue, unsigned int* array,
-                                  int capacity)
-{
-    return BrocSys::GetEntByFieldAndHash(664, hValue, array, capacity);
-}
-
-// ============================================================================
-// scr.o batch 14 - sHashStrings map + RegisterHashString + debug text
-// ============================================================================
-
-// BrocSys::sHashStrings (binary: stdext::hash_map<int,
-// ae_fixed_string<32,unsigned char>> at 0xF3B478). Win32 port: fixed-capacity
-// linear-probe map preserving register/lookup semantics.
-class BrocSysHashStrings {
-public:
-    struct Entry {
-        unsigned int mHash;                        // +0x00
-        ae_fixed_string<32, unsigned char> mStr;   // +0x04
-    };
-
-    Entry mEntries[2048];  // +0x00
-    int   mCount;          // +0x14000
-
-    BrocSysHashStrings() : mCount(0) {}
-
-    Entry* find(unsigned int hash)
-    {
-        for (int i = 0; i < mCount; ++i)
-        {
-            if (mEntries[i].mHash == hash)
-                return &mEntries[i];
-        }
-        return nullptr;
-    }
-
-    const char* lookup(unsigned int hash)
-    {
-        Entry* e = find(hash);
-        return e != nullptr ? (const char*)e->mStr.mBuff : nullptr;
-    }
-
-    void set(unsigned int hash, const ae_fixed_string<32, unsigned char>& s)
-    {
-        Entry* e = find(hash);
-        if (e != nullptr)
-        {
-            e->mStr = s;
-            return;
-        }
-        if (mCount < 2048)
-        {
-            mEntries[mCount].mHash = hash;
-            mEntries[mCount].mStr = s;
-            ++mCount;
-        }
-    }
-};
-
-// Binary: ?sHashStrings@BrocSys@@3V?$hash_map@...@@A @ 0xF3B478
-BrocSysHashStrings sHashStrings;
-
-// ea: 0x005DFD00
-void BrocSys::RegisterHashString(int hash, const char* txt)
-{
-    BrocSysHashStrings::Entry* existing = sHashStrings.find((unsigned int)hash);
-    if (existing != nullptr
-        && _strnicmp((const char*)existing->mStr.mBuff, txt, 31) != 0)
-    {
-        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
-        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
-        AeAssert::gCurrentLine = 409;
-        AeAssert::gCurrentExpr = nullptr;
-        if (!AeAssert::IsIgnored()
-            && AeAssert::Warning("Hash collision: '%s' and '%s'", txt,
-                                 existing->mStr.mBuff))
-            __debugbreak();
-    }
-    ae_fixed_string<32, unsigned char> val(txt);
-    sHashStrings.set((unsigned int)hash, val);
-}
-
-// Real lookup backing GetEntByFieldAndHash's error path
-static const char* BrocSysHashLookup(unsigned int hash)
-{
-    return sHashStrings.lookup(hash);
-}
-
-// ea: 0x005DF580
-void AeThreadEntityNotifyState::GetCondText(
-    ae_fixed_string<64, unsigned char>& str)
-{
-    if (mResult == kActionWakeUp)
-    {
-        int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
-        str.mLength = (unsigned char)len;
-        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len2;
-    }
-    else if (mResult == kActionSleep)
-    {
-        int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "(s) ");
-        str.mLength = (unsigned char)len;
-        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len2;
-    }
-}
-
-// ea: 0x005DF680
-void AeThreadEntityNotifyState::GetDebugTxt(
-    ae_fixed_string<64, unsigned char>& str)
-{
-    const char* prefix = nullptr;
-    if (mResult == kActionWakeUp)
-        prefix = "waking up for ";
-    else if (mResult == kActionTerminate)
-        prefix = "terminating for ";
-    else
-        return;
-    int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, prefix);
-    str.mLength = (unsigned char)len;
-    const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-    int len2 = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                            s != nullptr ? s : "");
-    str.mLength = (unsigned char)len2;
-}
-
-// ea: 0x005DF780
-void AeThreadEntityNotifyTimeoutState::GetCondText(
-    ae_fixed_string<64, unsigned char>& str)
-{
-    ae_formatted_string<64, unsigned char> v10(",(s) %04.3f", mTimeRemaining);
-    int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, (const char*)v10.mBuff);
-    str.mLength = (unsigned char)len;
-    if (mResult == kActionWakeUp)
-    {
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63, ",(w) ");
-        str.mLength = (unsigned char)len2;
-        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-        int len3 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len3;
-    }
-    else if (mResult == kActionSleep)
-    {
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63, "(s) ");
-        str.mLength = (unsigned char)len2;
-        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-        int len3 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len3;
-    }
-}
-
-// ea: 0x005DF8B0
-void AeThreadEntityNotifyTimeoutState::GetDebugTxt(
-    ae_fixed_string<64, unsigned char>& str)
-{
-    if (mResult == kActionWakeUp)
-    {
-        int len = str.mLength;
-        if (mTimeRemaining <= 0.0f)
-        {
-            AeStringSupport::Concat((char*)str.mBuff, len, 63,
-                                    "waking up from time wait");
-            str.mLength = (unsigned char)len;
-            return;
-        }
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
-        str.mLength = (unsigned char)len;
-        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len2;
-    }
-    else if (mResult == kActionTerminate)
-    {
-        int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "terminating for ");
-        str.mLength = (unsigned char)len;
-        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len2;
-    }
-}
-
-// ea: 0x005DF9E0
-void AeThreadEntityNotifyMatchState::GetCondText(
-    ae_fixed_string<64, unsigned char>& str)
-{
-    if (mResult != kActionWakeUp)
-        return;
-    int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
-    str.mLength = (unsigned char)len;
-    for (int i = 0; i < 4; ++i)
-    {
-        if (mDebugNotifys[i].mHash == 0)
-            break;
-        if (i != 0)
-        {
-            int len2 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " & ");
-            str.mLength = (unsigned char)len2;
-        }
-        const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len2;
-        if ((mEventMask & (1 << i)) == 0)
-        {
-            int len3 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(0)");
-            str.mLength = (unsigned char)len3;
-        }
-        else
-        {
-            int len3 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(1)");
-            str.mLength = (unsigned char)len3;
-        }
-    }
-}
-
-// ea: 0x005DFB40
-void AeThreadEntityNotifyMatchState::GetDebugTxt(
-    ae_fixed_string<64, unsigned char>& str)
-{
-    if (mResult != kActionWakeUp)
-        return;
-    int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
-    str.mLength = (unsigned char)len;
-    for (int i = 0; i < 4; ++i)
-    {
-        if (i != 0)
-        {
-            int len2 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " and ");
-            str.mLength = (unsigned char)len2;
-        }
-        const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
-        int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
-                                s != nullptr ? s : "");
-        str.mLength = (unsigned char)len2;
-    }
-}
-
-// ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
-BrocHelper::brocFunctionLookup BrocHelper::broFuncLookupTable[70];
-void BrocHelper::Init()
-{
-    memset(BrocHelper::broFuncLookupTable, 0,
-           sizeof(BrocHelper::broFuncLookupTable));
-    BrocHelper::m_treeCount = 0;
-}
-
-// ============================================================================
-// scr.o batch 15 - thread create/exec/notify internals
-// ============================================================================
-
-// ea: 0x005DB3C0
-unsigned int BrocSys::ThreadCreateInternal(const char* file, int line,
-                                           const char* func,
-                                           unsigned int ehandle,
-                                           AeThreadFunctor* functor,
-                                           bool create_handle)
-{
-    AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
-        0x50, false);
-    AeThread* v7 = v6 != nullptr
-                       ? new (v6) AeThread(file, line, func, ehandle, functor,
-                                           false)
-                       : nullptr;
-    AeThreadManager::sInst.AddThread(v7);
-    if (create_handle)
-    {
-        AeThreadManagerLayout* L =
-            (AeThreadManagerLayout*)&AeThreadManager::sInst;
-        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
-            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
-        Handle mVal = db->AllocateHandle();
-        db->BindObjectToHandle(mVal, v7);
-        v7->mHandle = mVal;
-    }
-    return v7->mHandle.mVal;
-}
-
-// ea: 0x005DB470
-unsigned int BrocSys::ThreadExecInternal(const char* file, int line,
-                                         const char* func,
-                                         unsigned int ehandle,
-                                         AeThreadFunctor* functor,
-                                         bool create_handle)
-{
-    AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
-        0x50, false);
-    AeThread* v7 = v6 != nullptr
-                       ? new (v6) AeThread(file, line, func, ehandle, functor,
-                                           false)
-                       : nullptr;
-    AeThreadManagerLayout* L =
-        (AeThreadManagerLayout*)&AeThreadManager::sInst;
-    v7->m_dlist_node.mNext = L->mExecThreads.m_end;
-    v7->m_dlist_node.mPrev = L->mExecThreads.m_tail;
-    ((AeDListNode*)L->mExecThreads.m_tail)->mNext = &v7->m_dlist_node;
-    L->mExecThreads.m_tail = &v7->m_dlist_node;
-    ++L->mExecThreads.m_size;
-    L->mNewThreadExec = v7;
-    v7->mFlags.mMask |= 0x800;
-    if (create_handle)
-    {
-        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
-            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
-        Handle mVal = db->AllocateHandle();
-        db->BindObjectToHandle(mVal, v7);
-        v7->mHandle = mVal;
-    }
-    return v7->mHandle.mVal;
-}
-
 // ea: 0x005DB540
 unsigned int BrocSys::ThreadNotifyInternal(const char* file, int line,
                                            const char* func,
                                            unsigned int ehandle,
                                            unsigned int notifyEnt,
-                                           unsigned int notify,
+                                           int notify,
                                            AeThreadFunctor* functor)
 {
     AeThread* v7 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
@@ -10504,13 +10155,16 @@ void BrocSys::SetSpectateMedic(int medic, int viewport)
 
 extern int G_CallSpawnEntity(Entity* ent);  // ?G_CallSpawnEntity@@YAHPAVEntity@@@Z (g_spawn.cpp)
 
-// AAR vote menus (mp.o views)
+// ea: 0x005BC450
+// AAR vote menus (mp.o views; ResetPanel from shell.o AARMapVote)
 class AARMapVote {
 public:
-    static void TallyVotes(void* self);  // ?TallyVotes@AARMapVote@@SAXPAV1@@Z? (mp.o)
+    void ResetPanel();                 // ?ResetPanel@AARMapVote@@QAEXXZ (shell.o)
+    static void TallyVotes(void* self);  // ?TallyVotes@AARMapVote@@SAXPAV1@@Z (mp.o)
 };
 class AARGameModeVote {
 public:
+    void ResetPanel();                 // ?ResetPanel@AARGameModeVote@@QAEXXZ (shell.o)
     static void TallyVotes(void* self);  // ?TallyVotes@AARGameModeVote@@SAXPAV1@@Z (mp.o)
 };
 
@@ -21863,4 +21517,3345 @@ AeThreadState::EAction AeThreadEntityNotifyMatchState::NewAction(
     }
     mFinished = true;
     return kActionTerminate;
+}
+// ea: 0x005DCF80
+unsigned int BrocSys::GetEntTarget(unsigned int hValue, unsigned int* array,
+                                  int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(656, hValue, array, capacity);
+}
+
+// ea: 0x005DCFA0
+unsigned int BrocSys::GetEntTargetName(unsigned int hValue,
+                                       unsigned int* array, int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(648, hValue, array, capacity);
+}
+
+// ea: 0x005DCFC0
+unsigned int BrocSys::GetEntClassname(unsigned int hValue,
+                                      unsigned int* array, int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(640, hValue, array, capacity);
+}
+
+// ea: 0x005DCFE0
+unsigned int BrocSys::GetEntNoteWorthy(unsigned int hValue,
+                                       unsigned int* array, int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(672, hValue, array, capacity);
+}
+
+// ea: 0x005DD000
+unsigned int BrocSys::GetEntGroup(unsigned int hValue, unsigned int* array,
+                                  int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(664, hValue, array, capacity);
+}
+
+// ============================================================================
+// scr.o batch 14 - sHashStrings map + RegisterHashString + debug text
+// ============================================================================
+
+// BrocSys::sHashStrings (binary: stdext::hash_map<int,
+// ae_fixed_string<32,unsigned char>> at 0xF3B478). Win32 port: fixed-capacity
+// linear-probe map preserving register/lookup semantics.
+class BrocSysHashStrings {
+public:
+    struct Entry {
+        unsigned int mHash;                        // +0x00
+        ae_fixed_string<32, unsigned char> mStr;   // +0x04
+    };
+
+    Entry mEntries[2048];  // +0x00
+    int   mCount;          // +0x14000
+
+    BrocSysHashStrings() : mCount(0) {}
+
+    Entry* find(unsigned int hash)
+    {
+        for (int i = 0; i < mCount; ++i)
+        {
+            if (mEntries[i].mHash == hash)
+                return &mEntries[i];
+        }
+        return nullptr;
+    }
+
+    const char* lookup(unsigned int hash)
+    {
+        Entry* e = find(hash);
+        return e != nullptr ? (const char*)e->mStr.mBuff : nullptr;
+    }
+
+    void set(unsigned int hash, const ae_fixed_string<32, unsigned char>& s)
+    {
+        Entry* e = find(hash);
+        if (e != nullptr)
+        {
+            e->mStr = s;
+            return;
+        }
+        if (mCount < 2048)
+        {
+            mEntries[mCount].mHash = hash;
+            mEntries[mCount].mStr = s;
+            ++mCount;
+        }
+    }
+
+    bool remove(unsigned int hash)
+    {
+        for (int i = 0; i < mCount; ++i)
+        {
+            if (mEntries[i].mHash == hash)
+            {
+                mEntries[i] = mEntries[mCount - 1];
+                --mCount;
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+// Binary: ?sHashStrings@BrocSys@@3V?$hash_map@...@@A @ 0xF3B478
+BrocSysHashStrings sHashStrings;
+
+// ea: 0x005DFD00
+void BrocSys::RegisterHashString(int hash, const char* txt)
+{
+    BrocSysHashStrings::Entry* existing = sHashStrings.find((unsigned int)hash);
+    if (existing != nullptr
+        && _strnicmp((const char*)existing->mStr.mBuff, txt, 31) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 409;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Hash collision: '%s' and '%s'", txt,
+                                 existing->mStr.mBuff))
+            __debugbreak();
+    }
+    ae_fixed_string<32, unsigned char> val(txt);
+    sHashStrings.set((unsigned int)hash, val);
+}
+
+// Real lookup backing GetEntByFieldAndHash's error path
+static const char* BrocSysHashLookup(unsigned int hash)
+{
+    return sHashStrings.lookup(hash);
+}
+
+// ea: 0x005DF580
+void AeThreadEntityNotifyState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult == kActionWakeUp)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+    else if (mResult == kActionSleep)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "(s) ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+}
+
+// ea: 0x005DF680
+void AeThreadEntityNotifyState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    const char* prefix = nullptr;
+    if (mResult == kActionWakeUp)
+        prefix = "waking up for ";
+    else if (mResult == kActionTerminate)
+        prefix = "terminating for ";
+    else
+        return;
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, prefix);
+    str.mLength = (unsigned char)len;
+    const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+    int len2 = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                            s != nullptr ? s : "");
+    str.mLength = (unsigned char)len2;
+}
+
+// ea: 0x005DF780
+void AeThreadEntityNotifyTimeoutState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    ae_formatted_string<64, unsigned char> v10(",(s) %04.3f", mTimeRemaining);
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, (const char*)v10.mBuff);
+    str.mLength = (unsigned char)len;
+    if (mResult == kActionWakeUp)
+    {
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63, ",(w) ");
+        str.mLength = (unsigned char)len2;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len3 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len3;
+    }
+    else if (mResult == kActionSleep)
+    {
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63, "(s) ");
+        str.mLength = (unsigned char)len2;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len3 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len3;
+    }
+}
+
+// ea: 0x005DF8B0
+void AeThreadEntityNotifyTimeoutState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult == kActionWakeUp)
+    {
+        int len = str.mLength;
+        if (mTimeRemaining <= 0.0f)
+        {
+            AeStringSupport::Concat((char*)str.mBuff, len, 63,
+                                    "waking up from time wait");
+            str.mLength = (unsigned char)len;
+            return;
+        }
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+    else if (mResult == kActionTerminate)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "terminating for ");
+        str.mLength = (unsigned char)len;
+        const char* s = sHashStrings.lookup(mNotifyStr.mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+}
+
+// ea: 0x005DF9E0
+void AeThreadEntityNotifyMatchState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult != kActionWakeUp)
+        return;
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
+    str.mLength = (unsigned char)len;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (mDebugNotifys[i].mHash == 0)
+            break;
+        if (i != 0)
+        {
+            int len2 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " & ");
+            str.mLength = (unsigned char)len2;
+        }
+        const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+        if ((mEventMask & (1 << i)) == 0)
+        {
+            int len3 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(0)");
+            str.mLength = (unsigned char)len3;
+        }
+        else
+        {
+            int len3 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(1)");
+            str.mLength = (unsigned char)len3;
+        }
+    }
+}
+
+// ea: 0x005DFB40
+void AeThreadEntityNotifyMatchState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult != kActionWakeUp)
+        return;
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+    str.mLength = (unsigned char)len;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (i != 0)
+        {
+            int len2 = str.mLength;
+            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " and ");
+            str.mLength = (unsigned char)len2;
+        }
+        const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
+        int len2 = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+                                s != nullptr ? s : "");
+        str.mLength = (unsigned char)len2;
+    }
+}
+
+// ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
+BrocHelper::brocFunctionLookup BrocHelper::broFuncLookupTable[70];
+void BrocHelper::Init()
+{
+    memset(BrocHelper::broFuncLookupTable, 0,
+           sizeof(BrocHelper::broFuncLookupTable));
+    BrocHelper::m_treeCount = 0;
+}
+
+// ============================================================================
+// scr.o batch 15 - thread create/exec/notify internals
+// ============================================================================
+
+// ea: 0x005DB3C0
+unsigned int BrocSys::ThreadCreateInternal(const char* file, int line,
+                                           const char* func,
+                                           unsigned int ehandle,
+                                           AeThreadFunctor* functor,
+                                           bool create_handle)
+{
+    AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
+        0x50, false);
+    AeThread* v7 = v6 != nullptr
+                       ? new (v6) AeThread(file, line, func, ehandle, functor,
+                                           false)
+                       : nullptr;
+    AeThreadManager::sInst.AddThread(v7);
+    if (create_handle)
+    {
+        AeThreadManagerLayout* L =
+            (AeThreadManagerLayout*)&AeThreadManager::sInst;
+        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+        Handle mVal = db->AllocateHandle();
+        db->BindObjectToHandle(mVal, v7);
+        v7->mHandle = mVal;
+    }
+    return v7->mHandle.mVal;
+}
+
+// ea: 0x005DB470
+unsigned int BrocSys::ThreadExecInternal(const char* file, int line,
+                                         const char* func,
+                                         unsigned int ehandle,
+                                         AeThreadFunctor* functor,
+                                         bool create_handle)
+{
+    AeThread* v6 = (AeThread*)AeThread::GetAllocatorInternal()->Allocate(
+        0x50, false);
+    AeThread* v7 = v6 != nullptr
+                       ? new (v6) AeThread(file, line, func, ehandle, functor,
+                                           false)
+                       : nullptr;
+    AeThreadManagerLayout* L =
+        (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    v7->m_dlist_node.mNext = L->mExecThreads.m_end;
+    v7->m_dlist_node.mPrev = L->mExecThreads.m_tail;
+    ((AeDListNode*)L->mExecThreads.m_tail)->mNext = &v7->m_dlist_node;
+    L->mExecThreads.m_tail = &v7->m_dlist_node;
+    ++L->mExecThreads.m_size;
+    L->mNewThreadExec = v7;
+    v7->mFlags.mMask |= 0x800;
+    if (create_handle)
+    {
+        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+        Handle mVal = db->AllocateHandle();
+        db->BindObjectToHandle(mVal, v7);
+        v7->mHandle = mVal;
+    }
+    return v7->mHandle.mVal;
+}
+
+// ============================================================================
+// scr.o batch 59 - threads / objectives / entity arrays / hash strings
+// ============================================================================
+
+struct DialogMenuGapView {
+    uint8_t _pad[0x1C];
+    void (*gap1C)(void* self, float a2);  // +0x1C (shell.o)
+};
+
+// ea: 0x005DB660
+void BrocSys::ThreadSleepUntilNotify(unsigned int entityHandleVal,
+                                     TPakInfo pakfile,
+                                     int labelHash1,
+                                     int labelHash2,
+                                     int labelHash3,
+                                     int labelHash4,
+                                     bool waitForAll, float timeOut)
+{
+    AeThreadState* matched;
+    if (pakfile != kTPakInfoInvalid)
+    {
+        matched = new (AeThreadStateAllocAccess::Get()->Allocate(0x1C, false))
+            AeThreadPakNotifyState((const PakInfoNode*)(uintptr_t)pakfile,
+                                   (AeThreadPakNotifyState::ePakState)
+                                       labelHash1);
+    }
+    else
+    {
+        unsigned int v15 = entityHandleVal & 0xFFF;
+        if (v15 >= 0x540
+            || entityHandleVal >> 12
+                   != EntityHandleDb::sInst.mElements[v15].mKey
+            || EntityHandleDb::sInst.mElements[v15].mObject == nullptr)
+        {
+            AeThread* t = (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+            AeThreadFlagWord* p_mFlags = &t->mFlags;
+            unsigned int v20 = t->mFlags.mMask | 0x48;
+            t->mFlags.mMask |= 8u;
+            p_mFlags->mMask = v20;
+            p_mFlags->mMask = v20 | 4;
+            LongJmp(AeThread::sBackup);
+            return;
+        }
+        if (((unsigned int)labelHash4 | (unsigned int)labelHash3
+             | (unsigned int)labelHash2) != 0)
+        {
+            AeThreadEntityNotifyMatchState* v18 =
+                (AeThreadEntityNotifyMatchState*)
+                    AeThreadStateAllocAccess::Get()->Allocate(0x40, false);
+            matched = v18 != nullptr
+                          ? new (v18) AeThreadEntityNotifyMatchState(
+                                DbLinkedHandle<EntityHandleDb, Entity>(
+                                    entityHandleVal),
+                                labelHash1, labelHash2, labelHash3, labelHash4,
+                                AeThreadState::kActionWakeUp, waitForAll)
+                          : nullptr;
+        }
+        else if (labelHash1 == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 1250;
+            AeAssert::gCurrentExpr = "labelHash1";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("passed an empty string to waittill"))
+                __debugbreak();
+            matched = nullptr;
+        }
+        else if (timeOut <= 0.0f)
+        {
+            AeThreadEntityNotifyState* v17 =
+                (AeThreadEntityNotifyState*)
+                    AeThreadStateAllocAccess::Get()->Allocate(0x20, false);
+            matched = v17 != nullptr
+                          ? new (v17) AeThreadEntityNotifyState(
+                                DbLinkedHandle<EntityHandleDb, Entity>(
+                                    entityHandleVal),
+                                labelHash1, AeThreadState::kActionWakeUp)
+                          : nullptr;
+        }
+        else
+        {
+            AeThreadEntityNotifyTimeoutState* v16 =
+                (AeThreadEntityNotifyTimeoutState*)
+                    AeThreadStateAllocAccess::Get()->Allocate(0x20, false);
+            matched = v16 != nullptr
+                          ? new (v16) AeThreadEntityNotifyTimeoutState(
+                                DbLinkedHandle<EntityHandleDb, Entity>(
+                                    entityHandleVal),
+                                labelHash1, timeOut,
+                                AeThreadState::kActionWakeUp)
+                          : nullptr;
+        }
+    }
+    AeThread* mThreadExecuting =
+        (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+    AeThreadFlagWord* v11 = &mThreadExecuting->mFlags;
+    unsigned int v12 = mThreadExecuting->mFlags.mMask | 2;
+    mThreadExecuting->mFlags.mMask = v12;
+    v11->mMask = v12 | 0x10;
+    v11->mMask = v12 | 0x210;
+    AeDListNode* p_m_dlist_node = &matched->m_dlist_node;
+    p_m_dlist_node->mNext = mThreadExecuting->mStateControllers.m_end;
+    p_m_dlist_node->mPrev = mThreadExecuting->mStateControllers.m_tail;
+    ((AeDListNode*)mThreadExecuting->mStateControllers.m_tail)->mNext =
+        p_m_dlist_node;
+    mThreadExecuting->mStateControllers.m_tail = p_m_dlist_node;
+    ++mThreadExecuting->mStateControllers.m_size;
+    LongJmp(AeThread::sBackup);
+}
+
+// ea: 0x005DB870
+unsigned int BrocSys::ThreadGetId()
+{
+    AeThread* mThreadExecuting =
+        (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+    if (mThreadExecuting == nullptr)
+        return 0;
+    if (mThreadExecuting->mHandle.mVal == 0)
+    {
+        AeThreadManagerLayout* L =
+            (AeThreadManagerLayout*)&AeThreadManager::sInst;
+        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+        Handle h = db->AllocateHandle();
+        db->BindObjectToHandle(h, mThreadExecuting);
+        mThreadExecuting->mHandle = h;
+    }
+    return mThreadExecuting->mHandle.mVal;
+}
+
+// ea: 0x005DB8C0
+int BrocSys::GetKeyBinding(Broc::dyn_array<Broc::string>& array,
+                           const Broc::string& pszBinding)
+{
+    const char* pszKey1 = nullptr;
+    const char* pszKey2 = nullptr;
+    const char* v4 = pszBinding.mBlock != nullptr ? pszBinding.mBlock->mBuff
+                                                  : defaultFileName;
+    int KeyBinding = CL_GetKeyBinding(v4, &pszKey1, &pszKey2);
+    if (pszKey1 == nullptr || pszKey2 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2304;
+        AeAssert::gCurrentExpr = "pszKey1 && pszKey2";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Getting the key bindings failed"))
+            __debugbreak();
+    }
+    array.push_back(Broc::string(pszKey1));
+    array.push_back(Broc::string(pszKey2));
+    return KeyBinding;
+}
+
+// ea: 0x005DC5E0
+bool BrocSys::RemoveHashString(int hash)
+{
+    return sHashStrings.remove((unsigned int)hash) ? 1 : 0;
+}
+
+// ea: 0x005DC620
+bool BrocSys::RemoveHashString(const char* txt)
+{
+    const char* hash = txt;
+    if (txt != nullptr)
+        hash = (const char*)(uintptr_t)tlFixedString(txt).hash;
+    if (!sHashStrings.remove((unsigned int)(uintptr_t)hash))
+        return 0;
+    return 1;
+}
+
+// ea: 0x005DC680
+void BrocSys::ThreadTerminateOnNotify(unsigned int entityHandleVal,
+                                      int labelHash)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && EntityHandleDb::sInst.mElements[v2].mObject != nullptr)
+    {
+        AeThread* mThreadExecuting =
+            (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+        if (mThreadExecuting->mHandle.mVal
+            == gpBrocAPI->mBrocExports.mMainThreadHandle)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 1287;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error("endon cannot be assigned to main level thread"))
+                __debugbreak();
+        }
+        if (!mThreadExecuting->HasEndCond(labelHash))
+        {
+            AeThreadEntityNotifyState* v4 =
+                (AeThreadEntityNotifyState*)
+                    AeThreadStateAllocAccess::Get()->Allocate(0x20, false);
+            AeThreadEntityNotifyState* v5 =
+                v4 != nullptr
+                    ? new (v4) AeThreadEntityNotifyState(
+                          DbLinkedHandle<EntityHandleDb, Entity>(
+                              entityHandleVal),
+                          labelHash, AeThreadState::kActionTerminate)
+                    : nullptr;
+            AeDListNode* p_m_dlist_node = &v5->m_dlist_node;
+            p_m_dlist_node->mNext = mThreadExecuting->mStateControllers.m_end;
+            p_m_dlist_node->mPrev = mThreadExecuting->mStateControllers.m_tail;
+            ((AeDListNode*)mThreadExecuting->mStateControllers.m_tail)->mNext =
+                p_m_dlist_node;
+            mThreadExecuting->mStateControllers.m_tail = p_m_dlist_node;
+            ++mThreadExecuting->mStateControllers.m_size;
+            if (((mThreadExecuting->mFlags.mMask >> 8) & 1) != 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+                AeAssert::gCurrentLine = 1295;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored())
+                {
+                    const char* v9 = BrocSys::ConvertHashToString(labelHash);
+                    ae_formatted_string<128, unsigned char> v11(
+                        "set endon notify %s", v9);
+                    if (AeAssert::Warning("0x%08x %s", mThreadExecuting,
+                                          v11.mBuff))
+                        __debugbreak();
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x005DC800
+void BrocSys::GetAiArray1(Broc::dyn_array<Broc::entity>& array,
+                          const Broc::string& teamName)
+{
+    array.resize(0, 0);
+    int TeamFlags;
+    if (teamName.mBlock != nullptr
+        && teamName.mBlock != (Broc::string::Block*)-12
+        && teamName.mBlock->mBuff[0] != 0)
+    {
+        Broc::string caller("getai");
+        TeamFlags = BrocSys::GetTeamFlags(teamName, caller);
+    }
+    else
+    {
+        TeamFlags = 14;
+    }
+    actor_s* Actor = Actor_FirstActor(TeamFlags);
+    actor_s* v5 = Actor;
+    if (Actor != nullptr)
+    {
+        Entity* Ent = Actor_GetEnt(Actor);
+        if (Ent != nullptr)
+        {
+            array.push_back(Broc::entity(Ent->mHandle.mHandle.mVal));
+            for (actor_s* i = Actor_NextActor(v5, TeamFlags);
+                 i != nullptr; i = Actor_NextActor(i, TeamFlags))
+            {
+                Entity* v8 = Actor_GetEnt(i);
+                if (v8 == nullptr)
+                    break;
+                array.push_back(Broc::entity(v8->mHandle.mHandle.mVal));
+            }
+        }
+    }
+}
+
+// ea: 0x005DC8F0
+void BrocSys::GetAiArray2(Broc::dyn_array<Broc::entity>& array)
+{
+    Broc::string empty((Broc::string::Block*)nullptr);
+    BrocSys::GetAiArray1(array, empty);
+}
+
+// ea: 0x005DC950
+void BrocSys::CopyEntArray(Broc::dyn_array<Broc::entity>& array,
+                           const ae_sized_array<Broc::entity, 512>& entList)
+{
+    array.resize(0, 0);
+    array.reserve(entList.m_size);
+    for (int i = 0; i < entList.m_size; ++i)
+        array.push_back(entList.m_elements[i]);
+}
+
+// ea: 0x005DC9A0
+void BrocSys::GetSpawnerArray(Broc::dyn_array<Broc::entity>& array)
+{
+    ae_sized_array<Broc::entity, 512> entList;
+    entList.m_size = 0;
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    for (int i = 0; i < EntityHandleDb::sInst.mActiveList.m_size; ++i, ++p)
+    {
+        Entity* v3 = *p;
+        if (v3 != nullptr && v3->s.eType == 12)
+            entList.push_back(Broc::entity(v3->mHandle.mHandle.mVal));
+    }
+    array.resize(0, 0);
+    array.reserve(entList.m_size);
+    for (int i = 0; i < entList.m_size; ++i)
+        array.push_back(entList.m_elements[i]);
+}
+
+// ea: 0x005DCA40
+void BrocSys::GetSpawnerTeamArray(Broc::dyn_array<Broc::entity>& array,
+                                  const Broc::string& teamName)
+{
+    Broc::string caller("getspawnerteamarray");
+    int TeamFlags = BrocSys::GetTeamFlags(teamName, caller);
+    if (TeamFlags == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "\x15%s",
+                "no team was specified - use getspawnerarray instead"))
+            __debugbreak();
+    }
+    ae_sized_array<Broc::entity, 512> entList;
+    entList.m_size = 0;
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    for (int i = 0; i < EntityHandleDb::sInst.mActiveList.m_size; ++i, ++p)
+    {
+        Entity* v5 = *p;
+        if (v5 != nullptr && v5->s.eType == 12
+            && ((1 << v5->key) & TeamFlags) != 0)
+            entList.push_back(Broc::entity(v5->mHandle.mHandle.mVal));
+    }
+    array.resize(0, 0);
+    array.reserve(entList.m_size);
+    for (int i = 0; i < entList.m_size; ++i)
+        array.push_back(entList.m_elements[i]);
+}
+
+// ea: 0x005DB9D0
+void BrocSys::ObjectiveChildAdd4(int iObjective, int iChild,
+                                 const Broc::string& state, int iString,
+                                 const Broc::vector& vPos,
+                                 const char* display)
+{
+    if (iChild >= 1)
+    {
+        int child = BrocSys::FindUnusedChildObjective();
+        if (child == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (BrocSys::FindChildObjective(iObjective, iChild, false) == -1)
+        {
+            char szString[1024];
+            sprintf(szString, "%d", iString);
+            int v7 = (int)strlen(szString);
+            if (v7 > 1)
+            {
+                for (int i = 0; i < v7; ++i)
+                {
+                    if (!isalnum((unsigned char)szString[i])
+                        && szString[i] != 95)
+                    {
+                        char* v9 = va(
+                            "Illegal localized string reference: %s (must contain only alpha-numeric characters and underscores",
+                            szString);
+                        Scr_ParamError(2, v9);
+                    }
+                }
+            }
+            Broc::string str(szString);
+            BrocSys::ObjectiveAdd5(iObjective, state, str, vPos, 0, 0.0f,
+                                   display, child, iChild, -1);
+        }
+        else
+        {
+            Com_Printf("^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 513;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DBB80
+void BrocSys::ObjectiveAdd4(int iObjective, const Broc::string& state,
+                            int iString, const Broc::vector& vPos,
+                            const char* display, int iChild, int iChildOrder)
+{
+    (void)iChild; (void)iChildOrder;
+    char szString[1024];
+    sprintf(szString, "%d", iString);
+    int v5 = (int)strlen(szString);
+    if (v5 > 1)
+    {
+        for (int i = 0; i < v5; ++i)
+        {
+            if (!isalnum((unsigned char)szString[i]) && szString[i] != 95)
+            {
+                char* v7 = va(
+                    "Illegal localized string reference: %s (must contain only alpha-numeric characters and underscores",
+                    szString);
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+                AeAssert::gCurrentLine = 23;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("\x15%s", v7))
+                    __debugbreak();
+            }
+        }
+    }
+    Broc::string pszString(szString);
+    BrocSys::ObjectiveAdd5(iObjective, state, pszString, vPos, 0, 0.0f,
+                           display, -1, -1, -1);
+}
+
+// ea: 0x005DBCC0
+void BrocSys::ObjectiveChildAdd7(int iObjective, int iChild,
+                                 const Broc::string& state, int pszString,
+                                 const Broc::vector& vPos,
+                                 const char* display)
+{
+    if (iChild >= 1)
+    {
+        int UnusedChildObjective = BrocSys::FindUnusedChildObjective();
+        if (UnusedChildObjective == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (BrocSys::FindChildObjective(iObjective, iChild, false) == -1)
+        {
+            Broc::string localized = BrocSys::GetLocalizedString(pszString);
+            BrocSys::ObjectiveAdd5(iObjective, state, localized, vPos, 0, 0.0f,
+                                   display, UnusedChildObjective, iChild, -1);
+        }
+        else
+        {
+            Com_Printf("^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 583;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DBDF0
+void BrocSys::ObjectiveAdd7(int iObjective, const Broc::string& inState,
+                            int pszString, const Broc::vector& vPos,
+                            const char* display, int iChild, int iChildOrder)
+{
+    (void)iChild; (void)iChildOrder;
+    Broc::string localized = BrocSys::GetLocalizedString(pszString);
+    BrocSys::ObjectiveAdd5(iObjective, inState, localized, vPos, 0, 0.0f,
+                           display, -1, -1, -1);
+}
+
+// ea: 0x005DBE60
+void BrocSys::ObjectiveChildAdd5(int iObjective, int iChild,
+                                 const Broc::string& state,
+                                 const Broc::string& pszString,
+                                 const Broc::vector& vPos,
+                                 const char* display)
+{
+    if (iChild >= 1)
+    {
+        int UnusedChildObjective = BrocSys::FindUnusedChildObjective();
+        if (UnusedChildObjective == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (BrocSys::FindChildObjective(iObjective, iChild, false) == -1)
+        {
+            BrocSys::ObjectiveAdd5(iObjective, state, pszString, vPos, 0, 0.0f,
+                                   display, UnusedChildObjective, iChild, -1);
+        }
+        else
+        {
+            Com_Printf("^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 639;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DBF20
+void BrocSys::InitObjective()
+{
+    gpBrocAPI->mBrocExports.mObjectiveAdd1 = BrocSys::ObjectiveAdd1;
+    gpBrocAPI->mBrocExports.mObjectiveAdd2 = BrocSys::ObjectiveAdd2;
+    gpBrocAPI->mBrocExports.mObjectiveAdd3 = BrocSys::ObjectiveAdd3;
+    gpBrocAPI->mBrocExports.mObjectiveAdd4 = BrocSys::ObjectiveAdd4;
+    gpBrocAPI->mBrocExports.mObjectiveAdd5 = BrocSys::ObjectiveAdd5;
+    gpBrocAPI->mBrocExports.mObjectiveAdd6 = BrocSys::ObjectiveAdd6;
+    gpBrocAPI->mBrocExports.mObjectiveAdd7 = BrocSys::ObjectiveAdd7;
+    gpBrocAPI->mBrocExports.mObjectiveDelete = BrocSys::ObjectiveDelete;
+    gpBrocAPI->mBrocExports.mObjectiveDeleteChildren =
+        BrocSys::ObjectiveDeleteChildren;
+    gpBrocAPI->mBrocExports.mObjectiveState = BrocSys::ObjectiveState;
+    gpBrocAPI->mBrocExports.mObjectiveWorldState =
+        BrocSys::ObjectiveWorldState;
+    gpBrocAPI->mBrocExports.mObjectiveString = BrocSys::ObjectiveString;
+    gpBrocAPI->mBrocExports.mObjectiveString2 = BrocSys::ObjectiveString2;
+    gpBrocAPI->mBrocExports.mObjectiveString_NoMessage =
+        BrocSys::ObjectiveString_NoMessage;
+    gpBrocAPI->mBrocExports.mObjectivePosition = BrocSys::ObjectivePosition;
+    gpBrocAPI->mBrocExports.mObjectiveCurrent = BrocSys::ObjectiveCurrent;
+    gpBrocAPI->mBrocExports.mObjectiveRing = BrocSys::ObjectiveRing;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd1 =
+        BrocSys::ObjectiveChildAdd1;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd2 =
+        BrocSys::ObjectiveChildAdd2;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd3 =
+        BrocSys::ObjectiveChildAdd3;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd4 =
+        BrocSys::ObjectiveChildAdd4;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd5 =
+        BrocSys::ObjectiveChildAdd5;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd6 =
+        BrocSys::ObjectiveChildAdd6;
+    gpBrocAPI->mBrocExports.mObjectiveChildAdd7 =
+        BrocSys::ObjectiveChildAdd7;
+    gpBrocAPI->mBrocExports.mObjectiveChildDelete =
+        BrocSys::ObjectiveChildDelete;
+    gpBrocAPI->mBrocExports.mObjectiveChildState =
+        BrocSys::ObjectiveChildState;
+    gpBrocAPI->mBrocExports.mObjectiveChildString =
+        BrocSys::ObjectiveChildString;
+    gpBrocAPI->mBrocExports.mObjectiveChildString2 =
+        BrocSys::ObjectiveChildString2;
+    gpBrocAPI->mBrocExports.mObjectiveChildString_NoMessage =
+        BrocSys::ObjectiveChildString_NoMessage;
+    gpBrocAPI->mBrocExports.mObjectiveChildPosition =
+        BrocSys::ObjectiveChildPosition;
+    gpBrocAPI->mBrocExports.mObjectiveChildCurrent =
+        BrocSys::ObjectiveChildCurrent;
+    gpBrocAPI->mBrocExports.mObjectiveChildRing =
+        BrocSys::ObjectiveChildRing;
+}
+
+// ea: 0x005DCB90
+unsigned int BrocSys::GetWeaponModel(unsigned int weaponName)
+{
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(weaponName);
+    if (WeaponIndexForName != 0)
+    {
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon(WeaponIndexForName);
+        return HashString::CalcHash(InfoForWeapon->szWorldModel);
+    }
+    if (weaponName != 0xFEFEFEFE && weaponName != hash_const.none.mHash)
+    {
+        const char* v2 = BrocSys::ConvertHashToString(weaponName);
+        Com_Printf(va("unknown weapon '%s' in getWeaponModel\n", v2));
+    }
+    return 0;
+}
+
+// ea: 0x005DCBF0
+Broc::string BrocSys::GetWeaponModelName(unsigned int weaponName)
+{
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(weaponName);
+    if (WeaponIndexForName != 0)
+    {
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon(WeaponIndexForName);
+        return Broc::string(InfoForWeapon->szWorldModel);
+    }
+    if (weaponName != 0xFEFEFEFE && weaponName != hash_const.none.mHash)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2219;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v3 = BrocSys::ConvertHashToString(weaponName);
+            if (AeAssert::Warning(
+                    "unknown weapon '%s' in getWeaponModel\n", v3))
+                __debugbreak();
+        }
+    }
+    return Broc::string(defaultFileName);
+}
+
+// Local XModelParts view (render.o XModelParts.h; mHierarchy list)
+struct BrocXModelPartsLocal {
+    unsigned char _pad0[0x10];
+    int mHierarchySize;        // +0x10
+    struct Entry {
+        char* mStr;            // +0x00
+        unsigned int mHash;    // +0x04
+        int mFlags;            // +0x08
+    }* mHierarchyList;         // +0x14
+};
+
+// ea: 0x005DCCA0
+void BrocSys::GetPartName(Broc::string& outName,
+                          const Broc::string& modelName, int index)
+{
+    if (modelName.mBlock == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2812;
+        AeAssert::gCurrentExpr = "modelName.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("GetPartName called with undefined input."))
+            __debugbreak();
+    }
+    const char* v5 = modelName.mBlock != nullptr ? modelName.mBlock->mBuff
+                                                 : defaultFileName;
+    IVPointer<XModel> model = SV_XModelGet(v5);
+    ValidatePakId((TPakId)model.mPakId);
+    XModel* mValue = model.mValue;
+
+    int v9 = 0;
+    if (mValue->lod[0] == nullptr)
+    {
+        XModelLod** lod = mValue->lod;
+        do
+        {
+            ++lod;
+            ++v9;
+        } while (lod[1] == nullptr);
+    }
+    BrocXModelPartsLocal* parts =
+        (BrocXModelPartsLocal*)mValue->lod[v9]->xmodelParts;
+    if (parts == nullptr)
+    {
+        char* v16 = va("index out of range (0 - %d)", 0 - 1);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v16))
+            __debugbreak();
+    }
+    else
+    {
+        if (index >= (unsigned int)parts->mHierarchySize)
+        {
+            char* v16 = va("index out of range (0 - %d)",
+                           parts->mHierarchySize - 1);
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+            AeAssert::gCurrentLine = 23;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("\x15%s", v16))
+                __debugbreak();
+        }
+    }
+    ValidatePakId((TPakId)model.mPakId);
+    int v17 = 0;
+    if (mValue->lod[0] == nullptr)
+    {
+        XModelLod** v18 = mValue->lod;
+        do
+        {
+            ++v18;
+            ++v17;
+        } while (v18[1] == nullptr);
+    }
+    BrocXModelPartsLocal* parts2 =
+        (BrocXModelPartsLocal*)mValue->lod[v17]->xmodelParts;
+    unsigned int boneHash = 0;
+    if (parts2 != nullptr && index < (unsigned int)parts2->mHierarchySize)
+        boneHash = parts2->mHierarchyList[index].mHash;
+    const char* v20 = sHashStrings.lookup(boneHash);
+    outName = v20;
+    if (outName.mBlock == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "bad model"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005DFD70
+unsigned int BrocSys::CalcStringHash(const char* str)
+{
+    if (str != nullptr)
+    {
+        tlFixedString v3(str);
+        BrocSys::RegisterHashString(v3.hash, str);
+    }
+    return HashString::CalcHash(str);
+}
+
+// Local BitSet<1344> twin (core_systems.h cannot be included alongside
+// g_local.h; layout/methods match the binary's HandleDb free-index set).
+template <int N>
+struct LocalBitSet {
+    unsigned char mBits[(N + 7) / 8];  // +0x00
+
+    LocalBitSet() { memset(mBits, 0, sizeof(mBits)); }
+
+    LocalBitSet<N> operator~() const
+    {
+        LocalBitSet<N> out;
+        for (int i = 0; i < (N + 7) / 8; ++i)
+            out.mBits[i] = (unsigned char)~mBits[i];
+        return out;
+    }
+
+    class iterator {
+    public:
+        LocalBitSet<N>* m_src;        // +0x00
+        int m_word_idx;               // +0x04
+        unsigned int m_cur_val;       // +0x08
+        unsigned int m_cur_word;      // +0x0C
+
+        iterator() : m_src(nullptr), m_word_idx(0), m_cur_val(0),
+                     m_cur_word(0) {}
+        iterator(const LocalBitSet<N>* src)
+        {
+            m_src = (LocalBitSet<N>*)src;
+            m_cur_word = ((const unsigned int*)src->mBits)[0];
+            m_word_idx = 0;
+            m_cur_val = (unsigned int)-1;
+            ++(*this);
+        }
+        bool operator!=(const iterator& rhs) const
+        {
+            return m_cur_val != rhs.m_cur_val
+                   || m_word_idx != rhs.m_word_idx;
+        }
+        void operator++()
+        {
+            while (m_cur_word == 0)
+            {
+                ++m_word_idx;
+                if (m_word_idx >= (N + 31) / 32)
+                {
+                    m_cur_val = (unsigned int)-1;
+                    return;
+                }
+                m_cur_word = ((const unsigned int*)m_src->mBits)[m_word_idx];
+            }
+            unsigned int bit = m_cur_word & (0u - m_cur_word);
+            unsigned int bitPos = 0;
+            for (unsigned int t = bit; t > 1; t >>= 1)
+                ++bitPos;
+            m_cur_val = m_word_idx * 32 + bitPos;
+            m_cur_word &= ~bit;
+        }
+    };
+    iterator begin() { return iterator(this); }
+};
+
+// ea: 0x005DD020
+unsigned int BrocSys::GetEnt(const Broc::string& value, int fieldnameHash,
+                             unsigned int* array, int capacity, int flags)
+{
+    static bool sHashInit;
+    static unsigned int classname_hash_0;
+    static unsigned int targetname_hash;
+    static unsigned int target_hash;
+    static unsigned int groupname_hash;
+    static unsigned int script_noteworthy_hash;
+
+    const char* v5 = value.mBlock != nullptr ? value.mBlock->mBuff
+                                             : defaultFileName;
+    unsigned int v6 = HashString::CalcHash(v5);
+    bool v7 = (flags & 1) == 0;
+    if (!sHashInit)
+    {
+        sHashInit = true;
+        classname_hash_0 = HashString::CalcHash("classname");
+        targetname_hash = HashString::CalcHash("targetname");
+        target_hash = HashString::CalcHash("target");
+        groupname_hash = HashString::CalcHash("groupname");
+        script_noteworthy_hash = HashString::CalcHash("script_noteworthy");
+    }
+    unsigned int v9;
+    if (fieldnameHash == (int)targetname_hash)
+    {
+        v9 = BrocSys::GetEntByFieldAndHash(648, v6, array, capacity);
+        if (v7 && array == nullptr && v9 == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 457;
+            AeAssert::gCurrentExpr = "array || h != 0";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v10 = value.mBlock != nullptr
+                                      ? value.mBlock->mBuff
+                                      : defaultFileName;
+                if (AeAssert::Assert(
+                        "GetEnt failed to find entity with TargetName %s.",
+                        v10))
+                    __debugbreak();
+            }
+        }
+        return v9;
+    }
+    if (fieldnameHash == (int)target_hash)
+    {
+        v9 = BrocSys::GetEntByFieldAndHash(656, v6, array, capacity);
+        if (v7 && array == nullptr && v9 == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 464;
+            AeAssert::gCurrentExpr = "array || h != 0";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v12 = value.mBlock != nullptr
+                                      ? value.mBlock->mBuff
+                                      : defaultFileName;
+                if (AeAssert::Assert(
+                        "GetEnt failed to find entity with Target %s.", v12))
+                    __debugbreak();
+            }
+        }
+        return v9;
+    }
+    if (fieldnameHash == (int)classname_hash_0)
+    {
+        v9 = BrocSys::GetEntByFieldAndHash(640, v6, array, capacity);
+        if (v7 && array == nullptr && v9 == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 470;
+            AeAssert::gCurrentExpr = "array || h != 0";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v14 = value.mBlock != nullptr
+                                      ? value.mBlock->mBuff
+                                      : defaultFileName;
+                if (AeAssert::Assert(
+                        "GetEnt failed to find entity with Classname %s.",
+                        v14))
+                    __debugbreak();
+            }
+        }
+        return v9;
+    }
+    if (fieldnameHash == (int)groupname_hash)
+    {
+        v9 = BrocSys::GetEntByFieldAndHash(664, v6, array, capacity);
+        if (v7 && array == nullptr && v9 == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 476;
+            AeAssert::gCurrentExpr = "array || h != 0";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v16 = value.mBlock != nullptr
+                                      ? value.mBlock->mBuff
+                                      : defaultFileName;
+                if (AeAssert::Assert(
+                        "GetEnt failed to find entity with Group %s.", v16))
+                    __debugbreak();
+            }
+        }
+        return v9;
+    }
+    if (fieldnameHash == (int)script_noteworthy_hash)
+    {
+        v9 = BrocSys::GetEntNoteWorthy(v6, array, capacity);
+        if (v7 && array == nullptr && v9 == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 482;
+            AeAssert::gCurrentExpr = "array || h != 0";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v18 = value.mBlock != nullptr
+                                      ? value.mBlock->mBuff
+                                      : defaultFileName;
+                if (AeAssert::Assert(
+                        "GetEnt failed to find entity with ScriptNoteWorthy %s.",
+                        v18))
+                    __debugbreak();
+            }
+        }
+        return v9;
+    }
+
+    v9 = 0;
+    unsigned int count = 0;
+    LocalBitSet<1344> elements =
+        ~*((LocalBitSet<1344>*)&EntityHandleDb::sInst);  // ~mFreeIndices
+    LocalBitSet<1344>::iterator itIdx = elements.begin();
+    LocalBitSet<1344>::iterator itIdx_end;
+    itIdx_end.m_src = nullptr;
+    itIdx_end.m_word_idx = -1;
+    itIdx_end.m_cur_val = (unsigned int)-1;
+    while (itIdx != itIdx_end)
+    {
+        Entity* Object = EntityHandleDb::sInst.GetObject((int)itIdx.m_cur_val);
+        if (Object != nullptr && Object->mBrocExtendedEntity != nullptr)
+        {
+            if (gpBrocAPI == nullptr
+                || gpBrocAPI->mBrocExports.mMatchExtendedEntityKey == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 495;
+                AeAssert::gCurrentExpr =
+                    "gpBrocAPI && gpBrocAPI->mBrocExports.mMatchExtendedEntityKey";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("api functions not defined"))
+                    __debugbreak();
+            }
+            const char* v21 = value.mBlock != nullptr ? value.mBlock->mBuff
+                                                      : defaultFileName;
+            if (gpBrocAPI->mBrocExports.mMatchExtendedEntityKey(
+                    Object->mBrocExtendedEntity, fieldnameHash, v21))
+            {
+                if (array == nullptr)
+                {
+                    if (Object->scr_vehicle != nullptr)
+                        Object->scr_vehicle->playEngineSound = 1;
+                    return Object->mHandle.mHandle.mVal;
+                }
+                if (count < (unsigned int)capacity)
+                    array[count] = Object->mHandle.mHandle.mVal;
+                ++count;
+            }
+        }
+        ++itIdx;
+    }
+    v9 = count;
+    if (v7 && v9 == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 510;
+        AeAssert::gCurrentExpr = "count>0";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v22 = value.mBlock != nullptr ? value.mBlock->mBuff
+                                                      : defaultFileName;
+            if (AeAssert::Assert(
+                    "GetEnt failed to find entity with field hash of 0x%x and value of %s",
+                    fieldnameHash, v22))
+                __debugbreak();
+        }
+    }
+    return v9;
+}
+
+// ea: 0x005CB840
+void BrocSys::Trace(Broc::collResult& result, const Broc::vector& vStart,
+                    const Broc::vector& vEnd)
+{
+    math::Position3 start;
+    math::Position3 end;
+    math::Position3 mins;
+    math::Position3 maxs;
+    start.v.m128_f32[0] = vStart.x;
+    start.v.m128_f32[1] = vStart.y;
+    start.v.m128_f32[2] = vStart.z;
+    start.v.m128_f32[3] = 0.0f;
+    end.v.m128_f32[0] = vEnd.x;
+    end.v.m128_f32[1] = vEnd.y;
+    end.v.m128_f32[2] = vEnd.z;
+    end.v.m128_f32[3] = 0.0f;
+    mins.v = _mm_setzero_ps();
+    maxs.v = _mm_setzero_ps();
+
+    collision_context_t context;
+    context.pass_entity1.mHandle.mVal = 0;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x2820011;
+
+    trace_t tr;
+    memset(&tr, 0, sizeof(tr));
+    g_Trace(&tr, start, mins, maxs, end, context);
+
+    result.mPosition.x = tr.endpos.v.m128_f32[0];
+    result.mPosition.y = tr.endpos.v.m128_f32[1];
+    result.mPosition.z = tr.endpos.v.m128_f32[2];
+    result.mFraction = tr.fraction;
+
+    unsigned int v8 = tr.mEntity.mHandle.mVal;
+    if (v8 == 0
+        || v8 == EntityManager::sInst->mWorld->mHandle.mHandle.mVal)
+    {
+        result.mEnt = Broc::entity(0);
+    }
+    else
+    {
+        unsigned int v10 = v8 & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v10 < 0x540
+            && v8 >> 12 == EntityHandleDb::sInst.mElements[v10].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v10].mObject;
+        result.mEnt = Broc::entity(mObject != nullptr
+                                       ? mObject->mHandle.mHandle.mVal
+                                       : 0);
+    }
+
+    const char* v13;
+    if (tr.fraction >= 1.0f)
+    {
+        float dir[3];
+        dir[0] = vEnd.x - vStart.x;
+        dir[1] = vEnd.y - vStart.y;
+        dir[2] = vEnd.z - vStart.z;
+        VectorNormalize(dir);
+        result.mNormal.x = dir[0];
+        result.mNormal.y = dir[1];
+        result.mNormal.z = dir[2];
+        v13 = Com_SurfaceTypeToName(0);
+    }
+    else
+    {
+        result.mNormal.x = tr.normal.v.m128_f32[0];
+        result.mNormal.y = tr.normal.v.m128_f32[1];
+        result.mNormal.z = tr.normal.v.m128_f32[2];
+        v13 = Com_SurfaceTypeToName((tr.contents >> 20) & 0x1F);
+    }
+    result.mSurfaceType = v13;
+}
+
+// ea: 0x005C84E0
+void BrocSys::Rumble(float lowFrequencyDelay,
+                     float lowFrequencyRumbleIntensity,
+                     float lowFrequencyRumbleSteadyDuration,
+                     float lowFrequencyRumbleRampUpTime,
+                     float lowFrequencyRumbleRampDownTime,
+                     float highFrequencyDelay, float highFrequencyDuration,
+                     int player_index)
+{
+    RumbleEffect rumbleEffect;
+    float rumbleIntensity = 0.0f;
+    if (player_index == 0)
+    {
+        RumbleEffect::RumbleData& hi = rumbleEffect.mRumbleDataArray[0];
+        if (highFrequencyDuration <= 0.0f)
+        {
+            hi.enabled = false;
+        }
+        else
+        {
+            hi.steady_duration = highFrequencyDuration;
+            hi.intensity = 1.0f;
+            if (highFrequencyDelay < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 90;
+                AeAssert::gCurrentExpr = "new_delay >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            hi.delay = highFrequencyDelay;
+            hi.enabled = true;
+        }
+        RumbleEffect::RumbleData& lo = rumbleEffect.mRumbleDataArray[1];
+        if (lowFrequencyRumbleSteadyDuration >= 0.0099999998f)
+        {
+            if (lowFrequencyRumbleIntensity >= 0.0f)
+            {
+                if (lowFrequencyRumbleIntensity <= 1.0f)
+                {
+                    rumbleIntensity = lowFrequencyRumbleIntensity;
+                    if (lowFrequencyRumbleIntensity < 0.0f
+                        || lowFrequencyRumbleIntensity > 1.0f)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\RumbleEffect.h";
+                        AeAssert::gCurrentLine = 103;
+                        AeAssert::gCurrentExpr =
+                            "new_intensity >= 0.0f && new_intensity <= 1.0f";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                "Please add a descriptive string"))
+                            __debugbreak();
+                    }
+                }
+                else
+                {
+                    rumbleIntensity = 1.0f;
+                }
+            }
+            else
+            {
+                rumbleIntensity = 0.0f;
+            }
+            lo.intensity = rumbleIntensity;
+            if (lowFrequencyDelay < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 90;
+                AeAssert::gCurrentExpr = "new_delay >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            lo.delay = lowFrequencyDelay;
+            if (lowFrequencyRumbleSteadyDuration < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 124;
+                AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            lo.steady_duration = lowFrequencyRumbleSteadyDuration;
+            if (lowFrequencyRumbleRampUpTime < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 117;
+                AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            lo.ramp_up_duration = lowFrequencyRumbleRampUpTime;
+            if (lowFrequencyRumbleRampDownTime < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 110;
+                AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            lo.ramp_down_duration = lowFrequencyRumbleRampDownTime;
+            lo.enabled = true;
+        }
+        else
+        {
+            lo.enabled = false;
+        }
+        void* v10 = RumbleManager_Inst(player_index);
+        if (v10 != nullptr)
+            RumbleManager_Play(v10, &rumbleEffect, 1.0f);
+    }
+}
+
+// ea: 0x005C8290
+void BrocSys::RumbleNotes(const Broc::string& lowFreqNotes,
+                          float lowFreqDuraton,
+                          const Broc::string& highFreqNotes,
+                          float highFreqDuration, int player_index)
+{
+    RumbleEffect rumbleEffect;
+    if (player_index == 0)
+    {
+        RumbleEffect::RumbleData& hi = rumbleEffect.mRumbleDataArray[0];
+        if (lowFreqDuraton <= 0.0f)
+        {
+            hi.enabled = false;
+        }
+        else
+        {
+            if (highFreqNotes.mBlock == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 137;
+                AeAssert::gCurrentExpr = "new_notes.IsDefined()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("RUMBLE NOTES STRING IS EMPTY"))
+                    __debugbreak();
+            }
+            hi.rumble_notes = highFreqNotes;
+            hi.m_flags |= 1u;
+            if (highFreqDuration < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 124;
+                AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            hi.steady_duration = highFreqDuration;
+            hi.intensity = 1.0f;
+            hi.enabled = true;
+        }
+        RumbleEffect::RumbleData& lo = rumbleEffect.mRumbleDataArray[1];
+        if (lowFreqDuraton <= 0.0f)
+        {
+            lo.enabled = false;
+        }
+        else
+        {
+            if (lowFreqNotes.mBlock == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+                AeAssert::gCurrentLine = 137;
+                AeAssert::gCurrentExpr = "new_notes.IsDefined()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("RUMBLE NOTES STRING IS EMPTY"))
+                    __debugbreak();
+            }
+            lo.rumble_notes = lowFreqNotes;
+            lo.steady_duration = lowFreqDuraton;
+            lo.m_flags |= 1u;
+            lo.intensity = 1.0f;
+            lo.enabled = true;
+        }
+        void* v7 = RumbleManager_Inst(player_index);
+        if (v7 != nullptr)
+            RumbleManager_Play(v7, &rumbleEffect, 1.0f);
+    }
+}
+
+// ea: 0x005BC350
+void BrocSys::DisplayScoreBoard(bool show, int time)
+{
+    int v2 = 1580 * currCl;
+    byte_F64194[v2 * 4] = show ? 1 : 0;
+    dword_F641D0[v2] = show ? 1 : 0;
+    dword_F641D4[v2] = cgGlobal.time;
+    if (!show)
+    {
+        if (g_femanager.mAARS != nullptr
+            && g_femanager.mAARS->IsSystemActive())
+        {
+            View::UpdateNumViewports();
+            g_femanager.mAARS->gap1C(g_femanager.mAARS, -1.0f);
+        }
+    }
+    else
+    {
+        if (g_femanager.mDMS[0] != nullptr)
+            ((DialogMenuGapView*)g_femanager.mDMS[0])
+                ->gap1C(g_femanager.mDMS[0], -1.0f);
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(currCl);
+        if (IGMS != nullptr)
+            IGMS->gap1C(IGMS, -1.0f);
+        View::SetNumViewports(1);
+        kuju_sTime* local = MultiplayerMgr::getLocalTime(MultiplayerMgr::sInst);
+        if (local != nullptr)
+            g_MPAARTimer.mTime = local->mTime;
+        g_MPAARTotalTime = time;
+        if (g_femanager.mAARS != nullptr)
+        {
+            g_femanager.mAARS->ActivateMenu(0);
+            if (g_femanager.mAARS->menus != nullptr)
+            {
+                if (g_femanager.mAARS->menus[4] != nullptr)
+                    ((AARMapVote*)g_femanager.mAARS->menus[4])->ResetPanel();
+                if (g_femanager.mAARS->menus[3] != nullptr)
+                    ((AARGameModeVote*)g_femanager.mAARS->menus[3])
+                        ->ResetPanel();
+            }
+        }
+    }
+    if (g_femanager.IGO != nullptr)
+    {
+        g_femanager.IGO->SetTutorialText(-1, 0);
+        g_femanager.IGO->SetActionHint(-1, 0);
+    }
+}
+
+// ea: 0x005CC890
+void BrocSys::SetFlaggedAnimAligned(unsigned int entityHandleVal,
+                                    unsigned int notifyName,
+                                    const Broc::vector& origin,
+                                    const Broc::vector& angles,
+                                    unsigned int broanim)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        if (mObject->actor == nullptr)
+        {
+            Scr_Error("Entity ain't no actor yo!!!");
+            return;
+        }
+        XAnimTree* tree = GScr_GetEntAnimTree(mObject);
+        scr_anim_s root = g_XAnimGetRoot(tree);
+        animscripted_t* v8 = mObject->scripted;
+        if (v8 == nullptr)
+        {
+            v8 = (animscripted_t*)mem_heap_malloc(0x70);
+            mObject->scripted = v8;
+            v8->bStarted = 0;
+            if (((broanim >> 16) & 0xFFFF) == 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2097;
+                AeAssert::gCurrentExpr = "anim.tree != 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bad anim passed to anim scripted"))
+                    __debugbreak();
+            }
+            v8->anim = broanim;
+            v8->root = (void*)(uintptr_t)root.mHandle;
+            v8->mode = 0;
+            v8->notifyName = notifyName;
+        }
+        float axis[3][3];
+        AnglesToAxis(&angles.x, axis);
+        math::Mat44 axisM;
+        for (int r = 0; r < 3; ++r)
+        {
+            axisM.x.v.m128_f32[r] = axis[r][0];
+            axisM.y.v.m128_f32[r] = axis[r][1];
+            axisM.z.v.m128_f32[r] = axis[r][2];
+        }
+        axisM.x.v.m128_f32[3] = 0.0f;
+        axisM.y.v.m128_f32[3] = 0.0f;
+        axisM.z.v.m128_f32[3] = 0.0f;
+        axisM.w.v.m128_f32[0] = origin.x;
+        axisM.w.v.m128_f32[1] = origin.y;
+        axisM.w.v.m128_f32[2] = origin.z;
+        axisM.w.v.m128_f32[3] = 0.0f;
+        v8->origin.quat = nalQuaternionFromMatrix(axisM);
+        v8->origin.pos.v.m128_f32[0] = origin.x;
+        v8->origin.pos.v.m128_f32[1] = origin.y;
+        v8->origin.pos.v.m128_f32[2] = origin.z;
+        if (IS_NAN(v8->origin.pos.v.m128_f32[0])
+            || IS_NAN(v8->origin.pos.v.m128_f32[1])
+            || IS_NAN(v8->origin.pos.v.m128_f32[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2120;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((scripted->origin.p)[0]) && !IS_NAN((scripted->origin.p)[1]) && !IS_NAN((scripted->origin.p)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        v8->offset.quat.x = 0.0f;
+        v8->offset.quat.y = 0.0f;
+        v8->offset.quat.z = 1.0f;
+        v8->offset.quat.w = 0.0f;
+        memset(&v8->offset.pos, 0, sizeof(v8->offset.pos));
+        XAnimClearTreeGoalWeightsStrict(tree, root.mHandle & 0xFFFF, 0.0f);
+        int IsLooped = XAnimIsLooped((AnimTree*)tree, broanim & 0xFFFF);
+        XAnimSetCompleteGoalWeight(tree, broanim & 0xFFFF, 1.0f, 0.0f, 1.0f,
+                                   notifyName, 0, IsLooped == 0);
+        mObject->flags |= 0x1000000;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D7930
+void BrocSys::AttachPath(unsigned int entityHandleVal,
+                         const Broc::vehiclenode& node, int attach_mode)
+{
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    Entity* info = nullptr;
+    if (v5 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey
+        || (info = EntityHandleDb::sInst.mElements[v5].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 60;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to AttachPath"))
+            __debugbreak();
+    }
+    if (node.___u0 == (unsigned int)INVALID_VEHICLENODE_HANDLE)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 61;
+        AeAssert::gCurrentExpr = "node.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad vehiclenode passed to AttachPath"))
+            __debugbreak();
+    }
+    if (info != nullptr
+        && node.___u0 != (unsigned int)INVALID_VEHICLENODE_HANDLE)
+    {
+        scr_vehicle_t* v8 = info->scr_vehicle;
+        if (v8 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 65;
+            AeAssert::gCurrentExpr = "ent->scr_vehicle";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v7 =
+                    info->mClassName.mBlock != nullptr
+                        ? info->mClassName.mBlock->mBuff
+                        : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to AttachPath", v7))
+                    __debugbreak();
+            }
+        }
+        if (v8 != nullptr)
+        {
+            vehicle_info_t* v16 = s_vehicleInfos[v8->infoIdx];
+            if (info->active == 2)
+            {
+                Scr_Error(
+                    va("Vehicle is invalid on path after it's been used"));
+            }
+            G_VehSetUpPathPos((vehicle_pathpos_t*)v8,
+                              (int16_t)node.___u0);
+            math::Position3 zeroVel;
+            zeroVel.v = _mm_setzero_ps();
+            v8->phys.origin.v.m128_f32[0] = v8->pathPos.origin[0];
+            v8->phys.origin.v.m128_f32[1] = v8->pathPos.origin[1];
+            v8->phys.origin.v.m128_f32[2] = v8->pathPos.origin[2];
+            v8->phys.angles.v.m128_f32[0] = v8->pathPos.angles[0];
+            v8->phys.angles.v.m128_f32[1] = v8->pathPos.angles[1];
+            v8->phys.angles.v.m128_f32[2] = v8->pathPos.angles[2];
+            VEH_SetPosition(info, v8->phys.origin, v8->phys.angles,
+                            &zeroVel.v.m128_f32[0]);
+            v8->phys.prevOrigin = v8->phys.origin;
+            v8->phys.prevAngles = v8->phys.angles;
+            for (int i = 0; i < 6; ++i)
+            {
+                DObjSkelMat tagMat;
+                if (G_DObjGetWorldTagMatrix(info, s_wheelTagHashes[i],
+                                            &tagMat))
+                    v8->phys.wheelZPos[i] = tagMat.origin[2];
+            }
+            if (v8->mRBVeh == nullptr)
+            {
+                if (v16 != nullptr
+                    && (v16->type == 1 || v16->type == 2))
+                    VEH_GroundPlant(info, 0, ServerTime::sInst.mTickMSec);
+            }
+            VEH_SetPosition(info, v8->phys.origin, v8->phys.angles,
+                            &zeroVel.v.m128_f32[0]);
+            v8->phys.prevOrigin = v8->phys.origin;
+            v8->phys.prevAngles = v8->phys.angles;
+            rb_vehicle* v12 = (rb_vehicle*)v8->mRBVeh;
+            if (v12 != nullptr)
+                v12->start_path(attach_mode);
+        }
+    }
+}
+
+// ea: 0x005DA230
+void BrocSys::FireTurret(unsigned int entityHandleVal, bool gunner)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v3].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v3].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 1015;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to FireTurret"))
+            __debugbreak();
+        return;
+    }
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    if (scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 1021;
+        AeAssert::gCurrentExpr = "veh";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v7 = mObject->mClassName.mBlock != nullptr
+                                 ? mObject->mClassName.mBlock->mBuff
+                                 : defaultFileName;
+            if (AeAssert::Assert(
+                    "Non vehicle entity %s passed to FireTurret", v7))
+                __debugbreak();
+        }
+        return;
+    }
+    int infoIdx = scr_vehicle->infoIdx;
+    scr_vehicle->shooter = gunner;
+    vehicle_info_t* Info = VEH_GetInfo(infoIdx);
+    int i = gunner ? scr_vehicle->gunnerWeapon : mObject->s.weapon;
+    if (mObject->health <= 0.0f)
+        Scr_Error("Vehicle must have health to control the turret");
+    if (i == 0)
+    {
+        const char* v10 = mObject->targetname.mBlock != nullptr
+                              ? mObject->targetname.mBlock->mBuff
+                              : defaultFileName;
+        Scr_Error(va("No weapon specified for [%s]\n", v10));
+        return;
+    }
+    weaponFileInfo_t* wInfo = BG_GetInfoForWeapon(i);
+    if (wInfo->type != 0 && wInfo->type != 2)
+        Scr_Error("Vehicles only support bullet and projectile weapons\n");
+
+    int gunner_barrel;
+    if (gunner)
+    {
+        gunner_barrel = scr_vehicle->boneIndex.gunner_barrel;
+        if (gunner_barrel < 0)
+            goto no_barrel;
+    }
+    else
+    {
+        gunner_barrel = scr_vehicle->boneIndex.barrel;
+        if (gunner_barrel < 0)
+            goto no_barrel;
+    }
+    {
+        DObjSkelMat barrelMtx;
+        G_DObjGetWorldBoneIndexMatrix(mObject, gunner_barrel, &barrelMtx);
+        int v39;
+        int startBarrel;
+        int event;
+        if (Info->quadBarrel != 0)
+        {
+            v39 = scr_vehicle->fireBarrel != 0 ? 2 : 0;
+            startBarrel = 2;
+            event = 198 + (scr_vehicle->fireBarrel != 0 ? 1 : 0);
+        }
+        else
+        {
+            v39 = 0;
+            startBarrel = 1;
+            event = 186;
+        }
+        for (int v40 = 0; v40 < startBarrel; ++v40)
+        {
+            int tagIdx = v39 + v40;
+            DObjSkelMat flashMtx;
+            if (gunner)
+            {
+                if (!G_DObjGetWorldTagMatrix(
+                        mObject, s_gunnerFlashTagHashes[tagIdx], &flashMtx))
+                    continue;
+            }
+            else
+            {
+                if (!G_DObjGetWorldTagMatrix(
+                        mObject, s_flashTagHashes[tagIdx], &flashMtx))
+                    continue;
+            }
+            float* target = gunner ? scr_vehicle->gunnerTargetOrigin
+                                   : scr_vehicle->targetOrigin;
+            float v22 = target[0];
+            float v24 = target[1];
+            float v26 = target[2];
+            float v29, v28, v27;
+            weaponParms wp;
+            memset(&wp, 0, sizeof(wp));
+            if (mObject->r.mOwner.mHandle.mVal == 0 || startBarrel != 1
+                || scr_vehicle->barrelBlocked != 0
+                || (v22 == 0.0f && v24 == 0.0f && v26 == 0.0f))
+            {
+                wp.muzzleTrace[0] = flashMtx.origin[0];
+                wp.muzzleTrace[1] = flashMtx.origin[1];
+                wp.muzzleTrace[2] = flashMtx.origin[2];
+                v29 = wp.muzzleTrace[0];
+                v28 = wp.muzzleTrace[1];
+                v27 = wp.muzzleTrace[2];
+            }
+            else
+            {
+                wp.muzzleTrace[0] = v22 - flashMtx.axis[2][1];
+                wp.muzzleTrace[1] = v24 - flashMtx.axis[2][2];
+                wp.muzzleTrace[2] = v26 - flashMtx.axis[2][3];
+                VectorNormalize(wp.muzzleTrace);
+                math::Position3 joltAngles;
+                math::Position3 barrelAngles;
+                math::Position3 gunFwd;
+                vectoangles(&flashMtx.origin[0],
+                            &joltAngles.v.m128_f32[1]);
+                vectoangles(wp.muzzleTrace, &barrelAngles.v.m128_f32[1]);
+                AnglesSubtract(joltAngles, barrelAngles, gunFwd);
+                wp.gunForward[1] = gunFwd.v.m128_f32[1];
+                wp.gunForward[2] = gunFwd.v.m128_f32[2];
+                if (wp.gunForward[1] < -10.0f)
+                    wp.gunForward[1] = -10.0f;
+                if (wp.gunForward[1] > 10.0f)
+                    wp.gunForward[1] = 10.0f;
+                if (wp.gunForward[2] < -10.0f)
+                    wp.gunForward[2] = -10.0f;
+                if (wp.gunForward[2] > 10.0f)
+                    wp.gunForward[2] = 10.0f;
+                wp.pWeapInfo = nullptr;
+                math::Position3 gunFwd2;
+                AnglesSubtract(
+                    joltAngles,
+                    *(const math::Position3*)&wp.gunForward[1], gunFwd2);
+                AnglesToForward(&gunFwd2.v.m128_f32[1], wp.muzzleTrace);
+                v27 = wp.muzzleTrace[2];
+                v28 = wp.muzzleTrace[1];
+                v29 = wp.muzzleTrace[0];
+            }
+            wp.forward[0] = flashMtx.axis[0][1];
+            wp.forward[1] = flashMtx.axis[0][2];
+            wp.forward[2] = flashMtx.axis[0][3];
+            wp.right[0] = flashMtx.axis[1][1];
+            wp.right[1] = flashMtx.axis[1][2];
+            wp.right[2] = flashMtx.axis[1][3];
+            math::Position3 gunAngles;
+            gunAngles.v.m128_f32[1] = v29;
+            gunAngles.v.m128_f32[2] = v28;
+            gunAngles.v.m128_f32[3] = v27;
+            if (scr_vehicle->barrelBlocked != 0)
+            {
+                wp.up[0] = (-scr_vehicle->barrelOffset * v29)
+                           + flashMtx.axis[2][1];
+                wp.up[1] = (-scr_vehicle->barrelOffset * v28)
+                           + flashMtx.axis[2][2];
+                wp.up[2] = (-scr_vehicle->barrelOffset * v27)
+                           + flashMtx.axis[2][3];
+            }
+            else
+            {
+                wp.up[0] = flashMtx.axis[2][1];
+                wp.up[1] = flashMtx.axis[2][2];
+                wp.up[2] = flashMtx.axis[2][3];
+            }
+            scr_vehicle->fireBarrel = v39 + v40;
+            if (wInfo->type != 0)
+            {
+                if (mObject->active == 2)
+                    Weapon_Artillery_Fire(mObject, 0.0f, &wp, 10.0f);
+                else
+                    Weapon_RocketLauncher_Fire(mObject, 0.0f, &wp, 10.0f,
+                                               true);
+            }
+            else
+            {
+                Bullet_Fire(mObject, 1.0f, wInfo->iDamage, &wp, mObject,
+                            0.0f);
+            }
+        }
+        G_AddEvent(mObject, event, 0);
+        if (wInfo->type == 2)
+        {
+            math::Position3 joltDir;
+            joltDir.v.m128_f32[0] = -barrelMtx.origin[0];
+            joltDir.v.m128_f32[1] = -barrelMtx.origin[1];
+            joltDir.v.m128_f32[2] = -barrelMtx.origin[2];
+            VEH_JoltBody(mObject, joltDir, 1.0f, 0.0f, 0.0f);
+        }
+        scr_vehicle->fireTime = wInfo->iFireTime + 2000;
+        scr_vehicle->fireBarrel = scr_vehicle->fireBarrel == 0;
+        return;
+    }
+no_barrel:
+    {
+        const char* v16 = mObject->targetname.mBlock != nullptr
+                              ? mObject->targetname.mBlock->mBuff
+                              : defaultFileName;
+        Scr_Error(va("No tag_barrel for [%s]\n", v16));
+    }
+}
+
+// ============================================================================
+// scr.o batch 13 - GetEnt* entity-lookup family (BrocEntity.cpp)
+// ============================================================================
+
+// ea: 0x005DCE70 (mangle YAIHIPAIH: int, uint, uint*, int)
+static const char* BrocSysHashLookup(unsigned int hash);
+
+unsigned int BrocSys::GetEntByFieldAndHash(int offsetIntoEnt,
+                                           unsigned int hValue,
+                                           unsigned int* array, int capacity)
+{
+    (void)capacity;
+    unsigned int result = 0;
+    AeSizedEntityArray& active = EntityHandleDb::sInst.mActiveList;
+    Entity** p = active.m_elements;
+    Entity** end = p + active.m_size;
+    unsigned int entHandleToRet = 0;
+    int entityCount = 0;
+    while (p != end)
+    {
+        Entity* v6 = *p;
+        if (v6 != nullptr
+            && *(unsigned int*)((char*)&v6->s.eType + offsetIntoEnt)
+                   == hValue)
+        {
+            if (array != nullptr)
+            {
+                array[result++] = v6->mHandle.mHandle.mVal;
+            }
+            else
+            {
+                if (v6->scr_vehicle != nullptr)
+                    v6->scr_vehicle->playEngineSound = 1;
+                entHandleToRet = v6->mHandle.mHandle.mVal;
+                ++entityCount;
+            }
+        }
+        ++p;
+    }
+    if (array == nullptr)
+    {
+        if (entityCount > 1)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 394;
+            AeAssert::gCurrentExpr = "entityCount<=1";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v9 = BrocSysHashLookup(hValue);
+                if (AeAssert::Assert(
+                        "More than one entity with key %s value exists", v9))
+                    __debugbreak();
+            }
+        }
+        return entHandleToRet;
+    }
+    return result;
+}
+
+// ============================================================================
+// scr.o batch 59 tail - API field templates / InitEntity / InitAPI
+// ============================================================================
+
+template <typename T, int OFF> void hud_set_field(int handle, T val);
+template <typename T, int OFF> T hud_get_field(int handle);
+template <typename T, int OFF, int IDX>
+void entity_set_field(unsigned int handle, T val);
+template <typename T, int OFF, int IDX>
+T entity_get_field(unsigned int handle);
+template <typename T, int OFF, int IDX>
+void entity_set_actor_field(unsigned int handle, T val);
+template <typename T, int OFF, int IDX>
+T entity_get_actor_field(unsigned int handle);
+template <typename T, int OFF, int IDX>
+void pnode_set_field(int handle, T val);
+template <typename T, int OFF, int IDX>
+T pnode_get_field(int handle);
+template <typename T, int OFF> void vnode_set_field(int handle, T val);
+template <typename T, int OFF> T vnode_get_field(int handle);
+template <typename T, int OFF, int IDX>
+void entity_set_sentient_field(unsigned int handle, T val);
+template <typename T, int OFF, int IDX>
+T entity_get_sentient_field(unsigned int handle);
+template <typename T, int OFF, int IDX>
+void entity_set_player_field(unsigned int handle, T val);
+template <typename T, int OFF, int IDX>
+T entity_get_player_field(unsigned int handle);
+template <typename T, int OFF, int IDX>
+void entity_set_persistent_player_field(unsigned int handle, T val);
+template <typename T, int OFF, int IDX>
+T entity_get_persistent_player_field(unsigned int handle);
+
+// hud_set_field<T,OFF> (binary 0x5EB090+) - writes g_hudelems[handle]
+// elem byte offset OFF (fallback path; the binary's Scr_Set* hooks do the same)
+template <typename T, int OFF>
+void hud_set_field(int handle, T val)
+{
+    if (handle >= 0 && handle < 16)
+    {
+        game_hudelem_s* v2 = &g_hudelems[handle];
+        if (v2 != nullptr && v2->elem.type != HE_TYPE_FREE)
+        {
+            *(T*)((char*)&v2->elem + OFF) = val;
+            return;
+        }
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 6189;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("TRYING TO SET FIELD ON NULL HUD ELEMENT"))
+        __debugbreak();
+}
+
+template <typename T, int OFF>
+T hud_get_field(int handle)
+{
+    if (handle >= 0 && handle < 16)
+    {
+        game_hudelem_s* v1 = &g_hudelems[handle];
+        if (v1 != nullptr && v1->elem.type != HE_TYPE_FREE)
+            return *(T*)((char*)&v1->elem + OFF);
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 6205;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("TRYING TO GET FIELD OFF NULL HUD ELEMENT"))
+        __debugbreak();
+    return T();
+}
+
+static Entity* BrocSysApiHandleToEntity(unsigned int handle)
+{
+    unsigned int idx = handle & 0xFFF;
+    if (idx < 0x540
+        && handle >> 12 == EntityHandleDb::sInst.mElements[idx].mKey)
+        return EntityHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
+
+template <typename T, int OFF, int IDX>
+void entity_set_field(unsigned int handle, T val)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && handle != 0)
+    {
+        *(T*)((char*)mObject + OFF) = val;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5785;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to set field on NULL entity"))
+        __debugbreak();
+}
+
+template <typename T, int OFF, int IDX>
+T entity_get_field(unsigned int handle)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr)
+        return *(T*)((char*)mObject + OFF);
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5818;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to get field off NULL entity"))
+        __debugbreak();
+    return T();
+}
+
+template <typename T, int OFF, int IDX>
+void entity_set_actor_field(unsigned int handle, T val)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->actor != nullptr)
+    {
+        *(T*)((char*)mObject->actor + OFF) = val;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5826;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to set actor field on NULL entity"))
+        __debugbreak();
+}
+
+template <typename T, int OFF, int IDX>
+T entity_get_actor_field(unsigned int handle)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->actor != nullptr)
+        return *(T*)((char*)mObject->actor + OFF);
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5850;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to get actor field off NULL entity"))
+        __debugbreak();
+    return T();
+}
+
+template <typename T, int OFF, int IDX>
+void pnode_set_field(int handle, T val)
+{
+    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(
+        (PathNodes::NodeHandle)(unsigned short)handle);
+    if (node != nullptr)
+    {
+        *(T*)((char*)node + OFF) = val;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5878;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to set field on NULL pathnode"))
+        __debugbreak();
+}
+
+template <typename T, int OFF, int IDX>
+T pnode_get_field(int handle)
+{
+    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(
+        (PathNodes::NodeHandle)(unsigned short)handle);
+    if (node != nullptr)
+        return *(T*)((char*)node + OFF);
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5898;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to get field off NULL pathnode"))
+        __debugbreak();
+    return T();
+}
+
+// vnode storage is mp_level-internal (NodeFieldManager); no ported accessor.
+template <typename T, int OFF>
+void vnode_set_field(int /*handle*/, T /*val*/) {}
+template <typename T, int OFF>
+T vnode_get_field(int /*handle*/)
+{
+    return T();
+}
+
+template <typename T, int OFF, int IDX>
+void entity_set_sentient_field(unsigned int handle, T val)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->sentient != nullptr)
+    {
+        *(T*)((char*)mObject->sentient + OFF) = val;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5860;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to set sentient field on NULL entity"))
+        __debugbreak();
+}
+
+template <typename T, int OFF, int IDX>
+T entity_get_sentient_field(unsigned int handle)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->sentient != nullptr)
+        return *(T*)((char*)mObject->sentient + OFF);
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5870;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to get sentient field off NULL entity"))
+        __debugbreak();
+    return T();
+}
+
+template <typename T, int OFF, int IDX>
+void entity_set_player_field(unsigned int handle, T val)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->client != nullptr)
+    {
+        *(T*)((char*)mObject->client + OFF) = val;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5888;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to set player field on NULL entity"))
+        __debugbreak();
+}
+
+template <typename T, int OFF, int IDX>
+T entity_get_player_field(unsigned int handle)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->client != nullptr)
+        return *(T*)((char*)mObject->client + OFF);
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5900;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to get player field off NULL entity"))
+        __debugbreak();
+    return T();
+}
+
+template <typename T, int OFF, int IDX>
+void entity_set_persistent_player_field(unsigned int handle, T val)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->client != nullptr)
+    {
+        *(T*)((char*)mObject->client + OFF) = val;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5918;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to set persistent player field on NULL entity"))
+        __debugbreak();
+}
+
+template <typename T, int OFF, int IDX>
+T entity_get_persistent_player_field(unsigned int handle)
+{
+    Entity* mObject = BrocSysApiHandleToEntity(handle);
+    if (mObject != nullptr && mObject->client != nullptr)
+        return *(T*)((char*)mObject->client + OFF);
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5930;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Trying to get persistent player field off NULL entity"))
+        __debugbreak();
+    return T();
+}
+
+
+// ea: 0x005DD690
+void BrocSys::InitEntity()
+{    gpBrocAPI->mBrocExports.mGetPlayerArray = BrocSys::GetPlayerArray;
+    gpBrocAPI->mBrocExports.mGetLocalPlayerArray = BrocSys::GetLocalPlayerArray;
+    gpBrocAPI->mBrocExports.mGetPlayerIndex = BrocSys::GetPlayerIndex;
+    gpBrocAPI->mBrocExports.mGetEnt = BrocSys::GetEnt;
+    gpBrocAPI->mBrocExports.mGetExtendedEntity = BrocSys::GetExtendedEntity;
+    gpBrocAPI->mBrocExports.mGetLevel = BrocSys::GetLevel;
+    gpBrocAPI->mBrocExports.mGetPlayer = BrocSys::GetPlayer;
+    gpBrocAPI->mBrocExports.mGetEntByNum = BrocSys::GetEntByNum;
+    gpBrocAPI->mBrocExports.mGetDrones = BrocSys::GetDrones;
+    gpBrocAPI->mBrocExports.mSetDroneScriptControl = nullsub_101;
+    gpBrocAPI->mBrocExports.mGetNode = BrocSys::GetNode;
+    gpBrocAPI->mBrocExports.mGetNodeInProximity = BrocSys::GetNodeInProximity;
+    gpBrocAPI->mBrocExports.mGetVehicleNode = BrocSys::GetVehicleNode;
+    gpBrocAPI->mBrocExports.mGetNumVehicles = BrocSys::GetNumVehicles;
+    gpBrocAPI->mBrocExports.mDrawTracer = BrocSys::DrawTracer;
+    gpBrocAPI->mBrocExports.mEffectEventPlay = BrocSys::EffectEventPlay;
+    gpBrocAPI->mBrocExports.mEffectEventPlayNonEnt = BrocSys::EffectEventPlayNonEnt;
+    gpBrocAPI->mBrocExports.mEffectEventPlayDir = BrocSys::EffectEventPlayDir;
+    gpBrocAPI->mBrocExports.mEffectEventQueue = BrocSys::EffectEventQueue;
+    gpBrocAPI->mBrocExports.mEffectEventQueueDialog = BrocSys::EffectEventQueueDialog;
+    gpBrocAPI->mBrocExports.mEffectEventPlayQueued = BrocSys::EffectEventPlayQueued;
+    gpBrocAPI->mBrocExports.mEffectEventIsStillPlaying = BrocSys::EffectEventIsStillPlaying;
+    gpBrocAPI->mBrocExports.mEffectEventStop = BrocSys::EffectEventStop;
+    gpBrocAPI->mBrocExports.mEffectEventFastForward = BrocSys::EffectEventFastForward;
+    gpBrocAPI->mBrocExports.mEffectEventWeaponPlay = BrocSys::EffectEventWeaponPlay;
+    gpBrocAPI->mBrocExports.mAttachCurve = BrocSys::BROC_AttachCurveEntity;
+    gpBrocAPI->mBrocExports.mAddCurveKeyEvaluator = BrocSys::BROC_AddCurveKeyEvaluator;
+    gpBrocAPI->mBrocExports.mAddCurveConditionEvaluator = BrocSys::BROC_AddCurveConditionEvaluator;
+    gpBrocAPI->mBrocExports.mSceneEffectEnable = BrocSys::SceneEffectEnable;
+    gpBrocAPI->mBrocExports.mSceneEffectDisable = BrocSys::SceneEffectDisable;
+    gpBrocAPI->mBrocExports.mDialogPlayAllowOverlapping = BrocSys::DialogPlayAllowOverlapping;
+    gpBrocAPI->mBrocExports.mDialogPlay = BrocSys::DialogPlay;
+    gpBrocAPI->mBrocExports.mCheckWave = BrocSys::CheckWave;
+    gpBrocAPI->mBrocExports.mEntityIsAlive = BrocSys::EntityIsAlive;
+    gpBrocAPI->mBrocExports.mEntityExists = BrocSys::EntityExists;
+    gpBrocAPI->mBrocExports.mEntityIsPlayer = BrocSys::EntityIsPlayer;
+    gpBrocAPI->mBrocExports.mEntityIsAI = BrocSys::EntityIsAI;
+    gpBrocAPI->mBrocExports.mEntityIsSentient = BrocSys::EntityIsSentient;
+    gpBrocAPI->mBrocExports.mEntityIsVehicle = BrocSys::EntityIsVehicle;
+    gpBrocAPI->mBrocExports.mEntityIsVehicleTank = BrocSys::EntityIsVehicleTank;
+    gpBrocAPI->mBrocExports.mEntityIsWounded = BrocSys::EntityIsWounded;
+    gpBrocAPI->mBrocExports.mIsPathNodeDefined = BrocSys::IsPathNodeDefined;
+    gpBrocAPI->mBrocExports.mIsVehicleNodeDefined = BrocSys::IsVehicleNodeDefined;
+    gpBrocAPI->mBrocExports.mBulletTrace = BrocSys::BulletTrace;
+    gpBrocAPI->mBrocExports.mTrace = BrocSys::Trace;
+    gpBrocAPI->mBrocExports.mSaveCheckpoint = BrocSys::SaveCheckpoint;
+    gpBrocAPI->mBrocExports.mGetGameVectorVar = BrocSys::GetGameVectorVar;
+    gpBrocAPI->mBrocExports.mGetGameUnsignedVar = BrocSys::GetGameUnsignedVar;
+    gpBrocAPI->mBrocExports.mGetGameFloatVar = BrocSys::GetGameFloatVar;
+    gpBrocAPI->mBrocExports.mSetGameVectorVar = BrocSys::SetGameVectorVar;
+    gpBrocAPI->mBrocExports.mSetGameUnsignedVar = BrocSys::SetGameUnsignedVar;
+    gpBrocAPI->mBrocExports.mSetGameFloatVar = BrocSys::SetGameFloatVar;
+    gpBrocAPI->mBrocExports.mRestoreLastCheckpoint = BrocSys::RestoreLastCheckpoint;
+    gpBrocAPI->mBrocExports.mSetShadowIntensity = BrocSys::SetShadowIntensity;
+    gpBrocAPI->mBrocExports.mSetShadowRadius = BrocSys::SetShadowRadius;
+    gpBrocAPI->mBrocExports.mSetEntityLODOverride = BrocSys::SetEntityLODOverride;
+    gpBrocAPI->mBrocExports.mScriptExplode = BrocSys::ScriptExplode;
+    gpBrocAPI->mBrocExports.mGetSplineData = BrocSys::GetSplineData;
+    gpBrocAPI->mBrocExports.mDronesStart = nullsub_102;
+    gpBrocAPI->mBrocExports.mDronesStop = nullsub_103;
+    gpBrocAPI->mBrocExports.mDronesDelete = nullsub_104;
+    gpBrocAPI->mBrocExports.mRegisterAnimNotifyFunc = BrocSys::RegisterAnimNotifyFunc;
+    gpBrocAPI->mBrocExports.mCreateAnimNotifyTask = BrocSys::CreateAnimNotifyTask;
+    gpBrocAPI->mBrocExports.mScaleEntity = BrocSys::ScaleEntity;
+    gpBrocAPI->mBrocExports.mSwapColMaps = BrocSys::SwapColMaps;
+    gpBrocAPI->mBrocExports.mRumble = BrocSys::Rumble;
+    gpBrocAPI->mBrocExports.mRumbleNotes = BrocSys::RumbleNotes;
+    gpBrocAPI->mBrocExports.mSetExploderState = BrocSys::SetExploderState;
+    gpBrocAPI->mBrocExports.mIsExploded = BrocSys::IsExploded;
+    gpBrocAPI->mBrocExports.mSetEntityFlagDrone = BrocSys::SetEntityFlagDrone;
+    gpBrocAPI->mBrocExports.mObjectiveHideStar = BrocSys::ObjectiveHideStar;
+    gpBrocAPI->mBrocExports.mObjectiveHideUpdatedText = BrocSys::ObjectiveHideUpdatedText;
+    gpBrocAPI->mBrocExports.mIsEntityVisible = BrocSys::IsEntityVisible;
+    gpBrocAPI->mBrocExports.mSetWeaponCameraShakeScale = BrocSys::SetWeaponCameraShakeScale;
+    gpBrocAPI->mBrocExports.mSetHUDType = BrocSys::SetHUDType;
+    gpBrocAPI->mBrocExports.mSetTutorialText = BrocSys::SetTutorialText;
+    gpBrocAPI->mBrocExports.mSetTutorialTextAllPlayers = BrocSys::SetTutorialTextAllPlayers;
+    gpBrocAPI->mBrocExports.mSetActionHint = BrocSys::SetActionHint;
+    gpBrocAPI->mBrocExports.mEntityIgnoreDanger = BrocSys::EntityIgnoreDanger;
+    gpBrocAPI->mBrocExports.mSetGetOceanHeight = BrocSys::SetGetOceanHeight;
+    gpBrocAPI->mBrocExports.mAnimScripted1 = BrocSys::AnimScripted1;
+    gpBrocAPI->mBrocExports.mAnimScripted2 = nullsub_105;
+    gpBrocAPI->mBrocExports.mStopAnimScripted = BrocSys::StopAnimScripted;
+    gpBrocAPI->mBrocExports.mStartBlankState = BrocSys::StartBlankState;
+    gpBrocAPI->mBrocExports.mStopBlankState = BrocSys::StopBlankState;
+    gpBrocAPI->mBrocExports.mAttach1 = BrocSys::Attach1;
+    gpBrocAPI->mBrocExports.mAttach2 = BrocSys::Attach2;
+    gpBrocAPI->mBrocExports.mAttach3 = BrocSys::Attach3;
+    gpBrocAPI->mBrocExports.mDetach1 = BrocSys::Detach1;
+    gpBrocAPI->mBrocExports.mDetach2 = BrocSys::Detach2;
+    gpBrocAPI->mBrocExports.mDetachAll = BrocSys::DetachAll;
+    gpBrocAPI->mBrocExports.mGetAttachSize = BrocSys::GetAttachSize;
+    gpBrocAPI->mBrocExports.mGetAttachModelName = BrocSys::GetAttachModelName;
+    gpBrocAPI->mBrocExports.mGetAttachTagName = BrocSys::GetAttachTagName;
+    gpBrocAPI->mBrocExports.mGetAttachIgnoreCollision = BrocSys::GetAttachIgnoreCollision;
+    gpBrocAPI->mBrocExports.mGetAnimFromScriptCVars = BrocSys::GetAnimFromScriptCVars;
+    gpBrocAPI->mBrocExports.mLinkTo1 = BrocSys::LinkTo1;
+    gpBrocAPI->mBrocExports.mLinkTo2 = BrocSys::LinkTo2;
+    gpBrocAPI->mBrocExports.mLinkTo3 = BrocSys::LinkTo3;
+    gpBrocAPI->mBrocExports.mPlayerLinkTo1 = BrocSys::PlayerLinkTo1;
+    gpBrocAPI->mBrocExports.mPlayerLinkTo2 = BrocSys::PlayerLinkTo2;
+    gpBrocAPI->mBrocExports.mPlayerLinkTo3 = BrocSys::PlayerLinkTo3;
+    gpBrocAPI->mBrocExports.mUnLink = BrocSys::UnLink;
+    gpBrocAPI->mBrocExports.mEnableLinkTo = BrocSys::EnableLinkTo;
+    gpBrocAPI->mBrocExports.mDoSpawn1 = BrocSys::DoSpawn1;
+    gpBrocAPI->mBrocExports.mDoSpawn2 = BrocSys::DoSpawn2;
+    gpBrocAPI->mBrocExports.mStalinGradSpawn1 = BrocSys::StalinGradSpawn1;
+    gpBrocAPI->mBrocExports.mStalinGradSpawn2 = BrocSys::StalinGradSpawn2;
+    gpBrocAPI->mBrocExports.mGetOrigin = BrocSys::GetOrigin;
+    gpBrocAPI->mBrocExports.mGetEye = BrocSys::GetEye;
+    gpBrocAPI->mBrocExports.mAddFakeFriendly = BrocSys::AddFakeFriendly;
+    gpBrocAPI->mBrocExports.mRemoveFakeFriendly = BrocSys::RemoveFakeFriendly;
+    gpBrocAPI->mBrocExports.mPlayScriptedAnim = BrocSys::PlayScriptedAnim;
+    gpBrocAPI->mBrocExports.mGetLocalizedString = BrocSys::GetLocalizedString;
+    gpBrocAPI->mBrocExports.mUseBy = BrocSys::UseBy;
+    gpBrocAPI->mBrocExports.mIsTouching = BrocSys::IsTouching;
+    gpBrocAPI->mBrocExports.mLockDoor = BrocSys::LockDoor;
+    gpBrocAPI->mBrocExports.mUnLockDoor = BrocSys::UnLockDoor;
+    gpBrocAPI->mBrocExports.mIsDoorLocked = BrocSys::IsDoorLocked;
+    gpBrocAPI->mBrocExports.mDelete = BrocSys::Delete;
+    gpBrocAPI->mBrocExports.mSetTransparent = BrocSys::SetTransparent;
+    gpBrocAPI->mBrocExports.mSetAiType = BrocSys::SetAiType;
+    gpBrocAPI->mBrocExports.mSetModel = BrocSys::SetModel;
+    gpBrocAPI->mBrocExports.mSetModelIndex = BrocSys::SetModelIndex;
+    gpBrocAPI->mBrocExports.mIsModelLoaded = BrocSys::IsModelLoaded;
+    gpBrocAPI->mBrocExports.mGetNormalHealth = BrocSys::GetNormalHealth;
+    gpBrocAPI->mBrocExports.mSetNormalHealth = BrocSys::SetNormalHealth;
+    gpBrocAPI->mBrocExports.mDoDamage = BrocSys::DoDamage;
+    gpBrocAPI->mBrocExports.mSetTakeDamage = BrocSys::SetTakeDamage;
+    gpBrocAPI->mBrocExports.mInvulnerableForTime = BrocSys::InvulnerableForTime;
+    gpBrocAPI->mBrocExports.mIsEntityInvulnerable = BrocSys::IsEntityInvulnerable;
+    gpBrocAPI->mBrocExports.mSetAlwaysRender = BrocSys::SetAlwaysRender;
+    gpBrocAPI->mBrocExports.mShow = BrocSys::Show;
+    gpBrocAPI->mBrocExports.mHide = BrocSys::Hide;
+    gpBrocAPI->mBrocExports.mSetContents = BrocSys::SetContents;
+    gpBrocAPI->mBrocExports.mDisConnectPaths = BrocSys::DisConnectPaths;
+    gpBrocAPI->mBrocExports.mConnectPaths = BrocSys::ConnectPaths;
+    gpBrocAPI->mBrocExports.mStartFiring = BrocSys::StartFiring;
+    gpBrocAPI->mBrocExports.mStopFiring = BrocSys::StopFiring;
+    gpBrocAPI->mBrocExports.mShootTurret = BrocSys::ShootTurret;
+    gpBrocAPI->mBrocExports.mSetMode = BrocSys::SetMode;
+    gpBrocAPI->mBrocExports.mGetTurretOwner = BrocSys::GetTurretOwner;
+    gpBrocAPI->mBrocExports.mGetOwner = BrocSys::GetOwner;
+    gpBrocAPI->mBrocExports.mSetOwner = BrocSys::SetOwner;
+    gpBrocAPI->mBrocExports.mSetTargetEntity = BrocSys::SetTargetEntity;
+    gpBrocAPI->mBrocExports.mHasTargetEntity = BrocSys::HasTargetEntity;
+    gpBrocAPI->mBrocExports.mClearTargetEntity = BrocSys::ClearTargetEntity;
+    gpBrocAPI->mBrocExports.mSetTurretTeam = BrocSys::SetTurretTeam;
+    gpBrocAPI->mBrocExports.mMakeTurretUsable = BrocSys::MakeTurretUsable;
+    gpBrocAPI->mBrocExports.mMakeTurretUnusable = BrocSys::MakeTurretUnusable;
+    gpBrocAPI->mBrocExports.mSetTurretAccuracy = BrocSys::SetTurretAccuracy;
+    gpBrocAPI->mBrocExports.mSetTurretRange = BrocSys::SetTurretRange;
+    gpBrocAPI->mBrocExports.mGetTurretRange = BrocSys::GetTurretRange;
+    gpBrocAPI->mBrocExports.mGetTurretTarget = BrocSys::GetTurretTarget;
+    gpBrocAPI->mBrocExports.mSetCursorHint = BrocSys::SetCursorHint;
+    gpBrocAPI->mBrocExports.mSetHintString1 = BrocSys::SetHintString1;
+    gpBrocAPI->mBrocExports.mSetHintString2 = BrocSys::SetHintString2;
+    gpBrocAPI->mBrocExports.mSetHintString3 = BrocSys::SetHintString3;
+    gpBrocAPI->mBrocExports.mGetAnimLength = BrocSys::GetAnimLength;
+    gpBrocAPI->mBrocExports.mGetAnimFrameCount = BrocSys::GetAnimFrameCount;
+    gpBrocAPI->mBrocExports.mAnimHasNotetrack = BrocSys::AnimHasNotetrack;
+    gpBrocAPI->mBrocExports.mClearAnim = BrocSys::ClearAnim;
+    gpBrocAPI->mBrocExports.mSetAnimKnob = BrocSys::SetAnimKnob;
+    gpBrocAPI->mBrocExports.mSetAnimKnobAll = BrocSys::SetAnimKnobAll;
+    gpBrocAPI->mBrocExports.mSetAnim = BrocSys::SetAnim;
+    gpBrocAPI->mBrocExports.mGetAnimTime = BrocSys::GetAnimTime;
+    gpBrocAPI->mBrocExports.mSetFlaggedAnimKnob = BrocSys::SetFlaggedAnimKnob;
+    gpBrocAPI->mBrocExports.mSetFlaggedAnimKnobAll = BrocSys::SetFlaggedAnimKnobAll;
+    gpBrocAPI->mBrocExports.mSetFlaggedAnim = BrocSys::SetFlaggedAnim;
+    gpBrocAPI->mBrocExports.mUseAnimTree = BrocSys::UseAnimTree;
+    gpBrocAPI->mBrocExports.mStopUseAnimTree = BrocSys::StopUseAnimTree;
+    gpBrocAPI->mBrocExports.mResetAnimVariationChunkState = BrocSys::ResetAnimVariationChunkState;
+    gpBrocAPI->mBrocExports.mSetFlaggedAnimAligned = BrocSys::SetFlaggedAnimAligned;
+    gpBrocAPI->mBrocExports.mGetInVehicle1 = BrocSys::GetInVehicle1;
+    gpBrocAPI->mBrocExports.mGetInVehicle2 = BrocSys::GetInVehicle2;
+    gpBrocAPI->mBrocExports.mGetOutVehicle = BrocSys::GetOutVehicle;
+    gpBrocAPI->mBrocExports.mSceneGetOutVehicle = BrocSys::SceneGetOutVehicle;
+    gpBrocAPI->mBrocExports.mStartInVehicle1 = BrocSys::StartInVehicle1;
+    gpBrocAPI->mBrocExports.mStartInVehicle2 = BrocSys::StartInVehicle2;
+    gpBrocAPI->mBrocExports.mStartFollowBehavior = BrocSys::StartFollowBehavior;
+    gpBrocAPI->mBrocExports.mStopFollowBehavior = BrocSys::StopFollowBehavior;
+    gpBrocAPI->mBrocExports.mSetFollowFormationData = BrocSys::SetFollowFormationData;
+    gpBrocAPI->mBrocExports.mResetVehicleFollowPositionHistoryData = BrocSys::ResetVehicleFollowPositionHistoryData;
+    gpBrocAPI->mBrocExports.mSetWalkRunLoopAnimNode = BrocSys::SetWalkRunLoopAnimNode;
+    gpBrocAPI->mBrocExports.mGetNodeClaimer = BrocSys::GetNodeClaimer;
+    gpBrocAPI->mBrocExports.mPlaySubtitle = BrocSys::PlaySubtitle;
+    gpBrocAPI->mBrocExports.mDumpAnims = BrocSys::DumpAnims;
+    gpBrocAPI->mBrocExports.mGetStance = BrocSys::GetStance;
+    gpBrocAPI->mBrocExports.mMagicGrenade1 = BrocSys::MagicGrenade1;
+    gpBrocAPI->mBrocExports.mMagicGrenade2 = BrocSys::MagicGrenade2;
+    gpBrocAPI->mBrocExports.mMagicGrenadeManual1 = BrocSys::MagicGrenadeManual1;
+    gpBrocAPI->mBrocExports.mMagicGrenadeManual2 = BrocSys::MagicGrenadeManual2;
+    gpBrocAPI->mBrocExports.mRifleGrenadeManual1 = BrocSys::RifleGrenadeManual1;
+    gpBrocAPI->mBrocExports.mIsLocalHost = BrocSys::IsLocalHost;
+    gpBrocAPI->mBrocExports.mIsFiringTurret = BrocSys::IsFiringTurret;
+    gpBrocAPI->mBrocExports.mSetFriendlyChain = BrocSys::SetFriendlyChain;
+    gpBrocAPI->mBrocExports.mGetTagOrigin1 = BrocSys::GetTagOrigin1;
+    gpBrocAPI->mBrocExports.mGetTagOrigin2 = BrocSys::GetTagOrigin2;
+    gpBrocAPI->mBrocExports.mGetTagAngles1 = BrocSys::GetTagAngles1;
+    gpBrocAPI->mBrocExports.mGetTagAngles2 = BrocSys::GetTagAngles2;
+    gpBrocAPI->mBrocExports.mShellShock = BrocSys::ShellShock;
+    gpBrocAPI->mBrocExports.mStopShellShock = BrocSys::StopShellShock;
+    gpBrocAPI->mBrocExports.mViewKick = BrocSys::ViewKick;
+    gpBrocAPI->mBrocExports.mLockLightVis = BrocSys::LockLightVis;
+    gpBrocAPI->mBrocExports.mUnLockLightVis = BrocSys::UnLockLightVis;
+    gpBrocAPI->mBrocExports.mLaunch = BrocSys::Launch;
+    gpBrocAPI->mBrocExports.mLocalToWorldCoords = BrocSys::LocalToWorldCoords;
+    gpBrocAPI->mBrocExports.mGetEntityNumber = BrocSys::GetEntityNumber;
+    gpBrocAPI->mBrocExports.mEnableGrenadeTouchDamage = BrocSys::EnableGrenadeTouchDamage;
+    gpBrocAPI->mBrocExports.mDisableGrenadeTouchDamage = BrocSys::DisableGrenadeTouchDamage;
+    gpBrocAPI->mBrocExports.mEnableGrenadeBounce = BrocSys::EnableGrenadeBounce;
+    gpBrocAPI->mBrocExports.mDisableGrenadeBounce = BrocSys::DisableGrenadeBounce;
+    gpBrocAPI->mBrocExports.mMakeFakeAi = BrocSys::MakeFakeAi;
+    gpBrocAPI->mBrocExports.mSetSpawnerTeam = BrocSys::SetSpawnerTeam;
+    gpBrocAPI->mBrocExports.mSetRightArc = BrocSys::SetRightArc;
+    gpBrocAPI->mBrocExports.mSetLeftArc = BrocSys::SetLeftArc;
+    gpBrocAPI->mBrocExports.mSetTopArc = BrocSys::SetTopArc;
+    gpBrocAPI->mBrocExports.mSetBottomArc = BrocSys::SetBottomArc;
+    gpBrocAPI->mBrocExports.mSetTurretPitch = BrocSys::SetTurretPitch;
+    gpBrocAPI->mBrocExports.mSetTurretYaw = BrocSys::SetTurretYaw;
+    gpBrocAPI->mBrocExports.mSetCharacter = BrocSys::SetCharacter;
+    gpBrocAPI->mBrocExports.mGetJoyPos = BrocSys::GetJoyPos;
+    gpBrocAPI->mBrocExports.mOverrideTriggerLookAtRadius = BrocSys::OverrideTriggerLookAtRadius;
+    gpBrocAPI->mBrocExports.mNoClip = BrocSys::NoClip;
+    gpBrocAPI->mBrocExports.mEnableAsserts = BrocSys::EnableAsserts;
+    BrocSys::InitEntityMove(); /*0x5de457*/;
+
+    BrocSys::InitEntityClient(); /*0x5de45c*/;
+
+    gpBrocAPI->mBrocExports.hud_set_x = hud_set_field<int,4>;
+    gpBrocAPI->mBrocExports.hud_get_x = hud_get_field<int,4>;
+    gpBrocAPI->mBrocExports.hud_set_y = hud_set_field<int,8>;
+    gpBrocAPI->mBrocExports.hud_get_y = hud_get_field<int,8>;
+    gpBrocAPI->mBrocExports.hud_set_alignX = hud_set_field<int,20>;
+    gpBrocAPI->mBrocExports.hud_get_alignX = hud_get_field<int,20>;
+    gpBrocAPI->mBrocExports.hud_set_alignY = hud_set_field<int,24>;
+    gpBrocAPI->mBrocExports.hud_get_alignY = hud_get_field<int,24>;
+    gpBrocAPI->mBrocExports.hud_set_sort = hud_set_field<float,108>;
+    gpBrocAPI->mBrocExports.hud_get_sort = hud_get_field<float,108>;
+    gpBrocAPI->mBrocExports.hud_set_fontScale = hud_set_field<float,12>;
+    gpBrocAPI->mBrocExports.hud_get_fontScale = hud_get_field<float,12>;
+    gpBrocAPI->mBrocExports.hud_set_alpha = hud_set_field<unsigned char,31>;
+    gpBrocAPI->mBrocExports.hud_get_alpha = hud_get_field<unsigned char,31>;
+    gpBrocAPI->mBrocExports.hud_set_red = hud_set_field<unsigned char,28>;
+    gpBrocAPI->mBrocExports.hud_get_red = hud_get_field<unsigned char,28>;
+    gpBrocAPI->mBrocExports.hud_set_green = hud_set_field<unsigned char,29>;
+    gpBrocAPI->mBrocExports.hud_get_green = hud_get_field<unsigned char,29>;
+    gpBrocAPI->mBrocExports.hud_set_blue = hud_set_field<unsigned char,30>;
+    gpBrocAPI->mBrocExports.hud_get_blue = hud_get_field<unsigned char,30>;
+    gpBrocAPI->mBrocExports.m_pnode_set_targetname = pnode_set_field<Broc::string,48,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_targetname = pnode_get_field<Broc::string,48,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_target = pnode_set_field<Broc::string,56,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_target = pnode_get_field<Broc::string,56,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_on_goal = pnode_set_field<Broc::string,60,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_on_goal = pnode_get_field<Broc::string,60,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_reservename = pnode_set_field<Broc::string,64,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_reservename = pnode_get_field<Broc::string,64,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_animscript = pnode_set_field<Broc::string,68,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_animscript = pnode_get_field<Broc::string,68,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_script_noteworthy = pnode_set_field<Broc::string,52,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_script_noteworthy = pnode_get_field<Broc::string,52,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_origin = pnode_set_field<Broc::vector,76,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_origin = pnode_get_field<Broc::vector,76,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_angles = pnode_set_field<Broc::vector,88,34>;
+    gpBrocAPI->mBrocExports.m_pnode_get_angles = pnode_get_field<Broc::vector,88,35>;
+    gpBrocAPI->mBrocExports.m_pnode_set_radius = pnode_set_field<float,92,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_radius = pnode_get_field<float,92,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_spawnflags = pnode_set_field<short,44,0>;
+    gpBrocAPI->mBrocExports.m_pnode_get_spawnflags = pnode_get_field<short,44,0>;
+    gpBrocAPI->mBrocExports.m_pnode_set_type = pnode_set_field<Broc::string,40,36>;
+    gpBrocAPI->mBrocExports.m_pnode_get_type = pnode_get_field<Broc::string,40,37>;
+    gpBrocAPI->mBrocExports.m_vnode_set_targetname = vnode_set_field<Broc::string,0>;
+    gpBrocAPI->mBrocExports.m_vnode_get_targetname = vnode_get_field<Broc::string,0>;
+    gpBrocAPI->mBrocExports.m_vnode_set_target = vnode_set_field<Broc::string,4>;
+    gpBrocAPI->mBrocExports.m_vnode_get_target = vnode_get_field<Broc::string,4>;
+    gpBrocAPI->mBrocExports.m_vnode_set_origin = vnode_set_field<Broc::vector,20>;
+    gpBrocAPI->mBrocExports.m_vnode_get_origin = vnode_get_field<Broc::vector,20>;
+    gpBrocAPI->mBrocExports.m_vnode_set_angles = vnode_set_field<Broc::vector,44>;
+    gpBrocAPI->mBrocExports.m_vnode_get_angles = vnode_get_field<Broc::vector,44>;
+    gpBrocAPI->mBrocExports.m_vnode_set_speed = vnode_set_field<float,8>;
+    gpBrocAPI->mBrocExports.m_vnode_get_speed = vnode_get_field<float,8>;
+    gpBrocAPI->mBrocExports.m_vnode_set_lookahead = vnode_set_field<float,12>;
+    gpBrocAPI->mBrocExports.m_vnode_get_lookahead = vnode_get_field<float,12>;
+    gpBrocAPI->mBrocExports.m_vnode_set_script_noteworthy = vnode_set_field<Broc::string,16>;
+    gpBrocAPI->mBrocExports.m_vnode_get_script_noteworthy = vnode_get_field<Broc::string,16>;
+    gpBrocAPI->mBrocExports.m_entity_set_classname = entity_set_field<Broc::string,636,1>;
+    gpBrocAPI->mBrocExports.m_entity_get_classname = entity_get_field<Broc::string,636,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_origin = entity_set_field<Broc::vector,336,2>;
+    gpBrocAPI->mBrocExports.m_entity_get_origin = entity_get_field<Broc::vector,336,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_model = entity_set_field<Broc::string,624,1>;
+    gpBrocAPI->mBrocExports.m_entity_get_model = entity_get_field<Broc::string,624,6>;
+    gpBrocAPI->mBrocExports.m_entity_set_spawnflags = entity_set_field<int,704,1>;
+    gpBrocAPI->mBrocExports.m_entity_get_spawnflags = entity_get_field<int,704,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_speed = entity_set_field<float,796,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_speed = entity_get_field<float,796,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_closespeed = entity_set_field<float,800,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_closespeed = entity_get_field<float,800,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_target = entity_set_field<Broc::string,652,11>;
+    gpBrocAPI->mBrocExports.m_entity_get_target = entity_get_field<Broc::string,652,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_targetname = entity_set_field<Broc::string,644,12>;
+    gpBrocAPI->mBrocExports.m_entity_get_targetname = entity_get_field<Broc::string,644,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_teamname = entity_set_field<Broc::string,792,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_teamname = entity_get_field<Broc::string,792,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_wait = entity_set_field<float,896,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_wait = entity_get_field<float,896,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_random = entity_set_field<float,900,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_random = entity_get_field<float,900,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_count = entity_set_field<int,876,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_count = entity_get_field<int,876,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_health = entity_set_field<int,856,3>;
+    gpBrocAPI->mBrocExports.m_entity_get_health = entity_get_field<int,856,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_dmg = entity_set_field<int,864,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_dmg = entity_get_field<int,864,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_angles = entity_set_field<Broc::vector,352,4>;
+    gpBrocAPI->mBrocExports.m_entity_get_angles = entity_get_field<Broc::vector,352,5>;
+    gpBrocAPI->mBrocExports.m_entity_set_rotate = entity_set_field<Broc::vector,912,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_rotate = entity_get_field<Broc::vector,912,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_degrees = entity_set_field<float,788,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_degrees = entity_get_field<float,788,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_time = entity_set_field<float,796,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_time = entity_get_field<float,796,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_modelscale = entity_set_field<float,632,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_modelscale = entity_get_field<float,632,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_key = entity_set_field<int,948,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_key = entity_get_field<int,948,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_delay = entity_set_field<float,904,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_delay = entity_get_field<float,904,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_shard = entity_set_field<int,876,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_shard = entity_get_field<int,876,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_spawnitem = entity_set_field<Broc::string,952,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_spawnitem = entity_get_field<Broc::string,952,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_groupname = entity_set_field<Broc::string,660,13>;
+    gpBrocAPI->mBrocExports.m_entity_get_groupname = entity_get_field<Broc::string,660,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_script_noteworthy = entity_set_field<Broc::string,668,14>;
+    gpBrocAPI->mBrocExports.m_entity_get_script_noteworthy = entity_get_field<Broc::string,668,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_maxhealth = entity_set_field<int,860,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_maxhealth = entity_get_field<int,860,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_animname = entity_set_field<Broc::string,676,15>;
+    gpBrocAPI->mBrocExports.m_entity_get_animname = entity_get_field<Broc::string,676,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_persistent_index = entity_set_field<short,958,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_persistent_index = entity_get_field<short,958,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_takedamage = entity_set_field<int,696,9>;
+    gpBrocAPI->mBrocExports.m_entity_get_takedamage = entity_get_field<int,696,10>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracy = entity_set_actor_field<float,240,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracy = entity_get_actor_field<float,240,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracystationarymod = entity_set_actor_field<float,244,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracystationarymod = entity_get_actor_field<float,244,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracyVsPlayer = entity_set_actor_field<float,248,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracyVsPlayer = entity_get_actor_field<float,248,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracyVsAI = entity_set_actor_field<float,252,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracyVsAI = entity_get_actor_field<float,252,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_accuracyVsHero = entity_set_actor_field<float,256,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_accuracyVsHero = entity_get_actor_field<float,256,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_lookforward = entity_set_actor_field<Broc::vector,320,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_lookforward = entity_get_actor_field<Broc::vector,320,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_lookright = entity_set_actor_field<Broc::vector,332,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_lookright = entity_get_actor_field<Broc::vector,332,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_lookup = entity_set_actor_field<Broc::vector,344,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_lookup = entity_get_actor_field<Broc::vector,344,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_fovcosine = entity_set_actor_field<float,2220,17>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_fovcosine = entity_get_actor_field<float,2220,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_maxsightdistsqrd = entity_set_actor_field<float,2224,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_maxsightdistsqrd = entity_get_actor_field<float,2224,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_visibilitythreshold = entity_set_actor_field<float,2216,17>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_visibilitythreshold = entity_get_actor_field<float,2216,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_defaultsightlatency = entity_set_actor_field<int,2228,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_defaultsightlatency = entity_get_actor_field<int,2228,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_maxthreatdistsqrd = entity_set_actor_field<float,2452,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_maxthreatdistsqrd = entity_get_actor_field<float,2452,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_followmin = entity_set_actor_field<int,2084,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_followmin = entity_get_actor_field<int,2084,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_followmax = entity_set_actor_field<int,2088,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_followmax = entity_get_actor_field<int,2088,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_chainfallback = entity_set_actor_field<short,2128,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_chainfallback = entity_get_actor_field<short,2128,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_interval = entity_set_actor_field<float,2092,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_interval = entity_get_actor_field<float,2092,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_personalspace = entity_set_actor_field<float,2096,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_personalspace = entity_get_actor_field<float,2096,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_damagetype = entity_set_actor_field<int,616,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_damagetype = entity_get_actor_field<int,616,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_damagetaken = entity_set_actor_field<int,620,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_damagetaken = entity_get_actor_field<int,620,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_damagedir = entity_set_actor_field<Broc::vector,628,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_damagedir = entity_get_actor_field<Broc::vector,628,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_damageyaw = entity_set_actor_field<int,624,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_damageyaw = entity_get_actor_field<int,624,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_damagelocation = entity_set_actor_field<unsigned int,640,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_damagelocation = entity_get_actor_field<unsigned int,640,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_proneok = entity_set_actor_field<int,472,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_proneok = entity_get_actor_field<int,472,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_walkdist = entity_set_actor_field<float,2072,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_walkdist = entity_get_actor_field<float,2072,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_desiredangle = entity_set_actor_field<float,396,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_desiredangle = entity_get_actor_field<float,396,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_bravery = entity_set_actor_field<float,2144,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_bravery = entity_get_actor_field<float,2144,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_pacifist = entity_set_actor_field<int,2148,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_pacifist = entity_get_actor_field<int,2148,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_pacifistwait = entity_set_actor_field<int,2152,18>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_pacifistwait = entity_get_actor_field<int,2152,19>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_suppressionwait = entity_set_actor_field<int,2552,18>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_suppressionwait = entity_get_actor_field<int,2552,19>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_name = entity_set_actor_field<Broc::string,288,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_name = entity_get_actor_field<Broc::string,288,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_weapon = entity_set_actor_field<unsigned int,292,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_weapon = entity_get_actor_field<unsigned int,292,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_secondaryweapon = entity_set_actor_field<unsigned int,296,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_secondaryweapon = entity_get_actor_field<unsigned int,296,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_voice = entity_set_actor_field<Broc::string,300,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_voice = entity_get_actor_field<Broc::string,300,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_dontavoidplayer = entity_set_actor_field<int,2124,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_dontavoidplayer = entity_get_actor_field<int,2124,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_grenadeawareness = entity_set_actor_field<float,2556,17>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_grenadeawareness = entity_get_actor_field<float,2556,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_grenade = entity_set_actor_field<Broc::entity,2560,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_grenade = entity_get_actor_field<Broc::entity,2560,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_grenadeweapon = entity_set_actor_field<Broc::string,2620,20>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_grenadeweapon = entity_get_actor_field<Broc::string,2620,21>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_grenadeammo = entity_set_actor_field<int,2632,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_grenadeammo = entity_get_actor_field<int,2632,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_favoriteenemy = entity_set_actor_field<Broc::entity,2444,24>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_favoriteenemy = entity_get_actor_field<Broc::entity,2444,25>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_allowdeath = entity_set_actor_field<int,228,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_allowdeath = entity_get_actor_field<int,228,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_mg42stayput = entity_set_actor_field<unsigned char,2712,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_mg42stayput = entity_get_actor_field<unsigned char,2712,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_useable = entity_set_actor_field<unsigned char,2713,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_useable = entity_get_actor_field<unsigned char,2713,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_goalradiusonly = entity_set_actor_field<unsigned char,2130,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_goalradiusonly = entity_get_actor_field<unsigned char,2130,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_dropweapon = entity_set_actor_field<int,2716,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_dropweapon = entity_get_actor_field<int,2716,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_drawoncompass = entity_set_actor_field<int,2720,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_drawoncompass = entity_get_actor_field<int,2720,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_interactstage = entity_set_actor_field<int,2848,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_interactstage = entity_get_actor_field<int,2848,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_scriptstate = entity_set_actor_field<Broc::string,2728,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_scriptstate = entity_get_actor_field<Broc::string,2728,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_lastscriptstate = entity_set_actor_field<Broc::string,2732,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_lastscriptstate = entity_get_actor_field<Broc::string,2732,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_statechangereason = entity_set_actor_field<Broc::string,2736,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_statechangereason = entity_get_actor_field<Broc::string,2736,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_groundtype = entity_set_actor_field<Broc::string,768,16>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_groundtype = entity_get_actor_field<Broc::string,768,22>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_anim_pose = entity_set_actor_field<unsigned int,452,23>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_anim_pose = entity_get_actor_field<unsigned int,452,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_forced_pose = entity_set_actor_field<unsigned int,456,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_forced_pose = entity_get_actor_field<unsigned int,456,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle = entity_set_actor_field<Broc::entity,2572,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle = entity_get_actor_field<Broc::entity,2572,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle_sub_type = entity_set_actor_field<unsigned int,2576,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle_sub_type = entity_get_actor_field<unsigned int,2576,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle_seat = entity_set_actor_field<unsigned int,2580,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle_seat = entity_get_actor_field<unsigned int,2580,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_actor_vehicle_seat_enter = entity_set_actor_field<unsigned int,2584,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_actor_vehicle_seat_enter = entity_get_actor_field<unsigned int,2584,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_team = entity_set_sentient_field<Broc::string,4,27>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_team = entity_get_sentient_field<Broc::string,4,28>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_threatbias = entity_set_sentient_field<int,48,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_threatbias = entity_get_sentient_field<int,48,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_scariness = entity_set_sentient_field<float,52,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_scariness = entity_get_sentient_field<float,52,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_node = entity_set_sentient_field<Broc::pathnode,116,26>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_node = entity_get_sentient_field<Broc::pathnode,116,31>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_chainnode = entity_set_sentient_field<Broc::pathnode,132,26>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_chainnode = entity_get_sentient_field<Broc::pathnode,132,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_goalradius = entity_set_sentient_field<float,24,29>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_goalradius = entity_get_sentient_field<float,24,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_goalangletolerance = entity_set_sentient_field<float,36,30>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_goalangletolerance = entity_get_sentient_field<float,36,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_enemy = entity_set_sentient_field<Broc::entity,104,26>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_enemy = entity_get_sentient_field<Broc::entity,104,33>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_ignoreme = entity_set_sentient_field<int,56,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_ignoreme = entity_get_sentient_field<int,56,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_ignorepain = entity_set_sentient_field<int,64,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_ignorepain = entity_get_sentient_field<int,64,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_grenadereturnchance = entity_set_sentient_field<float,76,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_grenadereturnchance = entity_get_sentient_field<float,76,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_bulletsInClip = entity_set_sentient_field<int,80,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_bulletsInClip = entity_get_sentient_field<int,80,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_animscriptedallowpain = entity_set_sentient_field<int,84,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_animscriptedallowpain = entity_get_sentient_field<int,84,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_state_change_blocked = entity_set_sentient_field<int,68,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_state_change_blocked = entity_get_sentient_field<int,68,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_updateDesireChaineNodeMin = entity_set_sentient_field<int,140,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_updateDesireChaineNodeMin = entity_get_sentient_field<int,140,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_updateDesireChaineNodeMax = entity_set_sentient_field<int,144,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_updateDesireChaineNodeMax = entity_get_sentient_field<int,144,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_keepOldDesiredChainNodeOdds = entity_set_sentient_field<float,148,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_keepOldDesiredChainNodeOdds = entity_get_sentient_field<float,148,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_moveAwayAvoidPoint = entity_set_sentient_field<Broc::vector,88,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_moveAwayAvoidPoint = entity_get_sentient_field<Broc::vector,88,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_sentient_moveAwayDist = entity_set_sentient_field<float,100,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_sentient_moveAwayDist = entity_get_sentient_field<float,100,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_player_spectatorClient = entity_set_player_field<int,1360,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_player_spectatorClient = entity_get_player_field<int,1360,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_player_ctf_has_flag = entity_set_player_field<short,1356,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_player_ctf_has_flag = entity_get_player_field<short,1356,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_player_viewangles = entity_set_player_field<Broc::vector,208,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_player_viewangles = entity_get_player_field<Broc::vector,208,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_rank = entity_set_persistent_player_field<short,424,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_rank = entity_get_persistent_player_field<short,424,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_playerClass = entity_set_persistent_player_field<short,416,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_playerClass = entity_get_persistent_player_field<short,416,0>;
+    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_nextPlayerClass = entity_set_persistent_player_field<short,418,0>;
+    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_nextPlayerClass = entity_get_persistent_player_field<short,418,0>;
+
+    gpBrocAPI->mBrocExports.m_entity_set_persistent_player_playerState = entity_set_persistent_player_field<int,420,0>;
+
+    gpBrocAPI->mBrocExports.m_entity_get_persistent_player_playerState = entity_get_persistent_player_field<int,420,0>;
+}
+
+
+// ============================================================================
+// scr.o batch 59 tail - InitAPI / BulletTrace
+// ============================================================================
+
+// Script API math/physics entry points (sv.o/g.o; stored in the API table)
+extern void ApplyPhysics(unsigned int, const Broc::vector&,
+                         const Broc::vector&, float, bool);  // ?ApplyPhysics@@YAXIABUvector@Broc@@0M_N@Z
+extern void StopPhysics(unsigned int);                       // ?StopPhysics@@YAXI@Z
+extern void StopAllSceneAnims();                             // ?StopAllSceneAnims@@YAXXZ
+
+// Script API externs referenced by the InitAPI table (sv.o/g.o; stored in the
+// API function-pointer table only - implementations may live in unported objs)
+namespace Broc {
+float VecDistance(const Broc::vector*, const Broc::vector*);        // 0x184
+float VecDistanceSquared(const Broc::vector*, const Broc::vector*); // 0x188
+float length2(const Broc::vector*);                                 // 0x190
+float dot(const Broc::vector*, const Broc::vector*);                // 0x198
+void VecNormalize(Broc::vector*, const Broc::vector*);              // 0x19C
+void VecToAngles(Broc::vector*, const Broc::vector*);               // 0x1A0
+void VecAnglesToUp(Broc::vector*, const Broc::vector*);             // 0x1A4
+void VecAnglesToRight(Broc::vector*, const Broc::vector*);          // 0x1A8
+void VecAnglesToForward(Broc::vector*, const Broc::vector*);        // 0x1AC
+void VecAnglesToVectors(const Broc::vector*, Broc::vector*, Broc::vector*, Broc::vector*);  // 0x1B0
+int MathsRandomInt(int);                                            // 0x140
+float MathsRandomFloat(float);                                      // 0x144
+int MathsRandomIntRange(int, int);                                  // 0x148
+float MathsRandomFloatRange(float, float);                          // 0x14C
+void MathFastSinCos(float, float*, float*);                         // 0x150
+float MathsLog(float);                                              // 0x170
+}
+namespace FogConfig {
+void SetVal(float, float);      // ?SetVal@FogConfig@@YAXMM@Z
+void SetRange(float, float);    // ?SetRange@FogConfig@@YAXMM@Z
+void SetColorInt(int, int, int);  // ?SetColorInt@FogConfig@@YAXHHH@Z
+void SetColor(float, float, float);  // ?SetColor@FogConfig@@YAXMMM@Z
+}
+unsigned int QueueSceneAnim(const char*, unsigned int, float, float, bool, unsigned int);  // ?QueueSceneAnim@@YAIPBDIMM_NI@Z
+void PlaySceneAnim(unsigned int, unsigned int, unsigned int);  // ?PlaySceneAnim@@YAXIII@Z
+void StopSceneAnim(unsigned int);                              // ?StopSceneAnim@@YAXI@Z
+void EnableAI(unsigned int);                                   // ?EnableAI@@YAXI@Z
+void DisableAI(unsigned int);                                  // ?DisableAI@@YAXI@Z
+void apsResetPools();                                          // ?apsResetPools@@YAXXZ
+void apsAddPool(int, int);                                     // ?apsAddPool@@YAXHH@Z
+void SetDepthOfField(bool, float, float, float, float);        // ?SetDepthOfField@@YAX_NMMMM@Z
+float SquareRootX(float);                                      // ?SquareRootX@BrocSys@@YAMM@Z
+int ModXY(int, int);                                           // ?ModXY@BrocSys@@YAHHH@Z
+float FModXY(float, float);                                    // ?FModXY@BrocSys@@YAMMM@Z
+float atoff(const char*);                                      // ?atoff@BrocSys@@YAMPBD@Z
+void* MemAlloc(unsigned int, unsigned int);                    // ?MemAlloc@BrocSys@@YAPAXII@Z
+void MemFree(void*);                                           // ?MemFree@BrocSys@@YAXPAX@Z
+void* PoolAlloc(unsigned int);                                 // ?PoolAlloc@BrocSys@@YAPAXI@Z
+void PoolFree(void*);                                          // ?PoolFree@BrocSys@@YAXPAX@Z
+
+BrocExports gBrocExports;  // ?gBrocExports@@3UBrocExports@@A @ 0xF3A7B0
+
+static char* BrocStrstr(const char* haystack, const char* needle)
+{
+    return (char*)strstr(haystack, needle);
+}
+
+static const struct { unsigned int off1; void (*fn1)();
+                       unsigned int off2; void (*fn2)(); }
+    sBrocApiTable[] = {
+    { 0x2D0, (void (*)())BrocSys::GetWeaponIndex, 0x2D8, (void (*)())BrocSys::SetProjectileSpeed },
+    { 0x2DC, (void (*)())BrocSys::SetWeaponPlayerUpOffset, 0x000, (void (*)())BrocSys::Print },
+    { 0x004, (void (*)())BrocSys::PrintLn, 0x008, (void (*)())BrocSys::IPrintLn },
+    { 0x00C, (void (*)())BrocSys::IPrintLnBold, 0x010, (void (*)())BrocSys::Print3D },
+    { 0x014, (void (*)())BrocSys::PrintFloat3D, 0x018, (void (*)())BrocSys::Line },
+    { 0x044, (void (*)())BrocSys::ThreadBackupStack, 0x048, (void (*)())BrocSys::ThreadGetDebugInfo },
+    { 0x04C, (void (*)())BrocSys::ThreadSleepInternal, 0x050, (void (*)())BrocSys::ThreadSleepFrames },
+    { 0x03C, (void (*)())BrocSys::ThreadCreateInternal, 0x038, (void (*)())BrocSys::ThreadExecInternal },
+    { 0x040, (void (*)())BrocSys::ThreadNotifyInternal, 0x054, (void (*)())BrocSys::ThreadSleepUntilNotify },
+    { 0x058, (void (*)())BrocSys::ThreadTerminateOnNotify, 0x05C, (void (*)())BrocSys::ThreadIsThreadExecuting },
+    { 0x060, (void (*)())BrocSys::ThreadIsThreadAlive, 0x064, (void (*)())BrocSys::ThreadDebug },
+    { 0x068, (void (*)())BrocSys::ThreadDebugNotice, 0x06C, (void (*)())BrocSys::ThreadGetId },
+    { 0x070, (void (*)())BrocSys::ThreadKill, 0x184, (void (*)())Broc::VecDistance },
+    { 0x188, (void (*)())Broc::VecDistanceSquared, 0x190, (void (*)())Broc::length2 },
+    { 0x194, (void (*)())Broc::VecCloser, 0x198, (void (*)())Broc::dot },
+    { 0x19C, (void (*)())Broc::VecNormalize, 0x1A0, (void (*)())Broc::VecToAngles },
+    { 0x1A4, (void (*)())Broc::VecAnglesToUp, 0x1A8, (void (*)())Broc::VecAnglesToRight },
+    { 0x1AC, (void (*)())Broc::VecAnglesToForward, 0x1B0, (void (*)())Broc::VecAnglesToVectors },
+    { 0x24C, (void (*)())BrocSys::CVarGetString, 0x250, (void (*)())BrocSys::CVarGetInt },
+    { 0x254, (void (*)())BrocSys::CVarGetFloat, 0x258, (void (*)())BrocSys::CVarSetString },
+    { 0x25C, (void (*)())BrocSys::CVarSetInt, 0x260, (void (*)())BrocSys::CVarSetFloat },
+    { 0x264, (void (*)())BrocSys::Spawn, 0x268, (void (*)())BrocSys::SpawnWithFlag },
+    { 0x26C, (void (*)())BrocSys::SpawnWithFlagAndSize, 0x270, (void (*)())BrocSys::SpawnTriggerMount },
+    { 0x274, (void (*)())BrocSys::SpawnVehicle, 0x278, (void (*)())BrocSys::SpawnTurret },
+    { 0x27C, (void (*)())BrocSys::SpawnTurretWithAngles, 0x280, (void (*)())BrocSys::MusicPlay },
+    { 0x284, (void (*)())BrocSys::MusicStop, 0x288, (void (*)())BrocSys::MusicIndoorPlay },
+    { 0x28C, (void (*)())BrocSys::MusicIndoorStop, 0x290, (void (*)())BrocSys::SoundPlay },
+    { 0x294, (void (*)())BrocSys::SoundStop, 0x298, (void (*)())BrocSys::SoundFadeIn },
+    { 0x29C, (void (*)())BrocSys::SoundFadeOut, 0x2A0, (void (*)())BrocSys::SoundCrossFade },
+    { 0x2A4, (void (*)())BrocSys::SoundBusVolIsName, 0x2A8, (void (*)())BrocSys::SoundBusVolFade },
+    { 0x2AC, (void (*)())BrocSys::SoundBusPitchFade, 0x2B0, (void (*)())BrocSys::SoundBusVolAddBus },
+    { 0x2B4, (void (*)())BrocSys::SoundBusPitchAddBus, 0x2B8, (void (*)())BrocSys::SoundBusVolRemoveBus },
+    { 0x2BC, (void (*)())BrocSys::SoundBusPitchRemoveBus, 0x2C0, (void (*)())BrocSys::ReverbSetParams },
+    { 0x2C4, (void (*)())BrocSys::SetIndoor, 0x2C8, (void (*)())BrocSys::LoadWbk },
+    { 0x2CC, (void (*)())BrocSys::FreeWbk, 0x528, (void (*)())BrocSys::GetTime },
+    { 0x52C, (void (*)())BrocSys::GetDeltaTime, 0x530, (void (*)())BrocSys::GetDifficulty },
+    { 0x534, (void (*)())BrocSys::GetAiArray1, 0x538, (void (*)())BrocSys::GetAiArray2 },
+    { 0x53C, (void (*)())BrocSys::GetSpawnerArray, 0x540, (void (*)())BrocSys::GetSpawnerTeamArray },
+    { 0x544, (void (*)())BrocSys::GetWeaponModel, 0x548, (void (*)())BrocSys::GetWeaponModelName },
+    { 0x54C, (void (*)())BrocSys::GetWeaponClassName, 0x550, (void (*)())BrocSys::GetWeaponClassNameStr },
+    { 0x554, (void (*)())BrocSys::GetKeyBinding, 0x564, (void (*)())BrocSys::GetStartOrigin },
+    { 0x568, (void (*)())BrocSys::GetStartAngles, 0x56C, (void (*)())BrocSys::GetCycleOriginOffset },
+    { 0x570, (void (*)())BrocSys::GetMoveDelta, 0x574, (void (*)())BrocSys::GetAngleDelta },
+    { 0x578, (void (*)())BrocSys::GetNorthYaw, 0x588, (void (*)())BrocSys::GameSave },
+    { 0x58C, (void (*)())BrocSys::GameLoad, 0x590, (void (*)())BrocSys::SetCullDist },
+    { 0x594, (void (*)())BrocSys::RadiusDamage, 0x598, (void (*)())BrocSys::RadiusDamageFromEnt },
+    { 0x59C, (void (*)())BrocSys::SetPlayerIgnoreRadiusDamage, 0x5A0, (void (*)())BrocSys::MissionSuccess },
+    { 0x5A4, (void (*)())BrocSys::MissionFailed, 0x5A8, (void (*)())BrocSys::Cinematic1 },
+    { 0x5AC, (void (*)())BrocSys::Cinematic2, 0x5B0, (void (*)())BrocSys::Earthquake },
+    { 0x5B4, (void (*)())BrocSys::Lightning, 0x5B8, (void (*)())BrocSys::SetRainDrops },
+    { 0x5BC, (void (*)())BrocSys::SetFootSplashEffect, 0x5C0, (void (*)())BrocSys::DrawCompassFriendlies },
+    { 0x5C4, (void (*)())BrocSys::SetMaxVehicles, 0x5C8, (void (*)())BrocSys::SetMissileActiveTime },
+    { 0x5CC, (void (*)())BrocSys::BulletTracer, 0x5D0, (void (*)())BrocSys::MagicBullet },
+    { 0x5D4, (void (*)())BrocSys::ProfBegin, 0x5D8, (void (*)())BrocSys::ProfEnd },
+    { 0x5E4, (void (*)())BrocSys::GetNumParts, 0x5E8, (void (*)())BrocSys::GetPartName },
+    { 0x5EC, (void (*)())BrocSys::WeaponFireTime, 0x5F0, (void (*)())BrocSys::WeaponClipSize },
+    { 0x5F4, (void (*)())BrocSys::WeaponIsSemiAuto, 0x5F8, (void (*)())BrocSys::WeaponIsBoltAction },
+    { 0x5FC, (void (*)())BrocSys::WeaponType, 0x600, (void (*)())BrocSys::BadPlaceDelete },
+    { 0x604, (void (*)())BrocSys::BadPlaceCylinder, 0x608, (void (*)())BrocSys::BadPlaceArcs },
+    { 0x60C, (void (*)())BrocSys::NewHudElem, 0x610, (void (*)())BrocSys::FlushCorpses },
+    { 0xB8C, (void (*)())BrocSys::HudSetIsVisible, 0xB90, (void (*)())BrocSys::SetText },
+    { 0xB94, (void (*)())BrocSys::SetShader, 0xB98, (void (*)())BrocSys::SetTimer },
+    { 0xB9C, (void (*)())BrocSys::SetTimerUp, 0xBA0, (void (*)())BrocSys::SetTenthsTimer },
+    { 0xBA4, (void (*)())BrocSys::SetTenthsTimerUp, 0xBA8, (void (*)())BrocSys::SetClock },
+    { 0xBAC, (void (*)())BrocSys::SetClockUp, 0xBB0, (void (*)())BrocSys::SetValue },
+    { 0xBB4, (void (*)())BrocSys::FadeOverTime, 0xBB8, (void (*)())BrocSys::ScaleOverTime },
+    { 0xBBC, (void (*)())BrocSys::MoveOverTime, 0xBC0, (void (*)())BrocSys::Reset },
+    { 0xBC4, (void (*)())BrocSys::Destroy, 0xBDC, (void (*)())BrocSys::Assert },
+    { 0xBE0, (void (*)())BrocSys::Warning, 0xBE4, (void (*)())BrocSys::Error },
+    { 0x640, (void (*)())BrocSys::StartMemCheck, 0x644, (void (*)())BrocSys::EndMemCheck },
+    { 0x614, (void (*)())BrocSys::GetPak, 0x618, (void (*)())BrocSys::GetPakEntity },
+    { 0x61C, (void (*)())BrocSys::GetPakVector, 0x620, (void (*)())BrocSys::IsPakLoaded },
+    { 0x624, (void (*)())BrocSys::SetPakDistance, 0x628, (void (*)())BrocSys::ClearPakDistance },
+    { 0x62C, (void (*)())BrocSys::SyncLoadPak, 0x630, (void (*)())BrocSys::ProfileDeclareID },
+    { 0x634, (void (*)())BrocSys::ProfileStart, 0x638, (void (*)())BrocSys::ProfileStop },
+    { 0x63C, (void (*)())FogConfig::SetVal, 0x088, (void (*)())BrocSys::AssignParameterForNotify },
+    { 0x08C, (void (*)())BrocSys::AddEventHandler, 0x090, (void (*)())BrocSys::RemoveEventHandler },
+    { 0xDDC, (void (*)())FogConfig::SetVal, 0xDE0, (void (*)())FogConfig::SetRange },
+    { 0xDE4, (void (*)())FogConfig::SetColorInt, 0xDE8, (void (*)())FogConfig::SetColor },
+    { 0xDEC, (void (*)())BrocSys::GlowSetIntensityAux, 0xDF0, (void (*)())BrocSys::GlowSetExpansionAux },
+    { 0xDF4, (void (*)())BrocSys::GlowSetBrightnessAux, 0xDF8, (void (*)())BrocSys::GlowSetGodRaysAux },
+    { 0xDFC, (void (*)())BrocSys::GlowSetPassesAux, 0x828, (void (*)())BrocSys::CurGenMotionBlur },
+    { 0x82C, (void (*)())BrocSys::StopCurGenMotionBlur, 0xE04, (void (*)())BrocSys::ConvertHashToString },
+    { 0xE08, (void (*)())BrocSys::ConvertStringToHash, 0xDC8, (void (*)())BrocSys::RegisterAnimation },
+    { 0xDCC, (void (*)())BrocSys::GetAnimName, 0x558, (void (*)())apsResetPools },
+    { 0x55C, (void (*)())apsAddPool, 0x560, (void (*)())BrocSys::GetLastParticleInfo },
+    { 0xE0C, (void (*)())QueueSceneAnim, 0xE10, (void (*)())PlaySceneAnim },
+    { 0xE14, (void (*)())StopSceneAnim, 0xE20, (void (*)())EnableAI },
+    { 0xE1C, (void (*)())DisableAI, 0x1330, (void (*)())BrocSys::BrocObjCtor },
+    { 0x1334, (void (*)())BrocSys::BrocObjDtor, 0x1338, (void (*)())BrocSys::KillThreadExec },
+    { 0x46C, (void (*)())BrocSys::SetMissionToTrack, 0x470, (void (*)())BrocSys::GetMissionStat },
+    { 0x474, (void (*)())BrocSys::GetMissionStatAll, 0x478, (void (*)())BrocSys::SetMissionStat },
+    { 0x47C, (void (*)())BrocSys::IncMissionStat, 0x480, (void (*)())BrocSys::DecMissionStat },
+    { 0x49C, (void (*)())BrocSys::GetAvgMissionStat, 0x484, (void (*)())BrocSys::GetMissionCompletionTime },
+    { 0x488, (void (*)())BrocSys::UpdateMissionCompletionTime, 0x48C, (void (*)())BrocSys::SetPlayerWeaponUsed },
+    { 0x490, (void (*)())BrocSys::WasPlayerWeaponUsed, 0x494, (void (*)())BrocSys::WasPlayerWeaponCategoryUsed },
+    { 0x4A0, (void (*)())BrocSys::CreateDynamicLight, 0x4A4, (void (*)())BrocSys::SetDynamicLightPosition },
+    { 0x4A8, (void (*)())BrocSys::RemoveDynamicLight, 0x4B0, (void (*)())BrocSys::CreateNanoForce },
+    { 0x4B4, (void (*)())BrocSys::EnableNanoForces, 0x4AC, (void (*)())SetDepthOfField },
+    { 0x01C, (void (*)())sprintf, 0x020, (void (*)())strcpy },
+    { 0x024, (void (*)())strncpy, 0xBC8, (void (*)())BrocSys::MemAlloc },
+    { 0xBCC, (void (*)())BrocSys::MemFree, 0xBD0, (void (*)())BrocSys::PoolAlloc },
+    { 0xBD4, (void (*)())BrocSys::PoolFree, 0xBD8, (void (*)())memset },
+    { 0x140, (void (*)())Broc::MathsRandomInt, 0x144, (void (*)())Broc::MathsRandomFloat },
+    { 0x148, (void (*)())Broc::MathsRandomIntRange, 0x14C, (void (*)())Broc::MathsRandomFloatRange },
+    { 0x150, (void (*)())Broc::MathFastSinCos, 0x154, (void (*)())sinf },
+    { 0x158, (void (*)())cosf, 0x15C, (void (*)())tanf },
+    { 0x160, (void (*)())asinf, 0x164, (void (*)())acosf },
+    { 0x168, (void (*)())atanf, 0x170, (void (*)())Broc::MathsLog },
+    { 0x174, (void (*)())fabsf, 0x178, (void (*)())BrocSys::SquareRootX },
+    { 0x17C, (void (*)())BrocSys::ModXY, 0x180, (void (*)())BrocSys::FModXY },
+    { 0xDB4, (void (*)())atoi, 0xDB0, (void (*)())BrocSys::atoff },
+    { 0x1304, (void (*)())cdOceanGlobals::SetSeaLevel, 0x1308, (void (*)())cdOceanGlobals::SetLayerAlpha },
+    { 0x130C, (void (*)())cdOceanGlobals::SetLayerScale, 0x1310, (void (*)())cdOceanGlobals::SetLayerScroll },
+    { 0x1314, (void (*)())cdOceanGlobals::SetWaveOrigin, 0x1318, (void (*)())cdOceanGlobals::SetWaveHeading },
+    { 0x131C, (void (*)())cdOceanGlobals::SetWaveDistance, 0x1320, (void (*)())cdOceanGlobals::SetWaveWavelength },
+    { 0x1324, (void (*)())cdOceanGlobals::SetWaveAmplitude, 0x1328, (void (*)())cdOceanGlobals::SetWavePhase },
+    { 0x132C, (void (*)())cdOceanGlobals::SetWaveTimescale, 0x5DC, (void (*)())BrocSys::ProfTick },
+};
+// ea: 0x005DFDB0
+void BrocSys::InitAPI()
+{
+    // gpBrocAPI->mPrint = 0xBFBFBFBF (release sentinel per disasm)
+    *(void**)((char*)&gpBrocAPI->mBrocExports + 0x000) = (void*)0xBFBFBFBF;
+    for (int i = 0; i < (int)(sizeof(sBrocApiTable) / sizeof(sBrocApiTable[0]));
+         ++i)
+    {
+        *(void**)((char*)&gpBrocAPI->mBrocExports + sBrocApiTable[i].off1) =
+            (void*)sBrocApiTable[i].fn1;
+        *(void**)((char*)&gpBrocAPI->mBrocExports + sBrocApiTable[i].off2) =
+            (void*)sBrocApiTable[i].fn2;
+    }
+    gpBrocAPI->mBrocExports.mEntNotify = BrocSys::ThreadEntityNotify;
+    gpBrocAPI->mBrocExports.mEntNotifyFromEnt = BrocSys::ThreadEntityNotify;
+    gpBrocAPI->mBrocExports.mEntNotifyFromInt = BrocSys::ThreadEntityNotify;
+    gpBrocAPI->mBrocExports.mEntNotifyFromString = BrocSys::ThreadEntityNotify;
+    // +0x80 (collides with the merged BrocExports mSpawnScriptThread slot)
+    *(void**)((char*)&gpBrocAPI->mBrocExports + 0x80) =
+        (void*)static_cast<void (*)(unsigned int, int)>(
+            &BrocSys::ThreadEntityNotify);
+    gpBrocAPI->mBrocExports.mMathsAtan2 = math::ATan;
+    memcpy(&gpBrocAPI->mBrocExports, &gBrocExports, 0x1C8);
+    gpBrocAPI->mBrocExports.mRegisterHashString =
+        BrocSys::RegisterHashString;
+    gpBrocAPI->mBrocExports.mStrncmp = strncmp;
+    gpBrocAPI->mBrocExports.mStricmp = _stricmp;
+    gpBrocAPI->mBrocExports.mVecLength = Broc::length;
+    gpBrocAPI->mBrocExports.mApplyPhysics = ApplyPhysics;
+    gpBrocAPI->mBrocExports.mStopPhysics = StopPhysics;
+    gpBrocAPI->mBrocExports.mStopAllSceneAnims = StopAllSceneAnims;
+    gpBrocAPI->mBrocExports.mStrstr = BrocStrstr;
+    BrocSys::InitMPCallbacks();
+    gpBrocAPI->mBrocExports.mRoundOver = BrocSys::RoundOver;
+    gpBrocAPI->mBrocExports.mDisplayScoreBoard = BrocSys::DisplayScoreBoard;
+    gpBrocAPI->mBrocExports.mSettleMapVote = BrocSys::SettleMapVote;
+    gpBrocAPI->mBrocExports.mSettleGameModeVote =
+        BrocSys::SettleGameModeVote;
+    gpBrocAPI->mBrocExports.mSetSpecialRecharge =
+        BrocSys::SetSpecialRecharge;
+    gpBrocAPI->mBrocExports.mAdvanceSpecialRecharge =
+        BrocSys::AdvanceSpecialRecharge;
+    gpBrocAPI->mBrocExports.mGetSpecialRechargePlayerClass =
+        BrocSys::GetSpecialRechargePlayerClass;
+    gpBrocAPI->mBrocExports.mSpecialEditionSkin =
+        BrocSys::SpecialEditionSkin;
+    gpBrocAPI->mBrocExports.mSetTeamGame = BrocSys::SetTeamGame;
+    gpBrocAPI->mBrocExports.mSetShowScore = BrocSys::SetShowScore;
+    gpBrocAPI->mBrocExports.mSetShowTime = BrocSys::SetShowTime;
+    gpBrocAPI->mBrocExports.mGetTeamGame = BrocSys::GetTeamGame;
+    gpBrocAPI->mBrocExports.mIsHost = BrocSys::IsHost;
+    gpBrocAPI->mBrocExports.mIsRankedGame = BrocSys::IsRankedGame;
+    gpBrocAPI->mBrocExports.mIsSplitScreen = BrocSys::IsSplitScreen;
+    gpBrocAPI->mBrocExports.mIsLanGame = BrocSys::IsLanGame;
+    gpBrocAPI->mBrocExports.mIsOnlineGame = BrocSys::IsOnlineGame;
+    gpBrocAPI->mBrocExports.mIsLocalGame = BrocSys::IsLocalGame;
+    gpBrocAPI->mBrocExports.mScreenFadeToBlack = BrocSys::ScreenFadeToBlack;
+    gpBrocAPI->mBrocExports.mScreenFadeUp = BrocSys::ScreenFadeUp;
+    gpBrocAPI->mBrocExports.mFollowCycle = BrocSys::FollowCycle;
+    gpBrocAPI->mBrocExports.mActiveMenu = BrocSys::ActiveMenu;
+    gpBrocAPI->mBrocExports.mNextRound = BrocSys::NextRound;
+    gpBrocAPI->mBrocExports.mNextRoundMapChanges =
+        BrocSys::NextRoundMapChanges;
+    gpBrocAPI->mBrocExports.mQuitGame = BrocSys::QuitGame;
+    gpBrocAPI->mBrocExports.mEnableWeapon = BrocSys::EnableWeapon;
+    gpBrocAPI->mBrocExports.mDisableWeapon = BrocSys::DisableWeapon;
+    gpBrocAPI->mBrocExports.mLocalize = BrocSys::Localize;
+    gpBrocAPI->mBrocExports.mSetupLevelSpecificVariables =
+        BrocSys::SetupLevelSpecificVariables;
+    BrocSys::InitEntity();
+    BrocSys::InitObjective();
+    BrocSys::InitVehicle();
+    gpBrocAPI->mBrocExports.mOceanSetSeaLevel =
+        cdOceanGlobals::SetSeaLevel;
+    gpBrocAPI->mBrocExports.mOceanSetLayerAlpha =
+        cdOceanGlobals::SetLayerAlpha;
+    gpBrocAPI->mBrocExports.mOceanSetLayerScale =
+        cdOceanGlobals::SetLayerScale;
+    gpBrocAPI->mBrocExports.mOceanSetLayerScroll =
+        cdOceanGlobals::SetLayerScroll;
+    gpBrocAPI->mBrocExports.mOceanSetWaveOrigin =
+        cdOceanGlobals::SetWaveOrigin;
+    gpBrocAPI->mBrocExports.mOceanSetWaveHeading =
+        cdOceanGlobals::SetWaveHeading;
+    gpBrocAPI->mBrocExports.mOceanSetWaveDistance =
+        cdOceanGlobals::SetWaveDistance;
+    gpBrocAPI->mBrocExports.mOceanSetWaveWavelength =
+        cdOceanGlobals::SetWaveWavelength;
+    gpBrocAPI->mBrocExports.mOceanSetWaveAmplitude =
+        cdOceanGlobals::SetWaveAmplitude;
+    gpBrocAPI->mBrocExports.mOceanSetWavePhase =
+        cdOceanGlobals::SetWavePhase;
+    gpBrocAPI->mBrocExports.mOceanSetWaveTimescale =
+        cdOceanGlobals::SetWaveTimescale;
+}
+
+// ea: 0x005CBA30
+void BrocSys::BulletTrace(Broc::collResult& result,
+                          const Broc::vector& vStart,
+                          const Broc::vector& vEnd, bool bHitCharacters,
+                          unsigned int entityHandleVal)
+{
+    math::Position3 start;
+    math::Position3 end;
+    start.v.m128_f32[0] = vStart.x;
+    start.v.m128_f32[1] = vStart.y;
+    start.v.m128_f32[2] = vStart.z;
+    start.v.m128_f32[3] = 0.0f;
+    end.v.m128_f32[0] = vEnd.x;
+    end.v.m128_f32[1] = vEnd.y;
+    end.v.m128_f32[2] = vEnd.z;
+    end.v.m128_f32[3] = 0.0f;
+
+    bool samePoint =
+        ((vEnd.x - vStart.x) * (vEnd.x - vStart.x)
+         + (vEnd.y - vStart.y) * (vEnd.y - vStart.y)) < 0.0099999998f;
+
+    Entity* owner = nullptr;
+    unsigned int v9 = entityHandleVal & 0xFFF;
+    if (v9 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v9].mKey)
+        owner = EntityHandleDb::sInst.mElements[v9].mObject;
+
+    collision_context_t context;
+    context.pass_entity1.mHandle.mVal = 0;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = bHitCharacters ? 0x2800C33 : 0x802033;
+
+    trace_t tr;
+    memset(&tr, 0, sizeof(tr));
+    if (!samePoint && owner != nullptr && owner->proximity_data != nullptr)
+    {
+        math::Position3 lo;
+        math::Position3 hi;
+        lo.v = _mm_min_ps(start.v, end.v);
+        hi.v = _mm_max_ps(start.v, end.v);
+        proximity_data_t prox = *owner->proximity_data;
+        query_proximity_data(lo, hi, prox);
+        proximity_data_t filtered;
+        filter_proximity_data(lo, hi, context.contentmask, prox, filtered);
+        TracePoint(filtered, &tr, start, end, context.contentmask);
+    }
+    else
+    {
+        g_LocationalTrace(&tr, start, end, context, bulletPriorityMap, 0.0f);
+    }
+
+    result.mPosition.x = tr.endpos.v.m128_f32[0];
+    result.mPosition.y = tr.endpos.v.m128_f32[1];
+    result.mPosition.z = tr.endpos.v.m128_f32[2];
+    result.mFraction = tr.fraction;
+
+    unsigned int v22 = tr.mEntity.mHandle.mVal;
+    if (v22 == 0
+        || v22 == EntityManager::sInst->mWorld->mHandle.mHandle.mVal)
+    {
+        result.mEnt = Broc::entity(0);
+    }
+    else
+    {
+        unsigned int v23 = v22 & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v23 < 0x540
+            && v22 >> 12 == EntityHandleDb::sInst.mElements[v23].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v23].mObject;
+        result.mEnt = Broc::entity(mObject != nullptr
+                                       ? mObject->mHandle.mHandle.mVal
+                                       : 0);
+    }
+
+    const char* v30;
+    if (tr.fraction >= 1.0f)
+    {
+        float dir[3];
+        dir[0] = vEnd.x - vStart.x;
+        dir[1] = vEnd.y - vStart.y;
+        dir[2] = vEnd.z - vStart.z;
+        VectorNormalize(dir);
+        result.mNormal.x = dir[0];
+        result.mNormal.y = dir[1];
+        result.mNormal.z = dir[2];
+        v30 = Com_SurfaceTypeToName(0);
+    }
+    else
+    {
+        result.mNormal.x = tr.normal.v.m128_f32[0];
+        result.mNormal.y = tr.normal.v.m128_f32[1];
+        result.mNormal.z = tr.normal.v.m128_f32[2];
+        v30 = Com_SurfaceTypeToName((tr.contents >> 20) & 0x1F);
+    }
+    result.mSurfaceType = v30;
 }

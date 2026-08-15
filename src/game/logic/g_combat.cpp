@@ -358,7 +358,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
             {
                 Broc::string shock("default");
                 gpBrocAPI->mBrocExports.mShellShock(
-                    v10->mHandle.mHandle.mVal, &shock, 3.0f);
+                    v10->mHandle.mHandle.mVal, shock, 3.0f);
                 CG_StartShakeCamera(1.0f, 800, vOrigin, 2000.0f,
                                     mServerClientIndex);
                 dword_F64018[1580 * mServerClientIndex] =
@@ -391,7 +391,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
             {
                 Broc::string shock("default");
                 gpBrocAPI->mBrocExports.mShellShock(
-                    v10->mHandle.mHandle.mVal, &shock, 2.0f);
+                    v10->mHandle.mHandle.mVal, shock, 2.0f);
                 CG_StartShakeCamera(1.0f, 800, vOrigin, 2000.0f,
                                     mServerClientIndex);
                 dword_F64018[1580 * mServerClientIndex] =

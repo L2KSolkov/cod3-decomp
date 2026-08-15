@@ -242,10 +242,13 @@ struct DialogMenuSystem;
 struct InGameMenuSystem;
 struct AARMenuSystem {
     void** menus;           // +0x04 (FEMenu** array)
+    uint8_t _pad08[0x1C - 0x08];
+    void (*gap1C)(void* self, float a2);  // +0x1C (shell.o AAR update slot)
     bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
     void Update(float time_inc);  // mp.o
     void Draw();                  // mp.o
     void UpdateSplitScreen();     // mp.o
+    void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
     bool GetPanelFileUsers(const char* name,
                            ae_sized_array<PanelFileUser*, 12>& array);  // mp.o
 };
@@ -1369,7 +1372,9 @@ class FEMenuSystem {
 public:
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
     void**  menus;                       // +0x04 (FEMenu** array)
-    uint8_t _pad[0x2A - 0x08];
+    uint8_t _pad08[0x1C - 0x08];
+    void (*gap1C)(void* self, float a2); // +0x1C (shell.o update slot)
+    uint8_t _pad20[0x2A - 0x20];
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
     bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
