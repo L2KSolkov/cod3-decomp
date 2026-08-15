@@ -206,6 +206,9 @@ public:
              unsigned int ehandle, AeThreadFunctor* ftor,
              bool bUseScratchpad);                          // scr.o 0x5C79D0
     void Sleep(AeThreadState* stateController);             // scr.o 0x5C7AC0
+    void ProcessState();  // ?ProcessState@AeThread@@QAEXXZ (scr.o 0x5C8EE0)
+    void Execute(float deltaT);  // ?Execute@AeThread@@QAEXM@Z (scr.o 0x5C90A0)
+    bool HasEndCond(int notify) const;  // ?HasEndCond@AeThread@@QBE_NH@Z (scr.o 0x5C92B0)
 
 private:
     static PoolAllocator* sAllocator;  // ?sAllocator@AeThread@@0PAVPoolAllocator@@A @ 0x132A0C4
@@ -353,6 +356,11 @@ struct AeThreadEntityNotifyMatchState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF9E0
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DFB40
 };
+
+// AeThread execution core decls (batch 17)
+void AeThread_ProcessState(AeThread* self);   // ?ProcessState@AeThread@@QAEXXZ (0x5C8EE0)
+void AeThread_Execute(AeThread* self, float deltaT);  // ?Execute@AeThread@@QAEXM@Z (0x5C90A0)
+bool AeThread_HasEndCond(AeThread* self, int notify);  // ?HasEndCond@AeThread@@QBE_NH@Z (0x5C92B0)
 
 // PakInfoNode view (streamer.o; full layout in pakmanager.cpp)
 static_assert(sizeof(AeThread::BackupStack) == 0x14,
@@ -4272,6 +4280,172 @@ void ObjectiveUpdatedNotify()
         v1.mHash = AeHash("ObjectiveUpdated");
         Player->Notify(v1);
     }
+}
+
+// ============================================================================
+// scr.o batch 17 - AeThread execution core
+// ============================================================================
+
+extern void CallFunctor(AeThreadFunctor* f);  // ?CallFunctor@@YAXPAVAeThreadFunctor@@@Z
+extern bool gPumpThreads;              // ?gPumpThreads@@3_NA
+extern bool gPumpThreadsForMapChange;  // ?gPumpThreadsForMapChange@@3_NA
+
+// ea: 0x005C8EE0
+void AeThread::ProcessState()
+{
+    AeThread* self = this;
+    unsigned int mVal = self->mOwner.mHandle.mVal;
+    unsigned int v3 = mVal & 0xFFF;
+    if (v3 < 0x540
+        && mVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v3].mKey
+        && EntityHandleDb::sInst.mElements[v3].mObject != nullptr
+        && (self->mFlags.mMask & 0x40) == 0)
+    {
+        AeDListNode* m_node = self->mStateControllers.m_head;
+        AeDListNode* m_next =
+            m_node != nullptr ? m_node->mNext : nullptr;
+        if (m_node != self->mStateControllers.m_end && m_next != nullptr)
+        {
+            for (;;)
+            {
+                AeDListNode* v6 = m_next;
+                m_node = m_next;
+                m_next = m_next->mNext;
+                AeThreadState* state = (AeThreadState*)m_node;
+                AeThreadState::EAction action = state->NewAction(*self);
+                if (action == AeThreadState::kActionWakeUp)
+                    goto wake;
+                if (action == AeThreadState::kActionTerminate)
+                    break;
+            debug:
+                if (action != AeThreadState::kActionNone)
+                {
+                    char debugTxt[64];
+                    debugTxt[0] = 0;
+                    state->GetDebugTxt(*(ae_fixed_string<64, unsigned char>*)
+                                           debugTxt);
+                    if ((self->mFlags.mMask & 0x100) != 0)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\AeThread.cpp";
+                        AeAssert::gCurrentLine = 228;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Warning("0x%08x %s", self, debugTxt))
+                            __debugbreak();
+                    }
+                }
+                if (state->mFinished)
+                {
+                    // reserved_dlist<AeThreadState>::erase + delete
+                    state->m_dlist_node.mPrev->mNext =
+                        state->m_dlist_node.mNext;
+                    state->m_dlist_node.mNext->mPrev =
+                        state->m_dlist_node.mPrev;
+                    --self->mStateControllers.m_size;
+                    delete state;
+                }
+                if (m_next == nullptr)
+                    return;
+            }
+            self->mFlags.mMask |= 8;
+            self->mFlags.mMask |= 0x48;
+        wake:
+            self->mFlags.mMask |= 4;
+            self->mFlags.mMask &= 0xFFFFFFEB;
+            self->mFlags.mMask |= 4;
+            goto debug;
+        }
+    }
+    else
+    {
+        self->mFlags.mMask |= 0x40;
+        self->mFlags.mMask |= 0x48;
+        if ((self->mFlags.mMask & 1) == 0)
+            self->mFlags.mMask |= 4;
+        if ((self->mFlags.mMask & 0x100) != 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+            AeAssert::gCurrentLine = 204;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                    "0x%08x %s", self,
+                    "entity is gone (or game is restarting), terminating"))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x005C92B0
+bool AeThread::HasEndCond(int notify) const
+{
+    const AeThread* self = this;
+    AeDListNode* m_head = self->mStateControllers.m_head;
+    AeDListNode* m_next = m_head != nullptr ? m_head->mNext : nullptr;
+    if (m_head == self->mStateControllers.m_end || m_next == nullptr)
+        return false;
+    while (((AeThreadState*)m_head)->mResult != AeThreadState::kActionTerminate
+           || self->mHandle.mVal != (unsigned int)notify)
+    {
+        m_head = m_next;
+        m_next = m_next->mNext;
+        if (m_next == nullptr)
+            return false;
+    }
+    return true;
+}
+
+// ea: 0x005C90A0
+void AeThread::Execute(float /*deltaT*/)
+{
+    AeThread* self = this;
+    ThreadPrintf(1, "ThreadExec %s - %d\n", self->mFile, self->mLine);
+    AeThreadManager::sInst.mThreadExecuting = self;
+    AeThread_ProcessState(self);
+    bool v3 = (self->mFlags.mMask & 0x40) != 0;
+    gpBrocAPI->mKillThread = v3 ? (void (*)())1 : (void (*)())0;
+    SetJmp(AeThread::sBackup);
+    if ((self->mFlags.mMask & 1) != 0 && (self->mFlags.mMask & 0x10) == 0)
+    {
+        self->mFlags.mMask &= ~1u;
+        self->mFlags.mMask &= 0xFFFFFFFA;
+        if ((self->mFlags.mMask & 0x40) != 0)
+        {
+            if (!gPumpThreadsForMapChange)
+                ThreadPrintf(1,
+                             "Killing thread that never started!\nThread created from:\n%s(%d)\n",
+                             self->mFile, self->mLine);
+            self->mFlags.mMask |= 8;
+            AeThreadManager::sInst.mThreadExecuting = nullptr;
+            return;
+        }
+        self->mStackStart = (unsigned int)self->mBackupStack.mEnd;  // approx: real code switches stacks
+        CallFunctor(self->mFunctor);
+        self->mFlags.mMask |= 8;
+        if (((self->mFlags.mMask | 8) >> 8) & 1)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+            AeAssert::gCurrentLine = 493;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("0x%08x %s", self, "finished executing"))
+                __debugbreak();
+            AeThreadManager::sInst.mThreadExecuting = nullptr;
+            return;
+        }
+    }
+    else if ((self->mFlags.mMask & 2) != 0 && (self->mFlags.mMask & 4) != 0)
+    {
+        self->mFlags.mMask &= ~2u;
+        self->mFlags.mMask &= 0xFFFFFFF9;
+        self->mBackupStack.Restore(self->mBackupStack.mBegin);
+    }
+    AeThreadManager::sInst.mThreadExecuting = nullptr;
 }
 
 // ea: 0x005C1F40

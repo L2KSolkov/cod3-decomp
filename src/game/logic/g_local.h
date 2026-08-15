@@ -1527,6 +1527,7 @@ struct BrocAPI {
     uint8_t _padObj[0x1330 - sizeof(BrocExports)];
     void (*mBrocObjCtor)(void* ptr, void* dtor);  // +0x1330
     void (*mBrocObjDtor)(void* ptr);              // +0x1334
+    void (*mKillThread)();                        // +0x1338
 };
 extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
 
