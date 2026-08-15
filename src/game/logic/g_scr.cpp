@@ -52,6 +52,8 @@ enum TPakInfo {
 namespace AeStringSupport {
 void Concat(char* dst, int& dstLen, int dstCapacity,
             const char* src);  // ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z
+void CStrToAeStr(char* dst, int& dstLen, int dstCapacity,
+                 const char* src);  // ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z
 }
 
 namespace ShaderCommon {
@@ -933,7 +935,8 @@ void UpdateEntityHash(Entity* ent)
 // AnimBankManager / AnimBank
 // ============================================================================
 struct AnimBank {
-    InplaceVector<XAnimEntry> anims;  // +0x00
+    InplaceVector<AnimTree> anims;  // +0x00
+    void* mPtrFixupTable;           // +0x08
 };
 class AnimBankManager {
 public:
@@ -3110,6 +3113,32 @@ void GetStartAngles(Broc::vector& outVec, const Broc::vector& origin,
                     unsigned int anim);  // 0x5C3A40
 void GetCycleOriginOffset(Broc::vector& outVec, const Broc::vector& angles,
                           unsigned int anim);  // 0x5C3B60
+void Print3D(const Broc::vector& pos, const Broc::string& text,
+             const Broc::vector& col, float alpha, float scale);  // 0x5C2280
+void Earthquake(float scale, float fVal, const Broc::vector& source,
+                float radius, int player_index);  // 0x5C4040
+void BulletTracer(const Broc::vector& vStart,
+                  const Broc::vector& vEnd);  // 0x5C40F0
+void MagicBullet(const Broc::string& weapName, const Broc::vector& source,
+                 const Broc::vector& dest);  // 0x5C4230
+float WeaponFireTime(const Broc::string& pszWeaponName);  // 0x5C44D0
+void WeaponType(Broc::string& outStr,
+                const Broc::string& pszWeaponName);  // 0x5C45E0
+void BadPlaceDelete(const Broc::string& placeName);  // 0x5C4640
+void BadPlaceCylinder(const Broc::string& placeName, float dur,
+                      const Broc::vector& ori, float rad,
+                      float height);  // 0x5C46B0
+void BadPlaceArcs(const Broc::string& placeName, float dur,
+                  const Broc::vector& ori, float rad, float height,
+                  const Broc::vector& ang, float fVal1, float fVal2,
+                  const Broc::string& pszTeamName);  // 0x5C47A0
+void GetNumParts(const Broc::string& modelName);  // 0x5C8040
+void NotifyPakLoadOperation(const char* operation,
+                            const char* longName);  // 0x5C8100
+float GetAnimLength(unsigned int entityHandleVal,
+                    unsigned int broanim);  // 0x5C81D0
+int GetAnimFrameCount(unsigned int entityHandleVal,
+                      unsigned int broanim);  // 0x5C8230
 }
 
 static void BrocFree(void* p)
@@ -9626,6 +9655,388 @@ void BrocSys::GetCycleOriginOffset(Broc::vector& outVec,
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
             __debugbreak();
     }
+}
+
+// ============================================================================
+// scr.o batch 39 - Print3D / weapon / badplace / anim wrappers
+// ============================================================================
+
+extern void CG_StartShakeCamera(float p, int duration, const float* src,
+                                float radius,
+                                int player_index);  // ?CG_StartShakeCamera@@YAXMH PBM M H@Z (cg.o)
+extern void CG_EventSpawnTracer(const math::Position3* pstart,
+                                const math::Position3* pend,
+                                int);  // ?CG_EventSpawnTracer@@YAXABVPosition3@math@@0H@Z (cg.o)
+extern const char* BG_GetWeaponTypeName(weapType_t type);  // g_bg_pmove.cpp (0x606620)
+extern void Bullet_Fire(Entity* attacker, float spread, int damage,
+                        weaponParms* wp, Entity* ignore,
+                        float range);  // g.o
+extern int XAnimIsVariationChunk(AnimTree* anims,
+                                 unsigned int animIndex);  // nal.cpp (anim.o)
+extern int XAnimGetFrameCount(AnimTree* anims,
+                              unsigned int animIndex);  // anim.o
+extern IVPointer<XModel> SV_XModelGet(const char* name);  // ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z (sv_game.cpp)
+
+// Empty stubs in the release binary (j_nullsub_52 / j_nullsub_70)
+static void BadPlaceRegister(const Broc::string* /*placeName*/) {}
+static void BadPlaceRender(const Broc::string* /*placeName*/, int /*dur*/,
+                           int /*teamFlags*/, BadPlaceArc* /*arc*/) {}
+
+// ea: 0x005C2280
+void BrocSys::Print3D(const Broc::vector& pos, const Broc::string& text,
+                      const Broc::vector& col, float alpha, float scale)
+{
+    float color[4];
+    color[0] = col.x;
+    color[1] = col.y;
+    color[2] = col.z;
+    color[3] = alpha;
+    const char* v7 = text.mBlock != nullptr
+                         ? (const char*)(text.mBlock + 1)
+                         : defaultFileName;
+    g_AddDebugString(&pos.x, color, scale, v7);
+}
+
+// ea: 0x005C4040
+void BrocSys::Earthquake(float scale, float fVal, const Broc::vector& source,
+                         float radius, int player_index)
+{
+    if (source.x == sNaN && source.y == sNaN && source.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2672;
+        AeAssert::gCurrentExpr = "source.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Earthquake called with undefined vector."))
+            __debugbreak();
+    }
+    CG_StartShakeCamera(scale, (int)((fVal * 1000.0) + 0.5), &source.x,
+                        radius, player_index);
+}
+
+// ea: 0x005C40F0
+void BrocSys::BulletTracer(const Broc::vector& vStart,
+                           const Broc::vector& vEnd)
+{
+    if ((vStart.x == sNaN && vStart.y == sNaN && vStart.z == sNaN)
+        || (vEnd.x == sNaN && vEnd.y == sNaN && vEnd.z == sNaN))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2731;
+        AeAssert::gCurrentExpr = "vStart.IsDefined() && vEnd.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("BulletTracer called with undefined vector."))
+            __debugbreak();
+    }
+    math::Position3 v4;
+    v4.v.m128_f32[0] = vEnd.x;
+    v4.v.m128_f32[1] = vEnd.y;
+    v4.v.m128_f32[2] = vEnd.z;
+    v4.v.m128_f32[3] = 0.0f;
+    math::Position3 v3 = v4;
+    v4.v.m128_f32[0] = vStart.x;
+    v4.v.m128_f32[1] = vStart.y;
+    v4.v.m128_f32[2] = vStart.z;
+    v4.v.m128_f32[3] = 0.0f;
+    CG_EventSpawnTracer(&v4, &v3, 0);
+}
+
+// ea: 0x005C4230
+void BrocSys::MagicBullet(const Broc::string& weapName,
+                          const Broc::vector& source,
+                          const Broc::vector& dest)
+{
+    if (!weapName.mBlock
+        || (source.x == sNaN && source.y == sNaN && source.z == sNaN)
+        || (dest.x == sNaN && dest.y == sNaN && dest.z == sNaN))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2745;
+        AeAssert::gCurrentExpr =
+            "weapName.IsDefined() && source.IsDefined() && dest.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("MagicBullet called with undefined vector."))
+            __debugbreak();
+    }
+    const char* v3 = weapName.mBlock != nullptr
+                         ? (const char*)(weapName.mBlock + 1)
+                         : defaultFileName;
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v3);
+    int v5 = WeaponIndexForName;
+    if (WeaponIndexForName != 0)
+    {
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(WeaponIndexForName);
+        weaponParms wp;
+        wp.muzzleTrace[0] = source.x;
+        wp.muzzleTrace[1] = source.y;
+        wp.muzzleTrace[2] = source.z;
+        float dir[3];
+        dir[0] = dest.x - source.x;
+        dir[1] = dest.y - source.y;
+        float v8 = dest.z - source.z;
+        wp.pWeapInfo = InfoForWeapon;
+        dir[2] = v8;
+        VectorNormalize(dir);
+        wp.forward[0] = dir[0];
+        wp.forward[1] = dir[1];
+        wp.forward[2] = dir[2];
+        if (IS_NAN(dir[0]) || IS_NAN(dir[1]) || IS_NAN(dir[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 2759;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((dir)[0]) && !IS_NAN((dir)[1]) && !IS_NAN((dir)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        weapType_t type = (weapType_t)wp.pWeapInfo->type;
+        if (type != (weapType_t)0)
+        {
+            if (type == WEAPTYPE_GRENADE)
+                Scr_Error(
+                    "MagicBullet only handle weapons of type bullet currently.\n");
+        }
+        else
+        {
+            Bullet_Fire(EntityManager::sInst->mWorld, 0.0f,
+                        wp.pWeapInfo->iDamage, &wp, nullptr, 0.0f);
+            G_TempEntity(&source.x, 186)->s.weapon = v5;
+        }
+    }
+    else
+    {
+        const char* v6 = va(
+            "MagicBullet called with unknown weapon name %s\n",
+            weapName.mBlock);
+        Scr_Error(v6);
+    }
+}
+
+// ea: 0x005C44D0
+float BrocSys::WeaponFireTime(const Broc::string& pszWeaponName)
+{
+    const char* v1 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v1);
+    if (WeaponIndexForName != 0)
+        return (float)(BG_GetInfoForWeapon(WeaponIndexForName)->iFireTime
+                       * 0.001);
+    return 0.0f;
+}
+
+// ea: 0x005C45E0
+void BrocSys::WeaponType(Broc::string& outStr,
+                         const Broc::string& pszWeaponName)
+{
+    const char* v2 = pszWeaponName.mBlock != nullptr
+                         ? (const char*)(pszWeaponName.mBlock + 1)
+                         : defaultFileName;
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v2);
+    if (WeaponIndexForName != 0)
+    {
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon(WeaponIndexForName);
+        const char* WeaponTypeName =
+            BG_GetWeaponTypeName((weapType_t)InfoForWeapon->type);
+        outStr = WeaponTypeName;
+    }
+    else
+    {
+        outStr = "none";
+    }
+}
+
+// ea: 0x005C4640
+void BrocSys::BadPlaceDelete(const Broc::string& placeName)
+{
+    if (placeName.mBlock != nullptr
+        && placeName.mBlock != (Broc::string::Block*)-12
+        && *(char*)(placeName.mBlock + 1) != 0)
+    {
+        BadPlaceRegister(&placeName);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s",
+                                 "badplace_delete called with name \"\""))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C46B0
+void BrocSys::BadPlaceCylinder(const Broc::string& placeName, float dur,
+                               const Broc::vector& ori, float rad,
+                               float height)
+{
+    double v5 = dur * 1000.0;
+    BadPlaceArc arc;
+    arc.origin[0] = ori.z;
+    arc.origin[1] = ori.y;
+    arc.origin[2] = ori.z;
+    arc.radius = rad;
+    arc.halfheight = height * 0.5;
+    arc.angle0 = 0.0f;
+    arc.angle1 = 360.0f;
+    Broc::string s("badplace_cylinder");
+    int TeamFlags = GetTeamFlags(placeName, s);
+    BadPlaceRender(&placeName, (int)ceil(v5), TeamFlags, &arc);
+}
+
+// ea: 0x005C47A0
+void BrocSys::BadPlaceArcs(const Broc::string& placeName, float dur,
+                           const Broc::vector& ori, float rad, float height,
+                           const Broc::vector& ang, float fVal1, float fVal2,
+                           const Broc::string& pszTeamName)
+{
+    double v9 = dur * 1000.0;
+    int v10 = (int)ceil(v9);
+    BadPlaceArc arc;
+    arc.origin[0] = ori.z;
+    arc.origin[1] = ori.y;
+    arc.origin[2] = ori.z;
+    arc.radius = rad;
+    arc.halfheight = height * 0.5;
+    float v11 = vectoyaw(&ang.x);
+    float v12 = v11;
+    arc.angle0 = v11 - fVal1;
+    if ((v11 - fVal1) > v11)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s",
+                                 "left angle < 0 in badplace_arc\n"))
+            __debugbreak();
+        v12 = v11;
+    }
+    float angle1 = v12 + fVal2;
+    arc.angle1 = v12 + fVal2;
+    if (v12 > (v12 + fVal2))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s",
+                                 "right angle < 0 in badplace_arc\n"))
+            __debugbreak();
+        angle1 = arc.angle1;
+    }
+    if ((angle1 - arc.angle0) < 360.0f)
+    {
+        AngleNormalize360Accurate(arc.angle0);
+        arc.angle0 = v11;
+        AngleNormalize360Accurate(arc.angle1);
+        arc.angle1 = v11;
+    }
+    else
+    {
+        arc.angle0 = 0.0f;
+        arc.angle1 = 360.0f;
+    }
+    Broc::string s("badplace_arc");
+    int TeamFlags = GetTeamFlags(pszTeamName, s);
+    BadPlaceRender(&placeName, v10, TeamFlags, &arc);
+}
+
+// ea: 0x005C8040
+void BrocSys::GetNumParts(const Broc::string& modelName)
+{
+    if (modelName.mBlock == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2799;
+        AeAssert::gCurrentExpr = "modelName.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("GetNumParts called with undefined input."))
+            __debugbreak();
+    }
+    const char* v2 = modelName.mBlock != nullptr
+                         ? (const char*)(modelName.mBlock + 1)
+                         : defaultFileName;
+    IVPointer<XModel> result = SV_XModelGet(v2);
+    XModel* mValue = result.mValue;
+    ValidatePakId((TPakId)result.mPakId);
+    XModelLod* v5 = mValue->lod[0];
+    XModelLod** lod = mValue->lod;
+    int v7 = 0;
+    if (v5 == nullptr)
+    {
+        XModelLod** v8 = mValue->lod;
+        XModelLod* v9;
+        do
+        {
+            v9 = v8[1];
+            ++v8;
+            ++v7;
+        } while (v9 == nullptr);
+    }
+    if (mValue->lod[v7]->xmodelParts != nullptr && v5 == nullptr)
+    {
+        XModelLod* v10;
+        do
+        {
+            v10 = lod[1];
+            ++lod;
+        } while (v10 == nullptr);
+    }
+}
+
+// ea: 0x005C8100
+void BrocSys::NotifyPakLoadOperation(const char* operation,
+                                     const char* longName)
+{
+    char notify[254];
+    int oLen = 0;
+    AeStringSupport::CStrToAeStr(notify, oLen, 254, operation);
+    AeStringSupport::Concat(notify, oLen, 254, longName);
+    Entity* mWorld = EntityManager::sInst->mWorld;
+    if (mWorld != nullptr)
+    {
+        HashString v3;
+        v3.mHash = HashString::CalcHash(notify);
+        mWorld->Notify(v3);
+    }
+}
+
+// ea: 0x005C81D0
+float BrocSys::GetAnimLength(unsigned int entityHandleVal,
+                             unsigned int broanim)
+{
+    (void)entityHandleVal;
+    AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    AnimTree* v3 = &Bank->anims[broanim >> 16];
+    if (!XAnimIsVariationChunk(v3, broanim)
+        && XAnimIsPrimitive(v3, broanim) == 0)
+        Scr_ParamError(0, "non-primitive animation has no concept of length");
+    return XAnimGetLength(v3, broanim);
+}
+
+// ea: 0x005C8230
+int BrocSys::GetAnimFrameCount(unsigned int entityHandleVal,
+                               unsigned int broanim)
+{
+    (void)entityHandleVal;
+    AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    AnimTree* v3 = &Bank->anims[broanim >> 16];
+    if (!XAnimIsVariationChunk(v3, broanim)
+        && XAnimIsPrimitive(v3, broanim) == 0)
+        Scr_ParamError(0, "non-primitive animation has no concept of length");
+    return XAnimGetFrameCount(v3, broanim);
 }
 
 // ============================================================================
