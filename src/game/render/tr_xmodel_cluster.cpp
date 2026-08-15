@@ -116,9 +116,10 @@ public:
 };
 
 struct nglSceneLocal {
-    uint8_t _pad[0x8C];
-    math::Position3 ViewPos;         // +0x8C
-    math::Mat44 WorldToView;         // +0x9C
+    uint8_t _pad[0x150];
+    math::Mat44 WorldToView;         // +0x150
+    uint8_t _pad2[0x250 - 0x190];
+    math::Position3 ViewPos;         // +0x250
 };
 extern nglScene* nglBuildScene;      // ?nglBuildScene@@3PAUnglScene@@A
 
@@ -158,6 +159,19 @@ extern int auxGetNBones(nglMesh* m);           // ?auxGetNBones@@YAHPAUnglMesh@@
 extern void auxSetScale(nglMeshParams* meshParams, float sx, float sy,
                         float sz);             // ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z
 extern float computeLOD(DObj* obj, const math::Position3& center);  // ?computeLOD@@YAMPAVDObj@@ABVPosition3@math@@@Z
+extern nglLightContext* nglCreateLightContext();  // ?nglCreateLightContext@@YAPAUnglLightContext@@XZ
+extern void ModelLightingHack();                  // ?ModelLightingHack@@YAXXZ
+extern unsigned int nglLightContextParamID;       // ?nglLightContextParamID@@3IA
+
+// trGlobals view (viewParms.zFar +0x180)
+struct trGlobalsView {
+    uint8_t _pad[0x10];
+    struct {
+        uint8_t _pad[0x180];
+        float zFar;  // +0x180
+    } viewParms;     // +0x10
+};
+extern trGlobalsView tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 struct nglMeshLocal {
     uint8_t _pad[0x0C];
@@ -579,7 +593,7 @@ int R_AddVehicleSurfaces(DObj* obj, Entity* entity, const math::Mat43& matrix,
                         __debugbreak();
                 }
                 nglMesh* mesh = parts->mMeshPtrs.mList[mi];
-                if (mesh != (nglMesh*)(uintptr_t)-1)
+                if (mesh != nullptr)
                 {
                     math::Mat43 worldMatrix =
                         VehicleWorldMatrix(&matrixArray[mi], matrix);
@@ -868,6 +882,210 @@ int R_AddNonVehicleSurfaces(DObj* obj, Entity* entity,
                     }
                     ++mi;
                 } while (mi < meshCount);
+            }
+            ++modelIndex;
+            if (modelIndex >= obj->numModels)
+                break;
+        }
+    }
+    return (obj->mFlags & (unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME) == 0;
+}
+
+// ============================================================================
+// R_AddXModelSurfaces_DistanceHack - ea: 0x006CF200
+// ============================================================================
+int R_AddXModelSurfaces_DistanceHack(DObj* obj, Entity* entity,
+                                     const math::Mat43& matrix)
+{
+    nglShaderParamSet* shaderParams =
+        (nglShaderParamSet*)nglListAlloc(4 * nglShaderParamSet::NumParams + 8, 8);
+    *(unsigned int*)shaderParams = 0;
+    *((unsigned int*)shaderParams + 1) = 0;
+    nglLightContext* lightContext = nglCreateLightContext();
+    ModelLightingHack();
+    unsigned int ctxRid = nglLightContextParamID;
+    unsigned long long ctxBit = 1ULL << ctxRid;
+    *(unsigned int*)shaderParams |= (unsigned int)ctxBit;
+    *((unsigned int*)shaderParams + 1) |= (unsigned int)(ctxBit >> 32);
+    ((unsigned int*)shaderParams)[2 + ctxRid] =
+        (unsigned int)lightContext;
+
+    int v87 = ((entity->mFlags & 2) != 0) << 6;
+    nglMeshParams meshParams = {};
+    int modelIndex = 0;
+    if (obj->numModels != 0)
+    {
+        while (1)
+        {
+            DObjSkelMatLocal* matrixArray =
+                (DObjSkelMatLocal*)DObjGetMatrixArray(obj, modelIndex);
+            int pakId = obj->models[modelIndex].mPakId;
+            XModel* xmodel = (XModel*)obj->models[modelIndex].mValue;
+            int mLOD;
+            if (modelIndex != 0)
+            {
+                mLOD = -1;
+            }
+            else if (obj->mLODOverride < 0)
+            {
+                if (obj->mLODAnim < 0)
+                    mLOD = obj->mLOD;
+                else
+                    mLOD = obj->mLODAnim;
+            }
+            else
+            {
+                mLOD = obj->mLODOverride;
+            }
+            ValidatePakId(pakId);
+            int v14 = mLOD;
+            if (mLOD < 0)
+            {
+                v14 = 0;
+                while (xmodel->lod[v14] == nullptr)
+                    ++v14;
+            }
+            XModelParts* parts =
+                (XModelParts*)((XModelLodLocal*)xmodel->lod[v14])->xmodelParts;
+
+            for (int t = 0;; ++t)
+            {
+                ValidatePakId(pakId);
+                int v18 = mLOD;
+                if (mLOD < 0)
+                {
+                    v18 = 0;
+                    while (xmodel->lod[v18] == nullptr)
+                        ++v18;
+                }
+                unsigned int meshCount;
+                if (((XModelLodLocal*)xmodel->lod[v18])->xmodelParts
+                    != nullptr)
+                {
+                    int v20 = mLOD;
+                    if (mLOD < 0)
+                    {
+                        v20 = 0;
+                        while (xmodel->lod[v20] == nullptr)
+                            ++v20;
+                    }
+                    meshCount =
+                        ((XModelLodLocal*)xmodel->lod[v20])
+                            ->xmodelParts->mHierarchy.mSize;
+                }
+                else
+                {
+                    meshCount = 0;
+                }
+                if (t >= (int)meshCount)
+                    break;
+                int count = t;
+                if (t >= (int)parts->mMeshPtrs.mSize)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "../ae\\inplace/InplaceVector.h";
+                    AeAssert::gCurrentLine = 81;
+                    AeAssert::gCurrentExpr = "index < mSize";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Bounds check"))
+                        __debugbreak();
+                    count = 0;
+                }
+                nglMesh* mesh = parts->mMeshPtrs.mList[count];
+                if (mesh != nullptr)
+                {
+                    math::Mat43 localToWorld =
+                        VehicleWorldMatrix(&matrixArray[t], matrix);
+                    meshParams.Flags = (unsigned int)v87;
+                    math::Position3 sphereCenter;
+                    auxGetSphereCenter(&sphereCenter, mesh);
+                    __m128 sphereWorld = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(sphereCenter.v,
+                                                      sphereCenter.v, 0),
+                                       localToWorld.x.v),
+                            _mm_mul_ps(_mm_shuffle_ps(sphereCenter.v,
+                                                      sphereCenter.v, 0x55),
+                                       localToWorld.y.v)),
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(sphereCenter.v,
+                                                      sphereCenter.v, 0xAA),
+                                       localToWorld.z.v),
+                            localToWorld.w.v));
+                    const math::Mat44& w2v =
+                        ((nglSceneLocal*)nglBuildScene)->WorldToView;
+                    __m128 viewPos = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(sphereWorld, sphereWorld,
+                                                      0),
+                                       w2v.x.v),
+                            _mm_mul_ps(_mm_shuffle_ps(sphereWorld, sphereWorld,
+                                                      0x55),
+                                       w2v.y.v)),
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(sphereWorld, sphereWorld,
+                                                      0xAA),
+                                       w2v.z.v),
+                            w2v.w.v));
+                    float viewZ =
+                        _mm_shuffle_ps(viewPos, viewPos, 0xAA).m128_f32[0];
+                    float radius = auxGetSphereRadius(mesh);
+                    if (radius + viewZ > tr.viewParms.zFar)
+                    {
+                        float newZ = tr.viewParms.zFar - radius;
+                        float scale = newZ / viewZ;
+                        __m128 axisX = _mm_setr_ps(
+                            w2v.x.v.m128_f32[0], w2v.y.v.m128_f32[0],
+                            w2v.z.v.m128_f32[0], 0.0f);
+                        __m128 axisY = _mm_setr_ps(
+                            w2v.x.v.m128_f32[1], w2v.y.v.m128_f32[1],
+                            w2v.z.v.m128_f32[1], 0.0f);
+                        __m128 axisZ = _mm_setr_ps(
+                            w2v.x.v.m128_f32[2], w2v.y.v.m128_f32[2],
+                            w2v.z.v.m128_f32[2], 0.0f);
+                        __m128 camPos = _mm_xor_ps(
+                            _mm_castsi128_ps(_mm_set1_epi32(0x80000000)),
+                            _mm_add_ps(
+                                _mm_add_ps(
+                                    _mm_mul_ps(
+                                        _mm_set1_ps(w2v.w.v.m128_f32[0]),
+                                        axisX),
+                                    _mm_mul_ps(
+                                        _mm_set1_ps(w2v.w.v.m128_f32[1]),
+                                        axisY)),
+                                _mm_mul_ps(
+                                    _mm_set1_ps(w2v.w.v.m128_f32[2]),
+                                    axisZ)));
+                        __m128 scaledRay =
+                            _mm_mul_ps(viewPos, _mm_set1_ps(scale));
+                        __m128 newW = _mm_sub_ps(
+                            _mm_add_ps(
+                                _mm_add_ps(
+                                    _mm_add_ps(
+                                        _mm_mul_ps(_mm_shuffle_ps(scaledRay,
+                                                                  scaledRay, 0),
+                                                   axisX),
+                                        _mm_mul_ps(_mm_shuffle_ps(scaledRay,
+                                                                  scaledRay,
+                                                                  0x55),
+                                                   axisY)),
+                                    _mm_mul_ps(_mm_shuffle_ps(scaledRay,
+                                                              scaledRay, 0xAA),
+                                               axisZ)),
+                                camPos),
+                            _mm_mul_ps(sphereWorld, _mm_set1_ps(scale)));
+                        localToWorld.w.v = newW;
+                        auxSetScale(&meshParams, scale, scale, scale);
+                    }
+                    meshParams.Flags |= 0x80u;
+                    meshParams.LOD = (unsigned int)GetScaledMeshLOD(
+                        mesh, &localToWorld, &meshParams, gZoomRatio);
+                    _codListAddMesh(mesh, localToWorld, &meshParams,
+                                    shaderParams, nullptr);
+                    obj->mFlags &=
+                        ~(unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME;
+                }
             }
             ++modelIndex;
             if (modelIndex >= obj->numModels)
