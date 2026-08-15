@@ -196,7 +196,7 @@ void G_EndGame(void)
 }
 
 // ea: 0x0044BAB0
-char* GetScratchPad(void)
+void* GetScratchPad(void)
 {
     return g_scratchpadMem;
 }
@@ -226,11 +226,9 @@ void Cmd_NGLStats_f(void)
 }
 
 // ea: 0x0044AB00
-bool Cmd_NGLStatDisplay_f(void)
+void Cmd_NGLStatDisplay_f(void)
 {
-    bool result = nglDebug.ShowPerfInfo != 1;
     nglDebug.ShowPerfInfo = nglDebug.ShowPerfInfo != 1;
-    return result;
 }
 
 // ea: 0x0044AB10
@@ -320,11 +318,9 @@ void Cmd_Invinc_f(Entity* /*ent*/)
 }
 
 // ea: 0x0044AB30
-int Cmd_NGLFPSDisplay_f(void)
+void Cmd_NGLFPSDisplay_f(void)
 {
-    int result = nglDebug.ShowPerfInfo == 2 ? 0 : 2;
     nglDebug.ShowPerfInfo = nglDebug.ShowPerfInfo == 2 ? 0 : 2;
-    return result;
 }
 
 // ea: 0x0044ABB0
@@ -409,7 +405,7 @@ EntityDeathTask::EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h)
 }
 
 // ea: 0x0044FCE0
-int G_ResetEntryPointHintIndicies(void)
+void G_ResetEntryPointHintIndicies(void)
 {
     sEntryPointHintIndicies[0] = -1;
     dword_DD67B8 = -1;
@@ -417,7 +413,6 @@ int G_ResetEntryPointHintIndicies(void)
     dword_DD67C0 = -1;
     dword_DD67C4 = -1;
     dword_DD67C8 = -1;
-    return -1;
 }
 
 // ea: 0x004541D0

@@ -1353,7 +1353,7 @@ void UpdatePaths(Entity* ent)
 }
 
 // ea: 0x0044D320
-int IsVehicleTank(Entity* ent)
+bool IsVehicleTank(Entity* ent)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
     return scr_vehicle != nullptr && s_vehicleInfos[scr_vehicle->infoIdx]->type == 2;
@@ -1424,7 +1424,7 @@ void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3* pos,
 }
 
 // ea: 0x0044FB30
-vehicle_info_t* VEH_GetVehicleInfo(unsigned int iIndex)
+vehicle_info_t* VEH_GetVehicleInfo(int iIndex)
 {
     if (iIndex > 0x40)
     {
@@ -1460,7 +1460,7 @@ int scr_vehicle_t::GetSwitchPosRoute(int seatIdx, int fromPos, bool hasFlag)
 }
 
 // ea: 0x0044D480
-int VEH_GetVehicleInfo(const char* name)
+__int16 VEH_GetVehicleInfo(const char* name)
 {
     if (name == nullptr || *name == 0)
         return -1;
@@ -3393,7 +3393,8 @@ void G_FreeVehicleSeat(Entity* /*ent*/, Entity* /*veh*/, int /*seat*/)
 }
 
 // ea: 0x0044F480
-int G_RequestVehicleSeat(Entity* /*ent*/, Entity* /*veh*/, HashString /*seat*/, bool /*bForce*/)
+int G_RequestVehicleSeat(Entity* /*ent*/, Entity* /*veh*/,
+                         const HashString& /*seat*/, bool /*bForce*/)
 {
     return -1;
 }
@@ -3457,15 +3458,15 @@ void SP_script_prop_collmap(Entity* pSelf)
 }
 
 // ea: 0x0044D2F0
-int Is4WheeledVehicle(Entity* ent)
+bool Is4WheeledVehicle(Entity* ent)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
     if (scr_vehicle == nullptr)
-        return 0;
+        return false;
     vehicle_info_t* v2 = s_vehicleInfos[scr_vehicle->infoIdx];
     if (v2->type != 1)
-        return 0;
-    return 1;
+        return false;
+    return true;
 }
 
 // ea: 0x0044F1D0

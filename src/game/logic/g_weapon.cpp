@@ -114,7 +114,10 @@ void CalcMuzzlePoints(Entity* ent, weaponParms* wp)
 }
 
 // ea: 0x0044C6B0
-void Die_MineDamaged(Entity* mine)
+void Die_MineDamaged(Entity* mine, Entity* /*unused1*/, Entity* /*unused2*/,
+                     int /*unused3*/, int /*unused4*/, int /*unused5*/,
+                     const float* /*unused6*/, Entity* /*unused7*/,
+                     hitLocation_t /*unused8*/)
 {
     mine->think = THINK__G_ExplodeMissile;
     mine->nextthink = level.time + 10;

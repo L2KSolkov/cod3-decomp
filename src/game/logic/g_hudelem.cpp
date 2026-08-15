@@ -28,7 +28,7 @@ void HudElem_UpdateClient(Client* /*client*/, int /*iClientNum*/)
 }
 
 // ea: 0x0044CDE0
-void Scr_ConstructMessageString(int /*iValue*/, char* /*pszBuffer*/, int /*iSize*/, int /*iType*/)
+void Scr_ConstructMessageString(int /*iValue*/, char* /*pszBuffer*/, int /*iSize*/, conMsgType_t /*iType*/)
 {
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_main.cpp";
@@ -39,7 +39,7 @@ void Scr_ConstructMessageString(int /*iValue*/, char* /*pszBuffer*/, int /*iSize
 }
 
 // ea: 0x0044CE30
-void Scr_LocalizationError(unsigned int iParm, const char* pszErrorMessage)
+void Scr_LocalizationError(int iParm, const char* pszErrorMessage)
 {
     Scr_ParamError(iParm, pszErrorMessage);
 }

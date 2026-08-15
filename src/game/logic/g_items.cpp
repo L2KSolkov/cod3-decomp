@@ -47,11 +47,10 @@ int G_canPickupMelee(Entity* ent)
 }
 
 // ea: 0x0044B560
-int ClearRegisteredItems()
+void ClearRegisteredItems()
 {
     memset(itemRegistered, 0, 137 * sizeof(int));
     itemRegistered[0] = 1;
-    return 0;
 }
 
 // ea: 0x0044B580

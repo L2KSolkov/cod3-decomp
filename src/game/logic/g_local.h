@@ -670,10 +670,17 @@ struct TestFPS {
 static_assert(sizeof(TestFPS) == 0xAD90, "TestFPS size mismatch");
 
 // g_main.cpp entry / console commands
+enum conMsgType_t : int32_t {
+    CONMSG_GAME = 0x0,
+    CONMSG_OBJECTIVE = 0x1,
+    CONMSG_CVAR = 0x2,
+    CONMSG_HINTSTRING = 0x3,
+};
 void game_dllEntry(int (*syscallptr)(int, ...));
 void Cmd_TestFPS(void);
 void Cmd_NGLStats_f(void);
-bool Cmd_NGLStatDisplay_f(void);
+void Cmd_NGLStatDisplay_f(void);
+void Cmd_NGLFPSDisplay_f(void);
 void Cmd_ProfileShaders_f(void);
 void Cmd_ProfileNodes_f(void);
 void Cmd_Wireframe_f(void);
@@ -686,7 +693,7 @@ void Cmd_Thread_Debug_f(void);
 int  Cmd_EntityStats_f(void);
 void Cmd_TextureTiling_f(void);
 void G_EndGame(void);
-char* GetScratchPad(void);
+void* GetScratchPad(void);
 int   G_GetServerSnapTime(void);
 void  G_InitVehiclePaths(void);
 vehicle_node_t* GetVehicleNode(int idx);
@@ -704,7 +711,8 @@ void  Fill_Clip(PlayerState* ps, int weapon);
 void  MemGraph_RenderResources(void);
 int   G_StealVehicleSeat(Entity* ent, Entity* veh, int seat, bool bForce);
 void  G_FreeVehicleSeat(Entity* ent, Entity* veh, int seat);
-int   G_RequestVehicleSeat(Entity* ent, Entity* veh, HashString seat, bool bForce);
+int   G_RequestVehicleSeat(Entity* ent, Entity* veh,
+                           const HashString& seat, bool bForce);
 int   G_RequestVehicleBestSeat(Entity* ent, Entity* veh, bool bForce, bool bPassenger, bool bCanDrive);
 int   G_GetNonPVSTankInfo(float* origin, DbLinkedHandle<EntityHandleDb, Entity> ent);
 void  Scr_Vehicle_OccupantStartEntering(scr_vehicle_t* veh, const Entity* ent, int seat);
@@ -2493,7 +2501,7 @@ extern int gameCvarTableSize;      // g.o
 extern cdl_proftimer cdl_proftimer_cvar;  // game.o 0x0133E0C8
 Entity* VEH_GetEntity(unsigned int entityHandleVal);  // g.o 0x...
 void    FastSinCos(float radians, float* psin, float* pcos);  // core.o
-int     VEH_GetVehicleInfo(const char* name);  // g.o 0x44D480 (returns index, -1 if not found)
+__int16 VEH_GetVehicleInfo(const char* name);  // g.o 0x44D480 (returns index, -1 if not found)
 void    G_VehInitPathPos(vehicle_pathpos_t* vpp);  // g.o 0x... (g_scr_vehicle.cpp)
 Entity* G_IsVehicleUnusable(Entity* player);        // g.o 0x46E040
 bool    G_IsPlayerVehicleGunner(Entity* player);    // g.o 0x46E200
@@ -3653,7 +3661,8 @@ void  SP_sd_axis(Entity* ent);                                 // g.o 0x4499E0
 void  G_FreeScrVehicleInfo(void);                              // g.o 0x44EFD0
 void  G_FreeScrVehicles(void);                                 // g.o 0x45E240
 int   G_FreeVehiclePaths(void);                                // g.o 0x4523F0
-int   IsVehicleTank(Entity* ent);                              // g.o 0x44D320
+bool  IsVehicleTank(Entity* ent);                              // g.o 0x44D320
+bool  Is4WheeledVehicle(Entity* ent);                          // g.o 0x44D2F0
 void  UpdatePaths(Entity* ent);                                // g.o 0x44C7E0
 void  scr_vehicle_t_CollisionDamage(scr_vehicle_t* veh, Entity* ent,
                                     const math::Position3* pos,

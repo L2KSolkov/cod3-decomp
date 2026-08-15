@@ -182,7 +182,7 @@ void G_LaunchMissile(Entity* ent)
 }
 
 // ea: 0x0044C3F0
-void G_IncomingMissile(Entity* ent)
+void G_IncomingMissile(Entity* ent, int /*unused*/)
 {
     ent->nextthink = level.time + 1100;
     ent->think = THINK__G_DelayMissile;
@@ -208,7 +208,8 @@ void G_DelayMissile(Entity* ent)
 }
 
 // ea: 0x0044C4B0
-void G_MissileDie(Entity* self, Entity* inflictor)
+void G_MissileDie(Entity* self, Entity* inflictor, Entity* /*unused2*/,
+                  int /*unused3*/, int /*unused4*/)
 {
     if (inflictor != self)
     {
