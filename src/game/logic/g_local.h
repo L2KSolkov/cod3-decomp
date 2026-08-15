@@ -904,12 +904,24 @@ struct str_const_t {
      Broc::string xmodel_airborne;     // +0x234
      Broc::string xmodel_wehrmacht;    // +0x238
      Broc::string worldspawn;          // +0x23C
-    uint8_t    _pad240[0x260 - 0x240];
-    Broc::string none;                 // +0x260 (152)
-    Broc::string obstacle;             // +0x264
-    Broc::string world;                // +0x268
-    uint8_t    _pad26C[0x284 - 0x26C];
-    Broc::string overheated;          // +0x284
+     Broc::string auto_ai;              // +0x240
+     Broc::string auto_nonai;           // +0x244
+     Broc::string manual;               // +0x248
+     Broc::string manual_ai;            // +0x24C
+     Broc::string turretstatechange;    // +0x250
+     Broc::string turretownerchange;    // +0x254
+     Broc::string moveawayaccepted;     // +0x258
+     Broc::string nophysics;            // +0x25C
+     Broc::string none;                 // +0x260 (152)
+     Broc::string obstacle;             // +0x264
+     Broc::string world;                // +0x268
+     Broc::string zonesloaded;          // +0x26C
+     Broc::string groundEntChanged;     // +0x270
+     Broc::string _custom;              // +0x274
+     Broc::string bigRotation;          // +0x278
+     Broc::string smallRotation;        // +0x27C
+     Broc::string nearNode;             // +0x280
+     Broc::string overheated;          // +0x284
     Broc::string axis;                // +0x288
     Broc::string allies;              // +0x28C
     Broc::string neutral;             // +0x290
@@ -969,7 +981,9 @@ struct hash_const_t {
     uint8_t    _padB4[0xBC - 0xB4];
     HashString info_player_deathmatch;  // +0xBC (47)
     HashString interaction_done;    // +0xC0
-    uint8_t    _padC4[0xDC - 0xC4];
+    uint8_t    _padC4[0xD0 - 0xC4];
+    HashString killanimscript;      // +0xD0 (52)
+    uint8_t    _padD4[0xDC - 0xD4];
     HashString menuresponse;            // +0xDC (55)
     uint8_t    _padE0[0xEC - 0xE0];
     HashString movedone;           // +0xEC
@@ -998,13 +1012,18 @@ struct hash_const_t {
     HashString turret_on_target;   // +0x224 (137)
     HashString player_on_vehicle;  // +0x228 (138)
     HashString player_off_vehicle; // +0x22C (139)
-    uint8_t    _pad230[0x248 - 0x230];
-    HashString turret_on_vistarget; // +0x248 (146)
-    uint8_t    _pad24C[0x250 - 0x24C];
+    HashString turret_on_vistarget; // +0x230 (146)
+    HashString xmodel_airborne;     // +0x234
+    HashString xmodel_wehrmacht;    // +0x238
+    HashString worldspawn;          // +0x23C
+    HashString auto_ai;             // +0x240
+    HashString auto_nonai;          // +0x244
+    HashString manual;              // +0x248
+    HashString manual_ai;           // +0x24C
     HashString turretstatechange;  // +0x250 (148)
     HashString turretownerchange;  // +0x254 (149)
-    HashString killanimscript;     // +0x258 (150)
-    uint8_t    _pad25C[0x260 - 0x25C];
+    HashString moveawayaccepted;   // +0x258 (150)
+    HashString nophysics;          // +0x25C
     HashString none;               // +0x260 (152)
     uint8_t    _pad264[0x284 - 0x264];
     HashString overheated;         // +0x284 (161)

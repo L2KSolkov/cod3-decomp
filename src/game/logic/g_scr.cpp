@@ -3358,6 +3358,29 @@ void SetAlwaysRender(unsigned int entityHandleVal, int r);  // 0x5CF920
 void Show(unsigned int entityHandleVal);  // 0x5CF960
 void Hide(unsigned int entityHandleVal);  // 0x5CF9A0
 int  SetContents(unsigned int entityHandleVal, int contents);  // 0x5CF9E0
+void DisConnectPaths(unsigned int entityHandleVal);  // 0x5CFA30
+void ConnectPaths(unsigned int entityHandleVal);  // 0x5CFAC0
+void StartFiring(unsigned int entityHandleVal);  // 0x5CFB50
+void StopFiring(unsigned int entityHandleVal);  // 0x5CFBC0
+void ShootTurret(unsigned int entityHandleVal,
+                 unsigned int turretOwnerOverride);  // 0x5CFC30
+void SetMode(unsigned int entityHandleVal, int mode);  // 0x5CFCD0
+unsigned int GetTurretOwner(unsigned int entityHandleVal);  // 0x5CFDB0
+unsigned int GetOwner(unsigned int entityHandleVal);  // 0x5CFE30
+void SetOwner(unsigned int entityHandleVal,
+              unsigned int ownerHandleVal);  // 0x5CFE70
+void SetTargetEntity(unsigned int entityHandleVal,
+                     unsigned int otherEntityHandleVal);  // 0x5CFEF0
+bool HasTargetEntity(unsigned int entityHandleVal);  // 0x5CFF90
+void ClearTargetEntity(unsigned int entityHandleVal);  // 0x5D0000
+void SetTurretTeam(unsigned int entityHandleVal,
+                   const Broc::string& pszTeam);  // 0x5D0070
+void MakeTurretUsable(unsigned int entityHandleVal);  // 0x5D0170
+void MakeTurretUnusable(unsigned int entityHandleVal);  // 0x5D01E0
+void SetTurretAccuracy(unsigned int entityHandleVal,
+                       float accuracy);  // 0x5D0250
+void SetTurretRange(unsigned int entityHandleVal, float range);  // 0x5D02C0
+float GetTurretRange(unsigned int entityHandleVal);  // 0x5D0340
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -14312,6 +14335,513 @@ int BrocSys::SetContents(unsigned int entityHandleVal, int contents)
     mObject->r.contents = contents;
     g_LinkEntity(mObject);
     return v5;
+}
+
+// ============================================================================
+// scr.o batch 48 - paths / turrets
+// ============================================================================
+
+// ea: 0x005CFA30
+void BrocSys::DisConnectPaths(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            if (Path_IsDynamicBlockingEntity(
+                    EntityHandleDb::sInst.mElements[v1].mObject))
+            {
+                PathNodeMgr::sInst->DisconnectPathsForEntity(mObject);
+            }
+            else
+            {
+                if (mObject->mClassNameHash.mHash
+                    == hash_const.script_brushmodel.mHash)
+                    Scr_Error(
+                        "script_brushmodel must have DYNAMICPATH set to disconnect paths");
+                const char* v4 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                Scr_Error(va("entity of type '%s' cannot disconnect paths",
+                             v4));
+            }
+        }
+    }
+}
+
+// ea: 0x005CFAC0
+void BrocSys::ConnectPaths(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            if (Path_IsDynamicBlockingEntity(
+                    EntityHandleDb::sInst.mElements[v1].mObject) != 0)
+            {
+                PathNodeMgr::sInst->ConnectPathsForEntity(mObject);
+            }
+            else
+            {
+                if (mObject->mClassNameHash.mHash
+                    == hash_const.script_brushmodel.mHash)
+                    Scr_Error(
+                        "script_brushmodel must have DYNAMICPATH set to connect paths");
+                const char* v4 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                Scr_Error(va("entity of type '%s' cannot connect paths", v4));
+            }
+        }
+    }
+}
+
+// ea: 0x005CFB50
+void BrocSys::StartFiring(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->turret_flags |= 4u;
+        }
+        else
+        {
+            const char* v5 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v5));
+        }
+    }
+}
+
+// ea: 0x005CFBC0
+void BrocSys::StopFiring(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->turret_flags &= ~4u;
+        }
+        else
+        {
+            const char* v5 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v5));
+        }
+    }
+}
+
+// ea: 0x005CFC30
+void BrocSys::ShootTurret(unsigned int entityHandleVal,
+                          unsigned int turretOwnerOverride)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int v4 = turretOwnerOverride & 0xFFF;
+        Entity* v5 = nullptr;
+        if (v4 < 0x540
+            && turretOwnerOverride >> 12
+                   == EntityHandleDb::sInst.mElements[v4].mKey)
+            v5 = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject->pTurretInfo != nullptr)
+        {
+            turret_shoot(mObject, v5);
+        }
+        else
+        {
+            const char* v7 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v7));
+        }
+    }
+}
+
+// ea: 0x005CFCD0
+void BrocSys::SetMode(unsigned int entityHandleVal, int mode)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            if (mode == (int)hash_const.auto_ai.mHash)
+            {
+                pTurretInfo->turret_flags |= 3u;
+            }
+            else if (mode == (int)hash_const.manual.mHash)
+            {
+                pTurretInfo->turret_flags &= 0xFCu;
+            }
+            else if (mode == (int)hash_const.manual_ai.mHash)
+            {
+                pTurretInfo->turret_flags =
+                    (pTurretInfo->turret_flags & 0xFFFC) | 1;
+            }
+            else if (mode == (int)hash_const.auto_nonai.mHash)
+            {
+                pTurretInfo->turret_flags =
+                    (pTurretInfo->turret_flags & 0xFFFC) | 2;
+            }
+            else
+            {
+                Scr_Error("unknown mode");
+            }
+        }
+        else
+        {
+            const char* v6 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v6));
+        }
+    }
+}
+
+// ea: 0x005CFDB0
+unsigned int BrocSys::GetTurretOwner(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return 0;
+    if (mObject->pTurretInfo == nullptr)
+    {
+        const char* v4 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(va("entity type '%s' is not a turret", v4));
+        return 0;
+    }
+    if (mObject->active == 0)
+        return 0;
+    return mObject->r.mOwner.mHandle.mVal;
+}
+
+// ea: 0x005CFE30
+unsigned int BrocSys::GetOwner(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        return mObject->r.mOwner.mHandle.mVal;
+    }
+    return 0;
+}
+
+// ea: 0x005CFE70
+void BrocSys::SetOwner(unsigned int entityHandleVal,
+                       unsigned int ownerHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int v4 = ownerHandleVal & 0xFFF;
+        Entity* v5;
+        if (v4 < 0x540
+            && ownerHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+            && (v5 = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+        {
+            mObject->r.mOwner.mHandle.mVal = v5->mHandle.mHandle.mVal;
+        }
+        else
+        {
+            mObject->r.mOwner.mHandle.mVal = 0;
+        }
+    }
+}
+
+// ea: 0x005CFEF0
+void BrocSys::SetTargetEntity(unsigned int entityHandleVal,
+                              unsigned int otherEntityHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int v4 = otherEntityHandleVal & 0xFFF;
+        Entity* v5;
+        if (v4 < 0x540
+            && otherEntityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v4].mKey
+            && (v5 = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+        {
+            turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+            if (pTurretInfo != nullptr)
+            {
+                pTurretInfo->manualTarget = v5;
+            }
+            else
+            {
+                const char* v8 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                Scr_Error(va("entity type '%s' is not a turret", v8));
+            }
+        }
+    }
+}
+
+// ea: 0x005CFF90
+bool BrocSys::HasTargetEntity(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return false;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return false;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return false;
+    turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+    if (pTurretInfo == nullptr)
+    {
+        const char* v5 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(va("entity type '%s' is not a turret", v5));
+        return false;
+    }
+    return pTurretInfo->manualTarget != nullptr;
+}
+
+// ea: 0x005D0000
+void BrocSys::ClearTargetEntity(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->manualTarget = nullptr;
+        }
+        else
+        {
+            const char* v5 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v5));
+        }
+    }
+}
+
+// ea: 0x005D0070
+void BrocSys::SetTurretTeam(unsigned int entityHandleVal,
+                            const Broc::string& pszTeam)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        if (mObject->pTurretInfo != nullptr)
+        {
+            const char* v7 = pszTeam.mBlock != nullptr
+                                 ? (const char*)(pszTeam.mBlock + 1)
+                                 : defaultFileName;
+            if (_stricmp(v7, "axis") == 0)
+            {
+                mObject->pTurretInfo->eTeam = TEAM_AXIS;
+            }
+            else
+            {
+                const char* v8 = pszTeam.mBlock != nullptr
+                                     ? (const char*)(pszTeam.mBlock + 1)
+                                     : defaultFileName;
+                if (_stricmp(v8, "allies") == 0)
+                {
+                    mObject->pTurretInfo->eTeam = TEAM_ALLIES;
+                }
+                else
+                {
+                    Scr_Error(
+                        va("unknown team '%s', should be 'axis' or 'allies'\n",
+                           pszTeam.mBlock));
+                }
+            }
+        }
+        else
+        {
+            const char* v5 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v5));
+        }
+    }
+}
+
+// ea: 0x005D0170
+void BrocSys::MakeTurretUsable(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->pTurretInfo != nullptr)
+        {
+            mObject->pTurretInfo->turret_flags |= 0x1000u;
+        }
+        else
+        {
+            const char* v4 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v4));
+        }
+    }
+}
+
+// ea: 0x005D01E0
+void BrocSys::MakeTurretUnusable(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->pTurretInfo != nullptr)
+        {
+            mObject->pTurretInfo->turret_flags &= ~0x1000u;
+        }
+        else
+        {
+            const char* v4 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v4));
+        }
+    }
+}
+
+// ea: 0x005D0250
+void BrocSys::SetTurretAccuracy(unsigned int entityHandleVal, float accuracy)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->accuracy = accuracy;
+        }
+        else
+        {
+            const char* v6 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v6));
+        }
+    }
+}
+
+// ea: 0x005D02C0
+void BrocSys::SetTurretRange(unsigned int entityHandleVal, float range)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+        if (pTurretInfo != nullptr)
+        {
+            pTurretInfo->maxRangeSquared = range * range;
+        }
+        else
+        {
+            const char* v6 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("entity type '%s' is not a turret", v6));
+        }
+    }
+}
+
+// ea: 0x005D0340
+float BrocSys::GetTurretRange(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return 0.0f;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return 0.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return 0.0f;
+    turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+    if (pTurretInfo == nullptr)
+    {
+        const char* v5 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(va("entity type '%s' is not a turret", v5));
+        return 0.0f;
+    }
+    return sqrtf(pTurretInfo->maxRangeSquared);
 }
 
 // ============================================================================
