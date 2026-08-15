@@ -1023,20 +1023,6 @@ ScriptEventParams::ScriptEventParams()
     v1.z = (float)NAN;
 }
 
-// AeThread / manager accessors (g.o 0x4A6330-0x4A6590)
-namespace AeThread {
-struct BackupStack {
-    struct Block {
-        static PoolAllocator* sAllocator;  // ?sAllocator@Block@BackupStack@AeThread@@2PAVPoolAllocator@@A
-        static PoolAllocator* GetAllocator();  // ?GetAllocator@Block@BackupStack@AeThread@@SAPAVPoolAllocator@@XZ
-    };
-};
-}
-PoolAllocator* AeThread::BackupStack::Block::sAllocator;
-PoolAllocator* AeThread::BackupStack::Block::GetAllocator()
-{
-    return AeThread::BackupStack::Block::sAllocator;
-}
 AeThreadManager* AeThreadManager::Inst()
 {
     return &AeThreadManager::sInst;

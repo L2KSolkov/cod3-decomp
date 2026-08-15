@@ -5,6 +5,7 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <new>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,13 +13,21 @@
 
 #include "core/PoolAllocator.h"
 #include "core/tlFixedString.h"
+#include "core/ae_fixed_string.h"
+#include "game/AeThreadFunctor.h"
 #include "game/nextgen/nextgen.h"
 
 extern PoolAllocator* gCommonPoolAllocator;  // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A (core.o)
+extern void* mem_heap_malloc(unsigned int size);  // ?mem_heap_malloc@@YAPAXI@Z
 extern bool g_indoor;                              // ?g_indoor@@3_NA (core.o)
 extern float CG_GetNorthDirection();               // ?CG_GetNorthDirection@@YAMXZ (cg.o)
 extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp_actors.o)
 extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z (render.o)
+
+namespace AeStringSupport {
+void Concat(char* dst, int& dstLen, int dstCapacity,
+            const char* src);  // ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z
+}
 
 namespace ShaderCommon {
 extern bool gGlowGodRays;  // ?gGlowGodRays@ShaderCommon@@3_NA
@@ -75,6 +84,456 @@ extern bool gAssertsEnabled;  // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr)
 namespace Broc {
 class hudelem;
 }
+
+// ============================================================================
+// AeThread + state controllers (scr.o / AeThread.cpp) - IDA types 5428-5437
+// ============================================================================
+// Local layout views (core_systems.h cannot be included alongside g_local.h)
+struct AeDListNode {
+    AeDListNode* mNext;  // +0x00
+    AeDListNode* mPrev;  // +0x04
+};
+struct AeStateList {  // reserved_dlist<AeThreadState> layout
+    int          m_size;  // +0x00
+    AeDListNode* m_head;  // +0x04
+    AeDListNode* m_end;   // +0x08
+    AeDListNode* m_tail;  // +0x0C
+};
+struct AeThreadFlagWord {  // Bitmask<unsigned int> layout
+    unsigned int mMask;    // +0x00
+};
+
+class AeThreadState;
+class AeThread {
+public:
+    struct BackupStack {
+        struct Block {
+            uint8_t mBuff[252];  // +0x00
+            Block*  mNext;       // +0xFC
+
+            static PoolAllocator* sAllocator;   // scr.o @ 0x132A0CC
+            static PoolAllocator* GetAllocator();  // g.o
+            static void SetupAllocator();          // scr.o 0x5C9340
+        };
+
+        Block*       mBlockList;  // +0x00
+        unsigned int mSize;       // +0x04
+        unsigned int mChecksum;   // +0x08
+        unsigned int mBegin;      // +0x0C
+        unsigned int mEnd;        // +0x10
+
+        BackupStack();                            // scr.o 0x5BBDB0
+        ~BackupStack();                           // scr.o 0x5BC0B0
+        void Backup(unsigned int stackBegin, unsigned int stackEnd);  // 0x5BBDC0
+        void Restore(unsigned int stackBegin) const;                  // 0x5BBF70
+    };
+
+    struct BrocObjCreated;  // full definition in the thread-lifecycle batch
+
+    AeDListNode m_dlist_node;                           // +0x00
+    DbLinkedHandle<EntityHandleDb, Entity> mOwner;      // +0x08
+    AeThreadFunctor* mFunctor;                          // +0x0C
+    AeThreadFlagWord mFlags;                            // +0x10
+    Handle mHandle;                                     // +0x14
+    AeStateList mStateControllers;                      // +0x18
+    BrocObjCreated* mBrocCreated;                       // +0x28
+    unsigned int mStackStart;                           // +0x2C
+    BackupStack mBackupStack;                           // +0x30
+    const char* mFuncName;                              // +0x44
+    const char* mFile;                                  // +0x48
+    int mLine;                                          // +0x4C
+
+    void SetKillFlag();  // ?SetKillFlag@AeThread@@QAEXXZ (scr.o 0x5C1F00)
+    void Kill();         // ?Kill@AeThread@@QAEXXZ (scr.o 0x5C1F10)
+};
+
+class AeThreadState {
+public:
+    enum EAction : int {
+        kActionNone = 0,
+        kActionSleep = 1,
+        kActionWakeUp = 2,
+        kActionTerminate = 3,
+    };
+
+    virtual ~AeThreadState() {}
+    virtual EAction NewAction(AeThread& t) = 0;  // UAE?AW4EAction@AeThreadState@@
+    virtual void GetCondText(ae_fixed_string<64, unsigned char>& str) = 0;
+    virtual void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) = 0;
+
+    AeDListNode m_dlist_node;                                // +0x04
+    bool mFinished;                                          // +0x0C
+    EAction mResult;                                         // +0x10
+};
+
+struct AeThreadWaitState : AeThreadState {
+    float mTimeRemaining;  // +0x14
+
+    AeThreadWaitState(float t);  // ??0AeThreadWaitState@@QAE@M@Z (scr.o 0x5C1FB0)
+    EAction NewAction(AeThread& t) override;  // scr.o 0x5BC150
+    void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C1FE0
+    void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7BB0
+};
+
+struct AeThreadWaitFramesState : AeThreadState {
+    int mFramesRemaining;  // +0x14
+
+    AeThreadWaitFramesState(int numFrames);  // ??0AeThreadWaitFramesState@@QAE@H@Z (0x5C2030)
+    EAction NewAction(AeThread& t) override;  // 0x5BC180
+    void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C2060
+    void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7BE0
+};
+
+struct AeThreadPakNotifyState : AeThreadState {
+    enum ePakState : int {
+        kPakStateUnloaded = 0,
+        kPakStateLoaded = 1,
+    };
+
+    const PakInfoNode* mPak;      // +0x14
+    ePakState mWaitState;         // +0x18
+
+    AeThreadPakNotifyState(const PakInfoNode* pak, ePakState state);  // 0x5C1F80
+    EAction NewAction(AeThread& t) override;  // 0x5BC0F0
+    void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B00
+    void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B50
+};
+
+// PakInfoNode view (streamer.o; full layout in pakmanager.cpp)
+static_assert(sizeof(AeThread::BackupStack) == 0x14,
+              "BackupStack size mismatch");
+static_assert(sizeof(AeThread::BackupStack::Block) == 0x100,
+              "BackupStack::Block size mismatch");
+
+PoolAllocator* AeThread::BackupStack::Block::sAllocator;
+PoolAllocator* AeThread::BackupStack::Block::GetAllocator()
+{
+    return AeThread::BackupStack::Block::sAllocator;
+}
+
+// scr.o data @ 0x11E3E00 / 0x132A0D0 (init -1 per IDA bytes)
+int g_AeThread_minStackSize = -1;
+int g_AeThread_maxStackSize = -1;
+// file-static counter (no public symbol)
+static unsigned int sRestoreId = 0;
+
+// ea: 0x005BBDB0
+AeThread::BackupStack::BackupStack()
+{
+    mBlockList = nullptr;
+    mSize = 0;
+    mBegin = 0;
+    mEnd = 0;
+}
+
+// ea: 0x005BC0B0
+AeThread::BackupStack::~BackupStack()
+{
+    while (mBlockList != nullptr)
+    {
+        Block* next = mBlockList->mNext;
+        Block::sAllocator->Release(mBlockList);
+        mBlockList = next;
+    }
+}
+
+// ea: 0x005BBDC0 (disasm 5BBE80-5BBF23: 0xFC-byte block copy + checksum)
+void AeThread::BackupStack::Backup(unsigned int stackBegin,
+                                   unsigned int stackEnd)
+{
+    if (stackEnd <= stackBegin)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+        AeAssert::gCurrentLine = 965;
+        AeAssert::gCurrentExpr = "stackEnd > stackBegin";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("argument mismatch"))
+            __debugbreak();
+    }
+    unsigned int size = stackEnd - stackBegin;
+    if (size < (unsigned int)g_AeThread_minStackSize)
+        g_AeThread_minStackSize = (int)size;
+    if (size > (unsigned int)g_AeThread_maxStackSize)
+        g_AeThread_maxStackSize = (int)size;
+    mChecksum = 0;
+    if (mBlockList == nullptr)
+    {
+        Block* v6 = (Block*)Block::sAllocator->Allocate(0x100, false);
+        if (v6 != nullptr)
+            v6->mNext = nullptr;
+        else
+            v6 = nullptr;
+        mBlockList = v6;
+    }
+    Block* block = mBlockList;
+    unsigned int stackPtr = stackBegin;
+    unsigned int remaining = size;
+    while (remaining != 0)
+    {
+        unsigned int chunk = remaining >= 0xFC ? 0xFC : remaining;
+        if (chunk > 0)
+        {
+            unsigned int n = ((chunk - 1) >> 2) + 1;
+            unsigned int* dst = (unsigned int*)block->mBuff;
+            unsigned int* src = (unsigned int*)stackPtr;
+            for (unsigned int k = 0; k < n; ++k)
+                dst[k] = src[k];
+        }
+        for (unsigned int i = 0; i < chunk; ++i)
+            mChecksum += block->mBuff[i];
+        remaining -= chunk;
+        stackPtr += chunk;
+        if (remaining != 0 && block->mNext == nullptr)
+        {
+            Block* v12 = (Block*)Block::sAllocator->Allocate(0x100, false);
+            if (v12 != nullptr)
+                v12->mNext = nullptr;
+            else
+                v12 = nullptr;
+            block->mNext = v12;
+        }
+        Block* prev = block;
+        block = block->mNext;
+        if (remaining == 0 && prev != nullptr)
+            prev->mNext = nullptr;
+    }
+    while (block != nullptr)
+    {
+        Block* v14 = block;
+        block = block->mNext;
+        Block::sAllocator->Release(v14);
+    }
+    mSize = stackEnd - stackBegin;
+    mBegin = stackBegin;
+    mEnd = stackEnd;
+}
+
+// ea: 0x005BBF70
+void AeThread::BackupStack::Restore(unsigned int stackBegin) const
+{
+    if (mBlockList == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+        AeAssert::gCurrentLine = 1049;
+        AeAssert::gCurrentExpr = "mBlockList";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can't restore unintialized stack!"))
+            __debugbreak();
+    }
+    Block* block = mBlockList;
+    unsigned int mSize = this->mSize;
+    unsigned int stackPtr = stackBegin;
+    unsigned int restoreSize = mSize;
+    ++sRestoreId;
+    unsigned int checksum = 0;
+    while (mSize != 0)
+    {
+        unsigned int chunk = mSize >= 0xFC ? 0xFC : mSize;
+        if (chunk > 0)
+        {
+            unsigned int n = ((chunk - 1) >> 2) + 1;
+            unsigned int* dst = (unsigned int*)stackPtr;
+            unsigned int* src = (unsigned int*)block->mBuff;
+            for (unsigned int k = 0; k < n; ++k)
+                dst[k] = src[k];
+            mSize = restoreSize;
+        }
+        for (unsigned int i = 0; i < chunk; ++i)
+            checksum += block->mBuff[i];
+        mSize -= chunk;
+        stackPtr += chunk;
+        restoreSize = mSize;
+        if (mSize == 0)
+            break;
+        block = block->mNext;
+    }
+    if (checksum != mChecksum)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+        AeAssert::gCurrentLine = 1100;
+        AeAssert::gCurrentExpr = "checksum == mChecksum";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Checksum bad!"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C9340 (PoolConfig 0x100/0x40/0x190 per disasm)
+void AeThread::BackupStack::Block::SetupAllocator()
+{
+    ae_sized_array<PoolAllocator::PoolConfig, 16> poolCfg;
+    memset(&poolCfg, 0, sizeof(poolCfg));
+    poolCfg.m_size = 0;
+    PoolAllocator::PoolConfig elt;
+    elt.blockSize = 0x100;
+    elt.blockAlign = 0x40;
+    elt.numBlocks = 0x190;
+    elt.block = nullptr;
+    poolCfg.push_back(elt);
+    void* block = mem_heap_malloc(0x3C);
+    if (block != nullptr)
+        Block::sAllocator = new (block) PoolAllocator(poolCfg, 1);
+    else
+        Block::sAllocator = nullptr;
+}
+
+// ea: 0x005C1F00
+void AeThread::SetKillFlag()
+{
+    mFlags.mMask |= 0x40;
+    mFlags.mMask |= 0x8;
+}
+
+// ea: 0x005C1F10
+void AeThread::Kill()
+{
+    unsigned int v1 = mFlags.mMask | 8;
+    mFlags.mMask = v1;
+    v1 |= 0x40;
+    mFlags.mMask = v1;
+    mFlags.mMask = v1 | 4;
+}
+
+// ea: 0x005C1FB0
+AeThreadWaitState::AeThreadWaitState(float t)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = AeThreadState::kActionWakeUp;
+    mTimeRemaining = t;
+}
+
+// ea: 0x005BC150
+AeThreadState::EAction AeThreadWaitState::NewAction(AeThread& /*t*/)
+{
+    float v2 = mTimeRemaining - ServerTime::sInst.mTickDelta;
+    mTimeRemaining = v2;
+    if (v2 > 0.0f)
+        return AeThreadState::kActionNone;
+    mFinished = true;
+    return AeThreadState::kActionWakeUp;
+}
+
+// ea: 0x005C1FE0
+void AeThreadWaitState::GetCondText(ae_fixed_string<64, unsigned char>& str)
+{
+    ae_formatted_string<64, unsigned char> v5(",(s) %04.3f", mTimeRemaining);
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63,
+                            (const char*)v5.mBuff);
+    str.mLength = (unsigned char)len;
+}
+
+// ea: 0x005C7BB0
+void AeThreadWaitState::GetDebugTxt(ae_fixed_string<64, unsigned char>& str)
+{
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up from time wait");
+    str.mLength = (unsigned char)len;
+}
+
+// ea: 0x005C2030
+AeThreadWaitFramesState::AeThreadWaitFramesState(int numFrames)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = AeThreadState::kActionWakeUp;
+    mFramesRemaining = numFrames;
+}
+
+// ea: 0x005BC180
+AeThreadState::EAction AeThreadWaitFramesState::NewAction(AeThread& /*t*/)
+{
+    int v2 = mFramesRemaining - 1;
+    bool wasOne = mFramesRemaining == 1;
+    mFramesRemaining = v2;
+    if (v2 >= 0 && !wasOne)
+        return AeThreadState::kActionNone;
+    mFinished = true;
+    return AeThreadState::kActionWakeUp;
+}
+
+// ea: 0x005C2060
+void AeThreadWaitFramesState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    ae_formatted_string<64, unsigned char> v5(",asleep for %04d frames",
+                                              mFramesRemaining);
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63,
+                            (const char*)v5.mBuff);
+    str.mLength = (unsigned char)len;
+}
+
+// ea: 0x005C7BE0
+void AeThreadWaitFramesState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up from frame_wait");
+    str.mLength = (unsigned char)len;
+}
+
+// ea: 0x005C1F80
+AeThreadPakNotifyState::AeThreadPakNotifyState(const PakInfoNode* pak,
+                                               ePakState state)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = AeThreadState::kActionWakeUp;
+    mPak = pak;
+    mWaitState = state;
+}
+
+// ea: 0x005BC0F0
+AeThreadState::EAction AeThreadPakNotifyState::NewAction(AeThread& /*t*/)
+{
+    TPakId pakId = *(TPakId*)((char*)mPak + 0xB4);
+    if ((mWaitState != kPakStateLoaded
+         || !PakManager::sInst->IsLoaded(pakId))
+        && (mWaitState != kPakStateUnloaded
+            || !PakManager::sInst->IsUnloaded(pakId)))
+    {
+        return AeThreadState::kActionNone;
+    }
+    AeThreadState::EAction result = mResult;
+    mFinished = true;
+    return result;
+}
+
+// ea: 0x005C7B00
+void AeThreadPakNotifyState::GetCondText(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    int len = str.mLength;
+    AeStringSupport::Concat((char*)str.mBuff, len, 63, ",waitpak ");
+    str.mLength = (unsigned char)len;
+    const char* mStr = *(const char**)((char*)mPak + 4);  // longName.mStr
+    int len2 = len;
+    AeStringSupport::Concat((char*)str.mBuff, len2, 63, mStr);
+    str.mLength = (unsigned char)len2;
+}
+
+// ea: 0x005C7B50
+void AeThreadPakNotifyState::GetDebugTxt(
+    ae_fixed_string<64, unsigned char>& str)
+{
+    if (mResult == AeThreadState::kActionWakeUp)
+    {
+        int len = str.mLength;
+        AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+        str.mLength = (unsigned char)len;
+        const char* mStr = *(const char**)((char*)mPak + 4);  // longName.mStr
+        int len2 = len;
+        AeStringSupport::Concat((char*)str.mBuff, len2, 63, mStr);
+        str.mLength = (unsigned char)len2;
+    }
+}
+
 
 extern void EffectEventPlayQueuedEffect(Handle effect);  // ?EffectEventPlayQueuedEffect@@YAXVHandle@@@Z (game.o)
 extern bool EffectEventIsPlaying(Handle effect);         // ?EffectEventIsPlaying@@YA_NVHandle@@@Z (game.o)
@@ -1065,6 +1524,13 @@ void MakeGameMessage(const char* pszString, const char* pszCmd)
     SV_GameSendServerCommand(
         DbLinkedHandle<EntityHandleDb, Entity>(Handle(0)),
         va("%s \"%s\"", pszCmd, pszString));
+}
+
+// ea: 0x005BC860
+void ThreadBackupStack(unsigned int lhs)
+{
+    AeThread* t = (AeThread*)AeThreadManager::sInst.mThreadExecuting;
+    t->mBackupStack.Backup(lhs, t->mStackStart);
 }
 
 // ea: 0x005C3340
