@@ -784,17 +784,7 @@ struct InplaceTree {
     unsigned int mSize;              // +0x00
     InplaceTreeElement<K, V>* mElements;  // +0x04
 
-    bool IsUsed(unsigned int index) const
-    {
-        const unsigned char* p = (const unsigned char*)&mElements[index];
-        for (unsigned int i = 0; i < sizeof(InplaceTreeElement<K, V>); ++i)
-        {
-            if (p[i] != 0)
-                return true;
-        }
-        return false;
-    }
-
+public:
     template <typename TKey>
     V* Find(const TKey& key) const
     {
@@ -814,6 +804,18 @@ struct InplaceTree {
             if (!IsUsed(index))
                 return nullptr;
         }
+    }
+
+private:
+    bool IsUsed(unsigned int index) const
+    {
+        const unsigned char* p = (const unsigned char*)&mElements[index];
+        for (unsigned int i = 0; i < sizeof(InplaceTreeElement<K, V>); ++i)
+        {
+            if (p[i] != 0)
+                return true;
+        }
+        return false;
     }
 };
 
@@ -3687,6 +3689,7 @@ public:
     int IsInteracting() const;             // ?IsInteracting@InteractionController@@QBEHXZ (g.o 0x4A8260)
     void SetFlag(unsigned int f, int enable);  // ?SetFlag@InteractionController@@QAEXIH@Z (g.o 0x4A8270)
     int IsFlagged(unsigned int f) const;   // ?IsFlagged@InteractionController@@QBEHI@Z (g.o 0x4A82A0)
+    void FreeInteraction();                // ?FreeInteraction@InteractionController@@QAEXXZ (g.o 0x4B00A0)
 };
 float InteractionController_GetRotation(void* self); // cl.o
 void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
@@ -3947,6 +3950,9 @@ public:
     rigid_body_constraint_wheel* get_wheel(int i);    // ?get_wheel@rb_vehicle@@QAEPAVrigid_body_constraint_wheel@@H@Z (g.o 0x4A9EF0)
     const unsigned int get_braking() const;           // ?get_braking@rb_vehicle@@QBE?BIXZ (g.o 0x4A9F10)
     const float get_max_speed() const;                // ?get_max_speed@rb_vehicle@@QBE?BMXZ (g.o 0x4A9F20)
+    bool is_physics_paused() const;  // ?is_physics_paused@rb_vehicle@@QBE_NXZ (g.o 0x4B0540)
+    bool is_attached_path() const;   // ?is_attached_path@rb_vehicle@@QBE_NXZ (g.o 0x4B0550)
+    bool is_driving_path() const;    // ?is_driving_path@rb_vehicle@@QBE_NXZ (g.o 0x4B0560)
 
     enum rb_vehicle_model_flags_e : int {
         FLAG_IS_POWER_BRAKING = 0x1,

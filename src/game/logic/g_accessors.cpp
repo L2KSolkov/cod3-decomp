@@ -1304,15 +1304,31 @@ class MPEntityHandle {
 public:
     unsigned short mValue;  // +0x00
     MPEntityHandle();                                     // ??0MPEntityHandle@@QAE@XZ (g.o 0x4A9700)
-    MPEntityHandle(const MPEntityHandle& value) : mValue(value.mValue) {}  // ??0MPEntityHandle@@QAE@ABV0@@Z (g.o 0x4A9710)
+    MPEntityHandle(const MPEntityHandle& value);           // ??0MPEntityHandle@@QAE@ABV0@@Z (g.o 0x4A9710)
     MPEntityHandle& operator=(const MPEntityHandle& other);
-    unsigned short GetPeerEntityIndex() const { return mValue & 0x7FF; }  // ?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ (g.o 0x4A9730)
-    unsigned short GetValue() const { return mValue; }   // ?GetValue@MPEntityHandle@@QBEGXZ (g.o 0x4A9740)
-    bool IsAssigned() const { return mValue != 0; }      // ?IsAssigned@MPEntityHandle@@QBE_NXZ (g.o 0x4A9750)
+    unsigned short GetPeerEntityIndex() const;  // ?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ (g.o 0x4A9730)
+    unsigned short GetValue() const;           // ?GetValue@MPEntityHandle@@QBEGXZ (g.o 0x4A9740)
+    bool IsAssigned() const;                   // ?IsAssigned@MPEntityHandle@@QBE_NXZ (g.o 0x4A9750)
 };
 MPEntityHandle::MPEntityHandle()
 {
     mValue = 0;
+}
+MPEntityHandle::MPEntityHandle(const MPEntityHandle& value)
+{
+    mValue = value.mValue;
+}
+unsigned short MPEntityHandle::GetPeerEntityIndex() const
+{
+    return mValue & 0x7FF;
+}
+unsigned short MPEntityHandle::GetValue() const
+{
+    return mValue;
+}
+bool MPEntityHandle::IsAssigned() const
+{
+    return mValue != 0;
 }
 MPEntityHandle& MPEntityHandle::operator=(const MPEntityHandle& other)
 {
@@ -2233,7 +2249,8 @@ player_collision_context_t::player_collision_context_t(
 // Local minimal BitSet + SizedHandle + HandleDb (binary template manglings;
 // g_accessors.cpp cannot include core_systems.h where the other BitSet lives).
 template <int N>
-struct BitSet {
+class BitSet {
+public:
     unsigned char mBits[(N + 7) / 8];
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
     void Clear()
@@ -2252,6 +2269,45 @@ struct BitSet {
     }
     static int GetNumWords() { return (N + 31) / 32; }
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
+
+    class iterator {
+    public:
+        BitSet<N>* m_src;        // +0x00
+        int m_word_idx;          // +0x04
+        unsigned int m_cur_val;  // +0x08
+        unsigned int m_cur_word; // +0x0C
+
+        iterator() : m_src(nullptr), m_word_idx(0), m_cur_val(0), m_cur_word(0) {}
+        iterator(const BitSet<N>& src)
+        {
+            m_src = (BitSet<N>*)&src;
+            m_cur_word = ((const unsigned int*)src.mBits)[0];
+            m_word_idx = 0;
+            m_cur_val = (unsigned int)-1;
+            operator++();
+        }
+        iterator& operator++()
+        {
+            while (m_word_idx < GetNumWords())
+            {
+                if (m_cur_word != 0)
+                {
+                    unsigned long idx;
+                    _BitScanForward(&idx, m_cur_word);
+                    m_cur_val = m_word_idx * 32 + (int)idx;
+                    m_cur_word &= m_cur_word - 1;
+                    return *this;
+                }
+                ++m_word_idx;
+                if (m_word_idx < GetNumWords())
+                    m_cur_word = ((const unsigned int*)m_src->mBits)[m_word_idx];
+            }
+            m_cur_val = (unsigned int)-1;
+            m_word_idx = -1;
+            return *this;
+        }
+    };
+    iterator begin() const { return iterator(*this); }
 };
 
 template <int INDEX_BITS, int KEY_BITS>
@@ -2291,6 +2347,8 @@ public:
     T* GetObject(int idx) const;
     void BindObjectToHandle(Handle handle, T* obj);
     void RegisterDebugCallback(void (*cb)(int, T*)) { mDebugCallback = cb; }
+    void Dump();  // ?Dump@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ (g.o 0x4B3130)
+    SizedHandle<12, 20> AllocateHandle();  // ?AllocateHandle@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ (g.o 0x4B3D70)
 };
 
 template <typename T, int CAPACITY, typename H>
@@ -2369,8 +2427,82 @@ void HandleDb<T, CAPACITY, H>::BindObjectToHandle(Handle handle, T* obj)
         mElements[v3].mObject = obj;
     }
 }
+template <typename T, int CAPACITY, typename H>
+void HandleDb<T, CAPACITY, H>::Dump()
+{
+    if (mDebugCallback != nullptr)
+    {
+        tlPrintf("handle db contents:\n");
+        BitSet<1344> allocatedIndices = ~mFreeIndices;
+        BitSet<1344>::iterator it = allocatedIndices.begin();
+        for (;;)
+        {
+            ++it;
+            if (it.m_cur_val == (unsigned int)-1 && it.m_word_idx == -1)
+                break;
+            mDebugCallback((int)it.m_cur_val, mElements[it.m_cur_val].mObject);
+        }
+    }
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Error("out of handles! - Tell MikeA (MAX_GENTITIES)"))
+        __debugbreak();
+}
+template <typename T, int CAPACITY, typename H>
+SizedHandle<12, 20> HandleDb<T, CAPACITY, H>::AllocateHandle()
+{
+    BitSet<1344>::iterator it = mFreeIndices.begin();
+    int m_cur_val = (int)it.m_cur_val;
+    if ((unsigned int)it.m_cur_val >= (unsigned int)CAPACITY)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("index out of bounds!!! ILLEGAL array access!"))
+            __debugbreak();
+    }
+    mFreeIndices.Rmv(m_cur_val);
+    if (m_cur_val == -1)
+        Dump();
+    return SizedHandle<12, 20>(m_cur_val, mElements[m_cur_val].mKey);
+}
+template class SizedHandle<12, 20>;
 template class HandleDb<Entity, 1344, SizedHandle<12, 20>>;
 template class HandleDb<DObj, 1344, SizedHandle<12, 20>>;
+
+// InteractionController::FreeInteraction (g.o 0x4B00A0)
+void InteractionController::FreeInteraction()
+{
+    InteractionController_EndInteraction(this, mCurState != nullptr);
+    InteractionController_ClearQueue(this);
+}
+
+// rb_vehicle flag getters (g.o 0x4B0540-0x4B0560)
+bool rb_vehicle::is_physics_paused() const
+{
+    return (m_flags & 1) != 0;
+}
+bool rb_vehicle::is_attached_path() const
+{
+    return ((m_flags >> 8) & 1) != 0;
+}
+bool rb_vehicle::is_driving_path() const
+{
+    return (m_flags & 0x200) != 0;
+}
+
+// local_physic_s ctor (g.o 0x4B0B60) - pmove scratch with groundTrace
+namespace {
+struct local_physic_s {
+    uint8_t _pad[0x50];  // scratch layout; groundTrace is a trace_t
+    trace_t groundTrace; // +0x50
+    local_physic_s();
+};
+local_physic_s::local_physic_s()
+{
+    groundTrace.mEntity.mHandle.mVal = 0;
+    groundTrace.partName.mHash = 0;
+}
+}
+// ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
+template class ae_formatted_string<256, unsigned short>;
 
 // DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
 template <>
