@@ -2423,7 +2423,7 @@ void  G_ExplodeMissile(Entity* ent, int msec);
 void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                                   const math::Position3* vEnd, int iDamage, int iMOD);
 Entity* G_TempEntity(const float* origin, int event);
-void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
+void  G_MissileImpact(Entity* ent, trace_t* trace, float* const dir, const float* vOldOrigin);  // ?G_MissileImpact@@YAXPAVEntity@@PAUtrace_t@@QAMQBM@Z (g.o 0x48B520)
 extern Entity* g_path_owner;
 struct nglTexture;
 // DebugRender - render.o class with static draw helpers (binary mangling
@@ -2509,10 +2509,10 @@ public:
     static void RenderAxis(const math::Mat43& mat, float length,
                            float width);  // render.o 0xAC8870
 };
-void  G_MissileTrace(trace_t* results, const math::Position3* start,
-                     const math::Position3* end,
+void  G_MissileTrace(trace_t* results, const math::Position3& start,
+                     const math::Position3& end,
                      DbLinkedHandle<EntityHandleDb, Entity> passEntity,
-                     int contentmask, unsigned char* priorityMap);
+                     int contentmask, unsigned char* priorityMap);  // ?G_MissileTrace@@YAXPAUtrace_t@@ABVPosition3@math@@1V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HPAE@Z (g.o 0x459800)
 void  j_nullsub_84(Entity* pOriginator, int eType, int iTeamFlags,
                    const float* vStart, const float* vEnd, float fRadiusSqrd);
 void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
@@ -2778,12 +2778,12 @@ enum {
     CON_DISCONNECTED = 0,
     CON_CONNECTING = 1,
 };
-void  UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities);  // g.o 0x485F20
+void  UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>& linkedEntities);  // g.o 0x485F20
 void  Svcmd_EntityList_f(void);                      // g.o 0x4640D0
 void  Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int damage, const float* point,
                        int mod, const float* dir, hitLocation_t hitLoc);  // g.o 0x45E9B0
 void  CalcMuzzlePoints(Entity* ent, weaponParms* wp);  // g.o 0x453620
-void  UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities,
+void  UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>& linkedEntities,
                      int msec);                     // g.o 0x48F270
 void  G_DebugSphere(const float* center, float radius, const float* color,
                     int density, int depthTest, int duration);  // g.o 0x461BD0
@@ -2933,7 +2933,7 @@ void  G_TouchTriggersAndVehicles(Entity* pEnt, const math::Position3* origin,
 struct player_collision_context_t;  // pmove context (opaque)
 extern void (*entinfotable[3])(Entity* ent);      // g.o
 const float vectoyaw(const float* const vec);     // core.o
-struct TouchEntityData;
+class TouchEntityData;
 
 // CDL collision types (cdl_types.h / cgbank.h) - used by collide_sphere +
 // push_in_world
@@ -3336,10 +3336,10 @@ bool push_in_world(math::Position3& pos, float radius,
                    TouchEntityData& entities);  // g.o 0x46E640
 bool push_in_world(pmove_t& pm, float radius,
                    const collision_context_t& context);  // g.o
-void prepare_collision_objects(Entity* ent, const math::Position3* p0,
-                               const math::Position3* p1, float radius,
-                               int mask, proximity_data_t* proximity_data,
-                               TouchEntityData* entities);  // g.o 0x45C5F0
+void prepare_collision_objects(Entity* ent, const math::Position3& p0,
+                               const math::Position3& p1, float radius,
+                               int mask, proximity_data_t& proximity_data,
+                               TouchEntityData& entities);  // g.o 0x45C5F0
 bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                     const TouchEntityData& entities,
                     const math::Position3& incenter, float radius,
@@ -3524,7 +3524,7 @@ void  G_DebugCircle2Ex(const float* center, float radius, const float* dir,
                        const float* color, int depthTest, int duration);  // g.o 0x4572F0
 int   CM_PointContents(const math::Position3& p, DCGSet* model);  // game.o 0x632500
 int   GetEntityTouchTriggerType(Entity* pEnt);  // g.o 0x448BE0
-int   g_EntityContactCapsule(const math::Position3* mins, const math::Position3* maxs,
+int   g_EntityContactCapsule(const math::Position3& mins, const math::Position3& maxs,
                              const Entity* ent);  // g.o 0x450AC0
 int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                       DbLinkedHandle<EntityHandleDb, Entity>* entityList,
@@ -3625,8 +3625,8 @@ void  Weapon_RocketLauncher_Fire(Entity* ent, float spread, weaponParms* wp,
                                  float lifetime, bool explode);  // g.o 0x481930
 Entity* fire_rocket(Entity* self, float* start, float* dir, float lifetime);  // g.o
 void  gunrandom(float* x, float* y);             // core.o
-void  Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* center,
-                                    unsigned int seed);  // g.o 0x481E00
+void  Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* const center,
+                                    int seed);  // ?Weapon_ArtilleryStrike_Launch@@YAXPAVEntity@@PAUweaponParms@@QAMH@Z (g.o 0x481E00)
 Entity* fire_artillery(Entity* i_Self, float* i_StrikePoint, int i_Delay);  // g.o
 void  j_nullsub_54(weaponParms* wp, const float* target, float* out);  // g.o
 void  j_nullsub_47(weaponParms* wp, const float* target, float* out);  // g.o
@@ -4030,7 +4030,7 @@ struct EntityDeathTask : Task {
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,
                             bool useAngles);
-void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
+void  G_MissileImpact(Entity* ent, trace_t* trace, float* const dir, const float* vOldOrigin);
 
 struct Destructible;
 class IVPointer_Destructible {

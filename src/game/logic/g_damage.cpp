@@ -948,8 +948,8 @@ label_19:
     }
     else
     {
-        G_MissileTrace((trace_t*)v33, &ent->r.currentOrigin,
-                       (const math::Position3*)vReflect, ent->r.mOwner,
+        G_MissileTrace((trace_t*)v33, ent->r.currentOrigin,
+                       *(const math::Position3*)vReflect, ent->r.mOwner,
                        ent->clipmask | 0x22, bulletPriorityMap);
     }
     if (((int)tr.normal.v.m128_f32[2] & 0x1F00000) == 0x1400000
@@ -966,8 +966,8 @@ label_19:
         v15->s.surfType = ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F;
         v15->s.weapon = ent->s.weapon;
         v15->s.mOtherEntity.mHandle.mVal = ent->mHandle.mHandle.mVal;
-        G_MissileTrace((trace_t*)v33, &ent->r.currentOrigin,
-                       (const math::Position3*)vReflect, ent->r.mOwner,
+        G_MissileTrace((trace_t*)v33, ent->r.currentOrigin,
+                       *(const math::Position3*)vReflect, ent->r.mOwner,
                        ent->clipmask, bulletPriorityMap);
     }
     if (ent->methodOfDeath == 3
@@ -977,8 +977,8 @@ label_19:
         Entity* v16 = HandleDbToEnt(tr.mEntity);
         int v17 = v16->r.contents;
         v16->r.contents = 0;
-        G_MissileTrace((trace_t*)v33, &ent->r.currentOrigin,
-                       (const math::Position3*)vReflect, ent->r.mOwner,
+        G_MissileTrace((trace_t*)v33, ent->r.currentOrigin,
+                       *(const math::Position3*)vReflect, ent->r.mOwner,
                        ent->clipmask, bulletPriorityMap);
         v16->r.contents = v17;
     }
@@ -1023,7 +1023,7 @@ label_19:
         end.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
         end.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
         end.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2] - 1.5f;
-        G_MissileTrace((trace_t*)v33, &start, &end, ent->r.mOwner,
+        G_MissileTrace((trace_t*)v33, start, end, ent->r.mOwner,
                        ent->clipmask, bulletPriorityMap);
         if (tr.normal.v.m128_f32[1] != 1.0f)
         {
@@ -1072,7 +1072,7 @@ label_71:
 }
 
 // ea: 0x0048B520
-void G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin)
+void G_MissileImpact(Entity* ent, trace_t* trace, float* const dir, const float* vOldOrigin)
 {
     unsigned int mVal = trace->mEntity.mHandle.mVal;
     unsigned int v4 = mVal & 0xFFF;

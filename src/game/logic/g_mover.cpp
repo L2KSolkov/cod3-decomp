@@ -1144,8 +1144,8 @@ void Render()
 // ea: 0x0045C5F0
 void prepare_collision_objects(Entity* ent, const math::Position3& p0,
                                const math::Position3& p1, float radius,
-                               int mask, proximity_data_t* proximity_data,
-                               TouchEntityData* entities)
+                               int mask, proximity_data_t& proximity_data,
+                               TouchEntityData& entities)
 {
     math::Position3 pmin;
     pmin.v = _mm_min_ps(p0.v, p1.v);
@@ -1184,17 +1184,17 @@ void prepare_collision_objects(Entity* ent, const math::Position3& p0,
             query_proximity_data(qlo, qhi, *ent->proximity_data);
         }
         filter_proximity_data(lo, hi, mask, *ent->proximity_data,
-                              *proximity_data);
+                              proximity_data);
     }
     math::Position3 expand2;
     expand2.v.m128_f32[0] = radius;
     expand2.v.m128_f32[1] = radius;
     expand2.v.m128_f32[2] = radius;
     expand2.v.m128_f32[3] = 0.0f;
-    entities->mins.v = _mm_sub_ps(pmin.v, expand2.v);
-    entities->maxs.v = _mm_add_ps(pmax.v, expand2.v);
-    entities->num = CM_AreaEntities(entities->mins, entities->maxs,
-                                    entities->touch, 128, mask);
+    entities.mins.v = _mm_sub_ps(pmin.v, expand2.v);
+    entities.maxs.v = _mm_add_ps(pmax.v, expand2.v);
+    entities.num = CM_AreaEntities(entities.mins, entities.maxs,
+                                    entities.touch, 128, mask);
 }
 
 // ea: 0x0048CB90

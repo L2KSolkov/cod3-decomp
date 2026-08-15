@@ -1271,7 +1271,7 @@ Entity* fire_grenade(Entity* self, float* start, float* dir, int grenadeWPID,
 }
 
 // ea: 0x0047ABC0
-Entity* fire_rifle_grenade(Entity* self, const float* target, int grenadeWPID,
+Entity* fire_rifle_grenade(Entity* self, float* const target, int grenadeWPID,
                            bool checkTrajectory)
 {
     TPakId mPakId = (TPakId)self->mPakId;

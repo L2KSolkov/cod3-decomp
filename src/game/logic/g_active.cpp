@@ -437,7 +437,7 @@ void G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
             }
             else
             {
-                v19 = g_EntityContactCapsule(&mins, &maxs, mObject) == 0;
+                v19 = g_EntityContactCapsule(mins, maxs, mObject) == 0;
             }
             if (!v19)
                 goto touch;
@@ -545,7 +545,7 @@ void G_TouchVehicles(Entity* ent, const math::Position3& origin,
             continue;
         if (context.filter(mObject))
             continue;
-        if (g_EntityContactCapsule(&mins, &maxs, mObject) == 0)
+        if (g_EntityContactCapsule(mins, maxs, mObject) == 0)
             continue;
         if (Scr_IsSystemActive(1) != 0)
         {

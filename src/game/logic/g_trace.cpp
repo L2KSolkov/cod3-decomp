@@ -71,7 +71,7 @@ int g_EntityContact(const math::Position3& mins, const math::Position3& maxs,
 }
 
 // ea: 0x00450AE0
-int g_EntityContactCapsule(const math::Position3* mins, const math::Position3* maxs, const Entity* ent)
+int g_EntityContactCapsule(const math::Position3& mins, const math::Position3& maxs, const Entity* ent)
 {
     if (ent == nullptr)
     {
@@ -145,7 +145,7 @@ int g_EntityContactCapsule(const math::Position3* mins, const math::Position3* m
                 __debugbreak();
         }
     }
-    return SV_EntityContact(*mins, *maxs, ent, 1);
+    return SV_EntityContact(mins, maxs, ent, 1);
 }
 
 // ea: 0x0045EBB0

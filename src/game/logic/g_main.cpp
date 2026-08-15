@@ -1738,11 +1738,11 @@ void ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity)
 }
 
 // ea: 0x00485F20
-void UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities)
+void UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>& linkedEntities)
 {
-    for (int i = 0; i < linkedEntities->m_size; ++i)
+    for (int i = 0; i < linkedEntities.m_size; ++i)
     {
-        Entity* mObject = HandleDbToEnt(linkedEntities->m_elements[i]);
+        Entity* mObject = HandleDbToEnt(linkedEntities.m_elements[i]);
         if (mObject != nullptr && mObject->client == nullptr && mObject->tagInfo != nullptr)
             G_GeneralLink(mObject);
     }
@@ -1774,7 +1774,7 @@ void Svcmd_EntityList_f(void)
 }
 
 // ea: 0x0048F270
-void UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities,
+void UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>& linkedEntities,
                     int msec)
 {
     Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
@@ -1786,7 +1786,7 @@ void UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>
         {
             if (v4->tagInfo != nullptr)
             {
-                if (linkedEntities->m_size == 1000)
+                if (linkedEntities.m_size == 1000)
                 {
                     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
                     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
@@ -1799,7 +1799,7 @@ void UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>
                 }
                 else
                 {
-                    linkedEntities->m_elements[linkedEntities->m_size++] = v4->mHandle;
+                    linkedEntities.m_elements[linkedEntities.m_size++] = v4->mHandle;
                 }
             }
             G_RunFrameForEntity(v4, msec);
@@ -2422,9 +2422,9 @@ void G_RunFrame(int msec)
     PlayerAnimMgr_Update(delta);
     ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000> linkedEntities;
     linkedEntities.m_size = 0;
-    UpdateEntities(&linkedEntities, msec);
+    UpdateEntities(linkedEntities, msec);
     UpdateRigidBody(delta);
-    UpdateLinkedEntities(&linkedEntities);
+    UpdateLinkedEntities(linkedEntities);
     if (cls.state == CA_ACTIVE)
         MultiplayerMgr::sInst->Step(0, false, true);
     if (level.actorPredictDepth != 0)
@@ -4379,8 +4379,8 @@ void Weapon_RocketLauncher_Fire(Entity* ent, float spread, weaponParms* wp,
 }
 
 // ea: 0x00481E00
-void Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* center,
-                                   unsigned int seed)
+void Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* const center,
+                                   int seed)
 {
     weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
     int delay = pWeapInfo->iProjectileDelay;

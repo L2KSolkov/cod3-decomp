@@ -436,7 +436,7 @@ int G_PredictMissile(const Entity* ent, int duration, float* endPos,
         math::Position3 end;
         BG_EvaluateTrajectory(&pos, i, end);
         trace_t trace;
-        G_MissileTrace(&trace, &origin, &end, ent->r.mOwner, ent->clipmask,
+        G_MissileTrace(&trace, origin, end, ent->r.mOwner, ent->clipmask,
                        bulletPriorityMap);
         origin.v = trace.endpos.v;
         if (trace.allsolid != 0)
@@ -449,7 +449,7 @@ int G_PredictMissile(const Entity* ent, int duration, float* endPos,
             end2.v.m128_f32[0] = origin.v.m128_f32[0];
             end2.v.m128_f32[1] = origin.v.m128_f32[1];
             end2.v.m128_f32[2] = origin.v.m128_f32[2] - 1.5f;
-            G_MissileTrace(&trace, &origin, &end2, ent->r.mOwner, ent->clipmask,
+            G_MissileTrace(&trace, origin, end2, ent->r.mOwner, ent->clipmask,
                            bulletPriorityMap);
             fraction = trace.fraction;
             if (fraction != 1.0f)
@@ -484,9 +484,8 @@ int G_PredictMissile(const Entity* ent, int duration, float* endPos,
 
 // ea: 0x0044C8C0
 void Static_Pain(Entity* ent, Entity* /*unused1*/, int /*unused2*/,
-                 const float* /*unused3*/, int /*unused4*/, int /*unused5*/,
-                 const float* /*unused6*/, Entity* /*unused7*/,
-                 hitLocation_t /*unused8*/)
+                 const float* const /*unused3*/, int /*unused4*/,
+                 const float* const /*unused5*/, hitLocation_t /*unused6*/)
 {
     bool v2 = (ent->spawnflags & 4) == 0;
     float enta = (float)level.time;
@@ -931,8 +930,8 @@ void Corpse_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
 }
 
 // ea: 0x00459800
-void G_MissileTrace(trace_t* results, const math::Position3* start,
-                    const math::Position3* end,
+void G_MissileTrace(trace_t* results, const math::Position3& start,
+                    const math::Position3& end,
                     DbLinkedHandle<EntityHandleDb, Entity> passEntity,
                     int contentmask, unsigned char* priorityMap)
 {
@@ -940,7 +939,7 @@ void G_MissileTrace(trace_t* results, const math::Position3* start,
     v7.pass_entity1 = passEntity;
     v7.pass_entity2.mHandle.mVal = 0;
     v7.contentmask = contentmask;
-    g_LocationalTrace(results, *start, *end, v7, priorityMap, 0.0f);
+    g_LocationalTrace(results, start, end, v7, priorityMap, 0.0f);
     if (results->startsolid != 0)
     {
         if ((results->contents & 0x800) != 0)
@@ -951,7 +950,7 @@ void G_MissileTrace(trace_t* results, const math::Position3* start,
         else
         {
             results->fraction = 0.0f;
-            results->normal.v = _mm_sub_ps(start->v, end->v);
+            results->normal.v = _mm_sub_ps(start.v, end.v);
         }
     }
 }

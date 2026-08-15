@@ -5034,8 +5034,8 @@ void ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf)
     proximity_data_t proximity;
     memset(&proximity, 0, sizeof(proximity));
     prepare_collision_objects(
-        pSelf, &veh->phys.origin, &veh->phys.origin, 200.0f,
-        pSelf->clipmask | 0x2000000, &proximity, &entities);
+        pSelf, veh->phys.origin, veh->phys.origin, 200.0f,
+        pSelf->clipmask | 0x2000000, proximity, entities);
     math::Mat43 rot = pSelf->CalcRotTranMat43();
     math::Position3 lo = rot.w;
     // bmodel bounds in the tree's DCGSet layout: min/max at +0x30/+0x40
@@ -5415,8 +5415,8 @@ int VEH_Slide(Entity* ent, int gravity, int msec, int move, int allowHit)
     }
     proximity_data_t proximity;
     memset(&proximity, 0, sizeof(proximity));
-    prepare_collision_objects(ent, &veh->phys.origin, &veh->phys.origin,
-                              200.0f, ent->clipmask, &proximity, &entities);
+    prepare_collision_objects(ent, veh->phys.origin, veh->phys.origin,
+                              200.0f, ent->clipmask, proximity, entities);
     DObjSkelMat bodyMtx;
     G_DObjGetWorldBoneIndexMatrix(ent, veh->boneIndex.body, &bodyMtx);
     float dir[3] = { bodyMtx.axis[0][0], bodyMtx.axis[0][1],
