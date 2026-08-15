@@ -354,7 +354,9 @@ static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 // ============================================================================
 class AeThreadManager {
 public:
-    uint8_t _pad[2148];
+    uint8_t _pad[0x858];
+    void*   mThreadExecuting;  // +0x858 (scr.o 0x5BC880)
+    uint8_t _pad2[2148 - 0x85C];
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
     static AeThreadManager* Inst(); // ?Inst@AeThreadManager@@SAPAV1@XZ (g.o 0x4A6340)
     void KillAllThreads();

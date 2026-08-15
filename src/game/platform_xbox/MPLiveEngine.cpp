@@ -18,7 +18,7 @@ bool MPUIInterface::mLiveQueryActive = false;   // ?mLiveQueryActive@MPUIInterfa
 bool MPUIInterface::mQueryFromID = false;       // ?mQueryFromID@MPUIInterface@@1_NA
 bool MPUIInterface::mIsViewableOnline = false;  // ?mIsViewableOnline@MPUIInterface@@1_NA
 MPUIInterface::EGameConnectionType MPUIInterface::mGameConnectionType =
-    MPUIInterface::kGameConnectionTypeLan;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
+    MPUIInterface::kGameConnectionTypeOnline;  // binary data init @ 0xE36E40 = 1 (Online)
 bool MPUIInterface::mInSession = false;    // ?mInSession@MPUIInterface@@1_NA
 
 // ea: 0x0072F480 (mp.o)

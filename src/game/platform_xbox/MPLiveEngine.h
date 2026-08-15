@@ -301,8 +301,9 @@ struct MPPlayerManager {
 class MPUIInterface {
 public:
     enum EGameConnectionType : int {
-        kGameConnectionTypeLan = 1,
-        kGameConnectionTypeOnline = 2,
+        kGameConnectionTypeLan = 0,
+        kGameConnectionTypeOnline = 1,
+        kGameConnectionTypeLocal = 2,
     };
     static bool IsOnlineGame();            // ?IsOnlineGame@MPUIInterface@@SA_NXZ
     static bool InSession();               // ?InSession@MPUIInterface@@SA?B_NXZ

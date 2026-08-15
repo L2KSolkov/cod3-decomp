@@ -11,8 +11,22 @@
 
 #include "core/PoolAllocator.h"
 #include "core/tlFixedString.h"
+#include "game/nextgen/nextgen.h"
 
 extern PoolAllocator* gCommonPoolAllocator;  // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A (core.o)
+extern bool g_indoor;                              // ?g_indoor@@3_NA (core.o)
+extern float CG_GetNorthDirection();               // ?CG_GetNorthDirection@@YAMXZ (cg.o)
+extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp_actors.o)
+extern void FX_SetRainDrops(bool on);              // ?FX_SetRainDrops@@YAX_N@Z (render.o)
+
+namespace ShaderCommon {
+extern bool gGlowGodRays;  // ?gGlowGodRays@ShaderCommon@@3_NA
+extern int  gGlowPasses;   // ?gGlowPasses@ShaderCommon@@3HA
+}
+
+namespace View {
+bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
+}
 
 // ?gpBrocAPI@@3PAUBrocAPI@@A (scr.o data @ 0xF3ABDC, BSS)
 BrocAPI* gpBrocAPI = NULL;
@@ -510,6 +524,9 @@ extern void mem_heap_free(void* ptr);  // ?mem_heap_free@@YAXPAX@Z
 
 namespace MPUIInterface {
 void ExitGame();  // ?ExitGame@MPUIInterface@@SAXXZ (mp.o)
+bool IsOnlineGame();  // mp.o
+bool IsLANGame();     // mp.o
+bool IsLocalGame();   // mp.o
 }
 
 // ae_heap wrapper view (streamer.o 0x684DD0; definition in pakmanager.cpp)
@@ -605,6 +622,261 @@ unsigned int CreateNanoGraph(char* /*id*/, float* const /*param1*/,
 }
 
 namespace BrocSys {
+
+// ea: 0x005BC580 (thunk to View::IsSplitScreen)
+bool IsSplitScreen()
+{
+    return View::IsSplitScreen();
+}
+
+// ea: 0x005BC550 (thunk to MPUIInterface::IsLANGame)
+bool IsLanGame()
+{
+    return MPUIInterface::IsLANGame();
+}
+
+// ea: 0x005BC560 (thunk to MPUIInterface::IsOnlineGame)
+bool IsOnlineGame()
+{
+    return MPUIInterface::IsOnlineGame();
+}
+
+// ea: 0x005BC570 (thunk to MPUIInterface::IsLocalGame)
+bool IsLocalGame()
+{
+    return MPUIInterface::IsLocalGame();
+}
+
+// ea: 0x005BC820
+int ModXY(int x, int y)
+{
+    return x % y;
+}
+
+// ea: 0x005BC830
+float FModXY(float x, float y)
+{
+    return fmodf(x, y);
+}
+
+// ea: 0x005BC880 (mov eax, AeThreadManager::sInst.mThreadExecuting)
+bool ThreadIsThreadExecuting()
+{
+    return AeThreadManager::sInst.mThreadExecuting != nullptr;
+}
+
+// ea: 0x005BC9A0
+int CVarGetInt(const char* cvarName)
+{
+    return Cvar_VariableIntegerValue(cvarName);
+}
+
+// ea: 0x005BCC10
+void SetIndoor(bool indoor)
+{
+    g_indoor = indoor;
+}
+
+// ea: 0x005BCC80
+unsigned int GetTime()
+{
+    return level.time;
+}
+
+// ea: 0x005BCC90
+float GetDeltaTime()
+{
+    return ServerTime::sInst.mTickDelta;
+}
+
+// ea: 0x005BCD10 (thunk to CG_GetNorthDirection)
+float GetNorthYaw()
+{
+    return CG_GetNorthDirection();
+}
+
+// ea: 0x005BCD20 (empty stub)
+void GameSave(const Broc::string&)
+{
+}
+
+// ea: 0x005BCD30 (empty stub)
+void GameLoad(const Broc::string&)
+{
+}
+
+// ea: 0x005BCDC0
+void SetPlayerIgnoreRadiusDamage(bool bVal)
+{
+    level.bPlayerIgnoreRadiusDamageLatched = bVal;
+}
+
+// ea: 0x005BCDD0 (empty stub)
+void MissionSuccess(const Broc::string&)
+{
+}
+
+// ea: 0x005BCE60
+void SetRainDrops(bool on)
+{
+    FX_SetRainDrops(on);
+}
+
+// ea: 0x005BCE90
+void DrawCompassFriendlies(bool inBool)
+{
+    level.bDrawCompassFriendlies = inBool;
+}
+
+// ea: 0x005BCEC0
+void SetMaxVehicles(int vehicles)
+{
+    vehicle_InitDynamicBuffers(vehicles);
+}
+
+// ea: 0x005BCED0 (empty stub)
+void ProfBegin()
+{
+}
+
+// ea: 0x005BCEE0 (empty stub)
+void ProfEnd()
+{
+}
+
+// ea: 0x005BCF10 (thunk to G_FlushCorpses)
+void FlushCorpses()
+{
+    G_FlushCorpses();
+}
+
+// ea: 0x005BCF20 (empty stub)
+void StartMemCheck()
+{
+}
+
+// ea: 0x005BCF30 (empty stub)
+void EndMemCheck()
+{
+}
+
+// ea: 0x005BD2B0 (return 0 stub)
+int ProfileDeclareID(const char*)
+{
+    return 0;
+}
+
+// ea: 0x005BD2C0 (empty stub)
+void ProfileStart(int)
+{
+}
+
+// ea: 0x005BD2D0 (empty stub)
+void ProfileStop(int)
+{
+}
+
+// ea: 0x005BD2E0 (empty stub)
+void ProfileSetVal(int, int)
+{
+}
+
+// ea: 0x005BD900 (return false stub)
+bool SetMissionToTrack(const char*, bool)
+{
+    return false;
+}
+
+// ea: 0x005BD910 (return 0 stub)
+int GetMissionStat(int, bool)
+{
+    return 0;
+}
+
+// ea: 0x005BD920 (return 0 stub)
+int GetMissionStatAll(int)
+{
+    return 0;
+}
+
+// ea: 0x005BD930 (empty stub)
+void SetMissionStat(int, int)
+{
+}
+
+// ea: 0x005BD940 (empty stub)
+void IncMissionStat(int)
+{
+}
+
+// ea: 0x005BD950 (empty stub)
+void DecMissionStat(int)
+{
+}
+
+// ea: 0x005BD960 (return 0 stub)
+float GetAvgMissionStat(int)
+{
+    return 0.0f;
+}
+
+// ea: 0x005BD970 (return 0 stub)
+int GetMissionCompletionTime()
+{
+    return 0;
+}
+
+// ea: 0x005BD980 (empty stub)
+void UpdateMissionCompletionTime()
+{
+}
+
+// ea: 0x005BD990 (empty stub)
+void SetPlayerWeaponUsed(int)
+{
+}
+
+// ea: 0x005BD9A0 (return false stub)
+bool WasPlayerWeaponUsed(int)
+{
+    return false;
+}
+
+// ea: 0x005BD9B0 (return false stub)
+bool WasPlayerWeaponCategoryUsed(int, bool)
+{
+    return false;
+}
+
+// ea: 0x005BDA30 (mov byte ptr [light+0x3D], 1)
+void RemoveDynamicLight(unsigned int light)
+{
+    if (light != 0)
+        *((unsigned char*)light + 0x3D) = 1;
+}
+
+// ea: 0x005BDAF0 (empty stub)
+void EnableNanoForces(bool)
+{
+}
+
+// ea: 0x005BDB60
+void GlowSetGodRaysAux(bool val)
+{
+    ShaderCommon::gGlowGodRays = val;
+}
+
+// ea: 0x005BDB70
+void GlowSetPassesAux(int val)
+{
+    ShaderCommon::gGlowPasses = val;
+}
+
+// ea: 0x005BDB80
+void CurGenMotionBlur(float fLevel, float fPlateauTime, float fFadeTime)
+{
+    CG_MotionBlur::Begin(fLevel, fPlateauTime, fFadeTime);
+}
 
 // ea: 0x005BC210
 const unsigned int ConvertStringToHash(const char* str)

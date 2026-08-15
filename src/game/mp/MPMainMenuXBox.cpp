@@ -114,6 +114,8 @@ struct MPProfileMainMenu {
 
 namespace MPUIInterface {
 bool IsOnlineGame();
+bool IsLANGame();
+bool IsLocalGame();
 bool InSession();
 void ExitGame();
 void QueryFromID(XNKID* sessionID);
@@ -128,12 +130,26 @@ extern bool mQueryFromID;
 extern bool mIsViewableOnline;
 extern bool mCableDisconnect;
 int mGameConnectionType = 1;  // namespace twin (binary's static lives in mp.o)
-enum { kGameConnectionTypeLan = 1, kGameConnectionTypeOnline = 2 };
+// EGameConnectionType (IDA types): Lan=0, Online=1, Local=2
+enum { kGameConnectionTypeLan = 0, kGameConnectionTypeOnline = 1,
+       kGameConnectionTypeLocal = 2 };
 
 // ea: 0x0072F480 (mp.o)
 bool IsOnlineGame()  // ?IsOnlineGame@MPUIInterface@@YA_NXZ
 {
     return mGameConnectionType == kGameConnectionTypeOnline;
+}
+
+// ea: 0x0072F470 (mp.o)
+bool IsLANGame()
+{
+    return mGameConnectionType == kGameConnectionTypeLan;
+}
+
+// ea: 0x0072F490 (mp.o)
+bool IsLocalGame()
+{
+    return mGameConnectionType == kGameConnectionTypeLocal;
 }
 }
 
