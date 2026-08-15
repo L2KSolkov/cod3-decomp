@@ -297,7 +297,7 @@ void Cmd_Thread_Debug_f(void)
 }
 
 // ea: 0x0044AE40
-int Cmd_EntityStats_f(void)
+void Cmd_EntityStats_f(void)
 {
     int result = Cmd_Argc();
     if (result == 2)
@@ -305,10 +305,9 @@ int Cmd_EntityStats_f(void)
         char tmpstr[64];
         Cmd_ArgvBuffer(1, tmpstr, 64);
         g_renderGameEntityStats = strcmp(tmpstr, "1") == 0;
-        return g_renderGameEntityStats;
+        return;
     }
     g_renderGameEntityStats = 0;
-    return result;
 }
 
 // ea: 0x0044A780
@@ -357,9 +356,10 @@ void Init()
 }
 
 // ea: 0x00450CF0
-void g_AddDebugString(float* xyz, float* color, float scale, const char* pszText)
+void g_AddDebugString(const float* xyz, const float* color, float scale,
+                      const char* pszText)
 {
-    CL_AddDebugString(xyz, color, scale, pszText, 1);
+    CL_AddDebugString((float*)xyz, (float*)color, scale, pszText, 1);
 }
 
 // ea: 0x00455F40
@@ -452,7 +452,7 @@ void SP_intermission(Entity* ent)
 }
 
 // ea: 0x0044AAB0
-void Cmd_SetSpawnPoint_f(void)
+void Cmd_SetSpawnPoint_f(Entity* /*ent*/)
 {
     if (Cmd_Argc() == 2)
     {
@@ -927,7 +927,7 @@ void Cmd_Where_f(Entity* ent)
 }
 
 // ea: 0x0044AEA0
-int Cmd_PFXStats_f(void)
+void Cmd_PFXStats_f(void)
 {
     int result = Cmd_Argc();
     if (result == 2)
@@ -935,10 +935,9 @@ int Cmd_PFXStats_f(void)
         char tmpstr[64];
         Cmd_ArgvBuffer(1, tmpstr, 64);
         g_renderPFXStats = strcmp(tmpstr, "1") == 0;
-        return g_renderPFXStats;
+        return;
     }
     g_renderPFXStats = 0;
-    return result;
 }
 
 // ea: 0x00448FE0
@@ -1374,7 +1373,7 @@ void G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
 }
 
 // ea: 0x00458120
-void G_CheckLoadGame(int savegame)
+void G_CheckLoadGame(int savegame, int /*unused*/)
 {
     Cvar_Set("g_reloading", "1");
     if (savegame != 0)

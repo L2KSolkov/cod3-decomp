@@ -1095,7 +1095,7 @@ char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
         G_LoadLevel();
         return nullptr;
     case 9:
-        G_CheckLoadGame((int)arg0);
+        G_CheckLoadGame((int)arg0, 0);
         return nullptr;
     case 11:
         G_RunPreFrame((int)arg0);

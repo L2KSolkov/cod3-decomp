@@ -294,6 +294,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_accessors.cpp
     src/game/logic/placement_delete.asm
     src/game/logic/g_math_shims.asm
+    src/game/logic/g_old_mangle_thunks.asm
     src/game/logic/g_scr_vehicle.cpp
     src/game/logic/g_testfps.cpp
     src/game/logic/g_inspector.cpp

@@ -173,7 +173,7 @@ void G_MissileLandAngles(Entity* ent, trace_t* trace, math::Position3* vAngles,
 }
 
 // ea: 0x0044C390
-void G_LaunchMissile(Entity* ent)
+void G_LaunchMissile(Entity* ent, int /*unused*/)
 {
     ent->nextthink = level.time + BG_GetInfoForWeapon(ent->s.weapon)->iProjectileDelay;
     ent->think = THINK__G_IncomingMissile;
@@ -190,7 +190,7 @@ void G_IncomingMissile(Entity* ent, int /*unused*/)
 }
 
 // ea: 0x0044C430
-void G_DelayMissile(Entity* ent)
+void G_DelayMissile(Entity* ent, int /*unused*/)
 {
     ent->nextthink = level.time + 30000;
     ent->think = THINK__G_ExplodeMissile;
@@ -825,7 +825,7 @@ void P_DamageFeedback(Entity* player)
 }
 
 // ea: 0x00455A40
-void BodySink(Entity* ent)
+void BodySink(Entity* ent, int /*unused*/)
 {
     if (level.time - ent->timestamp <= 6500)
     {

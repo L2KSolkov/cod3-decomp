@@ -8,7 +8,7 @@
 // ea: 0x00457A10
 void Use_Item(Entity* ent, Entity* /*other*/, Entity* /*activator*/)
 {
-    RespawnItem(ent);
+    RespawnItem(ent, 0);
 }
 
 // ea: 0x0048B4E0
@@ -81,7 +81,7 @@ void SaveRegisteredItems()
 }
 
 // ea: 0x0044B630
-void RegisterItem(unsigned int iItemIndex, int bUpdateCS)
+void RegisterItem(int iItemIndex, int bUpdateCS)
 {
     if (iItemIndex > 0x88)
     {
@@ -112,7 +112,7 @@ void RegisterItem(unsigned int iItemIndex, int bUpdateCS)
 }
 
 // ea: 0x0044B6F0
-int IsItemRegistered(unsigned int iItemIndex)
+int IsItemRegistered(int iItemIndex)
 {
     if (iItemIndex > 0x88)
     {
@@ -127,7 +127,7 @@ int IsItemRegistered(unsigned int iItemIndex)
 }
 
 // ea: 0x00457760
-void RespawnItem(Entity* ent)
+void RespawnItem(Entity* ent, int /*unused*/)
 {
     Entity* teammaster = ent;
     Broc::string::Block* mBlock = ent->team.mBlock;

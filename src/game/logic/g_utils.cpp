@@ -493,14 +493,14 @@ void G_TransposeMatrix(float (*matrix)[3], float (*transpose)[3])
 }
 
 // ea: 0x0044C750
-void G_RotatePoint(math::Position3* point, float (*matrix)[3])
+void G_RotatePoint(math::Position3& point, float (*matrix)[3])
 {
-    float x = point->v.m128_f32[0];
-    float y = point->v.m128_f32[1];
-    float z = point->v.m128_f32[2];
-    point->v.m128_f32[0] = matrix[0][0] * x + matrix[0][1] * y + matrix[0][2] * z;
-    point->v.m128_f32[1] = matrix[1][0] * x + matrix[1][1] * y + matrix[1][2] * z;
-    point->v.m128_f32[2] = matrix[2][0] * x + matrix[2][1] * y + matrix[2][2] * z;
+    float x = point.v.m128_f32[0];
+    float y = point.v.m128_f32[1];
+    float z = point.v.m128_f32[2];
+    point.v.m128_f32[0] = matrix[0][0] * x + matrix[0][1] * y + matrix[0][2] * z;
+    point.v.m128_f32[1] = matrix[1][0] * x + matrix[1][1] * y + matrix[1][2] * z;
+    point.v.m128_f32[2] = matrix[2][0] * x + matrix[2][1] * y + matrix[2][2] * z;
 }
 
 // ea: 0x0044CE40

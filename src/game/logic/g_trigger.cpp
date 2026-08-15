@@ -62,7 +62,7 @@ int GetEntityTouchTriggerType(Entity* pEnt)
 }
 
 // ea: 0x0044CA80
-void use_trigger_use(Entity* ent, Entity* other)
+void use_trigger_use(Entity* ent, Entity* other, Entity* /*unused*/)
 {
     if (level.time > ent->wait)
     {
@@ -104,7 +104,7 @@ void InitSentientTrigger(Entity* self)
 }
 
 // ea: 0x004514F0
-void multi_wait(Entity* ent)
+void multi_wait(Entity* ent, int /*unused*/)
 {
     ent->nextthink = 0;
 }
@@ -136,7 +136,7 @@ void Use_Multi(Entity* ent, Entity* other, Entity* activator)
 }
 
 // ea: 0x004515E0
-void hurt_use(Entity* self)
+void hurt_use(Entity* self, Entity* /*unused1*/, Entity* /*unused2*/)
 {
     float delay = self->delay;
     self->touch = self->touch != 0 ? 0 : 3;
@@ -452,7 +452,7 @@ void Touch_Multi(Entity* self, Entity* other, int /*unused*/)
 }
 
 // ea: 0x00470990
-void Touch_FriendlyChain(Entity* self, Entity* other)
+void Touch_FriendlyChain(Entity* self, Entity* other, int /*unused*/)
 {
     if (other->sentient == nullptr)
     {

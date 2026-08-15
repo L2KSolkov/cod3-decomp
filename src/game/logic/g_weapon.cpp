@@ -195,7 +195,7 @@ void UseLiveGrenade(Entity* /*ent*/, Entity* /*other*/, Entity* /*activator*/)
 }
 
 // ea: 0x00469720
-void Touch_Mine(Entity* mine, Entity* toucher)
+void Touch_Mine(Entity* mine, Entity* toucher, int /*bTouched*/)
 {
     Client* client = toucher->client;
     if (client == nullptr)
@@ -223,18 +223,18 @@ explode:
 }
 
 // ea: 0x004697F0
-void Touch_Mine_Not_Owner(Entity* mine, Entity* toucher)
+void Touch_Mine_Not_Owner(Entity* mine, Entity* toucher, int bTouched)
 {
     unsigned int v3 = mine->r.mOwner.mHandle.mVal & 0xFFF;
     Entity* mObject = nullptr;
     if (v3 < 0x540 && mine->r.mOwner.mHandle.mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
         mObject = EntityHandleDb::sInst.mElements[v3].mObject;
     if (toucher != mObject)
-        Touch_Mine(mine, toucher);
+        Touch_Mine(mine, toucher, bTouched);
 }
 
 // ea: 0x00469840
-void Think_EnableMine(Entity* ent)
+void Think_EnableMine(Entity* ent, int /*unused*/)
 {
     unsigned int v1 = ent->r.mOwner.mHandle.mVal & 0xFFF;
     Entity* mObject = nullptr;

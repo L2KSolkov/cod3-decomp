@@ -388,7 +388,7 @@ static_assert(offsetof(scr_vehicle_t, mRBVeh) == 0x518, "scr_vehicle_t::mRBVeh o
 static_assert(offsetof(scr_vehicle_t, animMap) == 0x56C, "scr_vehicle_t::animMap offset mismatch");
 
 void Use_Item(Entity* ent, Entity* other, Entity* activator);
-void RespawnItem(Entity* ent);
+void RespawnItem(Entity* ent, int unused);
 
 // ============================================================================
 // trRefEntity - render entity (0x104 bytes) - verified against IDA (subset)
@@ -690,7 +690,7 @@ void Cmd_ToggleShader_f(void);
 void Cmd_KillSound(void);
 void Cmd_BuilderTest_f(void);
 void Cmd_Thread_Debug_f(void);
-int  Cmd_EntityStats_f(void);
+void Cmd_EntityStats_f(void);
 void Cmd_TextureTiling_f(void);
 void G_EndGame(void);
 void* GetScratchPad(void);
@@ -2171,7 +2171,8 @@ const float vectosignedpitch(const float* const vec);
 void  vectosignedangles(const float* const vec, float* const angles);
 void  G_DObjCalcBone(Entity* ent, int boneIndex);
 bool  G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex, DObjSkelMat* tagMat);
-void  RegisterItem(unsigned int iItemIndex, int bUpdateCS);
+void  RegisterItem(int iItemIndex, int bUpdateCS);
+int   IsItemRegistered(int iItemIndex);
 int __fastcall Actor_IsUsingTurret(actor_s* pSelf);  // mp_actors.o
 void j_nullsub_74(Entity* pSelf, int bLerp);
 bool Entity_has_zone_collision(const void* self);
@@ -2514,7 +2515,7 @@ void    G_VehInitPathPos(vehicle_pathpos_t* vpp);  // g.o 0x... (g_scr_vehicle.c
 Entity* G_IsVehicleUnusable(Entity* player);        // g.o 0x46E040
 bool    G_IsPlayerVehicleGunner(Entity* player);    // g.o 0x46E200
 void    Cmd_Where_f(Entity* ent);                   // g.o 0x456010
-int     Cmd_PFXStats_f(void);                       // g.o 0x44AEA0
+void    Cmd_PFXStats_f(void);                       // g.o 0x44AEA0
 int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o 0x46F9F0
 vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
 int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
@@ -2523,7 +2524,7 @@ void    G_InitScrVehicles(void);                    // g.o 0x45E1D0
 void G_InitialParseInteractionInfo(void);
 void    G_InitSentients(void);                       // g.o
 void    GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
-unsigned char GScr_LoadConsts(void);                 // g.o
+void    GScr_LoadConsts(void);                       // g.o
 void    Scr_PrecacheAnimTrees(void* (*alloc)(void*, unsigned int), int restart);  // g.o
 AnimTree* Scr_GetAnimTreeByName(const char* treename);  // g.o
 void*   Hunk_AllocXAnimCreate(void* self, unsigned int size);  // g.o
@@ -2591,7 +2592,7 @@ void  Scr_Vehicle_GetIn(Entity* vehicle, Entity* occupant, int health,
                         unsigned int seatIdx, int entryIdx);  // g.o 0x4918E0
 void  G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
                           float angleLerpRate);      // g.o 0x4492B0
-void  G_CheckLoadGame(int savegame);                 // g.o 0x458120
+void  G_CheckLoadGame(int savegame, int unused);  // g.o 0x458120
 void  VEH_RotateWheels(Entity* self, vehicle_info_t* info);  // g.o 0x480CF0
 extern vmCvar_t g_dumpAnims;                         // ?g_dumpAnims@@3UvmCvar_t@@A
 extern vmCvar_t cg_mpDebugAnimEntity;                // cg.o vmCvar
@@ -2692,7 +2693,7 @@ void  ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
 void  ClientEndFrame(Entity* ent, int msec);   // g.o 0x491B60
 void  G_setfog(const char* fogstring);               // g.o 0x455E80
 void  ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467610
-vehicle_info_t* G_GetVehicleInfoName(int16_t index); // g.o 0x44F100
+const char* G_GetVehicleInfoName(short index);   // g.o 0x44F100
 void  G_SetFixedLink(Entity* ent, int eAngles);      // g.o (g_utils.cpp)
 void  G_SetPlayerFixedLink(Entity* ent);             // g.o 0x482780
 int   G_EntAttach(Entity* ent, const char* modelName, const char* tagName,
@@ -3645,7 +3646,7 @@ void  g_AddDebugLine(const float* start, const float* end, const float* color,
                      int depthTest, int duration, int fadeOut);  // g.o 0x450D10
 void  ClientIntermissionThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x448F20
 void  SP_intermission(Entity* ent);                          // g.o 0x449410
-void  Cmd_SetSpawnPoint_f(void);                             // g.o 0x44AAB0
+void  Cmd_SetSpawnPoint_f(Entity* ent);                      // g.o 0x44AAB0
 void  G_XAnimUpdateEnt(Entity* ent);                         // g.o 0x4581C0
 void  render_sphere(const math::Position3& center, float radius,
                     const Color& color);  // g.o 0x46A250

@@ -1994,7 +1994,7 @@ void G_FreeVehicleRefs(Entity* ent)
 }
 
 // ea: 0x0044F100
-vehicle_info_t* G_GetVehicleInfoName(int16_t index)
+const char* G_GetVehicleInfoName(short index)
 {
     if (index < 0)
     {
@@ -2006,14 +2006,14 @@ vehicle_info_t* G_GetVehicleInfoName(int16_t index)
             __debugbreak();
     }
     if (index < s_numVehicleInfos)
-        return s_vehicleInfos[index];
+        return s_vehicleInfos[index]->name;
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
     AeAssert::gCurrentLine = 7098;
     AeAssert::gCurrentExpr = "index < s_numVehicleInfos";
     if (AeAssert::IsIgnored() || AeAssert::Assert("old cod assert"))
         __debugbreak();
-    return s_vehicleInfos[index];
+    return s_vehicleInfos[index]->name;
 }
 
 // ea: 0x0045E9B0

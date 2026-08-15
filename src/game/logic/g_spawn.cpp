@@ -627,7 +627,7 @@ void G_DuplicateScriptFields(Entity* dest, const Entity* source)
 }
 
 // ea: 0x0047A700
-void misc_spawner_think(Entity* ent)
+void misc_spawner_think(Entity* ent, int /*unused*/)
 {
     const char* v2 = ent->mSpawnItem.mBlock != nullptr
                          ? (const char*)(ent->mSpawnItem.mBlock + 1)

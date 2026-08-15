@@ -1241,7 +1241,7 @@ void (*reachedtable[3])(Entity* ent);
 void (*blockedtable[3])(Entity* ent, Entity* other);
 
 // ea: 0x0044C830
-void finishSpawningKeyedMover(Entity* ent)
+void finishSpawningKeyedMover(Entity* ent, int /*unused*/)
 {
     ent->nextthink = level.time + 100;
     if ((ent->flags & 0x10) == 0)
@@ -2340,7 +2340,7 @@ void SP_script_model(Entity* pSelf)
 }
 
 // ea: 0x00462B50
-void ReturnToPos1Rotate(Entity* ent)
+void ReturnToPos1Rotate(Entity* ent, int /*unused*/)
 {
     MatchTeam(ent, MOVER_2TO1ROTATE, level.time);
     Entity* v1 = EntityHandleDb::sInst.Find(640, hash_const.player);
