@@ -3051,6 +3051,40 @@ void ObjectiveWorldState(int iObjective, const Broc::string& inState,
 void ObjectiveChildCurrent(int iObjective, int iChild,
                            const char* pDisplay);  // 0x5C6C90
 void ObjectiveCurrent(int iObjective, const char* pDisplay);  // 0x5C6DE0
+void ObjectiveRing(int iObjective, int clientIndex);  // 0x5C6F90
+void ObjectiveChildString(int iObjective, int iChild,
+                          const Broc::string& text, int number,
+                          const char* pDisplay);  // 0x5C7060
+void ObjectiveChildString2(int iObjective, int iChild, int text,
+                           int number, const char* pDisplay);  // 0x5C70E0
+void ObjectiveChildString_NoMessage(int iObjective, int iChild,
+                                    const Broc::string& text,
+                                    int number,
+                                    const char* pDisplay);  // 0x5C73D0
+void ObjectiveChildPosition(int iObjective, int iChild,
+                            const Broc::vector& vPos);  // 0x5C7450
+void ObjectiveChildRing(int iObjective, int iChild);  // 0x5C7520
+void ObjectiveChildAdd1(int iObjective, int iChild,
+                        const Broc::string& state);  // 0x5C8830
+void ObjectiveAdd1(int iObjective, const Broc::string& state,
+                   const char* display, int iChild,
+                   int iChildOrder);  // 0x5C8950
+void ObjectiveChildAdd2(int iObjective, int iChild,
+                        const Broc::string& state, int iString,
+                        const char* display);  // 0x5C89C0
+void ObjectiveAdd2(int iObjective, const Broc::string& state,
+                   int iString, const char* display, int iChild,
+                   int iChildOrder);  // 0x5C8B70
+void ObjectiveChildAdd6(int iObjective, int iChild,
+                        const Broc::string& state, int pszString,
+                        const char* display);  // 0x5C8CA0
+void ObjectiveAdd6(int iObjective, const Broc::string& inState,
+                   int pszString, const char* display, int iChild,
+                   int iChildOrder);  // 0x5C8DC0
+void ObjectiveChildAdd3(int iObjective, int iChild,
+                        const Broc::string& state,
+                        const Broc::string& pszString,
+                        const char* display);  // 0x5C8E30
 void BrocDebugRender();  // 0x5BDEA0
 void* CreateExtendedEntity(const char** keys, int count);  // 0x5BDF00
 bool RecompileScript();  // 0x5BDFB0
@@ -8681,6 +8715,485 @@ void BrocSys::ObjectiveCurrent(int iObjective, const char* pDisplay)
             Broc::string s((Broc::string::Block*)nullptr);
             s = str_const.current;
         }
+    }
+}
+
+// ============================================================================
+// scr.o batch 40 - objective children/rings/add family
+// ============================================================================
+
+int dword_F6A2D0[740];  // 0xF6A2D0 (objective ring flags; scr.o data)
+
+// ea: 0x005C6F90
+void BrocSys::ObjectiveRing(int iObjective, int clientIndex)
+{
+    if (iObjective >= 0x10)
+    {
+        char* v3 = va(
+            "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+            iObjective, 15);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", v3))
+            __debugbreak();
+    }
+    else if (clientIndex < -1 || clientIndex >= 1)
+    {
+        const char* v2 = va(
+            "index %i is an illegal client index. Valid indexes are -1 to %i\n",
+            clientIndex, 0);
+        Scr_Error(v2);
+    }
+    else if (clientIndex >= 0)
+    {
+        dword_F6A2D0[802 * clientIndex + 44 * iObjective] =
+            dword_F6A2D0[802 * clientIndex + 44 * iObjective] == 0;
+    }
+    else
+    {
+        dword_F6A2D0[44 * iObjective] =
+            dword_F6A2D0[44 * iObjective] == 0;
+    }
+}
+
+// ea: 0x005C7060
+void BrocSys::ObjectiveChildString(int iObjective, int iChild,
+                                   const Broc::string& text, int number,
+                                   const char* pDisplay)
+{
+    if (iChild >= 1)
+    {
+        int ChildObjective = FindChildObjective(iObjective, iChild, true);
+        if (ChildObjective != -1)
+            ObjectiveStringInternal(ChildObjective, text, number, true, true,
+                                    pDisplay);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1570;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C70E0
+void BrocSys::ObjectiveChildString2(int iObjective, int iChild, int text,
+                                    int number, const char* pDisplay)
+{
+    (void)pDisplay;
+    if (iChild >= 1)
+    {
+        int ChildObjective = FindChildObjective(iObjective, iChild, true);
+        if (ChildObjective != -1)
+        {
+            Broc::string result = GetLocalizedString(text);
+            Broc::string child((Broc::string::Block*)nullptr);
+            if (ChildObjective < 16)
+            {
+                int v7 = ChildObjective + 16;
+                char buffer[256];
+                char s[256];
+                char string[16];
+                SV_GetConfigstring(v7, buffer, 256);
+                string[0] = 0;
+                snprintf(string, 0xFu, "%d", number);
+                if (result.mBlock != nullptr)
+                    sprintf(s, (const char*)(result.mBlock + 1), string);
+                else
+                    sprintf(s, defaultFileName, string);
+                if (strlen(s) < 256)
+                {
+                    if (!Info_Validate(s) || strchr(s, 92) != nullptr)
+                    {
+                        const char* v11 = va(
+                            "Objective strings can not have a \", a ;, or a \\ in them. Illegal objective string: %s\n",
+                            s);
+                        Scr_Error(v11);
+                    }
+                    else
+                    {
+                        Info_SetValueForKey(buffer, "str", s);
+                        SV_SetConfigstring(v7, buffer);
+                        const char* v9 =
+                            Info_ValueForKey(buffer, "state");
+                        int v10 = *v9 != 0 ? atoi(v9) : 0;
+                        switch (v10)
+                        {
+                        case 0:
+                            child = str_const.empty;
+                            break;
+                        case 1:
+                            child = str_const.active;
+                            break;
+                        case 2:
+                            child = str_const.invisible;
+                            break;
+                        case 3:
+                            child = str_const.done;
+                            break;
+                        case 4:
+                            child = str_const.current;
+                            break;
+                        case 5:
+                            child = str_const.failed;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    const char* v8 = va(
+                        "Objective strings is too long (> %i): %s\n", 255, s);
+                    Scr_Error(v8);
+                }
+            }
+            else
+            {
+                char* v6 = va(
+                    "index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+                    ChildObjective, 15);
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+                AeAssert::gCurrentLine = 16;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("\x15%s", v6))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1588;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C73D0
+void BrocSys::ObjectiveChildString_NoMessage(int iObjective, int iChild,
+                                             const Broc::string& text,
+                                             int number,
+                                             const char* pDisplay)
+{
+    if (iChild >= 1)
+    {
+        int ChildObjective = FindChildObjective(iObjective, iChild, true);
+        if (ChildObjective != -1)
+            ObjectiveStringInternal(ChildObjective, text, number, false, true,
+                                    pDisplay);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1607;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C7450
+void BrocSys::ObjectiveChildPosition(int iObjective, int iChild,
+                                     const Broc::vector& vPos)
+{
+    if (iChild >= 1)
+    {
+        int ChildObjective = FindChildObjective(iObjective, iChild, true);
+        int v4 = ChildObjective;
+        if (ChildObjective != -1)
+        {
+            char szConfigString[256];
+            SV_GetConfigstring(ChildObjective, szConfigString, 256);
+            const char* v5 = va("%i %i %i", vPos.x, vPos.y, vPos.z);
+            Info_SetValueForKey(szConfigString, "org", v5);
+            SV_SetConfigstring(v4, szConfigString);
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1625;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C7520
+void BrocSys::ObjectiveChildRing(int iObjective, int iChild)
+{
+    if (iChild >= 1)
+    {
+        int ChildObjective = FindChildObjective(iObjective, iChild, true);
+        int v3 = ChildObjective;
+        if (ChildObjective != -1)
+        {
+            char szConfigString[256];
+            SV_GetConfigstring(ChildObjective, szConfigString, 256);
+            const char* v4 = Info_ValueForKey(szConfigString, "ring");
+            int v5 = *v4 != 0 ? atoi(v4) : 0;
+            const char* v6 = va("%i", v5 == 0);
+            Info_SetValueForKey(szConfigString, "ring", v6);
+            SV_SetConfigstring(v3, szConfigString);
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 1650;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C8830
+void BrocSys::ObjectiveChildAdd1(int iObjective, int iChild,
+                                 const Broc::string& state)
+{
+    int v3 = iChild;
+    if (iChild >= 1)
+    {
+        int UnusedChildObjective = FindUnusedChildObjective();
+        if (UnusedChildObjective == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (FindChildObjective(iObjective, v3, false) == -1)
+        {
+            Broc::string s((Broc::string::Block*)nullptr);
+            ObjectiveAdd3(iObjective, state, s, defaultFileName,
+                          UnusedChildObjective, v3, -1);
+        }
+        else
+        {
+            Com_Printf(
+                "^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 197;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C8950
+void BrocSys::ObjectiveAdd1(int iObjective, const Broc::string& state,
+                            const char* display, int iChild,
+                            int iChildOrder)
+{
+    (void)display;
+    (void)iChild;
+    (void)iChildOrder;
+    Broc::string s((Broc::string::Block*)nullptr);
+    ObjectiveAdd3(iObjective, state, s, "1", -1, -1, -1);
+}
+
+// ea: 0x005C89C0
+void BrocSys::ObjectiveChildAdd2(int iObjective, int iChild,
+                                 const Broc::string& state, int iString,
+                                 const char* display)
+{
+    int v5 = iChild;
+    if (iChild >= 1)
+    {
+        int child = FindUnusedChildObjective();
+        if (child == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (FindChildObjective(iObjective, v5, false) == -1)
+        {
+            char szString[1024];
+            sprintf(szString, "%d", iString);
+            size_t v6 = strlen(szString);
+            if (v6 > 1)
+            {
+                for (size_t i = 0; i < v6; ++i)
+                {
+                    if (isalnum((unsigned char)szString[i]) == 0
+                        && szString[i] != 95)
+                    {
+                        const char* v8 = va(
+                            "Illegal localized string reference: %s (must contain only alpha-numeric characters and underscores",
+                            szString);
+                        Scr_ParamError(2u, v8);
+                    }
+                }
+            }
+            Broc::string s(szString);
+            ObjectiveAdd3(iObjective, state, s, display, child, v5, -1);
+        }
+        else
+        {
+            Com_Printf(
+                "^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 230;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C8B70
+void BrocSys::ObjectiveAdd2(int iObjective, const Broc::string& state,
+                            int iString, const char* display, int iChild,
+                            int iChildOrder)
+{
+    (void)display;
+    (void)iChild;
+    (void)iChildOrder;
+    char szString[1024];
+    sprintf(szString, "%d", iString);
+    size_t v3 = strlen(szString);
+    if (v3 > 1)
+    {
+        for (size_t i = 0; i < v3; ++i)
+        {
+            if (isalnum((unsigned char)szString[i]) == 0
+                && szString[i] != 95)
+            {
+                char* v5 = va(
+                    "Illegal localized string reference: %s (must contain only alpha-numeric characters and underscores",
+                    szString);
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+                AeAssert::gCurrentLine = 23;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("\x15%s", v5))
+                    __debugbreak();
+            }
+        }
+    }
+    Broc::string pszString(szString);
+    ObjectiveAdd3(iObjective, state, pszString, "1", -1, -1, -1);
+}
+
+// ea: 0x005C8CA0
+void BrocSys::ObjectiveChildAdd6(int iObjective, int iChild,
+                                 const Broc::string& state, int pszString,
+                                 const char* display)
+{
+    int v5 = iChild;
+    if (iChild >= 1)
+    {
+        int UnusedChildObjective = FindUnusedChildObjective();
+        if (UnusedChildObjective == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (FindChildObjective(iObjective, v5, false) == -1)
+        {
+            Broc::string s = GetLocalizedString(pszString);
+            ObjectiveAdd3(iObjective, state, s, display, UnusedChildObjective,
+                          v5, -1);
+        }
+        else
+        {
+            Com_Printf(
+                "^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 299;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C8DC0
+void BrocSys::ObjectiveAdd6(int iObjective, const Broc::string& inState,
+                            int pszString, const char* display, int iChild,
+                            int iChildOrder)
+{
+    (void)display;
+    (void)iChild;
+    (void)iChildOrder;
+    Broc::string result = GetLocalizedString(pszString);
+    ObjectiveAdd3(iObjective, inState, result, "1", -1, -1, -1);
+}
+
+// ea: 0x005C8E30
+void BrocSys::ObjectiveChildAdd3(int iObjective, int iChild,
+                                 const Broc::string& state,
+                                 const Broc::string& pszString,
+                                 const char* display)
+{
+    if (iChild >= 1)
+    {
+        int UnusedChildObjective = FindUnusedChildObjective();
+        if (UnusedChildObjective == -1)
+        {
+            Com_Printf("^1ERROR : No free child objectives!\n");
+        }
+        else if (FindChildObjective(iObjective, iChild, false) == -1)
+        {
+            ObjectiveAdd3(iObjective, state, pszString, display,
+                          UnusedChildObjective, iChild, -1);
+        }
+        else
+        {
+            Com_Printf(
+                "^1ERROR : Attempt to add an existant child objective number to a parent objective!\n");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocObjective.cpp";
+        AeAssert::gCurrentLine = 333;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Child Objective numbers must be greater than 0."))
+            __debugbreak();
     }
 }
 
