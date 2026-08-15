@@ -400,6 +400,8 @@ public:
     void ExitLevel();
     void StartDevServer();
     void MapRestart();                                  // ?MapRestart@MultiplayerMgr@@QAEXXZ (mp.o)
+    void RoundOver(int condition, int team);            // ?RoundOver@MultiplayerMgr@@QAEXHH@Z (mp.o)
+    void NextRound(bool allowChange);                   // ?NextRound@MultiplayerMgr@@QAEX_N@Z (mp.o)
     void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,
@@ -1390,6 +1392,7 @@ struct IGOFrontEnd {
     void Update(float time_inc);       // ?Update@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void UpdateInScene(float time_inc);// ?UpdateInScene@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
+    void SetActionHint(int ref, int viewport);    // ?SetActionHint@IGOFrontEnd@@QAEXHH@Z
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
     void AddActiveGrenade(const Entity* grenade);  // ?AddActiveGrenade@IGOFrontEnd@@QAEXPBVEntity@@@Z
     void SetHUDType(hud_type ht, int viewport);  // ?SetHUDType@IGOFrontEnd@@QAEXW4hud_type@@H@Z

@@ -890,7 +890,12 @@ struct str_const_t {
      Broc::string xmodel_airborne;     // +0x234
      Broc::string xmodel_wehrmacht;    // +0x238
      Broc::string worldspawn;          // +0x23C
-    uint8_t    _pad240[0x298 - 0x240];
+    uint8_t    _pad240[0x284 - 0x240];
+    Broc::string overheated;          // +0x284
+    Broc::string axis;                // +0x288
+    Broc::string allies;              // +0x28C
+    Broc::string neutral;             // +0x290
+    Broc::string dead;                // +0x294
     Broc::string smoke_grenade;       // +0x298
     uint8_t    _pad29C[0x2B4 - 0x29C];
 };
@@ -911,6 +916,8 @@ static_assert(offsetof(str_const_t, worldspawn) == 0x23C,
               "str_const_t::worldspawn offset mismatch");
 static_assert(offsetof(str_const_t, script_vehicle) == 0x15C,
               "str_const_t::script_vehicle offset mismatch");
+static_assert(offsetof(str_const_t, axis) == 0x288,
+              "str_const_t::axis offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================

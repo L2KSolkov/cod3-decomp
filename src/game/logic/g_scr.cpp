@@ -18,6 +18,7 @@
 #include "core/ae_array.h"
 #include "game/AeThreadFunctor.h"
 #include "game/nextgen/nextgen.h"
+#include "game/logic/g_camerashake.h"
 
 extern PoolAllocator* gCommonPoolAllocator;  // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A (core.o)
 extern void* mem_heap_malloc(unsigned int size);  // ?mem_heap_malloc@@YAPAXI@Z
@@ -1276,6 +1277,7 @@ extern void mem_heap_free(void* ptr);  // ?mem_heap_free@@YAXPAX@Z
 
 namespace MPUIInterface {
 void ExitGame();  // ?ExitGame@MPUIInterface@@SAXXZ (mp.o)
+bool NextRoundMapChanges();  // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ (mp.o)
 bool IsOnlineGame();  // mp.o
 bool IsLANGame();     // mp.o
 bool IsLocalGame();   // mp.o
@@ -2904,6 +2906,27 @@ unsigned int CreateDynamicLight(const Broc::vector& lightpos,
 void SetDynamicLightPosition(unsigned int light,
                              const Broc::vector& lightpos);  // 0x5BD9C0
 Broc::string GetLocalizedString(int stringHash);  // 0x5BDAC0
+void RoundOver(int condition, const Broc::string& winner);  // 0x5BC2C0
+void NextRound(bool allowChange);  // 0x5BC6A0
+bool NextRoundMapChanges();        // 0x5BC6C0
+void Reset(const Broc::hudelem& hudElem);  // 0x5BD730
+void Destroy(const Broc::hudelem& hudElem);  // 0x5BD7A0
+void PlayScriptedAnim(unsigned int entHandleVal,
+                      const char* eventId);  // 0x5BD8B0
+int  GetPlayerArray(unsigned int* array);  // 0x5BE6C0
+int  GetLocalPlayerArray(unsigned int* array);  // 0x5BE750
+void Scr_SetAngles(Entity* ent, int offset, Broc::vector* val);  // 0x5BE810
+void Scr_GetAngles(Entity* ent, int offset, Broc::vector* val);  // 0x5BE870
+void Scr_SetGroupName(Entity* ent, int offset, Broc::string* val);  // 0x5BE8D0
+void Scr_SetTargetName(Entity* ent, int offset, Broc::string* val);  // 0x5BE920
+void Scr_SetTarget(Entity* ent, int offset, Broc::string* val);  // 0x5BE970
+void Scr_SetNoteWorthy(Entity* ent, int offset, Broc::string* val);  // 0x5BE9C0
+void Scr_SetAnimName(Entity* ent, int offset, Broc::string* val);  // 0x5BEA10
+void SetTutorialText(int hash, int viewport);  // 0x5BF8B0
+void SetActionHint(int hash, int viewport);    // 0x5BF940
+void SetWeaponCameraShakeScale(float scale, int onlyADS);  // 0x5BF860
+void NoClip(int val);  // 0x5BFB90
+unsigned int GetNumVehicles();  // 0x5BEC40
 }
 
 static void BrocFree(void* p)
@@ -6317,6 +6340,294 @@ Broc::string BrocSys::GetLocalizedString(int stringHash)
     const char* STBString =
         STBManager::sInst->GetSTBString((unsigned int)stringHash);
     return Broc::string(STBString);
+}
+
+// ============================================================================
+// scr.o batch 30 - BrocSys wrappers (RoundOver..GetNumVehicles)
+// ============================================================================
+
+// ea: 0x005BC2C0
+void BrocSys::RoundOver(int condition, const Broc::string& winner)
+{
+    if (winner == str_const.axis)
+    {
+        MultiplayerMgr::sInst->RoundOver(condition, 1);
+    }
+    else if (winner == str_const.allies)
+    {
+        MultiplayerMgr::sInst->RoundOver(condition, 2);
+    }
+    else
+    {
+        (void)(winner == str_const.neutral);
+        MultiplayerMgr::sInst->RoundOver(condition, 3);
+    }
+}
+
+// ea: 0x005BC6A0
+void BrocSys::NextRound(bool allowChange)
+{
+    MultiplayerMgr::sInst->NextRound(allowChange);
+}
+
+// ea: 0x005BC6C0 (tail jmp to MPUIInterface::NextRoundMapChanges)
+bool BrocSys::NextRoundMapChanges()
+{
+    return MPUIInterface::NextRoundMapChanges();
+}
+
+// ea: 0x005BD730
+void BrocSys::Reset(const Broc::hudelem& hudElem)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3619;
+        AeAssert::gCurrentExpr =
+            "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    HudSetDefaults(&g_hudelems[mHudIndex]);
+}
+
+// ea: 0x005BD7A0
+void BrocSys::Destroy(const Broc::hudelem& hudElem)
+{
+    int mHudIndex = (int)hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3627;
+        AeAssert::gCurrentExpr =
+            "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    if (mHudIndex >= 0)
+        HudFree(&g_hudelems[mHudIndex]);
+}
+
+// ea: 0x005BD8B0 (binary symbol has (unsigned int, const char*))
+void BrocSys::PlayScriptedAnim(unsigned int entHandleVal, const char* eventId)
+{
+    (void)entHandleVal;
+    (void)eventId;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+    AeAssert::gCurrentLine = 3662;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert(" Empty function for MP !! "))
+        __debugbreak();
+}
+
+// ea: 0x005BE6C0
+int BrocSys::GetPlayerArray(unsigned int* array)
+{
+    int v1 = 0;
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v3 = EntityManager::sInst->mPlayers[i];
+        if (v3 != nullptr && v3->sentient != nullptr)
+            array[v1++] = v3->mHandle.mHandle.mVal;
+    }
+    return v1;
+}
+
+// ea: 0x005BE750
+int BrocSys::GetLocalPlayerArray(unsigned int* array)
+{
+    Entity* v1 = EntityManager::sInst->mPlayers[0];
+    if (v1 == nullptr || v1->sentient == nullptr || !v1->IsLocalPlayer())
+        return 0;
+    *array = v1->mHandle.mHandle.mVal;
+    return 1;
+}
+
+// ea: 0x005BE810
+void BrocSys::Scr_SetAngles(Entity* ent, int offset, Broc::vector* val)
+{
+    (void)offset;
+    if (ent->actor != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 632;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "cannot directly set the angles on AI.  Use the teleport command instead.\n"))
+            __debugbreak();
+    }
+    G_SetAngle(ent, &val->x);
+}
+
+// ea: 0x005BE870
+void BrocSys::Scr_GetAngles(Entity* ent, int offset, Broc::vector* val)
+{
+    (void)offset;
+    Client* client = ent->client;
+    if (client != nullptr)
+    {
+        val->x = client->ps.viewangles[0];
+        val->y = client->ps.viewangles[1];
+        val->z = client->ps.viewangles[2];
+    }
+    else
+    {
+        val->x = ent->r.currentAngles.v.m128_f32[0];
+        val->y = ent->r.currentAngles.v.m128_f32[1];
+        val->z = ent->r.currentAngles.v.m128_f32[2];
+    }
+}
+
+// ea: 0x005BE8D0
+void BrocSys::Scr_SetGroupName(Entity* ent, int offset, Broc::string* val)
+{
+    (void)offset;
+    ent->mGroupName = *val;
+    if (val->mBlock != nullptr)
+        ent->mGroupNameHash = HashString::CalcHash(
+            (const char*)(val->mBlock + 1));
+    else
+        ent->mGroupNameHash = HashString::CalcHash(defaultFileName);
+}
+
+// ea: 0x005BE920
+void BrocSys::Scr_SetTargetName(Entity* ent, int offset, Broc::string* val)
+{
+    (void)offset;
+    ent->targetname = *val;
+    if (val->mBlock != nullptr)
+        ent->targetnameHash = HashString::CalcHash(
+            (const char*)(val->mBlock + 1));
+    else
+        ent->targetnameHash = HashString::CalcHash(defaultFileName);
+}
+
+// ea: 0x005BE970
+void BrocSys::Scr_SetTarget(Entity* ent, int offset, Broc::string* val)
+{
+    (void)offset;
+    ent->mTarget = *val;
+    if (val->mBlock != nullptr)
+        ent->mTargetHash = HashString::CalcHash(
+            (const char*)(val->mBlock + 1));
+    else
+        ent->mTargetHash = HashString::CalcHash(defaultFileName);
+}
+
+// ea: 0x005BE9C0
+void BrocSys::Scr_SetNoteWorthy(Entity* ent, int offset, Broc::string* val)
+{
+    (void)offset;
+    ent->mScriptNoteworthy = *val;
+    if (val->mBlock != nullptr)
+        ent->mScriptNoteworthyHash = HashString::CalcHash(
+            (const char*)(val->mBlock + 1));
+    else
+        ent->mScriptNoteworthyHash = HashString::CalcHash(defaultFileName);
+}
+
+// ea: 0x005BEA10
+void BrocSys::Scr_SetAnimName(Entity* ent, int offset, Broc::string* val)
+{
+    (void)offset;
+    ent->mAnimName = *val;
+    if (val->mBlock != nullptr)
+        ent->mAnimNameHash = HashString::CalcHash(
+            (const char*)(val->mBlock + 1));
+    else
+        ent->mAnimNameHash = HashString::CalcHash(defaultFileName);
+}
+
+// ea: 0x005BF8B0
+void BrocSys::SetTutorialText(int hash, int viewport)
+{
+    if (viewport != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6671;
+        AeAssert::gCurrentExpr = "viewport >= 0 && viewport < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "SetTutorialText called for a non local player"))
+            __debugbreak();
+    }
+    if (viewport == 0)
+        g_femanager.IGO->SetTutorialText(hash, 0);
+}
+
+// ea: 0x005BF940
+void BrocSys::SetActionHint(int hash, int viewport)
+{
+    if (viewport != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 6693;
+        AeAssert::gCurrentExpr = "viewport >= 0 && viewport < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "SetTutorialText called for a non local player"))
+            __debugbreak();
+    }
+    if (viewport == 0)
+        g_femanager.IGO->SetActionHint(hash, 0);
+}
+
+// ea: 0x005BF860
+void BrocSys::SetWeaponCameraShakeScale(float scale, int onlyADS)
+{
+    CameraShake* v2 = &g_cameraShake[currCl];
+    v2->m_scaleCOD = scale;
+    v2->m_scaleCOD_onlyADS = onlyADS;
+}
+
+// ea: 0x005BFB90
+void BrocSys::NoClip(int val)
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        if (val != 0)
+        {
+            Player->client->noclip = 1;
+            gNoClipEnabled = true;
+        }
+        else
+        {
+            Player->client->noclip = 0;
+            gNoClipEnabled = false;
+        }
+    }
+}
+
+// ea: 0x005BEC40
+unsigned int BrocSys::GetNumVehicles()
+{
+    int MaxVehicles = level.MaxVehicles;
+    unsigned int result = 0;
+    if (level.MaxVehicles != 0)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity>* p_mEntity =
+            &s_vehicles->mEntity;
+        do
+        {
+            if (p_mEntity->mHandle.mVal != 0)
+                ++result;
+            p_mEntity += 468;
+            --MaxVehicles;
+        } while (MaxVehicles != 0);
+    }
+    return result;
 }
 
 // ============================================================================
