@@ -95,11 +95,15 @@ struct BitSet {
 
     class iterator {
     public:
-        unsigned int m_cur_val;  // +0x00
+        BitSet<N>* m_src;        // +0x00
         int m_word_idx;          // +0x04
+        unsigned int m_cur_val;  // +0x08
 
         bool compare(const iterator& rhs);  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
+        bool operator!=(const iterator& rhs);  // ??9iterator@?$BitSet@$0FEA@@@QAE_NABV01@@Z (g.o 0x4B1400)
     };
+
+    iterator end() const;  // ?end@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B0EC0)
 };
 
 // ============================================================================
@@ -142,6 +146,13 @@ bool BitSet<N>::iterator::compare(const BitSet<N>::iterator& rhs)
 {
     return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
 }
+
+template <int N>
+bool BitSet<N>::iterator::operator!=(const BitSet<N>::iterator& rhs)
+{
+    return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
+}
+
 
 // ============================================================================
 // SimpleCollisionDesc - impact point + normal (32 bytes)

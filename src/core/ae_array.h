@@ -32,6 +32,8 @@ public:
         m_elements[m_size] = val;
         ++m_size;
     }
+    int capacity() const { return CAPACITY; }
+    int free_space() const { return CAPACITY - m_size; }
 
     T& pop_back() {
         if (m_size != 0)
@@ -43,6 +45,8 @@ public:
     class const_iterator {
     public:
         const T* m_ptr;  // +0x00
+        const_iterator() : m_ptr(nullptr) {}
+        const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
         const T& operator*() const { return *m_ptr; }  // ??Dconst_iterator@...@@QBEAB...@@XZ
         const_iterator& operator++() { ++m_ptr; return *this; }  // ??Econst_iterator@...@@QAEAAV01@XZ
         bool operator!=(const_iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9const_iterator@...@@QBE_NV01@@Z
@@ -51,10 +55,29 @@ public:
     class iterator {
     public:
         T* m_ptr;  // +0x00
+        iterator() : m_ptr(nullptr) {}
+        iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
         T& operator*() const { return *m_ptr; }  // ??Diterator@...@@QBEAAPAV...@@XZ / QBEAAV...@@XZ
         iterator& operator++() { ++m_ptr; return *this; }  // ??Eiterator@...@@QAEAAV01@XZ
         bool operator!=(iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9iterator@...@@QBE_NV01@@Z
     };
+
+    iterator begin() { return iterator(m_elements); }  // ?begin@...@@QAE?AViterator@1@XZ
+    iterator end() { return iterator(&m_elements[m_size]); }  // ?end@...@@QAE?AViterator@1@XZ
+    const_iterator begin() const { return const_iterator(m_elements); }  // ?begin@...@@QBE?AVconst_iterator@1@XZ
+    const_iterator end() const { return const_iterator(&m_elements[m_size]); }  // ?end@...@@QBE?AVconst_iterator@1@XZ
+};
+
+// ae_sized_array_base<T,CAPACITY> - derived from by ae_sized_array when it
+// needs a separate m_elementdata storage (m_elements points into it).
+template <typename T, int CAPACITY>
+class ae_sized_array_base {
+public:
+    T m_elementdata[CAPACITY];  // +0x00
+    T* m_elements;              // +0x4000
+    int m_size;                 // +0x4004
+
+    ae_sized_array_base() : m_elements(m_elementdata), m_size(0) {}
 };
 
 // ============================================================================

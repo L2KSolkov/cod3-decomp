@@ -41,6 +41,7 @@ struct ae_vector {
     T* end() { return &mElements[mSize]; }
     int size() const { return mSize; }              // ?size@?$ae_vector@...@@QBEHXZ
     T& operator[](int iIndex) { return mElements[iIndex]; }  // ??A?$ae_vector@...@@QAEAA...@@H@Z
+    void pop_back();                                // ?pop_back@?$ae_vector@...@@QAEXXZ
     void reserve(int iCapacity);
     void push_back(const T& iElement);
     void resize(int iNewSize);
@@ -117,6 +118,13 @@ void ae_vector<T>::push_back(const T& iElement)
         mElements = v5;
     }
     mElements[mSize++] = iElement;
+}
+
+template <typename T>
+void ae_vector<T>::pop_back()
+{
+    if (mSize != 0)
+        --mSize;
 }
 
 template <typename T>
@@ -2962,10 +2970,12 @@ public:
     }
     const T& operator[](int i) const;  // ??A?$phys_static_array@...@@QBEABU...@@H@Z
     const int get_count() const { return m_alloc_count; }  // ?get_count@...@@QBE?BHXZ
+    ~phys_static_array();  // ??1?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4B1210)
 
 private:
     void call_destructors();  // ?call_destructors@...@@AAEXXZ (g.o 0x4AE490)
     void reset_buffer();      // ?reset_buffer@...@@AAEXXZ (g.o 0x4AE4B0)
+    void remove_all();        // ?remove_all@...@@QAEXXZ (g.o 0x4B1230)
 };
 struct cdl_array_t {
     int   m_count;     // +0x00

@@ -6720,10 +6720,6 @@ bool BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime)
 // ============================================================================
 // Collision context filters - ea: 0x615AF0..0x615B20
 // ============================================================================
-struct player_collision_context_t : collision_context_t {
-    virtual bool filter(Entity* ent) const;  // ?filter@player_collision_context_t@@UBE_NPAVEntity@@@Z
-};
-
 // ea: 0x00615AF0
 bool player_collision_context_t::filter(Entity* ent) const
 {

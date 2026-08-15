@@ -895,6 +895,8 @@ public:
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
     static EntityHandleDb* Inst();       // ?Inst@EntityHandleDb@@SAPAV1@XZ (g.o 0x4A9D40)
     const ae_sized_array<Entity*, 4096>& GetActiveList() const;  // ?GetActiveList@EntityHandleDb@@QBEABV?$ae_sized_array@PAVEntity@@$0BAAA@@@XZ (g.o 0x4A9D50)
+    Entity* GetObject(int idx) const;    // ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z (g.o 0x4B0DA0)
+    void BindObjectToHandle(Handle handle, Entity* obj);  // ?BindObjectToHandle@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVEntity@@@Z (g.o 0x4B0E20)
     void Init();                         // ?Init@EntityHandleDb@@QAEXXZ
     void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
     // Inline handle lookup (used at every call site in the binary)

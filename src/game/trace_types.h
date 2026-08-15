@@ -68,6 +68,7 @@ struct collision_context_t {
     collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle1,
                         DbLinkedHandle<EntityHandleDb, Entity> handle2,
                         int mask);                // ??0collision_context_t@@QAE@V?$DbLinkedHandle@...@@0H@Z
+    bool filter(Entity* ent);  // ?filter@collision_context_t@@UBE_NPAVEntity@@@Z (g.o 0x4AF020)
 };
 static_assert(sizeof(collision_context_t) == 0x18, "collision_context_t size mismatch");
 static_assert(offsetof(collision_context_t, pass_entity1) == 0x04,
@@ -80,3 +81,12 @@ static_assert(offsetof(collision_context_t, pass_owner2) == 0x10,
               "collision_context_t::pass_owner2 offset mismatch");
 static_assert(offsetof(collision_context_t, contentmask) == 0x14,
               "collision_context_t::contentmask offset mismatch");
+
+// player_collision_context_t - pmove collision context (g_bg_pmove.cpp)
+class player_collision_context_t : public collision_context_t {
+public:
+    player_collision_context_t();  // default (pmove local usage)
+    player_collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle,
+                               int mask);  // ??0player_collision_context_t@@QAE@V?$DbLinkedHandle@...@@H@Z (g.o 0x4B0000)
+    bool filter(Entity* ent) const;  // ?filter@player_collision_context_t@@UBE_NPAVEntity@@@Z
+};

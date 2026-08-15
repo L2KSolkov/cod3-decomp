@@ -152,10 +152,14 @@ public:
     IVPointer() : mValue(nullptr), mPakId(PAK_ID_INVALID) {}  // ??0?$IVPointer@VPhysData@@@@QAE@XZ (g.o 0x4ACE80)
     void clear() { mValue = nullptr; mPakId = PAK_ID_INVALID; }  // ?clear@?$IVPointer@VXModel@@@@QAEXXZ (g.o 0x4ACE20)
 
+    T* operator*() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??D?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1240)
+    T* operator->() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1260)
+
 private:
     T* Deref() const;  // ?Deref@?$IVPointer@VXModel@@@@ABEPAVXModel@@XZ (g.o 0x4AE4C0)
 };
 static_assert(sizeof(IVPointer<char>) == 8, "IVPointer size mismatch");
+extern void ValidatePakId(TPakId pakId);  // core.o
 
 // ============================================================================
 // DObjModel — model slot for Entity::CreateDObj (20 bytes) - verified IDA

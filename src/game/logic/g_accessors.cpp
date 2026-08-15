@@ -1900,6 +1900,15 @@ void phys_static_array<T, CAPACITY>::reset_buffer()
 {
     m_alloc_count = 0;
 }
+template <typename T, int CAPACITY>
+phys_static_array<T, CAPACITY>::~phys_static_array()
+{
+}
+template <typename T, int CAPACITY>
+void phys_static_array<T, CAPACITY>::remove_all()
+{
+    m_alloc_count = 0;
+}
 template class phys_static_array<proxy_obj_t, 256>;
 template class phys_static_array<bounded_proxy_obj_t, 128>;
 
@@ -1987,6 +1996,7 @@ template class cFreeList<DSkel4>;
 template class ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>;
 template class ae_vector<debug_sphere>;
 template class ae_vector<debug_aabb>;
+template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
 template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 64>;
 template class ae_sized_array<Entity*, 128>;
 template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
@@ -2196,4 +2206,84 @@ VehicleNodeAllocator::VehicleNodeAllocator()
     m_currentBlockIndex = 0;
     for (int i = 0; i < 16; ++i)
         m_pNodeBlocks[i] = nullptr;
+}
+
+// ============================================================================
+// Batch 27: container machinery + remaining accessors (g.o 0x4AE5D0-0x4B1600)
+// ============================================================================
+
+// ae_sized_array_base ctors (g.o 0x4AE5F0 / 0x4AE600 / 0x4AE6E0)
+template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 256>;
+template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 64>;
+template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
+
+// HandleDb GetObject / BindObjectToHandle (g.o 0x4B0DA0 / 0x4B0E20)
+Entity* EntityHandleDb::GetObject(int idx) const
+{
+    if ((unsigned int)idx >= 0x540)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 78;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _MaxEltements";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("index out of bounds"))
+            __debugbreak();
+    }
+    return mElements[idx].mObject;
+}
+void EntityHandleDb::BindObjectToHandle(Handle handle, Entity* obj)
+{
+    unsigned int v3 = handle.mVal & 0xFFF;
+    if (v3 < 0x540)
+    {
+        if (mElements[v3].mKey != (int)(handle.mVal >> 12))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 123;
+            AeAssert::gCurrentExpr = "element.GetKey() == h.GetKey()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle was not allocated for this object"))
+                __debugbreak();
+        }
+        mElements[v3].mObject = obj;
+    }
+}
+
+// TaskFunctor1 ctors/Update (g.o 0x4B1510-0x4B15C0)
+template <typename T, typename U>
+struct TaskFunctor1Impl : TaskFunctor {
+    void (__thiscall* mFp)(T*, Entity*, U);
+    U  mA1;
+
+    TaskFunctor1Impl(void (__thiscall* fp)(T*, Entity*, U), const U& a1)
+        : mFp(fp), mA1(a1)
+    {
+    }
+    virtual void Update(Task* t, Entity* e)
+    {
+        mFp((T*)t, e, mA1);
+    }
+};
+template class TaskFunctor1Impl<AnimationUpdateTask, float>;
+template class TaskFunctor1Impl<XAnimUpdateTask, float>;
+
+// collision_context_t::filter (g.o 0x4AF020)
+bool collision_context_t::filter(Entity* ent)
+{
+    (void)ent;
+    return false;
+}
+
+// player_collision_context_t ctor (g.o 0x4B0000)
+player_collision_context_t::player_collision_context_t(
+    DbLinkedHandle<EntityHandleDb, Entity> handle, int mask)
+    : collision_context_t()
+{
+    pass_entity1.mHandle.mVal = 0;
+    pass_entity2.mHandle.mVal = 0;
+    pass_owner1.mHandle.mVal = 0;
+    pass_owner2.mHandle.mVal = 0;
+    pass_entity1 = handle;
+    contentmask = mask;
 }

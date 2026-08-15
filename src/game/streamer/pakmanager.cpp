@@ -1651,6 +1651,16 @@ public:
         {
             return (const T*)m_node;
         }
+        // ??Cconst_iterator@?$reserved_dlist@VPakFile@@@@QBEPBVPakFile@@XZ (g.o 0x4B1320)
+        const T* operator->() const
+        {
+            return (const T*)m_node;
+        }
+        // ??9const_iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV01@@Z (g.o 0x4B1330)
+        bool operator!=(const const_iterator& rhs) const
+        {
+            return m_next != rhs.m_next;
+        }
 
         // ??Econst_iterator@?$reserved_dlist@VPakFile@@@@QAEAAV01@XZ (g.o 0x4ACF00)
         const_iterator& operator++();
@@ -1668,6 +1678,10 @@ public:
     bool empty() const { return m_head == &m_end; }
     // ?validate@?$reserved_dlist@VPakFile@@@@QBEXXZ (g.o 0x4AE7E0)
     void validate() const;
+    // ?end@?$reserved_dlist@VPakFile@@@@QBE?AVconst_iterator@1@XZ (g.o 0x4B11F0)
+    const_iterator end() const;
+    // ?begin@?$reserved_dlist@VPakFile@@@@QBE?AVconst_iterator@1@XZ (g.o 0x4B2760)
+    const_iterator begin() const;
 
     // ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ (0x686E60)
     iterator begin()
@@ -1729,6 +1743,30 @@ bool reserved_dlist<PakFile>::const_iterator::compare(
 template <>
 void reserved_dlist<PakFile>::validate() const
 {
+}
+
+template <>
+reserved_dlist<PakFile>::const_iterator reserved_dlist<PakFile>::end() const
+{
+    const_iterator result((const dlist_node*)m_end, (const dlist_node*)nullptr);
+    result.m_node = m_end;
+    result.m_next = nullptr;
+    return result;
+}
+
+template <>
+reserved_dlist<PakFile>::const_iterator reserved_dlist<PakFile>::begin() const
+{
+    const_iterator result((const dlist_node*)m_head,
+                          (const dlist_node*)((m_head != nullptr) ? m_head->m_next : nullptr));
+    result.m_node = m_head;
+    result.m_next = (m_head != nullptr) ? m_head->m_next : nullptr;
+    if (m_head == m_end)
+    {
+        result.m_next = nullptr;
+        result.m_node = nullptr;
+    }
+    return result;
 }
 
 class PakManager {
