@@ -109,6 +109,7 @@ extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o
 class MusicMgr {
 public:
     static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A
+    void Play(const char* name);          // ?Play@MusicMgr@@QAEXPBD@Z
     void Stop(float fadeOutTime);         // ?Stop@MusicMgr@@QAEXM@Z
     void StopIndoor(float fadeOutTime);   // ?StopIndoor@MusicMgr@@QAEXM@Z
 };
@@ -1064,6 +1065,80 @@ void MakeGameMessage(const char* pszString, const char* pszCmd)
     SV_GameSendServerCommand(
         DbLinkedHandle<EntityHandleDb, Entity>(Handle(0)),
         va("%s \"%s\"", pszCmd, pszString));
+}
+
+// ea: 0x005C3340
+void MusicPlay(const Broc::string& pszSoundName)
+{
+    if (pszSoundName.mBlock != nullptr)
+        MusicMgr::sInst->Play((const char*)(pszSoundName.mBlock + 1));
+    else
+        MusicMgr::sInst->Play(defaultFileName);
+}
+
+// ea: 0x005C3480
+bool SoundBusVolIsName(const Broc::string& name)
+{
+    if (name.mBlock != nullptr)
+        return SoundDevice::sInst->BusVolumeIsName(
+            (const char*)(name.mBlock + 1));
+    return SoundDevice::sInst->BusVolumeIsName(defaultFileName);
+}
+
+// ea: 0x005C34B0
+void SoundBusPitchAddBus(const Broc::string& busId)
+{
+    if (busId.mBlock != nullptr)
+        SoundDevice::sInst->BusPitchAddBus((const char*)(busId.mBlock + 1));
+    else
+        SoundDevice::sInst->BusPitchAddBus(defaultFileName);
+}
+
+// ea: 0x005C34E0
+void SoundBusVolAddBus(const Broc::string& busId)
+{
+    if (busId.mBlock != nullptr)
+        SoundDevice::sInst->BusVolumeAddBus((const char*)(busId.mBlock + 1));
+    else
+        SoundDevice::sInst->BusVolumeAddBus(defaultFileName);
+}
+
+// ea: 0x005C3510
+void SoundBusPitchRemoveBus(const Broc::string& busId)
+{
+    if (busId.mBlock != nullptr)
+        SoundDevice::sInst->BusPitchRemoveBus(
+            (const char*)(busId.mBlock + 1));
+    else
+        SoundDevice::sInst->BusPitchRemoveBus(defaultFileName);
+}
+
+// ea: 0x005C3540
+void SoundBusVolRemoveBus(const Broc::string& busId)
+{
+    if (busId.mBlock != nullptr)
+        SoundDevice::sInst->BusVolumeRemoveBus(
+            (const char*)(busId.mBlock + 1));
+    else
+        SoundDevice::sInst->BusVolumeRemoveBus(defaultFileName);
+}
+
+// ea: 0x005C3570
+void SoundBusVolFade(const Broc::string& busId, float pitch, float time)
+{
+    const char* v3 = busId.mBlock != nullptr
+                         ? (const char*)(busId.mBlock + 1)
+                         : defaultFileName;
+    SoundDevice::sInst->BusVolumeFade(v3, pitch, time);
+}
+
+// ea: 0x005C35A0
+void SoundBusPitchFade(const Broc::string& busId, float pitch, float time)
+{
+    const char* v3 = busId.mBlock != nullptr
+                         ? (const char*)(busId.mBlock + 1)
+                         : defaultFileName;
+    SoundDevice::sInst->BusPitchFade(v3, pitch, time);
 }
 
 // ea: 0x005BDB90 (thunk to CG_MotionBlur::End)
