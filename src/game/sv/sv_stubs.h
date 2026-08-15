@@ -212,7 +212,7 @@ static_assert(offsetof(SaveGameData, mFriendlies) == 0x7E0,
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 struct MPPlayer;
 struct MPPlayerManager;
-struct MPPeer;
+class MPPeer;
 
 // ============================================================================
 // ServerTime â€” server clock (20 bytes) â€” verified IDA
@@ -469,7 +469,8 @@ struct SmokeGrenadeInfoList {
     int mCapacity;                // +0x08
 };
 
-struct SmokeGrenadeMgr {
+class SmokeGrenadeMgr {
+public:
     SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
     static void* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
     static SmokeGrenadeMgr* Inst();  // ?Inst@SmokeGrenadeMgr@@SAPAV1@XZ (g.o 0x4A83B0)

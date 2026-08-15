@@ -658,7 +658,8 @@ extern int (*syscall)(int, ...);           // 0xDF9D70 (cg.o)
 void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
 
 // game2.o FPS test harness (full layout 0xAD90, verified against IDA)
-struct TestFPS {
+class TestFPS {
+public:
     unsigned char _pad[0xABE0];       // mStats[1000] data
     int mStats_size;                  // +0xABE0 (mStats.m_size)
     unsigned char _pad2[0xAC48 - 0xABE4];  // mCells data

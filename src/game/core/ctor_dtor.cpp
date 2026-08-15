@@ -270,6 +270,12 @@ template class WaitTilOutputInst1<Broc::entity>;
 template class WaitTilOutputInst2<Broc::string, Broc::string>;
 template class WaitTilOutputInst2<int, Broc::entity>;
 
+void force_waitinst1_delete(WaitTilOutputInst1<Broc::string>* p) { delete p; }
+void force_waitinst1u_delete(WaitTilOutputInst1<unsigned int>* p) { delete p; }
+void force_waitinst1e_delete(WaitTilOutputInst1<Broc::entity>* p) { delete p; }
+void force_waitinst2_delete(WaitTilOutputInst2<Broc::string, Broc::string>* p) { delete p; }
+void force_waitinst2e_delete(WaitTilOutputInst2<int, Broc::entity>* p) { delete p; }
+
 // ea: 0x004C1D80
 EntityNotifySet::EntityNotifySet(Entity* e)
 {

@@ -55,5 +55,87 @@ PUBLIC ??_F?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEXXZ
     jmp ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@XZ
 ??_F?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEXXZ ENDP
 
+; ============================================================================
+; Vector-deleting destructors (??_E) forwarding to the scalar form (??_G).
+; The release binary's ??_E bodies are equivalent (single-object free).
+; ============================================================================
+
+; ea: 0x004A52F0 - ??_ETask@@UAEPAXI@Z
+EXTERN ??_GTask@@UAEPAXI@Z : PROC
+PUBLIC ??_ETask@@UAEPAXI@Z
+??_ETask@@UAEPAXI@Z PROC
+    jmp ??_GTask@@UAEPAXI@Z
+??_ETask@@UAEPAXI@Z ENDP
+
+; ea: 0x004AF160 - ??_ETaskFunctor@@UAEPAXI@Z
+EXTERN ??_GTaskFunctor@@UAEPAXI@Z : PROC
+PUBLIC ??_ETaskFunctor@@UAEPAXI@Z
+??_ETaskFunctor@@UAEPAXI@Z PROC
+    jmp ??_GTaskFunctor@@UAEPAXI@Z
+??_ETaskFunctor@@UAEPAXI@Z ENDP
+
+; ea: 0x004A5980 - ??_EWaitTilOutput@@UAEPAXI@Z
+EXTERN ??_GWaitTilOutput@@UAEPAXI@Z : PROC
+PUBLIC ??_EWaitTilOutput@@UAEPAXI@Z
+??_EWaitTilOutput@@UAEPAXI@Z PROC
+    jmp ??_GWaitTilOutput@@UAEPAXI@Z
+??_EWaitTilOutput@@UAEPAXI@Z ENDP
+
+; ea: 0x004B0D60 - ??_EEntityDeathTask@@UAEPAXI@Z
+EXTERN ??_GEntityDeathTask@@UAEPAXI@Z : PROC
+PUBLIC ??_EEntityDeathTask@@UAEPAXI@Z
+??_EEntityDeathTask@@UAEPAXI@Z PROC
+    jmp ??_GEntityDeathTask@@UAEPAXI@Z
+??_EEntityDeathTask@@UAEPAXI@Z ENDP
+
+; ea: 0x004B1560 - ??_E?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z
+EXTERN ??_G?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z
+??_E?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z PROC
+    jmp ??_G?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z
+??_E?$TaskFunctor1@VAnimationUpdateTask@@M@@UAEPAXI@Z ENDP
+
+; ea: 0x004B15E0 - ??_E?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z
+EXTERN ??_G?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z
+??_E?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z PROC
+    jmp ??_G?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z
+??_E?$TaskFunctor1@VXAnimUpdateTask@@M@@UAEPAXI@Z ENDP
+
+; ea: 0x004B1F60 - ??_E?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z
+EXTERN ??_G?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z PROC
+    jmp ??_G?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst1@Vstring@Broc@@@@UAEPAXI@Z ENDP
+
+; ea: 0x004B1FF0 - ??_E?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z
+EXTERN ??_G?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z PROC
+    jmp ??_G?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAEPAXI@Z ENDP
+
+; ea: 0x004B2940 - ??_E?$WaitTilOutputInst1@I@@UAEPAXI@Z
+EXTERN ??_G?$WaitTilOutputInst1@I@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$WaitTilOutputInst1@I@@UAEPAXI@Z
+??_E?$WaitTilOutputInst1@I@@UAEPAXI@Z PROC
+    jmp ??_G?$WaitTilOutputInst1@I@@UAEPAXI@Z
+??_E?$WaitTilOutputInst1@I@@UAEPAXI@Z ENDP
+
+; ea: 0x004B2A70 - ??_E?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z
+EXTERN ??_G?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z PROC
+    jmp ??_G?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst1@Ventity@Broc@@@@UAEPAXI@Z ENDP
+
+; ea: 0x004B2BB0 - ??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z
+EXTERN ??_G?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z : PROC
+PUBLIC ??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z PROC
+    jmp ??_G?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z
+??_E?$WaitTilOutputInst2@HVentity@Broc@@@@UAEPAXI@Z ENDP
+
 _TEXT ENDS
 END

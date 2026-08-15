@@ -61,7 +61,8 @@ const char* XModel::GetName() const
 }
 
 // XAnimUpdateTask / AnimationUpdateTask GetHandler (g.o 0x4A5330/0x4A5340)
-struct TaskHandler {
+class TaskHandler {
+public:
     uint8_t _pad[4];
 };
 class XAnimUpdateTask {

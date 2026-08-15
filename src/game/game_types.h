@@ -22,7 +22,7 @@ enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 // Forward declarations
 class Entity;
 class DObj;
-struct EntityNotifySet;
+class EntityNotifySet;
 struct ScriptEventHandler;
 struct biped_system;
 struct biped_phys_info {
