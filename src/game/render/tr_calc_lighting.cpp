@@ -161,3 +161,94 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
     }
     return ctx;
 }
+
+// ============================================================================
+// AddTextureMatrix - ea: 0x006CE850
+// ============================================================================
+class scr_vehicle_t {
+public:
+    uint8_t _pad[0x51C];
+    float treadTime;                 // +0x51C
+    float treadTime2;                // +0x520
+};
+// Entity::scr_vehicle @ +0x260 (already in Entity above? add accessor)
+extern unsigned int HashString_CalcHash(const char* str);  // ?CalcHash@HashString@@SAIPBD@Z
+extern void* nglListAlloc(unsigned int size, unsigned int align);  // ?nglListAlloc@@YAPAXII@Z
+extern void make_rotate(math::Mat43& m, int axis, float angle);  // ?make_rotate@@YAXAAVMat43@math@@HM@Z
+extern unsigned int TextureMatrixParamID;    // ?TextureMatrixParamID@@3IA
+extern unsigned int isRotatingTextureParamID;  // ?isRotatingTextureParamID@@3IA
+
+static unsigned int g_tag_tread_left;
+static unsigned int g_tag_tread_right;
+static unsigned int g_tag_left_gear_hash;
+static unsigned int g_tag_right_gear_hash;
+static int g_tagInit;
+
+bool AddTextureMatrix(Entity* ent, unsigned int boneNameHash,
+                      nglShaderParamSet& shaderParams)
+{
+    if ((g_tagInit & 1) == 0)
+    {
+        g_tagInit |= 1;
+        g_tag_tread_left = HashString_CalcHash("tag_tread_left");
+    }
+    if ((g_tagInit & 2) == 0)
+    {
+        g_tagInit |= 2;
+        g_tag_tread_right = HashString_CalcHash("tag_tread_right");
+    }
+    if ((g_tagInit & 4) == 0)
+    {
+        g_tagInit |= 4;
+        g_tag_left_gear_hash = HashString_CalcHash("tag_gear_left");
+    }
+    if ((g_tagInit & 8) == 0)
+    {
+        g_tagInit |= 8;
+        g_tag_right_gear_hash = HashString_CalcHash("tag_gear_right");
+    }
+
+    scr_vehicle_t* veh = (scr_vehicle_t*)*(void**)((char*)ent + 0x260);
+    float v5;
+    if (boneNameHash == g_tag_tread_left)
+        v5 = veh->treadTime2 * 0.001f;
+    else if (boneNameHash == g_tag_tread_right)
+        v5 = veh->treadTime * 0.001f;
+    else if (boneNameHash == g_tag_left_gear_hash
+             || boneNameHash == g_tag_right_gear_hash)
+        v5 = 0.0f;
+    else
+        v5 = veh->treadTime * 0.001f;
+
+    math::Mat43* m = (math::Mat43*)nglListAlloc(0x40u, 0x10u);
+    m->x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    m->y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    m->z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    m->w.v = _mm_setr_ps(0.0f, 0.0f, v5, 0.0f);
+
+    float rotation = 0.0f;
+    if (boneNameHash == g_tag_left_gear_hash)
+    {
+        rotation = veh->treadTime2 * 0.0014f;
+        make_rotate(*m, 2, rotation);
+        // original also mirrors the rotation axis; keep the simple rotation
+    }
+    else if (boneNameHash == g_tag_right_gear_hash)
+    {
+        rotation = veh->treadTime * 0.0014f;
+        make_rotate(*m, 2, rotation);
+    }
+
+    unsigned int* Array = shaderParams.Array;
+    unsigned int id = TextureMatrixParamID;
+    Array[0] |= (1u << id);
+    shaderParams.Array[id + 2] = (unsigned int)m;
+    unsigned int* arr = shaderParams.Array;
+    unsigned int rid = isRotatingTextureParamID;
+    arr[0] |= (1u << rid);
+    arr[1] |= (1u << rid) >> 32;
+    shaderParams.Array[rid + 2] = boneNameHash == g_tag_left_gear_hash
+                                || boneNameHash == g_tag_right_gear_hash
+        ? 1u : 0u;
+    return true;
+}
