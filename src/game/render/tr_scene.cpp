@@ -9,6 +9,7 @@
 #include "ngl/ngl_lighting.h"
 
 #include <math.h>
+#include <string.h>
 
 struct nglTexture;
 
@@ -53,23 +54,67 @@ struct refEntity_t {
     float origin[3];       // +0x3C
 };
 
-// orientationr_t view (origin +0x00)
+// orientationr_t (IDA type; size 0x7C)
 struct orientationr_t {
-    float origin[3];       // +0x00
+    float origin[3];        // +0x00
+    float axis[3][3];       // +0x0C
+    float viewOrigin[3];    // +0x30
+    float modelMatrix[16];  // +0x3C
 };
 
-// viewParms_t view (or +0x00, lodBias +0x138, lodScale +0x13C)
+// viewParms_t (IDA type; align 16, size 0x1D4)
 struct viewParms_t {
-    orientationr_t or;           // +0x00
-    uint8_t _pad[0x138 - 0x0C];
-    float lodBias;               // +0x138
-    float lodScale;              // +0x13C
+    orientationr_t or;          // +0x00
+    orientationr_t world;       // +0x7C
+    float pvsOrigin[3];         // +0xF8
+    int isPortal;               // +0x104
+    int isMirror;               // +0x108
+    int frameCount;             // +0x10C
+    uint8_t _pad[0x130 - 0x110];
+    float fovX;                 // +0x130
+    float fovY;                 // +0x134
+    float lodBias;              // +0x138
+    float lodScale;             // +0x13C
+    uint8_t _pad2[0x180 - 0x140];
+    float zFar;                 // +0x180
+};
+
+// trRefdef_t view (refdef at tr+0x26C; IDA type, size 0x24)
+struct trRefdef_t {
+    int x;                   // +0x00
+    int y;                   // +0x04
+    int width;               // +0x08
+    int height;              // +0x0C
+    float fov_x;             // +0x10
+    float fov_y;             // +0x14
+    int time;                // +0x18
+    int rdflags;             // +0x1C
+    short num_world_dlights; // +0x20
+    short num_model_dlights; // +0x22
+};
+
+// viewModelInfo_t (IDA type; size 0x70)
+struct viewModelInfo_t {
+    int mDoingRender;       // +0x00
+    int mInWorldScene;      // +0x04
+    int mScaleWeaponTrans;  // +0x08
+    int mDrawBeforeWorld;   // +0x0C
+    uint8_t _pad[0x70 - 0x10];
 };
 
 struct trGlobals_t {
     int      registered;         // +0x00
-    uint8_t  _pad0[0x10 - 0x04];
+    int      worldMapLoaded;     // +0x04
+    int      frameCount;         // +0x08
+    int      viewCount;          // +0x0C
     viewParms_t viewParms;       // +0x10
+    uint8_t  _pad0[0x26C - 0x10 - 0x184];
+    trRefdef_t refdef;           // +0x26C
+    uint8_t  _pad1[0x290 - 0x270];
+    void*    world;              // +0x290
+    uint8_t  _pad2[0x2A0 - 0x294];
+    viewModelInfo_t viewModelInfo[1];  // +0x2A0
+    int      viewModelInfoIndex;       // +0x310
 };
 extern trGlobals_t tr;           // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
@@ -92,10 +137,11 @@ struct backEndData_t {
 };
 backEndData_t* backEndData;  // ?backEndData@@3PAUbackEndData_t@@A @ 0xDFA438
 
-// refimport_t view (Printf +0x00, Error +0x04)
+// refimport_t view (Printf +0x00, Error +0x04, Milliseconds +0x08)
 struct refimport_t {
     void (*Printf)(int, const char*, ...);
     void (*Error)(int, const char*, ...);
+    int (*Milliseconds)();
 };
 extern refimport_t ri;         // ?ri@@3Urefimport_t@@A @ 0xF741E8
 
@@ -495,4 +541,550 @@ void apsInitLevelSpecificParticleMemory(const char* name)
 void apsUpdate(float deltaTime)
 {
     (void)deltaTime;
+}
+
+// ============================================================================
+// RE_RenderScene / R_RenderView (tr_scene.cpp)
+// ============================================================================
+// AeAssert (game.o defines the real symbols; local decls only)
+namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmtstring, ...);
+}
+
+extern "C" int __fpclass(float);
+
+static bool IS_NAN(float x)
+{
+    return (__fpclass(x) & 0x297) != 0;
+}
+
+// cvar_t view (integer +0x20)
+struct cvar_t {
+    uint8_t _pad[0x1C];
+    float value;   // +0x1C
+    int integer;   // +0x20
+};
+
+extern cvar_t* r_norefresh;    // ?r_norefresh@@3PAUcvar_t@@A @ 0xF7417C
+extern cvar_t* r_dynamiclight; // ?r_dynamiclight@@3PAUcvar_t@@A @ 0xF742A8
+extern cvar_t* r_lodscale;     // ?r_lodscale@@3PAUcvar_t@@A @ 0xF741D4
+extern cvar_t* r_lodbias;      // ?r_lodbias@@3PAUcvar_t@@A @ 0xF741B0
+extern cvar_t* r_zfar;         // ?r_zfar@@3PAUcvar_t@@A @ 0xF741A0
+extern cvar_t* r_znear;        // ?r_znear@@3PAUcvar_t@@A @ 0xF743A0
+extern cvar_t* r_testshadow;   // ?r_testshadow@@3PAUcvar_t@@A @ 0xF742C0
+extern cvar_t* r_testlight;    // ?r_testlight@@3PAUcvar_t@@A @ 0xF742EC
+
+extern int r_numdlights;        // ?r_numdlights@@3HA @ 0xF741E4
+extern int r_firstSceneDlight;  // ?r_firstSceneDlight@@3HA @ 0xF74274
+extern int r_numpolys;          // ?r_numpolys@@3HA @ 0xF742FC
+extern int r_firstScenePoly;    // ?r_firstScenePoly@@3HA @ 0xF742B0
+extern int skyboxportal;        // ?skyboxportal@@3HA @ 0xF743B0
+extern int drawskyboxportal;    // ?drawskyboxportal@@3HA @ 0xF74188
+extern int currCl;              // ?currCl@@3HA @ 0xF1579C
+extern float g_zfar;            // ?g_zfar@@3MA @ 0xDFB000
+extern void* tempScene;         // ?tempScene@@3PAUnglScene@@A @ 0xF7442C
+extern int gParticleBatchGroup; // ?gParticleBatchGroup@@3HA @ 0xF742B8
+extern int gRenderSky;          // ?gRenderSky@@3HA @ 0xDFB008
+extern int gRenderFX;           // ?gRenderFX@@3HA @ 0xDFB020
+extern int gRenderLocalEntities;// ?gRenderLocalEntities@@3HA @ 0xDFB00C
+extern int gRenderWorld;        // ?gRenderWorld@@3HA @ 0xDFB004
+extern int gRenderEntities;     // ?gRenderEntities@@3HA @ 0xDFB018
+extern int gRenderInstanceGroups;  // ?gRenderInstanceGroups@@3HA @ 0xDFB024
+extern int gRenderLightGlows;   // ?gRenderLightGlows@@3HA @ 0xDFB028
+extern int gRenderDebug;        // ?gRenderDebug@@3HA @ 0xDFB014
+extern int gRenderStatusBar;    // ?gRenderStatusBar@@3HA @ 0xDFB010
+extern int g_showLightGridDistribution;  // ?g_showLightGridDistribution@@3HA @ 0xF04908
+extern int g_showLightGridDebugText;     // ?g_showLightGridDebugText@@3HA @ 0xF04904
+extern int g_useOnScreenSoundPosDebugging;  // ?g_useOnScreenSoundPosDebugging@@3HA @ 0xF04970
+extern "C" int unk_F6A284[];   // @ 0xF6A284
+
+// vmCvar_t (cg_widescreen; integer +0x0C)
+struct vmCvar_t {
+    int handle;             // +0x00
+    int modificationCount;  // +0x04
+    float value;            // +0x08
+    int integer;            // +0x0C
+};
+extern vmCvar_t cg_widescreen;  // ?cg_widescreen@@3UvmCvar_t@@A @ 0xF5CC88
+
+// cgGlobal_t (cubemapShot +0x0C)
+struct cgGlobal_t {
+    uint8_t _pad[0x0C];
+    int cubemapShot;  // +0x0C
+};
+enum { CUBEMAPSHOT_NONE = -1 };
+extern cgGlobal_t cgGlobal;  // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
+
+// world_t (bspTree +0x100, mSky +0x108)
+struct world_t {
+    uint8_t _pad[0x100];
+    void* bspTree;  // +0x100
+    void* mSky;     // +0x108
+};
+
+// FogConfig statics (fogconfig.cpp)
+namespace FogConfig {
+extern int sEnabled;
+extern float sNear, sFar, sStart, sEnd, sRed, sGreen, sBlue;
+}
+
+// ShaderCommon statics
+namespace ShaderCommon {
+extern math::Position3 gGlowSunPosScreen;  // ?gGlowSunPosScreen@ShaderCommon@@3VPosition3@math@@A @ 0x10DDF40
+extern float gGlowGodRaysFadeOut;          // ?gGlowGodRaysFadeOut@ShaderCommon@@3MA @ 0x10DDF20
+}
+
+// ngl.o exports
+extern void nglSetEndOfRenderCallback(void (*Fn)(void*), void* Data);
+extern void nglSetFogRange(float Near, float Far, float Min, float Max);
+extern void nglSetFogColor(float r, float g, float b);
+extern void nglSetAspectRatio(float a);
+extern void nglSetPerspectiveMatrix(float fov, float nearz, float farz);
+extern void nglSetWorldToViewMatrix(const math::Mat43* WorldToView);
+extern void nglListAddPointLight(unsigned int LightCat,
+                                 const math::Position3& Pos, float Near,
+                                 float Far, const math::Vector4& Color,
+                                 bool isVertexPointLight);
+extern math::Position3 nglProjectPoint(const math::Position3& In,
+                                       nglScene* Scene);
+extern class nglFont* CL_GetFontInfo(int font, float scale);
+class nglFont;
+extern nglFont* nglSysFont;  // ?nglSysFont@@3PAVnglFont@@A @ 0x10E3580
+
+// q_math.o
+extern void AngleVectors(const float* angles, float* forward, float* right,
+                         float* up);  // ?AngleVectors@@YAXQBMQAM11@Z
+
+// render.o scene helpers
+void R_RotateForViewer();
+void R_SetupFrustum();
+void R_RenderSky();
+void R_SetupProjection();
+void R_RenderGlow();
+void R_RenderViewModels(viewParms_t* parms);  // 0x6D7430 (this batch)
+void R_AddWorldSurfacesDPVS();
+void R_AddEntitySurfaces();
+void RB_DrawDebug();
+void _codListBeginScene(nglSceneParamType ParamSource);
+void _codListEndScene();
+void cdProjShadow_Begin();
+void LensFlareDraw();
+void HandleFullScreenBlur(int viewport);
+void XboxNGLMidSceneCallBack(void*);
+void XboxNGLPostSceneCallBack(void*);
+int apsCheckErrors();
+
+// cg.o / cl.o exports
+void CG_AddLocalEntities();
+void CG_AddPacketEntities();
+void FX_UpdateFX(bool firstClient);
+void RenderEffectsInternal();
+void FX_BuildSortedParticleEffectList();
+namespace LocalClient {
+int FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHXZ
+}
+
+// FEManager (g_femanager object; U tag)
+struct FEManager {
+    void Draw3DWorldSpace();   // ?Draw3DWorldSpace@FEManager@@QAEXXZ
+    void Draw3DScreenSpace();  // ?Draw3DScreenSpace@FEManager@@QAEXXZ
+};
+extern FEManager g_femanager;  // ?g_femanager@@3UFEManager@@A @ 0xF30E48
+
+// DynamicDecalMgr / DecalSet (IDA layout; vector of DecalSet)
+class DynamicDecalSet {
+public:
+    void Render();  // ?Render@DynamicDecalSet@@QAEXXZ
+};
+struct DecalSet {
+    void* mTexture;          // +0x00
+    DynamicDecalSet* mDecalSet;  // +0x04
+};
+struct DecalSetVector {
+    uint8_t _pad[4];   // allocator
+    DecalSet* _Myfirst;  // +0x04
+    DecalSet* _Mylast;   // +0x08
+};
+class DynamicDecalMgr {
+public:
+    static void* sInst;         // ?sInst@DynamicDecalMgr@@2PAXA
+    DecalSetVector mDecalSets;  // +0x00
+};
+
+// WheelMark / WheelMarkMgr
+class WheelMark {
+public:
+    void Render();  // ?Render@WheelMark@@QAEXXZ
+};
+class WheelMarkMgr {
+public:
+    static unsigned int NMarks;   // ?NMarks@WheelMarkMgr@@1IA
+    static WheelMark* Marks;      // ?Marks@WheelMarkMgr@@1PAVWheelMark@@A
+};
+
+// WorldSpawn / SceneManager (struct tags per sInst mangle PAU1)
+class WorldSpawn {
+public:
+    uint8_t _pad[0x118];
+    float sundirection[3];  // +0x118
+};
+struct SceneManager {
+    uint8_t _pad[0x1A0];
+    WorldSpawn* mWorldSpawn;         // +0x1A0
+    void RenderInstanceGroups();     // ?RenderInstanceGroups@SceneManager@@QAEXXZ
+    void RenderLightGlows();         // ?RenderLightGlows@SceneManager@@QAEXXZ
+    static SceneManager* sInst;      // ?sInst@SceneManager@@2PAU1@A
+};
+
+// LightGridMgr / DebugRender
+class LightGridMgr {
+public:
+    static LightGridMgr* sInst;  // ?sInst@LightGridMgr@@2PAV1@A
+    void RenderLightGridDebugSpheres();  // ?RenderLightGridDebugSpheres@LightGridMgr@@QAEXXZ
+    void RenderDebugText();              // ?RenderDebugText@LightGridMgr@@QAEXXZ
+};
+class DebugRender {
+public:
+    static DebugRender sInst;  // ?sInst@DebugRender@@2V1@A
+    void Render();             // ?Render@DebugRender@@QAEXXZ
+};
+
+// StatusBar / MemGraph / CG blur callbacks (free-fn manglings)
+namespace StatusBar {
+void Render();  // ?Render@StatusBar@@YAXXZ
+}
+namespace MemGraph {
+void Render();  // ?Render@MemGraph@@YAXXZ
+}
+namespace CG_MotionBlur {
+void AddPostCallback();  // ?AddPostCallback@CG_MotionBlur@@YAXXZ
+}
+namespace CG_SceneBlur {
+void AddPostCallback();  // ?AddPostCallback@CG_SceneBlur@@YAXXZ
+}
+
+// cdl_proftimer (member start/stop)
+class cdl_proftimer {
+public:
+    void start();  // ?start@cdl_proftimer@@QAEXXZ
+    void stop();   // ?stop@cdl_proftimer@@QAEXXZ
+};
+extern cdl_proftimer cdl_proftimer_fx_all;     // ?cdl_proftimer_fx_all@@3Ucdl_proftimer@@A @ 0xF3E970
+extern cdl_proftimer cdl_proftimer_fx_render;  // ?cdl_proftimer_fx_render@@3Ucdl_proftimer@@A @ 0xF44FB8
+
+// TlSystemCallbacks::sWarningsEnabled (private static; @@0 per binary)
+class TlSystemCallbacks {
+    friend void R_RenderView(viewParms_t* parms);
+    static bool sWarningsEnabled;  // ?sWarningsEnabled@TlSystemCallbacks@@0_NA
+};
+
+// ============================================================================
+// RE_RenderScene - ea: 0x006DC6C0
+// ============================================================================
+struct refdef_s {
+    int x;                  // +0x00
+    int y;                  // +0x04
+    int width;              // +0x08
+    int height;             // +0x0C
+    float fov_x;            // +0x10
+    float fov_y;            // +0x14
+    uint8_t _pad[0x20 - 0x18];
+    math::Position3 vieworg;   // +0x20
+    float viewaxis[3][3];      // +0x30
+    uint8_t _pad2[0x54 - 0x3C];
+    int time;               // +0x54
+    int rdflags;            // +0x58
+};
+
+void RE_RenderScene(const refdef_s* fd)
+{
+    if (tr.registered != 0 && r_norefresh->integer == 0)
+    {
+        ri.Milliseconds();
+        if (tr.world == nullptr && (fd->rdflags & 1) == 0)
+            ri.Error(1, "R_RenderScene: NULL worldmodel");  // ERR_DROP
+        if (IS_NAN(tr.viewParms.world.modelMatrix[0])
+            || IS_NAN(tr.viewParms.world.modelMatrix[1])
+            || IS_NAN(tr.viewParms.world.modelMatrix[2]))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_scene.cpp";
+            AeAssert::gCurrentLine = 200;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((tr.viewParms.world.modelMatrix)[0]) && !IS_NAN((tr.viewParms.world.modelMatrix)[1]) && !IS_NAN((tr.viewParms.world.modelMatrix)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        tr.refdef.x = fd->x;
+        tr.refdef.y = fd->y;
+        tr.refdef.width = fd->width;
+        tr.refdef.height = fd->height;
+        tr.refdef.fov_x = fd->fov_x;
+        tr.refdef.fov_y = fd->fov_y;
+        tr.refdef.time = fd->time;
+        tr.refdef.rdflags = fd->rdflags;
+        if ((fd->rdflags & 8) != 0)
+            skyboxportal = 1;
+        drawskyboxportal = (fd->rdflags & 0x10) != 0;
+        short v2 = (short)(r_numdlights - r_firstSceneDlight);
+        tr.refdef.num_world_dlights = v2;
+        tr.refdef.num_model_dlights = v2;
+        if (r_dynamiclight->integer == 0)
+            tr.refdef.num_model_dlights = 0;
+        if (r_dynamiclight->integer != 1)
+        {
+            v2 = 0;
+            tr.refdef.num_world_dlights = 0;
+        }
+        if (r_dynamiclight->integer == 3)
+            ri.Printf(0, "%i dynamic lights in scene\n", v2);
+
+        viewParms_t v8;
+        memset(&v8, 0, sizeof(v8));
+        v8.isPortal = 0;
+        float value = r_lodscale->value;
+        v8.fovX = tr.refdef.fov_x;
+        v8.fovY = tr.refdef.fov_y;
+        float v3 = 4.0f;
+        if (value <= 4.0f)
+            v3 = value;
+        float v5 = r_lodbias->value;
+        v8.lodScale = v3;
+        float v6 = 0.0f;
+        if (v5 <= 0.0f)
+            v6 = v5;
+        v8.lodBias = v6;
+        v8.zFar = r_zfar->value;
+        float fov_x = tr.refdef.fov_x;
+        if (tr.refdef.fov_y < tr.refdef.fov_x)
+            fov_x = tr.refdef.fov_y;
+        v8.or.origin[0] = fd->vieworg.v.m128_f32[0];
+        v8.or.origin[1] = fd->vieworg.v.m128_f32[1];
+        v8.or.origin[2] = fd->vieworg.v.m128_f32[2];
+        memcpy(v8.or.axis, fd->viewaxis, sizeof(v8.or.axis));
+        memcpy(v8.pvsOrigin, &fd->vieworg, sizeof(v8.pvsOrigin));
+        float v7 = (float)(tan(fov_x * 0.0087266462f)
+                           / tan(0.6981317400932312));
+        v8.lodScale = v8.lodScale * v7;
+        v8.lodBias = v7 * v8.lodBias;
+        R_RenderView(&v8);
+        r_firstSceneDlight = r_numdlights;
+        r_firstScenePoly = r_numpolys;
+    }
+}
+
+// ============================================================================
+// R_RenderView - ea: 0x006DBE00
+// ============================================================================
+void R_RenderView(viewParms_t* parms)
+{
+    nglSetEndOfRenderCallback(EndOfRenderCallback, nullptr);
+    TlSystemCallbacks::sWarningsEnabled = false;
+    ++tr.viewCount;
+    tr.viewParms = *parms;
+    tr.viewParms.frameCount = tr.frameCount;
+    if (IS_NAN(tr.viewParms.world.axis[0][0])
+        || IS_NAN(tr.viewParms.world.axis[0][1])
+        || IS_NAN(tr.viewParms.world.axis[0][2]))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_main.cpp";
+        AeAssert::gCurrentLine = 3068;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tr.viewParms.world.axis[0])[0]) && !IS_NAN((tr.viewParms.world.axis[0])[1]) && !IS_NAN((tr.viewParms.world.axis[0])[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    R_RotateForViewer();
+    R_SetupFrustum();
+    nglListBeginScene(NGLSCENE_PARENT);
+    nglSetClearFlags(0);
+    if (FogConfig::sEnabled != 0)
+    {
+        nglSetFogRange(FogConfig::sNear, FogConfig::sFar, FogConfig::sStart,
+                       FogConfig::sEnd * 0.5f);
+        nglSetFogColor(FogConfig::sRed, FogConfig::sGreen, FogConfig::sBlue);
+    }
+    int v2 = unk_F6A284[802 * currCl];
+    float v3;
+    if (v2 == 3 || v2 == 4)
+        v3 = (cg_widescreen.integer != 0) ? 3.5555556f : 2.6666667f;
+    else
+        v3 = (cg_widescreen.integer != 0) ? 1.7777778f : 1.3333334f;
+    nglSetAspectRatio(v3);
+    if (cgGlobal.cubemapShot != CUBEMAPSHOT_NONE)
+        nglSetAspectRatio(1.0f);
+    float zFar = parms->zFar;
+    if (zFar == 0.0f)
+        zFar = 8192.0f;
+    float value = r_znear->value;
+    nglSetPerspectiveMatrix(parms->fovY, value, zFar);
+    float v6 = parms->zFar;
+    if (v6 == 0.0f)
+        v6 = 8192.0f;
+    g_zfar = v6;
+    if (IS_NAN(tr.viewParms.world.modelMatrix[0])
+        || IS_NAN(tr.viewParms.world.modelMatrix[1])
+        || IS_NAN(tr.viewParms.world.modelMatrix[2]))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_main.cpp";
+        AeAssert::gCurrentLine = 3099;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tr.viewParms.world.modelMatrix)[0]) && !IS_NAN((tr.viewParms.world.modelMatrix)[1]) && !IS_NAN((tr.viewParms.world.modelMatrix)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    float worldToView[16];
+    memcpy(worldToView, tr.viewParms.world.modelMatrix, 64);
+    nglSetWorldToViewMatrix((const math::Mat43*)worldToView);
+    if (((world_t*)tr.world)->mSky != nullptr && gRenderSky != 0)
+        R_RenderSky();
+    tempScene = nglBuildScene;
+    if (gRenderFX != 0)
+    {
+        cdl_proftimer_fx_all.start();
+        FX_UpdateFX(currCl == LocalClient::FirstLocalClientIndex());
+        cdl_proftimer_fx_all.stop();
+    }
+    if (tr.viewModelInfo[tr.viewModelInfoIndex].mDrawBeforeWorld != 0)
+        R_RenderViewModels(parms);
+    _codListBeginScene(NGLSCENE_PARENT);
+    HandleFullScreenBlur(0);
+    if (tr.viewModelInfo[tr.viewModelInfoIndex].mDrawBeforeWorld == 0
+        || cgGlobal.cubemapShot != CUBEMAPSHOT_NONE)
+        nglSetClearFlags(3u);
+    if (r_testshadow->integer != 0)
+        cdProjShadow_Begin();
+    nglSetSceneCallBack(NGLSCENE_MID, XboxNGLMidSceneCallBack, nullptr);
+    nglSetSceneCallBack(NGLSCENE_POST, XboxNGLPostSceneCallBack, nullptr);
+    LensFlareDraw();
+    if (g_showLightGridDistribution != 0)
+    {
+        nglGetMatrix_ViewToWorld(nglBuildScene);
+        LightGridMgr::sInst->RenderLightGridDebugSpheres();
+    }
+    if (r_testlight->integer != 0)
+    {
+        const math::Mat43* Matrix_ViewToWorld =
+            nglGetMatrix_ViewToWorld(nglBuildScene);
+        math::Mat43 mtx = *Matrix_ViewToWorld;
+        float sunPos[16];
+        memset(&sunPos[4], 0, 32);
+        nglListAddPointLight(0x40000000u,
+                             *((const math::Position3*)&mtx.w.v), 0.0f, 150.0f,
+                             *((const math::Vector4*)&sunPos[20]), false);
+        sunPos[4] = 0.0f;
+        sunPos[8] = 0.0f;
+        sunPos[16] = 0.0f;
+        sunPos[12] = 1.0f;
+        sunPos[20] = sunPos[4];
+        __m128 pos2 = _mm_add_ps(
+            mtx.w.v, _mm_mul_ps(mtx.z.v, _mm_set1_ps(300.0f)));
+        memcpy(&sunPos[4], &pos2, 16);
+        nglListAddPointLight(0x40000000u,
+                             *((const math::Position3*)&sunPos[4]), 0.0f,
+                             150.0f, *((const math::Vector4*)&sunPos[20]),
+                             false);
+    }
+    if (g_showLightGridDebugText != 0)
+        LightGridMgr::sInst->RenderDebugText();
+    if (gRenderLocalEntities != 0)
+        CG_AddLocalEntities();
+    CG_AddPacketEntities();
+    g_femanager.Draw3DWorldSpace();
+    DynamicDecalMgr* decalMgr = (DynamicDecalMgr*)DynamicDecalMgr::sInst;
+    for (DecalSet* Myfirst = decalMgr->mDecalSets._Myfirst,
+                  *i = decalMgr->mDecalSets._Mylast;
+         Myfirst != i; ++Myfirst)
+        Myfirst->mDecalSet->Render();
+    if (WheelMarkMgr::NMarks != 0)
+    {
+        for (unsigned int v11 = 0; v11 < WheelMarkMgr::NMarks; ++v11)
+            WheelMarkMgr::Marks[v11].Render();
+    }
+    float forward[3], right[3], up[3];
+    AngleVectors(SceneManager::sInst->mWorldSpawn->sundirection, forward,
+                 right, up);
+    float SunDir[36];
+    float sunWorld[3] = { forward[0] * 100000.0f, forward[1] * 100000.0f,
+                          forward[2] * 100000.0f };
+    memcpy(&SunDir[20], sunWorld, 12);
+    SunDir[32] = 0.0f;
+    memcpy(&SunDir[4], &SunDir[20], 12);
+    math::Position3 projected =
+        nglProjectPoint(*((const math::Position3*)&SunDir[4]), nglBuildScene);
+    memcpy(&SunDir[4], &projected, 16);
+    SunDir[20] = SunDir[4] * 0.0015625f;
+    SunDir[24] = SunDir[5] * 0.0020833334f;
+    ShaderCommon::gGlowSunPosScreen.v = *((const __m128*)&SunDir[20]);
+    SunDir[20] = forward[0];
+    SunDir[24] = forward[1];
+    SunDir[28] = forward[2];
+    SunDir[32] = 0.0f;
+    __m128 v14 = _mm_mul_ps(nglBuildScene->ViewDir.v,
+                            *((const __m128*)&SunDir[20]));
+    float dot = v14.m128_f32[0]
+                + (v14.m128_f32[1] + v14.m128_f32[2]);
+    float v15 = dot * 2.5f;
+    if (v15 < 0.0f || v15 > 1.0f)
+        v15 = (dot * 2.5f < 0.0f) ? 0.0f : 1.0f;
+    ShaderCommon::gGlowGodRaysFadeOut = v15;
+    if (gRenderWorld != 0)
+    {
+        R_SetupProjection();
+        if (tr.world != nullptr && ((world_t*)tr.world)->bspTree != nullptr)
+            R_AddWorldSurfacesDPVS();
+        if (gRenderEntities != 0)
+            R_AddEntitySurfaces();
+    }
+    if (gRenderInstanceGroups != 0)
+        SceneManager::sInst->RenderInstanceGroups();
+    if (gRenderLightGlows != 0)
+        SceneManager::sInst->RenderLightGlows();
+    if (gRenderDebug != 0)
+    {
+        RB_DrawDebug();
+        DebugRender::sInst.Render();
+    }
+    if (gRenderFX != 0)
+    {
+        cdl_proftimer_fx_all.start();
+        cdl_proftimer_fx_render.start();
+        RenderEffectsInternal();
+        cdl_proftimer_fx_render.stop();
+        FX_BuildSortedParticleEffectList();
+        cdl_proftimer_fx_all.stop();
+    }
+    _codListEndScene();
+    if (g_useOnScreenSoundPosDebugging != 0)
+    {
+        if (nglSysFont == nullptr)
+            nglSysFont = CL_GetFontInfo(4, 1.0f);
+    }
+    R_RenderGlow();
+    if (tr.viewModelInfo[tr.viewModelInfoIndex].mDrawBeforeWorld == 0)
+        R_RenderViewModels(parms);
+    nglListBeginScene(NGLSCENE_PARENT);
+    nglSetClearFlags(0);
+    g_femanager.Draw3DScreenSpace();
+    nglListEndScene();
+    nglListBeginScene(NGLSCENE_PARENT);
+    nglSetClearFlags(0);
+    if (gRenderStatusBar != 0 && cgGlobal.cubemapShot == CUBEMAPSHOT_NONE)
+        StatusBar::Render();
+    MemGraph::Render();
+    nglListEndScene();
+    CG_MotionBlur::AddPostCallback();
+    CG_SceneBlur::AddPostCallback();
+    nglListEndScene();
+    apsCheckErrors();
+    TlSystemCallbacks::sWarningsEnabled = true;
 }
