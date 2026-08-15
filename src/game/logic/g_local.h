@@ -2753,7 +2753,7 @@ int   G_InitGame(int randomSeed, int restart, int savegame, int checksum);  // g
 void  G_RunPreFrame(int msec);                      // g.o
 void  G_SendClientMessages(void);                   // g.o
 int   game_vmMain(int command, int arg0, int arg1, int arg2,
-                 int arg3, int arg4, int arg5, int arg6, int arg7);  // g.o 0x48EBF0
+                 int arg3, int arg4, int arg5, int arg6);  // g.o 0x48EBF0
 void  G_GeneralLink(Entity* ent);                    // g.o 0x482B50
 void  ClientThink(DbLinkedHandle<EntityHandleDb, Entity> entityHandle);  // g.o 0x48EB30
 void  ClientSpawn(Entity* ent, const float* origin, const float* angles, bool stopPhysics,
