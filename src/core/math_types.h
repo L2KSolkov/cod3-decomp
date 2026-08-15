@@ -31,6 +31,7 @@ public:
 
     DiagMat33();                     // ??0DiagMat33@math@@QAE@XZ (anim.o 0x539DC0)
     DiagMat33(const DiagMat33& m);   // ??0DiagMat33@math@@QAE@ABV01@@Z (anim.o 0x539F60)
+    const DiagMat33& operator=(const DiagMat33& m);  // ??4DiagMat33@math@@QAEABV01@ABV01@@Z (render.o 0x6E66E0)
     Dir3 GetX() const;               // ?GetX@DiagMat33@math@@QBE?AVDir3@2@XZ (anim.o 0x539DD0)
     Dir3 GetY() const;               // anim.o 0x539E10
     Dir3 GetZ() const;               // anim.o 0x539E60
@@ -123,6 +124,10 @@ public:
         float GetY() const;  // ?GetY@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6030)
         float GetZ() const;  // ?GetZ@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6040)
         float GetW() const;  // ?GetW@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6050)
+        void SetX(float _x);  // ?SetX@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E5FA0)
+        void SetY(float _y);  // ?SetY@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E5FC0)
+        void SetZ(float _z);  // ?SetZ@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E5FE0)
+        void SetW(float _w);  // ?SetW@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E6000)
     };
 
     const Vector4& operator*=(const Mat44& m);  // ??XVector4@math@@QAEABV01@ABVMat44@1@@Z (streamer.o)
