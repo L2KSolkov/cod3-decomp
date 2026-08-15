@@ -364,12 +364,15 @@ public:
     void Execute(float deltaT);     // ?Execute@AeThreadManager@@QAEXM@Z
     void AddNotify(EntityNotify* notify);  // ?AddNotify@AeThreadManager@@QAEXPAVEntityNotify@@@Z (g.o 0x4B2170)
     // scr.o methods (AeThread.cpp; layout overlays defined in g_scr.cpp)
+    AeThreadManager();                         // ??0AeThreadManager@@QAE@XZ (scr.o 0x5DB100)
+    void AddThread(AeThread* t);               // ?AddThread@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5C95F0)
     void DebugThread(unsigned int threadId);   // ?DebugThread@AeThreadManager@@QAEXI@Z (scr.o 0x5C97C0)
     void ReleaseHandle(AeThread* t);           // ?ReleaseHandle@AeThreadManager@@QAEXPAVAeThread@@@Z (scr.o 0x5C9770)
     void ReleaseHandle(Handle h);              // ?ReleaseHandle@AeThreadManager@@QAEXVHandle@@@Z (scr.o 0x5C97A0)
     Handle AssignHandle(AeThread* t);          // ?AssignHandle@AeThreadManager@@QAE?AVHandle@@PAVAeThread@@@Z (scr.o 0x5DB160)
 private:
     void KillThread(AeThread* t);              // ?KillThread@AeThreadManager@@AAEXPAVAeThread@@@Z (scr.o 0x5DC120)
+    void ProcessScriptNotifys();               // ?ProcessScriptNotifys@AeThreadManager@@AAEXXZ (scr.o 0x5C96D0)
 public:
 };
 static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");

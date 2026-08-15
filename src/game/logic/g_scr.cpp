@@ -77,6 +77,9 @@ extern void __fastcall Sentient_SetGoalAngleTolerance(sentient_s* pSelf, float f
 extern bool g_controllerConnectedErrorShown[4];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
 extern bool gNANO_Animate;                       // ?gNANO_Animate@@3_NA (g.o)
 
+extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (core.o)
+extern void tlFatal(const char* fmt, ...);   // ?tlFatal@@YAXPBDZZ (core.o)
+
 namespace AeAssert {
 extern bool gAssertsEnabled;  // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr)
 }
@@ -98,10 +101,21 @@ struct AeStateList {  // reserved_dlist<AeThreadState> layout
     int          m_size;  // +0x00
     AeDListNode* m_head;  // +0x04
     AeDListNode* m_end;   // +0x08
-    AeDListNode* m_tail;  // +0x0C
+    AeDListNode* m_tail;  // +0x0C (points at m_head's slot via trick)
 };
 struct AeThreadFlagWord {  // Bitmask<unsigned int> layout
     unsigned int mMask;    // +0x00
+};
+
+// EntityNotify local view (full type in core_systems.h; 0x14 bytes)
+class EntityNotifyLocal {
+public:
+    AeDListNode m_dlist_node;  // +0x00
+    unsigned int mStr;         // +0x08
+    DbLinkedHandle<EntityHandleDb, Entity> mOwner;  // +0x0C
+    void* mParam;              // +0x10
+    ~EntityNotifyLocal();      // ?~EntityNotify@@QAE@XZ (g.o)
+    static PoolAllocator* sAllocator;  // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A @ 0xF00E28
 };
 
 // ae_pair (class tag V per binary mangling; same shape as g_accessors.cpp)
@@ -174,6 +188,10 @@ public:
     void RegisterBrocDtor(void* inst);                      // scr.o 0x5C94C0
     void DestroyBrocInsts();                                // scr.o 0x5DAF90
     ~AeThread();                                            // scr.o 0x5DAE30
+    AeThread(const char* file, int line, const char* func,
+             unsigned int ehandle, AeThreadFunctor* ftor,
+             bool bUseScratchpad);                          // scr.o 0x5C79D0
+    void Sleep(AeThreadState* stateController);             // scr.o 0x5C7AC0
 
 private:
     static PoolAllocator* sAllocator;  // ?sAllocator@AeThread@@0PAVPoolAllocator@@A @ 0x132A0C4
@@ -2905,4 +2923,157 @@ void BrocSys::KillThreadExec()
 void BrocSys::ThreadDebug(unsigned int threadId)
 {
     AeThreadManager::sInst.DebugThread(threadId);
+}
+
+// ============================================================================
+// scr.o batch 11 - AeThread ctor + manager thread lists
+// ============================================================================
+
+// ea: 0x005C79D0
+AeThread::AeThread(const char* file, int line, const char* func,
+                   unsigned int ehandle, AeThreadFunctor* ftor,
+                   bool bUseScratchpad)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mOwner.mHandle.mVal = ehandle;
+    mFunctor = ftor;
+    mFlags.mMask = 0;
+    mHandle.mVal = 0;
+    mStateControllers.m_size = 0;
+    mStateControllers.m_end = nullptr;
+    mStateControllers.m_head = (AeDListNode*)&mStateControllers.m_end;
+    mStateControllers.m_tail = (AeDListNode*)&mStateControllers.m_head;
+    mBrocCreated = nullptr;
+    mBackupStack.mBlockList = nullptr;
+    mBackupStack.mSize = 0;
+    mBackupStack.mBegin = 0;
+    mBackupStack.mEnd = 0;
+    mFuncName = func;
+    mFile = file;
+    mLine = line;
+    if (ftor == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AeThread.cpp";
+        AeAssert::gCurrentLine = 103;
+        AeAssert::gCurrentExpr = "ftor";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad functor pointer in thread create"))
+            __debugbreak();
+    }
+    mFlags.mMask |= 1;
+    if (bUseScratchpad)
+        mFlags.mMask |= 0x400;
+    ++((AeThreadManagerLayout*)&AeThreadManager::sInst)->sNumThreads;
+}
+
+// ea: 0x005C7AC0
+void AeThread::Sleep(AeThreadState* stateController)
+{
+    mFlags.mMask |= 2;
+    mFlags.mMask |= 0x10;
+    mFlags.mMask |= 0x210;
+    stateController->m_dlist_node.mNext = mStateControllers.m_end;
+    stateController->m_dlist_node.mPrev = mStateControllers.m_tail;
+    ((AeDListNode*)mStateControllers.m_tail)->mNext =
+        &stateController->m_dlist_node;
+    mStateControllers.m_tail = &stateController->m_dlist_node;
+    ++mStateControllers.m_size;
+}
+
+// ea: 0x005C95F0
+void AeThreadManager::AddThread(AeThread* t)
+{
+    if (t == nullptr)
+    {
+        tlPrintf("===Doing threads dump===\n");
+        AeDListNode* node = ((AeThreadManagerLayout*)this)->mThreads.m_head;
+        if (node != nullptr
+            && node != ((AeThreadManagerLayout*)this)->mThreads.m_end)
+        {
+            int i = 0;
+            for (AeDListNode* n = node; n != nullptr; n = n->mNext)
+            {
+                AeThread* th = (AeThread*)n;
+                tlPrintf("%s(%d): (%03d) %s\n", th->mFile, th->mLine, i++,
+                         th->mFuncName);
+            }
+        }
+        tlFatal("out of room in pool");
+        return;
+    }
+    AeStateList* mThreads = &((AeThreadManagerLayout*)this)->mThreads;
+    t->m_dlist_node.mNext = mThreads->m_end;
+    t->m_dlist_node.mPrev = mThreads->m_tail;
+    ((AeDListNode*)mThreads->m_tail)->mNext = &t->m_dlist_node;
+    mThreads->m_tail = &t->m_dlist_node;
+    ++mThreads->m_size;
+}
+
+// ea: 0x005C96D0
+void AeThreadManager::ProcessScriptNotifys()
+{
+    AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+    AeStateList* pending = &L->mPendingNotifys;
+    EntityNotifyLocal* head = (EntityNotifyLocal*)pending->m_head;
+    if (head == nullptr)
+        return;
+    EntityNotifyLocal* next = (EntityNotifyLocal*)((AeDListNode*)head)->mNext;
+    if (head == (EntityNotifyLocal*)pending->m_end || next == nullptr)
+        return;
+    while (next != nullptr)
+    {
+        EntityNotifyLocal* v4 = head;
+        head = next;
+        next = (EntityNotifyLocal*)((AeDListNode*)next)->mNext;
+        // reserved_dlist<EntityNotify>::erase(v4)
+        ((AeDListNode*)v4)->mPrev->mNext = ((AeDListNode*)v4)->mNext;
+        ((AeDListNode*)v4)->mNext->mPrev = ((AeDListNode*)v4)->mPrev;
+        --pending->m_size;
+
+        unsigned int v5 = v4->mOwner.mHandle.mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v5 < 0x540
+            && v4->mOwner.mHandle.mVal >> 12
+                   == (unsigned int)EntityHandleDb::sInst.mElements[v5].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+        if (mObject != nullptr)
+        {
+            mObject->AddNotify((EntityNotify*)v4);
+        }
+        else
+        {
+            v4->~EntityNotifyLocal();
+            EntityNotifyLocal::sAllocator->Release(v4);
+        }
+        if (next == nullptr)
+            break;
+    }
+}
+
+// ea: 0x005DB100
+AeThreadManager::AeThreadManager()
+{
+    AeThreadManagerLayout* L = (AeThreadManagerLayout*)this;
+    L->mThreads.m_end = nullptr;
+    L->mThreads.m_size = 0;
+    L->mThreads.m_head = (AeDListNode*)&L->mThreads.m_end;
+    L->mThreads.m_tail = (AeDListNode*)&L->mThreads.m_head;
+    L->mExecThreads.m_end = nullptr;
+    L->mExecThreads.m_head = (AeDListNode*)&L->mExecThreads.m_end;
+    L->mExecThreads.m_tail = (AeDListNode*)&L->mExecThreads.m_head;
+    L->mExecThreads.m_size = 0;
+    AeDListNode* p_end = (AeDListNode*)&L->mPendingNotifys.m_end;
+    AeDListNode* p_head = (AeDListNode*)&L->mPendingNotifys.m_head;
+    p_head->mNext = p_end;
+    L->mPendingNotifys.m_tail = (AeDListNode*)p_head;
+    L->mPendingNotifys.m_size = 0;
+    p_end->mNext = nullptr;
+    p_end->mPrev = nullptr;
+    HandleDb<AeThread, 256, SizedHandle<8, 24>> db;
+    memcpy(L->mHandleDb, &db, sizeof(db));
+    L->mThreadExecuting = nullptr;
+    L->mNewThreadExec = nullptr;
+    L->mScriptToUnload = nullptr;
 }
