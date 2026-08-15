@@ -2842,11 +2842,15 @@ unsigned int SpawnTurret(const Broc::string& classname,
                          const Broc::vector& origin,
                          const Broc::string& weaponinfoname,
                          TPakInfo pakInfo);  // 0x5C2E00
-unsigned int SpawnTurretWithAngles(const Broc::string& classname,
-                                   const Broc::vector& origin,
-                                   const Broc::string& weaponinfoname,
-                                   const Broc::vector& angles,
-                                   TPakInfo pakInfo);  // 0x5C3030
+    unsigned int SpawnTurretWithAngles(const Broc::string& classname,
+                                       const Broc::vector& origin,
+                                       const Broc::string& weaponinfoname,
+                                       const Broc::vector& angles,
+                                       TPakInfo pakInfo);  // 0x5C3030
+void HudSetDefaults(game_hudelem_s* hud);  // 0x5BD320
+void SetValue(const Broc::hudelem& hudElem, float value);  // 0x5BD670
+void SetShader(const Broc::hudelem& hudElem, const Broc::string& string,
+               int width, int height);  // 0x5C5060
 }
 
 static void BrocFree(void* p)
@@ -5295,6 +5299,154 @@ unsigned int BrocSys::SpawnTurretWithAngles(
     G_SpawnTurret(v7, v9);
     UpdateEntityHash(v7);
     return v7->mHandle.mHandle.mVal;
+}
+
+// ============================================================================
+// scr.o batch 25 - HUD defaults / value / shader
+// ============================================================================
+
+// HUD per-client string/value blocks (scr.o data @ 0xEA55B0, stride 31 dwords)
+int dword_EA55B0[31 * 4 * 16];
+int dword_EA55B4[31 * 4 * 16];
+int dword_EA55B8[31 * 4 * 16];
+int dword_EA55BC[31 * 4 * 16];
+int dword_EA55C0[31 * 4 * 16];
+int dword_EA55C4[31 * 4 * 16];
+int dword_EA55C8[31 * 4 * 16];
+int dword_EA55DC[31 * 4 * 16];
+int dword_EA55E0[31 * 4 * 16];
+int dword_EA55E4[31 * 4 * 16];
+int dword_EA55E8[31 * 4 * 16];
+int highWaterMark = 0;  // @ 0xF3B7A8
+
+// ea: 0x005BD320
+void BrocSys::HudSetDefaults(game_hudelem_s* hud)
+{
+    if (hud == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3213;
+        AeAssert::gCurrentExpr = "hud";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((hud - g_hudelems) >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3214;
+        AeAssert::gCurrentExpr = "hud - g_hudelems >= 0 && hud - g_hudelems < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    hud->elem.x = 0;
+    hud->elem.y = 0;
+    hud->elem.fontScale = 1.0f;
+    hud->elem.font = 0;
+    hud->elem.alignX = 0;
+    hud->elem.alignY = 0;
+    hud->elem.fromColor[0] = 0;
+    hud->elem.fromColor[1] = 0;
+    hud->elem.fromColor[2] = 0;
+    hud->elem.fromColor[3] = 0;
+    hud->elem.fadeStartTime = 0;
+    hud->elem.fadeTime = 0;
+    hud->elem.label = 0;
+    hud->elem.width = 0;
+    hud->elem.height = 0;
+    hud->elem.mTexture = nullptr;
+    hud->elem.fromWidth = 0;
+    hud->elem.fromHeight = 0;
+    hud->elem.scaleStartTime = 0;
+    hud->elem.scaleTime = 0;
+    hud->elem.time = 0;
+    hud->elem.duration = 0;
+    hud->elem.text = 0;
+    hud->elem.type = HE_TYPE_TEXT;
+    hud->elem.color[0] = 0xFF;
+    hud->elem.color[1] = 0xFF;
+    hud->elem.color[2] = 0xFF;
+    hud->elem.color[3] = 0xFF;
+    hud->elem.sort = 0.0f;
+    hud->elem.value = 0.0f;
+}
+
+// ea: 0x005BD670
+void BrocSys::SetValue(const Broc::hudelem& hudElem, float value)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3531;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    unsigned int v3 = 124 * mHudIndex;
+    dword_EA55E4[v3 / 4] = 0;
+    dword_EA55B0[v3 / 4] = 0;
+    dword_EA55B4[v3 / 4] = 0;
+    dword_EA55B8[v3 / 4] = 0;
+    dword_EA55BC[v3 / 4] = 0;
+    dword_EA55C0[v3 / 4] = 0;
+    dword_EA55C4[v3 / 4] = 0;
+    dword_EA55C8[v3 / 4] = 0;
+    dword_EA55DC[v3 / 4] = 0;
+    dword_EA55E0[v3 / 4] = 0;
+    dword_EA55E8[v3 / 4] = 0;
+    g_hudelems[mHudIndex].elem.type = HE_TYPE_VALUE;
+    *(float*)&dword_EA55E4[v3 / 4] = value;
+}
+
+// ea: 0x005C5060
+void BrocSys::SetShader(const Broc::hudelem& hudElem,
+                        const Broc::string& string, int width, int height)
+{
+    unsigned int v4 = hudElem.___u0;
+    if ((v4 & 0x80000000) != 0 || v4 >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3463;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", v4))
+            __debugbreak();
+    }
+    if (v4 < 0x10)
+    {
+        game_hudelem_s* v5 = &g_hudelems[v4];
+        if (v5->elem.type < HE_TYPE_COUNT
+            || v5->elem.type > (HE_TYPE_COUNT | HE_TYPE_TIMER_DOWN))
+        {
+            const char* v6 = string.mBlock != nullptr
+                                 ? (const char*)(string.mBlock + 1)
+                                 : defaultFileName;
+            nglTexture* texture = GetTextureData(v6, 0, "mp_frontEnd");
+            if (width < 0)
+                Scr_ParamError(1, va("width %i < 0", width));
+            int v8 = height;
+            if (height < 0)
+            {
+                Scr_ParamError(2, va("height %i < 0", height));
+                v8 = height;
+            }
+            v5->elem.width = width;
+            v5->elem.fromWidth = 0;
+            v5->elem.fromHeight = 0;
+            v5->elem.scaleStartTime = 0;
+            v5->elem.scaleTime = 0;
+            v5->elem.time = 0;
+            v5->elem.duration = 0;
+            v5->elem.value = 0.0f;
+            v5->elem.text = 0;
+            v5->elem.type = HE_TYPE_SHADER;
+            v5->elem.mTexture = texture;
+            v5->elem.height = v8;
+        }
+    }
 }
 
 // ============================================================================
