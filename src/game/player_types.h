@@ -27,6 +27,8 @@ struct PlayerStateEvents {
     int32_t damagePitch;          // +0x30
     int32_t damageCount;          // +0x34
     int32_t entityEventSequence;  // +0x38
+
+    void Clear();  // ?Clear@PlayerStateEvents@@QAEXXZ (g.o 0x4A7560)
 };
 static_assert(sizeof(PlayerStateEvents) == 0x3C, "PlayerStateEvents size mismatch");
 

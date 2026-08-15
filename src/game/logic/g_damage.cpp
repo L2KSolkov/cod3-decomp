@@ -839,7 +839,7 @@ void G_ExplodeMissile(Entity* ent, int msec)
         }
         int key = ent->key;
         if (key > 0 && v22->slot != WEAPSLOT_SMOKE_GRENADE)
-            EffectEventSys::sInst->StopEffect(Handle{(unsigned int)key}, false);
+            EffectEventSys::sInst->StopEffect(Handle((unsigned int)key), false);
         SV_UnlinkEntity(ent);
     }
     else
@@ -1193,7 +1193,7 @@ label_88:
                         int key = ent->key;
                         if (key > 0 && InfoForWeapon->slot != 5)
                             EffectEventSys::sInst->StopEffect(
-                                Handle{(unsigned int)key}, true);
+                                Handle((unsigned int)key), true);
                         G_FreeEntity(ent, 0);
                     }
                     else
@@ -1243,7 +1243,7 @@ label_88:
                         int v45 = ent->key;
                         if (v45 > 0 && InfoForWeapon->slot != 5)
                             EffectEventSys::sInst->StopEffect(
-                                Handle{(unsigned int)v45}, true);
+                                Handle((unsigned int)v45), true);
                         SV_UnlinkEntity(ent);
                     }
                 }

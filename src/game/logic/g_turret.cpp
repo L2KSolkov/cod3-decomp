@@ -1806,7 +1806,7 @@ void turret_think(Entity* self, int msec)
             if (pTurretInfo->overheatEffect.mVal != 0)
             {
                 EffectEventSys::sInst->StopEffect(
-                    Handle{pTurretInfo->overheatEffect.mVal}, false);
+                    Handle(pTurretInfo->overheatEffect.mVal), false);
                 pTurretInfo->overheatEffect.mVal = 0;
             }
         }
@@ -1819,7 +1819,7 @@ void turret_think(Entity* self, int msec)
         Scr_Notify(self, hash_const.overheated, 0);
         if (pTurretInfo->overheatEffect.mVal != 0)
             EffectEventSys::sInst->AdjustEffect_Scale(
-                Handle{pTurretInfo->overheatEffect.mVal},
+                Handle(pTurretInfo->overheatEffect.mVal),
                 "EmissionRate", 200.0f);
     }
     float heat = pTurretInfo->heat;
@@ -1832,7 +1832,7 @@ void turret_think(Entity* self, int msec)
         if (pTurretInfo->overheatEffect.mVal != 0)
         {
             EffectEventSys::sInst->StopEffect(
-                Handle{pTurretInfo->overheatEffect.mVal}, false);
+                Handle(pTurretInfo->overheatEffect.mVal), false);
             pTurretInfo->overheatEffect.mVal = 0;
         }
     }
@@ -1846,7 +1846,7 @@ void turret_think(Entity* self, int msec)
         }
         float scalea = (pTurretInfo->heat - 0.25f) * 1.333333333333333f * emissionRate;
         EffectEventSys::sInst->AdjustEffect_Scale(
-            Handle{pTurretInfo->overheatEffect.mVal},
+            Handle(pTurretInfo->overheatEffect.mVal),
             "EmissionRate", scalea);
     }
     Entity* mObject = HandleDbToEnt(self->r.mOwner);

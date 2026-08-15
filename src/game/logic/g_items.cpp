@@ -1060,7 +1060,7 @@ void Touch_Item(Entity* ent, Entity* other, int bTouched)
                             EntityDeathTask* task =
                                 mem ? new (mem) EntityDeathTask(ent->mHandle)
                                     : nullptr;
-                            TaskSys::sInst->PostTask(task);
+                            TaskSys::sInst.PostTask(task);
                         }
                         else
                         {

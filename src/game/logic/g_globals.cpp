@@ -280,7 +280,7 @@ PoolAllocator* gAeThreadBackupStackAllocator;  // ?gAeThreadBackupStackAllocator
 ConfigStringManager* ConfigStringManager::sInst;  // ?sInst@ConfigStringManager@@0PAV1@A
 TestFPS* TestFPS::sInst;                     // ?sInst@TestFPS@@2PAV1@A
 TimerRenderBars TimerRenderBars::sInst;      // ?sInst@TimerRenderBars@@0V1@A
-TaskSys* TaskSys::sInst;                     // ?sInst@TaskSys@@0V1@A
+TaskSys TaskSys::sInst;                      // ?sInst@TaskSys@@0V1@A
 void* DynamicDecalMgr::sInst;                // ?sInst@DynamicDecalMgr@@2PAV1@A
 namespace StatusBar {
 cvar_t* sStatusBarActive = nullptr;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A

@@ -526,3 +526,113 @@ void RumbleManager::FrameAdvance(float delta_time)
     if (total_max_intensity <= 0.000001f)
         mLastTimeNotRumbling = level_time;
 }
+
+// ============================================================================
+// RumbleEffect setters (g.o 0x4A8A70-0x4A8FB0; emitted here because
+// RumbleEffect is a core_systems.h type)
+// ============================================================================
+
+#define RUMBLE_RANGE_ASSERT(line_no)                                       \
+    do {                                                                   \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                         \
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";    \
+        AeAssert::gCurrentLine = (line_no);                                \
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )"; \
+        if (!AeAssert::IsIgnored()                                         \
+            && AeAssert::Assert("value not in enum range"))                \
+            __debugbreak();                                                \
+    } while (0)
+
+#define RUMBLE_VALUE_ASSERT(expr_str, line_no, msg)                        \
+    do {                                                                   \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                         \
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";    \
+        AeAssert::gCurrentLine = (line_no);                                \
+        AeAssert::gCurrentExpr = (expr_str);                               \
+        if (!AeAssert::IsIgnored()                                         \
+            && AeAssert::Assert((msg)))                                    \
+            __debugbreak();                                                \
+    } while (0)
+
+// ea: 0x004A8A70
+void RumbleEffect::SetDelay(ERumbleMotorID rumbleID, float new_delay)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+        RUMBLE_RANGE_ASSERT(89);
+    if (new_delay < 0.0f)
+        RUMBLE_VALUE_ASSERT("new_delay >= 0.0f", 90,
+                            "Please add a descriptive string");
+    mRumbleDataArray[rumbleID].delay = new_delay;
+}
+
+// ea: 0x004A8B60
+void RumbleEffect::SetEnabled(ERumbleMotorID rumbleID, bool new_enabled)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+        RUMBLE_RANGE_ASSERT(96);
+    mRumbleDataArray[rumbleID].enabled = new_enabled;
+}
+
+// ea: 0x004A8BE0
+void RumbleEffect::SetIntensity(ERumbleMotorID rumbleID, float new_intensity)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+        RUMBLE_RANGE_ASSERT(102);
+    if (new_intensity < 0.0f || new_intensity > 1.0f)
+        RUMBLE_VALUE_ASSERT("new_intensity >= 0.0f && new_intensity <= 1.0f",
+                            103, "Please add a descriptive string");
+    mRumbleDataArray[rumbleID].intensity = new_intensity;
+}
+
+// ea: 0x004A8CE0
+void RumbleEffect::SetRampDownDuration(ERumbleMotorID rumbleID,
+                                       float new_duration)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+        RUMBLE_RANGE_ASSERT(109);
+    if (new_duration < 0.0f)
+        RUMBLE_VALUE_ASSERT("new_duration >= 0.0f", 110,
+                            "Please add a descriptive string");
+    mRumbleDataArray[rumbleID].ramp_down_duration = new_duration;
+}
+
+// ea: 0x004A8DD0
+void RumbleEffect::SetRampUpDuration(ERumbleMotorID rumbleID,
+                                     float new_duration)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+        RUMBLE_RANGE_ASSERT(116);
+    if (new_duration < 0.0f)
+        RUMBLE_VALUE_ASSERT("new_duration >= 0.0f", 117,
+                            "Please add a descriptive string");
+    mRumbleDataArray[rumbleID].ramp_up_duration = new_duration;
+}
+
+// ea: 0x004A8EC0
+void RumbleEffect::SetSteadyDuration(ERumbleMotorID rumbleID,
+                                     float new_duration)
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+        RUMBLE_RANGE_ASSERT(123);
+    if (new_duration < 0.0f)
+        RUMBLE_VALUE_ASSERT("new_duration >= 0.0f", 124,
+                            "Please add a descriptive string");
+    mRumbleDataArray[rumbleID].steady_duration = new_duration;
+}
+
+// ea: 0x004A8FB0
+void RumbleEffect::Initialize()
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        mRumbleDataArray[i].enabled = true;
+        mRumbleDataArray[i].delay = 0.0f;
+        mRumbleDataArray[i].intensity = 1.0f;
+        mRumbleDataArray[i].ramp_up_duration = 0.0f;
+        mRumbleDataArray[i].steady_duration = 1.0f;
+        mRumbleDataArray[i].ramp_down_duration = 0.0f;
+    }
+}
+
+#undef RUMBLE_RANGE_ASSERT
+#undef RUMBLE_VALUE_ASSERT

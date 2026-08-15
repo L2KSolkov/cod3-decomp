@@ -303,11 +303,23 @@ public:
     Mat33(const Mat33& _m);        // ??0Mat33@math@@QAE@ABV01@@Z (g.o 0x4A7100)
     Mat33(const Dir3& _x, const Dir3& _y, const Dir3& _z);  // ??0Mat33@math@@QAE@ABVDir3@1@00@Z (g.o 0x4A6FB0)
     const Mat33& operator=(const Mat33& _m);  // ??4Mat33@math@@QAEABV01@ABV01@@Z (g.o 0x4A7180)
+    const Mat33& operator*=(const Mat33& _m);  // ??XMat33@math@@QAEABV01@ABV01@@Z (g.o 0x4A7F60)
     const Dir3& GetX() const;  // ?GetX@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7030)
     const Dir3& GetY() const;  // ?GetY@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7040)
     const Dir3& GetZ() const;  // ?GetZ@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7050)
 };
 static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
+
+// g.o matrix free functions (0x4A75B0-0x4A82C0)
+Position3 Mul(const Position3& _v, const Mat43& _m);  // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat43@1@@Z (g.o 0x4A75B0)
+Position3 operator*(const Position3& _v, const Mat43& _m);  // ??Dmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z (g.o 0x4A76E0)
+Position3 operator/(const Position3& _v, const Mat43& _m);  // ??Kmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z (g.o 0x4A82C0)
+Mat33 Mul(const Mat33& _a, const Mat33& _b);  // ?Mul@math@@YA?AVMat33@1@ABV21@0@Z (g.o 0x4A77C0)
+Mat43 Mul(const Mat43& _a, const Mat43& _b);  // ?Mul@math@@YA?AVMat43@1@ABV21@0@Z (g.o 0x4A7BC0)
+Mat43 operator*(const Mat43& _a, const Mat43& _b);  // ??Dmath@@YA?AVMat43@0@ABV10@0@Z (g.o 0x4A7D90)
+Mat43 Inv(const Mat43& _m);                     // ?Inv@math@@YA?AVMat43@1@ABV21@@Z (g.o 0x4A80A0)
+Vector4 Cos(const Vector4& radians, const Vector4& frequency);  // ?Cos@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A83C0)
+bool Compare_all_lt(const Position3& _a, const Position3& _b);  // ?Compare_all_lt@math@@YA_NABVPosition3@1@0@Z (g.o 0x4A84D0)
 
 // ============================================================================
 // Mat44 — 4x4 matrix (64 bytes = 4 * Vector4)
@@ -382,6 +394,9 @@ public:
     float z;  // +0x08
     float w;  // +0x0C
 
+    Quaternion();                                // ??0Quaternion@math@@QAE@XZ (g.o 0x4A8530)
+    Quaternion(float _x, float _y, float _z, float _w);  // ??0Quaternion@math@@QAE@MMMM@Z (g.o 0x4A8540)
+
     // ??AQuaternion@math@@QAEAAMI@Z (anim.o 0x53AD30)
     float& operator[](unsigned int i);
 };
@@ -397,6 +412,11 @@ Dir3       operator*(const Dir3& v, const Mat33& m);  // ??Dmath@@YA?AVDir3@0@AB
 Quaternion Mul(const Quaternion& a, const Quaternion& b);  // ?Mul@math@@YA?AVQuaternion@1@ABV21@0@Z (0x53AD40)
 Quaternion operator*(const Quaternion& a, const Quaternion& b);  // ??Dmath@@YA?AVQuaternion@0@ABV10@0@Z (0x53ADF0)
 float      LengthSquared(const Quaternion& q);  // ?LengthSquared@math@@YAMABVQuaternion@1@@Z (0x53AEA0)
+
+// g.o quaternion free functions (0x4A85B0-0x4A8620)
+Quaternion operator*(const Quaternion& _a, float _b);  // ??Dmath@@YA?AVQuaternion@0@ABV10@M@Z (g.o 0x4A85B0)
+Quaternion DeclareUnit(const Quaternion& _q);          // ?DeclareUnit@math@@YA?AVQuaternion@1@ABV21@@Z (g.o 0x4A85F0)
+Quaternion GetQuaternion(const Mat33& rot);            // ?GetQuaternion@math@@YA?AVQuaternion@1@ABVMat33@1@@Z (g.o 0x4A8620)
 
 
 // ============================================================================

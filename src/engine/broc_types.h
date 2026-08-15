@@ -970,6 +970,13 @@ class NodeHandle {
 public:
     uint16_t mValue;  // +0x00
 
+    NodeHandle();                            // ??0NodeHandle@PathNodes@@QAE@XZ (g.o 0x4A75A0)
+    NodeHandle(int value);                   // ??0NodeHandle@PathNodes@@QAE@H@Z (g.o 0x4A7630)
+    unsigned short GetZoneIndex() const;     // ?GetZoneIndex@NodeHandle@PathNodes@@QBEGXZ (g.o 0x4A7650)
+    static NodeHandle NullHandle();          // ?NullHandle@NodeHandle@PathNodes@@SA?AV12@XZ (g.o 0x4A7660)
+    bool IsAssigned() const;                 // ?IsAssigned@NodeHandle@PathNodes@@QBE_NXZ (g.o 0x4A7670)
+    bool operator==(const NodeHandle& rhs) const;  // ??8NodeHandle@PathNodes@@QBE_NABV01@@Z (g.o 0x4A7690)
+    operator bool() const;                   // ??BNodeHandle@PathNodes@@QBE_NXZ (g.o 0x4A76B0)
     const PathNode* operator*() const;  // ??DNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ (mp_actors.o)
     PathNode* operator*();             // ??DNodeHandle@PathNodes@@QAEPAUPathNode@1@XZ (mp_actors.o)
     const PathNode* operator->() const;  // ??CNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ (mp_actors.o)

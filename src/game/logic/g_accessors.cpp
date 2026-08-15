@@ -721,6 +721,267 @@ math::Position3& math::Mat43::GetW()
     return w;
 }
 
+// ============================================================================
+// Matrix free functions (g.o 0x4A75B0-0x4A82C0)
+// ============================================================================
+math::Position3 math::Mul(const math::Position3& _v, const math::Mat43& _m)
+{
+    math::Position3 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0x55), _m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0xAA), _m.z.v),
+                   _m.w.v));
+    return r;
+}
+math::Position3 math::operator*(const math::Position3& _v, const math::Mat43& _m)
+{
+    return math::Mul(_v, _m);
+}
+math::Position3 math::operator/(const math::Position3& _v, const math::Mat43& _m)
+{
+    math::Position3 r;
+    __m128 v3 = _m.y.v;
+    __m128 v4 = _m.z.v;
+    __m128 v5 = _mm_shuffle_ps(_m.x.v, v3, 68);
+    __m128 v6 = _mm_shuffle_ps(_mm_shuffle_ps(_m.x.v, v3, 238), v4, 168);
+    __m128 v8 = _mm_shuffle_ps(v5, v4, 221);
+    __m128 v9 = _mm_shuffle_ps(v5, v4, 136);
+    r.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), v9),
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0x55), v8)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0xAA), v6),
+            _mm_xor_ps(
+                _mm_set1_ps(-0.0f),
+                _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(_m.w.v, _m.w.v, 0), v9),
+                        _mm_mul_ps(_mm_shuffle_ps(_m.w.v, _m.w.v, 0x55), v8)),
+                    _mm_mul_ps(_mm_shuffle_ps(_m.w.v, _m.w.v, 0xAA), v6)))));
+    return r;
+}
+
+math::Mat33 math::Mul(const math::Mat33& _a, const math::Mat33& _b)
+{
+    math::Mat33 r;
+    __m128 v3 = _b.z.v;
+    __m128 v4 = _b.y.v;
+    __m128 v5 = _b.x.v;
+    __m128 v6 = _a.z.v;
+    r.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_a.x.v, _a.x.v, 0), _b.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_a.x.v, _a.x.v, 0x55), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(_a.x.v, _a.x.v, 0xAA), v3));
+    r.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_a.y.v, _a.y.v, 0), _b.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_a.y.v, _a.y.v, 0x55), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(_a.y.v, _a.y.v, 0xAA), v3));
+    r.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v6, v6, 0), v5),
+            _mm_mul_ps(_mm_shuffle_ps(v6, v6, 0x55), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(v6, v6, 0xAA), v3));
+    return r;
+}
+const math::Mat33& math::Mat33::operator*=(const math::Mat33& _m)
+{
+    math::Mat33 r = math::Mul(*this, _m);
+    *this = r;
+    return *this;
+}
+
+math::Mat43 math::Mul(const math::Mat43& _a, const math::Mat43& _b)
+{
+    math::Mat43 r;
+    __m128 v3 = _b.z.v;
+    __m128 v4 = _b.y.v;
+    __m128 v5 = _b.x.v;
+    r.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_a.x.v, _a.x.v, 0), _b.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_a.x.v, _a.x.v, 0x55), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(_a.x.v, _a.x.v, 0xAA), v3));
+    r.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_a.y.v, _a.y.v, 0), _b.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_a.y.v, _a.y.v, 0x55), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(_a.y.v, _a.y.v, 0xAA), v3));
+    r.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_a.z.v, _a.z.v, 0), _b.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_a.z.v, _a.z.v, 0x55), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(_a.z.v, _a.z.v, 0xAA), v3));
+    r.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_a.w.v, _a.w.v, 0), v5),
+            _mm_mul_ps(_mm_shuffle_ps(_a.w.v, _a.w.v, 0x55), v4)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_a.w.v, _a.w.v, 0xAA), v3),
+                   _b.w.v));
+    return r;
+}
+math::Mat43 math::operator*(const math::Mat43& _a, const math::Mat43& _b)
+{
+    return math::Mul(_a, _b);
+}
+
+math::Mat43 math::Inv(const math::Mat43& _m)
+{
+    math::Mat43 r;
+    __m128 v2 = _m.y.v;
+    __m128 v3 = _m.z.v;
+    __m128 v4 = _mm_shuffle_ps(_m.x.v, v2, 68);
+    __m128 v5 = _mm_shuffle_ps(v4, v3, 221);
+    __m128 tmp_20 = _mm_shuffle_ps(_mm_shuffle_ps(_m.x.v, v2, 238), v3, 168);
+    __m128 v6 = _mm_shuffle_ps(v4, v3, 136);
+    __m128 tmp_4 = v5;
+    __m128 v7 = _mm_mul_ps(_mm_shuffle_ps(_m.w.v, _m.w.v, 0xAA), tmp_20);
+    __m128 v8 = _mm_add_ps(
+        _mm_mul_ps(_mm_shuffle_ps(_m.w.v, _m.w.v, 0), v6),
+        _mm_mul_ps(_mm_shuffle_ps(_m.w.v, _m.w.v, 0x55), v5));
+    r.x.v = v6;
+    r.y.v = tmp_4;
+    r.z.v = tmp_20;
+    r.w.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _mm_add_ps(v8, v7));
+    return r;
+}
+
+// Vector4 cos approximation (g.o 0x4A83C0)
+math::Vector4 math::Cos(const math::Vector4& radians, const math::Vector4& frequency)
+{
+    __m128 sign = _mm_set1_ps(-0.0f);
+    __m128 floorMagic = _mm_set1_ps(12582912.0f);
+    __m128 half = _mm_set1_ps(0.5f);
+    __m128 quarter = _mm_set1_ps(0.25f);
+    __m128 v3 = _mm_mul_ps(_mm_xor_ps(sign, _mm_andnot_ps(sign, radians.v)),
+                           frequency.v);
+    __m128 v5 = _mm_sub_ps(
+        _mm_andnot_ps(
+            sign,
+            _mm_sub_ps(_mm_sub_ps(_mm_add_ps(_mm_sub_ps(v3, floorMagic),
+                                             floorMagic),
+                                  v3),
+                       half)),
+        quarter);
+    __m128 v6 = _mm_mul_ps(v5, v5);
+    __m128 v7 = _mm_mul_ps(v6, v6);
+    __m128 v8 = _mm_mul_ps(v5, v6);
+    __m128 v9 = _mm_mul_ps(v5, v7);
+    math::Vector4 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_mul_ps(v9, v7), _mm_set1_ps(39.710659f)),
+                    _mm_mul_ps(_mm_mul_ps(v8, v7), _mm_set1_ps(-76.574959f))),
+                _mm_mul_ps(v9, _mm_set1_ps(81.602226f))),
+            _mm_mul_ps(v8, _mm_set1_ps(-41.341675f))),
+        _mm_mul_ps(v5, _mm_set1_ps(6.283185f)));
+    return r;
+}
+
+bool math::Compare_all_lt(const math::Position3& _a, const math::Position3& _b)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(_a.v, _b.v)) & 7) == 7;
+}
+
+// Quaternion ctors / ops (g.o 0x4A8530-0x4A8620)
+math::Quaternion::Quaternion()
+{
+}
+math::Quaternion::Quaternion(float _x, float _y, float _z, float _w)
+{
+    x = _x;
+    y = _y;
+    z = _z;
+    w = _w;
+}
+math::Quaternion math::operator*(const math::Quaternion& _a, float _b)
+{
+    math::Quaternion r;
+    r.x = _a.x * _b;
+    r.y = _a.y * _b;
+    r.z = _a.z * _b;
+    r.w = _a.w * _b;
+    return r;
+}
+math::Quaternion math::DeclareUnit(const math::Quaternion& _q)
+{
+    math::Quaternion r;
+    r.x = _q.x;
+    r.y = _q.y;
+    r.z = _q.z;
+    r.w = _q.w;
+    return r;
+}
+math::Quaternion math::GetQuaternion(const math::Mat33& rot)
+{
+    float v2 = rot.z.v.m128_f32[2];
+    float v3 = rot.y.v.m128_f32[1];
+    float v4 = rot.x.v.m128_f32[0];
+    __m128 v5 = _mm_shuffle_ps(rot.x.v, _mm_shuffle_ps(_mm_setzero_ps(), rot.x.v, 160), 52);
+    __m128 v6 = _mm_shuffle_ps(rot.y.v, _mm_shuffle_ps(_mm_setzero_ps(), rot.y.v, 160), 52);
+    __m128 v7 = _mm_shuffle_ps(rot.z.v, _mm_shuffle_ps(_mm_setzero_ps(), rot.z.v, 160), 52);
+    float v8 = (v2 + v3) + v4;
+    math::Quaternion r;
+    __m128 vv;
+    float scale;
+    if (v8 < -0.33333299f)
+    {
+        if (v3 <= v4)
+        {
+            if (v4 > v2)
+            {
+                vv.m128_f32[1] = _mm_shuffle_ps(v5, v5, 0x55).m128_f32[0] + v6.m128_f32[0];
+                vv.m128_f32[2] = v7.m128_f32[0] + _mm_shuffle_ps(v5, v5, 0xAA).m128_f32[0];
+                vv.m128_f32[3] = _mm_shuffle_ps(v7, v7, 0x55).m128_f32[0] - _mm_shuffle_ps(v6, v6, 0xAA).m128_f32[0];
+                vv.m128_f32[0] = ((v4 - v3) - v2) + 1.0f;
+                scale = 0.5f / sqrt(vv.m128_f32[0]);
+                r.x = vv.m128_f32[0] * scale;
+                r.y = vv.m128_f32[1] * scale;
+                r.z = vv.m128_f32[2] * scale;
+                r.w = vv.m128_f32[3] * scale;
+                return r;
+            }
+        }
+        else if (v3 > v2)
+        {
+            vv.m128_f32[0] = _mm_shuffle_ps(v5, v5, 0x55).m128_f32[0] + v6.m128_f32[0];
+            vv.m128_f32[2] = _mm_shuffle_ps(v6, v6, 0xAA).m128_f32[0] + _mm_shuffle_ps(v7, v7, 0x55).m128_f32[0];
+            vv.m128_f32[3] = _mm_shuffle_ps(v5, v5, 0xAA).m128_f32[0] - v7.m128_f32[0];
+            vv.m128_f32[1] = ((v3 - v4) - v2) + 1.0f;
+            scale = 0.5f / sqrt(vv.m128_f32[1]);
+            r.x = vv.m128_f32[0] * scale;
+            r.y = vv.m128_f32[1] * scale;
+            r.z = vv.m128_f32[2] * scale;
+            r.w = vv.m128_f32[3] * scale;
+            return r;
+        }
+        vv.m128_f32[0] = v7.m128_f32[0] + _mm_shuffle_ps(v5, v5, 0xAA).m128_f32[0];
+        vv.m128_f32[1] = _mm_shuffle_ps(v6, v6, 0xAA).m128_f32[0] + _mm_shuffle_ps(v7, v7, 0x55).m128_f32[0];
+        vv.m128_f32[3] = v6.m128_f32[0] - _mm_shuffle_ps(v5, v5, 0x55).m128_f32[0];
+        vv.m128_f32[2] = ((v2 - v4) - v3) + 1.0f;
+        scale = 0.5f / sqrt(vv.m128_f32[2]);
+    }
+    else
+    {
+        vv.m128_f32[0] = _mm_shuffle_ps(v7, v7, 0x55).m128_f32[0] - _mm_shuffle_ps(v6, v6, 0xAA).m128_f32[0];
+        vv.m128_f32[1] = _mm_shuffle_ps(v5, v5, 0xAA).m128_f32[0] - v7.m128_f32[0];
+        vv.m128_f32[2] = v6.m128_f32[0] - _mm_shuffle_ps(v5, v5, 0x55).m128_f32[0];
+        vv.m128_f32[3] = v8 + 1.0f;
+        scale = 0.5f / sqrt(v8 + 1.0f);
+    }
+    r.x = vv.m128_f32[0] * scale;
+    r.y = vv.m128_f32[1] * scale;
+    r.z = vv.m128_f32[2] * scale;
+    r.w = vv.m128_f32[3] * scale;
+    return r;
+}
+
 // Broc::vector::Set (g.o 0x4A5DE0)
 void Broc::vector::Set(float X, float Y, float Z)
 {
@@ -887,4 +1148,146 @@ CollisionDesc::CollisionDesc(const math::Position3& c,
     : simple(c, n)
 {
     material = m;
+}
+
+// ============================================================================
+// Singleton Inst accessors (g.o 0x4A7540-0x4A9070)
+// ============================================================================
+EffectEventSys* EffectEventSys::Inst()
+{
+    return EffectEventSys::sInst;
+}
+TaskSys* TaskSys::Inst()
+{
+    return &TaskSys::sInst;
+}
+SoundDevice* SoundDevice::Inst()
+{
+    return SoundDevice::sInst;
+}
+SmokeGrenadeMgr* SmokeGrenadeMgr::Inst()
+{
+    return (SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst;
+}
+TestFPS* TestFPS::Inst()
+{
+    return TestFPS::sInst;
+}
+bool TestFPS::IsTesting()
+{
+    return mTesting;
+}
+
+// PlayerStateEvents::Clear (g.o 0x4A7560)
+void PlayerStateEvents::Clear()
+{
+    eventSequence = 0;
+    oldEventSequence = 0;
+    damageEvent = 0;
+    damageYaw = 0;
+    damagePitch = 0;
+    damageCount = 0;
+    entityEventSequence = 0;
+    for (int i = 0; i < 4; ++i)
+    {
+        events[i] = 0;
+        eventParms[i] = 0;
+    }
+}
+
+// PathNodes::NodeHandle (g.o 0x4A75A0-0x4A76B0)
+PathNodes::NodeHandle::NodeHandle()
+{
+    mValue = 0;
+}
+PathNodes::NodeHandle::NodeHandle(int value)
+{
+    mValue = (uint16_t)value;
+}
+unsigned short PathNodes::NodeHandle::GetZoneIndex() const
+{
+    return (unsigned short)(mValue - 1);
+}
+PathNodes::NodeHandle PathNodes::NodeHandle::NullHandle()
+{
+    PathNodes::NodeHandle h;
+    h.mValue = 0;
+    return h;
+}
+bool PathNodes::NodeHandle::IsAssigned() const
+{
+    return mValue != 0 && mValue != 0xFFFF;
+}
+bool PathNodes::NodeHandle::operator==(const PathNodes::NodeHandle& rhs) const
+{
+    return mValue == rhs.mValue;
+}
+PathNodes::NodeHandle::operator bool() const
+{
+    return mValue != 0 && mValue != 0xFFFF && operator->() != nullptr;
+}
+
+// scr_vehicle_t::LerpedVariables::Clear (g.o 0x4A79E0)
+void scr_vehicle_t::LerpedVariables::Clear()
+{
+    mSteeringAngle = 0.0f;
+    mTurretAngles.v.m128_f32[1] = 0.0f;
+    mTurretAngles.v.m128_f32[0] = 0.0f;
+    mBodyPosition.v.m128_f32[1] = 0.0f;
+    mBodyPosition.v.m128_f32[0] = 0.0f;
+}
+
+// InteractionController accessors (g.o 0x4A8260-0x4A82A0)
+int InteractionController::IsInteracting() const
+{
+    return mCurState != nullptr;
+}
+void InteractionController::SetFlag(unsigned int f, int enable)
+{
+    if (enable != 0)
+        mFlags |= f;
+    else
+        mFlags &= ~f;
+}
+int InteractionController::IsFlagged(unsigned int f) const
+{
+    return (f & mFlags) != 0;
+}
+
+// Camera accessors (g.o 0x4A9020-0x4A9040)
+ECameraModes Camera::GetCameraMode()
+{
+    return (ECameraModes)mCamMode;
+}
+EVehicleCameraMode Camera::GetVehicleCameraMode()
+{
+    return (EVehicleCameraMode)mVehicleCamMode;
+}
+float Camera::GetLastViewAngles(int axis)
+{
+    return mPrevAngles.v.m128_f32[axis];
+}
+
+// Handle (g.o 0x4A9100-0x4A9160)
+Handle::Handle(int v)
+{
+    mVal = (unsigned int)v;
+}
+Handle Handle::NullHandle()
+{
+    Handle h;
+    h.mVal = 0;
+    return h;
+}
+bool Handle::IsUnassigned() const
+{
+    return mVal == 0;
+}
+unsigned int Handle::GetVal() const
+{
+    return mVal;
+}
+bool operator==(Handle lhs, Handle rhs)
+{
+    return lhs.mVal == rhs.mVal;
 }

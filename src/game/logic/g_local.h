@@ -311,6 +311,7 @@ struct scr_vehicle_t {
         float mHatchAngleRight;         // +0x34
         float mHatchAngleLeft;          // +0x38
         float _pad3C;                   // +0x3C
+        void Clear();  // ?Clear@LerpedVariables@scr_vehicle_t@@QAEXXZ (g.o 0x4A79E0)
     } current;                          // +0x3E0 (0x3C bytes)
     struct LerpedVariables next;        // +0x420 (0x40 bytes)
     struct VehicleBoneIndex {
@@ -667,6 +668,8 @@ struct TestFPS {
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z
+    static TestFPS* Inst();  // ?Inst@TestFPS@@SAPAV1@XZ (g.o 0x4A9060)
+    bool IsTesting();        // ?IsTesting@TestFPS@@QAE_NXZ (g.o 0x4A9070)
 };
 static_assert(sizeof(TestFPS) == 0xAD90, "TestFPS size mismatch");
 
@@ -3596,6 +3599,11 @@ public:
     };
     static InstanceHolder sInstHolder;  // ?sInstHolder@InteractionController@@2UInstanceHolder@1@A (g.o)
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z (g.o)
+    unsigned int mFlags;   // +0x00
+    void* mCurState;       // +0x04
+    int IsInteracting() const;             // ?IsInteracting@InteractionController@@QBEHXZ (g.o 0x4A8260)
+    void SetFlag(unsigned int f, int enable);  // ?SetFlag@InteractionController@@QAEXIH@Z (g.o 0x4A8270)
+    int IsFlagged(unsigned int f) const;   // ?IsFlagged@InteractionController@@QBEHI@Z (g.o 0x4A82A0)
 };
 float InteractionController_GetRotation(void* self); // cl.o
 void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
@@ -3850,7 +3858,8 @@ struct Task {
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
 
 struct TaskSys {
-    static TaskSys* sInst;  // ?sInst@TaskSys@@0V1@A @ 0x012F4120
+    static TaskSys sInst;   // ?sInst@TaskSys@@0V1@A @ 0x012F4120 (object, per binary mangle)
+    static TaskSys* Inst(); // ?Inst@TaskSys@@SAPAV1@XZ (g.o 0x4A7550)
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o
 };
 
@@ -3979,6 +3988,7 @@ void G_FreeVehicleRefs(Entity* ent);              // g.o 0x45D3A0 (g_scr_vehicle
 class EffectEventSys {
 public:
     static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
+    static EffectEventSys* Inst();  // ?Inst@EffectEventSys@@SAPAV1@XZ (g.o 0x4A7540)
     void SendSoundNotify(Entity* pEnt);  // ea: 0x004BCDE0
     void SendSpecificSoundNotify(Entity* pEnt, HashString soundName);  // ?SendSpecificSoundNotify@EffectEventSys@@QAEXPAVEntity@@VHashString@@@Z
     void StopEffect(Handle handle, bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z

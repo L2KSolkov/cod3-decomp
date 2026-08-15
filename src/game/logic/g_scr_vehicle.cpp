@@ -7025,7 +7025,7 @@ void VEH_UpdateOverHeat(Entity* self, int msec)
                         if (v9.mVal != 0)
                         {
                             EffectEventSys::sInst->StopEffect(
-                                Handle{v9.mVal}, false);
+                                Handle(v9.mVal), false);
                             seat.overheatEffect.mVal = 0;
                         }
                     }
@@ -7040,7 +7040,7 @@ void VEH_UpdateOverHeat(Entity* self, int msec)
                     v8.mVal = seat.overheatEffect.mVal;
                     if (v8.mVal != 0)
                         EffectEventSys::sInst->AdjustEffect_Scale(
-                            Handle{v8.mVal}, "EmissionRate", 200.0f);
+                            Handle(v8.mVal), "EmissionRate", 200.0f);
                 }
                 float heat = seat.heat;
                 if (heat <= 0.0f)
@@ -7054,7 +7054,7 @@ void VEH_UpdateOverHeat(Entity* self, int msec)
                     if (v11.mVal != 0)
                     {
                         EffectEventSys::sInst->StopEffect(
-                            Handle{v11.mVal}, false);
+                            Handle(v11.mVal), false);
                         seat.overheatEffect.mVal = 0;
                     }
                 }
@@ -7066,7 +7066,7 @@ void VEH_UpdateOverHeat(Entity* self, int msec)
                                                   (EAction)0x36 /* kActionMax|kActionWEAPON_LAST_SHOT_EJECT */);
                     float scale = (seat.heat - 0.25f) * 1.333333333333333f * emissionRate_0;
                     EffectEventSys::sInst->AdjustEffect_Scale(
-                        Handle{seat.overheatEffect.mVal},
+                        Handle(seat.overheatEffect.mVal),
                         "EmissionRate", scale);
                 }
             }

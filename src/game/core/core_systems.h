@@ -563,6 +563,15 @@ public:
     float GetRampUpDuration(ERumbleMotorID rumbleID) const;     // ?GetRampUpDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE290)
     float GetSteadyDuration(ERumbleMotorID rumbleID) const;     // ?GetSteadyDuration@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE310)
     void SetLooping(ERumbleMotorID rumbleID, bool looping);     // ?SetLooping@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z (cg.o 0x6BBDE0)
+    void SetDelay(ERumbleMotorID rumbleID, float new_delay);              // ?SetDelay@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8A70)
+    void SetEnabled(ERumbleMotorID rumbleID, bool new_enabled);           // ?SetEnabled@RumbleEffect@@QAEXW4ERumbleMotorID@@_N@Z (g.o 0x4A8B60)
+    void SetIntensity(ERumbleMotorID rumbleID, float new_intensity);      // ?SetIntensity@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8BE0)
+    void SetRampDownDuration(ERumbleMotorID rumbleID, float new_duration);  // ?SetRampDownDuration@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8CE0)
+    void SetRampUpDuration(ERumbleMotorID rumbleID, float new_duration);  // ?SetRampUpDuration@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8DD0)
+    void SetSteadyDuration(ERumbleMotorID rumbleID, float new_duration);  // ?SetSteadyDuration@RumbleEffect@@QAEXW4ERumbleMotorID@@M@Z (g.o 0x4A8EC0)
+
+private:
+    void Initialize();  // ?Initialize@RumbleEffect@@AAEXXZ (g.o 0x4A8FB0)
 };
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 

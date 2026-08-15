@@ -1845,13 +1845,8 @@ void bone_mass_info::calc_stuff(Entity* const owner)
 }
 
 // Camera (cg.o view; minimal local copy; mVehicleCamMode +0x194 verified from
-// UpdateControls disasm: cmp dword ptr [eax+194h], 2/3)
-enum EVehicleCameraMode {
-    VEH_MODE_FIRSTPERSON = 0,
-    VEH_MODE_CHASECAM = 1,
-    VEH_MODE_HLO = 2,
-    VEH_MODE_STRAFE = 3,
-};
+// UpdateControls disasm: cmp dword ptr [eax+194h], 2/3). EVehicleCameraMode
+// enum comes from game/sv/sv_stubs.h.
 class Camera {
 public:
     uint8_t         _pad0[0x30];

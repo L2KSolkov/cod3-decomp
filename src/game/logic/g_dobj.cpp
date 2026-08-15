@@ -1645,6 +1645,22 @@ void G_DObjUpdate(Entity* ent, bool forceWeaponModel)
 
 PoolAllocator* tagInfo_t::sAllocator = nullptr;  // defined by g_globals/init
 
+// tagInfo_t memory ops (g.o 0x4A7760-0x4A77A0)
+void* tagInfo_t::operator new(size_t size, bool forceHeapAlloc,
+                              const char* /*file*/, int /*line*/)
+{
+    return tagInfo_t::sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+void tagInfo_t::operator delete(void* ptr, bool /*forceHeapAlloc*/,
+                                const char* /*file*/, int /*line*/)
+{
+    tagInfo_t::sAllocator->Release(ptr);
+}
+void tagInfo_t::operator delete(void* ptr)
+{
+    tagInfo_t::sAllocator->Release(ptr);
+}
+
 static tagInfo_t* AllocTagInfo(Entity* parent, Entity* ent, unsigned int tagHash,
                                int index, bool useAngles)
 {

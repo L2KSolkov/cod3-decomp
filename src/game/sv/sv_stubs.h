@@ -464,6 +464,7 @@ struct SmokeGrenadeInfoList {
 struct SmokeGrenadeMgr {
     SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
     static void* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+    static SmokeGrenadeMgr* Inst();  // ?Inst@SmokeGrenadeMgr@@SAPAV1@XZ (g.o 0x4A83B0)
     float CalcOpacity(const SmokeGrenadeInfo& smokeGrenInfo) const;  // ?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z (game2.o 0x4FA0E0)
     bool PointCanSeePoint(const float* startPoint, const float* endPoint,
                           float visThreshold);  // ?PointCanSeePoint@SmokeGrenadeMgr@@QAE_NQBM0M@Z (game2.o 0x4FA220)
@@ -476,6 +477,34 @@ struct SmokeGrenadeMgr {
     void ReInitialize();  // ?ReInitialize@SmokeGrenadeMgr@@QAEXXZ (game2.o 0x504C50)
 };
 static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
+
+// Camera mode enums (binary values from codmp_xboxr.xbe.h)
+enum EVehicleCameraMode : int32_t {
+    VEH_MODE_FIRSTPERSON = 0x0,
+    VEH_MODE_CHASECAM = 0x1,
+    VEH_MODE_HLO = 0x2,
+    VEH_MODE_STRAFE = 0x3,
+    VEH_MODE_MAX = 0x4,
+};
+
+enum ECameraModes : int32_t {
+    CAM_NORMAL_FIRST = 0x0,
+    CAM_NORMAL_THIRD = 0x1,
+    CAM_VEHICLE_FIRST = 0x2,
+    CAM_VEHICLE_THIRD = 0x3,
+    CAM_VEHICLE_TANK = 0x4,
+    CAM_VEHICLE_TANK_COMMANDER = 0x5,
+    CAM_VEHICLE_GUNNER = 0x6,
+    CAM_VEHICLE_PASSENGER = 0x7,
+    CAM_VEHICLE_ANIMATING = 0x8,
+    CAM_LINKED = 0x9,
+    CAM_TURRET = 0xA,
+    CAM_INTERMISSION = 0xB,
+    CAM_SCENE_ANIMATED = 0xC,
+    CAM_INTERACTION_LOCKED = 0xD,
+    CAM_INTERACTION_FREE = 0xE,
+    CAM_MP_DEATH_CAMERA = 0xF,
+};
 
 // SetEnvironment(0x602B90) is a no-op in the binary; values unverified.
 enum ESoundEnvironment {
@@ -626,6 +655,7 @@ public:
     float mDebugListenerForward[3];   // +0x7A88
     float mDebugListenerUp[3];        // +0x7A94
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
+    static SoundDevice* Inst();     // ?Inst@SoundDevice@@SAPAV1@XZ (g.o 0x4A8520)
     SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)
     ~SoundDevice();                 // ??1SoundDevice@@QAE@XZ (game.o 0x646610)
     nslWaveID FindWave(const char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
@@ -1371,6 +1401,9 @@ public:
     uint8_t _pad9[0x1F0 - 0x1E4];
     void Restart();  // ?Restart@Camera@@QAEXXZ
     bool IsTweening();  // ?IsTweening@Camera@@QAE_NXZ (cg.o 0x68EBB0)
+    ECameraModes GetCameraMode();                    // ?GetCameraMode@Camera@@QAE?AW4ECameraModes@@XZ (g.o 0x4A9020)
+    EVehicleCameraMode GetVehicleCameraMode();       // ?GetVehicleCameraMode@Camera@@QAE?AW4EVehicleCameraMode@@XZ (g.o 0x4A9030)
+    float GetLastViewAngles(int axis);               // ?GetLastViewAngles@Camera@@QAEMH@Z (g.o 0x4A9040)
 };
 static_assert(sizeof(Camera) == 0x1F0, "Camera size mismatch");
 extern Camera gCamera[8];  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0, stride 0x1F0)

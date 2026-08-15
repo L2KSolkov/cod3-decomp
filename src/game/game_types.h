@@ -73,8 +73,16 @@ class EntityHandleDb;
 class Handle {
 public:
     unsigned int mVal;  // +0x00
+
+    Handle() : mVal(0) {}              // implicit default preserved
+    Handle(int v);                     // ??0Handle@@QAE@H@Z (g.o 0x4A9100)
+    static Handle NullHandle();        // ?NullHandle@Handle@@SA?AV1@XZ (g.o 0x4A9120)
+    bool IsUnassigned() const;         // ?IsUnassigned@Handle@@QBE_NXZ (g.o 0x4A9140)
+    unsigned int GetVal() const;       // ?GetVal@Handle@@QBEIXZ (g.o 0x4A9150)
 };
 static_assert(sizeof(Handle) == 4, "Handle size mismatch");
+
+bool operator==(Handle lhs, Handle rhs);  // ??8@YA_NVHandle@@0@Z (g.o 0x4A9160)
 
 // Handle type — wraps a DbLinkedHandle
 template <typename HandleDb, typename T>
@@ -100,6 +108,11 @@ struct tagInfo_t {
     float      parentInvAxis[4][3];  // +0x40
 
     static class PoolAllocator* sAllocator;  // ?sAllocator@tagInfo_t@@2PAVPoolAllocator@@A
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);  // ??2tagInfo_t@@SAPAXI_NPBDH@Z (g.o 0x4A7760)
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);  // ??3tagInfo_t@@SAXPAX_NPBDH@Z (g.o 0x4A7780)
+    static void operator delete(void* ptr);  // ??3tagInfo_t@@SAXPAX@Z (g.o 0x4A77A0)
 };
 static_assert(sizeof(tagInfo_t) == 0x70, "tagInfo_t size mismatch");
 static_assert(offsetof(tagInfo_t, name) == 0x08, "tagInfo_t::name offset mismatch");
