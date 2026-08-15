@@ -2163,7 +2163,7 @@ void Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
 }
 
 // ea: 0x00480970
-void Scr_Vehicle_Controller(Entity* pSelf)
+void Scr_Vehicle_Controller(Entity* pSelf, int* /*unused*/)
 {
     if (pSelf == nullptr)
     {
@@ -2311,7 +2311,7 @@ void G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx)
 }
 
 // ea: 0x00452A10
-void G_VehSetSwitchNode(vehicle_pathpos_t* vpp, int16_t srcNodeIdx, uint16_t dstNodeIdx)
+void G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, unsigned short dstNodeIdx)
 {
     for (int i = 0; i < 2; ++i)
     {
@@ -2360,7 +2360,7 @@ void VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst)
 }
 
 // ea: 0x00488280
-int G_SpawnVehicle(Entity* ent, const char* typeName)
+int G_SpawnVehicle(Entity* ent, const char* typeName, int /*unused*/)
 {
     scr_vehicle_t* v3;
     if (ent->scr_vehicle != nullptr)
@@ -2556,7 +2556,7 @@ void VEH_RespawnVehicle(Entity* ent)
         scr_vehicle->mRBVeh = nullptr;
     }
     ent->s.eFlags &= ~0x80u;
-    G_SpawnVehicle(ent, nullptr);
+    G_SpawnVehicle(ent, nullptr, 0);
     scr_vehicle->phys.origin.v.m128_f32[0] = respawn_origin[0];
     scr_vehicle->phys.origin.v.m128_f32[1] = respawn_origin[1];
     scr_vehicle->phys.origin.v.m128_f32[2] = respawn_origin[2];
@@ -2620,7 +2620,7 @@ void SP_script_vehicle(Entity* pSelf)
             && AeAssert::Assert("Invalid vehicletype found in level.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
             __debugbreak();
     }
-    if (G_SpawnVehicle(pSelf, typeName) != 0)
+    if (G_SpawnVehicle(pSelf, typeName, 0) != 0)
     {
         scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
         if (s_vehicleInfos[scr_vehicle->infoIdx]->type == 2)

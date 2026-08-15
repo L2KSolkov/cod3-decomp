@@ -1037,7 +1037,7 @@ label_19:
     if (ent->methodOfDeath == 3)
     {
         weaponFileInfo_t* v29 = BG_GetInfoForWeapon(ent->s.weapon);
-        G_GrenadeTouchTriggerDamage(ent, &ent->r.currentOrigin, &ent->r.currentOrigin,
+        G_GrenadeTouchTriggerDamage(ent, ent->r.currentOrigin, ent->r.currentOrigin,
                                     v29->iExplosionInnerDamage, ent->methodOfDeath);
     }
     if (tr.normal.v.m128_f32[1] == 1.0f || ((int)tr.normal.v.m128_f32[3] & 2) != 0)
@@ -1200,7 +1200,7 @@ label_88:
                     {
                         int v35 = ent->damage;
                         if (v35 != 0)
-                            G_CheckHitTriggerDamage(other, &ent->r.currentOrigin,
+                            G_CheckHitTriggerDamage(other, ent->r.currentOrigin,
                                                     &trace->endpos, v35, ent->methodOfDeath);
                         if (v62 != 0 || trace->partName.mHash != 0)
                             v62 = 1;

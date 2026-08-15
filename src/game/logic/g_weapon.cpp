@@ -1555,7 +1555,7 @@ void Weapon_Melee(Entity* ent, weaponParms* wp)
         muzzlePos.v.m128_f32[1] = wp->muzzleTrace[1];
         muzzlePos.v.m128_f32[2] = wp->muzzleTrace[2];
         muzzlePos.v.m128_f32[3] = 0.0f;
-        G_CheckHitTriggerDamage(ent, &muzzlePos, &tr.endpos, damage, 11);
+        G_CheckHitTriggerDamage(ent, muzzlePos, tr.endpos, damage, 11);
         if ((((unsigned char*)&tr.normal.v.m128_f32[2])[0] & 0x10) != 0
             || tr.normal.v.m128_f32[1] == 1.0f)
             goto melee_miss;
@@ -1971,7 +1971,7 @@ void Bullet_Fire_Extended(
     startPos.v.m128_f32[1] = start[1];
     startPos.v.m128_f32[2] = start[2];
     startPos.v.m128_f32[3] = 0.0f;
-    G_CheckHitTriggerDamage(attacker, &startPos, &tr.endpos, damage,
+    G_CheckHitTriggerDamage(attacker, startPos, tr.endpos, damage,
                             sourceMod);
     Entity* hitEnt = EntFromHandle(tr.surfaceFlags);
     if (tr.normal.v.m128_f32[1] < 1.0f)

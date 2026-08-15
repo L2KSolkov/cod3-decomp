@@ -2355,7 +2355,7 @@ enum {
     kActionWEAPON_FIRE_3RD = 0x800,
 };
 void  G_ExplodeMissile(Entity* ent, int msec);
-void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                                   const math::Position3* vEnd, int iDamage, int iMOD);
 Entity* G_TempEntity(const float* origin, int event);
 void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
@@ -2450,7 +2450,7 @@ void  G_MissileTrace(trace_t* results, const math::Position3* start,
                      int contentmask, unsigned char* priorityMap);
 void  j_nullsub_84(Entity* pOriginator, int eType, int iTeamFlags,
                    const float* vStart, const float* vEnd, float fRadiusSqrd);
-void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                               const math::Position3* vEnd, int iDamage, int iMOD);
 const float VectorDistance(const float* const v1, const float* const v2);
 void  AnglesToAxis(const float* const angles, float (*const axis)[3]);
@@ -3275,7 +3275,7 @@ void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0
 void  Player_UpdateActivate(Entity* ent);         // g.o 0x473C40
 void  VP_SetScriptVariable(const char* a1, const char* a2, vehicle_node_t* a3);  // g.o 0x451800
 bool  VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item);  // g.o 0x44FB90
-void  Scr_Vehicle_Controller(Entity* pSelf);      // g.o 0x480970
+void  Scr_Vehicle_Controller(Entity* pSelf, int* unused);      // g.o 0x480970
 void  HealthRegen(Entity* e, float deltaT);       // g.o 0x455380
 void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                   Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
@@ -3397,21 +3397,21 @@ void  Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
                            float coneAngleTangent);  // g.o 0x48D980 (same family)
 float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh);  // g.o 0x46F4F0
 void  G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx);  // g.o 0x452870
-void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
-                              const math::Position3* vEnd, int iDamage,
+void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
+                              const math::Position3& vEnd, int iDamage,
                               int iMOD);           // g.o 0x470BD0
-int   G_SpawnVehicle(Entity* ent, const char* typeName);  // g.o 0x488280
+int   G_SpawnVehicle(Entity* ent, const char* typeName, int unused);  // g.o 0x488280
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o
 void  VEH_InitVehicle(scr_vehicle_t* veh);         // g.o
 void  Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMOD);  // g.o
-int   update_trigger_notifies(void);               // g.o 0x471100
+void  update_trigger_notifies(void);               // g.o 0x471100
 void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
 void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
 void  G_EntUnlink(Entity* ent);                  // g.o 0x460190
-void  G_VehSetSwitchNode(vehicle_pathpos_t* vpp, int16_t srcNodeIdx, uint16_t dstNodeIdx);  // g.o 0x452A10
+void  G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, unsigned short dstNodeIdx);  // g.o 0x452A10
 void  VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst);  // g.o
-void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vStart,
-                                  const math::Position3* vEnd, int iDamage,
+void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vStart,
+                                  const math::Position3& vEnd, int iDamage,
                                   int iMOD);      // g.o 0x470D70
 int   G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouch);  // g.o 0x470F40
 void  Client_Touch(Entity* pSelf, Entity* pOther);  // g.o 0x4671F0

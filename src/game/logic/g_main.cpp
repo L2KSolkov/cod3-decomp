@@ -2842,7 +2842,7 @@ void G_AddEvent(Entity* ent, int event, int eventParm)
 }
 
 // ea: 0x00471100
-int update_trigger_notifies(void)
+void update_trigger_notifies(void)
 {
     int result = g_performanceTest.integer;
     if (g_performanceTest.integer == 0)
@@ -2876,21 +2876,19 @@ int update_trigger_notifies(void)
             }
             level.triggerList[0] = level.triggerList[level.triggerListSize];
             --level.triggerListSize;
-            result = 0;
         }
         level.triggerListSize = 0;
     }
-    return result;
 }
 
 // ea: 0x00470BD0
-void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
-                             const math::Position3* vEnd, int iDamage, int iMOD)
+void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
+                             const math::Position3& vEnd, int iDamage, int iMOD)
 {
     math::Position3 mins;
     math::Position3 maxs;
-    mins.v = _mm_min_ps(vStart->v, vEnd->v);
-    maxs.v = _mm_max_ps(vStart->v, vEnd->v);
+    mins.v = _mm_min_ps(vStart.v, vEnd.v);
+    maxs.v = _mm_max_ps(vStart.v, vEnd.v);
     DbLinkedHandle<EntityHandleDb, Entity> entityList[256];
     int iNum = CM_AreaEntities(mins, maxs, entityList, 256, 0x400000);
     for (int v7 = 0; v7 < iNum; ++v7)
@@ -2904,7 +2902,7 @@ void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
             zeroMins.v = _mm_setzero_ps();
             zeroMaxs.v = _mm_setzero_ps();
             collision_context_t context;
-            if (SV_SightTraceToEntity(vStart, &zeroMins, &zeroMaxs, vEnd,
+            if (SV_SightTraceToEntity(&vStart, &zeroMins, &zeroMaxs, &vEnd,
                                       mObject->mHandle, &context, 1) != 0)
             {
                 int h = pActivator->mHandle.mHandle.mVal;
@@ -2919,12 +2917,12 @@ void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
 }
 
 // ea: 0x00470D70
-void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vStart,
-                                 const math::Position3* vEnd, int iDamage, int iMOD)
+void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vStart,
+                                 const math::Position3& vEnd, int iDamage, int iMOD)
 {
     math::Position3 mins, maxs;
-    mins.v = _mm_min_ps(vStart->v, vEnd->v);
-    maxs.v = _mm_max_ps(vStart->v, vEnd->v);
+    mins.v = _mm_min_ps(vStart.v, vEnd.v);
+    maxs.v = _mm_max_ps(vStart.v, vEnd.v);
     DbLinkedHandle<EntityHandleDb, Entity> entityList[1344];
     int iNum = CM_AreaEntities(mins, maxs, entityList, 1344, 0x400000);
     for (int v7 = 0; v7 < iNum; ++v7)
@@ -2939,7 +2937,7 @@ void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vSta
             zeroMins.v = _mm_setzero_ps();
             zeroMaxs.v = _mm_setzero_ps();
             collision_context_t context;
-            if (SV_SightTraceToEntity(vStart, &zeroMins, &zeroMaxs, vEnd,
+            if (SV_SightTraceToEntity(&vStart, &zeroMins, &zeroMaxs, &vEnd,
                                       mObject->mHandle, &context, 1) != 0)
             {
                 int h = pActivator->mHandle.mHandle.mVal;
@@ -3004,7 +3002,7 @@ int G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouc
 }
 
 // ea: 0x004671F0
-void Client_Touch(Entity* pSelf, Entity* pOther)
+void Client_Touch(Entity* pSelf, Entity* pOther, int /*unused*/)
 {
     if (pSelf->sentient == nullptr)
     {
