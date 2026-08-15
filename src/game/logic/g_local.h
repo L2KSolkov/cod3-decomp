@@ -901,7 +901,11 @@ struct str_const_t {
      Broc::string xmodel_airborne;     // +0x234
      Broc::string xmodel_wehrmacht;    // +0x238
      Broc::string worldspawn;          // +0x23C
-    uint8_t    _pad240[0x284 - 0x240];
+    uint8_t    _pad240[0x260 - 0x240];
+    Broc::string none;                 // +0x260 (152)
+    Broc::string obstacle;             // +0x264
+    Broc::string world;                // +0x268
+    uint8_t    _pad26C[0x284 - 0x26C];
     Broc::string overheated;          // +0x284
     Broc::string axis;                // +0x288
     Broc::string allies;              // +0x28C

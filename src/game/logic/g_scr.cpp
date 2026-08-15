@@ -351,6 +351,11 @@ private:
     friend struct AeThreadEntityNotifyState;
 };
 
+class WaitTilOutput;  // core_systems.h; full local view below (0xC bytes + virtuals)
+struct ScriptEventHandler {
+    bool RemoveEvent(HashString h, HashString callback);  // ?RemoveEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z (g_game2_misc.cpp 0x4F59F0)
+};
+
 // EntityNotifySet local view (core_systems.h 0x2C bytes)
 class EntityNotifySetLocal {
 public:
@@ -361,6 +366,8 @@ public:
 
     EntityNotifySetLocal(Entity* e);  // ??0EntityNotifySet@@QAE@PAVEntity@@@Z
     EntityNotify* GetNotify(const HashString& chk) const;  // ?GetNotify@EntityNotifySet@@QBEPAVEntityNotify@@ABVHashString@@@Z
+    bool AssignScriptVariable(const HashString& chk,
+                              WaitTilOutput* scriptVariable);  // ?AssignScriptVariable@EntityNotifySet@@QAE_NABVHashString@@PAVWaitTilOutput@@@Z (entity_notify.cpp)
 
 private:
     static PoolAllocator* sAllocator;  // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A
@@ -3165,7 +3172,8 @@ void WeaponType(Broc::string& outStr,
 void BadPlaceDelete(const Broc::string& placeName);  // 0x5C4640
 void BadPlaceCylinder(const Broc::string& placeName, float dur,
                       const Broc::vector& ori, float rad,
-                      float height);  // 0x5C46B0
+                      float height,
+                      const Broc::string& pszTeamName);  // 0x5C46B0 (unused trailing param per PDB mangle)
 void BadPlaceArcs(const Broc::string& placeName, float dur,
                   const Broc::vector& ori, float rad, float height,
                   const Broc::vector& ang, float fVal1, float fVal2,
@@ -3191,7 +3199,31 @@ void* MemAlloc(unsigned int size, unsigned int align);  // 0x5C7D30
 void ThreadGetDebugInfo(Broc::string& fileline, Broc::string& func,
                         Broc::string& threadId);  // 0x5C7D90
 unsigned int SoundPlay(const Broc::string& name, float volume);  // 0x5C33B0
+bool AssignParameterForNotify(unsigned int entHandle, unsigned int notify,
+                              WaitTilOutput* scriptVar);  // 0x5C9DC0
+bool AddEventHandler(unsigned int entityHandleVal, unsigned int notifyId,
+                     unsigned int callback);  // 0x5CA260
+bool RemoveEventHandler(unsigned int entityHandleVal, unsigned int notifyId,
+                        unsigned int callback);  // 0x5CA2B0
+void RadiusDamageFromEnt(unsigned int ehandle, const Broc::vector& origin,
+                         float range, float max_damage, float min_damage,
+                         int damageType);  // 0x5CA710
+TPakInfo GetPakEntity(unsigned int ehandle);  // 0x5CA7C0
+int GetPlayerIndex(unsigned int player);  // 0x5CAA50
+void* GetExtendedEntity(unsigned int handle);  // 0x5CAA90
+void Scr_SetModel(Entity* ent, int offset, Broc::string* val);  // 0x5CAB00
+void Mover_SetupMoveSpeed(trajectory_t* pTr, const math::Position3& vSpeed,
+                          float fTotalTime, float fAccelTime,
+                          float fDecelTime, math::Position3& vCurrPos,
+                          float* pfSpeed, float* pfMidTime,
+                          float* pfDecelTime, math::Position3& vPos1,
+                          math::Position3& vPos2,
+                          math::Position3& vPos3);  // 0x5C02C0
 }
+
+// GetEntType (0x5CA9F0) - global
+void GetEntType(DbLinkedHandle<EntityHandleDb, Entity> entityHandle,
+                Broc::string& type);
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -10426,8 +10458,10 @@ void BrocSys::BadPlaceDelete(const Broc::string& placeName)
 // ea: 0x005C46B0
 void BrocSys::BadPlaceCylinder(const Broc::string& placeName, float dur,
                                const Broc::vector& ori, float rad,
-                               float height)
+                               float height,
+                               const Broc::string& pszTeamName)
 {
+    (void)pszTeamName;  // unused trailing param (never read in the binary)
     double v5 = dur * 1000.0;
     BadPlaceArc arc;
     arc.origin[0] = ori.z;
@@ -11052,6 +11086,361 @@ void Scr_FreeAnimTreeAtIndex(int treeindex)
     AnimTree* v2 = &Bank->anims[treeindex];
     for (unsigned int i = 0; i < v2->entries.mSize; ++i)
         v2->entries.mList[i].Release();
+}
+
+// ============================================================================
+// scr.o batch 43 - event handlers / radius damage / pak / mover speed
+// ============================================================================
+
+// ea: 0x005C9DC0
+bool BrocSys::AssignParameterForNotify(unsigned int entHandle,
+                                       unsigned int notify,
+                                       WaitTilOutput* scriptVar)
+{
+    unsigned int v3 = entHandle & 0xFFF;
+    if (v3 >= 0x540)
+        return false;
+    if (entHandle >> 12 != EntityHandleDb::sInst.mElements[v3].mKey)
+        return false;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (mObject == nullptr)
+        return false;
+    EntityNotifySet* mNotifySet = mObject->mNotifySet;
+    if (mNotifySet == nullptr)
+        return false;
+    entHandle = notify;
+    return ((EntityNotifySetLocal*)mNotifySet)
+        ->AssignScriptVariable((const HashString&)entHandle, scriptVar);
+}
+
+// ea: 0x005CA260
+bool BrocSys::AddEventHandler(unsigned int entityHandleVal,
+                              unsigned int notifyId, unsigned int callback)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    return v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr
+        && mObject->AddScriptEvent(notifyId, callback);
+}
+
+// ea: 0x005CA2B0
+bool BrocSys::RemoveEventHandler(unsigned int entityHandleVal,
+                                 unsigned int notifyId,
+                                 unsigned int callback)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    ScriptEventHandler* mScriptEventHandler;
+    return v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr
+        && (mScriptEventHandler = mObject->mScriptEventHandler) != nullptr
+        && mScriptEventHandler->RemoveEvent(notifyId, callback);
+}
+
+// ea: 0x005CA710
+void BrocSys::RadiusDamageFromEnt(unsigned int ehandle,
+                                  const Broc::vector& origin, float range,
+                                  float max_damage, float min_damage,
+                                  int damageType)
+{
+    unsigned int v6 = ehandle & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v6 >= 0x540
+        || ehandle >> 12 != EntityHandleDb::sInst.mElements[v6].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v6].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2445;
+        AeAssert::gCurrentExpr = "which";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "passing in NULL entity to RadiusDamageFromEnt!"))
+            __debugbreak();
+    }
+    level.bPlayerIgnoreRadiusDamage = level.bPlayerIgnoreRadiusDamageLatched;
+    G_RadiusDamage(&origin.x, mObject, mObject, max_damage, min_damage, range,
+                   nullptr, damageType);
+    level.bPlayerIgnoreRadiusDamage = 0;
+}
+
+// ea: 0x005CA7C0
+TPakInfo BrocSys::GetPakEntity(unsigned int ehandle)
+{
+    unsigned int v1 = ehandle & 0xFFF;
+    Entity* mObject;
+    PakManager* v5;
+    TPakId mPakId;
+    if (v1 < 0x540
+        && ehandle >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        mPakId = (TPakId)mObject->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        v5 = PakManager::sInst;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3071;
+        AeAssert::gCurrentExpr = "which";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("passing in NULL entity to GetPak!"))
+            __debugbreak();
+        v5 = PakManager::sInst;
+        mPakId = CurPakId();
+    }
+    const PakInfoNode* PakInfo = v5->GetPakInfo(mPakId);
+    if (PakInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3078;
+        AeAssert::gCurrentExpr = "result";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Unknown pak file"))
+            __debugbreak();
+    }
+    return (TPakInfo)(uintptr_t)PakInfo;
+}
+
+// ea: 0x005CA9F0
+void GetEntType(DbLinkedHandle<EntityHandleDb, Entity> entityHandle,
+                Broc::string& type)
+{
+    if (entityHandle.mHandle.mVal != 0)
+    {
+        unsigned int v2 = entityHandle.mHandle.mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v2 < 0x540
+            && entityHandle.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v2].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        Broc::string* p_obstacle = &str_const.obstacle;
+        if ((mObject->flags & 0x4000) == 0)
+            p_obstacle = &str_const.world;
+        type = *p_obstacle;
+    }
+    else
+    {
+        type = str_const.none;
+    }
+}
+
+// ea: 0x005CAA50
+int BrocSys::GetPlayerIndex(unsigned int player)
+{
+    unsigned int v1 = player & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && player >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    return EntityManager::sInst->GetPlayerIndex(mObject);
+}
+
+// ea: 0x005CAA90
+void* BrocSys::GetExtendedEntity(unsigned int handle)
+{
+    unsigned int v1 = handle & 0xFFF;
+    if (v1 >= 0x540)
+        return nullptr;
+    if (handle >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return nullptr;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return nullptr;
+    if (mObject->mBrocExtendedEntity == nullptr)
+    {
+        void* (*mCreateExtendedEntity)(const char**, int) =
+            gpBrocAPI->mBrocExports.mCreateExtendedEntity;
+        if (mCreateExtendedEntity != nullptr)
+            mObject->mBrocExtendedEntity = mCreateExtendedEntity(nullptr, 0);
+    }
+    return mObject->mBrocExtendedEntity;
+}
+
+// ea: 0x005CAB00
+void BrocSys::Scr_SetModel(Entity* ent, int offset, Broc::string* val)
+{
+    (void)offset;
+    DObj* mDObj = ent->mDObj;
+    if (mDObj != nullptr)
+    {
+        XModel* mValue = mDObj->models[0].mValue;
+        TPakId mPakId = (TPakId)mDObj->models[0].mPakId;
+        ValidatePakId(mPakId);
+        if (mValue != nullptr)
+        {
+            ValidatePakId(mPakId);
+            *val = mValue->name.mStr;
+        }
+    }
+}
+
+// ea: 0x005C02C0
+void BrocSys::Mover_SetupMoveSpeed(
+    trajectory_t* pTr, const math::Position3& vSpeed, float fTotalTime,
+    float fAccelTime, float fDecelTime, math::Position3& vCurrPos,
+    float* pfSpeed, float* pfMidTime, float* pfDecelTime,
+    math::Position3& vPos1, math::Position3& vPos2, math::Position3& vPos3)
+{
+    if (pTr->trType != TR_STATIONARY)
+        BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+    if (fAccelTime == 0.0f && fDecelTime == 0.0f)
+    {
+        pTr->trTime = level.time;
+        pTr->trDuration = (int)(fTotalTime * 1000.0f);
+        *pfMidTime = fTotalTime;
+        *pfDecelTime = 0.0f;
+        pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+        pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+        pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+        pTr->trDelta[0] = vSpeed.v.m128_f32[0];
+        pTr->trDelta[1] = vSpeed.v.m128_f32[1];
+        pTr->trDelta[2] = vSpeed.v.m128_f32[2];
+        if (IS_NAN(pTr->trDelta[0]) || IS_NAN(pTr->trDelta[1])
+            || IS_NAN(pTr->trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+            AeAssert::gCurrentLine = 169;
+            AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        pTr->trType = TR_LINEAR_STOP;
+        BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+        BG_EvaluateTrajectory(pTr, level.time + pTr->trDuration, vPos3);
+    }
+    else
+    {
+        *pfMidTime = (fTotalTime - fAccelTime) - fDecelTime;
+        *pfDecelTime = fDecelTime;
+        *pfSpeed = sqrtf(vSpeed.v.m128_f32[0] * vSpeed.v.m128_f32[0]
+                       + vSpeed.v.m128_f32[1] * vSpeed.v.m128_f32[1]
+                       + vSpeed.v.m128_f32[2] * vSpeed.v.m128_f32[2]);
+        if (fAccelTime == 0.0f)
+        {
+            vPos1.v.m128_f32[0] = vCurrPos.v.m128_f32[0];
+            vPos1.v.m128_f32[1] = vCurrPos.v.m128_f32[1];
+            vPos1.v.m128_f32[2] = vCurrPos.v.m128_f32[2];
+            if (*pfMidTime == 0.0f)
+            {
+                pTr->trTime = level.time;
+                pTr->trDuration = (int)(*pfDecelTime * 1000.0f);
+                pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+                pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+                pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+                pTr->trDelta[0] = vSpeed.v.m128_f32[0];
+                pTr->trDelta[1] = vSpeed.v.m128_f32[1];
+                pTr->trDelta[2] = vSpeed.v.m128_f32[2];
+                if (IS_NAN(pTr->trDelta[0]) || IS_NAN(pTr->trDelta[1])
+                    || IS_NAN(pTr->trDelta[2]))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 218;
+                    AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                pTr->trType = TR_DECCELERATE;
+            }
+            else
+            {
+                pTr->trTime = level.time;
+                pTr->trDuration = (int)(*pfMidTime * 1000.0f);
+                pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+                pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+                pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+                pTr->trDelta[0] = vSpeed.v.m128_f32[0];
+                pTr->trDelta[1] = vSpeed.v.m128_f32[1];
+                pTr->trDelta[2] = vSpeed.v.m128_f32[2];
+                if (IS_NAN(pTr->trDelta[0]) || IS_NAN(pTr->trDelta[1])
+                    || IS_NAN(pTr->trDelta[2]))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                    AeAssert::gCurrentLine = 208;
+                    AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                pTr->trType = TR_LINEAR_STOP;
+            }
+        }
+        else
+        {
+            pTr->trTime = level.time;
+            pTr->trDuration = (int)(fAccelTime * 1000.0f);
+            pTr->trBase[0] = vCurrPos.v.m128_f32[0];
+            pTr->trBase[1] = vCurrPos.v.m128_f32[1];
+            pTr->trBase[2] = vCurrPos.v.m128_f32[2];
+            pTr->trDelta[0] = vSpeed.v.m128_f32[0];
+            pTr->trDelta[1] = vSpeed.v.m128_f32[1];
+            pTr->trDelta[2] = vSpeed.v.m128_f32[2];
+            if (IS_NAN(pTr->trDelta[0]) || IS_NAN(pTr->trDelta[1])
+                || IS_NAN(pTr->trDelta[2]))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                AeAssert::gCurrentLine = 191;
+                AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid vector"))
+                    __debugbreak();
+            }
+            int trDuration = pTr->trDuration;
+            pTr->trType = TR_ACCELERATE;
+            BG_EvaluateTrajectory(pTr, level.time + trDuration, vPos1);
+        }
+        vPos2.v.m128_f32[0] =
+            (*pfMidTime * vSpeed.v.m128_f32[0]) + vPos1.v.m128_f32[0];
+        vPos2.v.m128_f32[1] =
+            (vSpeed.v.m128_f32[1] * *pfMidTime) + vPos1.v.m128_f32[1];
+        vPos2.v.m128_f32[2] =
+            (*pfMidTime * vSpeed.v.m128_f32[2]) + vPos1.v.m128_f32[2];
+        if (*pfDecelTime == 0.0f)
+        {
+            vPos3.v.m128_f32[0] = vPos2.v.m128_f32[0];
+            vPos3.v.m128_f32[1] = vPos2.v.m128_f32[1];
+            vPos3.v.m128_f32[2] = vPos2.v.m128_f32[2];
+        }
+        else
+        {
+            trajectory_t tr;
+            tr.trBase[0] = vPos2.v.m128_f32[0];
+            tr.trBase[1] = vPos2.v.m128_f32[1];
+            tr.trBase[2] = vPos2.v.m128_f32[2];
+            tr.trDelta[0] = vSpeed.v.m128_f32[0];
+            tr.trDelta[1] = vSpeed.v.m128_f32[1];
+            tr.trDelta[2] = vSpeed.v.m128_f32[2];
+            tr.trGravityOverride = 0;
+            tr.trType = TR_DECCELERATE;
+            tr.trTime = level.time;
+            tr.trDuration = (int)(*pfDecelTime * 1000.0f);
+            if (IS_NAN(tr.trDelta[0]) || IS_NAN(tr.trDelta[1])
+                || IS_NAN(tr.trDelta[2]))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+                AeAssert::gCurrentLine = 236;
+                AeAssert::gCurrentExpr = "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid vector"))
+                    __debugbreak();
+            }
+            BG_EvaluateTrajectory(&tr, tr.trDuration + level.time, vPos3);
+        }
+        BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+    }
 }
 
 // ============================================================================
