@@ -809,7 +809,12 @@ public:
     EntityNotify(unsigned int hashStr, DbLinkedHandle<EntityHandleDb, Entity> ent,
                  WaitTilOutput* param);  // ea: 0x004BDAA0
     ~EntityNotify();                     // ea: 0x004B5650
-    void* get_dlist_node() { return this; }  // ?get_dlist_node@EntityNotify@@QAEPAXXZ (g.o 0x4A5B70)
+    void* get_dlist_node();              // ?get_dlist_node@EntityNotify@@QAEPAXXZ (g.o 0x4A5B70)
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);  // ??2EntityNotify@@SAPAXI_NPBDH@Z (g.o 0x4A5BF0)
+    static void operator delete(void* ptr);  // ??3EntityNotify@@SAXPAX@Z (core.o 0x4B3F90)
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);  // ??3EntityNotify@@SAXPAX_NPBDH@Z (g.o 0x4A5C60)
     static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A @ 0xF00E28
 };
 static_assert(sizeof(EntityNotify) == 0x14, "EntityNotify size mismatch");

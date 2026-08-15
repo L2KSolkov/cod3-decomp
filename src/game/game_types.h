@@ -346,6 +346,10 @@ public:
     DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;  // ?GetHandle@Entity@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ (g.o 0x4A67B0)
     void SetEntityArrayIndex(int v);              // ?SetEntityArrayIndex@Entity@@QAEXH@Z (g.o 0x4A67D0)
     int GetEntityArrayIndex() const;              // ?GetEntityArrayIndex@Entity@@QBEHXZ (g.o 0x4A67F0)
+    TPakId GetPakId() const;                      // ?GetPakId@Entity@@QBE?AW4TPakId@@XZ (g.o 0x4A6800)
+    DObj* GetDObj();                              // ?GetDObj@Entity@@QAEPAVDObj@@XZ (g.o 0x4A6820)
+    void SetDestructible(IVPointer<Destructible> d);  // ?SetDestructible@Entity@@QAEXV?$IVPointer@VDestructible@@@@@Z (g.o 0x4A68B0)
+    IVPointer<Destructible> GetDestructible();    // ?GetDestructible@Entity@@QAE?AV?$IVPointer@VDestructible@@@@XZ (g.o 0x4A68E0)
     ScriptEventHandler* mScriptEventHandler;      // +0x244
     biped_phys_info* mBPInfo;                     // +0x248
     IVPointer<Destructible> mDestructible;        // +0x24C (8 bytes)

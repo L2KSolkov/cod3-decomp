@@ -2660,6 +2660,8 @@ extern void j_nullsub_50(void* self);  // g.o
 extern int kActionVEHICLE_BRAKE;       // core.o enum (40)
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 void  EntityManager_DeleteAllEntities(void);         // game.o
+Entity* GetWorld();                                  // ?GetWorld@@YAPAVEntity@@XZ (g.o 0x4A6B90)
+int GetPlayerIndex(Entity* player);                  // ?GetPlayerIndex@@YAHPAVEntity@@@Z (g.o 0x4A6BA0)
 void  SceneManager_ResetAllStaticModels(void);       // render.o
 void  AnimationPlayer_DebugDump(Entity* ent);        // anim.o
 void  Cmd_God_f(Entity* ent);                        // g.o 0x44A7A0

@@ -73,6 +73,7 @@ public:
 
     // cg.o inline COMDAT (??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z)
     const math::Dir3& operator-=(const math::Position3& v);
+    const math::Dir3& operator/=(float _v);  // ??_0Dir3@math@@QAEABV01@M@Z (g.o 0x4A6CF0)
 
     // Constant layout (for compile-time initialization)
     struct Constant {
@@ -107,6 +108,10 @@ public:
     Position3(const Position3& other) : v(other.v) {}  // implicit copy
     Position3(const Dir3& _v);    // ??0Position3@math@@QAE@ABVDir3@1@@Z
     const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
+    const Position3& operator+=(const Dir3& _v);       // ??YPosition3@math@@QAEABV01@ABVDir3@1@@Z (g.o 0x4A6D30)
+    const Position3& operator+=(const Position3& _v);  // ??YPosition3@math@@QAEABV01@ABV01@@Z (g.o 0x4A6D70)
+    const Position3& operator*=(float _v);             // ??XPosition3@math@@QAEABV01@M@Z (g.o 0x4A6DB0)
+    const Position3& operator/=(float _v);             // ??_0Position3@math@@QAEABV01@M@Z (g.o 0x4A6DF0)
 
     float GetX() const;           // ?GetX@Position3@math@@QBEMXZ (g.o 0x4A58B0)
     float GetY() const;           // ?GetY@Position3@math@@QBEMXZ (g.o 0x4A58D0)
@@ -167,6 +172,21 @@ Dir3 operator-(const Dir3& _a, const Position3& _b);            // ??Gmath@@YA?A
 Position3 operator-(const Position3& _a, const Dir3& _b);       // ??Gmath@@YA?AVPosition3@0@ABV10@ABVDir3@0@@Z (g.o 0x4A66F0)
 Position3 operator-(const Position3& _a, const Position3& _b);  // ??Gmath@@YA?AVPosition3@0@ABV10@0@Z (g.o 0x4A6730)
 Dir3 operator/(const Dir3& _a, float _b);                       // ??Kmath@@YA?AVDir3@0@ABV10@M@Z (g.o 0x4A6770)
+Dir3 operator*(const Dir3& _a, float _b);                       // ??Dmath@@YA?AVDir3@0@ABV10@M@Z (g.o 0x4A6830)
+Dir3 operator*(float _a, const Dir3& _b);                       // ??Dmath@@YA?AVDir3@0@MABV10@@Z (g.o 0x4A6870)
+Position3 operator*(const Position3& _a, float _b);             // ??Dmath@@YA?AVPosition3@0@ABV10@M@Z (g.o 0x4A6910)
+Position3 operator*(float _a, const Position3& _b);             // ??Dmath@@YA?AVPosition3@0@MABV10@@Z (g.o 0x4A6950)
+float operator*(const Dir3& _a, const Dir3& _b);                // ??Dmath@@YAMABVDir3@0@0@Z (g.o 0x4A69A0)
+float operator*(const Dir3& _a, const Position3& _b);           // ??Dmath@@YAMABVDir3@0@ABVPosition3@0@@Z (g.o 0x4A6A00)
+float operator*(const Position3& _a, const Dir3& _b);           // ??Dmath@@YAMABVPosition3@0@ABVDir3@0@@Z (g.o 0x4A6B10)
+Vector4 Mul(const Vector4& _a, const Vector4& _b);              // ?Mul@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A6BC0)
+Dir3 Cross(const Dir3& _a, const Dir3& _b);                     // ?Cross@math@@YA?AVDir3@1@ABV21@0@Z (g.o 0x4A6C00)
+Position3 Min(const Position3& _a, const Position3& _b);        // ?Min@math@@YA?AVPosition3@1@ABV21@0@Z (g.o 0x4A6C70)
+Position3 Max(const Position3& _a, const Position3& _b);        // ?Max@math@@YA?AVPosition3@1@ABV21@0@Z (g.o 0x4A6CB0)
+Dir3 DeclareUnit(const Dir3& _v);                               // ?DeclareUnit@math@@YA?AVDir3@1@ABV21@@Z (g.o 0x4A6E70)
+Dir3 Unitize(const Dir3& _v);                                   // ?Unitize@math@@YA?AVDir3@1@ABV21@@Z (g.o 0x4A6EA0)
+Dir3 Dir3_Zero();                                               // ?Dir3_Zero@math@@YA?AVDir3@1@XZ (g.o 0x4A6F20)
+Position3 Position3_Zero();                                     // ?Position3_Zero@math@@YA?AVPosition3@1@XZ (g.o 0x4A6F60)
 
 // ============================================================================
 // Vector4 — 4-component float vector (16 bytes)
@@ -219,6 +239,7 @@ public:
     float& operator[](int i) { return v.m128_f32[i]; }
 
     const Vector4& operator*=(const Mat44& m);  // ??XVector4@math@@QAEABV01@ABVMat44@1@@Z (streamer.o)
+    const Vector4& operator-=(const Vector4& _v);  // ??ZVector4@math@@QAEABV01@ABV01@@Z (g.o 0x4A6E30)
 };
 static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
 
@@ -237,6 +258,15 @@ public:
     // ??4Mat43@math@@QAEABV01@ABVDiagMat33@1@@Z (anim.o; defined in nal.cpp)
     const Mat43& operator=(const DiagMat33& m);
     const Mat43& operator*=(const TranMat43& m);  // ??XMat43@math@@QAEABV01@ABVTranMat43@1@@Z (render.o 0x6E7040)
+    const Mat43& operator=(const Mat43& _m);           // ??4Mat43@math@@QAEABV01@ABV01@@Z (g.o 0x4A74A0)
+    const Dir3& GetX() const;      // ?GetX@Mat43@math@@QBEABVDir3@2@XZ (g.o 0x4A7070)
+    const Dir3& GetY() const;      // ?GetY@Mat43@math@@QBEABVDir3@2@XZ (g.o 0x4A7080)
+    const Dir3& GetZ() const;      // ?GetZ@Mat43@math@@QBEABVDir3@2@XZ (g.o 0x4A7090)
+    const Position3& GetW() const; // ?GetW@Mat43@math@@QBEABVPosition3@2@XZ (g.o 0x4A70A0)
+    Dir3& GetX();                  // ?GetX@Mat43@math@@QAEAAVDir3@2@XZ (g.o 0x4A70B0)
+    Dir3& GetY();                  // ?GetY@Mat43@math@@QAEAAVDir3@2@XZ (g.o 0x4A70C0)
+    Dir3& GetZ();                  // ?GetZ@Mat43@math@@QAEAAVDir3@2@XZ (g.o 0x4A70D0)
+    Position3& GetW();             // ?GetW@Mat43@math@@QAEAAVPosition3@2@XZ (g.o 0x4A70E0)
     Dir3      x;  // +0x00 — right axis
     Dir3      y;  // +0x10 — forward axis
     Dir3      z;  // +0x20 — up axis
@@ -249,6 +279,9 @@ public:
         Dir3::Packed      z;
         Position3::Packed w;
     };
+
+    Mat43(const Mat43::Packed& _p);                    // ??0Mat43@math@@QAE@ABUPacked@01@@Z (g.o 0x4A7200)
+    Mat43(const Mat33& _m, const Position3& _p);       // ??0Mat43@math@@QAE@ABVMat33@1@ABVPosition3@1@@Z (g.o 0x4A7360)
 };
 static_assert(sizeof(Mat43) == 0x40, "Mat43 size mismatch");
 static_assert(sizeof(Mat43::Packed) == 0x30, "Mat43::Packed size mismatch");
@@ -265,6 +298,14 @@ public:
     Dir3 x;  // +0x00
     Dir3 y;  // +0x10
     Dir3 z;  // +0x20
+
+    Mat33() {}
+    Mat33(const Mat33& _m);        // ??0Mat33@math@@QAE@ABV01@@Z (g.o 0x4A7100)
+    Mat33(const Dir3& _x, const Dir3& _y, const Dir3& _z);  // ??0Mat33@math@@QAE@ABVDir3@1@00@Z (g.o 0x4A6FB0)
+    const Mat33& operator=(const Mat33& _m);  // ??4Mat33@math@@QAEABV01@ABV01@@Z (g.o 0x4A7180)
+    const Dir3& GetX() const;  // ?GetX@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7030)
+    const Dir3& GetY() const;  // ?GetY@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7040)
+    const Dir3& GetZ() const;  // ?GetZ@Mat33@math@@QBEABVDir3@2@XZ (g.o 0x4A7050)
 };
 static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
 

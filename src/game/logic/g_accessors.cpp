@@ -494,6 +494,233 @@ math::Vector4::Vector4(const math::Vector4::Constant& _c)
     v = _mm_loadu_ps(&_c.x);
 }
 
+// ============================================================================
+// Scalar-multiply free functions (g.o 0x4A6830-0x4A6950)
+// ============================================================================
+math::Dir3 math::operator*(const math::Dir3& _a, float _b)
+{
+    math::Dir3 r;
+    r.v = _mm_mul_ps(_a.v, _mm_set1_ps(_b));
+    return r;
+}
+math::Dir3 math::operator*(float _a, const math::Dir3& _b)
+{
+    math::Dir3 r;
+    r.v = _mm_mul_ps(_b.v, _mm_set1_ps(_a));
+    return r;
+}
+math::Position3 math::operator*(const math::Position3& _a, float _b)
+{
+    math::Position3 r;
+    r.v = _mm_mul_ps(_a.v, _mm_set1_ps(_b));
+    return r;
+}
+math::Position3 math::operator*(float _a, const math::Position3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_mul_ps(_b.v, _mm_set1_ps(_a));
+    return r;
+}
+
+// Dot products (g.o 0x4A69A0-0x4A6B10)
+float math::operator*(const math::Dir3& _a, const math::Dir3& _b)
+{
+    __m128 v2 = _mm_mul_ps(_a.v, _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+              + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]);
+}
+float math::operator*(const math::Dir3& _a, const math::Position3& _b)
+{
+    __m128 v2 = _mm_mul_ps(_a.v, _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+              + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]);
+}
+float math::operator*(const math::Position3& _a, const math::Dir3& _b)
+{
+    __m128 v2 = _mm_mul_ps(_a.v, _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+              + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]);
+}
+
+// Named vector ops (g.o 0x4A6BC0-0x4A6CB0)
+math::Vector4 math::Mul(const math::Vector4& _a, const math::Vector4& _b)
+{
+    math::Vector4 r;
+    r.v = _mm_mul_ps(_a.v, _b.v);
+    return r;
+}
+math::Dir3 math::Cross(const math::Dir3& _a, const math::Dir3& _b)
+{
+    math::Dir3 r;
+    r.v = _mm_sub_ps(_mm_mul_ps(_mm_shuffle_ps(_a.v, _a.v, 9),
+                                _mm_shuffle_ps(_b.v, _b.v, 18)),
+                     _mm_mul_ps(_mm_shuffle_ps(_a.v, _a.v, 18),
+                                _mm_shuffle_ps(_b.v, _b.v, 9)));
+    return r;
+}
+math::Position3 math::Min(const math::Position3& _a, const math::Position3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_min_ps(_a.v, _b.v);
+    return r;
+}
+math::Position3 math::Max(const math::Position3& _a, const math::Position3& _b)
+{
+    math::Position3 r;
+    r.v = _mm_max_ps(_a.v, _b.v);
+    return r;
+}
+
+// DeclareUnit / Unitize / Zero (g.o 0x4A6E70-0x4A6F60)
+math::Dir3 math::DeclareUnit(const math::Dir3& _v)
+{
+    math::Dir3 r;
+    r.v = _v.v;
+    return r;
+}
+math::Dir3 math::Unitize(const math::Dir3& _v)
+{
+    __m128 v2 = _mm_mul_ps(_v.v, _v.v);
+    float len = (float)sqrt((double)(v2.m128_f32[0]
+                                     + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+                                        + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0])));
+    math::Dir3 r;
+    r.v = _mm_div_ps(_v.v, _mm_set1_ps(len));
+    return r;
+}
+math::Dir3 math::Dir3_Zero()
+{
+    math::Dir3 r;
+    r.v = _mm_setzero_ps();
+    return r;
+}
+math::Position3 math::Position3_Zero()
+{
+    math::Position3 r;
+    r.v = _mm_setzero_ps();
+    return r;
+}
+
+// Compound math ops (g.o 0x4A6CF0-0x4A6E30)
+const math::Dir3& math::Dir3::operator/=(float _v)
+{
+    v = _mm_div_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
+const math::Position3& math::Position3::operator+=(const math::Dir3& _v)
+{
+    v = _mm_add_ps(v, _v.v);
+    return *this;
+}
+const math::Position3& math::Position3::operator+=(const math::Position3& _v)
+{
+    v = _mm_add_ps(v, _v.v);
+    return *this;
+}
+const math::Position3& math::Position3::operator*=(float _v)
+{
+    v = _mm_mul_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
+const math::Position3& math::Position3::operator/=(float _v)
+{
+    v = _mm_div_ps(v, _mm_set1_ps(_v));
+    return *this;
+}
+const math::Vector4& math::Vector4::operator-=(const math::Vector4& _v)
+{
+    v = _mm_sub_ps(v, _v.v);
+    return *this;
+}
+
+// Mat33 / Mat43 (g.o 0x4A6FB0-0x4A74A0)
+math::Mat33::Mat33(const math::Dir3& _x, const math::Dir3& _y, const math::Dir3& _z)
+{
+    x = _x;
+    y = _y;
+    z = _z;
+}
+const math::Dir3& math::Mat33::GetX() const
+{
+    return x;
+}
+const math::Dir3& math::Mat33::GetY() const
+{
+    return y;
+}
+const math::Dir3& math::Mat33::GetZ() const
+{
+    return z;
+}
+math::Mat33::Mat33(const math::Mat33& _m)
+{
+    *this = _m;
+}
+const math::Mat33& math::Mat33::operator=(const math::Mat33& _m)
+{
+    x = _m.x;
+    y = _m.y;
+    z = _m.z;
+    return *this;
+}
+math::Mat43::Mat43(const math::Mat43::Packed& _p)
+{
+    x = math::Dir3(_p.x);
+    y = math::Dir3(_p.y);
+    z = math::Dir3(_p.z);
+    w = math::Position3(_p.w);
+}
+math::Mat43::Mat43(const math::Mat33& _m, const math::Position3& _p)
+{
+    x = _m.x;
+    y = _m.y;
+    z = _m.z;
+    w = _p;
+}
+const math::Mat43& math::Mat43::operator=(const math::Mat43& _m)
+{
+    x = _m.x;
+    y = _m.y;
+    z = _m.z;
+    w = _m.w;
+    return *this;
+}
+const math::Dir3& math::Mat43::GetX() const
+{
+    return x;
+}
+const math::Dir3& math::Mat43::GetY() const
+{
+    return y;
+}
+const math::Dir3& math::Mat43::GetZ() const
+{
+    return z;
+}
+const math::Position3& math::Mat43::GetW() const
+{
+    return w;
+}
+math::Dir3& math::Mat43::GetX()
+{
+    return x;
+}
+math::Dir3& math::Mat43::GetY()
+{
+    return y;
+}
+math::Dir3& math::Mat43::GetZ()
+{
+    return z;
+}
+math::Position3& math::Mat43::GetW()
+{
+    return w;
+}
+
 // Broc::vector::Set (g.o 0x4A5DE0)
 void Broc::vector::Set(float X, float Y, float Z)
 {
@@ -574,6 +801,37 @@ void Entity::SetEntityArrayIndex(int v)
 int Entity::GetEntityArrayIndex() const
 {
     return mEntityArrayIndex;
+}
+
+// Entity pak/dobj/destructible accessors (g.o 0x4A6800-0x4A68E0)
+TPakId Entity::GetPakId() const
+{
+    if (mPakId == (int)PAK_ID_INVALID)
+        return CurPakId();
+    return (TPakId)mPakId;
+}
+DObj* Entity::GetDObj()
+{
+    return mDObj;
+}
+void Entity::SetDestructible(IVPointer<Destructible> d)
+{
+    mDestructible = d;
+    takedamage = 1;
+}
+IVPointer<Destructible> Entity::GetDestructible()
+{
+    return mDestructible;
+}
+
+// Free EntityManager helpers (g.o 0x4A6B90 / 0x4A6BA0)
+Entity* GetWorld()
+{
+    return EntityManager::sInst->mWorld;
+}
+int GetPlayerIndex(Entity* player)
+{
+    return EntityManager::sInst->GetPlayerIndex(player);
 }
 
 // EntityState::GetLerpAngles (g.o 0x4A5750)

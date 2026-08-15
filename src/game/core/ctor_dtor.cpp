@@ -129,6 +129,27 @@ EntityNotify::~EntityNotify()
     mParam = nullptr;
 }
 
+// EntityNotify memory ops / dlist accessor (g.o 0x4A5B70-0x4A5C60)
+void* EntityNotify::get_dlist_node()
+{
+    return this;
+}
+void* EntityNotify::operator new(size_t size, bool forceHeapAlloc,
+                                 const char* /*file*/, int /*line*/)
+{
+    return EntityNotify::sAllocator->Allocate((unsigned int)size,
+                                               forceHeapAlloc);
+}
+void EntityNotify::operator delete(void* ptr)
+{
+    EntityNotify::sAllocator->Release(ptr);
+}
+void EntityNotify::operator delete(void* ptr, bool /*forceHeapAlloc*/,
+                                   const char* /*file*/, int /*line*/)
+{
+    EntityNotify::sAllocator->Release(ptr);
+}
+
 // WaitTilOutput memory ops / dtor (g.o 0x4A5810-0x4A5980)
 PoolAllocator* WaitTilOutput::sAllocator;
 void* WaitTilOutput::operator new(size_t size, bool forceHeapAlloc,
