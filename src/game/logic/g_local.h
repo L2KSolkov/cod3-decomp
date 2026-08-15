@@ -3538,7 +3538,8 @@ enum {
 };
 void  Scr_Vehicle_Init(Entity* pSelf, int msec); // g.o 0x480AC0
 void  VEH_GroundPlant(Entity* ent, int gravity, int msec);  // g.o
-struct TouchEntityData {
+class TouchEntityData {
+public:
     int      num;        // +0x00
     uint8_t  _pad4[0x10 - 0x4];
     math::Position3 mins;   // +0x10
@@ -3552,9 +3553,9 @@ struct useList_t {
     float   score; // +0x04
 };
 void  G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
-                        TouchEntityData* tData, collision_context_t* context);  // g.o 0x474C90
+                        TouchEntityData* tData, const collision_context_t& context);  // g.o 0x474C90
 void  G_TouchVehicles(Entity* ent, const math::Position3& origin,
-                      TouchEntityData* tData, collision_context_t* context);  // g.o 0x4748A0
+                      TouchEntityData* tData, const collision_context_t& context);  // g.o 0x4748A0
 int   Player_GetActivateEnt(Entity* pEnt, useList_t* useList);  // g.o 0x473D90
 void  Player_UpdateCursorHints(Entity* ent);                    // g.o 0x482C10
 extern bool gGrenadeCanBePickedUp;  // g.o

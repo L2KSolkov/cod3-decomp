@@ -47,9 +47,9 @@ void G_TouchTriggersAndVehicles(Entity* pEnt,
         tData.maxs.v.m128_f32[2] =
             pEnt->r.maxs.v.m128_f32[2] + origin.v.m128_f32[2];
         G_DoTouchTriggers(pEnt, origin, &tData,
-                          (collision_context_t*)&context);
+                          context);
         G_TouchVehicles(pEnt, origin, &tData,
-                        (collision_context_t*)&context);
+                        context);
     }
 }
 

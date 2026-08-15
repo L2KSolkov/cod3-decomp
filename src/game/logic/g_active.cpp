@@ -370,7 +370,7 @@ void G_RunThink(Entity* ent, int msec)
 
 // ea: 0x00474C90
 void G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
-                       TouchEntityData* tData, collision_context_t* context)
+                       TouchEntityData* tData, const collision_context_t& context)
 {
     int v24 = GetEntityTouchTriggerType(ent);
     if (v24 == 0)
@@ -415,8 +415,8 @@ void G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
             continue;
         if (mObject->touch == 0 && ent->touch == 0)
             continue;
-        if (context->__vftable != nullptr
-            && context->__vftable->filter((collision_context_t*)context, mObject))
+        if (context.__vftable != nullptr
+            && context.__vftable->filter((collision_context_t*)&context, mObject))
             continue;
         if (mObject->s.eType == 2)
         {
@@ -486,7 +486,7 @@ void G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
 
 // ea: 0x004748A0
 void G_TouchVehicles(Entity* ent, const math::Position3& origin,
-                     TouchEntityData* tData, collision_context_t* context)
+                     TouchEntityData* tData, const collision_context_t& context)
 {
     if (ent->tagInfo != nullptr)
         return;
@@ -544,8 +544,8 @@ void G_TouchVehicles(Entity* ent, const math::Position3& origin,
             continue;
         if (mObject->touch == 0 && ent->touch == 0)
             continue;
-        if (context->__vftable != nullptr
-            && context->__vftable->filter((collision_context_t*)context, mObject))
+        if (context.__vftable != nullptr
+            && context.__vftable->filter((collision_context_t*)&context, mObject))
             continue;
         if (g_EntityContactCapsule(&mins, &maxs, mObject) == 0)
             continue;
