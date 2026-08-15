@@ -3422,6 +3422,43 @@ void GetStance(unsigned int entityHandleVal,
 void MagicGrenade1(unsigned int entityHandleVal, const Broc::vector& origin,
                    const Broc::vector& vTargetPos,
                    float grenadeTime);  // 0x5D1800
+void MagicGrenade2(unsigned int entityHandleVal, const Broc::vector& origin,
+                   const Broc::vector& vTargetPos);  // 0x5D1910
+void MagicGrenadeManual1(unsigned int entityHandleVal,
+                         const Broc::vector& origin,
+                         const Broc::vector& calcedVel,
+                         float grenadeTime);  // 0x5D1930
+void MagicGrenadeManual2(unsigned int entityHandleVal,
+                         const Broc::vector& origin,
+                         const Broc::vector& calcedVel);  // 0x5D19B0
+void RifleGrenadeManual1(unsigned int entityHandleVal,
+                         const Broc::vector& target,
+                         bool checkTrajectory);  // 0x5D19D0
+bool IsFiringTurret(unsigned int entityHandleVal);  // 0x5D1A60
+void SetFriendlyChain(const unsigned int entityHandleVal,
+                      const Broc::pathnode& nodeIn);  // 0x5D1AE0
+DObjSkelMat* GetTagInternal(DbLinkedHandle<EntityHandleDb, Entity> entity,
+                            const unsigned int& stringHash);  // 0x5D1B90
+void GetTagOrigin1(unsigned int entityHandleVal, Broc::vector& vec,
+                   const unsigned int& stringHash);  // 0x5D1CE0
+void GetTagOrigin2(unsigned int entityHandleVal, Broc::vector& vec,
+                   const Broc::string& string);  // 0x5D1DD0
+void GetTagAngles1(unsigned int entityHandleVal, Broc::vector& vec,
+                   const unsigned int& stringHash);  // 0x5D1E10
+void GetTagAngles2(unsigned int entityHandleVal, Broc::vector& vec,
+                   const Broc::string& string);  // 0x5D1E70
+void ShellShock(unsigned int entityHandleVal, const Broc::string& shock,
+                float fVal);  // 0x5D1EF0
+void StopShellShock(unsigned int entityHandleVal);  // 0x5D2100
+void ViewKick(unsigned int entityHandleVal, int iVal,
+              const Broc::vector& origin);  // 0x5D2180
+void LockLightVis(unsigned int entityHandleVal);  // 0x5D2260
+void UnLockLightVis(unsigned int entityHandleVal);  // 0x5D22B0
+void Launch(unsigned int entityHandleVal,
+            const Broc::vector& velocity);  // 0x5D2300
+void LocalToWorldCoords(unsigned int entityHandleVal,
+                        const Broc::vector& vLocal,
+                        Broc::vector& vWorld);  // 0x5D2400
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3499,6 +3536,36 @@ int __fastcall Actor_Grenade_CheckGrenadeHintToss(actor_s* pSelf,
                                                   bool roll);
 extern void Scr_ConstructMessageString(int iValue, char* pszBuffer,
                                        int iSize, conMsgType_t iType);
+
+// scr.o batch 50 helpers
+extern Entity* fire_rifle_grenade(Entity* self, float* const target,
+                                  int grenadeWPID,
+                                  bool checkTrajectory);  // g_weapon.cpp
+int __fastcall Actor_Grenade_IsSafeTarget(actor_s* pSelf,
+                                          const float* const vTargetPos,
+                                          int iWeapID);  // mp_actors.o
+void __fastcall Sentient_SetDesiredChainNode(
+    sentient_s* pSelf, PathNodes::NodeHandle node);  // ?Sentient_SetDesiredChainNode@@YIXPAUsentient_s@@VNodeHandle@PathNodes@@@Z (mp_actors.o)
+extern int G_ShellShockIndex(const char* name);  // ?G_ShellShockIndex@@YAHPBD@Z (g_utils.cpp)
+extern void SV_GetConfigstring(int index, Broc::string& str);  // ?SV_GetConfigstring@@YAXHAAVstring@Broc@@@Z (sv_init.cpp)
+struct shellshock_parms_t;
+extern void CG_SetShellShockParmsFromCvars(
+    shellshock_parms_t* parms);  // ?CG_SetShellShockParmsFromCvars@@YAXPAUshellshock_parms_t@@@Z (cg_view.cpp)
+extern char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS (cg_ents.cpp)
+extern void Axis4ToAngles(const float (*const axis)[4],
+                          float* const angles);  // ?Axis4ToAngles@@YAXQAY03$$CBMQAM@Z (q_math.cpp)
+
+// level.cachedTagMat (level_locals_t +0xC30, 0x4C bytes) - IDA verified
+struct CachedTagMatLocal {
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x00
+    int         mTime;                               // +0x04
+    unsigned int mNameHash;                          // +0x08
+    DObjSkelMat  tagMat;                             // +0x0C
+};
+static CachedTagMatLocal& GetCachedTagMat()
+{
+    return *(CachedTagMatLocal*)&level.cachedTagMat;
+}
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -15734,6 +15801,476 @@ void BrocSys::MagicGrenade1(unsigned int entityHandleVal,
         {
             Scr_Error("MagicGrenade only supports actors.\n");
         }
+    }
+}
+
+// ============================================================================
+// scr.o batch 50 - grenades / tags / shellshock / misc
+// ============================================================================
+
+// ea: 0x005D1910
+void BrocSys::MagicGrenade2(unsigned int entityHandleVal,
+                            const Broc::vector& origin,
+                            const Broc::vector& vTargetPos)
+{
+    BrocSys::MagicGrenade1(entityHandleVal, origin, vTargetPos, 5.0f);
+}
+
+// ea: 0x005D1930
+void BrocSys::MagicGrenadeManual1(unsigned int entityHandleVal,
+                                  const Broc::vector& origin,
+                                  const Broc::vector& calcedVel,
+                                  float grenadeTime)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+        {
+            fire_grenade(mObject, (float*)&origin.x, (float*)&calcedVel.x,
+                         actor->iGrenadeWeaponIndex,
+                         (int)(grenadeTime * 1000.0f));
+        }
+        else
+        {
+            Scr_Error("MagicGrenadeManual only supports actors.\n");
+        }
+    }
+}
+
+// ea: 0x005D19B0
+void BrocSys::MagicGrenadeManual2(unsigned int entityHandleVal,
+                                  const Broc::vector& origin,
+                                  const Broc::vector& calcedVel)
+{
+    BrocSys::MagicGrenadeManual1(entityHandleVal, origin, calcedVel, 5.0f);
+}
+
+// ea: 0x005D19D0
+void BrocSys::RifleGrenadeManual1(unsigned int entityHandleVal,
+                                  const Broc::vector& target,
+                                  bool checkTrajectory)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+        {
+            int WeaponIndexForName = BG_GetWeaponIndexForName("m1garand_RG");
+            if (Actor_Grenade_IsSafeTarget(actor, &target.x,
+                                           WeaponIndexForName) != 0)
+                fire_rifle_grenade(mObject, (float*)&target.x,
+                                   WeaponIndexForName, checkTrajectory);
+        }
+        else
+        {
+            Scr_Error("RifleGrenadeManual only supports actors.\n");
+        }
+    }
+}
+
+// ea: 0x005D1A60
+bool BrocSys::IsFiringTurret(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return false;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return false;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return false;
+    if (mObject->pTurretInfo == nullptr)
+    {
+        const char* v4 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(va("entity type '%s' is not a turret", v4));
+        return false;
+    }
+    return turret_IsFiring(mObject) != 0;
+}
+
+// ea: 0x005D1AE0
+void BrocSys::SetFriendlyChain(const unsigned int entityHandleVal,
+                               const Broc::pathnode& nodeIn)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        if (mObject->sentient != nullptr)
+        {
+            unsigned short mHandle = *(const unsigned short*)&nodeIn;
+            unsigned int handle = mHandle;
+            PathNodes::PathNode* Node =
+                PathNodeMgr::sInst->GetNode(*(const PathNodes::NodeHandle*)&handle);
+            if (Node != nullptr && Node->mConstant.mChainId < 1)
+            {
+                Scr_Error("Node is not a friendly chain node.\n");
+            }
+            else
+            {
+                mObject->sentient->mActualChainPos.mValue = mHandle;
+                if (mObject->client == nullptr)
+                    Sentient_SetDesiredChainNode(
+                        mObject->sentient,
+                        *(const PathNodes::NodeHandle*)&handle);
+            }
+        }
+        else
+        {
+            Scr_Error("Entity must be sentient.\n");
+        }
+    }
+}
+
+// ea: 0x005D1B90
+DObjSkelMat* BrocSys::GetTagInternal(
+    DbLinkedHandle<EntityHandleDb, Entity> entity,
+    const unsigned int& stringHash)
+{
+    if (entity.mHandle.mVal == GetCachedTagMat().mEntity.mHandle.mVal
+        && level.time == GetCachedTagMat().mTime
+        && stringHash == GetCachedTagMat().mNameHash)
+    {
+        return &GetCachedTagMat().tagMat;
+    }
+    unsigned int v2 = entity.mHandle.mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entity.mHandle.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 4556;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v5 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            if (AeAssert::Warning(
+                    "entity has no model defined (classname '%s')", v5))
+                __debugbreak();
+        }
+        return nullptr;
+    }
+    if (G_DObjGetWorldTagMatrix(mObject, stringHash,
+                                &GetCachedTagMat().tagMat))
+    {
+        GetCachedTagMat().mEntity = entity;
+        GetCachedTagMat().mTime = level.time;
+        GetCachedTagMat().mNameHash = stringHash;
+        return &GetCachedTagMat().tagMat;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 4562;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored())
+    {
+        ValidatePakId((TPakId)mObject->mModel.mPakId);
+        if (AeAssert::Warning(
+                "tag  does not exist in model '%s' (or any attached submodels)",
+                mObject->mModel.mValue->name.mStr))
+            __debugbreak();
+    }
+    return nullptr;
+}
+
+// ea: 0x005D1CE0
+void BrocSys::GetTagOrigin1(unsigned int entityHandleVal, Broc::vector& vec,
+                            const unsigned int& stringHash)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        DObjSkelMat* TagInternal =
+            BrocSys::GetTagInternal(mObject->mHandle, stringHash);
+        if (TagInternal != nullptr)
+        {
+            vec.x = TagInternal->origin[0];
+            vec.y = TagInternal->origin[1];
+            vec.z = TagInternal->origin[2];
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 4584;
+            AeAssert::gCurrentExpr = "tagMat";
+            if (!AeAssert::IsIgnored())
+            {
+                ValidatePakId((TPakId)mObject->mModel.mPakId);
+                const char* mStr;
+                if (mObject->mModel.mValue != nullptr)
+                {
+                    ValidatePakId((TPakId)mObject->mModel.mPakId);
+                    mStr = mObject->mModel.mValue->name.mStr;
+                }
+                else
+                {
+                    mStr = "<no model>";
+                }
+                if (AeAssert::Assert(
+                        "tag does not exist in model '%s' (or any attached submodels)",
+                        mStr))
+                    __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x005D1DD0
+void BrocSys::GetTagOrigin2(unsigned int entityHandleVal, Broc::vector& vec,
+                            const Broc::string& string)
+{
+    const char* v3 = string.mBlock != nullptr
+                         ? (const char*)(string.mBlock + 1)
+                         : defaultFileName;
+    unsigned int hash = HashString::CalcHash(v3);
+    BrocSys::GetTagOrigin1(entityHandleVal, vec, hash);
+}
+
+// ea: 0x005D1E10
+void BrocSys::GetTagAngles1(unsigned int entityHandleVal, Broc::vector& vec,
+                            const unsigned int& stringHash)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        DObjSkelMat* TagInternal =
+            BrocSys::GetTagInternal(mObject->mHandle, stringHash);
+        if (TagInternal != nullptr)
+            Axis4ToAngles(TagInternal->axis, &vec.x);
+    }
+}
+
+// ea: 0x005D1E70
+void BrocSys::GetTagAngles2(unsigned int entityHandleVal, Broc::vector& vec,
+                            const Broc::string& string)
+{
+    const char* v3 = string.mBlock != nullptr
+                         ? (const char*)(string.mBlock + 1)
+                         : defaultFileName;
+    unsigned int v4 = HashString::CalcHash(v3);
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        DObjSkelMat* TagInternal =
+            BrocSys::GetTagInternal(mObject->mHandle, v4);
+        if (TagInternal != nullptr)
+            Axis4ToAngles(TagInternal->axis, &vec.x);
+    }
+}
+
+// ea: 0x005D1EF0
+void BrocSys::ShellShock(unsigned int entityHandleVal,
+                         const Broc::string& shock, float fVal)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr
+        && EntityHandleDb::sInst.mElements[v3].mObject->IsLocalPlayer())
+    {
+        g_doShellShock[mObject->GetPlayerIndex()] = 1;
+        int id = 1;
+        Broc::string s((Broc::string::Block*)nullptr);
+        SV_GetConfigstring(562, s);
+        if (s.mBlock == nullptr
+            || s.mBlock == (Broc::string::Block*)-12
+            || *((const char*)(s.mBlock + 1)) == 0)
+        {
+            G_ShellShockIndex("default");
+            G_ShellShockIndex("pain");
+            G_ShellShockIndex("death");
+        }
+        const char* v6 = shock.mBlock != nullptr
+                             ? (const char*)(shock.mBlock + 1)
+                             : defaultFileName;
+        if (strcmp(v6, "default") == 0)
+        {
+            id = 1;
+        }
+        else
+        {
+            const char* v7 = shock.mBlock != nullptr
+                                 ? (const char*)(shock.mBlock + 1)
+                                 : defaultFileName;
+            if (strcmp(v7, "pain") == 0)
+            {
+                id = 2;
+            }
+            else
+            {
+                const char* v8 = shock.mBlock != nullptr
+                                     ? (const char*)(shock.mBlock + 1)
+                                     : defaultFileName;
+                if (strcmp(v8, "death") == 0)
+                    id = 3;
+            }
+        }
+        int v9 = (int)((fVal * 1000.0f) + 0.5f);
+        if (v9 > 0xEA60)
+        {
+            Scr_ParamError(1,
+                           va("duration %g should be >= 0 and <= 60",
+                              v9 * 0.001f));
+        }
+        CG_SetShellShockParmsFromCvars(
+            (shellshock_parms_t*)(cgsGlobal_shellshockParms + id * 0x7C));
+        mObject->client->ps.shellshockIndex = id;
+        mObject->client->ps.shellshockTime = level.time;
+        mObject->client->ps.shellshockDuration = v9;
+        if (v9 <= 0)
+            g_doShellShock[mObject->GetPlayerIndex()] = 0;
+    }
+}
+
+// ea: 0x005D2100
+void BrocSys::StopShellShock(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr
+        && mObject->IsLocalPlayer())
+    {
+        g_doShellShock[mObject->GetPlayerIndex()] = 0;
+        mObject->client->ps.shellshockIndex = 0;
+        mObject->client->ps.shellshockTime = 0;
+        mObject->client->ps.shellshockDuration = 0;
+    }
+}
+
+// ea: 0x005D2180
+void BrocSys::ViewKick(unsigned int entityHandleVal, int iVal,
+                       const Broc::vector& origin)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        mObject->client->damage_blood =
+            (iVal * mObject->maxHealth + 50) / 100;
+        if (mObject->client->damage_blood < 0)
+        {
+            Scr_Error(va("viewkick: damage %g < 0\n", iVal));
+        }
+        mObject->client->damage_from[0] =
+            mObject->client->ps.origin.v.m128_f32[0] - origin.x;
+        mObject->client->damage_from[1] =
+            mObject->client->ps.origin.v.m128_f32[1] - origin.y;
+        mObject->client->damage_from[2] =
+            mObject->client->ps.origin.v.m128_f32[2] - origin.z;
+    }
+}
+
+// ea: 0x005D2260
+void BrocSys::LockLightVis(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        mObject->s.eFlags |= 0x8000u;
+        BrocSys::ValidateLightVis(mObject->s.eType);
+    }
+}
+
+// ea: 0x005D22B0
+void BrocSys::UnLockLightVis(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        mObject->s.eFlags &= ~0x8000u;
+        BrocSys::ValidateLightVis(mObject->s.eType);
+    }
+}
+
+// ea: 0x005D2300
+void BrocSys::Launch(unsigned int entityHandleVal,
+                     const Broc::vector& velocity)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        mObject->s.pos.trType = TR_GRAVITY;
+        mObject->s.pos.trTime = level.time;
+        mObject->s.pos.trDelta[0] = velocity.x;
+        mObject->s.pos.trDelta[1] = velocity.y;
+        mObject->s.pos.trDelta[2] = velocity.z;
+        if (IS_NAN(mObject->s.pos.trDelta[0])
+            || IS_NAN(mObject->s.pos.trDelta[1])
+            || IS_NAN(mObject->s.pos.trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 4772;
+            AeAssert::gCurrentExpr = "!IS_NAN((pEnt->s.pos.trDelta)[0]) && !IS_NAN((pEnt->s.pos.trDelta)[1]) && !IS_NAN((pEnt->s.pos.trDelta)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        mObject->physicsObject = 1;
+    }
+}
+
+// ea: 0x005D2400
+void BrocSys::LocalToWorldCoords(unsigned int entityHandleVal,
+                                 const Broc::vector& vLocal,
+                                 Broc::vector& vWorld)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        float axis[3][3];
+        AnglesToAxis(mObject->r.currentAngles.v.m128_f32, axis);
+        MatrixTransformVector(&vLocal.x, axis, &vWorld.x);
+        vWorld.x = mObject->r.currentOrigin.v.m128_f32[0] + vWorld.x;
+        vWorld.y = mObject->r.currentOrigin.v.m128_f32[1] + vWorld.y;
+        vWorld.z = mObject->r.currentOrigin.v.m128_f32[2] + vWorld.z;
     }
 }
 
