@@ -1523,7 +1523,8 @@ struct XModelLod {
 static_assert(sizeof(XModelLod) == 0x0C, "XModelLod size mismatch");
 
 // XBoneHierarchy - bone hierarchy entry (12 bytes) - verified against IDA
-struct XBoneHierarchy {
+class XBoneHierarchy {
+public:
     InplaceString mName;        // +0x00
     unsigned int  mNameHash;    // +0x04
     int           mParentIndex; // +0x08
