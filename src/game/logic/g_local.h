@@ -838,7 +838,9 @@ void EntityHandleDb_Find(int fieldOfs, T match, ae_sized_array<Entity*, 4096>& r
 // ============================================================================
 struct str_const_t {
     Broc::string active;              // +0x000
-    uint8_t    _pad004[0x30 - 0x04];
+    uint8_t    _pad004[0x28 - 0x04];
+    Broc::string crouch;              // +0x028 (10, "crouch")
+    uint8_t    _pad02C[0x30 - 0x2C];
     Broc::string current;             // +0x030 (12, "current")
     uint8_t    _pad034[0x4C - 0x34];
     Broc::string done;                // +0x04C (19, "done")
@@ -855,7 +857,9 @@ struct str_const_t {
     Broc::string noclass;             // +0xF4 (verified vs Entity ctor disasm)
     uint8_t    _padF8[0x120 - 0xF8];
     Broc::string player;              // +0x120
-    uint8_t    _pad124[0x13C - 0x124];
+    uint8_t    _pad124[0x128 - 0x124];
+    Broc::string prone;               // +0x128 (74, "prone")
+    uint8_t    _pad12C[0x13C - 0x12C];
     Broc::string rocket;              // +0x13C
     uint8_t    _pad140[0x148 - 0x140];
     Broc::string sound_blend;         // +0x148
@@ -886,7 +890,18 @@ struct str_const_t {
     Broc::string spawn_sd_allies;          // +0x1AC
      Broc::string spawn_sd_axis;            // +0x1B0
      Broc::string hq_point;                 // +0x1B4
-     uint8_t    _pad1B8[0x1FC - 0x1B8];
+     uint8_t    _pad1B8[0x1D0 - 0x1B8];
+     Broc::string scriptcamera;        // +0x1D0
+     Broc::string spawned;             // +0x1D4
+     Broc::string stand;               // +0x1D8
+     Broc::string back;                // +0x1DC
+     Broc::string wounded;             // +0x1E0
+     Broc::string suppressed;          // +0x1E4
+     Broc::string surfacetype;         // +0x1E8
+     Broc::string tag_engine1;         // +0x1EC
+     Broc::string tag_engine2;         // +0x1F0
+     Broc::string target_location;     // +0x1F4
+     Broc::string target_script_trigger; // +0x1F8
      Broc::string tempEntity;          // +0x1FC
      Broc::string muzzleEntity;        // +0x200 (129)
      Broc::string touch;               // +0x204 (130)
@@ -1204,6 +1219,18 @@ inline int Scr_GetAnimsIndex(AnimTree* anims)
 void      XAnimClearTreeGoalWeights(XAnimTree* tree, unsigned int animIndex, float blendTime);
 void      XAnimClearGoalWeight(XAnimTree* tree, unsigned int animIndex, float blendTime);
 void      XAnimClearTreeGoalWeightsStrict(XAnimTree* tree, unsigned int animIndex, float blendTime);
+void      XAnimSetCompleteGoalWeightKnob(XAnimTree* tree, unsigned int animIndex,
+                                         float goalWeight, float goalTime,
+                                         float rate, unsigned int notifyName,
+                                         unsigned short notifyType,
+                                         int bRestart);  // nal.cpp
+int       XAnimSetCompleteGoalWeightKnobAll(XAnimTree* tree, unsigned int animIndex,
+                                            unsigned int rootIndex,
+                                            float goalWeight, float goalTime,
+                                            float rate, unsigned int notifyName,
+                                            unsigned short notifyType,
+                                            int bRestart);  // nal.cpp
+unsigned int XAnimGetAnimTreeSize(AnimTree* anims);  // nal.cpp
 void      XAnimSetAnimRate(XAnimTree* tree, unsigned int animIndex, float rate);
 void      XAnimSetTime(XAnimTree* tree, unsigned int animIndex, float time);
 int       XAnimHasTime(AnimTree* anims, unsigned int animIndex);
@@ -2759,6 +2786,7 @@ void    GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
 void    GScr_LoadConsts(void);                       // g.o
 void    Scr_PrecacheAnimTrees(void* (*alloc)(void*, unsigned int), int restart);  // g.o
 AnimTree* Scr_GetAnimTreeByName(const char* treename);  // g.o
+XAnimTree* G_GetEntAnimTree(Entity* ent);               // g_dobj.cpp 0x453B80
 void*   Hunk_AllocXAnimCreate(void* self, unsigned int size);  // g.o
 void    BG_SetupWeaponInfo(void);                    // game.o
 void    ParseHitLocDmgTableEntry(const char* name, const ConfigString* cfg);  // g.o

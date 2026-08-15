@@ -3381,6 +3381,47 @@ void SetTurretAccuracy(unsigned int entityHandleVal,
                        float accuracy);  // 0x5D0250
 void SetTurretRange(unsigned int entityHandleVal, float range);  // 0x5D02C0
 float GetTurretRange(unsigned int entityHandleVal);  // 0x5D0340
+unsigned int GetTurretTarget(unsigned int entityHandleVal);  // 0x5D03B0
+void SetCursorHint(unsigned int entityHandleVal,
+                   const Broc::string& pszHint);  // 0x5D0430
+void SetHintString1(unsigned int entityHandleVal,
+                    const Broc::string& str);  // 0x5D05A0
+void SetHintString3(unsigned int entityHandleVal, int str);  // 0x5D0680
+void SetHintString2(unsigned int entityHandleVal);  // 0x5D0740
+void ClearAnim(unsigned int entityHandleVal, unsigned int broanim,
+               float blendtime);  // 0x5D0870
+void SetAnimKnob(unsigned int entityHandleVal, unsigned int broanim,
+                 float goalWeight, float goalTime, float rate,
+                 bool bRestart);  // 0x5D0990
+void SetAnimKnobAll(unsigned int entityHandleVal, unsigned int broanimchild,
+                    unsigned int broanimparent, float goalWeight,
+                    float goalTime, float rate, bool bRestart);  // 0x5D0B90
+void SetAnim(unsigned int entityHandleVal, unsigned int broanim,
+             float goalWeight, float goalTime, float rate,
+             bool bRestart);  // 0x5D0DA0
+float GetAnimTime(unsigned int entityHandleVal,
+                  unsigned int broanim);  // 0x5D0F30
+void SetFlaggedAnimKnob(unsigned int entityHandleVal,
+                        unsigned int notifyHash, unsigned int broanim,
+                        float goalWeight, float goalTime, float rate,
+                        bool bRestart);  // 0x5D1030
+void SetFlaggedAnimKnobAll(unsigned int entityHandleVal,
+                           unsigned int notifyHash, unsigned int broAnimChild,
+                           unsigned int broanimparent, float goalWeight,
+                           float goalTime, float rate,
+                           bool bRestart);  // 0x5D1190
+void SetFlaggedAnim(unsigned int entityHandleVal, unsigned int notifyHash,
+                    unsigned int broanim, float goalWeight, float goalTime,
+                    float rate, bool bRestart);  // 0x5D13D0
+void UseAnimTree(unsigned int entityHandleVal,
+                 const Broc::string& treename);  // 0x5D1530
+void StopUseAnimTree(unsigned int entityHandleVal);  // 0x5D16C0
+void DumpAnims(unsigned int entityHandleVal);  // 0x5D1740
+void GetStance(unsigned int entityHandleVal,
+               Broc::string& str);  // 0x5D1780
+void MagicGrenade1(unsigned int entityHandleVal, const Broc::vector& origin,
+                   const Broc::vector& vTargetPos,
+                   float grenadeTime);  // 0x5D1800
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3429,6 +3470,35 @@ extern Entity* SpawnActor(Entity* ent, const Broc::string& targetname,
                           enumForceSpawn forceSpawn,
                           TPakId pakId);  // ?SpawnActor@@YAPAVEntity@@PAV1@ABVstring@Broc@@W4enumForceSpawn@@W4TPakId@@@Z (ai_stubs.cpp)
 extern void G_SetModelIndex(Entity* ent, int iflIndex);  // ?G_SetModelIndex@@YAXPAVEntity@@H@Z (g_dobj.cpp 0x453BC0)
+
+// scr.o batch 49 helpers
+extern void Com_DPrintf(const char* fmt, ...);  // core.o
+struct PakHeapContext {
+    PakHeapContext(TPakId id, bool once);  // ??0PakHeapContext@@QAE@W4TPakId@@_N@Z (pakmanager.cpp)
+    ~PakHeapContext();                     // ??1PakHeapContext@@QAE@XZ
+};
+int __fastcall Actor_Grenade_GetTossPositions(actor_s* pSelf,
+                                              const float* const vStandPos,
+                                              const float* const vOffset,
+                                              const float* const vAimPos,
+                                              float* const vFrom,
+                                              float* const vLand);
+int __fastcall Actor_Grenade_CheckMinimumEnergyToss(actor_s* pSelf,
+                                                    const float* const vFrom,
+                                                    const float* const vLand,
+                                                    float* const vVelOut);
+int __fastcall Actor_Grenade_CheckMaximumEnergyToss(actor_s* pSelf,
+                                                    const float* const vFrom,
+                                                    const float* const vLand,
+                                                    int bLob,
+                                                    float* const vVelOut);
+int __fastcall Actor_Grenade_CheckGrenadeHintToss(actor_s* pSelf,
+                                                  const float* const vFrom,
+                                                  const float* const vLand,
+                                                  float* const vVelOut,
+                                                  bool roll);
+extern void Scr_ConstructMessageString(int iValue, char* pszBuffer,
+                                       int iSize, conMsgType_t iType);
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -14842,6 +14912,829 @@ float BrocSys::GetTurretRange(unsigned int entityHandleVal)
         return 0.0f;
     }
     return sqrtf(pTurretInfo->maxRangeSquared);
+}
+
+// ============================================================================
+// scr.o batch 49 - cursor hints / anim tree wrappers / stance
+// ============================================================================
+
+// ea: 0x005D03B0
+unsigned int BrocSys::GetTurretTarget(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return 0;
+    turretInfo_t* pTurretInfo = mObject->pTurretInfo;
+    if (pTurretInfo == nullptr)
+    {
+        const char* v5 = mObject->mClassName.mBlock != nullptr
+                             ? (const char*)(mObject->mClassName.mBlock + 1)
+                             : defaultFileName;
+        Scr_Error(va("entity type '%s' is not a turret", v5));
+        return 0;
+    }
+    Entity* target = pTurretInfo->target;
+    if (target == nullptr || (pTurretInfo->turret_flags & 0x40) == 0)
+        return 0;
+    return target->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005D0430
+void BrocSys::SetCursorHint(unsigned int entityHandleVal,
+                            const Broc::string& pszHint)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        const char* hint = pszHint.mBlock != nullptr
+                               ? (const char*)(pszHint.mBlock + 1)
+                               : defaultFileName;
+        if (mObject->mClassNameHash.mHash != hash_const.trigger_use.mHash
+            || Q_strcasecmp(hint, "HINT_INHERIT") != 0)
+        {
+            for (int i = 1; i < 280; ++i)
+            {
+                if (hintStrings[i] == nullptr)
+                    break;
+                const char* v6 = pszHint.mBlock != nullptr
+                                     ? (const char*)(pszHint.mBlock + 1)
+                                     : defaultFileName;
+                if (Q_strcasecmp(v6, hintStrings[i]) == 0)
+                {
+                    mObject->s.dmgFlags = i;
+                    return;
+                }
+            }
+            Com_Printf("List of valid hint type strings\n");
+            if (mObject->mClassNameHash.mHash == hash_const.trigger_use.mHash)
+                Com_Printf(
+                    "HINT_INHERIT (for trigger_use entities only)\n");
+            for (const char** v7 = hintStrings; *v7 != nullptr; ++v7)
+                Com_Printf("%s\n", *v7);
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+            AeAssert::gCurrentLine = 16;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                       "\x15%s",
+                       va("%s is not a valid hint type. See above for list of valid hint types\n",
+                          pszHint.mBlock)))
+                __debugbreak();
+        }
+        else
+        {
+            mObject->s.dmgFlags = -1;
+        }
+    }
+}
+
+// ea: 0x005D05A0
+void BrocSys::SetHintString1(unsigned int entityHandleVal,
+                             const Broc::string& str)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        if (mHash == hash_const.trigger_use.mHash || mObject->actor != nullptr)
+        {
+            if (str.mBlock != nullptr)
+            {
+                if (mHash == hash_const.trigger_use.mHash)
+                {
+                    mObject->s.scale = -1;
+                }
+                else
+                {
+                    if (mObject->actor == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 3708;
+                        AeAssert::gCurrentExpr = "pEnt->actor";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    mObject->actor->iUseHintString = -1;
+                }
+            }
+        }
+        else
+        {
+            Scr_Error(
+                "The setHintString command only works on trigger_use entities and actors.\n");
+        }
+    }
+}
+
+// ea: 0x005D0680
+void BrocSys::SetHintString3(unsigned int entityHandleVal, int str)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int mHash = mObject->mClassNameHash.mHash;
+        mObject->mHintString = (unsigned int)str;
+        if (mHash == hash_const.trigger_use.mHash)
+        {
+            mObject->s.scale = -1;
+        }
+        else
+        {
+            if (mObject->actor == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 3729;
+                AeAssert::gCurrentExpr = "pEnt->actor";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            mObject->actor->iUseHintString = -1;
+        }
+    }
+}
+
+// ea: 0x005D0740
+void BrocSys::SetHintString2(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->mClassNameHash.mHash == hash_const.trigger_use.mHash
+            || mObject->actor != nullptr)
+        {
+            char szHint[256];
+            Scr_ConstructMessageString(0, szHint, 256, CONMSG_HINTSTRING);
+            if (G_GetHintStringIndex((int*)&entityHandleVal, szHint) != 0)
+            {
+                if (mObject->mClassNameHash.mHash == hash_const.trigger_use.mHash)
+                {
+                    mObject->s.scale = (uint8_t)entityHandleVal;
+                }
+                else
+                {
+                    if (mObject->actor == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 3766;
+                        AeAssert::gCurrentExpr = "pEnt->actor";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    mObject->actor->iUseHintString =
+                        (int16_t)entityHandleVal;
+                }
+            }
+            else
+            {
+                Scr_Error(
+                    va("Too many different hintstring values. Max allowed is %i different strings",
+                       32));
+            }
+        }
+        else
+        {
+            Scr_Error(
+                "The setHintString command only works on trigger_use entities and actors.\n");
+        }
+    }
+}
+
+// ea: 0x005D0870
+void BrocSys::ClearAnim(unsigned int entityHandleVal, unsigned int broanim,
+                        float blendtime)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        if (broanim == 0xFFFF)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 3826;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("anim index is -1"))
+                __debugbreak();
+        }
+        else
+        {
+            if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+                Scr_Error(
+                    "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+            XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+            AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+            if (&Bank->anims[broanim >> 16]
+                != *(AnimTree**)((char*)EntAnimTree + 8))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 3840;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error(
+                        "Tree Animation mismatch. Out of range memory access possible!!"))
+                    __debugbreak();
+            }
+            gDebugEntity = mObject;
+            XAnimClearTreeGoalWeights(EntAnimTree, broanim, blendtime);
+        }
+    }
+}
+
+// ea: 0x005D0990
+void BrocSys::SetAnimKnob(unsigned int entityHandleVal, unsigned int broanim,
+                          float goalWeight, float goalTime, float rate,
+                          bool bRestart)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        if (broanim == (unsigned int)-1)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 3862;
+            AeAssert::gCurrentExpr = "broanim != -1";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Bad anim in SetAnimKnob"))
+                __debugbreak();
+        }
+        else
+        {
+            if (broanim == 0xFFFF)
+                Scr_Error("anim index is -1");
+            if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+                Scr_Error(
+                    "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+            if (goalWeight < 0.0f)
+                Scr_Error("goalweight must be non-negative");
+            if (goalTime < 0.0f)
+                Scr_Error("goaltime must be non-negative");
+            if (rate < 0.0f)
+                Scr_Error("rate must be non-negative");
+            mObject->SetAnimDebug((int)broanim);
+            XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+            AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+            if (&Bank->anims[broanim >> 16]
+                != *(AnimTree**)((char*)EntAnimTree + 8))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 3904;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error(
+                        "Tree Animation mismatch. Out of range memory access possible!!"))
+                    __debugbreak();
+            }
+            gDebugEntity = mObject;
+            TPakId mPakId = (TPakId)mObject->mPakId;
+            TPakId v11;
+            if (mPakId == PAK_ID_INVALID)
+                v11 = CurPakId();
+            else
+                v11 = mPakId;
+            PakHeapContext ctx(v11, false);
+            XAnimSetCompleteGoalWeightKnob(EntAnimTree, broanim, goalWeight,
+                                           goalTime, rate, 0, 0, bRestart);
+        }
+    }
+}
+
+// ea: 0x005D0B90
+void BrocSys::SetAnimKnobAll(unsigned int entityHandleVal,
+                             unsigned int broanimchild,
+                             unsigned int broanimparent, float goalWeight,
+                             float goalTime, float rate, bool bRestart)
+{
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v7 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v7].mObject) != nullptr)
+    {
+        if (broanimchild == 0xFFFF || broanimparent == 0xFFFF)
+            Scr_Error("root anim or child anim index is -1");
+        if (goalWeight < 0.0f)
+            Scr_Error("goalweight must be non-negative");
+        if (goalTime < 0.0f)
+            Scr_Error("goaltime must be non-negative");
+        if (rate < 0.0f)
+            Scr_Error("rate must be non-negative");
+        if ((broanimchild >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        if ((broanimparent >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        mObject->SetAnimDebug((int)broanimchild);
+        TPakId mPakId = (TPakId)mObject->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        PakHeapContext pakCtx(mPakId, false);
+        XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+        AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+        if (&Bank->anims[broanimchild >> 16]
+            != *(AnimTree**)((char*)EntAnimTree + 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 3971;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error(
+                    "Tree Animation mismatch. Out of range memory access possible!!"))
+                __debugbreak();
+        }
+        gDebugEntity = mObject;
+        int v12 = XAnimSetCompleteGoalWeightKnobAll(
+            EntAnimTree, broanimchild, broanimparent, goalWeight, goalTime,
+            rate, 0, 0, bRestart);
+        if (v12 != 0)
+        {
+            if (v12 != 1)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 3980;
+                AeAssert::gCurrentExpr = "error == XANIM_ERROR_BAD_ROOT_ANIM";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            Scr_Error("root anim is not an ancestor of the anim");
+        }
+    }
+}
+
+// ea: 0x005D0DA0
+void BrocSys::SetAnim(unsigned int entityHandleVal, unsigned int broanim,
+                      float goalWeight, float goalTime, float rate,
+                      bool bRestart)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        if (broanim == 0xFFFF)
+            Scr_Error("anim index is -1");
+        if (goalWeight < 0.0f)
+            Scr_Error("goalweight must be non-negative");
+        if (goalTime < 0.0f)
+            Scr_Error("goaltime must be non-negative");
+        if (rate < 0.0f)
+            Scr_Error("rate must be non-negative");
+        if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        mObject->SetAnimDebug((int)broanim);
+        XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+        AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+        if (&Bank->anims[broanim >> 16]
+            != *(AnimTree**)((char*)EntAnimTree + 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 4033;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error(
+                    "Tree Animation mismatch. Out of range memory access possible!!"))
+                __debugbreak();
+        }
+        gDebugEntity = mObject;
+        TPakId mPakId = (TPakId)mObject->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        PakHeapContext pakCtx(mPakId, false);
+        XAnimSetCompleteGoalWeight(EntAnimTree, broanim, goalWeight, goalTime,
+                                   rate, 0, 0, bRestart);
+    }
+}
+
+// ea: 0x005D0F30
+float BrocSys::GetAnimTime(unsigned int entityHandleVal,
+                           unsigned int broanim)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 >= 0x540)
+        return 0.0f;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return 0.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr)
+        return 0.0f;
+    if (broanim == 0xFFFF)
+        Scr_Error("anim index is -1");
+    if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+        Scr_Error(
+            "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+    XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+    AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    if (&Bank->anims[broanim >> 16]
+        != *(AnimTree**)((char*)EntAnimTree + 8))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 4071;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error(
+                "Tree Animation mismatch. Out of range memory access possible!!"))
+            __debugbreak();
+    }
+    gDebugEntity = mObject;
+    if (XAnimHasTime(*(AnimTree**)((char*)EntAnimTree + 8), broanim) == 0)
+        Scr_Error(
+            "blended nonsynchronized animation has no concept of time");
+    return XAnimGetTime(EntAnimTree, broanim);
+}
+
+// ea: 0x005D1030
+void BrocSys::SetFlaggedAnimKnob(unsigned int entityHandleVal,
+                                 unsigned int notifyHash,
+                                 unsigned int broanim, float goalWeight,
+                                 float goalTime, float rate, bool bRestart)
+{
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v7 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v7].mObject) != nullptr)
+    {
+        if (broanim == 0xFFFF)
+            Scr_Error("anim index is -1");
+        if (goalWeight < 0.0f)
+            Scr_Error("goalweight must be non-negative");
+        if (goalTime < 0.0f)
+            Scr_Error("goaltime must be non-negative");
+        if (rate < 0.0f)
+            Scr_Error("rate must be non-negative");
+        if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+        AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+        if (&Bank->anims[broanim >> 16]
+            != *(AnimTree**)((char*)EntAnimTree + 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 4123;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error(
+                    "Tree Animation mismatch. Out of range memory access possible!!"))
+                __debugbreak();
+        }
+        gDebugEntity = mObject;
+        if (XAnimHasTime(*(AnimTree**)((char*)EntAnimTree + 8), broanim) == 0)
+            Scr_Error(
+                "blended nonsynchronized animation has no concept of time");
+        mObject->SetAnimDebug((int)broanim);
+        XAnimSetCompleteGoalWeightKnob(EntAnimTree, broanim, goalWeight,
+                                       goalTime, rate, notifyHash, 0,
+                                       bRestart);
+    }
+}
+
+// ea: 0x005D1190
+void BrocSys::SetFlaggedAnimKnobAll(unsigned int entityHandleVal,
+                                    unsigned int notifyHash,
+                                    unsigned int broAnimChild,
+                                    unsigned int broanimparent,
+                                    float goalWeight, float goalTime,
+                                    float rate, bool bRestart)
+{
+    unsigned int v8 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v8 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v8].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v8].mObject) != nullptr)
+    {
+        if (broAnimChild == 0xFFFF || broanimparent == 0xFFFF)
+            Scr_Error("root anim or child anim index is -1");
+        if (goalWeight < 0.0f)
+            Scr_Error("goalweight must be non-negative");
+        if (goalTime < 0.0f)
+            Scr_Error("goaltime must be non-negative");
+        if (rate < 0.0f)
+            Scr_Error("rate must be non-negative");
+        if ((broAnimChild >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        if ((broanimparent >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+        AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+        if (&Bank->anims[broAnimChild >> 16]
+            != *(AnimTree**)((char*)EntAnimTree + 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 4189;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error(
+                    "Anim not listed in AnimTree. Game will crash!!"))
+                __debugbreak();
+        }
+        gDebugEntity = mObject;
+        if (XAnimHasTime(*(AnimTree**)((char*)EntAnimTree + 8),
+                         broAnimChild)
+            == 0)
+            Scr_Error(
+                "blended nonsynchronized animation has no concept of time");
+        mObject->SetAnimDebug((int)broAnimChild);
+        TPakId mPakId = (TPakId)mObject->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        PakHeapContext ctx(mPakId, false);
+        int v13 = XAnimSetCompleteGoalWeightKnobAll(
+            EntAnimTree, broAnimChild, broanimparent, goalWeight, goalTime,
+            rate, notifyHash, 0, bRestart);
+        switch (v13)
+        {
+        case 0:
+            return;
+        case 1:
+            Scr_Error("root anim is not an ancestor of the anim");
+            break;
+        case 2:
+            Scr_Error("cannot flag anim since it has 0 effective goal weight");
+            return;
+        default:
+            break;
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 4218;
+        AeAssert::gCurrentExpr = "error == XANIM_ERROR_BAD_NOTIFY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        Scr_Error("cannot flag anim since it has 0 effective goal weight");
+    }
+}
+
+// ea: 0x005D13D0
+void BrocSys::SetFlaggedAnim(unsigned int entityHandleVal,
+                             unsigned int notifyHash, unsigned int broanim,
+                             float goalWeight, float goalTime, float rate,
+                             bool bRestart)
+{
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v7 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v7].mObject) != nullptr)
+    {
+        if (broanim == 0xFFFF)
+            Scr_Error("anim index is -1");
+        if (goalWeight < 0.0f)
+            Scr_Error("goalweight must be non-negative");
+        if (goalTime < 0.0f)
+            Scr_Error("goaltime must be non-negative");
+        if (rate < 0.0f)
+            Scr_Error("rate must be non-negative");
+        if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+            Scr_Error(
+                "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+        XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+        AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+        if (&Bank->anims[broanim >> 16]
+            != *(AnimTree**)((char*)EntAnimTree + 8))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 4262;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error(
+                    "Tree Animation mismatch. Out of range memory access possible!!"))
+                __debugbreak();
+        }
+        gDebugEntity = mObject;
+        if (XAnimHasTime(*(AnimTree**)((char*)EntAnimTree + 8), broanim) == 0)
+            Scr_Error(
+                "blended nonsynchronized animation has no concept of time");
+        mObject->SetAnimDebug((int)broanim);
+        XAnimSetCompleteGoalWeight(EntAnimTree, broanim, goalWeight, goalTime,
+                                   rate, notifyHash, 0, bRestart);
+    }
+}
+
+// ea: 0x005D1530
+void BrocSys::UseAnimTree(unsigned int entityHandleVal,
+                          const Broc::string& treename)
+{
+    if (treename.mBlock != nullptr
+        && treename.mBlock->mLength != 0)
+    {
+        unsigned int v3 = entityHandleVal & 0xFFF;
+        Entity* mObject;
+        if (v3 < 0x540
+            && entityHandleVal >> 12
+                   == EntityHandleDb::sInst.mElements[v3].mKey
+            && (mObject = EntityHandleDb::sInst.mElements[v3].mObject)
+                   != nullptr)
+        {
+            AnimTree* AnimTreeByName =
+                Scr_GetAnimTreeByName((const char*)(treename.mBlock + 1));
+            if (AnimTreeByName != nullptr
+                && AnimTreeByName->entries.mSize != 0)
+            {
+                if (G_GetEntAnimTree(mObject) != mObject->pAnimTree)
+                {
+                    const char* v7 = mObject->mClassName.mBlock != nullptr
+                                         ? (const char*)(mObject->mClassName
+                                                             .mBlock
+                                                         + 1)
+                                         : defaultFileName;
+                    Scr_Error(
+                        va("cannot change the animtree of classname '%s'",
+                           v7));
+                }
+                if (XAnimGetAnimTreeSize(AnimTreeByName) > 0x20)
+                    Scr_ParamError(
+                        0, "Cannot dynamically use an anim tree of size greater than 32");
+                gDebugEntity = mObject;
+                G_SetAnimTree(mObject, AnimTreeByName);
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 4303;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored())
+                {
+                    const char* v9 = treename.mBlock != nullptr
+                                         ? (const char*)(treename.mBlock + 1)
+                                         : defaultFileName;
+                    const char* v11 = mObject->mClassName.mBlock != nullptr
+                                          ? (const char*)(mObject->mClassName
+                                                              .mBlock
+                                                          + 1)
+                                          : defaultFileName;
+                    if (AeAssert::Warning(
+                            "Cannot change the animtree of classname '%s' to '%s'. Tree not found.",
+                            v11, v9))
+                        __debugbreak();
+                }
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 4291;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "UseAnimTree called with a NULL treename."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D16C0
+void BrocSys::StopUseAnimTree(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (G_GetEntAnimTree(EntityHandleDb::sInst.mElements[v1].mObject)
+            != mObject->pAnimTree)
+        {
+            const char* v4 = mObject->mClassName.mBlock != nullptr
+                                 ? (const char*)(mObject->mClassName.mBlock
+                                                 + 1)
+                                 : defaultFileName;
+            Scr_Error(va("cannot change the animtree of classname '%s'", v4));
+        }
+        gDebugEntity = mObject;
+        G_SetAnimTree(mObject, nullptr);
+    }
+}
+
+// ea: 0x005D1740
+void BrocSys::DumpAnims(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        SV_DObjDisplayAnim(mObject);
+}
+
+// ea: 0x005D1780
+void BrocSys::GetStance(unsigned int entityHandleVal, Broc::string& str)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        Client* client = mObject->client;
+        if (client != nullptr)
+        {
+            int pm_flags = client->ps.pm_flags;
+            if ((pm_flags & 1) != 0)
+            {
+                str = str_const.prone;
+            }
+            else if ((pm_flags & 2) != 0)
+            {
+                str = str_const.crouch;
+            }
+            else
+            {
+                str = str_const.stand;
+            }
+        }
+        else
+        {
+            Scr_Error("GetStance is only defined for players.");
+        }
+    }
+}
+
+// ea: 0x005D1800
+void BrocSys::MagicGrenade1(unsigned int entityHandleVal,
+                            const Broc::vector& origin,
+                            const Broc::vector& vTargetPos,
+                            float grenadeTime)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+        {
+            float calcedVel[3];
+            float vLand[3];
+            float zero[3] = { 0.0f, 0.0f, 0.0f };
+            Actor_Grenade_GetTossPositions(actor, &origin.x, zero,
+                                           &vTargetPos.x, (float*)&origin.x,
+                                           vLand);
+            if (Actor_Grenade_CheckMinimumEnergyToss(actor, &origin.x, vLand,
+                                                     calcedVel)
+                || Actor_Grenade_CheckMaximumEnergyToss(actor, &origin.x,
+                                                        vLand, 0, calcedVel)
+                || Actor_Grenade_CheckGrenadeHintToss(actor, &origin.x, vLand,
+                                                      calcedVel, false))
+            {
+                fire_grenade(mObject, (float*)&origin.x, calcedVel,
+                             actor->iGrenadeWeaponIndex,
+                             (int)(grenadeTime * 1000.0f));
+            }
+            else
+            {
+                Com_DPrintf(
+                    "MagicGrenade: None of the sScrMethods worked (probably distance or blocked)...need a good failsafe or remove this print?\n");
+            }
+        }
+        else
+        {
+            Scr_Error("MagicGrenade only supports actors.\n");
+        }
+    }
 }
 
 // ============================================================================
