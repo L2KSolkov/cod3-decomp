@@ -3662,6 +3662,40 @@ int GetFullClipAmmoCount(unsigned int entityHandleVal,
                          const Broc::string& sSlot);  // 0x5D6F40
 int GetMaxAmmo(unsigned int entityHandleVal,
                const Broc::string& sSlot);  // 0x5D6FF0
+void InitEntityClient();  // 0x5D70A0 (void mangle)
+void ObjectiveAdd5(int iObjective, const Broc::string& inState,
+                   const Broc::string& pszString, const Broc::vector& vPos,
+                   unsigned int hEnt, float fHeight, const char* display,
+                   int iChild, int iChildOrder,
+                   int clientIndex);  // 0x5D7790
+void StartPath(unsigned int entityHandleVal);  // 0x5D7C30
+void EndPath(unsigned int entityHandleVal);  // 0x5D7D40
+void SetSwitchNode(unsigned int entityHandleVal,
+                   const Broc::vehiclenode& node1,
+                   const Broc::vehiclenode& node2);  // 0x5D7E40
+void SetWaitNode(unsigned int entityHandleVal,
+                 const Broc::vehiclenode& node);  // 0x5D8000
+void SetWaitSpeed(unsigned int entityHandleVal,
+                  float waitSpeed);  // 0x5D8170
+void SetSpeed(unsigned int entityHandleVal, float manualSpeed,
+              float manualAcc);  // 0x5D82A0
+void ResumeSpeed(unsigned int entityHandleVal,
+                 float manualAcc);  // 0x5D8410
+void JoltBody(unsigned int entityHandleVal, const Broc::vector& joltPos,
+              float intensity, float speedFrac,
+              float decel);  // 0x5D8550
+void FreeVehicle(unsigned int entityHandleVal);  // 0x5D8700
+void GetWheelSurface(unsigned int entityHandleVal, unsigned int wheelName,
+                     Broc::string& surfaceType);  // 0x5D8840
+float GetSpeedMph(unsigned int entityHandleVal);  // 0x5D8A20
+unsigned int GetVehicleOwner(unsigned int entityHandleVal);  // 0x5D8AB0
+void SetMaxSpeed(unsigned int entityHandleVal, float maxSpeed);  // 0x5D8B60
+void SetBrake(unsigned int entityHandleVal, bool braking);  // 0x5D8D30
+void SetStabilityEnabled(unsigned int entityHandleVal,
+                         bool enabled);  // 0x5D8F00
+bool IsVehicleFlipped(unsigned int entityHandleVal);  // 0x5D90D0
+void SetVehicleGoal(unsigned int vehHandleVal, const Broc::vector& tgtPos,
+                    float goalRadius, float goalSpeed);  // 0x5D9190
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -3799,6 +3833,16 @@ extern void CG_Obituary(Entity* target, Entity* attacker, int parm,
                         bool teamGame);  // ?CG_Obituary@@YAXPAVEntity@@0H_N@Z
 extern int BG_GetWeaponSlotForName(const char* pszSlotName);  // ?BG_GetWeaponSlotForName@@YAHPBD@Z
 extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // ?BG_GetWeaponSlotNameForIndex@@YAPBDH@Z
+
+// scr.o batch 57 helpers (BrocVehicle.cpp)
+extern rb_vehicle* GetPlayerRBVehicle();  // ?GetPlayerRBVehicle@@YAPAVrb_vehicle@@XZ (g_scr_vehicle.cpp)
+extern bool IsVehFlipped(Entity* ent);  // ?IsVehFlipped@@YA_NPAVEntity@@@Z (g_scr_vehicle.cpp)
+class RBVehicleController {
+public:
+    void SetScriptTarget(rb_vehicle& rbveh, const math::Position3& goal_position,
+                         float goal_radius,
+                         float goal_speed);  // ?SetScriptTarget@RBVehicleController@@QAEXAAVrb_vehicle@@ABVPosition3@math@@MM@Z
+};
 
 // level.cachedTagMat (level_locals_t +0xC30, 0x4C bytes) - IDA verified
 struct CachedTagMatLocal {
@@ -19478,6 +19522,1211 @@ int BrocSys::GetMaxAmmo(unsigned int entityHandleVal,
                    mObject->client->ps.weaponslots[WeaponSlotForName])
             ->iMaxAmmo;
     return 0;
+}
+
+// ============================================================================
+// scr.o batch 57 - InitEntityClient / objective add5 / vehicle path
+// ============================================================================
+
+// ea: 0x005D70A0
+void BrocSys::InitEntityClient()
+{
+    gpBrocAPI->mBrocExports.mPlayerRespawn = BrocSys::MPScript_PlayerRespawn;
+    gpBrocAPI->mBrocExports.mPlayerSpawn = BrocSys::MPScript_PlayerSpawn;
+    gpBrocAPI->mBrocExports.mSetPlayerAlive =
+        BrocSys::MPScript_SetPlayerAlive;
+    gpBrocAPI->mBrocExports.mSetRespawnMaxTime =
+        BrocSys::SetRespawnMaxTime;
+    gpBrocAPI->mBrocExports.mRequestRespawn =
+        BrocSys::MPScript_RequestRespawn;
+    gpBrocAPI->mBrocExports.mGetPlayerName =
+        BrocSys::MPScript_GetPlayerName;
+    gpBrocAPI->mBrocExports.mFinishDamage = BrocSys::MPScript_FinishDamage;
+    gpBrocAPI->mBrocExports.mIsLocalPlayer =
+        BrocSys::MPScript_IsLocalPlayer;
+    gpBrocAPI->mBrocExports.mIsInVehicle1 = BrocSys::MPScript_IsInVehicle1;
+    gpBrocAPI->mBrocExports.mIsInVehicle2 = BrocSys::MPScript_IsInVehicle2;
+    gpBrocAPI->mBrocExports.mGetPlayerInSeat =
+        BrocSys::MPScript_GetPlayerInSeat;
+    gpBrocAPI->mBrocExports.mGetOutOfVehicle =
+        BrocSys::MPScript_GetOutOfVehicle;
+    gpBrocAPI->mBrocExports.mObituary = BrocSys::MPScript_Obituary;
+    gpBrocAPI->mBrocExports.mChangePlayerTeam =
+        BrocSys::MPScript_ChangePlayerTeam;
+    gpBrocAPI->mBrocExports.mIncPlayerStat =
+        BrocSys::MPScript_IncPlayerStat;
+    gpBrocAPI->mBrocExports.mSetPlayerStat =
+        BrocSys::MPScript_SetPlayerStat;
+    gpBrocAPI->mBrocExports.mGetPlayerStat =
+        BrocSys::MPScript_GetPlayerStat;
+    gpBrocAPI->mBrocExports.mGetPlayerTotalScore =
+        BrocSys::MPScript_GetPlayerTotalScore;
+    gpBrocAPI->mBrocExports.mClearPlayerStats =
+        BrocSys::MPScript_ClearPlayerStats;
+    gpBrocAPI->mBrocExports.mClearTeamScores =
+        BrocSys::MPScript_ClearTeamScores;
+    gpBrocAPI->mBrocExports.mIncTeamScore = BrocSys::MPScript_IncTeamScore;
+    gpBrocAPI->mBrocExports.mGetTeamScore = BrocSys::MPScript_GetTeamScore;
+    gpBrocAPI->mBrocExports.mSendInitialGameState =
+        BrocSys::MPScript_SendInitialGameState;
+    gpBrocAPI->mBrocExports.mSendVehicleStates =
+        BrocSys::MPScript_SendVehicleStates;
+    gpBrocAPI->mBrocExports.mBroadcastVehicleRespawn =
+        BrocSys::MPScript_BroadcastVehicleRespawn;
+    gpBrocAPI->mBrocExports.mSendGameState =
+        BrocSys::MPScript_SendGameState;
+    gpBrocAPI->mBrocExports.mSendGameStateCTF =
+        BrocSys::MPScript_SendGameStateCTF;
+    gpBrocAPI->mBrocExports.mSendGameStateHQ =
+        BrocSys::MPScript_SendGameStateHQ;
+    gpBrocAPI->mBrocExports.mSendGameStateSCF =
+        BrocSys::MPScript_SendGameStateSCF;
+    gpBrocAPI->mBrocExports.mSendGameStateDOM =
+        BrocSys::MPScript_SendGameStateDOM;
+    gpBrocAPI->mBrocExports.mSendGameStateSD =
+        BrocSys::MPScript_SendGameStateSD;
+    gpBrocAPI->mBrocExports.mSendGameScore =
+        BrocSys::MPScript_SendGameScore;
+    gpBrocAPI->mBrocExports.mEnterGame = BrocSys::MPScript_EnterGame;
+    gpBrocAPI->mBrocExports.mControllerErrorMessageUp =
+        BrocSys::MPScript_ControllerErrorMessageUp;
+    gpBrocAPI->mBrocExports.mForceControllerErrorMessageDown =
+        BrocSys::MPScript_ForceControllerErrorMessageDown;
+    gpBrocAPI->mBrocExports.mDebugOut = BrocSys::DebugOut;
+    gpBrocAPI->mBrocExports.mGetSpotterEntity =
+        BrocSys::MPScript_GetSpotterEntity;
+    gpBrocAPI->mBrocExports.mClearSpottingFromOccupants =
+        BrocSys::MPScript_ClearSpottingFromOccupants;
+    gpBrocAPI->mBrocExports.mGetWeaponName =
+        BrocSys::MPScript_GetWeaponName;
+    gpBrocAPI->mBrocExports.mDropItem1 = BrocSys::MPScript_DropItem1;
+    gpBrocAPI->mBrocExports.mDropItem2 = BrocSys::MPScript_DropItem2;
+    gpBrocAPI->mBrocExports.mHostDropItem1 =
+        BrocSys::MPScript_HostDropItem1;
+    gpBrocAPI->mBrocExports.mHostDropItem2 =
+        BrocSys::MPScript_HostDropItem2;
+    gpBrocAPI->mBrocExports.mPickupItem = BrocSys::MPScript_PickupItem;
+    gpBrocAPI->mBrocExports.mAreaCaptured = BrocSys::MPScript_AreaCaptured;
+    gpBrocAPI->mBrocExports.mPositionWouldTelefrag =
+        BrocSys::MPScript_PositionWouldTelefrag;
+    gpBrocAPI->mBrocExports.mSendHostBombRequest =
+        BrocSys::MPScript_SendHostBombRequest;
+    gpBrocAPI->mBrocExports.mSendBombExplosion =
+        BrocSys::MPScript_SendBombExplosion;
+    gpBrocAPI->mBrocExports.mSendBombOperation =
+        BrocSys::MPScript_SendBombOperation;
+    gpBrocAPI->mBrocExports.mSendBombOperationEvent =
+        BrocSys::MPScript_SendBombOperationEvent;
+    gpBrocAPI->mBrocExports.mSetCompassVisibilty =
+        BrocSys::MPScript_SetCompassVisibilty;
+    gpBrocAPI->mBrocExports.mSpawnButtonPressed =
+        BrocSys::MPScript_SpawnButtonPressed;
+    gpBrocAPI->mBrocExports.mNextButtonPressed =
+        BrocSys::MPScript_NextButtonPressed;
+    gpBrocAPI->mBrocExports.mPrevButtonPressed =
+        BrocSys::MPScript_PrevButtonPressed;
+    gpBrocAPI->mBrocExports.mDebugRenderText =
+        BrocSys::MPScript_DebugRenderText;
+    gpBrocAPI->mBrocExports.mDebugRenderEntityBBox =
+        BrocSys::MPScript_DebugRenderEntityBBox;
+    gpBrocAPI->mBrocExports.mDebugRenderBox =
+        BrocSys::MPScript_DebugRenderBox;
+    gpBrocAPI->mBrocExports.mDebugRenderSphere =
+        BrocSys::MPScript_DebugRenderSphere;
+    gpBrocAPI->mBrocExports.mGiveWeapon = BrocSys::GiveWeapon;
+    gpBrocAPI->mBrocExports.mGiveWeaponAndAmmo =
+        BrocSys::GiveWeaponAndAmmo;
+    gpBrocAPI->mBrocExports.mTakeWeapon = BrocSys::TakeWeapon;
+    gpBrocAPI->mBrocExports.mTakeAllWeapons = BrocSys::TakeAllWeapons;
+    gpBrocAPI->mBrocExports.mGetCurrentWeapon =
+        BrocSys::GetCurrentWeapon;
+    gpBrocAPI->mBrocExports.mHasWeapon = BrocSys::HasWeapon;
+    gpBrocAPI->mBrocExports.mHasWeaponAndAmmo =
+        BrocSys::HasWeaponAndAmmo;
+    gpBrocAPI->mBrocExports.mSwitchToWeapon = BrocSys::SwitchToWeapon;
+    gpBrocAPI->mBrocExports.mSwitchToLastWeapon =
+        BrocSys::SwitchToLastWeapon;
+    gpBrocAPI->mBrocExports.mGiveStartAmmo = BrocSys::GiveStartAmmo;
+    gpBrocAPI->mBrocExports.mGiveMaxAmmo = BrocSys::GiveMaxAmmo;
+    gpBrocAPI->mBrocExports.mGetFractionStartAmmo =
+        BrocSys::GetFractionStartAmmo;
+    gpBrocAPI->mBrocExports.mGetFractionMaxAmmo =
+        BrocSys::GetFractionMaxAmmo;
+    gpBrocAPI->mBrocExports.mSetOrigin = BrocSys::SetOrigin;
+    gpBrocAPI->mBrocExports.mSetVelocity = BrocSys::SetVelocity;
+    gpBrocAPI->mBrocExports.mSetPlayerAngles = BrocSys::SetPlayerAngles;
+    gpBrocAPI->mBrocExports.mGetPlayerAngles = BrocSys::GetPlayerAngles;
+    gpBrocAPI->mBrocExports.mUseButtonPressed =
+        BrocSys::UseButtonPressed;
+    gpBrocAPI->mBrocExports.mAttackButtonPressed =
+        BrocSys::AttackButtonPressed;
+    gpBrocAPI->mBrocExports.mMeleeButtonPressed =
+        BrocSys::MeleeButtonPressed;
+    gpBrocAPI->mBrocExports.mIsAds = BrocSys::IsAds;
+    gpBrocAPI->mBrocExports.mIsOnGround = BrocSys::IsOnGround;
+    gpBrocAPI->mBrocExports.mSetViewModel = BrocSys::SetViewModel;
+    gpBrocAPI->mBrocExports.mAllowUse = BrocSys::AllowUse;
+    gpBrocAPI->mBrocExports.mAllowStand = BrocSys::AllowStand;
+    gpBrocAPI->mBrocExports.mAllowCrouch = BrocSys::AllowCrouch;
+    gpBrocAPI->mBrocExports.mAllowProne = BrocSys::AllowProne;
+    gpBrocAPI->mBrocExports.mAllowLeanLeft = BrocSys::AllowLeanLeft;
+    gpBrocAPI->mBrocExports.mAllowLeanRight = BrocSys::AllowLeanRight;
+    gpBrocAPI->mBrocExports.mIsMenuOpen = BrocSys::IsMenuOpen;
+    gpBrocAPI->mBrocExports.mOpenMenu = BrocSys::OpenMenu;
+    gpBrocAPI->mBrocExports.mOpenMenuNoMouse = BrocSys::OpenMenuNoMouse;
+    gpBrocAPI->mBrocExports.mCloseMenu1 = BrocSys::CloseMenu1;
+    gpBrocAPI->mBrocExports.mCloseMenu2 = BrocSys::CloseMenu2;
+    gpBrocAPI->mBrocExports.mCloseAllMenus = BrocSys::CloseAllMenus;
+    gpBrocAPI->mBrocExports.mSetSpectateState =
+        BrocSys::SetSpectateState;
+    gpBrocAPI->mBrocExports.mSetSpectateSeconds =
+        BrocSys::SetSpectateSeconds;
+    gpBrocAPI->mBrocExports.mSetSpectateMedic =
+        BrocSys::SetSpectateMedic;
+    gpBrocAPI->mBrocExports.mSetSpectateTeamKill =
+        BrocSys::SetSpectateTeamKill;
+    gpBrocAPI->mBrocExports.mFreezeControls = BrocSys::FreezeControls;
+    gpBrocAPI->mBrocExports.mFreezeMovement = BrocSys::FreezeMovement;
+    gpBrocAPI->mBrocExports.mToggleClip = BrocSys::ToggleClip;
+    gpBrocAPI->mBrocExports.mSetReverb = BrocSys::SetReverb;
+    gpBrocAPI->mBrocExports.mIsLookingAt = BrocSys::IsLookingAt;
+    gpBrocAPI->mBrocExports.mPlayLocalSound = BrocSys::PlayLocalSound;
+    gpBrocAPI->mBrocExports.mSetAutoPickup = BrocSys::SetAutoPickup;
+    gpBrocAPI->mBrocExports.mGetWeaponSlotWeapon =
+        BrocSys::GetWeaponSlotWeapon;
+    gpBrocAPI->mBrocExports.mSetWeaponSlotWeapon =
+        BrocSys::SetWeaponSlotWeapon;
+    gpBrocAPI->mBrocExports.mGetWeaponSlotAmmo =
+        BrocSys::GetWeaponSlotAmmo;
+    gpBrocAPI->mBrocExports.mSetWeaponSlotAmmo =
+        BrocSys::SetWeaponSlotAmmo;
+    gpBrocAPI->mBrocExports.mGetWeaponSlotClipAmmo =
+        BrocSys::GetWeaponSlotClipAmmo;
+    gpBrocAPI->mBrocExports.mSetWeaponSlotClipAmmo =
+        BrocSys::SetWeaponSlotClipAmmo;
+    gpBrocAPI->mBrocExports.mGetFullClipAmmoCount =
+        BrocSys::GetFullClipAmmoCount;
+    gpBrocAPI->mBrocExports.mGetMaxAmmo = BrocSys::GetMaxAmmo;
+    gpBrocAPI->mBrocExports.mToggleCloth = BrocSys::ToggleNano;
+}
+
+// ea: 0x005D7790
+void BrocSys::ObjectiveAdd5(int iObjective, const Broc::string& inState,
+                            const Broc::string& pszString,
+                            const Broc::vector& vPos, unsigned int hEnt,
+                            float fHeight, const char* display, int iChild,
+                            int iChildOrder, int clientIndex)
+{
+    (void)pszString; (void)display; (void)iChild; (void)iChildOrder;
+    if (iObjective >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "\x15%s",
+                   va("index %i is an illegal objective index. Valid indexes are 0 to %i\n",
+                      iObjective, 15)))
+            __debugbreak();
+        return;
+    }
+    int v11 = clientIndex;
+    if (clientIndex < -1 || clientIndex >= 1)
+    {
+        Scr_Error(
+            va("index %i is an illegal client index. Valid indexes are -1 to %i\n",
+               clientIndex, 0));
+        return;
+    }
+    Broc::string stateCopy = inState;
+    int iStateIndex = 0;
+    if (BrocSys::ObjectiveStateIndexFromString(&iStateIndex, stateCopy))
+    {
+        DbLinkedHandle<EntityHandleDb, Entity> h(hEnt);
+        Entity* v12 = *h;
+        int base = v11 >= 0 ? 3208 * v11 : 0;
+        objectiveInfoLocal* p = ObjInfo(base / 3208, iObjective);
+        if (v11 >= 0)
+            p = ObjInfo(v11, iObjective);
+        else
+            p = (objectiveInfoLocal*)(ObjectiveBase() + 176 * iObjective);
+        p->worldState = iStateIndex;
+        p->state = iStateIndex;
+        p->vOrigin[0] = vPos.x;
+        p->vOrigin[1] = vPos.y;
+        p->vOrigin[2] = vPos.z;
+        p->height = fHeight;
+        p->entity = v12 != nullptr ? v12->mHandle.mHandle.mVal : 0;
+    }
+}
+
+// ea: 0x005D7C30
+void BrocSys::StartPath(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* veh = mObject->scr_vehicle;
+        if (veh != nullptr)
+        {
+            if (veh->pathPos.nodeIdx < 0)
+            {
+                Scr_Error(
+                    "Can't start path on a vehicle that hasn't been attached");
+            }
+            mObject->active = 1;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 128;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v5 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to StartPath", v5))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to StartPath"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D7D40
+void BrocSys::EndPath(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            mObject->active = 0;
+            rb_vehicle* mRBVeh = (rb_vehicle*)scr_vehicle->mRBVeh;
+            if (mRBVeh != nullptr)
+                mRBVeh->end_path();
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 151;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v5 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to StartPath", v5))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 145;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to StartPath"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D7E40
+void BrocSys::SetSwitchNode(unsigned int entityHandleVal,
+                            const Broc::vehiclenode& node1,
+                            const Broc::vehiclenode& node2)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v3].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v3].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetSwitchNode"))
+            __debugbreak();
+    }
+    int mh1 = *(const int*)&node1;
+    int mh2 = *(const int*)&node2;
+    if (mh1 == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 168;
+        AeAssert::gCurrentExpr = "node1.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad vehiclenode passed to SetSwitchNode"))
+            __debugbreak();
+    }
+    if (mh2 == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 169;
+        AeAssert::gCurrentExpr = "node2.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad vehiclenode passed to SetSwitchNode"))
+            __debugbreak();
+    }
+    if (mObject != nullptr && mh1 != -1 && mh2 != -1)
+    {
+        scr_vehicle_t* veh = mObject->scr_vehicle;
+        if (veh != nullptr)
+        {
+            if (mObject->active == 2)
+                Scr_Error("Vehicle is invalid on path after it's been used");
+            G_VehSetSwitchNode(&veh->pathPos, (short)mh1, (short)mh2);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 175;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v9 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetSwitchNode", v9))
+                    __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x005D8000
+void BrocSys::SetWaitNode(unsigned int entityHandleVal,
+                          const Broc::vehiclenode& node)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v2].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 194;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetWaitNode"))
+            __debugbreak();
+    }
+    int mHandle = *(const int*)&node;
+    if (mHandle == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 195;
+        AeAssert::gCurrentExpr = "node.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad vehiclenode passed to SetWaitNode"))
+            __debugbreak();
+    }
+    if (mObject != nullptr && mHandle != -1)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (mObject->active == 2)
+                Scr_Error("Vehicle is invalid on path after it's been used");
+            scr_vehicle->waitNode = (int16_t)mHandle;
+            scr_vehicle->numWaitNotify = 0;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 201;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetWaitNode", v6))
+                    __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x005D8170
+void BrocSys::SetWaitSpeed(unsigned int entityHandleVal, float waitSpeed)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (mObject->active == 2)
+                Scr_Error("Vehicle is invalid on path after it's been used");
+            scr_vehicle->waitSpeed = waitSpeed * 17.6f;
+            if ((waitSpeed * 17.6f) < 0.0f)
+                Scr_ParamError(
+                    0, "Cannot have a negative wait speed on a vehicle");
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 224;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetWaitSpeed", v6))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 218;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetWaitSpeed"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D82A0
+void BrocSys::SetSpeed(unsigned int entityHandleVal, float manualSpeed,
+                       float manualAcc)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (mObject->active == 2)
+                Scr_Error("Vehicle is invalid on path after it's been used");
+            scr_vehicle->manualMode = 1;
+            scr_vehicle->manualSpeed = manualSpeed * 17.6f;
+            scr_vehicle->manualAccel = manualAcc * 17.6f;
+            if ((manualSpeed * 17.6f) < 0.0f)
+                Scr_ParamError(0, "Cannot set negative speed on vehicle");
+            if (scr_vehicle->manualAccel < 0.0f)
+                Scr_ParamError(1,
+                               "Cannot set negative acceleration on vehicle");
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 249;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v7 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to SetSpeed", v7))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 243;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetSpeed"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8410
+void BrocSys::ResumeSpeed(unsigned int entityHandleVal, float manualAcc)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (mObject->active == 2)
+                Scr_Error("Vehicle is invalid on path after it's been used");
+            scr_vehicle->manualMode = 2;
+            scr_vehicle->manualAccel = manualAcc * 17.6f;
+            if ((manualAcc * 17.6f) < 0.0f)
+                Scr_ParamError(
+                    0, "Cannot set negative acceleration on vehicle");
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 279;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v6 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to ResumeSpeed", v6))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 273;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to ResumeSpeed"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8550
+void BrocSys::JoltBody(unsigned int entityHandleVal,
+                       const Broc::vector& joltPos, float intensity,
+                       float speedFrac, float decel)
+{
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v6].mObject) != nullptr)
+    {
+        if (speedFrac < 0.0f || speedFrac > 1.0f)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+            AeAssert::gCurrentLine = 23;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("\x15%s",
+                                     "Speed fraction must be between [0,1]"))
+                __debugbreak();
+        }
+        float decela = decel * 17.6f;
+        if (decela < 0.0f)
+            Scr_ParamError(3, "Deceleration can't be negative");
+        math::Position3 dir;
+        dir.v.m128_f32[0] =
+            mObject->r.currentOrigin.v.m128_f32[0] - joltPos.x;
+        dir.v.m128_f32[1] =
+            mObject->r.currentOrigin.v.m128_f32[1] - joltPos.y;
+        dir.v.m128_f32[2] =
+            mObject->r.currentOrigin.v.m128_f32[2] - joltPos.z;
+        dir.v.m128_f32[3] = 0.0f;
+        VectorNormalize((float*)&dir.v);
+        VEH_JoltBody(mObject, dir, intensity, speedFrac, decela);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 299;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to JoltBody"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8700
+void BrocSys::FreeVehicle(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        if (mObject->scr_vehicle != nullptr)
+        {
+            G_FreeVehicle(mObject);
+            mObject->s.eType = 15;
+            mObject->mClassName = str_const.script_vehicle_corpse;
+            mObject->mClassNameHash = HashString(mObject->mClassName);
+            UpdateEntityHash(mObject);
+            Scr_Notify(mObject, hash_const.death, 0);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 327;
+            AeAssert::gCurrentExpr = "ent->scr_vehicle";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v4 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to FreeVehicle", v4))
+                    __debugbreak();
+            }
+            if (mObject->scr_vehicle != nullptr)
+            {
+                G_FreeVehicle(mObject);
+                mObject->s.eType = 15;
+                mObject->mClassName = str_const.script_vehicle_corpse;
+                mObject->mClassNameHash = HashString(mObject->mClassName);
+                UpdateEntityHash(mObject);
+                Scr_Notify(mObject, hash_const.death, 0);
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 323;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to FreeVehicle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8840
+void BrocSys::GetWheelSurface(unsigned int entityHandleVal,
+                              unsigned int wheelName,
+                              Broc::string& surfaceType)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            vehicle_info_t* v8 = s_vehicleInfos[scr_vehicle->infoIdx];
+            int16_t type = v8->type;
+            int v10 = 0;
+            if (type != 2 && type != 1)
+            {
+                Scr_Error(va("Vehicle type [%s] has no wheels\n", v8->name));
+            }
+            if (wheelName == hash_const.front_left.mHash)
+            {
+                v10 = 0;
+            }
+            else if (wheelName == hash_const.front_right.mHash)
+            {
+                v10 = 1;
+            }
+            else if (wheelName == hash_const.back_left.mHash)
+            {
+                v10 = 2;
+            }
+            else if (wheelName == hash_const.back_right.mHash)
+            {
+                v10 = 3;
+            }
+            else if (wheelName == hash_const.middle_left.mHash)
+            {
+                v10 = 4;
+            }
+            else if (wheelName == hash_const.middle_right.mHash)
+            {
+                v10 = 5;
+            }
+            else
+            {
+                Scr_ParamError(
+                    0,
+                    "Valid wheel names are: [front_left, front_right, back_left, back_right, middle_left, middle_right]\n");
+            }
+            if (v8->type == 1 && v10 > 3)
+                Scr_ParamError(0, "Vehicle has no middle wheels\n");
+            int v12 = scr_vehicle->phys.wheelSurfType[v10];
+            if (v12 != 0)
+            {
+                surfaceType = Com_SurfaceTypeToName(v12);
+            }
+            else
+            {
+                surfaceType = "none";
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 352;
+            AeAssert::gCurrentExpr = "veh";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v7 = mObject->mClassName.mBlock != nullptr
+                                     ? (const char*)(mObject->mClassName.mBlock
+                                                     + 1)
+                                     : defaultFileName;
+                if (AeAssert::Assert(
+                        "Non vehicle entity %s passed to GetWheelSurface",
+                        v7))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 346;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to GetWheelSurface"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8A20
+float BrocSys::GetSpeedMph(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        return mObject->speed * 0.05681818f;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+    AeAssert::gCurrentLine = 396;
+    AeAssert::gCurrentExpr = "ent";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Bad entity passed to GetSpeedMph"))
+        __debugbreak();
+    return 0.0f;
+}
+
+// ea: 0x005D8AB0
+unsigned int BrocSys::GetVehicleOwner(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v1].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 412;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to GetVehicleOwner"))
+        {
+            __debugbreak();
+            return 0;
+        }
+        return 0;
+    }
+    unsigned int result = mObject->r.mOwner.mHandle.mVal;
+    unsigned int v4 = result & 0xFFF;
+    if (v4 >= 0x540
+        || result >> 12 != EntityHandleDb::sInst.mElements[v4].mKey
+        || EntityHandleDb::sInst.mElements[v4].mObject == nullptr)
+    {
+        return 0;
+    }
+    return result;
+}
+
+// ea: 0x005D8B60
+void BrocSys::SetMaxSpeed(unsigned int entityHandleVal, float maxSpeed)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int mVal = mObject->mHandle.mHandle.mVal;
+        if (mVal
+            == EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal)
+        {
+            rb_vehicle* PlayerRBVehicle = GetPlayerRBVehicle();
+            if (PlayerRBVehicle != nullptr)
+            {
+                PlayerRBVehicle->m_parameter->m_speed_max = maxSpeed;
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 433;
+                AeAssert::gCurrentExpr = "rbveh";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "SetMaxSpeed called on player who isn't driving a vehicle"))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            if (mObject->scr_vehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 439;
+                AeAssert::gCurrentExpr = "ent->scr_vehicle";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Non-vehicle passed to SetMaxSpeed"))
+                    __debugbreak();
+            }
+            scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+            if (scr_vehicle != nullptr)
+            {
+                if (scr_vehicle->mRBVeh == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                    AeAssert::gCurrentLine = 442;
+                    AeAssert::gCurrentExpr = "ent->scr_vehicle->mRBVeh";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Non-vehicle passed to SetMaxSpeed"))
+                        __debugbreak();
+                }
+                rb_vehicle* mRBVeh = (rb_vehicle*)mObject->scr_vehicle->mRBVeh;
+                if (mRBVeh != nullptr)
+                    mRBVeh->m_parameter->m_speed_max = maxSpeed;
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 427;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetMaxSpeed"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8D30
+void BrocSys::SetBrake(unsigned int entityHandleVal, bool braking)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int mVal = mObject->mHandle.mHandle.mVal;
+        rb_vehicle* PlayerRBVehicle;
+        if (mVal
+            == EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal)
+        {
+            PlayerRBVehicle = GetPlayerRBVehicle();
+            if (PlayerRBVehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 462;
+                AeAssert::gCurrentExpr = "rbveh";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "SetBrake called on player who isn't driving a vehicle"))
+                    __debugbreak();
+                return;
+            }
+        }
+        else
+        {
+            if (mObject->scr_vehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 468;
+                AeAssert::gCurrentExpr = "ent->scr_vehicle";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Non-vehicle passed to SetBrake"))
+                    __debugbreak();
+            }
+            scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+            if (scr_vehicle == nullptr)
+                return;
+            if (scr_vehicle->mRBVeh == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 471;
+                AeAssert::gCurrentExpr = "ent->scr_vehicle->mRBVeh";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Non-vehicle passed to SetBrake"))
+                    __debugbreak();
+            }
+            PlayerRBVehicle = (rb_vehicle*)mObject->scr_vehicle->mRBVeh;
+            if (PlayerRBVehicle == nullptr)
+                return;
+        }
+        float v7 = braking ? 1.0f : 0.0f;
+        *(float*)((char*)PlayerRBVehicle + 0x260) = v7;  // m_script_brake
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 456;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetBrake"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D8F00
+void BrocSys::SetStabilityEnabled(unsigned int entityHandleVal, bool enabled)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        unsigned int mVal = mObject->mHandle.mHandle.mVal;
+        if (mVal
+            == EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal)
+        {
+            rb_vehicle* PlayerRBVehicle = GetPlayerRBVehicle();
+            if (PlayerRBVehicle != nullptr)
+            {
+                PlayerRBVehicle->set_actuator_enabled(enabled);
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 491;
+                AeAssert::gCurrentExpr = "rbveh";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "SetBrake called on player who isn't driving a vehicle"))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            if (mObject->scr_vehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 497;
+                AeAssert::gCurrentExpr = "ent->scr_vehicle";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Non-vehicle passed to SetBrake"))
+                    __debugbreak();
+            }
+            scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+            if (scr_vehicle != nullptr)
+            {
+                if (scr_vehicle->mRBVeh == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                    AeAssert::gCurrentLine = 500;
+                    AeAssert::gCurrentExpr = "ent->scr_vehicle->mRBVeh";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Non-vehicle passed to SetBrake"))
+                        __debugbreak();
+                }
+                rb_vehicle* mRBVeh =
+                    (rb_vehicle*)mObject->scr_vehicle->mRBVeh;
+                if (mRBVeh != nullptr)
+                    mRBVeh->set_actuator_enabled(enabled);
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 485;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad entity passed to SetBrake"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005D90D0
+bool BrocSys::IsVehicleFlipped(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    Entity* m_owner = mObject;
+    if (mObject != nullptr)
+    {
+        unsigned int mVal = mObject->mHandle.mHandle.mVal;
+        if (mVal
+            == EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal)
+        {
+            rb_vehicle* PlayerRBVehicle = GetPlayerRBVehicle();
+            if (PlayerRBVehicle != nullptr)
+                m_owner = *(Entity**)((char*)PlayerRBVehicle + 0x270);  // m_owner
+        }
+        return IsVehFlipped(m_owner);
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+    AeAssert::gCurrentLine = 515;
+    AeAssert::gCurrentExpr = "ent";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Bad entity passed to IsVehicleFlipped"))
+        __debugbreak();
+    return false;
+}
+
+// ea: 0x005D9190
+void BrocSys::SetVehicleGoal(unsigned int vehHandleVal,
+                             const Broc::vector& tgtPos, float goalRadius,
+                             float goalSpeed)
+{
+    unsigned int v5 = vehHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v5 >= 0x540
+        || vehHandleVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v5].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 535;
+        AeAssert::gCurrentExpr = "vehEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Bad vehicle entity passed to SetVehicleGoal"))
+            __debugbreak();
+    }
+    float v7 = sNaN;
+    if (tgtPos.x == sNaN && tgtPos.y == sNaN && tgtPos.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+        AeAssert::gCurrentLine = 536;
+        AeAssert::gCurrentExpr = "tgtPos.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Bad target position passed to SetVehicleGoal"))
+            __debugbreak();
+        v7 = sNaN;
+    }
+    if (mObject != nullptr
+        && (tgtPos.x != v7 || tgtPos.y != v7 || tgtPos.z != v7))
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle == nullptr || scr_vehicle->mRBVeh == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocVehicle.cpp";
+            AeAssert::gCurrentLine = 540;
+            AeAssert::gCurrentExpr =
+                "vehEnt->scr_vehicle && vehEnt->scr_vehicle->mRBVeh";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Non drivable vehicle passed to SetVehicleGoal"))
+                __debugbreak();
+        }
+        scr_vehicle_t* v9 = mObject->scr_vehicle;
+        if (v9 != nullptr && v9->mRBVeh != nullptr)
+        {
+            math::Position3 v10;
+            v10.v.m128_f32[0] = tgtPos.x;
+            v10.v.m128_f32[1] = tgtPos.y;
+            v10.v.m128_f32[2] = tgtPos.z;
+            v10.v.m128_f32[3] = 0.0f;
+            if (goalSpeed < 0.0f || goalSpeed > 1.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BrocVehicle.cpp";
+                AeAssert::gCurrentLine = 544;
+                AeAssert::gCurrentExpr =
+                    "goalSpeed >= 0.0f && goalSpeed <= 1.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Bad goalSpeed passed to SetVehicleGoal"))
+                    __debugbreak();
+            }
+            rb_vehicle* rbveh = (rb_vehicle*)v9->mRBVeh;
+            RBVehicleController* ctrl =
+                (RBVehicleController*)((char*)rbveh + 0x2D0);
+            ctrl->SetScriptTarget(*rbveh, v10, goalRadius, goalSpeed);
+        }
+    }
 }
 
 // ============================================================================

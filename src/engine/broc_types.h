@@ -357,7 +357,9 @@ public:
 // Binary mangle uses class tag V for pathnode (PAVpathnode@Broc@@).
 COD3_STATIC_ASSERT_32BIT(sizeof(pathnode) == 4, "Broc::pathnode size mismatch");
 
-struct vehiclenode {
+// Binary mangle uses class tag V for vehiclenode (ABVvehiclenode@Broc@@).
+class vehiclenode {
+public:
     unsigned int ___u0;
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(vehiclenode) == 4, "Broc::vehiclenode size mismatch");

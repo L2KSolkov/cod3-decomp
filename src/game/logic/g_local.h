@@ -1020,7 +1020,25 @@ struct hash_const_t {
     HashString script_brushmodel;  // +0x14C (83)
     HashString script_model;       // +0x150
     HashString script_origin;      // +0x154 (85)
-    uint8_t    _pad158[0x204 - 0x158];
+    uint8_t    _pad158[0x1B8 - 0x158];
+    HashString front_left;         // +0x1B8
+    HashString front_right;        // +0x1BC
+    HashString back_left;          // +0x1C0
+    HashString back_right;         // +0x1C4
+    HashString middle_left;        // +0x1C8
+    HashString middle_right;       // +0x1CC
+    HashString scriptcamera;       // +0x1D0
+    HashString spawned;            // +0x1D4
+    HashString stand;              // +0x1D8
+    HashString back;               // +0x1DC
+    HashString wounded;            // +0x1E0
+    HashString suppressed;         // +0x1E4
+    HashString surfacetype;        // +0x1E8
+    HashString tag_engine1;        // +0x1EC
+    HashString tag_engine2;        // +0x1F0
+    HashString target_location;    // +0x1F4
+    HashString target_script_trigger;  // +0x1F8
+    uint8_t    _pad1FC[0x204 - 0x1FC];
     HashString touch;              // +0x204 (81)
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
@@ -1593,7 +1611,90 @@ struct BrocExports {
                                        Broc::vector*);  // +0x80
     uint8_t _pad84[0x90 - 0x84];
     void (*mAnimDebug)(Broc::entity);       // +0x90 (game2.o inspector)
-    uint8_t _pad94[0x518 - 0x94];
+    uint8_t _pad94[0x2EC - 0x94];
+    void (*mPlayerRespawn)(unsigned int, const Broc::vector&,
+                           const Broc::vector&, const Broc::string&);  // +0x2EC
+    void (*mPlayerSpawn)(unsigned int, const Broc::vector&,
+                         const Broc::vector&, bool);  // +0x2F0
+    void (*mSetPlayerAlive)(unsigned int, int);       // +0x2F4
+    void (*mSetRespawnMaxTime)(unsigned int, int);    // +0x2F8
+    const char* (*mGetPlayerName)(unsigned int);      // +0x2FC
+    void (*mRequestRespawn)(unsigned int);            // +0x300
+    void (*mFinishDamage)(unsigned int, unsigned int, unsigned int,
+                          const Broc::vector&, const Broc::vector&, int,
+                          int, int, int);             // +0x304
+    uint8_t _pad308[4];                               // +0x308
+    bool (*mIsLocalPlayer)(unsigned int);             // +0x30C
+    bool (*mIsInVehicle1)(unsigned int);              // +0x310
+    bool (*mIsInVehicle2)(unsigned int, unsigned int);// +0x314
+    unsigned int (*mGetPlayerInSeat)(unsigned int, unsigned int);  // +0x318
+    void (*mGetOutOfVehicle)(unsigned int);           // +0x31C
+    void (*mObituary)(unsigned int, unsigned int, const Broc::string&, int,
+                      bool);                          // +0x320
+    void (*mClearPlayerStats)();                      // +0x324
+    void (*mIncPlayerStat)(unsigned int, unsigned int, short);  // +0x328
+    void (*mSetPlayerStat)(unsigned int, unsigned int, short);  // +0x32C
+    short (*mGetPlayerStat)(unsigned int, unsigned int);  // +0x330
+    int (*mGetPlayerTotalScore)(unsigned int);        // +0x334
+    void (*mClearTeamScores)();                       // +0x338
+    void (*mIncTeamScore)(const Broc::string&, int);  // +0x33C
+    int (*mGetTeamScore)(const Broc::string&);        // +0x340
+    void (*mChangePlayerTeam)(unsigned int, const Broc::string&, bool);  // +0x344
+    uint8_t _pad348[0x364 - 0x348];
+    void (*mSendInitialGameState)(unsigned int);      // +0x364
+    void (*mSendVehicleStates)(unsigned int);         // +0x368
+    void (*mBroadcastVehicleRespawn)(unsigned int);   // +0x36C
+    void (*mSendGameState)(unsigned int, int, int, int, int, bool, bool,
+                           bool, int, int, int, bool, int, int);  // +0x370
+    void (*mSendGameStateHQ)(unsigned int, unsigned int,
+                             const Broc::vector, const Broc::vector,
+                             unsigned int, bool, bool);  // +0x374
+    void (*mSendGameStateCTF)(unsigned int, const Broc::vector,
+                              const Broc::vector, unsigned int,
+                              const Broc::vector, const Broc::vector,
+                              unsigned int);          // +0x378
+    void (*mSendGameStateSCF)(unsigned int, int, const Broc::vector,
+                              const Broc::vector, unsigned int);  // +0x37C
+    void (*mSendGameStateDOM)(unsigned int, int, int, int, int, int);  // +0x380
+    void (*mSendGameStateSD)(unsigned int, unsigned int, unsigned int, bool,
+                             const Broc::vector, Broc::vector, int);  // +0x384
+    void (*mSendGameScore)(int, int);                 // +0x388
+    void (*mEnterGame)();                             // +0x38C
+    void (*mDebugOut)(const char*);                   // +0x390
+    bool (*mControllerErrorMessageUp)();              // +0x394
+    void (*mForceControllerErrorMessageDown)();       // +0x398
+    void (*mDropItem1)(int, int, const Broc::vector&, const Broc::vector&);  // +0x39C
+    void (*mDropItem2)(int, int, const Broc::vector&, const Broc::vector&,
+                       const Broc::vector&);          // +0x3A0
+    void (*mHostDropItem1)(int, int, const Broc::vector&,
+                           const Broc::vector&);      // +0x3A4
+    void (*mHostDropItem2)(int, int, const Broc::vector&,
+                           const Broc::vector&, const Broc::vector&);  // +0x3A8
+    void (*mPickupItem)(int, unsigned int);           // +0x3AC
+    void (*mAreaCaptured)(int, unsigned int, unsigned int);  // +0x3B0
+    void (*mSendHostBombRequest)(unsigned int, bool); // +0x3B4
+    void (*mSendBombExplosion)(unsigned int);         // +0x3B8
+    void (*mSendBombOperation)(unsigned int, bool);   // +0x3BC
+    void (*mSendBombOperationEvent)(unsigned int, bool, bool);  // +0x3C0
+    unsigned int (*mGetSpotterEntity)(unsigned int);  // +0x3C4
+    void (*mClearSpottingFromOccupants)(unsigned int);// +0x3C8
+    void (*mGetWeaponName)(unsigned int, Broc::string&);  // +0x3CC
+    uint8_t _pad3D0[0x3E0 - 0x3D0];
+    bool (*mPositionWouldTelefrag)(const Broc::vector&);  // +0x3E0
+    uint8_t _pad3E4[0x428 - 0x3E4];
+    void (*mSetCompassVisibilty)(unsigned int, bool); // +0x428
+    int (*mSpawnButtonPressed)(unsigned int);         // +0x42C
+    int (*mNextButtonPressed)(unsigned int);          // +0x430
+    int (*mPrevButtonPressed)(unsigned int);          // +0x434
+    uint8_t _pad438[0x43C - 0x438];
+    void (*mDebugRenderText)(const char*, int, int);  // +0x43C
+    void (*mDebugRenderEntityBBox)(unsigned int, const Broc::vector&,
+                                   float);            // +0x440
+    void (*mDebugRenderBox)(const Broc::vector&, const Broc::vector&,
+                            const Broc::vector&, float);  // +0x444
+    void (*mDebugRenderSphere)(const Broc::vector&, float, const Broc::vector&,
+                               float);                // +0x448
+    uint8_t _pad44C[0x518 - 0x44C];
     int (*mRumble)(float lowFreqDelay, float lowFreqRumbleIntensity,
                    float lowFreqSteadyDuration, float lowFreqRampUpTime,
                    float lowFreqRampDownTime, float highFreqDelay,
@@ -1626,9 +1727,73 @@ struct BrocExports {
                             float);                         // +0xA0C
     void (*mSolid)(unsigned int);                           // +0xA10
     void (*mNotSolid)(unsigned int);                        // +0xA14
-    uint8_t _padA18[0xB70 - 0xA18];
+    void (*mGiveWeapon)(unsigned int, const Broc::string&);  // +0xA18
+    void (*mGiveWeaponAndAmmo)(unsigned int, const Broc::string&, int);  // +0xA1C
+    void (*mTakeWeapon)(unsigned int, const Broc::string&);  // +0xA20
+    void (*mTakeAllWeapons)(unsigned int);                  // +0xA24
+    void (*mGetCurrentWeapon)(unsigned int, Broc::string&); // +0xA28
+    bool (*mHasWeapon)(unsigned int, const Broc::string&);  // +0xA2C
+    bool (*mHasWeaponAndAmmo)(unsigned int, const Broc::string&, int&);  // +0xA30
+    bool (*mSwitchToWeapon)(unsigned int, const Broc::string&);  // +0xA34
+    bool (*mSwitchToLastWeapon)(unsigned int);              // +0xA38
+    void (*mGiveStartAmmo)(unsigned int, const Broc::string&);  // +0xA3C
+    void (*mGiveMaxAmmo)(unsigned int, const Broc::string&);   // +0xA40
+    float (*mGetFractionStartAmmo)(unsigned int,
+                                   const Broc::string&);    // +0xA44
+    float (*mGetFractionMaxAmmo)(unsigned int,
+                                 const Broc::string&);      // +0xA48
+    void (*mSetOrigin)(unsigned int, const Broc::vector&);  // +0xA4C
+    void (*mSetVelocity)(unsigned int, const Broc::vector&);// +0xA50
+    void (*mSetPlayerAngles)(unsigned int, const Broc::vector&);  // +0xA54
+    Broc::vector (*mGetPlayerAngles)(unsigned int);         // +0xA58
+    int (*mUseButtonPressed)(unsigned int);                 // +0xA5C
+    int (*mAttackButtonPressed)(unsigned int);              // +0xA60
+    int (*mMeleeButtonPressed)(unsigned int);               // +0xA64
+    int (*mIsAds)(unsigned int);                            // +0xA68
+    int (*mIsOnGround)(unsigned int);                       // +0xA6C
+    void (*mSetViewModel)(unsigned int, const Broc::string&);  // +0xA70
+    void (*mAllowUse)(unsigned int, bool);                  // +0xA74
+    void (*mAllowStand)(unsigned int, bool);                // +0xA78
+    void (*mAllowCrouch)(unsigned int, bool);               // +0xA7C
+    void (*mAllowProne)(unsigned int, bool);                // +0xA80
+    void (*mAllowLeanLeft)(unsigned int, bool);             // +0xA84
+    void (*mAllowLeanRight)(unsigned int, bool);            // +0xA88
+    int (*mOpenMenu)(const Broc::string&, int);             // +0xA8C
+    int (*mIsMenuOpen)(const Broc::string&, int);           // +0xA90
+    int (*mOpenMenuNoMouse)(unsigned int, const Broc::string&);  // +0xA94
+    void (*mCloseMenu1)(unsigned int);                      // +0xA98
+    void (*mCloseMenu2)(const Broc::string&, int);          // +0xA9C
+    void (*mCloseAllMenus)(int);                            // +0xAA0
+    void (*mSetSpectateState)(int, int);                    // +0xAA4
+    void (*mSetSpectateSeconds)(int, int);                  // +0xAA8
+    void (*mSetSpectateMedic)(int, int);                    // +0xAAC
+    void (*mSetSpectateTeamKill)(int, unsigned int, int);   // +0xAB0
+    uint8_t _padAB4[0xAB8 - 0xAB4];
+    void (*mFreezeControls)(unsigned int, bool);            // +0xAB8
+    void (*mFreezeMovement)(bool);                          // +0xABC
+    void (*mToggleClip)();                                  // +0xAC0
+    void (*mSetReverb)(unsigned int, const Broc::string&, float, float);  // +0xAC4
+    bool (*mIsLookingAt)(unsigned int, unsigned int);       // +0xAC8
+    void (*mPlayLocalSound)(unsigned int, const Broc::string&);  // +0xACC
+    void (*mSetAutoPickup)(unsigned int, bool);             // +0xAD0
+    void (*mGetWeaponSlotWeapon)(unsigned int, const Broc::string&,
+                                 Broc::string&);            // +0xAD4
+    void (*mSetWeaponSlotWeapon)(unsigned int, const Broc::string&,
+                                 const Broc::string&);      // +0xAD8
+    int (*mGetWeaponSlotAmmo)(unsigned int, const Broc::string&);  // +0xADC
+    void (*mSetWeaponSlotAmmo)(unsigned int, const Broc::string&, int);  // +0xAE0
+    int (*mGetWeaponSlotClipAmmo)(unsigned int,
+                                  const Broc::string&);     // +0xAE4
+    void (*mSetWeaponSlotClipAmmo)(unsigned int, const Broc::string&,
+                                   int);                    // +0xAE8
+    int (*mGetFullClipAmmoCount)(unsigned int,
+                                 const Broc::string&);      // +0xAEC
+    int (*mGetMaxAmmo)(unsigned int, const Broc::string&);  // +0xAF0
+    uint8_t _padAF4[0xB70 - 0xAF4];
     void (*mFireTurret)(unsigned int ent, bool fire);      // +0xB70
-    uint8_t _padB74[0xC50 - 0xB74];
+    uint8_t _padB74[0xB88 - 0xB74];
+    void (*mToggleCloth)(bool);                             // +0xB88
+    uint8_t _padB8C[0xC50 - 0xB8C];
     void (*mAnimInitialize)();  // +0xC50
     uint8_t _padC54[0xC58 - 0xC54];
     const char* (*mAnimNameResolver)(unsigned int animHash);  // +0xC58 (DebugThread::Render)
@@ -4175,6 +4340,8 @@ public:
     void*   m_vci;  // +0x388 (vehicle_collision_info*)
 
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o 0x6FC200)
+    void set_actuator_enabled(bool b);  // ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z (physics.o)
+    void start_path(int attach_mode);   // ?start_path@rb_vehicle@@QAEXH@Z (physics.o)
 
     float get_throttle() const;          // ?get_throttle@rb_vehicle@@QBEMXZ (g.o 0x4A9E80)
     float get_steer_factor() const;      // ?get_steer_factor@rb_vehicle@@QBEMXZ (g.o 0x4A9E90)
