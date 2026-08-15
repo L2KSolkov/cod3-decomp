@@ -40,13 +40,17 @@ public:
             --m_size;
         return m_elements[m_size];
     }
+    T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
 
     // Binary mangle: const_iterator@?$ae_sized_array@...@@ (Entity* const*)
     class const_iterator {
     public:
+        friend class ae_sized_array;
         const T* m_ptr;  // +0x00
         const_iterator() : m_ptr(nullptr) {}
+    private:
         const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
+    public:
         const T& operator*() const { return *m_ptr; }  // ??Dconst_iterator@...@@QBEAB...@@XZ
         const_iterator& operator++() { ++m_ptr; return *this; }  // ??Econst_iterator@...@@QAEAAV01@XZ
         bool operator!=(const_iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9const_iterator@...@@QBE_NV01@@Z
@@ -54,9 +58,12 @@ public:
 
     class iterator {
     public:
+        friend class ae_sized_array;
         T* m_ptr;  // +0x00
         iterator() : m_ptr(nullptr) {}
+    private:
         iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
+    public:
         T& operator*() const { return *m_ptr; }  // ??Diterator@...@@QBEAAPAV...@@XZ / QBEAAV...@@XZ
         iterator& operator++() { ++m_ptr; return *this; }  // ??Eiterator@...@@QAEAAV01@XZ
         bool operator!=(iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9iterator@...@@QBE_NV01@@Z

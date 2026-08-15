@@ -2972,12 +2972,12 @@ public:
     }
     const T& operator[](int i) const;  // ??A?$phys_static_array@...@@QBEABU...@@H@Z
     const int get_count() const { return m_alloc_count; }  // ?get_count@...@@QBE?BHXZ
+    void remove_all() { m_alloc_count = 0; }  // ?remove_all@...@@QAEXXZ (g.o 0x4B1230)
     ~phys_static_array();  // ??1?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4B1210)
 
 private:
     void call_destructors();  // ?call_destructors@...@@AAEXXZ (g.o 0x4AE490)
     void reset_buffer();      // ?reset_buffer@...@@AAEXXZ (g.o 0x4AE4B0)
-    void remove_all();        // ?remove_all@...@@QAEXXZ (g.o 0x4B1230)
 };
 struct cdl_array_t {
     int   m_count;     // +0x00

@@ -1783,64 +1783,6 @@ debug_aabb& debug_aabb::operator=(const debug_aabb& other)
     return *this;
 }
 
-// HandleDb template family (g.o 0x4AC530 / 0x4AE210-0x4AE3D0)
-template <int INDEX_BITS, int KEY_BITS>
-class SizedHandle {
-public:
-    unsigned int mVal;  // +0x00
-
-    SizedHandle() : mVal(0) {}
-    SizedHandle(int index, int key)
-    {
-        mVal = 0;
-        if (index >= (1 << INDEX_BITS))
-        {
-            AeAssert::gCurrentAuthor = AeAssert::COD3;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
-            AeAssert::gCurrentLine = 49;
-            AeAssert::gCurrentExpr = "index >= 0 && index <= ((1 << _IndexBits) - 1)";
-            if (!AeAssert::IsIgnored()
-                && AeAssert::Assert("handle index requires too many bits"))
-                __debugbreak();
-        }
-        if (key < 0 || key > (1 << KEY_BITS) - 1)
-        {
-            AeAssert::gCurrentAuthor = AeAssert::COD3;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
-            AeAssert::gCurrentLine = 50;
-            AeAssert::gCurrentExpr = "key >= 0 && key <= ((1 << _KeyBits) - 1)";
-            if (!AeAssert::IsIgnored()
-                && AeAssert::Assert("handle key requires too many bits"))
-                __debugbreak();
-        }
-        mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
-    }
-    SizedHandle(Handle h) { mVal = h.mVal; }  // ??0?$SizedHandle@$0M@$0BE@@@QAE@VHandle@@@Z (g.o 0x4AE310)
-    int GetIndex() const { return (int)(mVal & ((1 << INDEX_BITS) - 1)); }  // g.o 0x4AE330
-    int GetKey() const { return (int)(mVal >> INDEX_BITS); }                // g.o 0x4AE340
-};
-template class SizedHandle<12, 20>;
-
-template <typename T, int CAPACITY, typename H>
-class HandleDb {
-public:
-    struct DbElement {
-        T*  mObject;  // +0x00
-        int mKey;     // +0x04
-
-        DbElement() { mObject = nullptr; mKey = 1; }  // g.o 0x4AE370 / 0x4AE3D0
-        T* GetObject() const { return mObject; }      // g.o 0x4AE390
-        void SetObject(T* obj) { mObject = obj; }     // g.o 0x4AE3A0
-        int GetKey() const { return mKey; }           // g.o 0x4AE3B0
-        void Release() { ++mKey; mObject = nullptr; } // g.o 0x4AE3C0
-    };
-
-    void RegisterDebugCallback(void (*cb)(int, T*)) { mDebugCallback = cb; }  // g.o 0x4AC530
-    void (*mDebugCallback)(int, T*);
-};
-template class HandleDb<Entity, 1344, SizedHandle<12, 20>>;
-template class HandleDb<DObj, 1344, SizedHandle<12, 20>>;
-
 // cdl_array / phys_static_array members (g.o 0x4AC780-0x4AE4B0)
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
@@ -1903,11 +1845,6 @@ void phys_static_array<T, CAPACITY>::reset_buffer()
 template <typename T, int CAPACITY>
 phys_static_array<T, CAPACITY>::~phys_static_array()
 {
-}
-template <typename T, int CAPACITY>
-void phys_static_array<T, CAPACITY>::remove_all()
-{
-    m_alloc_count = 0;
 }
 template class phys_static_array<proxy_obj_t, 256>;
 template class phys_static_array<bounded_proxy_obj_t, 128>;
@@ -2216,6 +2153,7 @@ VehicleNodeAllocator::VehicleNodeAllocator()
 template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 256>;
 template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 64>;
 template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
+template class ae_sized_array_base<ae_fixed_string<512, unsigned short>, 64>;
 
 // HandleDb GetObject / BindObjectToHandle (g.o 0x4B0DA0 / 0x4B0E20)
 Entity* EntityHandleDb::GetObject(int idx) const
@@ -2292,6 +2230,148 @@ player_collision_context_t::player_collision_context_t(
 // Batch 28: HandleDb/DbLinkedHandle/IVPointer/BitSet/WaitTilOutput cluster
 // ============================================================================
 
+// Local minimal BitSet + SizedHandle + HandleDb (binary template manglings;
+// g_accessors.cpp cannot include core_systems.h where the other BitSet lives).
+template <int N>
+struct BitSet {
+    unsigned char mBits[(N + 7) / 8];
+    BitSet() { memset(mBits, 0, sizeof(mBits)); }
+    void Clear()
+    {
+        for (int i = (N + 31) / 32 - 1; i >= 0; --i)
+            ((unsigned int*)mBits)[i] = 0;
+    }
+    void Add(int v) { ((unsigned int*)mBits)[v >> 5] |= 1u << (v & 0x1F); }
+    void Rmv(int v) { ((unsigned int*)mBits)[v >> 5] &= ~(1u << (v & 0x1F)); }
+    BitSet<N> operator~() const
+    {
+        BitSet<N> r;
+        for (int i = 0; i < (N + 31) / 32; ++i)
+            ((unsigned int*)r.mBits)[i] = ~((const unsigned int*)mBits)[i];
+        return r;
+    }
+    static int GetNumWords() { return (N + 31) / 32; }
+    unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
+};
+
+template <int INDEX_BITS, int KEY_BITS>
+class SizedHandle {
+public:
+    unsigned int mVal;  // +0x00
+    SizedHandle() : mVal(0) {}
+    SizedHandle(int index, int key)
+    {
+        mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
+    }
+    SizedHandle(Handle h) { mVal = h.mVal; }
+    int GetIndex() const { return (int)(mVal & ((1 << INDEX_BITS) - 1)); }
+    int GetKey() const { return (int)(mVal >> INDEX_BITS); }
+};
+
+template <typename T, int CAPACITY, typename H>
+class HandleDb {
+public:
+    struct DbElement {
+        T*  mObject;  // +0x00
+        int mKey;     // +0x04
+        DbElement() : mObject(nullptr), mKey(1) {}
+        T* GetObject() const { return mObject; }
+        void SetObject(T* obj) { mObject = obj; }
+        int GetKey() const { return mKey; }
+        void Release() { ++mKey; mObject = nullptr; }
+    };
+    BitSet<1344> mFreeIndices;       // +0x00 (168 bytes)
+    DbElement mElements[0x540];      // +0xA8
+    void (*mDebugCallback)(int, T*); // +0x2AA8
+
+    HandleDb();
+    BitSet<1344> GetAllocatedIndices() const;
+    void ReleaseHandle(Handle h);
+    T* DereferenceHandle(Handle h) const;
+    T* GetObject(int idx) const;
+    void BindObjectToHandle(Handle handle, T* obj);
+    void RegisterDebugCallback(void (*cb)(int, T*)) { mDebugCallback = cb; }
+};
+
+template <typename T, int CAPACITY, typename H>
+HandleDb<T, CAPACITY, H>::HandleDb()
+{
+    mFreeIndices.Clear();
+    for (int i = 0; i < CAPACITY; ++i)
+    {
+        mElements[i].mObject = nullptr;
+        mElements[i].mKey = 1;
+    }
+    mDebugCallback = nullptr;
+    for (int i = 0; i < CAPACITY; ++i)
+        mFreeIndices.Add(i);
+}
+template <typename T, int CAPACITY, typename H>
+BitSet<1344> HandleDb<T, CAPACITY, H>::GetAllocatedIndices() const
+{
+    return ~mFreeIndices;
+}
+template <typename T, int CAPACITY, typename H>
+void HandleDb<T, CAPACITY, H>::ReleaseHandle(Handle h)
+{
+    if (h.mVal != 0)
+    {
+        unsigned int v3 = h.mVal & 0xFFF;
+        if (v3 >= (unsigned int)CAPACITY)
+        {
+            if (!AeAssert::IsIgnored() && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+        else
+        {
+            if (mElements[v3].mKey == (int)(h.mVal >> 12))
+            {
+                mFreeIndices.Add((int)v3);
+                mElements[v3].mObject = nullptr;
+                ++mElements[v3].mKey;
+                return;
+            }
+            if (!AeAssert::IsIgnored() && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+    }
+}
+template <typename T, int CAPACITY, typename H>
+T* HandleDb<T, CAPACITY, H>::DereferenceHandle(Handle h) const
+{
+    unsigned int v2 = h.mVal & 0xFFF;
+    if (v2 < (unsigned int)CAPACITY && (h.mVal >> 12) == (unsigned int)mElements[v2].mKey)
+        return mElements[v2].mObject;
+    return nullptr;
+}
+template <typename T, int CAPACITY, typename H>
+T* HandleDb<T, CAPACITY, H>::GetObject(int idx) const
+{
+    if ((unsigned int)idx >= (unsigned int)CAPACITY)
+    {
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("index out of bounds"))
+            __debugbreak();
+    }
+    return mElements[idx].mObject;
+}
+template <typename T, int CAPACITY, typename H>
+void HandleDb<T, CAPACITY, H>::BindObjectToHandle(Handle handle, T* obj)
+{
+    unsigned int v3 = handle.mVal & 0xFFF;
+    if (v3 < (unsigned int)CAPACITY)
+    {
+        if (mElements[v3].mKey != (int)(handle.mVal >> 12))
+        {
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle was not allocated for this object"))
+                __debugbreak();
+        }
+        mElements[v3].mObject = obj;
+    }
+}
+template class HandleDb<Entity, 1344, SizedHandle<12, 20>>;
+template class HandleDb<DObj, 1344, SizedHandle<12, 20>>;
+
 // DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
 template <>
 Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator*() const
@@ -2353,10 +2433,10 @@ struct EntityNotifyDListNode {
     EntityNotifyDListNode* m_prev;
 };
 struct PendingNotifyList {
-    int m_size;
     EntityNotifyDListNode* m_head;
     EntityNotifyDListNode* m_end;
     EntityNotifyDListNode* m_tail;
+    int m_size;
 };
 }
 void AeThreadManager::AddNotify(EntityNotify* notify)

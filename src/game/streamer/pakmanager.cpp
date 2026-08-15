@@ -1614,7 +1614,7 @@ public:
             m_node = dlist->m_head;
             m_next = (dlist->m_head != nullptr) ? dlist->m_head->m_next
                                                 : nullptr;
-            if (dlist->m_head == &dlist->m_end)
+            if (dlist->m_head == dlist->m_end)
             {
                 m_next = nullptr;
                 m_node = nullptr;
@@ -1675,7 +1675,7 @@ public:
     // ?get_head@?$reserved_dlist@VPakFile@@@@QBEPBUdlist_node@1@XZ (g.o 0x4AE7B0)
     const dlist_node* get_head() const { return m_head; }
     // ?empty@?$reserved_dlist@VPakFile@@@@QBE_NXZ (g.o 0x4AE7C0)
-    bool empty() const { return m_head == &m_end; }
+    bool empty() const { return m_head == m_end; }
     // ?validate@?$reserved_dlist@VPakFile@@@@QBEXXZ (g.o 0x4AE7E0)
     void validate() const;
     // ?end@?$reserved_dlist@VPakFile@@@@QBE?AVconst_iterator@1@XZ (g.o 0x4B11F0)
@@ -1689,7 +1689,7 @@ public:
         iterator result(nullptr, nullptr);
         result.m_node = m_head;
         result.m_next = (m_head != nullptr) ? m_head->m_next : nullptr;
-        if (m_head == &m_end)
+        if (m_head == m_end)
         {
             result.m_next = nullptr;
             result.m_node = nullptr;
@@ -1768,6 +1768,9 @@ reserved_dlist<PakFile>::const_iterator reserved_dlist<PakFile>::begin() const
     }
     return result;
 }
+
+// Force emission of remaining inline members (get_head/empty/validate/operator->/!=)
+template class reserved_dlist<PakFile>;
 
 class PakManager {
 public:
