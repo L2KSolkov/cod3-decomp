@@ -30,9 +30,43 @@ namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
 }
 
+namespace BrocHelper {
+int m_treeCount;  // ?m_treeCount@BrocHelper@@3HA (scr.o @ 0x1329E78)
+void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
+int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
+}
+
+// ea: 0x005BE020
+void BrocHelper::SetLoadedTrees(int num)
+{
+    BrocHelper::m_treeCount = num;
+}
+
+// ea: 0x005BE030
+int BrocHelper::GetLoadedTrees()
+{
+    return BrocHelper::m_treeCount;
+}
+
 extern void __fastcall Sentient_SetGoalRadius(sentient_s* pSelf, float fRadius);  // ?Sentient_SetGoalRadius@@YIXPAUsentient_s@@M@Z
 extern void __fastcall Sentient_SetGoalAngleTolerance(sentient_s* pSelf, float fTolerance);  // ?Sentient_SetGoalAngleTolerance@@YIXPAUsentient_s@@M@Z
 extern bool g_controllerConnectedErrorShown[4];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
+extern bool gNANO_Animate;                       // ?gNANO_Animate@@3_NA (g.o)
+
+namespace AeAssert {
+extern bool gAssertsEnabled;  // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr)
+}
+
+extern void EffectEventPlayQueuedEffect(Handle effect);  // ?EffectEventPlayQueuedEffect@@YAXVHandle@@@Z (game.o)
+extern bool EffectEventIsPlaying(Handle effect);         // ?EffectEventIsPlaying@@YA_NVHandle@@@Z (game.o)
+extern void EffectEventStopEmitting(Handle effect);      // ?EffectEventStopEmitting@@YAXVHandle@@@Z (game.o)
+extern void EffectEventFF(Handle effect, float deltaT);  // ?EffectEventFF@@YAXVHandle@@M@Z (game.o)
+
+class AnimNotifyTask {
+public:
+    static void RegisterFunc(const char* pKey, void (__cdecl* cbFunc)(Broc::entity));
+    // ?RegisterFunc@AnimNotifyTask@@SAXPBDP6AXVentity@Broc@@@Z@Z
+};
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
 class MusicMgr {
@@ -646,6 +680,191 @@ unsigned int CreateNanoGraph(char* /*id*/, float* const /*param1*/,
 }
 
 namespace BrocSys {
+
+bool allowOverLapping;  // ?allowOverLapping@BrocSys@@3_NA (scr.o @ 0x132A0F8)
+
+// ea: 0x005BDB90 (thunk to CG_MotionBlur::End)
+void StopCurGenMotionBlur()
+{
+    CG_MotionBlur::End();
+}
+
+// ea: 0x005BEAE0 (return -1 stub)
+int GetNodeInProximity(const Broc::vector&, float, bool, unsigned int)
+{
+    return -1;
+}
+
+// ea: 0x005BEC70
+void EffectEventPlayQueued(unsigned int effectId)
+{
+    EffectEventPlayQueuedEffect(Handle(effectId));
+}
+
+// ea: 0x005BEC80
+bool EffectEventIsStillPlaying(unsigned int effectId)
+{
+    return EffectEventIsPlaying(Handle(effectId));
+}
+
+// ea: 0x005BEC90
+void EffectEventStop(unsigned int effectId)
+{
+    EffectEventStopEmitting(Handle(effectId));
+}
+
+// ea: 0x005BECA0
+void EffectEventFastForward(unsigned int effectId, float deltaT)
+{
+    EffectEventFF(Handle(effectId), deltaT);
+}
+
+// ea: 0x005BECF0
+void RegisterAnimNotifyFunc(const char* pAnimKey, void (__cdecl* fn)(Broc::entity))
+{
+    AnimNotifyTask::RegisterFunc(pAnimKey, fn);
+}
+
+// ea: 0x005BED80
+void DialogPlayAllowOverlapping(bool b)
+{
+    allowOverLapping = b;
+}
+
+// ea: 0x005BEDE0
+int IsVehicleNodeDefined(unsigned int handle)
+{
+    return handle != (unsigned int)-1;
+}
+
+// ea: 0x005BEDF0 (empty stub)
+void AnimScripted2(unsigned int, unsigned int, const Broc::vector&,
+                   const Broc::vector&, unsigned int, const Broc::string&,
+                   unsigned int, bool, float, float)
+{
+}
+
+// ea: 0x005BEEA0 (empty stub)
+void StartScriptedAnim(unsigned int, unsigned int, const Broc::vector&,
+                       const Broc::vector&, unsigned int, const Broc::string&,
+                       unsigned int)
+{
+}
+
+// ea: 0x005BEF90 (empty stub)
+void AddFakeFriendly(unsigned int, bool)
+{
+}
+
+// ea: 0x005BEFA0 (empty stub)
+void RemoveFakeFriendly(unsigned int)
+{
+}
+
+// ea: 0x005BF0A0
+bool IsLocalHost()
+{
+    return MultiplayerMgr::sInst->IsHost();
+}
+
+// ea: 0x005BF730 (empty stub)
+void SaveCheckpoint()
+{
+}
+
+// ea: 0x005BF740
+void RestoreLastCheckpoint()
+{
+    CheckpointMgr::sInst->RestoreLastCheckpoint();
+}
+
+// ea: 0x005BF7F0 (empty stub)
+void DronesStart(const char*, const char*, int, int, int, float, float,
+                 bool, bool)
+{
+}
+
+// ea: 0x005BF800 (empty stub)
+void DronesStop(const char*)
+{
+}
+
+// ea: 0x005BF810 (empty stub)
+void DronesDelete(const char*)
+{
+}
+
+// ea: 0x005BFB20 (empty stub)
+void SetDroneScriptControl(unsigned int, bool)
+{
+}
+
+// ea: 0x005BFB30 (return 0 stub)
+unsigned int GetDrones(const Broc::vector&, float, unsigned int*,
+                       unsigned int)
+{
+    return 0;
+}
+
+// ea: 0x005BFB80
+void EnableAsserts()
+{
+    AeAssert::gAssertsEnabled = true;
+}
+
+// ea: 0x005BFBE0 (empty stub)
+void SetZFog(float, float, float)
+{
+}
+
+// ea: 0x005C0AF0
+void ToggleNano(bool on)
+{
+    gNANO_Animate = on;
+}
+
+// ea: 0x005C0C30
+void MPScript_ClearTeamScores()
+{
+    cgGlobal.teamScores[2] = 0;
+    cgGlobal.teamScores[1] = 0;
+}
+
+// ea: 0x005C1110
+void MPScript_ForceControllerErrorMessageDown()
+{
+    g_controllerConnectedErrorShown[0] = 0;
+}
+
+// ea: 0x005C11C0 (empty stub)
+void MPScript_SetCompassVisibilty(unsigned int, bool)
+{
+}
+
+// ea: 0x005C17E0 (tail jmp to tlPrintf)
+void DebugOut(const char* strOut)
+{
+    tlPrintf(strOut);
+}
+
+// ea: 0x005C17F0
+void FreezeMovement(bool value)
+{
+    g_freeze_movement = value;
+}
+
+// ea: 0x005C1940 (return true stub)
+bool PrintObjectiveUpdate(Broc::string&, int, const char*)
+{
+    return true;
+}
+
+// ea: 0x005C5780 (return 0 stub)
+unsigned int CreateNanoForce(const Broc::string&, const Broc::vector&,
+                             const Broc::vector&)
+{
+    return 0;
+}
 
 // ea: 0x005BCB70
 void MusicStop(float fadeOutTime)
