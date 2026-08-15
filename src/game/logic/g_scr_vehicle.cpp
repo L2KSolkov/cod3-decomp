@@ -2749,7 +2749,7 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         context.pass_owner1.mHandle.mVal = 0;
         context.pass_owner2.mHandle.mVal = 0;
         context.contentmask = -1;
-        G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, &context);
+        G_DoTouchTriggers(pSelf, pSelf->r.currentOrigin, nullptr, &context);
         pSelf->think = THINK__Scr_Vehicle_Init;
         pSelf->nextthink = level.time + 1;
     }
@@ -6420,7 +6420,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
         context.pass_owner1.mHandle.mVal = 0;
         context.pass_owner2.mHandle.mVal = 0;
         context.contentmask = -1;
-        G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, &context);
+        G_DoTouchTriggers(pSelf, pSelf->r.currentOrigin, nullptr, &context);
     }
     if (g_vehicleDebug.integer != 0)
         VEH_DebugBox(veh->phys.origin, 4.0f, 1.0f, 1.0f, 0.0f);
@@ -6530,7 +6530,7 @@ void VEH_JoltBody(Entity* ent, const math::Position3& dir, float intensity,
 }
 
 // ea: 0x004888D0
-void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
+void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther, int /*unused*/)
 {
     if (pOther->client != nullptr)
         return;

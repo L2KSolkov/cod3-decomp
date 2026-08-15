@@ -369,7 +369,7 @@ void G_RunThink(Entity* ent, int msec)
 }
 
 // ea: 0x00474C90
-void G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
+void G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
                        TouchEntityData* tData, collision_context_t* context)
 {
     int v24 = GetEntityTouchTriggerType(ent);
@@ -393,11 +393,11 @@ void G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
     else
     {
         __m128 box = _mm_set_ps(0.0f, 52.0f, 40.0f, 40.0f);
-        maxs.v = _mm_add_ps(origin->v, box);
-        mins.v = _mm_sub_ps(origin->v, box);
+        maxs.v = _mm_add_ps(origin.v, box);
+        mins.v = _mm_sub_ps(origin.v, box);
         num = CM_AreaEntities(mins, maxs, entityList, 64, v24);
-        mins.v = _mm_add_ps(origin->v, ent->r.mins.v);
-        maxs.v = _mm_add_ps(origin->v, ent->r.maxs.v);
+        mins.v = _mm_add_ps(origin.v, ent->r.mins.v);
+        maxs.v = _mm_add_ps(origin.v, ent->r.maxs.v);
         touch_ptr = entityList;
     }
     for (int v13 = 0; v13 < num; ++v13)
@@ -485,7 +485,7 @@ void G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
 }
 
 // ea: 0x004748A0
-void G_TouchVehicles(Entity* ent, const math::Position3* origin,
+void G_TouchVehicles(Entity* ent, const math::Position3& origin,
                      TouchEntityData* tData, collision_context_t* context)
 {
     if (ent->tagInfo != nullptr)
@@ -510,19 +510,19 @@ void G_TouchVehicles(Entity* ent, const math::Position3* origin,
     }
     else
     {
-        mins.v.m128_f32[0] = origin->v.m128_f32[0] - 40.0f;
-        mins.v.m128_f32[1] = origin->v.m128_f32[1] - 40.0f;
-        mins.v.m128_f32[2] = origin->v.m128_f32[2] - 52.0f;
-        maxs.v.m128_f32[0] = origin->v.m128_f32[0] + 40.0f;
-        maxs.v.m128_f32[1] = origin->v.m128_f32[1] + 40.0f;
-        maxs.v.m128_f32[2] = origin->v.m128_f32[2] + 52.0f;
+        mins.v.m128_f32[0] = origin.v.m128_f32[0] - 40.0f;
+        mins.v.m128_f32[1] = origin.v.m128_f32[1] - 40.0f;
+        mins.v.m128_f32[2] = origin.v.m128_f32[2] - 52.0f;
+        maxs.v.m128_f32[0] = origin.v.m128_f32[0] + 40.0f;
+        maxs.v.m128_f32[1] = origin.v.m128_f32[1] + 40.0f;
+        maxs.v.m128_f32[2] = origin.v.m128_f32[2] + 52.0f;
         num = CM_AreaEntities(mins, maxs, touch.m_elements, 256, 0x800000);
-        mins.v.m128_f32[0] = ent->r.mins.v.m128_f32[0] + origin->v.m128_f32[0];
-        mins.v.m128_f32[1] = ent->r.mins.v.m128_f32[1] + origin->v.m128_f32[1];
-        mins.v.m128_f32[2] = ent->r.mins.v.m128_f32[2] + origin->v.m128_f32[2];
-        maxs.v.m128_f32[0] = ent->r.maxs.v.m128_f32[0] + origin->v.m128_f32[0];
-        maxs.v.m128_f32[1] = ent->r.maxs.v.m128_f32[1] + origin->v.m128_f32[1];
-        maxs.v.m128_f32[2] = ent->r.maxs.v.m128_f32[2] + origin->v.m128_f32[2];
+        mins.v.m128_f32[0] = ent->r.mins.v.m128_f32[0] + origin.v.m128_f32[0];
+        mins.v.m128_f32[1] = ent->r.mins.v.m128_f32[1] + origin.v.m128_f32[1];
+        mins.v.m128_f32[2] = ent->r.mins.v.m128_f32[2] + origin.v.m128_f32[2];
+        maxs.v.m128_f32[0] = ent->r.maxs.v.m128_f32[0] + origin.v.m128_f32[0];
+        maxs.v.m128_f32[1] = ent->r.maxs.v.m128_f32[1] + origin.v.m128_f32[1];
+        maxs.v.m128_f32[2] = ent->r.maxs.v.m128_f32[2] + origin.v.m128_f32[2];
         touch_ptr = touch.m_elements;
     }
     for (int v14 = 0; v14 < num; ++v14)

@@ -3551,9 +3551,9 @@ struct useList_t {
     Entity* ent;   // +0x00
     float   score; // +0x04
 };
-void  G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
+void  G_DoTouchTriggers(Entity* ent, const math::Position3& origin,
                         TouchEntityData* tData, collision_context_t* context);  // g.o 0x474C90
-void  G_TouchVehicles(Entity* ent, const math::Position3* origin,
+void  G_TouchVehicles(Entity* ent, const math::Position3& origin,
                       TouchEntityData* tData, collision_context_t* context);  // g.o 0x4748A0
 int   Player_GetActivateEnt(Entity* pEnt, useList_t* useList);  // g.o 0x473D90
 void  Player_UpdateCursorHints(Entity* ent);                    // g.o 0x482C10
