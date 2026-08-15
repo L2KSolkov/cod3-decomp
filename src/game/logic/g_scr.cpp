@@ -2680,6 +2680,18 @@ void BrocObjDtor(void* ptr);  // fwd for DestroyBrocInsts
 void BrocObjCtor(void* ptr, BrocDtorBase* dtor);  // fwd (defined at file end)
 void KillThreadExec();  // fwd (defined at file end)
 void ThreadDebug(unsigned int threadId);  // fwd (defined at file end)
+unsigned int GetEntByFieldAndHash(int offsetIntoEnt, unsigned int hValue,
+                                  unsigned int* array, int capacity);  // 0x5DCE70
+unsigned int GetEntTarget(unsigned int hValue, unsigned int* array,
+                          int capacity);  // 0x5DCF80
+unsigned int GetEntTargetName(unsigned int hValue, unsigned int* array,
+                              int capacity);  // 0x5DCFA0
+unsigned int GetEntClassname(unsigned int hValue, unsigned int* array,
+                             int capacity);  // 0x5DCFC0
+unsigned int GetEntNoteWorthy(unsigned int hValue, unsigned int* array,
+                              int capacity);  // 0x5DCFE0
+unsigned int GetEntGroup(unsigned int hValue, unsigned int* array,
+                         int capacity);  // 0x5DD000
 }
 
 static void BrocFree(void* p)
@@ -3302,6 +3314,106 @@ AeThreadState::EAction AeThreadEntityNotifyState::NewAction(AeThread& t)
     }
     mFinished = true;
     return kActionTerminate;
+}
+
+// ============================================================================
+// scr.o batch 13 - GetEnt* entity-lookup family (BrocEntity.cpp)
+// ============================================================================
+
+// Resolve a registered hash to its string. sHashStrings (stdext hash_map at
+// 0xF3B478) is ported in a later batch; the error path degrades to nullptr.
+static const char* BrocSysHashLookup(unsigned int /*hash*/)
+{
+    return nullptr;  // TODO: sHashStrings map port (batch pending)
+}
+
+// ea: 0x005DCE70 (mangle YAIHIPAIH: int, uint, uint*, int)
+unsigned int BrocSys::GetEntByFieldAndHash(int offsetIntoEnt,
+                                           unsigned int hValue,
+                                           unsigned int* array, int capacity)
+{
+    (void)capacity;
+    unsigned int result = 0;
+    AeSizedEntityArray& active = EntityHandleDb::sInst.mActiveList;
+    Entity** p = active.m_elements;
+    Entity** end = p + active.m_size;
+    unsigned int entHandleToRet = 0;
+    int entityCount = 0;
+    while (p != end)
+    {
+        Entity* v6 = *p;
+        if (v6 != nullptr
+            && *(unsigned int*)((char*)&v6->s.eType + offsetIntoEnt)
+                   == hValue)
+        {
+            if (array != nullptr)
+            {
+                array[result++] = v6->mHandle.mHandle.mVal;
+            }
+            else
+            {
+                if (v6->scr_vehicle != nullptr)
+                    v6->scr_vehicle->playEngineSound = 1;
+                entHandleToRet = v6->mHandle.mHandle.mVal;
+                ++entityCount;
+            }
+        }
+        ++p;
+    }
+    if (array == nullptr)
+    {
+        if (entityCount > 1)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 394;
+            AeAssert::gCurrentExpr = "entityCount<=1";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v9 = BrocSysHashLookup(hValue);
+                if (AeAssert::Assert(
+                        "More than one entity with key %s value exists", v9))
+                    __debugbreak();
+            }
+        }
+        return entHandleToRet;
+    }
+    return result;
+}
+
+// ea: 0x005DCF80
+unsigned int BrocSys::GetEntTarget(unsigned int hValue, unsigned int* array,
+                                  int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(656, hValue, array, capacity);
+}
+
+// ea: 0x005DCFA0
+unsigned int BrocSys::GetEntTargetName(unsigned int hValue,
+                                       unsigned int* array, int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(648, hValue, array, capacity);
+}
+
+// ea: 0x005DCFC0
+unsigned int BrocSys::GetEntClassname(unsigned int hValue,
+                                      unsigned int* array, int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(640, hValue, array, capacity);
+}
+
+// ea: 0x005DCFE0
+unsigned int BrocSys::GetEntNoteWorthy(unsigned int hValue,
+                                       unsigned int* array, int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(672, hValue, array, capacity);
+}
+
+// ea: 0x005DD000
+unsigned int BrocSys::GetEntGroup(unsigned int hValue, unsigned int* array,
+                                  int capacity)
+{
+    return BrocSys::GetEntByFieldAndHash(664, hValue, array, capacity);
 }
 
 // ea: 0x005C1F40
