@@ -3219,11 +3219,70 @@ void Mover_SetupMoveSpeed(trajectory_t* pTr, const math::Position3& vSpeed,
                           float* pfDecelTime, math::Position3& vPos1,
                           math::Position3& vPos2,
                           math::Position3& vPos3);  // 0x5C02C0
+unsigned int GetEntByNum(int entnum);  // 0x5CAB50
+void DrawTracer(unsigned int entityHandleVal);  // 0x5CABA0
+int EffectEventWeaponPlay(unsigned int entityHandleVal,
+                          unsigned int action);  // 0x5CAC20
+int EffectEventPlay(unsigned int entityHandleVal, const Broc::string& script,
+                    int notifyHash, bool stoppable,
+                    bool important);  // 0x5CAD10
+int EffectEventPlayNonEnt(const Broc::string& script,
+                          const Broc::vector& pos,
+                          const Broc::vector& facing, bool bImportant,
+                          unsigned int entityHandle,
+                          int notifyHash);  // 0x5CAE70
+int EffectEventPlayDir(unsigned int entityHandleVal,
+                       const Broc::string& script, const Broc::vector& dir,
+                       int notifyHash, bool bUnused);  // 0x5CB000
+int EffectEventQueue(unsigned int entityHandleVal,
+                     const Broc::string& script, int notifyHash,
+                     bool stoppable, bool important);  // 0x5CB140
+int EffectEventQueueDialog(unsigned int entityHandleVal,
+                           const Broc::string& script, int notifyHash,
+                           bool bUnused);  // 0x5CB280
+int DialogPlay(unsigned int entityHandleVal, const Broc::string& script,
+               int notifyHash, bool stopPrevIfPlaying);  // 0x5CB390
+int EntityExists(unsigned int entityHandleVal);  // 0x5CB5C0
+int EntityIsAlive(unsigned int entityHandleVal);  // 0x5CB600
+int EntityIsWounded(unsigned int entityHandleVal);  // 0x5CB660
+int EntityIsPlayer(unsigned int entityHandleVal);  // 0x5CB6B0
+int EntityIsAI(unsigned int entityHandleVal);  // 0x5CB700
+int EntityIsSentient(unsigned int entityHandleVal);  // 0x5CB750
+int EntityIsVehicle(unsigned int entityHandleVal);  // 0x5CB7A0
+int EntityIsVehicleTank(unsigned int entityHandleVal);  // 0x5CB7F0
+void StopAnimScripted(unsigned int entityHandleVal);  // 0x5CC050
+void StartBlankState(unsigned int entityHandleVal);  // 0x5CC1A0
+void StopBlankState(unsigned int entityHandleVal);  // 0x5CC1F0
 }
 
 // GetEntType (0x5CA9F0) - global
 void GetEntType(DbLinkedHandle<EntityHandleDb, Entity> entityHandle,
                 Broc::string& type);
+
+// scr.o batch 44 helpers (BrocEntity.cpp effect-event wrappers)
+extern Handle PostEffectEventScriptCall(const Entity* ent,
+                                        const char* scriptId,
+                                        const Broc::vector& pos,
+                                        const Broc::vector& facing,
+                                        bool queue, TPakId pakid,
+                                        bool important);  // 8-arg overload
+extern Handle PostEffectEventScriptCall_Dir(const Entity* ent,
+                                            const char* scriptId,
+                                            const float* dir,
+                                            bool queue);  // ?PostEffectEventScriptCall_Dir@@YA?AVHandle@@PBVEntity@@PBDQBM_N@Z
+extern Handle PostEffectEventQueueDialog(const Entity* ent,
+                                         const char* scriptId,
+                                         int notifyHash);  // ?PostEffectEventQueueDialog@@YA?AVHandle@@PBVEntity@@PBDH@Z
+extern void RegisterEffectWait(Entity* ent, int notifyHash);  // ?RegisterEffectWait@@YAXPAVEntity@@H@Z
+extern void XAnimSetCompleteGoalWeight(XAnimTree* tree,
+                                       unsigned int animIndex,
+                                       float goalWeight, float goalTime,
+                                       float rate, unsigned int notifyName,
+                                       unsigned short notifyType,
+                                       int bRestart);  // ?XAnimSetCompleteGoalWeight@@YAXPAVXAnimTree@@IMMMIGH@Z
+static void nullsub_59(void* /*actor*/) {}
+static void nullsub_65(void* /*actor*/) {}
+static void nullsub_106(void* /*actor*/, int /*eState*/) {}
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -11440,6 +11499,690 @@ void BrocSys::Mover_SetupMoveSpeed(
             BG_EvaluateTrajectory(&tr, tr.trDuration + level.time, vPos3);
         }
         BG_EvaluateTrajectory(pTr, level.time, vCurrPos);
+    }
+}
+
+// ============================================================================
+// scr.o batch 44 - effect events / entity state queries / blank-state
+// ============================================================================
+
+// ea: 0x005CAB50
+unsigned int BrocSys::GetEntByNum(int entnum)
+{
+    unsigned int v1 = (unsigned int)entnum & 0xFFF;
+    Entity* mObject = nullptr;
+    if (entnum < 0x540 && v1 < 0x540
+        && (unsigned int)entnum >> 12
+               == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        return mObject->mHandle.mHandle.mVal;
+    return 0;
+}
+
+// ea: 0x005CABA0
+void BrocSys::DrawTracer(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey
+        || EntityHandleDb::sInst.mElements[v1].mObject == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 931;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("EffectEventPlay - passed in entity is NULL"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CAC20
+int BrocSys::EffectEventWeaponPlay(unsigned int entityHandleVal,
+                                   unsigned int action)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v2].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 949;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("EffectEventPlay - passed in entity is NULL"))
+            __debugbreak();
+        return -1;
+    }
+    Client* client = mObject->client;
+    if (client == nullptr)
+        return -1;
+    gitem_s* v6 = &bg_itemlist[client->ps.weapon];
+    if (action == 0)
+        return PostEffectEventWeapon(mObject, v6->classname,
+                                     (EAction)0x1F /* kActionVEHICLE_START */)
+            .mVal;
+    if (action != 1)
+    {
+        if (action == 2)
+            return PostEffectEventWeapon(
+                       mObject, v6->classname,
+                       (EAction)0x21 /* kActionVEHICLE_WHEELDUST */)
+                .mVal;
+        return -1;
+    }
+    return PostEffectEventWeapon(mObject, v6->classname,
+                                 (EAction)0x20 /* kActionVEHICLE_RUMBLE */)
+        .mVal;
+}
+
+// ea: 0x005CAD10
+int BrocSys::EffectEventPlay(unsigned int entityHandleVal,
+                             const Broc::string& script, int notifyHash,
+                             bool stoppable, bool important)
+{
+    (void)stoppable;
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 985;
+        AeAssert::gCurrentExpr = "!script.is_empty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("EffectEventPlay - passed in script is NULL"))
+            __debugbreak();
+    }
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+        return -1;
+    const char* v7 = (const char*)(script.mBlock + 1);
+    unsigned int v9 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v9 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v9].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v9].mObject) != nullptr)
+    {
+        if (notifyHash != 0)
+        {
+            if (mObject->snd_wait.notifyHash.mHash != 0)
+            {
+                G_DPrintf(
+                    "EffectEventPlay: skipping effect %s, entity already has a sound notify\n",
+                    v7);
+                return -1;
+            }
+            RegisterEffectWait(mObject, notifyHash);
+        }
+        const char* v12 = script.mBlock != nullptr
+                              ? (const char*)(script.mBlock + 1)
+                              : defaultFileName;
+        return PostEffectEventScriptCall(mObject, v12, false, PAK_ID_INVALID,
+                                         important)
+            .mVal;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 990;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v11 = script.mBlock != nullptr
+                                  ? (const char*)(script.mBlock + 1)
+                                  : defaultFileName;
+            if (AeAssert::Assert(
+                    "EffectEventPlay - passed in entity is NULL (scriptid=%s)",
+                    v11))
+                __debugbreak();
+        }
+        return -1;
+    }
+}
+
+// ea: 0x005CAE70
+int BrocSys::EffectEventPlayNonEnt(const Broc::string& script,
+                                   const Broc::vector& pos,
+                                   const Broc::vector& facing,
+                                   bool bImportant, unsigned int entityHandle,
+                                   int notifyHash)
+{
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0xD;  // DL
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1021;
+        AeAssert::gCurrentExpr = "!script.is_empty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "EffectEventPlay (Non entity based) - passed in script is NULL"))
+            __debugbreak();
+    }
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+        return -1;
+    Entity* mObject;
+    if (entityHandle != 0)
+    {
+        unsigned int v8 = entityHandle & 0xFFF;
+        mObject = nullptr;
+        if (v8 < 0x540
+            && entityHandle >> 12 == EntityHandleDb::sInst.mElements[v8].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+        if (mObject == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0xD;  // DL
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 1030;
+            AeAssert::gCurrentExpr = "e";
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v10 = script.mBlock != nullptr
+                                      ? (const char*)(script.mBlock + 1)
+                                      : defaultFileName;
+                if (AeAssert::Assert(
+                        "EffectEventPlay (Non entity based) - passed in entity is NULL (scriptid=%s)",
+                        v10))
+                    __debugbreak();
+            }
+        }
+        if (mObject->snd_wait.notifyHash.mHash != 0)
+            return -1;
+        if (notifyHash != 0)
+            RegisterEffectWait(mObject, notifyHash);
+    }
+    else
+    {
+        unsigned int v11 =
+            EntityManager::sInst->mWorld->mHandle.mHandle.mVal & 0xFFF;
+        Entity* v12 = nullptr;
+        if (v11 < 0x540
+            && EntityManager::sInst->mWorld->mHandle.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v11].mKey)
+            v12 = EntityHandleDb::sInst.mElements[v11].mObject;
+        mObject = v12;
+    }
+    const char* v13 = script.mBlock != nullptr
+                          ? (const char*)(script.mBlock + 1)
+                          : defaultFileName;
+    return PostEffectEventScriptCall(mObject, v13, pos, facing, false,
+                                     PAK_ID_INVALID, bImportant)
+        .mVal;
+}
+
+// ea: 0x005CB000
+int BrocSys::EffectEventPlayDir(unsigned int entityHandleVal,
+                                const Broc::string& script,
+                                const Broc::vector& dir, int notifyHash,
+                                bool bUnused)
+{
+    (void)bUnused;
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1063;
+        AeAssert::gCurrentExpr = "!script.is_empty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("EffectEventPlayDir - passed in script is NULL"))
+            __debugbreak();
+    }
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+        return -1;
+    unsigned int v6 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v6 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v6].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v6].mObject) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1068;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v8 = script.mBlock != nullptr
+                                 ? (const char*)(script.mBlock + 1)
+                                 : defaultFileName;
+            if (AeAssert::Assert(
+                    "EffectEventPlayDir - passed in entity is NULL (scriptid=%s)",
+                    v8))
+                __debugbreak();
+        }
+        return -1;
+    }
+    if (mObject->snd_wait.notifyHash.mHash != 0)
+        return -1;
+    if (notifyHash != 0)
+        RegisterEffectWait(mObject, notifyHash);
+    const char* v9 = script.mBlock != nullptr
+                         ? (const char*)(script.mBlock + 1)
+                         : defaultFileName;
+    return PostEffectEventScriptCall_Dir(mObject, v9, &dir.x, false).mVal;
+}
+
+// ea: 0x005CB140
+int BrocSys::EffectEventQueue(unsigned int entityHandleVal,
+                              const Broc::string& script, int notifyHash,
+                              bool stoppable, bool important)
+{
+    (void)stoppable;
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1091;
+        AeAssert::gCurrentExpr = "!script.is_empty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("EffectEventQueue - passed in script is NULL"))
+            __debugbreak();
+    }
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+        return -1;
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v7 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v7].mObject) != nullptr)
+    {
+        if (notifyHash != 0)
+            RegisterEffectWait(mObject, notifyHash);
+        const char* v10 = script.mBlock != nullptr
+                              ? (const char*)(script.mBlock + 1)
+                              : defaultFileName;
+        return PostEffectEventScriptCall(mObject, v10, true, PAK_ID_INVALID,
+                                         important)
+            .mVal;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1096;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v9 = script.mBlock != nullptr
+                                 ? (const char*)(script.mBlock + 1)
+                                 : defaultFileName;
+            if (AeAssert::Assert(
+                    "EffectEventQueue - passed in entity is NULL (scriptid=%s)",
+                    v9))
+                __debugbreak();
+        }
+        return -1;
+    }
+}
+
+// ea: 0x005CB280
+int BrocSys::EffectEventQueueDialog(unsigned int entityHandleVal,
+                                    const Broc::string& script,
+                                    int notifyHash, bool bUnused)
+{
+    (void)bUnused;
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1121;
+        AeAssert::gCurrentExpr = "!script.is_empty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "EffectEventQueueDialog - passed in script is NULL"))
+            __debugbreak();
+    }
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+        return -1;
+    const char* v5 = (const char*)(script.mBlock + 1);
+    unsigned int v7 = entityHandleVal & 0xFFF;
+    if (v7 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+        if (mObject != nullptr)
+            return PostEffectEventQueueDialog(mObject, v5, notifyHash).mVal;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 1126;
+    AeAssert::gCurrentExpr = "e";
+    if (!AeAssert::IsIgnored())
+    {
+        const char* v9 = script.mBlock != nullptr
+                             ? (const char*)(script.mBlock + 1)
+                             : defaultFileName;
+        if (AeAssert::Assert(
+                "EffectEventQueueDialog - passed in entity is NULL (scriptid=%s)",
+                v9))
+            __debugbreak();
+    }
+    return -1;
+}
+
+// ea: 0x005CB390
+int BrocSys::DialogPlay(unsigned int entityHandleVal,
+                        const Broc::string& script, int notifyHash,
+                        bool stopPrevIfPlaying)
+{
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v5 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey
+        || (mObject = EntityHandleDb::sInst.mElements[v5].mObject) == nullptr)
+    {
+        EntityManager::sInst->mWorld->Notify(notifyHash);
+        return -1;
+    }
+    if (script.mBlock == nullptr
+        || script.mBlock == (Broc::string::Block*)-12
+        || *((const char*)(script.mBlock + 1)) == 0)
+    {
+        mObject->Notify(notifyHash);
+        return -1;
+    }
+    if (mObject->snd_wait.notifyHash.mHash != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1274;
+        AeAssert::gCurrentExpr = "e->snd_wait.notifyHash.GetHash()==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "DialogPlay - passed in entity is already got a\nsound notify on it"))
+            __debugbreak();
+        if (mObject->snd_wait.notifyHash.mHash != 0 && !allowOverLapping
+            && !stopPrevIfPlaying)
+        {
+            mObject->Notify(notifyHash);
+            return -1;
+        }
+    }
+    const char* v8 = script.mBlock != nullptr
+                         ? (const char*)(script.mBlock + 1)
+                         : defaultFileName;
+    nslWaveID Wave = SoundDevice::sInst->FindWave(v8);
+    if (Wave == NSL_WAVE_ID_INVALID)
+    {
+        mObject->Notify(notifyHash);
+        return -1;
+    }
+    math::Position3 pos = mObject->r.currentOrigin;
+    math::Dir3 v10;
+    v10.v = _mm_setzero_ps();
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> sound =
+        SoundDevice::sInst->PlaySound(
+            Wave, DbLinkedHandle<EntityHandleDb, Entity>(entityHandleVal), true,
+            false, pos, v10, -1.0f, -1.0f, -1.0f, -1.0f);
+    if (*sound == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 1292;
+        AeAssert::gCurrentExpr = "*sound";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SoundDevice::play_sound failed"))
+            __debugbreak();
+    }
+    if (*sound != nullptr)
+    {
+        if (*sound != nullptr && notifyHash != 0)
+            sound->mDialogNotify.mHash = (unsigned int)notifyHash;
+        return 1;
+    }
+    mObject->Notify(notifyHash);
+    return -1;
+}
+
+// ea: 0x005CB5C0
+int BrocSys::EntityExists(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    return v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && EntityHandleDb::sInst.mElements[v1].mObject != nullptr;
+}
+
+// ea: 0x005CB600
+int BrocSys::EntityIsAlive(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            actor_s* actor = mObject->actor;
+            if (actor != nullptr)
+            {
+                if (actor->Physics.bIsAlive)
+                    return 1;
+            }
+            else if (mObject->health > 0)
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// ea: 0x005CB660
+int BrocSys::EntityIsWounded(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    actor_s* actor;
+    return v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr
+        && (actor = mObject->actor) != nullptr
+        && actor->eState[actor->iStateLevel] == AIS_WOUNDED;
+}
+
+// ea: 0x005CB6B0
+int BrocSys::EntityIsPlayer(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    int result = false;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr && mObject->client != nullptr)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x005CB700
+int BrocSys::EntityIsAI(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    int result = false;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr && mObject->actor != nullptr)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x005CB750
+int BrocSys::EntityIsSentient(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    int result = false;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr && mObject->sentient != nullptr)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x005CB7A0
+int BrocSys::EntityIsVehicle(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    int result = false;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x005CB7F0
+int BrocSys::EntityIsVehicleTank(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    int result = false;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr
+            && IsVehicleTank(mObject))
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x005CC050
+void BrocSys::StopAnimScripted(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            actor_s* actor = mObject->actor;
+            if (actor != nullptr
+                && actor->eSimulatedState[actor->iSimulatedStateLevel]
+                       == AIS_SCRIPTEDANIM)
+                nullsub_59(actor);
+            animscripted_t* scripted = mObject->scripted;
+            if (scripted != nullptr)
+            {
+                if (scripted->anim != 0)
+                {
+                    XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+                    if (EntAnimTree == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 1733;
+                        AeAssert::gCurrentExpr = "pAnimTree";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    mObject->flags &= ~0x1000000u;
+                    if (scripted->fBlendOutTime <= 0.0f)
+                    {
+                        XAnimSetCompleteGoalWeight(EntAnimTree, scripted->anim,
+                                                   1.0f, 0.0f, 1.0f, 0, 0, 0);
+                        XAnimSetCompleteGoalWeight(EntAnimTree, scripted->anim,
+                                                   0.0f, 0.0f, 1.0f, 0, 0, 0);
+                    }
+                    else
+                    {
+                        XAnimSetCompleteGoalWeight(
+                            EntAnimTree, scripted->anim, 0.0f,
+                            scripted->fBlendOutTime, 1.0f, 0, 0, 0);
+                    }
+                }
+                mem_heap_free(scripted);
+                mObject->scripted = nullptr;
+            }
+        }
+    }
+}
+
+// ea: 0x005CC1A0
+void BrocSys::StartBlankState(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            actor_s* actor = mObject->actor;
+            if (actor != nullptr)
+            {
+                nullsub_65(mObject->actor);
+                nullsub_106(actor, AIS_BLANK);
+            }
+        }
+    }
+}
+
+// ea: 0x005CC1F0
+void BrocSys::StopBlankState(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            actor_s* actor = mObject->actor;
+            if (actor != nullptr
+                && actor->eSimulatedState[actor->iSimulatedStateLevel]
+                       == AIS_BLANK)
+            {
+                nullsub_106(actor, AIS_EXPOSED);
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 1798;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+        }
     }
 }
 
