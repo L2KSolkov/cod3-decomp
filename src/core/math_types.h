@@ -18,7 +18,7 @@ class Vector4;
 class Mat33;
 class Mat44;
 class Mat43;
-struct TranMat43;
+class TranMat43;
 class DiagMat33;
 
 // ============================================================================
@@ -111,6 +111,8 @@ inline const math::Dir3& Dir3::operator-=(const math::Position3& v)
     return *this;
 }
 
+float Cos(float radians);  // ?Cos@math@@YAMM@Z (render.o 0x6E7120)
+
 // ============================================================================
 // Vector4 — 4-component float vector (16 bytes)
 // Size: 0x10 (16 bytes)
@@ -129,6 +131,8 @@ public:
         void SetY(float _y);  // ?SetY@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E5FC0)
         void SetZ(float _z);  // ?SetZ@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E5FE0)
         void SetW(float _w);  // ?SetW@Packed@Vector4@math@@QAEXM@Z (render.o 0x6E6000)
+        void Set(const Vector4& v);  // ?Set@Packed@Vector4@math@@QAEXABV23@@Z (render.o 0x6E5EF0)
+        const Packed& operator=(const Vector4& v);  // ??4Packed@Vector4@math@@QAEABU012@ABV12@@Z (render.o 0x6E6060)
     };
 
     Vector4() {}
@@ -158,6 +162,7 @@ public:
 
     // ??4Mat43@math@@QAEABV01@ABVDiagMat33@1@@Z (anim.o; defined in nal.cpp)
     const Mat43& operator=(const DiagMat33& m);
+    const Mat43& operator*=(const TranMat43& m);  // ??XMat43@math@@QAEABV01@ABVTranMat43@1@@Z (render.o 0x6E7040)
     Dir3      x;  // +0x00 — right axis
     Dir3      y;  // +0x10 — forward axis
     Dir3      z;  // +0x20 — up axis
@@ -232,6 +237,11 @@ Vector4  operator*(const Vector4& v, const Mat43& m);             // ??Dmath@@YA
 Vector4  Mul(const Position3& v, const Mat44& m);                 // ?Mul@math@@YA?AVVector4@1@ABVPosition3@1@ABVMat44@1@@Z
 Vector4  operator*(const Position3& v, const Mat44& m);           // ??Dmath@@YA?AVVector4@0@ABVPosition3@0@ABVMat44@0@@Z
 Mat44    Mul(const Mat44& a, const Mat33& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z
+Mat43    Mul(const Mat43& a, const TranMat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABV21@ABUTranMat43@1@@Z (render.o 0x6E69F0)
+Mat43    Mul(const DiagMat33& a, const Mat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABVDiagMat33@1@ABV21@@Z (render.o 0x6E6AE0)
+Mat43    Mul(const TranMat43& a, const Mat43& b);                 // ?Mul@math@@YA?AVMat43@1@ABUTranMat43@1@ABV21@@Z (render.o 0x6E6C90)
+Mat43    operator*(const DiagMat33& a, const Mat43& b);           // ??Dmath@@YA?AVMat43@0@ABVDiagMat33@0@ABV10@@Z (render.o 0x6E6E10)
+Mat43    operator*(const TranMat43& a, const Mat43& b);           // ??Dmath@@YA?AVMat43@0@ABUTranMat43@0@ABV10@@Z (render.o 0x6E6F20)
 Mat33    AxisSinCosToRotMat(const Dir3& v, float s, float c);     // ?AxisSinCosToRotMat@math@@YA?AVMat33@1@ABVDir3@1@MM@Z
 Mat33    AxisAngleToRotMat(const Dir3& axis, float angle);        // ?AxisAngleToRotMat@math@@YA?AVMat33@1@ABVDir3@1@M@Z
 Vector4  Vector4_One();                                           // ?Vector4_One@math@@YA?AVVector4@1@XZ (sv.o 0x51E110)
@@ -240,7 +250,8 @@ Vector4  Vector4_One();                                           // ?Vector4_On
 // TranMat43 — translation-only matrix (16 bytes, single Position3)
 // Size: 0x10 (16 bytes) — verified against IDA
 // ============================================================================
-struct TranMat43 {
+class TranMat43 {
+public:
     __m128 v;
     TranMat43() {}
     TranMat43(float _x, float _y, float _z);  // ??0TranMat43@math@@QAE@MMM@Z (render.o 0x6E6580)

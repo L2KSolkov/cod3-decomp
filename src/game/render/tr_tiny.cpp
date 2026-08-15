@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <new>
+#include <string.h>
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
@@ -493,7 +494,9 @@ public:
     InplaceVector<XBoneHierarchy2> mHierarchy;  // +0x70
     const char* GetName();           // ?GetName@XModelParts@@QAEPBDXZ @ 0x6E5E00
     int GetBoneIndex(const char* name);  // ?GetBoneIndex@XModelParts@@QAEHPBD@Z @ 0x6EB640
+    int GetBoneIndex(unsigned int nameHash);  // ?GetBoneIndex@XModelParts@@QAEHI@Z @ 0x6EB6C0
     int GetBoneParent(unsigned int i) const;  // ?GetBoneParent@XModelParts@@QBEHI@Z @ 0x6EB850
+    unsigned int GetBoneNameHash(unsigned int i) const;  // ?GetBoneNameHash@XModelParts@@QBEII@Z (scr.o)
 };
 const char* XModelParts::GetName() { return mName; }
 
@@ -511,6 +514,7 @@ public:
     math::Dir3 mMin;                 // +0x00
     math::Dir3 mMax;                 // +0x10
     void Init();                     // ?Init@apsBounds@@QAEXXZ
+    void ClampHalfSize(float maxHalfX, float maxHalfY, float maxHalfZ);  // ?ClampHalfSize@apsBounds@@QAEXMMM@Z @ 0x6EB070
     const math::Dir3& Min() const;   // ?Min@apsBounds@@QBEABVDir3@math@@XZ @ 0x6E5DC0
     const math::Dir3& Max() const;   // ?Max@apsBounds@@QBEABVDir3@math@@XZ @ 0x6E5DD0
 };
@@ -556,15 +560,58 @@ ScopeDisableWarnings::~ScopeDisableWarnings()
 // ============================================================================
 // DObj / cdl_proftimer / AnimationPlayer
 // ============================================================================
+class XModel;
+extern void ValidatePakId(TPakId pakId);  // ?ValidatePakId@@YAXW4TPakId@@@Z
+template <class T>
+class IVPointer {
+public:
+    T* mValue;                         // +0x00
+    TPakId mPakId;                     // +0x04
+    IVPointer();                       // ??0?$IVPointer@VXModelParts@@@@QAE@XZ @ 0x6EAC30
+    IVPointer(TPakId pakId, T* value); // ...QAE@W4TPakId@@PAVXModelParts@@@Z @ 0x6EAC10
+    T* operator*();                    // ??D?$IVPointer@VXModelParts@@@@QAEPAVXModelParts@@XZ @ 0x6ED020
+private:
+    T* Deref() const;                  // ?Deref@?$IVPointer@VXModelParts@@@@ABEPAVXModelParts@@XZ @ 0x6EA440
+};
+template <class T>
+IVPointer<T>::IVPointer()
+    : mValue(nullptr), mPakId((TPakId)0xFFFFFFFF)
+{
+}
+template <class T>
+IVPointer<T>::IVPointer(TPakId pakId, T* value)
+    : mValue(value), mPakId(pakId)
+{
+}
+template <class T>
+T* IVPointer<T>::Deref() const
+{
+    ValidatePakId(mPakId);
+    return mValue;
+}
+template <class T>
+T* IVPointer<T>::operator*()
+{
+    ValidatePakId(mPakId);
+    return mValue;
+}
 class DObj {
 public:
-    uint8_t _pad[0xD8];
+    uint8_t _pad[0x80];
+    IVPointer<XModel> models[8];     // +0x80
+    TPakId mPakId;                   // +0xC0
+    uint8_t _padb[0xCE - 0xC4];
+    unsigned char numModels;         // +0xCE
+    unsigned char numBones;          // +0xCF
+    uint8_t _padc[0xD8 - 0xD0];
     int mLOD;                        // +0xD8
     int mLODOverride;                // +0xDC
     int mLODAnim;                    // +0xE0
+    unsigned int mFlags;             // +0xE4
     int GetLOD() const;              // ?GetLOD@DObj@@QBEHXZ @ 0x6E7770
     void ClearLODOverride();         // ?ClearLODOverride@DObj@@QAEXXZ @ 0x6E77A0
     void ClearLODAnim();             // ?ClearLODAnim@DObj@@QAEXXZ @ 0x6E77B0
+    void SetLODAnim(int startLod);   // ?SetLODAnim@DObj@@QAEXH@Z @ 0x6EE350
 };
 int DObj::GetLOD() const
 {
@@ -595,11 +642,17 @@ void cdl_proftimer::reset() { value = 0; }
 extern void tlMemFree(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
+extern void* tlMemAlloc(unsigned int size, unsigned int align, unsigned int flags);
+namespace nalGeneric {
+class nalGenericSkeleton;
+}
 class AnimationPlayer {
 public:
+    AnimationPlayer(class nalGeneric::nalGenericSkeleton* skeleton);  // ??0AnimationPlayer@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z @ 0x6EBC50
+    ~AnimationPlayer();              // ??1AnimationPlayer@@QAE@XZ @ 0x6EBD00
     static void* operator new(unsigned int sz);  // ??2AnimationPlayer@@SAPAXI@Z @ 0x6E7E70
     static void operator delete(void* ptr);  // ??3AnimationPlayer@@SAXPAX@Z @ 0x6E7E90
-    ~AnimationPlayer();      // ??1AnimationPlayer@@QAE@XZ (defined elsewhere)
+    void Reset();                    // ?Reset@AnimationPlayer@@QAEXXZ (nal.cpp)
 };
 void AnimationPlayer::operator delete(void* ptr) { tlMemFree(ptr); }
 
@@ -820,10 +873,13 @@ class InplaceAssetBank {
 public:
     uint8_t _pad[0x08];
     Tree mTree;                      // +0x08
-    unsigned int mSize;              // +0x10 (mPtrs.mSize)
-    uint8_t _pad2[0x18 - 0x14];
+    struct Ptrs {
+        unsigned int mSize;          // +0x10
+        T** mList;                   // +0x14
+    } mPtrs;                         // +0x10
     PtrFixupTable* mPtrFixupTable;   // +0x18
     unsigned int Size() const;       // ?Size@?$InplaceAssetBank@...@@QBEIXZ
+    T* operator[](unsigned int idx); // ?operator[]@?$InplaceAssetBank@...@@QAEP...@@I@Z (core.o)
     template <class K>
     bool FindIndex(K const& key, unsigned int* out) const;  // ??$FindIndex@...@?$InplaceAssetBank@...@@QBE_NABQ...@@PAI@Z
     void Fixup();                    // ?Fixup@?$InplaceAssetBank@...@@QAEXXZ
@@ -831,7 +887,12 @@ public:
 template <class T, class Tree>
 unsigned int InplaceAssetBank<T, Tree>::Size() const
 {
-    return mSize;
+    return mPtrs.mSize;
+}
+template <class T, class Tree>
+T* InplaceAssetBank<T, Tree>::operator[](unsigned int idx)  // ?operator[]@?$InplaceAssetBank@...@@QAEP...@@I@Z (core.o)
+{
+    return mPtrs.mList[idx];
 }
 template unsigned int
 InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>>::Size() const;  // @ 0x6EC050
@@ -1047,6 +1108,7 @@ public:
     T* end();                        // ?end@?$ae_vector@...@@QAEP...@@XZ
     int size() const;                // ?size@?$ae_vector@PAVParticleEffect@@@@QBEHXZ @ 0x6E8F20
     T* find(T const& iFindVal);      // declared; specialized for ae_vector<LightEffect*>
+    void push_back(const T& iElement);  // ?push_back@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXABVDebugTexturedQuad2D@@@Z @ 0x6ECEC0
     void resize(int n) { mSize = n; }
     void clear() { resize(0); }      // ?clear@?$ae_vector@...@@QAEXXZ
 private:
@@ -1114,6 +1176,597 @@ int ae_vector<T>::size() const
 template class ae_vector<LightEffect*>;
 template class ae_vector<ParticleEffect*>;
 template class ae_vector<DebugTexturedQuad2D>;
+
+// ============================================================================
+// batch 92 - 137..364 byte render.o symbols (all bodies/types from IDA)
+// ============================================================================
+
+// Vector4::Packed Set / assign
+void math::Vector4::Packed::Set(const math::Vector4& v)  // 0x6E5EF0
+{
+    x = v.v.m128_f32[0];
+    y = v.v.m128_f32[1];
+    z = v.v.m128_f32[2];
+    w = v.v.m128_f32[3];
+}
+const math::Vector4::Packed& math::Vector4::Packed::operator=(const math::Vector4& _v)  // 0x6E6060
+{
+    x = _v.v.m128_f32[0];
+    y = _v.v.m128_f32[1];
+    z = _v.v.m128_f32[2];
+    w = _v.v.m128_f32[3];
+    return *this;
+}
+
+// DObjSkelMat (IDA): axis float[3][4] @ +0x00, origin float[4] @ +0x30
+struct DObjSkelMat {
+    float axis[3][4];                // +0x00
+    float origin[4];                 // +0x30
+};
+
+void XModelMatrixTransformVector(const float* in, const DObjSkelMat* mat,
+                                 float* out)  // 0x6E7970
+{
+    out[0] = (mat->axis[2][0] * in[2]) + (mat->axis[1][0] * in[1]) + (in[0] * mat->axis[0][0]);
+    out[1] = (mat->axis[0][1] * in[0]) + (mat->axis[2][1] * in[2]) + (mat->axis[1][1] * in[1]);
+    out[2] = (mat->axis[0][2] * in[0]) + (mat->axis[2][2] * in[2]) + (mat->axis[1][2] * in[1]);
+}
+void XModelMatrixTransposeTransformVector(const float* in1,
+                                          const DObjSkelMat* in2,
+                                          float* out)  // 0x6E7A20
+{
+    out[0] = (in2->axis[0][1] * in1[1]) + (in2->axis[0][2] * in1[2]) + (in1[0] * in2->axis[0][0]);
+    out[1] = (in2->axis[1][0] * in1[0]) + (in2->axis[1][1] * in1[1]) + (in2->axis[1][2] * in1[2]);
+    out[2] = (in2->axis[2][0] * in1[0]) + (in2->axis[2][1] * in1[1]) + (in2->axis[2][2] * in1[2]);
+}
+void XModelMatrixTransformVector43(const float* in, const DObjSkelMat* mat,
+                                   float* out)  // 0x6E77C0
+{
+    out[0] = ((mat->axis[2][0] * in[2]) + (mat->axis[1][0] * in[1]) + (in[0] * mat->axis[0][0])) + mat->origin[0];
+    out[1] = ((mat->axis[0][1] * in[0]) + (mat->axis[2][1] * in[2]) + (mat->axis[1][1] * in[1])) + mat->origin[1];
+    out[2] = ((mat->axis[0][2] * in[0]) + (mat->axis[2][2] * in[2]) + (mat->axis[1][2] * in[1])) + mat->origin[2];
+}
+void LocalMatrixTransformVector43(const float* in, const DObjSkelMat* mat,
+                                  float* out)  // 0x6E7F50
+{
+    out[0] = ((mat->axis[2][0] * in[2]) + (mat->axis[1][0] * in[1]) + (in[0] * mat->axis[0][0])) + mat->origin[0];
+    out[1] = ((mat->axis[0][1] * in[0]) + (mat->axis[2][1] * in[2]) + (mat->axis[1][1] * in[1])) + mat->origin[1];
+    out[2] = ((mat->axis[0][2] * in[0]) + (mat->axis[2][2] * in[2]) + (mat->axis[1][2] * in[1])) + mat->origin[2];
+}
+void XModelAddScaledMatrixTransformVector43(const float* in, float s,
+                                            const DObjSkelMat* mat,
+                                            float* out)  // 0x6E7880
+{
+    out[0] = ((((mat->axis[1][0] * in[1]) + (mat->axis[2][0] * in[2]) + (in[0] * mat->axis[0][0])) + mat->origin[0]) * s) + out[0];
+    out[1] = ((((mat->axis[1][1] * in[1]) + (mat->axis[2][1] * in[2]) + (mat->axis[0][1] * in[0])) + mat->origin[1]) * s) + out[1];
+    out[2] = ((((mat->axis[1][2] * in[1]) + (mat->axis[2][2] * in[2]) + (mat->axis[0][2] * in[0])) + mat->origin[2]) * s) + out[2];
+}
+void CopyMatrix(DObjSkelMat& out, const math::Mat43& in)  // ?CopyMatrix@@YAXAAUDObjSkelMat@@ABVMat43@math@@@Z @ 0x6E8150
+{
+    out.axis[0][0] = in.x.v.m128_f32[0];
+    out.axis[0][1] = in.x.v.m128_f32[1];
+    out.axis[0][2] = in.x.v.m128_f32[2];
+    out.axis[1][0] = in.y.v.m128_f32[0];
+    out.axis[1][1] = in.y.v.m128_f32[1];
+    out.axis[1][2] = in.y.v.m128_f32[2];
+    out.axis[2][0] = in.z.v.m128_f32[0];
+    out.axis[2][1] = in.z.v.m128_f32[1];
+    out.axis[2][2] = in.z.v.m128_f32[2];
+    out.origin[0] = in.w.v.m128_f32[0];
+    out.origin[1] = in.w.v.m128_f32[1];
+    out.origin[2] = in.w.v.m128_f32[2];
+}
+
+// nglIsSphereVisible (clip-plane loop)
+bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                        const math::Vector4* Clip)  // 0x6E7B60
+{
+    int v4 = 0;
+    __m128 v5 = _mm_shuffle_ps(
+        Center.v, _mm_shuffle_ps(_mm_setzero_ps(), Center.v, 0xA0), 0x34);
+    while (1)
+    {
+        __m128 v6 = _mm_mul_ps(v5, Clip->v);
+        if ((((v6.m128_f32[0]
+               + (_mm_shuffle_ps(v6, v6, 0x55).m128_f32[0]
+                  + (_mm_shuffle_ps(v6, v6, 0xAA).m128_f32[0]
+                     + _mm_shuffle_ps(v6, v6, 0xFF).m128_f32[0])))
+              - Clip->v.m128_f32[3])
+             + Radius)
+            < 0.0f)
+            break;
+        ++v4;
+        ++Clip;
+        if (v4 >= 6)
+            return true;
+    }
+    return false;
+}
+
+// Mat43 / TranMat43 / DiagMat33 products
+const math::Mat43& math::Mat43::operator*=(const math::TranMat43& _m)  // 0x6E7040
+{
+    this->w.v = _mm_add_ps(this->w.v, _m.v);
+    return *this;
+}
+math::Mat43 math::Mul(const math::Mat43& _a, const math::TranMat43& _b)  // 0x6E69F0
+{
+    math::Mat43 result;
+    result.x = _a.x;
+    result.y = _a.y;
+    result.z = _a.z;
+    result.w.v = _mm_add_ps(_a.w.v, _b.v);
+    return result;
+}
+math::Mat43 math::Mul(const math::DiagMat33& _a, const math::Mat43& _b)  // 0x6E6AE0
+{
+    math::Mat43 result;
+    result.x.v = _mm_mul_ps(_b.x.v, _mm_shuffle_ps(_a.v, _a.v, 0));
+    result.y.v = _mm_mul_ps(_b.y.v, _mm_shuffle_ps(_a.v, _a.v, 0x55));
+    result.z.v = _mm_mul_ps(_b.z.v, _mm_shuffle_ps(_a.v, _a.v, 0xAA));
+    result.w = _b.w;
+    return result;
+}
+math::Mat43 math::operator*(const math::DiagMat33& _a, const math::Mat43& _b)  // 0x6E6E10
+{
+    return math::Mul(_a, _b);
+}
+math::Mat43 math::Mul(const math::TranMat43& _a, const math::Mat43& _b)  // 0x6E6C90
+{
+    math::Mat43 result;
+    result.x = _b.x;
+    result.y = _b.y;
+    result.z = _b.z;
+    result.w.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_a.v, _a.v, 0), _b.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_a.v, _a.v, 0x55), _b.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_a.v, _a.v, 0xAA), _b.z.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_a.v, _a.v, 0xFF), _b.w.v)));
+    return result;
+}
+math::Mat43 math::operator*(const math::TranMat43& _a, const math::Mat43& _b)  // 0x6E6F20
+{
+    return math::Mul(_a, _b);
+}
+
+// BspTree (IDA layout: mNodes +0x08, mPlanes +0x10, mPtrFixupTable +0x7C)
+struct BspPlaneLocal {
+    math::Vector4 mPlane;            // +0x00
+};
+struct BspNodeLocal {
+    short contents;                  // +0x00
+    short cellNum;                   // +0x02
+    union {
+        struct {
+            BspPlaneLocal* plane;    // +0x04
+            BspNodeLocal* children[2];  // +0x08
+        } node;
+        struct {
+            int cluster;             // +0x04
+            short area;              // +0x08
+        } leaf;
+    } u;
+};
+class BspTree {
+public:
+    unsigned int mId;                // +0x00
+    float mVersion;                  // +0x04
+    InplaceVector<BspNodeLocal> mNodes;    // +0x08
+    InplaceVector<BspPlaneLocal> mPlanes;  // +0x10
+    uint8_t _pad[0x7C - 0x18];
+    PtrFixupTable* mPtrFixupTable;   // +0x7C
+    void post_fixup();               // ?post_fixup@BspTree@@QAEXXZ @ 0x6EBA10
+    void Fixup();                    // ?Fixup@BspTree@@QAEXXZ @ 0x6EB8D0
+};
+void BspTree::post_fixup()  // 0x6EBA10
+{
+    InplaceVector<BspNodeLocal>* p_mNodes = &this->mNodes;
+    unsigned int v2 = 0;
+    if (this->mNodes.mSize != 0)
+    {
+        do
+        {
+            BspNodeLocal* n = &(*p_mNodes)[v2];
+            if (n->contents == -1)
+            {
+                n->u.node.children[0] =
+                    &(*p_mNodes)[(unsigned int)(uintptr_t)n->u.node.children[0]];
+                n->u.node.children[1] =
+                    &(*p_mNodes)[(unsigned int)(uintptr_t)n->u.node.children[1]];
+                BspPlaneLocal* v9 =
+                    &this->mPlanes[(unsigned int)(uintptr_t)n->u.node.plane];
+                n->u.leaf.cluster = (int)(uintptr_t)v9;
+            }
+            ++v2;
+        } while (v2 < p_mNodes->mSize);
+    }
+}
+void BspTree::Fixup()  // 0x6EB8D0
+{
+    if (this->mId != 1112756308)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BspTree.h";
+        AeAssert::gCurrentLine = 447;
+        AeAssert::gCurrentExpr = "mId == FourCC('BSPT')";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("not an instance bank set"))
+            __debugbreak();
+    }
+    if (this->mVersion != 1.01f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BspTree.h";
+        AeAssert::gCurrentLine = 448;
+        AeAssert::gCurrentExpr = "mVersion == 1.01f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("incorrect version instance bank"))
+            __debugbreak();
+    }
+    if ((unsigned int)this->mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BspTree.h";
+        AeAssert::gCurrentLine = 449;
+        AeAssert::gCurrentExpr = "((uint32)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    PtrFixupTable* v2 = (PtrFixupTable*)((char*)this + (unsigned int)this->mPtrFixupTable);
+    this->mPtrFixupTable = v2;
+    v2->Fixup(this);
+}
+
+// math::Cos
+float math::Cos(float radians)  // ?Cos@math@@YAMM@Z @ 0x6E7120
+{
+    return (float)cos((double)radians);
+}
+
+// ae_vector::push_back (DebugTexturedQuad2D; real growth body)
+template <class T>
+void ae_vector<T>::push_back(const T& iElement)  // @ 0x6ECEC0
+{
+    int mSize = this->mSize;
+    if (mSize >= mCapacity)
+    {
+        int v4 = mSize + 4;
+        if (mSize <= 3)
+            v4 = mSize + 1;
+        T* v5 = (T*)tlMemAlloc((unsigned int)(sizeof(T) * v4), 8u, 0);
+        for (int i = 0; i < mSize; ++i)
+            v5[i] = mElements[i];
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
+        }
+        mCapacity = v4;
+        mElements = v5;
+    }
+    int v9 = this->mSize;
+    mElements[v9] = iElement;
+    this->mSize = v9 + 1;
+}
+
+// DObj::SetLODAnim (models = IVPointer<XModel>[8] @ +0x80; lod[5] @ +0x24)
+struct XModelLodView {
+    float dist;                      // +0x00
+    uint8_t filename[4];             // +0x04 (InplaceString)
+    void* xmodelParts;               // +0x08
+};
+struct XModelView {
+    math::Position3 mins;            // +0x00
+    math::Position3 maxs;            // +0x10
+    XModelParts* parts;              // +0x20
+    XModelLodView* lod[5];           // +0x24
+    uint8_t _pad[0x50 - 0x38];
+};
+void DObj::SetLODAnim(int startLod)  // ?SetLODAnim@DObj@@QAEXH@Z @ 0x6EE350
+{
+    this->mLODAnim = -1;
+    ValidatePakId(models[0].mPakId);
+    if (startLod < 5 && ((XModelView*)models[0].mValue)->lod[startLod] != nullptr)
+    {
+        this->mLODAnim = startLod;
+    }
+    else
+    {
+        for (int i = startLod + 1; i < 5; ++i)
+        {
+            ValidatePakId(models[0].mPakId);
+            if (((XModelView*)models[0].mValue)->lod[i] != nullptr)
+            {
+                this->mLODAnim = i;
+                break;
+            }
+        }
+        if (this->mLODAnim < 0)
+        {
+            for (int i = startLod - 1; i >= 0; --i)
+            {
+                ValidatePakId(models[0].mPakId);
+                if (((XModelView*)models[0].mValue)->lod[i] != nullptr)
+                {
+                    this->mLODAnim = i;
+                    break;
+                }
+            }
+        }
+    }
+    if (this->mLODAnim < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.h";
+        AeAssert::gCurrentLine = 222;
+        AeAssert::gCurrentExpr = "mLODAnim >= 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Model has no LODs?"))
+            __debugbreak();
+    }
+}
+
+// XModelParts::GetBoneIndex(hash) - real hierarchy asserts
+int XModelParts::GetBoneIndex(unsigned int nameHash)  // ?GetBoneIndex@XModelParts@@QAEHI@Z @ 0x6EB6C0
+{
+    unsigned int v3 = 0;
+    if (mHierarchy.mSize == 0)
+        return -1;
+    while (1)
+    {
+        XBoneHierarchy2* h = &mHierarchy[v3];
+        if (h->mNameHash == 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelParts.h";
+            AeAssert::gCurrentLine = 203;
+            AeAssert::gCurrentExpr = "mHierarchy[i].mNameHash != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Uninitialized part being used?"))
+                __debugbreak();
+        }
+        if (mHierarchy[v3].mNameHash == nameHash)
+            break;
+        if (++v3 >= mHierarchy.mSize)
+            return -1;
+    }
+    return v3;
+}
+
+// apsBounds::ClampHalfSize
+void apsBounds::ClampHalfSize(float maxHalfX, float maxHalfY, float maxHalfZ)  // ?ClampHalfSize@apsBounds@@QAEXMMM@Z @ 0x6EB070
+{
+    __m128 half = _mm_set1_ps(0.5f);
+    __m128 halfSize = _mm_mul_ps(_mm_sub_ps(mMax.v, mMin.v), half);
+    __m128 center = _mm_mul_ps(_mm_add_ps(mMax.v, mMin.v), half);
+    if (halfSize.m128_f32[0] > maxHalfX)
+    {
+        mMax.v.m128_f32[0] = center.m128_f32[0] + maxHalfX;
+        mMin.v.m128_f32[0] = center.m128_f32[0] - maxHalfX;
+    }
+    if (halfSize.m128_f32[1] > maxHalfY)
+    {
+        mMax.v.m128_f32[1] = center.m128_f32[1] + maxHalfY;
+        mMin.v.m128_f32[1] = center.m128_f32[1] - maxHalfY;
+    }
+    if (halfSize.m128_f32[2] > maxHalfZ)
+    {
+        mMax.v.m128_f32[2] = center.m128_f32[2] + maxHalfZ;
+        mMin.v.m128_f32[2] = center.m128_f32[2] - maxHalfZ;
+    }
+}
+
+// InplaceAssetBankSet::Find (template; real prereq walk)
+template <class T>
+class AeType {
+};
+template <class Bank>
+class InplaceAssetBankSet {
+public:
+    ae_array<Bank*, 99> mBankArray;  // +0x00
+    template <class K, class V>
+    V Find(TPakId pakId, K key, AeType<V>, TPakId* foundPakId) const;
+};
+extern void GetPakPrerequisites(TPakId pakId,
+                                ae_sized_array<TPakId, 32>* prereqs);
+template <class Bank>
+template <class K, class V>
+V InplaceAssetBankSet<Bank>::Find(TPakId pakId, K key, AeType<V>,
+                                  TPakId* foundPakId) const
+{
+    if (pakId == (TPakId)0xFFFFFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 121;
+        AeAssert::gCurrentExpr = "pakId != PAK_ID_INVALID";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bad pak id"))
+            __debugbreak();
+        V result;
+        result.mValue = nullptr;
+        result.mPakId = (TPakId)0xFFFFFFFF;
+        return result;
+    }
+    unsigned int v7 = 0;
+    ae_sized_array<TPakId, 32> prereqs;
+    prereqs.m_size = 0;
+    GetPakPrerequisites(pakId, &prereqs);
+    if (prereqs.m_size <= 0)
+    {
+        V result;
+        result.mValue = nullptr;
+        result.mPakId = (TPakId)0xFFFFFFFF;
+        return result;
+    }
+    while (1)
+    {
+        TPakId v8 = prereqs[v7];
+        if (v8 != (TPakId)0xFFFFFFFF)
+        {
+            Bank* bank = mBankArray[(unsigned int)v8];
+            if (bank != nullptr)
+            {
+                unsigned int* found = bank->mTree.Find(key);
+                if (found != nullptr)
+                {
+                    unsigned int v11 = *found;
+                    if (foundPakId != nullptr)
+                        *foundPakId = v8;
+                    V result;
+                    result.mPakId = v8;
+                    result.mValue = bank->operator[](v11);
+                    return result;
+                }
+            }
+        }
+        if (++v7 >= (unsigned int)prereqs.m_size)
+            break;
+    }
+    V result;
+    result.mValue = nullptr;
+    result.mPakId = (TPakId)0xFFFFFFFF;
+    return result;
+}
+class XModelBank : public InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>> {};
+class XModelPartsBank : public InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>> {};
+template IVPointer<XModel>
+InplaceAssetBankSet<XModelBank>::Find<char*, IVPointer<XModel>>(
+    TPakId, char*, AeType<IVPointer<XModel>>, TPakId*) const;
+template IVPointer<XModel>
+InplaceAssetBankSet<XModelBank>::Find<char const*, IVPointer<XModel>>(
+    TPakId, char const*, AeType<IVPointer<XModel>>, TPakId*) const;
+template IVPointer<XModelParts>
+InplaceAssetBankSet<XModelPartsBank>::Find<char const*, IVPointer<XModelParts>>(
+    TPakId, char const*, AeType<IVPointer<XModelParts>>, TPakId*) const;
+
+// AnimationPlayer ctor/dtor (real IDA layout)
+namespace nalGeneric {
+class nalGenericSkeleton;
+class nalGenericPose {
+public:
+    void* _base;                     // +0x00
+    void* PoseData;                  // +0x08
+    bool AllocedData;                // +0x0C
+    nalGenericPose(const nalGenericPose& other, bool copy);  // ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z
+    nalGenericPose(const nalGenericSkeleton* skeleton, int); // ...PBVnalGenericSkeleton@1@H@Z
+    ~nalGenericPose();               // ??1nalGenericPose@nalGeneric@@QAE@XZ
+};
+class nalGenericSkeleton {
+public:
+    nalGenericPose DefaultPose;      // +0x00
+};
+}  // namespace nalGeneric
+
+struct nalPartialAnimStateLocal {
+    nalPartialAnimStateLocal* next;  // +0x00
+};
+extern void AnimationPlayer_Reset(AnimationPlayer* self);  // ?Reset@AnimationPlayer@@QAEXXZ
+AnimationPlayer::AnimationPlayer(nalGeneric::nalGenericSkeleton* skeleton)  // ??0AnimationPlayer@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z @ 0x6EBC50
+{
+    void* L = (void*)this;
+    *(void**)L = skeleton;
+    nalGeneric::nalGenericPose* bg = (nalGeneric::nalGenericPose*)((char*)L + 0x04);
+    new (bg) nalGeneric::nalGenericPose(skeleton->DefaultPose, true);
+    nalGeneric::nalGenericPose* tp = (nalGeneric::nalGenericPose*)((char*)L + 0x14);
+    new (tp) nalGeneric::nalGenericPose(skeleton, 0);
+    *(int*)((char*)L + 0x24) = 0;
+    *(void**)((char*)L + 0x34) = nullptr;
+    *(void**)((char*)L + 0x38) = nullptr;
+    *(unsigned int*)((char*)L + 0x3C) = 0;
+    void** AnimStates = (void**)((char*)L + 0x28);
+    for (int i = 3; i != 0; --i)
+        *AnimStates++ = tlMemAlloc(0x2Cu, 8u, 0);
+}
+AnimationPlayer::~AnimationPlayer()  // ??1AnimationPlayer@@QAE@XZ @ 0x6EBD00
+{
+    void* L = (void*)this;
+    AnimationPlayer_Reset(this);
+    void** AnimStates = (void**)((char*)L + 0x28);
+    for (int i = 3; i != 0; --i)
+        tlMemFree(*AnimStates++);
+    nalPartialAnimStateLocal* pool = (nalPartialAnimStateLocal*)*(void**)((char*)L + 0x38);
+    while (pool != nullptr)
+    {
+        nalPartialAnimStateLocal* v5 = pool;
+        pool = pool->next;
+        tlMemFree(v5);
+    }
+    ((nalGeneric::nalGenericPose*)((char*)L + 0x14))->~nalGenericPose();
+    ((nalGeneric::nalGenericPose*)((char*)L + 0x04))->~nalGenericPose();
+}
+
+// DObjGeomTraceline (real trace_t/DObjTrace_s/XModel layouts)
+struct trace_tLocal {
+    math::Position3 endpos;          // +0x00
+    math::Dir3 normal;               // +0x10
+    float fraction;                  // +0x20
+    int surfaceFlags;                // +0x24
+    int contents;                    // +0x28
+};
+struct DObjTrace_s {
+    float fraction;                  // +0x00
+    int surfaceflags;                // +0x04
+    float normal[3];                 // +0x08
+    unsigned int partName_mHash;     // +0x14
+    unsigned int partGroup;          // +0x18
+    unsigned char startsolid;        // +0x1C
+    unsigned char allsolid;          // +0x1D
+};
+extern int XModelTraceLine(IVPointer<XModel> model, trace_tLocal* trace,
+                           DObjSkelMat* mats, const float* start,
+                           const float* end, int contentmask);
+extern DObjSkelMat* DObjGetMatrixArray(const class DObj* obj, int partIndex);
+void DObjGeomTraceline(const class DObj* obj, const math::Position3& localStart,
+                       const math::Position3& localEnd, int contentmask,
+                       DObjTrace_s* results, float)  // ?DObjGeomTraceline@@YAXPBVDObj@@ABVPosition3@math@@1HPAUDObjTrace_s@@M@Z @ 0x6CDDA0
+{
+    trace_tLocal trace;
+    trace.surfaceFlags = 0;
+    trace.contents = 0;
+    DObjSkelMat* mats = DObjGetMatrixArray(obj, 0);
+    float fraction = results->fraction;
+    results->partName_mHash = 0;
+    results->partGroup = 0;
+    results->startsolid = 0;
+    results->allsolid = 0;
+    trace.normal.v.m128_f32[1] = fraction;
+    trace.normal.v.m128_f32[2] = 0.0f;
+    memset(&trace.endpos.v.m128_f32[1], 0, 12);
+    const IVPointer<XModel>* models = obj->models;
+    int v23 = 0;
+    if (obj->numModels != 0)
+    {
+        for (; v23 < obj->numModels; ++v23, ++models)
+        {
+            XModel* mValue = models->mValue;
+            TPakId mPakId = models->mPakId;
+            ValidatePakId(mPakId);
+            int v12 = 0;
+            if (((XModelView*)mValue)->lod[0] == nullptr)
+            {
+                do
+                {
+                    ++v12;
+                } while (((XModelView*)mValue)->lod[v12] == nullptr);
+            }
+            void* xmodelParts = ((XModelView*)mValue)->lod[v12]->xmodelParts;
+            int part = XModelTraceLine(
+                IVPointer<XModel>(mPakId, mValue), &trace, mats,
+                localStart.v.m128_f32, localEnd.v.m128_f32, contentmask);
+            if (part >= 0)
+                results->partName_mHash =
+                    ((XModelParts*)xmodelParts)->GetBoneNameHash((unsigned int)part);
+        }
+    }
+    results->fraction = trace.normal.v.m128_f32[1];
+    results->normal[0] = trace.endpos.v.m128_f32[1];
+    results->normal[1] = trace.endpos.v.m128_f32[2];
+    results->surfaceflags = (int)trace.normal.v.m128_f32[2];
+    results->normal[2] = trace.endpos.v.m128_f32[3];
+}
 
 // ============================================================================
 // reserved_dlist<trRefEntity>
@@ -1615,41 +2268,6 @@ bool LightEraserPred::operator()(const LightEffect* effect)
     return effect == nullptr;
 }
 
-// IVPointer<XModelParts>
-template <class T>
-class IVPointer {
-public:
-    T* mValue;                         // +0x00
-    TPakId mPakId;                     // +0x04
-    IVPointer();                       // ??0?$IVPointer@VXModelParts@@@@QAE@XZ @ 0x6EAC30
-    IVPointer(TPakId pakId, T* value); // ...QAE@W4TPakId@@PAVXModelParts@@@Z @ 0x6EAC10
-    T* operator*();                    // ??D?$IVPointer@VXModelParts@@@@QAEPAVXModelParts@@XZ @ 0x6ED020
-private:
-    T* Deref() const;                  // ?Deref@?$IVPointer@VXModelParts@@@@ABEPAVXModelParts@@XZ @ 0x6EA440
-};
-extern void ValidatePakId(TPakId pakId);  // ?ValidatePakId@@YAXW4TPakId@@@Z
-template <class T>
-IVPointer<T>::IVPointer()
-    : mValue(nullptr), mPakId((TPakId)0xFFFFFFFF)
-{
-}
-template <class T>
-IVPointer<T>::IVPointer(TPakId pakId, T* value)
-    : mValue(value), mPakId(pakId)
-{
-}
-template <class T>
-T* IVPointer<T>::Deref() const
-{
-    ValidatePakId(mPakId);
-    return mValue;
-}
-template <class T>
-T* IVPointer<T>::operator*()
-{
-    ValidatePakId(mPakId);
-    return mValue;
-}
 template class IVPointer<XModelParts>;
 
 // nglMeshIterator<cdDynamicDecalVertex, unsigned short>
@@ -1967,8 +2585,47 @@ public:
     T* mpFree;                       // +0x00
     int mUsed;                       // +0x04
     int mFree;                       // +0x08
+    T* Alloc();                      // ?Alloc@?$cFreeList@...@@QAEP...@@XZ
     void Free(T* ptr);               // ?Free@?$cFreeList@...@@QAEXPA...@@@Z
 };
+template <class T>
+T* cFreeList<T>::Alloc()  // @ 0x6E9460/0x6E9560/0x6E9660/0x6E9760
+{
+    T* result = mpFree;
+    if (mpFree != nullptr)
+    {
+        if (mFree > 0)
+        {
+            ++mUsed;
+            --mFree;
+            mpFree = *(T**)result;
+            return result;
+        }
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 49;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "cFreeList is full (%d used).  Think about deleting some objects or expanding the list.",
+                   mUsed))
+        {
+            __debugbreak();
+            return nullptr;
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FreeList.h";
+        AeAssert::gCurrentLine = 61;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("cFreeList Alloc is out of items.  %d used.", mUsed))
+            __debugbreak();
+    }
+    return nullptr;
+}
 template <class T>
 void cFreeList<T>::Free(T* ptr)
 {
@@ -1984,6 +2641,10 @@ template class cFreeList<DObj>;
 template class cFreeList<DSkel>;
 template class cFreeList<DSkelMax>;
 template class cFreeList<DSkel4>;
+template DObj* cFreeList<DObj>::Alloc();
+template DSkel* cFreeList<DSkel>::Alloc();
+template DSkelMax* cFreeList<DSkelMax>::Alloc();
+template DSkel4* cFreeList<DSkel4>::Alloc();
 
 // std::allocator::construct
 template <class T>
