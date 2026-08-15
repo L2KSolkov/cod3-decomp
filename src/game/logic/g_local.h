@@ -1511,7 +1511,9 @@ struct BrocExports {
     uint8_t _pad[0x58];
     void (*mAnimIndexResolver)(const int, const int, const int,
                                const int);      // +0x58
-    uint8_t _pad5C[0x90 - 0x5C];
+    uint8_t _pad5C[0x6C - 0x5C];
+    unsigned int (*mAnimResolver)(const char*, const char*);  // +0x6C
+    uint8_t _pad70[0x90 - 0x70];
     void (*mAnimDebug)(Broc::entity);       // +0x90 (game2.o inspector)
     uint8_t _pad94[0xD8 - 0x94];
     void (*mCallbackMineFailed)(unsigned int);            // +0xD8

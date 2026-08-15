@@ -56,6 +56,7 @@ struct brocFunctionLookup {  // IDA type 5907
     unsigned int (__cdecl* mFunction)(void*);  // +0x04
 };
 extern brocFunctionLookup broFuncLookupTable[70];  // ?broFuncLookupTable@BrocHelper@@3PAUbrocFunctionLookup@1@A @ 0x1329E80
+void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));  // ?RegisterBroFunc@BrocHelper@@YAXPADP6AIPAX@Z (0x5BE1A0)
 void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
 int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
 void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
@@ -2927,6 +2928,25 @@ void SetActionHint(int hash, int viewport);    // 0x5BF940
 void SetWeaponCameraShakeScale(float scale, int onlyADS);  // 0x5BF860
 void NoClip(int val);  // 0x5BFB90
 unsigned int GetNumVehicles();  // 0x5BEC40
+int GetNode(const Broc::string& inName, const Broc::string& key,
+            int* array, int capacity);  // 0x5BEAF0
+int GetVehicleNode(const Broc::string& inName, const Broc::string& key,
+                   int* array, int capacity);  // 0x5BEB90
+bool BROC_AttachCurveEntity(unsigned int entityHandleVal,
+                            Broc::string& filename);  // 0x5BED00
+int CheckWave(const Broc::string& script);  // 0x5BED90
+int GetAnimFromScriptCVars();  // 0x5BEEB0
+bool IsModelLoaded(const Broc::string& modelName, TPakInfo pakInfo);  // 0x5BEFB0
+void ValidateLightVis(int eType);  // 0x5BF0B0
+void ActorScr_Clamp_0_1(actor_s* a, int offset, float* val);  // 0x5BF110
+void ActorScr_ReadOnly(actor_s* a, int offset, void* val);  // 0x5BF1D0
+void SetGameVectorVar(unsigned int hashVarName,
+                      const Broc::vector& vect);  // 0x5BFA30
+Broc::vector GetGameVectorVar(unsigned int hashVarName);  // 0x5BFAD0
+bool IsValidClientType(Entity* pEnt);  // 0x5C0B00
+void MPScript_RequestRespawn(unsigned int playerID);  // 0x5C0B60
+void Mover_GravityMove(Entity* pEnt, const float* const vVel,
+                       float fTotalTime, float gravityOverride);  // 0x5C0910
 }
 
 static void BrocFree(void* p)
@@ -6628,6 +6648,321 @@ unsigned int BrocSys::GetNumVehicles()
         } while (MaxVehicles != 0);
     }
     return result;
+}
+
+// ============================================================================
+// scr.o batch 31 - BrocSys wrappers (RegisterBroFunc..Mover_GravityMove)
+// ============================================================================
+
+extern void* G_GetModel(const char* modelName, TPakId pakId);
+    // ?G_GetModel@@YAPAXPBDW4TPakId@@@Z (g.o 0x464C70)
+extern char* Cvar_VariableString(const char* var_name);  // core.o
+extern bool AttachCurveEntity(unsigned int entityHandleVal,
+                              char* filename);  // g_cmd.cpp
+
+// ea: 0x005BE1A0
+void BrocHelper::RegisterBroFunc(char* name,
+                                 unsigned int (__cdecl* func)(void*))
+{
+    BrocHelper::brocFunctionLookup* v2 = BrocHelper::broFuncLookupTable;
+    for (int i = 0; i < 70; ++i)
+    {
+        if (v2->mHashedName == 0)
+        {
+            v2->mHashedName = HashString::CalcHash(name);
+            v2->mFunction = func;
+            return;
+        }
+        ++v2;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+    AeAssert::gCurrentLine = 5424;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error(
+            "Out of lookup entries. Increase MAX_BRO_FUNCTION_LOOKUPS(BrocSys.h)"))
+        __debugbreak();
+}
+
+// ea: 0x005BEAF0
+int BrocSys::GetNode(const Broc::string& inName, const Broc::string& key,
+                     int* array, int capacity)
+{
+    (void)capacity;
+    int Node = PathNodeMgr::sInst->GetNode(inName, key, array);
+    int v4 = Node;
+    if (array == nullptr && Node < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 889;
+        AeAssert::gCurrentExpr = "array || node >= 0";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v5 = inName.mBlock != nullptr
+                                 ? (const char*)(inName.mBlock + 1)
+                                 : defaultFileName;
+            const char* v6 = key.mBlock != nullptr
+                                 ? (const char*)(key.mBlock + 1)
+                                 : defaultFileName;
+            if (AeAssert::Assert("Failed to get pathnode with %s = %s", v6, v5))
+                __debugbreak();
+        }
+    }
+    return v4;
+}
+
+// ea: 0x005BEB90
+int BrocSys::GetVehicleNode(const Broc::string& inName,
+                            const Broc::string& key, int* array,
+                            int capacity)
+{
+    (void)capacity;
+    int v4 = 0;
+    if (inName.mBlock == nullptr || key.mBlock == nullptr)
+        v4 = 1;
+    int result = PathNodeMgr::sInst->GetVehicleNodeIndex(
+        inName, key, array, v4);
+    int node = result;
+    if (array == nullptr && result < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 906;
+        AeAssert::gCurrentExpr = "array || node >= 0";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v7 = inName.mBlock != nullptr
+                                 ? (const char*)(inName.mBlock + 1)
+                                 : defaultFileName;
+            const char* v8 = key.mBlock != nullptr
+                                 ? (const char*)(key.mBlock + 1)
+                                 : defaultFileName;
+            if (AeAssert::Assert("Failed to get vehicle node with %s = %s",
+                                 v8, v7))
+                __debugbreak();
+        }
+        return node;
+    }
+    return result;
+}
+
+// ea: 0x005BED00
+bool BrocSys::BROC_AttachCurveEntity(unsigned int entityHandleVal,
+                                     Broc::string& filename)
+{
+    if (filename.mBlock != nullptr)
+        return AttachCurveEntity(entityHandleVal,
+                                 (char*)(filename.mBlock + 1));
+    else
+        return AttachCurveEntity(entityHandleVal, (char*)defaultFileName);
+}
+
+// ea: 0x005BED90
+int BrocSys::CheckWave(const Broc::string& script)
+{
+    const char* v1 = script.mBlock != nullptr
+                         ? (const char*)(script.mBlock + 1)
+                         : defaultFileName;
+    return SoundDevice::sInst->FindWave(v1) != NSL_WAVE_ID_INVALID;
+}
+
+// ea: 0x005BEEB0
+int BrocSys::GetAnimFromScriptCVars()
+{
+    Broc::string animTree(Cvar_VariableString("script_animtree"));
+    Broc::string animName(Cvar_VariableString("script_name"));
+    if (animTree.mBlock != nullptr
+        && animTree.mBlock + 1 != (Broc::string::Block*)-12
+        && *(char*)(animTree.mBlock + 1) != 0
+        && animName.mBlock != nullptr
+        && animName.mBlock + 1 != (Broc::string::Block*)-12
+        && *(char*)(animName.mBlock + 1) != 0)
+    {
+        unsigned int v4 = gpBrocAPI->mBrocExports.mAnimResolver(
+            (const char*)(animTree.mBlock + 1),
+            (const char*)(animName.mBlock + 1));
+        return (int)v4;
+    }
+    return 0;
+}
+
+// ea: 0x005BEFB0
+bool BrocSys::IsModelLoaded(const Broc::string& modelName, TPakInfo pakInfo)
+{
+    if (modelName.mBlock == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 2943;
+        AeAssert::gCurrentExpr = "modelName.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("IsModelLoaded: model name undefined."))
+            __debugbreak();
+        if (modelName.mBlock == nullptr)
+            return false;
+    }
+    TPakId v3;
+    if (pakInfo != kTPakInfoInvalid)
+        v3 = *(TPakId*)((char*)pakInfo + 0xB4);
+    else
+        v3 = CurPakId();
+    if (modelName.mBlock != nullptr)
+        return G_GetModel((const char*)(modelName.mBlock + 1), v3) != nullptr;
+    else
+        return G_GetModel(defaultFileName, v3) != nullptr;
+}
+
+// ea: 0x005BF0B0
+void BrocSys::ValidateLightVis(int eType)
+{
+    if (eType != 0 && eType != 7)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 4731;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v1 = va(
+                "(un)lockLightVis: entity type '%i' is not yet handled, get a coder to fix it\n",
+                eType);
+            if (AeAssert::Warning(v1))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x005BF110
+void BrocSys::ActorScr_Clamp_0_1(actor_s* a, int offset, float* val)
+{
+    float v4 = *val;
+    float* v5 = (float*)((char*)a + offset);
+    if (*val <= 1.0f)
+    {
+        if (v4 < 0.0f)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 5412;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                if (AeAssert::Warning(
+                        "actor field clamped from %g to 0\n", v5))
+                    __debugbreak();
+            }
+            v4 = 0.0f;
+        }
+        *v5 = v4;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 5407;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            if (AeAssert::Warning(
+                    "actor field clamped from %g to 1\n", v5))
+                __debugbreak();
+        }
+        *v5 = 1.0f;
+    }
+}
+
+// ea: 0x005BF1D0
+void BrocSys::ActorScr_ReadOnly(actor_s* a, int offset, void* val)
+{
+    (void)a;
+    (void)offset;
+    (void)val;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+    AeAssert::gCurrentLine = 5421;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Actor field is read only!"))
+        __debugbreak();
+}
+
+// ea: 0x005BFA30
+void BrocSys::SetGameVectorVar(unsigned int hashVarName,
+                               const Broc::vector& vect)
+{
+    unsigned int val[3];
+    val[0] = (unsigned int&)vect.x;
+    val[1] = (unsigned int&)vect.y;
+    val[2] = (unsigned int&)vect.z;
+    CheckpointMgr::sInst->SetGameVar(hashVarName, val, 3u);
+}
+
+// ea: 0x005BFAD0
+Broc::vector BrocSys::GetGameVectorVar(unsigned int hashVarName)
+{
+    Broc::vector vect;
+    vect.x = sNaN;
+    vect.y = sNaN;
+    vect.z = sNaN;
+    CheckpointMgr::sInst->GetGameVar(hashVarName, (unsigned int*)&vect, 3u);
+    return vect;
+}
+
+// ea: 0x005C0B00
+bool BrocSys::IsValidClientType(Entity* pEnt)
+{
+    if (pEnt != nullptr && pEnt->client != nullptr)
+        return true;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+    AeAssert::gCurrentLine = 62;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored())
+    {
+        const char* v2 = va("entity is not a player");
+        if (AeAssert::Warning(v2))
+            __debugbreak();
+    }
+    return false;
+}
+
+// ea: 0x005C0B60
+void BrocSys::MPScript_RequestRespawn(unsigned int playerID)
+{
+    MultiplayerMgr::sInst->SendRespawnRequest(playerID);
+}
+
+// ea: 0x005C0910
+void BrocSys::Mover_GravityMove(Entity* pEnt, const float* const vVel,
+                                float fTotalTime, float gravityOverride)
+{
+    trajectory_t* p_pos = &pEnt->s.pos;
+    pEnt->s.pos.trTime = level.time;
+    pEnt->s.pos.trDuration = (int)(fTotalTime * 1000.0);
+    memcpy(pEnt->s.pos.trBase,
+           &pEnt->r.currentOrigin.v.m128_f32[0],
+           sizeof(pEnt->s.pos.trBase));
+    pEnt->s.pos.trDelta[0] = vVel[0];
+    float v5 = pEnt->s.pos.trDelta[0];
+    pEnt->s.pos.trDelta[1] = vVel[1];
+    pEnt->s.pos.trDelta[2] = vVel[2];
+    if (IS_NAN(v5) || IS_NAN(pEnt->s.pos.trDelta[1])
+        || IS_NAN(pEnt->s.pos.trDelta[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityMove.cpp";
+        AeAssert::gCurrentLine = 291;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    p_pos->trType = TR_GRAVITY;
+    pEnt->s.pos.trGravityOverride = (int)gravityOverride;
+    BG_EvaluateTrajectory(p_pos, level.time, pEnt->r.currentOrigin);
+    g_LinkEntity(pEnt);
 }
 
 // ============================================================================
