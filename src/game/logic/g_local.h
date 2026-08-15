@@ -1331,9 +1331,17 @@ struct scr_data_t {
     int          levelscript;             // +0x000
     int          scripted_init;           // +0x004
     uint8_t      _pad8[0x60C - 0x8];      // generic_human/anim/classMap
+
+    struct __unnamed {
+        uint8_t data[0x5B8];
+        __unnamed();   // ??0__unnamed@scr_data_t@@QAE@XZ (g.o 0x4B05A0)
+        ~__unnamed();  // ??1__unnamed@scr_data_t@@QAE@XZ (g.o 0x4B08A0)
+    };
     corpseInfo_t actorCorpseInfo[16];     // +0x60C (0x1C0 bytes)
     uint8_t      _pad7CC[0x7D4 - 0x7CC];
     AnimTree*    generic_human_tree;      // +0x7D4
+
+    ~scr_data_t();  // ??1scr_data_t@@QAE@XZ (g.o 0x4B23C0)
 };
 static_assert(offsetof(scr_data_t, actorCorpseInfo) == 0x60C,
               "scr_data_t::actorCorpseInfo offset mismatch");

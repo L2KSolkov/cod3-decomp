@@ -2505,6 +2505,35 @@ level_locals_t::__unnamed::__unnamed()
     v = 0;
 }
 
+// scr_data_t::__unnamed ctor/dtor (g.o 0x4B05A0 / 0x4B08A0)
+// Layout: 28 Broc::strings (+8..+332), 91 scr_animscript_t (+336..+1428),
+// 5 Broc::strings (+1436..+1456).
+scr_data_t::__unnamed::__unnamed()
+{
+    for (int i = 0; i < 28; ++i)
+        new (data + 8 + i * 4) Broc::string((Broc::string::Block*)nullptr);
+    for (int i = 0; i < 91; ++i)
+        new (data + 336 + i * 12) scr_animscript_t();
+    for (int i = 0; i < 5; ++i)
+        new (data + 1436 + i * 4) Broc::string((Broc::string::Block*)nullptr);
+}
+scr_data_t::__unnamed::~__unnamed()
+{
+    for (int i = 4; i >= 0; --i)
+        ((Broc::string*)(data + 1436 + i * 4))->~string();
+    for (int i = 90; i >= 0; --i)
+        ((scr_animscript_t*)(data + 336 + i * 12))->~scr_animscript_t();
+    for (int i = 27; i >= 0; --i)
+        ((Broc::string*)(data + 8 + i * 4))->~string();
+}
+static scr_data_t::__unnamed s_force_scr_unnamed_emit;
+
+// scr_data_t dtor (g.o 0x4B23C0)
+scr_data_t::~scr_data_t()
+{
+    // binary: destroys debris.debug string + anim __unnamed
+}
+
 // level_locals_t::Clear (g.o 0x4AFD40)
 void level_locals_t::Clear()
 {
