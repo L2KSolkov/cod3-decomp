@@ -2651,8 +2651,8 @@ void TossClientItems(Entity* self)
                     math::Dir3 v13 = native_to_cdl_dir3(v6->s.pos.trDelta);
                     math::Position3 v12;
                     v12 = native_to_cdl_pos3(v6->s.pos.trBase);
-                    MultiplayerMgr::sInst->DropWeapon(v3, v16.mVal, &v12, &v14,
-                                                      &v13, count2, count);
+                    MultiplayerMgr::sInst->DropWeapon(v3, v16.mVal, v12, v14,
+                                                      v13, count2, count);
                 }
             }
         }
@@ -2727,7 +2727,7 @@ void Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
         CalcMuzzlePoint(attacker, muzzlePoint);
         MultiplayerMgr::sInst->SpreadFire(attacker, attacker->client->fGunPitch,
                                           attacker->client->fGunYaw,
-                                          muzzlePoint.v.m128_f32, pWeapInfo->index,
+                                          muzzlePoint, pWeapInfo->index,
                                           spread, coneAngleTangent, time);
         G_BulletFireSpread(weaponEnt, attacker, wp, damage, spread, weaponEnt,
                            coneAngleTangent, time);

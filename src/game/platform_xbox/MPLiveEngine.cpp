@@ -175,21 +175,6 @@ void MultiplayerMgr::ExitLevel() {}
 void MultiplayerMgr::StartDevServer() {}
 void MultiplayerMgr::MapRestart() {}
 void MultiplayerMgr::SpotEntity(Entity* ent) { (void)ent; }
-void MultiplayerMgr::PlayerDamage(Entity* h, Entity* a,
-                                  const math::Position3& p,
-                                  const math::Dir3& n, int w, float d,
-                                  unsigned char m, int df, hitLocation_t hl)
-{
-    (void)h; (void)a; (void)p; (void)n; (void)w; (void)d; (void)m;
-    (void)df; (void)hl;
-}
-void MultiplayerMgr::VehicleDamage(Entity* h, Entity* a,
-                                   const math::Position3& p,
-                                   const math::Dir3& n, float d, int w,
-                                   unsigned char m, int df)
-{
-    (void)h; (void)a; (void)p; (void)n; (void)d; (void)w; (void)m; (void)df;
-}
 void MultiplayerMgr::VehicleDeath(Entity* h, Entity* k, int w, int m)
 {
     (void)h; (void)k; (void)w; (void)m;
@@ -227,33 +212,10 @@ bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
     (void)player;
     return false;
 }
-void MultiplayerMgr::DropWeapon(int weapon, int netIndex,
-                                const math::Position3* position,
-                                const math::Position3* angles,
-                                const math::Dir3* velocity, int clipCount,
-                                int ammoCount)
-{
-    (void)weapon; (void)netIndex; (void)position; (void)angles;
-    (void)velocity; (void)clipCount; (void)ammoCount;
-}
-void MultiplayerMgr::SpreadFire(Entity* player, float gunPitch, float gunYaw,
-                                float* weaponPosition, int weapon,
-                                float spread, float coneAngleTangent, int seed)
-{
-    (void)player; (void)gunPitch; (void)gunYaw; (void)weaponPosition;
-    (void)weapon; (void)spread; (void)coneAngleTangent; (void)seed;
-}
 void MultiplayerMgr::PickupItem(int netIndex, int itemType, Entity* player,
                                 bool scriptFrom)
 {
     (void)netIndex; (void)itemType; (void)player; (void)scriptFrom;
-}
-void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
-                                                math::Position3* position,
-                                                math::Position3* angles,
-                                                float* velocity)
-{
-    (void)vehicle; (void)position; (void)angles; (void)velocity;
 }
 void MultiplayerMgr::AttemptToGetInVehicle(Entity* vehicle, Entity* player,
                                            int seatIdx, int entryIdx)
@@ -268,18 +230,6 @@ void MultiplayerMgr::AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
 void MultiplayerMgr::GetOutOfVehicle(Entity* vehicle, int seatIdx)
 {
     (void)vehicle; (void)seatIdx;
-}
-void MultiplayerMgr::VehicleFireMissile(Entity* vehEnt, int weapon,
-                                        const math::Position3* position,
-                                        const math::Dir3* dir)
-{
-    (void)vehEnt; (void)weapon; (void)position; (void)dir;
-}
-void MultiplayerMgr::FireArtillery(Entity* attacker, int weapon,
-                                   const math::Position3* position, int seed,
-                                   bool fire)
-{
-    (void)attacker; (void)weapon; (void)position; (void)seed; (void)fire;
 }
 void MultiplayerMgr::VehicleMantled(Entity* vehicle, Entity* killer)
 {
@@ -366,11 +316,6 @@ unsigned int MPPlayerSet::highestPlayerIndex() const
 {
     return 0;
 }
-MPPlayerManager* MPPeer::GetPlayerManager()
-{
-    return nullptr;
-}
-
 // ============================================================================
 // MPLiveEngine
 // ============================================================================

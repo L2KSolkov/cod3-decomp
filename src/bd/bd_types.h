@@ -83,7 +83,8 @@ static_assert(sizeof(bdInAddr) == 4, "bdInAddr size mismatch");
 // ============================================================================
 // bdInetAddr - internet address (4 bytes). Verified against IDA (bdInetAddr.obj).
 // ============================================================================
-struct bdInetAddr {
+class bdInetAddr {
+public:
     bdInAddr m_addr;  // +0x00
 
     bdInetAddr() {}
@@ -307,7 +308,8 @@ static_assert(sizeof(bdFastArray<char>) == 0x0C, "bdFastArray size mismatch");
 // bdArray<T> — bdFastArray alias (12 bytes)
 // ============================================================================
 template <typename T>
-struct bdArray {
+class bdArray {
+public:
     T*           m_data;     // +0x00
     unsigned int m_capacity; // +0x04
     unsigned int m_size;     // +0x08

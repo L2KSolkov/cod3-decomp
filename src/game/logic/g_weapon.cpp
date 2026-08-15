@@ -820,7 +820,7 @@ void Weapon_Artillery_Fire(Entity* ent, float spread, weaponParms* wp,
     v16.v.m128_f32[3] = 0.0f;
     if (ent->s.eType == 14)
     {
-        MultiplayerMgr::sInst->VehicleFireMissile(ent, ent->s.weapon, &v17, &v16);
+        MultiplayerMgr::sInst->VehicleFireMissile(ent, ent->s.weapon, v17, v16);
     }
     else
     {
@@ -910,7 +910,7 @@ void Weapon_ArtilleryStrike_Fire(Entity* ent, float spread, weaponParms* wp)
     position.v.m128_f32[1] = (v17 * forward[1]) + trace.endpos.v.m128_f32[1];
     position.v.m128_f32[2] = (v17 * forward[2]) + trace.endpos.v.m128_f32[2];
     position.v.m128_f32[3] = 0.0f;
-    MultiplayerMgr::sInst->FireArtillery(ent, pWeapInfo->index, &position,
+    MultiplayerMgr::sInst->FireArtillery(ent, pWeapInfo->index, position,
                                          level.time, false);
 }
 

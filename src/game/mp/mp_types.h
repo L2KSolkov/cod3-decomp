@@ -150,6 +150,7 @@ struct TPlayerStatsInfo {
 namespace PlayerStats {
 int ScoreForStat(int stat, int value);  // ?ScoreForStat@PlayerStats@@YAHHH@Z (mp.o 0x734660)
 int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o 0x7346D0)
+int TotalScoreForSingleStat(int stat, int value);  // ?TotalScoreForSingleStat@PlayerStats@@YAHHH@Z (mp.o 0x7347C0)
 extern TPlayerStatsInfo playerStatsInfo[];  // ?playerStatsInfo@PlayerStats@@3PAUTPlayerStatsInfo@@A @ 0xE36E90
 }
 
@@ -243,6 +244,7 @@ public:
     void UpdateFromLocalVehicle();      // ?UpdateFromLocalVehicle@MPVehicle@@QAEXXZ (mp.o 0x736F10)
     void SeatChange(MPPlayer* player, int newSeatIdx);  // ?SeatChange@MPVehicle@@QAEXPAVMPPlayer@@H@Z (mp.o 0x72E780)
     void GetOutOfVehicle(MPPlayer* player, int health, bool unlinkVehicle);  // ?GetOutOfVehicle@MPVehicle@@QAEXPAVMPPlayer@@H_N@Z (mp.o)
+    bool IsPhysicsPaused() const;       // ?IsPhysicsPaused@MPVehicle@@QBE_NXZ (mp.o 0x736EE0)
 };
 static_assert(sizeof(MPVehicle) == 0x210, "MPVehicle size mismatch");
 
@@ -416,6 +418,8 @@ public:
     static void NextRoundServerParams();       // ?NextRoundServerParams@MPUIInterface@@SAXXZ (mp.o 0x7300D0)
     static void StartGame(bool forceRestart, bool blockUntilNetReady);  // ?StartGame@MPUIInterface@@SA_N_N0@Z (mp.o)
     static void SetupCvars(bool useCurrent);   // ?SetupCvars@MPUIInterface@@SAX_N@Z (mp.o)
+    static const bool IsLANGame();  // ?IsLANGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F470)
+    static const bool IsLocalGame();  // ?IsLocalGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F490)
 
     static int  mReturnMenu;  // ?mReturnMenu@MPUIInterface@@1HA @ 0xF0A124
     static bool mKicked;      // ?mKicked@MPUIInterface@@1_NA @ 0xF0A128
@@ -482,9 +486,18 @@ public:
     int     mTopLine;    // +0x60
     int     mSelectedLine;  // +0x64
     uint8_t _pad2[172 - 0x68];
-    virtual ~UIListBox();          // ??1UIListBox@@UAE@Z (shell.o)
-    virtual short OnUp(int c);     // ?OnUp@UIListBox@@UAEFH@Z (shell.o 0x184290)
-    virtual short OnDown(int c);   // ?OnDown@UIListBox@@UAEFH@Z (shell.o 0x184340)
+    virtual ~UIListBox();                // slot 0 ??1UIListBox@@UAE@Z (shell.o)
+    virtual void Clear();                // slot 1 ?Clear@UIListBox@@UAEXXZ
+    virtual void ClearRow(int row);      // slot 2 ?ClearRow@UIListBox@@UAEXH@Z
+protected:
+    virtual void SelectLine(int a, int b);  // slot 3 (MAEXHH)
+public:
+    virtual void SelectLine(int line);      // slot 4 ?SelectLine@UIListBox@@UAEXH@Z
+    virtual short OnUp(int c);              // slot 5 ?OnUp@UIListBox@@UAEFH@Z (shell.o 0x184290)
+    virtual short OnDown(int c);            // slot 6 ?OnDown@UIListBox@@UAEFH@Z (shell.o 0x184340)
+    virtual void Update(float time_inc);    // slot 7 ?Update@UIListBox@@UAEXM@Z
+    virtual void Draw();                    // slot 8 ?Draw@UIListBox@@UAEXXZ
+    virtual void Refresh();                 // slot 9 ?Refresh@UIListBox@@UAEXXZ
     void RemoveAllItems();  // ?RemoveAllItems@UIListBox@@QAEXXZ (shell.o 0x5816B0)
 };
 static_assert(sizeof(UIListBox) == 172, "UIListBox size mismatch");
@@ -492,6 +505,7 @@ static_assert(sizeof(UIListBox) == 172, "UIListBox size mismatch");
 class PanelFile {
 public:
     void UpdateWidescreen(bool widescreen, float about_x);  // ?UpdateWidescreen@PanelFile@@QAEX_NM@Z (shell.o)
+    void Draw();  // ?Draw@PanelFile@@QAEXXZ (shell.o)
 };
 
 // FEMenu base (0x4C) - minimal view; members/virtuals used by mp.o overrides
@@ -514,7 +528,8 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pf);  // slot 1 shell.o 0x5B7570
     virtual void UpdateWidescreen(bool widescreen); // slot 2 shell.o 0x57DF20
     virtual ~FEMenu();                               // slot 3 shell.o 0x592150
-    virtual void Update(float time_inc);             // slot 27 shell.o (?Update@FEMenu@@UAEXM@Z)
+    virtual void Draw();                             // slot 20 shell.o (?Draw@FEMenu@@UAEXXZ)
+    virtual void Update(float time_inc);             // slot 23 shell.o (?Update@FEMenu@@UAEXM@Z)
     virtual void OnActivate();                       // slot 28 shell.o 0x570750
     virtual void OnUp(int c);                        // slot 32 shell.o 0x5AE910
     virtual void OnDown(int c);                      // slot 33 shell.o 0x5AE920
@@ -648,6 +663,7 @@ public:
     virtual ~MPOptionsSoundMenu();        // ??1MPOptionsSoundMenu@@UAE@XZ (mp.o 0x730DE0)
     static MPOptionsSoundMenu* Me();  // ?Me@MPOptionsSoundMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsSoundMenu@@UAEXM@Z
+    virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x7311F0)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsSoundMenu@@UAEX_N@Z (mp.o 0x731560)
     virtual void ButtonHeldAction();  // ?ButtonHeldAction@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x731440)
     virtual void OnActivate();        // ?OnActivate@MPOptionsSoundMenu@@UAEXXZ (mp.o 0x73E0D0)
@@ -669,15 +685,18 @@ public:
     virtual ~MPOptionsControlsMenu();        // ??1MPOptionsControlsMenu@@UAE@XZ (mp.o 0x731600)
     static MPOptionsControlsMenu* Me();  // ?Me@MPOptionsControlsMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsControlsMenu@@UAEXM@Z
+    virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x731B00)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsControlsMenu@@UAEX_N@Z (mp.o 0x7320F0)
     virtual void ButtonHeldAction();  // ?ButtonHeldAction@MPOptionsControlsMenu@@UAEXXZ (mp.o 0x731E80)
     virtual void OnActivate(int previous);  // ?OnActivate@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E230)
+    virtual void OnTriangle(int c);   // ?OnTriangle@MPOptionsControlsMenu@@UAEXH@Z (mp.o 0x73E340)
     static const char* const kControlsOptionStrings[];       // @ 0xD194B8
     static const char* const kControlsInstructionStrings[];  // @ 0xD19500
     static const char* const kStickLayoutStrings[];          // @ 0xD194D8
     static const char* const kButtonLayoutStrings[];         // @ 0xD194E8
 private:
     void SetOptions();  // ?SetOptions@MPOptionsControlsMenu@@AAEXXZ (mp.o 0x731B60)
+    bool SaveOptions();  // ?SaveOptions@MPOptionsControlsMenu@@AAE_NXZ
 };
 
 class MPOptionsGameplayMenu : public FEMenu {
@@ -693,10 +712,12 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732540)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsGameplayMenu@@UAEX_N@Z (mp.o 0x732890)
     virtual void OnActivate();  // ?OnActivate@MPOptionsGameplayMenu@@UAEXXZ (mp.o 0x73E400)
+    virtual void OnTriangle(int c);  // ?OnTriangle@MPOptionsGameplayMenu@@UAEXH@Z (mp.o 0x73E4B0)
     static const char* const kGameplayOptionStrings[4];       // @ 0xD19578
     static const char* const kGameplayInstructionStrings[4];  // @ 0xD195A8
 private:
     void SetOptions();  // ?SetOptions@MPOptionsGameplayMenu@@AAEXXZ (mp.o)
+    bool SaveOptions();  // ?SaveOptions@MPOptionsGameplayMenu@@AAE_NXZ
 };
 
 class MPOptionsPreferencesMenu : public FEMenu {
@@ -711,6 +732,7 @@ public:
     virtual ~MPOptionsPreferencesMenu();        // ??1MPOptionsPreferencesMenu@@UAE@XZ (mp.o 0x732940)
     static MPOptionsPreferencesMenu* Me();  // ?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsPreferencesMenu@@UAEXM@Z
+    virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732F30)
 private:
     void SetOptions();  // ?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ (mp.o 0x732F90)
 };
@@ -738,6 +760,7 @@ public:
     virtual void OnTriangle(int c);                          // ?OnTriangle@MPProfileEditMenu@@UAEXH@Z (mp.o 0x733770)
     virtual void ButtonHeldAction();                         // ?ButtonHeldAction@MPProfileEditMenu@@UAEXXZ (mp.o 0x733890)
     virtual ~MPProfileEditMenu();                            // ??1MPProfileEditMenu@@UAE@XZ (mp.o 0x765750)
+    virtual void Update(float time_inc);  // ?Update@MPProfileEditMenu@@UAEXM@Z (mp.o 0x7333D0)
 };
 
 class MPProfileMainMenu : public FEMenu {
@@ -756,8 +779,10 @@ public:
     static bool DialogResponseProfileLoadOk(int index); // ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734250)
     static bool DialogResponseSaveSuccess(int index);   // ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734290)
     static bool DialogResponseDeleteSuccess(int index); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x7342B0)
+    static bool DialogResponseDeleteConfirm(int index); // ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z (mp.o 0x74EFD0)
     static void LoadProfileData();   // ?LoadProfileData@MPProfileMainMenu@@SAXXZ (mp.o 0x733AF0)
     void ClearEntries();             // ?ClearEntries@MPProfileMainMenu@@QAEXXZ (mp.o 0x733A90)
+    void CreateProfile();            // ?CreateProfile@MPProfileMainMenu@@QAEXXZ (mp.o 0x733D90)
     void DialogDisplayProfileLoading(int delaySecs);  // ?DialogDisplayProfileLoading@MPProfileMainMenu@@QAEXH@Z (shell.o)
     static void DialogDisplayProfileLoadSuccess(int index);  // ?DialogDisplayProfileLoadSuccess@MPProfileMainMenu@@SAXH@Z (mp.o 0x73E7F0)
     void DialogDisplaySaveSuccess();  // ?DialogDisplaySaveSuccess@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EA80)
@@ -765,11 +790,15 @@ public:
     void DialogDisplayNoMemDevice();  // ?DialogDisplayNoMemDevice@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EC40)
     void DialogDisplayDataCorrupt();  // ?DialogDisplayDataCorrupt@MPProfileMainMenu@@QAEXXZ (mp.o 0x73ED20)
     void DialogDisplayNoFreeSpace();  // ?DialogDisplayNoFreeSpace@MPProfileMainMenu@@QAEXXZ (mp.o 0x73EE00)
+    void DialogDisplayDeleting();     // ?DialogDisplayDeleting@MPProfileMainMenu@@QAEXXZ (mp.o 0x73E9F0)
     virtual void Select(int entry_num);  // ?Select@MPProfileMainMenu@@UAEXH@Z (mp.o 0x764210)
     virtual void OnCross(int c);         // ?OnCross@MPProfileMainMenu@@UAEXH@Z (mp.o 0x733D80)
     virtual void OnTriangle(int c);      // ?OnTriangle@MPProfileMainMenu@@UAEXH@Z (mp.o 0x760F90)
+    virtual void ButtonHeldAction();     // ?ButtonHeldAction@MPProfileMainMenu@@UAEXXZ (mp.o 0x734220)
+    virtual void OnActivate(int previous);  // ?OnActivate@MPProfileMainMenu@@UAEXH@Z (mp.o 0x73E7C0)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPProfileMainMenu@@UAEX_N@Z (mp.o 0x733B20)
     virtual void Update(float time_inc);  // ?Update@MPProfileMainMenu@@UAEXM@Z (mp.o 0x74ED90)
+    virtual void Draw();                  // ?Draw@MPProfileMainMenu@@UAEXXZ (mp.o 0x733A60)
 private:
     void LoadSelectedProfile(bool displayDialog);  // ?LoadSelectedProfile@MPProfileMainMenu@@AAEX_N@Z (mp.o 0x75A980)
     void LoadProfilesDone();         // ?LoadProfilesDone@MPProfileMainMenu@@QAEXXZ (mp.o)
@@ -788,15 +817,39 @@ namespace kuju {
 class cBezier {
 public:
     cBezier();  // ??0cBezier@kuju@@QAE@XZ
+    cBezier(const math::Position3& initialPoint,
+            const math::Dir3& initialInflexion,
+            const math::Position3& finalPoint,
+            const math::Dir3& finalInflexion);  // ??0cBezier@kuju@@QAE@ABVPosition3@math@@ABVDir3@3@01@Z (mp.o 0x73EEE0)
     math::Dir3 mAFactor;     // +0x00
     math::Dir3 mBFactor;     // +0x10
     math::Dir3 mCFactor;     // +0x20
     math::Position3 mInitialPoint;  // +0x30
 
+    void reset(const math::Position3& initialPoint,
+               const math::Dir3& initialInflexion,
+               const math::Position3& finalPoint,
+               const math::Dir3& finalInflexion);  // ?reset@cBezier@kuju@@QAEXABVPosition3@math@@ABVDir3@4@01@Z (mp.o 0x7342F0)
     math::Position3 position(float time) const;  // ?position@cBezier@kuju@@QBE?AVPosition3@math@@M@Z (mp.o 0x7343A0)
     math::Dir3 speed(float time) const;          // ?speed@cBezier@kuju@@QBE?AVDir3@math@@M@Z (mp.o 0x734480)
 };
+}  // namespace kuju
 
+// EVoipGroup - voice group states (mp.o GetVoipGroup)
+enum EVoipGroup : int {
+    kVoipGroupSpectating = 0,
+    kVoipGroupDead = 1,
+    kVoipGroupPlaying = 2,
+};
+EVoipGroup GetVoipGroup(int state);  // ?GetVoipGroup@@YA?AW4EVoipGroup@@H@Z (mp.o 0x72C7E0)
+
+// VKMenu - shell.o on-screen keyboard (minimal view; mSlotNum +0x1BC)
+class VKMenu {
+public:
+    static VKMenu* Me();  // ?Me@VKMenu@@SAPAV1@XZ (shell.o)
+};
+
+namespace kuju {
 namespace knetuser {
 class cVoiceNetworkManager {
 public:
@@ -859,9 +912,9 @@ public:
     void initialise();               // ?initialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o)
     void deinitialise();             // ?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ
     void update(const kuju::knet::sTime& time);             // ?update@cVoiceNetworkManager@knetuser@kuju@@QAEXABVsTime@knet@3@@Z (mp.o 0x7500E0)
-    void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
     void check_for_looped();  // ?check_for_looped@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o 0x734EC0)
 private:
+    void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
     void flushFirstPacketInList(unsigned long listIndex,
                                 unsigned int discardData);  // ?flushFirstPacketInList@cVoiceNetworkManager@knetuser@kuju@@AAEXKI@Z (mp.o 0x734D90)
     void determineClosestDestination(sVoicePendingDispatchPacket* packet,
@@ -927,9 +980,9 @@ public:
     void deinitialise();   // ?deinitialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ
     void loadIRXModules(); // ?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ
     void setRemoteListeners(MPPlayerSet& players);  // ?setRemoteListeners@cVoiceManager@kvoicemanager@kuju@@QAEXAAVMPPlayerSet@@@Z
-    virtual void receiveVoiceData(unsigned int fromPlayerIndex,
+    virtual void receiveVoiceData(unsigned long fromPlayerIndex,
                                   unsigned char* buffer,
-                                  unsigned int length);  // ?receiveVoiceData@cVoiceManager@kvoicemanager@kuju@@UAEXKPAEK@Z (mp.o 0x7348F0)
+                                  unsigned long length);  // ?receiveVoiceData@cVoiceManager@kvoicemanager@kuju@@UAEXKPAEK@Z (mp.o 0x7348F0)
 private:
     void startSystem();    // ?startSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ (mp.o 0x734910)
     void stopSystem();     // ?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ
@@ -938,6 +991,7 @@ private:
     void updateLoopback(); // ?updateLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ
     void evaluatePlayers(); // ?evaluatePlayers@cVoiceManager@kvoicemanager@kuju@@AAEXXZ (mp.o 0x74F030)
     void dispatchVoiceData(); // ?dispatchVoiceData@cVoiceManager@kvoicemanager@kuju@@AAEXXZ (mp.o 0x75AAD0)
+    void updateSystem(kuju::knet::sTime& currentTime);  // ?updateSystem@cVoiceManager@kvoicemanager@kuju@@AAEXAAVsTime@knet@3@@Z (mp.o 0x7610D0)
 };
 }
 }

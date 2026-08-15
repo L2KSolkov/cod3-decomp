@@ -2740,8 +2740,8 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         scr_vehicle->phys.prevAngles.v.m128_f32[1] = scr_vehicle->phys.angles.v.m128_f32[1];
         scr_vehicle->phys.prevAngles.v.m128_f32[2] = scr_vehicle->phys.angles.v.m128_f32[2];
         math::Position3 angles = scr_vehicle->phys.angles;
-        MultiplayerMgr::sInst->ApplyLocalPhysicsToVehicle(pSelf, &scr_vehicle->phys.origin,
-                                                          &angles, vel);
+        MultiplayerMgr::sInst->ApplyLocalPhysicsToVehicle(
+            pSelf, scr_vehicle->phys.origin, angles, *vel);
         collision_context_t context;
 
         context.pass_entity1.mHandle.mVal = 0;

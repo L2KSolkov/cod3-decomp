@@ -441,7 +441,8 @@ public:
     MPPeer* mPeer;                  // +0x00
     uint8_t _pad[0x35 - 0x4];
     bool    mRankedGame;            // +0x35
-    uint8_t _pad2[0x40 - 0x36];
+    bool    mInitialized;           // +0x36
+    uint8_t _pad2[0x40 - 0x37];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad3[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
@@ -454,6 +455,8 @@ public:
     bool getEnableLinkCheck();              // ?getEnableLinkCheck@MultiplayerMgr@@QAE_NXZ (sv.o 0x528030)
     void ExitLevel();
     void StartDevServer();
+    void Stop();                                // ?Stop@MultiplayerMgr@@QAEXXZ (mp.o 0x72C480)
+    void AttemptHotJoin(int clientIndex);       // ?AttemptHotJoin@MultiplayerMgr@@QAEXH@Z (mp.o 0x751160)
     void HandleDiscError();                    // ?HandleDiscError@MultiplayerMgr@@QAEXXZ (mp.o 0x72C4A0)
     int  AddTestClient();                      // ?AddTestClient@MultiplayerMgr@@QAEHXZ (mp.o 0x72C4E0)
     bool oneOffCheckLinkStatus();              // ?oneOffCheckLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C6F0)
@@ -497,11 +500,12 @@ public:
     void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,
-                      int weapon, float damage, unsigned char mod, int dflags,
-                      EHitLocation hitLocation);
+                      int weapon, short damage, unsigned char mod,
+                      short dflags, int hitLocation);  // ?PlayerDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@HFEFH@Z (mp.o 0x7503D0)
     void VehicleDamage(Entity* hitEntity, Entity* attacker,
                        const math::Position3& position, const math::Dir3& normal,
-                       float damage, int weapon, unsigned char mod, int dflags);
+                       short damage, int weapon, unsigned char mod,
+                       short dflags);  // ?VehicleDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z (mp.o 0x75AC20)
     void VehicleDeath(Entity* hitEntity, Entity* killer, int weapon, int mod);
     void ProjectileExplosion(Entity* projectile, int weapon,
                              const math::Position3& position, const math::Dir3& normal,
@@ -511,7 +515,7 @@ public:
                     const float* dir, int hitLoc);   // ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z
     void AttemptToRevivePlayer(Entity* player, Entity* medic);  // ?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z
     void RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
-                             Entity* owner, short id);  // ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1F@Z (mp.o 0x7614F0)
+                             Entity* owner, int id);  // ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1H@Z (mp.o 0x7614F0)
     MPEntityHandle RegisterDroppedItem(int itemType, Entity* item, Entity* owner);  // ?RegisterDroppedItem@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z
     Entity* FindDroppedItem(EDroppedItemTypes item, int id,
                             int ownerID);  // ?FindDroppedItem@MultiplayerMgr@@QAEPAVEntity@@W4EDroppedItemTypes@@HH@Z (mp.o 0x761550)
@@ -562,12 +566,13 @@ public:
     void SendBombOperation(const Entity* player, bool defusing);  // ?SendBombOperation@MultiplayerMgr@@QAEXPBVEntity@@_N@Z
     void SendBombOperationEvent(const Entity* player, bool defusing,
                                 bool success);  // ?SendBombOperationEvent@MultiplayerMgr@@QAEXPBVEntity@@_N1@Z
-    void DropWeapon(int weapon, int netIndex, const math::Position3* position,
-                    const math::Position3* angles, const math::Dir3* velocity,
-                    int clipCount, int ammoCount);  // ?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@1ABVDir3@2@HH@Z
+    void DropWeapon(int weapon, int netIndex, const math::Position3& position,
+                    const math::Dir3& angles, const math::Dir3& velocity,
+                    int clipCount, int ammoCount);  // ?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@ABVDir3@3@1HH@Z (mp.o 0x7615C0)
     void SpreadFire(Entity* player, float gunPitch, float gunYaw,
-                    float* weaponPosition, int weapon, float spread,
-                    float coneAngleTangent, int seed);  // ?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMQAMHMHH@Z
+                    const math::Position3& weaponPosition, int weapon,
+                    float spread, float coneAngleTangent,
+                    int seed);  // ?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMABVPosition3@math@@HMMH@Z (mp.o 0x761290)
     void GetNextDroppedItemID(void* result, int itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAEXAAVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z
     ::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z (mp.o 0x7643B0)
     int  GetDroppedItemType(int itemType);   // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z
@@ -577,17 +582,20 @@ public:
                   const math::Dir3& angles, const math::Dir3& velocity,
                   int netIndex, bool scriptFrom,
                   int typeIndex);  // ?DropItem@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@1H_NH@Z (mp.o 0x75AE30)
-    void ApplyLocalPhysicsToVehicle(Entity* vehicle, math::Position3* position,
-                                    math::Position3* angles, float* velocity);  // ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@AAVPosition3@math@@1QAM@Z
+    void ApplyLocalPhysicsToVehicle(Entity* vehicle,
+                                    const math::Position3& position,
+                                    const math::Dir3& angles,
+                                    const math::Dir3& velocity);  // ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z (mp.o 0x75AF40)
     void AttemptToGetInVehicle(Entity* vehicle, Entity* player, int seatIdx,
                                int entryIdx);  // ?AttemptToGetInVehicle@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z
     void AttemptVehicleSeatChange(Entity* vehicle, Entity* player, int newSeatIdx);  // ?AttemptVehicleSeatChange@MultiplayerMgr@@QAEXPAVEntity@@0H@Z
     void GetOutOfVehicle(Entity* vehicle, int seatIdx);  // ?GetOutOfVehicle@MultiplayerMgr@@QAEXPAVEntity@@H@Z
     void VehicleFireMissile(Entity* vehEnt, int weapon,
-                            const math::Position3* position,
-                            const math::Dir3* dir);  // ?VehicleFireMissile@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z
+                            const math::Position3& position,
+                            const math::Dir3& dir);  // ?VehicleFireMissile@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z (mp.o 0x761320)
     void FireArtillery(Entity* attacker, int weapon,
-                       const math::Position3* position, int seed, bool fire);  // ?FireArtillery@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z
+                       const math::Position3& position, int seed,
+                       bool fire);  // ?FireArtillery@MultiplayerMgr@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z (mp.o 0x750370)
     void VehicleMantled(Entity* vehicle, Entity* killer);  // ?VehicleMantled@MultiplayerMgr@@QAEXPAVEntity@@0@Z
     void AnimEvent(int animEvent);  // ?AnimEvent@MultiplayerMgr@@QAEXH@Z
     bool IsHost();                  // ?IsHost@MultiplayerMgr@@QAE_NXZ
@@ -1723,15 +1731,25 @@ inline Entity* MPPlayer::GetEntity()
     return nullptr;
 }
 
-struct MPPlayerManager {
+class MPPlayerManager {
+public:
     MPPlayer* GetPlayer(int id);
     MPPlayer* GetPlayer(unsigned char id);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z (mp.o)
     MPPlayer* GetPlayer(bdReference<bdConnection> connection);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@V?$bdReference@VbdConnection@@@@@Z (mp.o 0x737770)
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
     MPVehicle* GetVehicle(unsigned char vehId);  // ?GetVehicle@MPPlayerManager@@QAEPAVMPVehicle@@E@Z (mp.o inline)
-    bool IsGuest(int controller) const;   // ?IsGuest@MPPlayerManager@@QAE_NH@Z (mp.o 0x72F190)
+    bool IsGuest(int controller);         // ?IsGuest@MPPlayerManager@@QAE_NH@Z (mp.o 0x72F190)
     void SendConsistencyUpdates();        // ?SendConsistencyUpdates@MPPlayerManager@@QAEXXZ (mp.o 0x72F240)
     unsigned char getPlayerIndex(int localPlayer);  // ?getPlayerIndex@MPPlayerManager@@QAEEH@Z (mp.o 0x72ED90)
+    bool AddingLocalPlayer() const;       // ?AddingLocalPlayer@MPPlayerManager@@QBE_NXZ (mp.o 0x72E8D0)
+    void AttemptHotJoin(int clientIndex); // ?AttemptHotJoin@MPPlayerManager@@QAEXH@Z (mp.o 0x748A00)
+    void AddLocalPlayer(int localPlayer); // ?AddLocalPlayer@MPPlayerManager@@QAEXH@Z (mp.o 0x7373F0)
+    void SerializeGameState(bdReference<bdBitBuffer> buffer);    // ?SerializeGameState@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x73A880)
+    void DeserializeGameState(bdReference<bdBitBuffer> buffer);  // ?DeserializeGameState@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x73A8A0)
+    void ApplyLocalPhysicsToVehicle(Entity* vehicle,
+                                    const math::Position3& position,
+                                    const math::Dir3& angles,
+                                    const math::Dir3& velocity);  // ?ApplyLocalPhysicsToVehicle@MPPlayerManager@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z (mp.o 0x75A4F0)
     bool IsLocalPlayer(const Entity* const entity);  // ?IsLocalPlayer@MPPlayerManager@@QAE_NQBVEntity@@@Z (mp.o 0x72EA80)
     bool AnyLocalPlayers();             // ?AnyLocalPlayers@MPPlayerManager@@QAE_NXZ (mp.o 0x72EA10)
     int  GetLocalId(const MPPlayer* player);  // ?GetLocalId@MPPlayerManager@@QAEHPBVMPPlayer@@@Z (mp.o 0x72EB80)
@@ -1800,7 +1818,7 @@ public:
                          int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVMPPlayer@@H@Z (mp.o)
     bool IsPlayerTalking(Entity* player, int local_controller);  // ?IsPlayerTalking@MPPeer@@QAE_NPAVEntity@@H@Z (mp.o 0x740730)
     void DebugPrintTTYSessionInfo();       // ?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ (mp.o 0x72CAE0)
-    bdSession::bdSessionStatus GetSessionStatus() const;  // ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ (mp.o 0x72C890)
+    bdSession::bdSessionStatus GetSessionStatus();  // ?GetSessionStatus@MPPeer@@QAE?AW4bdSessionStatus@bdSession@@XZ (mp.o 0x72C890)
     int  GetQosPing(int qos_handle);       // ?GetQosPing@MPPeer@@QAEHH@Z (mp.o 0x72CA50)
     bdReference<bdConnection> GetConnectionByIndex(unsigned int peerID);  // ?GetConnectionByIndex@MPPeer@@QAE?AV?$bdReference@VbdConnection@@@@I@Z (mp.o 0x735A70)
     void UpdateQosProbe(bdReference<bdCommonAddr> addr, bool bSuccess,
@@ -1865,6 +1883,25 @@ public:
                         int nGameIndex,
                         EGameConnectionType gameState);  // ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z (mp.o 0x764620)
     void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
+    void FireArtillery(Entity* player, int weapon,
+                       const math::Position3& position, int seed,
+                       bool fire);  // ?FireArtillery@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@H_N@Z (mp.o 0x7410A0)
+    void PlayerDamage(Entity* hitEntity, Entity* attacker,
+                      const math::Position3& position,
+                      const math::Dir3& normal, int weapon, short damage,
+                      unsigned char mod, short dflags,
+                      int hitLocation);  // ?PlayerDamage@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@HFEFH@Z (mp.o 0x741840)
+    void SpreadFire(Entity* player, float gunPitch, float gunYaw,
+                    const math::Position3& weaponPosition, int weapon,
+                    float spread, float coneAngleTangent,
+                    int seed);  // ?SpreadFire@MPPeer@@QAEXPAVEntity@@MMABVPosition3@math@@HMMH@Z (mp.o 0x75B0C0)
+    void VehicleDamage(Entity* hitEntity, Entity* attacker,
+                       const math::Position3& position,
+                       const math::Dir3& normal, short damage, int weapon,
+                       unsigned char mod, short dflags);  // ?VehicleDamage@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z (mp.o 0x751200)
+    void VehicleFireMissile(Entity* vehEnt, int weapon,
+                            const math::Position3& position,
+                            const math::Dir3& dir);  // ?VehicleFireMissile@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z (mp.o 0x75BA50)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

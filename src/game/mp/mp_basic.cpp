@@ -872,7 +872,7 @@ const int MPUIInterface::mRespawnTimeList[3] = { 0, 5, 10 };
 // ============================================================================
 // MPPlayerManager (mp.o)
 // ============================================================================
-bool MPPlayerManager::IsGuest(int) const
+bool MPPlayerManager::IsGuest(int)
 {
     return false;
 }
@@ -1179,7 +1179,7 @@ void* MPPeer::operator new(unsigned int s)
 }
 
 // ea: 0x0072C890 (mSession at +0x7448)
-bdSession::bdSessionStatus MPPeer::GetSessionStatus() const
+bdSession::bdSessionStatus MPPeer::GetSessionStatus()
 {
     return ((bdSession*)((char*)this + 0x7448))->getStatus();
 }
@@ -1859,7 +1859,7 @@ kuju::kvoicemanager::cVoiceManager::~cVoiceManager()
 
 // ea: 0x007348F0
 void kuju::kvoicemanager::cVoiceManager::receiveVoiceData(
-    unsigned int fromPlayerIndex, unsigned char*, unsigned int)
+    unsigned long fromPlayerIndex, unsigned char*, unsigned long)
 {
     mRemoteListeners.containsPlayer(fromPlayerIndex);
 }
@@ -2291,11 +2291,11 @@ Entity* MultiplayerMgr::FindDroppedItem(EDroppedItemTypes item, int id,
 // ea: 0x007614F0
 void MultiplayerMgr::RegisterDroppedItem(EDroppedItemTypes itemType,
                                          Entity* item, Entity* owner,
-                                         short id)
+                                         int id)
 {
     if (mPeer != nullptr)
         ((MPPlayerManager*)((char*)mPeer + 0x74E0))
-            ->RegisterDroppedItem(itemType, item, owner, id);
+            ->RegisterDroppedItem(itemType, item, owner, (short)id);
 }
 
 // ea: 0x00751030
@@ -4613,6 +4613,343 @@ void MPPlayerManager::HandleFireMissile(const bdReceivedMessage& receivedMsg)
                 delete msg.m_ptr;
         }
     }
+}
+
+// ============================================================================
+// Batch 12: smallest remaining mp.o functions (menu virtuals, wrappers)
+// ============================================================================
+
+// ea: 0x0072C8A0 (mPlayerManager at +0x74E0)
+MPPlayerManager* MPPeer::GetPlayerManager()
+{
+    return (MPPlayerManager*)((char*)this + 0x74E0);
+}
+
+// ea: 0x0072E8D0 (mLocalPlayerIndex at +0x4111)
+bool MPPlayerManager::AddingLocalPlayer() const
+{
+    return *(unsigned char*)((char*)this + 0x4111) == 17;
+}
+
+// ea: 0x0072F470
+const bool MPUIInterface::IsLANGame()
+{
+    return mGameConnectionType == kGameConnectionTypeLan;
+}
+
+// ea: 0x0072F490
+const bool MPUIInterface::IsLocalGame()
+{
+    return mGameConnectionType == kGameConnectionTypeLocal;
+}
+
+// ea: 0x0074EFD0 (profile dialog: confirm delete -> deleting screen)
+bool MPProfileMainMenu::DialogResponseDeleteConfirm(int index)
+{
+    (void)index;
+    ((MPProfileMainMenu*)g_femanager.fems->menus[27])
+        ->DialogDisplayDeleting();
+    return false;
+}
+
+// ea: 0x007615C0
+void MultiplayerMgr::DropWeapon(int weapon, int netIndex,
+                                const math::Position3& position,
+                                const math::Dir3& angles,
+                                const math::Dir3& velocity, int clipCount,
+                                int ammoCount)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        mPeer->DropWeapon(weapon, netIndex, position, angles, velocity,
+                          clipCount, ammoCount);
+}
+
+// ea: 0x00750370
+void MultiplayerMgr::FireArtillery(Entity* attacker, int weapon,
+                                   const math::Position3& position, int seed,
+                                   bool fire)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        mPeer->FireArtillery(attacker, weapon, position, seed, fire);
+}
+
+// ea: 0x007503D0
+void MultiplayerMgr::PlayerDamage(Entity* hitEntity, Entity* attacker,
+                                  const math::Position3& position,
+                                  const math::Dir3& normal, int weapon,
+                                  short damage, unsigned char mod,
+                                  short dflags, int hitLocation)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        mPeer->PlayerDamage(hitEntity, attacker, position, normal, weapon,
+                            damage, mod, dflags, hitLocation);
+}
+
+// ea: 0x00761290
+void MultiplayerMgr::SpreadFire(Entity* player, float gunPitch, float gunYaw,
+                                const math::Position3& weaponPosition,
+                                int weapon, float spread,
+                                float coneAngleTangent, int seed)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        mPeer->SpreadFire(player, gunPitch, gunYaw, weaponPosition, weapon,
+                          spread, coneAngleTangent, seed);
+}
+
+// ea: 0x007610D0
+void kuju::kvoicemanager::cVoiceManager::updateSystem(
+    kuju::knet::sTime& currentTime)
+{
+    (void)currentTime;
+    evaluatePlayers();
+    dispatchVoiceData();
+}
+
+// ea: 0x0075AC20
+void MultiplayerMgr::VehicleDamage(Entity* hitEntity, Entity* attacker,
+                                   const math::Position3& position,
+                                   const math::Dir3& normal, short damage,
+                                   int weapon, unsigned char mod,
+                                   short dflags)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        mPeer->VehicleDamage(hitEntity, attacker, position, normal, damage,
+                             weapon, mod, dflags);
+}
+
+// ea: 0x00761320
+void MultiplayerMgr::VehicleFireMissile(Entity* vehEnt, int weapon,
+                                        const math::Position3& position,
+                                        const math::Dir3& dir)
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        mPeer->VehicleFireMissile(vehEnt, weapon, position, dir);
+}
+
+// ea: 0x00748A00 (cls.state == CA_ACTIVE == 2)
+void MPPlayerManager::AttemptHotJoin(int clientIndex)
+{
+    if (cls.state == 2)
+        AddLocalPlayer(clientIndex);
+}
+
+// ea: 0x0075AF40 (mPlayerManager at +0x74E0)
+void MultiplayerMgr::ApplyLocalPhysicsToVehicle(
+    Entity* vehicle, const math::Position3& position,
+    const math::Dir3& angles, const math::Dir3& velocity)
+{
+    if (this->mPeer != nullptr)
+        ((MPPlayerManager*)((char*)this->mPeer + 0x74E0))
+            ->ApplyLocalPhysicsToVehicle(vehicle, position, angles, velocity);
+}
+
+// ea: 0x0073A8A0 (empty stub in the release build)
+void MPPlayerManager::DeserializeGameState(bdReference<bdBitBuffer> buffer)
+{
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x0073A880 (empty stub in the release build)
+void MPPlayerManager::SerializeGameState(bdReference<bdBitBuffer> buffer)
+{
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x0072C480
+void MultiplayerMgr::Stop()
+{
+    MPPeer* mPeer = this->mPeer;
+    if (mPeer != nullptr)
+        delete mPeer;
+    this->mPeer = nullptr;
+    this->mInitialized = false;
+}
+
+// ea: 0x007347C0
+int PlayerStats::TotalScoreForSingleStat(int stat, int value)
+{
+    return (int)((float)value
+                 * playerStatsInfo[stat].mContributesToScore);
+}
+
+// ea: 0x00733D90 (VKMenu::mSlotNum at +0x1BC)
+void MPProfileMainMenu::CreateProfile()
+{
+    int highlighted = this->highlighted;
+    *(int*)((char*)VKMenu::Me() + 0x1BC) = highlighted;
+    this->system->gap1C(this->system, 18);
+}
+
+// ea: 0x00736190
+bdReference<bdConnection> MPPlayer::GetConnection() const
+{
+    bdReference<bdConnection> result;
+    result.m_ptr = mConnection.m_ptr;
+    if (mConnection.m_ptr != nullptr)
+        ++mConnection.m_ptr->m_refCount;
+    return result;
+}
+
+// ea: 0x00731B00
+void MPOptionsControlsMenu::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    (void)pPanelFile;
+    FEMenu::Cleanup();
+    if (mInstructionsText != nullptr)
+        delete mInstructionsText;
+    mInstructionsText = nullptr;
+}
+
+// ea: 0x00732F30
+void MPOptionsPreferencesMenu::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    (void)pPanelFile;
+    FEMenu::Cleanup();
+    if (mInstructionsText != nullptr)
+        delete mInstructionsText;
+    mInstructionsText = nullptr;
+}
+
+// ea: 0x007311F0
+void MPOptionsSoundMenu::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    (void)pPanelFile;
+    FEMenu::Cleanup();
+    if (mInstructionsText != nullptr)
+        delete mInstructionsText;
+    mInstructionsText = nullptr;
+}
+
+// ea: 0x00734220
+void MPProfileMainMenu::ButtonHeldAction()
+{
+    char button_held_down = this->button_held_down;
+    if (button_held_down == 4)
+        this->OnUp(0);
+    else if (button_held_down == 8)
+        this->OnDown(0);
+}
+
+// ea: 0x0073E7C0
+void MPProfileMainMenu::OnActivate(int previous)
+{
+    (void)previous;
+    FEMenu::OnActivate();
+    this->SetHigh(0, false);
+    OnSelectionChange();
+}
+
+// ea: 0x00751160 (cls.state == CA_ACTIVE == 2)
+void MultiplayerMgr::AttemptHotJoin(int clientIndex)
+{
+    if (this->mPeer != nullptr && cls.state == 2)
+        ((MPPlayerManager*)((char*)this->mPeer + 0x74E0))
+            ->AddLocalPlayer(clientIndex);
+}
+
+// ea: 0x007333D0
+void MPProfileEditMenu::Update(float time_inc)
+{
+    mListBox.Update(time_inc);
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00733A60 (mHelpBar vtable slot 19 = Draw(bool))
+void MPProfileMainMenu::Draw()
+{
+    mPanel->Draw();
+    typedef void (__thiscall* DrawFn)(FEMultiLineText*, bool);
+    ((DrawFn)((void**)mHelpBar)[19])(mHelpBar, false);
+    FEMenu::Draw();
+}
+
+// ea: 0x00736EE0 (rb_vehicle::m_flags.mMask bit 0)
+bool MPVehicle::IsPhysicsPaused() const
+{
+    Entity* mEntity = (Entity*)this->mEntity;
+    if (mEntity != nullptr && mEntity->scr_vehicle->mRBVeh != nullptr)
+        return ((rb_vehicle*)mEntity->scr_vehicle->mRBVeh)->m_flags & 1;
+    return false;
+}
+
+// ea: 0x0073E340
+void MPOptionsControlsMenu::OnTriangle(int c)
+{
+    (void)c;
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    this->system->gap1C(this->system, 29);
+}
+
+// ea: 0x0073E4B0
+void MPOptionsGameplayMenu::OnTriangle(int c)
+{
+    (void)c;
+    if (SaveOptions())
+        ProfileEditMenu::Me()->mNeedWrite = true;
+    this->system->gap1C(this->system, 29);
+}
+
+// ea: 0x00731B50
+void MPOptionsControlsMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00732720
+void MPOptionsGameplayMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00732F80
+void MPOptionsPreferencesMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00730AF0
+void MPOptionsScreenMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00731240
+void MPOptionsSoundMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x0072C7E0
+EVoipGroup GetVoipGroup(int state)
+{
+    switch (state)
+    {
+    case 3:
+    case 4:
+        return kVoipGroupPlaying;
+    case 5:
+        return kVoipGroupDead;
+    default:
+        return kVoipGroupSpectating;
+    }
+}
+
+// ea: 0x0073EEE0
+kuju::cBezier::cBezier(const math::Position3& initialPoint,
+                       const math::Dir3& initialInflexion,
+                       const math::Position3& finalPoint,
+                       const math::Dir3& finalInflexion)
+{
+    reset(initialPoint, initialInflexion, finalPoint, finalInflexion);
 }
 
 // ea: 0x00762F20

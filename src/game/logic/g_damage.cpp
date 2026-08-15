@@ -154,8 +154,8 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                         else if (attacker == nullptr)
                         {
                             MultiplayerMgr::sInst->PlayerDamage(targ, inflictor, pos, norm,
-                                                                v14, (float)damage, (unsigned char)mod,
-                                                                dflags, hitLoc);
+                                                                v14, (short)damage, (unsigned char)mod,
+                                                                (short)dflags, hitLoc);
                             return;
                         }
                     }
@@ -167,16 +167,16 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                     if (v15 == nullptr)
                     {
                         MultiplayerMgr::sInst->PlayerDamage(targ, inflictor, pos, norm,
-                                                            v14, (float)damage, (unsigned char)mod,
-                                                            dflags, hitLoc);
+                                                            v14, (short)damage, (unsigned char)mod,
+                                                            (short)dflags, hitLoc);
                         return;
                     }
                     if (mod == 32)
                     {
                         if (targ->IsLocalPlayer())
                             MultiplayerMgr::sInst->PlayerDamage(targ, attacker, pos, norm,
-                                                                v14, (float)damage, 0x20u,
-                                                                dflags, hitLoc);
+                                                                v14, (short)damage, 0x20u,
+                                                                (short)dflags, hitLoc);
                         return;
                     }
                     if (v15->scr_vehicle != nullptr)
@@ -188,8 +188,8 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                             {
                                 Entity* v17 = HandleDbToEnt(v15->r.mOwner);
                                 MultiplayerMgr::sInst->PlayerDamage(targ, v17, pos, norm,
-                                                                    v14, (float)damage, (unsigned char)mod,
-                                                                    dflags, hitLoc);
+                                                                    v14, (short)damage, (unsigned char)mod,
+                                                                    (short)dflags, hitLoc);
                             }
                         }
                         return;
@@ -203,8 +203,8 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                         if (!targ->IsLocalPlayer())
                         {
                             MultiplayerMgr::sInst->PlayerDamage(targ, attacker, pos, norm,
-                                                                v14, (float)damage, (unsigned char)mod,
-                                                                dflags, hitLoc);
+                                                                v14, (short)damage, (unsigned char)mod,
+                                                                (short)dflags, hitLoc);
                             return;
                         }
                     }
@@ -379,8 +379,8 @@ label_121:
                     if (v30 == nullptr || !v30->IsLocalPlayer())
                     {
                         MultiplayerMgr::sInst->VehicleDamage(targ, mWorld, pos, norm,
-                                                             (float)damage, weapon,
-                                                             (unsigned char)mod, dflags);
+                                                             (short)damage, weapon,
+                                                             (unsigned char)mod, (short)dflags);
                         return;
                     }
                 }
