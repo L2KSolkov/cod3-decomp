@@ -268,6 +268,57 @@ void MPPlayerItems::SetItem(EDroppedItemTypes item, short id, Entity* ent)
     }
 }
 
+// ea: 0x00754C90
+void MPPlayerItems::RemoveAll()
+{
+    if (mDroppedWeapons.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    mDroppedWeapons[0].Destroy();
+    for (int i = 0; i < 3; ++i)
+    {
+        if (i < 0 || i >= mDroppedSupport.mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mDroppedSupport[i].Destroy();
+    }
+    for (int j = 0; j < 3; ++j)
+    {
+        if (j < 0 || j >= mDroppedMines.mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mDroppedMines[j].Destroy();
+    }
+    if (mDroppedKits.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    mDroppedKits[0].Destroy();
+}
+
 // MPGameInfo (mp.o 0x730510)
 void MPGameInfo::getSlots(unsigned char& publicOpen,
                           unsigned char& privateOpen,
@@ -382,9 +433,16 @@ void MPUIInterface::SetServerParams(const sServerCreateParams& a_ServerParams)
     mServerParams = a_ServerParams;
 }
 
+// ea: 0x0072F520
+void MPUIInterface::SetQueryParams(sServerQueryParams& params)
+{
+    mQueryParams = params;
+}
+
 struct sServerCreateParams MPUIInterface::mServerParams;
 struct sServerCreateParams MPUIInterface::mNextServerParams;
 bool MPUIInterface::mLanDiscoveryActive;
+struct sServerQueryParams MPUIInterface::mQueryParams;
 
 // ============================================================================
 // MPPlayerManager (mp.o)
@@ -796,7 +854,7 @@ void kuju::kvoicemanager::cVoiceManager::loadIRXModules()
 // ea: 0x007348D0 (mRemoteListeners at +0x266C)
 void kuju::kvoicemanager::cVoiceManager::setRemoteListeners(MPPlayerSet& players)
 {
-    mRemoteListeners = players.mBitPlayers;
+    mRemoteListeners.mBitPlayers = players.mBitPlayers;
 }
 
 void kuju::kvoicemanager::cVoiceManager::stopSystem()
@@ -813,6 +871,34 @@ void kuju::kvoicemanager::cVoiceManager::stopLoopback()
 
 void kuju::kvoicemanager::cVoiceManager::updateLoopback()
 {
+}
+
+// ea: 0x007348B0 (virtual dtor; compiler emits the vtable assignments)
+kuju::kvoicemanager::cVoiceManager::~cVoiceManager()
+{
+}
+
+// ea: 0x007348F0
+void kuju::kvoicemanager::cVoiceManager::receiveVoiceData(
+    unsigned int fromPlayerIndex, unsigned char*, unsigned int)
+{
+    mRemoteListeners.containsPlayer(fromPlayerIndex);
+}
+
+// ea: 0x007500E0
+void kuju::knetuser::cVoiceNetworkManager::update(
+    const kuju::knet::sTime& time)
+{
+    checkForPendingPacketsAwaitingHandling(time);
+    checkForPendingPacketsAwaitingDispatch(time);
+}
+
+// ea: 0x007500C0
+void kuju::knetuser::cVoiceNetworkManager::updateVoiceNetwork(
+    const kuju::knet::sTime& time)
+{
+    checkForPendingPacketsAwaitingHandling(time);
+    checkForPendingPacketsAwaitingDispatch(time);
 }
 
 kuju::cBezierTrajectoryInterpolator::cBezierTrajectoryInterpolator()
@@ -902,6 +988,24 @@ void MultiplayerMgr::RegisterDroppedItem(EDroppedItemTypes itemType,
         ((MPPlayerManager*)((char*)mPeer + 0x74E0))
             ->RegisterDroppedItem(itemType, item, owner, id);
 }
+
+// ea: 0x00751030
+void MultiplayerMgr::SendBombExplosion(const Entity* player)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1859;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SendBombExplosion(player);
+}
+
 
 // ea: 0x0072C4B0 (mSendInterval at +0x2C)
 void MultiplayerMgr::setSendInterval(int ms)

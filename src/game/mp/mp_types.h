@@ -15,12 +15,22 @@
 
 class Entity;  // game_types.h
 
+namespace kuju {
+namespace knet {
+class sTime {
+public:
+    int mTime;  // +0x00
+};
+}
+}
+
 // MPPlayerSet - 16-player bitmask (2 bytes)
 class MPPlayerSet {
 public:
     unsigned short mBitPlayers;  // +0x00
 
     MPPlayerSet() : mBitPlayers(0) {}
+    bool containsPlayer(unsigned int index) const;  // ?containsPlayer@MPPlayerSet@@QBE_NI@Z (mp.o 0x72A580)
 };
 
 // ============================================================================
@@ -118,6 +128,7 @@ enum EGameConnectionType : int {
 };
 
 struct sServerCreateParams;  // defined below MPUIInterface
+struct sServerQueryParams;   // defined below MPUIInterface
 
 // ============================================================================
 // MPUIInterface - multiplayer shell/UI static interface
@@ -135,6 +146,7 @@ public:
     static void StartDevice();           // ?StartDevice@MPUIInterface@@SAXXZ
     static void PlatformStop();          // ?PlatformStop@MPUIInterface@@SAXXZ
     static void SetServerParams(const sServerCreateParams& a_ServerParams);  // ?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z (mp.o 0x730240)
+    static void SetQueryParams(sServerQueryParams& params);  // ?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z (mp.o 0x72F520)
     static bool NextRoundMapChanges();   // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ
     static bool NextRoundMapRestart();   // ?NextRoundMapRestart@MPUIInterface@@SA_NXZ (mp.o 0x7300A0)
     static const bool IsGameListingComplete(); // ?IsGameListingComplete@MPUIInterface@@SA?B_NXZ (mp.o 0x72F730)
@@ -146,6 +158,7 @@ public:
     static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
     static bool mLanDiscoveryActive;  // ?mLanDiscoveryActive@MPUIInterface@@1_NA
     static bool mLiveQueryActive;     // ?mLiveQueryActive@MPUIInterface@@1_NA
+    static struct sServerQueryParams mQueryParams;  // ?mQueryParams@MPUIInterface@@1UsServerQueryParams@@A
 };
 
 // sServerCreateParams - host session setup (mMapID at +0x58)
@@ -154,6 +167,19 @@ struct sServerCreateParams {
     char mName[24];           // +0x40
     unsigned char mMapID;     // +0x58
     unsigned char mGameType;  // +0x59
+};
+
+// sServerQueryParams - LAN query filters (44 bytes)
+struct sServerQueryParams {
+    unsigned int mGameType;       // +0x00
+    unsigned int mMapID;          // +0x04
+    unsigned int mMaxPlayers;     // +0x08
+    unsigned int mMinPlayers;     // +0x0C
+    unsigned int mGameSubType;    // +0x10
+    unsigned int mTeamBalancing;  // +0x14
+    unsigned int mFriendlyFire;   // +0x18
+    char mSessionNamePrefix[16];  // +0x1C
+    unsigned int mListIfFull;     // +0x2C
 };
 
 // EDroppedItemTypes (mp.o); enumerators kept out of the global scope to avoid
@@ -226,24 +252,33 @@ public:
 namespace knetuser {
 class cVoiceNetworkManager {
 public:
-    uint8_t _pad[8];
+    virtual ~cVoiceNetworkManager();  // ??1cVoiceNetworkManager@knetuser@kuju@@UAE@XZ
+    uint8_t _pad[4];
     void*   mVoiceHandlerInterface;  // +0x08
     void deinitialise();             // ?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ
+    void update(const kuju::knet::sTime& time);             // ?update@cVoiceNetworkManager@knetuser@kuju@@QAEXABVsTime@knet@3@@Z (mp.o 0x7500E0)
+    void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
+private:
+    void checkForPendingPacketsAwaitingHandling(const kuju::knet::sTime& time);  // (mp.o 0x735250)
+    void checkForPendingPacketsAwaitingDispatch(const kuju::knet::sTime& time);  // (mp.o 0x750000)
 };
 }
 
 namespace kvoicemanager {
 class cVoiceManager {
 public:
-    uint8_t         _pad[4];
+    virtual ~cVoiceManager();  // ??1cVoiceManager@kvoicemanager@kuju@@UAE@XZ (mp.o 0x7348B0)
     int             mInitialised;  // +0x04
     kuju::knetuser::cVoiceNetworkManager mVoiceNetworkManager;  // +0x08
     uint8_t         _pad2[0x266C - (0x08 + sizeof(kuju::knetuser::cVoiceNetworkManager))];
-    unsigned short  mRemoteListeners;  // +0x266C
+    MPPlayerSet     mRemoteListeners;  // +0x266C
 
     void deinitialise();   // ?deinitialise@cVoiceManager@kvoicemanager@kuju@@QAEXXZ
     void loadIRXModules(); // ?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ
     void setRemoteListeners(MPPlayerSet& players);  // ?setRemoteListeners@cVoiceManager@kvoicemanager@kuju@@QAEXAAVMPPlayerSet@@@Z
+    virtual void receiveVoiceData(unsigned int fromPlayerIndex,
+                                  unsigned char* buffer,
+                                  unsigned int length);  // ?receiveVoiceData@cVoiceManager@kvoicemanager@kuju@@UAEXKPAEK@Z (mp.o 0x7348F0)
 private:
     void stopSystem();     // ?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ
     void startLoopback();  // ?startLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ

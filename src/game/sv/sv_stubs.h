@@ -1670,6 +1670,8 @@ public:
     bool IsQosSuccessful(int qos_handle);   // ?IsQosSuccessful@MPPeer@@QAE_NH@Z (mp.o 0x72CA20)
     void ExitLevel();                       // ?ExitLevel@MPPeer@@QAEXXZ (mp.o 0x742D80)
     void EnterLevel();                      // ?EnterLevel@MPPeer@@QAEXXZ (mp.o 0x75BDE0)
+    void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
+    void MapRestart();                      // ?MapRestart@MPPeer@@QAEXXZ (mp.o 0x742DA0)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
