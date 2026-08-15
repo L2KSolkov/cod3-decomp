@@ -64,6 +64,10 @@ void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
 void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
                           const tlFixedString& animation_name,
                           int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
+void AnimationToBroLookup(char* tree_name, int tree_index,
+                          int animation_name_brohashed,
+                          int animation_index);  // 0x5BE040
+void AnimationValidator(int numTrees);  // ?AnimationValidator@BrocHelper@@YAXH@Z (0x5BE100)
 }
 
 // ea: 0x005BE020
@@ -3032,6 +3036,31 @@ void ObjectiveWorldState(int iObjective, const Broc::string& inState,
 void ObjectiveChildCurrent(int iObjective, int iChild,
                            const char* pDisplay);  // 0x5C6C90
 void ObjectiveCurrent(int iObjective, const char* pDisplay);  // 0x5C6DE0
+void BrocDebugRender();  // 0x5BDEA0
+void* CreateExtendedEntity();  // 0x5BDF00
+bool RecompileScript();  // 0x5BDFB0
+void GetJoyPos(int stickIndex, float& xPos, float& yPos);  // 0x5BF6A0
+void MPScript_ClearPlayerStats();  // 0x5C0B80
+void MPScript_IncTeamScore(const Broc::string& team, int amount);  // 0x5C0C40
+int  MPScript_GetTeamScore(const Broc::string& team);  // 0x5C0CD0
+void MPScript_SendGameScore(int alliesScore, int axisScore);  // 0x5C0D50
+void MPScript_HostDropItem1(int itemType, int netID,
+                            const Broc::vector& pos,
+                            const Broc::vector& angle);  // 0x5C0D70
+void MPScript_HostDropItem2(int itemType, int netID,
+                            const Broc::vector& pos,
+                            const Broc::vector& angle,
+                            const Broc::vector& vel);  // 0x5C0E40
+void MPScript_DropItem1(int itemType, int netID, const Broc::vector& pos,
+                        const Broc::vector& angle);  // 0x5C0F30
+void MPScript_DropItem2(int itemType, int netID, const Broc::vector& pos,
+                        const Broc::vector& angle,
+                        const Broc::vector& vel);  // 0x5C0FE0
+void MPScript_AreaCaptured(int netID, unsigned int team,
+                           unsigned int hostOnly);  // 0x5C10C0
+void MPScript_EnterGame();  // 0x5C10E0
+bool MPScript_PositionWouldTelefrag(const Broc::vector& position);  // 0x5C1160
+bool MPScript_SpawnButtonPressed(unsigned int clientIdx);  // 0x5C11D0
 }
 
 static void BrocFree(void* p)
@@ -8575,6 +8604,337 @@ void BrocSys::ObjectiveCurrent(int iObjective, const char* pDisplay)
             s = str_const.current;
         }
     }
+}
+
+// ============================================================================
+// scr.o batch 35 - BrocDebugRender / MPScript family / GetJoyPos
+// ============================================================================
+
+// controller view (input/controller.cpp; binary overloads per IDA mangles)
+class controller {
+public:
+    enum ButtonIndex {
+        LEFTBUTTON = 0,
+        DOWNBUTTON = 1,
+        RIGHTBUTTON = 2,
+        UPBUTTON = 3,
+        SQUARE = 4,
+        CIRCLE = 5,
+        TRIANGLE = 7,
+        R1 = 8,
+        L1 = 9,
+        R2 = 10,
+        L2 = 11,
+        R3 = 12,
+        SELECT = 15,
+    };
+    enum StickIndex {
+        LEFTSTICK = 0,
+        RIGHTSTICK = 1,
+    };
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ
+    bool is_locked;  // +0x1C
+    void stick_value(StickIndex i_stick, int* o_x, int* o_y,
+                     int* p_controller);  // ?stick_value@controller@@QAEXW4StickIndex@1@PAH11@Z
+    void stick_value(int i_controller_num, StickIndex i_Stick, int* o_x,
+                     int* o_y);  // ?stick_value@controller@@QAEXHW4StickIndex@1@PAH1@Z
+    int button_value(int i_controller_num,
+                     ButtonIndex i_button);  // ?button_value@controller@@QAEHHW4ButtonIndex@1@@Z
+};
+
+extern int dword_F6A28C[4 * 802];  // 0xF6A28C (controller-port table)
+extern bool Com_ControllerValid(int controller_port);  // common.cpp
+
+// ea: 0x005BDEA0
+void BrocSys::BrocDebugRender()
+{
+    if (gBrocPool != nullptr && gBrocPool->IsEmpty())
+    {
+        Color col;
+        col.r = 1.0f;
+        col.g = 0.0f;
+        col.b = 0.0f;
+        col.a = 1.0f;
+        DebugRender::RenderText("Broc Pool empty", 20, 20, col, 0.0f, 1.0f);
+    }
+}
+
+// ea: 0x005BDF00
+void* BrocSys::CreateExtendedEntity()
+{
+    if (gpBrocAPI != nullptr)
+        return gpBrocAPI->mBrocExports.mCreateExtendedEntity(nullptr, 0);
+    else
+        return nullptr;
+}
+
+// ea: 0x005BDFB0
+bool BrocSys::RecompileScript()
+{
+    return true;
+}
+
+// ea: 0x005BE040
+void BrocHelper::AnimationToBroLookup(char* tree_name, int tree_index,
+                                      int animation_name_brohashed,
+                                      int animation_index)
+{
+    const char* v4 = _strlwr(tree_name);
+    int v5 = HashString::CalcHash(v4);
+    if (gpBrocAPI->mBrocExports.mAnimIndexResolver == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 5350;
+        AeAssert::gCurrentExpr = "gpBrocAPI->mBrocExports.mAnimIndexResolver";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    gpBrocAPI->mBrocExports.mAnimIndexResolver(
+        v5, tree_index, animation_name_brohashed, animation_index);
+}
+
+// ea: 0x005BE100
+void BrocHelper::AnimationValidator(int numTrees)
+{
+    BrocHelper::m_treeCount = numTrees;
+    if (gpBrocAPI->mBrocExports.mAnimIndexValidate == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 5392;
+        AeAssert::gCurrentExpr = "gpBrocAPI->mBrocExports.mAnimIndexValidate";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    if (!gpBrocAPI->mBrocExports.mAnimIndexValidate())
+        Com_Printf("===Not all animations were fixed up!\n");
+}
+
+// ea: 0x005BF6A0
+void BrocSys::GetJoyPos(int stickIndex, float& xPos, float& yPos)
+{
+    xPos = 0.0f;
+    yPos = 0.0f;
+    if (controller::inst()->is_locked)
+    {
+        controller::inst()->stick_value((controller::StickIndex)stickIndex,
+                                        (int*)&xPos, (int*)&yPos, nullptr);
+    }
+    else
+    {
+        int v7 = dword_F6A28C[802 * currCl];
+        controller::inst()->stick_value(v7,
+                                        (controller::StickIndex)stickIndex,
+                                        (int*)&xPos, (int*)&yPos);
+    }
+    xPos *= 0.0078740157f;
+    yPos *= 0.0078740157f;
+}
+
+// ea: 0x005C0B80
+void BrocSys::MPScript_ClearPlayerStats()
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v1 = EntityManager::sInst->mPlayers[i];
+        if (v1 != nullptr)
+        {
+            Client* client = v1->client;
+            if (client != nullptr)
+            {
+                memset(&client->pers, 0, 0x194u);
+                client->pers.mStats[6][28] = 0;
+                client->pers.mBaseScore = 0;
+                client->pers.rank = 0;
+                client->ps.ctf_has_flag = 0;
+            }
+        }
+    }
+}
+
+// ea: 0x005C0C40
+void BrocSys::MPScript_IncTeamScore(const Broc::string& team, int amount)
+{
+    if (team == "allies")
+    {
+        cgGlobal.teamScores[2] += amount;
+    }
+    else if (team == "axis")
+    {
+        cgGlobal.teamScores[1] += amount;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+        AeAssert::gCurrentLine = 421;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("Team must be either axis or allies"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C0CD0
+int BrocSys::MPScript_GetTeamScore(const Broc::string& team)
+{
+    if (team == "allies")
+        return cgGlobal.teamScores[2];
+    if (team == "axis")
+        return cgGlobal.teamScores[1];
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntityClient.cpp";
+    AeAssert::gCurrentLine = 437;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("Team must be either axis or allies"))
+        __debugbreak();
+    return 0;
+}
+
+// ea: 0x005C0D50
+void BrocSys::MPScript_SendGameScore(int alliesScore, int axisScore)
+{
+    MultiplayerMgr::sInst->SendGameScore(alliesScore, axisScore);
+}
+
+// ea: 0x005C0D70
+void BrocSys::MPScript_HostDropItem1(int itemType, int netID,
+                                     const Broc::vector& pos,
+                                     const Broc::vector& angle)
+{
+    if (MultiplayerMgr::sInst->IsHost())
+    {
+        math::Dir3 v6;  // zero velocity
+        v6.v = _mm_setzero_ps();
+        math::Position3 v7;
+        v7.v.m128_f32[0] = angle.x;
+        v7.v.m128_f32[1] = angle.y;
+        v7.v.m128_f32[2] = angle.z;
+        v7.v.m128_f32[3] = 0.0f;
+        math::Dir3 v5;
+        v5.v = v7.v;
+        v7.v.m128_f32[0] = pos.x;
+        v7.v.m128_f32[1] = pos.y;
+        v7.v.m128_f32[2] = pos.z;
+        v7.v.m128_f32[3] = 0.0f;
+        MultiplayerMgr::sInst->DropItem(itemType, &v7, &v5, &v6, netID,
+                                        true, -1);
+    }
+}
+
+// ea: 0x005C0E40
+void BrocSys::MPScript_HostDropItem2(int itemType, int netID,
+                                     const Broc::vector& pos,
+                                     const Broc::vector& angle,
+                                     const Broc::vector& vel)
+{
+    if (MultiplayerMgr::sInst->IsHost())
+    {
+        math::Position3 v8;
+        v8.v.m128_f32[0] = vel.x;
+        v8.v.m128_f32[1] = vel.y;
+        v8.v.m128_f32[2] = vel.z;
+        v8.v.m128_f32[3] = 0.0f;
+        math::Dir3 v7;
+        v7.v = v8.v;
+        v8.v.m128_f32[0] = angle.x;
+        v8.v.m128_f32[1] = angle.y;
+        v8.v.m128_f32[2] = angle.z;
+        v8.v.m128_f32[3] = 0.0f;
+        math::Dir3 v6;
+        v6.v = v8.v;
+        v8.v.m128_f32[0] = pos.x;
+        v8.v.m128_f32[1] = pos.y;
+        v8.v.m128_f32[2] = pos.z;
+        v8.v.m128_f32[3] = 0.0f;
+        MultiplayerMgr::sInst->DropItem(itemType, &v8, &v6, &v7, netID,
+                                        true, -1);
+    }
+}
+
+// ea: 0x005C0F30
+void BrocSys::MPScript_DropItem1(int itemType, int netID,
+                                 const Broc::vector& pos,
+                                 const Broc::vector& angle)
+{
+    math::Dir3 v6;
+    v6.v = _mm_setzero_ps();
+    math::Position3 v7;
+    v7.v.m128_f32[0] = angle.x;
+    v7.v.m128_f32[1] = angle.y;
+    v7.v.m128_f32[2] = angle.z;
+    v7.v.m128_f32[3] = 0.0f;
+    math::Dir3 v5;
+    v5.v = v7.v;
+    v7.v.m128_f32[0] = pos.x;
+    v7.v.m128_f32[1] = pos.y;
+    v7.v.m128_f32[2] = pos.z;
+    v7.v.m128_f32[3] = 0.0f;
+    MultiplayerMgr::sInst->DropItem(itemType, &v7, &v5, &v6, netID, true, -1);
+}
+
+// ea: 0x005C0FE0
+void BrocSys::MPScript_DropItem2(int itemType, int netID,
+                                 const Broc::vector& pos,
+                                 const Broc::vector& angle,
+                                 const Broc::vector& vel)
+{
+    math::Position3 v8;
+    v8.v.m128_f32[0] = vel.x;
+    v8.v.m128_f32[1] = vel.y;
+    v8.v.m128_f32[2] = vel.z;
+    v8.v.m128_f32[3] = 0.0f;
+    math::Dir3 v7;
+    v7.v = v8.v;
+    v8.v.m128_f32[0] = angle.x;
+    v8.v.m128_f32[1] = angle.y;
+    v8.v.m128_f32[2] = angle.z;
+    v8.v.m128_f32[3] = 0.0f;
+    math::Dir3 v6;
+    v6.v = v8.v;
+    v8.v.m128_f32[0] = pos.x;
+    v8.v.m128_f32[1] = pos.y;
+    v8.v.m128_f32[2] = pos.z;
+    v8.v.m128_f32[3] = 0.0f;
+    MultiplayerMgr::sInst->DropItem(itemType, &v8, &v6, &v7, netID, true, -1);
+}
+
+// ea: 0x005C10C0
+void BrocSys::MPScript_AreaCaptured(int netID, unsigned int team,
+                                    unsigned int hostOnly)
+{
+    MultiplayerMgr::sInst->AreaCaptured(netID, team, hostOnly);
+}
+
+// ea: 0x005C10E0
+void BrocSys::MPScript_EnterGame()
+{
+    MultiplayerMgr::sInst->EnterGame();
+}
+
+// ea: 0x005C1160
+bool BrocSys::MPScript_PositionWouldTelefrag(const Broc::vector& position)
+{
+    math::Position3 v3;
+    v3.v.m128_f32[0] = position.x;
+    v3.v.m128_f32[1] = position.y;
+    v3.v.m128_f32[2] = position.z;
+    v3.v.m128_f32[3] = 0.0f;
+    return SpotWouldTelefrag(v3);
+}
+
+// ea: 0x005C11D0
+bool BrocSys::MPScript_SpawnButtonPressed(unsigned int clientIdx)
+{
+    int v1 = dword_F6A28C[802 * clientIdx];
+    if (!Com_ControllerValid(v1))
+        return false;
+    return controller::inst()->button_value(
+               v1, (controller::ButtonIndex)(controller::SQUARE
+                                             | controller::DOWNBUTTON))
+           > 128;
 }
 
 // ============================================================================

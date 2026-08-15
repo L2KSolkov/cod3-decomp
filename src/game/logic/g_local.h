@@ -1520,10 +1520,13 @@ void LoadScript();                          // ?LoadScript@BrocSys@@YAXXZ
 // BrocAPI (g_scr.cpp) - artillery callback used by G_LaunchMissile
 // ============================================================================
 struct BrocExports {
-    uint8_t _pad[0x58];
+    uint8_t _pad[0x04];
+    void* (*mCreateExtendedEntity)(const char**, int);  // +0x04
+    uint8_t _pad8[0x58 - 0x08];
     void (*mAnimIndexResolver)(const int, const int, const int,
                                const int);      // +0x58
-    uint8_t _pad5C[0x6C - 0x5C];
+    bool (*mAnimIndexValidate)();  // +0x5C
+    uint8_t _pad60[0x6C - 0x60];
     unsigned int (*mAnimResolver)(const char*, const char*);  // +0x6C
     uint8_t _pad70[0x90 - 0x70];
     void (*mAnimDebug)(Broc::entity);       // +0x90 (game2.o inspector)

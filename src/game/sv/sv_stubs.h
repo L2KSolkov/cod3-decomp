@@ -403,6 +403,9 @@ public:
     void RoundOver(int condition, int team);            // ?RoundOver@MultiplayerMgr@@QAEXHH@Z (mp.o)
     void NextRound(bool allowChange);                   // ?NextRound@MultiplayerMgr@@QAEX_N@Z (mp.o)
     void SendRespawnRequest(unsigned int clientID);     // ?SendRespawnRequest@MultiplayerMgr@@QAEXI@Z (mp.o)
+    void SendGameScore(int alliesScore, int axisScore); // ?SendGameScore@MultiplayerMgr@@QAEXHH@Z (mp.o)
+    void AreaCaptured(int netIndex, int itemType, int hostOnly);  // ?AreaCaptured@MultiplayerMgr@@QAEXHHH@Z (mp.o)
+    void EnterGame();                                   // ?EnterGame@MultiplayerMgr@@QAEXXZ (mp.o)
     void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,
