@@ -2851,6 +2851,9 @@ void HudSetDefaults(game_hudelem_s* hud);  // 0x5BD320
 void SetValue(const Broc::hudelem& hudElem, float value);  // 0x5BD670
 void SetShader(const Broc::hudelem& hudElem, const Broc::string& string,
                int width, int height);  // 0x5C5060
+int  NRefsToString(int stringRef);  // 0x5BD460
+int  FindConfigString(const char* text);  // 0x5BD620
+void SetText(const Broc::hudelem& hudElem, const Broc::string& string);  // 0x5C4EE0
 }
 
 static void BrocFree(void* p)
@@ -4385,6 +4388,8 @@ extern void cg_dllEntry(int (*syscallptr)(int, ...));  // ?cg_dllEntry@@YAXP6AHH
 extern void Q_strncpyz(char* dest, const char* src, int destsize);  // ?Q_strncpyz@@YAXPADPBDH@Z
 extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);  // ?GetTextureData@@YAPAUnglTexture@@PBDH0@Z (render.o)
+extern const char* SV_GetConfigstringConst(int index);  // ?SV_GetConfigstringConst@@YAPBDH@Z (sv.o)
+extern int G_LocalizedStringIndex(const char* string);  // ?G_LocalizedStringIndex@@YAHPBD@Z (g.o)
 
 // ea: 0x005C1B80
 int VM_DllSyscall(int arg, ...)
@@ -5317,6 +5322,12 @@ int dword_EA55DC[31 * 4 * 16];
 int dword_EA55E0[31 * 4 * 16];
 int dword_EA55E4[31 * 4 * 16];
 int dword_EA55E8[31 * 4 * 16];
+int dword_EA55FC[31 * 4 * 16];
+int dword_EA5664[31 * 4 * 16];
+int dword_EA5678[31 * 4 * 16];
+int dword_EA56E0[31 * 4 * 16];
+int dword_EA56F4[31 * 4 * 16];
+int dword_EA575C[31 * 4 * 16];
 int highWaterMark = 0;  // @ 0xF3B7A8
 
 // ea: 0x005BD320
@@ -5446,6 +5457,92 @@ void BrocSys::SetShader(const Broc::hudelem& hudElem,
             v5->elem.mTexture = texture;
             v5->elem.height = v8;
         }
+    }
+}
+
+// ea: 0x005BD460
+int BrocSys::NRefsToString(int stringRef)
+{
+    int result = 0;
+    for (unsigned int i = 0; i < 496; i += 124)
+    {
+        if (g_hudelems[i / 0x1F].elem.type == HE_TYPE_TEXT
+            && dword_EA55E8[i] == stringRef)
+            ++result;
+        if (dword_EA55FC[i] == 1 && dword_EA5664[i] == stringRef)
+            ++result;
+        if (dword_EA5678[i] == 1 && dword_EA56E0[i] == stringRef)
+            ++result;
+        if (dword_EA56F4[i] == 1 && dword_EA575C[i] == stringRef)
+            ++result;
+    }
+    return result;
+}
+
+// ea: 0x005BD620
+int BrocSys::FindConfigString(const char* text)
+{
+    for (int v1 = 0; v1 < 64; ++v1)
+    {
+        const char* ConfigstringConst = SV_GetConfigstringConst(v1 + 660);
+        if (*ConfigstringConst != 0 && _stricmp(ConfigstringConst, text) == 0)
+            return v1;
+    }
+    return -1;
+}
+
+// ea: 0x005C4EE0
+void BrocSys::SetText(const Broc::hudelem& hudElem,
+                      const Broc::string& string)
+{
+    unsigned int mHudIndex = hudElem.___u0;
+    if ((mHudIndex & 0x80000000) != 0 || mHudIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3405;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", mHudIndex))
+            __debugbreak();
+    }
+    int v3 = 31 * (int)mHudIndex;
+    if (*SV_GetConfigstringConst(dword_EA55E8[v3] + 660)
+        && BrocSys::NRefsToString(dword_EA55E8[v3]) < 2)
+    {
+        const char* v7 = string.mBlock != nullptr
+                             ? (const char*)(string.mBlock + 1)
+                             : defaultFileName;
+        int ConfigString = BrocSys::FindConfigString(v7);
+        if (ConfigString != -1)
+        {
+            SV_SetConfigstring(dword_EA55E8[v3] + 660, nullptr);
+            dword_EA55E8[v3] = ConfigString;
+        }
+        const char* v9 = string.mBlock != nullptr
+                             ? (const char*)(string.mBlock + 1)
+                             : defaultFileName;
+        SV_SetConfigstring(dword_EA55E8[v3] + 660, v9);
+    }
+    else
+    {
+        dword_EA55B0[v3] = 0;
+        dword_EA55B4[v3] = 0;
+        dword_EA55B8[v3] = 0;
+        dword_EA55BC[v3] = 0;
+        dword_EA55C0[v3] = 0;
+        dword_EA55C4[v3] = 0;
+        dword_EA55C8[v3] = 0;
+        dword_EA55DC[v3] = 0;
+        dword_EA55E0[v3] = 0;
+        dword_EA55E4[v3] = 0;
+        dword_EA55E8[v3] = 0;
+        const char* v4 = string.mBlock != nullptr
+                             ? (const char*)(string.mBlock + 1)
+                             : defaultFileName;
+        int v5 = G_LocalizedStringIndex(v4);
+        dword_EA55E8[v3] = v5;
+        if (highWaterMark <= v5)
+            highWaterMark = v5;
     }
 }
 
