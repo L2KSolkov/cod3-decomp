@@ -243,6 +243,8 @@ struct vehicle_follow {
     int      actualRows;                // +0x260
     int      actualColumns;             // +0x264
     float    relativeFormation[6][6][3];// +0x268
+
+    vehicle_follow();  // ??0vehicle_follow@@QAE@XZ (core.o)
 };
 static_assert(sizeof(vehicle_follow) == 0x418, "vehicle_follow size mismatch");
 

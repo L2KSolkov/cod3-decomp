@@ -3253,6 +3253,44 @@ int EntityIsVehicleTank(unsigned int entityHandleVal);  // 0x5CB7F0
 void StopAnimScripted(unsigned int entityHandleVal);  // 0x5CC050
 void StartBlankState(unsigned int entityHandleVal);  // 0x5CC1A0
 void StopBlankState(unsigned int entityHandleVal);  // 0x5CC1F0
+void ResetAnimVariationChunkState(unsigned int entityHandleVal,
+                                  unsigned int broanim);  // 0x5CC290
+void GetInVehicle1(unsigned int entityHandleVal,
+                   unsigned int targetEntityHandleVal, bool canDrive,
+                   bool canGunner, bool lock);  // 0x5CC3B0
+void GetInVehicle2(unsigned int entityHandleVal,
+                   unsigned int targetEntityHandleVal, unsigned int desirePos,
+                   bool lock);  // 0x5CC4C0
+void GetOutVehicle(unsigned int entityHandleVal);  // 0x5CC5E0
+void SceneGetOutVehicle(unsigned int entityHandleVal);  // 0x5CC680
+void StartInVehicle1(unsigned int entityHandleVal,
+                     unsigned int targetEntityHandleVal, bool canDrive,
+                     bool canGunner, bool lock);  // 0x5CC730
+void StartInVehicle2(unsigned int entityHandleVal,
+                     unsigned int targetEntityHandleVal,
+                     unsigned int desirePos, bool lock);  // 0x5CC7E0
+void StartFollowBehavior(unsigned int entityHandleVal,
+                         unsigned int targetEntityHandleVal);  // 0x5CCC50
+void StopFollowBehavior(unsigned int entityHandleVal);  // 0x5CCDB0
+void SetFollowFormationData(unsigned int targetEntityHandleVal,
+                            unsigned int numColumns, float columnSpacing,
+                            float rowSpacing,
+                            float minFollowDistance);  // 0x5CCE50
+void ResetVehicleFollowPositionHistoryData(
+    unsigned int targetEntityHandleVal);  // 0x5CCFB0
+void Attach1(unsigned int entityHandleVal, const Broc::string& modelName,
+             const Broc::string& tagName, bool ignoreCollision,
+             TPakInfo modelpak);  // 0x5CD050
+void Attach2(unsigned int entityHandleVal, const Broc::string& modelName,
+             const Broc::string& tagName, TPakInfo modelpak);  // 0x5CD1D0
+void Attach3(unsigned int entityHandleVal,
+             const Broc::string& modelName);  // 0x5CD1F0
+void Detach1(unsigned int entityHandleVal, const Broc::string& modelName,
+             const Broc::string& tagName);  // 0x5CD260
+void Detach2(unsigned int entityHandleVal,
+             const Broc::string& modelName);  // 0x5CD3D0
+void DetachAll(unsigned int entityHandleVal);  // 0x5CD430
+int  GetAttachSize(unsigned int entityHandleVal);  // 0x5CD470
 }
 
 // GetEntType (0x5CA9F0) - global
@@ -3283,6 +3321,16 @@ extern void XAnimSetCompleteGoalWeight(XAnimTree* tree,
 static void nullsub_59(void* /*actor*/) {}
 static void nullsub_65(void* /*actor*/) {}
 static void nullsub_106(void* /*actor*/, int /*eState*/) {}
+
+// scr.o batch 45 helpers (vehicle follow / attach)
+extern bool VEH_AcquirePlayerFollowSlot(Entity* vehicle,
+                                        Entity* follower);  // ?VEH_AcquirePlayerFollowSlot@@YA_NPAVEntity@@0@Z
+extern void VEH_FillFollowHistoryBuffer(
+    scr_vehicle_t* veh);  // ?VEH_FillFollowHistoryBuffer@@YAXPAUscr_vehicle_t@@@Z
+extern void G_EntDetachAll(Entity* ent);  // ?G_EntDetachAll@@YAXPAVEntity@@@Z (g_dobj.cpp)
+extern void XAnimResetAnimVariationChunkState(
+    XAnimTree* tree, unsigned int animIndex);  // ?XAnimResetAnimVariationChunkState@@YAXPAVXAnimTree@@I@Z (nal.cpp)
+extern void* gDebugEntity;  // ?gDebugEntity@@3PAXA @ 0xF3A5CC
 
 // Scr_LoadAnimTreeAtIndex / Scr_FreeAnimTreeAtIndex (0x5C7730 / 0x5C7820)
 void Scr_LoadAnimTreeAtIndex(int treeindex,
@@ -12184,6 +12232,674 @@ void BrocSys::StopBlankState(unsigned int entityHandleVal)
             }
         }
     }
+}
+
+// ============================================================================
+// scr.o batch 45 - vehicle in/out / follow / attach
+// ============================================================================
+
+// ea: 0x005CC290
+void BrocSys::ResetAnimVariationChunkState(unsigned int entityHandleVal,
+                                           unsigned int broanim)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            if (broanim == 0xFFFF)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 1831;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("anim index is -1"))
+                    __debugbreak();
+            }
+            else
+            {
+                if ((broanim >> 16) > (unsigned int)BrocHelper::m_treeCount)
+                    Scr_Error(
+                        "AnimTree is a bad value. Is greater than # of trees loaded. Check input parameters for proper notation (i.e. @ symbol)");
+                XAnimTree* EntAnimTree = GScr_GetEntAnimTree(mObject);
+                AnimBank* Bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+                if (&Bank->anims[broanim >> 16]
+                    != *(AnimTree**)((char*)EntAnimTree + 8))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\BrocEntity.cpp";
+                    AeAssert::gCurrentLine = 1845;
+                    AeAssert::gCurrentExpr = nullptr;
+                    if (AeAssert::Error(
+                            "Tree Animation mismatch. Out of range memory access possible!!"))
+                        __debugbreak();
+                }
+                gDebugEntity = mObject;
+                XAnimResetAnimVariationChunkState(EntAnimTree, broanim);
+            }
+        }
+    }
+}
+
+// ea: 0x005CC3B0
+void BrocSys::GetInVehicle1(unsigned int entityHandleVal,
+                            unsigned int targetEntityHandleVal, bool canDrive,
+                            bool canGunner, bool lock)
+{
+    (void)canDrive; (void)canGunner; (void)lock;
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* v3;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (v3 = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        if (v3->actor != nullptr)
+        {
+            unsigned int v4 = targetEntityHandleVal & 0xFFF;
+            Entity* mObject;
+            if (v4 < 0x540
+                && targetEntityHandleVal >> 12
+                       == EntityHandleDb::sInst.mElements[v4].mKey
+                && (mObject = EntityHandleDb::sInst.mElements[v4].mObject)
+                       != nullptr)
+            {
+                if (mObject->scr_vehicle != nullptr)
+                {
+                    if (G_GetVehicleInfo(mObject) == nullptr)
+                        Scr_Error("Target doesnt have vehicle info...");
+                }
+                else
+                {
+                    Scr_Error("Target is not a vehicle...");
+                }
+            }
+            else
+            {
+                Scr_Error("Bad target entity handle");
+            }
+        }
+        else
+        {
+            Scr_Error("Entity ain't no actor yo!!!");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CC4C0
+void BrocSys::GetInVehicle2(unsigned int entityHandleVal,
+                            unsigned int targetEntityHandleVal,
+                            unsigned int desirePos, bool lock)
+{
+    (void)desirePos; (void)lock;
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+        {
+            unsigned int mVal = actor->hVehicle.mHandle.mVal;
+            unsigned int v6 = mVal & 0xFFF;
+            if (v6 >= 0x540
+                || mVal >> 12 != EntityHandleDb::sInst.mElements[v6].mKey
+                || EntityHandleDb::sInst.mElements[v6].mObject == nullptr)
+            {
+                entityHandleVal = targetEntityHandleVal;
+                Entity* v7 = *DbLinkedHandle<EntityHandleDb, Entity>(
+                    entityHandleVal);
+                if (v7 != nullptr)
+                {
+                    if (v7->scr_vehicle != nullptr)
+                    {
+                        if (G_GetVehicleInfo(v7) == nullptr)
+                            Scr_Error("Target doesnt have vehicle info...");
+                    }
+                    else
+                    {
+                        Scr_Error("Target is not a vehicle...");
+                    }
+                }
+                else
+                {
+                    Scr_Error("Bad target entity handle");
+                }
+            }
+        }
+        else
+        {
+            Scr_Error("Entity ain't no actor yo!!!");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CC5E0
+void BrocSys::GetOutVehicle(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+        {
+            actor->bVehicleSeatExitRequest = 1;
+        }
+        else
+        {
+            Scr_Error("Entity ain't no actor yo!!!");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CC680
+void BrocSys::SceneGetOutVehicle(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+        {
+            if ((mObject->s.eFlags & 0x100000) == 0)
+                G_EntUnlink(mObject);
+            actor->bVehicleSeatImmediate = 1;
+        }
+        else
+        {
+            Scr_Error("Entity ain't no actor yo!!!");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CC730
+void BrocSys::StartInVehicle1(unsigned int entityHandleVal,
+                              unsigned int targetEntityHandleVal,
+                              bool canDrive, bool canGunner, bool lock)
+{
+    BrocSys::GetInVehicle1(entityHandleVal, targetEntityHandleVal, canDrive,
+                           canGunner, lock);
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v5 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v5].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+            actor->bVehicleSeatImmediate = 1;
+        else
+            Scr_Error("Entity ain't no actor yo!!!");
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CC7E0
+void BrocSys::StartInVehicle2(unsigned int entityHandleVal,
+                              unsigned int targetEntityHandleVal,
+                              unsigned int desirePos, bool lock)
+{
+    BrocSys::GetInVehicle2(entityHandleVal, targetEntityHandleVal, desirePos,
+                           lock);
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v4].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+            actor->bVehicleSeatImmediate = true;
+        else
+            Scr_Error("Entity ain't no actor yo!!!");
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CCC50
+void BrocSys::StartFollowBehavior(unsigned int entityHandleVal,
+                                  unsigned int targetEntityHandleVal)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* v3;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey
+        && (v3 = EntityHandleDb::sInst.mElements[v2].mObject) != nullptr)
+    {
+        actor_s* actor = v3->actor;
+        if (actor != nullptr)
+        {
+            unsigned int v5 = targetEntityHandleVal & 0xFFF;
+            Entity* mObject;
+            if (v5 < 0x540
+                && targetEntityHandleVal >> 12
+                       == EntityHandleDb::sInst.mElements[v5].mKey
+                && (mObject = EntityHandleDb::sInst.mElements[v5].mObject)
+                       != nullptr)
+            {
+                if (mObject->scr_vehicle != nullptr)
+                {
+                    actor->pFollowTarget = mObject;
+                    if (VEH_AcquirePlayerFollowSlot(mObject, v3))
+                    {
+                        nullsub_106(actor, AIS_FOLLOW);
+                    }
+                    else
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\BrocEntity.cpp";
+                        AeAssert::gCurrentLine = 2177;
+                        AeAssert::gCurrentExpr = "0";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                }
+                else
+                {
+                    Scr_Error("Target is not a vehicle...");
+                }
+            }
+            else
+            {
+                Scr_Error("Bad target entity handle");
+            }
+        }
+        else
+        {
+            Scr_Error("Entity ain't no actor yo!!!");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CCDB0
+void BrocSys::StopFollowBehavior(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        actor_s* actor = mObject->actor;
+        if (actor != nullptr)
+            nullsub_106(actor, AIS_SETABLE_FIRST);
+        else
+            Scr_Error("Entity ain't no actor yo!!!");
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad self entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CCE50
+void BrocSys::SetFollowFormationData(unsigned int targetEntityHandleVal,
+                                     unsigned int numColumns,
+                                     float columnSpacing, float rowSpacing,
+                                     float minFollowDistance)
+{
+    unsigned int v5 = targetEntityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v5 < 0x540
+        && targetEntityHandleVal >> 12
+               == EntityHandleDb::sInst.mElements[v5].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v5].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            if (scr_vehicle->follow == nullptr)
+            {
+                TPakId mPakId = (TPakId)mObject->mPakId;
+                if (mPakId == PAK_ID_INVALID)
+                    mPakId = CurPakId();
+                vehicle_follow* v9 = (vehicle_follow*)PakManager::sInst
+                                         ->MemAlloc(mPakId, 0x418u, false);
+                vehicle_follow* v10;
+                if (v9 != nullptr)
+                    v10 = new (v9) vehicle_follow();
+                else
+                    v10 = nullptr;
+                mObject->scr_vehicle->follow = v10;
+            }
+            mObject->scr_vehicle->follow->columns = (int)numColumns;
+            mObject->scr_vehicle->follow->columnSpacing = columnSpacing;
+            mObject->scr_vehicle->follow->rowSpacing = rowSpacing;
+            mObject->scr_vehicle->follow->minFollowDistance =
+                minFollowDistance;
+            VEH_FillFollowHistoryBuffer(mObject->scr_vehicle);
+        }
+        else
+        {
+            Scr_Error("Target is not a vehicle...");
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad target entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CCFB0
+void BrocSys::ResetVehicleFollowPositionHistoryData(
+    unsigned int targetEntityHandleVal)
+{
+    unsigned int v1 = targetEntityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && targetEntityHandleVal >> 12
+               == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+        if (scr_vehicle != nullptr)
+            VEH_FillFollowHistoryBuffer(scr_vehicle);
+        else
+            Scr_Error("Target is not a vehicle...");
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("\x15%s", "Bad target entity handle"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CD050
+void BrocSys::Attach1(unsigned int entityHandleVal,
+                      const Broc::string& modelName,
+                      const Broc::string& tagName, bool ignoreCollision,
+                      TPakInfo modelpak)
+{
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v5 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v5].mObject) != nullptr)
+    {
+        TPakId mPakId;
+        if (modelpak != kTPakInfoInvalid)
+            mPakId = PakInfoToPakId(modelpak);
+        else
+        {
+            mPakId = (TPakId)mObject->mPakId;
+            if (mPakId == PAK_ID_INVALID)
+                mPakId = CurPakId();
+        }
+        TPakId pakId = mPakId;
+        if (modelName.mBlock != nullptr && tagName.mBlock != nullptr)
+        {
+            if (G_EntDetach(mObject,
+                            (const char*)(modelName.mBlock + 1),
+                            (const char*)(tagName.mBlock + 1)) != 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2298;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored())
+                {
+                    const char* v8 = tagName.mBlock != nullptr
+                                         ? (const char*)(tagName.mBlock + 1)
+                                         : defaultFileName;
+                    const char* v9 = modelName.mBlock != nullptr
+                                         ? (const char*)(modelName.mBlock + 1)
+                                         : defaultFileName;
+                    if (AeAssert::Warning(
+                            "model '%s' already attached to tag '%s'", v9,
+                            v8))
+                        __debugbreak();
+                }
+            }
+            const char* v11 = tagName.mBlock != nullptr
+                                  ? (const char*)(tagName.mBlock + 1)
+                                  : defaultFileName;
+            const char* v12 = modelName.mBlock != nullptr
+                                  ? (const char*)(modelName.mBlock + 1)
+                                  : defaultFileName;
+            if (G_EntAttach(mObject, v12, v11, ignoreCollision, pakId) == 0)
+                Scr_Error("maximum attached models exceeded");
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2292;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                       "model is null, or tag was null.  No attachment possible."))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x005CD1D0
+void BrocSys::Attach2(unsigned int entityHandleVal,
+                      const Broc::string& modelName,
+                      const Broc::string& tagName, TPakInfo modelpak)
+{
+    BrocSys::Attach1(entityHandleVal, modelName, tagName, false, modelpak);
+}
+
+// ea: 0x005CD1F0
+void BrocSys::Attach3(unsigned int entityHandleVal,
+                      const Broc::string& modelName)
+{
+    Broc::string empty(defaultFileName);
+    BrocSys::Attach1(entityHandleVal, modelName, empty, false,
+                     kTPakInfoInvalid);
+}
+
+// ea: 0x005CD260
+void BrocSys::Detach1(unsigned int entityHandleVal,
+                      const Broc::string& modelName,
+                      const Broc::string& tagName)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v3 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        const char* v5 = modelName.mBlock != nullptr
+                             ? (const char*)(modelName.mBlock + 1)
+                             : defaultFileName;
+        if (_stricmp(v5, "none") != 0)
+        {
+            const char* v6 = tagName.mBlock != nullptr
+                                 ? (const char*)(tagName.mBlock + 1)
+                                 : defaultFileName;
+            const char* v7 = modelName.mBlock != nullptr
+                                 ? (const char*)(modelName.mBlock + 1)
+                                 : defaultFileName;
+            if (G_EntDetach(mObject, v7, v6) == 0)
+            {
+                Com_Printf("Current attachments:\n");
+                Broc::string* p_mTag = &mObject->mAttachModels[0].mTag;
+                for (int i = 7; i != 0; --i)
+                {
+                    ValidatePakId((TPakId)(uintptr_t)p_mTag[-1].mBlock);
+                    if (p_mTag[-2].mBlock != nullptr)
+                    {
+                        Broc::string::Block* mBlock = p_mTag->mBlock;
+                        if (p_mTag->mBlock != nullptr)
+                        {
+                            const char* v11 = (const char*)(mBlock + 1);
+                            if (mBlock != (Broc::string::Block*)-12
+                                && *v11 != 0)
+                            {
+                                ValidatePakId(
+                                    (TPakId)(uintptr_t)p_mTag[-1].mBlock);
+                                Com_Printf(
+                                    "model: '%s', tag: '%s'\n",
+                                    *(char**)((char*)p_mTag[-2].mBlock + 0x18),
+                                    v11);
+                            }
+                        }
+                    }
+                    p_mTag += 3;
+                }
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+                AeAssert::gCurrentLine = 2341;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored())
+                {
+                    const char* v12 = tagName.mBlock != nullptr
+                                          ? (const char*)(tagName.mBlock + 1)
+                                          : defaultFileName;
+                    const char* v13 = modelName.mBlock != nullptr
+                                          ? (const char*)(modelName.mBlock + 1)
+                                          : defaultFileName;
+                    if (AeAssert::Warning(
+                            "failed to detach model '%s' from tag '%s'", v13,
+                            v12))
+                        __debugbreak();
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x005CD3D0
+void BrocSys::Detach2(unsigned int entityHandleVal,
+                      const Broc::string& modelName)
+{
+    Broc::string empty(defaultFileName);
+    BrocSys::Detach1(entityHandleVal, modelName, empty);
+}
+
+// ea: 0x005CD430
+void BrocSys::DetachAll(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    Entity* mObject;
+    if (v1 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v1].mObject) != nullptr)
+        G_EntDetachAll(mObject);
+}
+
+// ea: 0x005CD470
+int BrocSys::GetAttachSize(unsigned int entityHandleVal)
+{
+    unsigned int v1 = entityHandleVal & 0xFFF;
+    if (v1 >= 0x540)
+        return 0;
+    if (entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v1].mKey)
+        return 0;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    if (mObject == nullptr)
+        return 0;
+    int v4 = 0;
+    AttachModelInfo* mAttachModels = mObject->mAttachModels;
+    do
+    {
+        ValidatePakId((TPakId)mAttachModels->mModel.mPakId);
+        if (mAttachModels->mModel.mValue == nullptr)
+            break;
+        ++v4;
+        ++mAttachModels;
+    }
+    while (v4 < 7);
+    return v4;
 }
 
 // ============================================================================
