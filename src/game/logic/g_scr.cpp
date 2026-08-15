@@ -2824,6 +2824,9 @@ void ScaleOverTime(const Broc::hudelem& hudElem, float scaleTime, int width,
 void MoveOverTime(const Broc::hudelem& hudElem, float fadeTime);  // 0x5C5650
 void Scr_SetOrigin(Entity* ent, int offset, Broc::vector* val);  // 0x5C57E0
 int  GetNodeClaimer(const Broc::pathnode& nodeIn);  // 0x5C5AE0
+void GetMoveDelta(Broc::vector& outVec, unsigned int anim, float startTime,
+                  float endTime);  // 0x5C3C70
+float GetAngleDelta(unsigned int anim, float startTime, float endTime);  // 0x5C3DD0
 }
 
 static void BrocFree(void* p)
@@ -4906,6 +4909,77 @@ int BrocSys::GetNodeClaimer(const Broc::pathnode& nodeIn)
         return 0;
     Entity* pEnt = *(Entity**)((char*)mOwner + 0x234);
     return (int)pEnt->mHandle.mHandle.mVal;
+}
+
+// ea: 0x005C3C70
+void BrocSys::GetMoveDelta(Broc::vector& outVec, unsigned int anim,
+                           float startTime, float endTime)
+{
+    float rot[2];
+    if (endTime < 0.0f || endTime > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 "end time must be between 0 and 1"))
+            __debugbreak();
+    }
+    if (startTime < 0.0f || startTime > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 "start time must be between 0 and 1"))
+            __debugbreak();
+    }
+    XAnimGetRelDelta(nullptr, anim, rot, &outVec.x, startTime, endTime);
+    if (IS_NAN(outVec.x) || IS_NAN(outVec.y) || IS_NAN(outVec.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 2387;
+        AeAssert::gCurrentExpr = "!IS_NAN(((*(vec3_t*)&outVec))[0]) && !IS_NAN(((*(vec3_t*)&outVec))[1]) && !IS_NAN(((*(vec3_t*)&outVec))[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005C3DD0
+float BrocSys::GetAngleDelta(unsigned int anim, float startTime,
+                             float endTime)
+{
+    float trans[3];
+    float rot[2];
+    if (endTime < 0.0f || endTime > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 "end time must be between 0 and 1"))
+            __debugbreak();
+    }
+    if (startTime < 0.0f || startTime > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("%s",
+                                 "start time must be between 0 and 1"))
+            __debugbreak();
+    }
+    XAnimGetRelDelta(nullptr, anim, rot, trans, startTime, endTime);
+    return vectosignedyaw(rot);
 }
 
 // ============================================================================
