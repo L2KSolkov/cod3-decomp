@@ -78,6 +78,8 @@ struct clientPersistent_t {
     usercmd_s oldcmd;                               // +0x1E0 (48 bytes)
     int     pmoveFixed;                             // +0x210
     int     maxHealth;                              // +0x214
+
+    void Clear();  // ?Clear@clientPersistent_t@@QAEXXZ (g.o 0x4AF940)
 };
 static_assert(sizeof(clientPersistent_t) == 0x218, "clientPersistent_t size mismatch");
 static_assert(offsetof(clientPersistent_t, mStats) == 0x000, "clientPersistent_t::mStats offset mismatch");

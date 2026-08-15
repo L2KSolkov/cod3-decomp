@@ -2499,6 +2499,152 @@ local_physic_s::local_physic_s()
 // ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
 template class ae_formatted_string<256, unsigned short>;
 
+// PlayerState::Clear (g.o 0x4AF3C0)
+void PlayerState::Clear(bool clearWeapons)
+{
+    origin.v = _mm_setzero_ps();
+    leanf = 0.0f;
+    velocity.v = _mm_setzero_ps();
+    commandTime = 0;
+    pm_type = 0;
+    bobCycle = 0;
+    pm_flags = 0;
+    pm_time = 0;
+    weaponTime = 0;
+    weaponDelay = 0;
+    grenadeTimeLeft = 0;
+    iFoliageSoundTime = 0;
+    iFatigueSoundTime = 0;
+    gravity = 0;
+    speed = 0;
+    delta_angles[0] = 0;
+    delta_angles[1] = 0;
+    delta_angles[2] = 0;
+    mGroundEntity.mHandle.mVal = 0;
+    vLadderVec[0] = 0.0f;
+    vLadderVec[1] = 0.0f;
+    jumpTime = 0;
+    fJumpOriginZ = 0.0f;
+    legsAnim = 0;
+    legsYaw = 0.0f;
+    torsoAnim = 0;
+    spotTime = 0;
+    respawnUntilTime = 0;
+    mLastSpotter.mHandle.mVal = 0;
+    mTarget.mHandle.mVal = 0;
+    mTargetTime = 0;
+    mKiller.mHandle.mVal = 0;
+    movementDir = 0;
+    mClient.mHandle.mVal = 0;
+    weaponstate = 0;
+    fWeaponPosFrac = 0.0f;
+    reloadFromEmpty = false;
+    queuedReloadSound.mVal = 0;
+    queuedReloadSoundPlayStarted = false;
+    queuedReloadTimer = 0;
+    reloadSoundPrequeueAttempted = false;
+    viewmodel.mValue = nullptr;
+    viewmodel.mPakId = PAK_ID_INVALID;
+    viewangles[0] = 0.0f;
+    viewangles[1] = 0.0f;
+    viewHeightTarget = 0;
+    viewHeightCurrent = 0.0f;
+    viewHeightLerpTime = 0;
+    viewHeightLerpTarget = 0;
+    viewHeightLerpDown = 0;
+    viewHeightLerpPosAdj = 0.0f;
+    eFlags = 0;
+    event.Clear();
+    stats[0] = 0;
+    stats[1] = 0;
+    stats[2] = 0;
+    stats[3] = 0;
+    if (clearWeapons)
+    {
+        weapon = 0;
+        lastWeapon = 0;
+        for (int i = 0; i < 92; ++i)
+        {
+            ammo[i] = 0;
+            ammoclip[i] = 0;
+        }
+        weapons[0] = 0;
+        weapons[1] = 0;
+        for (int j = 0; j < 10; ++j)
+            weaponslots[j] = 0;
+        for (int j = 0; j < 2; ++j)
+            weaponrechamber[j] = 0;
+    }
+    mins[0] = 0.0f;
+    mins[1] = 0.0f;
+    mins[2] = 0.0f;
+    maxs[0] = 0.0f;
+    maxs[1] = 0.0f;
+    maxs[2] = 0.0f;
+    proneViewHeight = 0;
+    crouchViewHeight = 0;
+    deadViewHeight = 0;
+    walkSpeedScale = 0.0f;
+    runSpeedScale = 0.0f;
+    sprintSpeedScale = 0.0f;
+    proneSpeedScale = 0.0f;
+    crouchSpeedScale = 0.0f;
+    strafeSpeedScale = 0.0f;
+    backSpeedScale = 0.0f;
+    leanSpeedScale = 0.0f;
+    proneDirection = 0.0f;
+    proneDirectionPitch = 0.0f;
+    proneTorsoPitch = 0.0f;
+    fatigueScale = 0.0f;
+    lastSprintTime = 0;
+    viewlocked = 0;
+    mViewLockedEntity.mHandle.mVal = 0;
+    friction = 0.0f;
+    serverCursorHint = 0;
+    serverCursorHintVal = 0;
+    serverCursorHintString = 0;
+    serverCursorHintTrace.Clear();
+    iCompassFriendInfo = 0;
+    iCompassTankInfo = 0;
+    fTorsoHeight = 0.0f;
+    fTorsoPitch = 0.0f;
+    fWaistPitch = 0.0f;
+    vehPos = 0;
+    vehType = 0;
+    vehSubType = 0;
+    weapAnim = 0;
+    aimSpreadScale = 0.0f;
+    shellshockIndex = 0;
+    shellshockTime = 0;
+    shellshockDuration = 0;
+    mTimeSinceDamage = 0.0f;
+    mHealthDelta = 0.0f;
+    ctf_has_flag = 0;
+    spectatorClient = 0;
+    for (int i = 0; i < 16; ++i)
+        mDamageFromPlayers[i] = 0;
+    mLastFireWeaponTime = -1;
+    mLastFireWeapon = 0;
+    mAmmoDropTime = -1;
+    mMeleeAssistTarget.mHandle.mVal = 0;
+    mMeleeAssistSpeed = 0;
+    mFlags = 0;
+}
+
+// clientPersistent_t::Clear (g.o 0x4AF940)
+void clientPersistent_t::Clear()
+{
+    connected = CON_DISCONNECTED;
+    cmd.Clear();
+    oldcmd.Clear();
+    pmoveFixed = 0;
+    maxHealth = 0;
+    healthTaskHandle.mHandle.mVal = 0;
+    playerClass = -1;
+    playerState = 0;
+    rank = 0;
+}
+
 
 // DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
 template <>

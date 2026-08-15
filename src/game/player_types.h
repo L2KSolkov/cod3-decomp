@@ -161,6 +161,8 @@ public:
     float    mHoldBreathScale;             // +0x5C0
     int32_t  mHoldBreathTimer;             // +0x5C4
     uint32_t mFlags;                       // +0x5C8 (Bitmask<unsigned int>)
+
+    void Clear(bool clearWeapons);  // ?Clear@PlayerState@@QAEX_N@Z (g.o 0x4AF3C0)
 };
 static_assert(sizeof(PlayerState) == 0x5D0, "PlayerState size mismatch");
 static_assert(offsetof(PlayerState, origin) == 0x000, "PlayerState::origin offset mismatch");
