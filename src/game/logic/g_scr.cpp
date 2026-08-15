@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "game/mpactors/aitype.h"
 
 #include <math.h>
 #include <new>
@@ -2854,6 +2855,14 @@ void SetShader(const Broc::hudelem& hudElem, const Broc::string& string,
 int  NRefsToString(int stringRef);  // 0x5BD460
 int  FindConfigString(const char* text);  // 0x5BD620
 void SetText(const Broc::hudelem& hudElem, const Broc::string& string);  // 0x5C4EE0
+void SetModel(unsigned int entityHandleVal, const Broc::string& modelName,
+              TPakInfo pakInfo);  // 0x5CF060
+unsigned int SpawnVehicle(const Broc::string& modelname,
+                          const Broc::string& targetName,
+                          const Broc::string& vehicleType,
+                          const Broc::vector& origin,
+                          const Broc::vector& angles,
+                          TPakInfo pakInfo);  // 0x5CA340
 }
 
 static void BrocFree(void* p)
@@ -4390,6 +4399,8 @@ extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);  // ?GetTextureData@@YAPAUnglTexture@@PBDH0@Z (render.o)
 extern const char* SV_GetConfigstringConst(int index);  // ?SV_GetConfigstringConst@@YAPBDH@Z (sv.o)
 extern int G_LocalizedStringIndex(const char* string);  // ?G_LocalizedStringIndex@@YAHPBD@Z (g.o)
+extern void G_FreeEntity(Entity* e, int msec);  // ?G_FreeEntity@@YAXPAVEntity@@H@Z (g.o)
+extern void StopPhysics(Entity* e);            // ?StopPhysics@@YAXPAVEntity@@@Z (g.o)
 
 // ea: 0x005C1B80
 int VM_DllSyscall(int arg, ...)
@@ -5543,6 +5554,196 @@ void BrocSys::SetText(const Broc::hudelem& hudElem,
         dword_EA55E8[v3] = v5;
         if (highWaterMark <= v5)
             highWaterMark = v5;
+    }
+}
+
+// ============================================================================
+// scr.o batch 27 - SetModel / SpawnVehicle
+// ============================================================================
+
+// ea: 0x005CF060
+void BrocSys::SetModel(unsigned int entityHandleVal, const Broc::string& modelName,
+                       TPakInfo pakInfo)
+{
+    unsigned int v3 = (unsigned int)entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && (unsigned int)entityHandleVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v3].mKey
+        && (mObject = EntityHandleDb::sInst.mElements[v3].mObject) != nullptr)
+    {
+        if (modelName.mBlock != nullptr)
+        {
+            TPakId mPakId;
+            if (pakInfo != kTPakInfoInvalid)
+                mPakId = *(TPakId*)((char*)pakInfo + 0xB4);
+            else
+            {
+                mPakId = (TPakId)mObject->mPakId;
+                if (mPakId == PAK_ID_INVALID)
+                    mPakId = CurPakId();
+            }
+            TPakId pakId = mPakId;
+            bool v6 = false;
+            if (mObject->client != nullptr)
+            {
+                pakId = CurPakId();
+                v6 = (mObject->flags & 0x400000) != 0;
+                StopPhysics(mObject);
+                mObject->flags &= ~0x400000u;
+            }
+            const char* v7 = modelName.mBlock != nullptr
+                                 ? (const char*)(modelName.mBlock + 1)
+                                 : defaultFileName;
+            TPakId v8 = (TPakId)mObject->mPakId;
+            if (v8 == PAK_ID_INVALID)
+                v8 = CurPakId();
+            IVPointer<AIType> aiType =
+                AITypeManager::sInst->GetAIType(v8, v7, 6);
+            ValidatePakId((TPakId)aiType.mPakId);
+            if (aiType.mValue != nullptr)
+            {
+                ValidatePakId((TPakId)aiType.mPakId);
+                aiType.mValue->InitEnt(mObject);
+            }
+            else
+            {
+                const char* v9 = modelName.mBlock != nullptr
+                                     ? (const char*)(modelName.mBlock + 1)
+                                     : defaultFileName;
+                G_SetModel(mObject, v9, pakId, 0);
+            }
+            mObject->s.index = 0;
+            SV_SetBrushModel(mObject);
+            G_DObjUpdate(mObject, false);
+            if (v6)
+                g_UnlinkEntity(mObject);
+            else
+                g_LinkEntity(mObject);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+            AeAssert::gCurrentLine = 2967;
+            AeAssert::gCurrentExpr = "modelName.IsDefined()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("SetModel: model name undefined."))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 2963;
+        AeAssert::gCurrentExpr = "pEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Failed to set model on NULL entitiy."))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005CA340
+unsigned int BrocSys::SpawnVehicle(const Broc::string& modelname,
+                                   const Broc::string& targetName,
+                                   const Broc::string& vehicleType,
+                                   const Broc::vector& origin,
+                                   const Broc::vector& angles,
+                                   TPakInfo pakInfo)
+{
+    if ((origin.x == sNaN && origin.y == sNaN && origin.z == sNaN)
+        || (angles.x == sNaN && angles.y == sNaN && angles.z == sNaN))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1753;
+        AeAssert::gCurrentExpr = "origin.IsDefined() && angles.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("SpawnVehicle called with undefined input."))
+            __debugbreak();
+    }
+    TPakId v7 = PakInfoToPakId(pakInfo);
+    if (IS_NAN(origin.x) || IS_NAN(origin.y) || IS_NAN(origin.z))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1781;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("undefined origin passed to SpawnVehicle"))
+            __debugbreak();
+        return 0;
+    }
+    Entity* v8 = G_Spawn(v7);
+    v8->mClassName = str_const.script_vehicle;
+    v8->mClassNameHash = HashString(v8->mClassName);
+    const char* v9 = modelname.mBlock != nullptr
+                         ? (const char*)(modelname.mBlock + 1)
+                         : defaultFileName;
+    G_SetModel(v8, v9, PAK_ID_INVALID, 0);
+    ValidatePakId((TPakId)v8->mModel.mPakId);
+    if (v8->mModel.mValue != nullptr)
+    {
+        v8->targetname = targetName;
+        v8->r.currentOrigin.v.m128_f32[0] = origin.x;
+        v8->r.currentOrigin.v.m128_f32[1] = origin.y;
+        v8->r.currentOrigin.v.m128_f32[2] = origin.z;
+        v8->r.currentAngles.v.m128_f32[0] = angles.x;
+        v8->r.currentAngles.v.m128_f32[1] = angles.y;
+        v8->r.currentAngles.v.m128_f32[2] = angles.z;
+        if (IS_NAN(v8->r.currentOrigin.v.m128_f32[0])
+            || IS_NAN(v8->r.currentOrigin.v.m128_f32[1])
+            || IS_NAN(v8->r.currentOrigin.v.m128_f32[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 1773;
+            AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        if (IS_NAN(v8->r.currentAngles.v.m128_f32[0])
+            || IS_NAN(v8->r.currentAngles.v.m128_f32[1])
+            || IS_NAN(v8->r.currentAngles.v.m128_f32[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 1774;
+            AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentAngles)[0]) && !IS_NAN((ent->r.currentAngles)[1]) && !IS_NAN((ent->r.currentAngles)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        const char* v13 = vehicleType.mBlock != nullptr
+                              ? (const char*)(vehicleType.mBlock + 1)
+                              : defaultFileName;
+        G_SpawnVehicle(v8, v13, 0);
+        UpdateEntityHash(v8);
+        return v8->mHandle.mHandle.mVal;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)1;  // ARO
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 1766;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v10 = modelname.mBlock != nullptr
+                                  ? (const char*)(modelname.mBlock + 1)
+                                  : defaultFileName;
+            const char* v11 = targetName.mBlock != nullptr
+                                  ? (const char*)(targetName.mBlock + 1)
+                                  : defaultFileName;
+            if (AeAssert::Warning(
+                    "Unable to spawn vehicle '%s'- the model '%s' was unavailable",
+                    v11, v10))
+                __debugbreak();
+        }
+        G_FreeEntity(v8, 0);
+        return 0;
     }
 }
 

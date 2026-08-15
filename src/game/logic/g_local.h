@@ -845,7 +845,13 @@ struct str_const_t {
     Broc::string rocket;              // +0x13C
     uint8_t    _pad140[0x148 - 0x140];
     Broc::string sound_blend;         // +0x148
-    uint8_t    _pad14C[0x168 - 0x14C];
+    Broc::string script_brushmodel;   // +0x14C (83)
+    Broc::string script_model;        // +0x150
+    Broc::string script_origin;       // +0x154 (85)
+    Broc::string script_prop_collmap; // +0x158
+    Broc::string script_vehicle;      // +0x15C (87)
+    Broc::string script_vehicle_corpse;    // +0x160
+    Broc::string script_vehicle_collmap;   // +0x164
     Broc::string spawn_intermission;  // +0x168
     Broc::string spawn_deathmatch;        // +0x16C
     Broc::string spawn_teamdeathmatch;    // +0x170
@@ -903,6 +909,8 @@ static_assert(offsetof(str_const_t, info_player_deathmatch) == 0xBC,
               "str_const_t::info_player_deathmatch offset mismatch");
 static_assert(offsetof(str_const_t, worldspawn) == 0x23C,
               "str_const_t::worldspawn offset mismatch");
+static_assert(offsetof(str_const_t, script_vehicle) == 0x15C,
+              "str_const_t::script_vehicle offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================
