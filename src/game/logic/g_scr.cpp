@@ -129,6 +129,14 @@ public:
     ae_pair(const T1& f, const T2& s) : m_first(f), m_second(s) {}
 };
 
+template <typename T, int CAPACITY>
+struct ae_array {
+    T m_elements[CAPACITY];  // +0x00
+
+    T& operator[](int idx) { return m_elements[idx]; }
+    const T& operator[](int idx) const { return m_elements[idx]; }
+};
+
 // BrocDtorBase (mp_level.xboxd; vtable[0] = Destroy)
 class BrocDtorBase {
 public:
@@ -250,6 +258,74 @@ struct AeThreadPakNotifyState : AeThreadState {
     EAction NewAction(AeThread& t) override;  // 0x5BC0F0
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B00
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B50
+};
+
+// EndOnScriptNode (scr.o / AeThread.cpp; IDA type 5678)
+class EndOnScriptNode {
+public:
+    AeDListNode m_dlist_node;  // +0x00
+    Handle mThread;            // +0x08
+
+    EndOnScriptNode(AeThread* t);  // ??0EndOnScriptNode@@QAE@PAVAeThread@@@Z (0x5DB230)
+    AeThread* GetThread();         // ?GetThread@EndOnScriptNode@@QAEPAVAeThread@@XZ (0x5C9850)
+
+private:
+    static PoolAllocator* sAllocator;  // ?sAllocator@EndOnScriptNode@@0PAVPoolAllocator@@A
+    friend struct AeThreadEntityNotifyState;
+};
+
+// EntityNotifySet local view (core_systems.h 0x2C bytes)
+class EntityNotifySetLocal {
+public:
+    AeDListNode m_dlist_node;   // +0x00
+    DbLinkedHandle<void, void> mEnt;  // +0x08
+    AeStateList mStrings;       // +0x0C
+    AeStateList mEndOnList;     // +0x1C
+
+    EntityNotifySetLocal(Entity* e);  // ??0EntityNotifySet@@QAE@PAVEntity@@@Z
+    EntityNotify* GetNotify(const HashString& chk) const;  // ?GetNotify@EntityNotifySet@@QBEPAVEntityNotify@@ABVHashString@@@Z
+
+private:
+    static PoolAllocator* sAllocator;  // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A
+    friend struct AeThreadEntityNotifyState;
+};
+
+// Entity notify wait states (IDA types 5938/5883/6055)
+struct AeThreadEntityNotifyState : AeThreadState {
+    DbLinkedHandle<EntityHandleDb, Entity> mEnt;  // +0x14
+    HashString mNotifyStr;                        // +0x18
+    EndOnScriptNode* mEndOnNode;                  // +0x1C
+
+    AeThreadEntityNotifyState(
+        DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label,
+        AeThreadState::EAction result);  // 0x5DB280
+    ~AeThreadEntityNotifyState();   // 0x5C9880
+    EAction NewAction(AeThread& t) override;  // 0x5C9920
+};
+
+struct AeThreadEntityNotifyTimeoutState : AeThreadState {
+    DbLinkedHandle<EntityHandleDb, Entity> mEnt;  // +0x14
+    HashString mNotifyStr;                        // +0x18
+    float mTimeRemaining;                         // +0x1C
+
+    AeThreadEntityNotifyTimeoutState(
+        DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label,
+        float t, AeThreadState::EAction result);  // 0x5C1F40
+    EAction NewAction(AeThread& t) override;  // 0x5C99A0
+};
+
+struct AeThreadEntityNotifyMatchState : AeThreadState {
+    DbLinkedHandle<EntityHandleDb, Entity> mEnt;  // +0x14
+    ae_array<HashString, 4> mNotifySet;           // +0x18
+    int mEventMask;                               // +0x28
+    bool mWaitForAll;                             // +0x2C
+    ae_array<HashString, 4> mDebugNotifys;        // +0x30
+
+    AeThreadEntityNotifyMatchState(
+        DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label1,
+        unsigned int label2, unsigned int label3, unsigned int label4,
+        AeThreadState::EAction result, bool waitForAll);  // 0x5C7C10
+    EAction NewAction(AeThread& t) override;  // 0x5C9A40
 };
 
 // PakInfoNode view (streamer.o; full layout in pakmanager.cpp)
@@ -3076,4 +3152,269 @@ AeThreadManager::AeThreadManager()
     L->mThreadExecuting = nullptr;
     L->mNewThreadExec = nullptr;
     L->mScriptToUnload = nullptr;
+}
+
+// ============================================================================
+// scr.o batch 12 - entity-notify wait states
+// ============================================================================
+
+unsigned int sKillAnimScript = 0xFFFFFFFF;  // ?sKillAnimScript@@3IA @ 0xF3AC0C (init -1 per IDA bytes)
+
+PoolAllocator* EndOnScriptNode::sAllocator;
+PoolAllocator* EntityNotifySetLocal::sAllocator;
+
+// ea: 0x005DB230
+EndOnScriptNode::EndOnScriptNode(AeThread* t)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mThread.mVal = 0;
+    if (t->mHandle.mVal == 0)
+    {
+        AeThreadManagerLayout* L =
+            (AeThreadManagerLayout*)&AeThreadManager::sInst;
+        HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+            (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+        Handle mVal = db->AllocateHandle();
+        db->BindObjectToHandle(mVal, t);
+        t->mHandle = mVal;
+    }
+    mThread = t->mHandle;
+}
+
+// ea: 0x005C9850 (mHandleDb at sInst+0x34; index = mVal & 0xFF, key = mVal >> 8)
+AeThread* EndOnScriptNode::GetThread()
+{
+    AeThreadManagerLayout* L =
+        (AeThreadManagerLayout*)&AeThreadManager::sInst;
+    HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =
+        (HandleDb<AeThread, 256, SizedHandle<8, 24>>*)L->mHandleDb;
+    unsigned int mVal = mThread.mVal;
+    unsigned int idx = mVal & 0xFF;
+    if (idx < 256 && (mVal >> 8) == (unsigned int)db->mElements[idx].mKey)
+        return db->mElements[idx].mObject;
+    return nullptr;
+}
+
+// ea: 0x005DB280
+AeThreadEntityNotifyState::AeThreadEntityNotifyState(
+    DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label,
+    AeThreadState::EAction result)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = result;
+    mEnt = ent;
+    mNotifyStr.mHash = label;
+    mEndOnNode = nullptr;
+    if (result != kActionTerminate || label != sKillAnimScript)
+        return;
+    unsigned int v5 = ent.mHandle.mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v5 < 0x540
+        && ent.mHandle.mVal >> 12
+               == (unsigned int)EntityHandleDb::sInst.mElements[v5].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+    if (mObject == nullptr)
+        return;
+    EntityNotifySetLocal* mNotifySet =
+        (EntityNotifySetLocal*)mObject->mNotifySet;
+    if (mNotifySet == nullptr)
+    {
+        EntityNotifySetLocal* v8 =
+            (EntityNotifySetLocal*)EntityNotifySetLocal::sAllocator->Allocate(
+                0x2C, false);
+        EntityNotifySetLocal* v9 =
+            v8 != nullptr ? new (v8) EntityNotifySetLocal(mObject) : nullptr;
+        mNotifySet = v9;
+        mObject->mNotifySet = (EntityNotifySet*)v9;
+    }
+    EndOnScriptNode* v10 =
+        (EndOnScriptNode*)EndOnScriptNode::sAllocator->Allocate(0x0C, false);
+    EndOnScriptNode* v11 = v10 != nullptr ? new (v10) EndOnScriptNode(
+                                                (AeThread*)AeThreadManager::
+                                                    sInst.mThreadExecuting)
+                                          : nullptr;
+    mEndOnNode = v11;
+    if (v11 != nullptr)
+    {
+        v11->m_dlist_node.mPrev = mNotifySet->mEndOnList.m_tail;
+        ((AeDListNode*)mNotifySet->mEndOnList.m_tail)->mNext =
+            &v11->m_dlist_node;
+        mNotifySet->mEndOnList.m_tail = &v11->m_dlist_node;
+        ++mNotifySet->mEndOnList.m_size;
+    }
+}
+
+// ea: 0x005C9880
+AeThreadEntityNotifyState::~AeThreadEntityNotifyState()
+{
+    EndOnScriptNode* mEndOnNode = this->mEndOnNode;
+    if (mEndOnNode != nullptr)
+    {
+        unsigned int mVal = mEnt.mHandle.mVal;
+        unsigned int v4 = mVal & 0xFFF;
+        if (v4 < 0x540
+            && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+            if (mObject != nullptr)
+            {
+                EntityNotifySetLocal* mNotifySet =
+                    (EntityNotifySetLocal*)mObject->mNotifySet;
+                if (mNotifySet != nullptr)
+                {
+                    // reserved_dlist<EndOnScriptNode>::erase
+                    mEndOnNode->m_dlist_node.mPrev->mNext =
+                        mEndOnNode->m_dlist_node.mNext;
+                    mEndOnNode->m_dlist_node.mNext->mPrev =
+                        mEndOnNode->m_dlist_node.mPrev;
+                    --mNotifySet->mEndOnList.m_size;
+                }
+            }
+        }
+        EndOnScriptNode::sAllocator->Release(mEndOnNode);
+    }
+}
+
+// ea: 0x005C9920
+AeThreadState::EAction AeThreadEntityNotifyState::NewAction(AeThread& t)
+{
+    unsigned int mVal = mEnt.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            if ((t.mFlags.mMask & 0x80) != 0
+                && mObject->mNotifySet != nullptr
+                && ((EntityNotifySetLocal*)mObject->mNotifySet)
+                       ->GetNotify(mNotifyStr) != nullptr)
+            {
+                mFinished = true;
+                return mResult;
+            }
+            return kActionNone;
+        }
+    }
+    mFinished = true;
+    return kActionTerminate;
+}
+
+// ea: 0x005C1F40
+AeThreadEntityNotifyTimeoutState::AeThreadEntityNotifyTimeoutState(
+    DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label, float t,
+    AeThreadState::EAction result)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = result;
+    mEnt = ent;
+    mNotifyStr.mHash = label;
+    mTimeRemaining = t;
+}
+
+// ea: 0x005C99A0
+AeThreadState::EAction AeThreadEntityNotifyTimeoutState::NewAction(
+    AeThread& t)
+{
+    unsigned int mVal = mEnt.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            mTimeRemaining -= ServerTime::sInst.mTickDelta;
+            if (mTimeRemaining <= 0.0f
+                || ((t.mFlags.mMask & 0x80) != 0
+                    && mObject->mNotifySet != nullptr
+                    && ((EntityNotifySetLocal*)mObject->mNotifySet)
+                           ->GetNotify(mNotifyStr) != nullptr))
+            {
+                mFinished = true;
+                return mResult;
+            }
+            return kActionNone;
+        }
+    }
+    mFinished = true;
+    return kActionTerminate;
+}
+
+// ea: 0x005C7C10
+AeThreadEntityNotifyMatchState::AeThreadEntityNotifyMatchState(
+    DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label1,
+    unsigned int label2, unsigned int label3, unsigned int label4,
+    AeThreadState::EAction result, bool waitForAll)
+{
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mFinished = false;
+    mResult = result;
+    mEnt = ent;
+    mNotifySet[0].mHash = 0;
+    mNotifySet[1].mHash = 0;
+    mNotifySet[2].mHash = 0;
+    mNotifySet[3].mHash = 0;
+    mWaitForAll = waitForAll;
+    mEventMask = 0;
+    mDebugNotifys[0].mHash = 0;
+    mDebugNotifys[1].mHash = 0;
+    mDebugNotifys[2].mHash = 0;
+    mDebugNotifys[3].mHash = 0;
+    mNotifySet[0].mHash = label1;
+    mNotifySet[1].mHash = label2;
+    mNotifySet[2].mHash = label3;
+    mNotifySet[3].mHash = label4;
+    mDebugNotifys[0].mHash = mNotifySet[0].mHash;
+    mDebugNotifys[1].mHash = mNotifySet[1].mHash;
+    mDebugNotifys[2].mHash = mNotifySet[2].mHash;
+    mDebugNotifys[3].mHash = mNotifySet[3].mHash;
+}
+
+// ea: 0x005C9A40
+AeThreadState::EAction AeThreadEntityNotifyMatchState::NewAction(
+    AeThread& t)
+{
+    unsigned int mVal = mEnt.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            if ((t.mFlags.mMask & 0x80) != 0 && mObject->mNotifySet != nullptr)
+            {
+                EntityNotifySetLocal* notifySet =
+                    (EntityNotifySetLocal*)mObject->mNotifySet;
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (mNotifySet[i].mHash != 0
+                        && (mEventMask & (1 << i)) == 0
+                        && notifySet->GetNotify(mNotifySet[i]) != nullptr)
+                    {
+                        if (!mWaitForAll)
+                            goto done;
+                        mEventMask |= 1 << i;
+                        mNotifySet[i].mHash = 0;
+                    }
+                }
+                if ((mEventMask & 0xF) != 0xF)
+                    return kActionNone;
+            done:
+                mFinished = true;
+                return mResult;
+            }
+            return kActionNone;
+        }
+    }
+    mFinished = true;
+    return kActionTerminate;
 }
