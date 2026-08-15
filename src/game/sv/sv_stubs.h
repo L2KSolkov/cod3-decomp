@@ -16,6 +16,15 @@
 #include "core/ae_fixed_string.h"
 #include "bd/bdSession.h"
 
+// bd headers pull windows.h via bdReferencable.h; undo its GetObjectA macro
+// so HandleDb::GetObject keeps the binary's mangled name.
+#undef GetObject
+
+// Forward enum declarations used by mp.o member decls (full defs in
+// g_local.h / mp_types.h).
+enum itemType_t : int;
+enum EDroppedItemTypes : int;
+
 struct cdl_object_t;  // full definition in game/logic/g_local.h
 
 // font_index - FE font selection enum (also defined in ui_types.h; guarded
@@ -211,7 +220,7 @@ static_assert(offsetof(SaveGameData, mFriendlies) == 0x7E0,
               "SaveGameData::mFriendlies offset mismatch");
 
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
-struct MPPlayer;
+class MPPlayer;
 struct MPPlayerManager;
 class MPPeer;
 
@@ -411,6 +420,9 @@ public:
     bool FromLobby();                          // ?FromLobby@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C7D0)
     float getSendInterval() const;             // ?getSendInterval@MultiplayerMgr@@QBEMXZ (mp.o 0x72C4D0)
     bool getLinkStatus();                      // ?getLinkStatus@MultiplayerMgr@@QAE_NXZ (mp.o 0x72C780)
+    void setSendInterval(int ms);              // ?setSendInterval@MultiplayerMgr@@QAEXH@Z (mp.o 0x72C4B0)
+    void shutdownVoiceSubsystem();             // ?shutdownVoiceSubsystem@MultiplayerMgr@@QAEXXZ (mp.o 0x7511E0)
+    EDroppedItemTypes GetDroppedItemType(itemType_t item);  // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z (mp.o 0x72C4F0)
     void MapRestart();                                  // ?MapRestart@MultiplayerMgr@@QAEXXZ (mp.o)
     void RoundOver(int condition, int team);            // ?RoundOver@MultiplayerMgr@@QAEXHH@Z (mp.o)
     void NextRound(bool allowChange);                   // ?NextRound@MultiplayerMgr@@QAEX_N@Z (mp.o)
@@ -1579,7 +1591,8 @@ extern   void   FEManager_PlayFadeInOranScreen(void);
 // ============================================================================
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 // ============================================================================
-struct MPPlayer {
+class MPPlayer {
+public:
     unsigned char mId;                 // +0x00
     uint8_t _pad[3];
     bdReference<bdConnection> mConnection;  // +0x04
@@ -1592,6 +1605,8 @@ struct MPPlayer {
     void SetId(unsigned char id);      // ?SetId@MPPlayer@@QAEXE@Z (mp.o 0x72CE90)
     bool IsValid() const;              // ?IsValid@MPPlayer@@QBE_NXZ (mp.o 0x735FF0)
     static bool IsValid(unsigned char id);  // ?IsValid@MPPlayer@@SA_NE@Z (mp.o 0x72CE70)
+    bool IsConnected() const;          // ?IsConnected@MPPlayer@@QBE_NXZ (mp.o 0x736010)
+    void GetAngles(float (&angles)[3]) const;  // ?GetAngles@MPPlayer@@QBEXAAY02M@Z (mp.o 0x72DFD0)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1611,6 +1626,8 @@ struct MPPlayerManager {
     void SendConsistencyUpdates();        // ?SendConsistencyUpdates@MPPlayerManager@@QAEXXZ (mp.o 0x72F240)
     unsigned char getPlayerIndex(int localPlayer);  // ?getPlayerIndex@MPPlayerManager@@QAEEH@Z (mp.o 0x72ED90)
     bool IsLocalPlayer(const Entity* const entity);  // ?IsLocalPlayer@MPPlayerManager@@QAE_NQBVEntity@@@Z (mp.o 0x72EA80)
+    bool AnyLocalPlayers();             // ?AnyLocalPlayers@MPPlayerManager@@QAE_NXZ (mp.o 0x72EA10)
+    int  GetLocalId(const MPPlayer* player);  // ?GetLocalId@MPPlayerManager@@QAEHPBVMPPlayer@@@Z (mp.o 0x72EB80)
 private:
     void HandleKickPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleKickPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x72EC30)
 };
@@ -1632,6 +1649,10 @@ public:
     void AnimEvent(int animEvent);          // ?AnimEvent@MPPeer@@QAEXH@Z (mp.o)
     void SpotEntity(Entity* ent);           // ?SpotEntity@MPPeer@@QAEXPAVEntity@@@Z (mp.o)
     void DebugRender();                     // ?DebugRender@MPPeer@@QAEXXZ (mp.o)
+    void LeaveSession();                    // ?LeaveSession@MPPeer@@QAEXXZ (mp.o 0x72C850)
+    void CancelJoin();                      // ?CancelJoin@MPPeer@@QAEXXZ (mp.o 0x72C870)
+    int  FindAvailableQosSlot();            // ?FindAvailableQosSlot@MPPeer@@QAEHXZ (mp.o 0x72CAC0)
+    bool IsQosSuccessful(int qos_handle);   // ?IsQosSuccessful@MPPeer@@QAE_NH@Z (mp.o 0x72CA20)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

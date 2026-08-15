@@ -8,6 +8,11 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
+// EDroppedItemTypes definition (avoid g_local.h anonymous-enum collisions)
+enum EDroppedItemTypes : int {
+    kItemTypeSupport = 2,
+};
+
 int XNetCleanup();  // Xbox shim; Win32 no-op
 int XNetCleanup()
 {
@@ -51,6 +56,21 @@ bool MPPlayer::IsValid() const
     return mId < 0x10u && mConnection.m_ptr != nullptr;
 }
 
+// ea: 0x00736010
+bool MPPlayer::IsConnected() const
+{
+    return mConnection.m_ptr != nullptr
+           && mConnection.m_ptr->getStatus() == bdConnection::BD_CONNECTED;
+}
+
+// ea: 0x0072DFD0 (mInterpolatedHeading.mAngle at +0x218)
+void MPPlayer::GetAngles(float (&angles)[3]) const
+{
+    angles[2] = 0.0f;
+    angles[0] = 0.0f;
+    angles[1] = *(float*)((char*)this + 0x218);
+}
+
 // ============================================================================
 // MPVehicle (mp.o)
 // ============================================================================
@@ -80,6 +100,28 @@ bool MPVehicle::IsOccupied() const
 bool MPVehicle::IsValid(unsigned char id)
 {
     return id < 0x0Au;
+}
+
+// ea: 0x0072E1A0 (seats at +0x08, 12 bytes, 0x10 = MPPlayerSet empty slot)
+void MPVehicle::ClearOccupants()
+{
+    mNumOccupants = 0;
+    memset((char*)this + 0x08, 0x10, 0x0C);
+}
+
+// ea: 0x00736EC0
+void MPVehicle::SetInvalid()
+{
+    mEntity = nullptr;
+    mNumOccupants = 0;
+    mId = 10;
+    memset((char*)this + 0x08, 0x10, 0x0C);
+}
+
+// ea: 0x0072E480
+bool MPVehicle::IsFullyOccupied() const
+{
+    return mNumOccupants == G_GetVehicleSeatCount((Entity*)mEntity);
 }
 
 // ea: 0x0072E190
@@ -155,8 +197,27 @@ bool MPUIInterface::NextRoundMapChanges()
     return mNextServerParams.mMapID != mServerParams.mMapID;
 }
 
+// ea: 0x007300A0
+bool MPUIInterface::NextRoundMapRestart()
+{
+    return mNextServerParams.mMapID == mServerParams.mMapID
+           && mNextServerParams.mGameType != mServerParams.mGameType;
+}
+
+// ea: 0x0072F730
+const bool MPUIInterface::IsGameListingComplete()
+{
+    if (mGameConnectionType == kGameConnectionTypeLocal)
+        return true;
+    bool v1 = mLanDiscoveryActive;
+    if (mGameConnectionType != kGameConnectionTypeLan)
+        v1 = mLiveQueryActive;
+    return !v1;
+}
+
 struct sServerCreateParams MPUIInterface::mServerParams;
 struct sServerCreateParams MPUIInterface::mNextServerParams;
+bool MPUIInterface::mLanDiscoveryActive;
 
 // ============================================================================
 // MPPlayerManager (mp.o)
@@ -180,6 +241,71 @@ void MPPlayerManager::HandleKickPlayer(const bdReceivedMessage&)
 unsigned char MPPlayerManager::getPlayerIndex(int localPlayer)
 {
     return *(unsigned char*)((char*)this + 0x4111 + localPlayer);
+}
+
+// ea: 0x0072EA10 (mLocalPlayerIndex at +0x4111, size 1)
+bool MPPlayerManager::AnyLocalPlayers()
+{
+    for (int i = 0; i < 1; ++i)
+    {
+        if (*(unsigned char*)((char*)this + 0x4111 + i) < 0x10u)
+            return true;
+    }
+    return false;
+}
+
+// ea: 0x0072EB80
+int MPPlayerManager::GetLocalId(const MPPlayer* player)
+{
+    if (player == nullptr)
+        return -1;
+    for (int i = 0; i < 1; ++i)
+    {
+        if (*(unsigned char*)((char*)this + 0x4111 + i) == player->mId)
+            return i;
+    }
+    return -1;
+}
+
+// ea: 0x0072EA80 (mPlayers at +0x1010, stride 0x310, mClientIndex +0x08)
+bool MPPlayerManager::IsLocalPlayer(const Entity* const entity)
+{
+    if (entity == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 465;
+        AeAssert::gCurrentExpr = "entity";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid entity"))
+            __debugbreak();
+    }
+    if (entity->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 466;
+        AeAssert::gCurrentExpr = "entity->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Entity is not player"))
+            __debugbreak();
+    }
+    for (int i = 0; i < 1; ++i)
+    {
+        unsigned char idx = *(unsigned char*)((char*)this + 0x4111 + i);
+        if (idx < 0x10u)
+        {
+            MPPlayer* p = (MPPlayer*)((char*)this + 0x1010 + 0x310 * idx);
+            if (p != nullptr)
+            {
+                int mClientIndex = *(int*)((char*)p + 0x08);
+                Entity* v5 = mClientIndex >= 0
+                                 ? EntityManager::sInst->GetPlayer(mClientIndex)
+                                 : nullptr;
+                if (v5 == entity)
+                    return true;
+            }
+        }
+    }
+    return false;
 }
 
 // ============================================================================
@@ -218,6 +344,38 @@ bool MPPeer::IsHost()
 bool MPPeer::IsQosComplete(int qos_handle)
 {
     return *(bool*)((char*)this + 0x5AB0 + qos_handle);
+}
+
+// ea: 0x0072CA20 (m_QosIsComplete +0x5AB0, m_QosIsSuccessful +0x5DD0)
+bool MPPeer::IsQosSuccessful(int qos_handle)
+{
+    return *(bool*)((char*)this + 0x5AB0 + qos_handle)
+           && *(bool*)((char*)this + 0x5DD0 + qos_handle);
+}
+
+// ea: 0x0072C850
+void MPPeer::LeaveSession()
+{
+    ((bdSession*)((char*)this + 0x7448))->leave();
+    *(bool*)((char*)this + 0xD278) = false;
+}
+
+// ea: 0x0072C870
+void MPPeer::CancelJoin()
+{
+    ((bdSession*)((char*)this + 0x7448))->leave();
+    *(bool*)((char*)this + 0xD278) = false;
+}
+
+// ea: 0x0072CAC0 (m_QosIsAvailable at +0x60F0, 800 slots)
+int MPPeer::FindAvailableQosSlot()
+{
+    for (int i = 0; i < 800; ++i)
+    {
+        if (*(bool*)((char*)this + 0x60F0 + i))
+            return i;
+    }
+    return -1;
 }
 
 // ea: 0x00735AA0 (mPlayerManager at +0x74E0)
@@ -404,6 +562,41 @@ bool MultiplayerMgr::FromLobby()
 bool MultiplayerMgr::getLinkStatus()
 {
     return !mLinkCheckEnabled || *(bool*)((char*)this + 0x4D);
+}
+
+// ea: 0x0072C4B0 (mSendInterval at +0x2C)
+void MultiplayerMgr::setSendInterval(int ms)
+{
+    *(float*)((char*)this + 0x2C) = ms * 1000.0f;
+}
+
+// ea: 0x007511E0
+void MultiplayerMgr::shutdownVoiceSubsystem()
+{
+    if (mPeer != nullptr)
+    {
+        kuju::kvoicemanager::cVoiceManager* v =
+            *(kuju::kvoicemanager::cVoiceManager**)((char*)mPeer + 0xD270);
+        if (v->mInitialised != 0)
+        {
+            v->mInitialised = 0;
+            v->mVoiceNetworkManager.mVoiceHandlerInterface = nullptr;
+        }
+    }
+}
+
+// ea: 0x0072C4F0
+EDroppedItemTypes MultiplayerMgr::GetDroppedItemType(itemType_t item)
+{
+    switch (item)
+    {
+    case IT_HEALTH:
+    case IT_WEAPON_AMMO:
+    case IT_WEAPON_HEALTH:
+        return (EDroppedItemTypes)2;  // kItemTypeSupport
+    default:
+        return (EDroppedItemTypes)1;  // kItemTypeWeapons
+    }
 }
 
 // ============================================================================

@@ -44,6 +44,9 @@ public:
     void SetId(unsigned char id);       // ?SetId@MPVehicle@@QAEXE@Z
     bool IsOccupied() const;            // ?IsOccupied@MPVehicle@@QBE_NXZ
     static bool IsValid(unsigned char id);  // ?IsValid@MPVehicle@@SA_NE@Z
+    void ClearOccupants();              // ?ClearOccupants@MPVehicle@@QAEXXZ (mp.o 0x72E1A0)
+    void SetInvalid();                  // ?SetInvalid@MPVehicle@@QAEXXZ (mp.o 0x736EC0)
+    bool IsFullyOccupied() const;       // ?IsFullyOccupied@MPVehicle@@QBE_NXZ (mp.o 0x72E480)
     ~MPVehicle();                       // ??1MPVehicle@@QAE@XZ
 };
 
@@ -56,6 +59,13 @@ public:
     unsigned int mNumResults;  // +0x48
 
     unsigned int GetNumResults() const;  // ?GetNumResults@MPLanDiscovery@@QBEIXZ
+};
+
+// EGameConnectionType (mp.o)
+enum EGameConnectionType : int {
+    kGameConnectionTypeLan = 0,
+    kGameConnectionTypeOnline = 1,
+    kGameConnectionTypeLocal = 2,
 };
 
 // ============================================================================
@@ -74,11 +84,16 @@ public:
     static void StartDevice();           // ?StartDevice@MPUIInterface@@SAXXZ
     static void PlatformStop();          // ?PlatformStop@MPUIInterface@@SAXXZ
     static bool NextRoundMapChanges();   // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ
+    static bool NextRoundMapRestart();   // ?NextRoundMapRestart@MPUIInterface@@SA_NXZ (mp.o 0x7300A0)
+    static const bool IsGameListingComplete(); // ?IsGameListingComplete@MPUIInterface@@SA?B_NXZ (mp.o 0x72F730)
 
     static int  mReturnMenu;  // ?mReturnMenu@MPUIInterface@@1HA @ 0xF0A124
     static bool mKicked;      // ?mKicked@MPUIInterface@@1_NA @ 0xF0A128
     static struct sServerCreateParams mServerParams;     // ?mServerParams@MPUIInterface@@1UsServerCreateParams@@A
     static struct sServerCreateParams mNextServerParams; // ?mNextServerParams@MPUIInterface@@1UsServerCreateParams@@A
+    static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
+    static bool mLanDiscoveryActive;  // ?mLanDiscoveryActive@MPUIInterface@@1_NA
+    static bool mLiveQueryActive;     // ?mLiveQueryActive@MPUIInterface@@1_NA
 };
 
 // sServerCreateParams - host session setup (mMapID at +0x58)
@@ -86,7 +101,12 @@ struct sServerCreateParams {
     char mRandomMapList[64];  // +0x00
     char mName[24];           // +0x40
     unsigned char mMapID;     // +0x58
+    unsigned char mGameType;  // +0x59
 };
+
+// EDroppedItemTypes (mp.o); enumerators kept out of the global scope to avoid
+// colliding with the anonymous enums in g_local.h.
+enum EDroppedItemTypes : int;
 
 // ============================================================================
 // MP options menus (shell FE menu subclasses; mp.o vtable overrides)

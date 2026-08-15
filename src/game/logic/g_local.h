@@ -2833,7 +2833,7 @@ void   G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
 // ============================================================================
 // itemType_t / gitem_s - item table entry (0x34 bytes) - verified against IDA
 // ============================================================================
-enum itemType_t {
+enum itemType_t : int {
     IT_BAD = 0,
     IT_WEAPON = 1,
     IT_AMMO = 2,
