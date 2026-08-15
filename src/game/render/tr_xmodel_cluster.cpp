@@ -29,10 +29,6 @@ struct nglShaderParamSet {
 };
 static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");
 class nglMeshNode;
-class DObj;
-class XModel;
-class XModelParts;
-class Entity;
 struct XModelLod;
 struct DObjSkelMat;
 struct nglLightContext;
@@ -47,6 +43,77 @@ public:
     float Scale[4];       // +0x10
 };
 static_assert(sizeof(nglMeshParams) == 0x20, "nglMeshParams size mismatch");
+
+// IDA-verified views for the surface adders (tr_xmodel.cpp family)
+struct trRefEntityLocal {
+    uint8_t _pad[0xEC];
+    float mScale;               // +0xEC
+    uint8_t _pad2[0xFC - 0xF0];
+    unsigned char iflIndex;     // +0xFC
+};
+struct SentientLocal {
+    uint8_t _pad[0x04];
+    int eTeam;                  // +0x04
+};
+class Entity {
+public:
+    uint8_t _pad0[0x25C];
+    SentientLocal* sentient;        // +0x25C
+    void* scr_vehicle;              // +0x260
+    uint8_t _pad2[0x268 - 0x264];
+    trRefEntityLocal* mRenderEntity;// +0x268
+    uint8_t _pad3[0x278 - 0x26C];
+    float modelscale;               // +0x278
+    uint8_t _pad4[0x2C4 - 0x27C];
+    int flags;                      // +0x2C4
+    unsigned int mFlags;            // +0x2C8
+};
+class DObj {
+public:
+    uint8_t _pad0[0x40];
+    struct PoseLocal {
+        uint8_t _pad[0x04];
+        int LOD;                    // +0x04 (nalBasePose::LOD)
+    }* mPose[8];                    // +0x40
+    uint8_t _pad60[0x80 - 0x60];
+    struct Model {
+        void* mValue;               // +0x00
+        int mPakId;                 // +0x04
+    } models[8];                    // +0x80
+    uint8_t _padC0[0xCE - 0xC0];
+    unsigned char numModels;        // +0xCE
+    unsigned char numBones;         // +0xCF
+    uint8_t _padD0[0xD8 - 0xD0];
+    int mLOD;                       // +0xD8
+    int mLODOverride;               // +0xDC
+    int mLODAnim;                   // +0xE0
+    unsigned int mFlags;            // +0xE4
+    void SetLOD(int startLod);      // ?SetLOD@DObj@@QAEXH@Z
+    void SetLODAnim(int startLod);  // ?SetLODAnim@DObj@@QAEXH@Z
+};
+class XModelParts {
+public:
+    uint8_t _pad0[0x10];
+    struct Hierarchy {
+        unsigned int mSize;         // +0x10
+        struct BoneHier {
+            unsigned int mName;      // +0x00 (InplaceString::mStr)
+            unsigned int mNameHash;  // +0x04
+            int mParentIndex;        // +0x08
+        }* mList;                    // +0x14
+    } mHierarchy;
+    uint8_t _pad2[0x28 - 0x18];
+    struct MeshPtrs {
+        unsigned int mSize;          // +0x28
+        nglMesh** mList;             // +0x2C
+    } mMeshPtrs;
+};
+class XModel {
+public:
+    uint8_t _pad[0x24];
+    XModelLod* lod[5];              // +0x24
+    const XModelParts* GetXModelParts(int lodIndex) const;  // ?GetXModelParts@XModel@@QBEPBVXModelParts@@H@Z (g.o)
+};
 
 struct nglSceneLocal {
     uint8_t _pad[0x8C];
@@ -84,8 +151,13 @@ extern bool AddTextureMatrix(Entity* ent, unsigned int boneNameHash,
                              nglShaderParamSet& shaderParams);  // ?AddTextureMatrix@@YA_NPAVEntity@@IAAUnglShaderParamSet@@@Z
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);  // ?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z
 extern unsigned int isRotatingTextureParamID;  // ?isRotatingTextureParamID@@3IA
+extern unsigned int nglTextureFrameParamID;    // ?nglTextureFrameParamID@@3IA
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;    // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA
 extern float gZoomRatio;                       // ?gZoomRatio@@3MA (cg.o)
+extern int auxGetNBones(nglMesh* m);           // ?auxGetNBones@@YAHPAUnglMesh@@@Z
+extern void auxSetScale(nglMeshParams* meshParams, float sx, float sy,
+                        float sz);             // ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z
+extern float computeLOD(DObj* obj, const math::Position3& center);  // ?computeLOD@@YAMPAVDObj@@ABVPosition3@math@@@Z
 
 struct nglMeshLocal {
     uint8_t _pad[0x0C];
@@ -568,4 +640,239 @@ int R_AddVehicleSurfaces(DObj* obj, Entity* entity, const math::Mat43& matrix,
         }
     }
     return (dobj->mFlags & (unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME) == 0;
+}
+
+// ============================================================================
+// R_AddNonVehicleSurfaces - ea: 0x006D02D0
+// ============================================================================
+enum { TEAM_DEAD = 4, EF_NON_EXISTING = 0x40000000 };
+
+int R_AddNonVehicleSurfaces(DObj* obj, Entity* entity,
+                            const math::Mat43& matrix, float alpha,
+                            bool render_shadow, bool maxLod)
+{
+    if (entity == nullptr || entity->scr_vehicle != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_xmodel.cpp";
+        AeAssert::gCurrentLine = 1053;
+        AeAssert::gCurrentExpr = "entity && !entity->scr_vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("this function is for non-vehicle entities"))
+            __debugbreak();
+    }
+    nglShaderParamSet* shaderParams =
+        (nglShaderParamSet*)nglListAlloc(4 * nglShaderParamSet::NumParams + 8, 8);
+    *(unsigned int*)shaderParams = 0;
+    *((unsigned int*)shaderParams + 1) = 0;
+    bool didCalcLighting = false;
+
+    bool poseLodSet = false;
+    if (entity->sentient != nullptr && entity->sentient->eTeam == TEAM_DEAD
+        && (entity->flags & EF_NON_EXISTING) == 0)
+    {
+        DObj::PoseLocal* pose = obj->mPose[0];
+        if (pose != nullptr)
+        {
+            int lodOverride = obj->mLODOverride;
+            if (lodOverride < 0)
+                lodOverride = obj->mLOD;
+            if (lodOverride < pose->LOD)
+            {
+                obj->SetLODAnim(pose->LOD);
+                poseLodSet = true;
+            }
+        }
+    }
+    if (!poseLodSet)
+        obj->mLODAnim = -1;
+
+    int v75 = ((entity->mFlags & 2) != 0) << 6;
+    if (maxLod)
+    {
+        obj->SetLOD(0);
+    }
+    else
+    {
+        computeLOD(obj, *((const math::Position3*)&matrix.w.v));
+    }
+
+    nglMeshParams meshParams = {};
+    int modelIndex = 0;
+    if (obj->numModels != 0)
+    {
+        while (1)
+        {
+            DObjSkelMatLocal* matrixArray =
+                (DObjSkelMatLocal*)DObjGetMatrixArray(obj, modelIndex);
+            int pakId = obj->models[modelIndex].mPakId;
+            XModel* xmodel = (XModel*)obj->models[modelIndex].mValue;
+            int lod = obj->mLODOverride;
+            if (lod >= 0 || (lod = obj->mLODAnim) >= 0
+                || (lod = obj->mLOD) >= 0)
+            {
+                XModelLod** p = &xmodel->lod[lod];
+                do
+                {
+                    ValidatePakId(pakId);
+                    if (lod < 5 && *p != nullptr)
+                        break;
+                    --lod;
+                    --p;
+                } while (lod >= 0);
+            }
+            if (!didCalcLighting)
+            {
+                didCalcLighting = true;
+                calc_lighting(entity, matrix, alpha, *shaderParams);
+            }
+            ValidatePakId(pakId);
+            int v21 = lod;
+            if (lod < 0)
+            {
+                v21 = 0;
+                while (xmodel->lod[v21] == nullptr)
+                    ++v21;
+            }
+            XModelParts* parts =
+                (XModelParts*)((XModelLodLocal*)xmodel->lod[v21])->xmodelParts;
+            ValidatePakId(pakId);
+            int v24 = lod;
+            if (lod < 0)
+            {
+                v24 = 0;
+                while (xmodel->lod[v24] == nullptr)
+                    ++v24;
+            }
+            int meshCount;
+            if (((XModelLodLocal*)xmodel->lod[v24])->xmodelParts != nullptr)
+                meshCount = (int)xmodel->GetXModelParts(lod)->mHierarchy.mSize;
+            else
+                meshCount = 0;
+
+            int mi = 0;
+            if (meshCount > 0)
+            {
+                do
+                {
+                    int count = mi;
+                    if (mi >= (int)parts->mMeshPtrs.mSize)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "../ae\\inplace/InplaceVector.h";
+                        AeAssert::gCurrentLine = 81;
+                        AeAssert::gCurrentExpr = "index < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                        count = 0;
+                    }
+                    nglMesh* mesh = parts->mMeshPtrs.mList[count];
+                    if (mesh != nullptr)
+                    {
+                        math::Mat43 localToWorld;
+                        localToWorld.x.v = matrix.x.v;
+                        localToWorld.y.v = matrix.y.v;
+                        localToWorld.z.v = matrix.z.v;
+                        localToWorld.w.v = matrix.w.v;
+                        meshParams.Flags = (unsigned int)v75;
+                        int nBones = auxGetNBones(mesh);
+                        meshParams.NBones = nBones;
+                        trRefEntityLocal* renderEntity =
+                            (trRefEntityLocal*)entity->mRenderEntity;
+                        if (nBones != 0)
+                        {
+                            ValidatePakId(pakId);
+                            int v42 = 0;
+                            if (xmodel->lod[0] == nullptr)
+                            {
+                                do
+                                {
+                                    ++v42;
+                                } while (xmodel->lod[v42] == nullptr);
+                            }
+                            int numBones2 = 0;
+                            if (((XModelLodLocal*)xmodel->lod[v42])
+                                    ->xmodelParts
+                                != nullptr)
+                            {
+                                int v44 = 0;
+                                if (xmodel->lod[0] == nullptr)
+                                {
+                                    do
+                                    {
+                                        ++v44;
+                                    } while (xmodel->lod[v44] == nullptr);
+                                }
+                                numBones2 = (int)(
+                                    (XModelLodLocal*)xmodel->lod[v44])
+                                               ->xmodelParts->mHierarchy.mSize;
+                            }
+                            if (nBones != numBones2)
+                            {
+                                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\tr_xmodel.cpp";
+                                AeAssert::gCurrentLine = 1150;
+                                AeAssert::gCurrentExpr =
+                                    "NBones == xmod->GetNumBones()";
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Assert(
+                                        "Number of bones mismatch in skinned character."))
+                                    __debugbreak();
+                            }
+                            meshParams.Flags |= 8u;
+                            unsigned char iflIndex = renderEntity->iflIndex;
+                            if (iflIndex != 255)
+                            {
+                                unsigned int rid = nglTextureFrameParamID;
+                                unsigned long long bit = 1ULL << rid;
+                                *(unsigned int*)shaderParams |=
+                                    (unsigned int)bit;
+                                *((unsigned int*)shaderParams + 1) |=
+                                    (unsigned int)(bit >> 32);
+                                ((unsigned int*)shaderParams)[2 + rid] =
+                                    iflIndex;
+                            }
+                        }
+                        else
+                        {
+                            localToWorld =
+                                VehicleWorldMatrix(&matrixArray[mi], matrix);
+                            float mScale = renderEntity->mScale;
+                            if (mScale == 1.0f)
+                                mScale = entity->modelscale;
+                            if (mScale != 1.0f)
+                                auxSetScale(&meshParams, mScale, mScale,
+                                            mScale);
+                            meshParams.Flags |= 0x80u;
+                            meshParams.LOD = (unsigned int)GetScaledMeshLOD(
+                                mesh, &localToWorld, &meshParams, gZoomRatio);
+                        }
+                        unsigned int rid = isRotatingTextureParamID;
+                        unsigned long long bit = 1ULL << rid;
+                        *(unsigned int*)shaderParams |= (unsigned int)bit;
+                        *((unsigned int*)shaderParams + 1) |=
+                            (unsigned int)(bit >> 32);
+                        ((unsigned int*)shaderParams)[2 + rid] = 0;
+                        nglMeshNode* node = _codListAddMesh(
+                            mesh, localToWorld, &meshParams, shaderParams,
+                            nullptr);
+                        obj->mFlags &=
+                            ~(unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME;
+                        if (render_shadow)
+                            do_shadow(obj, modelIndex, mi, mesh, matrix,
+                                      localToWorld, meshParams,
+                                      *shaderParams, node);
+                    }
+                    ++mi;
+                } while (mi < meshCount);
+            }
+            ++modelIndex;
+            if (modelIndex >= obj->numModels)
+                break;
+        }
+    }
+    return (obj->mFlags & (unsigned int)g_DOBJF_NOT_RENDERED_LAST_FRAME) == 0;
 }
