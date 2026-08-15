@@ -84,6 +84,7 @@ public:
 
     Position3() {}
     Position3(__m128 _v) : v(_v) {}
+    const Position3& operator*=(const Mat43& _m);  // ??XPosition3@math@@QAEABV01@ABVMat43@1@@Z (render.o 0x6E67E0)
 
     // ??0Position3@math@@QAE@ABVVector4@1@@Z (anim.o 0x539D60)
     Position3(const Vector4& v);
@@ -222,8 +223,12 @@ Vector4  operator+(const Dir3& a, const Vector4& b);              // ??Hmath@@YA
 Vector4  operator/(const Vector4& a, float b);                    // ??Kmath@@YA?AVVector4@0@ABV10@M@Z
 Vector4  operator*(const Vector4& a, float b);                    // ??Dmath@@YA?AVVector4@0@ABV10@M@Z (render.o 0x6E62E0)
 float    operator*(const Vector4& a, const Vector4& b);           // ??Dmath@@YAMABVVector4@0@0@Z (render.o 0x6E6320)
+float    operator*(const Dir3& a, const Vector4& b);              // ??Dmath@@YAMABVDir3@0@ABVVector4@0@@Z (render.o 0x6E6390)
+float    operator*(const Position3& a, const Vector4& b);         // ??Dmath@@YAMABVPosition3@0@ABVVector4@0@@Z (render.o 0x6E6410)
 Position3 Mul(const Position3& v, const Mat33& m);                // ?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat33@1@@Z (render.o 0x6E6700)
 Position3 operator*(const Position3& v, const Mat33& m);          // ??Dmath@@YA?AVPosition3@0@ABV10@ABVMat33@0@@Z (render.o 0x6E6770)
+Vector4  Mul(const Vector4& v, const Mat43& m);                   // ?Mul@math@@YA?AVVector4@1@ABV21@ABVMat43@1@@Z (render.o 0x6E6860)
+Vector4  operator*(const Vector4& v, const Mat43& m);             // ??Dmath@@YA?AVVector4@0@ABV10@ABVMat43@0@@Z (render.o 0x6E6900)
 Vector4  Mul(const Position3& v, const Mat44& m);                 // ?Mul@math@@YA?AVVector4@1@ABVPosition3@1@ABVMat44@1@@Z
 Vector4  operator*(const Position3& v, const Mat44& m);           // ??Dmath@@YA?AVVector4@0@ABVPosition3@0@ABVMat44@0@@Z
 Mat44    Mul(const Mat44& a, const Mat33& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z

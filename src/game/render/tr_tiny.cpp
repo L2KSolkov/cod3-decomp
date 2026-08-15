@@ -228,7 +228,8 @@ void apsClient::UpdateAndRender(float) {}
 template <class T>
 class apsArray {
 public:
-    uint8_t _pad[6];
+    T* mElements;                    // +0x00
+    short mCapacity;                 // +0x04
     short mSize;                     // +0x06
     int size() const;                // ?size@?$apsArray@UElement@apsEffectTemplate@@@@QBEHXZ @ 0x6E9990
 };
@@ -271,7 +272,9 @@ public:
     int mPriority;                   // +0x6C
     int GetPriority() const;         // ?GetPriority@apsEffectTemplate@@QBEHXZ @ 0x6E8030
     int GetNumElements() const;      // ?GetNumElements@apsEffectTemplate@@QBEHXZ @ 0x6EBDF0
+private:
     const Element& GetElement(int iIndex) const;  // ?GetElement@apsEffectTemplate@@QBEABUElement@1@H@Z
+public:
     float GetEndTime(int iElementNum) const;     // ?GetEndTime@apsEffectTemplate@@QBEMH@Z @ 0x6EBE90
 };
 
@@ -426,11 +429,71 @@ public:
 };
 const WorldSpawn* SceneManager::GetWorldSpawn() { return mWorldSpawn; }
 
+class XBoneHierarchy2 {
+public:
+    uint8_t mName[8];                // InplaceString (small-string buffer)
+    unsigned int mNameHash;          // +0x08
+    int mParentIndex;                // +0x0C
+};
+template <class T>
+class InplaceVector {
+public:
+    unsigned int mSize;              // +0x00
+    T* mList;                        // +0x04
+    unsigned int size() const;       // ?size@?$InplaceVector@...@@QBEIXZ
+    T& operator[](unsigned int index);          // ??A?$InplaceVector@...@@QAEAA...@@I@Z
+    const T& operator[](unsigned int index) const;  // ??A?$InplaceVector@...@@QBEAB...@@I@Z
+};
+template <class T>
+unsigned int InplaceVector<T>::size() const
+{
+    return mSize;
+}
+template <class T>
+T& InplaceVector<T>::operator[](unsigned int index)  // @ 0x6E89B0/0x6E8B60/0x6E9F80/0x6EA010
+{
+    unsigned int v2 = index;
+    if (index >= mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+        if (index >= mSize)
+            v2 = 0;
+    }
+    return mList[v2];
+}
+template <class T>
+const T& InplaceVector<T>::operator[](unsigned int index) const  // @ 0x6E8A30/0x6E8AD0
+{
+    unsigned int v2 = index;
+    if (index >= mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 91;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+        if (index >= mSize)
+            v2 = 0;
+    }
+    return mList[v2];
+}
 class XModelParts {
 public:
     uint8_t _pad[0x3C];
     const char* mName;               // +0x3C (InplaceString::mStr)
+    uint8_t _pad2[0x70 - 0x40];
+    InplaceVector<XBoneHierarchy2> mHierarchy;  // +0x70
     const char* GetName();           // ?GetName@XModelParts@@QAEPBDXZ @ 0x6E5E00
+    int GetBoneIndex(const char* name);  // ?GetBoneIndex@XModelParts@@QAEHPBD@Z @ 0x6EB640
+    int GetBoneParent(unsigned int i) const;  // ?GetBoneParent@XModelParts@@QBEHI@Z @ 0x6EB850
 };
 const char* XModelParts::GetName() { return mName; }
 
@@ -713,31 +776,28 @@ template <class T>
 jqPtr<T>::operator void*() { return Value; }
 template class jqPtr<void>;
 
-// ============================================================================
-// InplaceVector size
-// ============================================================================
-template <class T>
-class InplaceVector {
-public:
-    unsigned int mSize;              // +0x00
-    T* mList;                        // +0x04
-    unsigned int size() const;       // ?size@?$InplaceVector@...@@QBEIXZ
-};
-template <class T>
-unsigned int InplaceVector<T>::size() const
-{
-    return mSize;
-}
 struct nglMesh;
 class XModelCollTri;
 class XModelCollSurf;
 class XModelParts;
 class XModel;
+class XBoneInfo {
+public:
+    math::Position3::Packed mBounds[2];  // +0x00
+    math::Dir3::Packed mOffset;          // +0x18
+    float mRadiusSquared;                // +0x24
+};
 template unsigned int InplaceVector<nglMesh*>::size() const;          // @ 0x6E8AB0
 template unsigned int InplaceVector<const XModelCollTri*>::size() const;   // @ 0x6E8AC0
 template unsigned int InplaceVector<const XModelCollSurf*>::size() const;  // @ 0x6E8B50
 template unsigned int InplaceVector<const XModelParts*>::size() const;     // @ 0x6E9F70
 template unsigned int InplaceVector<const XModel*>::size() const;          // @ 0x6EA000
+template XBoneInfo& InplaceVector<XBoneInfo>::operator[](unsigned int);
+template const XBoneInfo& InplaceVector<XBoneInfo>::operator[](unsigned int) const;
+template const XModelCollTri* const& InplaceVector<const XModelCollTri*>::operator[](unsigned int) const;
+template const XModelCollSurf*& InplaceVector<const XModelCollSurf*>::operator[](unsigned int);
+template const XModelParts*& InplaceVector<const XModelParts*>::operator[](unsigned int);
+template const XModel*& InplaceVector<const XModel*>::operator[](unsigned int);
 
 // ============================================================================
 // InplaceAssetBank Size
@@ -751,15 +811,22 @@ public:
     template <class T>
     unsigned int* Find(T const& key) const;  // ?Find@...?$InplaceTree@VInplaceString@@I@@QBEPAIABQ...@@Z
 };
+class PtrFixupTable {
+public:
+    void Fixup(const void* base);    // ?Fixup@PtrFixupTable@@QAEXPBX@Z
+};
 template <class T, class Tree>
 class InplaceAssetBank {
 public:
     uint8_t _pad[0x08];
     Tree mTree;                      // +0x08
     unsigned int mSize;              // +0x10 (mPtrs.mSize)
+    uint8_t _pad2[0x18 - 0x14];
+    PtrFixupTable* mPtrFixupTable;   // +0x18
     unsigned int Size() const;       // ?Size@?$InplaceAssetBank@...@@QBEIXZ
     template <class K>
     bool FindIndex(K const& key, unsigned int* out) const;  // ??$FindIndex@...@?$InplaceAssetBank@...@@QBE_NABQ...@@PAI@Z
+    void Fixup();                    // ?Fixup@?$InplaceAssetBank@...@@QAEXXZ
 };
 template <class T, class Tree>
 unsigned int InplaceAssetBank<T, Tree>::Size() const
@@ -796,6 +863,7 @@ ae_sized_array_base<T, N>::ae_sized_array_base() {}
 struct MultiApk;
 class LightGrid {
 public:
+    struct TOC;
     struct LightIndex {
         unsigned short mIndex;
         unsigned short mAttenuationInt;
@@ -807,6 +875,9 @@ class ae_sized_array : public ae_sized_array_base<T, N> {
 public:
     int m_size;                      // +sizeof(T)*N
     ae_sized_array() : m_size(0) {}  // ??0?$ae_sized_array@PAUMultiApk@@$0CA@@@QAE@XZ @ 0x6E9860
+    T& operator[](int idx);            // ??A?$ae_sized_array@...@@QAEAA...@@H@Z
+    const T& operator[](int idx) const;  // ??A?$ae_sized_array@...@@QBEAB...@@H@Z
+    void push_back(T const& elt);      // ?push_back@?$ae_sized_array@...@@QAEXABQ...@@@Z
     class iterator {
     private:
         friend class ae_sized_array;
@@ -857,6 +928,94 @@ template <class T, int N>
 void ae_sized_array<T, N>::clear()
 {
     m_size = 0;
+}
+template <class T, int N>
+T& ae_sized_array<T, N>::operator[](int idx)  // @ 0x6E9260/0x6E9870
+{
+    if (idx < 0 || idx >= N)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 154;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return m_elements[idx];
+}
+template <class T, int N>
+const T& ae_sized_array<T, N>::operator[](int idx) const
+{
+    if (idx < 0 || idx >= N)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 154;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return m_elements[idx];
+}
+template <class T, int N>
+void ae_sized_array<T, N>::push_back(T const& elt)  // @ 0x6E8920/0x6E9900
+{
+    if (m_size >= N)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 174;
+        AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no room left in array"))
+            __debugbreak();
+    }
+    if (m_size < N)
+    {
+        m_elements[m_size] = elt;
+        ++m_size;
+    }
+}
+
+// ae_array<T,N> fixed-size array with bound check
+template <class T, int N>
+class ae_array {
+public:
+    T m_elements[N];                 // +0x00
+    T& operator[](int idx);              // ??A?$ae_array@...@@QAEAA...@@H@Z
+    const T& operator[](int idx) const;  // ??A?$ae_array@...@@QBEABQ...@@H@Z
+};
+template <class T, int N>
+T& ae_array<T, N>::operator[](int idx)  // @ 0x6E8C20/0x6EA090/0x6EA110
+{
+    if (idx < 0 || idx > N - 1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 31;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return m_elements[idx];
+}
+template <class T, int N>
+const T& ae_array<T, N>::operator[](int idx) const  // @ 0x6EAB10/0x6EAB90
+{
+    if (idx < 0 || idx > N - 1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 25;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return m_elements[idx];
 }
 template class ae_sized_array_base<ae_pair<short, short>, 256>;
 template class ae_sized_array<void (__cdecl*)(void), 32>;
@@ -1128,11 +1287,13 @@ public:
     unsigned int capacity() const;                // ?capacity@?$vector@...@@std@@QBEIXZ
     iterator begin();                             // ?begin@?$vector@...@@std@@QAE?AViterator@12@XZ
     iterator end();                               // ?end@?$vector@...@@std@@QAE?AViterator@12@XZ
+    iterator insert(iterator _Where, const T& _Val);  // ?insert@?$vector@...@@std@@QAE?AViterator@12@V312@ABU...@@@Z
     iterator erase(iterator _First, iterator _Last);  // ?erase@?$vector@...@@std@@QAE?AViterator@12@V312@0@Z
     iterator erase(iterator _Where);                  // ?erase@?$vector@...@@std@@QAE?AViterator@12@V312@@Z
     void clear();                                 // ?clear@?$vector@...@@std@@QAEXXZ
     void resize(unsigned int _Newsize);           // ?resize@?$vector@...@@std@@QAEXI@Z
     void resize(unsigned int _Newsize, T _Val);   // 3-arg form (defined elsewhere)
+    void push_back(const T& _Val);                // ?push_back@?$vector@...@@std@@QAEXABU...@@@Z
     unsigned int max_size() const                 // ?max_size@?$vector@...@@std@@QBEIXZ
     {
         return (unsigned int)(((size_t)-1) / sizeof(T));
@@ -1143,7 +1304,8 @@ protected:
     bool _Buy(unsigned int _Capacity);            // ?_Buy@?$vector@...@@std@@IAE_NI@Z
     T* _Ufill(T* _Ptr, unsigned int _Count, const T& _Val);  // ?_Ufill@?$vector@...@@std@@IAEPAU...@@PAU34@IABU34@@Z
     void _Tidy();                                 // ?_Tidy@?$vector@...@@std@@IAEXXZ
-    void _Xlen() const;                           // ?_Xlen@?$vector@...@@std@@IBEXXZ (defined elsewhere)
+    void _Xlen() const;                           // ?_Xlen@?$vector@...@@std@@IBEXXZ
+    void _Insert_n(iterator _Where, unsigned int _Count, const T& _Val);  // ?_Insert_n@?$vector@...@@std@@IAEXViterator@12@IABU...@@@Z (next batch)
     void _Destroy(T*, T*) {}                      // ?_Destroy@?$vector@...@@std@@IAEXPAU...@@0@Z
 };
 
@@ -2181,24 +2343,36 @@ template bool InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned 
 // jqBatch
 class jqBatch {
 public:
-    uint8_t _pad[0x10];
+    void* Input;                     // +0x00 (jqPtr<void>)
+    void* Output;                    // +0x04
+    void* Scratch;                   // +0x08
+    void* Static;                    // +0x0C
     int InputSize;                   // +0x10
     int OutputSize;                  // +0x14
     int ScratchSize;                 // +0x18
     int StaticSize;                  // +0x1C
-    uint8_t _pad2[0x28 - 0x20];
+    int Handle;                      // +0x20
+    jqModule* Module;                // +0x24
     int Priority;                    // +0x28
     int GroupID;                     // +0x2C
+    int Next;                        // +0x30
     jqBatch();                       // ??0jqBatch@@QAE@XZ @ 0x6EBC20
 };
 jqBatch::jqBatch()
 {
+    Input = nullptr;
+    Output = nullptr;
+    Scratch = nullptr;
+    Static = nullptr;
     InputSize = 0;
     OutputSize = 0;
     ScratchSize = 0;
     StaticSize = 0;
+    Handle = 0;
+    Module = nullptr;
     Priority = 1;
     GroupID = -1;
+    Next = 0;
 }
 
 // codListAddMesh
@@ -2706,3 +2880,233 @@ void force_emit_nglParamSet_Sets(nglParamSet* ps, nglTintParamType* tint,
     ps->Set(cdWheelMarkShaderDataType(), wms);
     ps->Set(cdSimpleAlphaAlphaParamType(), fVal);
 }
+
+// ============================================================================
+// batch 91 - 94..130 byte render.o symbols
+// ============================================================================
+#include <string.h>
+
+const math::Position3& math::Position3::operator*=(const math::Mat43& _m)  // 0x6E67E0
+{
+    __m128 v = this->v;
+    this->v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v, v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(v, v, 0x55), _m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v, v, 0xAA), _m.z.v), _m.w.v));
+    return *this;
+}
+
+float math::operator*(const math::Dir3& _a, const math::Vector4& _b)  // 0x6E6390
+{
+    __m128 v2 = _mm_mul_ps(
+        _mm_shuffle_ps(_a.v, _mm_shuffle_ps(_mm_setzero_ps(), _a.v, 0xA0), 0x34),
+        _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+              + (_mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]
+                 + _mm_shuffle_ps(v2, v2, 0xFF).m128_f32[0]));
+}
+float math::operator*(const math::Position3& _a, const math::Vector4& _b)  // 0x6E6410
+{
+    __m128 v2 = _mm_mul_ps(
+        _mm_shuffle_ps(_a.v, _mm_shuffle_ps(_mm_set1_ps(1.0f), _a.v, 0xA0), 0x34),
+        _b.v);
+    return v2.m128_f32[0]
+           + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
+              + (_mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]
+                 + _mm_shuffle_ps(v2, v2, 0xFF).m128_f32[0]));
+}
+math::Vector4 math::Mul(const math::Vector4& _v, const math::Mat43& _m)  // 0x6E6860
+{
+    math::Vector4 result;
+    __m128 v4 = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0x55), _m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0xAA), _m.z.v),
+                   _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0xFF), _m.w.v)));
+    result.v = _mm_shuffle_ps(v4, _mm_shuffle_ps(_v.v, v4, 0xAF), 0x34);
+    return result;
+}
+math::Vector4 math::operator*(const math::Vector4& _v, const math::Mat43& _m)  // 0x6E6900
+{
+    return math::Mul(_v, _m);
+}
+
+void Color::clamp()  // 0x6E5CB0
+{
+    if (r < 0.0f) r = 0.0f;
+    else if (r > 1.0f) r = 1.0f;
+    if (g < 0.0f) g = 0.0f;
+    else if (g > 1.0f) g = 1.0f;
+    if (b < 0.0f) b = 0.0f;
+    else if (b > 1.0f) b = 1.0f;
+    if (a < 0.0f) a = 0.0f;
+    else if (a > 1.0f) a = 1.0f;
+}
+
+void VMathVectorCopy(float* v1, const math::Vector4& v2)  // ?VMathVectorCopy@@YAXPAMABVVector4@math@@@Z @ 0x6E80C0
+{
+    v1[0] = v2.v.m128_f32[0];
+    v1[1] = v2.v.m128_f32[1];
+    v1[2] = v2.v.m128_f32[2];
+}
+
+// XModelParts bone queries
+extern int _stricmp(const char* a, const char* b);
+int XModelParts::GetBoneIndex(const char* name)  // 0x6EB640
+{
+    if (name == nullptr)
+        return -1;
+    unsigned int v3 = 0;
+    if (mHierarchy.mSize == 0)
+        return -1;
+    while (1)
+    {
+        XBoneHierarchy2* h = &mHierarchy[v3];
+        if ((const char*)h->mName != nullptr
+            && _stricmp((const char*)h->mName, name) == 0)
+            break;
+        if (++v3 >= mHierarchy.mSize)
+            return -1;
+    }
+    return v3;
+}
+int XModelParts::GetBoneParent(unsigned int i) const  // 0x6EB850
+{
+    if (i >= mHierarchy.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelParts.h";
+        AeAssert::gCurrentLine = 217;
+        AeAssert::gCurrentExpr = "i >= 0 && i < mHierarchy.size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad Bone Index"))
+            __debugbreak();
+    }
+    return mHierarchy[i].mParentIndex;
+}
+
+// InplaceAssetBank Fixup
+template <class T, class Tree>
+void InplaceAssetBank<T, Tree>::Fixup()  // @ 0x6EBFD0/0x6EC0E0
+{
+    if ((unsigned int)mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr = "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    PtrFixupTable* v2 = (PtrFixupTable*)((char*)this + (unsigned int)mPtrFixupTable);
+    mPtrFixupTable = v2;
+    v2->Fixup(this);
+}
+template void InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>>::Fixup();
+template void InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>>::Fixup();
+
+// apsEffectTemplate::GetElement
+const apsEffectTemplate::Element& apsEffectTemplate::GetElement(int i) const  // 0x6EBE00
+{
+    if ((i < 0 || i >= mElements.mSize)
+        && _tlAssert(
+               "c:/cod/code/tl/aeps/include\\apsEffectTemplate.h", 242,
+               "(i >= 0) && i < GetNumElements()",
+               "element index out of range"))
+        __debugbreak();
+    if ((i < 0 || i >= mElements.mSize)
+        && _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                     "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    return mElements.mElements[i];
+}
+
+// UpdateEffects
+static bool staticUpdate;
+extern int gThreadedParticles;                 // ?gThreadedParticles@@3HA
+extern int jqAddBatch(const jqBatch* Data);    // ?jqAddBatch@@YAHPBUjqBatch@@@Z
+extern void ThreadedUpdateEffects(jqBatch* batch);  // ?ThreadedUpdateEffects@@YAXPAUjqBatch@@@Z
+jqModule ParticleUpdateFunctor = { ThreadedUpdateEffects, "ParticleUpdateFunctor" };
+void UpdateEffects(bool bUpdate)  // ?UpdateEffects@@YAX_N@Z @ 0x6DAB20
+{
+    jqBatch batch;
+    batch.Priority = 1;
+    batch.StaticSize = 1;
+    staticUpdate = bUpdate;
+    batch.GroupID = gParticleBatchGroup;
+    batch.Static = &staticUpdate;
+    batch.Module = &ParticleUpdateFunctor;
+    memset(&batch.InputSize, 0, 12);
+    if (gThreadedParticles != 0)
+        jqAddBatch(&batch);
+    else
+        ThreadedUpdateEffects(&batch);
+}
+
+// std::vector _Xlen / insert / resize / push_back
+template <class T, class A>
+void std::vector<T, A>::_Xlen() const  // @ 0x6EF700/0x6EF780/0x6EF800
+{
+    // Original throws std::length_error; keep the throw without pulling in the
+    // real <stdexcept> (which would collide with our std:: stubs).
+    throw "vector<T> too long";
+}
+template <class T, class A>
+typename std::vector<T, A>::iterator std::vector<T, A>::insert(iterator _Where,
+                                                               const T& _Val)  // @ 0x6F0470/0x6F0500
+{
+    T* Myfirst = this->_Myfirst;
+    int v6;
+    if (Myfirst != nullptr && this->_Mylast - Myfirst != 0)
+        v6 = (int)(_Where._Myptr - Myfirst);
+    else
+        v6 = 0;
+    this->_Insert_n(_Where, 1u, _Val);
+    return iterator(&this->_Myfirst[v6]);
+}
+template <class T, class A>
+void std::vector<T, A>::resize(unsigned int _Newsize, T _Val)  // @ 0x6F03E0
+{
+    T* Myfirst = this->_Myfirst;
+    unsigned int v4 = Myfirst != nullptr ? (unsigned int)(this->_Mylast - Myfirst) : 0;
+    if (v4 >= _Newsize)
+    {
+        if (Myfirst != nullptr && _Newsize < (unsigned int)(this->_Mylast - Myfirst))
+            this->erase(iterator(&Myfirst[_Newsize]), iterator(this->_Mylast));
+    }
+    else
+    {
+        unsigned int v5 = Myfirst != nullptr ? (unsigned int)(this->_Mylast - Myfirst) : 0;
+        this->_Insert_n(iterator(this->_Mylast), _Newsize - v5, _Val);
+    }
+}
+template <class T, class A>
+void std::vector<T, A>::push_back(const T& _Val)  // @ 0x6F0630/0x6F06E0
+{
+    T* Myfirst = this->_Myfirst;
+    unsigned int v4 = Myfirst != nullptr ? (unsigned int)(this->_Mylast - Myfirst) : 0;
+    if (Myfirst != nullptr && v4 < (unsigned int)(this->_Myend - Myfirst))
+    {
+        T* Mylast = this->_Mylast;
+        std::_Uninit_fill_n(Mylast, 1u, _Val, this->_Alval,
+                            std::_Nonscalar_ptr_iterator_tag());
+        this->_Mylast = Mylast + 1;
+    }
+    else
+    {
+        this->insert(iterator(this->_Mylast), _Val);
+    }
+}
+
+// ae_array instantiations
+class XModelBank;
+class XModelPartsBank;
+struct LightGrid::TOC;
+template class ae_array<LightGrid::TOC*, 99>;
+template class ae_array<XModelBank*, 99>;
+template class ae_array<XModelPartsBank*, 99>;
+template class ae_sized_array<LightGrid::LightIndex, 12>;
+template class ae_sized_array<MultiApk*, 32>;
+template class ae_sized_array<void (__cdecl*)(void), 32>;
