@@ -1198,6 +1198,7 @@ void TraceDebugLine(const math::Position3& start, const math::Position3& end,
 // ============================================================================
 // g_hudelem.cpp types/globals
 // ============================================================================
+enum animScrMode_t : int32_t { ASM_NORMAL = 0x0, ASM_DEATHPLANT = 0x1 };
 enum he_type_t {
     HE_TYPE_FREE = 0,
     HE_TYPE_COUNT = 0x0F,

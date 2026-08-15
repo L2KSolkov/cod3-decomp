@@ -3769,9 +3769,11 @@ void G_Animscripted_Think(Entity* ent)
 }
 
 // ea: 0x004610F0
-void G_Animscripted(Entity* ent, const float* origin, const float* angles,
+void G_Animscripted(Entity* ent, const float* const origin,
+                    const float* const angles,
                     scr_anim_s anim, scr_anim_s root, unsigned int notifyName,
-                    int animMode, float fBlendInTime, float fBlendOutTime)
+                    animScrMode_t animMode, float fBlendInTime,
+                    float fBlendOutTime)
 {
     trace_t trace;
     memset(&trace, 0, sizeof(trace));
