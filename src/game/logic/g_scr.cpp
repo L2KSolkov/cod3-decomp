@@ -96,6 +96,10 @@ void HudSetDefaults(game_hudelem_s* hud);  // ?HudSetDefaults@BrocSys@@YAXPAUgam
 void HudSetClockInternal(int elemNum, he_type_t type, const char* cmdName,
                          const char* a4, float fTime, float fDur, int width,
                          int height);  // ?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z
+void HudSetClockInternal(unsigned int elemNum, he_type_t type,
+                         const char* texturename, const char* cmdName,
+                         const float fTime, const float fDur, int width,
+                         int height);  // 0x5C4C50
 }
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (core.o)
@@ -4359,6 +4363,8 @@ extern int cg_vmMain(int command, int arg0, void* arg1, int* arg2, int arg3,
                      int arg13);  // ?cg_vmMain@@YAHHHHHHHHHHHHHH@Z
 extern void cg_dllEntry(int (*syscallptr)(int, ...));  // ?cg_dllEntry@@YAXP6AHHZZ@Z
 extern void Q_strncpyz(char* dest, const char* src, int destsize);  // ?Q_strncpyz@@YAXPADPBDH@Z
+extern nglTexture* GetTextureData(const char* name, int image_type,
+                                  const char* fromPak);  // ?GetTextureData@@YAPAUnglTexture@@PBDH0@Z (render.o)
 
 // ea: 0x005C1B80
 int VM_DllSyscall(int arg, ...)
@@ -4980,6 +4986,100 @@ float BrocSys::GetAngleDelta(unsigned int anim, float startTime,
     }
     XAnimGetRelDelta(nullptr, anim, rot, trans, startTime, endTime);
     return vectosignedyaw(rot);
+}
+
+// ea: 0x005C4C50
+void BrocSys::HudSetClockInternal(unsigned int elemNum, he_type_t type,
+                                  const char* texturename,
+                                  const char* /*cmdName*/, const float fTime,
+                                  const float fDur, int width, int height)
+{
+    if (elemNum >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3329;
+        AeAssert::gCurrentExpr = "elemNum >= 0 && elemNum < (sizeof(g_hudelems) / sizeof(g_hudelems[0]))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", elemNum))
+            __debugbreak();
+    }
+    if (type != HE_TYPE_CLOCK_DOWN && type != HE_TYPE_CLOCK_UP)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3330;
+        AeAssert::gCurrentExpr = "type == HE_TYPE_CLOCK_DOWN || type == HE_TYPE_CLOCK_UP";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", type))
+            __debugbreak();
+    }
+    float v8 = fTime * 1000.0f;
+    game_hudelem_s* v9 = &g_hudelems[elemNum];
+    int time = (int)ceilf(v8);
+    if (time <= 0 && type != HE_TYPE_CLOCK_UP)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3337;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("time should be > 0"))
+            __debugbreak();
+    }
+    float v10 = fDur * 1000.0f;
+    int duration = (int)ceilf(v10);
+    if (duration <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3343;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("duration should be > 0"))
+            __debugbreak();
+    }
+    nglTexture* texture = GetTextureData(texturename, 0, "mp_frontEnd");
+    if (!texture)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3349;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("texture not found"))
+            __debugbreak();
+    }
+    if (width < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3354;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("width should be >= 0"))
+            __debugbreak();
+    }
+    if (height < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 3358;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("height should be >= 0"))
+            __debugbreak();
+    }
+    v9->elem.type = type;
+    v9->elem.time = time + level.time;
+    v9->elem.fromWidth = 0;
+    v9->elem.fromHeight = 0;
+    v9->elem.scaleStartTime = 0;
+    v9->elem.scaleTime = 0;
+    v9->elem.text = 0;
+    v9->elem.height = height;
+    v9->elem.value = 0.0f;
+    v9->elem.duration = duration;
+    v9->elem.mTexture = texture;
+    v9->elem.width = width;
 }
 
 // ============================================================================
