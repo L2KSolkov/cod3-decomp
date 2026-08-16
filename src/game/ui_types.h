@@ -2925,6 +2925,7 @@ public:
     virtual void Refresh();         // 0x590520
 
     void RemoveAllItems();          // 0x5816B0
+    void SetColumnSelectable(int column, bool selectable);  // ?SetColumnSelectable@UIListBox@@QAEXH_N@Z (game_xbox.o inline)
     void SetItemState(int row, int column, int state);  // 0x581990
     void BlockRefresh(bool block);  // ?BlockRefresh@UIListBox@@QAEX_N@Z (mp_shell.o 0x78BEE0)
     void PageDown(int numPageRows);  // 0x581B00

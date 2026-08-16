@@ -222,6 +222,34 @@ struct MP_ANIM_INDEX {
     unsigned short padding;            // +0x0E
 };
 
+// ModelMenu::UpdateClassModel helpers (mp_actors.o / g.o / render.o)
+class AnimTree;
+class AIType {
+public:
+    void InitPlayer(Entity* ent, TPakId pakId);  // ?InitPlayer@AIType@@QAEXPAVEntity@@W4TPakId@@@Z (mp_actors.o)
+};
+class AITypeManager {
+public:
+    static AITypeManager* sInst;  // ?sInst@AITypeManager@@2PAV1@A
+    IVPointer<AIType> GetAIType(TPakId pakId, const char* name,
+                                int nameOffset);  // ?GetAIType@AITypeManager@@QAE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDH@Z
+};
+extern TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ (streamer.o)
+extern void SV_SetBrushModel(Entity* ent);  // ?SV_SetBrushModel@@YAXPAVEntity@@@Z (sv.o)
+extern AnimTree* Scr_GetAnimTreeByName(const char* treename);  // scr.o
+extern void G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o
+extern void DObjCreateAnimationPlayer(DObj* obj, int a2);  // render.o
+extern void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // g.o
+extern void g_UnlinkEntity(Entity* ent);  // g.o
+struct weaponFileInfo_t {
+    int weapClass;    // +0x00
+    int type;         // +0x04
+    int slot;         // +0x08
+    int iMeleeDamage; // +0x0C
+    int bADSOnly;     // +0x10
+};
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // cl.o
+
 // BuildControllerMessage - controller-disconnect message (mp_shell.o 0x78FC00)
 Broc::string BuildControllerMessage();
 
@@ -8018,6 +8046,300 @@ void GameSettingsEdit::OnActivate()
         SetHigh(2, true);
     else
         SetHigh(iLastOptionSelected, true);
+}
+
+// ============================================================================
+// Batch 30: overlay state set + class model update
+// ============================================================================
+
+static void OverlaySetStateCommon(UIListBox* m_ListBox,
+                                  FEText** m_pOptionText,
+                                  int& m_currSelection)
+{
+    m_ListBox->SetColumnSelectable(0, true);
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i]->SetShown(true);
+}
+
+// ea: 0x0079FBC0
+void InGameOverlay::SetState(eState state)
+{
+    m_State = state;
+    m_IsAARTimerEnabled = false;
+    m_IsAARTimerEnabled = true;
+    const char* locTxt;
+    switch (state)
+    {
+    case OVERLAY_SIGNIN_SIGNOUT:
+    case OVERLAY_AAR_SIGNIN_SIGNOUT:
+        locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_SIGNOUT";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+        break;
+    case OVERLAY_APPEAR_ONLINE:
+    case OVERLAY_AAR_APPEAR_ONLINE:
+        locTxt = "MPFRONTEND_XBOX_OPTIONS_APPEAR_ONLINE_OVERLAY";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+        break;
+    case OVERLAY_APPEAR_OFFLINE:
+    case OVERLAY_AAR_APPEAR_OFFLINE:
+        locTxt = "MPFRONTEND_XBOX_OPTIONS_APPEAR_OFFLINE_OVERLAY";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+        break;
+    case OVERLAY_TOGGLE_VOICE:
+    case OVERLAY_AAR_TOGGLE_VOICE:
+        locTxt = "MPFRONTEND_VOICE_OPTIONS";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_VOICE_CHOICE_HEADSET");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_VOICE_CHOICE_SPEAKERS");
+        m_ListBox.Refresh();
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+        break;
+    case OVERLAY_JOIN_FRIEND:
+    case OVERLAY_AAR_JOIN_FRIEND:
+        locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_JOINFRIEND";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+        break;
+    case OVERLAY_REBOOT_REQUIRED:
+    case OVERLAY_AAR_REBOOT_REQUIRED:
+        locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_REBOOT_REQUIRED";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+        break;
+    default:
+        locTxt = "Missing String!";
+        break;
+    }
+    m_Text = locTxt;
+    if (entries[0] != nullptr)
+        entries[0]->SetText(m_Text);
+}
+
+// ea: 0x007A0450
+void AAROverlay::SetState(eState state)
+{
+    m_State = state;
+    m_IsAARTimerEnabled = false;
+    m_IsAARTimerEnabled = true;
+    const char* locTxt;
+    switch (state)
+    {
+    case OVERLAY_SIGNIN_SIGNOUT:
+    case OVERLAY_AAR_SIGNIN_SIGNOUT:
+        locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_SIGNOUT";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+        break;
+    case OVERLAY_APPEAR_ONLINE:
+    case OVERLAY_AAR_APPEAR_ONLINE:
+        locTxt = "MPFRONTEND_XBOX_OPTIONS_APPEAR_ONLINE_OVERLAY";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+        break;
+    case OVERLAY_APPEAR_OFFLINE:
+    case OVERLAY_AAR_APPEAR_OFFLINE:
+        locTxt = "MPFRONTEND_XBOX_OPTIONS_APPEAR_OFFLINE_OVERLAY";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+        break;
+    case OVERLAY_TOGGLE_VOICE:
+    case OVERLAY_AAR_TOGGLE_VOICE:
+        locTxt = "MPFRONTEND_VOICE_OPTIONS";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_VOICE_CHOICE_HEADSET");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_VOICE_CHOICE_SPEAKERS");
+        m_ListBox.Refresh();
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+        break;
+    case OVERLAY_JOIN_FRIEND:
+    case OVERLAY_AAR_JOIN_FRIEND:
+        locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_JOINFRIEND";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+        break;
+    case OVERLAY_REBOOT_REQUIRED:
+    case OVERLAY_AAR_REBOOT_REQUIRED:
+        locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_REBOOT_REQUIRED";
+        OverlaySetStateCommon(&m_ListBox, m_pOptionText.m_elements,
+                              m_currSelection);
+        m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+        m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+        m_ListBox.Refresh();
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+        break;
+    default:
+        locTxt = "Missing String!";
+        break;
+    }
+    m_Text = locTxt;
+    if (entries[0] != nullptr)
+        entries[0]->SetText(m_Text);
+}
+
+// ea: 0x007AC7A0
+void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
+{
+    mCurrentWeapon = weapon;
+    mCurrentTeam = team;
+    mCurrentClass = playerclass;
+    Entity* mObject =
+        EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+    if (mObject != nullptr)
+    {
+        AITypeManager* v7 = AITypeManager::sInst;
+        const char* ClassModel = GetClassModel(playerclass, team);
+        IVPointer<AIType> ait =
+            v7->GetAIType(CurPakId(), ClassModel, 0);
+        ValidatePakId((TPakId)ait.mPakId);
+        if (ait.mValue != nullptr)
+        {
+            Entity* obj =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            ValidatePakId((TPakId)ait.mPakId);
+            AIType* mValue = ait.mValue;
+            mValue->InitPlayer(obj, CurPakId());
+            Entity* v14 =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            v14->s.brushmodel = 0;
+            Entity* v16 =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            v16->s.weapon = (uint8_t)mCurrentWeapon;
+            Entity* v18 =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            SV_SetBrushModel(v18);
+            AnimTree* AnimTreeByName =
+                Scr_GetAnimTreeByName("generic_human");
+            Entity* v21 =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            G_SetAnimTree(v21, AnimTreeByName);
+            Entity* v23 =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            DObjCreateAnimationPlayer(v23->mDObj, 0);
+            Entity* v25 =
+                EntityHandleDb::sInst.GetObject(
+                    mClassModelEntity.mHandle.mVal);
+            G_DObjUpdate(v25, true);
+            weaponFileInfo_t* InfoForWeapon =
+                BG_GetInfoForWeapon(mCurrentWeapon);
+            if (InfoForWeapon == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/ui/ModelMenu.cpp";
+                AeAssert::gCurrentLine = 218;
+                AeAssert::gCurrentExpr = "weapInfo";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            int v27 = 2;
+            switch (InfoForWeapon->weapClass)
+            {
+            case 0:
+            case 0xA:
+            case 0xE:
+            case 0x11:
+                v27 = 2;
+                break;
+            case 1:
+            case 3:
+                v27 = 3;
+                break;
+            case 2:
+                v27 = 4;
+                break;
+            case 4:
+                v27 = 1;
+                break;
+            case 5:
+                v27 = 6;
+                break;
+            case 6:
+                v27 = 5;
+                break;
+            case 8:
+                v27 = 7;
+                break;
+            case 0xB:
+            case 0xC:
+            case 0xD:
+            case 0xF:
+                v27 = 8;
+                break;
+            case 0x10:
+                v27 = 9;
+                break;
+            default:
+                tlPrintf(
+                    "UNHANDLED WEAPON CLASS FOR ANIMS ( MPPLayer.cpp )\n");
+                break;
+            }
+            mCurrentWeaponSheet = v27;
+            mCurrentAnim = 0;
+        }
+        g_UnlinkEntity(
+            EntityHandleDb::sInst.GetObject(
+                mClassModelEntity.mHandle.mVal));
+    }
 }
 
 // ea: 0x007AD4E0

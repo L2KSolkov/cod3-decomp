@@ -677,6 +677,7 @@ public:
 
     InGameOverlay(FEMenuSystem* pMenuSys);  // ??0InGameOverlay@@QAE@PAVFEMenuSystem@@@Z
     static InGameOverlay* Me(int version);  // ?Me@InGameOverlay@@SAPAV1@H@Z
+    void SetState(eState state);        // ?SetState@InGameOverlay@@QAEXW4eState@1@@Z
     virtual void Select(int __formal);  // ?Select@InGameOverlay@@UAEXH@Z
     virtual void OnUp(int c);           // ?OnUp@InGameOverlay@@UAEXH@Z
     virtual void OnDown(int c);         // ?OnDown@InGameOverlay@@UAEXH@Z
@@ -723,6 +724,7 @@ public:
 
     AAROverlay(FEMenuSystem* pMenuSys);  // ??0AAROverlay@@QAE@PAVFEMenuSystem@@@Z
     static AAROverlay* Me(int version);    // ?Me@AAROverlay@@SAPAV1@H@Z
+    void SetState(eState state);        // ?SetState@AAROverlay@@QAEXW4eState@1@@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AAROverlay@@UAEXPAVPanelFile@@@Z
     virtual void Select(int __formal);  // ?Select@AAROverlay@@UAEXH@Z
     virtual void OnUp(int c);           // ?OnUp@AAROverlay@@UAEXH@Z
@@ -873,6 +875,7 @@ protected:
     void PlayModifierAnim(int sheet, int row, int column, bool immediate);  // ?PlayModifierAnim@ModelMenu@@IAEXHHH_N@Z
     const char* GetClassModel(int playerClass, int team);  // ?GetClassModel@ModelMenu@@IAEPBDHH@Z
     void UpdateModelPosition();         // ?UpdateModelPosition@ModelMenu@@IAEXXZ
+    void UpdateClassModel(int playerclass, int team, int weapon);  // ?UpdateClassModel@ModelMenu@@IAEXHHH@Z
 };
 static_assert(sizeof(ModelMenu) == 0x110,
               "ModelMenu size mismatch");
