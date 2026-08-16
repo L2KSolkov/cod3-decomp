@@ -61,6 +61,7 @@ public:
     virtual void OnCircle(int c);        // ?OnCircle@CreateSessionMenu@@UAEXH@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@CreateSessionMenu@@UAEXH@Z
     virtual void OnCross(int c);         // ?OnCross@CreateSessionMenu@@UAEXH@Z
+    virtual void OnActivate();           // ?OnActivate@CreateSessionMenu@@UAEXXZ
     virtual void OnSquare(int c);        // ?OnSquare@CreateSessionMenu@@UAEXH@Z
     virtual void OnUp(int c);            // ?OnUp@CreateSessionMenu@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@CreateSessionMenu@@UAEXH@Z
@@ -1023,6 +1024,7 @@ public:
     virtual void OnR1(int c);          // ?OnR1@AARBaseMenu@@UAEXH@Z
     virtual void OnActivate();         // ?OnActivate@AARBaseMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@AARBaseMenu@@UAEXM@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AARBaseMenu@@UAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(AARBaseMenu) == 0x88,
               "AARBaseMenu size mismatch");
@@ -1137,6 +1139,7 @@ public:
     virtual void Update(float time_inc);  // ?Update@AARPersonalStats@@UAEXM@Z
 protected:
     void SetPanelHelpBar();           // ?SetPanelHelpBar@AARPersonalStats@@IAEXXZ
+    void SetGenericScores();          // ?SetGenericScores@AARPersonalStats@@IAEXXZ
     void GetClassSpecificScore(EPlayerClass a_ePlayerClass,
                                int& a_iClassScore, int& a_iTimeAsClass,
                                int& a_iClassSpecificScore1,

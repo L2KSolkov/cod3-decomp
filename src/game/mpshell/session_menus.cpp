@@ -250,6 +250,7 @@ int scoreboard_player_sorter(const void* left, const void* right);
 
 class AARXBoxLiveIngameOptions {
 public:
+    AARXBoxLiveIngameOptions(FEMenuSystem* s);  // ??0AARXBoxLiveIngameOptions@@QAE@PAVFEMenuSystem@@@Z (mp_xbox.o)
     static AARXBoxLiveIngameOptions* Me();  // ?Me@AARXBoxLiveIngameOptions@@SAPAV1@XZ (game_xbox.o)
     bool SetTimerText();                    // ?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ (game_xbox.o)
 };
@@ -7447,6 +7448,290 @@ void PlayOnlineMenu::Update(float time_inc)
         m_IsQuickMatchReady = false;
     }
     MPUIInterface::Step();
+}
+
+// ============================================================================
+// Batch 28: AAR base panel + menu system ctor + generic scores + create menu
+// ============================================================================
+
+// ea: 0x007A3410
+void AARBaseMenu::SetPanelFile(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARBaseMenu.cpp";
+        AeAssert::gCurrentLine = 88;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Scoreboard panel file pointer is NULL"))
+            __debugbreak();
+    }
+    panel = pf;
+    mLeftArrowFader.mQuad = pf->GetPointer("scroll_arrow_left");
+    mRightArrowFader.mQuad = panel->GetPointer("scroll_arrow_right");
+    PanelQuad* mQuad = mLeftArrowFader.mQuad;
+    if (mQuad != nullptr)
+    {
+        mLeftArrowFader.mAlpha = 0.5f;
+        mLeftArrowFader.mAlphaTo = 0.5f;
+        mLeftArrowFader.mFading = true;
+        mLeftArrowFader.mTime = 0.0f;
+        mLeftArrowFader.mAlphaDelta = (float)fabs(0.0);
+        mQuad->SetAlpha(0.5f);
+    }
+    else
+    {
+        mLeftArrowFader.mFading = false;
+    }
+    PanelQuad* v6 = mRightArrowFader.mQuad;
+    if (v6 != nullptr)
+    {
+        mRightArrowFader.mAlpha = 0.5f;
+        mRightArrowFader.mAlphaTo = 0.5f;
+        mRightArrowFader.mFading = true;
+        mRightArrowFader.mTime = 0.0f;
+        mRightArrowFader.mAlphaDelta = (float)fabs(0.0);
+        v6->SetAlpha(0.5f);
+    }
+    else
+    {
+        mRightArrowFader.mFading = false;
+    }
+    static const char* const sxScoreboardTextTimer[2] = {
+        "text_timer_numbers", "text_timer_text",
+    };
+    for (int i = 0; i < 2; ++i)
+    {
+        m_pTimerText.m_elements[i] =
+            panel->GetTextPointer(sxScoreboardTextTimer[i]);
+        if (m_pTimerText.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARBaseMenu.cpp";
+            AeAssert::gCurrentLine = 104;
+            AeAssert::gCurrentExpr = "m_pTimerText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get timer text!"))
+                __debugbreak();
+        }
+        m_pTimerText.m_elements[i]->SetShown(true);
+    }
+    m_pTimerText.m_elements[1]
+        ->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+}
+
+// ea: 0x007B02E0
+AARMenuSystem::AARMenuSystem()
+    : FEMenuSystem(11, FONT_GARAMOND)
+{
+    mPreviousWidescreen = false;
+    void* mem1 = mem_heap_malloc(16, 0x34Cu);
+    AARScoreboardWinner* v3 = nullptr;
+    if (mem1 != nullptr)
+        v3 = new (mem1) AARScoreboardWinner(this);
+    Add(v3);
+    void* mem2 = mem_heap_malloc(16, 0x34Cu);
+    AARScoreboardLoser* v5 = nullptr;
+    if (mem2 != nullptr)
+        v5 = new (mem2) AARScoreboardLoser(this);
+    Add(v5);
+    void* mem3 = mem_heap_malloc(16, 0x150u);
+    AARPersonalStats* v7 = nullptr;
+    if (mem3 != nullptr)
+        v7 = new (mem3) AARPersonalStats(this);
+    Add(v7);
+    void* mem4 = mem_heap_malloc(16, 0x20Cu);
+    AARGameModeVote* v9 = nullptr;
+    if (mem4 != nullptr)
+        v9 = new (mem4) AARGameModeVote(this);
+    Add(v9);
+    void* mem5 = mem_heap_malloc(16, 0x238u);
+    AARMapVote* v11 = nullptr;
+    if (mem5 != nullptr)
+        v11 = new (mem5) AARMapVote(this);
+    Add(v11);
+    void* mem6 = mem_heap_malloc(16, 0x11Cu);
+    AARInGameOptionsMenu* v13 = nullptr;
+    if (mem6 != nullptr)
+        v13 = new (mem6) AARInGameOptionsMenu(this);
+    Add(v13);
+    void* mem7 = mem_heap_malloc(16, 0x12Cu);
+    AARGameSettingsEdit* v15 = nullptr;
+    if (mem7 != nullptr)
+        v15 = new (mem7) AARGameSettingsEdit(this);
+    Add(v15);
+    void* mem8 = mem_heap_malloc(16, 0x11Cu);
+    AARGameSettingsView* v17 = nullptr;
+    if (mem8 != nullptr)
+        v17 = new (mem8) AARGameSettingsView(this);
+    Add(v17);
+    void* mem9 = mem_heap_malloc(16, 0x164u);
+    AARXBoxLiveIngameOptions* v19 = nullptr;
+    if (mem9 != nullptr)
+        v19 = new (mem9) AARXBoxLiveIngameOptions(this);
+    Add((FEMenu*)v19);
+    void* mem10 = mem_heap_malloc(16, 0x50u);
+    AARPauseMenu* v21 = nullptr;
+    if (mem10 != nullptr)
+        v21 = new (mem10) AARPauseMenu(this);
+    Add(v21);
+    void* mem11 = mem_heap_malloc(16, 0x12Cu);
+    AAROverlay* v23 = nullptr;
+    if (mem11 != nullptr)
+        v23 = new (mem11) AAROverlay(this);
+    Add(v23);
+    InitAll();
+}
+
+// ea: 0x007A41C0
+void AARPersonalStats::SetGenericScores()
+{
+    Entity* FirstLocalPlayer = EntityManager::sInst->GetFirstLocalPlayer();
+    if (FirstLocalPlayer != nullptr)
+    {
+        Client* client = FirstLocalPlayer->client;
+        if (client != nullptr)
+        {
+            clientPersistent_t& pers = client->pers;
+            int iTotalScore = pers.GetTotalScore();
+            int v8 = 0;   // kills
+            int v9 = 0;   // assists
+            int v10 = 0;  // deaths
+            int v25 = 0;  // suicides
+            int v24 = 0;  // teamkills
+            int v23 = 0;  // vehicles destroyed
+            for (int c = 0; c < 7; ++c)
+            {
+                v8 += pers.mStats[c][3];
+                v10 += pers.mStats[c][4];
+                v9 += pers.mStats[c][5];
+                v23 += pers.mStats[c][6];
+                v25 += pers.mStats[c][7];
+                v24 += pers.mStats[c][8];
+            }
+            char szTotalScore[12];
+            char szKills[12];
+            char szAssists[12];
+            char szDeaths[12];
+            char szSuicides[12];
+            char szTeamkills[12];
+            char szVehiclesDestroyed[12];
+            sprintf(szTotalScore, "%d", iTotalScore);
+            sprintf(szKills, "%d", v8);
+            sprintf(szAssists, "%d", v9);
+            sprintf(szDeaths, "%d", v10);
+            sprintf(szSuicides, "%d", v25);
+            sprintf(szTeamkills, "%d", v24);
+            sprintf(szVehiclesDestroyed, "%d", v23);
+            m_pScoreText.m_elements[1]->SetText(szTotalScore);
+            m_pScoreText.m_elements[3]->SetText(szKills);
+            m_pScoreText.m_elements[5]->SetText(szAssists);
+            m_pScoreText.m_elements[7]->SetText(szDeaths);
+            m_pScoreText.m_elements[9]->SetText(szSuicides);
+            m_pScoreText.m_elements[11]->SetText(szTeamkills);
+            m_pScoreText.m_elements[13]->SetText(szVehiclesDestroyed);
+        }
+    }
+}
+
+// ea: 0x007A76C0
+void CreateSessionMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    for (int i = 0; i < 6; ++i)
+        m_pBackgroundArt.m_elements[i]->SetShown(i < 5);
+    if ((m_FirstTimeAccessedByte & 1) == 0)
+    {
+        m_FirstTimeAccessedByte = 1;
+        if (mStartingMapCombo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/CreateSessionMenu.cpp";
+            AeAssert::gCurrentLine = 382;
+            AeAssert::gCurrentExpr = "mStartingMapCombo";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Combobox failure"))
+                __debugbreak();
+        }
+        for (int j = g_NumBaseMaps; j < g_NumTotalMaps; ++j)
+        {
+            char v4 = (j == 0xFF) ? (char)-1
+                                  : (char)byte_E386C9[114 * j];
+            Broc::string s(MPUIInterface::GetMapString(v4));
+            mStartingMapCombo->AddOption(s);
+        }
+    }
+    int mLastGameType = this->mLastGameType;
+    if (mGameModeCombo->mCurrOption != mLastGameType)
+    {
+        if (mLastGameType == 5)
+        {
+            MPUIInterface::mServerParams.mFriendlyFire = 1;
+            MPUIInterface::mServerParams.mEnablePenaltyVote = 1;
+        }
+        mLastGameType = mGameModeCombo->mCurrOption;
+        this->mLastGameType = mLastGameType;
+        MPUIInterface::mServerParams.mScoreLimit =
+            MPUIInterface::GetDefaultOption(
+                MPUIInterface::SETTING_SCORE_LIMIT, (eGameType)mLastGameType);
+        if (this->mLastGameType == 5)
+        {
+            MPUIInterface::mServerParams.mTeamBalancing = 0;
+            MPUIInterface::mServerParams.mFriendlyFire = 0;
+            MPUIInterface::mServerParams.mEnablePenaltyVote = 0;
+        }
+    }
+    int mCurrOption = mStartingMapCombo->mCurrOption;
+    if (mCurrOption != mLastMap)
+    {
+        mLastMap = mCurrOption;
+        char mapID;
+        if (mCurrOption == 0xFF)
+            mapID = -1;
+        else
+            mapID = byte_E386C9[114 * mCurrOption];
+        short MaxPlayersOptionFromMap =
+            MPUIInterface::GetMaxPlayersOptionFromMap(mapID);
+        mNumberOfPlayersCombo->SetCurrOption(MaxPlayersOptionFromMap);
+    }
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+    unsigned char mMaxPlayers = MPUIInterface::mServerParams.mMaxPlayers;
+    if (MPUIInterface::mServerParams.mMaxPlayers > 3u)
+    {
+        mMaxPlayers = (MPUIInterface::mServerParams.mMaxPlayers >> 2) - 1;
+        MPUIInterface::mServerParams.mMaxPlayers = mMaxPlayers;
+    }
+    mNumberOfPlayersCombo->SetCurrOption(mMaxPlayers);
+    mGameModeCombo->SetCurrOption(MPUIInterface::mServerParams.mGameType);
+    int v11 = 0;
+    if (g_NumTotalMaps > 0)
+    {
+        char* v12 = byte_E386C9;
+        while (*v12 != MPUIInterface::mServerParams.mMapID)
+        {
+            ++v11;
+            v12 += 114;
+            if (v11 >= g_NumTotalMaps)
+            {
+                v11 = -1;
+                break;
+            }
+        }
+    }
+    else
+    {
+        v11 = -1;
+    }
+    mStartingMapCombo->SetCurrOption((short)v11);
+    m_PrivateSlotsCombo->SetCurrOption(MPUIInterface::mServerParams.mPrivateSlots);
+    m_pText.m_elements[0]->SetText("MPFRONTEND_PLAY_XBOX_LIVE");
+    UpdatePrivateSlots();
+    GrabSessionName();
 }
 
 // ea: 0x007AD4E0

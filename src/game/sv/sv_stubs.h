@@ -318,28 +318,10 @@ static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 class PanelFileUser;
 struct IGOFrontEnd;
 class FEMenuSystem;
+class FEMenu;
 struct DialogMenuSystem;
 struct InGameMenuSystem;
-struct AARMenuSystem {
-    void** menus;           // +0x04 (FEMenu** array)
-    uint8_t _pad08[0x1C - 0x08];
-    void (*gap1C)(void* self, float a2);  // +0x1C (shell.o AAR update slot)
-    uint8_t _pad20[0x2A - 0x20];
-    bool is_active;         // +0x2A
-    bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
-    virtual void Update(float time_inc);  // ?Update@AARMenuSystem@@UAEXM@Z
-    virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
-    void UpdateSplitScreen();     // mp.o
-    void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
-    bool mPreviousWidescreen;     // +0x2C
-    virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z (mp_shell.o)
-protected:
-    void CheckForNoMenus();       // ?CheckForNoMenus@AARMenuSystem@@IAEXXZ (mp_shell.o 0x793520)
-    virtual void NewMenuActive(); // ?NewMenuActive@AARMenuSystem@@MAEXXZ (mp_shell.o)
-public:
-    bool GetPanelFileUsers(const char* name,
-                           ae_sized_array<PanelFileUser*, 12>& array);  // mp.o
-};
+class AARMenuSystem;
 struct ProfileManager;
 class PanelQuad;
 class PanelFile;
@@ -1537,6 +1519,9 @@ public:
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
     bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
+    FEMenuSystem(int s, font_index f);  // ??0FEMenuSystem@@QAE@HW4font_index@@@Z (shell.o 0x57DD70)
+    virtual void InitAll();             // ?InitAll@FEMenuSystem@@UAEXXZ (shell.o 0x570AA0)
+    virtual void Add(FEMenu* m);        // ?Add@FEMenuSystem@@UAEXPAVFEMenu@@@Z (shell.o 0x570A30)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)");
 
@@ -1561,6 +1546,24 @@ inline void InGameMenuSystem::SetActiveMenu(int a2)
 }
 #endif
 #endif
+
+class AARMenuSystem : public FEMenuSystem {
+public:
+    AARMenuSystem();          // ??0AARMenuSystem@@QAE@XZ (mp_shell.o 0x7B02E0)
+    bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
+    virtual void Update(float time_inc);  // ?Update@AARMenuSystem@@UAEXM@Z
+    virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
+    void UpdateSplitScreen();     // mp.o
+    void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
+    bool mPreviousWidescreen;     // +0x2C
+    virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z (mp_shell.o)
+protected:
+    void CheckForNoMenus();       // ?CheckForNoMenus@AARMenuSystem@@IAEXXZ (mp_shell.o 0x793520)
+    virtual void NewMenuActive(); // ?NewMenuActive@AARMenuSystem@@MAEXXZ (mp_shell.o)
+public:
+    bool GetPanelFileUsers(const char* name,
+                           ae_sized_array<PanelFileUser*, 12>& array);  // mp.o
+};
 
 // ============================================================================
 // GamePause â€” static pause helpers
