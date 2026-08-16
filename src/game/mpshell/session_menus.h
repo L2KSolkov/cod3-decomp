@@ -777,11 +777,11 @@ public:
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@InGameScoreBoard@@UAEXPAVFEMenu@@@Z
     virtual void Draw();              // ?Draw@InGameScoreBoard@@UAEXXZ
     void SetPanelContents();          // ?SetPanelContents@InGameScoreBoard@@IAEXXZ
-    void RecalculateWinningTeam();    // ?RecalculateWinningTeam@InGameScoreBoard@@IAEXXZ
 protected:
     int GetAlliesScore();             // ?GetAlliesScore@InGameScoreBoard@@IAEHXZ
     int GetAxisScore();               // ?GetAxisScore@InGameScoreBoard@@IAEHXZ
     void SetWinningTeam(int team);    // ?SetWinningTeam@InGameScoreBoard@@IAEXH@Z
+    void RecalculateWinningTeam();    // ?RecalculateWinningTeam@InGameScoreBoard@@IAEXXZ
 };
 static_assert(sizeof(InGameScoreBoard) == 0x3E0,
               "InGameScoreBoard size mismatch");

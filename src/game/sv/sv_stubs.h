@@ -328,7 +328,7 @@ struct AARMenuSystem {
     bool is_active;         // +0x2A
     bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
     void Update(float time_inc);  // mp.o
-    void Draw();                  // mp.o
+    virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
     void UpdateSplitScreen();     // mp.o
     void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
     bool mPreviousWidescreen;     // +0x2C
