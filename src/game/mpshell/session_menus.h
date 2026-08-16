@@ -8,6 +8,7 @@
 #include "game/shell/shell_types.h"
 
 struct sServerCreateParams;  // full definition in session_menus.cpp
+enum eGameType : int;        // full definition in session_menus.cpp
 
 // ============================================================================
 // CreateSessionMenu - 344 bytes (0x158), verified against IDA
@@ -283,6 +284,8 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@GameSettingsView@@UAEXPAVPanelFile@@@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@GameSettingsView@@UAEXPAVPanelFile@@@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z
+    virtual void OnUp(int c);            // ?OnUp@GameSettingsView@@UAEXH@Z
+    virtual void OnDown(int c);          // ?OnDown@GameSettingsView@@UAEXH@Z
     virtual void OnLeft(int c);          // ?OnLeft@GameSettingsView@@UAEXH@Z
     virtual void OnRight(int c);         // ?OnRight@GameSettingsView@@UAEXH@Z
     virtual void OnL1(int c);            // ?OnL1@GameSettingsView@@UAEXH@Z
@@ -332,6 +335,7 @@ public:
     virtual void OnSquare(int c);        // ?OnSquare@GameSettingsEdit@@UAEXH@Z
     virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
+    virtual void OnUp(int c);            // ?OnUp@GameSettingsEdit@@UAEXH@Z
 protected:
     static bool ResponseYesApplyNow(int client);  // ?ResponseYesApplyNow@GameSettingsEdit@@KA_NH@Z
     void SetGameTypeDefaults();                   // ?SetGameTypeDefaults@GameSettingsEdit@@IAEXXZ
@@ -341,8 +345,10 @@ protected:
     virtual void SwapMenus();            // ?SwapMenus@GameSettingsEdit@@MAEXXZ
     void UpdateMapChangeStatus(bool isAllowingMapVote);  // ?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z
     void DisableTeamGameOptions(bool b);  // ?DisableTeamGameOptions@GameSettingsEdit@@IAEX_N@Z
+    void GetScoreLimitsForGameType(eGameType gameType);  // ?GetScoreLimitsForGameType@GameSettingsEdit@@IAEXW4eGameType@@@Z
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
+    void UpdateScrollBar();              // ?UpdateScrollBar@GameSettingsEdit@@IAEXXZ
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z
 };
 static_assert(sizeof(GameSettingsEdit) == 0x12C,
@@ -383,6 +389,7 @@ class InitialLoadingMenu : public FEMenu {
 public:
     float mTime;                         // +0x4C
 
+    InitialLoadingMenu(FEMenuSystem* s); // ??0InitialLoadingMenu@@QAE@PAVFEMenuSystem@@@Z
     static InitialLoadingMenu* Me();     // ?Me@InitialLoadingMenu@@SAPAV1@XZ
     virtual void OnActivate();           // ?OnActivate@InitialLoadingMenu@@UAEXXZ
     virtual void Draw();                 // ?Draw@InitialLoadingMenu@@UAEXXZ
@@ -553,6 +560,7 @@ public:
     int mVersion;      // +0x4C
     int mAcceptMenu;   // +0x50
     int mBackMenu;     // +0x54
+    OverlayMenuBase(FEMenuSystem* s, int numEntries);  // ??0OverlayMenuBase@@QAE@PAVFEMenuSystem@@H@Z
     virtual void OnActivate();          // ?OnActivate@OverlayMenuBase@@UAEXXZ
     virtual void Draw();                // ?Draw@OverlayMenuBase@@UAEXXZ
     virtual void Update(float time_inc);// ?Update@OverlayMenuBase@@UAEXM@Z
@@ -592,6 +600,7 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameOverlay@@UAEXPAVPanelFile@@@Z
     virtual void OnCircle(int __formal);  // ?OnCircle@InGameOverlay@@UAEXH@Z
     virtual void OnSquare(int __formal);  // ?OnSquare@InGameOverlay@@UAEXH@Z
+    virtual ~InGameOverlay();             // ??1InGameOverlay@@UAE@XZ
 };
 static_assert(sizeof(InGameOverlay) == 0x12C,
               "InGameOverlay size mismatch");
@@ -623,6 +632,7 @@ public:
     virtual void Draw();                // ?Draw@AAROverlay@@UAEXXZ
     virtual void OnCircle(int __formal);  // ?OnCircle@AAROverlay@@UAEXH@Z
     virtual void OnSquare(int __formal);  // ?OnSquare@AAROverlay@@UAEXH@Z
+    virtual ~AAROverlay();                // ??1AAROverlay@@UAE@XZ
 };
 static_assert(sizeof(AAROverlay) == 0x12C,
               "AAROverlay size mismatch");
@@ -970,6 +980,7 @@ public:
     virtual void OnLeft(int c);       // ?OnLeft@AARMapVote@@UAEXH@Z
     virtual void OnRight(int c);      // ?OnRight@AARMapVote@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@AARMapVote@@UAEXH@Z
+    virtual void OnDown(int c);       // ?OnDown@AARMapVote@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@AARMapVote@@UAEXM@Z
 };
 static_assert(sizeof(AARMapVote) == 0x238,
@@ -1062,6 +1073,7 @@ public:
     virtual void OnStart(int c);           // ?OnStart@SpectateMenu@@UAEXH@Z
     virtual void OnSelect(int c);          // ?OnSelect@SpectateMenu@@UAEXH@Z
     virtual void OnCross(int c);           // ?OnCross@SpectateMenu@@UAEXH@Z
+    virtual void OnLeft(int c);            // ?OnLeft@SpectateMenu@@UAEXH@Z
     virtual void OnSquare(int c);          // ?OnSquare@SpectateMenu@@UAEXH@Z
     virtual void OnTrueCircle(int c);      // ?OnTrueCircle@SpectateMenu@@UAEXH@Z
     virtual void OnRight(int c);           // ?OnRight@SpectateMenu@@UAEXH@Z
@@ -1140,6 +1152,7 @@ public:
     virtual void Select(int entry_num);   // ?Select@OverlayMenu@@UAEXH@Z
     virtual void OnUp(int c);             // ?OnUp@OverlayMenu@@UAEXH@Z
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
+    virtual ~OverlayMenu();               // ??1OverlayMenu@@UAE@XZ
 protected:
     void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ
 };

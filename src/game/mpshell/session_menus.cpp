@@ -59,6 +59,9 @@ public:
     static void Step();                 // ?Step@MPUIInterface@@SAXXZ
     static const int GetDefaultOption(eSetting setting,
                                       eGameType gameType);  // ?GetDefaultOption@MPUIInterface@@SA?BHW4eSetting@1@W4eGameType@@@Z
+    static const int GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z
+    static const int GetScoreLimit(unsigned long index,
+                                   eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
     static const int GetMaxPlayersOptionFromMap(char mapID);  // ?GetMaxPlayersOptionFromMap@MPUIInterface@@SA?BHD@Z
     static const char* GetMapString(unsigned long mapIndex);  // ?GetMapString@MPUIInterface@@SAPBDK@Z
     static const bool StartServer(bool forceRestart,
@@ -4014,4 +4017,214 @@ void HotJoinMenu::OnCross(int c)
         MultiplayerMgr::sInst->AttemptHotJoin(mVersion);
         LocalClient::UpdatePlayerPorts(mVersion);
     }
+}
+
+// ============================================================================
+// Batch 13: timer text + menu ctors/dtors + OnUp/OnDown/OnActivate
+// ============================================================================
+
+extern int g_MPAARTotalTime;               // ?g_MPAARTotalTime@@3HA @ 0xE38468
+extern kuju::knet::sTime g_MPAARTimer;     // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
+
+// ea: 0x0078D850
+void GameSettingsEdit::GetScoreLimitsForGameType(eGameType gameType)
+{
+    FEComboBox* combo = (FEComboBox*)entries[3];
+    combo->ClearOptions();
+    for (int i = 0; i < MPUIInterface::GetScoreLimitCount(gameType); ++i)
+    {
+        char szNum[32];
+        sprintf(szNum, "%i", MPUIInterface::GetScoreLimit(i, gameType));
+        Broc::string s(szNum);
+        combo->AddOption(s);
+    }
+}
+
+// ea: 0x0078D8E0
+void AARGameSettingsEdit::SetTimerText()
+{
+    int v1 = g_MPAARTotalTime;
+    kuju::knet::sTime fSecondsLeftTilNextGame;
+    fSecondsLeftTilNextGame.mTime =
+        v1 - (int)((MultiplayerMgr::sInst->getLocalTime().mTime
+                    - g_MPAARTimer.mTime) * 0.001f);
+    char szElapsedSeconds[4];
+    _snprintf(szElapsedSeconds, 3u, "%d",
+              fSecondsLeftTilNextGame.mTime);
+    if (fSecondsLeftTilNextGame.mTime < 10)
+        strcpy(&szElapsedSeconds[1], " ");
+    panel->GetTextPointer("text_timer_numbers")
+        ->SetText(szElapsedSeconds);
+}
+
+// ea: 0x0078E050
+void AARGameSettingsView::SetTimerText()
+{
+    int v1 = g_MPAARTotalTime;
+    kuju::knet::sTime fSecondsLeftTilNextGame;
+    fSecondsLeftTilNextGame.mTime =
+        v1 - (int)((MultiplayerMgr::sInst->getLocalTime().mTime
+                    - g_MPAARTimer.mTime) * 0.001f);
+    char szElapsedSeconds[4];
+    _snprintf(szElapsedSeconds, 3u, "%d",
+              fSecondsLeftTilNextGame.mTime);
+    if (fSecondsLeftTilNextGame.mTime < 10)
+        strcpy(&szElapsedSeconds[1], " ");
+    panel->GetTextPointer("text_timer_numbers")
+        ->SetText(szElapsedSeconds);
+}
+
+// ea: 0x0078E0E0
+InitialLoadingMenu::InitialLoadingMenu(FEMenuSystem* s)
+    : FEMenu(s, 2, 320, 240, 8, 0)
+{
+    default_color_scheme = 0;
+    panel = nullptr;
+}
+
+// ea: 0x0078EFB0
+OverlayMenuBase::OverlayMenuBase(FEMenuSystem* s, int numEntries)
+    : FEMenu(s, numEntries, 320, 240, 8, 0)
+{
+    mVersion = 0;
+    panel = nullptr;
+}
+
+// ea: 0x00793030
+char MI_GetMapIndexbyID(char ID)
+{
+    if (g_NumTotalMaps <= 0)
+        return -1;
+    int v1 = 0;
+    char* v2 = byte_E386C9;
+    while (*v2 != ID)
+    {
+        ++v1;
+        v2 += 114;
+        if (v1 > g_NumTotalMaps)
+            return -1;
+    }
+    return (char)v1;
+}
+
+// ea: 0x00792B40
+void SpectateMenu::OnLeft(int c)
+{
+    (void)c;
+    Left();
+    if (mTeamKill && mState != kSpectatorStateIntermission
+        && MPUIInterface::mServerParams.mEnablePenaltyVote != 0)
+    {
+        PlayNavigationSound();
+        int mVersion = this->mVersion;
+        mTeamKill = false;
+        unsigned int v4 = HashString::CalcHash("MPGAME_PUNISH_TEAMKILL");
+        g_femanager.IGO->SetActionHint(v4, mVersion);
+        if (MultiplayerMgr::sInst->mPeer != nullptr)
+        {
+            Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+            MultiplayerMgr::sInst->mPeer->SendPunishTeamKill(
+                Player, (Entity*)mLastTeamKiller, true);
+        }
+        UpdateHelpbar();
+    }
+}
+
+// ea: 0x007915D0
+void AARMapVote::OnDown(int c)
+{
+    Down();
+    if (m_ListBox.mTopLine + m_ListBox.mSelectedLine
+        == g_NumBaseMaps)
+    {
+        m_ListBox.SelectLine(0);
+    }
+    else
+    {
+        m_ListBox.OnDown(c);
+    }
+}
+
+// ea: 0x0079AB40
+void GameSettingsEdit::OnUp(int c)
+{
+    (void)c;
+    Up();
+    if (mScrollBarUpFader.mQuad != nullptr)
+    {
+        mScrollBarUpFader.mAlpha = 1.0f;
+        mScrollBarUpFader.mFading = true;
+        mScrollBarUpFader.mAlphaTo = 0.5f;
+        mScrollBarUpFader.mTime = 0.5f;
+        mScrollBarUpFader.mAlphaDelta = fabs(0.5f);
+        mScrollBarUpFader.mQuad->SetAlpha(1.0f);
+    }
+    UpdateScrollBar();
+}
+
+// ea: 0x0079B760
+void GameSettingsView::OnUp(int c)
+{
+    (void)c;
+    Up();
+    if (mScrollBarUpFader.mQuad != nullptr)
+    {
+        mScrollBarUpFader.mAlpha = 1.0f;
+        mScrollBarUpFader.mFading = true;
+        mScrollBarUpFader.mAlphaTo = 0.5f;
+        mScrollBarUpFader.mTime = 0.5f;
+        mScrollBarUpFader.mAlphaDelta = fabs(0.5f);
+        mScrollBarUpFader.mQuad->SetAlpha(1.0f);
+    }
+    UpdateScrollBar();
+}
+
+// ea: 0x0079B7F0
+void GameSettingsView::OnDown(int c)
+{
+    (void)c;
+    Down();
+    if (mScrollBarDownFader.mQuad != nullptr)
+    {
+        mScrollBarDownFader.mAlpha = 1.0f;
+        mScrollBarDownFader.mFading = true;
+        mScrollBarDownFader.mAlphaTo = 0.5f;
+        mScrollBarDownFader.mTime = 0.5f;
+        mScrollBarDownFader.mAlphaDelta = fabs(0.5f);
+        mScrollBarDownFader.mQuad->SetAlpha(1.0f);
+    }
+    UpdateScrollBar();
+}
+
+// ea: 0x007AF8A0
+OverlayMenu::~OverlayMenu()
+{
+    m_ListBox.RemoveAllItems();
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i] = nullptr;
+    m_pOptionLines[0] = nullptr;
+}
+
+// ea: 0x007AFA00
+InGameOverlay::~InGameOverlay()
+{
+    m_ListBox.RemoveAllItems();
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i] = nullptr;
+    m_pOptionLines[0] = nullptr;
+}
+
+// ea: 0x007AFB60
+AAROverlay::~AAROverlay()
+{
+    m_ListBox.RemoveAllItems();
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i] = nullptr;
+    m_pOptionLines[0] = nullptr;
 }
