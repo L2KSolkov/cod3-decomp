@@ -356,6 +356,7 @@ public:
     virtual void OnCircle(int c);        // ?OnCircle@GameSettingsEdit@@UAEXH@Z
     virtual void OnSquare(int c);        // ?OnSquare@GameSettingsEdit@@UAEXH@Z
     virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
+    virtual void OnActivate();           // ?OnActivate@GameSettingsEdit@@UAEXXZ
     virtual void OnTriangle(int c);      // ?OnTriangle@GameSettingsEdit@@UAEXH@Z
     virtual void Update(float time_inc); // ?Update@GameSettingsEdit@@UAEXM@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
@@ -789,6 +790,7 @@ public:
     eState mState;                  // +0x68
 
     static MultilineIngameOverlayMenu* Me();  // ?Me@MultilineIngameOverlayMenu@@SAPAV1@XZ
+    void SetState(eState state);              // ?SetState@MultilineIngameOverlayMenu@@QAEXW4eState@1@@Z
     virtual void Update(float time_inc);      // ?Update@MultilineIngameOverlayMenu@@UAEXM@Z
     virtual void OnStart(int c);              // ?OnStart@MultilineIngameOverlayMenu@@UAEXH@Z
     virtual void OnDeactivate(FEMenu* menu);  // ?OnDeactivate@MultilineIngameOverlayMenu@@UAEXPAVFEMenu@@@Z
@@ -1169,9 +1171,11 @@ public:
     AARMapVote(FEMenuSystem* s);  // ??0AARMapVote@@QAE@PAVFEMenuSystem@@@Z
     static AARMapVote* Me();          // ?Me@AARMapVote@@SAPAV1@XZ
     void TallyVotes();                // ?TallyVotes@AARMapVote@@QAEXXZ
+    static unsigned char m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@AARMapVote@@1EA @ 0x1388D58
     virtual void Init();              // ?Init@AARMapVote@@UAEXXZ
     virtual void Draw();              // ?Draw@AARMapVote@@UAEXXZ
     virtual void OnCross(int c);      // ?OnCross@AARMapVote@@UAEXH@Z
+    virtual void OnActivate();        // ?OnActivate@AARMapVote@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@AARMapVote@@UAEXPAVPanelFile@@@Z
     void OnDeactivate(AARBaseMenu* __formal);  // ?OnDeactivate@AARMapVote@@QAEXPAVAARBaseMenu@@@Z
     virtual void OnR1(int c);         // ?OnR1@AARMapVote@@UAEXH@Z

@@ -188,6 +188,43 @@ struct XONLINE_FRIEND;
 extern "C" void __stdcall LiveEngine_Reboot(void* engine, int mode);
     // _LiveEngine_Reboot@8 (uixd:engine.obj)
 
+// Minimal views for ModelMenu animation helpers (anim.o / game2.o own the
+// real definitions; only the members used by mp_shell.o are declared).
+namespace nalGeneric { class nalGenericAnim; }
+class nalPlayMethod;
+class nalAnimCallback;
+class DObj {
+public:
+    void* tree[8];         // +0x00
+    void* animPlayers[8];  // +0x20
+};
+class AnimationPlayer {
+public:
+    enum AnimationPlayerModifierType {
+        nalAdditiveModifier = 0x0,
+        nalPartialModifier = 0x1,
+        nalFullModifier = 0x2,
+    };
+    void PlayModifier(nalGeneric::nalGenericAnim* anim,
+                      AnimationPlayerModifierType type, float priority,
+                      unsigned int mask, bool ForceRestart, float fade_in,
+                      float fade_out, nalPlayMethod* play_method,
+                      float callback_time, nalAnimCallback* callback,
+                      float speed, float time_in_seconds_to_start);
+    void SetModifierType(unsigned int mask,
+                         AnimationPlayerModifierType type);
+};
+struct MP_ANIM_INDEX {
+    char* name;                        // +0x00
+    unsigned int ID;                   // +0x04
+    nalGeneric::nalGenericAnim* anim;  // +0x08
+    unsigned short flags;              // +0x0C
+    unsigned short padding;            // +0x0E
+};
+
+// BuildControllerMessage - controller-disconnect message (mp_shell.o 0x78FC00)
+Broc::string BuildControllerMessage();
+
 class MPLiveEngine : public LiveWrapper {
 public:
     static MPLiveEngine* GetHandle();  // ?GetHandle@MPLiveEngine@@SAPAV1@XZ (game_xbox.o)
@@ -337,6 +374,7 @@ unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccess
 unsigned char CreateLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateLanSessionMenu@@1EA @ 0x1388D55
 unsigned char FindSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@FindSessionMenu@@1EA @ 0x1388D56
 unsigned char FindLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@FindLanSessionMenu@@1EA @ 0x1388D57
+unsigned char AARMapVote::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@AARMapVote@@1EA @ 0x1388D58
 int PlayOnlineMenu::m_currSelection;  // ?m_currSelection@PlayOnlineMenu@@1HA @ 0xE381C4
 
 // ============================================================================
@@ -7732,6 +7770,254 @@ void CreateSessionMenu::OnActivate()
     m_pText.m_elements[0]->SetText("MPFRONTEND_PLAY_XBOX_LIVE");
     UpdatePrivateSlots();
     GrabSessionName();
+}
+
+// ============================================================================
+// Batch 29: modifier anim + AAR map vote activate + multiline state + settings
+// ============================================================================
+
+// ea: 0x007AC6D0
+void ModelMenu::PlayModifierAnim(int sheet, int row, int column,
+                                 bool immediate)
+{
+    unsigned int mVal = mClassModelEntity.mHandle.mVal;
+    Entity* mObject = nullptr;
+    if ((mVal & 0xFFF) < 0x540
+        && mVal >> 12
+            == (unsigned int)EntityHandleDb::sInst
+                   .mElements[mVal & 0xFFF].mKey)
+        mObject = EntityHandleDb::sInst.mElements[mVal & 0xFFF].mObject;
+    DObj* mDObj = mObject->mDObj;
+    AnimationPlayer* v8 = nullptr;
+    if (mDObj != nullptr && mDObj->animPlayers[0] != nullptr)
+        v8 = (AnimationPlayer*)mDObj->animPlayers[0];
+    int mCurrentWeaponSheet = sheet;
+    if (sheet < 0)
+        mCurrentWeaponSheet = this->mCurrentWeaponSheet;
+    MP_ANIM_INDEX* AnimIndex =
+        MPPlayer::getAnimIndex(mCurrentWeaponSheet, row, column, true);
+    nalGeneric::nalGenericAnim* anim = nullptr;
+    if (AnimIndex != nullptr)
+        anim = AnimIndex->anim;
+    if (v8 != nullptr && anim != nullptr)
+    {
+        float v12 = immediate ? 0.0f : 0.25f;
+        v8->PlayModifier(anim, AnimationPlayer::nalPartialModifier, 1.0f,
+                         1u, false, v12, 0.25f, nullptr, 0.0f, nullptr,
+                         1.0f, 0.0f);
+        if ((AnimIndex->flags & 1) != 0)
+            ((AnimationPlayer*)mDObj->animPlayers[0])
+                ->SetModifierType(1u, AnimationPlayer::nalAdditiveModifier);
+    }
+}
+
+// ea: 0x007AB510
+void AARMapVote::OnActivate()
+{
+    static const char* const szAARMapNames[12] = {
+        "slot_01_text_mapname", "slot_02_text_mapname",
+        "slot_03_text_mapname", "slot_04_text_mapname",
+        "slot_05_text_mapname", "slot_06_text_mapname",
+        "slot_07_text_mapname", "slot_08_text_mapname",
+        "slot_09_text_mapname", "slot_10_text_mapname",
+        "slot_11_text_mapname", "slot_12_text_mapname",
+    };
+    static const char* const szAARMapVotes[12] = {
+        "slot_01_text_mapvote", "slot_02_text_mapvote",
+        "slot_03_text_mapvote", "slot_04_text_mapvote",
+        "slot_05_text_mapvote", "slot_06_text_mapvote",
+        "slot_07_text_mapvote", "slot_08_text_mapvote",
+        "slot_09_text_mapvote", "slot_10_text_mapvote",
+        "slot_11_text_mapvote", "slot_12_text_mapvote",
+    };
+    MPUIInterface::Step();
+    FEMenu::OnActivate();
+    AARBaseMenu::SetTimerText();
+    FEText* v2 = m_pTimerText.m_elements[1];
+    if (MultiplayerMgr::sInst->mRankedGame)
+        v2->SetText("MPGAME_AAR_RANK_GAME_OVER");
+    else
+        v2->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    if ((m_FirstTimeAccessedByte & 1) == 0)
+    {
+        int v3 = 1;
+        m_FirstTimeAccessedByte = 1;
+        if (g_NumBaseMaps + 1 > 1)
+        {
+            do
+            {
+                FEText* TextPointer =
+                    (v3 >= 12)
+                    ? panel->GetTextPointer("slot_12_text_mapname")
+                    : panel->GetTextPointer(szAARMapNames[v3]);
+                m_ListBox.SetItem(v3, 0, TextPointer, 0);
+                char v9 = (v3 != 0)
+                    ? byte_E386C9[114 * (v3 - 1)]
+                    : (char)(v3 - 1);
+                int v10 = 0;
+                const char* v12;
+                if (g_NumTotalMaps <= 0)
+                {
+                    v12 = "NULL";
+                }
+                else
+                {
+                    char* v11 = byte_E386C9;
+                    while (*v11 != v9)
+                    {
+                        ++v10;
+                        v11 += 114;
+                        if (v10 >= g_NumTotalMaps)
+                        {
+                            v12 = "NULL";
+                            goto MAP_LOOKUP_DONE;
+                        }
+                    }
+                    v12 = &aMpfrontendMerv[114 * v10];
+                }
+            MAP_LOOKUP_DONE:
+                m_ListBox.SetText(v3, 0, v12);
+                FEText* v13 =
+                    panel->GetTextPointer(szAARMapVotes[v3]);
+                m_ListBox.SetItem(v3, 1, v13, 0);
+                m_ListBox.SetText(v3++, 1, "0");
+            } while (v3 < g_NumBaseMaps + 1);
+        }
+    }
+    m_bShowScrollArrowRight = true;
+    m_bShowScrollArrowLeft = true;
+    m_ePanelToSwitchTo = -1;
+}
+
+// ea: 0x007903D0
+void MultilineIngameOverlayMenu::SetState(eState newState)
+{
+    entries[1]->SetScale(mTextScale);
+    mState = newState;
+    if (newState == NETWORK_ERROR_COUNTDOWN)
+    {
+        mText = "MPFRONTEND_NETWORK_ERROR_COUNTDOWN";
+        entries[2]->SetTextNoLocalize((char*)defaultFileName);
+        entries[2]->Disable(true);
+        entries[3]->SetText("MPFRONTEND_CANCEL");
+        entries[3]->Disable(false);
+        mCountdown = 5.9899998f;
+        helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK");
+    }
+    else if (newState == CONTROLLER_DISCONNECTED)
+    {
+        g_controllerConnectedErrorShown[
+            LocalClient::ClientToPort(currCl)] = true;
+        Broc::string controllerMessage = BuildControllerMessage();
+        mText = controllerMessage;
+        mAcceptMenu = -1;
+        mBackMenu = -1;
+        entries[3]->SetTextNoLocalize((char*)defaultFileName);
+        entries[3]->Disable(true);
+        helpbar1->SetTextNoLocalize((char*)defaultFileName);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/MultilineOverlayMenu.cpp";
+        AeAssert::gCurrentLine = 374;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    const char* v9 = (mText.mBlock != nullptr)
+        ? (const char*)&mText.mBlock[1] : defaultFileName;
+    mTextEntry->SetTextBox(v9, 400, -1.0f);
+    mBackMenu = -1;
+    mAcceptMenu = -1;
+}
+
+// ea: 0x0079A4C0
+void GameSettingsEdit::OnActivate()
+{
+    SwapMenus();
+    FEMenu::OnActivate();
+    if ((m_FirstTimeAccessedByte & 1) == 0)
+    {
+        m_FirstTimeAccessedByte = 1;
+        if (entries[1] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/GameSettingsEdit.cpp";
+            AeAssert::gCurrentLine = 229;
+            AeAssert::gCurrentExpr = "((FEComboBox*)entries[GAME_MAP])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Combobox failure"))
+                __debugbreak();
+        }
+        for (int i = g_NumBaseMaps; i < g_NumTotalMaps; ++i)
+        {
+            char v4 = (i == 0xFF) ? (char)-1
+                                  : (char)byte_E386C9[114 * i];
+            Broc::string s(MPUIInterface::GetMapString(v4));
+            ((FEComboBox*)entries[1])->AddOption(s);
+        }
+    }
+    mNextServerParams = &MPUIInterface::mNextServerParams;
+    mLastGameType = MPUIInterface::mNextServerParams.mGameType;
+    GetScoreLimitsForGameType((eGameType)mLastGameType);
+    // FEMenuEntry vtable slot 49 = SetValue(int) (0x5AE840)
+    ((void(__thiscall*)(void*, int))(*((void***)entries[0]) + 49))(
+        entries[0], mNextServerParams->mGameType);
+    int v6 = 0;
+    if (g_NumTotalMaps > 0)
+    {
+        char* v7 = byte_E386C9;
+        while (*v7 != mNextServerParams->mMapID)
+        {
+            ++v6;
+            v7 += 114;
+            if (v6 >= g_NumTotalMaps)
+            {
+                v6 = -1;
+                break;
+            }
+        }
+    }
+    else
+    {
+        v6 = -1;
+    }
+    ((void(__thiscall*)(void*, int))(*((void***)entries[1]) + 49))(
+        entries[1], v6);
+    ((void(__thiscall*)(void*, int))(*((void***)entries[2]) + 49))(
+        entries[2], mNextServerParams->mTimeLimit);
+    ((void(__thiscall*)(void*, int))(*((void***)entries[3]) + 49))(
+        entries[3], mNextServerParams->mScoreLimit);
+    ((void(__thiscall*)(void*, int))(*((void***)entries[4]) + 49))(
+        entries[4], mNextServerParams->mFriendlyFire);
+    ((void(__thiscall*)(void*, int))(*((void***)entries[5]) + 49))(
+        entries[5], mNextServerParams->mTeamBalancing);
+    ((void(__thiscall*)(void*, int))(*((void***)entries[6]) + 49))(
+        entries[6], mNextServerParams->mEnableAARVote);
+    ((void(__thiscall*)(void*, int))(*((void***)entries[7]) + 49))(
+        entries[7], mNextServerParams->mEnablePenaltyVote);
+    entries[6]->Disable(true);
+    entries[0]->Disable(mNextServerParams->mEnableAARVote != 0);
+    entries[1]->Disable(mNextServerParams->mEnableAARVote != 0);
+    bool v12 = mNextServerParams->mGameType == 5;
+    entries[7]->Disable(v12);
+    entries[4]->Disable(v12);
+    entries[5]->Disable(v12);
+    if (v12)
+    {
+        ((FEComboBox*)entries[7])->SetCurrOption(0);
+        ((FEComboBox*)entries[4])->SetCurrOption(0);
+        ((FEComboBox*)entries[5])->SetCurrOption(0);
+    }
+    if (mNextServerParams->mEnableAARVote != 0
+        && iLastOptionSelected <= 1)
+        SetHigh(2, true);
+    else
+        SetHigh(iLastOptionSelected, true);
 }
 
 // ea: 0x007AD4E0
