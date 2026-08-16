@@ -319,6 +319,7 @@ protected:
     void UpdateScrollBar();              // ?UpdateScrollBar@GameSettingsView@@IAEXXZ
     void UpdateOptions();                // ?UpdateOptions@GameSettingsView@@IAEXXZ
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsView@@IAEXH@Z
+    void UpdateOption(int option, FEText* text);  // ?UpdateOption@GameSettingsView@@IAEXHPAVFEText@@@Z
 };
 static_assert(sizeof(GameSettingsView) == 0x11C,
               "GameSettingsView size mismatch");
@@ -491,6 +492,7 @@ public:
 protected:
     void InitQuickMatchParameters(int c);  // ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z
     void UpdateTextDescription(int option);  // ?UpdateTextDescription@PlayOnlineMenu@@IAEXH@Z
+    void LaunchQuickMatch();             // ?LaunchQuickMatch@PlayOnlineMenu@@IAEXXZ
 };
 static_assert(sizeof(PlayOnlineMenu) == 0x60,
               "PlayOnlineMenu size mismatch");
@@ -893,6 +895,7 @@ protected:
     static void ResponseGoBack(int client);      // ?ResponseGoBack@InGameSwitchSides@@KAXH@Z
     static bool ResponseYesSwitch(int client);   // ?ResponseYesSwitch@InGameSwitchSides@@KA_NH@Z
     void NotifySameTeam();                        // ?NotifySameTeam@InGameSwitchSides@@IAEXXZ
+    void AttemptSwitchTeam();                     // ?AttemptSwitchTeam@InGameSwitchSides@@IAEXXZ
     void PickTeam();                             // ?PickTeam@InGameSwitchSides@@IAEXXZ
     void UpdateModel();                          // ?UpdateModel@InGameSwitchSides@@IAEXXZ
     void SwapMenus();                            // ?SwapMenus@InGameSwitchSides@@MAEXXZ
@@ -1094,6 +1097,10 @@ public:
     virtual void Update(float time_inc);  // ?Update@AARPersonalStats@@UAEXM@Z
 protected:
     void SetPanelHelpBar();           // ?SetPanelHelpBar@AARPersonalStats@@IAEXXZ
+    void GetClassSpecificScore(EPlayerClass a_ePlayerClass,
+                               int& a_iClassScore, int& a_iTimeAsClass,
+                               int& a_iClassSpecificScore1,
+                               int& a_iClassSpecificScore2);  // ?GetClassSpecificScore@AARPersonalStats@@IAEXW4EPlayerClass@@AAH111@Z
 };
 static_assert(sizeof(AARPersonalStats) == 0x150,
               "AARPersonalStats size mismatch");
@@ -1101,9 +1108,8 @@ static_assert(sizeof(AARPersonalStats) == 0x150,
 class AARMapVote : public AARBaseMenu {
 public:
     ae_array<PanelQuad*, 10> m_pBackgroundArt;  // +0x88
-    uint8_t _pad2[0xB8 - (0x88 + 40)];
-    ae_array<PanelQuad*, 2> m_pScrollArrow;  // +0xB8
-    uint8_t _pad2b[0xD0 - (0xB8 + 8)];
+    ae_array<PanelQuad*, 2> m_pScrollArrow;  // +0xB0
+    ae_array<PanelQuad*, 6> m_pScrollbar;    // +0xB8
     bool m_bShowScrollArrowLeft;      // +0xD0
     bool m_bShowScrollArrowRight;     // +0xD1
     bool m_bHighlightScrollArrowLeft; // +0xD2
@@ -1112,8 +1118,12 @@ public:
     int  m_iSelectedMap;              // +0xD8
     int  m_currentRow;                // +0xDC
     UIHighlightListBox m_ListBox;  // +0xE0
-    uint8_t _pad3[0x238 - (0xE0 + 0xE0)];
+    ae_array<FEText*, 5> m_pText;  // +0x1C0
+    ae_array<FEText*, 12> m_pMapNames;   // +0x1D4
+    ae_array<FEText*, 12> m_pMapVotes;   // +0x204
+    int* m_pMapVoteVals;                 // +0x234
 
+    AARMapVote(FEMenuSystem* s);  // ??0AARMapVote@@QAE@PAVFEMenuSystem@@@Z
     static AARMapVote* Me();          // ?Me@AARMapVote@@SAPAV1@XZ
     virtual void Init();              // ?Init@AARMapVote@@UAEXXZ
     virtual void Draw();              // ?Draw@AARMapVote@@UAEXXZ
@@ -1144,8 +1154,12 @@ public:
     int  m_iSelectedMode;             // +0xBC
     int  m_currentRow;                // +0xC0
     UIHighlightListBox m_ListBox;     // +0xC4
-    uint8_t _pad3[0x20C - (0xC4 + 0xE0)];
+    ae_array<FEText*, 5> m_pText;     // +0x1A4
+    ae_array<FEText*, 7> m_pModeNames; // +0x1B8
+    ae_array<FEText*, 7> m_pModeVotes; // +0x1D4
+    ae_array<int, 7> m_pModeVoteVals;  // +0x1F0
 
+    AARGameModeVote(FEMenuSystem* s);  // ??0AARGameModeVote@@QAE@PAVFEMenuSystem@@@Z
     static AARGameModeVote* Me();     // ?Me@AARGameModeVote@@SAPAV1@XZ
     virtual void Init();              // ?Init@AARGameModeVote@@UAEXXZ
     void OnDeactivate(AARBaseMenu* __formal);  // ?OnDeactivate@AARGameModeVote@@QAEXPAVAARBaseMenu@@@Z
@@ -1246,6 +1260,7 @@ public:
     virtual void Update(float time_inc);   // ?Update@SpectateMenu@@UAEXM@Z
     virtual void Draw();                   // ?Draw@SpectateMenu@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@SpectateMenu@@UAEXPAVPanelFile@@@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@SpectateMenu@@UAEXPAVPanelFile@@@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@SpectateMenu@@UAEXXZ
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@SpectateMenu@@UAEX_N@Z
     void UpdateState();                    // ?UpdateState@SpectateMenu@@QAEXXZ
@@ -1332,6 +1347,7 @@ public:
     virtual void Select(int entry_num);   // ?Select@OverlayMenu@@UAEXH@Z
     virtual void OnUp(int c);             // ?OnUp@OverlayMenu@@UAEXH@Z
     virtual void OnDown(int c);           // ?OnDown@OverlayMenu@@UAEXH@Z
+    virtual void OnTriangle(int c);       // ?OnTriangle@OverlayMenu@@UAEXH@Z
     virtual void OnSquare(int c);         // ?OnSquare@OverlayMenu@@UAEXH@Z
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
     virtual ~OverlayMenu();               // ??1OverlayMenu@@UAE@XZ

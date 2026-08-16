@@ -6,6 +6,7 @@
 #include "game/mpshell/session_menus.h"
 #include "game/actor_types.h"
 #include "game/client_types.h"
+#include "bd/bdNet.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -64,6 +65,7 @@ public:
     static const int GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z
     static const int GetScoreLimit(unsigned long index,
                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
+    static const int GetTimeLimit(unsigned long index);  // ?GetTimeLimit@MPUIInterface@@SA?BHK@Z
     static const int GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z
     static const char* GetGameTypeString(unsigned long gameType);  // ?GetGameTypeString@MPUIInterface@@SAPBDK@Z
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
@@ -75,6 +77,7 @@ public:
                                   bool blockUntilNetReady);  // ?StartServer@MPUIInterface@@SA?B_N_N0@Z
     static void ExitFrontend(int returnMenu);  // ?ExitFrontend@MPUIInterface@@SAXH@Z
     static void SetQueryParams(sServerQueryParams& params);  // ?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z
+    static void CancelJoin();  // ?CancelJoin@MPUIInterface@@SAXXZ
 
     static sServerCreateParams mServerParams;      // ?mServerParams@MPUIInterface@@1UsServerCreateParams@@A
     static sServerCreateParams mNextServerParams;  // ?mNextServerParams@MPUIInterface@@1UsServerCreateParams@@A
@@ -257,6 +260,10 @@ extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
 extern void j_nullsub_46(void* self);  // g.o nullsub
 extern void j_nullsub_58(void* self, bool use);  // g.o nullsub
+extern int irand(int min, int max);  // ?irand@@YAHHH@Z (g.o)
+namespace PlayerStats {
+int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o)
+}
 namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
 void UpdateNumViewports();  // ?UpdateNumViewports@View@@YAXXZ (cg.o)
@@ -5767,6 +5774,342 @@ void FindSessionMenu::OnActivate()
     SetHigh(1, true);
     highlighted = 1;
     entries[0]->Highlight(true, true);
+}
+
+// ============================================================================
+// Batch 23: vote ctors + spectate/quickmatch/options (304-368 bytes)
+// ============================================================================
+
+// ea: 0x007AFC00
+AARMapVote::AARMapVote(FEMenuSystem* pSystem)
+    : AARBaseMenu(pSystem, 0)
+{
+    m_bShowScrollArrowLeft = false;
+    m_bShowScrollArrowRight = false;
+    m_bHighlightScrollArrowLeft = false;
+    m_bHighlightScrollArrowRight = false;
+    m_ePanelToSwitchTo = -1;
+    m_iSelectedMap = -1;
+    m_currentRow = 0;
+    new (&m_ListBox) UIHighlightListBox(65, 2, 65, true);
+    m_pMapVoteVals = nullptr;
+    default_color_scheme = 5;
+    for (int i = 0; i < 10; ++i)
+        m_pBackgroundArt.m_elements[i] = nullptr;
+    m_pScrollArrow.m_elements[0] = nullptr;
+    m_pScrollArrow.m_elements[1] = nullptr;
+    m_pText.m_elements[0] = nullptr;
+    m_pText.m_elements[1] = nullptr;
+    m_pText.m_elements[2] = nullptr;
+    m_pText.m_elements[3] = nullptr;
+    m_pText.m_elements[4] = nullptr;
+    for (int i = 0; i < 6; ++i)
+        m_pScrollbar.m_elements[i] = nullptr;
+    memset(&m_pMapNames, 0, sizeof(m_pMapNames));
+    memset(&m_pMapVotes, 0, sizeof(m_pMapVotes));
+    m_pMapVoteVals = (int*)mem_heap_malloc(0x104u);
+}
+
+// ea: 0x007AFE40
+AARGameModeVote::AARGameModeVote(FEMenuSystem* pSystem)
+    : AARBaseMenu(pSystem, 0)
+{
+    m_bShowScrollArrowLeft = false;
+    m_bShowScrollArrowRight = false;
+    m_bHighlightScrollArrowLeft = false;
+    m_bHighlightScrollArrowRight = false;
+    m_ePanelToSwitchTo = -1;
+    m_iSelectedMode = -1;
+    m_currentRow = 0;
+    new (&m_ListBox) UIHighlightListBox(7, 2, 7, true);
+    default_color_scheme = 5;
+    for (int i = 0; i < 9; ++i)
+        m_pBackgroundArt.m_elements[i] = nullptr;
+    m_pScrollArrow.m_elements[0] = nullptr;
+    m_pScrollArrow.m_elements[1] = nullptr;
+    m_pText.m_elements[0] = nullptr;
+    m_pText.m_elements[1] = nullptr;
+    m_pText.m_elements[2] = nullptr;
+    m_pText.m_elements[3] = nullptr;
+    m_pText.m_elements[4] = nullptr;
+    for (int i = 0; i < 7; ++i)
+    {
+        m_pModeNames.m_elements[i] = nullptr;
+        m_pModeVotes.m_elements[i] = nullptr;
+        m_pModeVoteVals.m_elements[i] = 0;
+    }
+}
+
+// ea: 0x00792BD0
+void SpectateMenu::SetPanelFile(PanelFile* pf)
+{
+    if (mVersion > 0)
+        panel = pf->Clone();
+    else
+        panel = pf;
+    mHeader = panel->GetTextPointer("text_line_01");
+    mMessage = panel->GetTextPointer("text_line_02");
+    mTime = panel->GetTextPointer("text_line_03");
+    mButtonPress = panel->GetTextPointer("text_line_04");
+    ((FEText*)mButtonPress)->SetText("MPSCRIPT_PRESS_X_TO_SPAWN");
+    ((FEText*)mHeader)->SetShown(false);
+    helpbar = panel->GetTextPointer("text_helpbar");
+    FEMultiLineText* v11 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    if (v11 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v17 = helpbar->GetX();
+        v11 = new (v11)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v11;
+    if (v11 != nullptr)
+        v11->SetNumLines(1);
+}
+
+// ea: 0x007A9370
+void PlayOnlineMenu::LaunchQuickMatch()
+{
+    unsigned long numGames = 0;
+    MPUIInterface::GameListingGet(numGames);
+    if (numGames != 0)
+    {
+        int v2 = irand(0, (int)numGames);
+        if (v2 >= (int)numGames || v2 < 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayOnlineMenu.cpp";
+            AeAssert::gCurrentLine = 413;
+            AeAssert::gCurrentExpr = "selection < numGames && selection >= 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+        }
+        unsigned int v3 = v2 < 0 ? 0u : (unsigned int)v2;
+        if (v3 >= numGames)
+            v3 = numGames - 1;
+        OverlayMenu* v4 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        v4->SetState(OverlayMenu::JOINING_START);
+        OverlayMenu* fems = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)fems + 0x54) = 10;
+        OverlayMenu* v5 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(unsigned int*)((char*)v5 + 0x6C) = v3;
+        system->AddOverlay(16);
+    }
+    else
+    {
+        OverlayMenu* v6 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        v6->SetState((OverlayMenu::eState)(OverlayMenu::FROM_ID_QUERYING
+                                           | OverlayMenu::SIGNING_IN));
+        OverlayMenu* v7 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)v7 + 0x50) = 0;
+        OverlayMenu* v8 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)v8 + 0x54) = 10;
+        system->AddOverlay(16);
+    }
+}
+
+// ea: 0x007AC010
+void InGameSwitchSides::AttemptSwitchTeam()
+{
+    const char* v16 =
+        (EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam
+         == TEAM_ALLIES)
+        ? "MPGAME_SWITCH_TEAM_QUERY_AXIS"
+        : "MPGAME_SWITCH_TEAM_QUERY_ALLIES";
+    DialogMenuSystem* DMS = g_femanager.GetDMS(mVersion);
+    DMS->BringUp(v16, false, false, defaultFileName, true);
+    j_nullsub_58(DMS, true);
+    DialogMenuSystem* v4 = g_femanager.GetDMS(mVersion);
+    DialogMenu* Layer = v4->GetLayer(v4->GetActiveMenu() == 0);
+    Layer->AddOption("INGAME_DIALOG_YES",
+                     InGameSwitchSides::ResponseYesSwitch);
+    DialogMenuSystem* v7 = g_femanager.GetDMS(mVersion);
+    DialogMenu* v9 = v7->GetLayer(v7->GetActiveMenu() == 0);
+    v9->AddOption("INGAME_DIALOG_NO",
+                  InGameSwitchSides::ResponseNoNevermind);
+    g_femanager.GetDMS(mVersion)->HighlightOption(1);
+    DialogMenuSystem* v11 = g_femanager.GetDMS(mVersion);
+    DialogMenu* v13 = v11->GetLayer(v11->GetActiveMenu() == 0);
+    v13->Reformat(true, 0);
+    DialogMenuSystem* v14 = g_femanager.GetDMS(mVersion);
+    v14->GetLayer(v14->GetActiveMenu() == 0)->triangleResponse =
+        InGameSwitchSides::ResponseGoBack;
+}
+
+// ea: 0x0078DC10
+void GameSettingsView::UpdateOption(int option, FEText* text)
+{
+    char szText[20];
+    switch (option)
+    {
+    case 0:
+        text->SetText(
+            MPUIInterface::GetGameTypeString(
+                mCurrentServerParams->mGameType));
+        return;
+    case 1:
+        text->SetText(
+            MPUIInterface::GetMapString(mCurrentServerParams->mMapID));
+        return;
+    case 2:
+        _snprintf(szText, sizeof(szText), "%d",
+                  MPUIInterface::GetTimeLimit(
+                      mCurrentServerParams->mTimeLimit));
+        text->SetText(szText);
+        return;
+    case 3:
+        _snprintf(szText, sizeof(szText), "%d",
+                  MPUIInterface::GetScoreLimit(
+                      mCurrentServerParams->mScoreLimit,
+                      (eGameType)mCurrentServerParams->mGameType));
+        text->SetText(szText);
+        return;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    {
+        unsigned char mFriendlyFire;
+        if (option == 4)
+            mFriendlyFire = mCurrentServerParams->mFriendlyFire;
+        else if (option == 5)
+            mFriendlyFire = mCurrentServerParams->mTeamBalancing;
+        else if (option == 6)
+            mFriendlyFire = mCurrentServerParams->mEnableAARVote;
+        else
+            mFriendlyFire = mCurrentServerParams->mEnablePenaltyVote;
+        if (mFriendlyFire != 0)
+            text->SetText("MPGAME_ENABLED");
+        else
+            text->SetText("MPGAME_DISABLED");
+        break;
+    }
+    default:
+        return;
+    }
+}
+
+// ea: 0x007AEB40
+void OverlayMenu::OnTriangle(int c)
+{
+    switch (mState)
+    {
+    case GAME_LISTING:
+    case JOINING:
+        MPUIInterface::CancelJoin();
+        goto LABEL_9;
+    case GAME_LISTING_START:
+    case JOINING_START:
+    case BDNET_START_FAILED:
+        if (bdSingleton<bdNetImpl>::getInstance() != nullptr)
+        {
+            bdNetImpl* Instance = bdSingleton<bdNetImpl>::getInstance();
+            if (Instance->getParams().m_socket != nullptr)
+                bdSingleton<bdNetImpl>::getInstance()->stop();
+        }
+        goto LABEL_9;
+    case NO_GAMES:
+        Accept();
+        return;
+    case JOIN_REFUSED:
+    case JOIN_FAILED:
+    case CANNOT_CONNECT_TO_HOST:
+    case CANNOT_CONNECT_TO_PEERS:
+    case JOIN_SUCCESS:
+        MPUIInterface::CancelJoin();
+        if (GetSystem()->background == 13)
+            ((SessionListMenu*)GetSystem()->menus[13])->mNeedToUpdate = true;
+        else if (GetSystem()->background == 14)
+            ((SessionLanListMenu*)GetSystem()->menus[14])->mNeedToUpdate =
+                true;
+        goto LABEL_9;
+    case (OverlayMenu::eState)(FROM_ID_QUERYING | SIGNING_IN):
+        OverlayMenuBase::OnTriangle(c);
+        return;
+    default:
+    LABEL_9:
+        OverlayMenuBase::OnTriangle(mVersion);
+        if (GetSystem()->CurrentOverlay() != -1)
+        {
+            GetSystem()->RemoveOverlay();
+            mState = (OverlayMenu::eState)0;
+        }
+        if (mState == NO_GAMES)
+            mState = (OverlayMenu::eState)0;
+        return;
+    }
+}
+
+// ea: 0x007913A0
+void AARPersonalStats::GetClassSpecificScore(
+    EPlayerClass a_ePlayerClass, int& a_iClassScore, int& a_iTimeAsClass,
+    int& a_iClassSpecificScore1, int& a_iClassSpecificScore2)
+{
+    (void)a_iClassSpecificScore2;
+    Entity* FirstLocalPlayer = EntityManager::sInst->GetFirstLocalPlayer();
+    if (FirstLocalPlayer != nullptr)
+    {
+        Client* client = FirstLocalPlayer->client;
+        if (client != nullptr)
+        {
+            int v9 = (int)a_ePlayerClass;
+            a_iClassScore =
+                PlayerStats::TotalScoreForStats(
+                    client->pers.mStats[a_ePlayerClass]);
+            a_iTimeAsClass =
+                FirstLocalPlayer->client->pers.mStats[a_ePlayerClass][0];
+            switch (a_ePlayerClass)
+            {
+            case kPlayerClassAssault:
+            case kPlayerClassInfantry:
+                a_iClassSpecificScore1 =
+                    FirstLocalPlayer->client->pers.mStats[v9][14];
+                break;
+            case kPlayerClassRifleman:
+                a_iClassSpecificScore1 =
+                    FirstLocalPlayer->client->pers.mStats[2][10];
+                break;
+            case kPlayerClassMedic:
+                a_iClassSpecificScore1 =
+                    FirstLocalPlayer->client->pers.mStats[v9][11];
+                break;
+            case kPlayerClassSupport:
+                a_iClassSpecificScore1 =
+                    FirstLocalPlayer->client->pers.mStats[v9][12];
+                break;
+            case kPlayerClassAntiArmor:
+                a_iClassSpecificScore1 =
+                    FirstLocalPlayer->client->pers.mStats[v9][6];
+                break;
+            case kPlayerClassScout:
+                a_iClassSpecificScore1 =
+                    FirstLocalPlayer->client->pers.mStats[v9][13];
+                break;
+            default:
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+                AeAssert::gCurrentLine = 548;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "PlayerClass enumerations are out of sync"))
+                    __debugbreak();
+                break;
+            }
+        }
+    }
 }
 
 // ea: 0x0079A070
