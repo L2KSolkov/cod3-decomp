@@ -287,7 +287,9 @@ public:
     uint8_t _pad78[0x80 - 0x78];
     kuju::cBezierTrajectoryInterpolator mInterpolator;  // +0x80 (160 bytes)
     int   mInterpolationState;             // +0x120
-    uint8_t _pad124[0x130 - 0x124];
+    int   mLastLocalNetworkTime;           // +0x124
+    int   mLastRemoteNetworkTime;          // +0x128
+    int   mLastDeltaDifference;            // +0x12C
     math::Position3 mInterpolatedPosition;        // +0x130
     math::Dir3      mInterpolatedSpeed;           // +0x140
     math::Dir3      mInterpolatedAngularVelocity; // +0x150
@@ -296,11 +298,11 @@ public:
     float mInterpolatedHeading;   // +0x168
     float mInterpolatedSteering;  // +0x16C
     kuju::knet::sTime mLastInterpolatedTime;  // +0x170
-    int   mLastLocalNetworkTime;   // +0x174
-    int   mLastRemoteNetworkTime;  // +0x178
-    int   mLastDeltaDifference;    // +0x17C
     math::Dir3 mLastRemoteVelocity;  // +0x180
-    uint8_t _pad190[0x210 - 0x190];
+    uint8_t _pad190[0x204 - 0x190];
+    int   sLastRecievedNetUpdate;     // +0x204
+    int   sLastRecievedFrom;          // +0x208
+    uint8_t _pad20C[0x210 - 0x20C];
 
     static unsigned char GetNullId();   // ?GetNullId@MPVehicle@@SAEXZ
     unsigned char GetId() const;        // ?GetId@MPVehicle@@QBEEXZ
@@ -1224,6 +1226,7 @@ public:
 
     cVoiceNetworkManager();           // ??0cVoiceNetworkManager@knetuser@kuju@@QAE@XZ (mp.o 0x73F2A0)
     virtual ~cVoiceNetworkManager();  // ??1cVoiceNetworkManager@knetuser@kuju@@UAE@XZ
+    virtual void handlePacket(bdReference<bdBitBuffer> buffer);  // ?handlePacket@cVoiceNetworkManager@knetuser@kuju@@UAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x74F120)
     kuju::knet::sTime mLastTime;  // +0x04
     void*   mVoiceHandlerInterface;  // +0x08
     sVoicePacket mVoicePackets[24];  // +0x0C
@@ -1249,6 +1252,9 @@ public:
     unsigned int mMissedPackets;                   // +0x2660
     static const kuju::knet::sTime mVoiceLifeTime;  // ?mVoiceLifeTime@cVoiceNetworkManager@knetuser@kuju@@0VsTime@knet@3@B @ 0x12266F4
     void resetPlayer(unsigned long playerIndex);  // ?resetPlayer@cVoiceNetworkManager@knetuser@kuju@@QAEXK@Z (mp.o 0x74F050)
+    void setPlayerDistance(unsigned long sourcePlayer,
+                           unsigned long destPlayer,
+                           float distance);  // ?setPlayerDistance@cVoiceNetworkManager@knetuser@kuju@@QAEXKKM@Z (mp.o)
     void getDiagnostics(sDiagnostics* diagnostics,
                         const kuju::knet::sTime& time);  // ?getDiagnostics@cVoiceNetworkManager@knetuser@kuju@@QAEXPAUsDiagnostics@123@ABVsTime@knet@3@@Z (mp.o 0x7355E0)
     void sendVoiceData(MPPlayerSet destinationPlayers, unsigned char* buffer,

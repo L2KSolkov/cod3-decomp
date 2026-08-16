@@ -9,6 +9,7 @@
 #include "bd/bdNet.h"
 #include "bd/bdQoSProbe.h"
 #include "bd/bdTiming/bdShortTimer.h"
+#include "bd/bdSessionInfo.h"
 
 #include <stdio.h>
 #include <math.h>
@@ -77,6 +78,7 @@ extern int cl_stance_ss[];     // ?cl_stance_ss@@3PAHA (cl.o @ 0x1304C74)
 extern Entity* LaunchItem(TPakId pakId, const gitem_s* item, float* origin,
                           float* angles, float* velocity,
                           Entity* owner);  // ?LaunchItem@@YAPAVEntity@@W4TPakId@@PBUgitem_s@@QAM22PAV1@@Z (g.o 0x475A70)
+extern vehicle_info_t* VEH_GetVehicleInfo(int iIndex);  // ?VEH_GetVehicleInfo@@YAPAUvehicle_info_t@@H@Z (g.o)
 
 // batch 17 externs (cg/cl/cg.o data, math/anim helpers, g.o entry points)
 extern const float AngleSubtract(float a1, float a2);  // core.o (?AngleSubtract@@YA?BMMM@Z)
@@ -99,12 +101,6 @@ extern int dword_E37628[];  // animEvents row table @ 0xE37628
 extern int dword_E3762C[];  // animEvents column table @ 0xE3762C
 extern int dword_E37630[];  // animEvents sheet table @ 0xE37630
 extern const float Float4_Zero_16[4];  // @ 0xD190F0
-
-// MPMajorUpdate - last major network update (mp.o; Clear unported)
-struct MPMajorUpdate {
-    unsigned char _data[0x70];  // opaque
-    void Clear();  // ?Clear@MPMajorUpdate@@QAEXXZ (mp.o)
-};
 
 namespace BrocSys {
 void InitMPCallbacks();  // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
@@ -200,6 +196,7 @@ public:
     QueryInterface* currentQuery;  // +0x45D0
     unsigned int actualPort;           // +0x45D4
     bool invited;                      // +0x45D8
+    void SetRemoteListeners(const MPPlayerSet* listeners);  // ?SetRemoteListeners@MPLiveEngine@@QAEXPBVMPPlayerSet@@@Z (mp.o)
 };
 
 // AnimationPlayer (anim.o) - minimal view used by PlayAnimFlagAnim
@@ -13508,6 +13505,7 @@ const int MPUIInterface::mScoreLimitListTeamBattle[6] = {
 const int MPUIInterface::mScoreLimitListBattle[5] = { 0, 10, 20, 50, 100 };
 
 int MPPlayerManager::sNetworkFrameTime;
+int MPPlayerManager::sNetworkFrameTimeClose;
 
 // ============================================================================
 // Batch 16: session handlers, peer sends, voice dispatch, menu activates
@@ -17595,7 +17593,7 @@ void MPPlayer::Reset(bool reset_persistent)
         mTotalDeaths = 0;
     }
     mReceived = false;
-    ((MPMajorUpdate*)((char*)this + 0xF0))->Clear();  // mLastMajor
+    memset(&this->mLastMajor, 0, sizeof(MPMajorUpdate));  // mLastMajor
     memset((char*)this + 0xA0, 0, 0x30);   // mNetPosition/mNetSpeed
     mNetPosture = 0;
     mNetWeapon = 0;
@@ -22337,5 +22335,3020 @@ void MPProfileMainMenu::OnSelectionChange()
         this->mPanel->GetTextPointer("text_option_02")->SetShown(false);
         this->mPanel->GetTextPointer("text_option_set_01")->SetShown(false);
         this->mPanel->GetTextPointer("text_option_set_02")->SetShown(false);
+    }
+}
+
+// ============================================================================
+// mp.o batch 20 - anim helpers / MPPlayer::OnModified / voice dispatch /
+// MPPeer::DebugRender (anonymous-namespace helpers are ?A0x-versioned)
+// ============================================================================
+// ea: 0x00754750
+void MPPlayer::OnModified()
+{
+    extern float starvationAdd;             // mp.o @ 0xE377CC
+    extern float starvationIntervalScale;   // mp.o @ 0xE377D4
+    extern float starvationConsistencyScale;  // mp.o @ 0xE377D0
+    if (mReceived)
+    {
+        Entity* playerEntity = mClientIndex >= 0
+                                   ? EntityManager::sInst->GetPlayer(
+                                         mClientIndex)
+                                   : nullptr;
+        if (!mInVehicle)
+        {
+            __m128 v5 = _mm_mul_ps(this->mInterpolatedPosition.v,
+                                   this->mInterpolatedPosition.v);
+            float distSq = v5.m128_f32[0]
+                           + (_mm_shuffle_ps(v5, v5, 85).m128_f32[0]
+                              + _mm_shuffle_ps(v5, v5, 170).m128_f32[0]);
+            if (sqrt(distSq) < 1.0
+                || VectorDistanceSquared(
+                       this->mInterpolatedPosition.v.m128_f32,
+                       this->mNetPosition.v.m128_f32)
+                       > 262144.0)
+            {
+                this->mInterpolatedPosition = this->mNetPosition;
+                float heading = this->mNetHeading;
+                *(float*)((char*)this + 0x218) = heading;
+                *(float*)((char*)this + 0x260) = heading;
+            }
+        }
+        if (bWasVehicleAnimating)
+        {
+            unsigned int mVal = *(unsigned int*)((char*)playerEntity
+                                                 + 0x1B0);  // r.mOwner
+            unsigned int v10 = mVal & 0xFFF;
+            if (v10 < 0x540
+                && mVal >> 12 == EntityHandleDb::sInst.mElements[v10].mKey
+                && EntityHandleDb::sInst.mElements[v10].mObject != nullptr)
+            {
+                Client* client = playerEntity->client;
+                int v12 = *(int*)((char*)client + 0x524);  // ps.vehPos
+                if (v12 < 8)
+                {
+                    if (*(int*)((char*)client + 0x528) == 1)  // ps.vehType
+                    {
+                        if (v12 != 0)
+                            *(float*)((char*)client + 0xD4) =
+                                ((Entity*)EntityHandleDb::sInst
+                                     .mElements[v10]
+                                     .mObject)
+                                    ->r.currentAngles.v.m128_f32[1];
+                        else
+                            *(float*)((char*)client + 0xD4) = 0.0f;
+                    }
+                    else
+                    {
+                        *(float*)((char*)client + 0xD4) = this->mNetHeading;
+                    }
+                }
+                else
+                {
+                    *(float*)((char*)client + 0xD4) =
+                        *(float*)((char*)playerEntity + 0x4C);  // s.mode
+                }
+                this->mNetPitch = 0.0f;
+                *(float*)((char*)this + 0x210) = 0.0f;
+                this->mNetHeading =
+                    *(float*)((char*)playerEntity->client + 0xD4);
+            }
+            float v14 = this->mNetHeading;
+            if (v14 < -180.0f || v14 > 180.0f)
+                v14 = fmod(v14 + 180.0f, 360.0f) - 180.0f;
+            memset(&this->mInterpolatedSpeed, 0, sizeof(math::Dir3));
+            *(float*)((char*)this + 0x218) = v14;
+            *(float*)((char*)this + 0x260) = v14;
+            *(float*)((char*)this + 0x214) = 0.0f;  // mInterpolatedLean
+            MPPlayerYawEntry* yaw = (MPPlayerYawEntry*)((char*)this + 0x2C8);
+            yaw[0].mLegsYawAngle = this->mNetHeading;
+            yaw[0].mLastLegsYawAngle = this->mNetHeading;
+            yaw[0].mLegsYawing = 1;
+            yaw[0].mLastLegsDirection = 0;
+            yaw[0].mLastLegsDirectionChange.mTime =
+                MultiplayerMgr::sInst->getLocalTime().mTime;
+        }
+    }
+    else
+    {
+        this->mInterpolatedPosition = this->mNetPosition;
+        *(float*)((char*)this + 0x260) =
+            *(float*)((char*)this + 0x218);
+        float v3 = this->mNetHeading;
+        if (v3 < -180.0f || v3 > 180.0f)
+            v3 = fmod(v3 + 180.0f, 360.0f) - 180.0f;
+        *(float*)((char*)this + 0x218) = v3;
+    }
+    mReceived = true;
+    kuju::knet::sTime now = MultiplayerMgr::sInst->getLocalTime();
+    int mTime = now.mTime;
+    unsigned int mNbReceivedMessages = this->mNbReceivedMessages;
+    double v19;
+    if (mNbReceivedMessages <= 8)
+    {
+        if (mNbReceivedMessages == 0)
+            goto LABEL_34;
+        int mUpdateInterval = *(short*)((char*)this + 0x1E4);
+        float delta =
+            (mTime - this->mLastReceivedTime.mTime) * 0.001f;
+        v19 = (fabs(delta - mUpdateInterval * 0.001f)
+               + mNbReceivedMessages * this->mAverageUpdateInterval)
+              / (mNbReceivedMessages + 1);
+    }
+    else
+    {
+        int mUpdateInterval = *(short*)((char*)this + 0x1E4);
+        v19 = (fabs((mTime - this->mLastReceivedTime.mTime) * 0.001f
+                    - mUpdateInterval * 0.001f)
+               + this->mAverageUpdateInterval * 7.0)
+              * 0.125;
+    }
+    this->mAverageUpdateInterval = (float)v19;
+LABEL_34:
+    this->mNbReceivedMessages = mNbReceivedMessages + 1;
+    int v23 = *(short*)((char*)this + 0x1E4);
+    if (v23 == 0)
+        v23 = MPPlayerManager::sNetworkFrameTime;
+    this->mStarvationTime.mTime =
+        (int)(mTime + starvationAdd
+              + (v23 * starvationIntervalScale
+                 + starvationConsistencyScale
+                       * this->mAverageUpdateInterval * 1000.0f));
+    this->mLastReceivedTime.mTime = mTime;
+    *(int*)((char*)this + 0x1E0) =
+        kuju::cBezierTrajectoryInterpolator::kInterpolationStopped;
+    UpdateInterpolation(now);
+}
+
+// ea: 0x0074F120
+void kuju::knetuser::cVoiceNetworkManager::handlePacket(
+    bdReference<bdBitBuffer> buffer)
+{
+    unsigned int playerIndex =
+        *(unsigned char*)((char*)MultiplayerMgr::sInst->mPeer + 0x74E0
+                          + 0x4111);
+    unsigned char sourcePlayer = 0;
+    unsigned int voiceDataSizeInBytes = 0;
+    unsigned int v25 = 0;
+    if (buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE))
+        buffer.m_ptr->readBits(&sourcePlayer, 8u);
+    unsigned short bitmask = 0;
+    if (buffer.m_ptr->readDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_INTEGER16_TYPE))
+        buffer.m_ptr->readBits(&bitmask, 0x10u);
+    else
+        bitmask = (unsigned short)buffer.m_ptr;
+    MPPlayerSet playersToSendTo;
+    playersToSendTo.mBitPlayers = bitmask;
+    if (buffer.m_ptr->readDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_INTEGER16_TYPE))
+        buffer.m_ptr->readBits(&v25, 0x10u);
+    if (buffer.m_ptr->readDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_INTEGER32_TYPE)
+        && buffer.m_ptr->readBits(&voiceDataSizeInBytes, 0x20u))
+        v25 = voiceDataSizeInBytes;
+    unsigned int voicePrevSeqID[16];
+    for (unsigned int v2 = 0; v2 < 0x10; ++v2)
+    {
+        if (bitmask & (1 << v2))
+        {
+            unsigned int temp = 0;
+            if (buffer.m_ptr->readDataType(
+                    bdBitBuffer::BD_BB_UNSIGNED_INTEGER32_TYPE)
+                && buffer.m_ptr->readBits(&temp, 0x20u))
+                voiceDataSizeInBytes = temp;
+            voicePrevSeqID[v2] = v25 - voiceDataSizeInBytes;
+        }
+        else
+        {
+            voicePrevSeqID[v2] = 0xFFFFFFFF;
+        }
+    }
+    mRecentlyReceivedPacketSources[mRecentlyReceivedPacketIndex] =
+        sourcePlayer;
+    mRecentlyReceivedPacketRoutes[mRecentlyReceivedPacketIndex] =
+        sourcePlayer;
+    unsigned char v6 = mRecentlyReceivedPacketIndex + 1;
+    mRecentlyReceivedPacketIndex = v6 >= 0x0Au ? 0 : v6;
+    unsigned int temp = 0;
+    if (buffer.m_ptr->readDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_INTEGER32_TYPE)
+        && buffer.m_ptr->readBits(&temp, 0x20u))
+        voiceDataSizeInBytes = temp;
+    if (playerIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPPlayerSet.h";
+        AeAssert::gCurrentLine = 153;
+        AeAssert::gCurrentExpr = "index < 16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    if ((bitmask & (1 << playerIndex)) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/knetuser/cvoicenetworkmanager.cpp";
+        AeAssert::gCurrentLine = 311;
+        AeAssert::gCurrentExpr =
+            "playersToSendTo.containsPlayer(playerIndex)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    if (playerIndex >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPPlayerSet.h";
+        AeAssert::gCurrentLine = 153;
+        AeAssert::gCurrentExpr = "index < 16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    if (bitmask & (1 << playerIndex))
+    {
+        unsigned int v9 = mLastReceivedSeqID[sourcePlayer];
+        unsigned int seq = v25;
+        if (v9 == 0xFFFFFFFF || v9 <= voicePrevSeqID[playerIndex])
+        {
+            sVoicePacket* v10 = mPendingVoicePacketList[sourcePlayer];
+            if (v10 != nullptr)
+            {
+                do
+                {
+                    unsigned int mSeqID = v10->mSeqID;
+                    if (v25 < mSeqID)
+                        break;
+                    if (v25 == mSeqID)
+                        goto skipAdd;
+                    v10 = v10->mNext;
+                } while (v10 != nullptr);
+            }
+            sVoicePacket* FreePacket = getFreePacket();
+            if (FreePacket == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/knetuser/cvoicenetworkmanager.cpp";
+                AeAssert::gCurrentLine = 326;
+                AeAssert::gCurrentExpr = "voicePacket";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+            }
+            buffer.m_ptr->readBits(FreePacket, 8 * voiceDataSizeInBytes);
+            FreePacket->mPrevSeqID = voicePrevSeqID[playerIndex];
+            FreePacket->mSize = voiceDataSizeInBytes;
+            FreePacket->mSeqID = seq;
+            FreePacket->mTimeReceived.mTime =
+                MultiplayerMgr::sInst->mUpdateTime.mTime;
+            addPacket(FreePacket, sourcePlayer);
+        }
+    skipAdd:
+        playersToSendTo.removePlayer(playerIndex);
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x0075C420
+void MPPeer::DebugRender()
+{
+    extern int lCount;              // @ 0xF99298
+    extern unsigned __int64 sTotalBytesSent;      // @ 0xF99288
+    extern unsigned __int64 sTotalBytesReceived;  // @ 0xF99278
+    extern unsigned int _S8_41;    // @ 0xF99294
+    extern float sendRate;         // @ 0xF99274
+    extern float recvRate;         // @ 0xF99270
+    extern float vSendRate;        // @ 0xF9926C
+    extern unsigned __int64 gsVoiceBytesSubmitted;  // ?gsVoiceBytesSubmitted@@3_KA @ 0xF93F78
+    MPPlayerManager* p_mPlayerManager =
+        (MPPlayerManager*)((char*)this + 0x74E0);
+    p_mPlayerManager->DebugRender();
+    char buf[1024];
+    memset(buf, 0, sizeof(buf));
+    bdSession* p_mSession = (bdSession*)((char*)this + 0x7448);
+    if (mRenderSessionInfo != 0)
+        bdSessionInfo::getInfo(p_mSession, buf, 0x400u);
+    if (p_mSession->getStatus() != bdSession::BD_SESSION_READY)
+    {
+        Color col(0.9f, 0.0f, 0.0f, 1.0f);
+        DebugRender::RenderText("Session not ready!", 80, 60, col, -510.0f,
+                                0.9f);
+    }
+    if (mRenderSessionInfo != 0)
+    {
+        Color col(1.0f, 1.0f, 1.0f, 1.0f);
+        DebugRender::RenderText(buf, 30, 80, col, -510.0f, 0.9f);
+        if (mRenderSessionInfo != 0 && lCount >= 100)
+        {
+            bdMessageProxy proxy(
+                "c:\\cod\\code\\game\\mp/MPPeer.cpp",
+                "void __thiscall MPPeer::DebugRender(void)", 0xC38u,
+                "dw/info/");
+            proxy.log("mpPeer", buf);
+        }
+    }
+    int v4 = 100;
+    for (unsigned int i = 0; i < p_mSession->getNumPeers(); ++i)
+    {
+        if (bdSessionInfo::getPeerInfo(p_mSession, buf, 0x400u, i) != 0)
+        {
+            v4 += 16;
+            if (mRenderSessionInfo != 0)
+            {
+                Color col(1.0f, 1.0f, 1.0f, 1.0f);
+                DebugRender::RenderText(buf, 30, v4, col, -510.0f, 0.9f);
+                if (mRenderSessionInfo != 0 && lCount >= 100)
+                {
+                    bdMessageProxy proxy(
+                        "c:\\cod\\code\\game\\mp/MPPeer.cpp",
+                        "void __thiscall MPPeer::DebugRender(void)", 0xC53u,
+                        "dw/info/");
+                    proxy.log("mpPeer", buf);
+                }
+            }
+        }
+    }
+    int v7 = lCount;
+    if (lCount >= 100)
+        v7 = 0;
+    lCount = v7 + 1;
+    bdStopwatch* v8 = (bdStopwatch*)((char*)this + 0xD260);
+    float eSecs = v8->getElapsedTimeInSeconds();
+    if (eSecs >= 1.0f)
+    {
+        v8->start();
+        if ((_S8_41 & 1) == 0)
+        {
+            _S8_41 |= 1u;
+            sTotalBytesSent = bdPlatformSocket::getBytesSent();
+        }
+        if ((_S8_41 & 2) == 0)
+        {
+            _S8_41 |= 2u;
+            sTotalBytesReceived = bdPlatformSocket::getBytesReceived();
+        }
+        unsigned __int64 BytesSent = bdPlatformSocket::getBytesSent();
+        unsigned __int64 BytesReceived = bdPlatformSocket::getBytesReceived();
+        float inv = 1.0f / eSecs;
+        sendRate = (float)((BytesSent - sTotalBytesSent) * inv);
+        recvRate = (float)((BytesReceived - sTotalBytesReceived) * inv);
+        vSendRate = (float)(gsVoiceBytesSubmitted * inv);
+        sTotalBytesSent = BytesSent;
+        sTotalBytesReceived = BytesReceived;
+        gsVoiceBytesSubmitted = 0;
+    }
+    if (mRenderDataInfo != 0)
+    {
+        unsigned char v12 = *(unsigned char*)((char*)p_mPlayerManager
+                                              + 0x4111);
+        unsigned char mId = 0xFF;
+        if (v12 < 0x10u)
+        {
+            MPPlayer* v14 = p_mPlayerManager->GetLocalPlayer(0);
+            if (v14 != nullptr)
+                mId = v14->mId;
+        }
+        bdSnprintf(buf, 0x200u,
+                   "Sent: %u bytes/s\nRecv: %u bytes/s \nID: %u", sendRate,
+                   recvRate, mId);
+        Color col(1.0f, 1.0f, 1.0f, 1.0f);
+        DebugRender::RenderText(buf, 440, 85, col, -510.0f, 0.6f);
+    }
+    if (gpBrocAPI != nullptr)
+    {
+        if (gpBrocAPI->mBrocExports.mCallbackDebugRender != nullptr)
+            gpBrocAPI->mBrocExports.mCallbackDebugRender();
+    }
+    if (mRenderEntityBufferInfo != 0)
+    {
+        bdSnprintf(
+            buf, 0x200u, "Entity: %u/%u\nDObj: %u/%u\nRefEnt: %u/%u",
+            gEntFreeList.mUsed, gEntFreeList.mUsed + gEntFreeList.mFree,
+            gDObjFreeList.mUsed,
+            gDObjFreeList.mUsed + gDObjFreeList.mFree,
+            gRefEntFreeList.mUsed,
+            gRefEntFreeList.mUsed + gRefEntFreeList.mFree);
+        Color col(1.0f, 1.0f, 1.0f, 1.0f);
+        DebugRender::RenderText(buf, 100, 100, col, -510.0f, 0.9f);
+    }
+}
+
+// ea: 0x0074B390
+void MPPlayerManager::HandleVehicleDeath(
+    const bdReceivedMessage& receivedMsg)
+{
+    if (*(bool*)((char*)this + 0x4112))  // mLocalPlayerInGame
+    {
+        bdReference<bdMessage> msg = receivedMsg.getMessage();
+        bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+        unsigned char hitVehicleID = 10;
+        unsigned char killerPlayerID = 16;
+        bool readPlayer = false;
+        char weapon = 0;
+        unsigned char mod = 0;
+        bool ok = false;
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        if (MPUtility::ReadVehicleId(buffer, hitVehicleID)
+            && buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+        {
+            unsigned char b = 0;
+            if (buffer.m_ptr->readBits(&b, 1u))
+            {
+                readPlayer = b != 0;
+                ok = true;
+                if (b != 0)
+                {
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    ok = MPUtility::ReadPlayerId(buffer, killerPlayerID);
+                }
+            }
+        }
+        else
+        {
+            ok = false;
+        }
+        if (buffer.m_ptr->readDataType(
+                bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE))
+            buffer.m_ptr->readBits(&weapon, 8u);
+        if (buffer.m_ptr->readDataType(
+                bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE))
+            buffer.m_ptr->readBits(&mod, 8u);
+        if (ok)
+        {
+            MPVehicle* v9 =
+                (MPVehicle*)((char*)this + 0x4120 + 0x210 * hitVehicleID);
+            Entity* mEntity = (Entity*)v9->mEntity;
+            if (mEntity == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                AeAssert::gCurrentLine = 3640;
+                AeAssert::gCurrentExpr = "vehicleEnt";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid vehicle entity."))
+                    __debugbreak();
+            }
+            unsigned char die = (unsigned char)mEntity->die;
+            mEntity->health = -1;
+            if (die != 0)
+            {
+                if (die >= 8u)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                    AeAssert::gCurrentLine = 3647;
+                    AeAssert::gCurrentExpr =
+                        "vehicleEnt->die > 0 && vehicleEnt->die < DIE_MAX";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                Entity* killer = nullptr;
+                if (readPlayer)
+                {
+                    MPPlayer* Player = GetPlayer(killerPlayerID);
+                    if (Player == nullptr || Player->mClientIndex < 0)
+                        killer = mEntity;
+                    else
+                        killer = EntityManager::sInst->GetPlayer(
+                            Player->mClientIndex);
+                    if (killer == nullptr)
+                        killer = mEntity;
+                    if (gpBrocAPI->mBrocExports.mCallbackVehicleKilled
+                        != nullptr)
+                    {
+                        gpBrocAPI->mBrocExports.mCallbackVehicleKilled(
+                            mEntity->mHandle.mHandle.mVal,
+                            killer->mHandle.mHandle.mVal,
+                            killer->mHandle.mHandle.mVal, weapon, mod,
+                            v9->mNumOccupants);
+                    }
+                    dietable[die](mEntity, killer, killer, 1, mod, weapon,
+                                  vec3_origin, vec3_origin, HITLOC_NONE);
+                }
+                else
+                {
+                    if (gpBrocAPI->mBrocExports.mCallbackVehicleKilled
+                        != nullptr)
+                    {
+                        gpBrocAPI->mBrocExports.mCallbackVehicleKilled(
+                            mEntity->mHandle.mHandle.mVal,
+                            mEntity->mHandle.mHandle.mVal,
+                            mEntity->mHandle.mHandle.mVal, weapon, mod,
+                            v9->mNumOccupants);
+                    }
+                    dietable[die](mEntity, nullptr, nullptr, 1, mod,
+                                  weapon, vec3_origin, vec3_origin,
+                                  HITLOC_NONE);
+                }
+                if (v9->mNumOccupants != 0)
+                {
+                    for (int i = 0; i < 11; ++i)
+                    {
+                        unsigned char occupant =
+                            *(unsigned char*)((char*)v9 + 0x08 + i);
+                        if (occupant != 16)
+                        {
+                            MPPlayer* v20 = GetPlayer(occupant);
+                            v9->GetOutOfVehicle(v20, mEntity->health,
+                                                false);
+                        }
+                    }
+                }
+            }
+        }
+        if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+            delete buffer.m_ptr;
+        if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+            delete msg.m_ptr;
+    }
+}
+
+// ea: 0x0075EDF0
+void MPPlayerManager::HandlePlayerRespawn(
+    const bdReceivedMessage& receivedMsg)
+{
+    tlPrintf("Client: Received respawn info from host\n");
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player == nullptr)
+    {
+        tlPrintf(
+            "Client: Received respawn info for player that does not exist!\n");
+        return;
+    }
+    bdConnection* m_ptr = Player->mConnection.m_ptr;
+    if (m_ptr == nullptr
+        || m_ptr->getStatus() != bdConnection::BD_CONNECTED)
+    {
+        tlPrintf(
+            "Client: Received respawn info for non-connected player!\n");
+        return;
+    }
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    unsigned char respawningPlayerID = 0;
+    float position[3] = { 0.0f, 0.0f, 0.0f };
+    float angle = 0.0f;
+    int playerClass = 0;
+    team_t team = TEAM_ALLIES;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPlayerId(buffer, respawningPlayerID))
+        goto cleanup;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPosition(buffer, position))
+        goto cleanup;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadAngle(buffer, angle))
+        goto cleanup;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPlayerClass(buffer, playerClass))
+        goto cleanup;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPlayerTeam(buffer, team))
+        goto cleanup;
+    {
+        MPPlayer* v7 = GetPlayer(respawningPlayerID);
+        if (v7 != nullptr)
+        {
+            if (v7->mClientIndex >= 0
+                && EntityManager::sInst->GetPlayer(v7->mClientIndex)
+                       != nullptr)
+            {
+                Entity* spawnEnt = v7->mClientIndex >= 0
+                                       ? EntityManager::sInst->GetPlayer(
+                                             v7->mClientIndex)
+                                       : nullptr;
+                if (*(bool*)((char*)this + 0x4112))
+                {
+                    if (spawnEnt != nullptr)
+                    {
+                        Client* client = spawnEnt->client;
+                        if (client != nullptr
+                            && client->pers.playerClass != -1
+                            && (unsigned int)client->pers.playerState > 2u)
+                        {
+                            collision_context_t context(0x80000000);
+                            Entity* v10 = v7->mClientIndex >= 0
+                                              ? EntityManager::sInst
+                                                    ->GetPlayer(
+                                                        v7->mClientIndex)
+                                              : nullptr;
+                            if (SV_PointContents(v10->r.currentOrigin,
+                                                 context)
+                                == 0)
+                                TossClientItems(spawnEnt);
+                        }
+                    }
+                    tlPrintf("Client: Respawning client!\n");
+                    float angles[3] = { 0.0f, angle, 0.0f };
+                    ClientSpawn(spawnEnt, position, angles, true, false);
+                    spawnEnt->client->pers.playerClass = playerClass;
+                    spawnEnt->client->pers.nextPlayerClass = playerClass;
+                    sentient_s* sentient = spawnEnt->sentient;
+                    unsigned char v13 = 0;
+                    if (sentient != nullptr)
+                    {
+                        if (sentient->eTeam != team)
+                        {
+                            sentient->eTeam = team;
+                            v13 = 1;
+                            v7->mTeam = (short)team;
+                        }
+                    }
+                    if (gpBrocAPI->mBrocExports.mCallbackPlayerSpawn
+                        != nullptr)
+                    {
+                        tlPrintf(
+                            "Client: Dispatched respawn info to script!\n");
+                        Entity* ent2 = v7->mClientIndex >= 0
+                                           ? EntityManager::sInst->GetPlayer(
+                                                 v7->mClientIndex)
+                                           : nullptr;
+                        if (ent2 != nullptr)
+                            gpBrocAPI->mBrocExports.mCallbackPlayerSpawn(
+                                ent2->mHandle.mHandle.mVal, v13);
+                    }
+                    else
+                    {
+                        tlPrintf(
+                            "Client: No respawn callback registered!\n");
+                    }
+                }
+                else
+                {
+                    tlPrintf(
+                        "Client: Cannot act on respawn info as local player not in game!\n");
+                }
+                float angles[3] = { 0.0f, angle, 0.0f };
+                v7->PlayerSpawn(position, angles);
+                if (v7->IsLocalPlayer())
+                {
+                    tlPrintf("Client: Respawning player is local player\n");
+                    *(bool*)((char*)MultiplayerMgr::sInst->mPeer + 0x08) =
+                        false;  // mRequestedSpawn
+                }
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 4911;
+            AeAssert::gCurrentExpr = "respawningPlayer";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Client: Respawning player id does not match any player in session!\n"))
+                __debugbreak();
+        }
+    }
+cleanup:
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}
+
+// ea: 0x0075A0E0
+void MPPlayerManager::DeserializeVehicleStates(
+    bdReference<bdBitBuffer> buffer)
+{
+    unsigned int vehicleCount = 0;
+    bool ok = buffer.m_ptr->readRangedUInt32(vehicleCount, 0, 9u, true);
+    if (ok)
+    {
+        int count = *(int*)((char*)this + 0x55C0);  // mVehicleCount
+        for (int i = 0; i < count; ++i)
+        {
+            MPVehicle* mVehicles =
+                (MPVehicle*)((char*)this + 0x4120 + 0x210 * i);
+            Entity* mEntity = (Entity*)mVehicles->mEntity;
+            unsigned char hasTakedamage = 0;
+            mEntity->takedamage =
+                buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE)
+                && buffer.m_ptr->readBits(&hasTakedamage, 1u)
+                && hasTakedamage != 0;
+            if (buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+            {
+                unsigned char hasState = 0;
+                if (buffer.m_ptr->readBits(&hasState, 1u) && hasState != 0)
+                {
+                    int health = 0;
+                    int numOccupants = 0;
+                    if (ok
+                        && buffer.m_ptr->readDataType(
+                            bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE)
+                        && buffer.m_ptr->readBits(&health, 0x10u)
+                        && buffer.m_ptr->readDataType(
+                            bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE)
+                        && buffer.m_ptr->readBits(&numOccupants, 0x10u))
+                    {
+                        ok = true;
+                    }
+                    else
+                    {
+                        ok = false;
+                    }
+                    for (int j = 0; ok; ++j)
+                    {
+                        if (j >= numOccupants)
+                            break;
+                        int seatIdx = 0;
+                        unsigned char playerId = 0;
+                        if (buffer.m_ptr != nullptr)
+                            ++buffer.m_ptr->m_refCount;
+                        if (!MPUtility::ReadSeatIndex(buffer, seatIdx))
+                        {
+                            ok = false;
+                            break;
+                        }
+                        if (buffer.m_ptr != nullptr)
+                            ++buffer.m_ptr->m_refCount;
+                        ok = MPUtility::ReadPlayerId(buffer, playerId);
+                        MPPlayer* v8 =
+                            (MPPlayer*)((char*)this + 0x1010
+                                        + 0x310 * playerId);
+                        if (v8->mId >= 0x10u
+                            || v8->mConnection.m_ptr == nullptr)
+                        {
+                            AeAssert::gCurrentAuthor =
+                                (AeAssert::ECoderId)0;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                            AeAssert::gCurrentLine = 7731;
+                            AeAssert::gCurrentExpr = "occupant.IsValid()";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert(
+                                    "Invalid occupant for vehicle"))
+                                __debugbreak();
+                        }
+                        if (*(unsigned char*)((char*)mVehicles + 0x08
+                                              + seatIdx)
+                                != 16
+                            || (seatIdx == 1
+                                && *(unsigned char*)((char*)mVehicles
+                                                     + 0x0E)
+                                       != 16))
+                        {
+                            AeAssert::gCurrentAuthor =
+                                (AeAssert::ECoderId)0;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                            AeAssert::gCurrentLine = 7732;
+                            AeAssert::gCurrentExpr =
+                                "!vehicle.IsSeatOccupied( seatIdx )";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert(
+                                    "Vehicle already occupied"))
+                                __debugbreak();
+                        }
+                        mVehicles->GetInVehicle(v8, health, seatIdx, 0);
+                    }
+                }
+            }
+            mVehicles->Reset(false);
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            mVehicles->deserialize(buffer, true, 0);
+            mVehicles->OnModified();
+            if (buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+            {
+                unsigned char hasOwner = 0;
+                if (buffer.m_ptr->readBits(&hasOwner, 1u)
+                    && hasOwner != 0)
+                {
+                    unsigned char vehicleId = 0;
+                    unsigned char playerId = 0;
+                    if (!ok)
+                        continue;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    if (!MPUtility::ReadVehicleId(buffer, vehicleId))
+                        continue;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    if (!MPUtility::ReadPlayerId(buffer, playerId))
+                        continue;
+                    ok = true;
+                    MPPlayer* Player = GetPlayer(playerId);
+                    if (Player != nullptr && Player->mClientIndex >= 0
+                        && EntityManager::sInst->GetPlayer(
+                               Player->mClientIndex)
+                               != nullptr
+                        && ((MPVehicle*)((char*)this + 0x4120
+                                         + 0x210 * vehicleId))
+                               ->mEntity != nullptr)
+                    {
+                        Entity* ent = Player->mClientIndex >= 0
+                                          ? EntityManager::sInst->GetPlayer(
+                                                Player->mClientIndex)
+                                          : nullptr;
+                        ((Entity*)((MPVehicle*)((char*)this + 0x4120
+                                                + 0x210 * vehicleId))
+                             ->mEntity)
+                            ->scr_vehicle->AssignPhysics(ent);
+                    }
+                }
+            }
+        }
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x0075B540
+void MPPeer::MeleeHit(Entity* hitEntity, Entity* attackerEntity,
+                      const math::Position3& position,
+                      const math::Dir3& normal, unsigned char surfaceType,
+                      short damage, unsigned char mod, int hitLocation)
+{
+    const Entity* v9 = hitEntity;
+    bool hit = hitEntity != nullptr && hitEntity->client != nullptr;
+    if (((bdSession*)((char*)this + 0x7448))->getStatus()
+        == bdSession::BD_SESSION_NOT_CONNECTED)
+        return;
+    bdMessage* msg = new bdMessage(0x2Cu, false);
+    bdReference<bdMessage> message;
+    message.m_ptr = msg;
+    if (msg != nullptr)
+        ++msg->m_refCount;
+    extern int g_NumBdMessages;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> buffer = msg->getPayload();
+    MPPlayerManager* p_mPlayerManager =
+        (MPPlayerManager*)((char*)this + 0x74E0);
+    if (attackerEntity == nullptr)
+    {
+        if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+            delete buffer.m_ptr;
+        if (message.m_ptr != nullptr && message.m_ptr->m_refCount-- == 1)
+            delete message.m_ptr;
+        return;
+    }
+    MPPlayer* Player = p_mPlayerManager->GetPlayer(attackerEntity);
+    if (Player == nullptr)
+    {
+        if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+            delete buffer.m_ptr;
+        if (message.m_ptr != nullptr && message.m_ptr->m_refCount-- == 1)
+            delete message.m_ptr;
+        return;
+    }
+    unsigned char playerId = Player->mId;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUtility::WritePlayerId(buffer, playerId);
+    buffer.m_ptr->writeBool(hit);
+    if (hit)
+    {
+        MPPlayer* hitPlayer = p_mPlayerManager->GetPlayer(v9);
+        if (hitPlayer != nullptr)
+        {
+            unsigned char hitPlayerId = hitPlayer->mId;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WritePlayerId(buffer, hitPlayerId);
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WritePosition(buffer, position);
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WriteNormal(buffer, normal);
+            buffer.m_ptr->writeChar8((char)surfaceType);
+            buffer.m_ptr->writeInt16(damage);
+            buffer.m_ptr->writeUChar8(mod);
+            buffer.m_ptr->writeUChar8((unsigned char)hitLocation);
+            p_mPlayerManager->SendOthers(message, Player, true);
+            if (damage > 255)
+                damage = 255;
+            bdMessage* msg2 = new bdMessage(0x6Cu, false);
+            message.m_ptr = msg2;
+            if (msg2 != nullptr)
+                ++msg2->m_refCount;
+            extern int g_NumBdMessages;
+            ++g_NumBdMessages;
+            bdReference<bdBitBuffer> b2 = msg2->getPayload();
+            unsigned char victimId = hitPlayer->mId;
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WritePlayerId(b2, victimId);
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WriteNormal(b2, normal);
+            b2.m_ptr->writeUChar8((unsigned char)damage);
+            float midY = ((v9->r.maxs.v.m128_f32[2] - v9->r.mins.v.m128_f32[2])
+                              * 0.5f
+                          + v9->r.currentOrigin.v.m128_f32[2])
+                         + 5.0f;
+            b2.m_ptr->writeBool(midY > position.v.m128_f32[2]);
+            p_mPlayerManager->SendAll(message, false, false);
+            if (b2.m_ptr != nullptr && b2.m_ptr->m_refCount-- == 1)
+                delete b2.m_ptr;
+            if (message.m_ptr != nullptr
+                && message.m_ptr->m_refCount-- == 1)
+                delete message.m_ptr;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPeer.cpp";
+            AeAssert::gCurrentLine = 799;
+            AeAssert::gCurrentExpr = "hitPlayer";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        p_mPlayerManager->SendOthers(message, Player, false);
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (message.m_ptr != nullptr && message.m_ptr->m_refCount-- == 1)
+        delete message.m_ptr;
+}
+
+// ea: 0x007460B0
+bool MPPlayer::serialize(bdReference<bdBitBuffer> buffer, bool bIsMajor,
+                         bool bUpdateSequence)
+{
+    int mClientIndex = this->mClientIndex;
+    if (mClientIndex == -1)
+    {
+        if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+            delete buffer.m_ptr;
+        return false;
+    }
+    Entity* Player = mClientIndex >= 0
+                         ? EntityManager::sInst->GetPlayer(mClientIndex)
+                         : nullptr;
+    float origin[3];
+    origin[0] = Player->r.currentOrigin.v.m128_f32[0];
+    origin[1] = Player->r.currentOrigin.v.m128_f32[1];
+    origin[2] = Player->r.currentOrigin.v.m128_f32[2];
+    Client* client = Player->client;
+    int playerState = client->pers.playerState;
+    float angles[3];
+    angles[0] = client->ps.viewangles[0];
+    angles[1] = client->ps.viewangles[1];
+    angles[2] = client->ps.viewangles[2];
+    float velocity[3];
+    velocity[0] = client->ps.velocity.v.m128_f32[0];
+    velocity[1] = client->ps.velocity.v.m128_f32[1];
+    velocity[2] = client->ps.velocity.v.m128_f32[2];
+    bool isPlaying = playerState == 3;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_BOOL_TYPE);
+    unsigned char playing = isPlaying ? 0xFF : 0;
+    buffer.m_ptr->writeBits(&playing, 1u);
+    PlayerState* p_ps = &Player->client->ps;
+    unsigned int pm_flags = p_ps->pm_flags;
+    int weapon = Player->s.weapon;
+    unsigned int flags = pm_flags;
+    int pack_flags = GetPlayerAnimationPackFlags(p_ps,
+                                                           weapon);
+    float oldPos[3] = {
+        this->mLastMajor.position.v.m128_f32[0],
+        this->mLastMajor.position.v.m128_f32[1],
+        this->mLastMajor.position.v.m128_f32[2],
+    };
+    float oldVel[3] = {
+        this->mLastMajor.velocity.v.m128_f32[0],
+        this->mLastMajor.velocity.v.m128_f32[1],
+        this->mLastMajor.velocity.v.m128_f32[2],
+    };
+    bool positionDelta = VectorDistance(oldPos, origin) < 512.0;
+    bool positionXYChange = false;
+    if (fabs(origin[0] - this->mLastMajor.position.v.m128_f32[0]) > 1.0
+        || fabs(origin[1] - this->mLastMajor.position.v.m128_f32[1]) > 1.0)
+        positionXYChange = true;
+    bool positionZChange =
+        fabs(origin[2] - this->mLastMajor.position.v.m128_f32[2]) > 1.0;
+    bool velocityChange = false;
+    if (velocity[0] != oldVel[0] || velocity[1] != oldVel[1]
+        || velocity[2] != oldVel[2])
+        velocityChange = true;
+    bool anglesChange = false;
+    if (angles[0] != this->mLastMajor.angles.v.m128_f32[0]
+        || angles[1] != this->mLastMajor.angles.v.m128_f32[1])
+        anglesChange = true;
+    bool animFlagsChange = pack_flags != (int)this->mLastMajor.animFlags;
+    Client* v17 = Player->client;
+    bool pmFlagsChange = flags != this->mLastMajor.pmFlags;
+    bool weapAnimChange =
+        v17->ps.weapAnim != this->mLastMajor.weapAnim;
+    bool weapChange = v17->ps.weapon != (int)this->mLastMajor.weapon;
+    if (!bIsMajor && (pmFlagsChange || !positionDelta))
+        bIsMajor = true;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_BOOL_TYPE);
+    unsigned char major = bIsMajor ? 0xFF : 0;
+    buffer.m_ptr->writeBits(&major, 1u);
+    if ((_fpclass(origin[0]) & 0x297) != 0
+        || (_fpclass(origin[1]) & 0x297) != 0
+        || (_fpclass(origin[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+        AeAssert::gCurrentLine = 445;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(velocity[0]) & 0x297) != 0
+        || (_fpclass(velocity[1]) & 0x297) != 0
+        || (_fpclass(velocity[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+        AeAssert::gCurrentLine = 446;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((velocity)[0]) && !IS_NAN((velocity)[1]) && !IS_NAN((velocity)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(angles[0]) & 0x297) != 0
+        || (_fpclass(angles[1]) & 0x297) != 0
+        || (_fpclass(angles[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+        AeAssert::gCurrentLine = 447;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((angles)[0]) && !IS_NAN((angles)[1]) && !IS_NAN((angles)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (bIsMajor)
+    {
+        if (bUpdateSequence)
+            ++this->mLastMajor.sequenceId;
+        unsigned char seq = (unsigned char)this->mLastMajor.sequenceId;
+        buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE);
+        buffer.m_ptr->writeBits(&seq, 8u);
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        MPUtility::WritePosition(buffer, origin);
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        MPUtility::WriteCompressedVector(buffer, velocity);
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        MPUtility::WriteAnglesYawPitch(buffer, angles);
+        unsigned char w = (unsigned char)Player->client->ps.weapon;
+        buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE);
+        buffer.m_ptr->writeBits(&w, 8u);
+        buffer.m_ptr->writeDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_INTEGER32_TYPE);
+        buffer.m_ptr->writeBits(&flags, 0x20u);
+        buffer.m_ptr->writeRangedUInt32(pack_flags, 0, 0x8000u, true);
+        buffer.m_ptr->writeRangedUInt32(Player->client->ps.weapAnim, 0,
+                                        0x19u, true);
+        if (bUpdateSequence)
+        {
+            this->mLastMajor.position.v.m128_f32[0] = origin[0];
+            this->mLastMajor.position.v.m128_f32[1] = origin[1];
+            this->mLastMajor.position.v.m128_f32[2] = origin[2];
+            this->mLastMajor.velocity.v.m128_f32[0] = velocity[0];
+            this->mLastMajor.velocity.v.m128_f32[1] = velocity[1];
+            this->mLastMajor.velocity.v.m128_f32[2] = velocity[2];
+            this->mLastMajor.angles.v.m128_f32[0] = angles[0];
+            this->mLastMajor.angles.v.m128_f32[1] = angles[1];
+            this->mLastMajor.angles.v.m128_f32[2] = angles[2];
+            this->mLastMajor.animFlags = pack_flags;
+            this->mLastMajor.weapon =
+                (char)Player->client->ps.weapon;
+            this->mLastMajor.pmFlags = flags;
+            this->mLastMajor.weapAnim = Player->client->ps.weapAnim;
+        }
+    }
+    else
+    {
+        unsigned char seq = (unsigned char)this->mLastMajor.sequenceId;
+        buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE);
+        buffer.m_ptr->writeBits(&seq, 8u);
+        buffer.m_ptr->writeBool(positionXYChange);
+        buffer.m_ptr->writeBool(positionZChange);
+        buffer.m_ptr->writeBool(velocityChange);
+        buffer.m_ptr->writeBool(anglesChange);
+        buffer.m_ptr->writeBool(weapChange);
+        buffer.m_ptr->writeBool(animFlagsChange);
+        buffer.m_ptr->writeBool(pmFlagsChange);
+        buffer.m_ptr->writeBool(weapAnimChange);
+        if (positionXYChange)
+        {
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WritePositionDelta(buffer, oldPos[0], origin[0]);
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WritePositionDelta(buffer, oldPos[1], origin[1]);
+        }
+        if (positionZChange)
+        {
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WritePositionDelta(buffer, oldPos[2], origin[2]);
+        }
+        if (velocityChange)
+        {
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WriteCompressedVector(buffer, velocity);
+        }
+        if (anglesChange)
+        {
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            MPUtility::WriteAnglesYawPitch(buffer, angles);
+        }
+        if (weapChange)
+        {
+            unsigned char w = (unsigned char)Player->client->ps.weapon;
+            buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE);
+            buffer.m_ptr->writeBits(&w, 8u);
+        }
+        if (pmFlagsChange)
+        {
+            buffer.m_ptr->writeDataType(
+                bdBitBuffer::BD_BB_UNSIGNED_INTEGER32_TYPE);
+            buffer.m_ptr->writeBits(&flags, 0x20u);
+        }
+        if (animFlagsChange)
+            buffer.m_ptr->writeRangedUInt32(pack_flags, 0, 0x8000u, true);
+        if (weapAnimChange)
+            buffer.m_ptr->writeRangedUInt32(Player->client->ps.weapAnim, 0,
+                                            0x19u, true);
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return bIsMajor;
+}
+
+// PlayerDebug - per-player net debug ring (mp.o PlayerDebug namespace data)
+namespace PlayerDebug {
+struct DebugUpdatePoint {
+    struct DebugPhysicsParams {
+        math::Position3 point;
+        math::Dir3      velocity;
+        math::Position3 angles;
+    } local, remote;
+};
+extern int localPoint;  // ?localPoint@PlayerDebug@@3HA @ 0xF93F84
+extern DebugUpdatePoint points[40];  // ?points@PlayerDebug@@3PAUDebugUpdatePoint@1@A @ 0xF962D0
+}  // namespace PlayerDebug
+
+// ea: 0x007468D0
+bool MPPlayer::deserialize(bdReference<bdBitBuffer> buffer)
+{
+    bool bIsInter = false;
+    bool playing = false;
+    bool bIsMajor = false;
+    bool positionXYChange = false;
+    bool positionZChange = false;
+    bool velocityChange = false;
+    bool anglesChange = false;
+    bool animFlagsChange = false;
+    bool pmFlagsChange = false;
+    bool weapAnimChange = false;
+    bool weapChange = false;
+    unsigned int flags = 0;
+    unsigned int pack_flag = 0;
+    unsigned int weaponAnim = 0;
+    char weapon = 0;
+    char sequenceId = 0;
+    float origin[3] = { 0.0f, 0.0f, 0.0f };
+    float velocity[3] = { 0.0f, 0.0f, 0.0f };
+    float angles[3] = { 0.0f, 0.0f, 0.0f };
+    bool v4 = false;
+    if (buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+    {
+        unsigned char v71 = 0;
+        if (buffer.m_ptr->readBits(&v71, 1u))
+        {
+            bIsInter = v71 != 0;
+            if (buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+            {
+                v71 = 0;
+                if (buffer.m_ptr->readBits(&v71, 1u))
+                {
+                    playing = v71 != 0;
+                    if (buffer.m_ptr->readDataType(
+                            bdBitBuffer::BD_BB_BOOL_TYPE))
+                    {
+                        v71 = 0;
+                        if (buffer.m_ptr->readBits(&v71, 1u))
+                        {
+                            if (v71 != 0)
+                            {
+                                bIsMajor = true;
+                                if (buffer.m_ptr->readChar8(sequenceId))
+                                {
+                                    if (buffer.m_ptr != nullptr)
+                                        ++buffer.m_ptr->m_refCount;
+                                    if (MPUtility::ReadPosition(buffer,
+                                                                origin))
+                                    {
+                                        if (buffer.m_ptr != nullptr)
+                                            ++buffer.m_ptr->m_refCount;
+                                        if (MPUtility::ReadCompressedVector(
+                                                buffer, velocity))
+                                        {
+                                            if (buffer.m_ptr != nullptr)
+                                                ++buffer.m_ptr->m_refCount;
+                                            if (MPUtility::
+                                                    ReadAnglesYawPitch(
+                                                        buffer, angles)
+                                                && buffer.m_ptr
+                                                       ->readChar8(weapon)
+                                                && buffer.m_ptr->readUInt32(
+                                                    flags)
+                                                && buffer.m_ptr
+                                                       ->readRangedUInt32(
+                                                           pack_flag, 0,
+                                                           0x8000u, true)
+                                                && buffer.m_ptr
+                                                       ->readRangedUInt32(
+                                                           weaponAnim, 0,
+                                                           0x19u, true))
+                                            {
+                                                v4 = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                if ((_fpclass(origin[0]) & 0x297) != 0
+                                    || (_fpclass(origin[1]) & 0x297) != 0
+                                    || (_fpclass(origin[2]) & 0x297) != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 557;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                                if ((_fpclass(velocity[0]) & 0x297) != 0
+                                    || (_fpclass(velocity[1]) & 0x297) != 0
+                                    || (_fpclass(velocity[2]) & 0x297) != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 558;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((velocity)[0]) && !IS_NAN((velocity)[1]) && !IS_NAN((velocity)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                                if ((_fpclass(angles[0]) & 0x297) != 0
+                                    || (_fpclass(angles[1]) & 0x297) != 0
+                                    || (_fpclass(angles[2]) & 0x297) != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 559;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((angles)[0]) && !IS_NAN((angles)[1]) && !IS_NAN((angles)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                                this->mLastMajor.sequenceId = sequenceId;
+                                this->mLastMajor.position.v.m128_f32[0] =
+                                    origin[0];
+                                this->mLastMajor.position.v.m128_f32[1] =
+                                    origin[1];
+                                this->mLastMajor.position.v.m128_f32[2] =
+                                    origin[2];
+                                this->mLastMajor.velocity.v.m128_f32[0] =
+                                    velocity[0];
+                                this->mLastMajor.velocity.v.m128_f32[1] =
+                                    velocity[1];
+                                this->mLastMajor.velocity.v.m128_f32[2] =
+                                    velocity[2];
+                                this->mLastMajor.angles.v.m128_f32[0] =
+                                    angles[0];
+                                this->mLastMajor.angles.v.m128_f32[1] =
+                                    angles[1];
+                                this->mLastMajor.angles.v.m128_f32[2] =
+                                    angles[2];
+                                this->mLastMajor.animFlags = pack_flag;
+                                this->mLastMajor.weapon = weapon;
+                                this->mLastMajor.pmFlags = flags;
+                                this->mLastMajor.weapAnim = weaponAnim;
+                            }
+                            else
+                            {
+                                bIsMajor = false;
+                                v4 = buffer.m_ptr->readChar8(sequenceId)
+                                     && buffer.m_ptr->readBool(
+                                         positionXYChange)
+                                     && buffer.m_ptr->readBool(
+                                         positionZChange)
+                                     && buffer.m_ptr->readBool(
+                                         velocityChange)
+                                     && buffer.m_ptr->readBool(
+                                         anglesChange)
+                                     && buffer.m_ptr->readBool(weapChange)
+                                     && buffer.m_ptr->readBool(
+                                         animFlagsChange)
+                                     && buffer.m_ptr->readBool(
+                                         pmFlagsChange)
+                                     && buffer.m_ptr->readBool(
+                                         weapAnimChange);
+                                origin[0] =
+                                    this->mLastMajor.position.v.m128_f32[0];
+                                origin[1] =
+                                    this->mLastMajor.position.v.m128_f32[1];
+                                origin[2] =
+                                    this->mLastMajor.position.v.m128_f32[2];
+                                velocity[0] =
+                                    this->mLastMajor.velocity.v.m128_f32[0];
+                                velocity[1] =
+                                    this->mLastMajor.velocity.v.m128_f32[1];
+                                velocity[2] =
+                                    this->mLastMajor.velocity.v.m128_f32[2];
+                                angles[0] =
+                                    this->mLastMajor.angles.v.m128_f32[0];
+                                angles[1] =
+                                    this->mLastMajor.angles.v.m128_f32[1];
+                                angles[2] =
+                                    this->mLastMajor.angles.v.m128_f32[2];
+                                weapon = this->mLastMajor.weapon;
+                                flags = this->mLastMajor.pmFlags;
+                                pack_flag = this->mLastMajor.animFlags;
+                                weaponAnim = this->mLastMajor.weapAnim;
+                                if ((_fpclass(origin[0]) & 0x297) != 0
+                                    || (_fpclass(origin[1]) & 0x297) != 0
+                                    || (_fpclass(origin[2]) & 0x297) != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 593;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                                if ((_fpclass(velocity[0]) & 0x297) != 0
+                                    || (_fpclass(velocity[1]) & 0x297) != 0
+                                    || (_fpclass(velocity[2]) & 0x297) != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 594;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((velocity)[0]) && !IS_NAN((velocity)[1]) && !IS_NAN((velocity)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                                if ((_fpclass(angles[0]) & 0x297) != 0
+                                    || (_fpclass(angles[1]) & 0x297) != 0
+                                    || (_fpclass(angles[2]) & 0x297) != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 595;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((angles)[0]) && !IS_NAN((angles)[1]) && !IS_NAN((angles)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                                if (positionXYChange)
+                                {
+                                    if (v4
+                                        && (buffer.m_ptr != nullptr
+                                                ? (++buffer.m_ptr
+                                                       ->m_refCount,
+                                                   true)
+                                                : true)
+                                        && MPUtility::ReadPositionDelta(
+                                            buffer,
+                                            this->mLastMajor.position
+                                                .v.m128_f32[0],
+                                            origin[0])
+                                        && (buffer.m_ptr != nullptr
+                                                ? (++buffer.m_ptr
+                                                       ->m_refCount,
+                                                   true)
+                                                : true)
+                                        && MPUtility::ReadPositionDelta(
+                                            buffer,
+                                            this->mLastMajor.position
+                                                .v.m128_f32[1],
+                                            origin[1]))
+                                        v4 = true;
+                                    else
+                                        v4 = false;
+                                }
+                                if (positionZChange)
+                                {
+                                    if (v4
+                                        && (buffer.m_ptr != nullptr
+                                                ? (++buffer.m_ptr
+                                                       ->m_refCount,
+                                                   true)
+                                                : true)
+                                        && MPUtility::ReadPositionDelta(
+                                            buffer,
+                                            this->mLastMajor.position
+                                                .v.m128_f32[2],
+                                            origin[2]))
+                                        v4 = true;
+                                    else
+                                        v4 = false;
+                                }
+                                if (velocityChange)
+                                {
+                                    if (v4
+                                        && (buffer.m_ptr != nullptr
+                                                ? (++buffer.m_ptr
+                                                       ->m_refCount,
+                                                   true)
+                                                : true)
+                                        && MPUtility::ReadCompressedVector(
+                                            buffer, velocity))
+                                        v4 = true;
+                                    else
+                                        v4 = false;
+                                }
+                                if (anglesChange)
+                                {
+                                    if (v4
+                                        && (buffer.m_ptr != nullptr
+                                                ? (++buffer.m_ptr
+                                                       ->m_refCount,
+                                                   true)
+                                                : true)
+                                        && MPUtility::ReadAnglesYawPitch(
+                                            buffer, angles))
+                                        v4 = true;
+                                    else
+                                        v4 = false;
+                                }
+                                if (weapChange)
+                                    v4 = v4
+                                         && buffer.m_ptr->readChar8(weapon);
+                                if (pmFlagsChange)
+                                    v4 = v4
+                                         && buffer.m_ptr->readUInt32(flags);
+                                if (animFlagsChange)
+                                    v4 = v4
+                                         && buffer.m_ptr->readRangedUInt32(
+                                             pack_flag, 0, 0x8000u, true);
+                                if (weapAnimChange)
+                                    v4 = v4
+                                         && buffer.m_ptr->readRangedUInt32(
+                                             weaponAnim, 0, 0x19u, true);
+                                if ((_fpclass(this->mLastMajor.position
+                                                  .v.m128_f32[0])
+                                     & 0x297)
+                                        != 0
+                                    || (_fpclass(this->mLastMajor.position
+                                                     .v.m128_f32[1])
+                                        & 0x297)
+                                           != 0
+                                    || (_fpclass(this->mLastMajor.position
+                                                     .v.m128_f32[2])
+                                        & 0x297)
+                                           != 0)
+                                {
+                                    AeAssert::gCurrentAuthor =
+                                        (AeAssert::ECoderId)0;
+                                    AeAssert::gCurrentFile =
+                                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                                    AeAssert::gCurrentLine = 608;
+                                    AeAssert::gCurrentExpr =
+                                        "!IS_NAN((mLastMajor.position)[0]) && !IS_NAN((mLastMajor.position)[1]) && !IS_NAN((mLastMajor.position)[2])";
+                                    if (!AeAssert::IsIgnored()
+                                        && AeAssert::Assert(
+                                            "Invalid vector"))
+                                        __debugbreak();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        v4 = false;
+    }
+    Entity* v20 = nullptr;
+    if (this->mClientIndex >= 0)
+    {
+        Entity* Player =
+            EntityManager::sInst->GetPlayer(this->mClientIndex);
+        v20 = Player;
+        if (Player != nullptr)
+        {
+            Client* client = Player->client;
+            if (client != nullptr && client->pers.playerState == 3
+                && !playing)
+            {
+                if (buffer.m_ptr != nullptr
+                    && buffer.m_ptr->m_refCount-- == 1)
+                    delete buffer.m_ptr;
+                return true;
+            }
+        }
+    }
+    if (!bIsMajor && sequenceId != this->mLastMajor.sequenceId)
+    {
+        if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+            delete buffer.m_ptr;
+        return true;
+    }
+    if (v4)
+    {
+        if (bIsInter)
+            this->mUpdateInterval = MPPlayerManager::sNetworkFrameTimeClose;
+        else
+            this->mUpdateInterval = MPPlayerManager::sNetworkFrameTime;
+        this->mNetPosition.v.m128_f32[0] = origin[0];
+        this->mNetPosition.v.m128_f32[1] = origin[1];
+        this->mNetPosition.v.m128_f32[2] = origin[2];
+        this->mNetSpeed.v.m128_f32[0] = velocity[0];
+        this->mNetSpeed.v.m128_f32[1] = velocity[1];
+        this->mNetSpeed.v.m128_f32[2] = velocity[2];
+        bool bWasVehicleAnimating = this->bWasVehicleAnimating;
+        this->mNetHeading = angles[1];
+        this->mNetPitch = angles[0];
+        this->mNetLean = 0.0f;
+        if (bWasVehicleAnimating)
+        {
+            this->bWasVehicleAnimating = false;
+            *(float*)((char*)this + 0x218) = this->mNetHeading;
+            *(float*)((char*)this + 0x210) = angles[0];
+        }
+        this->mAnimFlags = pack_flag;
+        this->mAnimLegs = 0;
+        this->mLookAtAngle = angles[0];
+        if (this->mClientIndex >= 0)
+        {
+            AnimTree* AnimTreeByName =
+                Scr_GetAnimTreeByName("generic_human");
+            G_SetAnimTree(v20, AnimTreeByName);
+            v20->client->ps.pm_flags = flags;
+            v20->client->ps.weapAnim = weaponAnim;
+            v20->client->ps.viewHeightCurrent =
+                v20->client->ps.standViewHeight;
+            Client* v31 = v20->client;
+            if (v31->ps.pm_type < 6)
+            {
+                if ((flags & 1) != 0)
+                {
+                    v31->ps.viewHeightCurrent = v31->ps.proneViewHeight;
+                }
+                else if ((flags & 2) != 0)
+                {
+                    v31->ps.viewHeightCurrent = v31->ps.crouchViewHeight;
+                }
+            }
+            else
+            {
+                v31->ps.viewHeightCurrent = v31->ps.deadViewHeight;
+            }
+            v20->client->ps.viewHeightTarget =
+                v20->client->ps.viewHeightCurrent;
+            if (weapon != this->mNetWeapon)
+            {
+                v20->s.weapon = weapon;
+                v20->client->ps.weapon = weapon;
+                this->mNetWeapon = (unsigned char)weapon;
+                CG_RegisterWeapon(weapon);
+                if (!Entity_IsInRagdoll(v20))
+                    G_DObjUpdate(v20, false);
+            }
+            if (MPPlayer::sPauseNetworkUpdates == 0)
+            {
+                int v34 = PlayerDebug::localPoint;
+                PlayerDebug::points[v34].local.point.v.m128_f32[0] =
+                    v20->r.currentOrigin.v.m128_f32[0];
+                PlayerDebug::points[v34].local.point.v.m128_f32[1] =
+                    v20->r.currentOrigin.v.m128_f32[1];
+                PlayerDebug::points[v34].local.point.v.m128_f32[2] =
+                    v20->r.currentOrigin.v.m128_f32[2];
+                PlayerDebug::points[v34].local.point.v.m128_f32[3] =
+                    v20->r.currentOrigin.v.m128_f32[3];
+                PlayerDebug::points[v34].remote.point.v.m128_f32[0] =
+                    this->mNetPosition.v.m128_f32[0];
+                PlayerDebug::points[v34].remote.point.v.m128_f32[1] =
+                    this->mNetPosition.v.m128_f32[1];
+                PlayerDebug::points[v34].remote.point.v.m128_f32[2] =
+                    this->mNetPosition.v.m128_f32[2];
+                PlayerDebug::points[v34].remote.point.v.m128_f32[3] =
+                    this->mNetPosition.v.m128_f32[3];
+                float* vel = v20->client->ps.velocity.v.m128_f32;
+                PlayerDebug::points[v34].local.velocity.v.m128_f32[0] =
+                    vel[0];
+                PlayerDebug::points[v34].local.velocity.v.m128_f32[1] =
+                    vel[1];
+                PlayerDebug::points[v34].local.velocity.v.m128_f32[2] =
+                    vel[2];
+                PlayerDebug::points[v34].local.velocity.v.m128_f32[3] =
+                    vel[3];
+                PlayerDebug::points[v34].remote.velocity.v.m128_f32[0] =
+                    this->mNetSpeed.v.m128_f32[0];
+                PlayerDebug::points[v34].remote.velocity.v.m128_f32[1] =
+                    this->mNetSpeed.v.m128_f32[1];
+                PlayerDebug::points[v34].remote.velocity.v.m128_f32[2] =
+                    this->mNetSpeed.v.m128_f32[2];
+                PlayerDebug::points[v34].remote.velocity.v.m128_f32[3] =
+                    this->mNetSpeed.v.m128_f32[3];
+                float* ang = v20->r.currentAngles.v.m128_f32;
+                PlayerDebug::points[v34].local.angles.v.m128_f32[0] =
+                    ang[0];
+                PlayerDebug::points[v34].local.angles.v.m128_f32[1] =
+                    ang[1];
+                PlayerDebug::points[v34].local.angles.v.m128_f32[2] =
+                    ang[2];
+                PlayerDebug::points[v34].local.angles.v.m128_f32[3] =
+                    ang[3];
+                PlayerDebug::localPoint = (v34 + 1) % 40;
+            }
+        }
+    }
+    this->mLastAnimTime = level.time;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return true;
+}
+
+// ea: 0x00748320
+void MPVehicle::serialize(bdReference<bdBitBuffer> buffer)
+{
+    Entity* mEntity = (Entity*)this->mEntity;
+    scr_vehicle_t* scr_vehicle = mEntity->scr_vehicle;
+    rb_vehicle* mRBVeh = (rb_vehicle*)scr_vehicle->mRBVeh;
+    float origin[3] = { 0.0f, 0.0f, 0.0f };
+    float velocity[3] = { 0.0f, 0.0f, 0.0f };
+    float aVelocity[3] = { 0.0f, 0.0f, 0.0f };
+    float angles[3] = { 0.0f, 0.0f, 0.0f };
+    float gas = 0.0f;
+    float steering = 0.0f;
+    float brake = 0.0f;
+    float ebrake = 0.0f;
+    if (mRBVeh != nullptr)
+    {
+        velocity[0] = this->mNetPosition.v.m128_f32[0];
+        velocity[1] = this->mNetPosition.v.m128_f32[1];
+        velocity[2] = this->mNetPosition.v.m128_f32[2];
+        angles[0] = this->mNetPitch;
+        angles[1] = this->mNetHeading;
+        angles[2] = this->mNetRoll;
+        math::Dir3 vel = mRBVeh->get_velocity();
+        aVelocity[0] = vel.v.m128_f32[0];
+        aVelocity[1] = vel.v.m128_f32[1];
+        aVelocity[2] = vel.v.m128_f32[2];
+        math::Dir3 aVel = mRBVeh->get_angular_velocity();
+        origin[0] = aVel.v.m128_f32[0];
+        origin[1] = aVel.v.m128_f32[1];
+        origin[2] = aVel.v.m128_f32[2];
+        gas = mRBVeh->m_throttle;
+        steering = mRBVeh->m_steer_factor;
+        brake = mRBVeh->m_brake;
+        ebrake = mRBVeh->m_hand_brake;
+    }
+    else
+    {
+        float* p_nodeIdx = (float*)&mEntity->scr_vehicle->pathPos.nodeIdx;
+        velocity[0] = mEntity->r.currentOrigin.v.m128_f32[0];
+        velocity[1] = mEntity->r.currentOrigin.v.m128_f32[1];
+        velocity[2] = mEntity->r.currentOrigin.v.m128_f32[2];
+        angles[0] = mEntity->r.currentAngles.v.m128_f32[0];
+        angles[1] = mEntity->r.currentAngles.v.m128_f32[1];
+        angles[2] = mEntity->r.currentAngles.v.m128_f32[2];
+        aVelocity[0] = p_nodeIdx[64];
+        aVelocity[1] = p_nodeIdx[65];
+        aVelocity[2] = p_nodeIdx[66];
+        origin[0] = p_nodeIdx[68];
+        origin[1] = p_nodeIdx[69];
+        origin[2] = p_nodeIdx[70];
+    }
+    if ((_fpclass(steering) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 353;
+        AeAssert::gCurrentExpr = "!IS_NAN(steering)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(gas) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 354;
+        AeAssert::gCurrentExpr = "!IS_NAN(gas)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(brake) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 355;
+        AeAssert::gCurrentExpr = "!IS_NAN(brake)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(ebrake) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 356;
+        AeAssert::gCurrentExpr = "!IS_NAN(ebrake)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(velocity[0]) & 0x297) != 0
+        || (_fpclass(velocity[1]) & 0x297) != 0
+        || (_fpclass(velocity[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 357;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(aVelocity[0]) & 0x297) != 0
+        || (_fpclass(aVelocity[1]) & 0x297) != 0
+        || (_fpclass(aVelocity[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 358;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((velocity)[0]) && !IS_NAN((velocity)[1]) && !IS_NAN((velocity)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(origin[0]) & 0x297) != 0
+        || (_fpclass(origin[1]) & 0x297) != 0
+        || (_fpclass(origin[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 359;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((aVelocity)[0]) && !IS_NAN((aVelocity)[1]) && !IS_NAN((aVelocity)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(angles[0]) & 0x297) != 0
+        || (_fpclass(angles[1]) & 0x297) != 0
+        || (_fpclass(angles[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 360;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((angles)[0]) && !IS_NAN((angles)[1]) && !IS_NAN((angles)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUtility::WritePosition(buffer, velocity);
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUtility::WriteCompressedVector(buffer, aVelocity);
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUtility::WriteCompressedVector(buffer, origin);
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    MPUtility::WriteAngles(buffer, angles);
+    buffer.m_ptr->writeRangedFloat32(steering, -1.0f, 1.0f, 0.05f);
+    buffer.m_ptr->writeRangedFloat32(gas, -1.0f, 1.0f, 0.1f);
+    buffer.m_ptr->writeRangedFloat32(brake, 0.0f, 1.0f, 0.1f);
+    buffer.m_ptr->writeRangedFloat32(ebrake, 0.0f, 1.0f, 0.1f);
+    buffer.m_ptr->writeRangedInt32(GetSeatState(mEntity->scr_vehicle, 0), 0,
+                                   3);
+    buffer.m_ptr->writeRangedInt32(GetSeatState(mEntity->scr_vehicle, 1), 0,
+                                   3);
+    buffer.m_ptr->writeRangedInt32(mEntity->health, -1, 4100);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+}
+
+// ea: 0x007553D0
+bool MPVehicle::deserialize(bdReference<bdBitBuffer> buffer, bool isInit,
+                            int peerID)
+{
+    float velocity[3] = { 0.0f, 0.0f, 0.0f };
+    float aVelocity[3] = { 0.0f, 0.0f, 0.0f };
+    float angles[3] = { 0.0f, 0.0f, 0.0f };
+    float origin[3] = { 0.0f, 0.0f, 0.0f };
+    float steering = 0.0f;
+    float gas = 0.0f;
+    float brake = 0.0f;
+    float ebrake = 0.0f;
+    int driverState = 0;
+    int gunnerState = 0;
+    int health = 0;
+    bool ok = false;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPosition(buffer, velocity))
+        goto nanchecks;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadCompressedVector(buffer, aVelocity))
+        goto nanchecks;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadCompressedVector(buffer, angles))
+        goto nanchecks;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadAngles(buffer, origin)
+        || !buffer.m_ptr->readRangedFloat32(steering, -1.0f, 1.0f, 0.05f)
+        || !buffer.m_ptr->readRangedFloat32(gas, -1.0f, 1.0f, 0.1f)
+        || !buffer.m_ptr->readRangedFloat32(brake, 0.0f, 1.0f, 0.1f)
+        || !buffer.m_ptr->readRangedFloat32(ebrake, 0.0f, 1.0f, 0.1f)
+        || !buffer.m_ptr->readRangedInt32(driverState, 0, 3)
+        || !buffer.m_ptr->readRangedInt32(gunnerState, 0, 3)
+        || !buffer.m_ptr->readRangedInt32(health, -1, 4100))
+    {
+        ok = false;
+    }
+    else
+    {
+        ok = true;
+    }
+nanchecks:
+    if ((_fpclass(steering) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 413;
+        AeAssert::gCurrentExpr = "!IS_NAN(steering)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(gas) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 414;
+        AeAssert::gCurrentExpr = "!IS_NAN(gas)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(brake) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 415;
+        AeAssert::gCurrentExpr = "!IS_NAN(brake)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(ebrake) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 416;
+        AeAssert::gCurrentExpr = "!IS_NAN(ebrake)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(aVelocity[0]) & 0x297) != 0
+        || (_fpclass(aVelocity[1]) & 0x297) != 0
+        || (_fpclass(aVelocity[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 417;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(velocity[0]) & 0x297) != 0
+        || (_fpclass(velocity[1]) & 0x297) != 0
+        || (_fpclass(velocity[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 418;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((velocity)[0]) && !IS_NAN((velocity)[1]) && !IS_NAN((velocity)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(origin[0]) & 0x297) != 0
+        || (_fpclass(origin[1]) & 0x297) != 0
+        || (_fpclass(origin[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 419;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((aVelocity)[0]) && !IS_NAN((aVelocity)[1]) && !IS_NAN((aVelocity)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(angles[0]) & 0x297) != 0
+        || (_fpclass(angles[1]) & 0x297) != 0
+        || (_fpclass(angles[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPVehicle.cpp";
+        AeAssert::gCurrentLine = 420;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((angles)[0]) && !IS_NAN((angles)[1]) && !IS_NAN((angles)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (brake < 0.001f && brake > -0.001f)
+        brake = 0.0f;
+    if (ok && !MultiplayerMgr::sInst->IsLocalPlayerPhysicsOwner(
+                  (Entity*)this->mEntity, false))
+    {
+        this->mDriverState = driverState;
+        this->mGunnerState = gunnerState;
+        Entity* mEntity = (Entity*)this->mEntity;
+        if (mEntity != nullptr)
+            mEntity->health = health;
+        Entity* v9 = (Entity*)this->mEntity;
+        if (v9 != nullptr && v9->scr_vehicle->mRBVeh != nullptr)
+        {
+            rb_vehicle* rb = (rb_vehicle*)v9->scr_vehicle->mRBVeh;
+            math::Position3 spawnPos;
+            spawnPos.v.m128_f32[0] = velocity[0];
+            spawnPos.v.m128_f32[1] = velocity[1];
+            spawnPos.v.m128_f32[2] = velocity[2];
+            spawnPos.v.m128_f32[3] = 0.0f;
+            math::Position3 spawnAngles;
+            spawnAngles.v.m128_f32[0] = aVelocity[0];
+            spawnAngles.v.m128_f32[1] = aVelocity[1];
+            spawnAngles.v.m128_f32[2] = aVelocity[2];
+            spawnAngles.v.m128_f32[3] = 0.0f;
+            math::Dir3 netVel;
+            netVel.v.m128_f32[0] = origin[0];
+            netVel.v.m128_f32[1] = origin[1];
+            netVel.v.m128_f32[2] = origin[2];
+            netVel.v.m128_f32[3] = 0.0f;
+            int mTime = MultiplayerMgr::sInst->getLocalTime().mTime;
+            this->mLastLocalNetworkTime = mTime;
+            this->mLastRemoteVelocity = netVel;
+            if (isInit)
+                rb->teleport(*(Broc::vector*)&spawnPos,
+                             (Broc::vector*)&spawnAngles);
+            this->mNetPosition = spawnPos;
+            this->mNetSpeed = netVel;
+            this->mNetAngularVelocity.v.m128_f32[0] = angles[0];
+            this->mNetAngularVelocity.v.m128_f32[1] = angles[1];
+            this->mNetAngularVelocity.v.m128_f32[2] = angles[2];
+            this->mNetHeading = origin[1];
+            this->mNetPitch = origin[0];
+            this->mNetRoll = origin[2];
+            this->mNetSteering = steering;
+            rb->set_throttle(gas);
+            rb->set_brake(brake);
+            rb->set_hand_brake(ebrake);
+        }
+        else
+        {
+            this->mNetPosition.v.m128_f32[0] = velocity[0];
+            this->mNetPosition.v.m128_f32[1] = velocity[1];
+            this->mNetPosition.v.m128_f32[2] = velocity[2];
+            this->mNetSpeed.v.m128_f32[0] = origin[0];
+            this->mNetSpeed.v.m128_f32[1] = origin[1];
+            this->mNetSpeed.v.m128_f32[2] = origin[2];
+            this->mNetAngularVelocity.v.m128_f32[0] = angles[0];
+            this->mNetAngularVelocity.v.m128_f32[1] = angles[1];
+            this->mNetAngularVelocity.v.m128_f32[2] = angles[2];
+            this->mNetHeading = origin[1];
+            this->mNetPitch = origin[0];
+            this->mNetRoll = origin[2];
+        }
+        OnModified();
+    }
+    this->sLastRecievedNetUpdate = level.time;
+    this->sLastRecievedFrom = peerID;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    return true;
+}
+
+// ea: 0x00763040
+void MPPlayerManager::HandleSwapWeapon(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player == nullptr)
+        return;
+    bdConnection* m_ptr = Player->mConnection.m_ptr;
+    if (m_ptr == nullptr
+        || m_ptr->getStatus() != bdConnection::BD_CONNECTED
+        || !*(bool*)((char*)this + 0x4112))
+        return;
+    Entity* entity = Player->mClientIndex >= 0
+                         ? EntityManager::sInst->GetPlayer(
+                               Player->mClientIndex)
+                         : nullptr;
+    Entity* v8 = entity;
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    char weapon = 0;
+    int handle = 0;
+    short clipCount = 0;
+    short ammoCount = 0;
+    if (buffer.m_ptr->readChar8(weapon) && buffer.m_ptr->readInt32(handle)
+        && buffer.m_ptr->readInt16(clipCount)
+        && buffer.m_ptr->readInt16(ammoCount))
+    {
+        float velocity[3] = { 0.0f, 0.0f, 0.0f };
+        if (handle == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 5716;
+            AeAssert::gCurrentExpr = "handle.IsAssigned()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "HandleSwapWeapon: entity handle is unassigned"))
+                __debugbreak();
+        }
+        MPPlayer* v10 =
+            GetPlayer((int)(((handle >> 11) & 0x1F) - 1));
+        MPPlayer* mpOwner = v10;
+        Entity* mObject = nullptr;
+        if (v10 != nullptr)
+        {
+            int v12 = handle & 0x7FF;
+            MPPlayerItems* items = (MPPlayerItems*)((char*)v10 + 0x0C);
+            MPPlayerItems::sDroppedItem* item =
+                &items->mDroppedWeapons[v12];
+            unsigned int mVal = item->handle.mVal;
+            unsigned int v14 = mVal & 0xFFF;
+            if (v14 < 0x540
+                && mVal >> 12 == EntityHandleDb::sInst.mElements[v14].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v14].mObject;
+        }
+        float origin[3];
+        float angles[3];
+        if (mObject != nullptr)
+        {
+            origin[0] = mObject->r.currentOrigin.v.m128_f32[0];
+            origin[1] = mObject->r.currentOrigin.v.m128_f32[1];
+            origin[2] = mObject->r.currentOrigin.v.m128_f32[2];
+            angles[0] = mObject->r.currentAngles.v.m128_f32[0];
+            angles[1] = mObject->r.currentAngles.v.m128_f32[1];
+            angles[2] = mObject->r.currentAngles.v.m128_f32[2];
+        }
+        else
+        {
+            origin[0] = v8->r.currentOrigin.v.m128_f32[0];
+            origin[1] = v8->r.currentOrigin.v.m128_f32[1];
+            origin[2] = v8->r.currentOrigin.v.m128_f32[2];
+            angles[0] = v8->r.currentAngles.v.m128_f32[0];
+            angles[1] = v8->r.currentAngles.v.m128_f32[1];
+            angles[2] = v8->r.currentAngles.v.m128_f32[2];
+        }
+        Entity* v17 = mpOwner != nullptr && mpOwner->mClientIndex >= 0
+                          ? EntityManager::sInst->GetPlayer(
+                                mpOwner->mClientIndex)
+                          : nullptr;
+        gitem_s* v18 = &bg_itemlist[(unsigned char)weapon];
+        if (v18->giType != IT_WEAPON)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 5740;
+            AeAssert::gCurrentExpr = "pWeapItem->giType == IT_WEAPON";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        Entity* v20 = LaunchItem(CurPakId(), v18, origin, angles, velocity,
+                                 v17);
+        if (v20 != nullptr)
+            RegisterDroppedItem((EDroppedItemTypes)kItemTypeWeapons, v20,
+                                v17, (short)(handle & 0x7FF));
+        v20->count = ammoCount;
+        v20->count2 = clipCount;
+        if (ammoCount == 0)
+            v20->count = -1;
+        if (clipCount == 0)
+            v20->count2 = -1;
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}
+
+// ea: 0x00763420
+void MPPlayerManager::HandleSwapKit(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player == nullptr)
+        return;
+    bdConnection* m_ptr = Player->mConnection.m_ptr;
+    if (m_ptr == nullptr
+        || m_ptr->getStatus() != bdConnection::BD_CONNECTED
+        || !*(bool*)((char*)this + 0x4112))
+        return;
+    Entity* entity = Player->mClientIndex >= 0
+                         ? EntityManager::sInst->GetPlayer(
+                               Player->mClientIndex)
+                         : nullptr;
+    Entity* v8 = entity;
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    char playerClass = 0;
+    int handle = 0;
+    if (buffer.m_ptr->readChar8(playerClass)
+        && buffer.m_ptr->readInt32(handle))
+    {
+        float velocity[3] = { 0.0f, 0.0f, 0.0f };
+        if (handle == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 5790;
+            AeAssert::gCurrentExpr = "handle.IsAssigned()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "HandleSwapKit: entity handle is unassigned"))
+                __debugbreak();
+        }
+        MPPlayer* v10 =
+            GetPlayer((int)(((handle >> 11) & 0x1F) - 1));
+        MPPlayer* mpOwner = v10;
+        Entity* mObject = nullptr;
+        if (v10 != nullptr)
+        {
+            int v12 = handle & 0x7FF;
+            MPPlayerItems* items = (MPPlayerItems*)((char*)v10 + 0x0C);
+            MPPlayerItems::sDroppedItem* item =
+                &items->mDroppedKits[v12];
+            unsigned int mVal = item->handle.mVal;
+            unsigned int v14 = mVal & 0xFFF;
+            if (v14 < 0x540
+                && mVal >> 12 == EntityHandleDb::sInst.mElements[v14].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v14].mObject;
+        }
+        float origin[3];
+        float angles[3];
+        if (mObject != nullptr)
+        {
+            origin[0] = mObject->r.currentOrigin.v.m128_f32[0];
+            origin[1] = mObject->r.currentOrigin.v.m128_f32[1];
+            origin[2] = mObject->r.currentOrigin.v.m128_f32[2];
+            angles[0] = mObject->r.currentAngles.v.m128_f32[0];
+            angles[1] = mObject->r.currentAngles.v.m128_f32[1];
+            angles[2] = mObject->r.currentAngles.v.m128_f32[2];
+        }
+        else
+        {
+            origin[0] = v8->r.currentOrigin.v.m128_f32[0];
+            origin[1] = v8->r.currentOrigin.v.m128_f32[1];
+            origin[2] = v8->r.currentOrigin.v.m128_f32[2];
+            angles[0] = v8->r.currentAngles.v.m128_f32[0];
+            angles[1] = v8->r.currentAngles.v.m128_f32[1];
+            angles[2] = v8->r.currentAngles.v.m128_f32[2];
+        }
+        Entity* v17 = mpOwner != nullptr && mpOwner->mClientIndex >= 0
+                          ? EntityManager::sInst->GetPlayer(
+                                mpOwner->mClientIndex)
+                          : nullptr;
+        const gitem_s* Item = BG_FindItem("Dropped Kit");
+        if (Item == nullptr || (Item->giType & (IT_FLAG | IT_WEAPON)) == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 5814;
+            AeAssert::gCurrentExpr = "pKitItem && pKitItem->giType == IT_KIT";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        Entity* v21 = LaunchItem(CurPakId(), Item, origin, angles, velocity,
+                                 v17);
+        Entity* v22 = v21;
+        if (v21 != nullptr)
+            RegisterDroppedItem((EDroppedItemTypes)2, v21, v17,
+                                (short)(handle & 0x7FF));
+        v22->count = (unsigned char)playerClass;
+        if (gpBrocAPI != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackGetTeamWeapon != nullptr)
+        {
+            MPPlayer* v23 = GetPlayer(currCl);
+            Entity* v23Ent = v23->mClientIndex >= 0
+                                 ? EntityManager::sInst->GetPlayer(
+                                       v23->mClientIndex)
+                                 : nullptr;
+            const char* v25 = "axis";
+            if (v23Ent->sentient->eTeam != TEAM_AXIS)
+                v25 = "allies";
+            gitem_s* v26 = &bg_itemlist[
+                gpBrocAPI->mBrocExports.mCallbackGetTeamWeapon(
+                    v25, (unsigned char)playerClass)];
+            TPakId PakId = v22->GetPakId();
+            G_EntAttach(v22, v26->world_model[0], "tag_weapondummy", 1,
+                        PakId);
+        }
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}
+
+// ea: 0x00762B40
+void MPPlayerManager::HandleDropItem(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player != nullptr)
+    {
+        bdConnection* m_ptr = Player->mConnection.m_ptr;
+        if (m_ptr != nullptr
+            && m_ptr->getStatus() == bdConnection::BD_CONNECTED
+            && *(bool*)((char*)this + 0x4112))
+        {
+            bdReference<bdMessage> msg = receivedMsg.getMessage();
+            bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+            float position[3] = { 0.0f, 0.0f, 0.0f };
+            float angles[3] = { 0.0f, 0.0f, 0.0f };
+            float velocity[3] = { 0.0f, 0.0f, 0.0f };
+            int itemType = 0;
+            int netIndex = 0;
+            int typeIndex = 0;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            if (MPPlayerItems::DeserializeDropItem(
+                    buffer, position, angles, velocity, itemType, netIndex,
+                    typeIndex))
+            {
+                if (buffer.m_ptr->testBool())
+                {
+                    if (gpBrocAPI->mBrocExports.mCallbackDropItem != nullptr)
+                    {
+                        gpBrocAPI->mBrocExports.mCallbackDropItem(
+                            itemType, netIndex,
+                            Broc::vector(position[0], position[1],
+                                         position[2]),
+                            Broc::vector(angles[0], angles[1], angles[2]),
+                            Broc::vector(velocity[0], velocity[1],
+                                         velocity[2]));
+                    }
+                }
+                else
+                {
+                    MPPlayer* v8 =
+                        GetPlayer((int)(((netIndex >> 11) & 0x1F) - 1));
+                    if (v8 != nullptr)
+                    {
+                        Entity* ent = v8->mClientIndex >= 0
+                                          ? EntityManager::sInst
+                                                ->GetPlayer(
+                                                    v8->mClientIndex)
+                                          : nullptr;
+                        Entity* v14 = nullptr;
+                        if (itemType == 1)
+                        {
+                            const gitem_s* Item =
+                                BG_FindItem("Weapon Ammo");
+                            v14 = LaunchItem(CurPakId(), Item, position,
+                                             angles, velocity, ent);
+                            v14->count = 0;
+                            if (ent != nullptr)
+                            {
+                                v14->count = ent->client->pers.rank;
+                                Scr_Notify(ent, hash_const.fireSpecial,
+                                           0);
+                                ent->client->ps.mAmmoDropTime =
+                                    level.time;
+                                G_DObjUpdate(ent, false);
+                            }
+                        }
+                        else
+                        {
+                            if (itemType != 3)
+                            {
+                                AeAssert::gCurrentAuthor =
+                                    (AeAssert::ECoderId)0;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                                AeAssert::gCurrentLine = 5543;
+                                AeAssert::gCurrentExpr = nullptr;
+                                if (AeAssert::Error(
+                                        "DropItem:  Invalid item"))
+                                    __debugbreak();
+                                goto cleanup;
+                            }
+                            const gitem_s* v10 =
+                                BG_FindItem("Dropped Kit");
+                            v14 = LaunchItem(CurPakId(), v10, position,
+                                             angles, velocity, ent);
+                            v14->count = typeIndex;
+                            v14->think = THINK__G_FreeEntity;
+                            v14->nextthink = level.time + 30000;
+                            if (gpBrocAPI != nullptr)
+                            {
+                                if (gpBrocAPI->mBrocExports
+                                        .mCallbackGetTeamWeapon != nullptr)
+                                {
+                                    const char* v17 = "axis";
+                                    if (ent != nullptr
+                                        && ent->sentient != nullptr
+                                        && ent->sentient->eTeam
+                                               != TEAM_AXIS)
+                                        v17 = "allies";
+                                    gitem_s* v18 = &bg_itemlist[
+                                        gpBrocAPI->mBrocExports
+                                            .mCallbackGetTeamWeapon(
+                                                v17, typeIndex)];
+                                    TPakId PakId = v14->GetPakId();
+                                    G_EntAttach(
+                                        v14, v18->world_model[0],
+                                        "tag_weapondummy", 1, PakId);
+                                }
+                            }
+                        }
+                        MultiplayerMgr::sInst->RegisterDroppedItem(
+                            (EDroppedItemTypes)itemType, v14, ent,
+                            netIndex & 0x7FF);
+                    }
+                }
+            }
+        cleanup:
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+                delete msg.m_ptr;
+        }
+    }
+}
+
+// ea: 0x0074A270
+void MPPlayerManager::HandleBulletHitPlayer(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* hitPlayer = GetPlayer(conn);
+    if (hitPlayer != nullptr)
+    {
+        bdConnection* m_ptr = hitPlayer->mConnection.m_ptr;
+        if (m_ptr != nullptr
+            && m_ptr->getStatus() == bdConnection::BD_CONNECTED
+            && *(bool*)((char*)this + 0x4112))
+        {
+            bdReference<bdMessage> msg = receivedMsg.getMessage();
+            bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+            unsigned char attackerID = 0;
+            float position[3] = { 0.0f, 0.0f, 0.0f };
+            float realNormal[3] = { 0.0f, 0.0f, 0.0f };
+            char surfType = 0;
+            char hitLoc = 0;
+            short damage = 0;
+            unsigned char mod = 0;
+            unsigned char weapon = 0;
+            unsigned char dflags = 0;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            if (MPUtility::ReadPlayerId(buffer, attackerID))
+            {
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                if (MPUtility::ReadPosition(buffer, position))
+                {
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    if (MPUtility::ReadNormal(buffer, realNormal)
+                        && buffer.m_ptr->readChar8(surfType)
+                        && buffer.m_ptr->readChar8(hitLoc)
+                        && buffer.m_ptr->readInt16(damage)
+                        && buffer.m_ptr->readUChar8(mod)
+                        && buffer.m_ptr->readUChar8(weapon)
+                        && buffer.m_ptr->readUChar8(dflags))
+                    {
+                        MPPlayer* v6 = GetPlayer(attackerID);
+                        Entity* hitEnt =
+                            hitPlayer->mClientIndex >= 0
+                                ? EntityManager::sInst->GetPlayer(
+                                      hitPlayer->mClientIndex)
+                                : nullptr;
+                        if (!IsLocalPlayer(hitEnt))
+                        {
+                            AeAssert::gCurrentAuthor =
+                                (AeAssert::ECoderId)0;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                            AeAssert::gCurrentLine = 2977;
+                            AeAssert::gCurrentExpr =
+                                "IsLocalPlayer(hitPlayer->GetEntity())";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert(
+                                    "Hit player message came to the wrong player."))
+                                __debugbreak();
+                        }
+                        unsigned char attackerPlayerId = 0;
+                        Entity* attacker = nullptr;
+                        if (buffer.m_ptr != nullptr)
+                            ++buffer.m_ptr->m_refCount;
+                        if (!MPUtility::ReadPlayerId(buffer,
+                                                     attackerPlayerId)
+                            || (v6 = GetPlayer(attackerPlayerId)) == nullptr
+                            || v6->mClientIndex < 0
+                            || (attacker =
+                                    EntityManager::sInst->GetPlayer(
+                                        v6->mClientIndex))
+                                   == nullptr)
+                        {
+                            AeAssert::gCurrentAuthor =
+                                (AeAssert::ECoderId)0;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                            AeAssert::gCurrentLine = 2986;
+                            AeAssert::gCurrentExpr = "attacker";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert("old cod assert"))
+                                __debugbreak();
+                        }
+                        float negNormal[3] = {
+                            -realNormal[0], -realNormal[1], -realNormal[2],
+                        };
+                        Entity* sourceEnt =
+                            hitPlayer->mClientIndex >= 0
+                                ? EntityManager::sInst->GetPlayer(
+                                      hitPlayer->mClientIndex)
+                                : nullptr;
+                        math::Position3 cdl = native_to_cdl_pos3(position);
+                        CG_BulletHitClientEvent(
+                            sourceEnt->mHandle.mHandle.mVal, &cdl,
+                            negNormal, (unsigned char)surfType,
+                            (unsigned char)weapon);
+                        Entity* fireEnt =
+                            hitPlayer->mClientIndex >= 0
+                                ? EntityManager::sInst->GetPlayer(
+                                      hitPlayer->mClientIndex)
+                                : nullptr;
+                        CG_FireWeapon(fireEnt, &sourceEnt->s, 0,
+                                      (unsigned char)weapon);
+                        attacker->client->ps.mLastFireWeaponTime =
+                            MultiplayerMgr::sInst->getLocalTime().mTime;
+                        Entity* targ =
+                            hitPlayer->mClientIndex >= 0
+                                ? EntityManager::sInst->GetPlayer(
+                                      hitPlayer->mClientIndex)
+                                : nullptr;
+                        G_Damage(targ, attacker, attacker, realNormal,
+                                 position, damage, dflags | 0x80, mod,
+                                 (hitLocation_t)(unsigned char)hitLoc,
+                                 (unsigned char)weapon);
+                    }
+                }
+            }
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+                delete msg.m_ptr;
+        }
+    }
+}
+
+// ea: 0x0074D0F0
+void MPPlayerManager::HandleVehicleRequestEntry(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* v4 = GetPlayer(conn);
+    if (v4 != nullptr)
+    {
+        bdConnection* m_ptr = v4->mConnection.m_ptr;
+        if (m_ptr != nullptr
+            && m_ptr->getStatus() == bdConnection::BD_CONNECTED
+            && *(bool*)((char*)this + 0x4112)
+            && ((bdSession*)((char*)this + 0x4114))->getRole()
+                   == bdSession::BD_SESSION_HOST)
+        {
+            bdReference<bdMessage> msg = receivedMsg.getMessage();
+            bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+            unsigned char id = 0;
+            int seatIdx = 0;
+            int entryIdx = 0;
+            unsigned char currentOccupant = 0;
+            bool okRead = false;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            if (MPUtility::ReadVehicleId(buffer, id))
+            {
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                if (MPUtility::ReadSeatIndex(buffer, seatIdx))
+                {
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    if (MPUtility::ReadEntryPoint(buffer, entryIdx))
+                        okRead = true;
+                }
+            }
+            if (!okRead)
+                goto cleanup;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            if (!MPUtility::ReadPlayerId(buffer, currentOccupant))
+                goto cleanup;
+            MPPlayer* v10 = GetPlayer(currentOccupant);
+            if (v10 == nullptr || !v10->IsConnected())
+                goto cleanup;
+            MPVehicle* v11 =
+                (MPVehicle*)((char*)this + 0x4120 + 0x210 * id);
+            if (v11->IsFullyOccupied() && seatIdx != 7)
+                goto cleanup;
+            Entity* mEntity = (Entity*)v11->mEntity;
+            Entity* ent = v10->mClientIndex >= 0
+                              ? EntityManager::sInst->GetPlayer(
+                                    v10->mClientIndex)
+                              : nullptr;
+            if (G_IsVehicleUsable(mEntity, ent, true) == 0)
+                goto cleanup;
+            int v14 = seatIdx;
+            if (*(unsigned char*)((char*)v11 + 0x08 + seatIdx) == 16)
+            {
+                if (seatIdx != 1
+                    || *(unsigned char*)((char*)v11 + 0x0E) == 16)
+                    goto getIn;
+            }
+            else if (seatIdx == 7)
+            {
+                goto cleanup;
+            }
+            if (v11->mEntity != nullptr
+                && v10->mClientIndex >= 0
+                && !IsVehFlipped((Entity*)v11->mEntity))
+            {
+                unsigned char occ = *(unsigned char*)((char*)v11 + 0x08
+                                                      + seatIdx);
+                MPPlayer* v15 = GetPlayer(occ);
+                if (v15 != nullptr && v15->mClientIndex >= 0)
+                {
+                    Entity* occEnt = EntityManager::sInst->GetPlayer(
+                        v15->mClientIndex);
+                    Entity* newEnt = v10->mClientIndex >= 0
+                                         ? EntityManager::sInst->GetPlayer(
+                                               v10->mClientIndex)
+                                         : nullptr;
+                    if (occEnt != nullptr && newEnt != nullptr
+                        && occEnt->sentient != nullptr
+                        && newEnt->sentient != nullptr
+                        && occEnt->sentient->eTeam == newEnt->sentient->eTeam
+                        && VEH_GetVehicleInfo(
+                               ((scr_vehicle_t*)((Entity*)v11->mEntity)
+                                    ->scr_vehicle)
+                                   ->infoIdx)
+                               ->type
+                               == 2)
+                    {
+                        int v17 = (seatIdx + 1) % 10;
+                        if (*(unsigned char*)((char*)v11 + 0x08 + v17)
+                                == 16
+                            && (v17 != 1
+                                || *(unsigned char*)((char*)v11 + 0x0E)
+                                       == 16))
+                        {
+                            v14 = v17;
+                            goto getIn;
+                        }
+                    }
+                }
+            }
+            goto cleanup;
+        getIn:
+            v11->GetInVehicle(v10, ((Entity*)v11->mEntity)->health, v14,
+                              entryIdx);
+            unsigned int seq = *(unsigned int*)((char*)this + 0x55E0) + 1;
+            *(unsigned int*)((char*)this + 0x55E0) = seq;
+            v10->mVehicleEventSequence = seq;
+            bdMessage* out = new bdMessage(0x47u, false);
+            bdReference<bdMessage> message;
+            message.m_ptr = out;
+            if (out != nullptr)
+                ++out->m_refCount;
+            extern int g_NumBdMessages;
+            ++g_NumBdMessages;
+            bdReference<bdBitBuffer> b2 = out->getPayload();
+            unsigned char vid = v11->mId;
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WriteVehicleId(b2, vid);
+            unsigned char pid = v10->mId;
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WritePlayerId(b2, pid);
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WriteSeatIndex(b2, v14);
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WriteEntryPoint(b2, entryIdx);
+            b2.m_ptr->writeInt16(((Entity*)v11->mEntity)->health);
+            b2.m_ptr->writeUInt32(seq);
+            SendAll(message, true, false);
+            if (b2.m_ptr != nullptr && b2.m_ptr->m_refCount-- == 1)
+                delete b2.m_ptr;
+            if (message.m_ptr != nullptr
+                && message.m_ptr->m_refCount-- == 1)
+                delete message.m_ptr;
+        cleanup:
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+                delete msg.m_ptr;
+        }
+    }
+}
+
+// ea: 0x00758D00
+void MPPlayerManager::HandleVehicleRequestSeatChange(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    GetPlayer(conn);
+    if (conn.m_ptr != nullptr && conn.m_ptr->m_refCount-- == 1)
+        delete conn.m_ptr;
+    if (!*(bool*)((char*)this + 0x4112)
+        || ((bdSession*)((char*)this + 0x4114))->getRole()
+               != bdSession::BD_SESSION_HOST)
+        return;
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    unsigned char id = 0;
+    short health = 0;
+    int newSeatIdx = 0;
+    unsigned char playerId = 0;
+    bool okRead = false;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadVehicleId(buffer, id)
+        || !buffer.m_ptr->readInt16(health))
+    {
+        okRead = false;
+    }
+    else
+    {
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        okRead = MPUtility::ReadSeatIndex(buffer, newSeatIdx);
+    }
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (MPUtility::ReadPlayerId(buffer, playerId))
+    {
+        MPPlayer* v9 = GetPlayer(playerId);
+        MPVehicle* v12 = nullptr;
+        if (v9 == nullptr || v9->mConnection.m_ptr == nullptr
+            || v9->mConnection.m_ptr->getStatus()
+                   != bdConnection::BD_CONNECTED
+            || !v9->mInVehicle)
+        {
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+                delete msg.m_ptr;
+            return;
+        }
+        if (okRead)
+        {
+            v12 = (MPVehicle*)((char*)this + 0x4120 + 0x210 * id);
+            if (*(unsigned char*)((char*)v12 + 0x08 + 7) == 16)
+            {
+                if (*(unsigned char*)((char*)v12 + 0x08 + newSeatIdx)
+                    == 16)
+                {
+                    if (newSeatIdx != 1
+                        || *(unsigned char*)((char*)v12 + 0x0E) == 16)
+                        goto doSeatChange;
+                }
+                else if (newSeatIdx != 1)
+                {
+                    goto done;
+                }
+                if (*(unsigned char*)((char*)v12 + 0x0E) != 16
+                    && *(unsigned char*)((char*)v12 + 0x0E) == v9->mId)
+                    goto doSeatChange;
+            }
+        }
+    done:
+        if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+            delete buffer.m_ptr;
+        if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+            delete msg.m_ptr;
+        return;
+    doSeatChange:
+        unsigned int seq = *(unsigned int*)((char*)this + 0x55E0) + 1;
+        *(unsigned int*)((char*)this + 0x55E0) = seq;
+        v12->SeatChange(v9, newSeatIdx);
+        v9->mVehicleEventSequence = seq;
+        bdMessage* out = new bdMessage(0x4Bu, false);
+        bdReference<bdMessage> message;
+        message.m_ptr = out;
+        if (out != nullptr)
+            ++out->m_refCount;
+        extern int g_NumBdMessages;
+        ++g_NumBdMessages;
+        bdReference<bdBitBuffer> b2 = out->getPayload();
+        unsigned char vid = v12->mId;
+        if (b2.m_ptr != nullptr)
+            ++b2.m_ptr->m_refCount;
+        MPUtility::WriteVehicleId(b2, vid);
+        unsigned char pid = v9->mId;
+        if (b2.m_ptr != nullptr)
+            ++b2.m_ptr->m_refCount;
+        MPUtility::WritePlayerId(b2, pid);
+        b2.m_ptr->writeInt16(health);
+        if (b2.m_ptr != nullptr)
+            ++b2.m_ptr->m_refCount;
+        MPUtility::WriteSeatIndex(b2, newSeatIdx);
+        b2.m_ptr->writeUInt32(seq);
+        SendOthers(message, v9, true);
+        if (b2.m_ptr != nullptr && b2.m_ptr->m_refCount-- == 1)
+            delete b2.m_ptr;
+        if (message.m_ptr != nullptr
+            && message.m_ptr->m_refCount-- == 1)
+            delete message.m_ptr;
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}
+
+// ea: 0x00745800
+void MPPeer::updateVoiceSubsystem()
+{
+    MPPlayerManager* p_mPlayerManager =
+        (MPPlayerManager*)((char*)this + 0x74E0);
+    MPPlayerSet myTeamPlayers;
+    MPPlayerSet talkingPlayers;
+    myTeamPlayers.mBitPlayers = 0;
+    talkingPlayers.mBitPlayers = 0;
+    int v3 = LocalClient::NumLocalClients();
+    int mTime = *(int*)((char*)this + 0xD274);  // mLastTalkersUpdateTime
+    unsigned int numTalkerSlots = 8 / v3;
+    kuju::knet::sTime time;
+    time.mTime = MultiplayerMgr::sInst->mUpdateTime.mTime;
+    int timeDelta = time.mTime - mTime;
+    unsigned char v6 = *(unsigned char*)((char*)p_mPlayerManager + 0x4111);
+    if (v6 >= 0x10u)
+        return;
+    MPPlayer* localPlayer = p_mPlayerManager->GetLocalPlayer(0);
+    if (localPlayer == nullptr)
+        return;
+    unsigned int thisPlayerIndex =
+        *(unsigned char*)((char*)p_mPlayerManager + 0x4111);
+    myTeamPlayers = p_mPlayerManager->allPlayersButLocal();
+    EVoipGroup local_voip_group = kVoipGroupSpectating;
+    if (localPlayer->mClientIndex >= 0
+        && EntityManager::sInst->GetPlayer(localPlayer->mClientIndex)
+               != nullptr)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(
+            localPlayer->mClientIndex);
+        local_voip_group =
+            GetVoipGroup(Player->client->pers.playerState);
+    }
+    for (unsigned int v2 = 0; v2 < 0x10; ++v2)
+    {
+        if (myTeamPlayers.containsPlayer(v2) != 0)
+        {
+            MPPlayer* v13 = p_mPlayerManager->GetPlayer((int)v2);
+            if (v13 != nullptr)
+            {
+                if (v13->IsLocalPlayer())
+                {
+                    myTeamPlayers.removePlayer(v2);
+                    continue;
+                }
+                if (v13->mClientIndex < 0
+                    || EntityManager::sInst->GetPlayer(v13->mClientIndex)
+                           == nullptr)
+                {
+                    if (local_voip_group != kVoipGroupSpectating)
+                        myTeamPlayers.removePlayer(v2);
+                    continue;
+                }
+                Entity* v15 =
+                    EntityManager::sInst->GetPlayer(v13->mClientIndex);
+                EVoipGroup VoipGroup =
+                    GetVoipGroup(v15->client->pers.playerState);
+                if (VoipGroup != local_voip_group)
+                {
+                    myTeamPlayers.removePlayer(v2);
+                    continue;
+                }
+                if (cgGlobal.teamGame && local_voip_group == kVoipGroupPlaying)
+                {
+                    if (localPlayer->mTeam != v13->mTeam)
+                    {
+                        myTeamPlayers.removePlayer(v2);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    kuju::kvoicemanager::cVoiceManager* mpVoiceManager =
+        *(kuju::kvoicemanager::cVoiceManager**)((char*)this + 0xD270);
+    if (mpVoiceManager->mInitialised == 0)
+    {
+        mpVoiceManager->mVoiceNetworkManager.mVoiceHandlerInterface =
+            mpVoiceManager;
+        mpVoiceManager->mVoiceNetworkManager.initialise();
+        memset(mpVoiceManager->mEncodeBuffer, 0,
+               sizeof(mpVoiceManager->mEncodeBuffer));
+        mpVoiceManager->mEncodeDstOffset = 0;
+        mpVoiceManager->mNetworkDispatchOffset = 0;
+        mpVoiceManager->mLastNetworkDispatchTime.mTime = 0;
+        mpVoiceManager->mRealLastNetworkDispatchTime.mTime = 0;
+        mpVoiceManager->mRemoteListeners.mBitPlayers = 0;
+        mpVoiceManager->mInitialised = 1;
+    }
+    MPPlayerSet all = p_mPlayerManager->allPlayers();
+    float playerPositions[16][3];
+    for (unsigned int v19 = 0; v19 < 0x10; ++v19)
+    {
+        playerPositions[v19][0] = 0.0f;
+        playerPositions[v19][1] = 0.0f;
+        playerPositions[v19][2] = 0.0f;
+        MPPlayer* v21 = p_mPlayerManager->GetPlayer((int)v19);
+        if (v21 != nullptr && (all.mBitPlayers & (1 << v19)) != 0
+            && v21->mClientIndex != -1)
+        {
+            Entity* v23 = EntityManager::sInst->GetPlayer(
+                v21->mClientIndex);
+            playerPositions[v19][0] =
+                v23->r.currentOrigin.v.m128_f32[0];
+            playerPositions[v19][1] =
+                v23->r.currentOrigin.v.m128_f32[1];
+            playerPositions[v19][2] =
+                v23->r.currentOrigin.v.m128_f32[2];
+        }
+    }
+    float playerDistances[16];
+    for (unsigned int v27 = 0; v27 < 0x10; ++v27)
+    {
+        for (unsigned int v28 = 0; v28 < 0x10; ++v28)
+        {
+            if (v27 != v28
+                && (all.mBitPlayers & (1 << v27)) != 0
+                && (all.mBitPlayers & (1 << v28)) != 0)
+            {
+                float dx = playerPositions[v27][0] - playerPositions[v28][0];
+                float dy = playerPositions[v27][1] - playerPositions[v28][1];
+                float dz = playerPositions[v27][2] - playerPositions[v28][2];
+                float dist;
+                MPPlayer* p27 = p_mPlayerManager->GetPlayer((int)v27);
+                MPPlayer* p28 = p_mPlayerManager->GetPlayer((int)v28);
+                if (p27->mPlaying || p28->mPlaying)
+                    dist = dx * dx + dy * dy + dz * dz;
+                else
+                    dist = 0.0f;
+                mpVoiceManager->mVoiceNetworkManager.setPlayerDistance(
+                    v27, v28, dist);
+                if (v27 == thisPlayerIndex)
+                    playerDistances[v28] = dist;
+            }
+        }
+    }
+    if (timeDelta > 2000)
+    {
+        *(int*)((char*)this + 0xD274) = time.mTime;
+        MPPlayerSet remaining = myTeamPlayers;
+        unsigned int v32 = 0;
+        bool v33 = true;
+        unsigned int slots = numTalkerSlots;
+        if (slots != 0)
+        {
+            while (v33)
+            {
+                unsigned int closestPlayer = 0;
+                float distance = 620000.0f;
+                bool found = false;
+                v32 = 0;
+                do
+                {
+                    if ((remaining.mBitPlayers & (1 << v32)) != 0
+                        && (talkingPlayers.mBitPlayers & (1 << v32)) == 0
+                        && (!found || distance > playerDistances[v32]))
+                    {
+                        found = true;
+                        distance = playerDistances[v32];
+                        closestPlayer = v32;
+                    }
+                    ++v32;
+                } while (v32 < 0x10);
+                if (found)
+                {
+                    if (closestPlayer >= 0x10)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp\\MPPlayerSet.h";
+                        AeAssert::gCurrentLine = 138;
+                        AeAssert::gCurrentExpr = "index < 16";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(defaultFileName))
+                            __debugbreak();
+                    }
+                    unsigned int bit = 1 << closestPlayer;
+                    remaining.mBitPlayers =
+                        (unsigned short)(~(1 << closestPlayer)
+                                         & remaining.mBitPlayers);
+                    if (closestPlayer >= 0x10)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp\\MPPlayerSet.h";
+                        AeAssert::gCurrentLine = 110;
+                        AeAssert::gCurrentExpr = "index < 16";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(defaultFileName))
+                            __debugbreak();
+                    }
+                    talkingPlayers.mBitPlayers =
+                        (unsigned short)(talkingPlayers.mBitPlayers | bit);
+                    --slots;
+                }
+                if (slots == 0)
+                    break;
+                v33 = found;
+            }
+        }
+        mpVoiceManager->mRemoteListeners = talkingPlayers;
+        MPLiveEngine::GetHandle()->SetRemoteListeners(&talkingPlayers);
     }
 }

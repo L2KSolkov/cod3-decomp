@@ -3661,6 +3661,7 @@ __int16 VEH_GetVehicleInfo(const char* name);  // g.o 0x44D480 (returns index, -
 void    G_VehInitPathPos(vehicle_pathpos_t* vpp);  // g.o 0x... (g_scr_vehicle.cpp)
 Entity* G_IsVehicleUnusable(Entity* player);        // g.o 0x46E040
 bool    G_IsPlayerVehicleGunner(Entity* player);    // g.o 0x46E200
+bool    IsVehFlipped(Entity* ent);                  // g.o
 void    Cmd_Where_f(Entity* ent);                   // g.o 0x456010
 void    Cmd_PFXStats_f(void);                       // g.o 0x44AEA0
 int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o 0x46F9F0
@@ -5025,7 +5026,9 @@ public:
     uint8_t _pad[0x250];
     vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
-    uint8_t _pad258[0x264 - 0x258];
+    float   m_brake;     // +0x258
+    float   m_hand_brake;  // +0x25C
+    uint8_t _pad260[0x264 - 0x260];
     float   m_steer_factor;  // +0x264
     float   m_forward_vel;   // +0x268
     uint8_t _pad26C[0x274 - 0x26C];
@@ -5039,8 +5042,14 @@ public:
     void*   m_vci;  // +0x388 (vehicle_collision_info*)
 
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o 0x6FC200)
+    math::Dir3 get_angular_velocity() const;  // ?get_angular_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o)
     void set_actuator_enabled(bool b);  // ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z (physics.o)
     void start_path(int attach_mode);   // ?start_path@rb_vehicle@@QAEXH@Z (physics.o)
+    void set_throttle(float throttle);  // ?set_throttle@rb_vehicle@@QAEXM@Z (physics.o, inline)
+    void set_brake(float braking);      // ?set_brake@rb_vehicle@@QAEXM@Z (physics.o, inline)
+    void set_hand_brake(float braking); // ?set_hand_brake@rb_vehicle@@QAEXM@Z (physics.o, inline)
+    void teleport(const Broc::vector& vSpawnPos,
+                  const Broc::vector* vAngles);  // ?teleport@rb_vehicle@@QAEXABUvector@Broc@@PBU23@@Z (physics.o)
 
     float get_throttle() const;          // ?get_throttle@rb_vehicle@@QBEMXZ (g.o 0x4A9E80)
     float get_steer_factor() const;      // ?get_steer_factor@rb_vehicle@@QBEMXZ (g.o 0x4A9E90)

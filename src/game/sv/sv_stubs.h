@@ -1687,6 +1687,21 @@ extern   void   FEManager_PlayFadeInOranScreen(void);
 // ============================================================================
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 // ============================================================================
+// MPMajorUpdate - last-sent player net state (mp.o MPPlayer.cpp; IDA type 6448)
+struct MPMajorUpdate {
+    char             sequenceId;   // +0x00
+    uint8_t          _pad1[0x10 - 0x01];
+    math::Position3  position;     // +0x10
+    math::Position3  angles;       // +0x20
+    math::Dir3       velocity;     // +0x30
+    unsigned int     animFlags;    // +0x40
+    char             weapon;       // +0x44
+    uint8_t          _pad45[0x48 - 0x45];
+    unsigned int     pmFlags;      // +0x48
+    unsigned int     weapAnim;     // +0x4C
+};
+static_assert(sizeof(MPMajorUpdate) == 0x50, "MPMajorUpdate size mismatch");
+
 class MPPlayer {
 public:
     unsigned char mId;                 // +0x00
@@ -1729,11 +1744,13 @@ public:
     uint8_t _padE5[3];                 // +0xE5
     float   mAverageUpdateInterval;    // +0xE8
     uint8_t _padEC[4];                 // +0xEC
-    uint8_t mLastMajor[0x38];          // +0xF0 (MPMajorUpdate, opaque)
-    uint8_t _pad128[0x1F0 - 0x128];    // +0x128
+    MPMajorUpdate mLastMajor;          // +0xF0 (80 bytes)
+    uint8_t mInterpolator[0xA0];       // +0x140 kuju::cBezierTrajectoryInterpolator
+    int     mInterpolationState;       // +0x1E0
+    short   mUpdateInterval;           // +0x1E4
+    uint8_t _pad1E6[0x1F0 - 0x1E6];    // +0x1E6
     math::Position3 mInterpolatedPosition;  // +0x1F0
     math::Dir3      mInterpolatedSpeed;     // +0x200
-    int     mInterpolationState;            // +0x208
     uint8_t _pad20C[4];                     // +0x20C
     float   mInterpolatedPitch;             // +0x210
     float   mInterpolatedLean;              // +0x214
@@ -1800,6 +1817,9 @@ public:
     void PlayerSpawn(float* position, float* angles);  // ?PlayerSpawn@MPPlayer@@QAEXQAM0@Z (mp.o 0x75C960)
     void PlayerRevive(float* position, float* angles);  // ?PlayerRevive@MPPlayer@@QAEXQAM0@Z (mp.o 0x75CD10)
     bool IsInVehicle(unsigned char id) const;  // ?IsInVehicle@MPPlayer@@QBE_NE@Z (mp.o 0x72B880, inline)
+    void UpdateInterpolation(const kuju::knet::sTime& time);  // ?UpdateInterpolation@MPPlayer@@QAEXABVsTime@knet@kuju@@@Z (mp.o 0x747710)
+    bool serialize(bdReference<bdBitBuffer> buffer, bool bIsMajor,
+                   bool bUpdateSequence);  // ?serialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@_N1@Z (mp.o 0x7460B0)
     static MP_ANIM_INDEX* getAnimIndex(int sheet, int row, int col,
                                        bool useDefault);  // ?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z (mp.o 0x72CBA0)
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
@@ -2044,6 +2064,8 @@ private:
     void ClientConnect(MPPlayer* player, const float* position,
                        const float* angles);  // ?ClientConnect@MPPlayerManager@@AAEXQAVMPPlayer@@QBM1@Z (mp.o 0x739FA0)
     virtual bool acceptSession(const bdReceivedMessage& receivedMsg);  // ?acceptSession@MPPlayerManager@@EAE_NABVbdReceivedMessage@@@Z (mp.o 0x737DA0)
+public:
+    static int sNetworkFrameTimeClose;  // ?sNetworkFrameTimeClose@MPPlayerManager@@0HA @ 0xE36E30
 };
 
 // MPVehicleEvent - queued vehicle event (32 bytes, IDA)
@@ -2221,10 +2243,16 @@ public:
                                   int newSeatIdx);  // ?AttemptVehicleSeatChange@MPPeer@@QAEXPAVEntity@@0H@Z (mp.o 0x744A50)
     void VehicleDeath(Entity* hitEntity, Entity* killer, int weapon,
                       int mod);  // ?VehicleDeath@MPPeer@@QAEXPAVEntity@@0HH@Z (mp.o 0x741250)
+    void MeleeHit(Entity* hitEntity, Entity* attackerEntity,
+                  const math::Position3& position,
+                  const math::Dir3& normal, unsigned char surfaceType,
+                  short damage, unsigned char mod,
+                  int hitLocation);  // ?MeleeHit@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z (mp.o 0x75B540)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
     static int mRenderSessionInfo;     // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
+    static int mRenderEntityBufferInfo;  // ?mRenderEntityBufferInfo@MPPeer@@2HA (mp.o)
 private:
     virtual void onQoSProbeSuccess(const bdQoSProbeInfo& info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
     virtual void onQoSProbeFail(bdReference<bdCommonAddr> addr);  // ?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z (mp.o 0x735C40)

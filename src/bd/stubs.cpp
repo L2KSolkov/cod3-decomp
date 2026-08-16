@@ -211,6 +211,21 @@ void bdBitBuffer::writeInt16(short value)
     (void)value;
 }
 
+void bdBitBuffer::writeUInt32(unsigned int value)
+{
+    (void)value;
+}
+
+void bdBitBuffer::writeChar8(char value)
+{
+    (void)value;
+}
+
+void bdBitBuffer::writeUChar8(unsigned char value)
+{
+    (void)value;
+}
+
 bool bdBitBuffer::readUInt16(unsigned short& value)
 {
     (void)value;
