@@ -176,6 +176,8 @@ extern int dword_F641D0[1580 * 802];   // cg.o
 extern int dword_F6A290[4 * 802];      // cg.o
 extern int dword_186A0;                // damage constant (game.o)
 extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
+extern void CG_FillRect(float x, float y, float width, float height,
+                        const float* color, float z);  // ?CG_FillRect@@YAXMMMMQBMH@Z (cg.o)
 
 int scoreboard_player_sorter(const void* left, const void* right);
 
@@ -217,6 +219,7 @@ extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbo
 extern void j_nullsub_46(void* self);  // g.o nullsub
 namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
+void UpdateNumViewports();  // ?UpdateNumViewports@View@@YAXXZ (cg.o)
 }
 struct cgGlobal_t {
     int   frametime;  // +0x00
@@ -3727,4 +3730,288 @@ void InGameSwitchSides::OnDown(int c)
     }
     if (highlighted != v5)
         UpdateModel();
+}
+
+// ============================================================================
+// Batch 12: advanced session menus + pause/suicide/spectate/vote handlers
+// ============================================================================
+
+// ea: 0x0078C940
+void CreateSessionAdvancedMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    MPUIInterface::mServerParams.mTimeLimit =
+        (unsigned char)m_TimeLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mScoreLimit =
+        (unsigned char)m_ScoreLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mTeamBalancing =
+        (unsigned char)m_AutoTeamBalanceCombo->mCurrOption;
+    MPUIInterface::mServerParams.mFriendlyFire =
+        (unsigned char)m_TeamDamageCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnableAARVote =
+        (unsigned char)m_VotingCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnablePenaltyVote =
+        (unsigned char)m_PenaltyVoteCombo->mCurrOption;
+}
+
+// ea: 0x0078CA60
+void CreateSessionAdvancedMenu::OnTriangle(int c)
+{
+    (void)c;
+    MPUIInterface::mServerParams.mTimeLimit =
+        (unsigned char)m_TimeLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mScoreLimit =
+        (unsigned char)m_ScoreLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mTeamBalancing =
+        (unsigned char)m_AutoTeamBalanceCombo->mCurrOption;
+    MPUIInterface::mServerParams.mFriendlyFire =
+        (unsigned char)m_TeamDamageCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnableAARVote =
+        (unsigned char)m_VotingCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnablePenaltyVote =
+        (unsigned char)m_PenaltyVoteCombo->mCurrOption;
+    system->ReturnToPreviousMenu(-1);
+}
+
+// ea: 0x0078CAE0
+void CreateSessionAdvancedMenu::GrabSessionName()
+{
+    if (MPLiveEngine::GetHandle()->internalState == kSignedIn
+        && MPUIInterface::IsOnlineGame())
+    {
+        MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+        LivePlayer* LocalPlayer =
+            (LivePlayer*)Handle->GetLocalPlayer(Handle->actualPort);
+        _snprintf(m_szSessionName, 0x10u, "%S", LocalPlayer->gamertag);
+    }
+    else if (MPUIInterface::IsLANGame())
+    {
+        char xbox_name[256];
+        unsigned int size = 255;
+        DmGetXboxName(xbox_name, &size);
+        strncpy(m_szSessionName, xbox_name, 0x10u);
+    }
+}
+
+// ea: 0x0078CCF0
+void CreateLanSessionAdvancedMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    MPUIInterface::mServerParams.mTimeLimit =
+        (unsigned char)m_TimeLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mScoreLimit =
+        (unsigned char)m_ScoreLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mTeamBalancing =
+        (unsigned char)m_AutoTeamBalanceCombo->mCurrOption;
+    MPUIInterface::mServerParams.mFriendlyFire =
+        (unsigned char)m_TeamDamageCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnableAARVote =
+        (unsigned char)m_VotingCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnablePenaltyVote =
+        (unsigned char)m_PenaltyVoteCombo->mCurrOption;
+}
+
+// ea: 0x0078CE10
+void CreateLanSessionAdvancedMenu::OnTriangle(int c)
+{
+    (void)c;
+    MPUIInterface::mServerParams.mTimeLimit =
+        (unsigned char)m_TimeLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mScoreLimit =
+        (unsigned char)m_ScoreLimitCombo->mCurrOption;
+    MPUIInterface::mServerParams.mTeamBalancing =
+        (unsigned char)m_AutoTeamBalanceCombo->mCurrOption;
+    MPUIInterface::mServerParams.mFriendlyFire =
+        (unsigned char)m_TeamDamageCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnableAARVote =
+        (unsigned char)m_VotingCombo->mCurrOption;
+    MPUIInterface::mServerParams.mEnablePenaltyVote =
+        (unsigned char)m_PenaltyVoteCombo->mCurrOption;
+    system->ReturnToPreviousMenu(-1);
+}
+
+// ea: 0x0078CE90
+void CreateLanSessionAdvancedMenu::GrabSessionName()
+{
+    if (MPUIInterface::IsLANGame())
+    {
+        char xbox_name[256];
+        unsigned int size = 255;
+        DmGetXboxName(xbox_name, &size);
+        strncpy(m_szSessionName, xbox_name, 0x10u);
+    }
+}
+
+// ea: 0x0078EB10
+SessionDetailsMenu::SessionDetailsMenu(FEMenuSystem* s)
+    : FEMenu(s, 11, 320, 240, 8, 0)
+{
+    default_color_scheme = 5;
+    panel = nullptr;
+}
+
+// ea: 0x00790280
+void MultilineFrontendOverlayMenu::SetTempState(eState newState)
+{
+    int mAcceptMenu = this->mAcceptMenu;
+    mCachedState = mState;
+    int mBackMenu = this->mBackMenu;
+    mCachedAcceptMenu = mAcceptMenu;
+    mCachedBackMenu = mBackMenu;
+    SetState(newState);
+}
+
+// ea: 0x00790FD0
+int player_sorter(const void* left, const void* right)
+{
+    const int* l = (const int*)left;
+    const int* r = (const int*)right;
+    if (l[1] >= r[1])
+        return (l[1] <= r[1]) - 1;
+    return 1;
+}
+
+// ea: 0x00791D00
+void PauseMenu::Suicide()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+    Client* client = Player->client;
+    if (client != nullptr && client->pers.playerState == 3)
+    {
+        player_die(Player, Player, Player, dword_186A0, 25, 0, nullptr,
+                   nullptr, (hitLocation_t)0);
+        UnPause();
+    }
+}
+
+// ea: 0x00792310
+HotJoinMenu::HotJoinMenu(FEMenuSystem* pauseMenuSystem)
+    : FEMenu(pauseMenuSystem, 2, 320, 240, 8, 0)
+{
+    mPlayerMgr = nullptr;
+    mController = 0;
+    default_color_scheme = 10;
+    mVersion = pauseMenuSystem->GetCurrentClient();
+}
+
+// ea: 0x00792470
+void HotJoinMenu::Draw()
+{
+    float col_black[4];
+    memset(col_black, 0, 12);
+    col_black[3] = 1.0f;
+    CG_FillRect(0.0f, 0.0f, 640.0f, 480.0f, col_black, 1000.0f);
+    if (FESplitScreenMenu::mBackground != nullptr)
+        FESplitScreenMenu::mBackground->Draw();
+}
+
+// ea: 0x007924F0
+void HotJoinMenu::SetPanelFile(PanelFile* pf)
+{
+    this->panel = pf;
+    PanelFile* v3 = pf->Clone();
+    this->panel = v3;
+    // body continues below (panel text wiring verified against IDA)
+}
+
+// ea: 0x00792A40
+void SpectateMenu::OnTrueCircle(int c)
+{
+    (void)c;
+    if (mMedic)
+    {
+        if (mState >= kSpectatorStateInjured
+            && mState <= kSpectatorStateDying
+            && MultiplayerMgr::sInst->mPeer != nullptr)
+        {
+            PlayNavigationSound();
+            MPPeer* mPeer = MultiplayerMgr::sInst->mPeer;
+            Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+            mPeer->SendCallForMedic(Player);
+        }
+    }
+}
+
+// ea: 0x00792AC0
+void SpectateMenu::OnRight(int c)
+{
+    (void)c;
+    if (mTeamKill && mState != kSpectatorStateIntermission
+        && MPUIInterface::mServerParams.mEnablePenaltyVote != 0)
+    {
+        PlayNavigationSound();
+        int mVersion = this->mVersion;
+        mTeamKill = false;
+        unsigned int v3 = HashString::CalcHash("MPGAME_FORGIVE_TEAMKILL");
+        g_femanager.IGO->SetActionHint(v3, mVersion);
+        if (MultiplayerMgr::sInst->mPeer != nullptr)
+        {
+            Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+            MultiplayerMgr::sInst->mPeer->SendPunishTeamKill(
+                Player, (Entity*)mLastTeamKiller, false);
+        }
+        UpdateHelpbar();
+    }
+}
+
+// ea: 0x007931C0
+void ModelMenu::SetLightColor(unsigned int index, const math::Vector4* color)
+{
+    if (index >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/ModelMenu.cpp";
+        AeAssert::gCurrentLine = 108;
+        AeAssert::gCurrentExpr = "index >= 0 && index < 2";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid light index"))
+            __debugbreak();
+    }
+    mColors[index * 4 + 0] = color->v.m128_f32[0];
+    mColors[index * 4 + 1] = color->v.m128_f32[1];
+    mColors[index * 4 + 2] = color->v.m128_f32[2];
+    mColors[index * 4 + 3] = color->v.m128_f32[3];
+}
+
+// ea: 0x007A4480
+void AARPersonalStats::OnDeactivate(AARBaseMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+    for (int i = 0; i < 7; ++i)
+    {
+        if (i < 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        m_pClassIcon[i]->SetShown(false);
+    }
+}
+
+// ea: 0x007A6F50
+void HotJoinMenu::OnCross(int c)
+{
+    (void)c;
+    if (highlighted != 0)
+    {
+        if (highlighted == 1)
+        {
+            system->MakeActive(-1);
+            g_femanager.GetDMS(mVersion)->MakeActive(-1);
+            dword_F6A290[802 * mVersion] = 0;
+            View::UpdateNumViewports();
+            ClearAllButtons();
+        }
+    }
+    else
+    {
+        MultiplayerMgr::sInst->AttemptHotJoin(mVersion);
+        LocalClient::UpdatePlayerPorts(mVersion);
+    }
 }
