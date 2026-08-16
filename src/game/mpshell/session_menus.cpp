@@ -3022,7 +3022,7 @@ void WeaponSelectMenu::CloseMenu()
 void InGameScoreBoard::RecalculateWinningTeam()
 {
     if (cgGlobal.teamScores[2] <= cgGlobal.teamScores[1])
-        SetWinningTeam(2 * (cgGlobal.teamScores[1] <= cgGlobal.teamScores[2]) + 1);
+        SetWinningTeam((team_t)(2 * (cgGlobal.teamScores[1] <= cgGlobal.teamScores[2]) + 1));
     else
         SetWinningTeam(TEAM_ALLIES);
 }
@@ -5045,4 +5045,170 @@ void SessionLanListMenu::OnActivate()
     mShowUpArrow = false;
     mNumGames = 0;
     InitMenu();
+}
+
+// ============================================================================
+// Batch 18: menu ctors
+// ============================================================================
+
+// ea: 0x0078E790
+PlayOnlineMenu::PlayOnlineMenu(FEMenuSystem* s)
+    : FEMenu(s, 5, 320, 240, 8, 0)
+{
+    flags = (int16_t)(flags | 0x80);
+    mJoiningFriend = false;
+    friendIcon = 0;
+    m_pBkgDetail4 = nullptr;
+    m_pBkgDetail5 = nullptr;
+    m_IsQuickMatchReady = false;
+    default_color_scheme = 5;
+}
+
+// ea: 0x007AF3E0
+PlayLanMenu::PlayLanMenu(FEMenuSystem* s)
+    : FEMenu(s, 0, 320, 240, 8, 0)
+{
+    mJoiningFriend = false;
+    new (&mListBox) UIListBox(3, 1, 3, true);
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pBackgroundButtons[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pText[i] = nullptr;
+    for (int i = 0; i < 3; ++i)
+        m_pOptionText[i] = nullptr;
+    for (int i = 0; i < 3; ++i)
+        m_pImages[i] = nullptr;
+    default_color_scheme = 5;
+}
+
+// ea: 0x007AF640
+SessionLanListMenu::SessionLanListMenu(FEMenuSystem* s)
+    : FEMultiMenu(s, 0, 0)
+{
+    new (&m_ListBox) UIListBox(6, 4, 50, true);
+    mSortColumn = 0;
+    mNumGames = 0;
+    mShowDownArrow = false;
+    mShowUpArrow = false;
+    mNeedToUpdate = false;
+    for (int i = 0; i < 5; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 3; ++i)
+        m_pText[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pHeaderText[i] = nullptr;
+    m_pServerText = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pConnectionStars[i] = nullptr;
+    m_currSelection = 0;
+}
+
+// ea: 0x007AF7C0
+OverlayMenu::OverlayMenu(FEMenuSystem* s, int numEntries)
+    : OverlayMenuBase(s, numEntries)
+{
+    mVersion = 0;
+    panel = nullptr;
+    mText = Broc::string(Broc::UNDEFINED);
+    mDotTimer = 0.0f;
+    mNumDots = 0;
+    mTimeout = 0.0f;
+    mGameListingNum = 0;
+    mbStartGame = false;
+    mDelayStart = 0;
+    mLinkStatusCount = 0;
+    mLinkStatusTimer = 0.0f;
+    m_currSelection = 0;
+    new (&m_ListBox) UIListBox(2, 1, 2, false);
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i] = nullptr;
+    m_pOptionLines[0] = nullptr;
+}
+
+// ea: 0x007AF940
+InGameOverlay::InGameOverlay(FEMenuSystem* pMenuSys)
+    : OverlayMenuBase(pMenuSys, 1)
+{
+    mVersion = 0;
+    panel = nullptr;
+    m_currSelection = 0;
+    new (&m_ListBox) UIListBox(2, 1, 2, false);
+    m_Text = Broc::string(Broc::UNDEFINED);
+    m_IsAARTimerEnabled = false;
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i] = nullptr;
+    m_pOptionLines[0] = nullptr;
+}
+
+// ea: 0x007AFAA0
+AAROverlay::AAROverlay(FEMenuSystem* pMenuSys)
+    : OverlayMenuBase(pMenuSys, 1)
+{
+    mVersion = 0;
+    panel = nullptr;
+    m_currSelection = 0;
+    new (&m_ListBox) UIListBox(2, 1, 2, false);
+    m_Text = Broc::string(Broc::UNDEFINED);
+    m_IsAARTimerEnabled = false;
+    for (int i = 0; i < 3; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pOptionText[i] = nullptr;
+    m_pOptionLines[0] = nullptr;
+}
+
+// ea: 0x007A1A20
+void InGameScoreBoard::SetWinningTeam(team_t team)
+{
+    char szLoserScore[12];
+    char szWinnerScore[12];
+    if (team != TEAM_ALLIES)
+    {
+        if (team == TEAM_AXIS)
+        {
+            _snprintf(szWinnerScore, 0xAu, "%d", cgGlobal.teamScores[1]);
+            _snprintf(szLoserScore, 0xAu, "%d", cgGlobal.teamScores[2]);
+        }
+        else
+        {
+            _snprintf(szWinnerScore, 0xAu, "%d", cgGlobal.teamScores[2]);
+            _snprintf(szLoserScore, 0xAu, "%d", cgGlobal.teamScores[1]);
+            Entity* FirstLocalPlayer =
+                EntityManager::sInst->GetFirstLocalPlayer();
+            if (FirstLocalPlayer != nullptr)
+            {
+                sentient_s* sentient = FirstLocalPlayer->sentient;
+                if (sentient != nullptr && sentient->eTeam == TEAM_ALLIES)
+                    goto LABEL_3;
+            }
+        }
+        m_pUppercaseText[6]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+        m_pUppercaseText[4]->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+        goto LABEL_10;
+    }
+    _snprintf(szWinnerScore, 0xAu, "%d", cgGlobal.teamScores[2]);
+    _snprintf(szLoserScore, 0xAu, "%d", cgGlobal.teamScores[1]);
+LABEL_3:
+    m_pUppercaseText[6]->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+    m_pUppercaseText[4]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+LABEL_10:
+    m_pUppercaseText[7]->SetText(szWinnerScore);
+    m_pUppercaseText[5]->SetText(szLoserScore);
+}
+
+// ea: 0x007A8F40
+void AARGameSettingsView::OnActivate()
+{
+    SwapMenus();
+    FEMenu::OnActivate();
+    highlighted = 0;
+    mCurrentServerParams = &MPUIInterface::mServerParams;
+    GameSettingsView::UpdateOptions();
+    UpdateSplitScreenOptions(highlighted);
 }

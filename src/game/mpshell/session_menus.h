@@ -386,6 +386,7 @@ public:
     virtual ~AARGameSettingsView();   // ??1AARGameSettingsView@@UAE@XZ
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AARGameSettingsView@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc);  // ?Update@AARGameSettingsView@@UAEXM@Z
+    virtual void OnActivate();        // ?OnActivate@AARGameSettingsView@@UAEXXZ
 private:
     void SetTimerText();              // ?SetTimerText@AARGameSettingsView@@AAEXXZ
 };
@@ -434,6 +435,7 @@ public:
     ae_array<PanelQuad*, 3> m_pImages;   // +0x8C
     UIListBox mListBox;                  // +0x98
 
+    PlayLanMenu(FEMenuSystem* s);      // ??0PlayLanMenu@@QAE@PAVFEMenuSystem@@@Z
     static PlayLanMenu* Me();            // ?Me@PlayLanMenu@@SAPAV1@XZ
     virtual void OnDeactivate(FEMenu* m);// ?OnDeactivate@PlayLanMenu@@UAEXPAVFEMenu@@@Z
     virtual void Draw();                 // ?Draw@PlayLanMenu@@UAEXXZ
@@ -442,6 +444,7 @@ public:
     virtual void OnUp(int c);            // ?OnUp@PlayLanMenu@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@PlayLanMenu@@UAEXH@Z
     virtual void OnActivate();           // ?OnActivate@PlayLanMenu@@UAEXXZ
+    virtual void Update(float time_inc); // ?Update@PlayLanMenu@@UAEXM@Z
 protected:
     void SetPreviewImage();              // ?SetPreviewImage@PlayLanMenu@@IAEXXZ
     void SetOptionText();                // ?SetOptionText@PlayLanMenu@@IAEXXZ
@@ -461,6 +464,7 @@ public:
     PanelQuad* m_pBkgDetail5;            // +0x58
     bool m_IsQuickMatchReady;            // +0x5C
 
+    PlayOnlineMenu(FEMenuSystem* s);   // ??0PlayOnlineMenu@@QAE@PAVFEMenuSystem@@@Z
     static PlayOnlineMenu* Me();         // ?Me@PlayOnlineMenu@@SAPAV1@XZ
     void TogglePreviewImage(int option, bool visible);  // ?TogglePreviewImage@PlayOnlineMenu@@QAEXH_N@Z
     virtual void OnDeactivate(FEMenu* m);// ?OnDeactivate@PlayOnlineMenu@@UAEXPAVFEMenu@@@Z
@@ -469,6 +473,7 @@ public:
     virtual void OnUp(int c);            // ?OnUp@PlayOnlineMenu@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@PlayOnlineMenu@@UAEXH@Z
     virtual void OnActivate();           // ?OnActivate@PlayOnlineMenu@@UAEXXZ
+    virtual void Select(int entry_num, int c);  // ?Select@PlayOnlineMenu@@UAEXHH@Z
 protected:
     void InitQuickMatchParameters(int c);  // ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z
     void UpdateTextDescription(int option);  // ?UpdateTextDescription@PlayOnlineMenu@@IAEXH@Z
@@ -562,6 +567,7 @@ public:
     int mVisibleListToGameListMap[25];          // +0x14C
     int m_currSelection;                        // +0x1B0
 
+    SessionLanListMenu(FEMenuSystem* s);  // ??0SessionLanListMenu@@QAE@PAVFEMenuSystem@@@Z
     static SessionLanListMenu* Me();  // ?Me@SessionLanListMenu@@SAPAV1@XZ
     virtual void OnCross(int c);      // ?OnCross@SessionLanListMenu@@UAEXH@Z
     virtual void Draw();              // ?Draw@SessionLanListMenu@@UAEXXZ
@@ -621,6 +627,7 @@ public:
     ae_array<FEText*, 2> m_pOptionText;        // +0x120
     ae_array<PanelQuad*, 1> m_pOptionLines;    // +0x128
 
+    InGameOverlay(FEMenuSystem* pMenuSys);  // ??0InGameOverlay@@QAE@PAVFEMenuSystem@@@Z
     static InGameOverlay* Me(int version);  // ?Me@InGameOverlay@@SAPAV1@H@Z
     virtual void Select(int __formal);  // ?Select@InGameOverlay@@UAEXH@Z
     virtual void OnUp(int c);           // ?OnUp@InGameOverlay@@UAEXH@Z
@@ -654,6 +661,7 @@ public:
     ae_array<FEText*, 2> m_pOptionText;        // +0x120
     ae_array<PanelQuad*, 1> m_pOptionLines;    // +0x128
 
+    AAROverlay(FEMenuSystem* pMenuSys);  // ??0AAROverlay@@QAE@PAVFEMenuSystem@@@Z
     static AAROverlay* Me(int version);    // ?Me@AAROverlay@@SAPAV1@H@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AAROverlay@@UAEXPAVPanelFile@@@Z
     virtual void Select(int __formal);  // ?Select@AAROverlay@@UAEXH@Z
@@ -869,7 +877,9 @@ public:
         Entity* pEntity;    // +0x08
     };
     ae_array<sScoreboardPlayerSlot, 16> m_playerList;  // +0x4C
-    uint8_t _pad1[0x2C0 - (0x4C + 16 * 12)];
+    uint8_t _pad1[0x18C - (0x4C + 16 * 12)];
+    ae_array<FEText*, 13> m_pUppercaseText;  // +0x18C
+    uint8_t _pad1b[0x2C0 - (0x18C + 52)];
     bool m_bShowMyTeamScore;           // +0x2C0
     int  m_iShowMyTeamScorePadOffset;  // +0x2C4
     int  m_iShowOtherTeamScorePadOffset;  // +0x2C8
@@ -896,7 +906,7 @@ public:
 protected:
     int GetAlliesScore();             // ?GetAlliesScore@InGameScoreBoard@@IAEHXZ
     int GetAxisScore();               // ?GetAxisScore@InGameScoreBoard@@IAEHXZ
-    void SetWinningTeam(int team);    // ?SetWinningTeam@InGameScoreBoard@@IAEXH@Z
+    virtual void SetWinningTeam(team_t team);  // ?SetWinningTeam@InGameScoreBoard@@MAEXW4team_t@@@Z
     void RecalculateWinningTeam();    // ?RecalculateWinningTeam@InGameScoreBoard@@IAEXXZ
 };
 static_assert(sizeof(InGameScoreBoard) == 0x3E0,
@@ -1238,6 +1248,7 @@ public:
     ae_array<PanelQuad*, 1> m_pOptionLines;    // +0x144
 
     static OverlayMenu* Me(int version);  // ?Me@OverlayMenu@@SAPAV1@H@Z
+    OverlayMenu(FEMenuSystem* s, int numEntries);  // ??0OverlayMenu@@QAE@PAVFEMenuSystem@@H@Z
     const eState GetState();              // ?GetState@OverlayMenu@@QAE?BW4eState@1@XZ
     void SetState(eState state);          // ?SetState@OverlayMenu@@QAEXW4eState@1@@Z
     virtual void Select(int entry_num);   // ?Select@OverlayMenu@@UAEXH@Z

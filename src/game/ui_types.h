@@ -2909,6 +2909,7 @@ public:
 
     UIListBox(int visibleRows, int visibleColumns, int maxDataRows,
               bool bIsWrapping);  // 0x59BB70
+    UIListBox() {}  // placeholder for member construction (never binary-emitted alone)
     virtual ~UIListBox();         // 0x5B9BB0
     virtual void Clear();         // 0x58FFC0
     virtual void ClearRow(int row);  // 0x590050
