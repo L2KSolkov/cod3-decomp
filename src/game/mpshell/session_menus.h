@@ -294,6 +294,7 @@ public:
 
     GameSettingsView(FEMenuSystem* s);  // ??0GameSettingsView@@QAE@PAVFEMenuSystem@@@Z (mp_shell.o 0x79CCF0)
     static GameSettingsView* Me(int version);  // ?Me@GameSettingsView@@SAPAV1@H@Z
+    virtual void Update(float time_inc);  // ?Update@GameSettingsView@@UAEXM@Z
     virtual void Init();                 // ?Init@GameSettingsView@@UAEXXZ
     virtual void OnActivate();           // ?OnActivate@GameSettingsView@@UAEXXZ
     virtual void Draw();                 // ?Draw@GameSettingsView@@UAEXXZ
@@ -956,10 +957,10 @@ public:
     virtual void Draw();              // ?Draw@InGameScoreBoard@@UAEXXZ
     virtual void OnButtonRelease(int c, int b);  // ?OnButtonRelease@InGameScoreBoard@@UAEXHH@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameScoreBoard@@UAEXPAVPanelFile@@@Z
-    void SetPanelContents();          // ?SetPanelContents@InGameScoreBoard@@IAEXXZ
 protected:
     int GetAlliesScore();             // ?GetAlliesScore@InGameScoreBoard@@IAEHXZ
     int GetAxisScore();               // ?GetAxisScore@InGameScoreBoard@@IAEHXZ
+    void SetPanelContents();          // ?SetPanelContents@InGameScoreBoard@@IAEXXZ
     virtual void SetWinningTeam(team_t team);  // ?SetWinningTeam@InGameScoreBoard@@MAEXW4team_t@@@Z
     void RecalculateWinningTeam();    // ?RecalculateWinningTeam@InGameScoreBoard@@IAEXXZ
 };
@@ -1192,6 +1193,7 @@ public:
     virtual ~AARPauseMenu();                    // ??1AARPauseMenu@@UAE@XZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AARPauseMenu@@UAEXPAVPanelFile@@@Z
     virtual void UpdateSplitScreen();           // ?UpdateSplitScreen@AARPauseMenu@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);   // ?SetPanelFile@AARPauseMenu@@UAEXPAVPanelFile@@@Z
     virtual void OnUp(int c);                   // ?OnUp@AARPauseMenu@@UAEXH@Z
     virtual void OnDown(int c);                 // ?OnDown@AARPauseMenu@@UAEXH@Z
     virtual void OnTriangle(int c);             // ?OnTriangle@AARPauseMenu@@UAEXH@Z

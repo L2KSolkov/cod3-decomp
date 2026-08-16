@@ -6112,6 +6112,196 @@ void AARPersonalStats::GetClassSpecificScore(
     }
 }
 
+// ============================================================================
+// Batch 24: scoreboard contents + settings update + AAR pause panel
+// ============================================================================
+
+// ea: 0x007A2C40
+void InGameScoreBoard::SetPanelContents()
+{
+    m_pTeamStripQuad.m_elements[0]->SetShown(false);
+    m_pTeamStripQuad.m_elements[1]->SetShown(false);
+    m_pTeamStripQuad.m_elements[2]->SetShown(false);
+    int v2;
+    if (!cgGlobal.teamGame)
+    {
+        v2 = 2;
+        m_pUppercaseText.m_elements[0]->SetShown(false);
+        m_cgTeamShown = TEAM_FREE;
+    }
+    else
+    {
+        sentient_s* sentient =
+            EntityManager::sInst->GetPlayer(mVersion)->sentient;
+        int16_t eTeam = (sentient != nullptr) ? (int16_t)sentient->eTeam : 2;
+        m_pUppercaseText.m_elements[0]->SetShown(true);
+        bool axis = false;
+        if (eTeam == 2)
+        {
+            if (!m_bShowMyTeamScore)
+                axis = true;
+        }
+        else if (eTeam != 1 || m_bShowMyTeamScore)
+        {
+            axis = true;
+        }
+        if (axis)
+        {
+            m_pUppercaseText.m_elements[0]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+            v2 = 1;
+            m_cgTeamShown = TEAM_AXIS;
+        }
+        else
+        {
+            m_pUppercaseText.m_elements[0]
+                ->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+            v2 = 0;
+            m_cgTeamShown = TEAM_ALLIES;
+        }
+    }
+    m_pTeamStripQuad.m_elements[v2]->SetShown(true);
+    if (cgGlobal.teamGame)
+    {
+        if (m_bShowMyTeamScore)
+            helpbar1->SetText("MPGAME_VIEW_OPPOSING_TEAM_SCOREBOARD");
+        else
+            helpbar1->SetText("MPGAME_VIEW_YOUR_TEAM_SCOREBOARD");
+    }
+    else
+    {
+        helpbar1->SetText("MPGAME_DM_SCOREBOARD");
+    }
+    m_pUppercaseText.m_elements[2]->SetText(
+        MPUIInterface::GetGameTypeString(
+            MPUIInterface::mServerParams.mGameType));
+    m_pUppercaseText.m_elements[3]->SetText(
+        MPUIInterface::GetMapString(MPUIInterface::mServerParams.mMapID));
+}
+
+// ea: 0x0078DDC0
+void GameSettingsView::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    PanelQuad* mQuad = mScrollBarUpFader.mQuad;
+    if (mQuad != nullptr && mScrollBarUpFader.mFading)
+    {
+        if (mScrollBarUpFader.mAlphaTo <= mScrollBarUpFader.mAlpha)
+        {
+            float mAlpha = mScrollBarUpFader.mAlpha;
+            if (mAlpha <= mScrollBarUpFader.mAlphaTo)
+                goto UP_SET;
+            float v7 = mAlpha
+                - (time_inc / mScrollBarUpFader.mTime)
+                    * mScrollBarUpFader.mAlphaDelta;
+            float mAlphaTo = mScrollBarUpFader.mAlphaTo;
+            mScrollBarUpFader.mAlpha = v7;
+            if (mAlphaTo < v7)
+                goto UP_SET;
+            mScrollBarUpFader.mAlpha = mScrollBarUpFader.mAlphaTo;
+        }
+        else
+        {
+            float v4 = (time_inc / mScrollBarUpFader.mTime)
+                    * mScrollBarUpFader.mAlphaDelta
+                + mScrollBarUpFader.mAlpha;
+            mScrollBarUpFader.mAlpha = v4;
+            if (v4 < mScrollBarUpFader.mAlphaTo)
+                goto UP_SET;
+            mScrollBarUpFader.mAlpha = mScrollBarUpFader.mAlphaTo;
+        }
+        mScrollBarUpFader.mFading = false;
+    UP_SET:
+        mQuad->SetAlpha(mScrollBarUpFader.mAlpha);
+    }
+    PanelQuad* v9 = mScrollBarDownFader.mQuad;
+    if (v9 != nullptr && mScrollBarDownFader.mFading)
+    {
+        if (mScrollBarDownFader.mAlphaTo <= mScrollBarDownFader.mAlpha)
+        {
+            float v11 = mScrollBarDownFader.mAlpha;
+            if (v11 <= mScrollBarDownFader.mAlphaTo)
+                goto DOWN_SET;
+            float v12 = v11
+                - (time_inc / mScrollBarDownFader.mTime)
+                    * mScrollBarDownFader.mAlphaDelta;
+            float v13 = mScrollBarDownFader.mAlphaTo;
+            mScrollBarDownFader.mAlpha = v12;
+            if (v13 < v12)
+                goto DOWN_SET;
+            mScrollBarDownFader.mAlpha = mScrollBarDownFader.mAlphaTo;
+        }
+        else
+        {
+            float v10 = (time_inc / mScrollBarDownFader.mTime)
+                    * mScrollBarDownFader.mAlphaDelta
+                + mScrollBarDownFader.mAlpha;
+            mScrollBarDownFader.mAlpha = v10;
+            if (v10 < mScrollBarDownFader.mAlphaTo)
+                goto DOWN_SET;
+            mScrollBarDownFader.mAlpha = mScrollBarDownFader.mAlphaTo;
+        }
+        mScrollBarDownFader.mFading = false;
+    DOWN_SET:
+        v9->SetAlpha(mScrollBarDownFader.mAlpha);
+    }
+}
+
+// ea: 0x00792090
+static const char* const szMPPauseEntriesText[7] = {
+    "slot_01_text_option", "slot_02_text_option", "slot_03_text_option",
+    "slot_04_text_option", "slot_05_text_option", "slot_06_text_option",
+    "slot_07_text_option",
+};
+static const char* const szMPPauseMenuOptionTextReferences[7] = {
+    "MPGAME_SELECT_WEAPON", "MPGAME_SELECT_TEAM", "MPGAME_SUICIDE",
+    "MPGAME_CONTROLLER", "MPGAME_VIEW_GAME_SETTINGS",
+    "MPGAME_XBOX_LIVE_OPTIONS", "MPGAME_QUIT",
+};
+void AARPauseMenu::SetPanelFile(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MPPauseMenu.cpp";
+        AeAssert::gCurrentLine = 799;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    panel = pf;
+    panel->GetTextPointer("text_title")
+        ->SetText("MPGAME_MULTIPLAYER_MENU");
+    FEText* v4 = panel->GetTextPointer("text_helpbar");
+    FEMultiLineText* v5 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v6 = nullptr;
+    if (v5 != nullptr)
+    {
+        color32 col = v4->GetColor();
+        panel_layer layer = (panel_layer)v4->GetScaleX();
+        float x1 = v4->GetY();
+        float v12 = v4->GetX();
+        v6 = new (v5)
+            FEMultiLineText(v4->GetFont(), x1, 0.0f, 1, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v6;
+    if (v6 != nullptr)
+        v6->SetNumLines(1);
+    helpbar1->SetText("MPGAME_PAUSE_HELPBAR");
+    for (int i = 0; i < 7; ++i)
+    {
+        FEText* v10 = panel->GetTextPointer(szMPPauseEntriesText[i]);
+        v10->SetText(szMPPauseMenuOptionTextReferences[i]);
+        AddEntry(i, v10, false);
+    }
+    entries[0]->up = 6;
+    entries[6]->down = 0;
+    highlighted = 3;
+    SetHigh(3, true);
+    entries[3]->Highlight(true, true);
+}
+
 // ea: 0x0079A070
 void FindLanSessionMenu::OnActivate()
 {
