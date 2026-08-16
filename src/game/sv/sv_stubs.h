@@ -2198,8 +2198,9 @@ public:
                      ::MPEntityHandle handle);  // ?FireMissile@MPPeer@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z (mp.o 0x75B920)
     void PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
                     int damage, int meansOfDeath, int weapon,
-                    const float* position, const float* dir,
-                    EHitLocation hitLoc);  // ?PlayerDead@MPPeer@@QAEXPAVEntity@@00HHHQBM1H@Z (mp.o 0x735B70)
+                    const float* const position,
+                    const float* const dir,
+                    int hitLoc);  // ?PlayerDead@MPPeer@@QAEXPAVEntity@@00HHHQBM1H@Z (mp.o 0x735B70)
     bool ConnectToPeers(const bdReference<MPGameInfo>& gameInfo,
                         int nGameIndex,
                         EGameConnectionType gameState);  // ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z (mp.o 0x764620)
