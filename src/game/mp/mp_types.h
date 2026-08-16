@@ -287,9 +287,6 @@ public:
     uint8_t _pad78[0x80 - 0x78];
     kuju::cBezierTrajectoryInterpolator mInterpolator;  // +0x80 (160 bytes)
     int   mInterpolationState;             // +0x120
-    int   mLastLocalNetworkTime;           // +0x124
-    int   mLastRemoteNetworkTime;          // +0x128
-    int   mLastDeltaDifference;            // +0x12C
     math::Position3 mInterpolatedPosition;        // +0x130
     math::Dir3      mInterpolatedSpeed;           // +0x140
     math::Dir3      mInterpolatedAngularVelocity; // +0x150
@@ -298,8 +295,19 @@ public:
     float mInterpolatedHeading;   // +0x168
     float mInterpolatedSteering;  // +0x16C
     kuju::knet::sTime mLastInterpolatedTime;  // +0x170
+    int   mLastLocalNetworkTime;           // +0x174
+    int   mLastRemoteNetworkTime;          // +0x178
+    int   mLastDeltaDifference;            // +0x17C
     math::Dir3 mLastRemoteVelocity;  // +0x180
-    uint8_t _pad190[0x204 - 0x190];
+    tAngularInterpolator mHeadingInterpolator;       // +0x190
+    tAngularInterpolator mPitchInterpolator;         // +0x1A0
+    tAngularInterpolator mRollInterpolator;          // +0x1B0
+    tAngularInterpolator mHeadingVelocityInterpolator;  // +0x1C0
+    tAngularInterpolator mPitchVelocityInterpolator;    // +0x1D0
+    tAngularInterpolator mRollVelocityInterpolator;     // +0x1E0
+    tAngularInterpolator mSteeringInterpolator;         // +0x1F0
+    bool  bIsInterpolatorValid;          // +0x200
+    uint8_t _pad201[0x204 - 0x201];
     int   sLastRecievedNetUpdate;     // +0x204
     int   sLastRecievedFrom;          // +0x208
     uint8_t _pad20C[0x210 - 0x20C];

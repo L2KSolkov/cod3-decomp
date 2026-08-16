@@ -57,6 +57,42 @@ public:
 }
 #endif
 
+// tAngularInterpolator<float> - global scope per mangle
+// (?reset@?$tAngularInterpolator@M@@QAEXABMM0M@Z, mp.o 0x775970)
+class tAngularInterpolator {
+public:
+    float mInitialValue;  // +0x00
+    float mInitialTime;   // +0x04
+    float mFinalValue;    // +0x08
+    float mFinalTime;     // +0x0C
+
+    void reset(const float& initialValue, float initialTime,
+               const float& finalValue, float finalTime);
+    float get(float time) const;
+};
+static_assert(sizeof(tAngularInterpolator) == 16,
+              "tAngularInterpolator size mismatch");
+
+#ifndef COD3_KUJU_TLINEAR_FLOAT_DEFINED
+#define COD3_KUJU_TLINEAR_FLOAT_DEFINED
+namespace kuju {
+// kuju::tLinearInterpolator<float> (mp.o 0x775B50 reset / 0x775B90 get)
+class tLinearInterpolator {
+public:
+    float mInitialValue;  // +0x00
+    float mInitialTime;   // +0x04
+    float mFinalValue;    // +0x08
+    float mFinalTime;     // +0x0C
+
+    void reset(const float& initialValue, float initialTime,
+               const float& finalValue, float finalTime);
+    float get(float time) const;
+};
+}
+#endif
+static_assert(sizeof(kuju::tLinearInterpolator) == 16,
+              "kuju::tLinearInterpolator size mismatch");
+
 struct cdl_object_t;  // full definition in game/logic/g_local.h
 
 // font_index - FE font selection enum (also defined in ui_types.h; guarded
@@ -1757,7 +1793,9 @@ public:
     float   mInterpolatedHeading;           // +0x218 (kuju::sAngle.mAngle)
     kuju::knet::sTime mLastInterpolatedTime;  // +0x21C
     kuju::knet::sTime mLastFootstepTime;    // +0x220
-    uint8_t _pad224[0x254 - 0x224];
+    tAngularInterpolator mHeadingInterpolator;  // +0x224
+    tAngularInterpolator mPitchInterpolator;    // +0x234
+    kuju::tLinearInterpolator mLeanInterpolator;  // +0x244
     bool    mPlayerInfoSet;   // +0x254
     uint8_t _pad255[1];
     short   mTotalScore;      // +0x256
@@ -1765,7 +1803,7 @@ public:
     short   mTotalDeaths;     // +0x25A
     short   mTeam;            // +0x25C
     short   mRank;            // +0x25E
-    uint8_t _pad260[4];       // +0x260 (mLastHeadingAngle, sAngle)
+    float   mLastHeadingAngle; // +0x260 (kuju::sAngle.mAngle)
     bool    bSprinting;       // +0x264
     bool    bWalking;         // +0x265
     bool    bCrouching;       // +0x266
@@ -1836,7 +1874,7 @@ public:
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
     bool IsLocalPlayer() const;        // ?IsLocalPlayer@MPPlayer@@QBE_NXZ (mp.o)
 protected:
-    void StepLegsYaw(kuju::knet::sTime time, int yawType, int targetYaw,
+    void StepLegsYaw(kuju::knet::sTime time, int yawType, float targetYaw,
                      float yawThreshold,
                      float moveYaw);  // ?StepLegsYaw@MPPlayer@@IAEXVsTime@knet@kuju@@HMMM@Z (mp.o 0x72D390)
     int  CalcLegsAnim(Entity* ent, float* velocity, float yaw,

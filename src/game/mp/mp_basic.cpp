@@ -11799,6 +11799,27 @@ int MPPlayer::GroundSurfaceType(int surfaceFlags)
 
 // ea: 0x0072D070 (anonymous namespace helper; hash cannot be reproduced)
 namespace {
+// ea: 0x0072DFF0
+void FreeEntity(Entity* ent)
+{
+    if (ent != nullptr)
+    {
+        ent->think = THINK__G_FreeEntity;
+        ent->nextthink = level.time + 1;
+    }
+}
+
+// ea: 0x0072D0E0
+void StopPartialAnimation(DObj* dobj, unsigned int mask)
+{
+    if (dobj != nullptr)
+    {
+        AnimationPlayer* v2 = (AnimationPlayer*)dobj->animPlayers[0];
+        if (v2 != nullptr)
+            v2->StopModifiers(mask);
+    }
+}
+
 void PlayPartialAnimationRate(DObj* dobj, MP_ANIM_INDEX* anim_index,
                               unsigned int mask, float alpha,
                               float speedScale)
@@ -13630,6 +13651,82 @@ math::Dir3 kuju::cBezierTrajectoryInterpolator::speed(float date) const
         math::Dir3 zero = {};
         return zero;
     }
+}
+
+// ea: 0x00775970
+void tAngularInterpolator::reset(const float& initialValue,
+                                 float initialTime,
+                                 const float& finalValue,
+                                 float finalTime)
+{
+    mInitialTime = initialTime;
+    mInitialValue = initialValue;
+    mFinalTime = finalTime;
+    mFinalValue = finalValue;
+    while (mInitialValue > 180.0f)
+        mInitialValue -= 360.0f;
+    while (mInitialValue < -180.0f)
+        mInitialValue += 360.0f;
+    while (mFinalValue > 180.0f)
+        mFinalValue -= 360.0f;
+    while (mFinalValue < -180.0f)
+        mFinalValue += 360.0f;
+}
+
+// ea: 0x00775A70
+float tAngularInterpolator::get(float time) const
+{
+    if (time >= mFinalTime)
+        return mFinalValue;
+    if (mInitialTime >= time)
+        return mInitialValue;
+    float v3 = mFinalValue - mInitialValue;
+    if (v3 < -180.0f)
+        v3 += 360.0f;
+    if (v3 > 180.0f)
+        v3 -= 360.0f;
+    float v4 = ((time - mInitialTime) / (mFinalTime - mInitialTime)) * v3
+               + mInitialValue;
+    if (v4 > 180.0f)
+    {
+        do
+            v4 -= 360.0f;
+        while (v4 > 180.0f);
+        return v4;
+    }
+    if (v4 < -180.0f)
+    {
+        do
+            v4 += 360.0f;
+        while (v4 < -180.0f);
+        return v4;
+    }
+    return v4;
+}
+
+// ea: 0x00775B50
+void kuju::tLinearInterpolator::reset(const float& initialValue,
+                                      float initialTime,
+                                      const float& finalValue,
+                                      float finalTime)
+{
+    mInitialTime = initialTime;
+    mInitialValue = initialValue;
+    mFinalValue = finalValue;
+    mFinalTime = finalTime;
+}
+
+// ea: 0x00775B90
+float kuju::tLinearInterpolator::get(float time) const
+{
+    if (time >= mFinalTime)
+        return mFinalValue;
+    if (mInitialTime < time)
+        return (mFinalValue - mInitialValue)
+                   * ((time - mInitialTime)
+                      / (mFinalTime - mInitialTime))
+               + mInitialValue;
+    return mInitialValue;
 }
 
 // ea: 0x00760590
@@ -17646,7 +17743,7 @@ void MPPlayer::Reset(bool reset_persistent)
 }
 
 // ea: 0x0072D390
-void MPPlayer::StepLegsYaw(kuju::knet::sTime time, int yawType, int targetYaw,
+void MPPlayer::StepLegsYaw(kuju::knet::sTime time, int yawType, float targetYaw,
                            float yawThreshold, float moveYaw)
 {
     struct MPYawState {
@@ -21757,6 +21854,205 @@ void MPPlayer::PlayerRevive(float* position, float* angles)
                 }
             }
         }
+    }
+}
+
+// ea: 0x00747710
+void MPPlayer::UpdateInterpolation(const kuju::knet::sTime& time)
+{
+    int mTime = this->mStarvationTime.mTime;
+    const kuju::knet::sTime* v5 = &time;
+    if (time.mTime <= mTime - (this->mAverageUpdateInterval * -1000.0f))
+    {
+        if (time.mTime <= mTime)
+        {
+            int mInterpolationState = this->mInterpolationState;
+            if (mInterpolationState
+                    == kuju::cBezierTrajectoryInterpolator::
+                           kInterpolationStarvation
+                || mInterpolationState
+                       == kuju::cBezierTrajectoryInterpolator::
+                              kInterpolationStopped)
+            {
+                if (this->bWasVehicleAnimating)
+                    goto label19;
+                this->mInterpolationState =
+                    kuju::cBezierTrajectoryInterpolator::kInterpolationRegular;
+                ((kuju::cBezierTrajectoryInterpolator*)mInterpolator)
+                    ->reset(mInterpolatedPosition, mInterpolatedSpeed,
+                            mLastInterpolatedTime.mTime * 0.001f,
+                            mNetPosition, mNetSpeed,
+                            mStarvationTime.mTime * 0.001f, true);
+                float diff = mNetHeading - mInterpolatedHeading;
+                float v11 = diff + mInterpolatedHeading;  // = mNetHeading
+                float v12 = this->mStarvationTime.mTime;
+                if (fabsf(v11 - mInterpolatedHeading) <= 180.0f)
+                {
+                    mHeadingInterpolator.reset(mInterpolatedHeading,
+                                               mLastInterpolatedTime.mTime
+                                                   * 0.001f,
+                                               v11, v12 * 0.001f);
+                }
+                else
+                {
+                    float v38;
+                    if (v11 <= 0.0f)
+                        v38 = v11 + 360.0f;
+                    else
+                        v38 = v11 - 360.0f;
+                    mHeadingInterpolator.reset(mInterpolatedHeading,
+                                               mLastInterpolatedTime.mTime
+                                                   * 0.001f,
+                                               v38, v12 * 0.001f);
+                }
+                mPitchInterpolator.reset(mInterpolatedPitch,
+                                         mLastInterpolatedTime.mTime * 0.001f,
+                                         mNetPitch,
+                                         mStarvationTime.mTime * 0.001f);
+                float v13 = this->mStarvationTime.mTime;
+                float v14 = mLastInterpolatedTime.mTime * 0.001f;
+                this->mLeanInterpolator.mInitialValue = mInterpolatedLean;
+                this->mLeanInterpolator.mInitialTime = v14;
+                this->mLeanInterpolator.mFinalValue = mNetLean;
+                this->mLeanInterpolator.mFinalTime = v13 * 0.001f;
+            }
+        }
+        else
+        {
+            this->mInterpolationState =
+                kuju::cBezierTrajectoryInterpolator::kInterpolationStopped;
+        }
+    }
+    else if (this->mInterpolationState
+             <= kuju::cBezierTrajectoryInterpolator::
+                    kInterpolationStarvation)
+    {
+        memset(&this->mInterpolatedSpeed, 0, sizeof(math::Dir3));
+        this->mInterpolationState =
+            kuju::cBezierTrajectoryInterpolator::kInterpolationStopped;
+    }
+    if (!this->bWasVehicleAnimating
+        && this->mInterpolationState
+               <= kuju::cBezierTrajectoryInterpolator::
+                      kInterpolationStarvation)
+    {
+        this->mInterpolatedPosition =
+            ((kuju::cBezierTrajectoryInterpolator*)mInterpolator)
+                ->position(v5->mTime * 0.001f);
+        math::Dir3 v15 =
+            ((kuju::cBezierTrajectoryInterpolator*)mInterpolator)
+                ->speed(v5->mTime * 0.001f);
+        this->mInterpolatedSpeed = v15;
+        this->mLastHeadingAngle = this->mInterpolatedHeading;
+        this->mInterpolatedHeading =
+            mHeadingInterpolator.get(v5->mTime * 0.001f);
+        this->mInterpolatedPitch =
+            mPitchInterpolator.get(v5->mTime * 0.001f);
+        this->mInterpolatedLean =
+            mLeanInterpolator.get(v5->mTime * 0.001f);
+    }
+label19:
+    int mClientIndex = this->mClientIndex;
+    this->mLastInterpolatedTime.mTime = v5->mTime;
+    if (mClientIndex < 0)
+        return;
+    Entity* Player = EntityManager::sInst->GetPlayer(mClientIndex);
+    if (!Player)
+        return;
+    Client* client = Player->client;
+    if (client->ps.pm_type >= 4)
+        return;
+    bool mVehicleAnimPauseRemoteAngles =
+        client->mVehicleAnimPauseRemoteAngles;
+    float mAngle = this->mInterpolatedHeading;
+    if (mVehicleAnimPauseRemoteAngles && !this->bWasVehicleAnimating)
+        client->mVehicleAnimPauseRemoteAngles = 0;
+    if (this->mInVehicle)
+    {
+        if (!IsPlayerFullySeatedInVehicle(Player))
+            goto label29;
+        mAngle = this->mInterpolatedHeading;
+    }
+    Player->s.apos.trBase[0] = Player->r.currentAngles.v.m128_f32[0];
+    Player->s.apos.trBase[1] = Player->r.currentAngles.v.m128_f32[1];
+    Player->s.apos.trBase[2] = Player->r.currentAngles.v.m128_f32[2];
+    Player->s.apos.trDelta[0] = 0.0f;
+    Player->s.apos.trDelta[1] = mAngle;
+    Player->s.apos.trDelta[2] = 0.0f;
+    client->ps.legsYaw =
+        ((MPPlayerYawEntry*)((char*)this + 0x2C8))[0].mLegsYawAngle;
+    Player->client->ps.viewangles[0] = this->mInterpolatedPitch;
+    Player->client->ps.viewangles[1] = mAngle;
+    Player->client->ps.viewangles[2] = 0.0f;
+    Player->client->ps.leanf = this->mInterpolatedLean;
+label29:
+    Client* v24 = Player->client;
+    if (this->mInVehicle)
+    {
+        if (v24->mVehicleAnimMoving)
+        {
+            this->mNetPosition = Player->r.currentOrigin;
+            this->mInterpolatedPosition = Player->r.currentOrigin;
+            if (Player->client->ps.vehPos >= 8)
+            {
+                this->mNetHeading = Player->s.apos.trBase[1];
+                this->mNetPitch = 0.0f;
+            }
+            float mNetPitch = this->mNetPitch;
+            this->mInterpolatedHeading = this->mNetHeading;
+            float mNetHeading = this->mNetHeading;
+            this->mInterpolatedPitch = mNetPitch;
+            this->mNetLean = 0.0f;
+            this->mInterpolatedLean = 0.0f;
+            Player->client->ps.legsYaw = mNetHeading;
+            MPPlayerYawEntry* v27 = (MPPlayerYawEntry*)((char*)this + 0x2C8);
+            for (int i = 0; i < 3; ++i)
+            {
+                v27[i].mLegsYawAngle = this->mInterpolatedHeading;
+                v27[i].mLastLegsYawAngle = this->mInterpolatedHeading;
+                v27[i].mLegsYawing = 1;
+                v27[i].mLastLegsDirection = 0;
+                v27[i].mLastLegsDirectionChange.mTime =
+                    MultiplayerMgr::sInst->getLocalTime().mTime;
+            }
+        }
+        else if (v24->ps.vehPos < 8)
+        {
+            memset(&this->mNetPosition, 0, sizeof(math::Position3));
+            memset(&this->mInterpolatedPosition, 0,
+                   sizeof(math::Position3));
+        }
+        Player->client->ps.velocity.v.m128_f32[0] = 0.0f;
+        Player->client->ps.velocity.v.m128_f32[1] = 0.0f;
+        Player->client->ps.velocity.v.m128_f32[2] = 0.0f;
+    }
+    else
+    {
+        v24->ps.velocity.v.m128_f32[0] =
+            this->mInterpolatedSpeed.v.m128_f32[0];
+        Player->client->ps.velocity.v.m128_f32[1] =
+            this->mInterpolatedSpeed.v.m128_f32[1];
+        Player->client->ps.velocity.v.m128_f32[2] =
+            this->mInterpolatedSpeed.v.m128_f32[2];
+        Player->client->oldOrigin.v.m128_f32[0] =
+            Player->client->ps.origin.v.m128_f32[0];
+        Player->client->oldOrigin.v.m128_f32[1] =
+            Player->client->ps.origin.v.m128_f32[1];
+        Player->client->oldOrigin.v.m128_f32[2] =
+            Player->client->ps.origin.v.m128_f32[2];
+        Player->client->ps.origin.v.m128_f32[0] =
+            this->mInterpolatedPosition.v.m128_f32[0];
+        Player->client->ps.origin.v.m128_f32[1] =
+            this->mInterpolatedPosition.v.m128_f32[1];
+        Player->client->ps.origin.v.m128_f32[2] =
+            this->mInterpolatedPosition.v.m128_f32[2];
+        Player->r.currentOrigin.v.m128_f32[0] =
+            Player->client->ps.origin.v.m128_f32[0];
+        Player->r.currentOrigin.v.m128_f32[1] =
+            Player->client->ps.origin.v.m128_f32[1];
+        Player->r.currentOrigin.v.m128_f32[2] =
+            Player->client->ps.origin.v.m128_f32[2];
+        g_LinkEntity(Player);
     }
 }
 
