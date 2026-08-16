@@ -469,6 +469,7 @@ public:
     virtual void OnDown(int c);          // ?OnDown@PlayLanMenu@@UAEXH@Z
     virtual void OnActivate();           // ?OnActivate@PlayLanMenu@@UAEXXZ
     virtual void Update(float time_inc); // ?Update@PlayLanMenu@@UAEXM@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@PlayLanMenu@@UAEXPAVPanelFile@@@Z
 protected:
     void SetPreviewImage();              // ?SetPreviewImage@PlayLanMenu@@IAEXXZ
     void SetOptionText();                // ?SetOptionText@PlayLanMenu@@IAEXXZ
@@ -577,6 +578,7 @@ public:
     virtual void OnActivate();     // ?OnActivate@SessionListMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@SessionListMenu@@UAEXM@Z
     virtual ~SessionListMenu();    // ??1SessionListMenu@@UAE@XZ
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@SessionListMenu@@UAEXPAVPanelFile@@@Z
 protected:
     void Refresh();                // ?Refresh@SessionListMenu@@IAEXXZ
     void TidyGamesList();          // ?TidyGamesList@SessionListMenu@@IAEXXZ
@@ -617,6 +619,7 @@ public:
     virtual void OnActivate();        // ?OnActivate@SessionLanListMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@SessionLanListMenu@@UAEXM@Z
     virtual ~SessionLanListMenu();    // ??1SessionLanListMenu@@UAE@XZ
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@SessionLanListMenu@@UAEXPAVPanelFile@@@Z
 protected:
     void Refresh();                   // ?Refresh@SessionLanListMenu@@IAEXXZ
     void InitMenu();                  // ?InitMenu@SessionLanListMenu@@IAEXXZ

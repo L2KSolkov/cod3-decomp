@@ -9422,6 +9422,728 @@ void InGameScoreBoard::SetPanelFile(PanelFile* pf)
     m_ListBox.SelectLine(0);
 }
 
+// ea: 0x0079D140
+void SessionListMenu::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szSessionListMenuBackgroundArt[5] = {
+        "gl_bkg", "gl_bkg_detail_01", "gl_bkg_detail_02",
+        "gl_bkg_detail_03", "gl_bkg_detail_04",
+    };
+    static const char* const szSessionListMenuText[3] = {
+        "gl_text_title_01", "gl_text_title_02", "text_helpbar",
+    };
+    static const char* const szSessionListMenuHeaderText[4] = {
+        "gl_text_group_header_01", "gl_text_group_header_02",
+        "gl_text_group_header_03", "gl_text_group_header_04",
+    };
+    static const char* const szSessionLMNames[6] = {
+        "gl_text_option_01", "gl_text_option_02", "gl_text_option_03",
+        "gl_text_option_04", "gl_text_option_05", "gl_text_option_06",
+    };
+    static const char* const szSessionLMPlayers[6] = {
+        "gl_text_option_01_play", "gl_text_option_02_play",
+        "gl_text_option_03_play", "gl_text_option_04_play",
+        "gl_text_option_05_play", "gl_text_option_06_play",
+    };
+    static const char* const szSessionLMModes[6] = {
+        "gl_text_option_01_mode", "gl_text_option_02_mode",
+        "gl_text_option_03_mode", "gl_text_option_04_mode",
+        "gl_text_option_05_mode", "gl_text_option_06_mode",
+    };
+    static const char* const szSessionLMMaps[6] = {
+        "gl_text_option_01_map", "gl_text_option_02_map",
+        "gl_text_option_03_map", "gl_text_option_04_map",
+        "gl_text_option_05_map", "gl_text_option_06_map",
+    };
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+        AeAssert::gCurrentLine = 377;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    for (int j = 0; j < 5; ++j)
+    {
+        if (m_pBackgroundArt.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 395;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Why is the array not null?"))
+                __debugbreak();
+        }
+        m_pBackgroundArt.m_elements[j] =
+            panel->GetPointer(szSessionListMenuBackgroundArt[j]);
+        if (m_pBackgroundArt.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 398;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int v4 = 0; v4 < 3; ++v4)
+    {
+        if (m_pText.m_elements[v4] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 411;
+            AeAssert::gCurrentExpr = "0 == m_pText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Why is the array not null?"))
+                __debugbreak();
+        }
+        m_pText.m_elements[v4] =
+            panel->GetTextPointer(szSessionListMenuText[v4]);
+        if (m_pText.m_elements[v4] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 414;
+            AeAssert::gCurrentExpr = "m_pText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        if (m_pText.m_elements[v4] != nullptr)
+        {
+            if (v4 == 0)
+                m_pText.m_elements[0]->SetText("MPFRONTEND_PLAY_XBOX_LIVE");
+            else if (v4 == 1)
+                m_pText.m_elements[1]->SetText("MPFRONTEND_GAME_BROWSER");
+            else if (v4 == 2)
+            {
+                FEText* v35 = m_pText.m_elements[2];
+                FEMultiLineText* v34 =
+                    (FEMultiLineText*)mem_heap_malloc(0xA8);
+                FEMultiLineText* v11 = nullptr;
+                if (v34 != nullptr)
+                {
+                    color32 col = v35->GetColor();
+                    panel_layer layer = (panel_layer)v35->GetScaleX();
+                    float x1 = v35->GetY();
+                    float v23 = v35->GetX();
+                    v11 = new (v34)
+                        FEMultiLineText(v35->GetFont(), x1, 0.0f, 0, layer,
+                                        0.0f, 0, 0, col);
+                }
+                helpbar1 = v11;
+                if (v11 != nullptr)
+                    v11->SetNumLines(1);
+                helpbar1->SetText(
+                    "MPFRONTEND_XENON_MAIN_HELP_BAR_ALLCAPS");
+            }
+        }
+    }
+    for (int k = 0; k < 4; ++k)
+    {
+        if (m_pHeaderText.m_elements[k] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 449;
+            AeAssert::gCurrentExpr = "0 == m_pHeaderText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Why is the array not null?"))
+                __debugbreak();
+        }
+        m_pHeaderText.m_elements[k] =
+            panel->GetTextPointer(szSessionListMenuHeaderText[k]);
+        if (m_pHeaderText.m_elements[k] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 452;
+            AeAssert::gCurrentExpr = "m_pHeaderText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        if (m_pHeaderText.m_elements[k] != nullptr)
+        {
+            if (k == 0)
+                m_pHeaderText.m_elements[0]
+                    ->SetText("MPFRONTEND_SERVER_NAME");
+            else
+            {
+                switch (k)
+                {
+                case 1:
+                    m_pHeaderText.m_elements[1]
+                        ->SetText("MPFRONTEND_PLAYERS_ALLCAPS");
+                    break;
+                case 2:
+                    m_pHeaderText.m_elements[2]->SetText("MPFRONTEND_MODE");
+                    break;
+                case 3:
+                    m_pHeaderText.m_elements[3]
+                        ->SetText("MPFRONTEND_MAP_ALLCAPS");
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+    if (m_pServerText != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+        AeAssert::gCurrentLine = 478;
+        AeAssert::gCurrentExpr = "m_pServerText == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Server text pointer should be null before it is set\n"))
+            __debugbreak();
+    }
+    m_pServerText = panel->GetTextPointer("gl_text_option_01");
+    if (m_pServerText == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+        AeAssert::gCurrentLine = 480;
+        AeAssert::gCurrentExpr = "m_pServerText != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Could not get server text pointer\n"))
+            __debugbreak();
+    }
+    m_ListBox.SetScrollBarFromPanelFile(panel);
+    if (m_ListBox.mItemColumnsCount <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+        AeAssert::gCurrentLine = 125;
+        AeAssert::gCurrentExpr =
+            "column >= 0 && column < mItemColumnsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "UIListBoxItem: State count must be greater then zero"))
+            __debugbreak();
+    }
+    if (m_ListBox.mSelectedRowColorChangeColumns.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    *m_ListBox.mSelectedRowColorChangeColumns.mElements = true;
+    panel->GetTextPointer("gl_text_spec_02a")
+        ->SetText("MPFRONTEND_AUTO_TEAM_BALANCE_ALLCAPS");
+    panel->GetTextPointer("gl_text_spec_03a")
+        ->SetText("MPFRONTEND_TEAM_DAMAGE_ALLCAPS");
+    panel->GetTextPointer("gl_text_spec_01a")
+        ->SetText("MPFRONTEND_CONNECTION_QUALITY");
+    for (int m = 0; m < 6; ++m)
+    {
+        m_ListBox.SetItem(
+            m, 0, panel->GetTextPointer(szSessionLMNames[m]), 0);
+        m_ListBox.SetItem(
+            m, 1, panel->GetTextPointer(szSessionLMPlayers[m]), 0);
+        m_ListBox.SetItem(
+            m, 2, panel->GetTextPointer(szSessionLMModes[m]), 0);
+        m_ListBox.SetItem(
+            m, 3, panel->GetTextPointer(szSessionLMMaps[m]), 0);
+    }
+    static const char* const szSessionStars[5] = {
+        "gl_icon_star_01", "gl_icon_star_02", "gl_icon_star_03",
+        "gl_icon_star_04", "gl_icon_star_05",
+    };
+    for (int s = 0; s < 5; ++s)
+        m_pConnectionStars.m_elements[s] =
+            panel->GetPointer(szSessionStars[s]);
+}
+
+// ea: 0x0079DEE0
+void SessionLanListMenu::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szSessionLanListMenuBackgroundArt[5] = {
+        "gl_bkg", "gl_bkg_detail_01", "gl_bkg_detail_02",
+        "gl_bkg_detail_03", "gl_bkg_detail_04",
+    };
+    static const char* const szSessionLanListMenuText[3] = {
+        "gl_text_title_01", "gl_text_title_02", "text_helpbar",
+    };
+    static const char* const szSessionLanListMenuHeaderText[4] = {
+        "gl_text_group_header_01", "gl_text_group_header_02",
+        "gl_text_group_header_03", "gl_text_group_header_04",
+    };
+    static const char* const szLanSessionLMNames[6] = {
+        "gl_text_option_01", "gl_text_option_02", "gl_text_option_03",
+        "gl_text_option_04", "gl_text_option_05", "gl_text_option_06",
+    };
+    static const char* const szLanSessionLMPlayers[6] = {
+        "gl_text_option_01_play", "gl_text_option_02_play",
+        "gl_text_option_03_play", "gl_text_option_04_play",
+        "gl_text_option_05_play", "gl_text_option_06_play",
+    };
+    static const char* const szLanSessionLMModes[6] = {
+        "gl_text_option_01_mode", "gl_text_option_02_mode",
+        "gl_text_option_03_mode", "gl_text_option_04_mode",
+        "gl_text_option_05_mode", "gl_text_option_06_mode",
+    };
+    static const char* const szLanSessionLMMaps[6] = {
+        "gl_text_option_01_map", "gl_text_option_02_map",
+        "gl_text_option_03_map", "gl_text_option_04_map",
+        "gl_text_option_05_map", "gl_text_option_06_map",
+    };
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+        AeAssert::gCurrentLine = 377;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    for (int j = 0; j < 5; ++j)
+    {
+        if (m_pBackgroundArt.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+            AeAssert::gCurrentLine = 395;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Why is the array not null?"))
+                __debugbreak();
+        }
+        m_pBackgroundArt.m_elements[j] =
+            panel->GetPointer(szSessionLanListMenuBackgroundArt[j]);
+        if (m_pBackgroundArt.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+            AeAssert::gCurrentLine = 398;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int v4 = 0; v4 < 3; ++v4)
+    {
+        if (m_pText.m_elements[v4] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+            AeAssert::gCurrentLine = 411;
+            AeAssert::gCurrentExpr = "0 == m_pText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Why is the array not null?"))
+                __debugbreak();
+        }
+        m_pText.m_elements[v4] =
+            panel->GetTextPointer(szSessionLanListMenuText[v4]);
+        if (m_pText.m_elements[v4] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+            AeAssert::gCurrentLine = 414;
+            AeAssert::gCurrentExpr = "m_pText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        if (m_pText.m_elements[v4] != nullptr)
+        {
+            if (v4 == 0)
+                m_pText.m_elements[0]->SetText("MPFRONTEND_PLAY_SYSTEM_LINK");
+            else if (v4 == 1)
+                m_pText.m_elements[1]->SetText("MPFRONTEND_GAME_BROWSER");
+            else if (v4 == 2)
+            {
+                FEText* v35 = m_pText.m_elements[2];
+                FEMultiLineText* v34 =
+                    (FEMultiLineText*)mem_heap_malloc(0xA8);
+                FEMultiLineText* v11 = nullptr;
+                if (v34 != nullptr)
+                {
+                    color32 col = v35->GetColor();
+                    panel_layer layer = (panel_layer)v35->GetScaleX();
+                    float x1 = v35->GetY();
+                    float v23 = v35->GetX();
+                    v11 = new (v34)
+                        FEMultiLineText(v35->GetFont(), x1, 0.0f, 0, layer,
+                                        0.0f, 0, 0, col);
+                }
+                helpbar1 = v11;
+                if (v11 != nullptr)
+                    v11->SetNumLines(1);
+                helpbar1->SetText(
+                    "MPFRONTEND_XENON_MAIN_HELP_BAR_ALLCAPS");
+            }
+        }
+    }
+    for (int k = 0; k < 4; ++k)
+    {
+        if (m_pHeaderText.m_elements[k] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+            AeAssert::gCurrentLine = 449;
+            AeAssert::gCurrentExpr = "0 == m_pHeaderText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Why is the array not null?"))
+                __debugbreak();
+        }
+        m_pHeaderText.m_elements[k] =
+            panel->GetTextPointer(szSessionLanListMenuHeaderText[k]);
+        if (m_pHeaderText.m_elements[k] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+            AeAssert::gCurrentLine = 452;
+            AeAssert::gCurrentExpr = "m_pHeaderText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        if (m_pHeaderText.m_elements[k] != nullptr)
+        {
+            if (k == 0)
+                m_pHeaderText.m_elements[0]
+                    ->SetText("MPFRONTEND_SERVER_NAME");
+            else
+            {
+                switch (k)
+                {
+                case 1:
+                    m_pHeaderText.m_elements[1]
+                        ->SetText("MPFRONTEND_PLAYERS_ALLCAPS");
+                    break;
+                case 2:
+                    m_pHeaderText.m_elements[2]->SetText("MPFRONTEND_MODE");
+                    break;
+                case 3:
+                    m_pHeaderText.m_elements[3]
+                        ->SetText("MPFRONTEND_MAP_ALLCAPS");
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+    if (m_pServerText != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+        AeAssert::gCurrentLine = 478;
+        AeAssert::gCurrentExpr = "m_pServerText == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Server text pointer should be null before it is set\n"))
+            __debugbreak();
+    }
+    m_pServerText = panel->GetTextPointer("gl_text_option_01");
+    if (m_pServerText == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+        AeAssert::gCurrentLine = 480;
+        AeAssert::gCurrentExpr = "m_pServerText != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Could not get server text pointer\n"))
+            __debugbreak();
+    }
+    m_ListBox.SetScrollBarFromPanelFile(panel);
+    if (m_ListBox.mItemColumnsCount <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+        AeAssert::gCurrentLine = 125;
+        AeAssert::gCurrentExpr =
+            "column >= 0 && column < mItemColumnsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "UIListBoxItem: State count must be greater then zero"))
+            __debugbreak();
+    }
+    if (m_ListBox.mSelectedRowColorChangeColumns.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    *m_ListBox.mSelectedRowColorChangeColumns.mElements = true;
+    panel->GetTextPointer("gl_text_spec_02a")
+        ->SetText("MPFRONTEND_AAR_VOTING_OPTION_ALLCAPS");
+    panel->GetTextPointer("gl_text_spec_03a")
+        ->SetText("MPFRONTEND_PENALTY_VOTE_ALLCAPS");
+    panel->GetTextPointer("gl_text_spec_01a")
+        ->SetText("MPFRONTEND_CONNECTION_QUALITY");
+    for (int m = 0; m < 6; ++m)
+    {
+        m_ListBox.SetItem(
+            m, 0, panel->GetTextPointer(szLanSessionLMNames[m]), 0);
+        m_ListBox.SetItem(
+            m, 1, panel->GetTextPointer(szLanSessionLMPlayers[m]), 0);
+        m_ListBox.SetItem(
+            m, 2, panel->GetTextPointer(szLanSessionLMModes[m]), 0);
+        m_ListBox.SetItem(
+            m, 3, panel->GetTextPointer(szLanSessionLMMaps[m]), 0);
+    }
+    static const char* const szLanStars[5] = {
+        "gl_icon_star_01", "gl_icon_star_02", "gl_icon_star_03",
+        "gl_icon_star_04", "gl_icon_star_05",
+    };
+    for (int s = 0; s < 5; ++s)
+        m_pConnectionStars.m_elements[s] =
+            panel->GetPointer(szLanStars[s]);
+}
+
+// ea: 0x0079B980
+void PlayLanMenu::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szPlayLanMenuBackgroundArt[3] = {
+        "bkg", "bkg_line_01", "bkg_preview_outline",
+    };
+    static const char* const szPlayLanMenuBackgroundButtons[5] = {
+        "bkg_btn_back_01", "bkg_btn_back_02", "bkg_btn_back_03",
+        "bkg_btn_line_01", "bkg_btn_line_02",
+    };
+    static const char* const szPlayLanMenuText[4] = {
+        "text_screen_title", "text_option_title", "text_option_description",
+        "text_helpbar",
+    };
+    static const char* const szPlayLanMenuTextReferences[4] = {
+        "MPFRONTEND_PLAY_SYSTEM_LINK", defaultFileName,
+        defaultFileName, defaultFileName,
+    };
+    static const char* const szPlayLanMenuOptionText[3] = {
+        "text_option_01", "text_option_02", "text_option_03",
+    };
+    static const char* const szPlayLanMenuOptionTextReferences[3] = {
+        "MPFRONTEND_MM_CREATE_GAME", "MPFRONTEND_FIND_GAME",
+        "MPFRONTEND_MM_XBOX_LIVE_OPTIONS",
+    };
+    static const char* const szPlayLanMenuPreviewImages[3] = {
+        "preview_image_01", "preview_image_02", "preview_image_03",
+    };
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+        AeAssert::gCurrentLine = 200;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        if (m_pBackgroundArt.m_elements[i] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 215;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array not null as expected"))
+                __debugbreak();
+        }
+        m_pBackgroundArt.m_elements[i] =
+            panel->GetPointer(szPlayLanMenuBackgroundArt[i]);
+        if (m_pBackgroundArt.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 217;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int j = 0; j < 5; ++j)
+    {
+        if (m_pBackgroundButtons.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 232;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundButtons[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array not null as expected"))
+                __debugbreak();
+        }
+        m_pBackgroundButtons.m_elements[j] =
+            panel->GetPointer(szPlayLanMenuBackgroundButtons[j]);
+        if (m_pBackgroundButtons.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 234;
+            AeAssert::gCurrentExpr = "m_pBackgroundButtons[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int k = 0; k < 4; ++k)
+    {
+        if (m_pText.m_elements[k] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 257;
+            AeAssert::gCurrentExpr = "0 == m_pText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array not null as expected"))
+                __debugbreak();
+        }
+        m_pText.m_elements[k] =
+            panel->GetTextPointer(szPlayLanMenuText[k]);
+        if (m_pText.m_elements[k] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 259;
+            AeAssert::gCurrentExpr = "m_pText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        m_pText.m_elements[k]->SetText(szPlayLanMenuTextReferences[k]);
+        m_pText.m_elements[k]->SetShown(true);
+    }
+    for (int m = 0; m < 3; ++m)
+    {
+        if (m_pOptionText.m_elements[m] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 274;
+            AeAssert::gCurrentExpr = "0 == m_pOptionText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array not null as expected"))
+                __debugbreak();
+        }
+        m_pOptionText.m_elements[m] =
+            panel->GetTextPointer(szPlayLanMenuOptionText[m]);
+        mListBox.SetItem(m, 0, m_pOptionText.m_elements[m], 0);
+        mListBox.SetText(m, 0, szPlayLanMenuOptionTextReferences[m]);
+        if (m_pOptionText.m_elements[m] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 281;
+            AeAssert::gCurrentExpr = "m_pOptionText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int n = 0; n < 3; ++n)
+    {
+        if (m_pImages.m_elements[n] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 293;
+            AeAssert::gCurrentExpr = "0 == m_pImages[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array not null as expected"))
+                __debugbreak();
+        }
+        m_pImages.m_elements[n] =
+            panel->GetPointer(szPlayLanMenuPreviewImages[n]);
+        if (m_pImages.m_elements[n] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp";
+            AeAssert::gCurrentLine = 295;
+            AeAssert::gCurrentExpr = "m_pImages[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        m_pImages.m_elements[n]->SetShown(false);
+    }
+    FEText* v11 = m_pText.m_elements[3];
+    FEMultiLineText* v32 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v14 = nullptr;
+    if (v32 != nullptr)
+    {
+        color32 col = v11->GetColor();
+        panel_layer layer = (panel_layer)v11->GetScaleX();
+        float x1 = v11->GetY();
+        float v18 = v11->GetX();
+        v14 = new (v32)
+            FEMultiLineText(v11->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar1 = v14;
+    if (v14 != nullptr)
+        v14->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+    if (mListBox.mItemColumnsCount <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+        AeAssert::gCurrentLine = 125;
+        AeAssert::gCurrentExpr =
+            "column >= 0 && column < mItemColumnsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "UIListBoxItem: State count must be greater then zero"))
+            __debugbreak();
+    }
+    if (mListBox.mSelectedRowColorChangeColumns.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    *mListBox.mSelectedRowColorChangeColumns.mElements = true;
+    mListBox.SelectLine(0);
+    mListBox.mSelectedFlashing = true;
+    mListBox.Refresh();
+}
+
 // ea: 0x007A4B50
 void AARMapVote::SetPanelFile(PanelFile* pPanelFile)
 {
