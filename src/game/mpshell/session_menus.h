@@ -494,6 +494,7 @@ public:
     virtual void OnUp(int c);            // ?OnUp@PlayOnlineMenu@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@PlayOnlineMenu@@UAEXH@Z
     virtual void OnActivate();           // ?OnActivate@PlayOnlineMenu@@UAEXXZ
+    virtual void Update(float time_inc); // ?Update@PlayOnlineMenu@@UAEXM@Z
     virtual void Select(int entry_num, int c);  // ?Select@PlayOnlineMenu@@UAEXHH@Z
 protected:
     void InitQuickMatchParameters(int c);  // ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z

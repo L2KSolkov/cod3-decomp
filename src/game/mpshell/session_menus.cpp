@@ -65,6 +65,7 @@ public:
     static const int GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z
     static const int GetScoreLimit(unsigned long index,
                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
+    static const int GetTimeLimitCount();  // ?GetTimeLimitCount@MPUIInterface@@SA?BHXZ
     static const int GetTimeLimit(unsigned long index);  // ?GetTimeLimit@MPUIInterface@@SA?BHK@Z
     static const int GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z
     static const char* GetGameTypeString(unsigned long gameType);  // ?GetGameTypeString@MPUIInterface@@SAPBDK@Z
@@ -84,6 +85,8 @@ public:
     static int  mMaxScoreLimitCount;  // ?mMaxScoreLimitCount@MPUIInterface@@1HA @ 0xE36E8C
     static bool mIsViewableOnline;    // ?mIsViewableOnline@MPUIInterface@@1_NA
     static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
+    static bool mLiveQueryActive;  // ?mLiveQueryActive@MPUIInterface@@1_NA
+    static bool mQueryFromID;      // ?mQueryFromID@MPUIInterface@@1_NA
 
     static const int GetMaxScoreLimitCount();  // ?GetMaxScoreLimitCount@MPUIInterface@@SA?BHXZ
     static void SetViewOnlineStatus(bool state);  // ?SetViewOnlineStatus@MPUIInterface@@SAX_N@Z
@@ -298,6 +301,8 @@ extern void j_nullsub_46(void* self);  // g.o nullsub
 extern void j_nullsub_58(void* self, bool use);  // g.o nullsub
 extern int irand(int min, int max);  // ?irand@@YAHHH@Z (g.o)
 extern int g_NumBdMessages;  // ?g_NumBdMessages@@3HA (bd.o)
+void ShowNotificationIcon(unsigned int* menuIcon, PanelQuad* inviteQuad,
+                          PanelQuad* friendQuad);  // platform_xbox (XboxLiveMenus.cpp)
 namespace PlayerStats {
 int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o)
 }
@@ -7307,6 +7312,141 @@ void CreateLanSessionMenu::OnActivate()
     entries[0]->Highlight(true, true);
     m_pText.m_elements[0]->SetText("MPFRONTEND_PLAY_SYSTEM_LINK");
     GrabSessionName(0);
+}
+
+// ea: 0x0079A290
+void GameSettingsEdit::AddOptionsToCombos()
+{
+    static const char* const pszDisableEnable[2] = {
+        "MPGAME_DISABLE", "MPGAME_ENABLE",
+    };
+    for (int i = 0; i < 6; ++i)
+    {
+        Broc::string s(MPUIInterface::GetGameTypeString(i));
+        ((FEComboBox*)entries[0])->AddOption(s);
+    }
+    ((FEComboBox*)entries[0])->SetCurrOption(0);
+    for (int j = 0; j < g_NumBaseMaps; ++j)
+    {
+        char v5 = (j == 0xFF) ? (char)-1 : (char)byte_E386C9[114 * j];
+        Broc::string s(MPUIInterface::GetMapString(v5));
+        ((FEComboBox*)entries[1])->AddOption(s);
+    }
+    ((FEComboBox*)entries[1])->SetCurrOption(0);
+    for (int k = 0; k < MPUIInterface::GetTimeLimitCount(); ++k)
+    {
+        char szScore[20];
+        sprintf(szScore, "%d", MPUIInterface::GetTimeLimit(k));
+        Broc::string s(szScore);
+        ((FEComboBox*)entries[2])->AddOption(s);
+    }
+    ((FEComboBox*)entries[2])->SetCurrOption(0);
+    for (int m = 0; m < MPUIInterface::GetScoreLimitCount(GAME_TYPE_WAR); ++m)
+    {
+        char szScore[20];
+        sprintf(szScore, "%d",
+                MPUIInterface::GetScoreLimit(m, GAME_TYPE_WAR));
+        Broc::string s(szScore);
+        ((FEComboBox*)entries[3])->AddOption(s);
+    }
+    ((FEComboBox*)entries[3])->SetCurrOption(0);
+    for (int e = 4; e <= 7; ++e)
+    {
+        for (int d = 0; d < 2; ++d)
+        {
+            Broc::string s(pszDisableEnable[d]);
+            ((FEComboBox*)entries[e])->AddOption(s);
+        }
+        ((FEComboBox*)entries[e])->SetCurrOption(0);
+    }
+}
+
+// ea: 0x007ABC20
+void PlayOnlineMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    UpdateTextDescription(highlighted);
+    if (MPLiveEngine::GetHandle()->internalState != kSignedIn)
+    {
+        system->MakeActive(8);
+        return;
+    }
+    char* Icon = LiveWrapper::theWrapper->GetIcon(
+        MPLiveEngine::GetHandle()->actualPort);
+    if (Icon == (char*)0x20000)
+    {
+        panel->GetPointer("game_invite")->SetShown(true);
+        panel->GetPointer("friend_request")->SetShown(false);
+    }
+    else if (Icon == (char*)0x10000)
+    {
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(true);
+    }
+    else if (Icon == nullptr)
+    {
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(false);
+    }
+    if (mJoiningFriend)
+    {
+        if (!MPUIInterface::mLiveQueryActive || !MPUIInterface::mQueryFromID)
+        {
+            unsigned long numGames = 0;
+            MPUIInterface::GameListingGet(numGames);
+            if (numGames == 0)
+            {
+                OverlayMenu* v16 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                v16->SetState(OverlayMenu::JOIN_FAILED);
+                OverlayMenu* fems = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)fems + 0x50) = 10;
+                OverlayMenu* v18 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)v18 + 0x54) = 10;
+                system->AddOverlay(16);
+            }
+            else
+            {
+                OverlayMenu* v13 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                v13->SetState(OverlayMenu::JOINING_START);
+                OverlayMenu* v14 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)v14 + 0x54) = 10;
+                OverlayMenu* v15 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(float*)((char*)v15 + 0x60) = 0.0f;
+                system->AddOverlay(16);
+            }
+            mJoiningFriend = false;
+        }
+    }
+    else if (MPUIInterface::mLiveQueryActive && MPUIInterface::mQueryFromID)
+    {
+        OverlayMenu* v10 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        v10->SetState((OverlayMenu::eState)16);
+        OverlayMenu* v11 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)v11 + 0x50) = 10;
+        OverlayMenu* v12 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)v12 + 0x54) = 10;
+        system->AddOverlay(16);
+        mJoiningFriend = true;
+    }
+    PanelQuad* v20 = panel->GetPointer("friend_request");
+    PanelQuad* v19 = panel->GetPointer("game_invite");
+    ShowNotificationIcon(&friendIcon, v19, v20);
+    if (m_IsQuickMatchReady)
+    {
+        LaunchQuickMatch();
+        m_IsQuickMatchReady = false;
+    }
+    MPUIInterface::Step();
 }
 
 // ea: 0x007AD4E0
