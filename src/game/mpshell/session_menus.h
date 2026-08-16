@@ -7,6 +7,8 @@
 
 #include "game/shell/shell_types.h"
 
+struct sServerCreateParams;  // full definition in session_menus.cpp
+
 // ============================================================================
 // CreateSessionMenu - 344 bytes (0x158), verified against IDA
 // ============================================================================
@@ -190,6 +192,215 @@ public:
 };
 static_assert(sizeof(FindLanSessionMenu) == 0x104,
               "FindLanSessionMenu size mismatch");
+
+// ============================================================================
+// CreateSessionAdvancedMenu / CreateLanSessionAdvancedMenu - 288 (0x120)
+// ============================================================================
+class CreateSessionAdvancedMenu : public FEMenu {
+public:
+    ae_array<PanelQuad*, 4> m_pBackgroundArt;      // +0x4C
+    ae_array<PanelQuad*, 6> m_pBackgroundRow;      // +0x5C
+    ae_array<PanelQuad*, 5> m_pBackgroundLine;     // +0x74
+    ae_array<FEText*, 4>    m_pText;               // +0x88
+    ae_array<FEText*, 12>   m_pSlotText;           // +0x98
+    ae_array<PanelQuad*, 12> m_pSlotArrow;         // +0xC8
+    FEComboBox* m_TimeLimitCombo;                  // +0xF8
+    FEComboBox* m_ScoreLimitCombo;                 // +0xFC
+    FEComboBox* m_AutoTeamBalanceCombo;            // +0x100
+    FEComboBox* m_TeamDamageCombo;                 // +0x104
+    FEComboBox* m_VotingCombo;                     // +0x108
+    FEComboBox* m_PenaltyVoteCombo;                // +0x10C
+    char m_szSessionName[16];                      // +0x110
+
+    CreateSessionAdvancedMenu(FEMenuSystem* s);  // ??0CreateSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z
+    static CreateSessionAdvancedMenu* Me();      // ?Me@CreateSessionAdvancedMenu@@SAPAV1@XZ
+    void GrabSessionName();                      // ?GrabSessionName@CreateSessionAdvancedMenu@@IAEXXZ
+    virtual ~CreateSessionAdvancedMenu();        // ??1CreateSessionAdvancedMenu@@UAE@XZ
+    virtual void OnDeactivate(FEMenu* m);        // ?OnDeactivate@CreateSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z
+    virtual void Draw();                         // ?Draw@CreateSessionAdvancedMenu@@UAEXXZ
+    virtual void Update(float time_inc);         // ?Update@CreateSessionAdvancedMenu@@UAEXM@Z
+    virtual void OnTriangle(int c);              // ?OnTriangle@CreateSessionAdvancedMenu@@UAEXH@Z
+    virtual void OnActivate();                   // ?OnActivate@CreateSessionAdvancedMenu@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);    // ?SetPanelFile@CreateSessionAdvancedMenu@@UAEXPAVPanelFile@@@Z
+};
+static_assert(sizeof(CreateSessionAdvancedMenu) == 0x120,
+              "CreateSessionAdvancedMenu size mismatch");
+
+class CreateLanSessionAdvancedMenu : public FEMenu {
+public:
+    ae_array<PanelQuad*, 4> m_pBackgroundArt;      // +0x4C
+    ae_array<PanelQuad*, 6> m_pBackgroundRow;      // +0x5C
+    ae_array<PanelQuad*, 5> m_pBackgroundLine;     // +0x74
+    ae_array<FEText*, 4>    m_pText;               // +0x88
+    ae_array<FEText*, 12>   m_pSlotText;           // +0x98
+    ae_array<PanelQuad*, 12> m_pSlotArrow;         // +0xC8
+    FEComboBox* m_TimeLimitCombo;                  // +0xF8
+    FEComboBox* m_ScoreLimitCombo;                 // +0xFC
+    FEComboBox* m_AutoTeamBalanceCombo;            // +0x100
+    FEComboBox* m_TeamDamageCombo;                 // +0x104
+    FEComboBox* m_VotingCombo;                     // +0x108
+    FEComboBox* m_PenaltyVoteCombo;                // +0x10C
+    char m_szSessionName[16];                      // +0x110
+
+    CreateLanSessionAdvancedMenu(FEMenuSystem* s);  // ??0CreateLanSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z
+    static CreateLanSessionAdvancedMenu* Me();      // ?Me@CreateLanSessionAdvancedMenu@@SAPAV1@XZ
+    void GrabSessionName();                         // ?GrabSessionName@CreateLanSessionAdvancedMenu@@IAEXXZ
+    virtual ~CreateLanSessionAdvancedMenu();        // ??1CreateLanSessionAdvancedMenu@@UAE@XZ
+    virtual void OnDeactivate(FEMenu* m);           // ?OnDeactivate@CreateLanSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z
+    virtual void Draw();                            // ?Draw@CreateLanSessionAdvancedMenu@@UAEXXZ
+    virtual void Update(float time_inc);            // ?Update@CreateLanSessionAdvancedMenu@@UAEXM@Z
+    virtual void OnTriangle(int c);                 // ?OnTriangle@CreateLanSessionAdvancedMenu@@UAEXH@Z
+    virtual void OnUp(int c);                       // ?OnUp@CreateLanSessionAdvancedMenu@@UAEXH@Z
+    virtual void OnDown(int c);                     // ?OnDown@CreateLanSessionAdvancedMenu@@UAEXH@Z
+    virtual void OnActivate();                      // ?OnActivate@CreateLanSessionAdvancedMenu@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);       // ?SetPanelFile@CreateLanSessionAdvancedMenu@@UAEXPAVPanelFile@@@Z
+};
+static_assert(sizeof(CreateLanSessionAdvancedMenu) == 0x120,
+              "CreateLanSessionAdvancedMenu size mismatch");
+
+// ============================================================================
+// GameSettingsEdit / GameSettingsView - split-screen settings menus
+// ============================================================================
+class GameSettingsView : public FESplitScreenMenu {
+public:
+    int mScrollBarTopY;                  // +0x68
+    int mScrollBarBottomY;               // +0x6C
+    int mScrollBarYInc;                  // +0x70
+    PanelQuad* mScrollBarThumb;          // +0x74
+    FEText mSafeText;                    // +0x78
+    PanelQuadFader mScrollBarUpFader;    // +0xE8
+    PanelQuadFader mScrollBarDownFader;  // +0x100
+    sServerCreateParams* mCurrentServerParams;  // +0x118
+
+    virtual void Init();                 // ?Init@GameSettingsView@@UAEXXZ
+    virtual void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z
+    virtual void OnLeft(int c);          // ?OnLeft@GameSettingsView@@UAEXH@Z
+    virtual void OnRight(int c);         // ?OnRight@GameSettingsView@@UAEXH@Z
+    virtual void OnL1(int c);            // ?OnL1@GameSettingsView@@UAEXH@Z
+    virtual void OnR1(int c);            // ?OnR1@GameSettingsView@@UAEXH@Z
+    virtual void OnCross(int c);         // ?OnCross@GameSettingsView@@UAEXH@Z
+    virtual void OnTriangle(int c);      // ?OnTriangle@GameSettingsView@@UAEXH@Z
+    virtual void OnCircle(int c);        // ?OnCircle@GameSettingsView@@UAEXH@Z
+    virtual void OnSquare(int c);        // ?OnSquare@GameSettingsView@@UAEXH@Z
+protected:
+    virtual void ButtonHeldAction();     // ?ButtonHeldAction@GameSettingsView@@MAEXXZ
+    void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsView@@IAEXPAVPanelFile@@@Z
+};
+static_assert(sizeof(GameSettingsView) == 0x11C,
+              "GameSettingsView size mismatch");
+
+class GameSettingsEdit : public FESplitScreenMenu {
+public:
+    int mVersion;                        // +0x68
+    sServerCreateParams* mNextServerParams;  // +0x6C
+    int iLastOptionSelected;             // +0x70
+    int mLastGameType;                   // +0x74
+    int mScrollBarTopY;                  // +0x78
+    int mScrollBarBottomY;               // +0x7C
+    int mScrollBarYInc;                  // +0x80
+    PanelQuad* mScrollBarThumb;          // +0x84
+    FEText mSafeText;                    // +0x88
+    PanelQuadFader mScrollBarUpFader;    // +0xF8
+    PanelQuadFader mScrollBarDownFader;  // +0x110
+    unsigned char m_ucLastHighlighted;   // +0x128
+    unsigned char m_FirstTimeAccessedByte;  // +0x129
+
+    virtual void Init();                 // ?Init@GameSettingsEdit@@UAEXXZ
+    virtual void OnL1(int c);            // ?OnL1@GameSettingsEdit@@UAEXH@Z
+    virtual void OnR1(int c);            // ?OnR1@GameSettingsEdit@@UAEXH@Z
+    virtual void OnCross(int c);         // ?OnCross@GameSettingsEdit@@UAEXH@Z
+    virtual void OnCircle(int c);        // ?OnCircle@GameSettingsEdit@@UAEXH@Z
+    virtual void OnSquare(int c);        // ?OnSquare@GameSettingsEdit@@UAEXH@Z
+    virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
+protected:
+    bool ResponseNoJustGoBackToPauseMenuHelper();  // ?ResponseNoJustGoBackToPauseMenuHelper@GameSettingsEdit@@IAE_NXZ
+    virtual void ButtonHeldAction();     // ?ButtonHeldAction@GameSettingsEdit@@MAEXXZ
+    void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
+};
+static_assert(sizeof(GameSettingsEdit) == 0x12C,
+              "GameSettingsEdit size mismatch");
+
+// AAR variants (same layouts, own vtables)
+class AARGameSettingsEdit : public GameSettingsEdit {
+public:
+    static AARGameSettingsEdit* Me(int version);  // ?Me@AARGameSettingsEdit@@SAPAV1@H@Z
+};
+static_assert(sizeof(AARGameSettingsEdit) == 0x12C,
+              "AARGameSettingsEdit size mismatch");
+
+class AARGameSettingsView : public GameSettingsView {
+public:
+    static AARGameSettingsView* Me(int version);  // ?Me@AARGameSettingsView@@SAPAV1@H@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AARGameSettingsView@@UAEXPAVPanelFile@@@Z
+};
+static_assert(sizeof(AARGameSettingsView) == 0x11C,
+              "AARGameSettingsView size mismatch");
+
+// ============================================================================
+// InitialLoadingMenu / InstantActionMenu / PlayLanMenu / PlayOnlineMenu /
+// PressStartMenu - FE menu stubs (mp_shell.o)
+// ============================================================================
+class InitialLoadingMenu : public FEMenu {
+public:
+    float mTime;                         // +0x4C
+
+    static InitialLoadingMenu* Me();     // ?Me@InitialLoadingMenu@@SAPAV1@XZ
+    virtual void Select(int entry_num);  // ?Select@InitialLoadingMenu@@UAEXH@Z
+};
+static_assert(sizeof(InitialLoadingMenu) == 0x50,
+              "InitialLoadingMenu size mismatch");
+
+class InstantActionMenu : public FEMenu {
+public:
+    static InstantActionMenu* Me();      // ?Me@InstantActionMenu@@SAPAV1@XZ
+    virtual void OnActivate();           // ?OnActivate@InstantActionMenu@@UAEXXZ
+    virtual void OnTriangle(int c);      // ?OnTriangle@InstantActionMenu@@UAEXH@Z
+};
+static_assert(sizeof(InstantActionMenu) == 0x4C,
+              "InstantActionMenu size mismatch");
+
+class PlayLanMenu : public FEMenu {
+public:
+    bool mJoiningFriend;                 // +0x4C
+    ae_array<PanelQuad*, 3> m_pBackgroundArt;   // +0x50
+    ae_array<PanelQuad*, 5> m_pBackgroundButtons;  // +0x5C
+    ae_array<FEText*, 4>    m_pText;     // +0x70
+    ae_array<FEText*, 3>    m_pOptionText;  // +0x80
+    ae_array<PanelQuad*, 3> m_pImages;   // +0x8C
+    UIListBox mListBox;                  // +0x98
+
+    static PlayLanMenu* Me();            // ?Me@PlayLanMenu@@SAPAV1@XZ
+    virtual void OnDeactivate(FEMenu* m);// ?OnDeactivate@PlayLanMenu@@UAEXPAVFEMenu@@@Z
+    virtual void OnTriangle(int c);      // ?OnTriangle@PlayLanMenu@@UAEXH@Z
+};
+static_assert(sizeof(PlayLanMenu) == 0x144,
+              "PlayLanMenu size mismatch");
+
+class PlayOnlineMenu : public FEMenu {
+public:
+    static int m_currSelection;          // ?m_currSelection@PlayOnlineMenu@@1HA @ 0xE381C4
+    bool mJoiningFriend;                 // +0x4C
+    unsigned int friendIcon;             // +0x50
+    PanelQuad* m_pBkgDetail4;            // +0x54
+    PanelQuad* m_pBkgDetail5;            // +0x58
+    bool m_IsQuickMatchReady;            // +0x5C
+
+    static PlayOnlineMenu* Me();         // ?Me@PlayOnlineMenu@@SAPAV1@XZ
+    virtual void OnDeactivate(FEMenu* m);// ?OnDeactivate@PlayOnlineMenu@@UAEXPAVFEMenu@@@Z
+    virtual void OnTriangle(int c);      // ?OnTriangle@PlayOnlineMenu@@UAEXH@Z
+};
+static_assert(sizeof(PlayOnlineMenu) == 0x60,
+              "PlayOnlineMenu size mismatch");
+
+class PressStartMenu : public FEMenu {
+public:
+    static PressStartMenu* Me();         // ?Me@PressStartMenu@@SAPAV1@XZ
+    virtual void Select(int entry_num);  // ?Select@PressStartMenu@@UAEXH@Z
+    virtual void OnTriangle(int c);      // ?OnTriangle@PressStartMenu@@UAEXH@Z
+    virtual void OnStart(int c);         // ?OnStart@PressStartMenu@@UAEXH@Z
+};
+static_assert(sizeof(PressStartMenu) == 0x4C,
+              "PressStartMenu size mismatch");
 
 // ============================================================================
 // OverlayMenuBase - FEMenu + 3 ints (0x58), verified against IDA

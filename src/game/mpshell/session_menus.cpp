@@ -157,6 +157,7 @@ unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccess
 unsigned char CreateLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateLanSessionMenu@@1EA @ 0x1388D55
 unsigned char FindSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@FindSessionMenu@@1EA @ 0x1388D56
 unsigned char FindLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@FindLanSessionMenu@@1EA @ 0x1388D57
+int PlayOnlineMenu::m_currSelection;  // ?m_currSelection@PlayOnlineMenu@@1HA @ 0xE381C4
 
 // ============================================================================
 // Small accessors (mp_shell.o, 16-byte functions)
@@ -1037,4 +1038,263 @@ void FindLanSessionMenu::OnDown(int c)
     (void)c;
     Down();
     UpdateHighlight();
+}
+
+// ============================================================================
+// CreateSessionAdvancedMenu / CreateLanSessionAdvancedMenu
+// ============================================================================
+
+// ea: 0x0078CAD0
+CreateSessionAdvancedMenu* CreateSessionAdvancedMenu::Me()
+{
+    return (CreateSessionAdvancedMenu*)g_femanager.fems->menus[2];
+}
+
+// ea: 0x0078CE80
+CreateLanSessionAdvancedMenu* CreateLanSessionAdvancedMenu::Me()
+{
+    return (CreateLanSessionAdvancedMenu*)g_femanager.fems->menus[3];
+}
+
+// ============================================================================
+// GameSettingsEdit / GameSettingsView (mp_shell.o GameSettings*.cpp)
+// ============================================================================
+
+// ea: 0x0078D5A0
+void GameSettingsEdit::Init()
+{
+}
+
+// ea: 0x0078D710
+void GameSettingsEdit::OnL1(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078D720
+void GameSettingsEdit::OnR1(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078D730
+void GameSettingsEdit::OnCross(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078D740
+bool GameSettingsEdit::ResponseNoJustGoBackToPauseMenuHelper()
+{
+    system->ReturnToPreviousMenu(-1);
+    return true;
+}
+
+// ea: 0x0078D780
+void GameSettingsEdit::OnCircle(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078D790
+void GameSettingsEdit::OnSquare(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078D7A0
+void GameSettingsEdit::OnStart(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078D7B0
+void GameSettingsEdit::ButtonHeldAction()
+{
+}
+
+// ea: 0x0078D8D0
+AARGameSettingsEdit* AARGameSettingsEdit::Me(int version)
+{
+    (void)version;
+    return (AARGameSettingsEdit*)g_femanager.mAARS->menus[6];
+}
+
+// ea: 0x0078D990
+void GameSettingsView::Init()
+{
+}
+
+// ea: 0x0078DF70 (thunk)
+void GameSettingsView::OnDeactivate(FESplitScreenMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+}
+
+// ea: 0x0078DFA0
+void GameSettingsView::OnLeft(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078DFB0
+void GameSettingsView::OnRight(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078DFC0
+void GameSettingsView::OnL1(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078DFD0
+void GameSettingsView::OnR1(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078DFE0
+void GameSettingsView::OnCross(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078DFF0
+void GameSettingsView::OnTriangle(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(-1);
+}
+
+// ea: 0x0078E000
+void GameSettingsView::OnCircle(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078E010
+void GameSettingsView::OnSquare(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078E020
+void GameSettingsView::ButtonHeldAction()
+{
+}
+
+// ea: 0x0078E030
+AARGameSettingsView* AARGameSettingsView::Me(int version)
+{
+    (void)version;
+    return (AARGameSettingsView*)g_femanager.mAARS->menus[7];
+}
+
+// ea: 0x0078E040 (thunk)
+void AARGameSettingsView::SetPanelFile(PanelFile* pf)
+{
+    SetPanelFileMain(pf);
+}
+
+// ============================================================================
+// InitialLoadingMenu / InstantActionMenu / PlayLanMenu / PlayOnlineMenu /
+// PressStartMenu
+// ============================================================================
+
+// ea: 0x0078E160
+void InitialLoadingMenu::Select(int entry_num)
+{
+    (void)entry_num;
+}
+
+// ea: 0x0078E220
+InitialLoadingMenu* InitialLoadingMenu::Me()
+{
+    return (InitialLoadingMenu*)g_femanager.fems->menus[6];
+}
+
+// ea: 0x0078E280 (thunk)
+void InstantActionMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+}
+
+// ea: 0x0078E410
+void InstantActionMenu::OnTriangle(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(-1);
+}
+
+// ea: 0x0078E6A0
+InstantActionMenu* InstantActionMenu::Me()
+{
+    return (InstantActionMenu*)g_femanager.fems->menus[7];
+}
+
+// ea: 0x0078E6B0
+void PlayLanMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+}
+
+// ea: 0x0078E770
+void PlayLanMenu::OnTriangle(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(8);
+}
+
+// ea: 0x0078E780
+PlayLanMenu* PlayLanMenu::Me()
+{
+    return (PlayLanMenu*)g_femanager.fems->menus[9];
+}
+
+// ea: 0x0078E7E0
+void PlayOnlineMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    PlayOnlineMenu::m_currSelection = highlighted;
+}
+
+// ea: 0x0078E810
+void PlayOnlineMenu::OnTriangle(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(8);
+}
+
+// ea: 0x0078E820
+PlayOnlineMenu* PlayOnlineMenu::Me()
+{
+    return (PlayOnlineMenu*)g_femanager.fems->menus[10];
+}
+
+// ea: 0x0078EA50
+void PressStartMenu::Select(int entry_num)
+{
+    (void)entry_num;
+}
+
+// ea: 0x0078EA60
+void PressStartMenu::OnTriangle(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078EA70
+void PressStartMenu::OnStart(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(-1);
+}
+
+// ea: 0x0078EB00
+PressStartMenu* PressStartMenu::Me()
+{
+    return (PressStartMenu*)g_femanager.fems->menus[11];
 }
