@@ -621,6 +621,7 @@ public:
     static unsigned long mGameListingNumGames;  // ?mGameListingNumGames@MPUIInterface@@1KA @ 0xF93FB0
     static unsigned char mGameListings[1600];   // ?mGameListings@MPUIInterface@@1PAEA @ 0xF93DC8
     static bool mQueryFromID;                   // ?mQueryFromID@MPUIInterface@@1_NA @ 0xF93FAC
+    static int  mMaxScoreLimitCount;            // ?mMaxScoreLimitCount@MPUIInterface@@1HA @ 0xE36E8C
     static struct sServerQueryParams mQueryParams;  // ?mQueryParams@MPUIInterface@@1UsServerQueryParams@@A
     static const char* mGameTypeStrings[6];       // ?mGameTypeStrings@MPUIInterface@@1PAPBDA
     static const char* mGameTypeShortStrings[6];  // ?mGameTypeShortStrings@MPUIInterface@@1PAPBDA

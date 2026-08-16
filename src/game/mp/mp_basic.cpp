@@ -4602,6 +4602,7 @@ bool MPUIInterface::mKicked;
 bool MPUIInterface::mHostMigrated;
 bool MPUIInterface::mHostDisconnected;
 unsigned long MPUIInterface::mGameListingNumGames;
+int MPUIInterface::mMaxScoreLimitCount;  // ?mMaxScoreLimitCount@MPUIInterface@@1HA @ 0xE36E8C
 
 const int MPUIInterface::GetTimeLimitCount()
 {

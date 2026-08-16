@@ -322,7 +322,10 @@ add_library(cod3_game_mp STATIC
     src/game/mp/stubs_game.cpp
     src/game/mp/mp_basic.cpp
 )
-add_library(cod3_game_mpshell STATIC src/game/mpshell/stubs_game.cpp)
+add_library(cod3_game_mpshell STATIC
+    src/game/mpshell/stubs_game.cpp
+    src/game/mpshell/session_menus.cpp
+)
 add_library(cod3_game_shell STATIC
     src/game/shell/stubs_game.cpp
     src/game/shell/stub_data.cpp

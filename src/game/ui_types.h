@@ -2669,6 +2669,7 @@ public:
                FEText* label, PanelQuad* leftArrow,
                PanelQuad* rightArrow);  // 0x57E0E0
     virtual ~FEComboBox();              // 0x58E180
+    short GetCurrOption() const;        // ?GetCurrOption@FEComboBox@@QBEFXZ (mp_shell.o 0x78BEB0)
     virtual short OnLeft();             // 0x586260
     virtual short OnRight();            // 0x586310
     virtual void Draw();                // 0x5714F0
@@ -2923,6 +2924,7 @@ public:
 
     void RemoveAllItems();          // 0x5816B0
     void SetItemState(int row, int column, int state);  // 0x581990
+    void BlockRefresh(bool block);  // ?BlockRefresh@UIListBox@@QAEX_N@Z (mp_shell.o 0x78BEE0)
     void PageDown(int numPageRows);  // 0x581B00
     void PageUp(int numPageRows);    // 0x581BC0
     void SetAllColumnsSelectable(bool selectable);  // 0x581D40
