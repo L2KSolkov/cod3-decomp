@@ -87,6 +87,7 @@ extern void YawVectors(float yaw, float* const forward,
 extern bool gLogAllPktTypes;   // ?gLogAllPktTypes@@3_NA @ 0xF93FA0
 extern int dword_E36ECC;       // @ 0xE36ECC (score stat scale)
 extern int dword_E36EE0;       // @ 0xE36EE0 (score stat scale)
+extern float distance;         // @ 0xE37624 (net debug draw radius filter)
 extern int dword_F6419C[4 * 1580];  // cg.o @ 0xF6419C
 extern int dword_F641A0[4 * 1580];  // cg.o @ 0xF641A0
 extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
@@ -23801,11 +23802,172 @@ struct DebugUpdatePoint {
         math::Position3 point;
         math::Dir3      velocity;
         math::Position3 angles;
+        float           timeDelta;  // +0x30
+        uint8_t         _pad34[0x40 - 0x34];
     } local, remote;
+    math::Position3 adjustedAngles;    // +0x80
+    math::Position3 adjustedPoint;     // +0x90
+    float           timeDeltaDifference;  // +0xA0
+    float           t;                     // +0xA4
+    uint8_t         _padA8[0xB0 - 0xA8];
 };
 extern int localPoint;  // ?localPoint@PlayerDebug@@3HA @ 0xF93F84
 extern DebugUpdatePoint points[40];  // ?points@PlayerDebug@@3PAUDebugUpdatePoint@1@A @ 0xF962D0
 }  // namespace PlayerDebug
+
+// ea: 0x00736670
+void MPPlayer::DebugRender()
+{
+    if (MPPlayer::sDebugNetworkUpdates != 0)
+    {
+        __m128 v43 = _mm_set1_ps(30.0f);
+        for (int v79 = 0; v79 < 40; ++v79)
+        {
+            PlayerDebug::DebugUpdatePoint* p =
+                &PlayerDebug::points[v79];
+            float radius = 5.0f;
+            if (currCl >= 16)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EntityManager.h";
+                AeAssert::gCurrentLine = 19;
+                AeAssert::gCurrentExpr = "idx<16";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            __m128 v3 = p->local.point.v;
+            __m128 v5 = _mm_sub_ps(
+                EntityManager::sInst->mPlayers[currCl]
+                    ->r.currentOrigin.v,
+                v3);
+            __m128 v6 = _mm_mul_ps(v5, v5);
+            float v59 = v6.m128_f32[0]
+                + (v6.m128_f32[1] + v6.m128_f32[2]);
+            if (distance > sqrtf(v59))
+            {
+                int v7 = v79 - 1;
+                if (v7 < 0)
+                    v7 = 39;
+                PlayerDebug::DebugUpdatePoint* prev =
+                    &PlayerDebug::points[v7];
+                __m128 v10 = _mm_mul_ps(p->remote.velocity.v,
+                                        p->remote.velocity.v);
+                float v60 = v10.m128_f32[0]
+                    + (v10.m128_f32[1] + v10.m128_f32[2]);
+                __m128 v11 = _mm_mul_ps(p->local.velocity.v,
+                                        p->local.velocity.v);
+                float v74 = v11.m128_f32[0]
+                    + (v11.m128_f32[1] + v11.m128_f32[2]);
+                __m128 v12 = _mm_sub_ps(p->local.point.v,
+                                        prev->local.point.v);
+                __m128 v13 = _mm_mul_ps(v12, v12);
+                float v72 = v13.m128_f32[0]
+                    + (v13.m128_f32[1] + v13.m128_f32[2]);
+                __m128 v15 = _mm_sub_ps(p->remote.point.v,
+                                        prev->remote.point.v);
+                __m128 v16 = _mm_mul_ps(v15, v15);
+                float v66 = v16.m128_f32[0]
+                    + (v16.m128_f32[1] + v16.m128_f32[2]);
+                Color v49(1.0f, 1.0f, 1.0f, 1.0f);
+                DebugRender::RenderText(
+                    va("Angles: %g %g",
+                       p->local.angles.v.m128_f32[1],
+                       p->remote.angles.v.m128_f32[1]),
+                    400, 145, v49, -510.0f, 0.9f);
+                DebugRender::RenderText(
+                    va("Vel: %g %g", sqrtf(v74), sqrtf(v60)),
+                    400, 175, v49, -510.0f, 0.9f);
+                DebugRender::RenderText(
+                    va("Dist: %g %g", sqrtf(v72), sqrtf(v66)),
+                    400, 190, v49, -510.0f, 0.9f);
+                radius = 10.0f;
+                if (v79 == PlayerDebug::localPoint)
+                    PlayerDebug::localPoint =
+                        (PlayerDebug::localPoint + 1) % 40;
+            }
+            Color red(1.0f, 0.0f, 0.0f, 0.3f);
+            DebugRender::RenderSphere(p->local.point, radius, red);
+            Color green(0.0f, 1.0f, 0.0f, 0.3f);
+            DebugRender::RenderSphere(p->remote.point, radius, green);
+            Color blue(0.0f, 0.0f, 1.0f, 0.3f);
+            DebugRender::RenderSphere(p->adjustedPoint, radius, blue);
+
+            // local angle forward line (red)
+            {
+                math::Vector4 v41;
+                v41.v = _mm_set1_ps(
+                    p->local.angles.v.m128_f32[1] * 0.017453292f);
+                math::Vector4 v31 = math::SinCos<3, 0, 3, 0>(v41);
+                math::Vector4 v39;
+                v39.v = _mm_set1_ps(
+                    p->local.angles.v.m128_f32[0] * 0.017453292f);
+                math::Vector4 v33 = math::SinCos<3, 0, 3, 0>(v39);
+                float dir[3];
+                dir[0] = v33.v.m128_f32[1] * v31.v.m128_f32[1];
+                dir[1] = v33.v.m128_f32[1] * v31.v.m128_f32[0];
+                dir[2] = -v33.v.m128_f32[0];
+                math::Position3 pt1 = p->local.point;
+                math::Position3 pt2;
+                pt2.v = _mm_add_ps(
+                    pt1.v,
+                    _mm_mul_ps(_mm_setr_ps(dir[0], dir[1], dir[2], 0.0f),
+                               v43));
+                Color lineRed(1.0f, 0.0f, 0.0f, 1.0f);
+                DebugRender::RenderLine(pt1, pt2, lineRed, 0.2f);
+            }
+
+            // remote angle forward line (green)
+            {
+                math::Vector4 v29;
+                v29.v = _mm_set1_ps(
+                    p->remote.angles.v.m128_f32[1] * 0.017453292f);
+                math::Vector4 v35 = math::SinCos<3, 0, 3, 0>(v29);
+                math::Vector4 v42;
+                v42.v = _mm_set1_ps(
+                    p->remote.angles.v.m128_f32[0] * 0.017453292f);
+                math::Vector4 v40v = math::SinCos<3, 0, 3, 0>(v42);
+                float dir[3];
+                dir[0] = v40v.v.m128_f32[1] * v35.v.m128_f32[1];
+                dir[1] = v40v.v.m128_f32[1] * v35.v.m128_f32[0];
+                dir[2] = -v40v.v.m128_f32[0];
+                math::Position3 pt1 = p->local.point;
+                math::Position3 pt2;
+                pt2.v = _mm_add_ps(
+                    pt1.v,
+                    _mm_mul_ps(_mm_setr_ps(dir[0], dir[1], dir[2], 0.0f),
+                               v43));
+                Color lineGreen(0.0f, 1.0f, 0.0f, 1.0f);
+                DebugRender::RenderLine(pt1, pt2, lineGreen, 0.2f);
+            }
+
+            // adjusted angle forward line (blue)
+            {
+                math::Vector4 v36;
+                v36.v = _mm_set1_ps(
+                    p->adjustedAngles.v.m128_f32[1] * 0.017453292f);
+                math::Vector4 v34 = math::SinCos<3, 0, 3, 0>(v36);
+                math::Vector4 v32;
+                v32.v = _mm_set1_ps(
+                    p->adjustedAngles.v.m128_f32[0] * 0.017453292f);
+                math::Vector4 v30 = math::SinCos<3, 0, 3, 0>(v32);
+                float dir[3];
+                dir[0] = v30.v.m128_f32[1] * v34.v.m128_f32[1];
+                dir[1] = v30.v.m128_f32[1] * v34.v.m128_f32[0];
+                dir[2] = -v30.v.m128_f32[0];
+                math::Position3 pt1 = p->local.point;
+                math::Position3 pt2;
+                pt2.v = _mm_add_ps(
+                    pt1.v,
+                    _mm_mul_ps(_mm_setr_ps(dir[0], dir[1], dir[2], 0.0f),
+                               v43));
+                Color lineBlue(0.0f, 0.0f, 1.0f, 1.0f);
+                DebugRender::RenderLine(pt1, pt2, lineBlue, 0.2f);
+            }
+        }
+    }
+}
 
 // ea: 0x007468D0
 bool MPPlayer::deserialize(bdReference<bdBitBuffer> buffer)
