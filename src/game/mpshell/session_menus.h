@@ -1003,6 +1003,7 @@ public:
     virtual void OnUp(int c);         // ?OnUp@InGameScoreBoard@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@InGameScoreBoard@@UAEXH@Z
     virtual void OnActivate();        // ?OnActivate@InGameScoreBoard@@UAEXXZ
+    virtual void Update(float time_inc);  // ?Update@InGameScoreBoard@@UAEXM@Z
     virtual void OnSelect(int c);     // ?OnSelect@InGameScoreBoard@@UAEXH@Z
     virtual void UpdateSplitScreen(); // ?UpdateSplitScreen@InGameScoreBoard@@UAEXXZ
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@InGameScoreBoard@@UAEXPAVFEMenu@@@Z

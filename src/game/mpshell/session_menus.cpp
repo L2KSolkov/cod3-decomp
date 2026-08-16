@@ -9080,6 +9080,135 @@ void OverlayMenu::Update(float time_inc)
     }
 }
 
+// ea: 0x007A26A0
+void InGameScoreBoard::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    m_ListBox.Update(time_inc);
+    int v3;
+    if (cgGlobal.teamScores[2] <= cgGlobal.teamScores[1])
+        v3 = 2 * (cgGlobal.teamScores[1] <= cgGlobal.teamScores[2]) + 1;
+    else
+        v3 = 2;
+    SetWinningTeam((team_t)v3);
+    MPPlayerManager* pPlayerManager =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    memset(&m_playerList, 0, sizeof(m_playerList));
+    int iPlayersSortedCount = 0;
+    int current_selection = -1;
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v5 = EntityManager::sInst->mPlayers[i];
+        if (v5 != nullptr)
+        {
+            sentient_s* sentient = v5->sentient;
+            if (sentient != nullptr)
+            {
+                team_t eTeam = sentient->eTeam;
+                Client* client = v5->client;
+                int bIsCurrentlyDead = client->pers.mBaseScore;
+                for (int c = 0; c < 7; ++c)
+                    bIsCurrentlyDead +=
+                        PlayerStats::TotalScoreForStats(client->pers.mStats[c]);
+                if (!cgGlobal.teamGame || eTeam == m_cgTeamShown)
+                {
+                    m_playerList.m_elements[iPlayersSortedCount].iScore =
+                        bIsCurrentlyDead;
+                    m_playerList.m_elements[iPlayersSortedCount].iPlayerIndex =
+                        pPlayerManager->GetPlayerIndex(v5);
+                    m_playerList.m_elements[iPlayersSortedCount++].pEntity =
+                        v5;
+                }
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/InGameScoreBoard.cpp";
+            AeAssert::gCurrentLine = 399;
+            AeAssert::gCurrentExpr = "pEntity";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get entity from player"))
+                __debugbreak();
+        }
+    }
+    qsort(&m_playerList, iPlayersSortedCount, sizeof(sScoreboardPlayerSlot),
+          scoreboard_player_sorter);
+    int v12 = iPlayersSortedCount;
+    int v13 = 0;
+    m_ListBox.mBlockRefresh = true;
+    if (iPlayersSortedCount > 0)
+    {
+        for (int i = 0; v13 < iPlayersSortedCount; ++v13, ++i)
+        {
+            Entity* v15 = m_playerList.m_elements[i].pEntity;
+            if (v15 != nullptr)
+            {
+                if (current_selection < 0
+                    && v15 == EntityManager::sInst->mPlayers[mVersion])
+                    current_selection = v13;
+                MPPlayer* Player = pPlayerManager->GetPlayer(v15);
+                if (Player != nullptr)
+                    m_ListBox.SetPlayerID(v13, Player->GetId());
+                Client* v18 = v15->client;
+                int v19 = 0;  // kills
+                int v20 = 0;  // deaths
+                for (int c = 0; c < 7; ++c)
+                {
+                    v19 += v18->pers.mStats[c][3];
+                    v20 += v18->pers.mStats[c][4];
+                }
+                const char* pszPlayerName = pPlayerManager->GetPlayerName(
+                    (unsigned char)m_playerList.m_elements[i].iPlayerIndex);
+                int16_t sCurrentPlayerTeamb = 0;
+                if (v15->sentient != nullptr)
+                    sCurrentPlayerTeamb = v15->sentient->eTeam;
+                int sCurrentPlayerClassb = v18->pers.playerClass;
+                if (sCurrentPlayerClassb == -1)
+                    sCurrentPlayerClassb = 2;
+                int playerState = v18->pers.playerState;
+                bool v48 = (playerState == 4 || playerState == 5);
+                int iRank = v18->pers.rank;
+                int iScore = m_playerList.m_elements[i].iScore;
+                m_ListBox.SetText(v13, 2, pszPlayerName);
+                if (!cgGlobal.teamGame || m_bShowMyTeamScore)
+                    m_ListBox.SetItemState(v13, 3, sCurrentPlayerClassb + 1);
+                else
+                    m_ListBox.SetItemState(v13, 3, 0);
+                if (cgGlobal.teamGame)
+                    m_ListBox.SetItemState(v13, 1, 0);
+                else
+                    m_ListBox.SetItemState(v13, 1, sCurrentPlayerTeamb);
+                m_ListBox.SetText(v13, 4, va("%i", iScore));
+                m_ListBox.SetText(v13, 5, va("%i", v19));
+                m_ListBox.SetText(v13, 6, va("%i", v20));
+                if (v48)
+                    m_ListBox.SetItemState(v13, 0, 1);
+                else if (iRank + 2 < 4)
+                    m_ListBox.SetItemState(v13, 0, iRank + 2);
+            }
+        }
+        v12 = iPlayersSortedCount;
+    }
+    for (int j = v12; j < 16; ++j)
+        m_ListBox.ClearRow(j);
+    if (current_selection >= v12)
+    {
+        current_selection = v12 - 1;
+        m_bActivated = true;
+    }
+    if (current_selection < 0)
+        current_selection = 0;
+    m_ListBox.mBlockRefresh = false;
+    m_ListBox.Refresh();
+    if (m_bActivated)
+    {
+        m_ListBox.SelectLine(current_selection);
+        m_bActivated = false;
+    }
+}
+
 // ea: 0x007AC7A0
 void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
 {
