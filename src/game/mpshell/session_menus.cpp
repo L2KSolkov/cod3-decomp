@@ -3955,7 +3955,7 @@ void SpectateMenu::OnRight(int c)
 }
 
 // ea: 0x007931C0
-void ModelMenu::SetLightColor(unsigned int index, const math::Vector4* color)
+void ModelMenu::SetLightColor(int index, const math::Vector4& color)
 {
     if (index >= 2)
     {
@@ -3967,10 +3967,10 @@ void ModelMenu::SetLightColor(unsigned int index, const math::Vector4* color)
             && AeAssert::Assert("Invalid light index"))
             __debugbreak();
     }
-    mColors[index * 4 + 0] = color->v.m128_f32[0];
-    mColors[index * 4 + 1] = color->v.m128_f32[1];
-    mColors[index * 4 + 2] = color->v.m128_f32[2];
-    mColors[index * 4 + 3] = color->v.m128_f32[3];
+    mColors[index * 4 + 0] = color.v.m128_f32[0];
+    mColors[index * 4 + 1] = color.v.m128_f32[1];
+    mColors[index * 4 + 2] = color.v.m128_f32[2];
+    mColors[index * 4 + 3] = color.v.m128_f32[3];
 }
 
 // ea: 0x007A4480

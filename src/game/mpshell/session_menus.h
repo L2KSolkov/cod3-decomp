@@ -214,7 +214,9 @@ public:
 
     CreateSessionAdvancedMenu(FEMenuSystem* s);  // ??0CreateSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z
     static CreateSessionAdvancedMenu* Me();      // ?Me@CreateSessionAdvancedMenu@@SAPAV1@XZ
+protected:
     void GrabSessionName();                      // ?GrabSessionName@CreateSessionAdvancedMenu@@IAEXXZ
+public:
     virtual ~CreateSessionAdvancedMenu();        // ??1CreateSessionAdvancedMenu@@UAE@XZ
     virtual void OnDeactivate(FEMenu* m);        // ?OnDeactivate@CreateSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z
     virtual void Draw();                         // ?Draw@CreateSessionAdvancedMenu@@UAEXXZ
@@ -244,7 +246,9 @@ public:
 
     CreateLanSessionAdvancedMenu(FEMenuSystem* s);  // ??0CreateLanSessionAdvancedMenu@@QAE@PAVFEMenuSystem@@@Z
     static CreateLanSessionAdvancedMenu* Me();      // ?Me@CreateLanSessionAdvancedMenu@@SAPAV1@XZ
+protected:
     void GrabSessionName();                         // ?GrabSessionName@CreateLanSessionAdvancedMenu@@IAEXXZ
+public:
     virtual ~CreateLanSessionAdvancedMenu();        // ??1CreateLanSessionAdvancedMenu@@UAE@XZ
     virtual void OnDeactivate(FEMenu* m);           // ?OnDeactivate@CreateLanSessionAdvancedMenu@@UAEXPAVFEMenu@@@Z
     virtual void Draw();                            // ?Draw@CreateLanSessionAdvancedMenu@@UAEXXZ
@@ -352,7 +356,7 @@ public:
     virtual ~AARGameSettingsEdit();   // ??1AARGameSettingsEdit@@UAE@XZ
     virtual void Update(float time_inc);  // ?Update@AARGameSettingsEdit@@UAEXM@Z
     virtual void SetPanelFile(PanelFile* pf);     // ?SetPanelFile@AARGameSettingsEdit@@UAEXPAVPanelFile@@@Z
-protected:
+private:
     void SetTimerText();              // ?SetTimerText@AARGameSettingsEdit@@AAEXXZ
 };
 static_assert(sizeof(AARGameSettingsEdit) == 0x12C,
@@ -365,7 +369,7 @@ public:
     virtual ~AARGameSettingsView();   // ??1AARGameSettingsView@@UAE@XZ
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AARGameSettingsView@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc);  // ?Update@AARGameSettingsView@@UAEXM@Z
-protected:
+private:
     void SetTimerText();              // ?SetTimerText@AARGameSettingsView@@AAEXXZ
 };
 static_assert(sizeof(AARGameSettingsView) == 0x11C,
@@ -740,7 +744,7 @@ protected:
     void DebugRender();      // ?DebugRender@ModelMenu@@IAEXXZ
     void AddDObjToScene();   // ?AddDObjToScene@ModelMenu@@IAEXXZ
     void SetLightBrightness(int index, float brightness);  // ?SetLightBrightness@ModelMenu@@IAEXHM@Z
-    void SetLightColor(unsigned int index, const math::Vector4* color);  // ?SetLightColor@ModelMenu@@IAEXHABVVector4@math@@@Z
+    void SetLightColor(int index, const math::Vector4& color);  // ?SetLightColor@ModelMenu@@IAEXHABVVector4@math@@@Z
 };
 static_assert(sizeof(ModelMenu) == 0x110,
               "ModelMenu size mismatch");
