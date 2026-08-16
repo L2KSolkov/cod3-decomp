@@ -15,6 +15,24 @@
 }
 
 
+// ea: 0x0077BE60  (?Actor_NextActor@@YIPAUactor_s@@PAU1@H@Z)
+    actor_s* __fastcall Actor_NextActor(actor_s*, int)
+{
+    return nullptr;
+}
+
+// ea: 0x0077BE70  (?Actor_FirstActor@@YIPAUactor_s@@H@Z)
+    actor_s* __fastcall Actor_FirstActor(int)
+{
+    return nullptr;
+}
+
+// ea: 0x0077BE80  (?Actor_GetEnt@@YIPAVEntity@@PAUactor_s@@@Z)
+    Entity* __fastcall Actor_GetEnt(actor_s*)
+{
+    return nullptr;
+}
+
 // ea: 0x0077BE90  (?Actor_CheckArmor@@YAHPAUactor_s@@HH@Z)
     int Actor_CheckArmor(actor_s*, int, int)
 {

@@ -581,8 +581,6 @@ extern void G_DelayFreeAnimTree(void* tree);        // g.o
 extern void j_nullsub_57(actor_s* actor);           // g.o
 extern void Sentient_Free(sentient_s* sentient);    // mp_actors.o
 extern void G_FreeEntityRefs(Entity* ed);           // g.o
-extern actor_s* Actor_FirstActor(int iTeamFlags);   // mp_actors.o
-extern actor_s* Actor_NextActor(actor_s* prev, int iTeamFlags);  // mp_actors.o
 extern void j_nullsub_15(actor_s* self, Entity* other);          // g.o
 extern sentient_s* __fastcall Sentient_FirstSentient(int iTeamFlags);  // mp_actors.o
 extern sentient_s* __fastcall Sentient_NextSentient(sentient_s* prev, int iTeamFlags);  // mp_actors.o
@@ -2073,10 +2071,6 @@ void verify_is_in_physics_system(rigid_body_constraint_contact* a,
     (void)a; (void)b; (void)c;
 }
 
-struct actor_s;
-actor_s* Actor_FirstActor(int a) { (void)a; return nullptr; }
-actor_s* Actor_NextActor(actor_s* a, int b) { (void)a; (void)b; return nullptr; }
-Entity* Actor_GetEnt(actor_s* a) { (void)a; return nullptr; }
 struct biped_phys_info;
 biped_phys_info* create_biped_phys_info(Entity* e)
 {

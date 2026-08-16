@@ -3607,10 +3607,10 @@ void  YawToAxis(float yaw, float (*const axis)[3]);     // core.o
 XAnimTree* GScr_GetEntAnimTree(Entity* ent);      // g_scr.cpp
 scr_anim_s g_XAnimGetRoot(XAnimTree* tree);        // ?g_XAnimGetRoot@@YA?AUscr_anim_s@@PAVXAnimTree@@@Z (g.o)
 IVPointer<XModel> SV_XModelGet(const char* name);  // ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z (sv.o 0x51EC00)
-actor_s* Actor_FirstActor(int iTeamFlags);         // ?Actor_FirstActor@@YIPAUactor_s@@H@Z (mp_actors.o)
-Entity*  Actor_GetEnt(actor_s* pActor);            // ?Actor_GetEnt@@YIPAVEntity@@PAUactor_s@@@Z (mp_actors.o)
-actor_s* Actor_NextActor(actor_s* pPrevActor,
-                         int iTeamFlags);          // ?Actor_NextActor@@YIPAUactor_s@@PAU1@H@Z (mp_actors.o)
+actor_s* __fastcall Actor_FirstActor(int iTeamFlags);  // ?Actor_FirstActor@@YIPAUactor_s@@H@Z (mp_actors.o)
+Entity*  __fastcall Actor_GetEnt(actor_s* pActor);     // ?Actor_GetEnt@@YIPAVEntity@@PAUactor_s@@@Z (mp_actors.o)
+actor_s* __fastcall Actor_NextActor(actor_s* pPrevActor,
+                                    int iTeamFlags);   // ?Actor_NextActor@@YIPAUactor_s@@PAU1@H@Z (mp_actors.o)
 int CL_GetKeyBinding(const char* pszBinding,
                      const char** ppszKey1,
                      const char** ppszKey2);       // ?CL_GetKeyBinding@@YAHPBDPAPBD1@Z (cl.o)
