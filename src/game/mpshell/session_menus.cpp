@@ -367,6 +367,7 @@ extern void j_nullsub_46(void* self);  // g.o nullsub
 extern void j_nullsub_58(void* self, bool use);  // g.o nullsub
 extern int irand(int min, int max);  // ?irand@@YAHHH@Z (g.o)
 extern int g_NumBdMessages;  // ?g_NumBdMessages@@3HA (bd.o)
+extern ELanguage gLanguage;  // 0x012F03A4 (core.o)
 void ShowNotificationIcon(unsigned int* menuIcon, PanelQuad* inviteQuad,
                           PanelQuad* friendQuad);  // platform_xbox (XboxLiveMenus.cpp)
 namespace PlayerStats {
@@ -8394,6 +8395,153 @@ void SessionDetailsMenu::SetPanelFile(PanelFile* pf)
     if (v30 != nullptr)
         v30->SetNumLines(1);
     helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+}
+
+// ea: 0x0078FD70
+void MultilineOverlayMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/MultilineOverlayMenu.cpp";
+        AeAssert::gCurrentLine = 95;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    FEText* header = panel->GetTextPointer("header");
+    AddEntry(0, header, false);
+    FEText* v5 = panel->GetTextPointer("body");
+    if (mTextEntry != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/MultilineOverlayMenu.cpp";
+        AeAssert::gCurrentLine = 100;
+        AeAssert::gCurrentExpr = "!mTextEntry";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("no!"))
+            __debugbreak();
+    }
+    FEMultiLineText* v6 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v7 = nullptr;
+    if (v6 != nullptr)
+    {
+        color32 col = v5->GetColor();
+        panel_layer layer = (panel_layer)v5->GetScaleX();
+        float x1 = v5->GetY();
+        float v25 = (float)(int)v5->GetZvalue();
+        v7 = new (v6)
+            FEMultiLineText(v5->GetFont(), x1, v25, 9, layer,
+                            0.0f, 0, 0, col);
+    }
+    mTextEntry = v7;
+    if (v7 != nullptr)
+        v7->SetNumLines(8);
+    AddEntry(1, mTextEntry, false);
+    FEText* ok = panel->GetTextPointer("ok");
+    AddEntry(2, ok, false);
+    FEText* cancel = panel->GetTextPointer("cancel");
+    AddEntry(3, cancel, false);
+    entries[2]->up = -1;
+    entries[2]->down = 3;
+    entries[3]->up = 2;
+    entries[3]->down = -1;
+    helpbar = panel->GetTextPointer("Helpbar");
+    FEMultiLineText* v15 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v19 = nullptr;
+    if (v15 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v22 = helpbar->GetX();
+        v19 = new (v15)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar1 = v19;
+    if (v19 != nullptr)
+        v19->SetNumLines(1);
+    mTextScale = entries[1]->GetScaleX();
+}
+
+// ea: 0x0079C800
+void PlayOnlineMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/PlayOnlineMenu.cpp";
+        AeAssert::gCurrentLine = 223;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    static const char* const szOnlineEntries[5] = {
+        "mm_text_screen_title", "mm_text_option_01", "mm_text_option_02",
+        "mm_text_option_03", "mm_text_option_04",
+    };
+    static const char* const szOnlineTexts[5] = {
+        "MPFRONTEND_MM_XBOX_LIVE", "MPFRONTEND_MM_QUICKMATCH",
+        "MPFRONTEND_MM_OPTIMATCH", "MPFRONTEND_MM_CREATE_GAME",
+        "MPFRONTEND_MM_XBOX_LIVE_OPTIONS",
+    };
+    for (int i = 0; i < 5; ++i)
+    {
+        FEText* t = panel->GetTextPointer(szOnlineEntries[i]);
+        AddEntry(i, t, false);
+    }
+    m_pBkgDetail4 = panel->GetPointer("mm_bkg_detail_04");
+    m_pBkgDetail5 = panel->GetPointer("mm_bkg_detail_05");
+    m_pBkgDetail4->SetShown(false);
+    m_pBkgDetail5->SetShown(false);
+    entries[0]->SetText(szOnlineTexts[0]);
+    entries[0]->SetColorSchemeIndex(11);
+    for (int i = 1; i < 5; ++i)
+    {
+        entries[i]->SetText(szOnlineTexts[i]);
+        entries[i]->SetColorSchemeIndex(10);
+    }
+    entries[4]->down = 1;
+    entries[1]->up = 4;
+    if (gLanguage == kLanguageFrench)
+    {
+        for (int i = 1; i < 5; ++i)
+            entries[i]->SetScale(0.6f);  // 1058642330 = 0.6f
+    }
+    helpbar = panel->GetTextPointer("mm_text_helpbar");
+    FEMultiLineText* v18 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v22 = nullptr;
+    if (v18 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v28 = helpbar->GetX();
+        v22 = new (v18)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar1 = v22;
+    if (v22 != nullptr)
+        v22->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+    static const char* const szPreviewImages[4] = {
+        "mm_preview_image_01", "mm_preview_image_02",
+        "mm_preview_image_03", "mm_preview_image_04",
+    };
+    for (int i = 0; i < 4; ++i)
+    {
+        PanelQuad* vq = panel->GetPointer(szPreviewImages[i]);
+        if (vq != nullptr)
+            vq->SetVisibility(0.0f);
+    }
 }
 
 // ea: 0x007AC7A0

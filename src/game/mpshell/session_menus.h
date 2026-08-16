@@ -499,6 +499,7 @@ public:
     virtual void OnActivate();           // ?OnActivate@PlayOnlineMenu@@UAEXXZ
     virtual void Update(float time_inc); // ?Update@PlayOnlineMenu@@UAEXM@Z
     virtual void Select(int entry_num, int c);  // ?Select@PlayOnlineMenu@@UAEXHH@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@PlayOnlineMenu@@UAEXPAVPanelFile@@@Z
 protected:
     void InitQuickMatchParameters(int c);  // ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z
     void UpdateTextDescription(int option);  // ?UpdateTextDescription@PlayOnlineMenu@@IAEXH@Z
@@ -755,6 +756,7 @@ public:
     MultilineOverlayMenu(FEMenuSystem* s);  // ??0MultilineOverlayMenu@@QAE@PAVFEMenuSystem@@@Z
     virtual void OnActivate();      // ?OnActivate@MultilineOverlayMenu@@UAEXXZ
     virtual void Select(int entry_num);  // ?Select@MultilineOverlayMenu@@UAEXH@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MultilineOverlayMenu@@UAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(MultilineOverlayMenu) == 0x68,
               "MultilineOverlayMenu size mismatch");
