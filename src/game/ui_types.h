@@ -1736,6 +1736,7 @@ public:
 protected:
     void SetPanelFileBackground(PanelFile* pf);  // 0x7931A0
     virtual void SwapMenus();       // ?SwapMenus@FESplitScreenMenu@@MAEXXZ (mp_shell.o 0x7930C0)
+private:
     FESplitScreenMenu(const FESplitScreenMenu&);  // ??0FESplitScreenMenu@@AAE@ABV0@@Z (copy ctor asserts)
 };
 static_assert(sizeof(FESplitScreenMenu) == 0x68,
