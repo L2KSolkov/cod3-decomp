@@ -152,6 +152,7 @@ extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
+extern void j_nullsub_46(void* self);  // g.o nullsub
 
 unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateSessionMenu@@1EA @ 0x1388D54
 unsigned char CreateLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateLanSessionMenu@@1EA @ 0x1388D55
@@ -1297,4 +1298,122 @@ void PressStartMenu::OnStart(int c)
 PressStartMenu* PressStartMenu::Me()
 {
     return (PressStartMenu*)g_femanager.fems->menus[11];
+}
+
+// ============================================================================
+// SessionDetailsMenu / SessionListMenu / SessionLanListMenu
+// ============================================================================
+
+// ea: 0x0078EB50 (thunk)
+void SessionDetailsMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    j_nullsub_46(this);
+}
+
+// ea: 0x0078EB80
+void SessionDetailsMenu::OnTriangle(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(-1);
+}
+
+// ea: 0x0078EE70
+SessionDetailsMenu* SessionDetailsMenu::Me()
+{
+    return (SessionDetailsMenu*)g_femanager.fems->menus[12];
+}
+
+// ea: 0x0078EEE0
+SessionListMenu* SessionListMenu::Me()
+{
+    return (SessionListMenu*)g_femanager.fems->menus[13];
+}
+
+// ea: 0x0078EF70
+SessionLanListMenu* SessionLanListMenu::Me()
+{
+    return (SessionLanListMenu*)g_femanager.fems->menus[14];
+}
+
+// ea: 0x0078EFA0
+void SessionLanListMenu::OnCross(int c)
+{
+    Select(c);
+}
+
+// ============================================================================
+// Overlay menu family (mp_shell.o overlay.cpp)
+// ============================================================================
+
+// ea: 0x0078F330
+void OverlayMenu::OnCircle(int c)
+{
+    (void)c;
+}
+
+// ea: 0x0078F4C0
+void OverlayMenu::LogonUpdate()
+{
+}
+
+// ea: 0x0078F4D0
+void InGameOverlay::Select(int __formal)
+{
+    (void)__formal;
+}
+
+// ea: 0x0078F780
+void InGameOverlay::OnCircle(int __formal)
+{
+    (void)__formal;
+}
+
+// ea: 0x0078F790
+void InGameOverlay::OnSquare(int __formal)
+{
+    (void)__formal;
+}
+
+// ea: 0x0078F870
+void AAROverlay::Select(int __formal)
+{
+    (void)__formal;
+}
+
+// ea: 0x0078FB10
+void AAROverlay::OnCircle(int __formal)
+{
+    (void)__formal;
+}
+
+// ea: 0x0078FB20
+void AAROverlay::OnSquare(int __formal)
+{
+    (void)__formal;
+}
+
+// ea: 0x00790030 (thunk)
+void MultilineFrontendOverlayMenu::OnCross(int c)
+{
+    FEMenu::OnCross(c);
+}
+
+// ea: 0x00790060
+MultilineFrontendOverlayMenu* MultilineFrontendOverlayMenu::Me()
+{
+    return (MultilineFrontendOverlayMenu*)g_femanager.fems->menus[17];
+}
+
+// ea: 0x007902A0 (thunk)
+void MultilineFrontendOverlayMenu::OnTriangle(int c)
+{
+    OverlayMenuBase::OnTriangle(c);
+}
+
+// ea: 0x00790920 (thunk)
+void VoteMapMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
 }

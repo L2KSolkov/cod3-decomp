@@ -273,7 +273,7 @@ public:
     sServerCreateParams* mCurrentServerParams;  // +0x118
 
     virtual void Init();                 // ?Init@GameSettingsView@@UAEXXZ
-    virtual void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z
+    void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z
     virtual void OnLeft(int c);          // ?OnLeft@GameSettingsView@@UAEXH@Z
     virtual void OnRight(int c);         // ?OnRight@GameSettingsView@@UAEXH@Z
     virtual void OnL1(int c);            // ?OnL1@GameSettingsView@@UAEXH@Z
@@ -403,6 +403,66 @@ static_assert(sizeof(PressStartMenu) == 0x4C,
               "PressStartMenu size mismatch");
 
 // ============================================================================
+// SessionDetailsMenu / SessionListMenu / SessionLanListMenu
+// ============================================================================
+class SessionDetailsMenu : public FEMenu {
+public:
+    unsigned int mNumGames;    // +0x4C
+    unsigned int mCurrentGame; // +0x50
+
+    static SessionDetailsMenu* Me();  // ?Me@SessionDetailsMenu@@SAPAV1@XZ
+    virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@SessionDetailsMenu@@UAEXPAVFEMenu@@@Z
+    virtual void OnTriangle(int c);       // ?OnTriangle@SessionDetailsMenu@@UAEXH@Z
+};
+static_assert(sizeof(SessionDetailsMenu) == 0x54,
+              "SessionDetailsMenu size mismatch");
+
+class SessionListMenu : public FEMultiMenu {
+public:
+    unsigned int mSortColumn;          // +0x4C
+    unsigned int mNumGames;            // +0x50
+    bool mShowDownArrow;               // +0x54
+    bool mShowUpArrow;                 // +0x55
+    bool mNeedToUpdate;                // +0x56
+    uint8_t _pad57[1];                 // +0x57
+    UIListBox m_ListBox;               // +0x58
+    ae_array<PanelQuad*, 5> m_pBackgroundArt;   // +0x104
+    ae_array<FEText*, 3> m_pText;               // +0x118
+    ae_array<FEText*, 4> m_pHeaderText;         // +0x124
+    FEText* m_pServerText;                      // +0x134
+    ae_array<PanelQuad*, 5> m_pConnectionStars; // +0x138
+    int mVisibleListToGameListMap[25];          // +0x14C
+    int m_currSelection;                        // +0x1B0
+
+    static SessionListMenu* Me();  // ?Me@SessionListMenu@@SAPAV1@XZ
+};
+static_assert(sizeof(SessionListMenu) == 0x1B4,
+              "SessionListMenu size mismatch");
+
+class SessionLanListMenu : public FEMultiMenu {
+public:
+    UIListBox m_ListBox;               // +0x4C
+    unsigned int mSortColumn;          // +0xF8
+    unsigned int mNumGames;            // +0xFC
+    bool mShowDownArrow;               // +0x100
+    bool mShowUpArrow;                 // +0x101
+    bool mNeedToUpdate;                // +0x102
+    uint8_t _pad103[1];                // +0x103
+    ae_array<PanelQuad*, 5> m_pBackgroundArt;   // +0x104
+    ae_array<FEText*, 3> m_pText;               // +0x118
+    ae_array<FEText*, 4> m_pHeaderText;         // +0x124
+    FEText* m_pServerText;                      // +0x134
+    ae_array<PanelQuad*, 5> m_pConnectionStars; // +0x138
+    int mVisibleListToGameListMap[25];          // +0x14C
+    int m_currSelection;                        // +0x1B0
+
+    static SessionLanListMenu* Me();  // ?Me@SessionLanListMenu@@SAPAV1@XZ
+    virtual void OnCross(int c);      // ?OnCross@SessionLanListMenu@@UAEXH@Z
+};
+static_assert(sizeof(SessionLanListMenu) == 0x1B4,
+              "SessionLanListMenu size mismatch");
+
+// ============================================================================
 // OverlayMenuBase - FEMenu + 3 ints (0x58), verified against IDA
 // ============================================================================
 class OverlayMenuBase : public FEMenu {
@@ -410,9 +470,122 @@ public:
     int mVersion;      // +0x4C
     int mAcceptMenu;   // +0x50
     int mBackMenu;     // +0x54
+    virtual void OnTriangle(int c);  // ?OnTriangle@OverlayMenuBase@@UAEXH@Z
 };
 static_assert(sizeof(OverlayMenuBase) == 0x58,
               "OverlayMenuBase size mismatch");
+
+// ============================================================================
+// InGameOverlay / AAROverlay - overlay menu family
+// ============================================================================
+class InGameOverlay : public OverlayMenuBase {
+public:
+    enum eState : int {
+        NO_OVERLAY = 0x0,
+        NETWORK_ERROR_COUNTDOWN = 0x1,
+        CONTROLLER_DISCONNECTED = 0x2,
+    };
+
+    eState m_State;                  // +0x58
+    int m_currSelection;             // +0x5C
+    UIListBox m_ListBox;             // +0x60
+    Broc::string m_Text;             // +0x10C
+    bool m_IsAARTimerEnabled;        // +0x110
+    uint8_t _pad111[3];              // +0x111
+    ae_array<PanelQuad*, 3> m_pBackgroundArt;  // +0x114
+    ae_array<FEText*, 2> m_pOptionText;        // +0x120
+    ae_array<PanelQuad*, 1> m_pOptionLines;    // +0x128
+
+    virtual void Select(int __formal);  // ?Select@InGameOverlay@@UAEXH@Z
+    virtual void OnCircle(int __formal);  // ?OnCircle@InGameOverlay@@UAEXH@Z
+    virtual void OnSquare(int __formal);  // ?OnSquare@InGameOverlay@@UAEXH@Z
+};
+static_assert(sizeof(InGameOverlay) == 0x12C,
+              "InGameOverlay size mismatch");
+
+class AAROverlay : public OverlayMenuBase {
+public:
+    enum eState : int {
+        NO_OVERLAY = 0x0,
+        NETWORK_ERROR_COUNTDOWN = 0x1,
+        CONTROLLER_DISCONNECTED = 0x2,
+    };
+
+    eState m_State;                  // +0x58
+    int m_currSelection;             // +0x5C
+    UIListBox m_ListBox;             // +0x60
+    Broc::string m_Text;             // +0x10C
+    bool m_IsAARTimerEnabled;        // +0x110
+    uint8_t _pad111[3];              // +0x111
+    ae_array<PanelQuad*, 3> m_pBackgroundArt;  // +0x114
+    ae_array<FEText*, 2> m_pOptionText;        // +0x120
+    ae_array<PanelQuad*, 1> m_pOptionLines;    // +0x128
+
+    virtual void Select(int __formal);  // ?Select@AAROverlay@@UAEXH@Z
+    virtual void OnCircle(int __formal);  // ?OnCircle@AAROverlay@@UAEXH@Z
+    virtual void OnSquare(int __formal);  // ?OnSquare@AAROverlay@@UAEXH@Z
+};
+static_assert(sizeof(AAROverlay) == 0x12C,
+              "AAROverlay size mismatch");
+
+// ============================================================================
+// MultilineOverlayMenu family
+// ============================================================================
+class MultilineOverlayMenu : public OverlayMenuBase {
+public:
+    Broc::string mText;             // +0x58
+    FEMultiLineText* mTextEntry;    // +0x5C
+    float mTextScale;               // +0x60
+    float mCountdown;               // +0x64
+};
+static_assert(sizeof(MultilineOverlayMenu) == 0x68,
+              "MultilineOverlayMenu size mismatch");
+
+class MultilineFrontendOverlayMenu : public MultilineOverlayMenu {
+public:
+    enum eState : int {
+        NO_OVERLAY = 0x0,
+        NETWORK_ERROR_COUNTDOWN = 0x1,
+        CONTROLLER_DISCONNECTED = 0x2,
+    };
+
+    eState mState;                  // +0x68
+    eState mCachedState;            // +0x6C
+    int mCachedAcceptMenu;          // +0x70
+    int mCachedBackMenu;            // +0x74
+
+    static MultilineFrontendOverlayMenu* Me();  // ?Me@MultilineFrontendOverlayMenu@@SAPAV1@XZ
+    virtual void OnCross(int c);    // ?OnCross@MultilineFrontendOverlayMenu@@UAEXH@Z
+    virtual void OnTriangle(int c); // ?OnTriangle@MultilineFrontendOverlayMenu@@UAEXH@Z
+};
+static_assert(sizeof(MultilineFrontendOverlayMenu) == 0x78,
+              "MultilineFrontendOverlayMenu size mismatch");
+
+class MultilineIngameOverlayMenu : public MultilineOverlayMenu {
+public:
+    enum eState : int {
+        NO_OVERLAY = 0x0,
+        NETWORK_ERROR_COUNTDOWN = 0x1,
+        CONTROLLER_DISCONNECTED = 0x2,
+    };
+
+    eState mState;                  // +0x68
+};
+static_assert(sizeof(MultilineIngameOverlayMenu) == 0x6C,
+              "MultilineIngameOverlayMenu size mismatch");
+
+// ============================================================================
+// VoteMapMenu / WeaponSelectMenu
+// ============================================================================
+class VoteMapMenu : public FEMenu {
+public:
+    void* mPlayerMgr;      // +0x4C (MPPlayerManager*)
+    void* mMapList;        // +0x50 (FEMenuListBox*)
+
+    virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@VoteMapMenu@@UAEXPAVFEMenu@@@Z
+};
+static_assert(sizeof(VoteMapMenu) == 0x54,
+              "VoteMapMenu size mismatch");
 
 // ============================================================================
 // OverlayMenu - front-end overlay (IDA verified; size 0x18C)
@@ -455,6 +628,8 @@ public:
     static OverlayMenu* Me(int version);  // ?Me@OverlayMenu@@SAPAV1@H@Z
     const eState GetState();              // ?GetState@OverlayMenu@@QAE?BW4eState@1@XZ
     void SetState(eState state);          // ?SetState@OverlayMenu@@QAEXW4eState@1@@Z
+    void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ
+    virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
 };
 static_assert(sizeof(OverlayMenu) == 0x148,
               "OverlayMenu size mismatch");
