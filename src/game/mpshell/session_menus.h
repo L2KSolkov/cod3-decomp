@@ -319,6 +319,7 @@ public:
     virtual void OnCircle(int c);        // ?OnCircle@GameSettingsEdit@@UAEXH@Z
     virtual void OnSquare(int c);        // ?OnSquare@GameSettingsEdit@@UAEXH@Z
     virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
+    void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
 protected:
     static bool ResponseYesApplyNow(int client);  // ?ResponseYesApplyNow@GameSettingsEdit@@KA_NH@Z
     void SetGameTypeDefaults();                   // ?SetGameTypeDefaults@GameSettingsEdit@@IAEXXZ
@@ -326,7 +327,6 @@ protected:
     bool ResponseYesApplyNowHelper();             // ?ResponseYesApplyNowHelper@GameSettingsEdit@@IAE_NXZ
     virtual void ButtonHeldAction();     // ?ButtonHeldAction@GameSettingsEdit@@MAEXXZ
     virtual void SwapMenus();            // ?SwapMenus@GameSettingsEdit@@MAEXXZ
-    void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
     void UpdateMapChangeStatus(bool isAllowingMapVote);  // ?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z
@@ -958,8 +958,9 @@ public:
     static OverlayMenu* Me(int version);  // ?Me@OverlayMenu@@SAPAV1@H@Z
     const eState GetState();              // ?GetState@OverlayMenu@@QAE?BW4eState@1@XZ
     void SetState(eState state);          // ?SetState@OverlayMenu@@QAEXW4eState@1@@Z
-    void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
+protected:
+    void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ
 };
 static_assert(sizeof(OverlayMenu) == 0x148,
               "OverlayMenu size mismatch");
