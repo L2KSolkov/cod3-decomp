@@ -1418,6 +1418,7 @@ public:
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
     virtual void OnCross(int c);          // ?OnCross@OverlayMenu@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@OverlayMenu@@UAEXM@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@OverlayMenu@@UAEXPAVPanelFile@@@Z
     virtual ~OverlayMenu();               // ??1OverlayMenu@@UAE@XZ
 protected:
     void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ

@@ -9554,6 +9554,153 @@ void AARGameModeVote::SetPanelFile(PanelFile* pPanelFile)
     m_ListBox.Refresh();
 }
 
+// ea: 0x0079E900
+void OverlayMenu::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szOverlayMenuBackgroundArt[3] = {
+        "cg_bkg", "cg_bkg_detail_01", "cg_bkg_detail_02",
+    };
+    static const char* const szOverlayMenuText[2] = {
+        "text_option_01", "text_option_02",
+    };
+    static const char* const szLinesBetweenOptionText[1] = {
+        "bkg_line_01",
+    };
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+        AeAssert::gCurrentLine = 916;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        if (m_pBackgroundArt.m_elements[i] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 924;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        m_pBackgroundArt.m_elements[i] =
+            panel->GetPointer(szOverlayMenuBackgroundArt[i]);
+        if (m_pBackgroundArt.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 927;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    FEText* TextPointer = panel->GetTextPointer("text_body");
+    FEText* v5 = panel->GetTextPointer("text_body");
+    v5->SetX(TextPointer->GetX());
+    FEText* v8 = panel->GetTextPointer("text_body");
+    AddEntry(0, v8, false);
+    FEMultiLineText* v9 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v10 = nullptr;
+    if (v9 != nullptr)
+    {
+        color32 col = TextPointer->GetColor();
+        panel_layer layer = (panel_layer)TextPointer->GetScaleX();
+        float x1 = TextPointer->GetY();
+        float v24 = TextPointer->GetX();
+        v10 = new (v9)
+            FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar2 = v10;
+    if (v10 != nullptr)
+        v10->SetNumLines(3);
+    for (int j = 0; j < 2; ++j)
+    {
+        if (m_pOptionText.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 952;
+            AeAssert::gCurrentExpr = "0 == m_pOptionText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        m_pOptionText.m_elements[j] =
+            panel->GetTextPointer(szOverlayMenuText[j]);
+        if (m_pOptionText.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 955;
+            AeAssert::gCurrentExpr = "m_pOptionText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        m_pOptionText.m_elements[j]
+            ->SetText((const char*)&defaultFileName);
+        m_pOptionText.m_elements[j]->SetShown(false);
+        m_ListBox.SetItem(j, 0, m_pOptionText.m_elements[j], 0);
+    }
+    helpbar = m_pOptionText.m_elements[1];
+    FEMultiLineText* v14 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v18 = nullptr;
+    if (v14 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v25 = helpbar->GetX();
+        v18 = new (v14)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar1 = v18;
+    if (v18 != nullptr)
+        v18->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+    helpbar1->SetX(helpbar1->GetX());
+    if (m_pOptionLines.m_elements[0] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+        AeAssert::gCurrentLine = 973;
+        AeAssert::gCurrentExpr = "0 == m_pOptionLines[i]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Array expected to be null"))
+            __debugbreak();
+    }
+    m_pOptionLines.m_elements[0] =
+        panel->GetPointer(szLinesBetweenOptionText[0]);
+    if (m_pOptionLines.m_elements[0] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+        AeAssert::gCurrentLine = 977;
+        AeAssert::gCurrentExpr = "m_pOptionLines[i]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+            __debugbreak();
+    }
+    m_pOptionLines.m_elements[0]->SetShown(false);
+    m_ListBox.SetAllColumnsSelectable(false);
+    m_ListBox.mSelectedFlashing = true;
+    m_ListBox.Refresh();
+}
+
 // ea: 0x007AC7A0
 void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
 {
