@@ -687,6 +687,7 @@ public:
     virtual void OnTriangle(int c);     // ?OnTriangle@InGameOverlay@@UAEXH@Z
     virtual void OnCross(int c);        // ?OnCross@InGameOverlay@@UAEXH@Z
     virtual void Draw();                // ?Draw@InGameOverlay@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@InGameOverlay@@UAEXPAVPanelFile@@@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameOverlay@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc); // ?Update@InGameOverlay@@UAEXM@Z
     virtual void OnCircle(int __formal);  // ?OnCircle@InGameOverlay@@UAEXH@Z
@@ -735,6 +736,7 @@ public:
     virtual void OnTriangle(int c);     // ?OnTriangle@AAROverlay@@UAEXH@Z
     virtual void OnCross(int c);        // ?OnCross@AAROverlay@@UAEXH@Z
     virtual void Draw();                // ?Draw@AAROverlay@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AAROverlay@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc); // ?Update@AAROverlay@@UAEXM@Z
     virtual void OnCircle(int __formal);  // ?OnCircle@AAROverlay@@UAEXH@Z
     virtual void OnSquare(int __formal);  // ?OnSquare@AAROverlay@@UAEXH@Z
@@ -1150,6 +1152,7 @@ public:
 protected:
     void SetPanelHelpBar();           // ?SetPanelHelpBar@AARPersonalStats@@IAEXXZ
     void SetGenericScores();          // ?SetGenericScores@AARPersonalStats@@IAEXXZ
+    void SetClassSpecificEntries();   // ?SetClassSpecificEntries@AARPersonalStats@@IAEXXZ
     void GetClassSpecificScore(EPlayerClass a_ePlayerClass,
                                int& a_iClassScore, int& a_iTimeAsClass,
                                int& a_iClassSpecificScore1,

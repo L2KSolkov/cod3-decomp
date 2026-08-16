@@ -8544,6 +8544,278 @@ void PlayOnlineMenu::SetPanelFile(PanelFile* pf)
     }
 }
 
+// ea: 0x007A4500
+void AARPersonalStats::SetClassSpecificEntries()
+{
+    int iClassScore = 0;
+    int iClassSpecificScore1 = 0;
+    int iTimeAsClass = 0;
+    Entity* FirstLocalPlayer = EntityManager::sInst->GetFirstLocalPlayer();
+    if (FirstLocalPlayer != nullptr)
+    {
+        Client* client = FirstLocalPlayer->client;
+        if (client != nullptr)
+        {
+            mPlayerClass = client->pers.playerClass;
+            int v5 = 0;
+            if (FirstLocalPlayer->client->pers.mStats[0][0] > 0)
+            {
+                v5 = FirstLocalPlayer->client->pers.mStats[0][0];
+                mPlayerClass = kPlayerClassAssault;
+            }
+            if (FirstLocalPlayer->client->pers.mStats[1][0] > v5)
+            {
+                v5 = FirstLocalPlayer->client->pers.mStats[1][0];
+                mPlayerClass = kPlayerClassInfantry;
+            }
+            if (FirstLocalPlayer->client->pers.mStats[2][0] > v5)
+            {
+                v5 = FirstLocalPlayer->client->pers.mStats[2][0];
+                mPlayerClass = kPlayerClassRifleman;
+            }
+            if (FirstLocalPlayer->client->pers.mStats[3][0] > v5)
+            {
+                v5 = FirstLocalPlayer->client->pers.mStats[3][0];
+                mPlayerClass = kPlayerClassMedic;
+            }
+            if (FirstLocalPlayer->client->pers.mStats[4][0] > v5)
+            {
+                v5 = FirstLocalPlayer->client->pers.mStats[4][0];
+                mPlayerClass = kPlayerClassSupport;
+            }
+            if (FirstLocalPlayer->client->pers.mStats[5][0] > v5)
+            {
+                v5 = FirstLocalPlayer->client->pers.mStats[5][0];
+                mPlayerClass = kPlayerClassAntiArmor;
+            }
+            if (FirstLocalPlayer->client->pers.mStats[6][0] > v5)
+                mPlayerClass = kPlayerClassScout;
+            m_pClassIcon.m_elements[mPlayerClass]->SetShown(true);
+            switch (mPlayerClass)
+            {
+            case kPlayerClassAssault:
+                m_pText.m_elements[2]->SetText("MPGAME_ASSAULT_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_ASSAULT_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_ASSAULT");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_ASSAULT_ABILITY1_NAME");
+                break;
+            case kPlayerClassInfantry:
+                m_pText.m_elements[2]->SetText("MPGAME_INFANTRY_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_INFANTRY_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_INFANTRY");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_INFANTRY_ABILITY1_NAME");
+                break;
+            case kPlayerClassRifleman:
+                m_pText.m_elements[2]->SetText("MPGAME_RIFLEMAN_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_RIFLEMAN_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_RIFLEMAN");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_RIFLEMAN_ABILITY1_NAME");
+                break;
+            case kPlayerClassMedic:
+                m_pText.m_elements[2]->SetText("MPGAME_MEDIC_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_MEDIC_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_MEDIC");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_MEDIC_ABILITY1_NAME");
+                break;
+            case kPlayerClassSupport:
+                m_pText.m_elements[2]->SetText("MPGAME_SUPPORT_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_SUPPORT_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_SUPPORT");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_SUPPORT_ABILITY1_NAME");
+                break;
+            case kPlayerClassAntiArmor:
+                m_pText.m_elements[2]->SetText("MPGAME_ANTIARMOR_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_ANTIARMOR_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_ANTIARMOR");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_ANTIARMOR_ABILITY1_NAME");
+                break;
+            case kPlayerClassScout:
+                m_pText.m_elements[2]->SetText("MPGAME_SCOUT_ALLCAPS");
+                m_pClassScoreText.m_elements[0]->SetText("MPGAME_SCOUT_SCORE");
+                m_pClassScoreText.m_elements[2]->SetText("MPGAME_TIME_SCOUT");
+                m_pClassScoreText.m_elements[4]
+                    ->SetText("MPGAME_SCOUT_ABILITY1_NAME");
+                break;
+            default:
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+                AeAssert::gCurrentLine = 346;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid class\n"))
+                    __debugbreak();
+                break;
+            }
+            GetClassSpecificScore(
+                (EPlayerClass)mPlayerClass, iClassScore, iTimeAsClass,
+                iClassSpecificScore1, iTimeAsClass);
+            char szScoreText[12];
+            _snprintf(szScoreText, 0xAu, "%d", iClassScore);
+            m_pClassScoreText.m_elements[1]->SetText(szScoreText);
+            _snprintf(szScoreText, 0xAu, "%d", iClassSpecificScore1);
+            m_pClassScoreText.m_elements[5]->SetText(szScoreText);
+            int v8 = iTimeAsClass % 3600 % 60;
+            int v7 = iTimeAsClass % 3600 / 60;
+            if (iTimeAsClass / 3600 != 0)
+                _snprintf(szScoreText, 0xAu, "%i:%02i:%02i",
+                          iTimeAsClass / 3600, v7, v8);
+            else
+                _snprintf(szScoreText, 0xAu, "%i:%02i", v7, v8);
+            m_pClassScoreText.m_elements[3]->SetText(szScoreText);
+        }
+    }
+}
+
+template <typename T>
+static void OverlayPanelFileCommon(T* self, PanelFile* pf,
+                                   const char* const szBackgroundArt[3],
+                                   const char* const szOptionText[2],
+                                   const char* const szOptionLines[1])
+{
+    PanelFile* v3 = pf->Clone();
+    self->panel = v3;
+    if (v3 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+        AeAssert::gCurrentLine = 1574;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        if (self->m_pBackgroundArt.m_elements[i] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 1584;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        self->m_pBackgroundArt.m_elements[i] =
+            self->panel->GetPointer(szBackgroundArt[i]);
+        if (self->m_pBackgroundArt.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 1587;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    FEText* TextPointer = self->panel->GetTextPointer("text_body");
+    FEText* v6 = self->panel->GetTextPointer("text_body");
+    v6->SetX(TextPointer->GetX());
+    FEText* v8 = self->panel->GetTextPointer("text_body");
+    self->AddEntry(0, v8, false);
+    for (int j = 0; j < 2; ++j)
+    {
+        if (self->m_pOptionText.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 1608;
+            AeAssert::gCurrentExpr = "0 == m_pOptionText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        self->m_pOptionText.m_elements[j] =
+            self->panel->GetTextPointer(szOptionText[j]);
+        if (self->m_pOptionText.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 1611;
+            AeAssert::gCurrentExpr = "m_pOptionText[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+        self->m_pOptionText.m_elements[j]
+            ->SetText((const char*)&defaultFileName);
+        self->m_pOptionText.m_elements[j]->SetShown(true);
+        self->m_ListBox.SetItem(j, 0, self->m_pOptionText.m_elements[j], 0);
+    }
+    if (self->m_pOptionLines.m_elements[0] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+        AeAssert::gCurrentLine = 1624;
+        AeAssert::gCurrentExpr = "0 == m_pOptionLines[i]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Array expected to be null"))
+            __debugbreak();
+    }
+    self->m_pOptionLines.m_elements[0] =
+        self->panel->GetPointer(szOptionLines[0]);
+    if (self->m_pOptionLines.m_elements[0] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+        AeAssert::gCurrentLine = 1628;
+        AeAssert::gCurrentExpr = "m_pOptionLines[i]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+            __debugbreak();
+    }
+    self->m_pOptionLines.m_elements[0]->SetShown(false);
+    self->m_ListBox.SetAllColumnsSelectable(false);
+    self->m_ListBox.mSelectedFlashing = true;
+    self->m_ListBox.Refresh();
+}
+
+// ea: 0x0079F620
+void InGameOverlay::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szInGameOverlayMenuBackgroundArt[3] = {
+        "bkg_detail_01", "bkg_detail_02", "bkg_detail_03",
+    };
+    static const char* const szInGameOverlayMenuText[2] = {
+        "text_option_01", "text_option_02",
+    };
+    static const char* const szInGameLinesBetweenOptionText[1] = {
+        "bkg_line_01",
+    };
+    OverlayPanelFileCommon(this, pf, szInGameOverlayMenuBackgroundArt,
+                           szInGameOverlayMenuText,
+                           szInGameLinesBetweenOptionText);
+}
+
+// ea: 0x0079FEB0
+void AAROverlay::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szAAROverlayMenuBackgroundArt[3] = {
+        "bkg_detail_01", "bkg_detail_02", "bkg_detail_03",
+    };
+    static const char* const szAAROverlayMenuText[2] = {
+        "text_option_01", "text_option_02",
+    };
+    static const char* const szAARLinesBetweenOptionText[1] = {
+        "bkg_line_01",
+    };
+    OverlayPanelFileCommon(this, pf, szAAROverlayMenuBackgroundArt,
+                           szAAROverlayMenuText,
+                           szAARLinesBetweenOptionText);
+}
+
 // ea: 0x007AC7A0
 void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
 {
