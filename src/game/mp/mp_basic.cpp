@@ -25352,3 +25352,552 @@ void MPPeer::updateVoiceSubsystem()
         MPLiveEngine::GetHandle()->SetRemoteListeners(&talkingPlayers);
     }
 }
+
+// ea: 0x007580A0
+void MPPlayerManager::HandleFireArtillery(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player != nullptr)
+    {
+        bdConnection* m_ptr = Player->mConnection.m_ptr;
+        if (m_ptr != nullptr
+            && m_ptr->getStatus() == bdConnection::BD_CONNECTED
+            && *(bool*)((char*)this + 0x4112))
+        {
+            bdReference<bdMessage> message = receivedMsg.getMessage();
+            bdReference<bdBitBuffer> buffer = message.m_ptr->getPayload();
+            unsigned char attackerId = 16;
+            char weapon = 0;
+            float center[3] = { 0.0f, 0.0f, 0.0f };
+            unsigned int seed = 0;
+            bool fire = false;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            if (!MPUtility::ReadPlayerId(buffer, attackerId)
+                || !buffer.m_ptr->readChar8(weapon))
+                goto cleanup;
+            if (buffer.m_ptr != nullptr)
+                ++buffer.m_ptr->m_refCount;
+            if (!MPUtility::ReadSnappedPosition(buffer, center))
+                goto cleanup;
+            if (!buffer.m_ptr->readUInt32(seed)
+                || !buffer.m_ptr->readBool(fire))
+                goto cleanup;
+            {
+                MPPlayer* v6 = GetPlayer(attackerId);
+                if (v6 == nullptr)
+                    goto cleanup;
+                Entity* v8 = v6->mClientIndex >= 0
+                                 ? EntityManager::sInst->GetPlayer(
+                                       v6->mClientIndex)
+                                 : nullptr;
+                if (v8 == nullptr || v8->sentient == nullptr)
+                    goto cleanup;
+                if (fire)
+                {
+                    BG_GetInfoForWeapon(weapon);
+                    if (gpBrocAPI->mBrocExports.mCallbackFireArtillery
+                        != nullptr)
+                    {
+                        gpBrocAPI->mBrocExports.mCallbackFireArtillery(
+                            v8->mHandle.mHandle.mVal,
+                            Broc::vector(center[0], center[1], center[2]));
+                    }
+                    weaponParms wp;
+                    Weapon_ArtilleryStrike_Launch(v8, &wp, center, seed);
+                    goto cleanup;
+                }
+                if (((bdSession*)((char*)this + 0x4114))->getRole()
+                    != bdSession::BD_SESSION_HOST)
+                    goto cleanup;
+                team_t eTeam = v8->sentient->eTeam;
+                float v11 = MultiplayerMgr::sInst->getLocalTime().mTime
+                            * 0.001f;
+                int limit = (cgGlobal.teamGame ? 10 : 20) + (int)v11;
+                bool allowed = false;
+                if (eTeam == TEAM_ALLIES || !cgGlobal.teamGame)
+                {
+                    if (v11
+                        > *(float*)((char*)this + 0x596C))  // mAlliesArtilleryFire
+                        *(float*)((char*)this + 0x596C) = v11;
+                    if (*(float*)((char*)this + 0x596C) < limit)
+                    {
+                        *(float*)((char*)this + 0x596C) =
+                            *(float*)((char*)this + 0x596C) + 14.0f;
+                        allowed = true;
+                    }
+                }
+                else if (eTeam == TEAM_AXIS)
+                {
+                    if (v11
+                        > *(float*)((char*)this + 0x5968))  // mAxisArtilleryFire
+                        *(float*)((char*)this + 0x5968) = v11;
+                    if (*(float*)((char*)this + 0x5968) < limit)
+                    {
+                        *(float*)((char*)this + 0x5968) =
+                            *(float*)((char*)this + 0x5968) + 14.0f;
+                        allowed = true;
+                    }
+                }
+                if (allowed)
+                {
+                    math::Position3 cdl = native_to_cdl_pos3(center);
+                    if (MultiplayerMgr::sInst->mPeer != nullptr)
+                        MultiplayerMgr::sInst->mPeer->FireArtillery(
+                            v8, weapon, cdl, seed, true);
+                }
+                else
+                {
+                    bdMessage* out = new bdMessage(0x2Bu, false);
+                    bdReference<bdMessage> denyMsg;
+                    denyMsg.m_ptr = out;
+                    if (out != nullptr)
+                        ++out->m_refCount;
+                    extern int g_NumBdMessages;
+                    ++g_NumBdMessages;
+                    bdReference<bdBitBuffer> b2 = out->getPayload();
+                    unsigned char pid = v6->mId;
+                    if (b2.m_ptr != nullptr)
+                        ++b2.m_ptr->m_refCount;
+                    MPUtility::WritePlayerId(b2, pid);
+                    if (v6->mConnection.m_ptr == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                        AeAssert::gCurrentLine = 3368;
+                        AeAssert::gCurrentExpr = "mpAttacker->GetConnection()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                "Player does not have a connection."))
+                            __debugbreak();
+                    }
+                    SendPlayer(v6, denyMsg, true);
+                    if (b2.m_ptr != nullptr
+                        && b2.m_ptr->m_refCount-- == 1)
+                        delete b2.m_ptr;
+                    if (denyMsg.m_ptr != nullptr
+                        && denyMsg.m_ptr->m_refCount-- == 1)
+                        delete denyMsg.m_ptr;
+                }
+            }
+        cleanup:
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (message.m_ptr != nullptr
+                && message.m_ptr->m_refCount-- == 1)
+                delete message.m_ptr;
+        }
+    }
+}
+
+// ea: 0x007646E0
+void MPPeer::onSessionStatusChange(bdSession::bdSessionStatus previous,
+                                   bdSession::bdSessionStatus current)
+{
+    tlPrintf(
+        "MPPeer::onSessionStatusChange() - The network connection DOES look ok\n");
+    if (previous != (bdSession::bdSessionStatus)4
+        || current != (bdSession::bdSessionStatus)5)
+        return;
+    tlPrintf(
+        "MPPeer::onSessionStatusChange() - Session WAS not ready, but now IS ready\n");
+    bdSession* p_mSession = (bdSession*)((char*)this + 0x7448);
+    MPPlayerManager* p_mPlayerManager =
+        (MPPlayerManager*)((char*)this + 0x74E0);
+    bdReference<bdConnection> host = p_mSession->getHost();
+    unsigned int hostIndex = 0;
+    if (host.m_ptr != nullptr)
+        ++host.m_ptr->m_refCount;
+    if (p_mSession->getPeerIndex(host, hostIndex))
+    {
+        tlPrintf(
+            "MPPeer::onSessionStatusChange() - Found the host peer index\n");
+    }
+    else
+    {
+        tlPrintf(
+            "MPPeer::onSessionStatusChange() - Can't find the host peer index!\n");
+        if (host.m_ptr != nullptr && host.m_ptr->m_refCount-- == 1)
+            delete host.m_ptr;
+        if (p_mPlayerManager->GetLocalPlayer(0) == nullptr)
+        {
+            onSessionConnectFail();
+        }
+        else if (MultiplayerMgr::sInst->mRankedGame)
+        {
+            // fall through to disconnect handling
+        }
+        else
+        {
+            p_mPlayerManager->SendLocalPlayerInfo(nullptr);
+            p_mPlayerManager->ResetVehicleEventSequenceIds();
+            p_mSession->setHost(0);
+            if (*(bool*)((char*)this + 0x08))  // mRequestedSpawn
+                SendRespawnRequest(0);
+            if (*(bool*)((char*)p_mPlayerManager + 0x4112)
+                && gpBrocAPI != nullptr
+                && gpBrocAPI->mBrocExports.mCallbackHostMigrated != nullptr)
+            {
+                gpBrocAPI->mBrocExports.mCallbackHostMigrated();
+            }
+            else
+            {
+                MPUIInterface::mHostMigrated = true;
+            }
+            MPVote* currVote = (MPVote*)((char*)p_mPlayerManager + 0x5914);
+            currVote->voteStartTime.mTime = 0;
+            currVote->mVoteType = kNoVote;
+            if (p_mSession->getLocalPeerIndex() == 0)
+            {
+                tlPrintf(
+                    "MPPeer::onSessionStatusChange() - LOCAL MACHINE IS NEW HOST true\n");
+                bdReference<MPGameInfo> gameInfo =
+                    *(bdReference<MPGameInfo>*)((char*)this + 0x73B0);
+                if (gameInfo.m_ptr != nullptr)
+                    ++gameInfo.m_ptr->m_refCount;
+                MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+                if (Handle->sessionState == kInSession)
+                {
+                    unsigned char publicOccupied = 0;
+                    unsigned char privateOccupied = 0;
+                    MPPlayerSet all = p_mPlayerManager->allPlayers();
+                    for (int i = 0; i < 16; ++i)
+                    {
+                        if (all.containsPlayer((unsigned long)i) != 0)
+                        {
+                            MPPlayer* p = p_mPlayerManager->GetPlayer(i);
+                            if (p->usedPrivateSlot)
+                                ++privateOccupied;
+                            else
+                                ++publicOccupied;
+                        }
+                    }
+                    if (privateOccupied
+                        > MPUIInterface::mServerParams.mPrivateSlots)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp/MPPeer.cpp";
+                        AeAssert::gCurrentLine = 2813;
+                        AeAssert::gCurrentExpr =
+                            "privateOccupied <= MPUIInterface::GetServerParams()->mPrivateSlots";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    if (publicOccupied + privateOccupied
+                        >= MPUIInterface::mServerParams.mMaxPlayers)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp/MPPeer.cpp";
+                        AeAssert::gCurrentLine = 2814;
+                        AeAssert::gCurrentExpr =
+                            "publicOccupied + privateOccupied < MPUIInterface::GetServerParams()->mMaxPlayers";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    MPLiveEngine* v9 = MPLiveEngine::GetHandle();
+                    LivePlayer* LocalPlayer =
+                        (LivePlayer*)v9->GetLocalPlayer(v9->actualPort);
+                    sprintf(MPUIInterface::mServerParams.mName, "%S",
+                            LocalPlayer->gamertag);
+                    Handle->StartLiveSession(
+                        &MPUIInterface::mServerParams, publicOccupied,
+                        privateOccupied);
+                    while (Handle->sessionState == kEnteringSession)
+                        Handle->DoWork();
+                    MPGameInfo* m_ptr = gameInfo.m_ptr;
+                    m_ptr->setSecurityID(Handle->liveSession->SessionID);
+                    m_ptr->setSecurityKey(Handle->liveSession->KeyExchangeKey);
+                    bdMessage* out = new bdMessage(0x59u, false);
+                    bdReference<bdMessage> message;
+                    message.m_ptr = out;
+                    if (out != nullptr)
+                        ++out->m_refCount;
+                    extern int g_NumBdMessages;
+                    ++g_NumBdMessages;
+                    bdReference<bdBitBuffer> b2 = out->getPayload();
+                    b2.m_ptr->writeBlob(&m_ptr->getSecurityID(), 8);
+                    b2.m_ptr->writeBlob(&m_ptr->getSecurityKey(), 16);
+                    p_mPlayerManager->SendAll(message, true, false);
+                    MPLiveEngine* h1 = MPLiveEngine::GetHandle();
+                    MPLiveEngine* h2 = MPLiveEngine::GetHandle();
+                    MPLiveEngine* h3 = MPLiveEngine::GetHandle();
+                    MPLiveEngine* h4 = MPLiveEngine::GetHandle();
+                    UpdateNumPlayers(h1->liveSession->PublicOpen,
+                                     h2->liveSession->PrivateOpen,
+                                     h3->liveSession->PublicFilled,
+                                     h4->liveSession->PrivateFilled);
+                    if (b2.m_ptr != nullptr && b2.m_ptr->m_refCount-- == 1)
+                        delete b2.m_ptr;
+                    if (message.m_ptr != nullptr
+                        && message.m_ptr->m_refCount-- == 1)
+                        delete message.m_ptr;
+                }
+                if (CreateLocalGameInfo(gameInfo))
+                {
+                    if (g_NumTotalMaps > 0)
+                        memset(&MPUIInterface::mServerParams, 0xFF,
+                               g_NumTotalMaps);
+                    MPUIInterface::mServerParams.mDontRotate = false;
+                    MPUIInterface::NextRoundServerParams();
+                    bdNetImpl* Instance = bdSingleton<bdNetImpl>::getInstance();
+                    if (!Instance->getParams().m_onlineGame)
+                    {
+                        bdInetAddr addr = bdInetAddr::Any();
+                        bdDiscoveryServer* ds =
+                            (bdDiscoveryServer*)((char*)this + 0x73B4);
+                        bdReference<bdGameInfo> gi;
+                        gi.m_ptr = gameInfo.m_ptr;
+                        if (gi.m_ptr != nullptr)
+                            ++gi.m_ptr->m_refCount;
+                        ds->start(gi, addr);
+                        if (gi.m_ptr != nullptr
+                            && gi.m_ptr->m_refCount-- == 1)
+                            delete gi.m_ptr;
+                    }
+                    bdNetImpl* v25 = bdSingleton<bdNetImpl>::getInstance();
+                    if (!v25->getParams().m_onlineGame)
+                    {
+                        unsigned int NumPeers = p_mSession->getNumPeers();
+                        UpdateNumPlayers(
+                            MPUIInterface::mServerParams.mMaxPlayers
+                                - NumPeers,
+                            0, NumPeers, 0);
+                    }
+                }
+                else
+                {
+                    bdMessageProxy proxy(
+                        "c:\\cod\\code\\game\\mp/MPPeer.cpp",
+                        "void __thiscall MPPeer::onSessionStatusChange(const enum bdSession::bdSessionStatus,const enum bdSession::bdSessionStatus)",
+                        0xB70u, "dw/warn/");
+                    proxy.log("MPPeer::Step",
+                              "Failed to create local gameInfo cannot start discovery server.");
+                }
+                SendServerParams();
+                if (gameInfo.m_ptr != nullptr
+                    && gameInfo.m_ptr->m_refCount-- == 1)
+                    delete gameInfo.m_ptr;
+            }
+            return;
+        }
+        if (*(bool*)((char*)p_mPlayerManager + 0x4112)
+            && gpBrocAPI != nullptr
+            && gpBrocAPI->mBrocExports.mCallbackHostDisconnected != nullptr)
+        {
+            gpBrocAPI->mBrocExports.mCallbackHostDisconnected();
+        }
+        else
+        {
+            MPUIInterface::mHostDisconnected = true;
+        }
+        return;
+    }
+    if (host.m_ptr != nullptr && host.m_ptr->m_refCount-- == 1)
+        delete host.m_ptr;
+}
+
+// ea: 0x007587A0
+void MPPlayerManager::HandlePlayerDead(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* Player = GetPlayer(conn);
+    if (Player == nullptr)
+        return;
+    bdConnection* m_ptr = Player->mConnection.m_ptr;
+    if (m_ptr == nullptr
+        || m_ptr->getStatus() != bdConnection::BD_CONNECTED)
+        return;
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    Entity* attacker = nullptr;
+    Entity* inflictor = nullptr;
+    int damage = 0;
+    int health = 0;
+    unsigned int meansOfDeath = 0;
+    unsigned int weapon = 0;
+    unsigned int hitLoc = 0;
+    float dir[3] = { 0.0f, 0.0f, 1.0f };
+    float position[3] = { 0.0f, 0.0f, 0.0f };
+    unsigned char deadPlayerID = 0;
+    bool PlayerId =
+        buffer.m_ptr->readInt32(damage) && buffer.m_ptr->readInt32(health)
+        && buffer.m_ptr->readRangedUInt32(meansOfDeath, 0, 0x21u, true)
+        && buffer.m_ptr->readRangedUInt32(weapon, 0, 0x5Cu, true)
+        && buffer.m_ptr->readRangedUInt32(hitLoc, 0, 0x13u, true);
+    if (!PlayerId)
+        goto done;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPlayerId(buffer, deadPlayerID))
+        goto done;
+    PlayerId = true;
+    if (buffer.m_ptr->testBool())
+    {
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        if (!MPUtility::ReadPosition(buffer, position))
+            goto done;
+        PlayerId = true;
+    }
+    if (buffer.m_ptr->testBool())
+    {
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        if (!MPUtility::ReadNormal(buffer, dir))
+        {
+            PlayerId = false;
+        }
+        else
+        {
+            PlayerId = true;
+            if (buffer.m_ptr->testBool())
+            {
+                int assistPlayerID = 0;
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                PlayerId = MPUtility::ReadPlayerId(buffer,
+                                                   *(unsigned char*)&assistPlayerID);
+                MPPlayer* v9 = GetPlayer(assistPlayerID);
+                if (v9 != nullptr)
+                {
+                    attacker = v9->mClientIndex >= 0
+                                   ? EntityManager::sInst->GetPlayer(
+                                         v9->mClientIndex)
+                                   : nullptr;
+                    inflictor = attacker;
+                }
+                if (PlayerId && buffer.m_ptr->testBool())
+                {
+                    unsigned char attackerVehicleID = 0;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    PlayerId = MPUtility::ReadVehicleId(
+                        buffer, attackerVehicleID);
+                    if (attackerVehicleID < 0x0Au)
+                        inflictor = (Entity*)((MPVehicle*)((char*)this
+                                                           + 0x4120
+                                                           + 0x210
+                                                                 * attackerVehicleID))
+                                        ->mEntity;
+                    else
+                        inflictor = attacker;
+                }
+            }
+        }
+    }
+done:
+    MPPlayer* v12 = GetPlayer(deadPlayerID);
+    if (v12 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 4740;
+        AeAssert::gCurrentExpr = "player";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (v12->mInVehicle)
+    {
+        MPVehicle* VehicleFromOccupant = GetVehicleFromOccupant(v12);
+        if (VehicleFromOccupant != nullptr)
+        {
+            Entity* v14 = v12->mClientIndex >= 0
+                              ? EntityManager::sInst->GetPlayer(
+                                    v12->mClientIndex)
+                              : nullptr;
+            if (EntityManager::sInst->IsLocalPlayer(v14))
+                MultiplayerMgr::sInst->GetOutOfVehicle(
+                    (Entity*)VehicleFromOccupant->mEntity,
+                    v12->mVehSeatIdx);
+        }
+        else
+        {
+            v12->mInVehicle = false;
+            v12->mVehSeatIdx = -1;
+            v12->mVehicleId = 0xFF;
+        }
+    }
+    v12->mPlaying = false;
+    if (*(bool*)((char*)this + 0x4112))
+    {
+        Entity* v16 = v12->mClientIndex >= 0
+                          ? EntityManager::sInst->GetPlayer(
+                                v12->mClientIndex)
+                          : nullptr;
+        PlayerDead(v16, inflictor, attacker, damage, meansOfDeath, weapon,
+                   position, dir, (hitLocation_t)hitLoc);
+        if (gpBrocAPI->mBrocExports.mCallbackPlayerKilled != nullptr)
+        {
+            unsigned int attackerHandle =
+                attacker != nullptr ? attacker->mHandle.mHandle.mVal : 0;
+            unsigned int inflictorHandle =
+                inflictor != nullptr ? inflictor->mHandle.mHandle.mVal : 0;
+            unsigned int deadHandle = 0;
+            if (v12->mClientIndex >= 0)
+            {
+                Entity* v18 = EntityManager::sInst->GetPlayer(
+                    v12->mClientIndex);
+                if (v18 != nullptr)
+                    deadHandle = v18->mHandle.mHandle.mVal;
+            }
+            gpBrocAPI->mBrocExports.mCallbackPlayerKilled(
+                deadHandle, inflictorHandle, attackerHandle, weapon,
+                meansOfDeath, health);
+        }
+        if (PlayerId)
+        {
+            while (buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+            {
+                unsigned char hasAssist = 0;
+                if (!buffer.m_ptr->readBits(&hasAssist, 1u)
+                    || hasAssist == 0)
+                    break;
+                unsigned char assistPlayerID = 0;
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                bool v48 = MPUtility::ReadPlayerId(buffer, assistPlayerID);
+                MPPlayer* v20 = GetPlayer(assistPlayerID);
+                if (v20 != nullptr)
+                {
+                    if (gpBrocAPI->mBrocExports.mCallbackPlayerAssist
+                        != nullptr)
+                    {
+                        Entity* aEnt = v20->mClientIndex >= 0
+                                           ? EntityManager::sInst->GetPlayer(
+                                                 v20->mClientIndex)
+                                           : nullptr;
+                        if (aEnt != nullptr)
+                            gpBrocAPI->mBrocExports.mCallbackPlayerAssist(
+                                aEnt->mHandle.mHandle.mVal);
+                    }
+                }
+                else
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+                    AeAssert::gCurrentLine = 4780;
+                    AeAssert::gCurrentExpr = "assistPlayer";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid player"))
+                        __debugbreak();
+                }
+                if (!v48)
+                    break;
+            }
+        }
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}

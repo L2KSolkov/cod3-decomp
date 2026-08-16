@@ -226,6 +226,12 @@ void bdBitBuffer::writeUChar8(unsigned char value)
     (void)value;
 }
 
+void bdBitBuffer::writeBlob(const void* blob, unsigned int length)
+{
+    (void)blob;
+    (void)length;
+}
+
 bool bdBitBuffer::readUInt16(unsigned short& value)
 {
     (void)value;

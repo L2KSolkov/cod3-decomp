@@ -2260,6 +2260,8 @@ private:
     virtual void onSessionConnectSuccess();  // ?onSessionConnectSuccess@MPPeer@@EAEXXZ (mp.o 0x761910)
     virtual void onSessionJoinRefused(bdReference<bdBitBuffer> userData);  // ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x735AB0)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x735DE0)
+    virtual void onSessionStatusChange(bdSession::bdSessionStatus previous,
+                                       bdSession::bdSessionStatus current);  // ?onSessionStatusChange@MPPeer@@EAEXW4bdSessionStatus@bdSession@@0@Z (mp.o 0x7646E0)
     void updateVoiceSubsystem();  // ?updateVoiceSubsystem@MPPeer@@AAEXXZ (mp.o)
     void ConnectToPeersFinalize(const bdReference<MPGameInfo>& gameInfo);  // ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z (mp.o 0x7616C0)
     bool CreateLocalGameInfo(bdReference<MPGameInfo>& gameInfo);  // ?CreateLocalGameInfo@MPPeer@@AAE_NAAV?$bdReference@VMPGameInfo@@@@@Z (mp.o)

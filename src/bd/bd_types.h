@@ -404,6 +404,7 @@ public:
     void writeUInt32(unsigned int value);                    // ?writeUInt32@bdBitBuffer@@QAEXI@Z
     void writeChar8(char value);                             // ?writeChar8@bdBitBuffer@@QAEXD@Z
     void writeUChar8(unsigned char value);                   // ?writeUChar8@bdBitBuffer@@QAEXE@Z
+    void writeBlob(const void* blob, unsigned int length);   // ?writeBlob@bdBitBuffer@@QAEXQBXI@Z
     void writeRangedInt32(int value, int min, int max);    // ?writeRangedInt32@bdBitBuffer@@QAEXHHH@Z
     void writeRangedUInt32(unsigned int value, unsigned int min, unsigned int max,
                            bool typeChecked);              // ?writeRangedUInt32@bdBitBuffer@@QAEXIII_N@Z
