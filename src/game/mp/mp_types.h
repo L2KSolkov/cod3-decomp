@@ -1292,6 +1292,9 @@ private:
     void dispatchPacketDirectToPlayer(const kuju::knet::sTime& time,
                                       sVoicePendingDispatchPacket* packet,
                                       unsigned char player);  // ?dispatchPacketDirectToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@E@Z (mp.o 0x74FB00)
+    void dispatchVoicePendingDispatchPacket(
+        sVoicePendingDispatchPacket* packet,
+        unsigned long destinationPlayer);  // ?dispatchVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@K@Z (mp.o 0x74F740)
     unsigned int dispatchPacketOnOptimalRouteToPlayer(const kuju::knet::sTime& time,
                                                       sVoicePendingDispatchPacket* packet,
                                                       unsigned char player,
@@ -1303,8 +1306,6 @@ private:
     void dispatchPendingVoicePackets(const kuju::knet::sTime& time,
                                      MPPlayerSet& connectionsUsed,
                                      unsigned long& connectionsLeft);  // ?dispatchPendingVoicePackets@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@AAVMPPlayerSet@@AAK@Z (mp.o 0x74FF40)
-    void dispatchVoicePendingDispatchPacket(sVoicePendingDispatchPacket* packet,
-                                            unsigned int destinationPlayer);  // ?dispatchVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@K@Z (mp.o)
     void discardVoicePendingDispatchPacket(sVoicePendingDispatchPacket* packet);  // ?discardVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePendingDispatchPacket@123@@Z (mp.o)
 };
 }

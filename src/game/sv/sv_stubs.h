@@ -1954,6 +1954,7 @@ public:
                                  bool inRange);  // ?SendOtherEnemiesInRange@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@H_N@Z (mp.o 0x748B40)
     void SendLocalPlayerTeam(const MPPlayer* localPlayer,
                              const MPPlayer* player);  // ?SendLocalPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@0@Z (mp.o 0x759A20)
+    void DeserializeVehicleStates(bdReference<bdBitBuffer> buffer);  // ?DeserializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x75A0E0)
     virtual ~MPPlayerManager();  // ??1MPPlayerManager@@UAE@XZ (mp.o 0x7624E0)
 private:
     void WritePlayerData(bdReference<bdBitBuffer> buffer,
@@ -2044,7 +2045,6 @@ private:
     void HandleSDBombOperation(const bdReceivedMessage& receivedMsg);  // ?HandleSDBombOperation@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o)
     void HandleAnimEvent(const bdReceivedMessage& receivedMsg);  // ?HandleAnimEvent@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o)
     void HandleDropSplitScreenPlayer(const bdReceivedMessage& receivedMsg);  // ?HandleDropSplitScreenPlayer@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o)
-    void DeserializeVehicleStates(bdReference<bdBitBuffer> buffer);  // ?DeserializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x7625E0)
     virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> requestUserData,
                                          bdBitBuffer* replyUserData);  // ?onSessionConnectRequest@MPPlayerManager@@EAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z (mp.o 0x7383C0)

@@ -9655,7 +9655,7 @@ void kuju::knetuser::cVoiceNetworkManager::dispatchPacketDirectToPlayer(
 
 // ea: 0x0074F740
 void kuju::knetuser::cVoiceNetworkManager::dispatchVoicePendingDispatchPacket(
-    sVoicePendingDispatchPacket* packet, unsigned int destinationPlayer)
+    sVoicePendingDispatchPacket* packet, unsigned long destinationPlayer)
 {
     sVoicePendingDispatchPacket* v3 = packet;
     if (packet == nullptr)
@@ -9723,7 +9723,7 @@ void kuju::knetuser::cVoiceNetworkManager::dispatchVoicePendingDispatchPacket(
     buffer.m_ptr->writeBits(&mSize, 0x20u);
     buffer.m_ptr->writeBits(v3->mBuffer, 8 * v3->mSize);
     unsigned char v18 = (unsigned char)destinationPlayer;
-    if (destinationPlayer >= 0x10)
+    if (destinationPlayer >= 0x10u)
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPPlayerSet.h";
