@@ -25901,3 +25901,125 @@ done:
     if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
         delete msg.m_ptr;
 }
+
+// ea: 0x00740770
+void MPPeer::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
+                             const math::Position3& position,
+                             const math::Dir3& normal,
+                             unsigned char surfaceType, unsigned char weapon,
+                             short damage, unsigned char damageFlags,
+                             unsigned char mod, int hitLocation)
+{
+    if (hitEntity->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPeer.cpp";
+        AeAssert::gCurrentLine = 666;
+        AeAssert::gCurrentExpr = "hitEntity->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (((bdSession*)((char*)this + 0x7448))->getStatus()
+            != bdSession::BD_SESSION_NOT_CONNECTED
+        && attackerEntity != nullptr)
+    {
+        MPPlayerManager* p_mPlayerManager =
+            (MPPlayerManager*)((char*)this + 0x74E0);
+        MPPlayer* Player = p_mPlayerManager->GetPlayer(hitEntity);
+        if (Player == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPeer.cpp";
+            AeAssert::gCurrentLine = 675;
+            AeAssert::gCurrentExpr = "hitPlayer";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        MPPlayer* v14 = p_mPlayerManager->GetPlayer(attackerEntity);
+        if (v14 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/MPPeer.cpp";
+            AeAssert::gCurrentLine = 678;
+            AeAssert::gCurrentExpr = "attacker";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (Player != nullptr && v14 != nullptr)
+        {
+            short v16 = damage;
+            if (!Player->IsLocalPlayer())
+            {
+                bdMessage* msg = new bdMessage(0x28u, false);
+                bdReference<bdMessage> message;
+                message.m_ptr = msg;
+                if (msg != nullptr)
+                    ++msg->m_refCount;
+                extern int g_NumBdMessages;
+                ++g_NumBdMessages;
+                bdReference<bdBitBuffer> buffer = msg->getPayload();
+                unsigned char playerId = Player->mId;
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                MPUtility::WritePlayerId(buffer, playerId);
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                MPUtility::WritePosition(buffer, position);
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                MPUtility::WriteNormal(buffer, normal);
+                buffer.m_ptr->writeChar8((char)surfaceType);
+                buffer.m_ptr->writeChar8((char)weapon);
+                buffer.m_ptr->writeInt16(v16);
+                buffer.m_ptr->writeUChar8(damageFlags);
+                buffer.m_ptr->writeUChar8(mod);
+                buffer.m_ptr->writeUChar8((unsigned char)hitLocation);
+                unsigned char attackerId = v14->mId;
+                if (buffer.m_ptr != nullptr)
+                    ++buffer.m_ptr->m_refCount;
+                MPUtility::WritePlayerId(buffer, attackerId);
+                p_mPlayerManager->SendPlayer(Player, message, true);
+                if (buffer.m_ptr != nullptr
+                    && buffer.m_ptr->m_refCount-- == 1)
+                    delete buffer.m_ptr;
+                if (message.m_ptr != nullptr
+                    && message.m_ptr->m_refCount-- == 1)
+                    delete message.m_ptr;
+            }
+            if (v16 > 255)
+                v16 = 255;
+            bdMessage* msg2 = new bdMessage(0x6Cu, false);
+            bdReference<bdMessage> message2;
+            message2.m_ptr = msg2;
+            if (msg2 != nullptr)
+                ++msg2->m_refCount;
+            extern int g_NumBdMessages;
+            ++g_NumBdMessages;
+            bdReference<bdBitBuffer> b2 = msg2->getPayload();
+            unsigned char pid = Player->mId;
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WritePlayerId(b2, pid);
+            if (b2.m_ptr != nullptr)
+                ++b2.m_ptr->m_refCount;
+            MPUtility::WriteNormal(b2, normal);
+            b2.m_ptr->writeUChar8((unsigned char)v16);
+            float midY =
+                ((hitEntity->r.maxs.v.m128_f32[2]
+                  - hitEntity->r.mins.v.m128_f32[2])
+                     * 0.5f
+                 + hitEntity->r.currentOrigin.v.m128_f32[2])
+                + 5.0f;
+            b2.m_ptr->writeBool(midY > position.v.m128_f32[2]);
+            p_mPlayerManager->SendAll(message2, false, false);
+            if (b2.m_ptr != nullptr && b2.m_ptr->m_refCount-- == 1)
+                delete b2.m_ptr;
+            if (message2.m_ptr != nullptr
+                && message2.m_ptr->m_refCount-- == 1)
+                delete message2.m_ptr;
+        }
+    }
+}

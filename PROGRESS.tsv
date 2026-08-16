@@ -696,3 +696,5 @@ mp.o batch 17: peer/vehicle handlers + vote/AAR + voice routing + QoS probe add 
 mp.o batch 18: player anim/state + UI game listing/options + voice diagnostics + peer game-state sends + manager handlers + menu panel setup (685/770)
 
 mp.o batch 19: peer vehicle/seat/spot sends, game-state handlers, player damage/revive/pain, session accept gating, serialization helpers, vote resolution, profile menu selection (730/770)
+
+mp.o batch 20: player/vehicle serialize+deserialize, voice subsystem, vehicle/seat/drop/swap handlers, fire artillery, session status change, player dead, bullet hit (751/770)

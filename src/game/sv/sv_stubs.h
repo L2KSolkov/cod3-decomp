@@ -2248,6 +2248,13 @@ public:
                   const math::Dir3& normal, unsigned char surfaceType,
                   short damage, unsigned char mod,
                   int hitLocation);  // ?MeleeHit@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z (mp.o 0x75B540)
+    void BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
+                         const math::Position3& position,
+                         const math::Dir3& normal,
+                         unsigned char surfaceType, unsigned char weapon,
+                         short damage, unsigned char damageFlags,
+                         unsigned char mod,
+                         int hitLocation);  // ?BulletHitPlayer@MPPeer@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EEFEEH@Z (mp.o 0x740770)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
