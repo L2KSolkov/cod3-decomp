@@ -297,6 +297,7 @@ extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbo
 extern void j_nullsub_46(void* self);  // g.o nullsub
 extern void j_nullsub_58(void* self, bool use);  // g.o nullsub
 extern int irand(int min, int max);  // ?irand@@YAHHH@Z (g.o)
+extern int g_NumBdMessages;  // ?g_NumBdMessages@@3HA (bd.o)
 namespace PlayerStats {
 int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o)
 }
@@ -6721,6 +6722,591 @@ void SessionListMenu::Update(float time_inc)
     {
         system->MakeActive(8);
     }
+}
+
+// ============================================================================
+// Batch 26: vote select/send + settings update/triangle + model position
+// ============================================================================
+
+// ea: 0x007A0800
+void VoteGameTypeMenu::Select(int entryNum)
+{
+    (void)entryNum;
+    int CurrentSelection = ((FEMenuListBox*)mGameTypeList)->GetCurrentSelection();
+    int selectedType = CurrentSelection;
+    if (CurrentSelection >= MPUIInterface::mServerParams.mGameType)
+        selectedType = CurrentSelection + 1;
+    bdMessage* v4 = (bdMessage*)bdMemory::allocate(0x18u);
+    bdMessage* v5 = (v4 != nullptr) ? new (v4) bdMessage(0x51u, false) : nullptr;
+    if (v5 != nullptr)
+        ++v5->m_refCount;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> buffer = v5->getPayload();
+    unsigned char v20[4] = { 3, 0, 0, 0 };
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(v20, 8u);
+    v20[0] = ((MPPlayerManager*)mPlayerMgr)->getPlayerIndex(0);
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(v20, 8u);
+    v20[0] = (unsigned char)selectedType;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(v20, 8u);
+    bdReference<bdMessage> v15;
+    v15.m_ptr = v5;
+    if (v5 != nullptr)
+        ++v5->m_refCount;
+    ((MPPlayerManager*)mPlayerMgr)->SendHost(v15, true);
+    FEMenu* v10 = g_femanager.mIGMS[0]->menus[0];
+    int client = ((FESplitScreenMenu*)v10)->mVersion;
+    g_femanager.GetIGMS(client)->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(client)->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)v10)->ClearAll();
+    if (buffer.m_ptr != nullptr)
+    {
+        int v13 = buffer.m_ptr->m_refCount - 1;
+        buffer.m_ptr->m_refCount = v13;
+        if (v13 == 0)
+        {
+            delete buffer.m_ptr;
+            buffer.m_ptr = nullptr;
+        }
+    }
+    if (v5 != nullptr && v5->m_refCount-- == 1)
+        delete v5;
+}
+
+// ea: 0x007A0A10
+void VoteMapMenu::Select(int entryNum)
+{
+    (void)entryNum;
+    int CurrentSelection = ((FEMenuListBox*)mMapList)->GetCurrentSelection();
+    int selectedMap = CurrentSelection;
+    if (CurrentSelection >= MPUIInterface::mServerParams.mMapID)
+        selectedMap = CurrentSelection + 1;
+    bdMessage* v4 = (bdMessage*)bdMemory::allocate(0x18u);
+    bdMessage* v5 = (v4 != nullptr) ? new (v4) bdMessage(0x51u, false) : nullptr;
+    if (v5 != nullptr)
+        ++v5->m_refCount;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> buffer = v5->getPayload();
+    unsigned char v20[4] = { 2, 0, 0, 0 };
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(v20, 8u);
+    v20[0] = ((MPPlayerManager*)mPlayerMgr)->getPlayerIndex(0);
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(v20, 8u);
+    v20[0] = (unsigned char)selectedMap;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(v20, 8u);
+    bdReference<bdMessage> v15;
+    v15.m_ptr = v5;
+    if (v5 != nullptr)
+        ++v5->m_refCount;
+    ((MPPlayerManager*)mPlayerMgr)->SendHost(v15, true);
+    FEMenu* v10 = g_femanager.mIGMS[0]->menus[0];
+    int client = ((FESplitScreenMenu*)v10)->mVersion;
+    g_femanager.GetIGMS(client)->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(client)->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)v10)->ClearAll();
+    if (buffer.m_ptr != nullptr)
+    {
+        int v13 = buffer.m_ptr->m_refCount - 1;
+        buffer.m_ptr->m_refCount = v13;
+        if (v13 == 0)
+        {
+            delete buffer.m_ptr;
+            buffer.m_ptr = nullptr;
+        }
+    }
+    if (v5 != nullptr && v5->m_refCount-- == 1)
+        delete v5;
+}
+
+// ea: 0x007A52C0
+void AARMapVote::SelectMap(int indexMap)
+{
+    if (m_iSelectedMap > -1)
+        m_ListBox.mHighlights.mElements[m_iSelectedMap] = false;
+    int v3 = indexMap;
+    if (indexMap >= g_NumBaseMaps + 1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARMapVote.cpp";
+        AeAssert::gCurrentLine = 576;
+        AeAssert::gCurrentExpr = "indexMap < kAARPMapLimit";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Index is out of bounds of avail. maps!"))
+            __debugbreak();
+    }
+    m_ListBox.mHighlights.mElements[v3] = true;
+    m_ListBox.Refresh();
+    unsigned char oldVote = (unsigned char)m_iSelectedMap;
+    m_iSelectedMap = v3;
+    bdMessage* v5 = (bdMessage*)bdMemory::allocate(0x18u);
+    bdMessage* v6 = (v5 != nullptr) ? new (v5) bdMessage(0x66u, false) : nullptr;
+    if (v6 != nullptr)
+        ++v6->m_refCount;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> buffer = v6->getPayload();
+    MPPlayerManager* pMan =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    unsigned char v20 = 2;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    v20 = pMan->getPlayerIndex(0);
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    v20 = oldVote;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    v20 = (unsigned char)m_iSelectedMap;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    bdReference<bdMessage> v14;
+    v14.m_ptr = v6;
+    if (v6 != nullptr)
+        ++v6->m_refCount;
+    pMan->SendAll(v14, true, false);
+    if (buffer.m_ptr != nullptr)
+    {
+        int v12 = buffer.m_ptr->m_refCount - 1;
+        buffer.m_ptr->m_refCount = v12;
+        if (v12 == 0)
+        {
+            delete buffer.m_ptr;
+            buffer.m_ptr = nullptr;
+        }
+    }
+    if (v6 != nullptr && v6->m_refCount-- == 1)
+        delete v6;
+}
+
+// ea: 0x0079DCC0
+void SessionLanListMenu::RepopulateSessionList()
+{
+    unsigned long numGames = 0;
+    sGameListing* v2 = MPUIInterface::GameListingGet(numGames);
+    if (numGames != 0)
+    {
+        m_ListBox.Clear();
+        unsigned int v3 = 0;
+        mNumGames = 0;
+        int count_added_to_list = 0;
+        unsigned int i = 0;
+        int* mVisibleListToGameListMap = this->mVisibleListToGameListMap;
+        int* v20 = this->mVisibleListToGameListMap;
+        int* v17 = this->mVisibleListToGameListMap;
+        do
+        {
+            *mVisibleListToGameListMap = -1;
+            if (v2 != nullptr && v2->mValidVersion != 0)
+            {
+                int v6 = 0;
+                if (g_NumTotalMaps > 0)
+                {
+                    char* v7 = byte_E386C9;
+                    while (*v7 != ((sMPGameInfoView*)v2->mGameInfo)->mMapID)
+                    {
+                        ++v6;
+                        v7 += 114;
+                        if (v6 >= g_NumTotalMaps)
+                            goto NEXT_GAME;
+                    }
+                    sMPGameInfoView* info = (sMPGameInfoView*)v2->mGameInfo;
+                    if (info->mGameType < 6u)
+                    {
+                        *v20 = v3;
+                        if (strcmp(info->mName, defaultFileName) == 0)
+                            m_ListBox.SetText(count_added_to_list, 0,
+                                              "MPFRONTEND_UNKNOWN_SOLDIER");
+                        else
+                            m_ListBox.SetText(count_added_to_list, 0,
+                                              info->mName);
+                        int v9 = info->m_publicFilled + info->m_privateFilled;
+                        int v10 = v9 + info->m_privateOpen + info->m_publicOpen;
+                        const char* STBString = STBManager::sInst->GetSTBString(
+                            "MPFRONTEND_OF");
+                        char maxPlayers[16];
+                        sprintf(maxPlayers, "%d %s %d", v9, STBString, v10);
+                        int v12 = count_added_to_list;
+                        m_ListBox.SetText(count_added_to_list, 1, maxPlayers);
+                        m_ListBox.SetText(
+                            v12, 2,
+                            MPUIInterface::GetGameTypeString(info->mGameType));
+                        m_ListBox.SetText(
+                            v12, 3, MPUIInterface::GetMapString(info->mMapID));
+                        v3 = i;
+                        count_added_to_list = v12 + 1;
+                        ++v20;
+                    }
+                }
+            }
+        NEXT_GAME:
+            ++v3;
+            mVisibleListToGameListMap = v17 + 1;
+            ++v2;
+            i = v3;
+            ++v17;
+        } while (v3 < numGames);
+        m_ListBox.Refresh();
+        UpdateGameInfo();
+    }
+}
+
+// ea: 0x0079A760
+void GameSettingsEdit::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    PanelQuad* mQuad = mScrollBarUpFader.mQuad;
+    if (mQuad != nullptr && mScrollBarUpFader.mFading)
+    {
+        if (mScrollBarUpFader.mAlphaTo <= mScrollBarUpFader.mAlpha)
+        {
+            float mAlpha = mScrollBarUpFader.mAlpha;
+            if (mAlpha <= mScrollBarUpFader.mAlphaTo)
+                goto UP_SET;
+            float v7 = mAlpha
+                - (time_inc / mScrollBarUpFader.mTime)
+                    * mScrollBarUpFader.mAlphaDelta;
+            float mAlphaTo = mScrollBarUpFader.mAlphaTo;
+            mScrollBarUpFader.mAlpha = v7;
+            if (mAlphaTo < v7)
+                goto UP_SET;
+            mScrollBarUpFader.mAlpha = mScrollBarUpFader.mAlphaTo;
+        }
+        else
+        {
+            float v4 = (time_inc / mScrollBarUpFader.mTime)
+                    * mScrollBarUpFader.mAlphaDelta
+                + mScrollBarUpFader.mAlpha;
+            mScrollBarUpFader.mAlpha = v4;
+            if (v4 < mScrollBarUpFader.mAlphaTo)
+                goto UP_SET;
+            mScrollBarUpFader.mAlpha = mScrollBarUpFader.mAlphaTo;
+        }
+        mScrollBarUpFader.mFading = false;
+    UP_SET:
+        mQuad->SetAlpha(mScrollBarUpFader.mAlpha);
+    }
+    PanelQuad* v9 = mScrollBarDownFader.mQuad;
+    if (v9 != nullptr && mScrollBarDownFader.mFading)
+    {
+        if (mScrollBarDownFader.mAlphaTo <= mScrollBarDownFader.mAlpha)
+        {
+            float v11 = mScrollBarDownFader.mAlpha;
+            if (v11 <= mScrollBarDownFader.mAlphaTo)
+                goto DOWN_SET;
+            float v12 = v11
+                - (time_inc / mScrollBarDownFader.mTime)
+                    * mScrollBarDownFader.mAlphaDelta;
+            float v13 = mScrollBarDownFader.mAlphaTo;
+            mScrollBarDownFader.mAlpha = v12;
+            if (v13 < v12)
+                goto DOWN_SET;
+            mScrollBarDownFader.mAlpha = mScrollBarDownFader.mAlphaTo;
+        }
+        else
+        {
+            float v10 = (time_inc / mScrollBarDownFader.mTime)
+                    * mScrollBarDownFader.mAlphaDelta
+                + mScrollBarDownFader.mAlpha;
+            mScrollBarDownFader.mAlpha = v10;
+            if (v10 < mScrollBarDownFader.mAlphaTo)
+                goto DOWN_SET;
+            mScrollBarDownFader.mAlpha = mScrollBarDownFader.mAlphaTo;
+        }
+        mScrollBarDownFader.mFading = false;
+    DOWN_SET:
+        v9->SetAlpha(mScrollBarDownFader.mAlpha);
+    }
+    if (entries[6]->GetValue() != 0)
+        entries[1]->Disable(true);
+    else
+        entries[1]->Disable(false);
+}
+
+// ea: 0x0079AEA0
+void GameSettingsEdit::OnTriangle(int c)
+{
+    (void)c;
+    bool bUnchanged = entries[0]->GetValue() == mNextServerParams->mGameType;
+    if (bUnchanged)
+    {
+        char v3 = (char)entries[1]->GetValue();
+        if (v3 != -1)
+            v3 = byte_E386C9[114 * v3];
+        bUnchanged =
+            v3 == mNextServerParams->mMapID
+            && entries[2]->GetValue() == mNextServerParams->mTimeLimit
+            && entries[3]->GetValue() == mNextServerParams->mScoreLimit
+            && entries[5]->GetValue() == mNextServerParams->mTeamBalancing
+            && entries[4]->GetValue() == mNextServerParams->mFriendlyFire
+            && entries[6]->GetValue() == mNextServerParams->mEnableAARVote
+            && entries[7]->GetValue() == mNextServerParams->mEnablePenaltyVote;
+    }
+    if (bUnchanged)
+    {
+        system->ReturnToPreviousMenu(-1);
+        iLastOptionSelected = highlighted;
+    }
+    else
+    {
+        DialogMenuSystem* DMS = g_femanager.GetDMS(mVersion);
+        DMS->BringUp("MPGAME_APPLY_SETTINGS_NOW", false, false,
+                     "MPGAME_EDIT_GAME_SETTINGS", true);
+        DialogMenuSystem* v5 = g_femanager.GetDMS(mVersion);
+        DialogMenu* Layer = v5->GetLayer(v5->GetActiveMenu() == 0);
+        Layer->AddOption("MPGAME_APPLY_NOW",
+                         GameSettingsEdit::ResponseYesApplyNow);
+        DialogMenuSystem* v8 = g_femanager.GetDMS(mVersion);
+        DialogMenu* v10 = v8->GetLayer(v8->GetActiveMenu() == 0);
+        v10->AddOption("MPGAME_DONT_APPLY",
+                       GameSettingsEdit::ResponseNoJustGoBackToPauseMenu);
+        j_nullsub_58(g_femanager.GetDMS(mVersion), true);
+        g_femanager.GetDMS(mVersion)->HighlightOption(1);
+        DialogMenuSystem* v13 = g_femanager.GetDMS(mVersion);
+        DialogMenu* v15 = v13->GetLayer(v13->GetActiveMenu() == 0);
+        v15->Reformat(true, 0);
+        iLastOptionSelected = highlighted;
+    }
+}
+
+// ea: 0x0079B170
+void AARGameSettingsEdit::OnTriangle(int c)
+{
+    (void)c;
+    bool bUnchanged = entries[0]->GetValue() == mNextServerParams->mGameType;
+    if (bUnchanged)
+    {
+        char v3 = (char)entries[1]->GetValue();
+        if (v3 != -1)
+            v3 = byte_E386C9[114 * v3];
+        bUnchanged =
+            v3 == mNextServerParams->mMapID
+            && entries[2]->GetValue() == mNextServerParams->mTimeLimit
+            && entries[3]->GetValue() == mNextServerParams->mScoreLimit
+            && entries[5]->GetValue() == mNextServerParams->mTeamBalancing
+            && entries[4]->GetValue() == mNextServerParams->mFriendlyFire
+            && entries[6]->GetValue() == mNextServerParams->mEnableAARVote
+            && entries[7]->GetValue() == mNextServerParams->mEnablePenaltyVote;
+    }
+    if (bUnchanged)
+    {
+        system->ReturnToPreviousMenu(-1);
+    }
+    else
+    {
+        DialogMenuSystem* DMS = g_femanager.GetDMS(mVersion);
+        DMS->BringUp("MPGAME_APPLY_SETTINGS_NOW", false, false,
+                     defaultFileName, true);
+        DialogMenuSystem* v5 = g_femanager.GetDMS(mVersion);
+        DialogMenu* Layer = v5->GetLayer(v5->GetActiveMenu() == 0);
+        Layer->AddOption("MPGAME_APPLY_NOW",
+                         AARGameSettingsEdit::ResponseYesApplyNow);
+        DialogMenuSystem* v8 = g_femanager.GetDMS(mVersion);
+        DialogMenu* v10 = v8->GetLayer(v8->GetActiveMenu() == 0);
+        v10->AddOption("MPGAME_DONT_APPLY",
+                       AARGameSettingsEdit::ResponseNoJustGoBackToPauseMenu);
+        j_nullsub_58(g_femanager.GetDMS(mVersion), true);
+        g_femanager.GetDMS(mVersion)->HighlightOption(1);
+        DialogMenuSystem* v13 = g_femanager.GetDMS(mVersion);
+        DialogMenu* v15 = v13->GetLayer(v13->GetActiveMenu() == 0);
+        v15->Reformat(true, 0);
+    }
+}
+
+// ea: 0x007AD150
+void ModelMenu::UpdateModelPosition()
+{
+    Entity* mObject =
+        EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+    if (mObject != nullptr)
+    {
+        mObject->r.currentAngles.v.m128_f32[0] = mModelAngles[0];
+        mObject->r.currentAngles.v.m128_f32[1] = mModelAngles[1];
+        mObject->r.currentAngles.v.m128_f32[2] = mModelAngles[2];
+        mObject->r.currentAngles.v.m128_f32[3] = mModelAngles[3];
+        Entity* v9 =
+            EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+        float* m128_f32 = v9->r.currentOrigin.v.m128_f32;
+        m128_f32[0] = mModelPosition[0];
+        m128_f32[1] = mModelPosition[1];
+        m128_f32[2] = mModelPosition[2];
+        m128_f32[3] = mModelPosition[3];
+        Entity* v12 =
+            EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+        v12->CalcRotTranMat43();
+        float v15 = 2.0f;  // scale_2 @ 0xE3AEDC
+        __m128 v16 = _mm_set1_ps(v15);
+        Entity* v14 =
+            EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+        v14->r.currentMat.x.v = _mm_mul_ps(v14->r.currentMat.x.v, v16);
+        Entity* v18 =
+            EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+        __m128 v19 = _mm_set1_ps(0.0f - v15);
+        v18->r.currentMat.y.v = _mm_mul_ps(v18->r.currentMat.y.v, v19);
+        Entity* v22 =
+            EntityHandleDb::sInst.GetObject(mClassModelEntity.mHandle.mVal);
+        v22->r.currentMat.z.v = _mm_mul_ps(v22->r.currentMat.z.v, v16);
+    }
+}
+
+// ea: 0x0078F120
+void OverlayMenu::OnCross(int c)
+{
+    switch (mState)
+    {
+    case (OverlayMenu::eState)0x11:
+        if (m_currSelection == 0)
+        {
+            MPLiveEngine::GetHandle()->LogOut();
+            XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        }
+        break;
+    case (OverlayMenu::eState)0x12:
+        if (m_currSelection == 0)
+            goto APPEAR_TOGGLE;
+        break;
+    case (OverlayMenu::eState)0x13:
+        if (m_currSelection == 0)
+        {
+        APPEAR_TOGGLE:
+            unsigned int actualPort = MPLiveEngine::GetHandle()->actualPort;
+            MPLiveEngine::GetHandle()->ToggleOfflineAppearance(actualPort);
+            MPUIInterface::mIsViewableOnline = !MPUIInterface::mIsViewableOnline;
+        }
+        break;
+    case (OverlayMenu::eState)0x14:
+        if (m_currSelection != 0)
+        {
+            if (m_currSelection == 1)
+            {
+                LiveWrapper::theWrapper->SetVTS(
+                    MPLiveEngine::GetHandle()->actualPort, true);
+            }
+        }
+        else
+        {
+            LiveWrapper::theWrapper->SetVTS(
+                MPLiveEngine::GetHandle()->actualPort, false);
+        }
+        break;
+    case (OverlayMenu::eState)0x15:
+        if (m_currSelection == 0)
+        {
+            MPLiveEngine* v4 = MPLiveEngine::GetHandle();
+            v4->JoinGame((XONLINE_FRIEND*)v4->friendToJoin);
+            XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        }
+        break;
+    case (OverlayMenu::eState)0x16:
+        XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        MPLiveEngine::GetHandle()->renderingEnabled = true;
+        if (m_currSelection != 0)
+            MPLiveEngine::GetHandle()->LogOut();
+        else
+            LiveEngine_Reboot(MPLiveEngine::GetHandle()->uixEngine, 0);
+        break;
+    default:
+        break;
+    }
+    if (mState == NO_GAMES)
+    {
+        system->RemoveOverlay();
+        if (MPUIInterface::IsLANGame())
+        {
+            j_nullsub_46(this);
+            system->MakeActiveAndReturn(1);
+        }
+        else
+        {
+            j_nullsub_46(this);
+            system->MakeActiveAndReturn(0);
+        }
+    }
+    else if ((mState == JOIN_FAILED || mState == CANNOT_CONNECT_TO_HOST
+              || mState == CANNOT_CONNECT_TO_PEERS || mState == JOIN_SUCCESS
+              || mState == JOIN_REFUSED)
+             && MPUIInterface::IsOnlineGame())
+    {
+        ClearAllButtons();
+        OnTriangle(c);
+    }
+    else
+    {
+        FEMenu::OnCross(c);
+        Accept();
+    }
+}
+
+// ea: 0x007A7BA0
+void CreateLanSessionMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    for (int i = 0; i < 4; ++i)
+        m_pBackgroundArt.m_elements[i]->SetShown(true);
+    if ((m_FirstTimeAccessedByte & 1) == 0)
+    {
+        m_FirstTimeAccessedByte = 1;
+        if (mStartingMapCombo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp";
+            AeAssert::gCurrentLine = 293;
+            AeAssert::gCurrentExpr = "mStartingMapCombo";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Combobox failure"))
+                __debugbreak();
+        }
+        for (int j = g_NumBaseMaps; j < g_NumTotalMaps; ++j)
+        {
+            char v4 = (j == 0xFF) ? (char)-1
+                                  : (char)byte_E386C9[114 * j];
+            Broc::string s(MPUIInterface::GetMapString(v4));
+            mStartingMapCombo->AddOption(s);
+        }
+    }
+    int mLastGameType = this->mLastGameType;
+    if (mGameModeCombo->mCurrOption != mLastGameType)
+    {
+        if (mLastGameType == 5)
+        {
+            MPUIInterface::mServerParams.mFriendlyFire = 1;
+            MPUIInterface::mServerParams.mEnablePenaltyVote = 1;
+        }
+        mLastGameType = mGameModeCombo->mCurrOption;
+        this->mLastGameType = mLastGameType;
+        MPUIInterface::mServerParams.mScoreLimit =
+            MPUIInterface::GetDefaultOption(
+                MPUIInterface::SETTING_SCORE_LIMIT, (eGameType)mLastGameType);
+        if (this->mLastGameType == 5)
+        {
+            MPUIInterface::mServerParams.mFriendlyFire = 0;
+            MPUIInterface::mServerParams.mEnablePenaltyVote = 0;
+            MPUIInterface::mServerParams.mTeamBalancing = 0;
+        }
+    }
+    int mCurrOption = mStartingMapCombo->mCurrOption;
+    if (mCurrOption != mLastMap)
+    {
+        mLastMap = mCurrOption;
+        char mapID;
+        if (mCurrOption == 0xFF)
+            mapID = -1;
+        else
+            mapID = byte_E386C9[114 * mCurrOption];
+        short MaxPlayersOptionFromMap =
+            MPUIInterface::GetMaxPlayersOptionFromMap(mapID);
+        mNumberOfPlayersCombo->SetCurrOption(MaxPlayersOptionFromMap);
+    }
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+    m_pText.m_elements[0]->SetText("MPFRONTEND_PLAY_SYSTEM_LINK");
+    GrabSessionName(0);
 }
 
 // ea: 0x007AD4E0

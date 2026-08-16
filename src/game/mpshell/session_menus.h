@@ -111,6 +111,7 @@ public:
     virtual void OnTriangle(int c);         // ?OnTriangle@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnCross(int c);            // ?OnCross@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnSquare(int c);           // ?OnSquare@CreateLanSessionMenu@@UAEXH@Z
+    virtual void OnActivate();              // ?OnActivate@CreateLanSessionMenu@@UAEXXZ
     virtual void OnUp(int c);               // ?OnUp@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnDown(int c);             // ?OnDown@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnLeft(int c);             // ?OnLeft@CreateLanSessionMenu@@UAEXH@Z
@@ -354,6 +355,8 @@ public:
     virtual void OnCircle(int c);        // ?OnCircle@GameSettingsEdit@@UAEXH@Z
     virtual void OnSquare(int c);        // ?OnSquare@GameSettingsEdit@@UAEXH@Z
     virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
+    virtual void OnTriangle(int c);      // ?OnTriangle@GameSettingsEdit@@UAEXH@Z
+    virtual void Update(float time_inc); // ?Update@GameSettingsEdit@@UAEXM@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
     virtual void OnUp(int c);            // ?OnUp@GameSettingsEdit@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@GameSettingsEdit@@UAEXH@Z
@@ -374,6 +377,7 @@ protected:
     void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void UpdateScrollBar();              // ?UpdateScrollBar@GameSettingsEdit@@IAEXXZ
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z
+    void AddOptionsToCombos();           // ?AddOptionsToCombos@GameSettingsEdit@@IAEXXZ
 };
 static_assert(sizeof(GameSettingsEdit) == 0x12C,
               "GameSettingsEdit size mismatch");
@@ -389,6 +393,7 @@ public:
     virtual void Update(float time_inc);  // ?Update@AARGameSettingsEdit@@UAEXM@Z
     virtual void SetPanelFile(PanelFile* pf);     // ?SetPanelFile@AARGameSettingsEdit@@UAEXPAVPanelFile@@@Z
     virtual void OnActivate();        // ?OnActivate@AARGameSettingsEdit@@UAEXXZ
+    virtual void OnTriangle(int c);   // ?OnTriangle@AARGameSettingsEdit@@UAEXH@Z
 private:
     void SetTimerText();              // ?SetTimerText@AARGameSettingsEdit@@AAEXXZ
 };
@@ -803,6 +808,7 @@ public:
     virtual void OnStart(int c);           // ?OnStart@VoteMapMenu@@UAEXH@Z
     virtual void OnActivate();             // ?OnActivate@VoteMapMenu@@UAEXXZ
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@VoteMapMenu@@UAEXPAVPanelFile@@@Z
+    virtual void Select(int entryNum);     // ?Select@VoteMapMenu@@UAEXH@Z
 };
 static_assert(sizeof(VoteMapMenu) == 0x54,
               "VoteMapMenu size mismatch");
@@ -817,6 +823,7 @@ public:
     virtual void Draw();                   // ?Draw@VoteGameTypeMenu@@UAEXXZ
     virtual void OnStart(int c);           // ?OnStart@VoteGameTypeMenu@@UAEXH@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@VoteGameTypeMenu@@UAEXPAVPanelFile@@@Z
+    virtual void Select(int entryNum);     // ?Select@VoteGameTypeMenu@@UAEXH@Z
 };
 static_assert(sizeof(VoteGameTypeMenu) == 0x54,
               "VoteGameTypeMenu size mismatch");
@@ -826,7 +833,7 @@ static_assert(sizeof(VoteGameTypeMenu) == 0x54,
 // ============================================================================
 class __declspec(align(16)) ModelMenu : public FESplitScreenMenu {
 public:
-    int  mClassModelEntity;    // +0x68 (DbLinkedHandle)
+    DbLinkedHandle<EntityHandleDb, Entity> mClassModelEntity;  // +0x68
     int  mCurrentTeam;         // +0x6C
     int  mCurrentWeapon;       // +0x70
     int  mCurrentClass;        // +0x74
@@ -861,6 +868,7 @@ protected:
     void SetLightDirection(int index, const math::Dir3& dir);  // ?SetLightDirection@ModelMenu@@IAEXHABVDir3@math@@@Z
     void PlayModifierAnim(int sheet, int row, int column, bool immediate);  // ?PlayModifierAnim@ModelMenu@@IAEXHHH_N@Z
     const char* GetClassModel(int playerClass, int team);  // ?GetClassModel@ModelMenu@@IAEPBDHH@Z
+    void UpdateModelPosition();         // ?UpdateModelPosition@ModelMenu@@IAEXXZ
 };
 static_assert(sizeof(ModelMenu) == 0x110,
               "ModelMenu size mismatch");
@@ -1170,6 +1178,8 @@ public:
     virtual void OnDown(int c);       // ?OnDown@AARMapVote@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@AARMapVote@@UAEXM@Z
     virtual ~AARMapVote();            // ??1AARMapVote@@UAE@XZ
+protected:
+    void SelectMap(int indexMap);     // ?SelectMap@AARMapVote@@IAEXH@Z
 };
 static_assert(sizeof(AARMapVote) == 0x238,
               "AARMapVote size mismatch");
@@ -1384,6 +1394,7 @@ public:
     virtual void OnTriangle(int c);       // ?OnTriangle@OverlayMenu@@UAEXH@Z
     virtual void OnSquare(int c);         // ?OnSquare@OverlayMenu@@UAEXH@Z
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
+    virtual void OnCross(int c);          // ?OnCross@OverlayMenu@@UAEXH@Z
     virtual ~OverlayMenu();               // ??1OverlayMenu@@UAE@XZ
 protected:
     void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ
