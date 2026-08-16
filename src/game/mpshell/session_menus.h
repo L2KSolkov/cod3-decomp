@@ -275,6 +275,7 @@ public:
     virtual void Init();                 // ?Init@GameSettingsView@@UAEXXZ
     virtual void Draw();                 // ?Draw@GameSettingsView@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@GameSettingsView@@UAEXPAVPanelFile@@@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@GameSettingsView@@UAEXPAVPanelFile@@@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsView@@QAEXPAVFESplitScreenMenu@@@Z
     virtual void OnLeft(int c);          // ?OnLeft@GameSettingsView@@UAEXH@Z
     virtual void OnRight(int c);         // ?OnRight@GameSettingsView@@UAEXH@Z
@@ -288,6 +289,8 @@ protected:
     virtual void ButtonHeldAction();     // ?ButtonHeldAction@GameSettingsView@@MAEXXZ
     virtual void SwapMenus();            // ?SwapMenus@GameSettingsView@@MAEXXZ
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsView@@IAEXPAVPanelFile@@@Z
+    void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@GameSettingsView@@IAEXPAVPanelFile@@@Z
+    void UpdateScrollBar();              // ?UpdateScrollBar@GameSettingsView@@IAEXXZ
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsView@@IAEXH@Z
 };
 static_assert(sizeof(GameSettingsView) == 0x11C,
@@ -309,9 +312,11 @@ public:
     unsigned char m_ucLastHighlighted;   // +0x128
     unsigned char m_FirstTimeAccessedByte;  // +0x129
 
+    static GameSettingsEdit* Me(int version);  // ?Me@GameSettingsEdit@@SAPAV1@H@Z
     virtual void Init();                 // ?Init@GameSettingsEdit@@UAEXXZ
     virtual void Draw();                 // ?Draw@GameSettingsEdit@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@GameSettingsEdit@@UAEXPAVPanelFile@@@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@GameSettingsEdit@@UAEXPAVPanelFile@@@Z
     virtual void OnLeft(int c);          // ?OnLeft@GameSettingsEdit@@UAEXH@Z
     virtual void OnL1(int c);            // ?OnL1@GameSettingsEdit@@UAEXH@Z
     virtual void OnR1(int c);            // ?OnR1@GameSettingsEdit@@UAEXH@Z
@@ -329,6 +334,7 @@ protected:
     virtual void SwapMenus();            // ?SwapMenus@GameSettingsEdit@@MAEXXZ
     void UpdateMapChangeStatus(bool isAllowingMapVote);  // ?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
+    void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z
 };
 static_assert(sizeof(GameSettingsEdit) == 0x12C,
@@ -381,6 +387,7 @@ public:
     static InstantActionMenu* Me();      // ?Me@InstantActionMenu@@SAPAV1@XZ
     virtual void OnActivate();           // ?OnActivate@InstantActionMenu@@UAEXXZ
     virtual void Draw();                 // ?Draw@InstantActionMenu@@UAEXXZ
+    virtual void Update(float time_inc); // ?Update@InstantActionMenu@@UAEXM@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@InstantActionMenu@@UAEXH@Z
 };
 static_assert(sizeof(InstantActionMenu) == 0x4C,
@@ -431,6 +438,7 @@ public:
     static PressStartMenu* Me();         // ?Me@PressStartMenu@@SAPAV1@XZ
     virtual void OnActivate();           // ?OnActivate@PressStartMenu@@UAEXXZ
     virtual void Draw();                 // ?Draw@PressStartMenu@@UAEXXZ
+    virtual void Update(float time_inc); // ?Update@PressStartMenu@@UAEXM@Z
     virtual void Select(int entry_num);  // ?Select@PressStartMenu@@UAEXH@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@PressStartMenu@@UAEXH@Z
     virtual void OnStart(int c);         // ?OnStart@PressStartMenu@@UAEXH@Z
@@ -477,6 +485,7 @@ public:
     virtual void OnSquare(int c);  // ?OnSquare@SessionListMenu@@UAEXH@Z
     virtual void OnUp(int c);      // ?OnUp@SessionListMenu@@UAEXH@Z
     virtual void OnDown(int c);    // ?OnDown@SessionListMenu@@UAEXH@Z
+    virtual void OnActivate();     // ?OnActivate@SessionListMenu@@UAEXXZ
 protected:
     void Refresh();                // ?Refresh@SessionListMenu@@IAEXXZ
     void TidyGamesList();          // ?TidyGamesList@SessionListMenu@@IAEXXZ
@@ -561,6 +570,9 @@ public:
     static InGameOverlay* Me(int version);  // ?Me@InGameOverlay@@SAPAV1@H@Z
     virtual void Select(int __formal);  // ?Select@InGameOverlay@@UAEXH@Z
     virtual void OnUp(int c);           // ?OnUp@InGameOverlay@@UAEXH@Z
+    virtual void OnTriangle(int c);     // ?OnTriangle@InGameOverlay@@UAEXH@Z
+    virtual void Draw();                // ?Draw@InGameOverlay@@UAEXXZ
+    virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameOverlay@@UAEXPAVPanelFile@@@Z
     virtual void OnCircle(int __formal);  // ?OnCircle@InGameOverlay@@UAEXH@Z
     virtual void OnSquare(int __formal);  // ?OnSquare@InGameOverlay@@UAEXH@Z
 };
@@ -589,6 +601,8 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AAROverlay@@UAEXPAVPanelFile@@@Z
     virtual void Select(int __formal);  // ?Select@AAROverlay@@UAEXH@Z
     virtual void OnUp(int c);           // ?OnUp@AAROverlay@@UAEXH@Z
+    virtual void OnTriangle(int c);     // ?OnTriangle@AAROverlay@@UAEXH@Z
+    virtual void Draw();                // ?Draw@AAROverlay@@UAEXXZ
     virtual void OnCircle(int __formal);  // ?OnCircle@AAROverlay@@UAEXH@Z
     virtual void OnSquare(int __formal);  // ?OnSquare@AAROverlay@@UAEXH@Z
 };
@@ -604,6 +618,8 @@ public:
     FEMultiLineText* mTextEntry;    // +0x5C
     float mTextScale;               // +0x60
     float mCountdown;               // +0x64
+
+    virtual void OnActivate();      // ?OnActivate@MultilineOverlayMenu@@UAEXXZ
 };
 static_assert(sizeof(MultilineOverlayMenu) == 0x68,
               "MultilineOverlayMenu size mismatch");
@@ -697,6 +713,7 @@ public:
     float mDistance;           // +0x100
     float mAnimSpeed;          // +0x104
 
+    ModelMenu(FEMenuSystem* s, int num_entries);  // ??0ModelMenu@@QAE@PAVFEMenuSystem@@H@Z
     virtual ~ModelMenu();    // ??1ModelMenu@@UAE@XZ
     virtual void Update(float time_inc);  // ?Update@ModelMenu@@UAEXM@Z
     virtual void Draw3D();   // ?Draw3D@ModelMenu@@UAEXXZ
@@ -710,30 +727,42 @@ static_assert(sizeof(ModelMenu) == 0x110,
 
 class __declspec(align(16)) WeaponSelectMenu : public ModelMenu {
 public:
-    uint8_t _pad[0x138 - 0x110];
+    bool Allow_Exit;               // +0x110
+    uint8_t _pad[0x138 - 0x111];
     FEText* m_pClassOptionHeader;  // +0x138
     uint8_t _pad2[0x1F0 - 0x13C];
-    bool Allow_Exit;               // +0x110
 
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@WeaponSelectMenu@@UAEXPAVFEMenu@@@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z
     virtual void OnStart(int c);           // ?OnStart@WeaponSelectMenu@@UAEXH@Z
+    virtual void OnUp(int c);              // ?OnUp@WeaponSelectMenu@@UAEXH@Z
+    virtual void OnDown(int c);            // ?OnDown@WeaponSelectMenu@@UAEXH@Z
+    virtual void Select(int entryNum);     // ?Select@WeaponSelectMenu@@UAEXH@Z
+    virtual void OnTriangle(int controllerIndex);  // ?OnTriangle@WeaponSelectMenu@@UAEXH@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z
 protected:
     void SetClassOptionHeader();           // ?SetClassOptionHeader@WeaponSelectMenu@@IAEXXZ
     void CloseMenu();                      // ?CloseMenu@WeaponSelectMenu@@IAEXXZ
+    void SetClassGauges();                 // ?SetClassGauges@WeaponSelectMenu@@IAEXXZ
+    void SetSwitchKit();                   // ?SetSwitchKit@WeaponSelectMenu@@IAEXXZ
+    void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z
+    void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(WeaponSelectMenu) == 0x1F0,
               "WeaponSelectMenu size mismatch");
 
 class __declspec(align(16)) InGameSwitchSides : public ModelMenu {
 public:
-    uint8_t _pad[0x120 - 0x110];
+    int  m_eTeam;                 // +0x110 (team_t)
+    uint8_t _pad2[0x120 - 0x114];
 
     virtual ~InGameSwitchSides();          // ??1InGameSwitchSides@@UAE@XZ
+    InGameSwitchSides(FEMenuSystem* s);    // ??0InGameSwitchSides@@QAE@PAVFEMenuSystem@@@Z
     virtual void Init();                          // ?Init@InGameSwitchSides@@UAEXXZ
     void OnDeactivate(ModelMenu* m);              // ?OnDeactivate@InGameSwitchSides@@QAEXPAVModelMenu@@@Z
     virtual void OnTriangle(int c);               // ?OnTriangle@InGameSwitchSides@@UAEXH@Z
     virtual void OnCross(int c);                  // ?OnCross@InGameSwitchSides@@UAEXH@Z
+    virtual void SetPanelFile(PanelFile* pf);     // ?SetPanelFile@InGameSwitchSides@@UAEXPAVPanelFile@@@Z
 protected:
     static bool ResponseNoNevermind(int index);  // ?ResponseNoNevermind@InGameSwitchSides@@KA_NH@Z
     static void ResponseGoBack(int client);      // ?ResponseGoBack@InGameSwitchSides@@KAXH@Z
@@ -741,6 +770,9 @@ protected:
     void SwitchTeams();                          // ?SwitchTeams@InGameSwitchSides@@IAEXXZ
     void PickTeam();                             // ?PickTeam@InGameSwitchSides@@IAEXXZ
     void UpdateModel();                          // ?UpdateModel@InGameSwitchSides@@IAEXXZ
+    void SwapMenus();                            // ?SwapMenus@InGameSwitchSides@@MAEXXZ
+    void SetPanelFileSplitScreen(PanelFile* pf); // ?SetPanelFileSplitScreen@InGameSwitchSides@@IAEXPAVPanelFile@@@Z
+    void SetPanelFileMain(PanelFile* pf);        // ?SetPanelFileMain@InGameSwitchSides@@IAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(InGameSwitchSides) == 0x120,
               "InGameSwitchSides size mismatch");
@@ -776,6 +808,8 @@ public:
     virtual void UpdateSplitScreen(); // ?UpdateSplitScreen@InGameScoreBoard@@UAEXXZ
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@InGameScoreBoard@@UAEXPAVFEMenu@@@Z
     virtual void Draw();              // ?Draw@InGameScoreBoard@@UAEXXZ
+    virtual void OnButtonRelease(int c, int b);  // ?OnButtonRelease@InGameScoreBoard@@UAEXHH@Z
+    virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameScoreBoard@@UAEXPAVPanelFile@@@Z
     void SetPanelContents();          // ?SetPanelContents@InGameScoreBoard@@IAEXXZ
 protected:
     int GetAlliesScore();             // ?GetAlliesScore@InGameScoreBoard@@IAEHXZ
@@ -798,6 +832,8 @@ public:
     void SetTimerText();               // ?SetTimerText@AARBaseMenu@@QAEXXZ
     virtual ~AARBaseMenu();            // ??1AARBaseMenu@@UAE@XZ
     virtual void OnStart(int c);       // ?OnStart@AARBaseMenu@@UAEXH@Z
+    virtual void OnL1(int c);          // ?OnL1@AARBaseMenu@@UAEXH@Z
+    virtual void OnActivate();         // ?OnActivate@AARBaseMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@AARBaseMenu@@UAEXM@Z
 };
 static_assert(sizeof(AARBaseMenu) == 0x88,
@@ -843,6 +879,7 @@ public:
     AARScoreboardLoser(FEMenuSystem* pauseMenuSystem);  // ??0AARScoreboardLoser@@QAE@PAVFEMenuSystem@@@Z
     virtual void OnR1(int c);   // ?OnR1@AARScoreboardLoser@@UAEXH@Z
     virtual void OnL1(int c);   // ?OnL1@AARScoreboardLoser@@UAEXH@Z
+    virtual void OnActivate();  // ?OnActivate@AARScoreboardLoser@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@AARScoreboardLoser@@UAEXM@Z
     virtual void Draw();                  // ?Draw@AARScoreboardLoser@@UAEXXZ
     virtual ~AARScoreboardLoser();        // ??1AARScoreboardLoser@@UAE@XZ
@@ -926,6 +963,7 @@ public:
     virtual void OnLeft(int c);       // ?OnLeft@AARGameModeVote@@UAEXH@Z
     virtual void OnRight(int c);      // ?OnRight@AARGameModeVote@@UAEXH@Z
     virtual void OnR1(int c);         // ?OnR1@AARGameModeVote@@UAEXH@Z
+    virtual void OnUp(int c);         // ?OnUp@AARGameModeVote@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@AARGameModeVote@@UAEXM@Z
 };
 static_assert(sizeof(AARGameModeVote) == 0x20C,
@@ -987,6 +1025,7 @@ public:
     virtual void OnSelect(int c);          // ?OnSelect@SpectateMenu@@UAEXH@Z
     virtual void OnSquare(int c);          // ?OnSquare@SpectateMenu@@UAEXH@Z
     virtual void OnActivate(int prev);     // ?OnActivate@SpectateMenu@@UAEXH@Z
+    virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@SpectateMenu@@UAEXXZ
     void UpdateState();                    // ?UpdateState@SpectateMenu@@QAEXXZ
 };
 static_assert(sizeof(SpectateMenu) == 0x70,

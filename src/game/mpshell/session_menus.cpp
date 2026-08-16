@@ -176,6 +176,12 @@ extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
 
 int scoreboard_player_sorter(const void* left, const void* right);
 
+class AARXBoxLiveIngameOptions {
+public:
+    static AARXBoxLiveIngameOptions* Me();  // ?Me@AARXBoxLiveIngameOptions@@SAPAV1@XZ (game_xbox.o)
+    bool SetTimerText();                    // ?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ (game_xbox.o)
+};
+
 enum ESpectatorState : int {
     kSpectatorStateIntermission = 0x0,
     kSpectatorStateSpawn = 0x1,
@@ -3004,4 +3010,323 @@ void AARScoreboardWinner::SetPanelFile(PanelFile* pf)
     AARScoreboardBase::SetPanelFile(pf);
     m_pYourTeamScore[4]->SetShown(true);
     m_pYourTeamScore[5]->SetShown(false);
+}
+
+// ============================================================================
+// Batch 10: SetPanelFile dispatchers + menu Update/Set handlers
+// ============================================================================
+
+// ea: 0x0078D6F0
+GameSettingsEdit* GameSettingsEdit::Me(int version)
+{
+    return (GameSettingsEdit*)g_femanager.GetIGMS(version)->menus[2];
+}
+
+// ea: 0x0078DD70
+void GameSettingsView::UpdateScrollBar()
+{
+    if (mScrollBarThumb != nullptr)
+    {
+        float y = (float)((mScrollBarYInc * highlighted) + mScrollBarTopY);
+        mScrollBarThumb->SetCenterPos(mScrollBarThumb->GetCenterX(), y);
+    }
+}
+
+// ea: 0x0078E2B0
+void InstantActionMenu::Update(float time_inc)
+{
+    if (!MPUIInterface::IsOnlineGame()
+        || MPLiveEngine::GetHandle()->internalState == kSignedIn)
+    {
+        FEMenu::Update(time_inc);
+        movie_manager::frame_advance();
+        MPUIInterface::Step();
+    }
+}
+
+// ea: 0x0078EA30
+void PressStartMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    MPUIInterface::Step();
+}
+
+// ea: 0x0078F590
+void InGameOverlay::OnTriangle(int c)
+{
+    (void)c;
+    OverlayMenuBase::OnTriangle(c);
+    if (GetSystem()->CurrentOverlay() != -1)
+    {
+        GetSystem()->RemoveOverlay();
+        m_State = (eState)0;
+    }
+}
+
+// ea: 0x0078F7E0
+void InGameOverlay::Draw()
+{
+    m_ListBox.Draw();
+    if (panel != nullptr)
+        panel->Draw();
+    FEMenu::Draw();
+    if (m_State >= 3 && m_State <= 9 && m_IsAARTimerEnabled)
+    {
+        m_IsAARTimerEnabled =
+            AARXBoxLiveIngameOptions::Me()->SetTimerText();
+    }
+}
+
+// ea: 0x0078F920
+void AAROverlay::OnTriangle(int c)
+{
+    (void)c;
+    OverlayMenuBase::OnTriangle(c);
+    if (GetSystem()->CurrentOverlay() != -1)
+    {
+        GetSystem()->RemoveOverlay();
+        m_State = (eState)0;
+    }
+}
+
+// ea: 0x0078FB70
+void AAROverlay::Draw()
+{
+    m_ListBox.Draw();
+    if (panel != nullptr)
+        panel->Draw();
+    FEMenu::Draw();
+    if (m_State >= 3 && m_State <= 9 && m_IsAARTimerEnabled)
+    {
+        m_IsAARTimerEnabled =
+            AARXBoxLiveIngameOptions::Me()->SetTimerText();
+    }
+}
+
+// ea: 0x0078FD20
+void MultilineOverlayMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    SetHigh(-1, true);
+    if (entries[2]->GetDisable() != 0)
+        SetHigh(3, true);
+    else
+        SetHigh(2, true);
+}
+
+// ea: 0x00790DE0
+void InGameScoreBoard::OnButtonRelease(int c, int b)
+{
+    (void)c;
+    if (b == 8)
+        ClearButton(controller::DOWNBUTTON);
+    else if (b == 4)
+        ClearButton(controller::UPBUTTON);
+}
+
+// ea: 0x00791890
+void AARGameModeVote::OnUp(int c)
+{
+    Up();
+    m_ListBox.OnUp(c);
+    if (m_currentRow <= 0)
+        m_currentRow = 6;
+    else
+        --m_currentRow;
+}
+
+// ea: 0x00792D10
+void SpectateMenu::UpdateSplitScreen()
+{
+    if (panel != nullptr)
+        panel->UpdateSplitScreen(unk_F6A284[802 * mVersion],
+                                 unk_F6A280[802 * mVersion]);
+}
+
+// ea: 0x007A33C0
+void InGameSwitchSides::SwapMenus()
+{
+    if (MultiplayerMgr::sInst->mRankedGame)
+    {
+        entries[1]->Disable(true);
+        entries[2]->Disable(true);
+    }
+    else
+    {
+        entries[1]->Disable(false);
+        entries[2]->Disable(false);
+    }
+}
+
+// ea: 0x007A3680
+void AARBaseMenu::OnL1(int c)
+{
+    (void)c;
+    if (mLeftArrowFader.mQuad != nullptr)
+    {
+        mLeftArrowFader.mAlpha = 1.0f;
+        mLeftArrowFader.mFading = true;
+        mLeftArrowFader.mAlphaTo = 0.5f;
+        mLeftArrowFader.mTime = 0.5f;
+        mLeftArrowFader.mAlphaDelta = fabs(0.5f);
+        mLeftArrowFader.mQuad->SetAlpha(1.0f);
+    }
+    else
+    {
+        mLeftArrowFader.mFading = false;
+    }
+}
+
+// ea: 0x007A8E20
+void GameSettingsView::SetPanelFile(PanelFile* pf)
+{
+    if (_stricmp(pf->mName, "MP_SS_PM_options_view.PANEL") == 0)
+        SetPanelFileSplitScreen(pf);
+    else if (_stricmp(pf->mName, "MP_PM_GS_view.PANEL") == 0)
+        SetPanelFileMain(pf);
+}
+
+// ea: 0x007A9CF0
+void WeaponSelectMenu::Select(int entryNum)
+{
+    (void)entryNum;
+    if (Allow_Exit)
+    {
+        Allow_Exit = true;
+        if (mReturnMenu < 0)
+            ((PauseMenu*)g_femanager.GetIGMS(mVersion)->menus[0])->UnPause();
+        else
+            system->ReturnToPreviousMenu(-1);
+    }
+}
+
+// ea: 0x007A9D40
+void WeaponSelectMenu::OnTriangle(int controllerIndex)
+{
+    (void)controllerIndex;
+    if (Allow_Exit)
+    {
+        Allow_Exit = true;
+        if (mReturnMenu < 0)
+            ((PauseMenu*)g_femanager.GetIGMS(mVersion)->menus[0])->UnPause();
+        else
+            system->ReturnToPreviousMenu(-1);
+    }
+}
+
+// ea: 0x007A9E90
+InGameSwitchSides::InGameSwitchSides(FEMenuSystem* s)
+    : ModelMenu(s, 3)
+{
+    m_eTeam = TEAM_FREE;
+    default_color_scheme = 10;
+}
+
+// ea: 0x007A9FC0
+void AARBaseMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    SetTimerText();
+    if (MultiplayerMgr::sInst->mRankedGame)
+        m_pTimerText[1]->SetText("MPGAME_AAR_RANK_GAME_OVER");
+    else
+        m_pTimerText[1]->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+}
+
+// ea: 0x007AAA10
+void AARScoreboardLoser::OnActivate()
+{
+    AARScoreboardBase::OnActivate();
+    m_pYourTeamScore[4]->SetShown(false);
+    m_pYourTeamScore[5]->SetShown(false);
+}
+
+// ea: 0x007ABBD0
+void GameSettingsEdit::SetPanelFile(PanelFile* pf)
+{
+    if (_stricmp(pf->mName, "MP_SS_PM_options_edit.PANEL") == 0)
+        SetPanelFileSplitScreen(pf);
+    else if (_stricmp(pf->mName, "MP_PM_GS_edit.PANEL") == 0)
+        SetPanelFileMain(pf);
+}
+
+// ea: 0x007ABE70
+void SessionListMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    mShowDownArrow = false;
+    mShowUpArrow = false;
+    mNumGames = 0;
+    m_ListBox.SelectLine(0);
+}
+
+// ea: 0x007ABF20
+void WeaponSelectMenu::SetPanelFile(PanelFile* pf)
+{
+    if (_stricmp(pf->mName, "MP_SS_PM_options.PANEL") == 0)
+        SetPanelFileSplitScreen(pf);
+    else if (_stricmp(pf->mName, "MP_class_select.PANEL") == 0)
+        SetPanelFileMain(pf);
+}
+
+// ea: 0x007ABF70
+void InGameScoreBoard::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    if (mVersion > 0)
+    {
+        PanelFile* panel = this->panel;
+        if (panel != nullptr)
+        {
+            panel->~PanelFile();
+            mem_heap_free(panel);
+        }
+        this->panel = nullptr;
+    }
+    m_ListBox.RemoveAllItems();
+    Cleanup();
+}
+
+// ea: 0x007ABFC0
+void InGameSwitchSides::SetPanelFile(PanelFile* pf)
+{
+    if (_stricmp(pf->mName, "MP_SS_PM_options.PANEL") == 0)
+        SetPanelFileSplitScreen(pf);
+    else if (_stricmp(pf->mName, "MP_PM_sideselection.PANEL") == 0)
+        SetPanelFileMain(pf);
+}
+
+// ea: 0x007AD620
+void InGameOverlay::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    PanelFile* panel = this->panel;
+    if (panel != nullptr)
+    {
+        panel->~PanelFile();
+        mem_heap_free(panel);
+    }
+    this->panel = nullptr;
+    Cleanup();
+}
+
+// ea: 0x007AF1C0
+void WeaponSelectMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+    m_pClassOptionHeader->SetText(szClassReference[highlighted]);
+    SetClassGauges();
+    SetSwitchKit();
+}
+
+// ea: 0x007AF200
+void WeaponSelectMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+    m_pClassOptionHeader->SetText(szClassReference[highlighted]);
+    SetClassGauges();
+    SetSwitchKit();
 }
