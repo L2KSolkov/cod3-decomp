@@ -527,7 +527,9 @@ public:
     virtual void OnActivate();        // ?OnActivate@SessionDetailsMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@SessionDetailsMenu@@UAEXM@Z
     virtual void Select(int entry_num);  // ?Select@SessionDetailsMenu@@UAEXH@Z
+protected:
     void UpdateDetails();             // ?UpdateDetails@SessionDetailsMenu@@IAEXXZ
+public:
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@SessionDetailsMenu@@UAEXPAVFEMenu@@@Z
     virtual void OnTriangle(int c);       // ?OnTriangle@SessionDetailsMenu@@UAEXH@Z
 };
@@ -562,12 +564,14 @@ public:
     virtual void OnDown(int c);    // ?OnDown@SessionListMenu@@UAEXH@Z
     virtual void Select(int entry_num);  // ?Select@SessionListMenu@@UAEXH@Z
     virtual void OnActivate();     // ?OnActivate@SessionListMenu@@UAEXXZ
+    virtual void Update(float time_inc);  // ?Update@SessionListMenu@@UAEXM@Z
     virtual ~SessionListMenu();    // ??1SessionListMenu@@UAE@XZ
 protected:
     void Refresh();                // ?Refresh@SessionListMenu@@IAEXXZ
     void TidyGamesList();          // ?TidyGamesList@SessionListMenu@@IAEXXZ
     void InitMenu();               // ?InitMenu@SessionListMenu@@IAEXXZ
     void UpdateGameInfo();         // ?UpdateGameInfo@SessionListMenu@@IAEXXZ
+    void RepopulateSessionList();  // ?RepopulateSessionList@SessionListMenu@@IAEXXZ
 };
 static_assert(sizeof(SessionListMenu) == 0x1B4,
               "SessionListMenu size mismatch");
@@ -600,12 +604,14 @@ public:
     virtual void OnUp(int c);         // ?OnUp@SessionLanListMenu@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@SessionLanListMenu@@UAEXH@Z
     virtual void OnActivate();        // ?OnActivate@SessionLanListMenu@@UAEXXZ
+    virtual void Update(float time_inc);  // ?Update@SessionLanListMenu@@UAEXM@Z
     virtual ~SessionLanListMenu();    // ??1SessionLanListMenu@@UAE@XZ
 protected:
     void Refresh();                   // ?Refresh@SessionLanListMenu@@IAEXXZ
     void InitMenu();                  // ?InitMenu@SessionLanListMenu@@IAEXXZ
     void TidyGamesList();             // ?TidyGamesList@SessionLanListMenu@@IAEXXZ
     void UpdateGameInfo();            // ?UpdateGameInfo@SessionLanListMenu@@IAEXXZ
+    void RepopulateSessionList();     // ?RepopulateSessionList@SessionLanListMenu@@IAEXXZ
 };
 static_assert(sizeof(SessionLanListMenu) == 0x1B4,
               "SessionLanListMenu size mismatch");
@@ -635,9 +641,20 @@ static_assert(sizeof(OverlayMenuBase) == 0x58,
 class InGameOverlay : public OverlayMenuBase {
 public:
     enum eState : int {
-        NO_OVERLAY = 0x0,
-        NETWORK_ERROR_COUNTDOWN = 0x1,
-        CONTROLLER_DISCONNECTED = 0x2,
+        NONE = 0x0,
+        OVERLAY_SIGNIN_SIGNOUT = 0x1,
+        OVERLAY_APPEAR_ONLINE = 0x2,
+        OVERLAY_APPEAR_OFFLINE = 0x3,
+        OVERLAY_TOGGLE_VOICE = 0x4,
+        OVERLAY_JOIN_FRIEND = 0x5,
+        OVERLAY_REBOOT_REQUIRED = 0x6,
+        OVERLAY_AAR_SIGNIN_SIGNOUT = 0x7,
+        OVERLAY_AAR_APPEAR_ONLINE = 0x8,
+        OVERLAY_AAR_APPEAR_OFFLINE = 0x9,
+        OVERLAY_AAR_TOGGLE_VOICE = 0xA,
+        OVERLAY_AAR_JOIN_FRIEND = 0xB,
+        OVERLAY_AAR_REBOOT_REQUIRED = 0xC,
+        NUM_STATES = 0xD,
     };
 
     eState m_State;                  // +0x58
@@ -656,6 +673,7 @@ public:
     virtual void OnUp(int c);           // ?OnUp@InGameOverlay@@UAEXH@Z
     virtual void OnDown(int c);         // ?OnDown@InGameOverlay@@UAEXH@Z
     virtual void OnTriangle(int c);     // ?OnTriangle@InGameOverlay@@UAEXH@Z
+    virtual void OnCross(int c);        // ?OnCross@InGameOverlay@@UAEXH@Z
     virtual void Draw();                // ?Draw@InGameOverlay@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameOverlay@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc); // ?Update@InGameOverlay@@UAEXM@Z
@@ -669,9 +687,20 @@ static_assert(sizeof(InGameOverlay) == 0x12C,
 class AAROverlay : public OverlayMenuBase {
 public:
     enum eState : int {
-        NO_OVERLAY = 0x0,
-        NETWORK_ERROR_COUNTDOWN = 0x1,
-        CONTROLLER_DISCONNECTED = 0x2,
+        NONE = 0x0,
+        OVERLAY_SIGNIN_SIGNOUT = 0x1,
+        OVERLAY_APPEAR_ONLINE = 0x2,
+        OVERLAY_APPEAR_OFFLINE = 0x3,
+        OVERLAY_TOGGLE_VOICE = 0x4,
+        OVERLAY_JOIN_FRIEND = 0x5,
+        OVERLAY_REBOOT_REQUIRED = 0x6,
+        OVERLAY_AAR_SIGNIN_SIGNOUT = 0x7,
+        OVERLAY_AAR_APPEAR_ONLINE = 0x8,
+        OVERLAY_AAR_APPEAR_OFFLINE = 0x9,
+        OVERLAY_AAR_TOGGLE_VOICE = 0xA,
+        OVERLAY_AAR_JOIN_FRIEND = 0xB,
+        OVERLAY_AAR_REBOOT_REQUIRED = 0xC,
+        NUM_STATES = 0xD,
     };
 
     eState m_State;                  // +0x58
@@ -691,6 +720,7 @@ public:
     virtual void OnUp(int c);           // ?OnUp@AAROverlay@@UAEXH@Z
     virtual void OnDown(int c);         // ?OnDown@AAROverlay@@UAEXH@Z
     virtual void OnTriangle(int c);     // ?OnTriangle@AAROverlay@@UAEXH@Z
+    virtual void OnCross(int c);        // ?OnCross@AAROverlay@@UAEXH@Z
     virtual void Draw();                // ?Draw@AAROverlay@@UAEXXZ
     virtual void Update(float time_inc); // ?Update@AAROverlay@@UAEXM@Z
     virtual void OnCircle(int __formal);  // ?OnCircle@AAROverlay@@UAEXH@Z
@@ -1126,6 +1156,7 @@ public:
 
     AARMapVote(FEMenuSystem* s);  // ??0AARMapVote@@QAE@PAVFEMenuSystem@@@Z
     static AARMapVote* Me();          // ?Me@AARMapVote@@SAPAV1@XZ
+    void TallyVotes();                // ?TallyVotes@AARMapVote@@QAEXXZ
     virtual void Init();              // ?Init@AARMapVote@@UAEXXZ
     virtual void Draw();              // ?Draw@AARMapVote@@UAEXXZ
     virtual void OnCross(int c);      // ?OnCross@AARMapVote@@UAEXH@Z
@@ -1162,6 +1193,7 @@ public:
 
     AARGameModeVote(FEMenuSystem* s);  // ??0AARGameModeVote@@QAE@PAVFEMenuSystem@@@Z
     static AARGameModeVote* Me();     // ?Me@AARGameModeVote@@SAPAV1@XZ
+    void TallyVotes();                // ?TallyVotes@AARGameModeVote@@QAEXXZ
     virtual void Init();              // ?Init@AARGameModeVote@@UAEXXZ
     void OnDeactivate(AARBaseMenu* __formal);  // ?OnDeactivate@AARGameModeVote@@QAEXPAVAARBaseMenu@@@Z
     virtual void OnLeft(int c);       // ?OnLeft@AARGameModeVote@@UAEXH@Z

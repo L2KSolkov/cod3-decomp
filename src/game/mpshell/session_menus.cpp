@@ -135,6 +135,19 @@ struct sGameListing {
     bool mValidVersion;                 // +0x0C
 };
 
+// MPGameInfo minimal view (mp.o owns the definition; offsets from IDA)
+struct sMPGameInfoView {
+    uint8_t _pad0[0x28];
+    unsigned char m_publicOpen;    // +0x28
+    unsigned char m_privateOpen;   // +0x29
+    unsigned char m_publicFilled;  // +0x2A
+    unsigned char m_privateFilled; // +0x2B
+    char mName[24];                // +0x2C
+    unsigned char mMapID;          // +0x44
+    unsigned char mGameType;       // +0x45
+    unsigned char mGameSubType;    // +0x46
+};
+
 // ============================================================================
 // MPLiveEngine / LiveWrapper minimal views (game_xbox.o owns the definitions)
 // ============================================================================
@@ -155,19 +168,42 @@ struct LiveLocal : LivePlayer {
 
 class LiveWrapper {
 public:
+    // vptr anchor (game_xbox.o owns the real vtable; never called here)
+    virtual void vtableAnchor() = 0;
+
     LiveLocal* GetLocalPlayer(unsigned int portNumber);  // ?GetLocalPlayer@LiveWrapper@@QAEPAVLiveLocal@@I@Z (game_xbox.o)
     char* GetIcon(unsigned int portNumber);  // ?GetIcon@LiveWrapper@@QAEPADK@Z (game_xbox.o)
     void SetNotificationFlag(unsigned int portNumber, unsigned int flagID,
                              bool flagState);  // ?SetNotificationFlag@LiveWrapper@@QAEXKK_N@Z
+    void LogOut();                            // ?LogOut@LiveWrapper@@QAEXXZ (game_xbox.o)
+    void ToggleOfflineAppearance(unsigned int portNumber);  // ?ToggleOfflineAppearance@LiveWrapper@@QAEXK@Z
+    void SetVTS(unsigned int portNumber, bool enabled);     // ?SetVTS@LiveWrapper@@QAEXK_N@Z
     static LiveWrapper* theWrapper;          // ?theWrapper@LiveWrapper@@1PAV1@A (game_xbox.o)
 };
+
+struct XONLINE_FRIEND;
+extern "C" void __stdcall LiveEngine_Reboot(void* engine, int mode);
+    // _LiveEngine_Reboot@8 (uixd:engine.obj)
 
 class MPLiveEngine : public LiveWrapper {
 public:
     static MPLiveEngine* GetHandle();  // ?GetHandle@MPLiveEngine@@SAPAV1@XZ (game_xbox.o)
     int internalState;                 // +0x04 (LiveWrapper)
+    uint8_t _pad08[0x14 - 0x08];       // +0x08
+    void* uixEngine;                   // +0x14 (LiveEngine*)
+    uint8_t _pad18[0x4474 - 0x18];     // +0x18
     bool needConfirmation;             // +0x4474
+    unsigned char friendToJoin[0x56];  // +0x4475 (XONLINE_FRIEND)
+    bool renderingEnabled;             // +0x44CB
+    uint8_t _pad44CC[0x45D4 - 0x44CC]; // +0x44CC
     unsigned int actualPort;           // +0x45D4
+    virtual void JoinGame(XONLINE_FRIEND* joinee);  // ?JoinGame@MPLiveEngine@@UAEXPAU_XONLINE_FRIEND@@@Z (vtable +0x38)
+};
+
+// XBoxLiveIngameOptionsCOD3 - FE menu (mp_xbox.o owns the definition)
+class XBoxLiveIngameOptionsCOD3 : public FEMenu {
+public:
+    static XBoxLiveIngameOptionsCOD3* Me(int version);  // ?Me@XBoxLiveIngameOptionsCOD3@@SAPAV1@H@Z
 };
 
 // ============================================================================
@@ -6300,6 +6336,441 @@ void AARPauseMenu::SetPanelFile(PanelFile* pf)
     highlighted = 3;
     SetHigh(3, true);
     entries[3]->Highlight(true, true);
+}
+
+// ============================================================================
+// Batch 25: overlay cross handlers + tally votes + session list updates
+// ============================================================================
+
+// ea: 0x0078F5E0
+void InGameOverlay::OnCross(int c)
+{
+    switch (m_State)
+    {
+    case OVERLAY_SIGNIN_SIGNOUT:
+    case OVERLAY_AAR_SIGNIN_SIGNOUT:
+        if (m_currSelection == 0)
+        {
+            MPLiveEngine::GetHandle()->LogOut();
+            XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        }
+        break;
+    case OVERLAY_APPEAR_ONLINE:
+    case OVERLAY_AAR_APPEAR_ONLINE:
+    case OVERLAY_APPEAR_OFFLINE:
+    case OVERLAY_AAR_APPEAR_OFFLINE:
+        if (m_currSelection == 0)
+        {
+            unsigned int actualPort = MPLiveEngine::GetHandle()->actualPort;
+            MPLiveEngine::GetHandle()->ToggleOfflineAppearance(actualPort);
+            MPUIInterface::mIsViewableOnline = !MPUIInterface::mIsViewableOnline;
+        }
+        break;
+    case OVERLAY_TOGGLE_VOICE:
+    case OVERLAY_AAR_TOGGLE_VOICE:
+        if (m_currSelection != 0)
+        {
+            if (m_currSelection == 1)
+            {
+                LiveWrapper::theWrapper->SetVTS(
+                    MPLiveEngine::GetHandle()->actualPort, true);
+            }
+        }
+        else
+        {
+            LiveWrapper::theWrapper->SetVTS(
+                MPLiveEngine::GetHandle()->actualPort, false);
+        }
+        break;
+    case OVERLAY_JOIN_FRIEND:
+    case OVERLAY_AAR_JOIN_FRIEND:
+        if (m_currSelection == 0)
+        {
+            MPLiveEngine* v4 = MPLiveEngine::GetHandle();
+            v4->JoinGame((XONLINE_FRIEND*)v4->friendToJoin);
+            XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        }
+        break;
+    case OVERLAY_REBOOT_REQUIRED:
+    case OVERLAY_AAR_REBOOT_REQUIRED:
+        XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        MPLiveEngine::GetHandle()->renderingEnabled = true;
+        if (m_currSelection != 0)
+            MPLiveEngine::GetHandle()->LogOut();
+        else
+            LiveEngine_Reboot(MPLiveEngine::GetHandle()->uixEngine, 0);
+        break;
+    default:
+        break;
+    }
+    FEMenu::OnCross(c);
+    Accept();
+}
+
+// ea: 0x0078F970
+void AAROverlay::OnCross(int c)
+{
+    switch (m_State)
+    {
+    case OVERLAY_SIGNIN_SIGNOUT:
+    case OVERLAY_AAR_SIGNIN_SIGNOUT:
+        if (m_currSelection == 0)
+        {
+            MPLiveEngine::GetHandle()->LogOut();
+            XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        }
+        break;
+    case OVERLAY_APPEAR_ONLINE:
+    case OVERLAY_AAR_APPEAR_ONLINE:
+    case OVERLAY_APPEAR_OFFLINE:
+    case OVERLAY_AAR_APPEAR_OFFLINE:
+        if (m_currSelection == 0)
+        {
+            unsigned int actualPort = MPLiveEngine::GetHandle()->actualPort;
+            MPLiveEngine::GetHandle()->ToggleOfflineAppearance(actualPort);
+            MPUIInterface::mIsViewableOnline = !MPUIInterface::mIsViewableOnline;
+        }
+        break;
+    case OVERLAY_TOGGLE_VOICE:
+    case OVERLAY_AAR_TOGGLE_VOICE:
+        if (m_currSelection != 0)
+        {
+            if (m_currSelection == 1)
+            {
+                LiveWrapper::theWrapper->SetVTS(
+                    MPLiveEngine::GetHandle()->actualPort, true);
+            }
+        }
+        else
+        {
+            LiveWrapper::theWrapper->SetVTS(
+                MPLiveEngine::GetHandle()->actualPort, false);
+        }
+        break;
+    case OVERLAY_JOIN_FRIEND:
+    case OVERLAY_AAR_JOIN_FRIEND:
+        if (m_currSelection == 0)
+        {
+            MPLiveEngine* v4 = MPLiveEngine::GetHandle();
+            v4->JoinGame((XONLINE_FRIEND*)v4->friendToJoin);
+            XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        }
+        break;
+    case OVERLAY_REBOOT_REQUIRED:
+    case OVERLAY_AAR_REBOOT_REQUIRED:
+        XBoxLiveIngameOptionsCOD3::Me(0)->mReturnMenu = -1;
+        MPLiveEngine::GetHandle()->renderingEnabled = true;
+        if (m_currSelection != 0)
+            MPLiveEngine::GetHandle()->LogOut();
+        else
+            LiveEngine_Reboot(MPLiveEngine::GetHandle()->uixEngine, 0);
+        break;
+    default:
+        break;
+    }
+    FEMenu::OnCross(c);
+    Accept();
+}
+
+// ea: 0x007A5600
+void AARMapVote::TallyVotes()
+{
+    int v1 = g_NumBaseMaps + 1;
+    int v2 = 0;
+    int maxVoteCnt = 0;
+    if (v1 > 0)
+    {
+        int* m_pMapVoteVals = this->m_pMapVoteVals;
+        int v4 = v1;
+        do
+        {
+            if (*m_pMapVoteVals > v2)
+            {
+                maxVoteCnt = *m_pMapVoteVals;
+                v2 = *m_pMapVoteVals;
+            }
+            ++m_pMapVoteVals;
+            --v4;
+        } while (v4 != 0);
+    }
+    int v5 = 0;
+    int* v6 = (int*)mem_heap_malloc(4 * v1);
+    int* arrChoices = v6;
+    if (v1 > 0)
+    {
+        memset(v6, 0, 4 * v1);
+        v2 = maxVoteCnt;
+    }
+    for (int i = 0; i < v1; ++i)
+    {
+        if (v2 != 0 && m_pMapVoteVals[i] == v2)
+            v6[v5++] = i;
+    }
+    int v8;
+    if (v5 <= 1)
+    {
+        if (v5 != 1)
+            goto DONE;
+        v8 = 0;
+    }
+    else
+    {
+        v8 = irand(0, v5);
+        if (v8 <= -1)
+            goto DONE;
+    }
+    int v9 = g_NumTotalMaps;
+    int v10 = 0;
+    if (g_NumTotalMaps <= 0)
+    {
+        v10 = -1;
+    }
+    else
+    {
+        char* v11 = byte_E386C9;
+        while (*v11 != MPUIInterface::mServerParams.mMapID)
+        {
+            ++v10;
+            v11 += 114;
+            if (v10 >= g_NumTotalMaps)
+            {
+                v10 = -1;
+                break;
+            }
+        }
+    }
+    int v12 = v6[v8];
+    if (v12 - 1 != v10)
+    {
+        char v13;
+        if (v12 != 0)
+        {
+            v13 = (char)(v6[v8]) - 1;
+            if (v13 != -1)
+                v13 = byte_E386C9[114 * v13];
+        }
+        else
+        {
+            v13 = (char)irand(0, g_NumBaseMaps);
+            v9 = g_NumTotalMaps;
+            if (v13 != -1)
+                v13 = byte_E386C9[114 * v13];
+        }
+        unsigned char v14 = (unsigned char)v13;
+        int v15 = 0;
+        MPUIInterface::mNextServerParams.mMapID = v14;
+        if (v9 > 0)
+        {
+            char* v16 = byte_E386C9;
+            while (*v16 != v14)
+            {
+                ++v15;
+                v16 += 114;
+                if (v15 >= v9)
+                    MPUIInterface::mNextServerParams.mMapID =
+                        MPUIInterface::mServerParams.mMapID;
+            }
+        }
+        else
+        {
+            MPUIInterface::mNextServerParams.mMapID =
+                MPUIInterface::mServerParams.mMapID;
+        }
+    }
+DONE:
+    mem_heap_free(arrChoices);
+}
+
+// ea: 0x007A6380
+void AARGameModeVote::TallyVotes()
+{
+    int v2 = 0;
+    for (int i = 0; i < 7; ++i)
+    {
+        if (m_pModeVoteVals.m_elements[i] > v2)
+            v2 = m_pModeVoteVals.m_elements[i];
+    }
+    int arrChoices[7];
+    memset(arrChoices, 0, sizeof(arrChoices));
+    int v4 = 0;
+    for (int j = 0; j < 7; ++j)
+    {
+        if (v2 != 0 && m_pModeVoteVals.m_elements[j] == v2)
+            arrChoices[v4++] = j;
+    }
+    int v6;
+    if (v4 <= 1)
+    {
+        if (v4 != 1)
+            return;
+        v6 = 0;
+    }
+    else
+    {
+        v6 = irand(0, v4);
+        if (v6 <= -1)
+            return;
+    }
+    int* v7 = &arrChoices[v6];
+    if (*v7 - 1 != MPUIInterface::mServerParams.mGameType)
+    {
+        unsigned char v8;
+        if (*v7 != 0)
+            v8 = (unsigned char)(*v7 - 1);
+        else
+            v8 = (unsigned char)irand(0, 6);
+        MPUIInterface::mNextServerParams.mGameType = v8;
+        if (v8 >= 6u)
+            MPUIInterface::mNextServerParams.mGameType =
+                MPUIInterface::mServerParams.mGameType;
+    }
+}
+
+// ea: 0x0079CBF0
+void SessionDetailsMenu::UpdateDetails()
+{
+    if (mCurrentGame < mNumGames)
+    {
+        unsigned long numGames = 0;
+        sGameListing* v2 = MPUIInterface::GameListingGet(numGames);
+        sGameListing* v4 = v2;
+        if (mNumGames != numGames)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionDetailsMenu.cpp";
+            AeAssert::gCurrentLine = 177;
+            AeAssert::gCurrentExpr = "mNumGames == numGames";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+        }
+        sMPGameInfoView* m_ptr =
+            (sMPGameInfoView*)v4[mCurrentGame].mGameInfo;
+        int v6 = m_ptr->m_privateFilled;
+        int v7 = m_ptr->mGameType;
+        unsigned int mapIndex = m_ptr->mMapID;
+        int v8 = m_ptr->m_publicFilled + v6;
+        unsigned int maxPlayers =
+            v8 + m_ptr->m_privateOpen + m_ptr->m_publicOpen;
+        entries[1]->SetText(MPUIInterface::GetGameTypeString(v7));
+        entries[2]->SetText(MPUIInterface::GetMapString(mapIndex));
+        entries[4]->SetTextNoLocalize(m_ptr->mName);
+        char playerString[64];
+        sprintf(playerString, "%d/%d", v8, maxPlayers);
+        entries[3]->SetTextNoLocalize(playerString);
+    }
+}
+
+// ea: 0x007AD350
+void SessionListMenu::Update(float time_inc)
+{
+    if (!MPUIInterface::IsOnlineGame()
+        || MPLiveEngine::GetHandle()->internalState == kSignedIn)
+    {
+        FEMenu::Update(time_inc);
+        movie_manager::frame_advance();
+        unsigned long numGames = 0;
+        MPUIInterface::GameListingGet(numGames);
+        if (numGames != 0 || !MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+        {
+            if (numGames != mNumGames)
+            {
+                helpbar1->SetText("MPFRONTEND_HELP_JOIN_BACK_MOVE_REFRESH");
+                RepopulateSessionList();
+                mNumGames = numGames;
+            }
+        }
+        else
+        {
+            OverlayMenu* v3 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            v3->SetState(OverlayMenu::NO_GAMES);
+            if (!MPUIInterface::IsLANGame())
+            {
+                OverlayMenu* fems = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)fems + 0x50) = 4;
+                OverlayMenu* v6 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)v6 + 0x54) = 10;
+                system->AddOverlay(16);
+            }
+            else
+            {
+                OverlayMenu* fems = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)fems + 0x50) = 5;
+                OverlayMenu* v7 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)v7 + 0x54) = 9;
+                system->AddOverlay(16);
+            }
+        }
+        MPUIInterface::Step();
+        if (mNeedToUpdate)
+        {
+            j_nullsub_46(this);
+            InitMenu();
+            mNeedToUpdate = false;
+        }
+        m_ListBox.Update(time_inc);
+        UpdateGameInfo();
+    }
+    else
+    {
+        system->MakeActive(8);
+    }
+}
+
+// ea: 0x007AD4E0
+void SessionLanListMenu::Update(float time_inc)
+{
+    if (!MPUIInterface::IsOnlineGame()
+        || MPLiveEngine::GetHandle()->internalState == kSignedIn)
+    {
+        FEMenu::Update(time_inc);
+        movie_manager::frame_advance();
+        unsigned long numGames = 0;
+        MPUIInterface::GameListingGet(numGames);
+        if (numGames != 0 || !MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+        {
+            if (numGames != mNumGames)
+            {
+                helpbar1->SetText("MPFRONTEND_HELP_JOIN_BACK_MOVE_REFRESH");
+                RepopulateSessionList();
+                mNumGames = numGames;
+            }
+        }
+        else
+        {
+            OverlayMenu* v3 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            v3->SetState(OverlayMenu::NO_GAMES);
+            if (MPUIInterface::IsLANGame())
+            {
+                OverlayMenu* fems = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)fems + 0x50) = 9;
+                OverlayMenu* v5 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)v5 + 0x54) = 8;
+            }
+            system->AddOverlay(16);
+        }
+        MPUIInterface::Step();
+        if (mNeedToUpdate)
+        {
+            j_nullsub_46(this);
+            InitMenu();
+            mNeedToUpdate = false;
+        }
+        m_ListBox.Update(time_inc);
+    }
+    else
+    {
+        system->MakeActive(8);
+    }
 }
 
 // ea: 0x0079A070
