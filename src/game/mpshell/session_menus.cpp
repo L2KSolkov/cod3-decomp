@@ -9701,6 +9701,192 @@ void OverlayMenu::SetPanelFile(PanelFile* pf)
     m_ListBox.Refresh();
 }
 
+// ea: 0x007AAA50
+void AARPersonalStats::SetPanelFile(PanelFile* pf)
+{
+    static const char* const szAARPersonalStatsBackgroundArt[12] = {
+        "ps_bkg", "ps_bkg_colorband", "ps_bkg_image_soldier",
+        "ps_bkg_detail_01", "ps_bkg_detail_02", "ps_bkg_detail_03",
+        "ps_bkg_detail_04", "ps_bkg_detail_05", "ps_bkg_detail_06",
+        "ps_bkg_detail_07", "ps_bkg_detail_08", "ps_bkg_detail_09",
+    };
+    static const char* const szAARPersonalStatsClassIcon[7] = {
+        "ps_ci_assault_heavy", "ps_ci_assault_light", "ps_ci_rifleman",
+        "ps_ci_medic", "ps_ci_support", "ps_ci_anti_armor",
+        "ps_ci_scout",
+    };
+    static const char* const szScrollArrowPersonal[2] = {
+        "scroll_arrow_left", "scroll_arrow_right",
+    };
+    static const char* const szAARPersonalText[4] = {
+        "text_helpbar", "text_title_AAR", "ps_text_class_title",
+        "ps_text_title_section",
+    };
+    static const char* const szAARPersonalScoreText[14] = {
+        "ps_text_line_01a", "ps_text_line_01b", "ps_text_line_02a",
+        "ps_text_line_02b", "ps_text_line_03a", "ps_text_line_03b",
+        "ps_text_line_04a", "ps_text_line_04b", "ps_text_line_05a",
+        "ps_text_line_05b", "ps_text_line_06a", "ps_text_line_06b",
+        "ps_text_line_07a", "ps_text_line_07b",
+    };
+    static const char* const szAARPersonalScoreTextReferences[14] = {
+        "MPGAME_TOTALSCORE_ALLCAPS", defaultFileName,
+        "MPGAME_KILLS_ALLCAPS", defaultFileName,
+        "MPGAME_ASSISTS_ALLCAPS", defaultFileName,
+        "MPGAME_DEATHS_ALLCAPS", defaultFileName,
+        "MPGAME_SUICIDES_ALLCAPS", defaultFileName,
+        "MPGAME_TEAMKILLS_ALLCAPS", defaultFileName,
+        "MPGAME_VEHICLESDESTROYED_ALLCAPS", defaultFileName,
+    };
+    static const char* const szAARPersonalClassScoreText[8] = {
+        "ps_text_line_08a", "ps_text_line_08b", "ps_text_line_09a",
+        "ps_text_line_09b", "ps_text_line_10a", "ps_text_line_10b",
+        "ps_text_line_11a", "ps_text_line_11b",
+    };
+    static const char* const szAARPersonalClassScoreTextReferences[8] = {
+        defaultFileName, defaultFileName, defaultFileName,
+        defaultFileName, defaultFileName, defaultFileName,
+        defaultFileName, defaultFileName,
+    };
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+        AeAssert::gCurrentLine = 136;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    AARBaseMenu::SetPanelFile(pf);
+    for (int i = 0; i < 12; ++i)
+    {
+        if (m_pBackgroundArt.m_elements[i] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 150;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        m_pBackgroundArt.m_elements[i] =
+            panel->GetPointer(szAARPersonalStatsBackgroundArt[i]);
+        if (m_pBackgroundArt.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 153;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int j = 0; j < 7; ++j)
+    {
+        if (m_pClassIcon.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 159;
+            AeAssert::gCurrentExpr = "0 == m_pClassIcon[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        m_pClassIcon.m_elements[j] =
+            panel->GetPointer(szAARPersonalStatsClassIcon[j]);
+        m_pClassIcon.m_elements[j]->SetShown(false);
+        if (m_pClassIcon.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 162;
+            AeAssert::gCurrentExpr = "m_pClassIcon[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int k = 0; k < 2; ++k)
+        m_pScrollArrow.m_elements[k] =
+            panel->GetPointer(szScrollArrowPersonal[k]);
+    for (int m = 0; m < 4; ++m)
+    {
+        m_pText.m_elements[m] =
+            panel->GetTextPointer(szAARPersonalText[m]);
+        if (m_pText.m_elements[m] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 175;
+            AeAssert::gCurrentExpr = "m_pText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get timer text!"))
+                __debugbreak();
+        }
+        m_pText.m_elements[m]->SetShown(true);
+    }
+    SetPanelHelpBar();
+    m_pText.m_elements[1]->SetText("MPGAME_AFTER_ACTION_REVIEW");
+    m_pText.m_elements[3]->SetText("MPGAME_PERSONAL_STATS");
+    for (int n = 0; n < 14; ++n)
+    {
+        m_pScoreText.m_elements[n] =
+            panel->GetTextPointer(szAARPersonalScoreText[n]);
+        if (m_pScoreText.m_elements[n] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 186;
+            AeAssert::gCurrentExpr = "m_pScoreText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get timer text!"))
+                __debugbreak();
+        }
+        m_pScoreText.m_elements[n]
+            ->SetText(szAARPersonalScoreTextReferences[n]);
+        m_pScoreText.m_elements[n]->SetShown(true);
+    }
+    for (int ii = 0; ii < 8; ++ii)
+    {
+        if (m_pClassScoreText.m_elements[ii] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 194;
+            AeAssert::gCurrentExpr = "0 == m_pClassScoreText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Pointer not null as expected"))
+                __debugbreak();
+        }
+        m_pClassScoreText.m_elements[ii] =
+            panel->GetTextPointer(szAARPersonalClassScoreText[ii]);
+        if (m_pClassScoreText.m_elements[ii] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARPersonalStats.cpp";
+            AeAssert::gCurrentLine = 196;
+            AeAssert::gCurrentExpr = "m_pClassScoreText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get class text!"))
+                __debugbreak();
+        }
+        m_pClassScoreText.m_elements[ii]
+            ->SetText(szAARPersonalClassScoreTextReferences[ii]);
+        m_pClassScoreText.m_elements[ii]->SetShown(true);
+    }
+}
+
 // ea: 0x007AC7A0
 void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
 {

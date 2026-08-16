@@ -1141,6 +1141,7 @@ public:
     virtual void Init();              // ?Init@AARPersonalStats@@UAEXXZ
     virtual void OnActivate();        // ?OnActivate@AARPersonalStats@@UAEXXZ
     virtual void Draw();              // ?Draw@AARPersonalStats@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AARPersonalStats@@UAEXPAVPanelFile@@@Z
     void OnDeactivate(AARBaseMenu* m);  // ?OnDeactivate@AARPersonalStats@@QAEXPAVAARBaseMenu@@@Z
     virtual void OnCross(int c);      // ?OnCross@AARPersonalStats@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@AARPersonalStats@@UAEXH@Z
