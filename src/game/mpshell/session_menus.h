@@ -549,6 +549,7 @@ public:
     virtual void Draw();           // ?Draw@SessionListMenu@@UAEXXZ
     virtual void OnTriangle(int c);// ?OnTriangle@SessionListMenu@@UAEXH@Z
     virtual void OnCircle(int c);  // ?OnCircle@SessionListMenu@@UAEXH@Z
+    virtual void OnCross(int c);   // ?OnCross@SessionListMenu@@UAEXH@Z
     virtual void OnSquare(int c);  // ?OnSquare@SessionListMenu@@UAEXH@Z
     virtual void OnUp(int c);      // ?OnUp@SessionListMenu@@UAEXH@Z
     virtual void OnDown(int c);    // ?OnDown@SessionListMenu@@UAEXH@Z
@@ -587,6 +588,7 @@ public:
     virtual void Draw();              // ?Draw@SessionLanListMenu@@UAEXXZ
     virtual void OnTriangle(int c);   // ?OnTriangle@SessionLanListMenu@@UAEXH@Z
     virtual void OnCircle(int c);     // ?OnCircle@SessionLanListMenu@@UAEXH@Z
+    virtual void Select(int entry_num);  // ?Select@SessionLanListMenu@@UAEXH@Z
     virtual void OnSquare(int c);     // ?OnSquare@SessionLanListMenu@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@SessionLanListMenu@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@SessionLanListMenu@@UAEXH@Z
@@ -762,6 +764,8 @@ public:
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@VoteMapMenu@@UAEXPAVFEMenu@@@Z
     virtual void Draw();                   // ?Draw@VoteMapMenu@@UAEXXZ
     virtual void OnStart(int c);           // ?OnStart@VoteMapMenu@@UAEXH@Z
+    virtual void OnActivate();             // ?OnActivate@VoteMapMenu@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@VoteMapMenu@@UAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(VoteMapMenu) == 0x54,
               "VoteMapMenu size mismatch");
@@ -772,8 +776,10 @@ public:
     void* mGameTypeList;    // +0x50 (FEMenuListBox*)
 
     VoteGameTypeMenu(FEMenuSystem* pauseMenuSystem);  // ??0VoteGameTypeMenu@@QAE@PAVFEMenuSystem@@@Z
+    virtual void OnActivate();             // ?OnActivate@VoteGameTypeMenu@@UAEXXZ
     virtual void Draw();                   // ?Draw@VoteGameTypeMenu@@UAEXXZ
     virtual void OnStart(int c);           // ?OnStart@VoteGameTypeMenu@@UAEXH@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@VoteGameTypeMenu@@UAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(VoteGameTypeMenu) == 0x54,
               "VoteGameTypeMenu size mismatch");
@@ -882,6 +888,7 @@ protected:
     static bool ResponseNoNevermind(int index);  // ?ResponseNoNevermind@InGameSwitchSides@@KA_NH@Z
     static void ResponseGoBack(int client);      // ?ResponseGoBack@InGameSwitchSides@@KAXH@Z
     static bool ResponseYesSwitch(int client);   // ?ResponseYesSwitch@InGameSwitchSides@@KA_NH@Z
+    void NotifySameTeam();                        // ?NotifySameTeam@InGameSwitchSides@@IAEXXZ
     void PickTeam();                             // ?PickTeam@InGameSwitchSides@@IAEXXZ
     void UpdateModel();                          // ?UpdateModel@InGameSwitchSides@@IAEXXZ
     void SwapMenus();                            // ?SwapMenus@InGameSwitchSides@@MAEXXZ
@@ -1039,6 +1046,7 @@ class AARScoreboardWinner : public AARScoreboardBase {
 public:
     AARScoreboardWinner(FEMenuSystem* pauseMenuSystem);  // ??0AARScoreboardWinner@@QAE@PAVFEMenuSystem@@@Z
     virtual void SetWinningTeam(team_t team);  // ?SetWinningTeam@AARScoreboardWinner@@UAEXW4team_t@@@Z
+    virtual void OnActivate();  // ?OnActivate@AARScoreboardWinner@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@AARScoreboardWinner@@UAEXM@Z
     virtual void Draw();                  // ?Draw@AARScoreboardWinner@@UAEXXZ
     virtual void OnR1(int c);             // ?OnR1@AARScoreboardWinner@@UAEXH@Z
@@ -1254,6 +1262,7 @@ public:
     virtual void ButtonHeldAction();       // ?ButtonHeldAction@PauseMenu@@UAEXXZ
     virtual void Update(float time_inc);   // ?Update@PauseMenu@@UAEXM@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@PauseMenu@@UAEXPAVPanelFile@@@Z
+    virtual void OnActivate();             // ?OnActivate@PauseMenu@@UAEXXZ
     virtual void OnCross(int c);           // ?OnCross@PauseMenu@@UAEXH@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@PauseMenu@@UAEXXZ
     void UnPause(int client);             // ?UnPause@PauseMenu@@QAEXH@Z (mp_shell.o)

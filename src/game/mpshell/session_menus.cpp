@@ -65,6 +65,7 @@ public:
     static const int GetScoreLimit(unsigned long index,
                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
     static const int GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z
+    static const char* GetGameTypeString(unsigned long gameType);  // ?GetGameTypeString@MPUIInterface@@SAPBDK@Z
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
     static void ExitGame();   // ?ExitGame@MPUIInterface@@SAXXZ
     static int mReturnMenu;   // ?mReturnMenu@MPUIInterface@@1HA
@@ -153,6 +154,8 @@ class LiveWrapper {
 public:
     LiveLocal* GetLocalPlayer(unsigned int portNumber);  // ?GetLocalPlayer@LiveWrapper@@QAEPAVLiveLocal@@I@Z (game_xbox.o)
     char* GetIcon(unsigned int portNumber);  // ?GetIcon@LiveWrapper@@QAEPADK@Z (game_xbox.o)
+    void SetNotificationFlag(unsigned int portNumber, unsigned int flagID,
+                             bool flagState);  // ?SetNotificationFlag@LiveWrapper@@QAEXKK_N@Z
     static LiveWrapper* theWrapper;          // ?theWrapper@LiveWrapper@@1PAV1@A (game_xbox.o)
 };
 
@@ -160,6 +163,7 @@ class MPLiveEngine : public LiveWrapper {
 public:
     static MPLiveEngine* GetHandle();  // ?GetHandle@MPLiveEngine@@SAPAV1@XZ (game_xbox.o)
     int internalState;                 // +0x04 (LiveWrapper)
+    bool needConfirmation;             // +0x4474
     unsigned int actualPort;           // +0x45D4
 };
 
@@ -252,6 +256,7 @@ void player_die(void* self, void* inflictor, void* attacker, int damage,
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
 extern void j_nullsub_46(void* self);  // g.o nullsub
+extern void j_nullsub_58(void* self, bool use);  // g.o nullsub
 namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
 void UpdateNumViewports();  // ?UpdateNumViewports@View@@YAXXZ (cg.o)
@@ -5327,6 +5332,321 @@ SessionListMenu::SessionListMenu(FEMenuSystem* s)
     m_pConnectionStars.m_elements[3] = nullptr;
     m_pConnectionStars.m_elements[4] = nullptr;
     memset(mVisibleListToGameListMap, 0xFFu, sizeof(mVisibleListToGameListMap));
+}
+
+// ============================================================================
+// Batch 21: vote/list/dialog/pause handlers (240-320 bytes)
+// ============================================================================
+
+extern void* mem_heap_malloc(unsigned int size);  // core.o (1-arg overload)
+
+// ea: 0x007905C0
+void VoteGameTypeMenu::OnActivate()
+{
+    entries[0]->SetText("MPGAME_CHANGE_GAME_TYPE");
+    if (mPlayerMgr == nullptr)
+        mPlayerMgr = MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    if (mGameTypeList == nullptr)
+    {
+        FEText* TextPointer = panel->GetTextPointer("element_list");
+        mGameTypeList = AddListBoxEntry(1, TextPointer, 10);
+    }
+    unsigned char mGameType = MPUIInterface::mServerParams.mGameType;
+    ((FEMenuListBox*)mGameTypeList)->Clear();
+    for (int i = 0; i < 6; ++i)
+    {
+        if (i != mGameType)
+        {
+            Broc::string itemText(MPUIInterface::GetGameTypeString(i));
+            ((FEMenuListBox*)mGameTypeList)->AddItem(itemText, 0);
+        }
+    }
+    FEMenu::OnActivate();
+    SetHigh(1, true);
+}
+
+// ea: 0x00790810
+void VoteMapMenu::OnActivate()
+{
+    entries[0]->SetText("MPGAME_CHANGE_MAP");
+    if (mPlayerMgr == nullptr)
+        mPlayerMgr = MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    if (mMapList == nullptr)
+    {
+        FEText* TextPointer = panel->GetTextPointer("element_list");
+        mMapList = AddListBoxEntry(1, TextPointer, 10);
+        ((FEMenuListBox*)mMapList)->mRowHeight = 16.0f;
+    }
+    ((FEMenuListBox*)mMapList)->Clear();
+    ((FEMenuListBox*)mMapList)->mRowHeight = 24.0f;
+    int v5 = 0;
+    if (g_NumTotalMaps > 0)
+    {
+        int mMapID = MPUIInterface::mServerParams.mMapID;
+        do
+        {
+            if (v5 != mMapID)
+            {
+                Broc::string itemText(MPUIInterface::GetMapString(v5));
+                ((FEMenuListBox*)mMapList)->AddItem(itemText, 0);
+            }
+            ++v5;
+        } while (v5 < g_NumTotalMaps);
+    }
+    FEMenu::OnActivate();
+    SetHigh(1, true);
+}
+
+// ea: 0x007906D0
+void VoteGameTypeMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    FEText* TextPointer = pf->GetTextPointer("title");
+    AddEntry(0, TextPointer, false);
+    helpbar = panel->GetTextPointer("Helpbar");
+    FEMultiLineText* v5 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    if (v5 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v11 = helpbar->GetX();
+        v5 = new (v5)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v5;
+    if (v5 != nullptr)
+        v5->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+}
+
+// ea: 0x00790950
+void VoteMapMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    FEText* TextPointer = pf->GetTextPointer("title");
+    AddEntry(0, TextPointer, false);
+    helpbar = panel->GetTextPointer("Helpbar");
+    FEMultiLineText* v5 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    if (v5 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v11 = helpbar->GetX();
+        v5 = new (v5)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v5;
+    if (v5 != nullptr)
+        v5->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+}
+
+// ea: 0x007A4A60
+void AARPersonalStats::SetPanelHelpBar()
+{
+    m_pText.m_elements[0]->SetShown(false);
+    FEMultiLineText* v12 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    if (v12 != nullptr)
+    {
+        FEText* v13 = m_pText.m_elements[0];
+        color32 col = v13->GetColor();
+        panel_layer layer = (panel_layer)v13->GetScaleX();
+        float x1 = v13->GetY();
+        float v7 = v13->GetX();
+        v12 = new (v12)
+            FEMultiLineText(v13->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v12;
+    if (v12 != nullptr)
+        v12->SetNumLines(1);
+    helpbar1->SetText("MPGAME_HELP_LOSERS_AAR_SCOREBOARD");
+}
+
+// ea: 0x007A3100
+void InGameSwitchSides::NotifySameTeam()
+{
+    const char* v12 =
+        (EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam
+         == TEAM_ALLIES)
+        ? "MPGAME_SWITCH_TEAM_ALREADY_ALLIES"
+        : "MPGAME_SWITCH_TEAM_ALREADY_AXIS";
+    DialogMenuSystem* DMS = g_femanager.GetDMS(mVersion);
+    DMS->BringUp(v12, false, false, defaultFileName, true);
+    j_nullsub_58(DMS, true);
+    DialogMenu* Layer = DMS->GetLayer(DMS->GetActiveMenu() == 0);
+    Layer->AddOption("INGAME_DIALOG_OK",
+                     InGameSwitchSides::ResponseNoNevermind);
+    DialogMenuSystem* v7 = g_femanager.GetDMS(mVersion);
+    DialogMenu* v9 = v7->GetLayer(v7->GetActiveMenu() == 0);
+    v9->Reformat(true, 0);
+    DialogMenuSystem* v10 = g_femanager.GetDMS(mVersion);
+    v10->GetLayer(v10->GetActiveMenu() == 0)->triangleResponse =
+        InGameSwitchSides::ResponseGoBack;
+}
+
+// ea: 0x007A9870
+void SessionListMenu::OnCross(int c)
+{
+    (void)c;
+    unsigned long numGames = 0;
+    MPUIInterface::GameListingGet(numGames);
+    unsigned int v3 = m_ListBox.mTopLine + m_ListBox.mSelectedLine;
+    if (v3 > 0x18)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+        AeAssert::gCurrentLine = 325;
+        AeAssert::gCurrentExpr =
+            "selection >= 0 && selection < MPUIInterface::MAX_RESULTS";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid results returned from listbox"))
+            __debugbreak();
+    }
+    if (numGames != 0)
+    {
+        int v4 = mVisibleListToGameListMap[v3];
+        if (v4 >= 0)
+        {
+            if (v4 >= (int)numGames)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+                AeAssert::gCurrentLine = 330;
+                AeAssert::gCurrentExpr =
+                    "mVisibleListToGameListMap[selection] < numGames";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+            }
+            OverlayMenu* v5 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            v5->SetState(OverlayMenu::JOINING_START);
+            OverlayMenu* fems = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)fems + 0x54) = 13;
+            OverlayMenu* v7 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)v7 + 0x50) = mVisibleListToGameListMap[v3];
+            system->AddOverlay(16);
+        }
+    }
+}
+
+// ea: 0x007A9A40
+void SessionLanListMenu::Select(int entry_num)
+{
+    (void)entry_num;
+    unsigned long numGames = 0;
+    MPUIInterface::GameListingGet(numGames);
+    unsigned int v3 = m_ListBox.mTopLine + m_ListBox.mSelectedLine;
+    if (v3 > 0x18)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+        AeAssert::gCurrentLine = 278;
+        AeAssert::gCurrentExpr =
+            "selection >= 0 && selection < MPUIInterface::MAX_RESULTS";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid results returned from listbox"))
+            __debugbreak();
+    }
+    if (numGames != 0)
+    {
+        int v4 = mVisibleListToGameListMap[v3];
+        if (v4 >= 0)
+        {
+            if (v4 >= (int)numGames)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/ui/SessionLanListMenu.cpp";
+                AeAssert::gCurrentLine = 281;
+                AeAssert::gCurrentExpr =
+                    "mVisibleListToGameListMap[selection] < numGames";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+            }
+            OverlayMenu* v5 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            v5->SetState(OverlayMenu::JOINING_START);
+            OverlayMenu* fems = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)fems + 0x54) = 14;
+            OverlayMenu* v7 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)v7 + 0x50) = mVisibleListToGameListMap[v3];
+            system->AddOverlay(16);
+        }
+    }
+}
+
+// ea: 0x007AA8C0
+void AARScoreboardWinner::OnActivate()
+{
+    AARScoreboardBase::OnActivate();
+    if (cgGlobal.teamGame)
+    {
+        panel->GetTextPointer("sb_text_title_section")
+            ->SetText("MPGAME_WINNERS_SCOREBOARD");
+        m_pYourTeamScore.m_elements[4]->SetShown(true);
+        m_pYourTeamScore.m_elements[5]->SetShown(false);
+        m_pUppercaseText.m_elements[4]->SetShown(true);
+        m_pUppercaseText.m_elements[5]->SetShown(true);
+        m_pUppercaseText.m_elements[6]->SetShown(true);
+        m_pUppercaseText.m_elements[7]->SetShown(true);
+        panel->GetPointer("sb_bkg_detail_02")->SetShown(true);
+        panel->GetPointer("sb_bkg_detail_09")->SetShown(true);
+    }
+    else
+    {
+        panel->GetTextPointer("sb_text_title_section")
+            ->SetText("MPGAME_BATTLE_SCOREBOARD");
+        m_pYourTeamScore.m_elements[4]->SetShown(false);
+        m_pYourTeamScore.m_elements[5]->SetShown(false);
+        m_pUppercaseText.m_elements[4]->SetShown(false);
+        m_pUppercaseText.m_elements[5]->SetShown(false);
+        m_pUppercaseText.m_elements[6]->SetShown(false);
+        m_pUppercaseText.m_elements[7]->SetShown(false);
+        panel->GetPointer("sb_bkg_detail_02")->SetShown(false);
+        panel->GetPointer("sb_bkg_detail_09")->SetShown(false);
+    }
+}
+
+// ea: 0x007A6700
+void PauseMenu::OnActivate()
+{
+    SwapMenus();
+    FEMenu::OnActivate();
+    HighlightDefault();
+    if (!MultiplayerMgr::sInst->mRankedGame
+        && MultiplayerMgr::sInst->IsLocalClientHost(mVersion))
+        entries[4]->SetText("MPGAME_EDIT_GAME_SETTINGS");
+    else
+        entries[4]->SetText("MPGAME_VIEW_GAME_SETTINGS");
+    SetHigh(m_iLastSelection, true);
+    entries[2]->Disable(
+        EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+        != 3);
+    if (EntityManager::sInst->GetPlayer(currCl)->client->pers.playerState
+            != 3
+        && highlighted == 2)
+        SetHigh(1, true);
+    tlPrintf("PauseMenu::OnActivate()\n");
+    ClearButton((controller::ButtonIndex)(controller::R3
+                                          | controller::RIGHTBUTTON));
+    MPLiveEngine::GetHandle()->needConfirmation = true;
+    LiveWrapper::theWrapper->SetNotificationFlag(
+        MPLiveEngine::GetHandle()->actualPort, 0, true);
+    panel->GetPointer("bkg_line_07")->SetShown(true);
 }
 
 // ea: 0x00792280
