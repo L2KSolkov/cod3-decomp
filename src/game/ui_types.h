@@ -2785,10 +2785,11 @@ public:
     enum EScrollQuads {
         kScrollBarArrowUp = 0,
         kScrollBarArrowDown = 1,
-        kScrollBarIndicator = 2,
-        kScrollBarTrack = 3,
-        kScrollBarDetail1 = 4,
-        kScrollBarDetail2 = 5,
+        kScrollBarThumb = 2,
+        kScrollBarThumbReference = 3,
+        kScrollBarBackground1 = 4,
+        kScrollBarBackground2 = 5,
+        kScrollBarMax = 6,
     };
 
     class UIListBoxRow;

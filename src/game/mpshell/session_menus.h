@@ -1010,6 +1010,7 @@ public:
     virtual void Draw();              // ?Draw@InGameScoreBoard@@UAEXXZ
     virtual void OnButtonRelease(int c, int b);  // ?OnButtonRelease@InGameScoreBoard@@UAEXHH@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@InGameScoreBoard@@UAEXPAVPanelFile@@@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@InGameScoreBoard@@UAEXPAVPanelFile@@@Z
 protected:
     int GetAlliesScore();             // ?GetAlliesScore@InGameScoreBoard@@IAEHXZ
     int GetAxisScore();               // ?GetAxisScore@InGameScoreBoard@@IAEHXZ

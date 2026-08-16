@@ -9210,6 +9210,218 @@ void InGameScoreBoard::Update(float time_inc)
     }
 }
 
+// ea: 0x007A1BA0
+void InGameScoreBoard::SetPanelFile(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/InGameScoreBoard.cpp";
+        AeAssert::gCurrentLine = 192;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Scoreboard panel file pointer is NULL"))
+            __debugbreak();
+    }
+    bool v4 = mVersion <= 0;
+    panel = pf;
+    if (!v4)
+        panel = pf->Clone();
+    char szSlotGeometry[24];
+    for (int i = 0; i < 12; ++i)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_bkg_detail_%02d", i + 1);
+        m_pBackgroundArt.m_elements[i] =
+            panel->GetPointer(szSlotGeometry);
+        if (m_pBackgroundArt.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/InGameScoreBoard.cpp";
+            AeAssert::gCurrentLine = 210;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Scoreboard background art not found!"))
+                __debugbreak();
+        }
+    }
+    for (int i = 12; i < 15; ++i)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_bkg_detail_%02da", i - 3);
+        m_pBackgroundArt.m_elements[i] =
+            panel->GetPointer(szSlotGeometry);
+        if (m_pBackgroundArt.m_elements[i] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/InGameScoreBoard.cpp";
+            AeAssert::gCurrentLine = 218;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Scoreboard background art not found!"))
+                __debugbreak();
+        }
+    }
+    m_pTeamStripQuad.m_elements[0] =
+        panel->GetPointer("sb_colorband_icon_american");
+    m_pTeamStripQuad.m_elements[1] =
+        panel->GetPointer("sb_colorband_icon_german");
+    m_pTeamStripQuad.m_elements[2] =
+        panel->GetPointer("sb_colorband_icon_neutral");
+    m_ListBox.SetAllColumnsSelectable(false);
+    if (m_ListBox.mItemColumnsCount <= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+        AeAssert::gCurrentLine = 125;
+        AeAssert::gCurrentExpr =
+            "column >= 0 && column < mItemColumnsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "UIListBoxItem: State count must be greater then zero"))
+            __debugbreak();
+    }
+    if (m_ListBox.mSelectedRowColorChangeColumns.mSize <= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    m_ListBox.mSelectedRowColorChangeColumns.mElements[2] = true;
+    static const char* const szScoreboardTexts[13] = {
+        "sb_text_title_team_name", "sb_text_title_scoreboard",
+        "sb_text_level_name", "sb_text_map_name", "sb_text_loser_name",
+        "sb_text_loser_score", "sb_text_winner_name",
+        "sb_text_winner_score", "sb_text_helpbar", "sb_text_icon_class",
+        "sb_text_icon_deaths", "sb_text_icon_kills",
+        "sb_text_icon_score",
+    };
+    for (int i = 0; i < 13; ++i)
+        m_pUppercaseText.m_elements[i] =
+            panel->GetTextPointer(szScoreboardTexts[i]);
+    FEText* helpbarText = m_pUppercaseText.m_elements[8];
+    FEMultiLineText* v52 =
+        (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v9 = nullptr;
+    if (v52 != nullptr)
+    {
+        color32 col = helpbarText->GetColor();
+        panel_layer layer = (panel_layer)helpbarText->GetScaleX();
+        float x1 = helpbarText->GetY();
+        float v42 = helpbarText->GetX();
+        v9 = new (v52)
+            FEMultiLineText(helpbarText->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar1 = v9;
+    if (v9 != nullptr)
+        v9->SetNumLines(1);
+    FEMultiLineText* v55 =
+        (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v13 = nullptr;
+    if (v55 != nullptr)
+    {
+        color32 col = helpbarText->GetColor();
+        panel_layer layer = (panel_layer)helpbarText->GetScaleX();
+        float x1 = helpbarText->GetY();
+        float v43 = helpbarText->GetX();
+        v13 = new (v55)
+            FEMultiLineText(helpbarText->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, 0, col);
+    }
+    helpbar2 = v13;
+    if (v13 != nullptr)
+        v13->SetNumLines(1);
+    m_ListBox.SetScrollBarQuad(
+        UIListBox::kScrollBarArrowDown,
+        pf->GetPointer("sb_scroll_arrow_down"));
+    m_ListBox.SetScrollBarQuad(
+        UIListBox::kScrollBarArrowUp,
+        pf->GetPointer("sb_scroll_arrow_up"));
+    m_ListBox.SetScrollBarQuad(
+        UIListBox::kScrollBarBackground1,
+        pf->GetPointer("sb_scroll_detail_01"));
+    m_ListBox.SetScrollBarQuad(
+        UIListBox::kScrollBarBackground2,
+        pf->GetPointer("sb_scroll_detail_02"));
+    m_ListBox.SetScrollBarQuad(
+        UIListBox::kScrollBarThumb,
+        pf->GetPointer("sb_scroll_indicator"));
+    m_ListBox.SetScrollBarQuad(
+        UIListBox::kScrollBarThumbReference,
+        pf->GetPointer("sb_scroll_indicator_reference"));
+    PanelQuad* v21 = panel->GetPointer("sb_player_hilite");
+    m_ListBox.mHighlightQuad = v21;
+    if (v21 != nullptr)
+        v21->SetShown(false);
+    m_ListBox.SetColumnStateCount(3, 8);
+    m_pUppercaseText.m_elements[1]->SetText("MPGAME_SCOREBOARD");
+    m_pUppercaseText.m_elements[9]->SetText("C");
+    m_pUppercaseText.m_elements[12]->SetText("S");
+    m_pUppercaseText.m_elements[11]->SetText("K");
+    m_pUppercaseText.m_elements[10]->SetText("D");
+    m_ListBox.mHighlightedSelectedTextColor.i = -3618616;
+    m_ListBox.mHighlightedUnselectedTextColor.i = -7553346;
+    m_ListBox.SetColumnStateCount(0, 5);
+    m_ListBox.SetColumnStateCount(1, 3);
+    m_ListBox.SetColumnStateCount(3, 8);
+    color32 nameColor;
+    nameColor.i = -2702166;
+    color32 nameSelColor;
+    nameSelColor.i = -2133408598;
+    for (int i = 0; i < 12; ++i)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_death_icon", i + 1);
+        m_ListBox.SetItem(i, 0, panel->GetPointer(szSlotGeometry), 1);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_rank_icon_a", i + 1);
+        m_ListBox.SetItem(i, 0, panel->GetPointer(szSlotGeometry), 2);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_rank_icon_b", i + 1);
+        m_ListBox.SetItem(i, 0, panel->GetPointer(szSlotGeometry), 3);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_rank_icon_c", i + 1);
+        m_ListBox.SetItem(i, 0, panel->GetPointer(szSlotGeometry), 4);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_flag_axis", i + 1);
+        m_ListBox.SetItem(i, 1, panel->GetPointer(szSlotGeometry), 1);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_flag_allied", i + 1);
+        m_ListBox.SetItem(i, 1, panel->GetPointer(szSlotGeometry), 2);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_name", i + 1);
+        m_ListBox.SetItem(
+            i, 2, panel->GetTextPointer(szSlotGeometry), 0);
+        static const char* const szClassIcons[7] = {
+            "AST_H", "AST_L", "RFM", "MED", "SPT", "ATA", "SCT",
+        };
+        for (int c = 0; c < 7; ++c)
+        {
+            _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_%s", i + 1,
+                      szClassIcons[c]);
+            m_ListBox.SetItem(
+                i, 3, panel->GetPointer(szSlotGeometry), c + 1);
+        }
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_scrore",
+                  i + 1);
+        m_ListBox.SetItem(
+            i, 4, panel->GetTextPointer(szSlotGeometry), 0);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_kills", i + 1);
+        m_ListBox.SetItem(
+            i, 5, panel->GetTextPointer(szSlotGeometry), 0);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_deaths", i + 1);
+        m_ListBox.SetItem(
+            i, 6, panel->GetTextPointer(szSlotGeometry), 0);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_name", i + 1);
+        FEText* v41 = panel->GetTextPointer(szSlotGeometry);
+        m_ListBox.SetItem(i, 2, v41, 0);
+        v41->SetColorMenuItem(nameColor, nameSelColor);
+    }
+    m_ListBox.Refresh();
+    m_ListBox.SelectLine(0);
+}
+
 // ea: 0x007A4B50
 void AARMapVote::SetPanelFile(PanelFile* pPanelFile)
 {
