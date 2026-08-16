@@ -1868,6 +1868,7 @@ public:
                     ::MPEntityHandle handle);  // ?RemoveItem@MPPlayer@@QAEXW4EDroppedItemTypes@@VMPEntityHandle@@@Z (mp.o)
     bool deserialize(bdReference<bdBitBuffer> buffer);  // ?deserialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
     void OnModified();                // ?OnModified@MPPlayer@@QAEXXZ (mp.o 0x73073E)
+    void Step();                      // ?Step@MPPlayer@@QAEXXZ (mp.o 0x751D20)
     ~MPPlayer();                      // ??1MPPlayer@@QAE@XZ (mp.o 0x761E30)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
@@ -1982,6 +1983,10 @@ public:
     void RemovePlayerFromSession(MPPlayer* player);  // ?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7383F0)
     bool SendHost(const bdReference<bdMessage> message, bool reliable);  // ?SendHost@MPPlayerManager@@QAE_NV?$bdReference@VbdMessage@@@@_N@Z (mp.o 0x737B90)
     static int sNetworkFrameTime;  // ?sNetworkFrameTime@MPPlayerManager@@0HA @ 0xE36E2C
+    static int sNetworkFrameTimeClose;  // ?sNetworkFrameTimeClose@MPPlayerManager@@0HA @ 0xE36E30
+    static int sNetworkMajorFrameTime;  // ?sNetworkMajorFrameTime@MPPlayerManager@@0HA @ 0xE36E34
+    static int sNetworkCloseRange;      // ?sNetworkCloseRange@MPPlayerManager@@0HA @ 0xE36E38
+    static int sNetworkCloseRangeMaxPeers;  // ?sNetworkCloseRangeMaxPeers@MPPlayerManager@@0HA @ 0xE36E3C
     MPPlayerManager(bdSession* session);  // ??0MPPlayerManager@@QAE@QAVbdSession@@@Z (mp.o 0x764C50)
     int  CountOtherEnemiesInRange(const MPPlayer* localPlayer,
                                   int maxRange);  // ?CountOtherEnemiesInRange@MPPlayerManager@@QAEHPBVMPPlayer@@H@Z (mp.o 0x7379F0)
@@ -2103,7 +2108,6 @@ private:
                        const float* angles);  // ?ClientConnect@MPPlayerManager@@AAEXQAVMPPlayer@@QBM1@Z (mp.o 0x739FA0)
     virtual bool acceptSession(const bdReceivedMessage& receivedMsg);  // ?acceptSession@MPPlayerManager@@EAE_NABVbdReceivedMessage@@@Z (mp.o 0x737DA0)
 public:
-    static int sNetworkFrameTimeClose;  // ?sNetworkFrameTimeClose@MPPlayerManager@@0HA @ 0xE36E30
 };
 
 // MPVehicleEvent - queued vehicle event (32 bytes, IDA)
