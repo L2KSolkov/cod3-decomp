@@ -357,6 +357,7 @@ protected:
     void UpdateMapChangeStatus(bool isAllowingMapVote);  // ?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z
     void DisableTeamGameOptions(bool b);  // ?DisableTeamGameOptions@GameSettingsEdit@@IAEX_N@Z
     void GetScoreLimitsForGameType(eGameType gameType);  // ?GetScoreLimitsForGameType@GameSettingsEdit@@IAEXW4eGameType@@@Z
+    void UpdateHighlight();            // ?UpdateHighlight@GameSettingsEdit@@IAEXXZ
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void UpdateScrollBar();              // ?UpdateScrollBar@GameSettingsEdit@@IAEXXZ
@@ -509,7 +510,8 @@ public:
     virtual void Draw();              // ?Draw@SessionDetailsMenu@@UAEXXZ
     virtual void OnActivate();        // ?OnActivate@SessionDetailsMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@SessionDetailsMenu@@UAEXM@Z
-    virtual void Select(unsigned int entry_num);  // ?Select@SessionDetailsMenu@@UAEXI@Z
+    virtual void Select(int entry_num);  // ?Select@SessionDetailsMenu@@UAEXH@Z
+    void UpdateDetails();             // ?UpdateDetails@SessionDetailsMenu@@IAEXXZ
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@SessionDetailsMenu@@UAEXPAVFEMenu@@@Z
     virtual void OnTriangle(int c);       // ?OnTriangle@SessionDetailsMenu@@UAEXH@Z
 };
@@ -539,6 +541,7 @@ public:
     virtual void OnSquare(int c);  // ?OnSquare@SessionListMenu@@UAEXH@Z
     virtual void OnUp(int c);      // ?OnUp@SessionListMenu@@UAEXH@Z
     virtual void OnDown(int c);    // ?OnDown@SessionListMenu@@UAEXH@Z
+    virtual void Select(int entry_num);  // ?Select@SessionListMenu@@UAEXH@Z
     virtual void OnActivate();     // ?OnActivate@SessionListMenu@@UAEXXZ
     virtual ~SessionListMenu();    // ??1SessionListMenu@@UAE@XZ
 protected:
@@ -953,7 +956,7 @@ public:
 
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AARScoreboardBase@@UAEXPAVPanelFile@@@Z
     AARScoreboardBase(FEMenuSystem* pauseMenuSystem);  // ??0AARScoreboardBase@@QAE@PAVFEMenuSystem@@@Z
-    virtual void SetWinningTeam(team_t team);       // ?SetWinningTeam@AARScoreboardBase@@UAEXW4team_t@@@Z
+    virtual void SetWinningTeam(team_t team);       // ?SetWinningTeam@AARScoreboardBase@@MAEXW4team_t@@@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@AARScoreboardBase@@UAEXPAVPanelFile@@@Z
     virtual void Init();                            // ?Init@AARScoreboardBase@@UAEXXZ
     virtual void OnSquare(int c);                   // ?OnSquare@AARScoreboardBase@@UAEXH@Z
@@ -1106,6 +1109,7 @@ static_assert(sizeof(AARGameModeVote) == 0x20C,
 class AARPauseMenu : public FEMenu {
 public:
     int m_iLastSelection;                   // +0x4C
+    AARPauseMenu(FEMenuSystem* pSystem);    // ??0AARPauseMenu@@QAE@PAVFEMenuSystem@@@Z
     virtual void Update(float time_inc);    // ?Update@AARPauseMenu@@UAEXM@Z
     virtual ~AARPauseMenu();                    // ??1AARPauseMenu@@UAE@XZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AARPauseMenu@@UAEXPAVPanelFile@@@Z
@@ -1115,6 +1119,7 @@ public:
     virtual void OnTriangle(int c);             // ?OnTriangle@AARPauseMenu@@UAEXH@Z
     virtual void OnStart(int c);                // ?OnStart@AARPauseMenu@@UAEXH@Z
     virtual void OnCross(int c);                // ?OnCross@AARPauseMenu@@UAEXH@Z
+    virtual void OnActivate();                  // ?OnActivate@AARPauseMenu@@UAEXXZ
     virtual void Draw();                        // ?Draw@AARPauseMenu@@UAEXXZ
     virtual void ButtonHeldAction();            // ?ButtonHeldAction@AARPauseMenu@@UAEXXZ
     virtual void OnDeactivate(FEMenu* pMenu);   // ?OnDeactivate@AARPauseMenu@@UAEXPAVFEMenu@@@Z
@@ -1142,6 +1147,7 @@ public:
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@HotJoinMenu@@UAEXPAVPanelFile@@@Z
     virtual void Draw();                   // ?Draw@HotJoinMenu@@UAEXXZ
     virtual void OnCross(int c);           // ?OnCross@HotJoinMenu@@UAEXH@Z
+    virtual void OnDown(int c);            // ?OnDown@HotJoinMenu@@UAEXH@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@HotJoinMenu@@UAEXPAVPanelFile@@@Z
     void Join();                           // ?Join@HotJoinMenu@@QAEXXZ
 };
@@ -1188,6 +1194,7 @@ public:
     virtual ~PauseMenu();  // ??1PauseMenu@@UAE@XZ (mp_shell.o 0x7AB850)
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@PauseMenu@@UAEXPAVFEMenu@@@Z
     virtual void ButtonHeldAction();       // ?ButtonHeldAction@PauseMenu@@UAEXXZ
+    virtual void Update(float time_inc);   // ?Update@PauseMenu@@UAEXM@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@PauseMenu@@UAEXPAVPanelFile@@@Z
     virtual void OnCross(int c);           // ?OnCross@PauseMenu@@UAEXH@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@PauseMenu@@UAEXXZ

@@ -37,6 +37,7 @@ enum eGameType : int {
 
 struct sServerCreateParams;
 struct sServerQueryParams;
+struct sGameListing;
 
 class MPUIInterface {
 public:
@@ -62,6 +63,9 @@ public:
     static const int GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z
     static const int GetScoreLimit(unsigned long index,
                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
+    static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
+    static void ExitGame();   // ?ExitGame@MPUIInterface@@SAXXZ
+    static int mReturnMenu;   // ?mReturnMenu@MPUIInterface@@1HA
     static const int GetMaxPlayersOptionFromMap(char mapID);  // ?GetMaxPlayersOptionFromMap@MPUIInterface@@SA?BHD@Z
     static const char* GetMapString(unsigned long mapIndex);  // ?GetMapString@MPUIInterface@@SAPBDK@Z
     static const bool StartServer(bool forceRestart,
@@ -116,6 +120,13 @@ struct sServerQueryParams {
     unsigned int mFriendlyFire;   // +0x18
     char mSessionNamePrefix[16];  // +0x1C
     unsigned int mListIfFull;     // +0x2C
+};
+
+struct sGameListing {
+    int mSize;                          // +0x00
+    void* mGameInfo;                    // +0x04 (bdReference<MPGameInfo>)
+    int mPing;                          // +0x08
+    bool mValidVersion;                 // +0x0C
 };
 
 // ============================================================================
@@ -4566,8 +4577,22 @@ void AARPauseMenu::Update(float time_inc)
     FEMenu::Update(time_inc);
     char* Icon = LiveWrapper::theWrapper->GetIcon(0);
     if (Icon == (char*)0x20000)
+    {
+        panel->GetPointer("game_invite")->SetShown(true);
+        panel->GetPointer("friend_request")->SetShown(false);
         return;
-    // controller/icon handling verified against IDA
+    }
+    if (Icon == (char*)0x10000)
+    {
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(true);
+        return;
+    }
+    if (Icon == nullptr)
+    {
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(false);
+    }
 }
 
 // ea: 0x00792280
@@ -4729,21 +4754,6 @@ AARMapVote::~AARMapVote()
         m_pBackgroundArt[i] = nullptr;
     for (int i = 0; i < 2; ++i)
         m_pScrollArrow[i] = nullptr;
-}
-
-// ea: 0x007A9630
-void SessionDetailsMenu::Select(unsigned int entry_num)
-{
-    if (entry_num == 5)
-    {
-        unsigned int mNumGames = this->mNumGames;
-        unsigned int v7 = mCurrentGame;
-        // game list navigation verified against IDA
-        if (v7 + 1 < mNumGames)
-            ++mCurrentGame;
-        else
-            mCurrentGame = 0;
-    }
 }
 
 // ea: 0x007AB420
@@ -5211,4 +5221,236 @@ void AARGameSettingsView::OnActivate()
     mCurrentServerParams = &MPUIInterface::mServerParams;
     GameSettingsView::UpdateOptions();
     UpdateSplitScreenOptions(highlighted);
+}
+
+// ============================================================================
+// Batch 19: session/vote/pause/multiline handlers
+// ============================================================================
+
+// ea: 0x0078D5B0
+void GameSettingsEdit::UpdateHighlight()
+{
+    entries[0]->Highlight(highlighted == 0, true);
+    entries[1]->Highlight(highlighted == 1, true);
+    entries[2]->Highlight(highlighted == 2, true);
+    entries[3]->Highlight(highlighted == 3, true);
+    entries[4]->Highlight(highlighted == 4, true);
+    entries[5]->Highlight(highlighted == 5, true);
+    entries[6]->Highlight(highlighted == 6, true);
+    entries[7]->Highlight(highlighted == 7, true);
+}
+
+// ea: 0x00790300
+void MultilineIngameOverlayMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    MPUIInterface::Step();
+    if (mState == NETWORK_ERROR_COUNTDOWN)
+    {
+        if (mCountdown >= 0.0f)
+        {
+            char buffer[500];
+            Broc::string::Block* mBlock = mText.mBlock;
+            const char* v4 = mBlock != nullptr
+                ? (const char*)&mBlock[1] : defaultFileName;
+            sprintf(buffer, "%s %d", v4, (int)mCountdown);
+            mTextEntry->SetTextBox(buffer, 400, -1082130432);
+            mCountdown -= time_inc;
+        }
+        else
+        {
+            MPUIInterface::mReturnMenu = 8;
+            MPUIInterface::ExitGame();
+        }
+    }
+}
+
+// ea: 0x007A9630
+void SessionDetailsMenu::Select(int entry_num)
+{
+    if (entry_num == 5)
+    {
+        unsigned int mNumGames = this->mNumGames;
+        unsigned int v7 = mCurrentGame + 1;
+        mCurrentGame = v7;
+        if (v7 >= mNumGames)
+            mCurrentGame = 0;
+        UpdateDetails();
+    }
+    else if (entry_num == 6)
+    {
+        unsigned long numGames = 0;
+        MPUIInterface::GameListingGet(numGames);
+        if (mCurrentGame < numGames)
+        {
+            OverlayMenu* v3 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            v3->SetState(OverlayMenu::JOINING_START);
+            OverlayMenu* fems = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)fems + 0x54) = 12;
+            OverlayMenu* v5 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)v5 + 0x50) = (int)mCurrentGame;
+            system->AddOverlay(16);
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionDetailsMenu.cpp";
+        AeAssert::gCurrentLine = 107;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x007A9730
+void SessionListMenu::Select(int entry_num)
+{
+    if (entry_num == 0)
+    {
+        unsigned long numGames = 0;
+        MPUIInterface::GameListingGet(numGames);
+        unsigned int v3 = m_ListBox.mTopLine + m_ListBox.mSelectedLine;
+        if (v3 > 0x18)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+            AeAssert::gCurrentLine = 290;
+            AeAssert::gCurrentExpr =
+                "selection >= 0 && selection < MPUIInterface::MAX_RESULTS";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid results returned from listbox"))
+                __debugbreak();
+        }
+        if (numGames != 0)
+        {
+            int v4 = mVisibleListToGameListMap[v3];
+            if (v4 >= 0)
+            {
+                if (v4 >= (int)numGames)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/ui/SessionListMenu.cpp";
+                    AeAssert::gCurrentLine = 293;
+                    AeAssert::gCurrentExpr =
+                        "mVisibleListToGameListMap[selection] < numGames";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(defaultFileName))
+                        __debugbreak();
+                }
+                OverlayMenu* v5 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                v5->SetState(OverlayMenu::JOINING_START);
+                OverlayMenu* fems = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)fems + 0x54) = 13;
+                OverlayMenu* v7 = g_femanager.fems != nullptr
+                    ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+                *(int*)((char*)v7 + 0x50) = mVisibleListToGameListMap[v3];
+                system->AddOverlay(16);
+            }
+        }
+    }
+}
+
+// ea: 0x007A9240
+void PlayOnlineMenu::Select(int entry_num, int c)
+{
+    switch (entry_num)
+    {
+    case 1:
+        InitQuickMatchParameters(c);
+        if (!m_IsQuickMatchReady
+            && MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+        {
+            if (system->CurrentOverlay() != -1)
+                system->RemoveOverlay();
+            OverlayMenu* v4 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            v4->SetState(OverlayMenu::GAME_LISTING_START);
+            OverlayMenu* fems = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)fems + 0x54) = 10;
+            OverlayMenu* v6 = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            *(int*)((char*)v6 + 0x54) = 10;
+            system->AddOverlay(16);
+        }
+        m_IsQuickMatchReady = true;
+        break;
+    case 2:
+        system->MakeActiveAndReturn(4);
+        break;
+    case 3:
+        system->MakeActiveAndReturn(0);
+        break;
+    case 4:
+        system->MakeActiveAndReturn(30);
+        break;
+    default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/PlayOnlineMenu.cpp";
+        AeAssert::gCurrentLine = 210;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        break;
+    }
+}
+
+// ea: 0x00791D80
+AARPauseMenu::AARPauseMenu(FEMenuSystem* pSystem)
+    : FEMenu(pSystem, 7, 320, 240, 8, 0)
+{
+    flags = (int16_t)(flags | 0x80);
+    m_iLastSelection = 3;
+    default_color_scheme = 10;
+}
+
+// ea: 0x00792570
+void HotJoinMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+}
+
+// ea: 0x007919E0
+void PauseMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if (player != nullptr && player->client != nullptr)
+    {
+        bool disable = player->client->pers.playerState != 3;
+        if (disable != entries[2]->GetDisable())
+            entries[2]->Disable(disable);
+    }
+    char* Icon = LiveWrapper::theWrapper->GetIcon(0);
+    if (Icon == (char*)0x20000)
+    {
+        panel->GetPointer("game_invite")->SetShown(true);
+        panel->GetPointer("friend_request")->SetShown(false);
+        return;
+    }
+    if (Icon == (char*)0x10000)
+    {
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(true);
+        return;
+    }
+    if (Icon == nullptr)
+    {
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(false);
+    }
 }
