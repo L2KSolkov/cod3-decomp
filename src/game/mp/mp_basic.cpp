@@ -200,6 +200,8 @@ public:
     unsigned int actualPort;           // +0x45D4
     bool invited;                      // +0x45D8
     void SetRemoteListeners(const MPPlayerSet* listeners);  // ?SetRemoteListeners@MPLiveEngine@@QAEXPBVMPPlayerSet@@@Z (mp.o)
+    bool OccupyPrivateSlot();          // ?OccupyPrivateSlot@MPLiveEngine@@QAE_NXZ
+    bool OccupyPublicSlot();           // ?OccupyPublicSlot@MPLiveEngine@@QAE_NXZ
 };
 
 // AnimationPlayer (anim.o) - minimal view used by PlayAnimFlagAnim
@@ -24327,6 +24329,225 @@ void MPPlayerManager::HandleAddPlayerReply(
         delete buffer.m_ptr;
     if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
         delete msg.m_ptr;
+}
+
+// ea: 0x00748E20
+void MPPlayerManager::HandleAddPlayerRequest(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdMessage* v2 = new bdMessage(0x1Fu, false);
+    bdReference<bdMessage> replyMsg;
+    replyMsg.m_ptr = v2;
+    if (v2 != nullptr)
+        ++v2->m_refCount;
+    extern int g_NumBdMessages;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> replyBuffer = v2->getPayload();
+
+    bdReference<bdConnection> connection = receivedMsg.getConnection();
+    bdConnection* v5 = connection.m_ptr;
+    bdReference<bdCommonAddr> addr = v5->getAddress();
+    bool isLocalPlayer = addr.m_ptr != nullptr
+                             ? addr.m_ptr->isLoopback()
+                             : false;
+    if (addr.m_ptr != nullptr && addr.m_ptr->m_refCount-- == 1)
+        delete addr.m_ptr;
+
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    unsigned char whichPlayer = 0;
+    if (buffer.m_ptr->readDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE))
+        buffer.m_ptr->readBits(&whichPlayer, 8u);
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+
+    MPPlayer* newPlayerSlot = nullptr;
+    unsigned char slotIndex = 16;
+    if (*(unsigned char*)((char*)this + 0x4110)
+        < MPUIInterface::mServerParams.mMaxPlayers)
+    {
+        for (int i = 0; i < 16; ++i)
+        {
+            MPPlayer* p =
+                (MPPlayer*)((char*)this + 0x1010 + 0x310 * i);
+            if (p->mId >= 0x10u || p->mConnection.m_ptr == nullptr)
+            {
+                newPlayerSlot = p;
+                slotIndex = (unsigned char)i;
+                break;
+            }
+        }
+    }
+    int joinReply = 0;  // kHostJoinReplySuccess
+    bool joineeWasInvited = false;
+    bool inSession =
+        MPUIInterface::mGameConnectionType == kGameConnectionTypeOnline
+            ? LiveWrapper::theWrapper->sessionState == kInSession
+            : MPUIInterface::mInSession;
+    if (inSession
+        && MPUIInterface::mGameConnectionType
+               == kGameConnectionTypeOnline)
+    {
+        bdReference<bdMessage> msg2 = receivedMsg.getMessage();
+        bdReference<bdBitBuffer> b2 = msg2.m_ptr->getPayload();
+        if (b2.m_ptr->readDataType(bdBitBuffer::BD_BB_BOOL_TYPE))
+        {
+            unsigned char v80 = 0;
+            if (b2.m_ptr->readBits(&v80, 1u))
+                joineeWasInvited = v80 != 0;
+        }
+        if (b2.m_ptr != nullptr && b2.m_ptr->m_refCount-- == 1)
+            delete b2.m_ptr;
+        if (msg2.m_ptr != nullptr && msg2.m_ptr->m_refCount-- == 1)
+            delete msg2.m_ptr;
+        MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+        if (isLocalPlayer)
+            goto label50;
+        if (joineeWasInvited)
+        {
+            if (Handle->OccupyPrivateSlot())
+            {
+                newPlayerSlot->usedPrivateSlot = true;
+                goto label50;
+            }
+        }
+        if (Handle->OccupyPublicSlot())
+            newPlayerSlot->usedPrivateSlot = false;
+        else
+            joinReply = 2;  // kHostJoinReplyFailFull
+        goto label50;
+    }
+    joinReply = newPlayerSlot != nullptr ? 0 : 2;
+label50:
+    {
+        MPLiveEngine* v24 = MPLiveEngine::GetHandle();
+        MPLiveEngine* v25 = MPLiveEngine::GetHandle();
+        MPLiveEngine* v26 = MPLiveEngine::GetHandle();
+        MPLiveEngine* v27 = MPLiveEngine::GetHandle();
+        MultiplayerMgr::sInst->mPeer->UpdateNumPlayers(
+            v27->liveSession->PublicOpen,
+            v26->liveSession->PrivateOpen,
+            v25->liveSession->PublicFilled,
+            v24->liveSession->PrivateFilled);
+    }
+label52:
+    replyBuffer.m_ptr->writeDataType(
+        bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    replyBuffer.m_ptr->writeBits(&whichPlayer, 8u);
+    replyBuffer.m_ptr->writeRangedInt32(joinReply, 0, 3);
+    if (joinReply == 0)
+    {
+        MPPlayer* v29 = newPlayerSlot;
+        bdReference<bdConnection> connRef;
+        connRef.m_ptr = connection.m_ptr;
+        if (connection.m_ptr != nullptr)
+            ++connection.m_ptr->m_refCount;
+        v29->SetConnection(connRef);
+        if (connRef.m_ptr != nullptr
+            && connRef.m_ptr->m_refCount-- == 1)
+            delete connRef.m_ptr;
+        v29->mId = slotIndex;
+        ++*(unsigned char*)((char*)this + 0x4110);
+
+        MPUtility::PlayerData data;
+        data.origin[0] = 0.0f;
+        data.origin[1] = 0.0f;
+        data.origin[2] = 0.0f;
+        data.angles[0] = 0.0f;
+        data.angles[1] = 0.0f;
+        data.angles[2] = 0.0f;
+        data.id = slotIndex;
+        LivePlayer* live = (LivePlayer*)&data.livePlayer;
+        live->Reset();
+        data.localIdx = whichPlayer;
+        data.vehicleEventSequence = 0;
+        data.playerClass = -1;
+        data.teamAxis = false;
+        data.name[0] = 0;
+        data.wasInvited = false;
+        data.playing = false;
+        data.vehicleId = 10;
+        data.vehicleHealth = 0;
+        short v32 = (short)PickPlayerTeam(v29);
+        v29->mTeam = v32;
+        data.teamAxis = v32 == 1;
+        v29->mMasterClient = true;
+        bool gotMasterDup = false;
+        for (int i = 0; i < 16; ++i)
+        {
+            MPPlayer* Player = GetPlayer((unsigned char)i);
+            if (Player == nullptr || Player->mId >= 0x10u
+                || Player->mConnection.m_ptr == nullptr
+                || Player == v29)
+                continue;
+            if (Player->mMasterClient)
+            {
+                bdReference<bdConnection> pc = Player->GetConnection();
+                bdReference<bdConnection> nc = v29->GetConnection();
+                bool same = pc.m_ptr == nc.m_ptr;
+                if (pc.m_ptr != nullptr
+                    && pc.m_ptr->m_refCount-- == 1)
+                    delete pc.m_ptr;
+                if (nc.m_ptr != nullptr
+                    && nc.m_ptr->m_refCount-- == 1)
+                    delete nc.m_ptr;
+                if (same)
+                {
+                    gotMasterDup = true;
+                    break;
+                }
+            }
+        }
+        if (gotMasterDup)
+            v29->mMasterClient = false;
+        data.wasInvited =
+            MPUIInterface::mGameConnectionType
+                == kGameConnectionTypeOnline
+            && v29->usedPrivateSlot;
+        unsigned char mNumPlayers =
+            *(unsigned char*)((char*)this + 0x4110);
+        if (mNumPlayers != 0
+            && MPUIInterface::mGameConnectionType
+                   == kGameConnectionTypeLan)
+            MultiplayerMgr::sInst->mPeer->UpdateNumPlayers(
+                MPUIInterface::mServerParams.mMaxPlayers
+                    - mNumPlayers,
+                0, mNumPlayers, 0);
+        bdReference<bdBitBuffer> wb;
+        wb.m_ptr = replyBuffer.m_ptr;
+        if (replyBuffer.m_ptr != nullptr)
+            ++replyBuffer.m_ptr->m_refCount;
+        MPUtility::WritePlayerData(wb, data);
+        if (wb.m_ptr != nullptr && wb.m_ptr->m_refCount-- == 1)
+            delete wb.m_ptr;
+        bdReference<bdBitBuffer> sb;
+        sb.m_ptr = replyBuffer.m_ptr;
+        if (replyBuffer.m_ptr != nullptr)
+            ++replyBuffer.m_ptr->m_refCount;
+        MPUIInterface::mServerParams.Serialize(sb);
+        if (sb.m_ptr != nullptr && sb.m_ptr->m_refCount-- == 1)
+            delete sb.m_ptr;
+    }
+    bdReference<bdMessage> sendRef;
+    sendRef.m_ptr = replyMsg.m_ptr;
+    if (replyMsg.m_ptr != nullptr)
+        ++replyMsg.m_ptr->m_refCount;
+    connection.m_ptr->send(sendRef, true);
+    if (sendRef.m_ptr != nullptr
+        && sendRef.m_ptr->m_refCount-- == 1)
+        delete sendRef.m_ptr;
+    if (connection.m_ptr != nullptr
+        && connection.m_ptr->m_refCount-- == 1)
+        delete connection.m_ptr;
+    if (replyBuffer.m_ptr != nullptr
+        && replyBuffer.m_ptr->m_refCount-- == 1)
+        delete replyBuffer.m_ptr;
+    if (replyMsg.m_ptr != nullptr
+        && replyMsg.m_ptr->m_refCount-- == 1)
+        delete replyMsg.m_ptr;
 }
 
 // ea: 0x007468D0
