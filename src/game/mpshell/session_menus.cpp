@@ -3347,7 +3347,7 @@ void WeaponSelectMenu::OnDown(int c)
 // ============================================================================
 
 // ea: 0x0078D7F0
-void GameSettingsEdit::DisableTeamGameOptions(int b)
+void GameSettingsEdit::DisableTeamGameOptions(bool b)
 {
     entries[7]->Disable(b != 0);
     entries[4]->Disable(b != 0);
@@ -3521,7 +3521,7 @@ char MI_GetMapIDbyShortname(char* shortname)
 }
 
 // ea: 0x00793300
-void ModelMenu::SetLightBrightness(unsigned int index, float brightness)
+void ModelMenu::SetLightBrightness(int index, float brightness)
 {
     if (index >= 2)
     {

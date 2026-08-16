@@ -327,7 +327,7 @@ struct AARMenuSystem {
     uint8_t _pad20[0x2A - 0x20];
     bool is_active;         // +0x2A
     bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
-    void Update(float time_inc);  // mp.o
+    virtual void Update(float time_inc);  // ?Update@AARMenuSystem@@UAEXM@Z
     virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
     void UpdateSplitScreen();     // mp.o
     void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)

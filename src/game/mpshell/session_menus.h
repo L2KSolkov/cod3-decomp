@@ -336,7 +336,7 @@ protected:
     virtual void ButtonHeldAction();     // ?ButtonHeldAction@GameSettingsEdit@@MAEXXZ
     virtual void SwapMenus();            // ?SwapMenus@GameSettingsEdit@@MAEXXZ
     void UpdateMapChangeStatus(bool isAllowingMapVote);  // ?UpdateMapChangeStatus@GameSettingsEdit@@IAEX_N@Z
-    void DisableTeamGameOptions(int b);  // ?DisableTeamGameOptions@GameSettingsEdit@@IAEXH@Z
+    void DisableTeamGameOptions(bool b);  // ?DisableTeamGameOptions@GameSettingsEdit@@IAEX_N@Z
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@GameSettingsEdit@@IAEXPAVPanelFile@@@Z
     void UpdateSplitScreenOptions(int last_highlighted);  // ?UpdateSplitScreenOptions@GameSettingsEdit@@IAEXH@Z
@@ -433,12 +433,13 @@ public:
 
     static PlayOnlineMenu* Me();         // ?Me@PlayOnlineMenu@@SAPAV1@XZ
     void TogglePreviewImage(int option, bool visible);  // ?TogglePreviewImage@PlayOnlineMenu@@QAEXH_N@Z
-    void InitQuickMatchParameters(int c);  // ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z
     virtual void OnDeactivate(FEMenu* m);// ?OnDeactivate@PlayOnlineMenu@@UAEXPAVFEMenu@@@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@PlayOnlineMenu@@UAEXH@Z
     virtual void Draw();                 // ?Draw@PlayOnlineMenu@@UAEXXZ
     virtual void OnUp(int c);            // ?OnUp@PlayOnlineMenu@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@PlayOnlineMenu@@UAEXH@Z
+protected:
+    void InitQuickMatchParameters(int c);  // ?InitQuickMatchParameters@PlayOnlineMenu@@IAEXH@Z
 };
 static_assert(sizeof(PlayOnlineMenu) == 0x60,
               "PlayOnlineMenu size mismatch");
@@ -735,7 +736,7 @@ protected:
     void DebugControls();    // ?DebugControls@ModelMenu@@IAEXXZ
     void DebugRender();      // ?DebugRender@ModelMenu@@IAEXXZ
     void AddDObjToScene();   // ?AddDObjToScene@ModelMenu@@IAEXXZ
-    void SetLightBrightness(unsigned int index, float brightness);  // ?SetLightBrightness@ModelMenu@@IAEXHM@Z
+    void SetLightBrightness(int index, float brightness);  // ?SetLightBrightness@ModelMenu@@IAEXHM@Z
 };
 static_assert(sizeof(ModelMenu) == 0x110,
               "ModelMenu size mismatch");
