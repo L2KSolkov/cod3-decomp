@@ -3,6 +3,10 @@
 // Verified against IDA (release map offsets + 0x40C000 = VA).
 // ============================================================================
 
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
 #include "game/logic/g_local.h"
 #include "core/tlFixedString.h"
 

@@ -23,6 +23,10 @@
 #include <intrin.h>
 #include <string.h>
 
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
 // ae_vector growth helpers (core.o)
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);

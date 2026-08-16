@@ -732,6 +732,10 @@ enum ESoundEnvironment {
     kEnvironmentIndoor = 0,
 };
 
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
 class SoundDevice {
 public:
     class Sound {
