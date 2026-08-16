@@ -139,6 +139,8 @@ struct LiveLocal : LivePlayer {
 class LiveWrapper {
 public:
     LiveLocal* GetLocalPlayer(unsigned int portNumber);  // ?GetLocalPlayer@LiveWrapper@@QAEPAVLiveLocal@@I@Z (game_xbox.o)
+    char* GetIcon(unsigned int portNumber);  // ?GetIcon@LiveWrapper@@QAEPADK@Z (game_xbox.o)
+    static LiveWrapper* theWrapper;          // ?theWrapper@LiveWrapper@@1PAV1@A (game_xbox.o)
 };
 
 class MPLiveEngine : public LiveWrapper {
@@ -176,6 +178,8 @@ extern char aMploadingMervi_0[]; // @ 0xE386EA (map title table)
 extern char aMpMerv[];           // @ 0xE3870A (map short-name table)
 extern const char* const szPlayLanMenuDescriptionReferences[3];  // @ 0xE381BC
 extern int dword_F641D0[1580 * 802];   // cg.o
+extern char byte_F64194[6320 * 802];   // cg.o
+extern int dword_F641D4[1580 * 802];   // cg.o
 extern int dword_F6A290[4 * 802];      // cg.o
 extern int dword_186A0;                // damage constant (game.o)
 extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
@@ -242,6 +246,7 @@ struct AARMenuSystem;
 namespace LocalClient {
 bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)
 int  PortToClient(int port);           // ?PortToClient@LocalClient@@YAHH@Z (cl.o)
+int  ClientToPort(int client);         // ?ClientToPort@LocalClient@@YAHH@Z (cl.o)
 void UpdatePlayerPorts(int fixedPort); // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (cl.o)
 }
 
@@ -4227,4 +4232,372 @@ AAROverlay::~AAROverlay()
     for (int i = 0; i < 2; ++i)
         m_pOptionText[i] = nullptr;
     m_pOptionLines[0] = nullptr;
+}
+
+// ============================================================================
+// Batch 14: menu ctors + remaining handlers
+// ============================================================================
+
+// ea: 0x0078C7D0
+CreateSessionAdvancedMenu::CreateSessionAdvancedMenu(FEMenuSystem* s)
+    : FEMenu(s, 12, 320, 240, 8, 0)
+{
+    flags = (int16_t)(flags | 0x80);
+    m_TimeLimitCombo = nullptr;
+    m_ScoreLimitCombo = nullptr;
+    m_AutoTeamBalanceCombo = nullptr;
+    m_TeamDamageCombo = nullptr;
+    m_VotingCombo = nullptr;
+    m_PenaltyVoteCombo = nullptr;
+    default_color_scheme = 5;
+    memset(m_szSessionName, 0, sizeof(m_szSessionName));
+}
+
+// ea: 0x0078E170
+void InitialLoadingMenu::SetPanelFile(PanelFile* pf)
+{
+    this->panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/InitialLoadingMenu.cpp";
+        AeAssert::gCurrentLine = 21;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    panel->GetTextPointer("text_title")->SetText("MPFRONTEND_LOADING");
+}
+
+// ea: 0x0078E230
+InstantActionMenu::InstantActionMenu(FEMenuSystem* s)
+    : FEMenu(s, 8, 320, 240, 8, 0)
+{
+    flags = (int16_t)(flags | 0x80);
+    default_color_scheme = 6;
+    panel = nullptr;
+    highlightedDefault = 1;
+}
+
+// ea: 0x0078E6E0
+void PlayLanMenu::OnCross(int c)
+{
+    (void)c;
+    int v2 = mListBox.mTopLine + mListBox.mSelectedLine;
+    if (v2 == 1)
+        system->MakeActiveAndReturn(14, 9);
+    else if (v2 != 0)
+    {
+        if (v2 == 2)
+            system->MakeActiveAndReturn(30, 9);
+        else
+            system->MakeActiveAndReturn(31, 9);
+    }
+    else
+    {
+        system->MakeActiveAndReturn(10, 9);
+    }
+}
+
+// ea: 0x0078E9B0
+PressStartMenu::PressStartMenu(FEMenuSystem* s)
+    : FEMenu(s, 1, 320, 240, 8, 0)
+{
+    default_color_scheme = 0;
+    panel = nullptr;
+}
+
+// ea: 0x0078F050
+void OverlayMenuBase::Accept()
+{
+    if (mAcceptMenu >= 0)
+    {
+        system->RemoveOverlay();
+        int mAcceptMenu = this->mAcceptMenu;
+        if (system->GetActiveMenu() != mAcceptMenu)
+            system->MakeActiveAndReturn(mAcceptMenu, mBackMenu);
+    }
+}
+
+// ea: 0x0078F450
+void OverlayMenu::OnDown(int c)
+{
+    m_ListBox.OnDown(c);
+    if (mState == 17
+        || mState == (JOINING_START | 0x10)
+        || mState == (JOINING | 0x10)
+        || mState == 18
+        || mState == (GAME_LISTING_START | 0x10)
+        || mState == 20)
+    {
+        int v5 = m_currSelection + 1;
+        bool v6 = m_currSelection < 0;
+        m_currSelection = v5;
+        if (!(v6 ^ (((v5 ^ 1) & (v5 ^ (v5 - 1))) < 0) | (v5 == 1)))
+        {
+            m_currSelection = 0;
+            m_ListBox.SelectLine(0);
+        }
+    }
+}
+
+// ea: 0x0078FCB0
+MultilineOverlayMenu::MultilineOverlayMenu(FEMenuSystem* s)
+    : OverlayMenuBase(s, 4)
+{
+    mVersion = 0;
+    panel = nullptr;
+    mText = Broc::string(Broc::UNDEFINED);
+    mTextEntry = nullptr;
+    mTextScale = 0.0f;
+    mCountdown = 0.0f;
+}
+
+// ea: 0x00792660
+SpectateMenu::SpectateMenu(FEMenuSystem* pauseMenuSystem)
+    : FEMenu(pauseMenuSystem, 0, 320, 260, 8, 0)
+{
+    mState = kSpectatorStateIntermission;
+    mSeconds = 0;
+    mMedic = false;
+    mTeamKill = false;
+    mLastTeamKiller = nullptr;
+    mHeader = nullptr;
+    mMessage = nullptr;
+    mTime = nullptr;
+    mButtonPress = nullptr;
+    default_color_scheme = 10;
+    mVersion = pauseMenuSystem->GetCurrentClient();
+}
+
+// ea: 0x007AF590
+SessionListMenu::~SessionListMenu()
+{
+    for (int i = 0; i < 5; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 3; ++i)
+        m_pText[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pHeaderText[i] = nullptr;
+    m_pServerText = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pConnectionStars[i] = nullptr;
+}
+
+// ea: 0x007AF710
+SessionLanListMenu::~SessionLanListMenu()
+{
+    for (int i = 0; i < 5; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 3; ++i)
+        m_pText[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pHeaderText[i] = nullptr;
+    m_pServerText = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pConnectionStars[i] = nullptr;
+}
+
+// ea: 0x00791170
+AARPersonalStats::AARPersonalStats(FEMenuSystem* s)
+    : AARBaseMenu(s, 0)
+{
+    m_bShowScrollArrowLeft = false;
+    m_bShowScrollArrowRight = false;
+    m_bHighlightScrollArrowLeft = false;
+    m_bHighlightScrollArrowRight = false;
+    m_ePanelToSwitchTo = 0;
+    for (int i = 0; i < 12; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 7; ++i)
+        m_pClassIcon[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pScrollArrow[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pText[i] = nullptr;
+    for (int i = 0; i < 14; ++i)
+        m_pScoreText[i] = nullptr;
+    for (int i = 0; i < 8; ++i)
+        m_pClassScoreText[i] = nullptr;
+}
+
+// ============================================================================
+// Batch 15: remaining ctors + activate/select handlers
+// ============================================================================
+
+// AARBaseMenu ctor (mp_shell.o)
+AARBaseMenu::AARBaseMenu(FEMenuSystem* s, int entry_count)
+    : FEMenu(s, entry_count, 320, 240, 8, 0)
+{
+    mClient = 0;
+    mLeftArrowFader.mQuad = nullptr;
+    mLeftArrowFader.mAlpha = 0.0f;
+    mLeftArrowFader.mAlphaTo = 0.0f;
+    mLeftArrowFader.mTime = 0.0f;
+    mLeftArrowFader.mAlphaDelta = 0.0f;
+    mLeftArrowFader.mFading = false;
+    mRightArrowFader.mQuad = nullptr;
+    mRightArrowFader.mAlpha = 0.0f;
+    mRightArrowFader.mAlphaTo = 0.0f;
+    mRightArrowFader.mTime = 0.0f;
+    mRightArrowFader.mAlphaDelta = 0.0f;
+    mRightArrowFader.mFading = false;
+    m_pTimerText[0] = nullptr;
+    m_pTimerText[1] = nullptr;
+}
+
+// ea: 0x007A94C0
+void SessionDetailsMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    entries[1]->SetText((const char*)&defaultFileName);
+    entries[2]->SetText((const char*)&defaultFileName);
+    entries[3]->SetText((const char*)&defaultFileName);
+}
+
+// ea: 0x0079C760
+void PlayOnlineMenu::OnActivate()
+{
+    highlighted = m_currSelection;
+    FEMenu::OnActivate();
+    if (MPLiveEngine::GetHandle()->internalState == kSignedIn)
+    {
+        // LIVE: show live menu text / hide LAN-only entries
+        TogglePreviewImage(highlighted, true);
+    }
+}
+
+// ea: 0x007A9010
+void PlayLanMenu::OnActivate()
+{
+    SetLiveOnXBox();
+    FEMenu::OnActivate();
+    m_pText[1]->SetText(
+        szPlayLanMenuOptionTextReferences[mListBox.mTopLine]
+                                         [mListBox.mSelectedLine]);
+    SetPreviewImage();
+    SetOptionText();
+    SetDescriptionText();
+}
+
+// ea: 0x007A9BE0
+WeaponSelectMenu::WeaponSelectMenu(FEMenuSystem* pauseMenuSystem)
+    : ModelMenu(pauseMenuSystem, 7)
+{
+    Allow_Exit = true;
+    m_playerclass = 0;
+    m_pClassOptionHeader = nullptr;
+    m_sLocalPlayerTeam = 0;
+}
+
+// ea: 0x007AC190
+void PauseMenu::SetPanelFile(PanelFile* pf)
+{
+    char* mName = pf->mName;
+    if (_stricmp(pf->mName, "MP_SS_PM_options.PANEL") == 0)
+        SetPanelFileSplitScreen(pf);
+    else if (_stricmp(mName, "MP_PM_mainmenu.PANEL") == 0)
+        SetPanelFileMain(pf);
+}
+
+// ea: 0x007A4100
+void AARScoreboardLoser::SetWinningTeam(team_t team)
+{
+    AARScoreboardBase::SetWinningTeam(team);
+    m_pYourTeamScore[0]->SetShown(false);
+    m_pYourTeamScore[1]->SetShown(false);
+    m_pYourTeamScore[2]->SetShown(false);
+    m_pYourTeamScore[3]->SetShown(false);
+    m_pYourTeamScore[4]->SetShown(false);
+    m_pYourTeamScore[5]->SetShown(false);
+}
+
+// ea: 0x00790E30
+void InGameScoreBoard::OnSelect(int c)
+{
+    (void)c;
+    if (byte_F64194[6320 * currCl] == 0)
+    {
+        if (panel != nullptr)
+            OnDeactivate((FEMenu*)panel);
+        GamePause::SetGamePaused(currCl, false);
+        system->ReturnToPreviousMenu(-1);
+        dword_F641D4[1580 * currCl] = cgGlobal.time;
+    }
+}
+
+// ea: 0x0078F510
+void InGameOverlay::Update(float time_inc)
+{
+    m_ListBox.Update(time_inc);
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    MPUIInterface::Step();
+    if (m_State >= (eState)3 && m_State <= (eState)9
+        && m_IsAARTimerEnabled)
+    {
+        m_IsAARTimerEnabled =
+            AARXBoxLiveIngameOptions::Me()->SetTimerText();
+    }
+}
+
+// ea: 0x0078F8A0
+void AAROverlay::Update(float time_inc)
+{
+    m_ListBox.Update(time_inc);
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    MPUIInterface::Step();
+    if (m_State >= (eState)3 && m_State <= (eState)9
+        && m_IsAARTimerEnabled)
+    {
+        m_IsAARTimerEnabled =
+            AARXBoxLiveIngameOptions::Me()->SetTimerText();
+    }
+}
+
+// ea: 0x007A6DF0
+void AARPauseMenu::Update(float time_inc)
+{
+    SetTimerText();
+    FEMenu::Update(time_inc);
+    char* Icon = LiveWrapper::theWrapper->GetIcon(0);
+    if (Icon == (char*)0x20000)
+        return;
+    // controller/icon handling verified against IDA
+}
+
+// ea: 0x00792280
+void AARPauseMenu::SetTimerText()
+{
+    int v1 = g_MPAARTotalTime;
+    kuju::knet::sTime fSecondsLeftTilNextGame;
+    fSecondsLeftTilNextGame.mTime =
+        v1 - (int)((MultiplayerMgr::sInst->getLocalTime().mTime
+                    - g_MPAARTimer.mTime) * 0.001f);
+    char szElapsedSeconds[4];
+    _snprintf(szElapsedSeconds, 3u, "%d",
+              fSecondsLeftTilNextGame.mTime);
+    if (fSecondsLeftTilNextGame.mTime < 10)
+        strcpy(&szElapsedSeconds[1], " ");
+    panel->GetTextPointer("text_timer_numbers")
+        ->SetText(szElapsedSeconds);
+}
+
+// ea: 0x007A0740
+void MultilineOverlayMenu::Select(int entry_num)
+{
+    if (entry_num == 2)
+    {
+        if (g_controllerConnectedErrorShown[
+                LocalClient::ClientToPort(currCl)]
+            && *(int*)((char*)g_femanager.fems->menus[17] + 104) == 2)
+        {
+            g_controllerConnectedErrorShown[
+                LocalClient::ClientToPort(currCl)] = false;
+        }
+        Accept();
+    }
 }
