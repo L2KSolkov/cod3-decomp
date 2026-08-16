@@ -4,6 +4,8 @@
 // ============================================================================
 
 #include "game/mpshell/session_menus.h"
+#include "game/actor_types.h"
+#include "game/client_types.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -172,6 +174,7 @@ extern char aMpMerv[];           // @ 0xE3870A (map short-name table)
 extern const char* const szPlayLanMenuDescriptionReferences[3];  // @ 0xE381BC
 extern int dword_F641D0[1580 * 802];   // cg.o
 extern int dword_F6A290[4 * 802];      // cg.o
+extern int dword_186A0;                // damage constant (game.o)
 extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
 
 int scoreboard_player_sorter(const void* left, const void* right);
@@ -192,15 +195,22 @@ enum ESpectatorState : int {
     kSpectatorStateCount = 0x6,
 };
 
-enum team_t : int {
-    TEAM_FREE = 0,
-    TEAM_BAD = 0,
-    TEAM_AXIS = 1,
-    TEAM_ALLIES = 2,
-    TEAM_NEUTRAL = 3,
-    TEAM_SPECTATOR = 3,
-    TEAM_DEAD = 4,
+// Minimal views for game-side symbols used by the menus
+struct BrocExports {
+    void (*mCallbackSpawnButtonPressed)(int entityHandle);  // +0xCD0 (Broc::entity)
 };
+struct BrocAPI {
+    BrocExports mBrocExports;  // +0x00
+};
+extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
+enum hitLocation_t : int;
+
+struct MenuClearHelper : FEMenu {
+    void ClearAll() { ClearAllButtons(); }
+};
+void player_die(void* self, void* inflictor, void* attacker, int damage,
+                int meansOfDeath, int iWeapon, const float* vPosition,
+                const float* vDir, hitLocation_t hitLoc);  // ?player_die@@YAXPAVEntity@@00HHHPBM1W4hitLocation_t@@@Z (g.o)
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
@@ -226,6 +236,7 @@ struct AARMenuSystem;
 namespace LocalClient {
 bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)
 int  PortToClient(int port);           // ?PortToClient@LocalClient@@YAHH@Z (cl.o)
+void UpdatePlayerPorts(int fixedPort); // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (cl.o)
 }
 
 unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateSessionMenu@@1EA @ 0x1388D54
@@ -3329,4 +3340,391 @@ void WeaponSelectMenu::OnDown(int c)
     m_pClassOptionHeader->SetText(szClassReference[highlighted]);
     SetClassGauges();
     SetSwitchKit();
+}
+
+// ============================================================================
+// Batch 11: game-settings/vote/overlay/side-switch handlers
+// ============================================================================
+
+// ea: 0x0078D7F0
+void GameSettingsEdit::DisableTeamGameOptions(int b)
+{
+    entries[7]->Disable(b != 0);
+    entries[4]->Disable(b != 0);
+    entries[5]->Disable(b != 0);
+    if (b != 0)
+    {
+        ((FEComboBox*)entries[7])->SetCurrOption(0);
+        ((FEComboBox*)entries[4])->SetCurrOption(0);
+        ((FEComboBox*)entries[5])->SetCurrOption(0);
+    }
+}
+
+// ea: 0x0078E830
+void PlayOnlineMenu::TogglePreviewImage(int option, bool visible)
+{
+    PanelQuad* Pointer = nullptr;
+    switch (option)
+    {
+    case 1:
+        Pointer = panel->GetPointer("mm_preview_image_01");
+        break;
+    case 2:
+        Pointer = panel->GetPointer("mm_preview_image_02");
+        break;
+    case 3:
+        Pointer = panel->GetPointer("mm_preview_image_03");
+        break;
+    case 4:
+        Pointer = panel->GetPointer("mm_preview_image_04");
+        break;
+    case 5:
+        Pointer = panel->GetPointer("mm_preview_image_05");
+        break;
+    default:
+        return;
+    }
+    if (Pointer != nullptr)
+        Pointer->SetVisibility(visible ? 1.0f : 0.0f);
+}
+
+// ea: 0x0078E8A0
+void PlayOnlineMenu::InitQuickMatchParameters(int c)
+{
+    sServerQueryParams params;
+    params.mMapID = gSaveGameData[c].mStubData.mMapPreference;
+    params.mGameType = gSaveGameData[c].mStubData.mGameModePreference;
+    params.mGameSubType = -1;
+    params.mMinPlayers = -1;
+    params.mMaxPlayers = gSaveGameData[c].mStubData.mMaxPlayerCntPreference;
+    params.mTeamBalancing = gSaveGameData[c].mStubData.mAutoTeamBalancePreference;
+    params.mFriendlyFire = gSaveGameData[c].mStubData.mTeamDamagePreference;
+    MPUIInterface::mGameConnectionType =
+        MPUIInterface::kGameConnectionTypeOnline;
+    params.mListIfFull = 0;
+    params.mSessionNamePrefix[0] = 0;
+    MPUIInterface::SetQueryParams(params);
+}
+
+// ea: 0x0078F3F0
+void OverlayMenu::OnUp(int c)
+{
+    m_ListBox.OnUp(c);
+    if ((mState == 17
+         || mState == (JOINING_START | 0x10)
+         || mState == (JOINING | 0x10)
+         || mState == 18
+         || mState == (GAME_LISTING_START | 0x10)
+         || mState == 20)
+        && --m_currSelection < 0)
+    {
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+    }
+}
+
+// ea: 0x0078F830
+void InGameOverlay::OnDown(int c)
+{
+    m_ListBox.OnDown(c);
+    int v4 = m_currSelection + 1;
+    bool v5 = m_currSelection < 0;
+    m_currSelection = v4;
+    // __OFSUB__(v4, 1): signed overflow of (v4 - 1)
+    bool ofsub = ((v4 ^ 1) & (v4 ^ (v4 - 1))) < 0;
+    if (!(v5 ^ ofsub | (v4 == 1)))
+    {
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+    }
+}
+
+// ea: 0x00790000
+void MultilineFrontendOverlayMenu::OnStart(int c)
+{
+    if (mState == CONTROLLER_DISCONNECTED && g_controllerConnected[c])
+    {
+        g_controllerConnectedErrorShown[c] = false;
+        system->RemoveOverlay();
+    }
+}
+
+// ea: 0x00791560
+void AARMapVote::OnUp(int c)
+{
+    Up();
+    if (m_ListBox.mTopLine + m_ListBox.mSelectedLine != 0)
+        m_ListBox.OnUp(c);
+    else
+        m_ListBox.SelectLine(g_NumBaseMaps - 1);
+}
+
+// ea: 0x00791970
+void AARGameModeVote::OnL1(int c)
+{
+    (void)c;
+    m_bHighlightScrollArrowLeft = true;
+    m_ePanelToSwitchTo = 2;
+}
+
+// ea: 0x00791C90
+bool PauseMenu::ResponseYesQuit(int client)
+{
+    LocalClient::QuitClientOutOfGame(
+        (int)g_femanager.GetIGMS(client)->menus[1]->entries);
+    return true;
+}
+
+// ea: 0x00792600
+void HotJoinMenu::Join()
+{
+    MultiplayerMgr::sInst->AttemptHotJoin(mVersion);
+    LocalClient::UpdatePlayerPorts(mVersion);
+}
+
+// ea: 0x007929E0
+void SpectateMenu::OnCross(int c)
+{
+    (void)c;
+    if ((mState == kSpectatorStateSpawn
+         || mState == kSpectatorStateDying
+         || mState == kSpectatorStateDeadCanSpawn)
+        && gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed != nullptr)
+    {
+        PlayNavigationSound();
+        Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+        gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed(
+            *(int*)Player);
+    }
+}
+
+// ea: 0x00792D60
+void SpectateMenu::UpdateWidescreen(bool widescreen)
+{
+    FEMenu::UpdateWidescreen(widescreen);
+}
+
+// ea: 0x00792FC0
+char MI_GetMapIDbyShortname(char* shortname)
+{
+    if (g_NumTotalMaps <= 0)
+        return 0;
+    int v1 = 0;
+    const char* i = aMpMerv;
+    while (_stricmp(i, shortname) != 0)
+    {
+        if (++v1 >= g_NumTotalMaps)
+            return 0;
+        i += 114;
+    }
+    return byte_E386C9[114 * v1];
+}
+
+// ea: 0x00793300
+void ModelMenu::SetLightBrightness(unsigned int index, float brightness)
+{
+    if (index >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/ModelMenu.cpp";
+        AeAssert::gCurrentLine = 121;
+        AeAssert::gCurrentExpr = "index >= 0 && index < 2";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid light index"))
+            __debugbreak();
+    }
+    mBrightness[index] = brightness;
+}
+
+// ea: 0x007934E0
+void AARMenuSystem::Update(float time_inc)
+{
+    // FEMenuSystem vtable slot 16 = Update (shell.o 0x570DD0)
+    ((void(__thiscall*)(void*, float))(*(void***)this)[16])(this, time_inc);
+    if (mPreviousWidescreen != (cg_widescreen.integer != 0))
+    {
+        ((void(__thiscall*)(void*, bool))(*(void***)this)[2])(
+            this, cg_widescreen.integer != 0);
+        mPreviousWidescreen = cg_widescreen.integer != 0;
+    }
+}
+
+// ea: 0x0079B910
+void PlayLanMenu::SetLiveOnXBox()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        if (i < 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        m_pBackgroundButtons[i]->SetShown(true);
+    }
+}
+
+// ea: 0x0079CB30
+void PlayOnlineMenu::OnUp(int c)
+{
+    (void)c;
+    if (highlighted == 1)
+    {
+        highlighted = 4;
+        SetHigh(4, true);
+    }
+    else
+    {
+        Up();
+    }
+    TogglePreviewImage(highlighted, true);
+}
+
+// ea: 0x0079CB90
+void PlayOnlineMenu::OnDown(int c)
+{
+    (void)c;
+    if (highlighted == 4)
+    {
+        highlighted = 1;
+        SetHigh(1, true);
+    }
+    else
+    {
+        Down();
+    }
+    TogglePreviewImage(highlighted, true);
+}
+
+// ea: 0x007A09B0
+void VoteGameTypeMenu::OnStart(int c)
+{
+    (void)c;
+    FEMenu* v2 = g_femanager.mIGMS[0]->menus[0];
+    int client = (int)v2[1].entries;
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(client);
+    IGMS->ReturnToPreviousMenu(-1);
+    DialogMenuSystem* DMS = g_femanager.GetDMS(client);
+    DMS->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)v2)->ClearAll();
+}
+
+// ea: 0x007A4090
+void AARScoreboardLoser::SetPanelFile(PanelFile* pf)
+{
+    PanelFile* v3 = pf->Clone();
+    AARScoreboardBase::SetPanelFile(v3);
+    m_pYourTeamScore[4]->SetShown(false);
+    m_pYourTeamScore[5]->SetShown(true);
+    helpbar1->SetText("MPGAME_HELP_LOSERS_AAR_SCOREBOARD");
+    panel->GetTextPointer("sb_text_title_section")
+        ->SetText("MPGAME_LOSERS_SCOREBOARD");
+}
+
+// ea: 0x007A6820
+bool PauseMenu::ResponseYesSuicide(int client)
+{
+    PauseMenu* v1 = (PauseMenu*)g_femanager.GetIGMS(client)->menus[0];
+    Entity* Player = EntityManager::sInst->GetPlayer(v1->mVersion);
+    Client* v3 = Player->client;
+    if (v3 != nullptr && v3->pers.playerState == 3)
+    {
+        player_die(Player, Player, Player, dword_186A0, 25, 0, nullptr,
+                   nullptr, (hitLocation_t)0);
+        v1->UnPause();
+    }
+    return true;
+}
+
+// ea: 0x007A8E70
+void GameSettingsView::OnActivate()
+{
+    SwapMenus();
+    FEMenu::OnActivate();
+    highlighted = 0;
+    mCurrentServerParams = &MPUIInterface::mServerParams;
+    UpdateOptions();
+    UpdateSplitScreenOptions(highlighted);
+}
+
+// ea: 0x007A8ED0
+AARGameSettingsView::AARGameSettingsView(FEMenuSystem* s)
+    : GameSettingsView(s)
+{
+    mVersion = s->GetCurrentClient();
+}
+
+// ea: 0x007AB710
+void AARGameModeVote::OnActivate()
+{
+    MPUIInterface::Step();
+    FEMenu::OnActivate();
+    AARBaseMenu::SetTimerText();
+    if (MultiplayerMgr::sInst->mRankedGame)
+        m_pTimerText[1]->SetText("MPGAME_AAR_RANK_GAME_OVER");
+    else
+        m_pTimerText[1]->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+}
+
+// ea: 0x007AB7F0
+PauseMenu::PauseMenu(FEMenuSystem* s)
+    : FESplitScreenMenu(s, 7)
+{
+    flags = (int16_t)(flags | 0x80);
+    m_iLastSelection = 0;
+    default_color_scheme = 10;
+    mVersion = s->GetCurrentClient();
+}
+
+// ea: 0x007AF300
+void InGameSwitchSides::OnUp(int c)
+{
+    (void)c;
+    int highlighted = this->highlighted;
+    Up();
+    Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+    int v5 = this->highlighted;
+    sentient_s* sentient = Player->sentient;
+    if (this->highlighted != 0)
+    {
+        if (this->highlighted == 1)
+            m_eTeam = TEAM_ALLIES;
+        else if (this->highlighted == 2)
+            m_eTeam = TEAM_AXIS;
+    }
+    else
+    {
+        m_eTeam = sentient->eTeam;
+    }
+    if (highlighted != v5)
+        UpdateModel();
+}
+
+// ea: 0x007AF370
+void InGameSwitchSides::OnDown(int c)
+{
+    (void)c;
+    int highlighted = this->highlighted;
+    Down();
+    Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+    int v5 = this->highlighted;
+    sentient_s* sentient = Player->sentient;
+    if (this->highlighted != 0)
+    {
+        if (this->highlighted == 1)
+            m_eTeam = TEAM_ALLIES;
+        else if (this->highlighted == 2)
+            m_eTeam = TEAM_AXIS;
+    }
+    else
+    {
+        m_eTeam = sentient->eTeam;
+    }
+    if (highlighted != v5)
+        UpdateModel();
 }
