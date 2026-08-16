@@ -1702,24 +1702,24 @@ void unpack(const cdl_vinfo_t* vinfo, const cdl_array_t* verts,
 }
 
 // ea: 0x006292E0
-void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
-                 const unsigned char* pvi, math::Position3& v0,
+void unpack_poly(const CGBank& bank, const cdl_vinfo_t& vinfo,
+                 unsigned char* pvi, math::Position3& v0,
                  math::Position3& v1, math::Position3& v2)
 {
-    unsigned int v6 = vinfo->first_vert + *pvi;
-    if (v6 >= (unsigned int)bank->patch_verts.m_count
+    unsigned int v6 = vinfo.first_vert + *pvi;
+    if (v6 >= (unsigned int)bank.patch_verts.m_count
         && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
-    unsigned int v7 = ((unsigned int*)bank->patch_verts.m_elements)[v6];
+    unsigned int v7 = ((unsigned int*)bank.patch_verts.m_elements)[v6];
 
     math::Position3 vbase;
-    vbase.v.m128_f32[0] = (float)vinfo->vbase[0];
-    vbase.v.m128_f32[1] = (float)vinfo->vbase[1];
-    vbase.v.m128_f32[2] = (float)vinfo->vbase[2];
+    vbase.v.m128_f32[0] = (float)vinfo.vbase[0];
+    vbase.v.m128_f32[1] = (float)vinfo.vbase[1];
+    vbase.v.m128_f32[2] = (float)vinfo.vbase[2];
     vbase.v.m128_f32[3] = 0.0f;
 
-    const unsigned char* pvia = pvi + 1;
+    unsigned char* pvia = pvi + 1;
     float scale = 0.25f;
     v0.v = _mm_add_ps(vbase.v,
                       _mm_mul_ps(
@@ -1728,12 +1728,12 @@ void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
                                       (float)(v7 >> 22), 0.0f),
                           _mm_set1_ps(scale)));
 
-    unsigned int v10 = vinfo->first_vert + *pvia;
-    if (v10 >= (unsigned int)bank->patch_verts.m_count
+    unsigned int v10 = vinfo.first_vert + *pvia;
+    if (v10 >= (unsigned int)bank.patch_verts.m_count
         && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
-    unsigned int v11 = ((unsigned int*)bank->patch_verts.m_elements)[v10];
+    unsigned int v11 = ((unsigned int*)bank.patch_verts.m_elements)[v10];
     v1.v = _mm_add_ps(vbase.v,
                       _mm_mul_ps(
                           _mm_setr_ps((float)(v11 & 0x7FF),
@@ -1741,12 +1741,12 @@ void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
                                       (float)(v11 >> 22), 0.0f),
                           _mm_set1_ps(scale)));
 
-    unsigned int v12 = vinfo->first_vert + pvia[1];
-    if (v12 >= (unsigned int)bank->patch_verts.m_count
+    unsigned int v12 = vinfo.first_vert + pvia[1];
+    if (v12 >= (unsigned int)bank.patch_verts.m_count
         && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
-    unsigned int v13 = ((unsigned int*)bank->patch_verts.m_elements)[v12];
+    unsigned int v13 = ((unsigned int*)bank.patch_verts.m_elements)[v12];
     v2.v = _mm_add_ps(vbase.v,
                       _mm_mul_ps(
                           _mm_setr_ps((float)(v13 & 0x7FF),

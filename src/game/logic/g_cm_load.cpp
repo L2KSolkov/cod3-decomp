@@ -5497,8 +5497,8 @@ void PositionTest(traceWork_t* tw, const proximity_data_t& data)
         math::Position3 v1;
         math::Position3 v2;
         unpack_poly(
-            bank, vinfo,
-            &((const unsigned char*)bank->patch_inds.m_elements)[ind], v0,
+            *bank, *vinfo,
+            &((unsigned char*)bank->patch_inds.m_elements)[ind], v0,
             v1, v2);
         math::Vector4 plane = calc_normal(v0, v1, v2);
         if (collide_sphere_poly(tw->start, tw->sphere_radius, v0, v1, v2,
@@ -6936,8 +6936,8 @@ bool collide_velocity_sphere(traceWork_t* tw, const proximity_data_t& data)
         math::Position3 v1;
         math::Position3 v2;
         unpack_poly(
-            bank, vinfo,
-            &((const unsigned char*)bank->patch_inds.m_elements)[ind], v0,
+            *bank, *vinfo,
+            &((unsigned char*)bank->patch_inds.m_elements)[ind], v0,
             v1, v2);
         math::Vector4 plane = calc_normal(v0, v1, v2);
 
@@ -7368,8 +7368,8 @@ bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
         math::Position3 v1;
         math::Position3 v2;
         unpack_poly(
-            bank, vinfo,
-            &((const unsigned char*)bank->patch_inds.m_elements)[ind], v0,
+            *bank, *vinfo,
+            &((unsigned char*)bank->patch_inds.m_elements)[ind], v0,
             v1, v2);
         math::Vector4 plane = calc_normal(v0, v1, v2);
 
@@ -7747,8 +7747,8 @@ void collide_segment(const proximity_data_t& data,
         math::Position3 v1;
         math::Position3 v2;
         unpack_poly(
-            bank, vinfo,
-            &((const unsigned char*)bank->patch_inds.m_elements)[ind], v0,
+            *bank, *vinfo,
+            &((unsigned char*)bank->patch_inds.m_elements)[ind], v0,
             v1, v2);
         math::Vector4 plane = calc_normal(v0, v1, v2);
 

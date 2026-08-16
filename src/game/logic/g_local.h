@@ -4246,8 +4246,8 @@ struct cdl_vinfo_t {
     uint16_t first_vert;  // +0x06
     uint16_t num_verts;   // +0x08
 };
-void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
-                 const unsigned char* pvi, math::Position3& v0,
+void unpack_poly(const CGBank& bank, const cdl_vinfo_t& vinfo,
+                 unsigned char* pvi, math::Position3& v0,
                  math::Position3& v1,
                  math::Position3& v2);  // game.o 0x6292E0
 void unpack(const CGBank& bank, unsigned int pi,
