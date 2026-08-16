@@ -9386,6 +9386,174 @@ void AARMapVote::SetPanelFile(PanelFile* pPanelFile)
     m_ListBox.Refresh();
 }
 
+// ea: 0x007A5770
+void AARGameModeVote::SetPanelFile(PanelFile* pPanelFile)
+{
+    static const char* const szAARGameModeVoteBackgroundArt[9] = {
+        "bkg", "bkg_detail_01", "bkg_detail_02", "bkg_detail_03",
+        "bkg_detail_04", "bkg_detail_05", "bkg_detail_06",
+        "bkg_detail_07", "bkg_detail_08",
+    };
+    static const char* const szAARGameModeVoteScrollArrow[2] = {
+        "scroll_arrow_left", "scroll_arrow_right",
+    };
+    static const char* const szAARGameModeVoteText[5] = {
+        "text_title_AAR", "text_title_section", "text_title_instructions",
+        "text_helpbar", "text_icon_vote",
+    };
+    static const char* const szAARGameModeVoteTextReferences[5] = {
+        "MPGAME_AFTER_ACTION_REVIEW", "MPGAME_GAME_MODE_VOTE",
+        "MPGAME_GAMEMODE_VOTE_INSTRUCTIONS",
+        "MPGAME_HELP_AAR_GAMEMODEVOTE", "MPGAME_AAR_MAPVOTE_V",
+    };
+    static const char* const szAARGameModeVoteNames[7] = {
+        "slot_01_text_mapname", "slot_02_text_mapname",
+        "slot_03_text_mapname", "slot_04_text_mapname",
+        "slot_05_text_mapname", "slot_06_text_mapname",
+        "slot_07_text_mapname",
+    };
+    static const char* const szAARGameModeVoteNameReferences[7] = {
+        "MPGAME_RANDOM_GAMEMODE", "MPGAME_WAR",
+        "MPGAME_CAPTURE_THE_FLAG", "MPGAME_SINGLE_FLAG_CTF",
+        "MPGAME_HEADQUARTERS", "MPGAME_TEAM_BATTLE", "MPGAME_BATTLE",
+    };
+    static const char* const szAARGameModeVotes[7] = {
+        "slot_01_text_mapvote", "slot_02_text_mapvote",
+        "slot_03_text_mapvote", "slot_04_text_mapvote",
+        "slot_05_text_mapvote", "slot_06_text_mapvote",
+        "slot_07_text_mapvote",
+    };
+    if (pPanelFile == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr = "pPanelFile";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    AARBaseMenu::SetPanelFile(pPanelFile);
+    for (int j = 0; j < 9; ++j)
+    {
+        if (m_pBackgroundArt.m_elements[j] != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+            AeAssert::gCurrentLine = 88;
+            AeAssert::gCurrentExpr = "0 == m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Array expected to be null"))
+                __debugbreak();
+        }
+        m_pBackgroundArt.m_elements[j] =
+            panel->GetPointer(szAARGameModeVoteBackgroundArt[j]);
+        if (m_pBackgroundArt.m_elements[j] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+            AeAssert::gCurrentLine = 91;
+            AeAssert::gCurrentExpr = "m_pBackgroundArt[i]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Not found!"))
+                __debugbreak();
+        }
+    }
+    for (int k = 0; k < 2; ++k)
+        m_pScrollArrow.m_elements[k] =
+            panel->GetPointer(szAARGameModeVoteScrollArrow[k]);
+    for (int v5 = 0; v5 < 5; ++v5)
+    {
+        m_pText.m_elements[v5] =
+            panel->GetTextPointer(szAARGameModeVoteText[v5]);
+        if (m_pText.m_elements[v5] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+            AeAssert::gCurrentLine = 121;
+            AeAssert::gCurrentExpr = "m_pText[i]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get text for m_pText!"))
+                __debugbreak();
+        }
+        const char* v6 = szAARGameModeVoteTextReferences[v5];
+        if (v5 == 3)
+        {
+            FEText* v44 = m_pText.m_elements[3];
+            FEMultiLineText* v43 =
+                (FEMultiLineText*)mem_heap_malloc(0xA8);
+            FEMultiLineText* v10 = nullptr;
+            if (v43 != nullptr)
+            {
+                color32 col = v44->GetColor();
+                panel_layer layer = (panel_layer)v44->GetScaleX();
+                float x1 = v44->GetY();
+                float v17 = v44->GetX();
+                v10 = new (v43)
+                    FEMultiLineText(v44->GetFont(), x1, 0.0f, 0, layer,
+                                    0.0f, 0, 0, col);
+            }
+            helpbar1 = v10;
+            if (v10 != nullptr)
+                v10->SetNumLines(1);
+            helpbar1->SetText(v6);
+        }
+        else
+        {
+            m_pText.m_elements[v5]->SetText(v6);
+        }
+        m_pText.m_elements[v5]->SetShown(true);
+    }
+    for (int v12 = 0; v12 < 7; ++v12)
+    {
+        FEText* TextPointer =
+            panel->GetTextPointer(szAARGameModeVoteNames[v12]);
+        m_ListBox.SetItem(v12, 0, TextPointer, 0);
+        m_ListBox.SetText(v12, 0,
+                          szAARGameModeVoteNameReferences[v12]);
+        FEText* v14 =
+            panel->GetTextPointer(szAARGameModeVotes[v12]);
+        m_ListBox.SetItem(v12, 1, v14, 0);
+        m_ListBox.SetText(v12, 1, "0");
+    }
+    m_ListBox.SetScrollBarFromPanelFile(panel);
+    m_ListBox.SetAllColumnsSelectable(false);
+    if (m_ListBox.mItemColumnsCount <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+        AeAssert::gCurrentLine = 125;
+        AeAssert::gCurrentExpr =
+            "column >= 0 && column < mItemColumnsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "UIListBoxItem: State count must be greater then zero"))
+            __debugbreak();
+    }
+    if (m_ListBox.mSelectedRowColorChangeColumns.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    *m_ListBox.mSelectedRowColorChangeColumns.mElements = true;
+    PanelQuad* Pointer = panel->GetPointer("player_hilite");
+    m_ListBox.mHighlightQuad = Pointer;
+    if (Pointer != nullptr)
+        Pointer->SetShown(false);
+    m_ListBox.mHighlightedSelectedTextColor.i = -3618616;
+    m_ListBox.mHighlightedUnselectedTextColor.i = -7553346;
+    m_ListBox.mSelectedFlashing = true;
+    m_ListBox.Refresh();
+}
+
 // ea: 0x007AC7A0
 void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
 {

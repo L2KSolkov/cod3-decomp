@@ -1236,6 +1236,7 @@ public:
     virtual void OnActivate();        // ?OnActivate@AARGameModeVote@@UAEXXZ
     virtual void OnCross(int c);      // ?OnCross@AARGameModeVote@@UAEXH@Z
     virtual void Draw();              // ?Draw@AARGameModeVote@@UAEXXZ
+    virtual void SetPanelFile(PanelFile* pPanelFile);  // ?SetPanelFile@AARGameModeVote@@UAEXPAVPanelFile@@@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@AARGameModeVote@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc);  // ?Update@AARGameModeVote@@UAEXM@Z
     virtual ~AARGameModeVote();       // ??1AARGameModeVote@@UAE@XZ
