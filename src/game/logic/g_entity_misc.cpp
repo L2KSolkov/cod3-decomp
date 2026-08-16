@@ -4297,11 +4297,11 @@ private:
     const char* LanguageStr(ELanguage id) const;  // ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z
     void NotifyLoaded();               // ?NotifyLoaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9C0)
     void NotifyUnloaded();             // ?NotifyUnloaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9F0)
+    void LoadWbkInternal(WbkEntry& wbk, const char* path, ELanguage lang,
+                         bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
 public:
     void Update();                     // ?Update@AudioBankMgr@@QAEXXZ (game.o 0x62BA20)
     void FinishLoading();              // ?FinishLoading@AudioBankMgr@@QAEXXZ (game.o 0x62BC40)
-    void LoadWbkInternal(WbkEntry* wbk, const char* path, ELanguage lang,
-                         bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
     void FreeWbk(const tlFixedString& name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
     void LoadWbk(const tlFixedString& name, bool async);  // ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x639630)
 private:
@@ -4521,11 +4521,11 @@ void AudioBankMgr::LoadWbk(const tlFixedString& name, bool async)
                 const char* path = (const char*)pak + 0x0C;
                 ELanguage v11 = gLanguage;
                 if (wbk->fileID[kLanguageUnlocalized] != (nflFileID)-1)
-                    this->LoadWbkInternal(wbk, path,
+                    this->LoadWbkInternal(*wbk, path,
                                           (ELanguage)kLanguageUnlocalized,
                                           async);
                 if (wbk->fileID[v11] == (nflFileID)-1
-                    || (this->LoadWbkInternal(wbk, path, v11, async),
+                    || (this->LoadWbkInternal(*wbk, path, v11, async),
                         wbk->fileID[v11] == (nflFileID)-1))
                 {
                     if (wbk->fileID[kLanguageUnlocalized] == (nflFileID)-1)
@@ -4797,11 +4797,11 @@ void AudioBankMgr::FinishLoading()
 }
 
 // ea: 0x0062BD50
-void AudioBankMgr::LoadWbkInternal(WbkEntry* wbk, const char* path,
+void AudioBankMgr::LoadWbkInternal(WbkEntry& wbk, const char* path,
                                    ELanguage lang, bool async)
 {
-    if (wbk->fileID[lang] == (nflFileID)-1
-        || wbk->bankId[lang] != NSL_BANK_ID_INVALID)
+    if (wbk.fileID[lang] == (nflFileID)-1
+        || wbk.bankId[lang] != NSL_BANK_ID_INVALID)
     {
         this->mDoLoadNotify = true;
     }
@@ -4809,16 +4809,16 @@ void AudioBankMgr::LoadWbkInternal(WbkEntry* wbk, const char* path,
     {
         const char* v6 = this->LanguageStr(lang);
         tlPrintf("[wbk] loading wbk [%s]: %s\n",
-                 (const char*)wbk + 4, v6);
-        nslBankID Bank = nslLoadBank(0, wbk->fileID[lang], 0);
-        wbk->bankId[lang] = Bank;
-        wbk->state[lang] = kLoading;
+                 (const char*)&wbk + 4, v6);
+        nslBankID Bank = nslLoadBank(0, wbk.fileID[lang], 0);
+        wbk.bankId[lang] = Bank;
+        wbk.state[lang] = kLoading;
         if (Bank == NSL_BANK_ID_INVALID)
         {
             this->mDoLoadNotify = true;
-            nflCloseFile(wbk->fileID[lang]);
-            wbk->fileID[lang] = (nflFileID)-1;
-            wbk->state[lang] = kUnloaded;
+            nflCloseFile(wbk.fileID[lang]);
+            wbk.fileID[lang] = (nflFileID)-1;
+            wbk.state[lang] = kUnloaded;
         }
         else if (!async)
         {
@@ -4826,7 +4826,7 @@ void AudioBankMgr::LoadWbkInternal(WbkEntry* wbk, const char* path,
             {
                 do
                     this->Update();
-                while (nslGetBankState(wbk->bankId[lang]) == 1);
+                while (nslGetBankState(wbk.bankId[lang]) == 1);
             }
             PakManager::sInst->SetSoundProgress(1.0f);
         }

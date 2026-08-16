@@ -3942,15 +3942,15 @@ done_char:
 float threshold_0;  // ?threshold_0 (game.o)
 static TouchEntityData s_entities_2;  // ?entities_2 (game.o @ 0xF58C60)
 static int s_entities_2_init;         // $S21_3 @ 0xF58F00
-extern bool collide_sphere_brush(math::Position3& sphere_center,
+extern bool collide_sphere_brush(const math::Position3& sphere_center,
                                  float sphere_radius,
                                  const cdl_object_t& obj,
                                  const cdlPlane* sides, unsigned int nsides,
-                                 math::Position3& new_sphere_center);
+                                 math::Position3* new_sphere_center);
     // game.o 0x61E660
 extern bool collide_sphere_box(const math::Position3& sphere_center,
                                float sphere_radius, const cdl_object_t& box,
-                               math::Position3& new_sphere_center);
+                               math::Position3* new_sphere_center);
     // game.o 0x61E890
 extern bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
                                          float sphere_radius,
@@ -4091,7 +4091,7 @@ bool push_in_world(pmove_t& pm, float radius,
                             localProbe, radius, obj,
                             (cdlPlane*)bmodel->brush_sides_m_elements
                                 + firstSide,
-                            brush[1], localProbe);
+                                brush[1], &localProbe);
                     }
                 }
                 int nboxes = bmodel->nboxes;
@@ -4106,7 +4106,7 @@ bool push_in_world(pmove_t& pm, float radius,
                         &((cdl_object_t*)bmodel->objects_m_elements)[b];
                     if ((obj->cflags & pm.tracemask) != 0)
                         hit |= collide_sphere_box(localProbe, radius, *obj,
-                                                  localProbe);
+                                                  &localProbe);
                 }
                 if (hit)
                 {
@@ -4173,7 +4173,7 @@ bool push_in_world(pmove_t& pm, float radius,
                 probe, radius, *obj,
                 (cdlPlane*)bank->brush_sides.m_elements
                     + brush->first_side,
-                brush->num_sides, probe);
+                brush->num_sides, &probe);
         }
         // proximity boxes
         for (int i = 0; i < filtered.boxes_count; ++i)
@@ -4189,7 +4189,7 @@ bool push_in_world(pmove_t& pm, float radius,
                 __debugbreak();
             hit |= collide_sphere_box(
                 probe, radius,
-                ((cdl_object_t*)bank->objects.m_elements)[oi], probe);
+                ((cdl_object_t*)bank->objects.m_elements)[oi], &probe);
         }
         // proximity polies
         for (int i = 0; i < filtered.polies_count; ++i)

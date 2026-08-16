@@ -388,7 +388,7 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                 if (collide_sphere_brush(
                         *(math::Position3*)&local.v, radius, *obj,
                         &sides[br->first_side], br->num_sides,
-                        *(math::Position3*)&local.v))
+                        (math::Position3*)&local.v))
                     hit = true;
             }
         }
@@ -407,7 +407,7 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
             if (dx * dx + dy * dy + dz * dz < 9.0f)
             {
                 if (collide_sphere_box(*(math::Position3*)&local.v, radius,
-                                       *obj, *(math::Position3*)&local.v))
+                                       *obj, (math::Position3*)&local.v))
                     hit = true;
             }
         }
@@ -441,7 +441,7 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                     oc, radius, *obj,
                     &((cdlPlane*)bank->brush_sides.m_elements)
                         [br->first_side],
-                    br->num_sides, oc))
+                        br->num_sides, &oc))
                 hit = true;
         }
     }
@@ -459,7 +459,7 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                 - (obj->center[2] + obj->box_radius[2])
             < 9.0f)
         {
-            if (collide_sphere_box(oc, radius, *obj, oc))
+            if (collide_sphere_box(oc, radius, *obj, &oc))
                 hit = true;
         }
     }
@@ -557,14 +557,14 @@ bool push_in_world(math::Position3& pos, float radius,
                 math::Position3& lc = *(math::Position3*)&local;
                 if (collide_sphere_brush(
                         lc, radius, *obj,
-                        &sides[br->first_side], br->num_sides, lc))
+                        &sides[br->first_side], br->num_sides, &lc))
                     hit = true;
             }
             math::Position3& lc = *(math::Position3*)&local;
             for (int b = 0; b < nboxes; ++b)
             {
                 cdl_object_t* obj = &objects[b];
-                if (collide_sphere_box(lc, radius, *obj, lc))
+                if (collide_sphere_box(lc, radius, *obj, &lc))
                     hit = true;
             }
             __m128 back = _mm_add_ps(
@@ -596,7 +596,7 @@ bool push_in_world(math::Position3& pos, float radius,
                     ctr, radius, *obj,
                     &((cdlPlane*)bank->brush_sides.m_elements)
                         [br->first_side],
-                    br->num_sides, ctr))
+                    br->num_sides, &ctr))
                 hit = true;
         }
         math::Position3& ctr = *(math::Position3*)center;
@@ -609,7 +609,7 @@ bool push_in_world(math::Position3& pos, float radius,
                 continue;
             cdl_object_t* obj =
                 &((cdl_object_t*)bank->objects.m_elements)[slot.oi];
-            if (collide_sphere_box(ctr, radius, *obj, ctr))
+            if (collide_sphere_box(ctr, radius, *obj, &ctr))
                 hit = true;
         }
         const float scale = 0.25f;

@@ -4196,13 +4196,13 @@ public:
     void DebugRender();                          // ?DebugRender@CGBankManager@@QAEXXZ (game.o 0x646700)
 };
 
-bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
+bool collide_sphere_brush(const math::Position3& sphere_center, float sphere_radius,
                           const cdl_object_t& obj, const cdlPlane* sides,
                           unsigned int nsides,
-                          math::Position3& new_sphere_center);  // game.o 0x61E660
+                          math::Position3* new_sphere_center);  // game.o 0x61E660
 bool collide_sphere_box(const math::Position3& sphere_center,
                         float sphere_radius, const cdl_object_t& box,
-                        math::Position3& new_sphere_center);  // game.o 0x61E890
+                        math::Position3* new_sphere_center);  // game.o 0x61E890
 void PM_UpdateMeleeAssistAim(PlayerState* ps, int msec);  // game.o 0x62DE20
 bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
                                   float sphere_radius,

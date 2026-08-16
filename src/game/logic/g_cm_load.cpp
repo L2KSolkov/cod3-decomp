@@ -6405,7 +6405,7 @@ bool push_sphere_in_world(math::Position3& pos, float radius,
                             __debugbreak();
                         hit |= collide_sphere_brush(
                             modelPos, radius, obj, &sides[first_side],
-                            (unsigned int)brush.num_sides, modelPos);
+                            (unsigned int)brush.num_sides, &modelPos);
                     }
                 }
                 int nboxes = model->nboxes;
@@ -6423,7 +6423,7 @@ bool push_sphere_in_world(math::Position3& pos, float radius,
                                 "invalid index"))
                             __debugbreak();
                         hit |= collide_sphere_box(
-                            modelPos, radius, objects[b], modelPos);
+                            modelPos, radius, objects[b], &modelPos);
                     }
                 }
                 // Back to world space: M * model + origin
@@ -6501,7 +6501,7 @@ bool push_sphere_in_world(math::Position3& pos, float radius,
                 sphere_center, radius, *obj,
                 &((const cdlPlane*)bank->brush_sides.m_elements)
                     [first_side],
-                (unsigned int)brush->num_sides, sphere_center);
+                (unsigned int)brush->num_sides, &sphere_center);
         }
 
         // Proximity boxes
@@ -6545,7 +6545,7 @@ bool push_sphere_in_world(math::Position3& pos, float radius,
             cdl_object_t* obj =
                 &((cdl_object_t*)bank->objects.m_elements)[oi];
             hit |= collide_sphere_box(sphere_center, radius, *obj,
-                                      sphere_center);
+                                      &sphere_center);
         }
 
         // Proximity polies
@@ -7936,7 +7936,7 @@ float fudge_2;  // game.o @ 0xDF8D34
 // ea: 0x0061E890
 bool collide_sphere_box(const math::Position3& sphere_center,
                         float sphere_radius, const cdl_object_t& box,
-                        math::Position3& new_sphere_center)
+                        math::Position3* new_sphere_center)
 {
     float ext[3] = { box.box_radius[0], box.box_radius[1],
                      box.box_radius[2] };
@@ -7962,9 +7962,9 @@ bool collide_sphere_box(const math::Position3& sphere_center,
         }
     }
     float push = dist[best] + fudge_2;
-    new_sphere_center = sphere_center;
+    *new_sphere_center = sphere_center;
     float axis = delta[best] >= 0.0f ? push : -push;
-    new_sphere_center.v.m128_f32[best] = center[best] + axis;
+    new_sphere_center->v.m128_f32[best] = center[best] + axis;
     return true;
 }
 
@@ -7973,10 +7973,10 @@ bool collide_sphere_box(const math::Position3& sphere_center,
 // ============================================================================
 float fudge_1;  // game.o @ 0xDF8D30
 // ea: 0x0061E660
-bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
+bool collide_sphere_brush(const math::Position3& sphere_center, float sphere_radius,
                           const cdl_object_t& obj, const cdlPlane* sides,
                           unsigned int nsides,
-                          math::Position3& new_sphere_center)
+                          math::Position3* new_sphere_center)
 {
     float ext[3] = { obj.box_radius[0], obj.box_radius[1],
                      obj.box_radius[2] };
@@ -8022,7 +8022,7 @@ bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
     {
         const cdlPlane& plane = sides[bestPlane];
         float push = fudge_1 + bestDist;
-        new_sphere_center.v = _mm_add_ps(
+        new_sphere_center->v = _mm_add_ps(
             sphere_center.v,
             _mm_mul_ps(_mm_setr_ps(plane.packed[0], plane.packed[1],
                                    plane.packed[2], 0.0f),
@@ -8030,9 +8030,9 @@ bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
         return true;
     }
     float push = fudge_1 + dist[best];
-    new_sphere_center = sphere_center;
+    *new_sphere_center = sphere_center;
     float axis = delta[best] >= 0.0f ? push : -push;
-    new_sphere_center.v.m128_f32[best] = center[best] + axis;
+    new_sphere_center->v.m128_f32[best] = center[best] + axis;
     return true;
 }
 
