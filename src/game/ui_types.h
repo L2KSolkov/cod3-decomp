@@ -1704,7 +1704,6 @@ public:
     ae_array_dynamic<FEMenuEntry*> mSplitScreenTextEntries;   // +0x60
 
     FESplitScreenMenu(FEMenuSystem* s, int num_entries);  // ?FESplitScreenMenu@@QAE@PAVFEMenuSystem@@H@Z
-    FESplitScreenMenu(const FESplitScreenMenu&);          // copy ctor (asserts)
     virtual ~FESplitScreenMenu();   // shared dtr slot 3
     virtual void SetPanelFile(PanelFile* pf);      // slot 0 (empty 0x7930D0)
     virtual void PanelFileUnloaded(PanelFile* pf); // slot 1 0x7AC280
@@ -1737,6 +1736,7 @@ public:
 protected:
     void SetPanelFileBackground(PanelFile* pf);  // 0x7931A0
     virtual void SwapMenus();       // ?SwapMenus@FESplitScreenMenu@@MAEXXZ (mp_shell.o 0x7930C0)
+    FESplitScreenMenu(const FESplitScreenMenu&);  // ??0FESplitScreenMenu@@AAE@ABV0@@Z (copy ctor asserts)
 };
 static_assert(sizeof(FESplitScreenMenu) == 0x68,
               "FESplitScreenMenu size mismatch");

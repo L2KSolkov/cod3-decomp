@@ -64,6 +64,7 @@ public:
     static const int GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z
     static const int GetScoreLimit(unsigned long index,
                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
+    static const int GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
     static void ExitGame();   // ?ExitGame@MPUIInterface@@SAXXZ
     static int mReturnMenu;   // ?mReturnMenu@MPUIInterface@@1HA
@@ -192,6 +193,7 @@ extern const char* const szPlayLanMenuDescriptionReferences[3];  // @ 0xE381BC
 extern int dword_F641D0[1580 * 802];   // cg.o
 extern char byte_F64194[6320 * 802];   // cg.o
 extern int dword_F641D4[1580 * 802];   // cg.o
+extern int dword_F6A28C[4 * 802];      // cg.o
 extern int dword_F6A290[4 * 802];      // cg.o
 extern int dword_186A0;                // damage constant (game.o)
 extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
@@ -225,6 +227,19 @@ struct BrocAPI {
     BrocExports mBrocExports;  // +0x00
 };
 extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
+
+// STBManager - string table bank manager (core.o owns the definition)
+class STBManager {
+public:
+    static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A @ 0xF00EA0
+    const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z
+};
+
+// Starting-map combo -> map id (byte_E386C9[114*k], 114-byte map records)
+static const unsigned char sFindMapIdByComboOption[9] = {
+    0x00, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x60,
+};
+
 enum hitLocation_t : int;
 
 struct MenuClearHelper : FEMenu {
@@ -4995,6 +5010,323 @@ InGameScoreBoard::InGameScoreBoard(FEMenuSystem* pauseMenuSystem)
     flags = (int16_t)(flags | 0x180);
     default_color_scheme = 5;
     mVersion = pauseMenuSystem->GetCurrentClient();
+}
+
+// ============================================================================
+// Batch 20: next-smallest handlers (32-320 bytes)
+// ============================================================================
+
+// ea: 0x00791670
+void AARMapVote::OnL1(int c)
+{
+    (void)c;
+    m_bHighlightScrollArrowLeft = true;
+    m_ePanelToSwitchTo = 3;
+}
+
+// ea: 0x00791B60
+void PauseMenu::SetGameSettingsText()
+{
+    if (MultiplayerMgr::sInst->mRankedGame
+        || !MultiplayerMgr::sInst->IsLocalClientHost(mVersion))
+        entries[4]->SetText("MPGAME_VIEW_GAME_SETTINGS");
+    else
+        entries[4]->SetText("MPGAME_EDIT_GAME_SETTINGS");
+}
+
+// ea: 0x007A71E0
+FESplitScreenMenu::FESplitScreenMenu(const FESplitScreenMenu& s)
+    : FEMenu(s.system, s.num_entries, 320, 240, 8, 0)
+{
+    mMainTextEntries.m_elements = nullptr;
+    mMainTextEntries.m_capacity = 0;
+    mMainTextEntries.m_size = 0;
+    mSplitScreenTextEntries.m_elements = nullptr;
+    mSplitScreenTextEntries.m_capacity = 0;
+    mSplitScreenTextEntries.m_size = 0;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FESplitScreenMenu.cpp";
+    AeAssert::gCurrentLine = 44;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("This funtion should not be called."))
+        __debugbreak();
+}
+
+// ea: 0x007A3300
+void InGameSwitchSides::SwitchTeams()
+{
+    int v2 = EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam - 1;
+    if (v2 != 0)
+    {
+        if (v2 == 1)
+        {
+            MultiplayerMgr* v3 = MultiplayerMgr::sInst;
+            if (v3->mPeer != nullptr)
+            {
+                Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+                v3->ChangeTeam(Player, 1, false, false);
+            }
+        }
+    }
+    else
+    {
+        MultiplayerMgr* v3 = MultiplayerMgr::sInst;
+        if (v3->mPeer != nullptr)
+        {
+            Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+            v3->ChangeTeam(Player, 2, false, false);
+        }
+    }
+    FEMenu* v6 = g_femanager.GetIGMS(mVersion)->menus[0];
+    int client = ((FESplitScreenMenu*)v6)->mVersion;
+    g_femanager.GetIGMS(client)->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(client)->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)v6)->ClearAll();
+}
+
+// ea: 0x00792390
+void HotJoinMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    dword_F6A290[802 * currCl] = 1;
+    View::UpdateNumViewports();
+    mController = dword_F6A28C[802 * currCl];
+    entries[0]->SetShown(true);
+    SetHigh(0, true);
+    const char* STBString =
+        STBManager::sInst->GetSTBString("MPGAME_HOTJOIN_TITLE");
+    char title[64];
+    sprintf(title, STBString, dword_F6A28C[802 * currCl] + 1);
+    panel->GetTextPointer("text_title")->SetText(title);
+    panel->GetTextPointer("text_body")
+        ->SetText((const char*)&defaultFileName);
+    ClearAllButtons();
+}
+
+// ea: 0x00798CD0
+void FindSessionMenu::OnCross(int c)
+{
+    (void)c;
+    sServerQueryParams params;
+    memset(&params, 255, 28);
+    params.mListIfFull = 0;
+    params.mSessionNamePrefix[0] = 0;
+    int v4 = mStartingMapCombo->mCurrOption - 1;
+    char v5 = (v4 == -1) ? (char)-1 : (char)sFindMapIdByComboOption[v4];
+    params.mMapID = v5;
+    params.mGameType = mGameModeCombo->mCurrOption - 1;
+    params.mGameSubType = -1;
+    short mCurrOption = mNumberOfPlayersCombo->mCurrOption;
+    if (mCurrOption <= 0)
+        params.mMaxPlayers = -1;
+    else
+        params.mMaxPlayers = MPUIInterface::GetMaxPlayers(mCurrOption - 1);
+    params.mMinPlayers = -1;
+    params.mFriendlyFire = m_TeamDamageCombo->mCurrOption - 1;
+    params.mTeamBalancing = m_AutoTeamBalanceCombo->mCurrOption - 1;
+    params.mSessionNamePrefix[0] = 0;
+    MPUIInterface::SetQueryParams(params);
+    system->MakeActiveAndReturn(13);
+}
+
+// ea: 0x0079A1C0
+void FindLanSessionMenu::OnCross(int c)
+{
+    (void)c;
+    sServerQueryParams params;
+    memset(&params, 255, 28);
+    params.mListIfFull = 0;
+    params.mSessionNamePrefix[0] = 0;
+    int v4 = mStartingMapCombo->mCurrOption - 1;
+    char v5 = (v4 == -1) ? (char)-1 : (char)sFindMapIdByComboOption[v4];
+    params.mMapID = v5;
+    params.mGameType = mGameModeCombo->mCurrOption - 1;
+    params.mGameSubType = -1;
+    short mCurrOption = mNumberOfPlayersCombo->mCurrOption;
+    if (mCurrOption <= 0)
+        params.mMaxPlayers = -1;
+    else
+        params.mMaxPlayers = MPUIInterface::GetMaxPlayers(mCurrOption - 1);
+    params.mMinPlayers = -1;
+    params.mFriendlyFire = m_TeamDamageCombo->mCurrOption - 1;
+    params.mTeamBalancing = m_AutoTeamBalanceCombo->mCurrOption - 1;
+    params.mSessionNamePrefix[0] = 0;
+    MPUIInterface::SetQueryParams(params);
+    system->MakeActiveAndReturn(14);
+}
+
+// ea: 0x007A3FC0
+void AARScoreboardWinner::SetWinningTeam(team_t team)
+{
+    AARScoreboardBase::SetWinningTeam(team);
+    m_pYourTeamScore.m_elements[0]->SetShown(false);
+    m_pYourTeamScore.m_elements[1]->SetShown(false);
+    if (cgGlobal.teamGame)
+    {
+        if (team == TEAM_ALLIES)
+        {
+            m_pUppercaseText.m_elements[0]
+                ->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+            m_cgTeamShown = TEAM_ALLIES;
+            m_pYourTeamScore.m_elements[0]->SetShown(true);
+            return;
+        }
+        if (team == TEAM_AXIS)
+        {
+            m_pUppercaseText.m_elements[0]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+        }
+        else
+        {
+            Entity* FirstLocalPlayer = EntityManager::sInst->GetFirstLocalPlayer();
+            if (FirstLocalPlayer != nullptr
+                && FirstLocalPlayer->sentient != nullptr
+                && FirstLocalPlayer->sentient->eTeam == TEAM_ALLIES)
+            {
+                m_pUppercaseText.m_elements[0]->SetText("MPSCRIPT_ALLIES_DRAW");
+                m_cgTeamShown = TEAM_ALLIES;
+                m_pYourTeamScore.m_elements[0]->SetShown(true);
+                return;
+            }
+            m_pUppercaseText.m_elements[0]->SetText("MPSCRIPT_AXIS_DRAW");
+        }
+        m_cgTeamShown = TEAM_AXIS;
+        m_pYourTeamScore.m_elements[1]->SetShown(true);
+    }
+}
+
+// ea: 0x0078CB70
+CreateLanSessionAdvancedMenu::CreateLanSessionAdvancedMenu(FEMenuSystem* pMenuSys)
+    : FEMenu(pMenuSys, 12, 320, 240, 8, 0)
+{
+    flags = (int16_t)(flags | 0x80);
+    m_TimeLimitCombo = nullptr;
+    m_ScoreLimitCombo = nullptr;
+    m_AutoTeamBalanceCombo = nullptr;
+    m_TeamDamageCombo = nullptr;
+    m_VotingCombo = nullptr;
+    m_PenaltyVoteCombo = nullptr;
+    panel = nullptr;
+    m_pBackgroundArt.m_elements[0] = nullptr;
+    m_pBackgroundArt.m_elements[1] = nullptr;
+    m_pBackgroundArt.m_elements[2] = nullptr;
+    m_pBackgroundArt.m_elements[3] = nullptr;
+    m_pBackgroundRow.m_elements[0] = nullptr;
+    m_pBackgroundRow.m_elements[1] = nullptr;
+    m_pBackgroundRow.m_elements[2] = nullptr;
+    m_pBackgroundRow.m_elements[3] = nullptr;
+    m_pBackgroundRow.m_elements[4] = nullptr;
+    m_pBackgroundRow.m_elements[5] = nullptr;
+    m_pBackgroundLine.m_elements[0] = nullptr;
+    m_pBackgroundLine.m_elements[1] = nullptr;
+    m_pBackgroundLine.m_elements[2] = nullptr;
+    m_pBackgroundLine.m_elements[3] = nullptr;
+    m_pBackgroundLine.m_elements[4] = nullptr;
+    m_pText.m_elements[0] = nullptr;
+    m_pText.m_elements[1] = nullptr;
+    m_pText.m_elements[2] = nullptr;
+    m_pText.m_elements[3] = nullptr;
+    memset(&m_pSlotText, 0, sizeof(m_pSlotText));
+    memset(&m_pSlotArrow, 0, sizeof(m_pSlotArrow));
+    *(unsigned int*)&m_szSessionName[0] = 0;
+    *(unsigned int*)&m_szSessionName[4] = 0;
+    *(unsigned int*)&m_szSessionName[8] = 0;
+    *(unsigned int*)&m_szSessionName[12] = 0;
+}
+
+// ea: 0x00793370
+const char* ModelMenu::GetClassModel(int playerClass, int team)
+{
+    const char* result;
+    if (team == 2)
+    {
+        switch (playerClass)
+        {
+        case 0:
+            result = "mp_US_ass";
+            break;
+        case 1:
+            result = "mp_US_inf";
+            break;
+        case 3:
+            result = "mp_US_medic";
+            break;
+        case 4:
+            result = "mp_US_supp";
+            break;
+        case 5:
+            result = "mp_US_tank";
+            break;
+        case 6:
+            result = "mp_US_scout";
+            break;
+        default:
+            result = "mp_US_rifle";
+            break;
+        }
+    }
+    else
+    {
+        switch (playerClass)
+        {
+        case 0:
+            result = "mp_GE_ass";
+            break;
+        case 1:
+            result = "mp_GE_inf";
+            break;
+        case 2:
+            result = "mp_GE_rifle";
+            break;
+        case 3:
+            result = "mp_GE_medic";
+            break;
+        case 4:
+            result = "mp_GE_supp";
+            break;
+        case 5:
+            result = "mp_GE_tank";
+            break;
+        case 6:
+            result = "mp_GE_scout";
+            break;
+        default:
+            result = "mp_US_rifle";
+            break;
+        }
+    }
+    return result;
+}
+
+// ea: 0x007AF4B0
+SessionListMenu::SessionListMenu(FEMenuSystem* s)
+    : FEMultiMenu(s, 0, 0)
+{
+    mSortColumn = 0;
+    mShowDownArrow = false;
+    mShowUpArrow = false;
+    mNeedToUpdate = false;
+    new (&m_ListBox) UIListBox(6, 4, 50, true);
+    flags = (int16_t)(flags | 0x80);
+    m_pServerText = nullptr;
+    m_pBackgroundArt.m_elements[0] = nullptr;
+    m_pBackgroundArt.m_elements[1] = nullptr;
+    m_pBackgroundArt.m_elements[2] = nullptr;
+    m_pBackgroundArt.m_elements[3] = nullptr;
+    m_pBackgroundArt.m_elements[4] = nullptr;
+    m_pHeaderText.m_elements[0] = nullptr;
+    m_pHeaderText.m_elements[1] = nullptr;
+    m_pHeaderText.m_elements[2] = nullptr;
+    m_pHeaderText.m_elements[3] = nullptr;
+    m_pText.m_elements[0] = nullptr;
+    m_pText.m_elements[1] = nullptr;
+    m_pText.m_elements[2] = nullptr;
+    m_pConnectionStars.m_elements[0] = nullptr;
+    m_pConnectionStars.m_elements[1] = nullptr;
+    m_pConnectionStars.m_elements[2] = nullptr;
+    m_pConnectionStars.m_elements[3] = nullptr;
+    m_pConnectionStars.m_elements[4] = nullptr;
+    memset(mVisibleListToGameListMap, 0xFFu, sizeof(mVisibleListToGameListMap));
 }
 
 // ea: 0x00792280
