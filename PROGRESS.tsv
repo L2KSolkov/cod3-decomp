@@ -700,3 +700,4 @@ mp.o batch 19: peer vehicle/seat/spot sends, game-state handlers, player damage/
 mp.o batch 20: player/vehicle serialize+deserialize, voice subsystem, vehicle/seat/drop/swap handlers, fire artillery, session status change, player dead, bullet hit (754/770)
 
 mp.o COMPLETE (770/770): player/vehicle step+interpolation, manager+peer handlers, network statics, dropped-item free-entity helpers; last 2 anon helpers emitted (PlayPartialAnimationRate 0x72D070 forceTorso signature + FreeEntity 0x72DFF0) via decompile-verified call sites + anchor
+mp_shell.o COMPLETE (680/680): session/overlay/vote/settings/AAR/scoreboard menus, pause/hotjoin/spectate, model+weapon select, create/find/play lan+online panels, overlay state machines, AARMenuSystem ctor, vote tally/send, panel-file + helpbar construction
