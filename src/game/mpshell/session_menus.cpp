@@ -4799,3 +4799,250 @@ void GameSettingsView::OnStart(int c)
     GamePause::SetGamePaused(currCl, false);
     ((MenuClearHelper*)v3)->ClearAll();
 }
+
+// ============================================================================
+// Batch 17: weapon/class/pause handlers
+// ============================================================================
+
+// ea: 0x00790A60
+EPlayerClass WeaponSelectMenu::LocalIndexToPlayerClass(int index)
+{
+    switch (index)
+    {
+    case 0:
+        return kPlayerClassRifleman;
+    case 1:
+        return kPlayerClassInfantry;
+    case 2:
+        return kPlayerClassAssault;
+    case 3:
+        return kPlayerClassMedic;
+    case 4:
+        return kPlayerClassScout;
+    case 5:
+        return kPlayerClassSupport;
+    case 6:
+        return kPlayerClassAntiArmor;
+    case 7:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp";
+        AeAssert::gCurrentLine = 308;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "WeaponSelectMenu::OnDeactivate() - CLASS_MAX is not a class!"))
+            __debugbreak();
+        return kPlayerClassRifleman;
+    default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp";
+        AeAssert::gCurrentLine = 311;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "WeaponSelectMenu::OnDeactivate() - unknown class!"))
+            __debugbreak();
+        return kPlayerClassRifleman;
+    }
+}
+
+// ea: 0x00790B90
+int WeaponSelectMenu::PlayerClassToLocalIndex(int playerclass)
+{
+    switch (playerclass)
+    {
+    case 0:
+        return 2;
+    case 1:
+        return 1;
+    case 3:
+        return 3;
+    case 4:
+        return 5;
+    case 5:
+        return 6;
+    case 6:
+        return 4;
+    case 7:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp";
+        AeAssert::gCurrentLine = 351;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "WeaponSelectMenu::SetClassGauges() - CLASS_MAX is not a class!"))
+            __debugbreak();
+        return 0;
+    default:
+        return 0;
+    }
+}
+
+// ea: 0x00793240
+void ModelMenu::SetLightDirection(int index, const math::Dir3& dir)
+{
+    if (index >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/ModelMenu.cpp";
+        AeAssert::gCurrentLine = 114;
+        AeAssert::gCurrentExpr = "index >= 0 && index < 2";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid light index"))
+            __debugbreak();
+    }
+    mDirections[index * 4 + 0] = dir.v.m128_f32[0];
+    mDirections[index * 4 + 1] = dir.v.m128_f32[1];
+    mDirections[index * 4 + 2] = dir.v.m128_f32[2];
+    mDirections[index * 4 + 3] = dir.v.m128_f32[3];
+}
+
+// ea: 0x0079AD50
+void GameSettingsEdit::OnRight(int c)
+{
+    (void)c;
+    Right();
+    SetGameTypeDefaults();
+}
+
+// ea: 0x007A37B0
+void AARScoreboardBase::SetWinningTeam(team_t team)
+{
+    char szLoserScore[12];
+    char szWinnerScore[12];
+    if (team != TEAM_ALLIES)
+    {
+        if (team == TEAM_AXIS)
+        {
+            _snprintf(szWinnerScore, 0xAu, "%d", cgGlobal.teamScores[1]);
+            _snprintf(szLoserScore, 0xAu, "%d", cgGlobal.teamScores[2]);
+        }
+        else
+        {
+            _snprintf(szWinnerScore, 0xAu, "%d", cgGlobal.teamScores[2]);
+            _snprintf(szLoserScore, 0xAu, "%d", cgGlobal.teamScores[1]);
+            Entity* FirstLocalPlayer =
+                EntityManager::sInst->GetFirstLocalPlayer();
+            if (FirstLocalPlayer != nullptr)
+            {
+                sentient_s* sentient = FirstLocalPlayer->sentient;
+                if (sentient != nullptr && sentient->eTeam == TEAM_ALLIES)
+                    goto LABEL_3;
+            }
+        }
+        m_pUppercaseText[6]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+        m_pUppercaseText[4]->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+        goto LABEL_10;
+    }
+    _snprintf(szWinnerScore, 0xAu, "%d", cgGlobal.teamScores[2]);
+    _snprintf(szLoserScore, 0xAu, "%d", cgGlobal.teamScores[1]);
+LABEL_3:
+    m_pUppercaseText[6]->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+    m_pUppercaseText[4]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+LABEL_10:
+    m_pUppercaseText[7]->SetText(szWinnerScore);
+    m_pUppercaseText[5]->SetText(szLoserScore);
+}
+
+// ea: 0x007A6B50
+void PauseMenu::UpdateSplitScreen()
+{
+    FESplitScreenMenu::UpdateSplitScreen();
+    if (MultiplayerMgr::sInst->mRankedGame
+        || !MultiplayerMgr::sInst->IsLocalClientHost(mVersion))
+    {
+        entries[4]->SetText("MPGAME_VIEW_GAME_SETTINGS");
+    }
+    else
+    {
+        entries[4]->SetText("MPGAME_EDIT_GAME_SETTINGS");
+    }
+}
+
+// ea: 0x007A6EA0
+void AARPauseMenu::OnCross(int c)
+{
+    FEMenu::OnCross(c);
+    switch (highlighted)
+    {
+    case 3:
+        system->MakeActiveAndReturn(5);
+        break;
+    case 4:
+        if (MultiplayerMgr::sInst->mRankedGame
+            || !MultiplayerMgr::sInst->IsLocalClientHost(
+                LocalClient::PortToClient(c)))
+        {
+            system->MakeActiveAndReturn(7);
+        }
+        else
+        {
+            system->MakeActiveAndReturn(6);
+        }
+        break;
+    case 5:
+        system->MakeActiveAndReturn(8);
+        break;
+    case 6:
+        AttemptQuit();
+        break;
+    default:
+        return;
+    }
+}
+
+// ea: 0x007ABAC0
+void PauseMenu::OnCross(int c)
+{
+    FEMenu::OnCross(c);
+    switch (highlighted)
+    {
+    case 0:
+        tlPrintf("PauseMenu::OnCross() - controller %d currCl %d\n",
+                 c, mVersion);
+        system->MakeActiveAndReturn(1, mReturnMenu);
+        break;
+    case 1:
+        AttemptTeamChange();
+        break;
+    case 2:
+        AttemptSuicide();
+        break;
+    case 3:
+        system->MakeActiveAndReturn(8);
+        break;
+    case 4:
+        if (!MultiplayerMgr::sInst->mRankedGame
+            && MultiplayerMgr::sInst->IsHost()
+            && mVersion == LocalClient::FirstLocalClientIndex())
+        {
+            system->MakeActiveAndReturn(2);
+        }
+        else
+        {
+            system->MakeActiveAndReturn(3);
+        }
+        break;
+    case 5:
+        system->MakeActiveAndReturn(5);
+        break;
+    case 6:
+        AttemptQuit();
+        break;
+    default:
+        return;
+    }
+}
+
+// ea: 0x007ABEB0
+void SessionLanListMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    mShowDownArrow = false;
+    mShowUpArrow = false;
+    mNumGames = 0;
+    InitMenu();
+}

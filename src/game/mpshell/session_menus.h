@@ -9,6 +9,15 @@
 
 struct sServerCreateParams;  // full definition in session_menus.cpp
 enum eGameType : int;        // full definition in session_menus.cpp
+enum EPlayerClass : int {
+    kPlayerClassRifleman = 0,
+    kPlayerClassInfantry = 1,
+    kPlayerClassAssault = 2,
+    kPlayerClassMedic = 3,
+    kPlayerClassScout = 4,
+    kPlayerClassSupport = 5,
+    kPlayerClassAntiArmor = 6,
+};
 
 // ============================================================================
 // CreateSessionMenu - 344 bytes (0x158), verified against IDA
@@ -337,6 +346,7 @@ public:
     virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
     virtual void OnUp(int c);            // ?OnUp@GameSettingsEdit@@UAEXH@Z
+    virtual void OnRight(int c);         // ?OnRight@GameSettingsEdit@@UAEXH@Z
 protected:
     static bool ResponseYesApplyNow(int client);  // ?ResponseYesApplyNow@GameSettingsEdit@@KA_NH@Z
     void SetGameTypeDefaults();                   // ?SetGameTypeDefaults@GameSettingsEdit@@IAEXXZ
@@ -560,6 +570,7 @@ public:
     virtual void OnSquare(int c);     // ?OnSquare@SessionLanListMenu@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@SessionLanListMenu@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@SessionLanListMenu@@UAEXH@Z
+    virtual void OnActivate();        // ?OnActivate@SessionLanListMenu@@UAEXXZ
     virtual ~SessionLanListMenu();    // ??1SessionLanListMenu@@UAE@XZ
 protected:
     void Refresh();                   // ?Refresh@SessionLanListMenu@@IAEXXZ
@@ -780,6 +791,7 @@ protected:
     void AddDObjToScene();   // ?AddDObjToScene@ModelMenu@@IAEXXZ
     void SetLightBrightness(int index, float brightness);  // ?SetLightBrightness@ModelMenu@@IAEXHM@Z
     void SetLightColor(int index, const math::Vector4& color);  // ?SetLightColor@ModelMenu@@IAEXHABVVector4@math@@@Z
+    void SetLightDirection(int index, const math::Dir3& dir);  // ?SetLightDirection@ModelMenu@@IAEXHABVDir3@math@@@Z
     void PlayModifierAnim(int sheet, int row, int column, bool immediate);  // ?PlayModifierAnim@ModelMenu@@IAEXHHH_N@Z
 };
 static_assert(sizeof(ModelMenu) == 0x110,
@@ -806,6 +818,7 @@ protected:
     int  m_playerclass;                  // +0x134
     short m_sLocalPlayerTeam;            // +0x1E0
     int PlayerClassToLocalIndex(int playerclass);  // ?PlayerClassToLocalIndex@WeaponSelectMenu@@IAEHH@Z
+    EPlayerClass LocalIndexToPlayerClass(int index);  // ?LocalIndexToPlayerClass@WeaponSelectMenu@@IAE?AW4EPlayerClass@@H@Z
     void ActivationToggle(bool a_bToggle);  // ?ActivationToggle@WeaponSelectMenu@@IAEX_N@Z
     void SetClassOptionHeader();           // ?SetClassOptionHeader@WeaponSelectMenu@@IAEXXZ
     void CloseMenu();                      // ?CloseMenu@WeaponSelectMenu@@IAEXXZ
@@ -923,7 +936,8 @@ public:
     bool m_bPreviousCursorState;       // +0x1C8
     uint8_t _pad1[0x1CC - (0x1C8 + 1)];
     ae_array<PanelQuad*, 6> m_pYourTeamScore;  // +0x1CC
-    uint8_t _pad2[0x228 - (0x1CC + 24)];
+    ae_array<FEText*, 13> m_pUppercaseText;  // +0x1E4
+    uint8_t _pad2[0x228 - (0x1E4 + 52)];
     UIPlayerListBox m_ListBox;         // +0x228
     uint8_t _pad3[0x34C - (0x228 + 0x108)];
 
@@ -1090,12 +1104,14 @@ public:
     virtual void OnDown(int c);                 // ?OnDown@AARPauseMenu@@UAEXH@Z
     virtual void OnTriangle(int c);             // ?OnTriangle@AARPauseMenu@@UAEXH@Z
     virtual void OnStart(int c);                // ?OnStart@AARPauseMenu@@UAEXH@Z
+    virtual void OnCross(int c);                // ?OnCross@AARPauseMenu@@UAEXH@Z
     virtual void Draw();                        // ?Draw@AARPauseMenu@@UAEXXZ
     virtual void ButtonHeldAction();            // ?ButtonHeldAction@AARPauseMenu@@UAEXXZ
     virtual void OnDeactivate(FEMenu* pMenu);   // ?OnDeactivate@AARPauseMenu@@UAEXPAVFEMenu@@@Z
     void UnPause(int client);                   // ?UnPause@AARPauseMenu@@QAEXH@Z
     static bool ResponseYesQuit(int client);    // ?ResponseYesQuit@AARPauseMenu@@SA_NH@Z
     static void Quit(int client);               // ?Quit@AARPauseMenu@@SAXH@Z
+    void AttemptQuit();                         // ?AttemptQuit@AARPauseMenu@@QAEXXZ
     static void ResponseGoBack(int client);     // ?ResponseGoBack@AARPauseMenu@@SAXH@Z
 private:
     void SetTimerText();                        // ?SetTimerText@AARPauseMenu@@AAEXXZ
@@ -1163,11 +1179,16 @@ public:
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@PauseMenu@@UAEXPAVFEMenu@@@Z
     virtual void ButtonHeldAction();       // ?ButtonHeldAction@PauseMenu@@UAEXXZ
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@PauseMenu@@UAEXPAVPanelFile@@@Z
+    virtual void OnCross(int c);           // ?OnCross@PauseMenu@@UAEXH@Z
+    virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@PauseMenu@@UAEXXZ
     void UnPause(int client);             // ?UnPause@PauseMenu@@QAEXH@Z (mp_shell.o)
 protected:
     void Quit();           // ?Quit@PauseMenu@@IAEXXZ (mp_shell.o 0x791BB0)
     void Suicide();        // ?Suicide@PauseMenu@@IAEXXZ (mp_shell.o 0x791D00)
     void TeamChange();     // ?TeamChange@PauseMenu@@IAEXXZ
+    void AttemptQuit();    // ?AttemptQuit@PauseMenu@@IAEXXZ
+    void AttemptTeamChange();  // ?AttemptTeamChange@PauseMenu@@IAEXXZ
+    void AttemptSuicide();  // ?AttemptSuicide@PauseMenu@@IAEXXZ
     void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@PauseMenu@@IAEXPAVPanelFile@@@Z
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@PauseMenu@@IAEXPAVPanelFile@@@Z
     static bool ResponseYesTeamChange(int client);  // ?ResponseYesTeamChange@PauseMenu@@KA_NH@Z
