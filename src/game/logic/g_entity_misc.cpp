@@ -5948,15 +5948,15 @@ int SoundDevice::GetFreeSlot()
 // ea: 0x006399D0
 void SoundDevice::Sound::Queue(
     nslWaveID wave, float vol, float pitch, float minrange, float maxrange,
-    const math::Position3* pos, const math::Dir3* vel, bool autoRelease,
+    const math::Position3& pos, const math::Dir3& vel, bool autoRelease,
     DbLinkedHandle<EntityHandleDb, Entity> entHandle, bool mImportant)
 {
-    if ((__fpclass(vel->v.m128_f32[0]) & 0x297) != 0
-        || (__fpclass(vel->v.m128_f32[1]) & 0x297) != 0
-        || (__fpclass(vel->v.m128_f32[2]) & 0x297) != 0
-        || (__fpclass(pos->v.m128_f32[0]) & 0x297) != 0
-        || (__fpclass(pos->v.m128_f32[1]) & 0x297) != 0
-        || (__fpclass(pos->v.m128_f32[2]) & 0x297) != 0
+    if ((__fpclass(vel.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[2]) & 0x297) != 0
         || (__fpclass(vol) & 0x297) != 0
         || (__fpclass(pitch) & 0x297) != 0
         || (__fpclass(minrange) & 0x297) != 0
@@ -6013,8 +6013,8 @@ void SoundDevice::Sound::Queue(
                 ? nslGetWaveParam(wave, 25, 50.0f)
                 : minrange;
             this->SetRange(mImportanta, autoReleasec);
-            this->SetPosition(*pos);
-            this->SetVelocity(*vel);
+            this->SetPosition(pos);
+            this->SetVelocity(vel);
             nslSetSourceEffectOn((nslSourceID)this->mSource);
             this->mEntHandle.mVal = entHandle.mHandle.mVal;
         }
@@ -6024,15 +6024,15 @@ void SoundDevice::Sound::Queue(
 // ea: 0x00639CE0
 void SoundDevice::Sound::Play(
     nslWaveID wave, float vol, float pitch, float minrange, float maxrange,
-    const math::Position3* pos, const math::Dir3* vel, bool autoRelease,
+    const math::Position3& pos, const math::Dir3& vel, bool autoRelease,
     DbLinkedHandle<EntityHandleDb, Entity> entHandle, bool mImportant)
 {
-    if ((__fpclass(vel->v.m128_f32[0]) & 0x297) != 0
-        || (__fpclass(vel->v.m128_f32[1]) & 0x297) != 0
-        || (__fpclass(vel->v.m128_f32[2]) & 0x297) != 0
-        || (__fpclass(pos->v.m128_f32[0]) & 0x297) != 0
-        || (__fpclass(pos->v.m128_f32[1]) & 0x297) != 0
-        || (__fpclass(pos->v.m128_f32[2]) & 0x297) != 0
+    if ((__fpclass(vel.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[2]) & 0x297) != 0
         || (__fpclass(vol) & 0x297) != 0
         || (__fpclass(pitch) & 0x297) != 0
         || (__fpclass(minrange) & 0x297) != 0
@@ -6101,8 +6101,8 @@ void SoundDevice::Sound::Play(
         ? nslGetWaveParam(wave, 25, 50.0f)
         : minrange;
     this->SetRange(mImportanta, autoReleasec);
-    this->SetPosition(*pos);
-    this->SetVelocity(*vel);
+            this->SetPosition(pos);
+            this->SetVelocity(vel);
     nslSetSourceEffectOn((nslSourceID)this->mSource);
     nslPlaySource((nslSourceID)this->mSource);
     this->mEntHandle.mVal = entHandle.mHandle.mVal;
@@ -6145,7 +6145,7 @@ SoundDevice::QueueSound(nslWaveID id,
         if (FreeSlot >= 0 && id != NSL_WAVE_ID_INVALID)
         {
             Sound* v14 = &this->mSounds[FreeSlot];
-            v14->Queue(id, vol, pitch, min, max, &pos, &vel, autoRelease,
+            v14->Queue(id, vol, pitch, min, max, pos, vel, autoRelease,
                        entHandle, mImportant);
             result.mHandle.mVal = v14->mHandle.mVal;
             return result;
@@ -6191,7 +6191,7 @@ SoundDevice::PlaySound(nslWaveID id,
         if (id != NSL_WAVE_ID_INVALID && cls.state != CA_LOADING)
         {
             Sound* v15 = &this->mSounds[FreeSlot];
-            v15->Play(id, vol, pitch, min, max, &pos, &vel, autoRelease,
+            v15->Play(id, vol, pitch, min, max, pos, vel, autoRelease,
                       entHandle, mImportant);
             result.mHandle.mVal = v15->mHandle.mVal;
             return result;

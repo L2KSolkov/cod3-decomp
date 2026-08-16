@@ -781,13 +781,13 @@ public:
         void SetVelocity(const math::Dir3& vel);      // ?SetVelocity@Sound@SoundDevice@@QAEXABVDir3@math@@@Z (game.o 0x62C630)
         void SetPoPtr(const math::Mat43* poPtr);      // ?SetPoPtr@Sound@SoundDevice@@QAEXPBVMat43@math@@@Z (game.o 0x63A040)
         void Queue(nslWaveID wave, float vol, float pitch, float minrange,
-                   float maxrange, const math::Position3* pos,
-                   const math::Dir3* vel, bool autoRelease,
+                   float maxrange, const math::Position3& pos,
+                   const math::Dir3& vel, bool autoRelease,
                    DbLinkedHandle<EntityHandleDb, Entity> entHandle,
                    bool mImportant);                  // ?Queue@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z (game.o 0x6399D0)
         void Play(nslWaveID wave, float vol, float pitch, float minrange,
-                  float maxrange, const math::Position3* pos,
-                  const math::Dir3* vel, bool autoRelease,
+                  float maxrange, const math::Position3& pos,
+                  const math::Dir3& vel, bool autoRelease,
                   DbLinkedHandle<EntityHandleDb, Entity> entHandle,
                   bool mImportant);                    // ?Play@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z (game.o 0x639CE0)
         void Update();                      // ?Update@Sound@SoundDevice@@QAEXXZ (game.o 0x62C7A0)
