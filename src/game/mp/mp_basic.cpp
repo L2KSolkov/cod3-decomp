@@ -25817,6 +25817,231 @@ void MPPeer::PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
         delete message.m_ptr;
 }
 
+// ea: 0x0075E600
+void MPPlayerManager::HandlePlayerSetup(
+    const bdReceivedMessage& receivedMsg)
+{
+    MPPlayerManager* v58 = this;
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    MPUtility::PlayerData data;
+    data.id = 16;
+    LivePlayer* playerToAdd = (LivePlayer*)&data.livePlayer;
+    playerToAdd->Reset();
+    data.vehicleHealth = 0;
+    data.vehicleEventSequence = 0;
+    data.playing = false;
+    data.vehicleId = 10;
+    data.playerClass = -1;
+    data.teamAxis = false;
+    data.name[0] = 0;
+    memset(data.origin, 0, sizeof(data.origin));
+    memset(data.angles, 0, sizeof(data.angles));
+    data.wasInvited = false;
+    bdReference<bdBitBuffer> readBuf;
+    readBuf.m_ptr = buffer.m_ptr;
+    if (buffer.m_ptr != nullptr)
+        ++buffer.m_ptr->m_refCount;
+    if (!MPUtility::ReadPlayerData(readBuf, data))
+    {
+        if (readBuf.m_ptr != nullptr
+            && readBuf.m_ptr->m_refCount-- == 1)
+            delete readBuf.m_ptr;
+        if (msg.m_ptr != nullptr
+            && msg.m_ptr->m_refCount-- == 1)
+            delete msg.m_ptr;
+        return;
+    }
+    if (readBuf.m_ptr != nullptr
+        && readBuf.m_ptr->m_refCount-- == 1)
+        delete readBuf.m_ptr;
+    bdReference<bdConnection> connection =
+        receivedMsg.getConnection();
+    if (connection.m_ptr->getStatus()
+        == bdConnection::BD_DISCONNECTED)
+        printf("HandlePlayerSetup:  Joining player who has "
+               "disconnected.\n");
+    if (connection.m_ptr->getStatus()
+        == bdConnection::BD_DISCONNECTING)
+        printf("HandlePlayerSetup:  Joining player who is "
+               "disconnecting.\n");
+    if (connection.m_ptr->getStatus()
+        == bdConnection::BD_NOT_CONNECTED)
+        printf("HandlePlayerSetup:  Joining player who is not "
+               "connected.\n");
+    MPPlayer* v4 =
+        (MPPlayer*)((char*)this + 0x1010 + 0x310 * data.id);
+    bdReference<bdCommonAddr> addr = connection.m_ptr->getAddress();
+    bool isLoopback = addr.m_ptr != nullptr
+                          ? addr.m_ptr->isLoopback()
+                          : false;
+    if (addr.m_ptr != nullptr && addr.m_ptr->m_refCount-- == 1)
+        delete addr.m_ptr;
+    bool freshSlot =
+        v4->mId >= 0x10u || v4->mConnection.m_ptr == nullptr;
+    if (freshSlot)
+    {
+        bdReference<bdConnection> connRef;
+        connRef.m_ptr = connection.m_ptr;
+        if (connection.m_ptr != nullptr)
+            ++connection.m_ptr->m_refCount;
+        v4->SetConnection(connRef);
+        if (connRef.m_ptr != nullptr
+            && connRef.m_ptr->m_refCount-- == 1)
+            delete connRef.m_ptr;
+        v4->mId = data.id;
+        ++*(unsigned char*)((char*)this + 0x4110);
+        goto label18;
+    }
+    if (isLoopback || v4->mClientIndex < 0)
+        goto label18;
+    v4->mPlaying = data.playing;
+    v4->SetPosition(data.origin);
+    v4->SetAngles(data.angles);
+    v4->SetName(data.name);
+    v4->mMasterClient = true;
+    bool masterDup = false;
+    for (int i = 0; i < 16; ++i)
+    {
+        MPPlayer* Player = GetPlayer((unsigned char)i);
+        if (Player == nullptr || Player->mId >= 0x10u
+            || Player->mConnection.m_ptr == nullptr || Player == v4)
+            continue;
+        if (Player->mMasterClient)
+        {
+            bdReference<bdConnection> pc = Player->GetConnection();
+            bdReference<bdConnection> nc = v4->GetConnection();
+            bool same = pc.m_ptr == nc.m_ptr;
+            if (pc.m_ptr != nullptr && pc.m_ptr->m_refCount-- == 1)
+                delete pc.m_ptr;
+            if (nc.m_ptr != nullptr && nc.m_ptr->m_refCount-- == 1)
+                delete nc.m_ptr;
+            if (same)
+            {
+                masterDup = true;
+                break;
+            }
+        }
+    }
+    if (masterDup)
+        v4->mMasterClient = false;
+    if (connection.m_ptr != nullptr
+        && connection.m_ptr->m_refCount-- == 1)
+        delete connection.m_ptr;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+    return;
+label18:
+    v4->mPlaying = data.playing;
+    v4->mNetPosition.v.m128_f32[0] = data.origin[0];
+    v4->mNetPosition.v.m128_f32[1] = data.origin[1];
+    v4->mNetPosition.v.m128_f32[2] = data.origin[2];
+    v4->mInterpolatedPosition.v.m128_f32[0] =
+        v4->mNetPosition.v.m128_f32[0];
+    v4->mInterpolatedPosition.v.m128_f32[1] =
+        v4->mNetPosition.v.m128_f32[1];
+    v4->mInterpolatedPosition.v.m128_f32[2] =
+        v4->mNetPosition.v.m128_f32[2];
+    v4->mInterpolatedPosition.v.m128_f32[3] =
+        v4->mNetPosition.v.m128_f32[3];
+    v4->SetAngles(data.angles);
+    v4->mMasterClient = true;
+    bool masterDup2 = false;
+    for (int i = 0; i < 16; ++i)
+    {
+        MPPlayer* Player = GetPlayer((unsigned char)i);
+        if (Player == nullptr || Player->mId >= 0x10u
+            || Player->mConnection.m_ptr == nullptr || Player == v4)
+            continue;
+        if (Player->mMasterClient)
+        {
+            bdReference<bdConnection> pc = Player->GetConnection();
+            bdReference<bdConnection> nc = v4->GetConnection();
+            bool same = pc.m_ptr == nc.m_ptr;
+            if (pc.m_ptr != nullptr && pc.m_ptr->m_refCount-- == 1)
+                delete pc.m_ptr;
+            if (nc.m_ptr != nullptr && nc.m_ptr->m_refCount-- == 1)
+                delete nc.m_ptr;
+            if (same)
+            {
+                masterDup2 = true;
+                break;
+            }
+        }
+    }
+    if (masterDup2)
+        v4->mMasterClient = false;
+    strncpy(v4->mName, data.name, 0x20u);
+    v4->mName[31] = 0;
+    v4->mTeam = (short)(data.teamAxis ? 1 : 2);
+    if (isLoopback)
+        *(unsigned char*)((char*)this + 0x4111 + data.localIdx) =
+            v4->mId;
+    if (*(bool*)((char*)this + 0x4112))  // mLocalPlayerInGame
+    {
+        bool v27 = dword_F6A290[802 * data.localIdx] == 1;
+        ClientConnect(v4, data.origin, data.angles);
+        if (v4->mClientIndex < 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 2419;
+            AeAssert::gCurrentExpr =
+                "newPlayer->GetClientIndex() >= 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Invalid client index after player join"))
+                __debugbreak();
+        }
+        if (gpBrocAPI->mBrocExports.mCallbackPlayerJoin != nullptr)
+        {
+            Entity* v29 = v4->mClientIndex >= 0
+                              ? EntityManager::sInst->GetPlayer(
+                                    v4->mClientIndex)
+                              : nullptr;
+            unsigned int mVal = v29->mHandle.mHandle.mVal;
+            gpBrocAPI->mBrocExports.mCallbackPlayerJoin(
+                mVal, data.playing ? 3 : 0, data.playerClass);
+        }
+        if (isLoopback)
+        {
+            LocalClient::SetNumLocalClients(
+                LocalClient::NumLocalClients() + 1);
+            if (gpBrocAPI->mBrocExports.mCallbackPlayerEnter
+                != nullptr)
+            {
+                Entity* v31 = v4->mClientIndex >= 0
+                                  ? EntityManager::sInst->GetPlayer(
+                                        v4->mClientIndex)
+                                  : nullptr;
+                unsigned int v32 = v31->mHandle.mHandle.mVal;
+                gpBrocAPI->mBrocExports.mCallbackPlayerEnter(v32,
+                                                             v27);
+            }
+            SendPlayerEnter(v4);
+        }
+    }
+    v4->usedPrivateSlot = data.wasInvited;
+    if (LiveWrapper::theWrapper->sessionState == kInSession
+        && !isLoopback)
+    {
+        memcpy(v4->xuid, &playerToAdd->xuid, sizeof(v4->xuid));
+        LiveWrapper::theWrapper->AddRemotePlayer(playerToAdd);
+    }
+    if (*(bool*)((char*)this + 0x4112) && !isLoopback)
+        SendLocalPlayerInfo(v4);
+    if (connection.m_ptr != nullptr
+        && connection.m_ptr->m_refCount-- == 1)
+        delete connection.m_ptr;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
+}
+
 // ea: 0x007468D0
 bool MPPlayer::deserialize(bdReference<bdBitBuffer> buffer)
 {
