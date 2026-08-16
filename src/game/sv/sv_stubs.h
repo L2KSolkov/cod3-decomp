@@ -444,7 +444,9 @@ public:
     uint8_t _pad[0x35 - 0x4];
     bool    mRankedGame;            // +0x35
     bool    mInitialized;           // +0x36
-    uint8_t _pad2[0x40 - 0x37];
+    uint8_t _pad37[0x38 - 0x37];
+    kuju::knet::sTime mUpdateTime;  // +0x38
+    uint8_t _pad2[0x40 - 0x3C];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad3[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
@@ -1695,11 +1697,14 @@ public:
     bool    mInVehicle;        // +0x44
     uint8_t _pad45[0x50 - 0x45];
     unsigned int mAnimFlags;   // +0x50
-    uint8_t _pad54[0x88 - 0x54];
+    uint8_t _pad54[0x68 - 0x54];
+    char    mName[32];         // +0x68
     uint8_t xuid[12];          // +0x88 (XUID, 12 bytes)
     uint8_t _pad94[0xDC - 0x94];
     int     mLastVoiceReceivedTime;  // +0xDC
-    uint8_t _padE0[0x254 - 0xE0];
+    uint8_t _padE0[0x220 - 0xE0];
+    kuju::knet::sTime mLastFootstepTime;  // +0x220
+    uint8_t _pad224[0x254 - 0x224];
     bool    mPlayerInfoSet;   // +0x254
     uint8_t _pad255[0x25C - 0x255];
     short   mTeam;            // +0x25C
@@ -1736,6 +1741,7 @@ public:
     void SetPosition(const float* position);  // ?SetPosition@MPPlayer@@QAEXQBM@Z (mp.o 0x72DF50)
     void SetConnection(bdReference<bdConnection> connection);  // ?SetConnection@MPPlayer@@QAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x736110)
     void AnimEventSpecial(int animEvent);  // ?AnimEventSpecial@MPPlayer@@QAEXH@Z (mp.o 0x736380)
+    MPPlayer();                       // ??0MPPlayer@@QAE@XZ (mp.o 0x761CE0)
     static MP_ANIM_INDEX* getAnimIndex(int sheet, int row, int col,
                                        bool useDefault);  // ?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z (mp.o 0x72CBA0)
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
@@ -1752,6 +1758,8 @@ protected:
     int FootstepEvent(int surfaceFlags);       // ?FootstepEvent@MPPlayer@@IAEHH@Z (mp.o 0x72DDE0)
     int GroundSurfaceType(int surfaceFlags);   // ?GroundSurfaceType@MPPlayer@@IAEHH@Z (mp.o 0x72DD70)
     int  ChooseFootYawSide(float maxYawForceThreshold);  // ?ChooseFootYawSide@MPPlayer@@IAEHM@Z (mp.o 0x72D9A0)
+    int  GetPlayerAnimationPackFlags(PlayerState* ps, int weapon);  // ?GetPlayerAnimationPackFlags@MPPlayer@@IAEHPAVPlayerState@@H@Z (mp.o 0x72CEB0)
+    void HandleFootstepSounds();     // ?HandleFootstepSounds@MPPlayer@@IAEXXZ (mp.o 0x736470)
     void PlayAnimFlagAnim(DObj* dobj, unsigned int packBit, int sheet,
                           int row, int col, bool doStopAnim, float alpha,
                           float speed, bool force, bool force_val);  // ?PlayAnimFlagAnim@MPPlayer@@IAEXPAVDObj@@IHHH_NMM11@Z (mp.o 0x72D100)
@@ -1763,6 +1771,13 @@ inline Entity* MPPlayer::GetEntity()
 }
 
 struct MPVehicleEvent;  // full definition below
+
+// MPVehicleEventType - queued vehicle event kinds (mp.o)
+enum MPVehicleEventType : int {
+    VEHICLE_EVENT_ENTER = 0,
+    VEHICLE_EVENT_EXIT = 1,
+    VEHICLE_EVENT_SEAT_CHANGE = 2,
+};
 
 class MPPlayerManager {
 public:
@@ -1809,7 +1824,7 @@ public:
     ::MPEntityHandle RegisterDroppedItem(EDroppedItemTypes itemType, Entity* item,
                                          Entity* owner);  // ?RegisterDroppedItem@MPPlayerManager@@QAE?AVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@1@Z (mp.o 0x763830)
     void FlushBufferedMessages(bdReference<bdConnection> connection);  // ?FlushBufferedMessages@MPPlayerManager@@QAEXV?$bdReference@VbdConnection@@@@@Z (mp.o)
-    void SendPlayer(const MPPlayer* player, const bdReference<bdMessage>& message,
+    void SendPlayer(const MPPlayer* player, bdReference<bdMessage> message,
                     bool reliable);  // ?SendPlayer@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@_N@Z (mp.o)
     void DebugRender();                 // ?DebugRender@MPPlayerManager@@QAEXXZ (mp.o 0x75A890)
     void Reset();                       // ?Reset@MPPlayerManager@@QAEXXZ (mp.o 0x75D440)
@@ -1817,6 +1832,7 @@ public:
     Entity* GetPlayerEntity(unsigned char id);  // ?GetPlayerEntity@MPPlayerManager@@QAEPAVEntity@@E@Z (mp.o 0x72E8E0)
     unsigned int GetPlayerInfo(char* buf);  // ?GetPlayerInfo@MPPlayerManager@@QAEIPAD@Z (mp.o 0x7378D0)
     int  GetCurrentPlayerCount();       // ?GetCurrentPlayerCount@MPPlayerManager@@QAEHXZ (mp.o 0x73A980)
+    void Step(float inc);               // ?Step@MPPlayerManager@@QAEXM@Z (mp.o)
     MPVehicle* GetVehicleFromOccupant(const MPPlayer* player);  // ?GetVehicleFromOccupant@MPPlayerManager@@QAEPAVMPVehicle@@PBVMPPlayer@@@Z (mp.o 0x72EFE0)
     Entity* FindDroppedItem(EDroppedItemTypes itemType, short id,
                             int ownerID);  // ?FindDroppedItem@MPPlayerManager@@QAEPAVEntity@@W4EDroppedItemTypes@@FH@Z (mp.o 0x760690)
@@ -1830,6 +1846,7 @@ public:
     void RemovePlayerFromSession(MPPlayer* player);  // ?RemovePlayerFromSession@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7383F0)
     bool SendHost(const bdReference<bdMessage> message, bool reliable);  // ?SendHost@MPPlayerManager@@QAE_NV?$bdReference@VbdMessage@@@@_N@Z (mp.o 0x737B90)
     static int sNetworkFrameTime;  // ?sNetworkFrameTime@MPPlayerManager@@0HA @ 0xE36E2C
+    virtual ~MPPlayerManager();  // ??1MPPlayerManager@@UAE@XZ (mp.o 0x7624E0)
 private:
     void AddAcceptCallback(int MESSAGE_ID,
                            void (MPPlayerManager::*callback)(const bdReceivedMessage&));  // ?AddAcceptCallback@MPPlayerManager@@AAEXHP81@AEXABVbdReceivedMessage@@@Z@Z (mp.o 0x72EBB0)
@@ -1850,11 +1867,24 @@ private:
     void HandleAreaCaptured(const bdReceivedMessage& receivedMsg);  // ?HandleAreaCaptured@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739350)
     void HandleWeaponChange(const bdReceivedMessage& receivedMsg);  // ?HandleWeaponChange@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739260)
     void HandleServerParams(const bdReceivedMessage& receivedMsg);  // ?HandleServerParams@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x74C750)
+    void HandlePlayerStateHash(const bdReceivedMessage& receivedMsg);  // ?HandlePlayerStateHash@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x74EBD0)
+    void HandleVehicleStates(const bdReceivedMessage& receivedMsg);  // ?HandleVehicleStates@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x75FFA0)
+    void HandleSDBombExplosion(const bdReceivedMessage& receivedMsg);  // ?HandleSDBombExplosion@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739160)
+    void HandleInitialGameState(const bdReceivedMessage& receivedMsg);  // ?HandleInitialGameState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x74DEA0)
+    void HandleSDBombOperationEvent(const bdReceivedMessage& receivedMsg);  // ?HandleSDBombOperationEvent@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x739000)
+    void HandleVoiceCommUpdate(const bdReceivedMessage& receivedMsg);  // ?HandleVoiceCommUpdate@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x738C60)
+    void HandleCallForMedic(const bdReceivedMessage& receivedMsg);  // ?HandleCallForMedic@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x74C1D0)
+    void DeserializeVehicleStates(bdReference<bdBitBuffer> buffer);  // ?DeserializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPlayerManager@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x7625E0)
     virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> requestUserData,
                                          bdBitBuffer* replyUserData);  // ?onSessionConnectRequest@MPPlayerManager@@EAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z (mp.o 0x7383C0)
     void ClearStateVariables();  // ?ClearStateVariables@MPPlayerManager@@AAEXXZ (mp.o 0x72F060)
     int  PickPlayerTeam(MPPlayer* player);  // ?PickPlayerTeam@MPPlayerManager@@AAEHQAVMPPlayer@@@Z (mp.o 0x72F1A0)
+    void VehicleEventAddToQueue(MPVehicleEventType eventType,
+                                unsigned char vehicleId,
+                                unsigned int sequence,
+                                unsigned char playerId, int health,
+                                int seatIdx, int entryIdx);  // ?VehicleEventAddToQueue@MPPlayerManager@@AAEXW4MPVehicleEventType@@EIEHHH@Z (mp.o 0x72EC40)
     void ClientDisconnect(MPPlayer* player, bool noScript);  // ?ClientDisconnect@MPPlayerManager@@AAEXQAVMPPlayer@@_N@Z (mp.o 0x73A370)
     void DisconnectPlayer(MPPlayer* player);  // ?DisconnectPlayer@MPPlayerManager@@AAEXPAVMPPlayer@@@Z (mp.o)
     void HandleRequestPlayerState(const bdReceivedMessage& receivedMsg);  // ?HandleRequestPlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z (mp.o 0x73A9F0)
@@ -1896,6 +1926,9 @@ public:
     void DropSplitScreenPlayer(Entity* player);  // ?DropSplitScreenPlayer@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x740610)
     void SendServerParams();              // ?SendServerParams@MPPeer@@QAEXXZ (mp.o 0x75AF60)
     void WeaponChange(int weapon);        // ?WeaponChange@MPPeer@@QAEXH@Z (mp.o 0x742BB0)
+    void Step(float inc, bool fromThread);  // ?Step@MPPeer@@QAEXM_N@Z (mp.o 0x764520)
+    void SendPunishTeamKill(const Entity* punisher, const Entity* team_killer,
+                            bool punished);  // ?SendPunishTeamKill@MPPeer@@QAEXPBVEntity@@0_N@Z (mp.o 0x745650)
     bool CreateGame(bdReference<MPGameInfo>& gameInfo,
                     EGameConnectionType gameState);  // ?CreateGame@MPPeer@@QAE_NAAV?$bdReference@VMPGameInfo@@@@W4EGameConnectionType@@@Z (mp.o 0x7655E0)
     void SetPlayerPos(const Entity* p, float* const pos);  // ?SetPlayerPos@MPPeer@@QAEXPBVEntity@@QAM@Z (mp.o 0x7457A0)
@@ -1949,6 +1982,7 @@ public:
                         int nGameIndex,
                         EGameConnectionType gameState);  // ?ConnectToPeers@MPPeer@@QAE_NABV?$bdReference@VMPGameInfo@@@@HW4EGameConnectionType@@@Z (mp.o 0x764620)
     void SendBombExplosion(const Entity* player);  // ?SendBombExplosion@MPPeer@@QAEXPBVEntity@@@Z (mp.o 0x7453B0)
+    void SwapWeapon(int weapon, int netIndex, int clipCount, int ammoCount);  // ?SwapWeapon@MPPeer@@QAEXHHHH@Z (mp.o 0x75C2A0)
     void NextRound(bool allowChange);  // ?NextRound@MPPeer@@QAEX_N@Z (mp.o 0x742910)
     void SendInitialGameState(Entity* player);  // ?SendInitialGameState@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x742EB0)
     void SendVehicleStates(Entity* player);  // ?SendVehicleStates@MPPeer@@QAEXPAVEntity@@@Z (mp.o 0x75BE00)
@@ -2018,6 +2052,7 @@ private:
     virtual void onSessionConnectSuccess();  // ?onSessionConnectSuccess@MPPeer@@EAEXXZ (mp.o 0x761910)
     virtual void onSessionJoinRefused(bdReference<bdBitBuffer> userData);  // ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x735AB0)
     virtual void onSessionDisconnect(bdReference<bdConnection> connection);  // ?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z (mp.o 0x735DE0)
+    void updateVoiceSubsystem();  // ?updateVoiceSubsystem@MPPeer@@AAEXXZ (mp.o)
     void ConnectToPeersFinalize(const bdReference<MPGameInfo>& gameInfo);  // ?ConnectToPeersFinalize@MPPeer@@AAEXABV?$bdReference@VMPGameInfo@@@@@Z (mp.o 0x7616C0)
     bool CreateLocalGameInfo(bdReference<MPGameInfo>& gameInfo);  // ?CreateLocalGameInfo@MPPeer@@AAE_NAAV?$bdReference@VMPGameInfo@@@@@Z (mp.o)
 };

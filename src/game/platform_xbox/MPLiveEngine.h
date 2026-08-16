@@ -62,6 +62,7 @@ struct QueryInterface {
     HRESULT Process() { return ((HRESULT(__thiscall*)(QueryInterface*))vftable[0])(this); }
     void Cancel() { ((void(__thiscall*)(QueryInterface*))vftable[1])(this); }
     bool Done() { return ((bool(__thiscall*)(QueryInterface*))vftable[3])(this) != 0; }
+    bool Succeeded() { return ((bool(__thiscall*)(QueryInterface*))vftable[4])(this) != 0; }
     bool IsRunning() { return ((bool(__thiscall*)(QueryInterface*))vftable[5])(this) != 0; }
     bool IsProbing() { return ((bool(__thiscall*)(QueryInterface*))vftable[6])(this) != 0; }
     HRESULT Probe() { return ((HRESULT(__thiscall*)(QueryInterface*))vftable[7])(this); }
