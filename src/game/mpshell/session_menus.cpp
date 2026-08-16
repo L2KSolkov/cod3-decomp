@@ -150,10 +150,15 @@ extern int g_NumBaseMaps;    // ?g_NumBaseMaps@@3HA @ 0x1388D60
 extern int g_NumTotalMaps;   // ?g_NumTotalMaps@@3HA @ 0x1388D64
 extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
 extern const char* const szClassReference[];  // ?szClassReference@@3PAPBDA @ 0x12782C
+extern int unk_F6A280[802];  // viewport prev (cg.o)
+extern int unk_F6A284[802];  // viewport curr (cg.o)
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
 extern void j_nullsub_46(void* self);  // g.o nullsub
+namespace View {
+bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
+}
 struct cgGlobal_t {
     int   frametime;  // +0x00
     int   time;       // +0x04
@@ -168,6 +173,7 @@ struct cgGlobal_t {
     int   teamScores[5];      // +0x20
 };
 extern cgGlobal_t cgGlobal;   // 0xF5FE30 (cg.o)
+struct AARMenuSystem;
 namespace LocalClient {
 bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)
 }
@@ -2108,4 +2114,234 @@ AARScoreboardWinner::~AARScoreboardWinner()
 // ea: 0x007B02D0
 AARScoreboardLoser::~AARScoreboardLoser()
 {
+}
+
+// ============================================================================
+// Batch 7: AAR winner, pause responses, spectate, session list, settings
+// ============================================================================
+
+// ea: 0x00791110
+void AARScoreboardWinner::OnL1(int c)
+{
+    (void)c;
+    if (MPUIInterface::mNextServerParams.mEnableAARVote == 1)
+        system->MakeActive(4);
+    else
+        system->MakeActive(2);
+}
+
+// ea: 0x00791CC0
+bool PauseMenu::ResponseYesTeamChange(int client)
+{
+    ((PauseMenu*)g_femanager.GetIGMS(client)->menus[0])->TeamChange();
+    return true;
+}
+
+// ea: 0x00791CE0
+void PauseMenu::ResponseGoBack(int client)
+{
+    g_femanager.GetDMS(client)->CloseDialog();
+}
+
+// ea: 0x007925E0
+void HotJoinMenu::UpdateSplitScreen()
+{
+    panel->MoveSplitScreen(unk_F6A284[802 * mVersion],
+                           unk_F6A280[802 * mVersion]);
+}
+
+// ea: 0x007926F0
+void SpectateMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+}
+
+// ea: 0x007929A0
+void SpectateMenu::OnStart(int c)
+{
+    (void)c;
+    g_femanager.GetIGMS(mVersion)->MakeActiveAndReturn(0);
+}
+
+// ea: 0x007929C0
+void SpectateMenu::OnSelect(int c)
+{
+    (void)c;
+    g_femanager.GetIGMS(mVersion)->MakeActiveAndReturn(10);
+}
+
+// ea: 0x00793010
+char MI_GetMapIDbyIndex(char index)
+{
+    if (index != -1)
+        return byte_E386C9[114 * index];
+    return index;
+}
+
+// ea: 0x00793520
+void AARMenuSystem::CheckForNoMenus()
+{
+    int active = ((int(__thiscall*)(void*))(*(void***)this)[24])(this);
+    if (active <= -1)
+    {
+        is_active = false;
+        GamePause::SetAllPaused(false);
+    }
+}
+
+// ea: 0x0079AD30
+void GameSettingsEdit::OnLeft(int c)
+{
+    (void)c;
+    Left();
+    SetGameTypeDefaults();
+}
+
+// ea: 0x0079AE80
+bool GameSettingsEdit::ResponseYesApplyNow(int client)
+{
+    return ((GameSettingsEdit*)g_femanager.GetIGMS(client)->menus[2])
+        ->ResponseYesApplyNowHelper();
+}
+
+// ea: 0x0079B8F0
+void AARGameSettingsView::Update(float time_inc)
+{
+    GameSettingsView::Update(time_inc);
+    SetTimerText();
+}
+
+// ea: 0x007A6C70
+bool AARPauseMenu::ResponseYesQuit(int client)
+{
+    Quit(client);
+    return true;
+}
+
+// ea: 0x007A8EB0
+void GameSettingsView::SwapMenus()
+{
+    int highlighted = this->highlighted;
+    mCurrentServerParams = &MPUIInterface::mServerParams;
+    UpdateSplitScreenOptions(highlighted);
+}
+
+// ea: 0x007A9FA0
+bool InGameSwitchSides::ResponseYesSwitch(int client)
+{
+    ((InGameSwitchSides*)g_femanager.GetIGMS(client)->menus[11])
+        ->SwitchTeams();
+    return true;
+}
+
+// ea: 0x007AB4F0
+void AARMapVote::Update(float time_inc)
+{
+    AARBaseMenu::SetTimerText();
+    m_ListBox.Update(time_inc);
+}
+
+// ea: 0x007AB6F0
+void AARGameModeVote::Update(float time_inc)
+{
+    AARBaseMenu::SetTimerText();
+    m_ListBox.Update(time_inc);
+}
+
+// ea: 0x007ABBB0
+void SpectateMenu::OnActivate(int prev)
+{
+    (void)prev;
+    FEMenu::OnActivate();
+    UpdateState();
+}
+
+// ea: 0x007AD4C0
+void SessionListMenu::OnSquare(int c)
+{
+    (void)c;
+    j_nullsub_46(this);
+    InitMenu();
+}
+
+// ea: 0x007AD600
+void SessionLanListMenu::OnSquare(int c)
+{
+    (void)c;
+    j_nullsub_46(this);
+    InitMenu();
+}
+
+// ea: 0x007AD650
+void WeaponSelectMenu::PanelFileUnloaded(PanelFile* pf)
+{
+    FESplitScreenMenu::PanelFileUnloaded(pf);
+    Cleanup();
+}
+
+// ea: 0x007AE430
+void ModelMenu::Draw3D()
+{
+    if (!View::IsSplitScreen())
+    {
+        FESplitScreenMenu::Draw();
+        AddDObjToScene();
+    }
+}
+
+// ea: 0x0078CEE0
+void CreateLanSessionAdvancedMenu::OnUp(int c)
+{
+    (void)c;
+    if (highlighted != 0)
+    {
+        Up();
+    }
+    else
+    {
+        highlighted = 4;
+        SetHigh(4, true);
+    }
+}
+
+// ea: 0x0078D7C0
+void GameSettingsEdit::UpdateMapChangeStatus(bool isAllowingMapVote)
+{
+    void** v2 = *(void***)entries[1];
+    ((void(__thiscall*)(void*, int))v2[16])(entries[1],
+                                            isAllowingMapVote ? 1 : 0);
+}
+
+// ea: 0x0078E140
+void InitialLoadingMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    movie_manager::render();
+    FEMenu::Draw();
+}
+
+// ea: 0x0078EB60
+void SessionDetailsMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    movie_manager::render();
+    FEMenu::Draw();
+}
+
+// ea: 0x0078EF50
+void SessionLanListMenu::OnCircle(int c)
+{
+    (void)c;
+    mSortColumn++;
+    if (mSortColumn == 4)
+        mSortColumn = 0;
+}
+
+// ea: 0x0078EF80
+void SessionLanListMenu::TidyGamesList()
+{
+    m_ListBox.Clear();
+    mNumGames = 0;
 }
