@@ -152,6 +152,31 @@ extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
 extern const char* const szClassReference[];  // ?szClassReference@@3PAPBDA @ 0x12782C
 extern int unk_F6A280[802];  // viewport prev (cg.o)
 extern int unk_F6A284[802];  // viewport curr (cg.o)
+extern bool g_controllerConnected[];           // ?g_controllerConnected@@3PA_NA (game2.o)
+extern bool g_controllerConnectedErrorShown[]; // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
+extern const char* const szPlayLanMenuOptionTextReferences[];  // ?szPlayLanMenuOptionTextReferences@@3PAPBDA @ 0x12276B8
+
+struct Mapinfo_t {
+    char map_pack;              // +0x00
+    char map_id_number;         // +0x01
+    char map_name_string[32];   // +0x02
+    char map_title_string[32];  // +0x22
+    char short_name[16];        // +0x42
+    char map_location_string[32];  // +0x52
+};
+extern Mapinfo_t* g_TheMapInfo;  // ?g_TheMapInfo@@3PAUMapinfo_t@@A @ 0x1227BC8
+
+int scoreboard_player_sorter(const void* left, const void* right);
+
+enum ESpectatorState : int {
+    kSpectatorStateIntermission = 0x0,
+    kSpectatorStateSpawn = 0x1,
+    kSpectatorStateInjured = 0x2,
+    kSpectatorStateDying = 0x3,
+    kSpectatorStateDead = 0x4,
+    kSpectatorStateDeadCanSpawn = 0x5,
+    kSpectatorStateCount = 0x6,
+};
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
@@ -2344,4 +2369,295 @@ void SessionLanListMenu::TidyGamesList()
 {
     m_ListBox.Clear();
     mNumGames = 0;
+}
+
+// ============================================================================
+// Batch 8: overlay/session/scoreboard/settings handlers
+// ============================================================================
+
+// ea: 0x0078F0F0
+void OverlayMenuBase::UpdateSplitScreen()
+{
+    if (panel != nullptr)
+        panel->UpdateSplitScreen(unk_F6A284[802 * mVersion],
+                                 unk_F6A280[802 * mVersion]);
+}
+
+// ea: 0x0078F3C0
+void OverlayMenu::Select(int entry_num)
+{
+    (void)entry_num;
+}
+
+// ea: 0x0078F4E0
+InGameOverlay* InGameOverlay::Me(int version)
+{
+    InGameMenuSystem* result = g_femanager.GetIGMS(version);
+    if (result != nullptr)
+        return (InGameOverlay*)g_femanager.GetIGMS(version)->menus[13];
+    return (InGameOverlay*)result;
+}
+
+// ea: 0x00790040
+void MultilineFrontendOverlayMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    MPUIInterface::Step();
+}
+
+// ea: 0x007902D0
+void MultilineIngameOverlayMenu::OnStart(int c)
+{
+    (void)c;
+    if (mState == CONTROLLER_DISCONNECTED && g_controllerConnected[c])
+    {
+        g_controllerConnectedErrorShown[c] = false;
+        system->RemoveOverlay();
+    }
+}
+
+// ea: 0x00790CF0
+int scoreboard_player_sorter(const void* left, const void* right)
+{
+    const int* l = (const int*)left;
+    const int* r = (const int*)right;
+    if (l[1] >= r[1])
+        return (l[1] <= r[1]) - 1;
+    return 1;
+}
+
+// ea: 0x00791020
+void AARScoreboardBase::OnDeactivate(AARBaseMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+    m_ListBox.Clear();
+}
+
+// ea: 0x00791B30
+void PauseMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    tlPrintf("PauseMenu::OnDeactivate()\n");
+    ClearAllButtons();
+    m_iLastSelection = highlighted;
+}
+
+// ea: 0x00791D50
+void PauseMenu::ButtonHeldAction()
+{
+    if (button_held_down == 8)
+        OnDown(0);
+    else if (button_held_down == 4)
+        OnUp(0);
+}
+
+// ea: 0x00791DD0
+void AARPauseMenu::ButtonHeldAction()
+{
+    if (button_held_down == 8)
+        OnDown(0);
+    else if (button_held_down == 4)
+        OnUp(0);
+}
+
+// ea: 0x00791E00
+void AARPauseMenu::ResponseGoBack(int client)
+{
+    g_femanager.GetDMS(client)->CloseDialog();
+}
+
+// ea: 0x00791E30
+void AARPauseMenu::OnDeactivate(FEMenu* pMenu)
+{
+    (void)pMenu;
+    tlPrintf("AARPauseMenu::OnDeactivate()\n");
+    ClearAllButtons();
+    m_iLastSelection = highlighted;
+}
+
+// ea: 0x00792A90
+void SpectateMenu::OnSquare(int c)
+{
+    (void)c;
+    int mState = this->mState;
+    if (mState > kSpectatorStateIntermission
+        && mState <= kSpectatorStateDeadCanSpawn)
+    {
+        PlayNavigationSound();
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(mVersion);
+        IGMS->MakeActiveAndReturn(1);
+    }
+}
+
+// ea: 0x00792E10
+bool MI_IsMapPackAvailable(char map_pack)
+{
+    if (g_NumTotalMaps <= 0)
+        return false;
+    Mapinfo_t* i = g_TheMapInfo;
+    int v1 = 0;
+    while (i->map_pack != map_pack)
+    {
+        ++v1;
+        ++i;
+        if (v1 >= g_NumTotalMaps)
+            return false;
+    }
+    return true;
+}
+
+// ea: 0x0079B140
+void AARGameSettingsEdit::Update(float time_inc)
+{
+    GameSettingsEdit::Update(time_inc);
+    SetTimerText();
+}
+
+// ea: 0x0079C580
+void PlayLanMenu::SetPreviewImage()
+{
+    ClearPreviewImages();
+    m_pImages[mListBox.mTopLine + mListBox.mSelectedLine]->SetShown(true);
+}
+
+// ea: 0x0079C5B0
+void PlayLanMenu::SetOptionText()
+{
+    m_pText[1]->SetText(
+        szPlayLanMenuOptionTextReferences[mListBox.mTopLine]
+                                         [mListBox.mSelectedLine]);
+}
+
+// ea: 0x0079D0E0
+void SessionListMenu::OnUp(int c)
+{
+    if (!lockInput)
+    {
+        m_ListBox.OnUp(c);
+        UpdateGameInfo();
+    }
+}
+
+// ea: 0x0079D110
+void SessionListMenu::OnDown(int c)
+{
+    if (!lockInput)
+    {
+        m_ListBox.OnDown(c);
+        UpdateGameInfo();
+    }
+}
+
+// ea: 0x0079DE80
+void SessionLanListMenu::OnUp(int c)
+{
+    if (!lockInput)
+    {
+        m_ListBox.OnUp(c);
+        UpdateGameInfo();
+    }
+}
+
+// ea: 0x0079DEB0
+void SessionLanListMenu::OnDown(int c)
+{
+    if (!lockInput)
+    {
+        m_ListBox.OnDown(c);
+        UpdateGameInfo();
+    }
+}
+
+// ea: 0x007A2E00
+void InGameScoreBoard::OnUp(int c)
+{
+    short v3 = m_ListBox.OnUp(c);
+    m_ListBox.mHighlights.mElements[v3] = true;
+}
+
+// ea: 0x007A2E30
+void InGameScoreBoard::OnDown(int c)
+{
+    short v3 = m_ListBox.OnDown(c);
+    m_ListBox.mHighlights.mElements[v3] = true;
+}
+
+// ea: 0x007A8CC0
+AARGameSettingsEdit::~AARGameSettingsEdit()
+{
+    m_FirstTimeAccessedByte = 0;
+}
+
+// ea: 0x007A9E60
+void InGameScoreBoard::OnActivate()
+{
+    FEMenu::OnActivate();
+    m_ListBox.Clear();
+    SetPanelContents();
+    ClearButton(controller::SELECT);
+    m_bActivated = true;
+}
+
+// ea: 0x007ABEF0
+void AAROverlay::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    PanelFile* panel = this->panel;
+    if (panel != nullptr)
+    {
+        panel->~PanelFile();
+        mem_heap_free(panel);
+    }
+    this->panel = nullptr;
+    Cleanup();
+}
+
+// ea: 0x007AC160
+void AARScoreboardLoser::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    (void)pPanelFile;
+    PanelFile* panel = this->panel;
+    if (panel != nullptr)
+    {
+        panel->~PanelFile();
+        mem_heap_free(panel);
+    }
+    this->panel = nullptr;
+    Cleanup();
+}
+
+// ea: 0x007AC200
+void HotJoinMenu::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    PanelFile* panel = this->panel;
+    if (panel != nullptr)
+    {
+        panel->~PanelFile();
+        mem_heap_free(panel);
+    }
+    this->panel = nullptr;
+}
+
+// ea: 0x007AF2D0
+void InGameSwitchSides::OnCross(int c)
+{
+    (void)c;
+    EntityManager::sInst->GetPlayer(mVersion);
+    PickTeam();
+    UpdateModel();
+}
+
+// ea: 0x007B0280
+AARScoreboardWinner::AARScoreboardWinner(FEMenuSystem* pauseMenuSystem)
+    : AARScoreboardBase(pauseMenuSystem)
+{
+}
+
+// ea: 0x007B02B0
+AARScoreboardLoser::AARScoreboardLoser(FEMenuSystem* pauseMenuSystem)
+    : AARScoreboardBase(pauseMenuSystem)
+{
 }
