@@ -206,6 +206,24 @@ bool bdBitBuffer::readUChar8(unsigned char& value)
     return true;
 }
 
+bool bdBitBuffer::readChar8(char& value)
+{
+    (void)value;
+    return true;
+}
+
+bool bdBitBuffer::readFloat32(float& value)
+{
+    (void)value;
+    return true;
+}
+
+bool bdBitBuffer::readString(bdString& s)
+{
+    (void)s;
+    return true;
+}
+
 bool bdBitBuffer::testBool()
 {
     return true;

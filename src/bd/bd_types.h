@@ -363,6 +363,7 @@ static_assert(offsetof(bdByteBuffer, m_data) == 0x0C, "bdByteBuffer::m_data offs
 // bdBitBuffer — bit-level serialization buffer (36 bytes)
 // Size: 0x24 (36 bytes) — verified against IDA
 // ============================================================================
+struct bdString;  // full definition in bd/bdNet.h
 class bdBitBuffer : public bdReferencable {
 public:
     bdFastArray<uint8_t> m_data;           // +0x08
@@ -413,6 +414,9 @@ public:
     bool readInt16(short& value);                          // ?readInt16@bdBitBuffer@@QAE_NAAF@Z
     bool readUInt32(unsigned int& value);                  // ?readUInt32@bdBitBuffer@@QAE_NAAI@Z
     bool readUChar8(unsigned char& value);                 // ?readUChar8@bdBitBuffer@@QAE_NAAE@Z
+    bool readChar8(char& value);                           // ?readChar8@bdBitBuffer@@QAE_NAAD@Z
+    bool readFloat32(float& value);                        // ?readFloat32@bdBitBuffer@@QAE_NAAM@Z
+    bool readString(bdString& s);                          // ?readString@bdBitBuffer@@QAE_NAAVbdString@@@Z
     bool testBool();                                       // ?testBool@bdBitBuffer@@QAE_NXZ
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);

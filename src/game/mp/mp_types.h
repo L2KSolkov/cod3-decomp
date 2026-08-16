@@ -70,6 +70,9 @@ inline void MPPlayerSet::addPlayers(const MPPlayerSet& set)
 // ============================================================================
 enum eVoteType : int {
     kNoVote = 0,  // kNoVote == 0 per IsVoteOngoing disasm (0x735990)
+    kKickPlayer = 1,
+    kMapVote = 2,
+    kGameModeVote = 3,
 };
 
 class MPVote {
@@ -101,6 +104,21 @@ public:
 // MPUtility - free serialization helpers (bdBitBuffer writers, mp.o)
 // ============================================================================
 namespace MPUtility {
+struct PlayerData {
+    int            id;                    // +0x00
+    float          origin[3];             // +0x04
+    float          angles[3];             // +0x10
+    bool           playing;               // +0x1C
+    unsigned char  vehicleId;             // +0x1D
+    int            vehicleHealth;         // +0x20
+    int            playerClass;           // +0x24
+    const char*    name;                  // +0x28
+    unsigned int   vehicleEventSequence;  // +0x2C
+    unsigned char  localIdx;              // +0x30
+    bool           teamAxis;              // +0x31
+    unsigned int   livePlayer[8];         // +0x34
+    bool           wasInvited;            // +0x54
+};
 void WritePlayerId(bdReference<bdBitBuffer> buffer, unsigned char id);  // ?WritePlayerId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z (mp.o 0x73BDB0)
 void WriteVehicleId(bdReference<bdBitBuffer> buffer, unsigned char id); // ?WriteVehicleId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z (mp.o 0x73BE90)
 void WriteSeatIndex(bdReference<bdBitBuffer> buffer, int seatIdx);      // ?WriteSeatIndex@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@H@Z (mp.o 0x73BF70)
@@ -141,6 +159,10 @@ bool ReadPlayerId(bdReference<bdBitBuffer> buffer, unsigned char& id);   // ?Rea
 bool ReadVehicleId(bdReference<bdBitBuffer> buffer, unsigned char& id);  // ?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73C0B0)
 bool ReadSeatIndex(bdReference<bdBitBuffer> buffer, int& seatIdx);       // ?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BEF0)
 bool ReadCompressedVector(bdReference<bdBitBuffer> buffer, float* vec);  // ?ReadCompressedVector@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z (mp.o 0x73B770)
+bool ReadUserCmd(bdReference<bdBitBuffer> buffer,
+                 usercmd_s& cmd);  // ?ReadUserCmd@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAUusercmd_s@@@Z (mp.o 0x73C8F0)
+void WritePlayerData(bdReference<bdBitBuffer> buffer,
+                     const PlayerData& playerData);  // ?WritePlayerData@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABUPlayerData@1@@Z (mp.o 0x73C320)
 bool ReadEntryPoint(bdReference<bdBitBuffer> buffer, int& entryIdx);     // ?ReadEntryPoint@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BFD0)
 bool ReadPlayerClass(bdReference<bdBitBuffer> buffer, int& playerclass); // ?ReadPlayerClass@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73C190)
 }
@@ -207,6 +229,11 @@ public:
     uint8_t _pad9C[0xA0 - 0x9C];
 
     cBezierTrajectoryInterpolator();  // ??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ (mp.o 0x73EF10)
+    void reset(const math::Position3& initialPoint,
+               const math::Dir3& initialSpeed, float initialDate,
+               const math::Position3& finalPoint,
+               const math::Dir3& finalSpeed, float finalDate,
+               bool forceLinear);  // ?reset@cBezierTrajectoryInterpolator@kuju@@QAEXABVPosition3@math@@ABVDir3@4@M01M_N@Z (mp.o 0x73EF30)
     math::Position3 position(float date) const;  // ?position@cBezierTrajectoryInterpolator@kuju@@QBE?AVPosition3@math@@M@Z (mp.o 0x73F180)
     math::Dir3 speed(float date) const;          // ?speed@cBezierTrajectoryInterpolator@kuju@@QBE?AVDir3@math@@M@Z (mp.o 0x734560)
 
@@ -292,6 +319,8 @@ public:
                         const math::Dir3& velocity);  // ?SetPhysicsInfo@MPVehicle@@QAEXABVPosition3@math@@ABVDir3@3@1@Z (mp.o 0x755C20)
     void OnModified();  // ?OnModified@MPVehicle@@QAEXXZ (mp.o 0x72E510)
     void RelinkOccupant(MPPlayer* occupant);  // ?RelinkOccupant@MPVehicle@@QAEXPAVMPPlayer@@@Z (mp.o 0x737290)
+    bool deserialize(bdReference<bdBitBuffer> buffer, bool isInit,
+                     int peerID);  // ?deserialize@MPVehicle@@QAE_NV?$bdReference@VbdBitBuffer@@@@_NH@Z (mp.o)
 };
 static_assert(sizeof(MPVehicle) == 0x210, "MPVehicle size mismatch");
 
@@ -404,6 +433,8 @@ public:
                   unsigned char& publicFilled,
                   unsigned char& privateFilled) const;  // ?getSlots@MPGameInfo@@QBEXAAE000@Z (mp.o 0x730510)
     virtual void serialize(bdBitBuffer& bitBuffer) const;  // ?serialize@MPGameInfo@@UBEXAAVbdBitBuffer@@@Z (mp.o 0x73DC30)
+    virtual bool deserialize(bdReference<bdCommonAddr> localAddr,
+                             bdBitBuffer& bitBuffer);  // ?deserialize@MPGameInfo@@UAE_NV?$bdReference@VbdCommonAddr@@@@AAVbdBitBuffer@@@Z (mp.o 0x73DDE0)
     void updateSlots(char publicOpenDelta, char privateOpenDelta,
                      char publicFilledDelta,
                      char privateFilledDelta);  // ?updateSlots@MPGameInfo@@QAEXDDDD@Z (mp.o 0x730540)
@@ -437,7 +468,20 @@ enum eGameType : int {
 struct sServerCreateParams;  // defined below MPUIInterface
 struct sServerQueryParams;   // defined below MPUIInterface
 // sGameListing - LAN/Live game listing entry (16 bytes, IDA verified)
-struct CDefaultResult;  // full definition below
+class CDefaultResult;  // full definition below
+
+// CDefaultQuery - Live game-list query (shell.o; unported)
+class CDefaultQuery {
+public:
+    CDefaultQuery();  // ??0CDefaultQuery@@QAE@XZ (shell.o)
+    int Query(unsigned __int64 queryGameType, unsigned __int64 queryGameMap,
+              unsigned __int64 queryGameVersion,
+              unsigned __int64 queryFriendlyFire,
+              unsigned __int64 queryTeamBalancing,
+              unsigned __int64 querySubType,
+              unsigned __int64 queryMaxPlayers,
+              unsigned __int64 queryMinPlayers);  // ?Query@CDefaultQuery@@QAEJ_K0000000@Z (shell.o)
+};
 struct sGameListing {
     int mSize;                          // +0x00
     bdReference<MPGameInfo> mGameInfo;  // +0x04
@@ -449,7 +493,8 @@ struct sGameListing {
 
 // CDefaultResult - Live query result record (162 bytes, IDA)
 #pragma pack(push, 1)
-struct CDefaultResult {
+class CDefaultResult {
+public:
     char host_name[0x22];        // +0x00
     char game_type[0x08];        // +0x22
     char game_map[0x08];         // +0x2A
@@ -474,6 +519,14 @@ static_assert(sizeof(CDefaultResult) == 162, "CDefaultResult size mismatch");
 // ============================================================================
 class MPUIInterface {
 public:
+    enum eSetting : int {
+        SETTING_TIME_LIMIT = 0,
+        SETTING_SCORE_LIMIT = 1,
+        SETTING_ROUND_LIMIT = 2,
+        SETTING_RESPAWN_TIME = 3,
+        SETTING_LAST_MAN_STANDING = 4,
+        SETTING_MAX_PLAYERS = 5,
+    };
     static void getLocalAddresses(bdArray<bdInetAddr>& addrs);  // ?getLocalAddresses@MPUIInterface@@SAXAAV?$bdArray@VbdInetAddr@@@@@Z
     static void Logging(bool enabled);   // ?Logging@MPUIInterface@@SAX_N@Z
     static const int GetTimeLimitCount();   // ?GetTimeLimitCount@MPUIInterface@@SA?BHXZ
@@ -515,7 +568,10 @@ public:
     static const char* GetMapString(unsigned long mapIndex);  // ?GetMapString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F830)
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z (mp.o 0x765FC0)
     static bool BlockUntilNetReady();  // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ
-    static void LoadMap(int map, bool restart, bool mapRot);  // ?LoadMap@MPUIInterface@@SAXH_N0@Z
+    static bool GameListingStart();  // ?GameListingStart@MPUIInterface@@SA_NXZ (mp.o 0x72F540)
+    static const int GetOptionFromValue(eSetting setting, int value,
+                                        eGameType gameType);  // ?GetOptionFromValue@MPUIInterface@@SA?BHW4eSetting@1@HW4eGameType@@@Z (mp.o 0x72FC70)
+    static void LoadMap(int map, bool restart, bool mapRot);  // ?LoadMap@MPUIInterface@@SAXH_N0@Z (mp.o 0x73D4B0)
     static void ExitFrontend(int returnMenu);  // ?ExitFrontend@MPUIInterface@@SAXH@Z (mp.o 0x74ED40)
     static void bdNetStart();  // ?bdNetStart@MPUIInterface@@SAXXZ (mp.o 0x764180)
     static void HandleQuery();  // ?HandleQuery@MPUIInterface@@SAXXZ (mp.o 0x764090)
@@ -577,18 +633,51 @@ enum EDroppedItemTypes : int;
 // MP options menus (shell FE menu subclasses; mp.o vtable overrides)
 // ============================================================================
 // Minimal front-end views (mp.o overrides; full types live in ui_types.h).
+#ifndef COD3_COLOR32_DEFINED
+#define COD3_COLOR32_DEFINED
+class color32 {
+public:
+    unsigned int i;
+};
+#endif
+#ifndef COD3_PANEL_LAYER_DEFINED
+#define COD3_PANEL_LAYER_DEFINED
+enum panel_layer {
+    PANEL_LAYER_0 = 0,
+    PANEL_LAYER_1 = 1,
+    PANEL_LAYER_2 = 2,
+    PANEL_LAYER_3 = 3,
+};
+#endif
+
+class PauseMenu {
+public:
+    void UnPause();  // ?UnPause@PauseMenu@@QAEXXZ (shell.o)
+};
+
 class FEText {
 public:
     virtual ~FEText();                      // ??1FEText@@UAE@XZ (shell.o)
     virtual void SetText(const char* s);    // ?SetText@FEText@@UAEXPBD@Z (shell.o 0x560870)
+    virtual void SetShown(bool shown);      // ?SetShown@FEText@@UAEX_N@Z (shell.o 0x5B1AF0)
+    virtual float GetX();                   // ?GetX@FEText@@UAEMXZ (shell.o)
+    virtual float GetY();                   // ?GetY@FEText@@UAEMXZ (shell.o)
+    virtual float GetScaleX() const;        // ?GetScaleX@FEText@@UBEMXZ (shell.o)
+    virtual color32 GetColor();             // ?GetColor@FEText@@UAE?AVcolor32@@XZ (shell.o)
+    virtual font_index GetFont();           // ?GetFont@FEText@@UAE?AW4font_index@@XZ (shell.o)
 };
 
 class FEMultiLineText {
 public:
+    FEMultiLineText(font_index f, float x1, float y1, int z1,
+                    panel_layer layer, float s, int horizJust,
+                    int vertJust, color32* col);  // ??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z (shell.o)
     virtual ~FEMultiLineText();      // ??1FEMultiLineText@@UAE@XZ (shell.o)
     virtual void UpdateForWidescreen(bool widescreen);  // ?UpdateForWidescreen@FEMultiLineText@@UAEX_N@Z (shell.o)
     virtual void SetTextBoxNoLocalize(Broc::string text, int width,
                                       float height);  // ?SetTextBoxNoLocalize@FEMultiLineText@@UAEXVstring@Broc@@HM@Z (shell.o 0x1857C0)
+    virtual void SetNumLines(int n);  // ?SetNumLines@FEMultiLineText@@UAEXH@Z (shell.o)
+    virtual void SetText(const char* s);  // ?SetText@FEMultiLineText@@UAEXPBD@Z (shell.o)
 };
 
 class UIListBox {
@@ -610,6 +699,11 @@ public:
     virtual void Draw();                    // slot 8 ?Draw@UIListBox@@UAEXXZ
     virtual void Refresh();                 // slot 9 ?Refresh@UIListBox@@UAEXXZ
     void RemoveAllItems();  // ?RemoveAllItems@UIListBox@@QAEXXZ (shell.o 0x5816B0)
+    void SetItem(int row, int column, FEText* text,
+                 int state);  // ?SetItem@UIListBox@@QAEXHHPAVFEText@@H@Z (shell.o)
+    void SetText(int row, int column,
+                 const char* text);  // ?SetText@UIListBox@@QAEXHHPBD@Z (shell.o)
+    void SetAllColumnsSelectable(bool selectable);  // ?SetAllColumnsSelectable@UIListBox@@QAEX_N@Z (shell.o)
 };
 static_assert(sizeof(UIListBox) == 172, "UIListBox size mismatch");
 
@@ -617,6 +711,8 @@ class PanelFile {
 public:
     void UpdateWidescreen(bool widescreen, float about_x);  // ?UpdateWidescreen@PanelFile@@QAEX_NM@Z (shell.o)
     void Draw();  // ?Draw@PanelFile@@QAEXXZ (shell.o)
+    PanelQuad* GetPointer(const char* search_name);      // ?GetPointer@PanelFile@@QAEPAVPanelQuad@@PBD@Z (shell.o)
+    FEText* GetTextPointer(const char* search_name);     // ?GetTextPointer@PanelFile@@QAEPAVFEText@@PBD@Z (shell.o)
 };
 
 // FEMenu base (0x4C) - minimal view; members/virtuals used by mp.o overrides
@@ -634,9 +730,14 @@ public:
     uint8_t       _pad31[0x32 - 0x31];
     char          button_held_down;     // +0x32
     char          default_color_scheme; // +0x33
-    uint8_t       _pad34[0x48 - 0x34];
+    int           mReturnMenu;          // +0x34
+    FEText*       helpbar;              // +0x38
+    FEMultiLineText* helpbar1;          // +0x3C
+    FEMultiLineText* helpbar2;          // +0x40
+    FEMultiLineText* helpbar3;          // +0x44
     PanelFile*    panel;                // +0x48
 
+    virtual void SetPanelFile(PanelFile* pf);  // slot 0 shell.o 0x5AEA10
     virtual void PanelFileUnloaded(PanelFile* pf);  // slot 1 shell.o 0x5B7570
     virtual void UpdateWidescreen(bool widescreen); // slot 2 shell.o 0x57DF20
     virtual ~FEMenu();                               // slot 3 shell.o 0x592150
@@ -697,18 +798,22 @@ class PanelQuad {
 public:
     virtual ~PanelQuad();                // ??1PanelQuad@@UAE@Z (shell.o)
     virtual void SetAlpha(float a);      // slot 34 (?SetAlpha@PanelQuad@@UAEXM@Z)
+    virtual void SetShown(bool shown);   // ?SetShown@PanelQuad@@UAEX_N@Z (shell.o)
 };
 
 class FESlider : public FEMenuEntry {
 public:
     uint8_t _pad[0x30 - 0x18];
     PanelQuad* mBar;                     // +0x30
+    bool mEnableSound;                   // +0x34
+    void SetRange(int min, int max);     // ?SetRange@FESlider@@QAEXHH@Z (shell.o)
 };
 
 // FEComboBox - shell.o combo box (minimal view; AddOption +0x4C)
 class FEComboBox : public FEMenuEntry {
 public:
     void AddOption(Broc::string optionString);  // ?AddOption@FEComboBox@@QAEXVstring@Broc@@@Z (shell.o)
+    void AddOptionNoLocalize(Broc::string optionString);  // ?AddOptionNoLocalize@FEComboBox@@QAEXVstring@Broc@@@Z (shell.o)
 };
 
 // ProfileManager / ProfileEditMenu (shell.o) - methods used by mp.o
@@ -773,6 +878,7 @@ public:
 
     MPOptionsScreenMenu(FEMenuSystem* s);  // ??0MPOptionsScreenMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x7305E0)
     virtual ~MPOptionsScreenMenu();        // ??1MPOptionsScreenMenu@@UAE@XZ (mp.o 0x730630)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x730690)
     static MPOptionsScreenMenu* Me();  // ?Me@MPOptionsScreenMenu@@SAPAV1@XZ
     virtual void Select(int entry_num);  // ?Select@MPOptionsScreenMenu@@UAEXH@Z
     virtual void OnCross(int c);         // ?OnCross@MPOptionsScreenMenu@@UAEXH@Z
@@ -786,6 +892,8 @@ public:
     virtual void OnDown(int c);  // ?OnDown@MPOptionsScreenMenu@@UAEXH@Z (mp.o 0x730C50)
     static const char* const kScreenOptionStrings[4];        // @ 0xD19378
     static const char* const kScreenInstructionStrings[4];   // @ 0xD1939C
+    static const char* const kScreenTextGeoms[4];            // @ 0xD19340
+    static const char* const kScreenOptionGeoms[4];          // @ 0xD19350
 private:
     bool SaveOptions();         // ?SaveOptions@MPOptionsScreenMenu@@AAE_NXZ (mp.o 0x730B00)
 };
@@ -801,6 +909,7 @@ public:
 
     MPOptionsSoundMenu(FEMenuSystem* s);  // ??0MPOptionsSoundMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x730D80)
     virtual ~MPOptionsSoundMenu();        // ??1MPOptionsSoundMenu@@UAE@XZ (mp.o 0x730DE0)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x730E40)
     static MPOptionsSoundMenu* Me();  // ?Me@MPOptionsSoundMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsSoundMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsSoundMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x7311F0)
@@ -814,6 +923,9 @@ public:
 
     static const char* const kSoundOptionStrings[];  // ?kSoundOptionStrings@MPOptionsSoundMenu@@0QBQBDB @ 0xD193BC
     static const char* const kSoundInstructionStrings[];  // ?kSoundInstructionStrings@MPOptionsSoundMenu@@0QBQBDB @ 0xD193C0
+    static const char* const kSoundTextGeoms[4];       // @ 0xD193A8
+    static const char* const kSoundOptionGeoms[4];     // @ 0xD193B8
+    static const char* const kSoundUnusedGeom[23];     // @ 0xD193C8
 private:
     void SetOptions();  // ?SetOptions@MPOptionsSoundMenu@@AAEXXZ (mp.o)
     bool SaveOptions();               // ?SaveOptions@MPOptionsSoundMenu@@AAE_NXZ (mp.o 0x7314B0)
@@ -828,6 +940,7 @@ public:
 
     MPOptionsControlsMenu(FEMenuSystem* s);  // ??0MPOptionsControlsMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x7315B0)
     virtual ~MPOptionsControlsMenu();        // ??1MPOptionsControlsMenu@@UAE@XZ (mp.o 0x731600)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x731660)
     static MPOptionsControlsMenu* Me();  // ?Me@MPOptionsControlsMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsControlsMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsControlsMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x731B00)
@@ -844,6 +957,9 @@ public:
     static const char* const kControlsInstructionStrings[];  // @ 0xD19500
     static const char* const kStickLayoutStrings[];          // @ 0xD194D8
     static const char* const kButtonLayoutStrings[];         // @ 0xD194E8
+    static const char* const kControlsTextGeoms[4];          // @ 0xD19424
+    static const char* const kControlsOptionGeoms[8];        // @ 0xD19434
+    static const char* const kOptionToggleStrings[2];        // @ 0xD194F8
 private:
     void SetOptions();  // ?SetOptions@MPOptionsControlsMenu@@AAEXXZ (mp.o 0x731B60)
     bool SaveOptions();  // ?SaveOptions@MPOptionsControlsMenu@@AAE_NXZ
@@ -857,6 +973,7 @@ public:
 
     MPOptionsGameplayMenu(FEMenuSystem* s);  // ??0MPOptionsGameplayMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x732140)
     virtual ~MPOptionsGameplayMenu();        // ??1MPOptionsGameplayMenu@@UAE@XZ (mp.o 0x732190)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732220)
     static MPOptionsGameplayMenu* Me();  // ?Me@MPOptionsGameplayMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsGameplayMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsGameplayMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732540)
@@ -868,6 +985,11 @@ public:
     virtual void OnDown(int c);  // ?OnDown@MPOptionsGameplayMenu@@UAEXH@Z (mp.o 0x7325F0)
     static const char* const kGameplayOptionStrings[4];       // @ 0xD19578
     static const char* const kGameplayInstructionStrings[4];  // @ 0xD195A8
+    static const char* const kGameplayTextGeoms[4];           // @ 0xD19520
+    static const char* const kGameplayOptionGeoms[4];         // @ 0xD19530
+    static const char* const kGameplayOptionToggleGeoms[4];   // @ 0xD19540
+    static const char* const kGameplayOptionArrowGeoms[8];    // @ 0xD19550
+    static const char* const kGameplayOptionToggleStrings[2]; // @ 0xD19588
 private:
     void SetOptions();  // ?SetOptions@MPOptionsGameplayMenu@@AAEXXZ (mp.o)
     bool SaveOptions();  // ?SaveOptions@MPOptionsGameplayMenu@@AAE_NXZ
@@ -884,6 +1006,7 @@ public:
 
     MPOptionsPreferencesMenu(FEMenuSystem* s);  // ??0MPOptionsPreferencesMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x7328E0)
     virtual ~MPOptionsPreferencesMenu();        // ??1MPOptionsPreferencesMenu@@UAE@XZ (mp.o 0x732940)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x7329A0)
     static MPOptionsPreferencesMenu* Me();  // ?Me@MPOptionsPreferencesMenu@@SAPAV1@XZ
     virtual void Update(float time_inc);  // ?Update@MPOptionsPreferencesMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsPreferencesMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x732F30)
@@ -895,6 +1018,9 @@ public:
     virtual void OnActivate();  // ?OnActivate@MPOptionsPreferencesMenu@@UAEXXZ (mp.o 0x73E4E0)
     static const char* const kOptionStrings[5];       // @ 0xD19618
     static const char* const kInstructionStrings[5];  // @ 0xD1962C
+    static const char* const kTextGeoms[4];           // @ 0xD195B8
+    static const char* const kOptionGeoms[5];         // @ 0xD195C8
+    static const char* const kOnOffToggleStrings[2];  // @ 0xD19640
     static unsigned char m_FirstTimeAccessedByte;     // ?m_FirstTimeAccessedByte@MPOptionsPreferencesMenu@@0EA @ 0xF93FC4
 private:
     void SetOptions();  // ?SetOptions@MPOptionsPreferencesMenu@@AAEXXZ (mp.o 0x732F90)
@@ -929,6 +1055,9 @@ public:
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPProfileEditMenu@@UAEX_N@Z (mp.o 0x7338D0)
     virtual void Draw();  // ?Draw@MPProfileEditMenu@@UAEXXZ (mp.o 0x7333A0)
     virtual void OnActivate(int previous);  // ?OnActivate@MPProfileEditMenu@@UAEXH@Z (mp.o 0x73E650)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x733400)
+    static const char* const kProfileTextGeoms[4];         // @ 0xD1964C
+    static const char* const kProfileTextOptionGeoms[5];   // @ 0xD1965C
 };
 
 class MPProfileMainMenu : public FEMenu {
@@ -951,6 +1080,8 @@ public:
     static bool DialogResponseDeleteSuccess(int index); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x7342B0)
     static bool DialogResponseDeleteConfirm(int index); // ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z (mp.o 0x74EFD0)
     static bool DialogResponseDelete(int index);        // ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z (mp.o 0x75A9E0)
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPProfileMainMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x733B60)
+    static const char* const kProfileTextGeoms[6];  // @ 0xD196A4 (6 entries)
     static void LoadProfileData();   // ?LoadProfileData@MPProfileMainMenu@@SAXXZ (mp.o 0x733AF0)
     void ClearEntries();             // ?ClearEntries@MPProfileMainMenu@@QAEXXZ (mp.o 0x733A90)
     void CreateProfile();            // ?CreateProfile@MPProfileMainMenu@@QAEXXZ (mp.o 0x733D90)
@@ -1058,6 +1189,23 @@ public:
         sVoicePendingDispatchPacket* mPrev;  // +0x154
         sVoicePendingDispatchPacket* mNext;  // +0x158
     };
+    // sDiagnostics - cVoiceNetworkManager::getDiagnostics output
+    struct sDiagnostics {
+        int mPacketQueueLength[16];        // +0x00
+        uint8_t _pad40[0x58 - 0x40];       // +0x40
+        int mPendingVoicePacketCount[16];  // +0x58
+        int mTimeSinceLastPacket[16];      // +0x98
+        unsigned int mPendingDispatchPacketSource[5];  // +0xD8
+        unsigned int mPendingDispatchPacketCount;      // +0xEC
+        kuju::knet::sTime mTimeSinceLastDispatch;      // +0xF0
+        unsigned char mRecentlyDispatchedPacketSources[10];  // +0xF4
+        unsigned char mRecentlyDispatchedPacketRoutes[10];   // +0xFE
+        unsigned char mRecentlyReceivedPacketSources[10];    // +0x108
+        unsigned char mRecentlyReceivedPacketRoutes[10];     // +0x112
+        unsigned char mRecentlyDispatchedPacketIndex;  // +0x11C
+        unsigned char mRecentlyReceivedPacketIndex;    // +0x11D
+        unsigned int mMissedPackets;                   // +0x120
+    };
 
     cVoiceNetworkManager();           // ??0cVoiceNetworkManager@knetuser@kuju@@QAE@XZ (mp.o 0x73F2A0)
     virtual ~cVoiceNetworkManager();  // ??1cVoiceNetworkManager@knetuser@kuju@@UAE@XZ
@@ -1086,6 +1234,8 @@ public:
     unsigned int mMissedPackets;                   // +0x2660
     static const kuju::knet::sTime mVoiceLifeTime;  // ?mVoiceLifeTime@cVoiceNetworkManager@knetuser@kuju@@0VsTime@knet@3@B @ 0x12266F4
     void resetPlayer(unsigned long playerIndex);  // ?resetPlayer@cVoiceNetworkManager@knetuser@kuju@@QAEXK@Z (mp.o 0x74F050)
+    void getDiagnostics(sDiagnostics* diagnostics,
+                        const kuju::knet::sTime& time);  // ?getDiagnostics@cVoiceNetworkManager@knetuser@kuju@@QAEXPAUsDiagnostics@123@ABVsTime@knet@3@@Z (mp.o 0x7355E0)
     void sendVoiceData(MPPlayerSet destinationPlayers, unsigned char* buffer,
                        unsigned long length);  // ?sendVoiceData@cVoiceNetworkManager@knetuser@kuju@@QAEXVMPPlayerSet@@PAEK@Z (mp.o)
     void initialise();               // ?initialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o)
@@ -1094,6 +1244,7 @@ public:
     void check_for_looped();  // ?check_for_looped@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ (mp.o 0x734EC0)
 private:
     void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
+    void updateVoiceBandwidthSimulation(const kuju::knet::sTime& time); // ?updateVoiceBandwidthSimulation@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x73FA30)
     void addPacket(sVoicePacket* packet, unsigned long listIndex);  // ?addPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePacket@123@K@Z (mp.o 0x734C40)
     sVoicePacket* getFreePacket();  // ?getFreePacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePacket@123@XZ (mp.o 0x73F630)
     sVoicePendingDispatchPacket* getFreeVoicePendingDispatchPacket();  // ?getFreeVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePendingDispatchPacket@123@XZ (mp.o 0x73F7C0)

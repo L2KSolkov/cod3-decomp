@@ -1692,40 +1692,89 @@ public:
     unsigned char mId;                 // +0x00
     uint8_t _pad[3];
     bdReference<bdConnection> mConnection;  // +0x04
-    int     mClientIndex;   // +0x08
-    uint8_t mItems[0x30];   // +0x0C MPPlayerItems (48 bytes; full type in mp_types.h)
-    unsigned char mVehicleId;  // +0x3C
-    int     mVehSeatIdx;       // +0x40
-    bool    mInVehicle;        // +0x44
-    uint8_t _pad45[0x50 - 0x45];
-    unsigned int mAnimFlags;   // +0x50
-    uint8_t _pad54[0x68 - 0x54];
-    char    mName[32];         // +0x68
-    uint8_t xuid[12];          // +0x88 (XUID, 12 bytes)
-    uint8_t _pad94[0xDC - 0x94];
-    int     mLastVoiceReceivedTime;  // +0xDC
-    uint8_t _padE0[0x220 - 0xE0];
-    kuju::knet::sTime mLastFootstepTime;  // +0x220
+    int     mClientIndex;              // +0x08
+    uint8_t mItems[0x30];              // +0x0C MPPlayerItems (full type in mp_types.h)
+    unsigned char mVehicleId;          // +0x3C
+    int     mVehSeatIdx;               // +0x40
+    bool    mInVehicle;                // +0x44
+    bool    mPlaying;                  // +0x45
+    bool    mMasterClient;             // +0x46
+    uint8_t _pad47[2];                 // +0x47
+    int     mLastAnimTime;             // +0x48
+    int     mLastAnimState;            // +0x4C
+    unsigned int mAnimFlags;           // +0x50
+    unsigned int mAnimLegs;            // +0x54
+    unsigned int mAnimLegsLast;        // +0x58
+    float   mLookAtAngle;              // +0x5C
+    bool    mEventAnimPlaying;         // +0x60
+    uint8_t _pad61[3];                 // +0x61
+    int     mStanceChangeTime;         // +0x64
+    char    mName[32];                 // +0x68
+    uint8_t xuid[12];                  // +0x88 (XUID, 12 bytes)
+    unsigned int mVehicleEventSequence;  // +0x94
+    bool    usedPrivateSlot;           // +0x98
+    uint8_t _pad99[7];                 // +0x99
+    math::Position3 mNetPosition;      // +0xA0
+    math::Dir3      mNetSpeed;         // +0xB0
+    float   mNetHeading;               // +0xC0
+    float   mNetPitch;                 // +0xC4
+    float   mNetLean;                  // +0xC8
+    unsigned int mNetPosture;          // +0xCC
+    unsigned int mNetWeapon;           // +0xD0
+    kuju::knet::sTime mLastReceivedTime;    // +0xD4
+    kuju::knet::sTime mStarvationTime;      // +0xD8
+    int     mLastVoiceReceivedTime;    // +0xDC
+    unsigned int mNbReceivedMessages;  // +0xE0
+    bool    mReceived;                 // +0xE4
+    uint8_t _padE5[3];                 // +0xE5
+    float   mAverageUpdateInterval;    // +0xE8
+    uint8_t _padEC[4];                 // +0xEC
+    uint8_t mLastMajor[0x38];          // +0xF0 (MPMajorUpdate, opaque)
+    uint8_t _pad128[0x1F0 - 0x128];    // +0x128
+    math::Position3 mInterpolatedPosition;  // +0x1F0
+    math::Dir3      mInterpolatedSpeed;     // +0x200
+    int     mInterpolationState;            // +0x208
+    uint8_t _pad20C[4];                     // +0x20C
+    float   mInterpolatedPitch;             // +0x210
+    float   mInterpolatedLean;              // +0x214
+    float   mInterpolatedHeading;           // +0x218 (kuju::sAngle.mAngle)
+    kuju::knet::sTime mLastInterpolatedTime;  // +0x21C
+    kuju::knet::sTime mLastFootstepTime;    // +0x220
     uint8_t _pad224[0x254 - 0x224];
     bool    mPlayerInfoSet;   // +0x254
-    uint8_t _pad255[0x25C - 0x255];
+    uint8_t _pad255[1];
+    short   mTotalScore;      // +0x256
+    short   mTotalKills;      // +0x258
+    short   mTotalDeaths;     // +0x25A
     short   mTeam;            // +0x25C
     short   mRank;            // +0x25E
-    uint8_t _pad260[0x26C - 0x260];
+    uint8_t _pad260[4];       // +0x260 (mLastHeadingAngle, sAngle)
+    bool    bSprinting;       // +0x264
+    bool    bWalking;         // +0x265
+    bool    bCrouching;       // +0x266
+    bool    bProne;           // +0x267
+    bool    bStrafing;        // +0x268
+    bool    bIdle;            // +0x269
+    bool    bBackwards;       // +0x26A
+    bool    bClimbing;        // +0x26B
     bool    bInAir;           // +0x26C
-    uint8_t _pad26D[0x270 - 0x26D];
-    bool    bWasInAir;        // +0x270
-    bool    bJumpPlayed;      // +0x271
-    bool    bLandPlayed;      // +0x272
-    bool    bLanding;         // +0x273
-    uint8_t _pad274[0x280 - 0x274];
+    bool    bWasClimbing;        // +0x26D
+    bool    bClimbingGetOffPlayed;  // +0x26E
+    bool    bClimbingGetOnPlayed;   // +0x26F
+    bool    bWasInAir;           // +0x270
+    bool    bJumpPlayed;         // +0x271
+    bool    bLandPlayed;         // +0x272
+    bool    bLanding;            // +0x273
+    bool    bAltIdle;            // +0x274
+    uint8_t _pad275[3];          // +0x275
+    int     mLastAnimSheet;      // +0x278
+    int     mLastAnimEvent;      // +0x27C
     bool    bWasVehicleAnimating;  // +0x280
     uint8_t _pad281[0x290 - 0x281];
     math::Position3 mLastStepPosition;  // +0x290
-    bool    bSprinting;     // +0x264
-    bool    bWalking;       // +0x265
-    bool    bCrouching;     // +0x266
-    bool    bProne;         // +0x267
+    uint8_t _pad2A0[0x2C4 - 0x2A0];
+    kuju::knet::sTime mLastLegsYawTime;  // +0x2C4
+    uint8_t _pad2C8[0x310 - 0x2C8];      // +0x2C8 (mYaw[3] + tail)
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
     void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
     int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
@@ -1752,6 +1801,9 @@ public:
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
     bdReference<bdConnection> GetConnection() const;  // ?GetConnection@MPPlayer@@QBE?AV?$bdReference@VbdConnection@@@@XZ (mp.o 0x736190)
     void Reset(bool clearAll);        // ?Reset@MPPlayer@@QAEX_N@Z (mp.o 0x72CC20)
+    void SetName(const char* name);   // ?SetName@MPPlayer@@QAEXPBD@Z (mp.o)
+    void RemoveItem(EDroppedItemTypes item,
+                    ::MPEntityHandle handle);  // ?RemoveItem@MPPlayer@@QAEXW4EDroppedItemTypes@@VMPEntityHandle@@@Z (mp.o)
     bool deserialize(bdReference<bdBitBuffer> buffer);  // ?deserialize@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
     void OnModified();                // ?OnModified@MPPlayer@@QAEXXZ (mp.o 0x73073E)
     ~MPPlayer();                      // ??1MPPlayer@@QAE@XZ (mp.o 0x761E30)
@@ -1760,6 +1812,11 @@ public:
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
     bool IsLocalPlayer() const;        // ?IsLocalPlayer@MPPlayer@@QBE_NXZ (mp.o)
 protected:
+    void StepLegsYaw(kuju::knet::sTime time, int yawType, int targetYaw,
+                     float yawThreshold,
+                     float moveYaw);  // ?StepLegsYaw@MPPlayer@@IAEXVsTime@knet@kuju@@HMMM@Z (mp.o 0x72D390)
+    int  CalcLegsAnim(Entity* ent, float* velocity, float yaw,
+                      bool useLastWalking);  // ?CalcLegsAnim@MPPlayer@@IAEHPAVEntity@@QAMM_N@Z (mp.o 0x72DAD0)
     void SwingAngles(float destination, float swingTolerance,
                      float clampTolerance, float speed, float& angle,
                      int& swinging, int frametime,
@@ -1827,6 +1884,8 @@ public:
     void SendOthers(bdReference<bdMessage> message, const MPPlayer* excludePlayer,
                     bool reliable);  // ?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@QBVMPPlayer@@_N@Z (mp.o 0x748A20)
     void SendPlayerEnter(MPPlayer* player);  // ?SendPlayerEnter@MPPlayerManager@@QAEXPAVMPPlayer@@@Z (mp.o 0x7577C0)
+    void SendPlayerTeam(const MPPlayer* player, bool autoTeamBalance,
+                        bool forceSend);  // ?SendPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@_N1@Z (mp.o 0x759800)
     MPPlayerSet allPlayers();       // ?allPlayers@MPPlayerManager@@QAE?AVMPPlayerSet@@XZ (mp.o 0x73A4B0)
     MPPlayerSet allPlayersButMe(int localPlayer);  // ?allPlayersButMe@MPPlayerManager@@QAE?AVMPPlayerSet@@H@Z (mp.o 0x73A590)
     void AddVehicle(Entity* vehicle);  // ?AddVehicle@MPPlayerManager@@QAEXPAVEntity@@@Z (mp.o)
@@ -2094,6 +2153,12 @@ public:
                             const math::Dir3& dir);  // ?VehicleFireMissile@MPPeer@@QAEXPAVEntity@@HABVPosition3@math@@ABVDir3@4@@Z (mp.o 0x75BA50)
     void SendBombOperationEvent(const Entity* player, bool defusing,
                                 bool success);  // ?SendBombOperationEvent@MPPeer@@QAEXPBVEntity@@_N1@Z (mp.o)
+    void BulletHit(const math::Position3& position,
+                   const math::Dir3& normal, unsigned char surfaceType,
+                   unsigned char weapon,
+                   Entity* hitEntity);  // ?BulletHit@MPPeer@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z (mp.o 0x75B330)
+    void VehicleRequestOwnership(Entity* vehicle,
+                                 Entity* newOwner);  // ?VehicleRequestOwnership@MPPeer@@QAEXPAVEntity@@0@Z (mp.o 0x744D20)
     void SendGameStateHQ(Entity* player, unsigned int stage,
                          const math::Position3& pA,
                          const math::Position3& pB,
