@@ -8229,6 +8229,173 @@ void AAROverlay::SetState(eState state)
         entries[0]->SetText(m_Text);
 }
 
+// ea: 0x007AEDB0
+void WeaponSelectMenu::OnActivate()
+{
+    ModelMenu::OnActivate();
+    mModelPosition[0] = -10.0f;
+    mModelPosition[1] = -110.0f;
+    mModelPosition[2] = 130.0f;
+    mModelPosition[3] = 0.0f;
+    UpdateModelPosition();
+    mModelAngles[0] = 110.0f;
+    mModelAngles[1] = 0.0f;
+    mModelAngles[2] = 270.0f;
+    mModelAngles[3] = 0.0f;
+    UpdateModelPosition();
+    mColors[0] = 1.07854f;
+    mColors[1] = 0.99822003f;
+    mColors[2] = 0.80317003f;
+    mColors[3] = 1.0f;
+    mColors[4] = 1.07854f;
+    mColors[5] = 0.99822003f;
+    mColors[6] = 0.80317003f;
+    mColors[7] = 1.0f;
+    mDirections[0] = 0.63f;
+    mDirections[1] = 0.49000001f;
+    mDirections[2] = 0.597f;
+    mDirections[3] = 0.0f;
+    mDirections[4] = -0.76300001f;
+    mDirections[5] = -0.161f;
+    mDirections[6] = -0.625f;
+    mDirections[7] = 0.0f;
+    mBrightness[0] = 0.69999999f;
+    mBrightness[1] = 0.69999999f;
+    int16_t eTeam = EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam;
+    m_sLocalPlayerTeam = eTeam;
+    PanelQuad* v7;
+    if (eTeam == 1)
+    {
+        panel->GetPointer("sb_colorband_icon_german")->SetShown(true);
+        v7 = panel->GetPointer("sb_colorband_icon_american");
+        v7->SetShown(false);
+    }
+    else
+    {
+        panel->GetPointer("sb_colorband_icon_german")->SetShown(false);
+        v7 = panel->GetPointer("sb_colorband_icon_american");
+        v7->SetShown(true);
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+    int16_t v10 = PlayerClassToLocalIndex(Player->client->pers.playerClass);
+    highlighted = v10;
+    SetHigh(v10, true);
+    ActivationToggle(true);
+    if (Allow_Exit)
+        helpbar1->SetText("WEAPON_HELP_BAR_ALLCAPS");
+    else
+        helpbar1->SetText("WEAPON_ABRIDGED_HELP_BAR_ALLCAPS");
+}
+
+// ea: 0x0078E420
+void InstantActionMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/InstantActionMenu.cpp";
+        AeAssert::gCurrentLine = 102;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    static const char* const szInstantActionEntries[8] = {
+        "title", "any", "deathmatch", "team_deathmatch",
+        "capture_the_flag", "capture_the_flag", "capture_the_flag",
+        "domination",
+    };
+    static const char* const szInstantActionTexts[8] = {
+        "MPFRONTEND_QUICK_MATCH", "MPFRONTEND_ANY", "MPFRONTEND_BATTLE",
+        "MPFRONTEND_TEAM_BATTLE", "MPFRONTEND_CAPTURE_THE_FLAG",
+        "MPFRONTEND_SINGLE_CAPTURE_THE_FLAG", "MPFRONTEND_HEADQUARTERS",
+        "MPFRONTEND_DOMINATION",
+    };
+    for (int i = 0; i < 8; ++i)
+    {
+        FEText* t = panel->GetTextPointer(szInstantActionEntries[i]);
+        AddEntry(i, t, false);
+    }
+    for (int i = 0; i < 8; ++i)
+        entries[i]->SetText(szInstantActionTexts[i]);
+    entries[1]->up = 7;
+    entries[7]->down = 1;
+    helpbar = panel->GetTextPointer("Helpbar");
+    FEMultiLineText* v19 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v23 = nullptr;
+    if (v19 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v25 = helpbar->GetX();
+        v23 = new (v19)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v23;
+    if (v23 != nullptr)
+        v23->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+}
+
+// ea: 0x0078EB90
+void SessionDetailsMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/SessionDetailsMenu.cpp";
+        AeAssert::gCurrentLine = 120;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    static const char* const szDetailsEntries[11] = {
+        "title", "game_type", "map", "players", "game_name", "next_game",
+        "join_game", "title_game", "title_map", "title_players",
+        "title_type",
+    };
+    for (int i = 0; i < 11; ++i)
+    {
+        FEText* t = panel->GetTextPointer(szDetailsEntries[i]);
+        AddEntry(i, t, false);
+    }
+    entries[0]->SetText("MPFRONTEND_QUICK_MATCH_DETAILS");
+    entries[5]->SetText("MPFRONTEND_NEXT_GAME");
+    entries[6]->SetText("MPFRONTEND_JOIN_GAME");
+    entries[4]->SetTextNoLocalize((char*)defaultFileName);
+    entries[7]->SetText("MPFRONTEND_GAME_NAME");
+    entries[8]->SetText("MPFRONTEND_MAP");
+    entries[9]->SetText("MPFRONTEND_PLAYERS");
+    entries[10]->SetText("MPFRONTEND_GAME_TYPE");
+    entries[6]->down = 5;
+    entries[5]->up = 6;
+    panel->GetPointer("gamespy")->SetShown(false);
+    helpbar = panel->GetTextPointer("Helpbar");
+    FEMultiLineText* v26 = (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* v30 = nullptr;
+    if (v26 != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float v32 = helpbar->GetX();
+        v30 = new (v26)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = v30;
+    if (v30 != nullptr)
+        v30->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+}
+
 // ea: 0x007AC7A0
 void ModelMenu::UpdateClassModel(int playerclass, int team, int weapon)
 {

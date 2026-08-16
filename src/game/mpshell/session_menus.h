@@ -444,6 +444,7 @@ public:
     virtual void Update(float time_inc); // ?Update@InstantActionMenu@@UAEXM@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@InstantActionMenu@@UAEXH@Z
     virtual void Select(int entry_num);  // ?Select@InstantActionMenu@@UAEXH@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@InstantActionMenu@@UAEXPAVPanelFile@@@Z
 };
 static_assert(sizeof(InstantActionMenu) == 0x4C,
               "InstantActionMenu size mismatch");
@@ -535,6 +536,7 @@ public:
     virtual void OnActivate();        // ?OnActivate@SessionDetailsMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@SessionDetailsMenu@@UAEXM@Z
     virtual void Select(int entry_num);  // ?Select@SessionDetailsMenu@@UAEXH@Z
+    virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@SessionDetailsMenu@@UAEXPAVPanelFile@@@Z
 protected:
     void UpdateDetails();             // ?UpdateDetails@SessionDetailsMenu@@IAEXXZ
 public:
@@ -905,6 +907,7 @@ public:
     virtual void OnTriangle(int controllerIndex);  // ?OnTriangle@WeaponSelectMenu@@UAEXH@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc);  // ?Update@WeaponSelectMenu@@UAEXM@Z
+    virtual void OnActivate();          // ?OnActivate@WeaponSelectMenu@@UAEXXZ
 protected:
     int PlayerClassToLocalIndex(int playerclass);  // ?PlayerClassToLocalIndex@WeaponSelectMenu@@IAEHH@Z
     EPlayerClass LocalIndexToPlayerClass(int index);  // ?LocalIndexToPlayerClass@WeaponSelectMenu@@IAE?AW4EPlayerClass@@H@Z
