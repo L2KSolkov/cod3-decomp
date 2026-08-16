@@ -40,31 +40,29 @@ extern void Com_Memcpy(void* dest, const void* src, unsigned int count);
     // ?Com_Memcpy@@YAXPAD0H@Z
 winding_t* CopyWinding(winding_t* w);  // ea: 0x609880 (defined below)
 
-// cdlPlane with SIMD data access (cdl_types.h; 16 bytes)
-struct cdlPlaneView {
-    __m128 data;
-};
-
-// Minimal cdl_array<cdlPlane> view (cdl_mem.h)
-struct cdlPlaneArray {
-    int           m_count;
-    cdlPlaneView* m_elements;
+// cdl_array<cdlPlane> (cdl_mem.h; layout verified by IDA types)
+template <typename T>
+class cdl_array {
+public:
+    unsigned int m_count;
+    T*           m_elements;
 };
 
 // ea: 0x0062A040
-static void clip_winding(ae_sized_array<math::Position3, 256>* winding,
-                         const cdlPlaneView* clip)
+void clip_winding(ae_sized_array<math::Position3, 256>& winding_ref,
+                  const cdlPlane& clip)
 {
+    ae_sized_array<math::Position3, 256>* winding = &winding_ref;
     unsigned int m_size = winding->m_size;
     float dists[257];
     int side[257];
     int side_count[3] = { 0, 0, 0 };
     for (unsigned int i = 0; i < m_size; ++i)
     {
-        float d = (*winding)[i].v.m128_f32[0] * clip->data.m128_f32[0]
-                + (*winding)[i].v.m128_f32[1] * clip->data.m128_f32[1]
-                + (*winding)[i].v.m128_f32[2] * clip->data.m128_f32[2]
-                - clip->data.m128_f32[3];
+        float d = (*winding)[i].v.m128_f32[0] * clip.data.m128_f32[0]
+                + (*winding)[i].v.m128_f32[1] * clip.data.m128_f32[1]
+                + (*winding)[i].v.m128_f32[2] * clip.data.m128_f32[2]
+                - clip.data.m128_f32[3];
         dists[i] = d;
         if (d <= 0.1f)
         {
@@ -102,10 +100,10 @@ static void clip_winding(ae_sized_array<math::Position3, 256>* winding,
                     math::Position3 p;
                     for (int c = 0; c < 3; ++c)
                     {
-                        if (clip->data.m128_f32[c] == 1.0f)
-                            p.v.m128_f32[c] = clip->data.m128_f32[3];
-                        else if (clip->data.m128_f32[c] == -1.0f)
-                            p.v.m128_f32[c] = -clip->data.m128_f32[3];
+                        if (clip.data.m128_f32[c] == 1.0f)
+                            p.v.m128_f32[c] = clip.data.m128_f32[3];
+                        else if (clip.data.m128_f32[c] == -1.0f)
+                            p.v.m128_f32[c] = -clip.data.m128_f32[3];
                         else
                             p.v.m128_f32[c] =
                                 ((*winding)[next].v.m128_f32[c]
@@ -127,13 +125,14 @@ static void clip_winding(ae_sized_array<math::Position3, 256>* winding,
 }
 
 // ea: 0x00620010
-static void init_winding(const cdlPlaneView* plane,
-                         ae_sized_array<math::Position3, 256>* winding)
+void init_winding(const cdlPlane& plane,
+                  ae_sized_array<math::Position3, 256>& winding_ref)
 {
+    ae_sized_array<math::Position3, 256>* winding = &winding_ref;
     float org[3];
-    org[0] = fabs(plane->data.m128_f32[0]);
-    org[1] = fabs(plane->data.m128_f32[1]);
-    org[2] = fabs(plane->data.m128_f32[2]);
+    org[0] = fabs(plane.data.m128_f32[0]);
+    org[1] = fabs(plane.data.m128_f32[1]);
+    org[2] = fabs(plane.data.m128_f32[2]);
     float axis[3];
     if (org[2] <= org[org[1] > org[0] ? 1 : 0])
     {
@@ -148,13 +147,13 @@ static void init_winding(const cdlPlaneView* plane,
         axis[2] = 0.0f;
     }
     float v16 =
-        axis[0] * plane->data.m128_f32[0]
-        + axis[1] * plane->data.m128_f32[1]
-        + axis[2] * plane->data.m128_f32[2];
+        axis[0] * plane.data.m128_f32[0]
+        + axis[1] * plane.data.m128_f32[1]
+        + axis[2] * plane.data.m128_f32[2];
     float v8[3];
-    v8[0] = axis[0] - plane->data.m128_f32[0] * v16;
-    v8[1] = axis[1] - plane->data.m128_f32[1] * v16;
-    v8[2] = axis[2] - plane->data.m128_f32[2] * v16;
+    v8[0] = axis[0] - plane.data.m128_f32[0] * v16;
+    v8[1] = axis[1] - plane.data.m128_f32[1] * v16;
+    v8[2] = axis[2] - plane.data.m128_f32[2] * v16;
     float len = sqrt(v8[0] * v8[0] + v8[1] * v8[1] + v8[2] * v8[2]);
     if (len != 0.0f)
     {
@@ -163,54 +162,55 @@ static void init_winding(const cdlPlaneView* plane,
         v8[2] /= len;
     }
     float v12[3];
-    v12[0] = v8[1] * plane->data.m128_f32[2]
-           - v8[2] * plane->data.m128_f32[1];
-    v12[1] = v8[2] * plane->data.m128_f32[0]
-           - v8[0] * plane->data.m128_f32[2];
-    v12[2] = v8[0] * plane->data.m128_f32[1]
-           - v8[1] * plane->data.m128_f32[0];
+    v12[0] = v8[1] * plane.data.m128_f32[2]
+           - v8[2] * plane.data.m128_f32[1];
+    v12[1] = v8[2] * plane.data.m128_f32[0]
+           - v8[0] * plane.data.m128_f32[2];
+    v12[2] = v8[0] * plane.data.m128_f32[1]
+           - v8[1] * plane.data.m128_f32[0];
     v12[0] *= 131072.0f;
     v12[1] *= 131072.0f;
     v12[2] *= 131072.0f;
     math::Position3 p;
-    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+    p.v.m128_f32[0] = plane.data.m128_f32[0] * plane.data.m128_f32[3]
         + v8[0] * 131072.0f + v12[0];
-    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+    p.v.m128_f32[1] = plane.data.m128_f32[1] * plane.data.m128_f32[3]
         + v8[1] * 131072.0f + v12[1];
-    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+    p.v.m128_f32[2] = plane.data.m128_f32[2] * plane.data.m128_f32[3]
         + v8[2] * 131072.0f + v12[2];
     p.v.m128_f32[3] = 0.0f;
     winding->push_back(p);
-    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+    p.v.m128_f32[0] = plane.data.m128_f32[0] * plane.data.m128_f32[3]
         - v8[0] * 131072.0f + v12[0];
-    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+    p.v.m128_f32[1] = plane.data.m128_f32[1] * plane.data.m128_f32[3]
         - v8[1] * 131072.0f + v12[1];
-    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+    p.v.m128_f32[2] = plane.data.m128_f32[2] * plane.data.m128_f32[3]
         - v8[2] * 131072.0f + v12[2];
     winding->push_back(p);
-    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+    p.v.m128_f32[0] = plane.data.m128_f32[0] * plane.data.m128_f32[3]
         - v8[0] * 131072.0f - v12[0];
-    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+    p.v.m128_f32[1] = plane.data.m128_f32[1] * plane.data.m128_f32[3]
         - v8[1] * 131072.0f - v12[1];
-    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+    p.v.m128_f32[2] = plane.data.m128_f32[2] * plane.data.m128_f32[3]
         - v8[2] * 131072.0f - v12[2];
     winding->push_back(p);
-    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+    p.v.m128_f32[0] = plane.data.m128_f32[0] * plane.data.m128_f32[3]
         + v8[0] * 131072.0f - v12[0];
-    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+    p.v.m128_f32[1] = plane.data.m128_f32[1] * plane.data.m128_f32[3]
         + v8[1] * 131072.0f - v12[1];
-    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+    p.v.m128_f32[2] = plane.data.m128_f32[2] * plane.data.m128_f32[3]
         + v8[2] * 131072.0f - v12[2];
     winding->push_back(p);
 }
 
 // ea: 0x0062A6B0
-void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
-                  ae_sized_array<math::Position3, 256>* winding)
+void calc_winding(const cdl_array<cdlPlane>& planes, int plane_index,
+                  ae_sized_array<math::Position3, 256>& winding_ref)
 {
-    const cdlPlaneView* v4 = &planes->m_elements[plane_index];
-    init_winding(v4, winding);
-    int m_count = planes->m_count;
+    ae_sized_array<math::Position3, 256>* winding = &winding_ref;
+    const cdlPlane* v4 = &planes.m_elements[plane_index];
+    init_winding(*v4, winding_ref);
+    int m_count = planes.m_count;
     bool v19 = false;
     for (unsigned int v6 = 0; v6 < (unsigned int)m_count; ++v6)
     {
@@ -220,7 +220,7 @@ void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
         }
         else
         {
-            const cdlPlaneView* v8 = &planes->m_elements[v6];
+            const cdlPlane* v8 = &planes.m_elements[v6];
             float v17 = v4->data.m128_f32[0] * v8->data.m128_f32[0]
                       + v4->data.m128_f32[1] * v8->data.m128_f32[1]
                       + v4->data.m128_f32[2] * v8->data.m128_f32[2];
@@ -228,11 +228,11 @@ void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
                 || fabs(v4->data.m128_f32[3] - v8->data.m128_f32[3])
                     >= 0.001f)
             {
-                cdlPlaneView clip;
+                cdlPlane clip;
                 clip.data = _mm_xor_ps(
                     *(__m128*)v8, _mm_set1_ps(-0.0f));
                 clip.data.m128_f32[3] = -v8->data.m128_f32[3];
-                clip_winding(winding, &clip);
+                clip_winding(winding_ref, clip);
                 if (winding->m_size < 3)
                     return;
             }

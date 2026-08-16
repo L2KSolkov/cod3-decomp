@@ -270,7 +270,8 @@ struct nglMeshSection;
 struct nglMesh;
 struct nglMaterial;
 template <typename T>
-struct cdl_array {
+class cdl_array {
+public:
     int m_count;     // +0x00
     T*   m_elements; // +0x04
     // ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z (cdl_xboxr; stub)
@@ -301,9 +302,8 @@ extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,
                                    void (*fn)(nglMeshNode*));
 extern void j_nullsub_67(nglMeshSection* Section);  // render_xboxr no-op
 extern void j_nullsub_27(nglMeshSection* Section);  // render_xboxr no-op
-struct cdlPlaneArray;
-extern void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
-                         ae_sized_array<math::Position3, 256>* winding);
+extern void calc_winding(const cdl_array<cdlPlane>& planes, int plane_index,
+                         ae_sized_array<math::Position3, 256>& winding);
     // ?calc_winding (game.o 0x62A6B0)
 extern unsigned char* nglListWork;
 extern unsigned char* nglListWorkPos;
@@ -414,8 +414,7 @@ void render_brush(const math::Position3& bmin, const math::Position3& bmax,
     {
         ae_sized_array<math::Position3, 256> winding;
         winding.m_size = 0;
-        calc_winding((cdlPlaneArray*)&planes, (unsigned int)plane_index,
-                     &winding);
+        calc_winding(planes, plane_index, winding);
         int v42 = winding.m_size - 2;
         if (v42 > 0)
         {

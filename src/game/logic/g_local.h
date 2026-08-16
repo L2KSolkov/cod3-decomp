@@ -4040,7 +4040,7 @@ struct cdl_brush_t {
     uint16_t first_side;  // +0x00
     uint16_t num_sides;   // +0x02
 };
-struct cdlPlane { int packed[4]; };  // 16 bytes
+struct cdlPlane { union { __m128 data; int packed[4]; }; };  // IDA: math::Vector4 data (16 bytes)
 struct cdl_patch_t {
     uint16_t first_index;  // +0x00
     uint16_t num_inds;     // +0x02
