@@ -153,6 +153,23 @@ extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
 extern void j_nullsub_46(void* self);  // g.o nullsub
+struct cgGlobal_t {
+    int   frametime;  // +0x00
+    int   time;       // +0x04
+    int   oldTime;    // +0x08
+    int   cubemapShot; // +0x0C
+    int   cubemapSize; // +0x10
+    bool  teamGame;   // +0x14
+    bool  showScore;  // +0x15
+    uint8_t _pad16[0x18 - 0x16];
+    float gameTime;   // +0x18
+    float gameTimeStartTime;  // +0x1C
+    int   teamScores[5];      // +0x20
+};
+extern cgGlobal_t cgGlobal;   // 0xF5FE30 (cg.o)
+namespace LocalClient {
+bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)
+}
 
 unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateSessionMenu@@1EA @ 0x1388D54
 unsigned char CreateLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateLanSessionMenu@@1EA @ 0x1388D55
@@ -1416,4 +1433,389 @@ void VoteMapMenu::OnDeactivate(FEMenu* m)
 {
     (void)m;
     ClearAllButtons();
+}
+
+// ============================================================================
+// WeaponSelectMenu / InGameSwitchSides
+// ============================================================================
+
+// ea: 0x00790A50 (thunk)
+void WeaponSelectMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+}
+
+// ea: 0x00790C60
+void WeaponSelectMenu::OnStart(int c)
+{
+    (void)c;
+}
+
+// ea: 0x00790E90
+void InGameSwitchSides::Init()
+{
+}
+
+// ea: 0x00790EA0 (thunk)
+void InGameSwitchSides::OnDeactivate(ModelMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+}
+
+// ea: 0x00790EB0
+void InGameSwitchSides::OnTriangle(int c)
+{
+    (void)c;
+}
+
+// ea: 0x00790EC0
+bool InGameSwitchSides::ResponseNoNevermind(int index)
+{
+    (void)index;
+    return true;
+}
+
+// ============================================================================
+// InGameScoreBoard
+// ============================================================================
+
+// ea: 0x00790D50
+void InGameScoreBoard::Init()
+{
+}
+
+// ea: 0x00790DC0
+int InGameScoreBoard::GetAlliesScore()
+{
+    return cgGlobal.teamScores[2];
+}
+
+// ea: 0x00790DD0
+int InGameScoreBoard::GetAxisScore()
+{
+    return cgGlobal.teamScores[1];
+}
+
+// ea: 0x00790E10
+void InGameScoreBoard::OnTriangle(int c)
+{
+    OnSelect(c);
+}
+
+// ea: 0x00790E20
+void InGameScoreBoard::OnSquare(int c)
+{
+    (void)c;
+}
+
+// ============================================================================
+// AAR scoreboard / stats / vote menus
+// ============================================================================
+
+// ea: 0x00791000 (thunk)
+void AARScoreboardBase::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    Cleanup();
+}
+
+// ea: 0x00791010
+void AARScoreboardBase::Init()
+{
+}
+
+// ea: 0x00791040
+void AARScoreboardBase::OnSquare(int c)
+{
+    (void)c;
+}
+
+// ea: 0x00791070
+int AARScoreboardBase::GetAlliesScore()
+{
+    return cgGlobal.teamScores[2];
+}
+
+// ea: 0x00791080
+int AARScoreboardBase::GetAxisScore()
+{
+    return cgGlobal.teamScores[1];
+}
+
+// ea: 0x00791090
+void AARScoreboardBase::OnLeft(int c)
+{
+    OnL1(c);
+}
+
+// ea: 0x007910A0
+void AARScoreboardBase::OnRight(int c)
+{
+    OnR1(c);
+}
+
+// ea: 0x007910B0
+void AARScoreboardBase::OnUp(int c)
+{
+    m_ListBox.OnUp(c);
+}
+
+// ea: 0x007910C0
+void AARScoreboardBase::OnDown(int c)
+{
+    m_ListBox.OnDown(c);
+}
+
+// ea: 0x00791150
+void AARScoreboardLoser::OnR1(int c)
+{
+    (void)c;
+    system->MakeActive(2);
+}
+
+// ea: 0x00791160
+void AARScoreboardLoser::OnL1(int c)
+{
+    (void)c;
+    system->MakeActive(0);
+}
+
+// ea: 0x007912C0
+AARPersonalStats* AARPersonalStats::Me()
+{
+    return (AARPersonalStats*)g_femanager.mAARS->menus[2];
+}
+
+// ea: 0x007912D0 (thunk)
+void AARPersonalStats::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    Cleanup();
+}
+
+// ea: 0x007912E0
+void AARPersonalStats::Init()
+{
+}
+
+// ea: 0x007912F0
+void AARPersonalStats::OnCross(int c)
+{
+    (void)c;
+}
+
+// ea: 0x00791300
+void AARPersonalStats::OnUp(int c)
+{
+    (void)c;
+}
+
+// ea: 0x00791310
+void AARPersonalStats::OnDown(int c)
+{
+    (void)c;
+}
+
+// ea: 0x00791340
+void AARPersonalStats::OnLeft(int c)
+{
+    OnL1(c);
+}
+
+// ea: 0x00791350
+void AARPersonalStats::OnRight(int c)
+{
+    OnR1(c);
+}
+
+// ea: 0x00791510
+AARMapVote* AARMapVote::Me()
+{
+    return (AARMapVote*)g_femanager.mAARS->menus[4];
+}
+
+// ea: 0x00791540
+void AARMapVote::Init()
+{
+}
+
+// ea: 0x00791550 (thunk)
+void AARMapVote::OnDeactivate(AARBaseMenu* __formal)
+{
+    (void)__formal;
+    ClearAllButtons();
+}
+
+// ea: 0x00791640
+void AARMapVote::OnR1(int c)
+{
+    (void)c;
+    system->MakeActive(0);
+}
+
+// ea: 0x00791650
+void AARMapVote::OnLeft(int c)
+{
+    OnL1(c);
+}
+
+// ea: 0x00791660
+void AARMapVote::OnRight(int c)
+{
+    OnR1(c);
+}
+
+// ea: 0x007917F0
+AARGameModeVote* AARGameModeVote::Me()
+{
+    return (AARGameModeVote*)g_femanager.mAARS->menus[3];
+}
+
+// ea: 0x00791870
+void AARGameModeVote::Init()
+{
+}
+
+// ea: 0x00791880 (thunk)
+void AARGameModeVote::OnDeactivate(AARBaseMenu* __formal)
+{
+    (void)__formal;
+    ClearAllButtons();
+}
+
+// ea: 0x00791950
+void AARGameModeVote::OnLeft(int c)
+{
+    OnL1(c);
+}
+
+// ea: 0x00791960
+void AARGameModeVote::OnRight(int c)
+{
+    OnR1(c);
+}
+
+// ============================================================================
+// PauseMenu / AARPauseMenu / HotJoinMenu / SpectateMenu
+// ============================================================================
+
+// ea: 0x00791BB0
+void PauseMenu::Quit()
+{
+    LocalClient::QuitClientOutOfGame(mVersion);
+}
+
+// ea: 0x00791DC0
+AARPauseMenu::~AARPauseMenu()
+{
+}
+
+// ea: 0x00791E20 (thunk)
+void AARPauseMenu::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    Cleanup();
+}
+
+// ea: 0x00792080
+void AARPauseMenu::UpdateSplitScreen()
+{
+}
+
+// ea: 0x00792260
+void AARPauseMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+}
+
+// ea: 0x00792270
+void AARPauseMenu::OnDown(int c)
+{
+    (void)c;
+    Down();
+}
+
+// ea: 0x00792460 (thunk)
+void HotJoinMenu::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+}
+
+// ea: 0x007924E0 (thunk)
+void HotJoinMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00792560
+void HotJoinMenu::OnUp(int c)
+{
+    (void)c;
+    Up();
+}
+
+// ea: 0x007926E0
+SpectateMenu::~SpectateMenu()
+{
+}
+
+// ============================================================================
+// MI_UpdateMapList / ModelMenu
+// ============================================================================
+
+// ea: 0x00792E70
+void MI_UpdateMapList()
+{
+}
+
+// ea: 0x007931B0 (thunk)
+void ModelMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+}
+
+// ea: 0x00793450
+void ModelMenu::DebugControls()
+{
+}
+
+// ea: 0x007A74B0
+ModelMenu::~ModelMenu()
+{
+}
+
+// ea: 0x0079AB30 (thunk)
+void GameSettingsEdit::Draw()
+{
+    FESplitScreenMenu::Draw();
+}
+
+// ea: 0x0079B160
+bool AARGameSettingsEdit::ResponseYesApplyNow(int index)
+{
+    (void)index;
+    return ((AARGameSettingsEdit*)g_femanager.mAARS->menus[6])
+        ->ResponseYesApplyNowHelper();
+}
+
+// ea: 0x0079B750 (thunk)
+void GameSettingsView::Draw()
+{
+    FESplitScreenMenu::Draw();
+}
+
+// ea: 0x007A8C50
+void GameSettingsEdit::SwapMenus()
+{
+    UpdateSplitScreenOptions(highlighted);
+}
+
+// ea: 0x007A8CE0 (thunk)
+void AARGameSettingsEdit::SetPanelFile(PanelFile* pf)
+{
+    SetPanelFileMain(pf);
 }
