@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #define ASSERT(expr, file, line)                                          \
     do {                                                                  \
@@ -3517,7 +3518,8 @@ void SpectateMenu::OnCross(int c)
         PlayNavigationSound();
         Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
         gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed(
-            *(int*)Player);
+            (int)Player->mHandle.mHandle.mVal);
+        system->ReturnToPreviousMenu(-1);
     }
 }
 
@@ -4593,6 +4595,406 @@ void AARPauseMenu::Update(float time_inc)
         panel->GetPointer("game_invite")->SetShown(false);
         panel->GetPointer("friend_request")->SetShown(false);
     }
+}
+
+// ============================================================================
+// Batch 20: smallest remaining handlers (16-160 bytes)
+// ============================================================================
+
+// ea: 0x007930C0
+void FESplitScreenMenu::SwapMenus()
+{
+}
+
+extern void MI_ResetMapList();  // ?MI_ResetMapList@@YAXXZ (g.o)
+
+// ea: 0x00792DD0 (thunk)
+void MI_InitMapList()
+{
+    MI_ResetMapList();
+}
+
+// ea: 0x0078D750
+bool GameSettingsEdit::ResponseNoJustGoBackToPauseMenu(int client)
+{
+    FEMenuEntry** v1 = g_femanager.GetIGMS(client)->menus[2]->entries;
+    ((short(__thiscall*)(void*, int))(*(void***)*v1)[6])(v1, -1);
+    return true;
+}
+
+// ea: 0x0078D970
+bool AARGameSettingsEdit::ResponseNoJustGoBackToPauseMenu(int client)
+{
+    (void)client;
+    FEMenuEntry** v1 = ((FEMenu*)g_femanager.mAARS->menus[6])->entries;
+    ((short(__thiscall*)(void*, int))(*(void***)*v1)[6])(v1, -1);
+    return true;
+}
+
+// ea: 0x0078DF80
+GameSettingsView* GameSettingsView::Me(int version)
+{
+    return (GameSettingsView*)g_femanager.GetIGMS(version)->menus[3];
+}
+
+// ea: 0x0078EEC0
+void SessionListMenu::OnCircle(int c)
+{
+    (void)c;
+    unsigned int v2 = mSortColumn + 1;
+    mSortColumn = v2;
+    if (v2 == 4)
+        mSortColumn = 0;
+}
+
+// ea: 0x00791050
+void AARScoreboardBase::Draw()
+{
+    FEMenu::Draw();
+    if (panel != nullptr)
+        panel->Draw();
+}
+
+// ea: 0x00792950
+void SpectateMenu::Draw()
+{
+    FEMenu::Draw();
+    if (panel != nullptr)
+        panel->Draw();
+}
+
+// ea: 0x007A74C0
+void AARMenuSystem::NewMenuActive()
+{
+    if (((int(__thiscall*)(void*))(*(void***)this)[24])(this) <= -1)
+    {
+        is_active = false;
+        GamePause::SetAllPaused(false);
+    }
+}
+
+// ea: 0x00793540
+void AARMenuSystem::UpdateWidescreen(bool widescreen)
+{
+    for (int i = 0; i < 11; ++i)
+        ((FEMenu*)menus[i])->UpdateWidescreen(widescreen);
+}
+
+// ea: 0x007A6FD0
+void HotJoinMenu::OnStart(int c)
+{
+    (void)c;
+    MultiplayerMgr::sInst->AttemptHotJoin(mVersion);
+    LocalClient::UpdatePlayerPorts(mVersion);
+}
+
+// ea: 0x007A2DC0
+void InGameScoreBoard::OnCross(int c)
+{
+    (void)c;
+    if (cgGlobal.teamGame)
+    {
+        m_bShowMyTeamScore = !m_bShowMyTeamScore;
+        SetPanelContents();
+    }
+    ClearButton((controller::ButtonIndex)(controller::SQUARE | controller::DOWNBUTTON));
+}
+
+// ea: 0x007AC230
+void SpectateMenu::PanelFileUnloaded(PanelFile* pf)
+{
+    (void)pf;
+    if (helpbar1 != nullptr)
+        delete helpbar1;
+    bool v4 = mVersion <= 0;
+    helpbar1 = nullptr;
+    if (!v4)
+    {
+        if (panel != nullptr)
+        {
+            panel->~PanelFile();
+            mem_heap_free(panel);
+        }
+    }
+    panel = nullptr;
+    mHeader = nullptr;
+    mMessage = nullptr;
+    mTime = nullptr;
+    mButtonPress = nullptr;
+}
+
+// ea: 0x00790C90
+void WeaponSelectMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    m_sLocalPlayerTeam = EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam;
+}
+
+// ea: 0x007A0BC0
+void VoteMapMenu::OnStart(int c)
+{
+    (void)c;
+    FEMenu* v2 = g_femanager.mIGMS[0]->menus[0];
+    int client = ((FESplitScreenMenu*)v2)->mVersion;
+    g_femanager.GetIGMS(client)->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(client)->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)v2)->ClearAll();
+}
+
+// ea: 0x007A38F0
+void AARScoreboardBase::RecalculateWinningTeam()
+{
+    int v1 = cgGlobal.teamScores[2];
+    int v2 = cgGlobal.teamScores[1];
+    int v3 = 0;
+    int* m_iSecondaryScoreAxis = this->m_iSecondaryScoreAxis;
+    bool v5;
+    while (1)
+    {
+        v5 = v1 <= v2;
+        if (v1 != v2)
+            break;
+        v1 = m_iSecondaryScoreAxis[3];
+        v2 = *m_iSecondaryScoreAxis;
+        ++v3;
+        ++m_iSecondaryScoreAxis;
+        if (v3 >= 3)
+        {
+            v5 = v1 <= v2;
+            break;
+        }
+    }
+    if (v5)
+        SetWinningTeam((team_t)(2 * (v2 <= v1) + 1));
+    else
+        SetWinningTeam(TEAM_ALLIES);
+}
+
+// ea: 0x007A8C60
+AARGameSettingsEdit::AARGameSettingsEdit(FEMenuSystem* s)
+    : GameSettingsEdit(s)
+{
+    mVersion = s->GetCurrentClient();
+}
+
+// ea: 0x00792710
+void SpectateMenu::Update(float time_inc)
+{
+    (void)time_inc;
+    if (g_femanager.GetDMS(mVersion)->mState != 1
+        && mState == kSpectatorStateSpawn
+        && gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed != nullptr)
+    {
+        PlayNavigationSound();
+        Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+        gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed(
+            (int)Player->mHandle.mHandle.mVal);
+        system->ReturnToPreviousMenu(-1);
+    }
+}
+
+// ea: 0x0078F340
+void OverlayMenu::OnSquare(int c)
+{
+    (void)c;
+    if (mState == NO_GAMES)
+    {
+        FEMenuSystem* sys = GetSystem();
+        if (sys->background == 13)
+        {
+            sys->RemoveOverlay();
+            ((SessionListMenu*)sys->menus[13])->mNeedToUpdate = true;
+        }
+        else if (sys->background == 14)
+        {
+            sys->RemoveOverlay();
+            ((SessionLanListMenu*)sys->menus[14])->mNeedToUpdate = true;
+        }
+    }
+}
+
+// ea: 0x007AB770
+void AARGameModeVote::OnCross(int c)
+{
+    (void)c;
+    math::Position3 pos;
+    math::Dir3 dir;
+    pos.v = _mm_setzero_ps();
+    dir.v = _mm_setzero_ps();
+    SoundDevice::sInst->PlaySound(
+        "UI_Highlight", DbLinkedHandle<EntityHandleDb, Entity>(), true, false,
+        pos, dir, -1.0f, -1.0f, -1.0f, -1.0f);
+    SelectMode(m_currentRow);
+}
+
+// ea: 0x007A1800
+void WeaponSelectMenu::ClearClassGauges()
+{
+    ae_array<PanelQuad*, 5>* m_pSlotGauge = this->m_pSlotGauge;
+    for (int i = 6; i != 0; --i)
+    {
+        for (int j = 0; j < 5; ++j)
+        {
+            m_pSlotGauge->m_elements[j]->SetShown(false);
+        }
+        ++m_pSlotGauge;
+    }
+}
+
+// ea: 0x007AA010
+void AARScoreboardBase::OnActivate()
+{
+    FEMenu::OnActivate();
+    AARBaseMenu::SetTimerText();
+    FEText* v2 = m_pTimerText.m_elements[1];
+    if (MultiplayerMgr::sInst->mRankedGame)
+        v2->SetText("MPGAME_AAR_RANK_GAME_OVER");
+    else
+        v2->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    m_ListBox.Clear();
+    m_iSecondaryScoreAllies[0] = 0;
+    m_iSecondaryScoreAxis[0] = 0;
+    m_iSecondaryScoreAllies[1] = 0;
+    m_iSecondaryScoreAxis[1] = 0;
+    m_iSecondaryScoreAllies[2] = 0;
+    m_iSecondaryScoreAxis[2] = 0;
+    m_cgTeamShown = TEAM_ALLIES;
+    mFirstUpdate = true;
+    ClearButton(controller::SELECT);
+}
+
+// ea: 0x007AF240
+void InGameSwitchSides::OnActivate()
+{
+    ModelMenu::OnActivate();
+    SetHigh(0, true);
+    m_eTeam = EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam;
+    if (MultiplayerMgr::sInst->mRankedGame
+        || MPUIInterface::mServerParams.mTeamBalancing != 0)
+    {
+        entries[1]->Disable(true);
+        entries[2]->Disable(true);
+        UpdateModel();
+    }
+    else
+    {
+        entries[1]->Disable(false);
+        entries[2]->Disable(false);
+        UpdateModel();
+    }
+}
+
+// ea: 0x0078E910
+void PlayOnlineMenu::UpdateTextDescription(int option)
+{
+    int highlighted = this->highlighted;
+    const char* szPlayOnlineText[5] = {
+        defaultFileName,
+        "MPFRONTEND_MM_QUICKMATCH",
+        "MPFRONTEND_MM_OPTIMATCH",
+        "MPFRONTEND_MM_CREATE_GAME",
+        "MPFRONTEND_MM_XBOX_LIVE_OPTIONS",
+    };
+    const char* szPlayOnlineDescrText[5] = {
+        defaultFileName,
+        "MPFRONTEND_QUICK_MATCH_MENU_DESCRIPTION",
+        "MPFRONTEND_OPTIMATCH_MENU_DESCRIPTION",
+        "MPFRONTEND_SELECT_GAME_CREATE_MENU_DESCRIPTION",
+        "MPFRONTEND_XBOXLIVEOPTIONS_MENU_DESCRIPTION",
+    };
+    panel->GetTextPointer("mm_text_option_title")
+        ->SetText(szPlayOnlineText[highlighted]);
+    panel->GetTextPointer("mm_text_option_description")
+        ->SetText(szPlayOnlineDescrText[highlighted]);
+    (void)option;
+}
+
+// ea: 0x0079ABE0
+void GameSettingsEdit::OnDown(int c)
+{
+    (void)c;
+    int highlighted = this->highlighted;
+    Down();
+    PanelQuad* mQuad = mScrollBarDownFader.mQuad;
+    if (mQuad != nullptr)
+    {
+        mScrollBarDownFader.mAlpha = 1.0f;
+        mScrollBarDownFader.mFading = true;
+        mScrollBarDownFader.mAlphaTo = 0.5f;
+        mScrollBarDownFader.mTime = 0.5f;
+        mScrollBarDownFader.mAlphaDelta = (float)fabs(0.5);
+        mQuad->SetAlpha(1.0f);
+    }
+    else
+    {
+        mScrollBarDownFader.mFading = false;
+    }
+    UpdateSplitScreenOptions(highlighted);
+    UpdateHighlight();
+}
+
+// ea: 0x0079B0A0
+void AARGameSettingsEdit::OnActivate()
+{
+    GameSettingsEdit::OnActivate();
+    panel->GetPointer("bkg")->SetShown(true);
+    panel->GetTextPointer("text_timer_numbers")->SetShown(true);
+    panel->GetTextPointer("text_timer_text")->SetShown(true);
+    panel->GetTextPointer("text_timer_text")
+        ->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    panel->GetTextPointer("text_title_AAR")->SetShown(true);
+    panel->GetTextPointer("text_title_AAR")
+        ->SetText("MPGAME_AFTER_ACTION_REVIEW");
+}
+
+// ea: 0x007A5EE0
+void AARGameModeVote::Draw()
+{
+    if (m_bHighlightScrollArrowLeft)
+        m_bHighlightScrollArrowLeft = false;
+    else
+        m_pScrollArrow.m_elements[0]->SetAlpha(0.5f);
+    if (m_bHighlightScrollArrowRight)
+        m_bHighlightScrollArrowRight = false;
+    else
+        m_pScrollArrow.m_elements[1]->SetAlpha(0.5f);
+    if (panel != nullptr)
+        panel->Draw();
+    FEMenu::Draw();
+    m_pScrollArrow.m_elements[1]->SetShown(m_bShowScrollArrowRight);
+    m_pScrollArrow.m_elements[0]->SetShown(m_bShowScrollArrowLeft);
+    if (m_ePanelToSwitchTo != -1)
+        system->MakeActive(m_ePanelToSwitchTo);
+}
+
+// ea: 0x007B0590
+InGameScoreBoard::InGameScoreBoard(FEMenuSystem* pauseMenuSystem)
+    : FEMenu(pauseMenuSystem, 0, 320, 260, 8, 0)
+{
+    m_bPreviousCursorState = true;
+    m_co32PlayerNameColor.i = 0;
+    m_co32ScoreTextColor.i = 0;
+    m_co32KillsTextColor.i = 0;
+    m_co32DeathTextColor.i = 0;
+    m_bShowMyTeamScore = true;
+    m_iShowMyTeamScorePadOffset = 0;
+    m_iShowOtherTeamScorePadOffset = 0;
+    m_bActivated = false;
+    new (&m_ListBox) UIPlayerListBox(12, 7, 16, true);
+    memset(&m_pBackgroundArt, 0, sizeof(m_pBackgroundArt));
+    m_pTeamStripQuad.m_elements[0] = nullptr;
+    m_pTeamStripQuad.m_elements[1] = nullptr;
+    m_pTeamStripQuad.m_elements[2] = nullptr;
+    memset(&m_pUppercaseText, 0, sizeof(m_pUppercaseText));
+    memset(&m_pSlotPlayerNameText, 0, sizeof(m_pSlotPlayerNameText));
+    memset(&m_pSlotClassText, 0, sizeof(m_pSlotClassText));
+    memset(&m_pSlotScoreText, 0, sizeof(m_pSlotScoreText));
+    memset(&m_pSlotKillsText, 0, sizeof(m_pSlotKillsText));
+    memset(&m_pSlotDeathText, 0, sizeof(m_pSlotDeathText));
+    flags = (int16_t)(flags | 0x180);
+    default_color_scheme = 5;
+    mVersion = pauseMenuSystem->GetCurrentClient();
 }
 
 // ea: 0x00792280

@@ -1711,7 +1711,6 @@ public:
     virtual void Draw();            // ?Draw@FESplitScreenMenu@@UAEXXZ
     virtual void OnActivate();      // ?OnActivate@FESplitScreenMenu@@UAEXXZ
     virtual void UpdateSplitScreen(); // ?UpdateSplitScreen@FESplitScreenMenu@@UAEXXZ
-    virtual void SwapMenus() = 0;   // slot 63 (pure; empty base 0x7930C0)
     bool IsSplitScreen();           // 0x5AF6D0
     void AddMainEntry(int index, FEText* text);            // 0x793150
     FEComboBox* AddMainComboBox(int index, int numOptions,
@@ -1737,6 +1736,7 @@ public:
     static PanelFile* mBackground;  // ?mBackground@FESplitScreenMenu@@1PAVPanelFile@@A
 protected:
     void SetPanelFileBackground(PanelFile* pf);  // 0x7931A0
+    virtual void SwapMenus();       // ?SwapMenus@FESplitScreenMenu@@MAEXXZ (mp_shell.o 0x7930C0)
 };
 static_assert(sizeof(FESplitScreenMenu) == 0x68,
               "FESplitScreenMenu size mismatch");
@@ -2984,6 +2984,7 @@ public:
     color32 mHighlightedUnselectedTextColor; // +0xD8
     int     mHighlightedRow;                 // +0xDC
 
+    UIHighlightListBox() {}  // placeholder for member construction (never binary-emitted alone)
     UIHighlightListBox(int visibleRows, int visibleColumns,
                        int maxDataRows, bool bIsWrapping);  // 0x59BF60
     virtual void Clear();             // 0x5909B0
@@ -3013,6 +3014,7 @@ public:
 
     UIPlayerListBox(int visibleRows, int visibleColumns,
                     int maxDataRows, bool bIsWrapping);  // 0x59C020
+    UIPlayerListBox() {}  // placeholder for member construction (never binary-emitted alone)
     virtual void Clear();        // 0x590A00
     virtual void ClearRow(int row);  // 0x590AB0
 

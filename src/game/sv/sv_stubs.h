@@ -335,6 +335,7 @@ struct AARMenuSystem {
     void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z (mp_shell.o)
 protected:
     void CheckForNoMenus();       // ?CheckForNoMenus@AARMenuSystem@@IAEXXZ (mp_shell.o 0x793520)
+    virtual void NewMenuActive(); // ?NewMenuActive@AARMenuSystem@@MAEXXZ (mp_shell.o)
 public:
     bool GetPanelFileUsers(const char* name,
                            ae_sized_array<PanelFileUser*, 12>& array);  // mp.o

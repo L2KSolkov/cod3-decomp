@@ -287,6 +287,7 @@ public:
     sServerCreateParams* mCurrentServerParams;  // +0x118
 
     GameSettingsView(FEMenuSystem* s);  // ??0GameSettingsView@@QAE@PAVFEMenuSystem@@@Z (mp_shell.o 0x79CCF0)
+    static GameSettingsView* Me(int version);  // ?Me@GameSettingsView@@SAPAV1@H@Z
     virtual void Init();                 // ?Init@GameSettingsView@@UAEXXZ
     virtual void OnActivate();           // ?OnActivate@GameSettingsView@@UAEXXZ
     virtual void Draw();                 // ?Draw@GameSettingsView@@UAEXXZ
@@ -318,6 +319,7 @@ static_assert(sizeof(GameSettingsView) == 0x11C,
 
 class GameSettingsEdit : public FESplitScreenMenu {
 public:
+    GameSettingsEdit(FEMenuSystem* s);  // ??0GameSettingsEdit@@QAE@PAVFEMenuSystem@@@Z
     int mVersion;                        // +0x68
     sServerCreateParams* mNextServerParams;  // +0x6C
     int iLastOptionSelected;             // +0x70
@@ -346,9 +348,11 @@ public:
     virtual void OnStart(int c);         // ?OnStart@GameSettingsEdit@@UAEXH@Z
     void OnDeactivate(FESplitScreenMenu* m);  // ?OnDeactivate@GameSettingsEdit@@QAEXPAVFESplitScreenMenu@@@Z
     virtual void OnUp(int c);            // ?OnUp@GameSettingsEdit@@UAEXH@Z
+    virtual void OnDown(int c);          // ?OnDown@GameSettingsEdit@@UAEXH@Z
     virtual void OnRight(int c);         // ?OnRight@GameSettingsEdit@@UAEXH@Z
 protected:
     static bool ResponseYesApplyNow(int client);  // ?ResponseYesApplyNow@GameSettingsEdit@@KA_NH@Z
+    static bool ResponseNoJustGoBackToPauseMenu(int client);  // ?ResponseNoJustGoBackToPauseMenu@GameSettingsEdit@@KA_NH@Z
     void SetGameTypeDefaults();                   // ?SetGameTypeDefaults@GameSettingsEdit@@IAEXXZ
     bool ResponseNoJustGoBackToPauseMenuHelper();  // ?ResponseNoJustGoBackToPauseMenuHelper@GameSettingsEdit@@IAE_NXZ
     bool ResponseYesApplyNowHelper();             // ?ResponseYesApplyNowHelper@GameSettingsEdit@@IAE_NXZ
@@ -371,9 +375,12 @@ class AARGameSettingsEdit : public GameSettingsEdit {
 public:
     static AARGameSettingsEdit* Me(int version);  // ?Me@AARGameSettingsEdit@@SAPAV1@H@Z
     static bool ResponseYesApplyNow(int index);   // ?ResponseYesApplyNow@AARGameSettingsEdit@@SA_NH@Z
+    static bool ResponseNoJustGoBackToPauseMenu(int client);  // ?ResponseNoJustGoBackToPauseMenu@AARGameSettingsEdit@@SA_NH@Z
+    AARGameSettingsEdit(FEMenuSystem* s);  // ??0AARGameSettingsEdit@@QAE@PAVFEMenuSystem@@@Z
     virtual ~AARGameSettingsEdit();   // ??1AARGameSettingsEdit@@UAE@XZ
     virtual void Update(float time_inc);  // ?Update@AARGameSettingsEdit@@UAEXM@Z
     virtual void SetPanelFile(PanelFile* pf);     // ?SetPanelFile@AARGameSettingsEdit@@UAEXPAVPanelFile@@@Z
+    virtual void OnActivate();        // ?OnActivate@AARGameSettingsEdit@@UAEXXZ
 private:
     void SetTimerText();              // ?SetTimerText@AARGameSettingsEdit@@AAEXXZ
 };
@@ -538,6 +545,7 @@ public:
     static SessionListMenu* Me();  // ?Me@SessionListMenu@@SAPAV1@XZ
     virtual void Draw();           // ?Draw@SessionListMenu@@UAEXXZ
     virtual void OnTriangle(int c);// ?OnTriangle@SessionListMenu@@UAEXH@Z
+    virtual void OnCircle(int c);  // ?OnCircle@SessionListMenu@@UAEXH@Z
     virtual void OnSquare(int c);  // ?OnSquare@SessionListMenu@@UAEXH@Z
     virtual void OnUp(int c);      // ?OnUp@SessionListMenu@@UAEXH@Z
     virtual void OnDown(int c);    // ?OnDown@SessionListMenu@@UAEXH@Z
@@ -750,6 +758,7 @@ public:
     VoteMapMenu(FEMenuSystem* pauseMenuSystem);  // ??0VoteMapMenu@@QAE@PAVFEMenuSystem@@@Z
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@VoteMapMenu@@UAEXPAVFEMenu@@@Z
     virtual void Draw();                   // ?Draw@VoteMapMenu@@UAEXXZ
+    virtual void OnStart(int c);           // ?OnStart@VoteMapMenu@@UAEXH@Z
 };
 static_assert(sizeof(VoteMapMenu) == 0x54,
               "VoteMapMenu size mismatch");
@@ -790,6 +799,7 @@ public:
     float mOuterRadius;        // +0xFC
     float mDistance;           // +0x100
     float mAnimSpeed;          // +0x104
+    uint8_t _pad108[0x110 - 0x108];  // +0x108 (align gap)
 
     ModelMenu(FEMenuSystem* s, int num_entries);  // ??0ModelMenu@@QAE@PAVFEMenuSystem@@H@Z
     virtual ~ModelMenu();    // ??1ModelMenu@@UAE@XZ
@@ -811,9 +821,16 @@ static_assert(sizeof(ModelMenu) == 0x110,
 class __declspec(align(16)) WeaponSelectMenu : public ModelMenu {
 public:
     bool Allow_Exit;               // +0x110
-    uint8_t _pad[0x138 - 0x111];
+    uint8_t _pad111[3];
+    FEComboBox* weaponCombo;       // +0x114
+    ae_array<PanelQuad*, 7> m_pClassIcons;   // +0x118
+    int  m_playerclass;            // +0x134
     FEText* m_pClassOptionHeader;  // +0x138
-    uint8_t _pad2[0x1F0 - 0x13C];
+    ae_array<FEText*, 4> m_pTextKitLine;     // +0x13C
+    ae_array<FEText*, 6> m_pSlotTextLine;    // +0x14C
+    ae_array<PanelQuad*, 5> m_pSlotGauge[6]; // +0x164
+    MultiplayerMgr* m_pMPM;        // +0x1DC
+    short m_sLocalPlayerTeam;      // +0x1E0
 
     WeaponSelectMenu(FEMenuSystem* pauseMenuSystem);  // ??0WeaponSelectMenu@@QAE@PAVFEMenuSystem@@@Z
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@WeaponSelectMenu@@UAEXPAVFEMenu@@@Z
@@ -825,15 +842,15 @@ public:
     virtual void Select(int entryNum);     // ?Select@WeaponSelectMenu@@UAEXH@Z
     virtual void OnTriangle(int controllerIndex);  // ?OnTriangle@WeaponSelectMenu@@UAEXH@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z
+    virtual void Update(float time_inc);  // ?Update@WeaponSelectMenu@@UAEXM@Z
 protected:
-    int  m_playerclass;                  // +0x134
-    short m_sLocalPlayerTeam;            // +0x1E0
     int PlayerClassToLocalIndex(int playerclass);  // ?PlayerClassToLocalIndex@WeaponSelectMenu@@IAEHH@Z
     EPlayerClass LocalIndexToPlayerClass(int index);  // ?LocalIndexToPlayerClass@WeaponSelectMenu@@IAE?AW4EPlayerClass@@H@Z
     void ActivationToggle(bool a_bToggle);  // ?ActivationToggle@WeaponSelectMenu@@IAEX_N@Z
     void SetClassOptionHeader();           // ?SetClassOptionHeader@WeaponSelectMenu@@IAEXXZ
     void CloseMenu();                      // ?CloseMenu@WeaponSelectMenu@@IAEXXZ
     void SetClassGauges();                 // ?SetClassGauges@WeaponSelectMenu@@IAEXXZ
+    void ClearClassGauges();               // ?ClearClassGauges@WeaponSelectMenu@@IAEXXZ
     void SetSwitchKit();                   // ?SetSwitchKit@WeaponSelectMenu@@IAEXXZ
     void SetPanelFileSplitScreen(PanelFile* pf);  // ?SetPanelFileSplitScreen@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z
     void SetPanelFileMain(PanelFile* pf);  // ?SetPanelFileMain@WeaponSelectMenu@@IAEXPAVPanelFile@@@Z
@@ -852,6 +869,7 @@ public:
     void OnDeactivate(ModelMenu* m);              // ?OnDeactivate@InGameSwitchSides@@QAEXPAVModelMenu@@@Z
     virtual void OnTriangle(int c);               // ?OnTriangle@InGameSwitchSides@@UAEXH@Z
     virtual void OnCross(int c);                  // ?OnCross@InGameSwitchSides@@UAEXH@Z
+    virtual void OnActivate();                    // ?OnActivate@InGameSwitchSides@@UAEXXZ
     virtual void OnUp(int c);                     // ?OnUp@InGameSwitchSides@@UAEXH@Z
     virtual void OnDown(int c);                   // ?OnDown@InGameSwitchSides@@UAEXH@Z
     virtual void SetPanelFile(PanelFile* pf);     // ?SetPanelFile@InGameSwitchSides@@UAEXPAVPanelFile@@@Z
@@ -880,21 +898,36 @@ public:
         Entity* pEntity;    // +0x08
     };
     ae_array<sScoreboardPlayerSlot, 16> m_playerList;  // +0x4C
-    uint8_t _pad1[0x18C - (0x4C + 16 * 12)];
+    bool m_bPreviousCursorState;           // +0x10C
+    uint8_t _pad10D[3];
+    ae_array<PanelQuad*, 15> m_pBackgroundArt;   // +0x110
+    ae_array<PanelQuad*, 3> m_pTeamStripQuad;    // +0x14C
+    PanelQuad* m_pScrollbarPlayerHilite;         // +0x158
+    ae_array<FEText*, 12> m_pSlotTextName;       // +0x15C
     ae_array<FEText*, 13> m_pUppercaseText;  // +0x18C
-    uint8_t _pad1b[0x2C0 - (0x18C + 52)];
+    ae_array<FEText*, 12> m_pSlotClassText;      // +0x1C0
+    ae_array<FEText*, 12> m_pSlotPlayerNameText; // +0x1F0
+    color32 m_co32PlayerNameColor;               // +0x220
+    ae_array<FEText*, 12> m_pSlotScoreText;      // +0x224
+    color32 m_co32ScoreTextColor;                // +0x254
+    ae_array<FEText*, 12> m_pSlotKillsText;      // +0x258
+    color32 m_co32KillsTextColor;                // +0x288
+    ae_array<FEText*, 12> m_pSlotDeathText;      // +0x28C
+    color32 m_co32DeathTextColor;                // +0x2BC
     bool m_bShowMyTeamScore;           // +0x2C0
     int  m_iShowMyTeamScorePadOffset;  // +0x2C4
     int  m_iShowOtherTeamScorePadOffset;  // +0x2C8
     int  m_cgTeamShown;                // +0x2CC (team_t)
     int  mVersion;                     // +0x2D0
     bool m_bActivated;                 // +0x2D4
-    uint8_t _pad2[0x2D8 - (0x2D4 + 1)];
+    uint8_t _pad2D5[3];
     UIPlayerListBox m_ListBox;         // +0x2D8
     uint8_t _pad3[0x3E0 - (0x2D8 + 0x108)];
 
+    InGameScoreBoard(FEMenuSystem* pauseMenuSystem);  // ??0InGameScoreBoard@@QAE@PAVFEMenuSystem@@@Z
     virtual void Init();              // ?Init@InGameScoreBoard@@UAEXXZ
     virtual void OnTriangle(int c);   // ?OnTriangle@InGameScoreBoard@@UAEXH@Z
+    virtual void OnCross(int c);      // ?OnCross@InGameScoreBoard@@UAEXH@Z
     virtual void OnSquare(int c);     // ?OnSquare@InGameScoreBoard@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@InGameScoreBoard@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@InGameScoreBoard@@UAEXH@Z
@@ -950,9 +983,15 @@ public:
     uint8_t _pad1[0x1CC - (0x1C8 + 1)];
     ae_array<PanelQuad*, 6> m_pYourTeamScore;  // +0x1CC
     ae_array<FEText*, 13> m_pUppercaseText;  // +0x1E4
-    uint8_t _pad2[0x228 - (0x1E4 + 52)];
+    bool m_bShowMyTeamScore;           // +0x218
+    uint8_t _pad219[3];
+    int  m_iShowMyTeamScorePadOffset;  // +0x21C
+    int  m_iShowOtherTeamScorePadOffset;  // +0x220
+    int  m_cgTeamShown;                // +0x224 (team_t)
     UIPlayerListBox m_ListBox;         // +0x228
-    uint8_t _pad3[0x34C - (0x228 + 0x108)];
+    bool mFirstUpdate;                 // +0x330
+    int  m_iSecondaryScoreAxis[3];     // +0x334
+    int  m_iSecondaryScoreAllies[3];   // +0x340
 
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AARScoreboardBase@@UAEXPAVPanelFile@@@Z
     AARScoreboardBase(FEMenuSystem* pauseMenuSystem);  // ??0AARScoreboardBase@@QAE@PAVFEMenuSystem@@@Z
@@ -965,10 +1004,13 @@ public:
     virtual void OnUp(int c);                       // ?OnUp@AARScoreboardBase@@UAEXH@Z
     virtual void OnDown(int c);                     // ?OnDown@AARScoreboardBase@@UAEXH@Z
     virtual void Update(float time_inc);            // ?Update@AARScoreboardBase@@UAEXM@Z
+    virtual void Draw();                            // ?Draw@AARScoreboardBase@@UAEXXZ
+    virtual void OnActivate();                      // ?OnActivate@AARScoreboardBase@@UAEXXZ
     void OnDeactivate(AARBaseMenu* m);              // ?OnDeactivate@AARScoreboardBase@@QAEXPAVAARBaseMenu@@@Z
 protected:
     int GetAlliesScore();             // ?GetAlliesScore@AARScoreboardBase@@IAEHXZ
     int GetAxisScore();               // ?GetAxisScore@AARScoreboardBase@@IAEHXZ
+    void RecalculateWinningTeam();    // ?RecalculateWinningTeam@AARScoreboardBase@@IAEXXZ
 };
 static_assert(sizeof(AARScoreboardBase) == 0x34C,
               "AARScoreboardBase size mismatch");
@@ -1096,9 +1138,13 @@ public:
     virtual void OnUp(int c);         // ?OnUp@AARGameModeVote@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@AARGameModeVote@@UAEXH@Z
     virtual void OnActivate();        // ?OnActivate@AARGameModeVote@@UAEXXZ
+    virtual void OnCross(int c);      // ?OnCross@AARGameModeVote@@UAEXH@Z
+    virtual void Draw();              // ?Draw@AARGameModeVote@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@AARGameModeVote@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc);  // ?Update@AARGameModeVote@@UAEXM@Z
     virtual ~AARGameModeVote();       // ??1AARGameModeVote@@UAE@XZ
+protected:
+    void SelectMode(int indexMode);   // ?SelectMode@AARGameModeVote@@IAEXH@Z
 };
 static_assert(sizeof(AARGameModeVote) == 0x20C,
               "AARGameModeVote size mismatch");
@@ -1143,6 +1189,7 @@ public:
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@HotJoinMenu@@UAEXPAVFEMenu@@@Z
     virtual void Update(float time_inc);   // ?Update@HotJoinMenu@@UAEXM@Z
     virtual void OnUp(int c);              // ?OnUp@HotJoinMenu@@UAEXH@Z
+    virtual void OnStart(int c);           // ?OnStart@HotJoinMenu@@UAEXH@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@HotJoinMenu@@UAEXXZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@HotJoinMenu@@UAEXPAVPanelFile@@@Z
     virtual void Draw();                   // ?Draw@HotJoinMenu@@UAEXXZ
@@ -1177,6 +1224,9 @@ public:
     virtual void OnTrueCircle(int c);      // ?OnTrueCircle@SpectateMenu@@UAEXH@Z
     virtual void OnRight(int c);           // ?OnRight@SpectateMenu@@UAEXH@Z
     virtual void OnActivate(int prev);     // ?OnActivate@SpectateMenu@@UAEXH@Z
+    virtual void Update(float time_inc);   // ?Update@SpectateMenu@@UAEXM@Z
+    virtual void Draw();                   // ?Draw@SpectateMenu@@UAEXXZ
+    virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@SpectateMenu@@UAEXPAVPanelFile@@@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@SpectateMenu@@UAEXXZ
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@SpectateMenu@@UAEX_N@Z
     void UpdateState();                    // ?UpdateState@SpectateMenu@@QAEXXZ
@@ -1261,6 +1311,7 @@ public:
     virtual void Select(int entry_num);   // ?Select@OverlayMenu@@UAEXH@Z
     virtual void OnUp(int c);             // ?OnUp@OverlayMenu@@UAEXH@Z
     virtual void OnDown(int c);           // ?OnDown@OverlayMenu@@UAEXH@Z
+    virtual void OnSquare(int c);         // ?OnSquare@OverlayMenu@@UAEXH@Z
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
     virtual ~OverlayMenu();               // ??1OverlayMenu@@UAE@XZ
 protected:
