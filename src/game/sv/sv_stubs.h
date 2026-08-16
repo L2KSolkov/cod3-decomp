@@ -331,6 +331,8 @@ struct AARMenuSystem {
     void Draw();                  // mp.o
     void UpdateSplitScreen();     // mp.o
     void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
+    bool mPreviousWidescreen;     // +0x2C
+    void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z (mp_shell.o)
 protected:
     void CheckForNoMenus();       // ?CheckForNoMenus@AARMenuSystem@@IAEXXZ (mp_shell.o 0x793520)
 public:

@@ -165,6 +165,14 @@ struct Mapinfo_t {
     char map_location_string[32];  // +0x52
 };
 extern Mapinfo_t* g_TheMapInfo;  // ?g_TheMapInfo@@3PAUMapinfo_t@@A @ 0x1227BC8
+extern char aMpfrontendMerv[];   // @ 0xE386CA (map display-name table, 114-byte stride)
+extern char aMploadingMervi[];   // @ 0xE386DA (map location table)
+extern char aMploadingMervi_0[]; // @ 0xE386EA (map title table)
+extern char aMpMerv[];           // @ 0xE3870A (map short-name table)
+extern const char* const szPlayLanMenuDescriptionReferences[3];  // @ 0xE381BC
+extern int dword_F641D0[1580 * 802];   // cg.o
+extern int dword_F6A290[4 * 802];      // cg.o
+extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
 
 int scoreboard_player_sorter(const void* left, const void* right);
 
@@ -176,6 +184,16 @@ enum ESpectatorState : int {
     kSpectatorStateDead = 0x4,
     kSpectatorStateDeadCanSpawn = 0x5,
     kSpectatorStateCount = 0x6,
+};
+
+enum team_t : int {
+    TEAM_FREE = 0,
+    TEAM_BAD = 0,
+    TEAM_AXIS = 1,
+    TEAM_ALLIES = 2,
+    TEAM_NEUTRAL = 3,
+    TEAM_SPECTATOR = 3,
+    TEAM_DEAD = 4,
 };
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
@@ -201,6 +219,7 @@ extern cgGlobal_t cgGlobal;   // 0xF5FE30 (cg.o)
 struct AARMenuSystem;
 namespace LocalClient {
 bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)
+int  PortToClient(int port);           // ?PortToClient@LocalClient@@YAHH@Z (cl.o)
 }
 
 unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateSessionMenu@@1EA @ 0x1388D54
@@ -2660,4 +2679,329 @@ AARScoreboardWinner::AARScoreboardWinner(FEMenuSystem* pauseMenuSystem)
 AARScoreboardLoser::AARScoreboardLoser(FEMenuSystem* pauseMenuSystem)
     : AARScoreboardBase(pauseMenuSystem)
 {
+}
+
+// ============================================================================
+// Batch 9: remaining menu Draw/Update/ctor handlers
+// ============================================================================
+
+// ea: 0x0078E7F0
+void PlayOnlineMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    movie_manager::render();
+    FEMenu::Draw();
+}
+
+// ea: 0x0078F7A0
+void InGameOverlay::OnUp(int c)
+{
+    m_ListBox.OnUp(c);
+    if (--m_currSelection < 0)
+    {
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+    }
+}
+
+// ea: 0x0078FB30
+void AAROverlay::OnUp(int c)
+{
+    m_ListBox.OnUp(c);
+    if (--m_currSelection < 0)
+    {
+        m_currSelection = 1;
+        m_ListBox.SelectLine(1);
+    }
+}
+
+// ea: 0x00790580
+VoteGameTypeMenu::VoteGameTypeMenu(FEMenuSystem* pauseMenuSystem)
+    : FEMenu(pauseMenuSystem, 2, 320, 260, 8, 0)
+{
+    mPlayerMgr = nullptr;
+    mGameTypeList = nullptr;
+}
+
+// ea: 0x007907D0
+VoteMapMenu::VoteMapMenu(FEMenuSystem* pauseMenuSystem)
+    : FEMenu(pauseMenuSystem, 2, 320, 260, 8, 0)
+{
+    mPlayerMgr = nullptr;
+    mMapList = nullptr;
+    default_color_scheme = 9;
+}
+
+// ea: 0x00790D20
+void InGameScoreBoard::UpdateSplitScreen()
+{
+    if (panel != nullptr)
+        panel->UpdateSplitScreen(unk_F6A284[802 * mVersion],
+                                 unk_F6A280[802 * mVersion]);
+}
+
+// ea: 0x00790D60
+void InGameScoreBoard::OnDeactivate(FEMenu* m)
+{
+    (void)m;
+    ClearAllButtons();
+    dword_F641D0[1580 * currCl] = 0;
+    m_bShowMyTeamScore = true;
+    m_ListBox.Clear();
+}
+
+// ea: 0x00790DA0
+void InGameScoreBoard::Draw()
+{
+    FEMenu::Draw();
+    if (panel != nullptr)
+        panel->Draw();
+}
+
+// ea: 0x00790F90
+void AARBaseMenu::OnStart(int c)
+{
+    unsigned int v3 = LocalClient::PortToClient(c);
+    if (v3 <= 1 && dword_F6A290[802 * v3] == 2)
+        system->MakeActiveAndReturn(9);
+}
+
+// ea: 0x00791130
+void AARScoreboardLoser::Draw()
+{
+    FEMenu::Draw();
+    if (panel != nullptr)
+        panel->Draw();
+}
+
+// ea: 0x00791320
+void AARPersonalStats::OnR1(int c)
+{
+    (void)c;
+    m_bHighlightScrollArrowRight = true;
+    m_ePanelToSwitchTo = MPUIInterface::mNextServerParams.mEnableAARVote != 1 ? 0 : 3;
+}
+
+// ea: 0x00791360
+void AARPersonalStats::OnL1(int c)
+{
+    (void)c;
+    if (cgGlobal.teamGame)
+        system->MakeActive(1);
+    else
+        system->MakeActive(0);
+    m_bHighlightScrollArrowLeft = true;
+}
+
+// ea: 0x00791520
+void AARMapVote::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    (void)pPanelFile;
+    Cleanup();
+    m_ListBox.RemoveAllItems();
+}
+
+// ea: 0x00791930
+void AARGameModeVote::OnR1(int c)
+{
+    (void)c;
+    m_bHighlightScrollArrowRight = true;
+    m_ePanelToSwitchTo = 4;
+}
+
+// ea: 0x00791E60
+void AARPauseMenu::UnPause(int client)
+{
+    system->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(client)->MakeActive(-1);
+    m_iLastSelection = -1;
+    ClearAllButtons();
+}
+
+// ea: 0x00791EA0
+void AARPauseMenu::OnTriangle(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(0)->MakeActive(-1);
+    m_iLastSelection = -1;
+    ClearAllButtons();
+}
+
+// ea: 0x00791EE0
+void AARPauseMenu::OnStart(int c)
+{
+    (void)c;
+    system->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS(0)->MakeActive(-1);
+    m_iLastSelection = -1;
+    ClearAllButtons();
+}
+
+// ea: 0x00792240
+void AARPauseMenu::Draw()
+{
+    if (panel != nullptr)
+        panel->Draw();
+    FEMenu::Draw();
+}
+
+// ea: 0x00792E40
+char* remove_underscores(char* str)
+{
+    int v2 = (int)strlen(str);
+    char* v3 = str;
+    if (v2 > 0)
+    {
+        do
+        {
+            if (*v3 == 95)
+                *v3 = 32;
+            ++v3;
+            --v2;
+        } while (v2);
+    }
+    return str;
+}
+
+// ea: 0x00792E80
+char* MI_GetMapDisplayName(char id)
+{
+    if (g_NumTotalMaps <= 0)
+        return "NULL";
+    int v1 = 0;
+    char* i = byte_E386C9;
+    while (*i != id)
+    {
+        if (++v1 >= g_NumTotalMaps)
+            return "NULL";
+        i += 114;
+    }
+    return &aMpfrontendMerv[114 * v1];
+}
+
+// ea: 0x00792EC0
+char* MI_GetMapLocation(char id)
+{
+    if (g_NumTotalMaps <= 0)
+        return "NULL";
+    int v1 = 0;
+    char* i = byte_E386C9;
+    while (*i != id)
+    {
+        if (++v1 >= g_NumTotalMaps)
+            return "NULL";
+        i += 114;
+    }
+    return &aMploadingMervi[114 * v1];
+}
+
+// ea: 0x00792F00
+char* MI_GetMapTitle(char id)
+{
+    if (g_NumTotalMaps <= 0)
+        return "NULL";
+    int v1 = 0;
+    char* i = byte_E386C9;
+    while (*i != id)
+    {
+        if (++v1 >= g_NumTotalMaps)
+            return "NULL";
+        i += 114;
+    }
+    return &aMploadingMervi_0[114 * v1];
+}
+
+// ea: 0x00792F40
+char MI_GetMapPack(char id)
+{
+    if (g_NumTotalMaps <= 0)
+        return -1;
+    int v1 = 0;
+    char* i = byte_E386C9;
+    while (*i != id)
+    {
+        if (++v1 >= g_NumTotalMaps)
+            return -1;
+        i += 114;
+    }
+    return g_TheMapInfo[v1].map_pack;
+}
+
+// ea: 0x00792F80
+char* MI_GetMapShortname(char id)
+{
+    if (g_NumTotalMaps <= 0)
+        return "NULL";
+    int v1 = 0;
+    char* i = byte_E386C9;
+    while (*i != id)
+    {
+        if (++v1 >= g_NumTotalMaps)
+            return "NULL";
+        i += 114;
+    }
+    return &aMpMerv[114 * v1];
+}
+
+// ea: 0x00793460
+void ModelMenu::DebugRender()
+{
+}
+
+// ea: 0x007934A0
+void AARMenuSystem::Draw()
+{
+    if (mPreviousWidescreen != (cg_widescreen.integer != 0))
+    {
+        // FEMenuSystem vtable slot 2 = UpdateWidescreen (shell.o 0x57DF20)
+        ((void(__thiscall*)(void*, bool))(*(void***)this)[2])(
+            this, cg_widescreen.integer != 0);
+        mPreviousWidescreen = cg_widescreen.integer != 0;
+    }
+    // FEMenuSystem vtable slot 19 = Draw (shell.o 0x570E90)
+    ((void(__thiscall*)(void*))(*(void***)this)[19])(this);
+}
+
+// ea: 0x0079C5E0
+void PlayLanMenu::SetDescriptionText()
+{
+    int mSelectedLine = mListBox.mSelectedLine;
+    FEText* v3 = m_pText[2];
+    m_pText[2]->SetText(szPlayLanMenuDescriptionReferences[mListBox.mTopLine]
+                                                    [mSelectedLine]);
+}
+
+// ea: 0x007A19E0
+void WeaponSelectMenu::CloseMenu()
+{
+    int mReturnMenu = this->mReturnMenu;
+    Allow_Exit = true;
+    if (mReturnMenu < 0)
+    {
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(mVersion);
+        ((PauseMenu*)IGMS->menus[0])->UnPause(mVersion);
+    }
+    else
+    {
+        system->ReturnToPreviousMenu(mReturnMenu);
+    }
+}
+
+// ea: 0x007A1B60
+void InGameScoreBoard::RecalculateWinningTeam()
+{
+    if (cgGlobal.teamScores[2] <= cgGlobal.teamScores[1])
+        SetWinningTeam(2 * (cgGlobal.teamScores[1] <= cgGlobal.teamScores[2]) + 1);
+    else
+        SetWinningTeam(TEAM_ALLIES);
+}
+
+// ea: 0x007A3F80
+void AARScoreboardWinner::SetPanelFile(PanelFile* pf)
+{
+    AARScoreboardBase::SetPanelFile(pf);
+    m_pYourTeamScore[4]->SetShown(true);
+    m_pYourTeamScore[5]->SetShown(false);
 }
