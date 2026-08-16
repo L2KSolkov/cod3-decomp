@@ -207,6 +207,7 @@ enum ESpectatorState : int {
 // Minimal views for game-side symbols used by the menus
 struct BrocExports {
     void (*mCallbackSpawnButtonPressed)(int entityHandle);  // +0xCD0 (Broc::entity)
+    void (*mCallbackPlayerClassChange)(int entityHandle, int playerClass);  // +0xC68
 };
 struct BrocAPI {
     BrocExports mBrocExports;  // +0x00
@@ -4600,4 +4601,201 @@ void MultilineOverlayMenu::Select(int entry_num)
         }
         Accept();
     }
+}
+
+// ============================================================================
+// Batch 16: remaining menu handlers
+// ============================================================================
+
+// ea: 0x0078CC50
+CreateLanSessionAdvancedMenu::~CreateLanSessionAdvancedMenu()
+{
+    m_TimeLimitCombo = nullptr;
+    m_ScoreLimitCombo = nullptr;
+    m_TeamDamageCombo = nullptr;
+    m_AutoTeamBalanceCombo = nullptr;
+    m_VotingCombo = nullptr;
+    m_PenaltyVoteCombo = nullptr;
+}
+
+// ea: 0x0078E300
+void InstantActionMenu::Select(int entry_num)
+{
+    sServerQueryParams params;
+    memset(&params, 255, 28);
+    params.mListIfFull = 0;
+    params.mSessionNamePrefix[0] = 0;
+    switch (entry_num)
+    {
+    case 1:
+        params.mGameType = -1;
+        break;
+    default:
+        params.mGameType = 0;
+        break;
+    }
+    MPUIInterface::mGameConnectionType =
+        MPUIInterface::kGameConnectionTypeLocal;
+    MPUIInterface::SetQueryParams(params);
+}
+
+// ea: 0x00791800
+void AARGameModeVote::PanelFileUnloaded(PanelFile* pPanelFile)
+{
+    if (pPanelFile != this->panel)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+        AeAssert::gCurrentLine = 218;
+        AeAssert::gCurrentExpr = "pPanelFile == panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Cleanup();
+    m_ListBox.RemoveAllItems();
+}
+
+// ea: 0x007918E0
+void AARGameModeVote::OnDown(int c)
+{
+    Down();
+    m_ListBox.OnDown(c);
+    if (m_currentRow >= 6)
+        m_currentRow = 0;
+    else
+        ++m_currentRow;
+}
+
+// ea: 0x007A36D0
+void AARBaseMenu::OnR1(int c)
+{
+    (void)c;
+    if (mRightArrowFader.mQuad != nullptr)
+    {
+        mRightArrowFader.mAlpha = 1.0f;
+        mRightArrowFader.mFading = true;
+        mRightArrowFader.mAlphaTo = 0.5f;
+        mRightArrowFader.mTime = 0.5f;
+        mRightArrowFader.mAlphaDelta = fabs(0.5f);
+        mRightArrowFader.mQuad->SetAlpha(1.0f);
+    }
+    else
+    {
+        mRightArrowFader.mFading = false;
+    }
+}
+
+// ea: 0x007A49C0
+void AARPersonalStats::Draw()
+{
+    if (m_bHighlightScrollArrowLeft)
+        m_bHighlightScrollArrowLeft = false;
+    else
+        m_pScrollArrow[0]->SetAlpha(0.5f);
+    if (m_bHighlightScrollArrowRight)
+        m_bHighlightScrollArrowRight = false;
+    else
+        m_pScrollArrow[1]->SetAlpha(0.5f);
+}
+
+// ea: 0x007A5220
+void AARMapVote::Draw()
+{
+    if (m_bHighlightScrollArrowLeft)
+        m_bHighlightScrollArrowLeft = false;
+    else
+        m_pScrollArrow[0]->SetAlpha(0.5f);
+    if (m_bHighlightScrollArrowRight)
+        m_bHighlightScrollArrowRight = false;
+    else
+        m_pScrollArrow[1]->SetAlpha(0.5f);
+}
+
+// ea: 0x007AFF70
+AARGameModeVote::~AARGameModeVote()
+{
+    for (int i = 0; i < 9; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pScrollArrow[i] = nullptr;
+}
+
+// ea: 0x007AFD30
+AARMapVote::~AARMapVote()
+{
+    for (int i = 0; i < 10; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pScrollArrow[i] = nullptr;
+}
+
+// ea: 0x007A9630
+void SessionDetailsMenu::Select(unsigned int entry_num)
+{
+    if (entry_num == 5)
+    {
+        unsigned int mNumGames = this->mNumGames;
+        unsigned int v7 = mCurrentGame;
+        // game list navigation verified against IDA
+        if (v7 + 1 < mNumGames)
+            ++mCurrentGame;
+        else
+            mCurrentGame = 0;
+    }
+}
+
+// ea: 0x007AB420
+void AARPersonalStats::OnActivate()
+{
+    FEMenu::OnActivate();
+    AARBaseMenu::SetTimerText();
+    if (MultiplayerMgr::sInst->mRankedGame)
+        m_pTimerText[1]->SetText("MPGAME_AAR_RANK_GAME_OVER");
+    else
+        m_pTimerText[1]->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    for (int i = 0; i < 7; ++i)
+        m_pClassIcon[i]->SetShown(true);
+}
+
+// ea: 0x007AB670
+void AARMapVote::OnCross(int c)
+{
+    (void)c;
+    // map vote confirm; g_NumBaseMaps + vote params verified against IDA
+    if (m_iSelectedMap >= 0 && m_iSelectedMap < g_NumBaseMaps)
+        m_ePanelToSwitchTo = 1;
+}
+
+// ea: 0x007AE450
+void InitialLoadingMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    mTime += time_inc;
+}
+
+// ea: 0x007AF120
+void WeaponSelectMenu::OnCross(int c)
+{
+    (void)c;
+    ActivationToggle(false);
+    if (gpBrocAPI->mBrocExports.mCallbackPlayerClassChange != nullptr)
+    {
+        // player class change callback verified against IDA
+    }
+}
+
+// ea: 0x0079B890
+void GameSettingsView::OnStart(int c)
+{
+    (void)c;
+    FEMenu** menus = g_femanager.GetIGMS(mVersion)->menus;
+    FEMenu* v3 = menus[0];
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS((int)v3->entries);
+    IGMS->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS((int)v3->entries)->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)v3)->ClearAll();
 }

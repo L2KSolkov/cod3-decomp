@@ -288,6 +288,7 @@ public:
     virtual void OnDown(int c);          // ?OnDown@GameSettingsView@@UAEXH@Z
     virtual void OnLeft(int c);          // ?OnLeft@GameSettingsView@@UAEXH@Z
     virtual void OnRight(int c);         // ?OnRight@GameSettingsView@@UAEXH@Z
+    virtual void OnStart(int c);         // ?OnStart@GameSettingsView@@UAEXH@Z
     virtual void OnL1(int c);            // ?OnL1@GameSettingsView@@UAEXH@Z
     virtual void OnR1(int c);            // ?OnR1@GameSettingsView@@UAEXH@Z
     virtual void OnCross(int c);         // ?OnCross@GameSettingsView@@UAEXH@Z
@@ -393,6 +394,7 @@ public:
     static InitialLoadingMenu* Me();     // ?Me@InitialLoadingMenu@@SAPAV1@XZ
     virtual void OnActivate();           // ?OnActivate@InitialLoadingMenu@@UAEXXZ
     virtual void Draw();                 // ?Draw@InitialLoadingMenu@@UAEXXZ
+    virtual void Update(float time_inc); // ?Update@InitialLoadingMenu@@UAEXM@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@InitialLoadingMenu@@UAEXPAVPanelFile@@@Z
     virtual void Select(int entry_num);  // ?Select@InitialLoadingMenu@@UAEXH@Z
 };
@@ -407,6 +409,7 @@ public:
     virtual void Draw();                 // ?Draw@InstantActionMenu@@UAEXXZ
     virtual void Update(float time_inc); // ?Update@InstantActionMenu@@UAEXM@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@InstantActionMenu@@UAEXH@Z
+    virtual void Select(int entry_num);  // ?Select@InstantActionMenu@@UAEXH@Z
 };
 static_assert(sizeof(InstantActionMenu) == 0x4C,
               "InstantActionMenu size mismatch");
@@ -490,6 +493,8 @@ public:
     static SessionDetailsMenu* Me();  // ?Me@SessionDetailsMenu@@SAPAV1@XZ
     virtual void Draw();              // ?Draw@SessionDetailsMenu@@UAEXXZ
     virtual void OnActivate();        // ?OnActivate@SessionDetailsMenu@@UAEXXZ
+    virtual void Update(float time_inc);  // ?Update@SessionDetailsMenu@@UAEXM@Z
+    virtual void Select(unsigned int entry_num);  // ?Select@SessionDetailsMenu@@UAEXI@Z
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@SessionDetailsMenu@@UAEXPAVFEMenu@@@Z
     virtual void OnTriangle(int c);       // ?OnTriangle@SessionDetailsMenu@@UAEXH@Z
 };
@@ -705,6 +710,7 @@ public:
     eState mState;                  // +0x68
 
     static MultilineIngameOverlayMenu* Me();  // ?Me@MultilineIngameOverlayMenu@@SAPAV1@XZ
+    virtual void Update(float time_inc);      // ?Update@MultilineIngameOverlayMenu@@UAEXM@Z
     virtual void OnStart(int c);              // ?OnStart@MultilineIngameOverlayMenu@@UAEXH@Z
     virtual void OnDeactivate(FEMenu* menu);  // ?OnDeactivate@MultilineIngameOverlayMenu@@UAEXPAVFEMenu@@@Z
 };
@@ -767,12 +773,14 @@ public:
     virtual ~ModelMenu();    // ??1ModelMenu@@UAE@XZ
     virtual void Update(float time_inc);  // ?Update@ModelMenu@@UAEXM@Z
     virtual void Draw3D();   // ?Draw3D@ModelMenu@@UAEXXZ
+    virtual void OnActivate();  // ?OnActivate@ModelMenu@@UAEXXZ
 protected:
     void DebugControls();    // ?DebugControls@ModelMenu@@IAEXXZ
     void DebugRender();      // ?DebugRender@ModelMenu@@IAEXXZ
     void AddDObjToScene();   // ?AddDObjToScene@ModelMenu@@IAEXXZ
     void SetLightBrightness(int index, float brightness);  // ?SetLightBrightness@ModelMenu@@IAEXHM@Z
     void SetLightColor(int index, const math::Vector4& color);  // ?SetLightColor@ModelMenu@@IAEXHABVVector4@math@@@Z
+    void PlayModifierAnim(int sheet, int row, int column, bool immediate);  // ?PlayModifierAnim@ModelMenu@@IAEXHHH_N@Z
 };
 static_assert(sizeof(ModelMenu) == 0x110,
               "ModelMenu size mismatch");
@@ -788,6 +796,7 @@ public:
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@WeaponSelectMenu@@UAEXPAVFEMenu@@@Z
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@WeaponSelectMenu@@UAEXPAVPanelFile@@@Z
     virtual void OnStart(int c);           // ?OnStart@WeaponSelectMenu@@UAEXH@Z
+    virtual void OnCross(int c);           // ?OnCross@WeaponSelectMenu@@UAEXH@Z
     virtual void OnUp(int c);              // ?OnUp@WeaponSelectMenu@@UAEXH@Z
     virtual void OnDown(int c);            // ?OnDown@WeaponSelectMenu@@UAEXH@Z
     virtual void Select(int entryNum);     // ?Select@WeaponSelectMenu@@UAEXH@Z
@@ -796,6 +805,8 @@ public:
 protected:
     int  m_playerclass;                  // +0x134
     short m_sLocalPlayerTeam;            // +0x1E0
+    int PlayerClassToLocalIndex(int playerclass);  // ?PlayerClassToLocalIndex@WeaponSelectMenu@@IAEHH@Z
+    void ActivationToggle(bool a_bToggle);  // ?ActivationToggle@WeaponSelectMenu@@IAEX_N@Z
     void SetClassOptionHeader();           // ?SetClassOptionHeader@WeaponSelectMenu@@IAEXXZ
     void CloseMenu();                      // ?CloseMenu@WeaponSelectMenu@@IAEXXZ
     void SetClassGauges();                 // ?SetClassGauges@WeaponSelectMenu@@IAEXXZ
@@ -892,6 +903,7 @@ public:
     virtual ~AARBaseMenu();            // ??1AARBaseMenu@@UAE@XZ
     virtual void OnStart(int c);       // ?OnStart@AARBaseMenu@@UAEXH@Z
     virtual void OnL1(int c);          // ?OnL1@AARBaseMenu@@UAEXH@Z
+    virtual void OnR1(int c);          // ?OnR1@AARBaseMenu@@UAEXH@Z
     virtual void OnActivate();         // ?OnActivate@AARBaseMenu@@UAEXXZ
     virtual void Update(float time_inc);  // ?Update@AARBaseMenu@@UAEXM@Z
 };
@@ -983,6 +995,8 @@ public:
     static AARPersonalStats* Me();    // ?Me@AARPersonalStats@@SAPAV1@XZ
     virtual void PanelFileUnloaded(PanelFile* pf);  // ?PanelFileUnloaded@AARPersonalStats@@UAEXPAVPanelFile@@@Z
     virtual void Init();              // ?Init@AARPersonalStats@@UAEXXZ
+    virtual void OnActivate();        // ?OnActivate@AARPersonalStats@@UAEXXZ
+    virtual void Draw();              // ?Draw@AARPersonalStats@@UAEXXZ
     void OnDeactivate(AARBaseMenu* m);  // ?OnDeactivate@AARPersonalStats@@QAEXPAVAARBaseMenu@@@Z
     virtual void OnCross(int c);      // ?OnCross@AARPersonalStats@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@AARPersonalStats@@UAEXH@Z
@@ -992,18 +1006,32 @@ public:
     virtual void OnR1(int c);         // ?OnR1@AARPersonalStats@@UAEXH@Z
     virtual void OnL1(int c);         // ?OnL1@AARPersonalStats@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@AARPersonalStats@@UAEXM@Z
+protected:
+    void SetPanelHelpBar();           // ?SetPanelHelpBar@AARPersonalStats@@IAEXXZ
 };
 static_assert(sizeof(AARPersonalStats) == 0x150,
               "AARPersonalStats size mismatch");
 
 class AARMapVote : public AARBaseMenu {
 public:
-    uint8_t _pad2[0xE0 - 0x88];
+    ae_array<PanelQuad*, 10> m_pBackgroundArt;  // +0x88
+    uint8_t _pad2[0xB8 - (0x88 + 40)];
+    ae_array<PanelQuad*, 2> m_pScrollArrow;  // +0xB8
+    uint8_t _pad2b[0xD0 - (0xB8 + 8)];
+    bool m_bShowScrollArrowLeft;      // +0xD0
+    bool m_bShowScrollArrowRight;     // +0xD1
+    bool m_bHighlightScrollArrowLeft; // +0xD2
+    bool m_bHighlightScrollArrowRight;// +0xD3
+    int  m_ePanelToSwitchTo;          // +0xD4
+    int  m_iSelectedMap;              // +0xD8
+    int  m_currentRow;                // +0xDC
     UIHighlightListBox m_ListBox;  // +0xE0
     uint8_t _pad3[0x238 - (0xE0 + 0xE0)];
 
     static AARMapVote* Me();          // ?Me@AARMapVote@@SAPAV1@XZ
     virtual void Init();              // ?Init@AARMapVote@@UAEXXZ
+    virtual void Draw();              // ?Draw@AARMapVote@@UAEXXZ
+    virtual void OnCross(int c);      // ?OnCross@AARMapVote@@UAEXH@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@AARMapVote@@UAEXPAVPanelFile@@@Z
     void OnDeactivate(AARBaseMenu* __formal);  // ?OnDeactivate@AARMapVote@@QAEXPAVAARBaseMenu@@@Z
     virtual void OnR1(int c);         // ?OnR1@AARMapVote@@UAEXH@Z
@@ -1012,13 +1040,15 @@ public:
     virtual void OnUp(int c);         // ?OnUp@AARMapVote@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@AARMapVote@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@AARMapVote@@UAEXM@Z
+    virtual ~AARMapVote();            // ??1AARMapVote@@UAE@XZ
 };
 static_assert(sizeof(AARMapVote) == 0x238,
               "AARMapVote size mismatch");
 
 class AARGameModeVote : public AARBaseMenu {
 public:
-    uint8_t _pad2[0xB4 - 0x88];
+    ae_array<PanelQuad*, 9> m_pBackgroundArt;  // +0x88
+    ae_array<PanelQuad*, 2> m_pScrollArrow;  // +0xAC
     bool m_bShowScrollArrowLeft;      // +0xB4
     bool m_bShowScrollArrowRight;     // +0xB5
     bool m_bHighlightScrollArrowLeft; // +0xB6
@@ -1037,8 +1067,11 @@ public:
     virtual void OnR1(int c);         // ?OnR1@AARGameModeVote@@UAEXH@Z
     virtual void OnL1(int c);         // ?OnL1@AARGameModeVote@@UAEXH@Z
     virtual void OnUp(int c);         // ?OnUp@AARGameModeVote@@UAEXH@Z
+    virtual void OnDown(int c);       // ?OnDown@AARGameModeVote@@UAEXH@Z
     virtual void OnActivate();        // ?OnActivate@AARGameModeVote@@UAEXXZ
+    virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@AARGameModeVote@@UAEXPAVPanelFile@@@Z
     virtual void Update(float time_inc);  // ?Update@AARGameModeVote@@UAEXM@Z
+    virtual ~AARGameModeVote();       // ??1AARGameModeVote@@UAE@XZ
 };
 static_assert(sizeof(AARGameModeVote) == 0x20C,
               "AARGameModeVote size mismatch");
