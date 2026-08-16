@@ -400,6 +400,7 @@ public:
 
     void writeDataType(bdBitBufferDataType type);
     void writeBits(const void* data, unsigned int bitCount);
+    void writeInt16(short value);                            // ?writeInt16@bdBitBuffer@@QAEXF@Z
     void writeRangedInt32(int value, int min, int max);    // ?writeRangedInt32@bdBitBuffer@@QAEXHHH@Z
     void writeRangedUInt32(unsigned int value, unsigned int min, unsigned int max,
                            bool typeChecked);              // ?writeRangedUInt32@bdBitBuffer@@QAEXIII_N@Z
@@ -412,11 +413,13 @@ public:
                            float scale);                   // ?readRangedFloat32@bdBitBuffer@@QAE_NAAMMMM@Z
     bool readInt32(int& value);                            // ?readInt32@bdBitBuffer@@QAE_NAAH@Z
     bool readInt16(short& value);                          // ?readInt16@bdBitBuffer@@QAE_NAAF@Z
+    bool readUInt16(unsigned short& value);                // ?readUInt16@bdBitBuffer@@QAE_NAAG@Z
     bool readUInt32(unsigned int& value);                  // ?readUInt32@bdBitBuffer@@QAE_NAAI@Z
     bool readUChar8(unsigned char& value);                 // ?readUChar8@bdBitBuffer@@QAE_NAAE@Z
     bool readChar8(char& value);                           // ?readChar8@bdBitBuffer@@QAE_NAAD@Z
     bool readFloat32(float& value);                        // ?readFloat32@bdBitBuffer@@QAE_NAAM@Z
     bool readString(bdString& s);                          // ?readString@bdBitBuffer@@QAE_NAAVbdString@@@Z
+    bool readString(char* s, unsigned int maxLen);         // ?readString@bdBitBuffer@@QAE_NQADI@Z
     bool testBool();                                       // ?testBool@bdBitBuffer@@QAE_NXZ
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);

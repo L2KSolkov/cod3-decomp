@@ -1796,6 +1796,10 @@ public:
     void AnimEvent(int row, int column, int sheet);  // ?AnimEvent@MPPlayer@@QAEXHHH@Z (mp.o 0x7361B0)
     bool deserializeVehicle(bdReference<bdBitBuffer> buffer,
                             MPVehicle* vehicle);  // ?deserializeVehicle@MPPlayer@@QAE_NV?$bdReference@VbdBitBuffer@@@@PAVMPVehicle@@@Z (mp.o 0x7519D0)
+    void serializeVehicle(bdReference<bdBitBuffer> buffer);  // ?serializeVehicle@MPPlayer@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x751720)
+    void PlayerSpawn(float* position, float* angles);  // ?PlayerSpawn@MPPlayer@@QAEXQAM0@Z (mp.o 0x75C960)
+    void PlayerRevive(float* position, float* angles);  // ?PlayerRevive@MPPlayer@@QAEXQAM0@Z (mp.o 0x75CD10)
+    bool IsInVehicle(unsigned char id) const;  // ?IsInVehicle@MPPlayer@@QBE_NE@Z (mp.o 0x72B880, inline)
     static MP_ANIM_INDEX* getAnimIndex(int sheet, int row, int col,
                                        bool useDefault);  // ?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z (mp.o 0x72CBA0)
     void UpdateInGamePlayerInfo(bool autoBalance, bool clear_stats);  // ?UpdateInGamePlayerInfo@MPPlayer@@QAEX_N0@Z (mp.o 0x72DE40)
@@ -1834,6 +1838,12 @@ protected:
 inline Entity* MPPlayer::GetEntity()
 {
     return nullptr;
+}
+
+// ?IsInVehicle@MPPlayer@@QBE_NE@Z (mp.o 0x72B880; inline)
+inline bool MPPlayer::IsInVehicle(unsigned char id) const
+{
+    return mInVehicle && mVehicleId == id;
 }
 
 struct MPVehicleEvent;  // full definition below
@@ -1919,8 +1929,15 @@ public:
                                   int maxRange);  // ?CountOtherEnemiesInRange@MPPlayerManager@@QAEHPBVMPPlayer@@H@Z (mp.o 0x7379F0)
     void SerializeVehicleStates(bdReference<bdBitBuffer> buffer);  // ?SerializeVehicleStates@MPPlayerManager@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o 0x759D60)
     void SendLocalPlayerInfo(const MPPlayer* player);  // ?SendLocalPlayerInfo@MPPlayerManager@@QAEXPBVMPPlayer@@@Z (mp.o 0x7592D0)
+    void SendOtherEnemiesInRange(const MPPlayer* localPlayer,
+                                 bdReference<bdMessage> message, int maxRange,
+                                 bool inRange);  // ?SendOtherEnemiesInRange@MPPlayerManager@@QAEXPBVMPPlayer@@V?$bdReference@VbdMessage@@@@H_N@Z (mp.o 0x748B40)
+    void SendLocalPlayerTeam(const MPPlayer* localPlayer,
+                             const MPPlayer* player);  // ?SendLocalPlayerTeam@MPPlayerManager@@QAEXPBVMPPlayer@@0@Z (mp.o 0x759A20)
     virtual ~MPPlayerManager();  // ??1MPPlayerManager@@UAE@XZ (mp.o 0x7624E0)
 private:
+    void WritePlayerData(bdReference<bdBitBuffer> buffer,
+                         MPPlayer* player);  // ?WritePlayerData@MPPlayerManager@@AAEXV?$bdReference@VbdBitBuffer@@@@QAVMPPlayer@@@Z (mp.o 0x7499F0)
     void SwapPlayers(int localIndex1, int localIndex2);  // ?SwapPlayers@MPPlayerManager@@AAEXHH@Z (mp.o 0x7600A0)
     void SendCallVote(MPPlayer* player);  // ?SendCallVote@MPPlayerManager@@AAEXQAVMPPlayer@@@Z (mp.o 0x738440)
     void AddAcceptCallback(int MESSAGE_ID,
@@ -2024,6 +2041,9 @@ private:
     void VehicleEventProcessAllEvents();  // ?VehicleEventProcessAllEvents@MPPlayerManager@@AAEXXZ (mp.o 0x7397A0)
     bool VehicleEventProcessEvent(MPVehicleEvent* event);  // ?VehicleEventProcessEvent@MPPlayerManager@@AAE_NPAUMPVehicleEvent@@@Z (mp.o)
     void SendDroppedItems(MPPlayer* player);  // ?SendDroppedItems@MPPlayerManager@@AAEXQAVMPPlayer@@@Z (mp.o 0x760710)
+    void ClientConnect(MPPlayer* player, const float* position,
+                       const float* angles);  // ?ClientConnect@MPPlayerManager@@AAEXQAVMPPlayer@@QBM1@Z (mp.o 0x739FA0)
+    virtual bool acceptSession(const bdReceivedMessage& receivedMsg);  // ?acceptSession@MPPlayerManager@@EAE_NABVbdReceivedMessage@@@Z (mp.o 0x737DA0)
 };
 
 // MPVehicleEvent - queued vehicle event (32 bytes, IDA)
@@ -2193,6 +2213,14 @@ public:
                        int roundCount);  // ?SendGameState@MPPeer@@QAEXPAVEntity@@HHHH_N11HHH1HH@Z (mp.o)
     void PlayerRespawn(Entity* player, const math::Position3& position,
                        const math::Dir3& angles, int team);  // ?PlayerRespawn@MPPeer@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@H@Z (mp.o)
+    void AttemptToGetInVehicle(Entity* vehicle, Entity* player, int seatIdx,
+                               int entryIdx);  // ?AttemptToGetInVehicle@MPPeer@@QAEXPAVEntity@@0HH@Z (mp.o 0x744550)
+    void GetOutOfVehicle(Entity* vehicle, int vehSeatIdx);  // ?GetOutOfVehicle@MPPeer@@QAEXPAVEntity@@H@Z (mp.o 0x7447C0)
+    void VehicleMantled(Entity* vehicle, Entity* killer);  // ?VehicleMantled@MPPeer@@QAEXPAVEntity@@0@Z (mp.o 0x741580)
+    void AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
+                                  int newSeatIdx);  // ?AttemptVehicleSeatChange@MPPeer@@QAEXPAVEntity@@0H@Z (mp.o 0x744A50)
+    void VehicleDeath(Entity* hitEntity, Entity* killer, int weapon,
+                      int mod);  // ?VehicleDeath@MPPeer@@QAEXPAVEntity@@0HH@Z (mp.o 0x741250)
 
     static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
     static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)

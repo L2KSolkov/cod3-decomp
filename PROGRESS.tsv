@@ -694,3 +694,5 @@ mp.o		mp.o	game	770	IN_PROGRESS	; mp.o batch 16 (583/770): session handlers (pla
 mp.o batch 17: peer/vehicle handlers + vote/AAR + voice routing + QoS probe add + MultiplayerMgr/MPPeer/MPPlayerManager ctors + SwapPlayers + anim/vehicle helpers (634/770)
 
 mp.o batch 18: player anim/state + UI game listing/options + voice diagnostics + peer game-state sends + manager handlers + menu panel setup (685/770)
+
+mp.o batch 19: peer vehicle/seat/spot sends, game-state handlers, player damage/revive/pain, session accept gating, serialization helpers, vote resolution, profile menu selection (730/770)

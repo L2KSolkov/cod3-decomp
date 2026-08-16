@@ -15,6 +15,7 @@
 #include "game/sv/sv_stubs.h"
 
 class Entity;  // game_types.h
+struct LivePlayer;  // platform_xbox/XboxLive.h (complete type in mp_basic.cpp)
 
 // MPPlayerSet - 16-player bitmask (2 bytes)
 class MPPlayerSet {
@@ -26,6 +27,7 @@ public:
 
     MPPlayerSet() : mBitPlayers(0) {}
     MPPlayerSet(eDefaultSets e);  // ??0MPPlayerSet@@QAE@W4eDefaultSets@0@@Z (mp.o 0x730260)
+    MPPlayerSet(unsigned int index);  // ??0MPPlayerSet@@QAE@K@Z (game_xbox.o 0x72AE00, inline)
     const char* debugString() const;  // ?debugString@MPPlayerSet@@QBEPBDXZ (mp.o 0x7303F0)
     bool containsPlayer(unsigned int index) const;  // ?containsPlayer@MPPlayerSet@@QBE_NI@Z (mp.o 0x72A580)
     unsigned long numberOfPlayers() const;          // ?numberOfPlayers@MPPlayerSet@@QBEKXZ (mp.o 0x730490)
@@ -35,6 +37,7 @@ public:
     void addPlayer(unsigned long index);     // ?addPlayer@MPPlayerSet@@QAEXK@Z (mp.o inline)
     void removePlayer(unsigned long index);  // ?removePlayer@MPPlayerSet@@QAEXK@Z (mp.o inline)
     void addPlayers(const MPPlayerSet& set);  // ?addPlayers@MPPlayerSet@@QAEXABV1@@Z (mp.o inline)
+    void set(unsigned int index);          // ?set@MPPlayerSet@@QAEXK@Z (game_xbox.o 0x72A480, inline)
 };
 
 inline unsigned int MPPlayerSet::containsPlayer(unsigned long index) const
@@ -105,19 +108,22 @@ public:
 // ============================================================================
 namespace MPUtility {
 struct PlayerData {
-    int            id;                    // +0x00
+    unsigned char  id;                    // +0x00 (IDA type dump)
+    uint8_t        _pad1[3];              // +0x01
     float          origin[3];             // +0x04
     float          angles[3];             // +0x10
-    bool           playing;               // +0x1C
-    unsigned char  vehicleId;             // +0x1D
-    int            vehicleHealth;         // +0x20
-    int            playerClass;           // +0x24
-    const char*    name;                  // +0x28
-    unsigned int   vehicleEventSequence;  // +0x2C
-    unsigned char  localIdx;              // +0x30
-    bool           teamAxis;              // +0x31
-    unsigned int   livePlayer[8];         // +0x34
-    bool           wasInvited;            // +0x54
+    unsigned int   livePlayer[16];        // +0x1C (LivePlayer, 0x40 bytes)
+    bool           wasInvited;            // +0x5C
+    char           name[32];              // +0x5D
+    bool           playing;               // +0x7D
+    unsigned char  vehicleId;             // +0x7E
+    uint8_t        _pad7F;                // +0x7F
+    int            vehicleHealth;         // +0x80
+    int            vehicleEventSequence;  // +0x84
+    int            playerClass;           // +0x88
+    unsigned char  localIdx;              // +0x8C
+    bool           teamAxis;              // +0x8D
+    uint8_t        _pad8E[2];             // +0x8E
 };
 void WritePlayerId(bdReference<bdBitBuffer> buffer, unsigned char id);  // ?WritePlayerId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z (mp.o 0x73BDB0)
 void WriteVehicleId(bdReference<bdBitBuffer> buffer, unsigned char id); // ?WriteVehicleId@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@E@Z (mp.o 0x73BE90)
@@ -165,6 +171,8 @@ void WritePlayerData(bdReference<bdBitBuffer> buffer,
                      const PlayerData& playerData);  // ?WritePlayerData@MPUtility@@YAXV?$bdReference@VbdBitBuffer@@@@ABUPlayerData@1@@Z (mp.o 0x73C320)
 bool ReadEntryPoint(bdReference<bdBitBuffer> buffer, int& entryIdx);     // ?ReadEntryPoint@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BFD0)
 bool ReadPlayerClass(bdReference<bdBitBuffer> buffer, int& playerclass); // ?ReadPlayerClass@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73C190)
+bool ReadPlayerData(bdReference<bdBitBuffer> buffer,
+                    PlayerData& playerData);  // ?ReadPlayerData@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAUPlayerData@1@@Z (mp.o 0x73C540)
 }
 
 // ============================================================================
@@ -238,9 +246,13 @@ public:
     math::Dir3 speed(float date) const;          // ?speed@cBezierTrajectoryInterpolator@kuju@@QBE?AVDir3@math@@M@Z (mp.o 0x734560)
 
     enum EInterpolationType {
-        kInterpolationStopped = 0,
-        kInterpolationLinear = 1,
-        kInterpolationBezier = 2,
+        kInterpolationLinear = 0,  // verified vs PlayerSpawn disasm (0x75CC03)
+        kInterpolationBezier = 1,
+    };
+    enum EInterpolationState {
+        kInterpolationRegular = 0,   // c3_bin enum (MPPlayer mInterpolationState)
+        kInterpolationStarvation = 1,
+        kInterpolationStopped = 2,
     };
 };
 static_assert(sizeof(cBezierTrajectoryInterpolator) == 160,
@@ -563,6 +575,8 @@ public:
                                   int nGameIndex);  // ?StartClient@MPUIInterface@@SA?B_NAAUsGameListing@@_NH@Z (mp.o 0x7663E0)
     static void NextRoundServerParams();       // ?NextRoundServerParams@MPUIInterface@@SAXXZ (mp.o 0x7300D0)
     static void SetupCvars(bool useCurrent);   // ?SetupCvars@MPUIInterface@@SAX_N@Z (mp.o)
+    static const int GetDefaultOption(eSetting setting,
+                                      eGameType gameType);  // ?GetDefaultOption@MPUIInterface@@SA?BHW4eSetting@1@W4eGameType@@@Z (mp.o 0x73D0F0)
     static const bool IsLANGame();  // ?IsLANGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F470)
     static const bool IsLocalGame();  // ?IsLocalGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F490)
     static const char* GetMapString(unsigned long mapIndex);  // ?GetMapString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F830)
@@ -788,6 +802,7 @@ public:
     virtual void SetText(const char* s); // slot 12 (?SetText@FEMenuEntry@@UAEXPBD@Z)
     virtual void SetValue(int value);    // ?SetValue@FEMenuEntry@@UAEXH@Z (shell.o 0x5AE840)
     virtual int  GetValue();             // ?GetValue@FEMenuEntry@@UAEHXZ (shell.o 0x5AE850)
+    virtual Broc::string GetText();      // ?GetText@FEMenuEntry@@UAE?AVstring@Broc@@XZ (shell.o 0x99DC40, inline)
     uint8_t _pad[0x18 - 0x04];
 };
 static_assert(sizeof(FEMenuEntry) == 0x18, "FEMenuEntry size mismatch");

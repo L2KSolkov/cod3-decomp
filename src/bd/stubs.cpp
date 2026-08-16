@@ -206,6 +206,17 @@ bool bdBitBuffer::readUChar8(unsigned char& value)
     return true;
 }
 
+void bdBitBuffer::writeInt16(short value)
+{
+    (void)value;
+}
+
+bool bdBitBuffer::readUInt16(unsigned short& value)
+{
+    (void)value;
+    return true;
+}
+
 bool bdBitBuffer::readChar8(char& value)
 {
     (void)value;
@@ -221,6 +232,13 @@ bool bdBitBuffer::readFloat32(float& value)
 bool bdBitBuffer::readString(bdString& s)
 {
     (void)s;
+    return true;
+}
+
+bool bdBitBuffer::readString(char* s, unsigned int maxLen)
+{
+    (void)s;
+    (void)maxLen;
     return true;
 }
 
