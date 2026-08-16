@@ -86,7 +86,7 @@ public:
     virtual ~bdSession();
 
     // bdDispatchInterceptor
-    virtual bool accept(const bdReceivedMessage& message);
+    virtual bool accept(bdReceivedMessage& message);
 
     // bdConnectionListener
     virtual void onConnect(const bdReference<bdConnection>& connection);

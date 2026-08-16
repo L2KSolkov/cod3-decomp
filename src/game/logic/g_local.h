@@ -3497,6 +3497,7 @@ class DebugRender {
 public:
     static DebugRender sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20 (physics.o)
     static DebugRender* Inst();  // ?Inst@DebugRender@@SAPAV1@XZ
+    void AddRenderer(void (*fp)());  // ?AddRenderer@DebugRender@@QAEXP6AXXZ@Z (physics.o 0x52A2B0)
     // render.o instance state (IDA-verified 0x94 bytes)
     struct nglMesh* mDebugSphereMesh;       // +0x00
     struct nglMesh* mDebugCylinderMesh;     // +0x04

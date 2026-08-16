@@ -11,6 +11,41 @@
 #include <string.h>
 
 // ============================================================================
+// bdQoSRemoteAddr - remote endpoint for QoS (28 bytes)
+// ============================================================================
+bdQoSRemoteAddr::bdQoSRemoteAddr()
+    : m_addr(), m_id(), m_key()
+{
+}
+
+bdQoSRemoteAddr::bdQoSRemoteAddr(const bdReference<bdCommonAddr>& addr,
+                                 const XNKID& id, const XNKEY& key)
+    : m_addr(addr.m_ptr), m_id(), m_key()
+{
+    if (m_addr.m_ptr != nullptr)
+        ++m_addr.m_ptr->m_refCount;
+    memcpy(&m_id, &id, sizeof(XNKID));
+    memcpy(&m_key, &key, sizeof(XNKEY));
+}
+
+bdQoSRemoteAddr& bdQoSRemoteAddr::operator=(const bdQoSRemoteAddr& other)
+{
+    bdReference<bdCommonAddr> newAddr;
+    newAddr.m_ptr = other.m_addr.m_ptr;
+    if (newAddr.m_ptr != nullptr)
+        ++newAddr.m_ptr->m_refCount;
+    if (m_addr.m_ptr != nullptr && --m_addr.m_ptr->m_refCount == 0)
+    {
+        delete m_addr.m_ptr;
+        m_addr.m_ptr = nullptr;
+    }
+    m_addr.m_ptr = newAddr.m_ptr;
+    memcpy(&m_id, &other.m_id, sizeof(XNKID));
+    memcpy(&m_key, &other.m_key, sizeof(XNKEY));
+    return *this;
+}
+
+// ============================================================================
 // Xbox XNet QoS types (layout from pump disassembly @0x8B6BC0)
 // ============================================================================
 struct XNQOSINFO {

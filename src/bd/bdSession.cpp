@@ -590,7 +590,7 @@ void bdSession::cleanup() {
 // ============================================================================
 // bdSession::accept - ea: 0x8B5500 (dispatch interceptor)
 // ============================================================================
-bool bdSession::accept(const bdReceivedMessage& message) {
+bool bdSession::accept(bdReceivedMessage& message) {
     unsigned char type = message.getMessage().m_ptr->getType();
     switch (type) {
     case BD_SESSION_JOIN_REQ:

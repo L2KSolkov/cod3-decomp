@@ -20,6 +20,11 @@ struct bdQoSRemoteAddr {
     bdReference<bdCommonAddr> m_addr;   // +0x00
     XNKID m_id;                         // +0x04
     XNKEY m_key;                        // +0x0C
+
+    bdQoSRemoteAddr();
+    bdQoSRemoteAddr(const bdReference<bdCommonAddr>& addr, const XNKID& id,
+                    const XNKEY& key);
+    bdQoSRemoteAddr& operator=(const bdQoSRemoteAddr& other);
 };
 static_assert(sizeof(bdQoSRemoteAddr) == 0x1C, "bdQoSRemoteAddr size mismatch");
 

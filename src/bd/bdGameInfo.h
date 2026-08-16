@@ -46,7 +46,7 @@ public:
     void setSecurityKey(const XNKEY& secKey);
     bdReference<bdCommonAddr> getHostAddr() const;
     void setHostAddr(const bdReference<bdCommonAddr>& hostAddr);
-    void serialize(bdBitBuffer& buffer) const;
+    virtual void serialize(bdBitBuffer& buffer) const;
     bool deserialize(const bdReference<bdCommonAddr>& hostAddr, bdBitBuffer& buffer);
 };
 static_assert(sizeof(bdGameInfo) == 0x28, "bdGameInfo size mismatch");

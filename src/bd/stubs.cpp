@@ -188,6 +188,24 @@ bool bdBitBuffer::readInt32(int& value)
     return true;
 }
 
+bool bdBitBuffer::readInt16(short& value)
+{
+    (void)value;
+    return true;
+}
+
+bool bdBitBuffer::readUInt32(unsigned int& value)
+{
+    (void)value;
+    return true;
+}
+
+bool bdBitBuffer::readUChar8(unsigned char& value)
+{
+    (void)value;
+    return true;
+}
+
 bool bdBitBuffer::testBool()
 {
     return true;
@@ -221,6 +239,33 @@ void* bdMemory::allocate(unsigned int size)
 void bdMemory::deallocate(void* p)
 {
     (void)p;
+}
+void bdMemory::setAllocateFunc(void* (*func)(unsigned int size))
+{
+    (void)func;
+}
+void bdMemory::setAlignedAllocateFunc(void* (*func)(unsigned int size,
+                                                    unsigned int align))
+{
+    (void)func;
+}
+void bdMemory::setDeallocateFunc(void (*func)(void* p))
+{
+    (void)func;
+}
+void bdMemory::setAlignedDeallocateFunc(void (*func)(void* p))
+{
+    (void)func;
+}
+void bdMemory::setReallocateFunc(void* (*func)(void* p, unsigned int size))
+{
+    (void)func;
+}
+void bdMemory::setAlignedReallocateFunc(void* (*func)(void* p,
+                                                      unsigned int size,
+                                                      unsigned int align))
+{
+    (void)func;
 }
 
 #define COD3_UNIMPLEMENTED(lib) \

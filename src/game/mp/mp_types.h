@@ -140,6 +140,7 @@ void WritePlayerTeam(bdReference<bdBitBuffer> buffer, team_t team);      // ?Wri
 bool ReadPlayerId(bdReference<bdBitBuffer> buffer, unsigned char& id);   // ?ReadPlayerId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73BE10)
 bool ReadVehicleId(bdReference<bdBitBuffer> buffer, unsigned char& id);  // ?ReadVehicleId@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAE@Z (mp.o 0x73C0B0)
 bool ReadSeatIndex(bdReference<bdBitBuffer> buffer, int& seatIdx);       // ?ReadSeatIndex@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BEF0)
+bool ReadCompressedVector(bdReference<bdBitBuffer> buffer, float* vec);  // ?ReadCompressedVector@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@QAM@Z (mp.o 0x73B770)
 bool ReadEntryPoint(bdReference<bdBitBuffer> buffer, int& entryIdx);     // ?ReadEntryPoint@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73BFD0)
 bool ReadPlayerClass(bdReference<bdBitBuffer> buffer, int& playerclass); // ?ReadPlayerClass@MPUtility@@YA_NV?$bdReference@VbdBitBuffer@@@@AAH@Z (mp.o 0x73C190)
 }
@@ -278,7 +279,10 @@ public:
     void RespawnVehicle();              // ?RespawnVehicle@MPVehicle@@QAEXXZ (mp.o 0x737210)
     void UpdateFromLocalVehicle();      // ?UpdateFromLocalVehicle@MPVehicle@@QAEXXZ (mp.o 0x736F10)
     void SeatChange(MPPlayer* player, int newSeatIdx);  // ?SeatChange@MPVehicle@@QAEXPAVMPPlayer@@H@Z (mp.o 0x72E780)
+    void GetInVehicle(MPPlayer* player, int health, int seatIdx,
+                      int entryIdx);  // ?GetInVehicle@MPVehicle@@QAEXPAVMPPlayer@@HHH@Z (mp.o 0x72E5C0)
     void GetOutOfVehicle(MPPlayer* player, int health, bool unlinkVehicle);  // ?GetOutOfVehicle@MPVehicle@@QAEXPAVMPPlayer@@H_N@Z (mp.o)
+    void serialize(bdReference<bdBitBuffer> buffer);  // ?serialize@MPVehicle@@QAEXV?$bdReference@VbdBitBuffer@@@@@Z (mp.o)
     bool IsPhysicsPaused() const;       // ?IsPhysicsPaused@MPVehicle@@QBE_NXZ (mp.o 0x736EE0)
     void Step();                        // ?Step@MPVehicle@@QAEXXZ (mp.o 0x75D410)
     void SetGunnerState(int state);     // ?SetGunnerState@MPVehicle@@QAEXH@Z (mp.o 0x72E4D0)
@@ -399,6 +403,7 @@ public:
     void getSlots(unsigned char& publicOpen, unsigned char& privateOpen,
                   unsigned char& publicFilled,
                   unsigned char& privateFilled) const;  // ?getSlots@MPGameInfo@@QBEXAAE000@Z (mp.o 0x730510)
+    virtual void serialize(bdBitBuffer& bitBuffer) const;  // ?serialize@MPGameInfo@@UBEXAAVbdBitBuffer@@@Z (mp.o 0x73DC30)
     void updateSlots(char publicOpenDelta, char privateOpenDelta,
                      char publicFilledDelta,
                      char privateFilledDelta);  // ?updateSlots@MPGameInfo@@QAEXDDDD@Z (mp.o 0x730540)
@@ -1090,6 +1095,7 @@ public:
 private:
     void updateVoiceNetwork(const kuju::knet::sTime& time); // ?updateVoiceNetwork@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@@Z (mp.o 0x7500C0)
     void addPacket(sVoicePacket* packet, unsigned long listIndex);  // ?addPacket@cVoiceNetworkManager@knetuser@kuju@@AAEXPAUsVoicePacket@123@K@Z (mp.o 0x734C40)
+    sVoicePacket* getFreePacket();  // ?getFreePacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePacket@123@XZ (mp.o 0x73F630)
     sVoicePendingDispatchPacket* getFreeVoicePendingDispatchPacket();  // ?getFreeVoicePendingDispatchPacket@cVoiceNetworkManager@knetuser@kuju@@AAEPAUsVoicePendingDispatchPacket@123@XZ (mp.o 0x73F7C0)
     void getPlayerIndicesToSendTo(unsigned long& firstPlayer,
                                   unsigned long& secondPlayer);  // ?getPlayerIndicesToSendTo@cVoiceNetworkManager@knetuser@kuju@@AAEXAAK0@Z (mp.o 0x73F8C0)
@@ -1108,9 +1114,20 @@ private:
                                   unsigned long destinationPlayer);  // ?handleDirectDestinations@cVoiceNetworkManager@knetuser@kuju@@AAEXAAVMPPlayerSet@@0K@Z (mp.o 0x74F6D0)
     unsigned char getRoutePlayer(unsigned char sourcePlayer,
                                  unsigned char destPlayer);  // ?getRoutePlayer@cVoiceNetworkManager@knetuser@kuju@@AAEEEE@Z (mp.o 0x73FC70)
+    unsigned char getRoutePlayerContiguous(unsigned char numPlayers,
+                                           unsigned char sourcePlayer,
+                                           unsigned char destPlayer);  // ?getRoutePlayerContiguous@cVoiceNetworkManager@knetuser@kuju@@AAEEEEE@Z (mp.o 0x735400)
     void dispatchPacketDirectToPlayer(const kuju::knet::sTime& time,
                                       sVoicePendingDispatchPacket* packet,
                                       unsigned char player);  // ?dispatchPacketDirectToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@E@Z (mp.o 0x74FB00)
+    unsigned int dispatchPacketOnOptimalRouteToPlayer(const kuju::knet::sTime& time,
+                                                      sVoicePendingDispatchPacket* packet,
+                                                      unsigned char player,
+                                                      MPPlayerSet& connectionsUsed);  // ?dispatchPacketOnOptimalRouteToPlayer@cVoiceNetworkManager@knetuser@kuju@@AAEIABVsTime@knet@3@PAUsVoicePendingDispatchPacket@123@EAAVMPPlayerSet@@@Z (mp.o 0x74FB90)
+    void selectVoicesAndDispatch(const kuju::knet::sTime& time,
+                                 unsigned int activeVoices,
+                                 MPPlayerSet& connectionsUsed,
+                                 unsigned long& connectionsLeft);  // ?selectVoicesAndDispatch@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@IAAVMPPlayerSet@@AAK@Z (mp.o 0x74FDA0)
     void dispatchPendingVoicePackets(const kuju::knet::sTime& time,
                                      MPPlayerSet& connectionsUsed,
                                      unsigned long& connectionsLeft);  // ?dispatchPendingVoicePackets@cVoiceNetworkManager@knetuser@kuju@@AAEXABVsTime@knet@3@AAVMPPlayerSet@@AAK@Z (mp.o 0x74FF40)

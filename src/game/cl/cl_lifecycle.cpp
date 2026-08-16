@@ -121,6 +121,7 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 struct clientConnection_t {
     unsigned char data[0x4C48];
+    void Swap(clientConnection_t* to);  // ?Swap@clientConnection_t@@QAEXPAU1@@Z (cl.o; unported)
 };
 clientConnection_t clc[2];  // ?clc@@3PAUclientConnection_t@@A (cl.o @ 0x12FC6F0)
 

@@ -28,7 +28,30 @@ namespace bdMemory {
 void* allocate(unsigned int size);
 void  deallocate(void* p);
 void* reallocate(void* p, unsigned int size);
+
+// bdCore allocation hook registration (bdCore:bdMemory.obj; not yet ported)
+void setAllocateFunc(void* (*func)(unsigned int size));
+void setAlignedAllocateFunc(void* (*func)(unsigned int size,
+                                           unsigned int align));
+void setDeallocateFunc(void (*func)(void* p));
+void setAlignedDeallocateFunc(void (*func)(void* p));
+void setReallocateFunc(void* (*func)(void* p, unsigned int size));
+void setAlignedReallocateFunc(void* (*func)(void* p, unsigned int size,
+                                            unsigned int align));
 }
+
+// bdCore init (bdCore:bdCore.obj; not yet ported)
+class bdCore {
+public:
+    static void init(bool netEnabled);
+};
+
+// bdLogImpl - Demonware logging hub (bdCore:bdLogImpl.obj; not yet ported)
+class bdLogSubscriber;
+class bdLogImpl {
+public:
+    void subscribe(const char* channel, bdLogSubscriber* subscriber);
+};
 
 template <typename T>
 struct bdSingleton {
@@ -387,6 +410,9 @@ public:
     bool readRangedFloat32(float& value, float min, float max,
                            float scale);                   // ?readRangedFloat32@bdBitBuffer@@QAE_NAAMMMM@Z
     bool readInt32(int& value);                            // ?readInt32@bdBitBuffer@@QAE_NAAH@Z
+    bool readInt16(short& value);                          // ?readInt16@bdBitBuffer@@QAE_NAAF@Z
+    bool readUInt32(unsigned int& value);                  // ?readUInt32@bdBitBuffer@@QAE_NAAI@Z
+    bool readUChar8(unsigned char& value);                 // ?readUChar8@bdBitBuffer@@QAE_NAAE@Z
     bool testBool();                                       // ?testBool@bdBitBuffer@@QAE_NXZ
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
