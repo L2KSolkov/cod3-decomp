@@ -262,6 +262,17 @@ public:
     int   GetBackMenu();                  // vtable slot 0x64
 };
 
+// HotJoinMenu (mp_shell.o) - split-screen hot-join menu
+class HotJoinMenu {
+public:
+    static HotJoinMenu* Me(int version);        // ?Me@HotJoinMenu@@SAPAV1@H@Z
+    void Close(bool joined);                    // ?Close@HotJoinMenu@@QAEX_N@Z
+    void DisplayError(const char* error_msg);   // ?DisplayError@HotJoinMenu@@QAEXPBD@Z
+};
+
+// Xbox debug monitor name query (xbdm.dll import; Win32 shim unresolved)
+extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);
+
 
 // Xbox XNetStartup shim (Win32 no-op; XNetCleanup below)
 extern "C" int __stdcall XNetStartup(void* pxnsp);
@@ -24129,6 +24140,193 @@ label46:
         if (!fromLoopback)
             g_LinkEntity(v20);
     }
+}
+
+// ea: 0x007494C0
+void MPPlayerManager::HandleAddPlayerReply(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdMessage> msg = receivedMsg.getMessage();
+    bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+    int joinReply = 0;
+    unsigned char whichPlayer = 0;
+    bdBitBuffer* m_ptr = buffer.m_ptr;
+    if (buffer.m_ptr->readDataType(
+            bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE)
+        && buffer.m_ptr->readBits(&whichPlayer, 8u)
+        && buffer.m_ptr->readRangedInt32(joinReply, 0, 3)
+        && joinReply == 0)
+    {
+        MPUtility::PlayerData data;
+        bdReference<bdBitBuffer> readBuf;
+        readBuf.m_ptr = buffer.m_ptr;
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        bool PlayerData = MPUtility::ReadPlayerData(readBuf, data);
+        if (readBuf.m_ptr != nullptr
+            && readBuf.m_ptr->m_refCount-- == 1)
+            delete readBuf.m_ptr;
+        InGameMenuSystem* IGMS = g_femanager.GetIGMS(whichPlayer);
+        if (IGMS->GetActiveMenu() == 14)
+        {
+            InGameMenuSystem* v6 = g_femanager.GetIGMS(whichPlayer);
+            ((HotJoinMenu*)v6->menus[14])->Close(true);
+        }
+        bdReference<bdBitBuffer> desBuf;
+        desBuf.m_ptr = buffer.m_ptr;
+        if (buffer.m_ptr != nullptr)
+            ++buffer.m_ptr->m_refCount;
+        MPUIInterface::mServerParams.Deserialize(desBuf);
+        if (desBuf.m_ptr != nullptr && desBuf.m_ptr->m_refCount-- == 1)
+            delete desBuf.m_ptr;
+        MPUIInterface::SetupCvars(true);
+        if (PlayerData)
+        {
+            bdMessage* v8 = new bdMessage(0x20u, false);
+            bdReference<bdMessage> newPlayerMsg;
+            newPlayerMsg.m_ptr = v8;
+            if (v8 != nullptr)
+                ++v8->m_refCount;
+            extern int g_NumBdMessages;
+            ++g_NumBdMessages;
+            bdReference<bdBitBuffer> v39 = v8->getPayload();
+            if (LiveWrapper::theWrapper->internalState == kSignedIn
+                && MPUIInterface::mGameConnectionType
+                       == kGameConnectionTypeOnline)
+            {
+                MPLiveEngine* Handle = MPLiveEngine::GetHandle();
+                LivePlayer* LocalPlayer =
+                    (LivePlayer*)Handle->GetLocalPlayer(Handle->actualPort);
+                *(LivePlayer*)&data.livePlayer = *LocalPlayer;
+                sprintf(data.name, "%S",
+                        ((LivePlayer*)&data.livePlayer)->gamertag);
+                Cvar_Set("name", data.name);
+            }
+            else
+            {
+                unsigned int size = (unsigned int)strlen(
+                    &gSaveGameData[LocalClient::ClientToPort(
+                                      data.localIdx)]
+                         .mStubData.mProfileName[0]);
+                if (size == 0)
+                {
+                    if (MPLiveEngine::GetHandle()->internalState
+                        == kSignedIn)
+                    {
+                        if (MPUIInterface::mGameConnectionType
+                            == kGameConnectionTypeOnline)
+                        {
+                            MPLiveEngine* v14 = MPLiveEngine::GetHandle();
+                            LivePlayer* v15 = (LivePlayer*)v14
+                                                  ->GetLocalPlayer(
+                                                      v14->actualPort);
+                            _snprintf(data.name, 0x20u, "%S",
+                                      v15->gamertag);
+                            goto label27;
+                        }
+                    }
+                    else if (MPUIInterface::mGameConnectionType
+                             == kGameConnectionTypeOnline)
+                    {
+                        goto label27;
+                    }
+                    size = 255;
+                    char xbox_name[256];
+                    DmGetXboxName(xbox_name, &size);
+                    strncpy(data.name, xbox_name, 0x20u);
+                    goto label27;
+                }
+                strncpy(
+                    data.name,
+                    &gSaveGameData[LocalClient::ClientToPort(
+                                      data.localIdx)]
+                         .mStubData.mProfileName[0],
+                    0x20u);
+                Cvar_Set(
+                    "name",
+                    &gSaveGameData[LocalClient::ClientToPort(
+                                      data.localIdx)]
+                         .mStubData.mProfileName[0]);
+            }
+        label27:
+            data.playing = false;
+            data.vehicleId = 10;
+            data.vehicleHealth = 0;
+            bdReference<bdBitBuffer> writeBuf;
+            writeBuf.m_ptr = v39.m_ptr;
+            if (v39.m_ptr != nullptr)
+                ++v39.m_ptr->m_refCount;
+            MPUtility::WritePlayerData(writeBuf, data);
+            if (writeBuf.m_ptr != nullptr
+                && writeBuf.m_ptr->m_refCount-- == 1)
+                delete writeBuf.m_ptr;
+            bdReference<bdMessage> sendMsg;
+            sendMsg.m_ptr = v8;
+            if (v8 != nullptr)
+                ++v8->m_refCount;
+            SendAll(sendMsg, true, false);
+            if (sendMsg.m_ptr != nullptr
+                && sendMsg.m_ptr->m_refCount-- == 1)
+                delete sendMsg.m_ptr;
+            OverlayMenu* v16 = OverlayMenu::Me(0);
+            if (v16 != nullptr)
+                v16->SetState(12);  // BDNET_STARTING
+            if (v39.m_ptr != nullptr
+                && v39.m_ptr->m_refCount-- == 1)
+                delete v39.m_ptr;
+            if (v8 != nullptr && v8->m_refCount-- == 1)
+                delete v8;
+        }
+    }
+    else if (g_femanager.fems != nullptr
+             && g_femanager.fems->IsSystemActive())
+    {
+        OverlayMenu* v18 = OverlayMenu::Me(0);
+        if (v18 != nullptr)
+        {
+            v18->SetState(joinReply == 2 ? 9 : 8);
+            void* activeMenu = v18->GetActiveMenu();
+            if (*(int*)((char*)activeMenu + 0x14) == -1)
+            {
+                *(int*)((char*)v18 + 0x50) = (int)v18->GetAcceptMenu();
+                *(int*)((char*)v18 + 0x54) = (int)v18->GetBackMenu();
+            }
+            else
+            {
+                *(int*)((char*)v18 + 0x50) =
+                    *(int*)((char*)activeMenu + 0x14);
+                void* activeMenu2 = v18->GetActiveMenu();
+                *(int*)((char*)v18 + 0x54) =
+                    *(int*)((char*)activeMenu2 + 0x14);
+            }
+        }
+    }
+    else if (*(unsigned char*)((char*)this + 0x4111 + whichPlayer) == 17
+             && dword_F6A290[802 * whichPlayer] == 1)
+    {
+        *(unsigned char*)((char*)this + 0x4111 + whichPlayer) = 16;
+        InGameMenuSystem* v24 = g_femanager.GetIGMS(whichPlayer);
+        if (v24->GetActiveMenu() == 14)
+        {
+            if (joinReply == 2)
+                HotJoinMenu::Me(whichPlayer)
+                    ->DisplayError("MPFRONTEND_GAME_SESSION_FULL");
+            else
+                HotJoinMenu::Me(whichPlayer)
+                    ->DisplayError("MPFRONTEND_GAME_UNAVAILABLE");
+        }
+        else
+        {
+            dword_F6A290[802 * whichPlayer] = 0;
+            View::UpdateNumViewports();
+            InGameMenuSystem* v27 = g_femanager.GetIGMS(whichPlayer);
+            v27->gap1C(v27, -1);
+        }
+    }
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+        delete msg.m_ptr;
 }
 
 // ea: 0x007468D0
