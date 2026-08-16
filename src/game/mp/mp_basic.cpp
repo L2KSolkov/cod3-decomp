@@ -94,6 +94,8 @@ extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
 extern int dword_F6A290[4 * 802];   // ?dword_F6A290@@3PAHA @ 0xF6A290
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void SV_SwapClients(int client1, int client2);  // sv.o (?SV_SwapClients@@YAXHH@Z)
+extern void SV_PostConnect();  // sv.o (?SV_PostConnect@@YAXXZ @ 0x914CE0)
+extern void SV_ClientEnterWorld(client_s* client);  // sv.o (?SV_ClientEnterWorld@@YAXPAUclient_s@@@Z @ 0x90F2C0)
 extern const char* MI_GetMapShortname(char mapID);  // ?MI_GetMapShortname@@YAPADD@Z (mp_shell.o)
 extern void Cbuf_AddText(const char* text);         // ?Cbuf_AddText@@YAXPBD@Z (cl.o)
 extern float leftLegLiftDuration;                   // @ 0xE3739C
@@ -23966,6 +23968,166 @@ void MPPlayer::DebugRender()
                 DebugRender::RenderLine(pt1, pt2, lineBlue, 0.2f);
             }
         }
+    }
+}
+
+// ea: 0x00739FA0
+void MPPlayerManager::ClientConnect(MPPlayer* player, const float* position,
+                                    const float* angles)
+{
+    if (com_sv_running->integer == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 7188;
+        AeAssert::gCurrentExpr = "com_sv_running->integer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    bdReference<bdConnection> result =
+        player->GetConnection();
+    bdReference<bdCommonAddr> addr = result.m_ptr->getAddress();
+    bool fromLoopback = addr.m_ptr != nullptr
+                            ? addr.m_ptr->isLoopback()
+                            : false;
+    if (result.m_ptr != nullptr)
+    {
+        if (result.m_ptr->m_refCount-- == 1)
+            delete result.m_ptr;
+    }
+    if (fromLoopback)
+    {
+        int v10 = currCl;
+        int v11 = currCl;
+        unsigned char mId = player->mId;
+        int v13 = NS_CLIENT;
+        while (*(unsigned char*)((char*)this + 0x4111 + v13) != mId)
+        {
+            if (++v13 >= NS_SERVER)
+                goto label17;
+        }
+        v10 = v13;
+        currCl = v13;
+    label17:
+        if (dword_F6A290[802 * v10] == 1)
+        {
+            SV_PostConnect();
+            v10 = currCl;
+        }
+        int v14 = 0;
+        while (v14 < 16)
+        {
+            if (*(int*)((char*)&svs.clients[v14] + 0x748) == 2
+                && *(unsigned short*)((char*)&svs.clients[v14] + 0x75A)
+                       == (unsigned short)v10)
+            {
+                player->mClientIndex = v14;
+                goto label28;
+            }
+            ++v14;
+        }
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+        AeAssert::gCurrentLine = 7229;
+        AeAssert::gCurrentExpr = "clientIndex < 16";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    label28:
+        svs.clients[v14].state = (clientState_t)1;
+        currCl = v11;
+        goto label46;
+    }
+    else
+    {
+        client_s* clients = svs.clients;
+        int v17 = 0;
+        while (clients->state != (clientState_t)0)
+        {
+            if (clients[1].state == (clientState_t)0)
+            {
+                ++v17;
+                ++clients;
+                break;
+            }
+            if (clients[2].state == (clientState_t)0)
+            {
+                v17 += 2;
+                clients += 2;
+                break;
+            }
+            if (clients[3].state == (clientState_t)0)
+            {
+                v17 += 3;
+                clients += 3;
+                break;
+            }
+            v17 += 4;
+            clients += 4;
+            if (v17 >= 16)
+                break;
+        }
+        if (v17 == 16)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerMgr.cpp";
+            AeAssert::gCurrentLine = 7251;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error("Tried to get a client for spawning but "
+                                "none were found."))
+                __debugbreak();
+            return;
+        }
+        player->mClientIndex = v17;
+        SV_ClientEnterWorld(clients);
+        Entity* v18 = player->mClientIndex >= 0
+                          ? EntityManager::sInst->GetPlayer(
+                                player->mClientIndex)
+                          : nullptr;
+        ClientSpawn(v18, position, angles, false, false);
+        clients->state = (clientState_t)1;
+        clients->gamestateMessageNum = -1;
+    }
+label46:
+    {
+        int mClientIndex = player->mClientIndex;
+        Entity* v20;
+        if (mClientIndex >= 0)
+        {
+            if (mClientIndex >= 16)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EntityManager.h";
+                AeAssert::gCurrentLine = 19;
+                AeAssert::gCurrentExpr = "idx<16";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            v20 = EntityManager::sInst->mPlayers[mClientIndex];
+        }
+        else
+        {
+            v20 = nullptr;
+        }
+        v20->client->pers.playerState = 0;
+        v20->client->pers.rank = 0;
+        v20->client->ps.ctf_has_flag = 0;
+        v20->client->pers.playerClass = -1;
+        v20->client->pers.nextPlayerClass = -1;
+        clientPersistent_t* p_pers = &v20->client->pers;
+        memset(p_pers, 0, 0x194u);
+        *((char*)p_pers + 404) = 0;
+        *((char*)p_pers + 408) = 0;
+        v20->sentient->eTeam = (team_t)player->mTeam;
+        G_DObjUpdate(v20, false);
+        if (!fromLoopback)
+            g_LinkEntity(v20);
     }
 }
 
