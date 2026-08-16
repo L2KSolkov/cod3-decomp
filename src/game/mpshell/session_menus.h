@@ -60,6 +60,7 @@ public:
     virtual void Update(float time_inc); // ?Update@CreateSessionMenu@@UAEXM@Z
     virtual void OnCircle(int c);        // ?OnCircle@CreateSessionMenu@@UAEXH@Z
     virtual void OnTriangle(int c);      // ?OnTriangle@CreateSessionMenu@@UAEXH@Z
+    virtual void OnCross(int c);         // ?OnCross@CreateSessionMenu@@UAEXH@Z
     virtual void OnSquare(int c);        // ?OnSquare@CreateSessionMenu@@UAEXH@Z
     virtual void OnUp(int c);            // ?OnUp@CreateSessionMenu@@UAEXH@Z
     virtual void OnDown(int c);          // ?OnDown@CreateSessionMenu@@UAEXH@Z
@@ -108,6 +109,7 @@ public:
     virtual void Update(float time_inc);    // ?Update@CreateLanSessionMenu@@UAEXM@Z
     virtual void OnCircle(int c);           // ?OnCircle@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnTriangle(int c);         // ?OnTriangle@CreateLanSessionMenu@@UAEXH@Z
+    virtual void OnCross(int c);            // ?OnCross@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnSquare(int c);           // ?OnSquare@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnUp(int c);               // ?OnUp@CreateLanSessionMenu@@UAEXH@Z
     virtual void OnDown(int c);             // ?OnDown@CreateLanSessionMenu@@UAEXH@Z
@@ -154,6 +156,7 @@ public:
     virtual void Update(float time_inc);  // ?Update@FindSessionMenu@@UAEXM@Z
     virtual void OnTriangle(int c);    // ?OnTriangle@FindSessionMenu@@UAEXH@Z
     virtual void OnCross(int c);       // ?OnCross@FindSessionMenu@@UAEXH@Z
+    virtual void OnActivate();         // ?OnActivate@FindSessionMenu@@UAEXXZ
     virtual void OnUp(int c);          // ?OnUp@FindSessionMenu@@UAEXH@Z
     virtual void OnDown(int c);        // ?OnDown@FindSessionMenu@@UAEXH@Z
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@FindSessionMenu@@UAEXPAVFEMenu@@@Z
@@ -197,6 +200,7 @@ public:
     virtual void Update(float time_inc);  // ?Update@FindLanSessionMenu@@UAEXM@Z
     virtual void OnTriangle(int c);       // ?OnTriangle@FindLanSessionMenu@@UAEXH@Z
     virtual void OnCross(int c);          // ?OnCross@FindLanSessionMenu@@UAEXH@Z
+    virtual void OnActivate();            // ?OnActivate@FindLanSessionMenu@@UAEXXZ
     virtual void OnUp(int c);             // ?OnUp@FindLanSessionMenu@@UAEXH@Z
     virtual void OnDown(int c);           // ?OnDown@FindLanSessionMenu@@UAEXH@Z
     virtual void OnDeactivate(FEMenu* m); // ?OnDeactivate@FindLanSessionMenu@@UAEXPAVFEMenu@@@Z

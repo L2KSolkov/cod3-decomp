@@ -5649,6 +5649,159 @@ void PauseMenu::OnActivate()
     panel->GetPointer("bkg_line_07")->SetShown(true);
 }
 
+// ============================================================================
+// Batch 22: create/find menu handlers (320-336 bytes)
+// ============================================================================
+
+// ea: 0x007A79C0
+void CreateSessionMenu::OnCross(int c)
+{
+    (void)c;
+    MPUIInterface::mServerParams.mGameType =
+        (unsigned char)mGameModeCombo->mCurrOption;
+    short mCurrOption = mStartingMapCombo->mCurrOption;
+    if (mCurrOption != 0xFF)
+        mCurrOption = (short)(unsigned char)byte_E386C9[114 * mCurrOption];
+    MPUIInterface::mServerParams.mMapID = (unsigned char)mCurrOption;
+    MPUIInterface::mServerParams.mMaxPlayers =
+        (unsigned char)m_iNumberOfPlayersConversion[
+            mNumberOfPlayersCombo->mCurrOption];
+    MPUIInterface::mServerParams.mPrivateSlots =
+        (unsigned char)m_PrivateSlotsCombo->mCurrOption;
+    strncpy(MPUIInterface::mServerParams.mName, m_szSessionName, 0x10u);
+    MPUIInterface::mServerParams.SetMapRotation(0);
+    MPUIInterface::mServerParams.mRespawnTime =
+        MPUIInterface::GetDefaultOption(
+            MPUIInterface::SETTING_RESPAWN_TIME,
+            (eGameType)MPUIInterface::mServerParams.mGameType);
+    MPUIInterface::mServerParams.mDontRotate = false;
+    MPUIInterface::mNextServerParams = MPUIInterface::mServerParams;
+    if (MPUIInterface::StartServer(true, true))
+    {
+        MPUIInterface::ExitFrontend(10);
+    }
+    else if (MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+    {
+        OverlayMenu* v4 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        v4->SetState(OverlayMenu::FROM_ID_QUERYING);
+        OverlayMenu* fems = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)fems + 0x50) = 8;
+        OverlayMenu* v5 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)v5 + 0x54) = 8;
+        system->AddOverlay(16);
+    }
+}
+
+// ea: 0x007A7DB0
+void CreateLanSessionMenu::OnCross(int c)
+{
+    MPUIInterface::mServerParams.mGameType =
+        (unsigned char)mGameModeCombo->mCurrOption;
+    short mCurrOption = mStartingMapCombo->mCurrOption;
+    if (mCurrOption != 0xFF)
+        mCurrOption = (short)(unsigned char)byte_E386C9[114 * mCurrOption];
+    MPUIInterface::mServerParams.mMapID = (unsigned char)mCurrOption;
+    MPUIInterface::mServerParams.mMaxPlayers =
+        (unsigned char)m_iNumberOfPlayersConversion[
+            mNumberOfPlayersCombo->mCurrOption];
+    GrabSessionName(c);
+    strncpy(MPUIInterface::mServerParams.mName, m_szSessionName, 0x10u);
+    MPUIInterface::mServerParams.SetMapRotation(0);
+    MPUIInterface::mServerParams.mRespawnTime =
+        MPUIInterface::GetDefaultOption(
+            MPUIInterface::SETTING_RESPAWN_TIME,
+            (eGameType)MPUIInterface::mServerParams.mGameType);
+    MPUIInterface::mServerParams.mDontRotate = false;
+    MultiplayerMgr::sInst->mLinkCheckEnabled = true;
+    if (MPUIInterface::StartServer(true, true))
+    {
+        MPUIInterface::ExitFrontend(9);
+    }
+    else if (MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+    {
+        g_femanager.fems->RemoveOverlay();
+        OverlayMenu* v4 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        v4->SetState(OverlayMenu::FROM_ID_QUERYING);
+        OverlayMenu* fems = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)fems + 0x50) = 8;
+        OverlayMenu* v5 = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        *(int*)((char*)v5 + 0x54) = 8;
+        system->AddOverlay(16);
+    }
+}
+
+// ea: 0x00798B80
+void FindSessionMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    for (int i = 0; i < 6; ++i)
+        m_pBackgroundArt.m_elements[i]->SetShown(true);
+    if ((m_FirstTimeAccessedByte & 1) == 0)
+    {
+        m_FirstTimeAccessedByte = 1;
+        if (mStartingMapCombo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/FindSessionMenu.cpp";
+            AeAssert::gCurrentLine = 418;
+            AeAssert::gCurrentExpr = "mStartingMapCombo";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Combobox failure"))
+                __debugbreak();
+        }
+        for (int j = g_NumBaseMaps; j < g_NumTotalMaps; ++j)
+        {
+            char v4 = (j == 0xFF) ? (char)-1
+                                   : (char)byte_E386C9[114 * j];
+            Broc::string s(MPUIInterface::GetMapString(v4));
+            mStartingMapCombo->AddOption(s);
+        }
+    }
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+}
+
+// ea: 0x0079A070
+void FindLanSessionMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    for (int i = 0; i < 4; ++i)
+        m_pBackgroundArt.m_elements[i]->SetShown(true);
+    if ((m_FirstTimeAccessedByte & 1) == 0)
+    {
+        m_FirstTimeAccessedByte = 1;
+        if (mStartingMapCombo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp";
+            AeAssert::gCurrentLine = 412;
+            AeAssert::gCurrentExpr = "mStartingMapCombo";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Combobox failure"))
+                __debugbreak();
+        }
+        for (int j = g_NumBaseMaps; j < g_NumTotalMaps; ++j)
+        {
+            char v4 = (j == 0xFF) ? (char)-1
+                                   : (char)byte_E386C9[114 * j];
+            Broc::string s(MPUIInterface::GetMapString(v4));
+            mStartingMapCombo->AddOption(s);
+        }
+    }
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+}
+
 // ea: 0x00792280
 void AARPauseMenu::SetTimerText()
 {
