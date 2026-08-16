@@ -302,10 +302,10 @@ public:
     tAngularInterpolator mHeadingInterpolator;       // +0x190
     tAngularInterpolator mPitchInterpolator;         // +0x1A0
     tAngularInterpolator mRollInterpolator;          // +0x1B0
-    tAngularInterpolator mHeadingVelocityInterpolator;  // +0x1C0
-    tAngularInterpolator mPitchVelocityInterpolator;    // +0x1D0
-    tAngularInterpolator mRollVelocityInterpolator;     // +0x1E0
-    tAngularInterpolator mSteeringInterpolator;         // +0x1F0
+    kuju::tLinearInterpolator mHeadingVelocityInterpolator;  // +0x1C0
+    kuju::tLinearInterpolator mPitchVelocityInterpolator;    // +0x1D0
+    kuju::tLinearInterpolator mRollVelocityInterpolator;     // +0x1E0
+    kuju::tLinearInterpolator mSteeringInterpolator;         // +0x1F0
     bool  bIsInterpolatorValid;          // +0x200
     uint8_t _pad201[0x204 - 0x201];
     int   sLastRecievedNetUpdate;     // +0x204

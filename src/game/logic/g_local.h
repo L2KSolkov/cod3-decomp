@@ -5078,6 +5078,13 @@ public:
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
     static void remove_vehicle(rb_vehicle* const v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
     void end_path();                            // physics.o ?end_path@rb_vehicle@@QAEXXZ
+    void pause_physics(bool shutdown);           // physics.o ?pause_physics@rb_vehicle@@QAEX_N@Z
+    void unpause_physics();                      // physics.o ?unpause_physics@rb_vehicle@@QAEXXZ
+    void set_steer_factor(float steer_factor);   // physics.o ?set_steer_factor@rb_vehicle@@QAEXM@Z
+    void update_from_network(const math::Position3& position,
+                             const math::Position3& angles,
+                             const math::Dir3& vel,
+                             const math::Dir3& aVel);  // physics.o ?update_from_network@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@1@Z
     void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
 };
 void rb_vehicle_unpause_physics(rb_vehicle* self);                    // phys_xboxr

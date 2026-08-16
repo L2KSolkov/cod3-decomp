@@ -22072,6 +22072,277 @@ label29:
     }
 }
 
+// ea: 0x00755D80
+void MPVehicle::UpdateInterpolation(const kuju::knet::sTime& time)
+{
+    int v29 = this->mLastReceivedTime.mTime
+              + (int)((this->mAverageUpdateInterval * 1000.0f) + 50.0f);
+    if (MultiplayerMgr::sInst->IsLocalPlayerPhysicsOwner(
+            (Entity*)this->mEntity, false))
+        goto label10;
+    if (time.mTime
+        <= (float)v29 - (this->mAverageUpdateInterval * -1000.0f))
+    {
+        if (time.mTime <= v29)
+        {
+            int mInterpolationState = this->mInterpolationState;
+            if (mInterpolationState
+                    == kuju::cBezierTrajectoryInterpolator::
+                           kInterpolationStarvation
+                || mInterpolationState
+                       == kuju::cBezierTrajectoryInterpolator::
+                              kInterpolationStopped)
+            {
+                float initialDate =
+                    this->mLastInterpolatedTime.mTime * 0.001f;
+                float v20 = v29 * 0.001f;
+                this->mInterpolationState =
+                    kuju::cBezierTrajectoryInterpolator::
+                        kInterpolationRegular;
+                this->bIsInterpolatorValid = 1;
+                mInterpolator.reset(mInterpolatedPosition,
+                                    mInterpolatedSpeed, initialDate,
+                                    mNetPosition, mNetSpeed, v20, false);
+                mHeadingInterpolator.reset(
+                    mInterpolatedHeading,
+                    mLastInterpolatedTime.mTime * 0.001f, mNetHeading,
+                    v20);
+                mPitchInterpolator.reset(
+                    mInterpolatedPitch,
+                    mLastInterpolatedTime.mTime * 0.001f, mNetPitch,
+                    v20);
+                mRollInterpolator.reset(
+                    mInterpolatedRoll,
+                    mLastInterpolatedTime.mTime * 0.001f, mNetRoll,
+                    v20);
+                float mTime = this->mLastInterpolatedTime.mTime;
+                this->mHeadingVelocityInterpolator.mInitialValue =
+                    this->mInterpolatedAngularVelocity.v.m128_f32[1];
+                this->mHeadingVelocityInterpolator.mInitialTime =
+                    mTime * 0.001f;
+                this->mHeadingVelocityInterpolator.mFinalValue =
+                    this->mNetAngularVelocity.v.m128_f32[1];
+                this->mHeadingVelocityInterpolator.mFinalTime = v20;
+                float v23 = this->mLastInterpolatedTime.mTime;
+                this->mPitchVelocityInterpolator.mInitialValue =
+                    this->mInterpolatedAngularVelocity.v.m128_f32[0];
+                this->mPitchVelocityInterpolator.mInitialTime =
+                    v23 * 0.001f;
+                this->mPitchVelocityInterpolator.mFinalValue =
+                    this->mNetAngularVelocity.v.m128_f32[0];
+                this->mPitchVelocityInterpolator.mFinalTime = v20;
+                float v24 =
+                    this->mLastInterpolatedTime.mTime * 0.001f;
+                this->mRollVelocityInterpolator.mInitialValue =
+                    this->mInterpolatedAngularVelocity.v.m128_f32[2];
+                this->mRollVelocityInterpolator.mInitialTime = v24;
+                this->mRollVelocityInterpolator.mFinalValue =
+                    this->mNetAngularVelocity.v.m128_f32[2];
+                this->mRollVelocityInterpolator.mFinalTime = v20;
+                float v25 =
+                    this->mLastInterpolatedTime.mTime * 0.001f;
+                this->mSteeringInterpolator.mInitialValue =
+                    this->mInterpolatedSteering;
+                this->mSteeringInterpolator.mInitialTime = v25;
+                this->mSteeringInterpolator.mFinalValue =
+                    this->mNetSteering;
+                this->mSteeringInterpolator.mFinalTime = v20;
+                goto label7;
+            }
+        }
+        else
+        {
+            this->mInterpolationState =
+                kuju::cBezierTrajectoryInterpolator::
+                    kInterpolationStopped;
+        }
+    }
+    else if (this->mInterpolationState
+             <= kuju::cBezierTrajectoryInterpolator::
+                    kInterpolationStarvation)
+    {
+        memset(&this->mInterpolatedSpeed, 0, sizeof(math::Dir3));
+        memset(&this->mInterpolatedAngularVelocity, 0,
+               sizeof(math::Dir3));
+        this->mInterpolationState =
+            kuju::cBezierTrajectoryInterpolator::
+                kInterpolationStopped;
+    }
+label7:
+    if (this->bIsInterpolatorValid
+        && this->mInterpolationState
+               <= kuju::cBezierTrajectoryInterpolator::
+                      kInterpolationStarvation)
+    {
+        this->mInterpolatedPosition =
+            mInterpolator.position(time.mTime * 0.001f);
+        this->mInterpolatedSpeed =
+            mInterpolator.speed(time.mTime * 0.001f);
+        this->mInterpolatedHeading =
+            mHeadingInterpolator.get(time.mTime * 0.001f);
+        this->mInterpolatedPitch =
+            mPitchInterpolator.get(time.mTime * 0.001f);
+        this->mInterpolatedRoll =
+            mRollInterpolator.get(time.mTime * 0.001f);
+        this->mInterpolatedAngularVelocity.v.m128_f32[1] =
+            mHeadingVelocityInterpolator.get(time.mTime * 0.001f);
+        this->mInterpolatedAngularVelocity.v.m128_f32[0] =
+            mPitchVelocityInterpolator.get(time.mTime * 0.001f);
+        this->mInterpolatedAngularVelocity.v.m128_f32[2] =
+            mRollVelocityInterpolator.get(time.mTime * 0.001f);
+        this->mInterpolatedSteering =
+            mSteeringInterpolator.get(time.mTime * 0.001f);
+    }
+label10:
+    {
+        Entity* mEntity = (Entity*)this->mEntity;
+        this->mLastInterpolatedTime.mTime = time.mTime;
+        if (mEntity != nullptr && mEntity->scr_vehicle != nullptr)
+        {
+            math::Position3 v28;
+            v28.v.m128_f32[0] = this->mInterpolatedPitch;
+            v28.v.m128_f32[1] = this->mInterpolatedHeading;
+            v28.v.m128_f32[2] = this->mInterpolatedRoll;
+            v28.v.m128_f32[3] = 0.0f;
+            VEH_Backup(mEntity);
+            float* m128_f32 =
+                mEntity->scr_vehicle->phys.origin.v.m128_f32;
+            m128_f32[0] = this->mInterpolatedPosition.v.m128_f32[0];
+            m128_f32[1] = this->mInterpolatedPosition.v.m128_f32[1];
+            m128_f32[2] = this->mInterpolatedPosition.v.m128_f32[2];
+            m128_f32[3] = this->mInterpolatedPosition.v.m128_f32[3];
+            float* v11 = mEntity->scr_vehicle->phys.vel.v.m128_f32;
+            v11[0] = this->mInterpolatedSpeed.v.m128_f32[0];
+            v11[1] = this->mInterpolatedSpeed.v.m128_f32[1];
+            v11[2] = this->mInterpolatedSpeed.v.m128_f32[2];
+            v11[3] = this->mInterpolatedSpeed.v.m128_f32[3];
+            float* v12 =
+                mEntity->scr_vehicle->phys.rotVel.v.m128_f32;
+            v12[0] = this->mInterpolatedAngularVelocity.v.m128_f32[0];
+            v12[1] = this->mInterpolatedAngularVelocity.v.m128_f32[1];
+            v12[2] = this->mInterpolatedAngularVelocity.v.m128_f32[2];
+            v12[3] = this->mInterpolatedAngularVelocity.v.m128_f32[3];
+            mEntity->scr_vehicle->phys.angles.v = v28.v;
+            if (mEntity->scr_vehicle->mRBVeh != nullptr)
+            {
+                if (!MultiplayerMgr::sInst->IsLocalPlayerPhysicsOwner(
+                        mEntity, false)
+                    && this->bIsInterpolatorValid)
+                {
+                    scr_vehicle_t* scr_vehicle =
+                        mEntity->scr_vehicle;
+                    float dx = this->mInterpolatedSpeed.v.m128_f32[0];
+                    float dy = this->mInterpolatedSpeed.v.m128_f32[1];
+                    float dz = this->mInterpolatedSpeed.v.m128_f32[2];
+                    float speed2 = dx * dx + dy * dy + dz * dz;
+                    float adx = this->mInterpolatedAngularVelocity
+                                    .v.m128_f32[0];
+                    float ady = this->mInterpolatedAngularVelocity
+                                    .v.m128_f32[1];
+                    float adz = this->mInterpolatedAngularVelocity
+                                    .v.m128_f32[2];
+                    float ang2 = adx * adx + ady * ady + adz * adz;
+                    float odx = mEntity->r.currentOrigin.v.m128_f32[0]
+                                - this->mInterpolatedPosition
+                                      .v.m128_f32[0];
+                    float ody = mEntity->r.currentOrigin.v.m128_f32[1]
+                                - this->mInterpolatedPosition
+                                      .v.m128_f32[1];
+                    float odz = mEntity->r.currentOrigin.v.m128_f32[2]
+                                - this->mInterpolatedPosition
+                                      .v.m128_f32[2];
+                    float origin2 = odx * odx + ody * ody + odz * odz;
+                    if (scr_vehicle->seats[0].occupant.mHandle.mVal != 0
+                        || sqrtf(speed2) > 2.0f
+                        || sqrtf(ang2) > 2.0f
+                        || sqrtf(origin2) > 2.0f)
+                    {
+                        if (scr_vehicle->IsPhysicsPaused())
+                            ((rb_vehicle*)scr_vehicle->mRBVeh)
+                                ->unpause_physics();
+                        ((rb_vehicle*)scr_vehicle->mRBVeh)
+                            ->update_from_network(
+                                this->mInterpolatedPosition, v28,
+                                this->mInterpolatedSpeed,
+                                this->mInterpolatedAngularVelocity);
+                    }
+                    else if (!scr_vehicle->IsPhysicsPaused())
+                    {
+                        ((rb_vehicle*)scr_vehicle->mRBVeh)
+                            ->pause_physics(false);
+                    }
+                }
+                mEntity->s.pos.trTime = 0;
+                mEntity->s.pos.trDuration = 0;
+                mEntity->s.apos.trTime = 0;
+                mEntity->s.apos.trDuration = 0;
+                mEntity->s.pos.trType = TR_STATIONARY;
+                mEntity->s.apos.trType = TR_STATIONARY;
+                mEntity->s.pos.trDelta[1] = 0.0f;
+                mEntity->s.pos.trDelta[0] = 0.0f;
+                mEntity->s.apos.trDelta[1] = 0.0f;
+                mEntity->s.apos.trDelta[0] = 0.0f;
+                mEntity->r.currentOrigin.v.m128_f32[0] =
+                    this->mInterpolatedPosition.v.m128_f32[0];
+                mEntity->r.currentOrigin.v.m128_f32[1] =
+                    this->mInterpolatedPosition.v.m128_f32[1];
+                mEntity->r.currentOrigin.v.m128_f32[2] =
+                    this->mInterpolatedPosition.v.m128_f32[2];
+                mEntity->r.currentOrigin.v.m128_f32[3] =
+                    this->mInterpolatedPosition.v.m128_f32[3];
+                mEntity->s.pos.trBase[0] =
+                    mEntity->r.currentOrigin.v.m128_f32[0];
+                mEntity->s.pos.trBase[1] =
+                    mEntity->r.currentOrigin.v.m128_f32[1];
+                mEntity->s.pos.trBase[2] =
+                    mEntity->r.currentOrigin.v.m128_f32[2];
+                mEntity->pos3.v.m128_f32[0] =
+                    this->mInterpolatedSpeed.v.m128_f32[0];
+                mEntity->pos3.v.m128_f32[1] =
+                    this->mInterpolatedSpeed.v.m128_f32[1];
+                mEntity->pos3.v.m128_f32[2] =
+                    this->mInterpolatedSpeed.v.m128_f32[2];
+                mEntity->r.currentAngles.v = v28.v;
+                mEntity->s.apos.trBase[0] =
+                    mEntity->r.currentAngles.v.m128_f32[0];
+                mEntity->s.apos.trBase[1] =
+                    mEntity->r.currentAngles.v.m128_f32[1];
+                mEntity->s.apos.trBase[2] =
+                    mEntity->r.currentAngles.v.m128_f32[2];
+                if (!MultiplayerMgr::sInst->IsLocalPlayerPhysicsOwner(
+                        mEntity, false)
+                    && !this->IsPhysicsPaused())
+                {
+                    ((rb_vehicle*)mEntity->scr_vehicle->mRBVeh)
+                        ->set_steer_factor(this->mInterpolatedSteering);
+                }
+                g_LinkEntity(mEntity);
+            }
+            else
+            {
+                mEntity->s.pos.trTime = 0;
+                mEntity->s.pos.trDuration = 0;
+                mEntity->s.apos.trTime = 0;
+                mEntity->s.apos.trDuration = 0;
+                mEntity->s.pos.trType = TR_STATIONARY;
+                mEntity->s.apos.trType = TR_STATIONARY;
+                mEntity->s.pos.trDelta[2] = 0.0f;
+                mEntity->s.pos.trDelta[1] = 0.0f;
+                mEntity->s.pos.trDelta[0] = 0.0f;
+                mEntity->s.apos.trDelta[2] = 0.0f;
+                mEntity->s.apos.trDelta[1] = 0.0f;
+                mEntity->s.apos.trDelta[0] = 0.0f;
+                math::Position3 v27;
+                v27.v = this->mInterpolatedSpeed.v;
+                VEH_SetPosition(mEntity, this->mInterpolatedPosition,
+                                v28, v27.v.m128_f32);
+            }
+            SetSeatState(mEntity->scr_vehicle, 0, this->mDriverState);
+            SetSeatState(mEntity->scr_vehicle, 1, this->mGunnerState);
+        }
+    }
+}
+
 // ea: 0x0073D0F0
 const int MPUIInterface::GetDefaultOption(eSetting setting,
                                           eGameType gameType)
