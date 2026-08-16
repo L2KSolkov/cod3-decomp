@@ -1414,6 +1414,7 @@ public:
     virtual void OnSquare(int c);         // ?OnSquare@OverlayMenu@@UAEXH@Z
     virtual void OnCircle(int c);         // ?OnCircle@OverlayMenu@@UAEXH@Z
     virtual void OnCross(int c);          // ?OnCross@OverlayMenu@@UAEXH@Z
+    virtual void Update(float time_inc);  // ?Update@OverlayMenu@@UAEXM@Z
     virtual ~OverlayMenu();               // ??1OverlayMenu@@UAE@XZ
 protected:
     void LogonUpdate();                   // ?LogonUpdate@OverlayMenu@@IAEXXZ

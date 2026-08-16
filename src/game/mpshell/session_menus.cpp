@@ -65,6 +65,11 @@ public:
     static const int GetScoreLimitCount(eGameType gameType);  // ?GetScoreLimitCount@MPUIInterface@@SA?BHW4eGameType@@@Z
     static const int GetScoreLimit(unsigned long index,
                                    eGameType gameType);  // ?GetScoreLimit@MPUIInterface@@SA?BHKW4eGameType@@@Z
+    static const bool IsGameListingComplete();  // ?IsGameListingComplete@MPUIInterface@@SA?B_NXZ
+    static const bool StartClient(sGameListing& game, bool bStartGame,
+                                  int nGameIndex);  // ?StartClient@MPUIInterface@@SA?B_NAAUsGameListing@@_NH@Z
+    static bool GameListingStart();  // ?GameListingStart@MPUIInterface@@SA_NXZ
+    static bool StartGame(bool forceRestart, bool blockUntilNetReady);  // ?StartGame@MPUIInterface@@SA_N_N0@Z
     static const int GetTimeLimitCount();  // ?GetTimeLimitCount@MPUIInterface@@SA?BHXZ
     static const int GetTimeLimit(unsigned long index);  // ?GetTimeLimit@MPUIInterface@@SA?BHK@Z
     static const int GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z
@@ -178,6 +183,7 @@ public:
     char* GetIcon(unsigned int portNumber);  // ?GetIcon@LiveWrapper@@QAEPADK@Z (game_xbox.o)
     void SetNotificationFlag(unsigned int portNumber, unsigned int flagID,
                              bool flagState);  // ?SetNotificationFlag@LiveWrapper@@QAEXKK_N@Z
+    void DoWork();                            // ?DoWork@LiveWrapper@@QAEXXZ (game_xbox.o)
     void LogOut();                            // ?LogOut@LiveWrapper@@QAEXXZ (game_xbox.o)
     void ToggleOfflineAppearance(unsigned int portNumber);  // ?ToggleOfflineAppearance@LiveWrapper@@QAEXK@Z
     void SetVTS(unsigned int portNumber, bool enabled);     // ?SetVTS@LiveWrapper@@QAEXK_N@Z
@@ -8814,6 +8820,264 @@ void AAROverlay::SetPanelFile(PanelFile* pf)
     OverlayPanelFileCommon(this, pf, szAAROverlayMenuBackgroundArt,
                            szAAROverlayMenuText,
                            szAARLinesBetweenOptionText);
+}
+
+// ea: 0x007AE570
+void OverlayMenu::Update(float time_inc)
+{
+    m_ListBox.Update(time_inc);
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    MPUIInterface::Step();
+    bool bEnter =
+        g_controllerConnected[LocalClient::ClientToPort(mVersion)];
+    if (!bEnter)
+    {
+        OnTriangle(0);
+        bEnter = (mState != (OverlayMenu::eState)0);
+    }
+    if (bEnter)
+    {
+        switch (mState)
+        {
+        case SIGNING_IN:
+            MPLiveEngine::GetHandle()->DoWork();
+            if (MPLiveEngine::GetHandle()->internalState != kSigningIn)
+            {
+                system->RemoveOverlay();
+                mState = (OverlayMenu::eState)0;
+            }
+            goto DOT_ANIM;
+        case GAME_LISTING:
+            mTimeout -= time_inc;
+            if (mTimeout >= 0.0f)
+            {
+                if (MPUIInterface::IsGameListingComplete())
+                {
+                    mState = (OverlayMenu::eState)0;
+                    system->RemoveOverlay();
+                }
+            }
+            else
+            {
+                OnTriangle(0);
+            }
+            goto DOT_ANIM;
+        case GAME_LISTING_START:
+            if (mDelayStart != 0)
+            {
+                --mDelayStart;
+                mLinkStatusCount = 0;
+                mLinkStatusTimer = 0.0f;
+                goto DOT_ANIM;
+            }
+            if (mbStartGame)
+            {
+                mbStartGame = false;
+                if (MPUIInterface::StartGame(false, false))
+                    helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+                else
+                    mTimeout = -1.0f;
+            }
+            mTimeout -= time_inc;
+            MultiplayerMgr::sInst->Step(0, false, true);
+            if (bdSingleton<bdNetImpl>::getInstance()->getStatus()
+                == BD_NET_DONE)
+            {
+                if (!MPUIInterface::GameListingStart())
+                {
+                    SetState(FROM_ID_QUERYING);
+                    mAcceptMenu = 8;
+                    mBackMenu = 8;
+                    goto DOT_ANIM;
+                }
+                SetState(GAME_LISTING);
+                goto DOT_ANIM;
+            }
+            if (mTimeout < 0.0f)
+            {
+                if (!MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+                {
+                    OnTriangle(0);
+                    return;
+                }
+                SetState(FROM_ID_QUERYING);
+                mAcceptMenu = 8;
+                mBackMenu = 8;
+                goto DOT_ANIM;
+            }
+            if (bdSingleton<bdNetImpl>::getInstance()->getStatus()
+                != BD_NET_PENDING)
+            {
+                if (!MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+                {
+                    OnTriangle(0);
+                    return;
+                }
+                SetState(FROM_ID_QUERYING);
+                mAcceptMenu = 8;
+                mBackMenu = 8;
+            }
+            goto DOT_ANIM;
+        case JOINING_START:
+            if (mDelayStart != 0)
+            {
+                --mDelayStart;
+                goto DOT_ANIM;
+            }
+            if (mbStartGame)
+            {
+                mbStartGame = false;
+                if (MPUIInterface::StartGame(true, false))
+                    helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+                else
+                    mTimeout = -1.0f;
+            }
+            mTimeout -= time_inc;
+            MultiplayerMgr::sInst->Step(0, false, true);
+            if (bdSingleton<bdNetImpl>::getInstance()->getStatus()
+                == BD_NET_DONE)
+            {
+                unsigned long numGames = 0;
+                sGameListing* v17 = MPUIInterface::GameListingGet(numGames);
+                if (v17 != nullptr
+                    && mGameListingNum < numGames)
+                {
+                    MPUIInterface::StartClient(
+                        v17[mGameListingNum], false, mGameListingNum);
+                    SetState(JOINING);
+                    goto DOT_ANIM;
+                }
+                SetState(JOIN_FAILED);
+                return;
+            }
+            if (mTimeout >= 0.0f
+                && bdSingleton<bdNetImpl>::getInstance()->getStatus()
+                    == BD_NET_PENDING)
+                goto DOT_ANIM;
+            if (!MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+            {
+                OnTriangle(0);
+                return;
+            }
+            SetState(FROM_ID_QUERYING);
+            mAcceptMenu = 8;
+            mBackMenu = 8;
+            goto DOT_ANIM;
+        case JOINING:
+            mTimeout -= time_inc;
+            if (mTimeout < 0.0f)
+            {
+                SetState(JOIN_FAILED);
+                if (GetSystem()->background == -1)
+                {
+                    mAcceptMenu = GetSystem()->GetActiveMenu();
+                    mBackMenu = GetSystem()->GetActiveMenu();
+                }
+                else
+                {
+                    mAcceptMenu = GetSystem()->background;
+                    mBackMenu = GetSystem()->background;
+                }
+                return;
+            }
+            goto DOT_ANIM;
+        case BDNET_STARTING:
+            system->RemoveOverlay();
+            mState = (OverlayMenu::eState)0;
+            j_nullsub_46(this);
+            if (MPUIInterface::IsLANGame())
+                MPUIInterface::ExitFrontend(9);
+            else
+                MPUIInterface::ExitFrontend(10);
+            goto DOT_ANIM;
+        case BDNET_START_FAILED:
+            mTimeout -= time_inc;
+            if (mTimeout >= 0.0f)
+                goto DOT_ANIM;
+            if (bdSingleton<bdNetImpl>::getInstance()->getStatus()
+                == BD_NET_PENDING)
+                goto DOT_ANIM;
+            if (bdSingleton<bdNetImpl>::getInstance()->getStatus()
+                == BD_NET_DONE)
+            {
+                mState = (OverlayMenu::eState)0;
+                system->RemoveOverlay();
+                if (MPUIInterface::IsLANGame())
+                    system->MakeActiveAndReturn(9);
+                else
+                    system->MakeActiveAndReturn(10);
+            }
+            else
+            {
+                SetState(FROM_ID_QUERYING);
+                mAcceptMenu = 8;
+                mBackMenu = 8;
+            }
+            goto DOT_ANIM;
+        case (OverlayMenu::eState)0x10:
+            if (mDelayStart != 0)
+            {
+                --mDelayStart;
+            }
+            else
+            {
+                MPLiveEngine::GetHandle()->DoWork();
+                if (mbStartGame)
+                {
+                    mbStartGame = false;
+                    MPUIInterface::StartGame(true, false);
+                    return;
+                }
+                if (MPUIInterface::IsGameListingComplete())
+                {
+                    system->RemoveOverlay();
+                    mState = (OverlayMenu::eState)0;
+                }
+            }
+            goto DOT_ANIM;
+        default:
+        DOT_ANIM:
+            if (mState == SIGNING_IN || mState == GAME_LISTING
+                || mState == GAME_LISTING_START
+                || mState == (OverlayMenu::eState)16 || mState == JOINING
+                || mState == JOINING_START || mState == BDNET_START_FAILED)
+            {
+                mDotTimer += time_inc;
+                if (mDotTimer > 0.5f)
+                {
+                    mDotTimer = (mDotTimer >= 1.0f)
+                        ? 0.0f : (mDotTimer - 0.5f);
+                    ++mNumDots;
+                    if (mNumDots == 3)
+                        mNumDots = 0;
+                    if (mText.mBlock != nullptr
+                        && mText.mBlock->mLength >= 0x7D)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+                        AeAssert::gCurrentLine = 584;
+                        AeAssert::gCurrentExpr = "mText.length()<125";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("String to long"))
+                            __debugbreak();
+                    }
+                    const char* v41 = (mText.mBlock != nullptr)
+                        ? (const char*)&mText.mBlock[1] : defaultFileName;
+                    char strtext[128];
+                    strncpy(strtext, v41, 0x7Cu);
+                    strtext[0x7C] = 0;
+                    int len = (int)strlen(strtext);
+                    for (int i = 0; i < 3; ++i)
+                        strtext[len + i] = (i < mNumDots) ? '.' : ' ';
+                    strtext[len + 3] = 0;
+                    entries[0]->SetText(strtext);
+                }
+            }
+            break;
+        }
+    }
 }
 
 // ea: 0x007AC7A0
