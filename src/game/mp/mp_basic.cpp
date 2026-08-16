@@ -26023,3 +26023,152 @@ void MPPeer::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
         }
     }
 }
+
+// ea: 0x00763A10
+void MPPlayerManager::HandleDroppedItems(
+    const bdReceivedMessage& receivedMsg)
+{
+    bdReference<bdConnection> conn = receivedMsg.getConnection();
+    MPPlayer* player = GetPlayer(conn);
+    if (player != nullptr)
+    {
+        bdConnection* m_ptr = player->mConnection.m_ptr;
+        if (m_ptr != nullptr
+            && m_ptr->getStatus() == bdConnection::BD_CONNECTED
+            && *(bool*)((char*)this + 0x4112))
+        {
+            bdReference<bdMessage> msg = receivedMsg.getMessage();
+            bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+            unsigned short playerCount = 0;
+            buffer.m_ptr->readUInt16(playerCount);
+            for (int i = 0; i < playerCount; ++i)
+            {
+                // dropped weapons
+                while (buffer.m_ptr->readDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE))
+                {
+                    unsigned char hasWeapon = 0;
+                    if (!buffer.m_ptr->readBits(&hasWeapon, 1u)
+                        || hasWeapon == 0)
+                        break;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    MPPlayerItems::DeserializeDropWeapon(buffer);
+                }
+                // dropped items
+                while (buffer.m_ptr->readDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE))
+                {
+                    unsigned char hasItem = 0;
+                    if (!buffer.m_ptr->readBits(&hasItem, 1u)
+                        || hasItem == 0)
+                        break;
+                    float position[3];
+                    float angles[3];
+                    float velocity[3];
+                    int itemType = 0;
+                    int netIndex = 0;
+                    int typeIndex = 0;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    if (MPPlayerItems::DeserializeDropItem(
+                            buffer, position, angles, velocity, itemType,
+                            netIndex, typeIndex))
+                    {
+                        Entity* v9 = player->mClientIndex >= 0
+                                         ? EntityManager::sInst->GetPlayer(
+                                               player->mClientIndex)
+                                         : nullptr;
+                        const gitem_s* Item =
+                            BG_FindItem("Weapon Ammo");
+                        Entity* v12 = LaunchItem(
+                            CurPakId(), Item, position, angles, velocity,
+                            v9);
+                        if (v12 != nullptr)
+                            RegisterDroppedItem(
+                                (EDroppedItemTypes)itemType, v12, v9,
+                                (short)(netIndex & 0x7FF));
+                    }
+                }
+                // fired missiles
+                while (buffer.m_ptr->readDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE))
+                {
+                    unsigned char hasMissile = 0;
+                    if (!buffer.m_ptr->readBits(&hasMissile, 1u)
+                        || hasMissile == 0)
+                        break;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    MPPlayerItems::DeserializeFireMissile(buffer, false);
+                }
+                // dropped kits
+                while (buffer.m_ptr->readDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE))
+                {
+                    unsigned char hasKit = 0;
+                    if (!buffer.m_ptr->readBits(&hasKit, 1u)
+                        || hasKit == 0)
+                        break;
+                    float position[3];
+                    float angles[3];
+                    float velocity[3];
+                    int itemType = 0;
+                    int netIndex = 0;
+                    int typeIndex = 0;
+                    if (buffer.m_ptr != nullptr)
+                        ++buffer.m_ptr->m_refCount;
+                    if (MPPlayerItems::DeserializeDropItem(
+                            buffer, position, angles, velocity, itemType,
+                            netIndex, typeIndex))
+                    {
+                        Entity* v15 = player->mClientIndex >= 0
+                                          ? EntityManager::sInst->GetPlayer(
+                                                player->mClientIndex)
+                                          : nullptr;
+                        const gitem_s* v16 = BG_FindItem("Dropped Kit");
+                        Entity* v18 = LaunchItem(
+                            CurPakId(), v16, position, angles, velocity,
+                            v15);
+                        Entity* v19 = v18;
+                        if (v18 != nullptr)
+                        {
+                            v18->count = typeIndex;
+                            if (gpBrocAPI != nullptr
+                                && gpBrocAPI->mBrocExports
+                                       .mCallbackGetTeamWeapon != nullptr)
+                            {
+                                MPPlayer* lp = GetPlayer(currCl);
+                                Entity* v22 = lp->mClientIndex >= 0
+                                                  ? EntityManager::sInst
+                                                        ->GetPlayer(
+                                                            lp->mClientIndex)
+                                                  : nullptr;
+                                const char* v24 = "axis";
+                                if (v22->sentient->eTeam != TEAM_AXIS)
+                                    v24 = "allies";
+                                int v25 =
+                                    gpBrocAPI->mBrocExports
+                                        .mCallbackGetTeamWeapon(v24,
+                                                                typeIndex);
+                                TPakId mPakId = v19->GetPakId();
+                                gitem_s* v27 = &bg_itemlist[v25];
+                                if (mPakId == PAK_ID_INVALID)
+                                    mPakId = CurPakId();
+                                G_EntAttach(v19, v27->world_model[0],
+                                            "tag_weapondummy", 1, mPakId);
+                            }
+                            RegisterDroppedItem(
+                                (EDroppedItemTypes)itemType, v19, v15,
+                                (short)(netIndex & 0x7FF));
+                        }
+                    }
+                }
+            }
+            if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+                delete buffer.m_ptr;
+            if (msg.m_ptr != nullptr && msg.m_ptr->m_refCount-- == 1)
+                delete msg.m_ptr;
+        }
+    }
+}
