@@ -245,12 +245,11 @@ struct loopback_t {
 static loopback_t loopbacks[2];
 
 // ea: 0x0060F680
-int Netchan_Init()
+void Netchan_Init()
 {
     showpackets = Cvar_Get("showpackets", "0", 256);
     showdrop = Cvar_Get("showdrop", "0", 256);
     memset(loopbacks, 0, sizeof(loopbacks));
-    return 0;
 }
 
 // ea: 0x0060F6D0

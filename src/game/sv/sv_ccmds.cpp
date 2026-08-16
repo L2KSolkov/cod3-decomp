@@ -21,7 +21,7 @@ extern int  Q_stricmp(const char* s1, const char* s2);
 extern int  Q_stricmpn(const char* s1, const char* s2, int n);
 extern void Q_strcat(char* dest, int size, const char* src);
 extern char* Q_strlwr(char* s1);
-extern char* Q_strrchr(char* string, char c);
+extern char* Q_strrchr(const char* string, int c);
 extern void Cbuf_ExecuteText(int exec_when, const char* text);
 extern int  Cvar_VariableIntegerValue(const char* var_name);
 extern void Com_Memset(void* dest, int val, unsigned int count);

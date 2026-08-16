@@ -7580,7 +7580,7 @@ void BrocSys::Mover_GravityMove(Entity* pEnt, const float* const vVel,
 // ============================================================================
 
 extern unsigned int AeHash(const char* str);  // ?AeHash@@YAIPBD@Z (core.o)
-extern const char* Info_ValueForKey(const char* s, const char* key);  // core.o
+extern char* Info_ValueForKey(const char* s, const char* key);  // core.o
 extern void Q_strncpyz(char* dest, const char* src, int destsize);  // core.o
 extern vmCvar_t g_changelevel_time;  // ?g_changelevel_time@@3UvmCvar_t@@A
 

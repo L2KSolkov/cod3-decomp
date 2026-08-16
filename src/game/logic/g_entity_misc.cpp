@@ -73,11 +73,10 @@ void StatMon_GetStatsArray(const statmonitor_s** array, int* count)
 // StatMon_Reset - ea: 0x611CC0
 // ============================================================================
 // ea: 0x00611CC0
-int StatMon_Reset()
+void StatMon_Reset()
 {
     memset(stats, 0, sizeof(stats));
     statCount = 0;
-    return 0;
 }
 
 // ============================================================================

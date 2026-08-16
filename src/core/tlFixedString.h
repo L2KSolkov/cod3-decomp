@@ -28,12 +28,12 @@ public:
     operator const char*() const { return str; }
 
 
-    tlFixedString() {
-        memset(this, 0, 32);
+    tlFixedString() : hash(0) {
+        memset(str, 0, sizeof(str));
     }
 
-    tlFixedString(const char* s) {
-        memset(this, 0, 32);
+    tlFixedString(const char* s) : hash(0) {
+        memset(str, 0, sizeof(str));
         if (s != NULL) {
             char* d = str;
             int i = 0;

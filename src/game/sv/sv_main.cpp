@@ -74,7 +74,7 @@ extern void  SCR_UpdateScreen(void);
 extern void  UpdateCVars(void);
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
 extern void  Cmd_ExecuteServerString(const char* text);
-extern int   Netchan_Init(void);
+extern void  Netchan_Init(void);
 extern void  GamePause_SetAllPaused(bool paused);
 enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };
 extern unsigned int nflFileExists(nflMediaID mediaID, const char* filename);

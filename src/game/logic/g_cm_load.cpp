@@ -8735,14 +8735,16 @@ public:
     void* mRecords;  // +0x04 (InplaceVector<GdbFileSet::Value>*)
 };
 struct GdbFileSet;
+struct GdbFileBank;
+class PakFile;
 
 class GdbFileManager {
 private:
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
     virtual ~GdbFileManager();  // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
 public:
-    void DecodeBank(const char* name, void* data, int size, TPakId pakId,
-                    void* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId, PakFile* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
     GdbFile GetGdbFile(TPakId pakId, const char* name, const char* type);
         // ?GetGdbFile@GdbFileManager@@QAE?AVGdbFile@@W4TPakId@@PBD1@Z (game.o 0x638750)
     static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
@@ -9709,8 +9711,8 @@ extern void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pakId,
                                                    void* data);  // streamer.o
 
 // ea: 0x00629940
-void GdbFileManager::DecodeBank(const char* name, void* data, int size,
-                                TPakId pakId, void* pakFile)
+void GdbFileManager::DecodeBank(const char* name, unsigned char* data, int size,
+                                TPakId pakId, PakFile* pakFile)
 {
     InplaceAssetBank_GdbFileSet_Fixup(data);
     InplaceAssetBankSet_GdbFileBank_AddBank(this, pakId, data);

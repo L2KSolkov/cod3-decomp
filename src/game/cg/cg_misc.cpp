@@ -2925,7 +2925,7 @@ extern const float VectorNormalize2(const float* const v,
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
-extern const char* Info_ValueForKey(const char* s, const char* key);
+extern char* Info_ValueForKey(const char* s, const char* key);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 
 // ea: 0x0068C920

@@ -1491,7 +1491,7 @@ bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
 
 // ea: 0x0060DE10
 int trace_point_through_sphere(const math::Position3& p, const math::Dir3& ud,
-                               const math::Position3& ctr, float r, float* t,
+                               const math::Position3& ctr, float r, float& t,
                                math::Position3& q)
 {
     float v6[3];
@@ -1507,19 +1507,19 @@ int trace_point_through_sphere(const math::Position3& p, const math::Dir3& ud,
     if (v12 < 0.0f)
         return 0;
     float v11 = -v13 - sqrtf(v12);
-    *t = v11;
+    t = v11;
     if (v11 < 0.0f)
-        *t = 0.0f;
-    q.v.m128_f32[0] = p.v.m128_f32[0] + ud.v.m128_f32[0] * *t;
-    q.v.m128_f32[1] = p.v.m128_f32[1] + ud.v.m128_f32[1] * *t;
-    q.v.m128_f32[2] = p.v.m128_f32[2] + ud.v.m128_f32[2] * *t;
+        t = 0.0f;
+    q.v.m128_f32[0] = p.v.m128_f32[0] + ud.v.m128_f32[0] * t;
+    q.v.m128_f32[1] = p.v.m128_f32[1] + ud.v.m128_f32[1] * t;
+    q.v.m128_f32[2] = p.v.m128_f32[2] + ud.v.m128_f32[2] * t;
     return 1;
 }
 
 // ea: 0x0060DF10
 bool trace_sphere_through_sphere(const math::Position3& c0, float r0,
                                  const math::Position3& c1, float r1,
-                                 const math::Dir3& v0, float* t)
+                                 const math::Dir3& v0, float& t)
 {
     float v14 = sqrtf(v0.v.m128_f32[0] * v0.v.m128_f32[0]
                       + v0.v.m128_f32[1] * v0.v.m128_f32[1]
@@ -1532,7 +1532,7 @@ bool trace_sphere_through_sphere(const math::Position3& c0, float r0,
     q_4.v.m128_f32[2] = v0.v.m128_f32[2] / v14;
     math::Position3 q;
     return trace_point_through_sphere(c0, q_4, c1, r0 + r1, t, q) != 0
-        && v14 >= *t;
+        && v14 >= t;
 }
 
 // ea: 0x0060DFE0

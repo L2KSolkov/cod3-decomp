@@ -42,11 +42,11 @@ int Q_isforfilename(int c)
 // Q_strrchr - ea: 0x610900
 // ============================================================================
 // ea: 0x00610900
-char* Q_strrchr(char* string, char c)
+char* Q_strrchr(const char* string, int c)
 {
-    char* result = string;
+    const char* result = string;
     char v3 = *string;
-    char* i = nullptr;
+    const char* i = nullptr;
     for (; v3 != 0; ++result)
     {
         bool v5 = v3 == c;
@@ -55,8 +55,8 @@ char* Q_strrchr(char* string, char c)
             i = result;
     }
     if (c != 0)
-        return i;
-    return result;
+        return const_cast<char*>(i);
+    return const_cast<char*>(result);
 }
 
 // ============================================================================
@@ -757,7 +757,7 @@ float BigFloat(float l) { return BigFloatPtr(l); }
 float LittleFloat(float l) { return LittleFloatPtr(l); }
 
 // ea: 0x00610720
-int Swap_Init()
+void Swap_Init()
 {
     BigShortPtr = ShortSwap;
     LittleShortPtr = ShortNoSwap;
@@ -767,7 +767,6 @@ int Swap_Init()
     LittleLong64Ptr = Long64NoSwap;
     BigFloatPtr = FloatSwap;
     LittleFloatPtr = FloatNoSwap;
-    return 1;
 }
 
 // ============================================================================

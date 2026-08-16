@@ -79,7 +79,7 @@ void   FS_Restart(int checksumFeed);
 void   FS_ClearMemory(void);
 
 // net.cpp
-int    Netchan_Init(void);
+void   Netchan_Init(void);
 void   Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport);
 int    NET_IsLocalAddress(netadr_t adr);
 

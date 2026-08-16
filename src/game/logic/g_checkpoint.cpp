@@ -30,9 +30,11 @@ world_t s_worldDataLocal;     // unnamed 0x1364098 object; distinct from
                               // streamer's ?s_worldData@@3Uworld_t@@A @ 0xF74B98
 
 // SceneBank persistent storage accessor (streamer.o; opaque layout)
-struct SceneEntity {
-    uint8_t _pad[0x0C];
-    unsigned int m_persistent_index;  // +0x0C (verified vs disasm)
+class SceneEntity {
+public:
+    uint8_t _pad[0xCC];
+    int16_t m_persistent_index;  // +0xCC (IDA SceneEntity type)
+    uint8_t _tail[0x16];         // SceneEntity size 0xE4 (IDA type)
 };
 extern unsigned char* SceneBank_PersistentStorage(void* self,
                                                   unsigned int index);
@@ -1139,8 +1141,8 @@ void CheckpointMgr::RestoreSceneEntity(Entity* pEnt)
 }
 
 // ea: 0x006180F0
-bool CheckpointMgr::SceneEntityWasDeletedBeforeCheckpoint(
-    SceneEntity* pSceneEnt, SceneBank* pScnBank)
+class SceneBank;
+bool CheckpointMgr::SceneEntityWasDeletedBeforeCheckpoint(class SceneEntity* pSceneEnt, class SceneBank* pScnBank)
 {
     return *SceneBank_PersistentStorage(
                pScnBank, pSceneEnt->m_persistent_index)

@@ -46,7 +46,7 @@ static const char* const punctuation[] = {
 // Parse session helpers - ea: 0x60FB20..0x60FC90
 // ============================================================================
 // ea: 0x0060FB20
-parseInfo_t* Com_EndParseSession()
+void Com_EndParseSession()
 {
     int v0 = parseInfoNum;
     if (parseInfoNum == ERR_FATAL)
@@ -55,9 +55,7 @@ parseInfo_t* Com_EndParseSession()
         v0 = parseInfoNum;
     }
     parseInfoNum = v0 - 1;
-    parseInfo_t* result = &parseInfo[v0 - 1];
-    pi = result;
-    return result;
+    pi = &parseInfo[v0 - 1];
 }
 
 // ============================================================================
@@ -585,7 +583,7 @@ const char* Com_Parse(const char** data_p)
 }
 
 // ea: 0x00610340
-parseInfo_t* Com_ParseOnLine(const char** data_p)
+const char* Com_ParseOnLine(const char** data_p)
 {
     parseInfo_t* result = pi;
     if (pi->ungetToken != 0)
@@ -593,11 +591,11 @@ parseInfo_t* Com_ParseOnLine(const char** data_p)
         int spaceDelimited = pi->spaceDelimited;
         pi->ungetToken = 0;
         if (spaceDelimited == 0)
-            return result;
+            return result->token;
         *data_p = result->backup_text;
         result->lines = result->backup_lines;
     }
-    return Com_ParseExt(data_p, 0);
+    return Com_ParseExt(data_p, 0)->token;
 }
 
 // ea: 0x00610390

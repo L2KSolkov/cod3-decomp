@@ -104,7 +104,7 @@ extern "C" int atoi(const char* nptr);
 extern void Cvar_SetCheatState();
 extern void nullsub_16(const char* pakSums, const char* pakNames);
 extern void nullsub_34(const char* pakSums, const char* pakNames);
-extern const char* Info_ValueForKey(const char* s, const char* key);
+extern char* Info_ValueForKey(const char* s, const char* key);
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern struct vm_s* VM_Create(const char* module,

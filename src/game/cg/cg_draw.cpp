@@ -60,7 +60,7 @@ struct parseInfo_t {
     int backup_lines;        // +0x94
     const char* backup_text; // +0x98
 };
-extern parseInfo_t* Com_ParseOnLine(const char** data);
+extern const char* Com_ParseOnLine(const char** data);
 extern float CG_GetViewFov();
 extern void CG_Error(const char* msg, ...);
 // CG_DrawSingleHudElem artifact (cg.o; stub)
@@ -1204,31 +1204,31 @@ void CG_DrawSkyBoxPortal()
             }
             CG_ASSERT("Dead code reached", "c:\\cod\\code\\game\\cg_view.cpp",
                       1542);
-            const char* v3 = Com_ParseOnLine(&x)->token;
+            const char* v3 = Com_ParseOnLine(&x);
             const char* v4 = v3;
             if (v3 == nullptr || *v3 == 0)
                 CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                          "configstring\n");
             dword_F63C70[1580 * currCl] = (float)atof(v4);
-            const char* v6 = Com_ParseOnLine(&x)->token;
+            const char* v6 = Com_ParseOnLine(&x);
             const char* v7 = v6;
             if (v6 == nullptr || *v6 == 0)
                 CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                          "configstring\n");
             dword_F63C74[1580 * currCl] = (float)atof(v7);
-            const char* v9 = Com_ParseOnLine(&x)->token;
+            const char* v9 = Com_ParseOnLine(&x);
             const char* v10 = v9;
             if (v9 == nullptr || *v9 == 0)
                 CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                          "configstring\n");
             dword_F63C78[1580 * currCl] = (float)atof(v10);
-            const char* v12 = Com_ParseOnLine(&x)->token;
+            const char* v12 = Com_ParseOnLine(&x);
             const char* v13 = v12;
             if (v12 == nullptr || *v12 == 0)
                 CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                          "configstring\n");
             atoi(v13);
-            const char* v14 = Com_ParseOnLine(&x)->token;
+            const char* v14 = Com_ParseOnLine(&x);
             if (v14 == nullptr || *v14 == 0)
             {
                 CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
@@ -1237,27 +1237,27 @@ void CG_DrawSkyBoxPortal()
             }
             if (atoi(v14) != 0)
             {
-                const char* v15 = Com_ParseOnLine(&x)->token;
+                const char* v15 = Com_ParseOnLine(&x);
                 const char* v16 = v15;
                 if (v15 == nullptr || *v15 == 0)
                     CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                              "configstring.  No fog[0]\n");
                 *(float*)&v32[100] = (float)atof(v16);
-                const char* v17 = Com_ParseOnLine(&x)->token;
+                const char* v17 = Com_ParseOnLine(&x);
                 const char* v18 = v17;
                 if (v17 == nullptr || *v17 == 0)
                     CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                              "configstring.  No fog[1]\n");
                 *(float*)&v32[104] = (float)atof(v18);
-                const char* v19 = Com_ParseOnLine(&x)->token;
+                const char* v19 = Com_ParseOnLine(&x);
                 const char* v20 = v19;
                 if (v19 == nullptr || *v19 == 0)
                     CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
                              "configstring.  No fog[2]\n");
                 float v33 = (float)atof(v20);
-                const char* v21 = Com_ParseOnLine(&x)->token;
+                const char* v21 = Com_ParseOnLine(&x);
                 int v22 = (v21 != nullptr && *v21 != 0) ? atoi(v21) : 0;
-                const char* v23 = Com_ParseOnLine(&x)->token;
+                const char* v23 = Com_ParseOnLine(&x);
                 int v24 = (v23 != nullptr && *v23 != 0) ? atoi(v23) : 0;
                 re.SetFog(2, v22, v24, *(float*)&v32[100], *(float*)&v32[104],
                           v33, 1.1f);

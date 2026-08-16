@@ -3683,7 +3683,7 @@ void    Path_Init(void);                             // g.o
 void    G_SetupScrVehicles(void);                    // g.o
 void    MP_ResolveAnims(void);                       // mp.o
 void    LensFlareInit(void);                         // render.o
-int     Swap_Init(void);                             // game.o
+void    Swap_Init(void);                             // game.o
 void    Rand_Init(int seed);                // core.o
 void    HudElem_Free(game_hudelem_s* hud);           // g.o
 void    CG_ClearHudElems(void);                      // cg.o
@@ -4386,12 +4386,12 @@ void CreateRotationMatrix(const math::Position3& angles,
 float point_to_segment_dist2(const math::Position3& c, const math::Position3& a,
                              const math::Position3& b);  // game.o 0x60E300
 int trace_point_through_sphere(const math::Position3& p, const math::Dir3& ud,
-                               const math::Position3& ctr, float r, float* t,
+                               const math::Position3& ctr, float r, float& t,
                                math::Position3& q);  // game.o 0x60DE10
 bool trace_sphere_through_sphere(const math::Position3& c0, float r0,
                                  const math::Position3& c1, float r1,
                                  const math::Dir3& v0,
-                                 float* t);  // game.o 0x60DF10
+                                 float& t);  // game.o 0x60DF10
 int trace_point_through_cylinder(const math::Position3& sa,
                                  const math::Position3& sb,
                                  const math::Position3& p,

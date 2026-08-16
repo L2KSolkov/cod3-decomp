@@ -17,7 +17,7 @@ extern int AeStringSupport::ae_stricmpn(const char* s1, const char* s2, int n);
 // Info_ValueForKey - ea: 0x610DD0
 // ============================================================================
 // ea: 0x00610DD0
-const char* Info_ValueForKey(const char* s, const char* key)
+char* Info_ValueForKey(const char* s, const char* key)
 {
     const char* v2 = s;
     char v5;
@@ -56,7 +56,7 @@ const char* Info_ValueForKey(const char* s, const char* key)
             if (AeStringSupport::ae_stricmpn(key, pkey, 0x7FFFFFFF) == 0)
                 return value1[valueindex];
             if (*v2 == 0)
-                return "";
+                return const_cast<char*>(defaultFileName);
             v3 = valueindex;
         }
         while (v5 != 0)
@@ -69,7 +69,7 @@ const char* Info_ValueForKey(const char* s, const char* key)
                 goto copy_pair;
         }
     }
-    return "";
+    return const_cast<char*>(defaultFileName);
 }
 
 // ============================================================================

@@ -346,9 +346,9 @@ struct parseInfo_t {
     int backup_lines;        // +0x94
     const char* backup_text; // +0x98
 };
-extern parseInfo_t* Com_ParseOnLine(const char** data_p);
+extern const char* Com_ParseOnLine(const char** data_p);
 extern void Com_SkipRestOfLine(const char** data);
-extern parseInfo_t* Com_EndParseSession();
+extern void Com_EndParseSession();
 class controller {
 public:
     enum ButtonIndex {
@@ -435,9 +435,9 @@ extern void Com_Error_f();
 extern void Com_Crash_f();
 extern void Com_Freeze_f();
 extern void Sys_Init();
-extern int Netchan_Init();
+extern void Netchan_Init();
 extern void VM_Init();
-extern int Swap_Init();
+extern void Swap_Init();
 extern void PhysInit();
 extern void PhysShutdown();
 extern void CL_InitKeyCommands();
@@ -2126,7 +2126,7 @@ int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                     if (++v6 >= numCvars)
                         goto unknownCvar;
                 }
-                const char* v8 = Com_ParseOnLine(p)->token;
+                const char* v8 = Com_ParseOnLine(p);
                 Cvar_Set2(cvarnames[v6], v8, 1);
                 if (bRead[v6] == 0)
                 {

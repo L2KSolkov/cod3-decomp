@@ -51,7 +51,7 @@ int dword_F61124;
 int dword_F61128;
 int dword_F6112C;
 int dword_F61130;
-extern const char* Info_ValueForKey(const char* s, const char* key);
+extern char* Info_ValueForKey(const char* s, const char* key);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern int Com_BitCheck(const int* const array, int bitNum);
 extern int BG_GetNumWeapons();

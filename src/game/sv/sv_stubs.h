@@ -671,8 +671,8 @@ struct SmokeGrenadeInfo {
     bool  bHit[4]; // +0x08
 };
 
-struct SceneEntity;  // streamer.o (opaque)
-struct SceneBank;    // streamer.o (opaque)
+class SceneEntity;  // streamer.o (IDA SceneEntity)
+class SceneBank;    // streamer.o (IDA map mangling uses class key)
 
 // ae_vector<SmokeGrenadeInfo> - 12 bytes
 struct SmokeGrenadeInfoList {

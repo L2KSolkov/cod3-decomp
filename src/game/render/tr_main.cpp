@@ -208,7 +208,7 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // ?Cvar_Get@@YAPAUcvar_t@@PBD0H@Z
 extern void AssertCvarRange(cvar_t* cv, int shouldBeIntegral, float minVal,
                             float maxVal);  // render.o 0x6C0310
-extern int Swap_Init();                     // render.o
+extern void Swap_Init();                    // render.o
 extern void R_ToggleSmpFrame();             // render.o
 extern void HackUpGLConfig();               // render.o
 extern void R_SetViewModelScale(int a1, float a2, float a3, int a4, int a5,
