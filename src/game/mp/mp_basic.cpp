@@ -25165,6 +25165,361 @@ label52:
         delete replyMsg.m_ptr;
 }
 
+// ea: 0x00760710
+void MPPlayerManager::SendDroppedItems(MPPlayer* player)
+{
+    if (player == nullptr || player->mId >= 0x10u
+        || player->mConnection.m_ptr == nullptr)
+        return;
+    bdMessage* v4 = new bdMessage(0x65u, false);
+    bdReference<bdMessage> message;
+    message.m_ptr = v4;
+    if (v4 != nullptr)
+        ++v4->m_refCount;
+    extern int g_NumBdMessages;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> buffer = v4->getPayload();
+    buffer.m_ptr->writeDataType(
+        bdBitBuffer::BD_BB_UNSIGNED_INTEGER16_TYPE);
+    short numLocal = (short)LocalClient::NumLocalClients();
+    buffer.m_ptr->writeBits(&numLocal, 0x10u);
+    if (dword_F6A290[0] == 2)
+    {
+        unsigned char v7 =
+            *(unsigned char*)((char*)this + 0x4111);
+        if (v7 < 0x10u)
+        {
+            MPPlayer* v9 =
+                (MPPlayer*)((char*)this + 0x1010 + 0x310 * v7);
+            if (v9 != nullptr)
+            {
+                MPPlayerItems* items =
+                    (MPPlayerItems*)((char*)v9 + 0x0C);
+                unsigned char hasBit;
+                // dropped weapon (single slot)
+                if (items->mDroppedWeapons.mSize <= 0)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+                    AeAssert::gCurrentLine = 118;
+                    AeAssert::gCurrentExpr = "size > id";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("FindItem: Invalid ID"))
+                        __debugbreak();
+                }
+                unsigned int mVal =
+                    items->mDroppedWeapons[0]
+                        .handle.mVal;
+                unsigned int v11 = mVal & 0xFFF;
+                if (v11 < 0x540
+                    && mVal >> 12
+                           == EntityHandleDb::sInst
+                                  .mElements[v11]
+                                  .mKey)
+                {
+                    Entity* mObject =
+                        EntityHandleDb::sInst.mElements[v11].mObject;
+                    if (mObject != nullptr)
+                    {
+                        unsigned short mValue =
+                            MPEntityHandle(v9->mId, 0).mValue;
+                        buffer.m_ptr->writeDataType(
+                            bdBitBuffer::BD_BB_BOOL_TYPE);
+                        hasBit = 0xFF;
+                        buffer.m_ptr->writeBits(&hasBit, 1u);
+                        math::Position3 angles;
+                        angles.v.m128_f32[0] =
+                            mObject->s.apos.trBase[0];
+                        angles.v.m128_f32[1] =
+                            mObject->s.apos.trBase[1];
+                        angles.v.m128_f32[2] =
+                            mObject->s.apos.trBase[2];
+                        angles.v.m128_f32[3] = 0.0f;
+                        math::Position3 position;
+                        position.v.m128_f32[0] =
+                            mObject->s.pos.trBase[0];
+                        position.v.m128_f32[1] =
+                            mObject->s.pos.trBase[1];
+                        position.v.m128_f32[2] =
+                            mObject->s.pos.trBase[2];
+                        position.v.m128_f32[3] = 0.0f;
+                        math::Dir3 velocity;
+                        velocity.v.m128_f32[0] = Float4_Zero_16[0];
+                        velocity.v.m128_f32[1] = Float4_Zero_16[1];
+                        velocity.v.m128_f32[2] = Float4_Zero_16[2];
+                        velocity.v.m128_f32[3] = Float4_Zero_16[3];
+                        int weapon = mObject->item->giTag;
+                        MPPlayerItems::SerializeDropWeapon(
+                            buffer, weapon, mValue, position, angles,
+                            velocity, mObject->count2, mObject->count);
+                    }
+                }
+                buffer.m_ptr->writeDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE);
+                hasBit = 0;
+                buffer.m_ptr->writeBits(&hasBit, 1u);
+                // dropped support (3 slots)
+                for (int m_ptr = 0; m_ptr < 3; ++m_ptr)
+                {
+                    if (items->mDroppedSupport.mSize <= m_ptr)
+                    {
+                        AeAssert::gCurrentAuthor =
+                            (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+                        AeAssert::gCurrentLine = 118;
+                        AeAssert::gCurrentExpr = "size > id";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                "FindItem: Invalid ID"))
+                            __debugbreak();
+                    }
+                    if (m_ptr < 0
+                        || m_ptr >= items->mDroppedSupport.mSize)
+                    {
+                        AeAssert::gCurrentAuthor =
+                            (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "../ae\\core/ae_vector.h";
+                        AeAssert::gCurrentLine = 167;
+                        AeAssert::gCurrentExpr =
+                            "iIndex >= 0 && iIndex < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("out of bounds"))
+                            __debugbreak();
+                    }
+                    unsigned int v25 =
+                        items->mDroppedSupport[m_ptr]
+                            .handle.mVal
+                        & 0xFFF;
+                    if (v25 < 0x540
+                        && items->mDroppedSupport[m_ptr]
+                                   .handle.mVal
+                                   >> 12
+                               == EntityHandleDb::sInst
+                                      .mElements[v25]
+                                      .mKey)
+                    {
+                        Entity* v26 =
+                            EntityHandleDb::sInst.mElements[v25]
+                                .mObject;
+                        if (v26 != nullptr)
+                        {
+                            unsigned short v27 =
+                                MPEntityHandle(v9->mId, m_ptr)
+                                    .mValue;
+                            buffer.m_ptr->writeDataType(
+                                bdBitBuffer::BD_BB_BOOL_TYPE);
+                            hasBit = 0xFF;
+                            buffer.m_ptr->writeBits(&hasBit, 1u);
+                            math::Position3 angles;
+                            angles.v.m128_f32[0] =
+                                v26->s.apos.trBase[0];
+                            angles.v.m128_f32[1] =
+                                v26->s.apos.trBase[1];
+                            angles.v.m128_f32[2] =
+                                v26->s.apos.trBase[2];
+                            angles.v.m128_f32[3] = 0.0f;
+                            math::Position3 position;
+                            position.v.m128_f32[0] =
+                                v26->s.pos.trBase[0];
+                            position.v.m128_f32[1] =
+                                v26->s.pos.trBase[1];
+                            position.v.m128_f32[2] =
+                                v26->s.pos.trBase[2];
+                            position.v.m128_f32[3] = 0.0f;
+                            math::Dir3 velocity;
+                            velocity.v.m128_f32[0] =
+                                Float4_Zero_16[0];
+                            velocity.v.m128_f32[1] =
+                                Float4_Zero_16[1];
+                            velocity.v.m128_f32[2] =
+                                Float4_Zero_16[2];
+                            velocity.v.m128_f32[3] =
+                                Float4_Zero_16[3];
+                            MPPlayerItems::SerializeDropItem(
+                                buffer, 1, position, angles,
+                                velocity, v27, -1);
+                        }
+                    }
+                }
+                buffer.m_ptr->writeDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE);
+                hasBit = 0;
+                buffer.m_ptr->writeBits(&hasBit, 1u);
+                // dropped mines (3 slots)
+                for (int v35 = 0; v35 < 3; ++v35)
+                {
+                    if (items->mDroppedMines.mSize <= v35)
+                    {
+                        AeAssert::gCurrentAuthor =
+                            (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+                        AeAssert::gCurrentLine = 118;
+                        AeAssert::gCurrentExpr = "size > id";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                "FindItem: Invalid ID"))
+                            __debugbreak();
+                    }
+                    if (v35 < 0
+                        || v35 >= items->mDroppedMines.mSize)
+                    {
+                        AeAssert::gCurrentAuthor =
+                            (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "../ae\\core/ae_vector.h";
+                        AeAssert::gCurrentLine = 167;
+                        AeAssert::gCurrentExpr =
+                            "iIndex >= 0 && iIndex < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("out of bounds"))
+                            __debugbreak();
+                    }
+                    unsigned int v36 =
+                        items->mDroppedMines[v35]
+                            .handle.mVal
+                        & 0xFFF;
+                    if (v36 < 0x540
+                        && items->mDroppedMines[v35]
+                                   .handle.mVal
+                                   >> 12
+                               == EntityHandleDb::sInst
+                                      .mElements[v36]
+                                      .mKey)
+                    {
+                        Entity* v37 =
+                            EntityHandleDb::sInst.mElements[v36]
+                                .mObject;
+                        if (v37 != nullptr)
+                        {
+                            unsigned short v38 =
+                                MPEntityHandle(v9->mId, v35)
+                                    .mValue;
+                            buffer.m_ptr->writeDataType(
+                                bdBitBuffer::BD_BB_BOOL_TYPE);
+                            hasBit = 0xFF;
+                            buffer.m_ptr->writeBits(&hasBit, 1u);
+                            math::Position3 position;
+                            position.v.m128_f32[0] =
+                                v37->s.pos.trBase[0];
+                            position.v.m128_f32[1] =
+                                v37->s.pos.trBase[1];
+                            position.v.m128_f32[2] =
+                                v37->s.pos.trBase[2];
+                            position.v.m128_f32[3] = 0.0f;
+                            math::Dir3 dir;
+                            dir.v.m128_f32[0] =
+                                v37->s.apos.trBase[0];
+                            dir.v.m128_f32[1] =
+                                v37->s.apos.trBase[1];
+                            dir.v.m128_f32[2] =
+                                v37->s.apos.trBase[2];
+                            dir.v.m128_f32[3] = 0.0f;
+                            MPEntityHandle handle(v9->mId, v35);
+                            MPPlayerItems::SerializeFireMissile(
+                                buffer, v37->s.weapon, position, dir,
+                                handle);
+                        }
+                    }
+                }
+                buffer.m_ptr->writeDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE);
+                hasBit = 0;
+                buffer.m_ptr->writeBits(&hasBit, 1u);
+                // dropped kit (single slot)
+                if (items->mDroppedKits.mSize <= 0)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+                    AeAssert::gCurrentLine = 118;
+                    AeAssert::gCurrentExpr = "size > id";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("FindItem: Invalid ID"))
+                        __debugbreak();
+                    if (items->mDroppedKits.mSize <= 0)
+                    {
+                        AeAssert::gCurrentAuthor =
+                            (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile =
+                            "../ae\\core/ae_vector.h";
+                        AeAssert::gCurrentLine = 167;
+                        AeAssert::gCurrentExpr =
+                            "iIndex >= 0 && iIndex < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("out of bounds"))
+                            __debugbreak();
+                    }
+                }
+                unsigned int v49 =
+                    items->mDroppedKits[0].handle.mVal
+                    & 0xFFF;
+                if (v49 < 0x540
+                    && items->mDroppedKits[0]
+                               .handle.mVal
+                               >> 12
+                           == EntityHandleDb::sInst.mElements[v49]
+                                  .mKey)
+                {
+                    Entity* v50 =
+                        EntityHandleDb::sInst.mElements[v49].mObject;
+                    if (v50 != nullptr)
+                    {
+                        unsigned short v51 =
+                            MPEntityHandle(v9->mId, 0).mValue;
+                        buffer.m_ptr->writeDataType(
+                            bdBitBuffer::BD_BB_BOOL_TYPE);
+                        hasBit = 0xFF;
+                        buffer.m_ptr->writeBits(&hasBit, 1u);
+                        math::Position3 angles;
+                        angles.v.m128_f32[0] =
+                            v50->s.apos.trBase[0];
+                        angles.v.m128_f32[1] =
+                            v50->s.apos.trBase[1];
+                        angles.v.m128_f32[2] =
+                            v50->s.apos.trBase[2];
+                        angles.v.m128_f32[3] = 0.0f;
+                        math::Position3 position;
+                        position.v.m128_f32[0] =
+                            v50->s.pos.trBase[0];
+                        position.v.m128_f32[1] =
+                            v50->s.pos.trBase[1];
+                        position.v.m128_f32[2] =
+                            v50->s.pos.trBase[2];
+                        position.v.m128_f32[3] = 0.0f;
+                        math::Dir3 velocity;
+                        velocity.v.m128_f32[0] = Float4_Zero_16[0];
+                        velocity.v.m128_f32[1] = Float4_Zero_16[1];
+                        velocity.v.m128_f32[2] = Float4_Zero_16[2];
+                        velocity.v.m128_f32[3] = Float4_Zero_16[3];
+                        MPPlayerItems::SerializeDropItem(
+                            buffer, 3, position, angles, velocity,
+                            v51, v50->count);
+                    }
+                }
+                buffer.m_ptr->writeDataType(
+                    bdBitBuffer::BD_BB_BOOL_TYPE);
+                hasBit = 0;
+                buffer.m_ptr->writeBits(&hasBit, 1u);
+            }
+        }
+    }
+    bdReference<bdMessage> sendRef;
+    sendRef.m_ptr = v4;
+    if (v4 != nullptr)
+        ++v4->m_refCount;
+    SendPlayer(player, sendRef, true);
+    if (sendRef.m_ptr != nullptr && sendRef.m_ptr->m_refCount-- == 1)
+        delete sendRef.m_ptr;
+    if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
+        delete buffer.m_ptr;
+    if (message.m_ptr != nullptr && message.m_ptr->m_refCount-- == 1)
+        delete message.m_ptr;
+}
+
 // ea: 0x007468D0
 bool MPPlayer::deserialize(bdReference<bdBitBuffer> buffer)
 {
