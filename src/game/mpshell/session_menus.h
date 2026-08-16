@@ -1197,6 +1197,7 @@ public:
     virtual void OnUp(int c);         // ?OnUp@AARMapVote@@UAEXH@Z
     virtual void OnDown(int c);       // ?OnDown@AARMapVote@@UAEXH@Z
     virtual void Update(float time_inc);  // ?Update@AARMapVote@@UAEXM@Z
+    virtual void SetPanelFile(PanelFile* pPanelFile);  // ?SetPanelFile@AARMapVote@@UAEXPAVPanelFile@@@Z
     virtual ~AARMapVote();            // ??1AARMapVote@@UAE@XZ
 protected:
     void SelectMap(int indexMap);     // ?SelectMap@AARMapVote@@IAEXH@Z
