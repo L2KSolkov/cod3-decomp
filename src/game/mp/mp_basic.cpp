@@ -117,6 +117,45 @@ extern int dword_E3762C[];  // animEvents column table @ 0xE3762C
 extern int dword_E37630[];  // animEvents sheet table @ 0xE37630
 extern const float Float4_Zero_16[4];  // @ 0xD190F0
 
+// Step@MPPlayer globals (cg.o / game.o data)
+extern int  lastThirdPerson;   // @ 0xF99268
+extern vmCvar_t cg_thirdPerson;  // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
+extern float ladderClipPullin;  // @ 0xE377C8
+extern math::Dir3 rdir_4;       // @ 0xF99250 (step probe direction)
+extern int  _S13_9;             // @ 0xF99264 (step probe init flag)
+extern float futureTime;        // @ 0xE377C4 (landing trace lead)
+extern float traceDist;         // @ 0xE377C0 (ladder probe distance)
+
+// nalMatrix4x4 - anim matrix (nal.cpp 0x765)
+struct nalPositionOrientation {
+    float m_data[8];  // opaque
+};
+class nalMatrix4x4 {
+public:
+    float m[4][4];
+    nalMatrix4x4() {}
+    nalMatrix4x4(const nalPositionOrientation& po);  // game2.o 0x51B400
+    nalMatrix4x4 Inverse() const;  // ?Inverse@nalMatrix4x4@@QBE?AV1@XZ (game2.o 0x90AD30)
+};
+
+// DObj trajectory helpers (nal.cpp / anim.o)
+void DObjGetTrajectory(nalPositionOrientation& po, DObj* obj);
+void DObjCreateAnimationPlayer(DObj* obj, int modelIndex);
+void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
+void CG_WeaponFlash(Entity* entity, int weaponNum,
+                    const math::Position3* origin, int bViewFlash);
+void CG_EjectWeaponBrass(Entity* entity, int event);
+void CG_WeaponIKAddToFireQueue(Entity* attacker, int weapon);
+Handle PostEffectEventWeaponFire3rd(const Entity* ent,
+                                    const char* weaponType,
+                                    EAction weaponAction, int cacheSound);
+void TraceSphereFull(const proximity_data_t* proximity_data,
+                     trace_t* results, const math::Position3* start,
+                     const math::Position3* mins,
+                     const math::Position3* maxs,
+                     const math::Position3* end,
+                     const collision_context_t* context);  // sv_world.cpp
+
 namespace BrocSys {
 void InitMPCallbacks();  // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
 }
@@ -223,7 +262,10 @@ public:
 };
 
 // AnimationPlayer (anim.o) - minimal view used by PlayAnimFlagAnim
-namespace nalGeneric { class nalGenericAnim; }
+namespace nalGeneric {
+class nalGenericAnim;
+class nalGenericPose;
+}
 class AnimationPlayer {
 public:
     enum AnimationPlayerModifierType {
@@ -231,6 +273,52 @@ public:
         nalPartialModifier = 1,
         nalFullModifier = 2,
     };
+    // nalAnimState / nalPartialAnimState (anim.o 0x539F20 family)
+    class nalAnimCallback;
+    struct nalAnimState {
+        void* instance;        // +0x00
+        float speed;           // +0x04
+        float tlimit;          // +0x08
+        nalAnimCallback* callback;  // +0x0C
+        void* play_method;     // +0x10
+        float t;               // +0x14
+        float t_prev;          // +0x18
+        float alpha;           // +0x1C
+        float maxAlpha;        // +0x20
+        float fadein_rate;     // +0x24
+        int state;             // +0x28
+        void Compose(nalGeneric::nalGenericPose& Pose,
+                     nalGeneric::nalGenericPose& tmpPose);  // game2.o 0x10EEF0
+    };
+    class nalAnimCallback {
+    public:
+        void** __vftable;          // +0x00
+        nalGeneric::nalGenericAnim* curAnim;  // +0x04
+        virtual void Reference(nalGeneric::nalGenericAnim* anim);
+        virtual void Release();
+    };
+    struct nalPartialAnimState {
+        nalAnimState base;      // +0x00
+        unsigned int CreationAdvanceCount;  // +0x2C
+        nalPartialAnimState* next;  // +0x30
+        unsigned int mask;      // +0x34
+        float priority;         // +0x38
+        float fadeout_rate;     // +0x3C
+        int type;               // +0x40
+    };
+    enum nalAnimStateEnum {
+        FadeIn = 0,
+        Running = 1,
+        FadeOut = 2,
+    };
+    void* Skeleton;                 // +0x00
+    uint8_t BackgroundPose[0x10];   // +0x04 (nalGenericPose)
+    uint8_t tmpPose[0x10];          // +0x14 (nalGenericPose)
+    int QueueSize;                  // +0x24
+    nalAnimState* AnimStates[3];    // +0x28
+    nalPartialAnimState* PartialAnimStates;  // +0x34
+    nalPartialAnimState* PartialAnimStatePool;  // +0x38
+    int AdvanceCount;               // +0x3C
     void PlayModifier(nalGeneric::nalGenericAnim* anim, float priority,
                       unsigned int mask);  // ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@MI@Z
     bool SetModifierAlpha(unsigned int mask, float priority,
@@ -245,7 +333,22 @@ public:
     void PlayModifier(nalGeneric::nalGenericAnim* anim,
                       AnimationPlayerModifierType type, float priority,
                       unsigned int mask);  // ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@W4AnimationPlayerModifierType@1@MI@Z
+    void PlayModifier(nalGeneric::nalGenericAnim* anim,
+                      AnimationPlayerModifierType type, float priority,
+                      unsigned int mask, bool ForceRestart, float fade_in,
+                      float fade_out, void* play_method,
+                      float callback_time, nalAnimCallback* callback,
+                      float speed,
+                      float time_in_seconds_to_start);  // ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@W4AnimationPlayerModifierType@1@MIPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM_NMM@Z (anim.o)
     bool IsPartialIdle(bool checkLooping);  // ?IsPartialIdle@AnimationPlayer@@QAE_N_N@Z (anim.o)
+    bool IsIdle();                       // ?IsIdle@AnimationPlayer@@QAE_NXZ (anim.o)
+    bool IsIdleNonTorso(bool checkLooping);  // ?IsIdleNonTorso@AnimationPlayer@@QAE_N_N@Z (anim.o)
+    bool IsTorsoAnimPlaying();           // ?IsTorsoAnimPlaying@AnimationPlayer@@QAE_NXZ (anim.o)
+    void Advance(float deltaT);          // ?Advance@AnimationPlayer@@QAEXM@Z (game2.o)
+    void SetModifierFrame(unsigned int mask, float t);  // ?SetModifierFrame@AnimationPlayer@@QAEXIM@Z (anim.o)
+    void SetModifierCallback(unsigned int mask,
+                             nalAnimCallback* callback);  // ?SetModifierCallback@AnimationPlayer@@QAEXIPAVnalAnimCallback@1@@Z (anim.o)
+    nalGeneric::nalGenericAnim* GetModifierAnim(unsigned int mask);  // ?GetModifierAnim@AnimationPlayer@@QAEPAVnalGenericAnim@nalGeneric@@I@Z (anim.o)
     void StopAnims();                        // ?StopAnims@AnimationPlayer@@QAEXXZ (anim.o)
     void Reset();                            // ?Reset@AnimationPlayer@@QAEXXZ (anim.o)
     void Play(nalGeneric::nalGenericAnim* anim, bool ForceRestart,
@@ -4281,6 +4384,11 @@ MPPlayerItems::GetItemList(EDroppedItemTypes item)
     }
 }
 
+// ea: 0x0072DFF0 (anon helper; definition below, called here per 0x00754BA0)
+namespace {
+void FreeEntity(Entity* ent);
+}  // namespace
+
 // ea: 0x00754BA0
 void MPPlayerItems::sDroppedItem::Destroy()
 {
@@ -4290,8 +4398,7 @@ void MPPlayerItems::sDroppedItem::Destroy()
         && EntityHandleDb::sInst.mElements[v1].mObject != nullptr)
     {
         Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
-        mObject->think = THINK__G_FreeEntity;
-        mObject->nextthink = level.time + 1;
+        FreeEntity(mObject);
     }
     handle.mVal = 0;
     time = 0;
@@ -11856,7 +11963,7 @@ void StopPartialAnimation(DObj* dobj, unsigned int mask)
 
 void PlayPartialAnimationRate(DObj* dobj, MP_ANIM_INDEX* anim_index,
                               unsigned int mask, float alpha,
-                              float speedScale)
+                              float speedScale, bool forceTorso)
 {
     if (dobj != nullptr)
     {
@@ -11866,7 +11973,11 @@ void PlayPartialAnimationRate(DObj* dobj, MP_ANIM_INDEX* anim_index,
             nalGeneric::nalGenericAnim* anim = anim_index->anim;
             if (anim != nullptr)
             {
-                v5->PlayModifier(anim, 1.0f, mask);
+                if ((anim_index->flags & 1) != 0)
+                    v5->PlayModifier(anim, AnimationPlayer::nalAdditiveModifier,
+                                     1.0f, mask);
+                else
+                    v5->PlayModifier(anim, 1.0f, mask);
                 v5->SetModifierAlpha(mask, 1.0f, anim, alpha);
                 v5->SetModifierSpeed(mask, 1.0f, anim, speedScale);
             }
@@ -11874,6 +11985,14 @@ void PlayPartialAnimationRate(DObj* dobj, MP_ANIM_INDEX* anim_index,
     }
 }
 }  // namespace
+
+// Force emission of the mp.o anon helper: 0x0072D070 is dead code in the
+// release XBE (IDA: zero xrefs to it or its j_ thunk 0x421B30; the Xbox-era
+// compiler kept unreferenced COMDATs, modern MSVC drops them at compile time).
+void mpAnonHelperAnchor()
+{
+    PlayPartialAnimationRate(nullptr, nullptr, 0, 0.0f, 0.0f, false);
+}
 
 // ea: 0x00750990
 void MultiplayerMgr::SendGameStateSCF(Entity* player, int currentFlagIndex,
@@ -16216,8 +16335,7 @@ void MPPlayerItems::RemoveAll(EDroppedItemTypes item)
                 Entity* mObject = EntityHandleDb::sInst.mElements[v5].mObject;
                 if (mObject != nullptr)
                 {
-                    mObject->think = THINK__G_FreeEntity;
-                    mObject->nextthink = level.time + 1;
+                    FreeEntity(mObject);
                 }
             }
             ++v3;
@@ -22694,6 +22812,1455 @@ void MPVehicle::DebugRender()
             }
         }
     }
+}
+
+// ea: 0x00751D20
+void MPPlayer::Step()
+{
+    int mClientIndex = this->mClientIndex;
+    if (mClientIndex < 0)
+        return;
+    Entity* v5 = EntityManager::sInst->GetPlayer(mClientIndex);
+    Client* client = v5->client;
+    DObj* col = v5->mDObj;
+    Entity* iterations = v5;
+    Client* startTime = client;
+    kuju::knet::sTime v249 = MultiplayerMgr::sInst->getLocalTime();
+    sentient_s* sentient = v5->sentient;
+    sentient->eTeam = (team_t)0;   // +184 = eTeam? (raw write: 0)
+    *(int*)((char*)sentient + 304) = 0;
+    bool bProne = this->bProne;
+    bool bCrouching = this->bCrouching;
+    *(int*)((char*)startTime + 244) &= 0x7FFFFFFF;
+    float lastThirdPersonVal = lastThirdPerson;
+    if (MPPlayer::IsLocalPlayer())
+    {
+        if (lastThirdPersonVal != cg_thirdPerson.integer)
+            G_DObjUpdate(v5, false);
+        lastThirdPerson = cg_thirdPerson.integer;
+        this->mAnimFlags = GetPlayerAnimationPackFlags(
+            &v5->client->ps, v5->s.weapon);
+        float mAngle = this->mInterpolatedHeading;
+        this->mLookAtAngle = v5->client->ps.viewangles[1];
+        float mLookAtAngle = this->mLookAtAngle;
+        this->mLastHeadingAngle = mAngle;
+        if (mLookAtAngle < -180.0f || mLookAtAngle > 180.0f)
+            mLookAtAngle = fmod(mLookAtAngle + 180.0f, 360.0f) - 180.0f;
+        this->mInterpolatedHeading = mLookAtAngle;
+        float* m128_f32 = v5->client->ps.velocity.v.m128_f32;
+        this->mInterpolatedSpeed.v.m128_f32[0] = m128_f32[0];
+        this->mInterpolatedSpeed.v.m128_f32[1] = m128_f32[1];
+        this->mInterpolatedSpeed.v.m128_f32[2] = m128_f32[2];
+        this->mInterpolatedSpeed.v.m128_f32[3] = m128_f32[3];
+        this->mNetSpeed.v.m128_f32[0] = m128_f32[0];
+        this->mNetSpeed.v.m128_f32[1] = m128_f32[1];
+        this->mNetSpeed.v.m128_f32[2] = m128_f32[2];
+        this->mNetSpeed.v.m128_f32[3] = m128_f32[3];
+        this->mAnimLegs = CalcLegsAnim(
+            v5, this->mInterpolatedSpeed.v.m128_f32, this->mLookAtAngle,
+            false);
+        StepLegsYaw(v249, 0, this->mInterpolatedHeading, 100.0f,
+                    -1000.0f);
+        v5->client->ps.legsYaw =
+            ((MPPlayerYawEntry*)((char*)this + 0x2C8))[0]
+                .mLegsYawAngle;
+        if (v5->s.weapon != this->mNetWeapon)
+        {
+            this->mNetWeapon = v5->s.weapon;
+            CG_RegisterWeapon(v5->s.weapon);
+            if (!Entity_IsInRagdoll(v5))
+                G_DObjUpdate(v5, false);
+        }
+    }
+    else
+    {
+        UpdateInterpolation(v249);
+        math::Position3 v10 = this->mLastStepPosition;
+        float v11 = this->mInterpolatedPosition.v.m128_f32[1];
+        float v12 = this->mInterpolatedPosition.v.m128_f32[2];
+        math::Position3 v13 = this->mInterpolatedPosition;
+        this->mLastStepPosition.v.m128_f32[0] =
+            this->mInterpolatedPosition.v.m128_f32[0];
+        float v14 = this->mInterpolatedPosition.v.m128_f32[3];
+        this->mLastStepPosition.v.m128_f32[1] = v11;
+        int mTime = v249.mTime;
+        this->mLastStepPosition.v.m128_f32[2] = v12;
+        int mLastStepTime = this->mLastStepTime;
+        this->mLastStepPosition.v.m128_f32[3] = v14;
+        __m128 v17 = _mm_sub_ps(v13.v, v10.v);
+        this->mLastStepTime = mTime;
+        __m128 v18;
+        if (mTime - mLastStepTime <= 0)
+        {
+            memset((char*)this + 0x2B0, 0, 16);
+            v18 = _mm_setzero_ps();
+        }
+        else
+        {
+            float dt = (float)(mTime - mLastStepTime) * 0.001f;
+            v18 = _mm_div_ps(v17, _mm_set1_ps(dt));
+        }
+        __m128 v19 = _mm_mul_ps(this->mNetSpeed.v, this->mNetSpeed.v);
+        float v255 = v19.m128_f32[0] + v19.m128_f32[1] + v19.m128_f32[2];
+        __m128 v20 =
+            _mm_mul_ps(this->mInterpolatedSpeed.v,
+                       this->mInterpolatedSpeed.v);
+        float lerpTime =
+            v20.m128_f32[0] + v20.m128_f32[1] + v20.m128_f32[2];
+        memcpy((char*)this + 0x2B0, &v18, 16);  // mLastStepVelocity
+        bool v21 = lerpTime > v255;
+        __m128 v22 = _mm_mul_ps(v18, v18);
+        float v22sum = v22.m128_f32[0] + v22.m128_f32[1] + v22.m128_f32[2];
+        if (v22sum > 90000.0f
+            || (v21 && v22sum < 225.0f)
+            || v22sum < 25.0f)
+        {
+            memcpy((char*)this + 0x2B0, &this->mInterpolatedSpeed, 16);
+            __m128 v23 = _mm_mul_ps(*(__m128*)((char*)this + 0x2B0),
+                                    *(__m128*)((char*)this + 0x2B0));
+            float lerp2 = v23.m128_f32[0] + v23.m128_f32[1]
+                          + v23.m128_f32[2];
+            if (lerp2 < 225.0f)
+            {
+                __m128 v24 =
+                    _mm_mul_ps(this->mNetSpeed.v, this->mNetSpeed.v);
+                float net2 =
+                    v24.m128_f32[0] + v24.m128_f32[1] + v24.m128_f32[2];
+                if (sqrtf(net2) > sqrtf(lerp2))
+                    memcpy((char*)this + 0x2B0, &this->mNetSpeed, 16);
+            }
+            __m128 v25 = _mm_mul_ps(this->mInterpolatedSpeed.v,
+                                    this->mInterpolatedSpeed.v);
+            float lerp3 =
+                v25.m128_f32[0] + v25.m128_f32[1] + v25.m128_f32[2];
+            __m128 v26 =
+                _mm_mul_ps(this->mNetSpeed.v, this->mNetSpeed.v);
+            float net3 =
+                v26.m128_f32[0] + v26.m128_f32[1] + v26.m128_f32[2];
+            v255 = sqrtf(lerp3) > sqrtf(net3);
+        }
+        this->mAnimLegs =
+            CalcLegsAnim(v5, (float*)((char*)this + 0x2B0),
+                         this->mInterpolatedHeading, v255 != 0);
+        if (this->bClimbing)
+            v5->client->ps.pm_flags |= 0x10u;
+        __m128 v27 = _mm_mul_ps(*(__m128*)((char*)this + 0x2B0),
+                                *(__m128*)((char*)this + 0x2B0));
+        float lerp4 =
+            v27.m128_f32[0] + v27.m128_f32[1] + v27.m128_f32[2];
+        float moveYaw = 50.0f;
+        if (sqrtf(lerp4) > 50.0f)
+            moveYaw = vectoyaw((float*)((char*)this + 0x2B0));
+        StepLegsYaw(v249, 0, this->mInterpolatedHeading, 100.0f,
+                    moveYaw);
+        if (v5->client->pers.playerState == 3)
+        {
+            collision_context_t context;
+            G_DoTouchTriggers(v5, v5->r.currentOrigin, nullptr,
+                              context);
+        }
+        if (this->bCrouching)
+            v5->client->ps.viewHeightTarget =
+                v5->client->ps.crouchViewHeight;
+        else if (this->bProne)
+            v5->client->ps.viewHeightTarget =
+                v5->client->ps.proneViewHeight;
+        if (this->mLastAnimTime == 0)
+            return;
+    }
+    weaponFileInfo_t* v35 = BG_GetInfoForWeapon(this->mNetWeapon);
+    int v36 = v249.mTime;
+    this->mLastLegsYawTime.mTime = v249.mTime;
+    if (!this->bInAir)
+        this->mLastGroundedTime = v36;
+    DObjCreateAnimationPlayer(col, 0);
+    if (v5->client->ps.pm_type >= 6)
+    {
+        *(int*)((char*)v5->sentient + 184) = 0;
+        *(int*)((char*)v5->sentient + 192) = 0;
+        *(int*)((char*)v5->sentient + 196) = 0;
+        if (this->mEventAnimPlaying && this->mLastAnimEvent == 0)
+            v5->client->ps.eFlags |= 0x80000000;
+        return;
+    }
+    AnimTree* AnimTreeByName =
+        Scr_GetAnimTreeByName("generic_human");
+    G_SetAnimTree(v5, AnimTreeByName);
+    if (col == nullptr)
+        return;
+    AnimationPlayer* t = (AnimationPlayer*)col->animPlayers[0];
+    if (t == nullptr)
+        return;
+    if (this->mInVehicle && *v5->r.mOwner != nullptr)
+    {
+        Entity* vehEnt = *v5->r.mOwner;
+        scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)*(int*)((char*)vehEnt + 608);
+        vehicle_info_t* info =
+            VEH_GetInfo(*(int*)((char*)scr_vehicle + 376));
+        if (info == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+            AeAssert::gCurrentLine = 1812;
+            AeAssert::gCurrentExpr = "info";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        this->mLastAnimState = 1;  // kAnimStateVehicle
+        int v255 = 11;
+        if (*(int*)((char*)startTime + 1320) != 2)
+            v255 = 12;
+        if (!IsPlayerFullySeatedInVehicle(v5))
+        {
+            t->StopModifiers(0xFFFFFFFF);
+            if (!MPPlayer::IsLocalPlayer())
+            {
+                this->bWasVehicleAnimating = true;
+                v5->client->mVehicleAnimPauseRemoteAngles = true;
+            }
+            if (*(int*)((char*)startTime + 2804)
+                == *(int*)((char*)startTime + 2796))
+            {
+                if (t->IsIdle())
+                {
+                    *(int*)((char*)startTime + 2800) =
+                        *(int*)((char*)startTime + 2796) + 1;
+                    scr_vehicle->UpdateAnimRoute(v5, v5);
+                    if (*(int*)((char*)startTime + 2800)
+                        == *(int*)((char*)startTime + 2796))
+                        this->mNetHeading =
+                            v5->r.currentAngles.v.m128_f32[1];
+                }
+            }
+            int v44 = *(int*)((char*)startTime + 2796);
+            if (*(int*)((char*)startTime + 2804) < v44)
+            {
+                *(int*)((char*)startTime + 2804) = v44;
+                int StageAnim = scr_vehicle->GetStageAnim(startTime);
+                int v48 =
+                    base_anim_indices[38 * v255 + StageAnim]
+                        .anims[*(int*)((char*)info + 640)]
+                        .animIndex;
+                if (v48 == 0 || &base_anim_names[v48] == nullptr)
+                {
+                    *(int*)((char*)startTime + 2800) =
+                        *(int*)((char*)startTime + 2796) + 1;
+                }
+                else if (base_anim_names[v48].anim != nullptr)
+                {
+                    AnimationPlayer* v52 = t;
+                    t->Reset();
+                    float sheet =
+                        scr_vehicle->GetAnimSpeedScale(startTime);
+                    nalGeneric::nalGenericAnim* v53 =
+                        base_anim_names[v48].anim;
+                    int v54 = v52->QueueSize;
+                    nalGeneric::nalGenericAnim* v55 = nullptr;
+                    if (v54 > 0)
+                    {
+                        v55 = ((AnimationPlayer::nalAnimState*)
+                                   v52->AnimStates[0])
+                                  ->instance
+                              ? *(nalGeneric::nalGenericAnim**)(
+                                    ((AnimationPlayer::nalAnimState*)
+                                         v52->AnimStates[0])
+                                        ->instance)
+                              : nullptr;
+                    }
+                    if (v53 == v55)
+                    {
+                        if (v54 > 0)
+                        {
+                            for (int v57 = 0; v57 < v52->QueueSize; ++v57)
+                            {
+                                AnimationPlayer::nalAnimState* st =
+                                    v52->AnimStates[v57];
+                                nalGeneric::nalGenericAnim* anim =
+                                    st->instance
+                                        ? *(nalGeneric::nalGenericAnim**)
+                                              st->instance
+                                        : nullptr;
+                                if (anim != nullptr
+                                    && (*(unsigned int*)((char*)anim + 52)
+                                        & 1) != 0)
+                                    st->speed = sheet;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (v54 == 3)
+                        {
+                            AnimationPlayer::nalAnimState* v60 =
+                                v52->AnimStates[2];
+                            v60->Compose(
+                                *(nalGeneric::nalGenericPose*)
+                                    &v52->BackgroundPose,
+                                *(nalGeneric::nalGenericPose*)
+                                    &v52->tmpPose);
+                            if (v60->callback != nullptr)
+                                v60->callback->Release();
+                            v60->play_method = nullptr;
+                            if (v60->instance != nullptr)
+                            {
+                                void* inst = v60->instance;
+                                (*(void(__thiscall**)(void*, int))
+                                     inst)(inst, 1);
+                            }
+                        }
+                        else
+                        {
+                            v52->QueueSize = v54 + 1;
+                        }
+                        int v63 = t->QueueSize;
+                        void* v64 = *(void**)((char*)&t->QueueSize
+                                              + v63 * 4 + 4);
+                        int v65 = v63 - 1;
+                        if (v65 > 0)
+                        {
+                            do
+                            {
+                                t->AnimStates[v65] = t->AnimStates[v65 - 1];
+                                --v65;
+                            } while (v65 != 0);
+                        }
+                        AnimationPlayer* v67 = t;
+                        nalGeneric::nalGenericAnim* v68 = v53;
+                        t->AnimStates[0] =
+                            (AnimationPlayer::nalAnimState*)v64;
+                        void* Instance = nalGenericAnim_CreateInstance(
+                            v68, v67->Skeleton);
+                        float v70 = sheet;
+                        float v73 = 0.0f;
+                        if (*(float*)((char*)v53 + 56) != 0.0f)
+                            v73 = 1.0f / *(float*)((char*)v53 + 56);
+                        *((void**)v64) = Instance;
+                        *(float*)((char*)v64 + 4) = v70;
+                        *(float*)((char*)v64 + 8) = 1.0f;
+                        *(int*)((char*)v64 + 12) = 0;
+                        *(int*)((char*)v64 + 16) = 0;
+                        float InverseDuration =
+                            *(float*)((char*)Instance + 12);
+                        *(float*)((char*)v64 + 20) = 0.0f;
+                        *(float*)((char*)v64 + 24) = 0.0f;
+                        *(float*)((char*)v64 + 32) = 1.0f;
+                        *(float*)((char*)v64 + 36) = 0.0f;
+                        *(int*)((char*)v64 + 40) = 1;
+                        *(float*)((char*)v64 + 28) = 1.0f;
+                        if ((*(unsigned int*)((char*)v53 + 52) & 1) != 0
+                            && v55 != nullptr
+                            && (*(unsigned int*)((char*)v55 + 52) & 1)
+                                   != 0)
+                        {
+                            AnimationPlayer* v77 = t;
+                            t->AnimStates[0]->tlimit =
+                                t->AnimStates[1]->t
+                                + t->AnimStates[0]->tlimit;
+                            v77->AnimStates[0]->t = v77->AnimStates[1]->t;
+                            v77->AnimStates[0]->t_prev =
+                                v77->AnimStates[0]->t;
+                        }
+                        v52 = t;
+                    }
+                    v52->Advance(0.0f);
+                    SV_DObjCalcAnim(v5, -1);
+                    nalPositionOrientation po;
+                    DObjGetTrajectory(po, v5->mDObj);
+                    nalMatrix4x4 fakerootMtx(po);
+                    nalMatrix4x4 inv = fakerootMtx.Inverse();
+                    *(int*)((char*)startTime + 2912) = 1;
+                    SV_DObjCalcAnim(v5, 0x80000000);
+                }
+                else
+                {
+                    bdMessageProxy proxy(
+                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp",
+                        "void __thiscall MPPlayer::Step(void)", 0x75D,
+                        "dw/info/");
+                    proxy.log("anim", "invalid AnimLoco = %s",
+                              base_anim_names[v48].name);
+                    *(int*)((char*)startTime + 2800) =
+                        *(int*)((char*)startTime + 2796) + 1;
+                }
+            }
+        }
+        else
+        {
+            *(int*)((char*)v5->sentient + 184) = 0;
+            int v82 = *(int*)((char*)startTime + 1316);
+            int v83 = *(int*)((char*)info + 640);
+            if (v82 < 2 || v82 > 5)
+            {
+                // full body vehicle anim
+            }
+            else
+            {
+                weaponFileInfo_t* InfoForWeapon =
+                    BG_GetInfoForWeapon(this->mNetWeapon);
+                if (InfoForWeapon == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                    AeAssert::gCurrentLine = 1913;
+                    AeAssert::gCurrentExpr = "weapInfo";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                int weapClass = InfoForWeapon->weapClass;
+                int sheet2 = 0;
+                switch (weapClass)
+                {
+                case 0:
+                case 10:
+                case 14:
+                case 17:
+                    sheet2 = 2;
+                    break;
+                case 1:
+                case 3:
+                    sheet2 = 3;
+                    break;
+                case 2:
+                    sheet2 = 4;
+                    break;
+                case 4:
+                    sheet2 = 1;
+                    break;
+                case 5:
+                    sheet2 = 4 * (InfoForWeapon->iMeleeDamage == 0) + 2;
+                    break;
+                case 6:
+                case 8:
+                case 16:
+                {
+                    int v89 = weapClass == 6 ? 5
+                                             : (weapClass == 8 ? 7 : 9);
+                    MP_ANIM_INDEX* AnimIndex =
+                        MPPlayer::getAnimIndex(
+                            v89, 0, v89 != 9, true);
+                    if (AnimIndex != nullptr
+                        && AnimIndex->anim != nullptr)
+                    {
+                        AnimationPlayer* v86 = t;
+                        int v93 = 0;
+                        for (AnimationPlayer::nalPartialAnimState* ps =
+                                 t->PartialAnimStates;
+                             ps != nullptr; ps = ps->next)
+                        {
+                            if (ps->mask == 17)
+                                ++v93;
+                        }
+                        if (v93 == 0
+                            || t->GetModifierAnim(0x11u)
+                                   != AnimIndex->anim)
+                        {
+                            t->PlayModifier(
+                                AnimIndex->anim,
+                                AnimationPlayer::nalAdditiveModifier,
+                                1.0f, 0x11u);
+                            t->SetModifierType(
+                                0x11u,
+                                AnimationPlayer::nalAdditiveModifier);
+                            t->SetModifierCallback(0x11u, nullptr);
+                        }
+                    }
+                    break;
+                }
+                case 11:
+                case 12:
+                case 13:
+                case 15:
+                    sheet2 = 8;
+                    break;
+                default:
+                    for (AnimationPlayer::nalPartialAnimState* i =
+                             t->PartialAnimStates;
+                         i != nullptr; i = i->next)
+                    {
+                        if (i->mask == 17)
+                        {
+                            AnimationPlayer::nalAnimCallback* callback =
+                                i->base.callback;
+                            i->base.state = AnimationPlayer::FadeOut;
+                            if (callback != nullptr)
+                                callback->Release();
+                            i->base.callback = nullptr;
+                        }
+                    }
+                    break;
+                }
+                if (sheet2 >= 0)
+                {
+                    v255 = sheet2;
+                    int iterations2 = *(int*)((char*)info + 640) + 9;
+                    int col2 = 2;
+                    bool useDefault = true;
+                    MP_ANIM_INDEX* v94 =
+                        MPPlayer::getAnimIndex(v255, iterations2, col2,
+                                               useDefault);
+                    if (v94 != nullptr && v94->anim != nullptr)
+                    {
+                        nalGeneric::nalGenericAnim* v96 = v94->anim;
+                        int QueueSize = t->QueueSize;
+                        float v248 = 0.2f;
+                        if (QueueSize > 0)
+                        {
+                            v248 = 0.0f;
+                            v96 = *(nalGeneric::nalGenericAnim**)
+                                      t->AnimStates[0]->instance;
+                        }
+                        if (v94->anim == v96)
+                        {
+                            if (QueueSize > 0)
+                            {
+                                for (int v97 = 0; v97 < t->QueueSize;
+                                     ++v97)
+                                {
+                                    AnimationPlayer::nalAnimState* st =
+                                        t->AnimStates[v97];
+                                    nalGeneric::nalGenericAnim* anim =
+                                        st->instance
+                                            ? *(nalGeneric::
+                                                   nalGenericAnim**)
+                                                  st->instance
+                                            : nullptr;
+                                    if (anim != nullptr
+                                        && (*(unsigned int*)(
+                                                (char*)anim + 52)
+                                            & 1) != 0)
+                                        st->speed = 1.0f;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (QueueSize == 3)
+                            {
+                                AnimationPlayer::nalAnimState* v100 =
+                                    t->AnimStates[2];
+                                v100->Compose(
+                                    *(nalGeneric::nalGenericPose*)
+                                        &t->BackgroundPose,
+                                    *(nalGeneric::nalGenericPose*)
+                                        &t->tmpPose);
+                                if (v100->callback != nullptr)
+                                    v100->callback->Release();
+                                v100->play_method = nullptr;
+                                if (v100->instance != nullptr)
+                                {
+                                    void* inst = v100->instance;
+                                    (*(void(__thiscall**)(void*, int))
+                                         inst)(inst, 1);
+                                }
+                            }
+                            else
+                            {
+                                t->QueueSize = QueueSize + 1;
+                            }
+                            int v103 = t->QueueSize;
+                            void* v104 = *(void**)((char*)&t->QueueSize
+                                                   + v103 * 4 + 4);
+                            int v105 = v103 - 1;
+                            if (v105 > 0)
+                            {
+                                do
+                                {
+                                    t->AnimStates[v105] =
+                                        t->AnimStates[v105 - 1];
+                                    --v105;
+                                } while (v105 != 0);
+                            }
+                            t->AnimStates[0] =
+                                (AnimationPlayer::nalAnimState*)v104;
+                            void* Instance =
+                                nalGenericAnim_CreateInstance(
+                                    v94->anim, t->Skeleton);
+                            *((void**)v104) = Instance;
+                            *(float*)((char*)v104 + 4) = 1.0f;
+                            float v111 = 0.0f;
+                            if (*(float*)((char*)v94->anim + 56) != 0.0f)
+                                v111 = 1.0f
+                                       / *(float*)((char*)v94->anim + 56);
+                            *(float*)((char*)v104 + 8) = v111 * 0.0f + 1.0f;
+                            *(int*)((char*)v104 + 12) = 0;
+                            *(int*)((char*)v104 + 16) = 0;
+                            float v112 = 0.0f;
+                            *(float*)((char*)v104 + 20) = v112;
+                            *(float*)((char*)v104 + 24) = v112;
+                            *(int*)((char*)v104 + 28) = 0;
+                            *(float*)((char*)v104 + 32) = 1.0f;
+                            *(float*)((char*)v104 + 36) = v248;
+                            *(int*)((char*)v104 + 40) = 1;
+                            if (v248 == 0.0f)
+                                *(float*)((char*)v104 + 28) = 1.0f;
+                            if ((*(unsigned int*)((char*)v94->anim + 52)
+                                 & 1) != 0
+                                && v96 != nullptr
+                                && (*(unsigned int*)((char*)v96 + 52)
+                                    & 1) != 0)
+                            {
+                                t->AnimStates[0]->tlimit =
+                                    t->AnimStates[1]->t
+                                    + t->AnimStates[0]->tlimit;
+                                t->AnimStates[0]->t = t->AnimStates[1]->t;
+                                t->AnimStates[0]->t_prev =
+                                    t->AnimStates[0]->t;
+                            }
+                        }
+                    }
+                    else if (v94 != nullptr)
+                    {
+                        bdMessageProxy proxy(
+                            "c:\\cod\\code\\game\\mp/MPPlayer.cpp",
+                            "void __thiscall MPPlayer::Step(void)", 0x7C0,
+                            "dw/info/");
+                        proxy.log("anim", "invalid AnimLoco = %s",
+                                  v94->name);
+                    }
+                }
+            }
+        }
+        return;
+    }
+    AnimationPlayer* v115 = t;
+    *(int*)((char*)v5->sentient + 184) = 1;
+    for (AnimationPlayer::nalPartialAnimState* j =
+             v115->PartialAnimStates;
+         j != nullptr; j = j->next)
+    {
+        if (j->mask == 17)
+        {
+            AnimationPlayer::nalAnimCallback* v117 = j->base.callback;
+            j->base.state = AnimationPlayer::FadeOut;
+            if (v117 != nullptr)
+                v117->Release();
+            j->base.callback = nullptr;
+        }
+    }
+    AnimationPlayer* v118 = t;
+    if (t->IsTorsoAnimPlaying())
+        *(int*)((char*)v5->sentient + 304) = 1;
+    if (this->bClimbing)
+    {
+        *(int*)((char*)v5->sentient + 184) = 0;
+        if (level.time - *(int*)((char*)startTime + 2916) > 1000)
+        {
+            trace_t trace;
+            float v248 = 0.0f;
+            float* v120 = (float*)((char*)iterations + 336);
+            float mins[3];
+            float maxs[3];
+            mins[0] = v120[0];
+            mins[1] = v120[1];
+            mins[2] = v120[2];
+            maxs[0] = v120[0];
+            maxs[1] = v120[1];
+            maxs[2] = v120[2] + 4.0f;
+            collision_context_t context(
+                *(DbLinkedHandle<EntityHandleDb, Entity>*)
+                    ((char*)iterations + 564),
+                42008593);
+            math::Position3 start, end;
+            start.v = _mm_setr_ps(mins[0], mins[1], mins[2], 0.0f);
+            end.v = _mm_setr_ps(maxs[0], maxs[1], maxs[2] - 1024.0f, 0.0f);
+            math::Position3 fwd, up;
+            fwd.v = _mm_setzero_ps();
+            up.v = _mm_setzero_ps();
+            g_Trace(&trace, start, up, fwd, end, context);
+            if (trace.normal.v.m128_f32[1] >= 1.0f)
+            {
+                do
+                {
+                    ++v248;
+                    if (v248 > 10.0f)
+                        break;
+                    start = end;
+                    end.v.m128_f32[2] -= 1024.0f;
+                    up.v = _mm_setzero_ps();
+                    fwd.v = _mm_setzero_ps();
+                    g_Trace(&trace, start, fwd, up, end, context);
+                } while (trace.normal.v.m128_f32[1] >= 1.0f);
+                if (trace.normal.v.m128_f32[1] >= 1.0f)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                    AeAssert::gCurrentLine = 2031;
+                    AeAssert::gCurrentExpr = "trace.fraction < 1.f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+            }
+            *(float*)((char*)startTime + 2920) =
+                trace.endpos.v.m128_f32[3];
+            float v127 = *(float*)((char*)startTime + 1108);
+            float v128 = *(float*)((char*)startTime + 1088);
+            float v129 = *(float*)((char*)startTime + 1096)
+                         + ladderClipPullin;
+            float v130 = *(float*)((char*)startTime + 1104);
+            float v131 = *(float*)((char*)startTime + 1092)
+                         + ladderClipPullin;
+            float v132 = *(float*)((char*)startTime + 1100)
+                         - ladderClipPullin;
+            float mins2[3] = { v131, v129, v132 };
+            float maxs2[3] = { v130 - ladderClipPullin,
+                               v127 - ladderClipPullin, v129 };
+            if (v129 > v127 - ladderClipPullin)
+                maxs2[2] = v129;
+            if (v132 < v131)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                AeAssert::gCurrentLine = 2052;
+                AeAssert::gCurrentExpr = "maxs[0] >= mins[0]";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (maxs2[1] < mins2[1])
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                AeAssert::gCurrentLine = 2053;
+                AeAssert::gCurrentExpr = "maxs[1] >= mins[1]";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (maxs2[2] < mins2[2])
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+                AeAssert::gCurrentLine = 2054;
+                AeAssert::gCurrentExpr = "maxs[2] >= mins[2]";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            math::Position3 ladderStart, ladderEnd;
+            ladderStart.v = _mm_setr_ps(v120[0], v120[1], v120[2], 0.0f);
+            float v136 = 0.0f;
+            while (1)
+            {
+                float forward[3], right[3], up2[3];
+                AngleVectors((float*)((char*)iterations + 352),
+                             forward, right, up2);
+                ladderEnd.v = _mm_add_ps(
+                    ladderStart.v,
+                    _mm_setr_ps(forward[0] * 16.0f,
+                                forward[1] * 16.0f,
+                                forward[2] * 16.0f, 0.0f));
+                g_Trace(&trace, ladderStart,
+                        *(math::Position3*)mins2,
+                        *(math::Position3*)maxs2, ladderEnd, context);
+                if (trace.normal.v.m128_f32[1] < 1.0f
+                    && (LOBYTE(trace.normal.v.m128_f32[2]) & 8) != 0)
+                    break;
+                v136 += 45.0f;
+                if (v136 >= 360.0f)
+                {
+                    float v138 = *(float*)((char*)iterations + 356);
+                    *(float*)((char*)startTime + 2924) = v138;
+                    *(float*)((char*)startTime + 2924) =
+                        floorf((v138 + 45.0f) * 0.011111111f) * 90.0f;
+                    goto label205;
+                }
+            }
+            float angle = vectoyaw(&trace.endpos.v.m128_f32[1]) + 180.0f;
+            *(float*)((char*)startTime + 2924) = AngleNormalize360(angle);
+        }
+    label205:
+        PlayAnimFlagAnim(col, 0xBu, 0, 4, 1, true, 1.0f, 0.0f,
+                         false, false);
+        *(int*)((char*)startTime + 2916) = level.time;
+        float v142 = (*(float*)((char*)iterations + 344)
+                      - *(float*)((char*)startTime + 2920) - 8.0f)
+                     * 0.020833334f;
+        t->SetModifierFrame(0xBu, v142 - floorf(v142));
+        ((MPPlayerYawEntry*)((char*)this + 0x2C8))[0].mLegsYawAngle =
+            *(float*)((char*)startTime + 2924);
+        *(int*)((char*)v5->sentient + 184) = 0;
+        *(float*)((char*)startTime + 124) =
+            *(float*)((char*)startTime + 2924);
+        this->bWasClimbing = true;
+        this->bClimbingGetOffPlayed = false;
+        return;
+    }
+    if (this->bWasClimbing)
+    {
+        if (this->bClimbingGetOffPlayed)
+        {
+            if (!t->IsIdle())
+                return;
+        }
+        else
+        {
+            StopPartialAnimation(col, 0xBu);
+        }
+        this->bWasClimbing = false;
+    }
+    unsigned int mAnimFlags = this->mAnimFlags;
+    int mLastAnimSheet = this->mLastAnimSheet;
+    int v146 = mAnimFlags & 0x1F;
+    this->bClimbingGetOnPlayed = false;
+    if (v146 != mLastAnimSheet)
+        this->mLastAnimSheet = v146;
+    if ((mAnimFlags & 0x2000) == 0)
+    {
+        if (!this->bIdle)
+        {
+            StopPartialAnimation(col, 0x10u);
+            goto label229;
+        }
+        if (bCrouching == this->bCrouching)
+        {
+            if (!bCrouching)
+            {
+                bool v150 = this->bProne;
+                if (bProne != v150)
+                {
+                    MP_ANIM_INDEX* v151 = MPPlayer::getAnimIndex(
+                        v146, 2 * (v150 == 0) + 33, 0, true);
+                    if (v151 != nullptr && v151->anim != nullptr)
+                    {
+                        StopPartialAnimation(col, 0x10u);
+                        t->PlayModifier(
+                            v151->anim, AnimationPlayer::nalPartialModifier, 1.0f, 0x10u,
+                            false, 0.1f, 0.05f, nullptr, 0.0f, nullptr,
+                            1.0f, 0.0f);
+                        this->mStanceChangeTime = v249.mTime + 150;
+                        goto label228;
+                    }
+                }
+            }
+        }
+        else
+        {
+            int v147;
+            if (bCrouching)
+                v147 = 34 - this->bProne;
+            else
+                v147 = 36 - (bProne != 0);
+            MP_ANIM_INDEX* v148 =
+                MPPlayer::getAnimIndex(v146, v147, 0, true);
+            if (v148 != nullptr && v148->anim != nullptr)
+            {
+                StopPartialAnimation(col, 0x10u);
+                t->PlayModifier(
+                    v148->anim, AnimationPlayer::nalPartialModifier, 0.9f, 0x10u,
+                    false, 0.1f, 0.05f, nullptr, 0.0f, nullptr, 1.0f,
+                    0.0f);
+                this->mStanceChangeTime = v249.mTime + 150;
+            label228:
+                this->mEventAnimPlaying = true;
+            }
+        }
+    }
+label229:
+    if (this->mEventAnimPlaying)
+    {
+        bool anyPlaying = false;
+        for (AnimationPlayer::nalPartialAnimState* v153 =
+                 t->PartialAnimStates;
+             v153 != nullptr; v153 = v153->next)
+        {
+            if ((*(unsigned int*)((char*)*((void**)v153->base.instance)
+                                  + 52)
+                 & 1) == 0)
+            {
+                if (v153->base.t >= 0.0f && v153->base.t < 1.0f)
+                {
+                    anyPlaying = true;
+                    break;
+                }
+                if (v153->base.t_prev >= 0.0f
+                    && v153->base.t_prev < 1.0f)
+                {
+                    anyPlaying = true;
+                    break;
+                }
+            }
+        }
+        if (anyPlaying)
+        {
+            if (!t->IsTorsoAnimPlaying())
+            {
+                int mStanceChangeTime = this->mStanceChangeTime;
+                if (mStanceChangeTime != 0
+                    && mStanceChangeTime < v249.mTime)
+                {
+                    this->mStanceChangeTime = 0;
+                    nalGeneric::nalGenericAnim* v162 =
+                        MPPlayer::getAnimIndex(v146, this->mAnimLegs, 0,
+                                               true)
+                            ->anim;
+                    t->StopAnims();
+                    if (v162 != nullptr)
+                        t->Play(v162, true, 0.0f, nullptr, 0.0f,
+                                nullptr, 1.0f, 1.0f);
+                    this->mAnimLegsLast = this->mAnimLegs;
+                }
+                return;
+            }
+        }
+        else
+        {
+            if (this->mLastAnimEvent != 13)
+            {
+                if (this->mStanceChangeTime != 0)
+                {
+                    this->mStanceChangeTime = 0;
+                    nalGeneric::nalGenericAnim* v156 =
+                        MPPlayer::getAnimIndex(v146, this->mAnimLegs, 0,
+                                               true)
+                            ->anim;
+                    t->StopAnims();
+                    if (v156 != nullptr)
+                        t->Play(v156, true, 0.0f, nullptr, 0.0f,
+                                nullptr, 1.0f, 1.0f);
+                    this->mAnimLegsLast = this->mAnimLegs;
+                }
+                this->mEventAnimPlaying = false;
+            }
+        }
+    }
+    this->mLastAnimState = 2;  // kAnimStateLocomotion
+    Entity* v158 = iterations;
+    weaponFileInfo_t* wpInfo = BG_GetInfoForWeapon(this->mNetWeapon);
+    if (!MPPlayer::IsLocalPlayer()
+        && (this->mAnimFlags & 0x4000) != 0
+        && PM_CanSimulateFiringWeapon(this->mNetWeapon)
+        && *(int*)((char*)startTime + 1428)
+                   + *(int*)((char*)wpInfo + 1528)
+               < MultiplayerMgr::sInst->getLocalTime().mTime
+        && t->IsPartialIdle(true))
+    {
+        weaponParms wp;
+        CalcMuzzlePoints(v158, &wp);
+        float cone = BG_GetConeAngleForWeapon(
+            &v158->client->ps, this->mNetWeapon, 0,
+            (this->mAnimFlags & 0x20) != 0);
+        Bullet_Fire_Fake(v158, 0.0f, 0, &wp, v158, cone);
+        CG_WeaponFlash(v158, this->mNetWeapon,
+                       &this->mInterpolatedPosition, 0);
+        PostEffectEventWeaponFire3rd(
+            v158, wp.pWeapInfo->szInternalName,
+            (EAction)kActionWEAPON_FIRE_3RD, 1);
+        if (*(int*)((char*)wpInfo + 1780) == 0)
+            CG_EjectWeaponBrass(v158, 186);
+        CG_WeaponIKAddToFireQueue(v158, this->mNetWeapon);
+        *(int*)((char*)v158->client + 72) = cgGlobal.time;
+        *(int*)((char*)startTime + 1428) =
+            MultiplayerMgr::sInst->getLocalTime().mTime;
+    }
+    if (this->bJumpPlayed)
+    {
+        if (this->bWasInAir)
+        {
+        label264:
+            if (!Entity_has_zone_collision(v158))
+                goto label303;
+            *(int*)((char*)v5->sentient + 184) = 0;
+            if (!this->bLanding)
+            {
+                bool v50 = t->QueueSize == 0;
+                if (v50 && t->IsPartialIdle(true))
+                    this->bLanding = true;
+                if (!this->bInAir
+                    || this->mLastGroundedTime < v249.mTime - 2000)
+                    this->bLanding = true;
+                math::Dir3 v163 = this->mInterpolatedSpeed;
+                float vel[3] = { *(float*)((char*)v158 + 336),
+                                 *(float*)((char*)v158 + 340),
+                                 *(float*)((char*)v158 + 344) };
+                float endZ = vel[2] + 1.0f;
+                float* pos = (float*)((char*)v158 + 348);
+                float future[3] = { vel[0] + v163.v.m128_f32[0] * futureTime,
+                                    vel[1] + v163.v.m128_f32[1] * futureTime,
+                                    vel[2] + v163.v.m128_f32[2] * futureTime };
+                if (v163.v.m128_f32[2] <= 5.0f)
+                    future[1] -= 32.0f;
+                if (fabsf(future[1] - endZ) < 2.0f)
+                    future[1] = endZ - 64.0f;
+                if (endZ > future[1])
+                {
+                    math::Position3 mins, maxs;
+                    mins.v = _mm_setr_ps(*(float*)((char*)startTime + 1088),
+                                         *(float*)((char*)startTime + 1092),
+                                         *(float*)((char*)startTime + 1096),
+                                         0.0f);
+                    maxs.v = _mm_setr_ps(*(float*)((char*)startTime + 1100),
+                                         *(float*)((char*)startTime + 1104),
+                                         *(float*)((char*)startTime + 1108),
+                                         0.0f);
+                    player_collision_context_t context(
+                        *(DbLinkedHandle<EntityHandleDb, Entity>*)
+                            ((char*)v158 + 596),
+                        42008593);
+                    proximity_data_t proximity_data;
+                    math::Position3 start, end;
+                    start.v = _mm_setr_ps(vel[0], vel[1], vel[2], 0.0f);
+                    end.v = _mm_setr_ps(future[0], future[1], future[2],
+                                        0.0f);
+                    trace_t trace;
+                    if (*(int*)((char*)v158 + 1116) != 0)
+                    {
+                        float maxv[4];
+                        maxv[0] = fmaxf(start.v.m128_f32[0],
+                                        end.v.m128_f32[0]);
+                        maxv[1] = fmaxf(start.v.m128_f32[1],
+                                        end.v.m128_f32[1]);
+                        maxv[2] = fmaxf(start.v.m128_f32[2],
+                                        end.v.m128_f32[2]);
+                        math::Position3 lo, hi;
+                        lo.v = _mm_min_ps(start.v, end.v);
+                        hi.v = _mm_max_ps(start.v, end.v);
+                        if ((*(int*)((char*)v158 + 1116) & 7) != 7)
+                        {
+                            if ((_S13_9 & 1) != 0)
+                            {
+                                hi.v = _mm_add_ps(hi.v, rdir_4.v);
+                                lo.v = _mm_sub_ps(lo.v, rdir_4.v);
+                            }
+                            else
+                            {
+                                rdir_4.v = _mm_set1_ps(20.0f);
+                                _S13_9 |= 1;
+                                hi.v = _mm_add_ps(hi.v, rdir_4.v);
+                                lo.v = _mm_sub_ps(lo.v, rdir_4.v);
+                            }
+                            query_proximity_data(lo, hi,
+                                                 *(proximity_data_t*)
+                                                     ((char*)v158 + 1116));
+                        }
+                        filter_proximity_data(
+                            lo, hi, context.contentmask,
+                            *(proximity_data_t*)((char*)v158 + 1116),
+                            proximity_data);
+                        TraceSphereFull(&proximity_data, &trace, &start,
+                                        &mins, &maxs, &end, &context);
+                    }
+                    else
+                    {
+                        g_Trace(&trace, start, mins, maxs, end, context);
+                    }
+                    if (trace.normal.v.m128_f32[1] < 1.0f
+                        || ((trace.mEntity.mHandle.mVal >> 8) & 0xFF)
+                               != 0)
+                        this->bLanding = true;
+                }
+            }
+            if (!this->bLanding)
+            {
+                if (!this->bJumpPlayed)
+                {
+                    MP_ANIM_INDEX* v177 =
+                        MPPlayer::getAnimIndex(v146, 32, 1, true);
+                    if (v177 != nullptr && v177->anim != nullptr)
+                        t->Play(v177->anim, true, 0.3f, nullptr, 0.0f,
+                                nullptr, 0.7f, 0.0f);
+                    this->bJumpPlayed = true;
+                }
+                return;
+            }
+            if (this->bLandPlayed)
+            {
+                if (!t->IsIdleNonTorso(false))
+                    return;
+                this->bWasInAir = false;
+                this->bJumpPlayed = false;
+                this->bLandPlayed = false;
+            }
+            else
+            {
+                MP_ANIM_INDEX* v179 =
+                    MPPlayer::getAnimIndex(v146, 32, 2, true);
+                if (v179 != nullptr && v179->anim != nullptr)
+                {
+                    this->bLandPlayed = true;
+                    return;
+                }
+                this->bWasInAir = false;
+                this->bJumpPlayed = false;
+                this->bLandPlayed = false;
+            }
+        }
+        else
+        {
+            *(int*)((char*)v5->sentient + 184) = 0;
+            this->bWasInAir = true;
+            goto label264;
+        }
+    }
+label303:
+    if (this->bInAir)
+    {
+        *(int*)((char*)v5->sentient + 184) = 0;
+        int v181 = this->mLastGroundedTime >= v249.mTime - 850
+                       ? base_anim_indices[399].anims[0].animIndex
+                       : base_anim_indices[400].anims[0].animIndex;
+        MP_ANIM_INDEX* v182 = nullptr;
+        if (v181 != 0)
+            v182 = &base_anim_names[v181];
+        if (v182 != nullptr && v182->anim != nullptr)
+        {
+            t->Play(v182->anim, true, 1.0f, nullptr, 0.0f, nullptr,
+                    1.0f, 0.0f);
+            return;
+        }
+    }
+    int v183 = v146;
+    PlayAnimFlagAnim(col, 0xDu, v146, this->bProne ? 2 : 0, 0, true,
+                     1.0f, 1.0f, false, false);
+    if ((this->mAnimFlags & 0x2000) != 0)
+        v183 = 0;
+    if (this->bProne || v35 == nullptr || *(int*)((char*)v35 + 1936) != 1)
+        goto label335;
+    {
+        int v185 = 0;
+        for (AnimationPlayer::nalPartialAnimState* v184 =
+                 t->PartialAnimStates;
+             v184 != nullptr; v184 = v184->next)
+            ++v185;
+        if (v185 == 0)
+            goto label328;
+        int v187 = 0;
+        for (AnimationPlayer::nalPartialAnimState* v186 =
+                 t->PartialAnimStates;
+             v186 != nullptr; v186 = v186->next)
+            ++v187;
+        if (v187 != 1)
+            goto label335;
+        int v189 = 0;
+        for (AnimationPlayer::nalPartialAnimState* v188 =
+                 t->PartialAnimStates;
+             v188 != nullptr; v188 = v188->next)
+        {
+            if (v188->mask == 19)
+                ++v189;
+        }
+        if (v189 == 0)
+            goto label335;
+    }
+    PlayAnimFlagAnim(col, 0x13u, v183, 0, 0, true, 1.0f, 1.0f, true,
+                     true);
+    v183 = 0;
+    goto label330;
+label328:
+    PlayAnimFlagAnim(col, 0x13u, v183, 0, 0, true, 1.0f, 1.0f, true,
+                     true);
+    v183 = 0;
+label330:
+    StopPartialAnimation(col, 0x12u);
+    if (this->bProne || (this->mAnimFlags & 0x20) != 0)
+    {
+        StopPartialAnimation(col, 0xFu);
+        goto label350;
+    }
+    if (!this->bJumpPlayed)
+    {
+        float forward[3], right[3];
+        YawVectors(*(float*)((char*)iterations + 356), &forward[1],
+                   &right[1]);
+        float* v190 = (float*)((char*)iterations + 84);
+        float start2[3] = { v190[0], v190[1], v190[2] };
+        DbLinkedHandle<EntityHandleDb, Entity> handle =
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)
+                ((char*)iterations + 564);
+        start2[1] = (*(float*)((char*)startTime + 1108)
+                     - *(float*)((char*)startTime + 1096) - 12.0f)
+                    + start2[1];
+        start2[0] += forward[1] * 15.0f;
+        float end2[3] = { start2[0] + forward[1] * traceDist,
+                          start2[1], start2[2] };
+        math::Position3 mins, maxs;
+        mins.v = _mm_set1_ps(-2.0f);
+        maxs.v = _mm_set1_ps(2.0f);
+        collision_context_t context(handle, 41951377);
+        math::Position3 s2, e2;
+        s2.v = _mm_setr_ps(start2[0], start2[1], start2[2], 0.0f);
+        e2.v = _mm_setr_ps(end2[0], end2[1], end2[2], 0.0f);
+        trace_t trace;
+        g_Trace(&trace, s2, mins, maxs, e2, context);
+        if (LOWORD(trace.mEntity.mHandle.mVal) != 0)
+        {
+            trace.normal.v.m128_f32[1] = 0.0f;
+        }
+        else if (trace.normal.v.m128_f32[1] < 1.0f)
+        {
+            // no slope
+        }
+        else
+        {
+            if (View::IsSplitScreen())
+                goto label348;
+            math::Dir3 v200 = e2 - s2;
+            float dlen = sqrtf(v200.v.m128_f32[0] * v200.v.m128_f32[0]
+                               + v200.v.m128_f32[1] * v200.v.m128_f32[1]
+                               + v200.v.m128_f32[2] * v200.v.m128_f32[2]);
+            math::Dir3 fwd = v200;
+            if (dlen != 0.0f)
+            {
+                fwd.v = _mm_div_ps(fwd.v, _mm_set1_ps(dlen));
+                float dot = fwd.v.m128_f32[0] * (start2[0] - s2.v.m128_f32[0])
+                            + fwd.v.m128_f32[1] * (start2[1] - s2.v.m128_f32[1])
+                            + fwd.v.m128_f32[2] * (start2[2] - s2.v.m128_f32[2]);
+                math::Dir3 closest;
+                closest.v = _mm_add_ps(s2.v, _mm_mul_ps(fwd.v, _mm_set1_ps(dot)));
+                float a = (closest.v.m128_f32[0] - s2.v.m128_f32[0]);
+                float b = (closest.v.m128_f32[1] - s2.v.m128_f32[1]);
+                float c = (closest.v.m128_f32[2] - s2.v.m128_f32[2]);
+                float distA = sqrtf(a * a + b * b + c * c);
+                if ((distA + sqrtf(dot * dot * (fwd.v.m128_f32[0] * fwd.v.m128_f32[0] + fwd.v.m128_f32[1] * fwd.v.m128_f32[1] + fwd.v.m128_f32[2] * fwd.v.m128_f32[2]))) / traceDist >= 1.0f)
+                    goto label348;
+            }
+        }
+    }
+    int v255b = 0;
+    if (!this->bJumpPlayed)
+    {
+        // probe failed -> use modifier
+        v255b = 1;
+    }
+label348:
+    PlayAnimFlagAnim(col, 0xFu, v146, 3, 1, true, 1.0f, 1.0f, true,
+                     v255b != 0);
+label350:
+    {
+        __m128 v210 = _mm_mul_ps(this->mInterpolatedSpeed.v,
+                                 this->mInterpolatedSpeed.v);
+        float speed =
+            sqrtf(v210.m128_f32[0] + v210.m128_f32[1] + v210.m128_f32[2]);
+        float v213 = 1.0f;
+        int v216 = this->mAnimLegs;
+        float startTimeV = 1.0f;
+        float iterationsV = 0.15f;
+        float colV = speed;
+        float v255v = 0.0f;
+        if (!this->bProne && !this->bInAir)
+            *(int*)((char*)v5->sentient + 184) = 1;
+        if (ik_ADS->integer == 0 && (this->mAnimFlags & 0x20) != 0)
+            v255v = 1.0f;
+        int mLegsYawing =
+            ((MPPlayerYawEntry*)((char*)this + 0x2C8))[0].mLegsYawing;
+        if (mLegsYawing != 0 && this->mAnimLegs <= 2)
+        {
+            this->mAnimLegs = mLegsYawing + 2 * this->mAnimLegs + 24;
+            iterationsV = 0.1f;
+            v216 = this->mAnimLegs;
+        }
+        bool forceRestart = false;
+        switch (v216)
+        {
+        case 5:
+            startTimeV = colV * 0.028571429f;
+            if (startTimeV >= 0.2f)
+                v213 = 2.0f;
+            break;
+        case 6:
+            startTimeV = colV * 0.071428575f;
+            if (startTimeV >= 0.2f)
+                v213 = 2.0f;
+            break;
+        case 7:
+        case 8:
+            startTimeV = colV * 0.090909094f;
+            if (startTimeV >= 0.2f)
+                v213 = 2.0f;
+            break;
+        case 9:
+        case 10:
+            startTimeV = colV * (v216 == 9 ? 0.024390243f : 0.02631579f);
+            if (startTimeV < 0.01f)
+                startTimeV = 0.01f;
+            else if (startTimeV > 2.0f)
+                startTimeV = 2.0f;
+            break;
+        case 11:
+        case 12:
+            startTimeV = colV * 0.024390243f;
+            if (startTimeV < 0.01f)
+            {
+                startTimeV = 0.01f;
+                iterationsV = 0.15f;
+            }
+            else
+            {
+                v213 = 2.5f;
+                startTimeV = fminf(startTimeV, 2.5f);
+            }
+            break;
+        case 13:
+        case 14:
+            startTimeV = colV * (v216 == 13 ? 0.0070921984f : 0.011051374f);
+            if (startTimeV < 0.01f)
+                startTimeV = 0.01f;
+            else if (startTimeV > 1.5f)
+                startTimeV = 1.5f;
+            break;
+        case 15:
+        case 16:
+        case 19:
+        case 20:
+        {
+            float factor = v216 == 15 ? 0.0086956518f
+                                     : (v216 == 16 ? 0.0052260254f
+                                                   : 0.0083333338f);
+            startTimeV = colV * factor;
+            if (startTimeV < 0.01f)
+            {
+                startTimeV = 0.01f;
+                iterationsV = 0.15f;
+            }
+            else
+            {
+                v213 = 1.5f;
+                startTimeV = fminf(startTimeV, 1.5f);
+                iterationsV = 0.15f;
+            }
+            break;
+        }
+        case 17:
+            startTimeV = colV * 0.006704981f;
+            if (startTimeV < 0.01f)
+                startTimeV = 0.01f;
+            else if (startTimeV > 2.0f)
+                startTimeV = 2.0f;
+            break;
+        case 18:
+            startTimeV = colV * 0.011702134f;
+            if (startTimeV < 0.1f)
+                startTimeV = 0.1f;
+            else if (startTimeV > 1.5f)
+                startTimeV = 1.5f;
+            break;
+        case 21:
+            startTimeV = colV * 0.01f;
+            if (startTimeV < 0.1f)
+                startTimeV = 0.1f;
+            else if (startTimeV > 1.2f)
+                startTimeV = 1.2f;
+            break;
+        case 22:
+        case 23:
+        case 24:
+            startTimeV = colV * 0.005f;
+            if (startTimeV < 0.2f)
+                startTimeV = 0.2f;
+            else if (startTimeV > 1.2f)
+                startTimeV = 1.2f;
+            break;
+        default:
+            if (v216 <= 2)
+                iterationsV = 0.25f;
+            break;
+        }
+        if (t == nullptr)
+            return;
+        if (v216 < 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayer.cpp";
+            AeAssert::gCurrentLine = 2702;
+            AeAssert::gCurrentExpr = "int(mAnimLegs) >= ANIM_MTX_IDLE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid leg animation index."))
+                __debugbreak();
+        }
+        bool bAltIdle = false;
+        if (v146 == 2 || v146 == 3)
+        {
+            unsigned int v220 = this->mAnimLegs;
+            unsigned int mAnimLegsLast = this->mAnimLegsLast;
+            if (v220 != mAnimLegsLast)
+            {
+                if (!(v220 >= 0x19 && v220 <= 0x1E)
+                    && mAnimLegsLast == 0)
+                {
+                    if (this->bBackwards)
+                    {
+                        if (!this->bStrafing)
+                            bAltIdle = true;
+                    }
+                    else if (this->bStrafing)
+                    {
+                        bAltIdle = true;
+                    }
+                    else if (this->bAltIdle)
+                    {
+                        bAltIdle = true;
+                    }
+                }
+                this->bAltIdle = false;
+            }
+        }
+        else
+        {
+            this->bAltIdle = false;
+        }
+        if (this->mAnimLegs == 0 && this->bAltIdle && v255v == 0.0f)
+            v255v = 2.0f;
+        MP_ANIM_INDEX* v227 =
+            MPPlayer::getAnimIndex(v146, this->mAnimLegs, (int)v255v, true);
+        nalGeneric::nalGenericAnim* v228 =
+            v227 != nullptr ? v227->anim : nullptr;
+        if (v255v > 0.0f)
+        {
+            if (v228 == nullptr)
+            {
+                MP_ANIM_INDEX* v229 =
+                    MPPlayer::getAnimIndex(v146, this->mAnimLegs, 0, true);
+                if (v229 == nullptr)
+                    goto label446;
+                v228 = v229->anim;
+            }
+        }
+        if (v228 != nullptr)
+        {
+            t->Play(v228, forceRestart, iterationsV, nullptr, 0.0f,
+                    nullptr, startTimeV, colV);
+        }
+        else
+        {
+        label446:
+            bdMessageProxy proxy(
+                "c:\\cod\\code\\game\\mp/MPPlayer.cpp",
+                "void __thiscall MPPlayer::Step(void)", 0xAF5,
+                "dw/info/");
+            proxy.log("anim", "invalid AnimLoco = %i, modifier = %i",
+                      this->mAnimLegs, (int)v255v);
+        }
+        this->mAnimLegsLast = this->mAnimLegs;
+    }
+label335:
+    StopPartialAnimation(col, 0x13u);
+    if (v183 == 6 && t->IsPartialIdle(true) && !this->bProne
+        && this->bIdle
+        && base_anim_indices[228].anims[0].animIndex != 0)
+    {
+        int v196 = base_anim_indices[228].anims[0].animIndex;
+        MP_ANIM_INDEX* v198 = &base_anim_names[v196];
+        if (v198 != nullptr && v198->anim != nullptr)
+        {
+            t->PlayModifier(v198->anim, AnimationPlayer::nalPartialModifier, 1.0f, 0x12u,
+                            false, 0.1f, 0.05f, nullptr, 0.0f, nullptr,
+                            1.0f, 0.0f);
+            if ((v198->flags & 1) != 0)
+                t->SetModifierType(0x12u, AnimationPlayer::nalAdditiveModifier);
+        }
+    }
+    if (t->IsTorsoAnimPlaying())
+        *(int*)((char*)v5->sentient + 304) = 1;
+    HandleFootstepSounds();
 }
 
 // ea: 0x0073D0F0

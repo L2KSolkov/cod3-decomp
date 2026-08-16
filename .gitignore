@@ -1,6 +1,7 @@
 # Build outputs
 build/
 out/
+GameData/
 *.exe
 *.dll
 *.lib

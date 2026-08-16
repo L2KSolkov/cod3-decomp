@@ -4119,6 +4119,7 @@ struct proximity_data_t {
     uint8_t         _pad1848[0x1850 - 0x1848];
     static void* operator new(size_t s, TPakId pakID);  // ??2proximity_data_t@@SAPAXIW4TPakId@@@Z (game.o 0x60BFE0)
     static void operator delete(void* ptr, TPakId pakID);  // ??3proximity_data_t@@SAXPAXW4TPakId@@@Z (game.o 0x60C000)
+    proximity_data_t();  // ??0proximity_data_t@@QAE@XZ (g.o 0x8A1590)
     ~proximity_data_t();  // ??1proximity_data_t@@QAE@XZ (g.o 0x4B2290)
 };
 static_assert(sizeof(proximity_data_t) == 0x1850,

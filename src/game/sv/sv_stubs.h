@@ -1827,9 +1827,11 @@ public:
     bool    bWasVehicleAnimating;  // +0x280
     uint8_t _pad281[0x290 - 0x281];
     math::Position3 mLastStepPosition;  // +0x290
-    uint8_t _pad2A0[0x2C4 - 0x2A0];
+    int     mLastStepTime;          // +0x2A0
+    math::Dir3 mLastStepVelocity;   // +0x2B0
+    int     mLastGroundedTime;      // +0x2C0
     kuju::knet::sTime mLastLegsYawTime;  // +0x2C4
-    uint8_t _pad2C8[0x310 - 0x2C8];      // +0x2C8 (mYaw[3] + tail)
+    uint8_t mYaw[0x48];             // +0x2C8 (3 * 24-byte yaw entries)
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
     void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
     int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
