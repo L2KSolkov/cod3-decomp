@@ -88,6 +88,18 @@ extern bool gLogAllPktTypes;   // ?gLogAllPktTypes@@3_NA @ 0xF93FA0
 extern int dword_E36ECC;       // @ 0xE36ECC (score stat scale)
 extern int dword_E36EE0;       // @ 0xE36EE0 (score stat scale)
 extern float distance;         // @ 0xE37624 (net debug draw radius filter)
+extern float distance_0;       // @ 0xE377D8 (vehicle net debug radius filter)
+extern int   x;                // @ 0xE377E4 (debug text origin)
+extern int   y;                // @ 0xE37804
+extern int   x_start;          // @ 0xE377E0
+extern int   y_start;          // @ 0xE377DC
+extern float text_scale;       // @ 0xE37808
+extern int   columns[];        // @ 0xE377E8 (debug column offsets)
+extern int   dword_E377EC;     // @ 0xE377EC
+extern int   dword_E377F0;     // @ 0xE377F0
+extern int   dword_E377F4;     // @ 0xE377F4
+extern int   dword_E377F8;     // @ 0xE377F8
+extern int   dword_E377FC;     // @ 0xE377FC
 extern int dword_F6419C[4 * 1580];  // cg.o @ 0xF6419C
 extern int dword_F641A0[4 * 1580];  // cg.o @ 0xF641A0
 extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
@@ -22072,6 +22084,32 @@ label29:
     }
 }
 
+// VehicleDebug - per-vehicle net debug ring (mp.o VehicleDebug namespace data)
+namespace VehicleDebug {
+struct DebugUpdatePoint {
+    struct DebugPhysicsParams {
+        math::Position3 point;
+        math::Dir3      velocity;
+        math::Position3 angles;
+        math::Dir3      aVelocity;  // +0x30
+        float steering;             // +0x40
+        float brake;                // +0x44
+        float gas;                  // +0x48
+        float timeDelta;            // +0x4C
+    } local, remote;                // +0x00, +0x50
+    math::Position3 adjustedAngles;       // +0xA0
+    math::Position3 adjustedPoint;        // +0xB0
+    math::Position3 adjustedPointAccel;   // +0xC0
+    bool  reverse;                        // +0xD0
+    int   timeDeltaDifference;            // +0xD4
+    float t;                              // +0xD8
+    uint8_t _padDC[0xE0 - 0xDC];
+};
+extern int localPoint;  // ?localPoint@VehicleDebug@@3HA @ 0xF93F94
+extern DebugUpdatePoint points[40];  // ?points@VehicleDebug@@3PAUDebugUpdatePoint@1@A @ 0xF93FD0
+extern const char* InterpolationStateText[];  // ?InterpolationStateText@VehicleDebug@@3PAPBDA @ 0xE36E18
+}  // namespace VehicleDebug
+
 // ea: 0x00755D80
 void MPVehicle::UpdateInterpolation(const kuju::knet::sTime& time)
 {
@@ -22339,6 +22377,312 @@ label10:
             }
             SetSeatState(mEntity->scr_vehicle, 0, this->mDriverState);
             SetSeatState(mEntity->scr_vehicle, 1, this->mGunnerState);
+        }
+    }
+}
+
+// ea: 0x007565E0
+void MPVehicle::DebugRender()
+{
+    Color white(1.0f, 1.0f, 1.0f, 1.0f);
+    Entity* mEntity = (Entity*)this->mEntity;
+    if (mEntity != nullptr && mEntity->scr_vehicle != nullptr)
+        mEntity->scr_vehicle->DebugRender();
+    if (MPVehicle::sDebugGeneral != 0)
+    {
+        int row = 15 * this->mId;
+        vehicle_info_t* VehicleInfo =
+            VEH_GetVehicleInfo(mEntity->scr_vehicle->infoIdx);
+        Entity* owner = EntityHandleDb::sInst.GetObject(
+            mEntity->r.mOwner.mHandle.mVal);
+        int PlayerId = 16;
+        if (((MPPlayerManager*)((char*)MultiplayerMgr::sInst->mPeer
+                                + 0x74E0))
+                ->GetPlayer(owner)
+            != nullptr)
+        {
+            Entity* owner2 = EntityHandleDb::sInst.GetObject(
+                mEntity->r.mOwner.mHandle.mVal);
+            PlayerId = MultiplayerMgr::sInst->GetPlayerId(owner2);
+        }
+        int physOwnerId = 16;
+        Entity* physOwner = EntityHandleDb::sInst.GetObject(
+            mEntity->scr_vehicle->mPhysicsOwner.mHandle.mVal);
+        if (((MPPlayerManager*)((char*)MultiplayerMgr::sInst->mPeer
+                                + 0x74E0))
+                ->GetPlayer(physOwner)
+            != nullptr)
+        {
+            Entity* physOwner2 = EntityHandleDb::sInst.GetObject(
+                mEntity->scr_vehicle->mPhysicsOwner.mHandle.mVal);
+            physOwnerId = MultiplayerMgr::sInst->GetPlayerId(physOwner2);
+        }
+        unsigned char sLastRecievedFrom = this->sLastRecievedFrom;
+        bool correct_physics_owner = true;
+        MPPlayer* Player =
+            ((MPPlayerManager*)((char*)MultiplayerMgr::sInst->mPeer
+                                + 0x74E0))
+                ->GetPlayer(sLastRecievedFrom);
+        if (Player != nullptr && Player->mClientIndex >= 0
+            && EntityManager::sInst->GetPlayer(Player->mClientIndex)
+                   != nullptr)
+        {
+            Entity* v18 =
+                EntityManager::sInst->GetPlayer(Player->mClientIndex);
+            correct_physics_owner =
+                *mEntity->scr_vehicle->mPhysicsOwner == v18;
+        }
+        mEntity->scr_vehicle->IsPhysicsPaused();
+        int v19 = columns[0];
+        float scale = text_scale;
+        DebugRender::RenderText(
+            va("V: %s", VehicleInfo->name), columns[0] + x, row + y,
+            white, -510.0f, scale);
+        DebugRender::RenderText(
+            va("Own: %i", PlayerId), dword_E377EC + v19 + x, row + y,
+            white, -510.0f, scale);
+        DebugRender::RenderText(
+            va("POwn: %i", physOwnerId), dword_E377F0 + v19 + x,
+            row + y, white, -510.0f, scale);
+        int v25 = dword_E377F4 + v19;
+        Color physCol(1.0f, 1.0f, 1.0f, 1.0f);
+        if (!mEntity->scr_vehicle->IsPhysicsPaused())
+            physCol = Color(1.0f, 0.0f, 0.0f, 1.0f);
+        DebugRender::RenderText(
+            va("Phys: %s",
+               mEntity->scr_vehicle->IsPhysicsPaused() ? "Paused"
+                                                       : "On"),
+            v25 + x, row + y, physCol, -510.0f, scale);
+        int v29 = dword_E377F8 + v25;
+        Color peerCol(1.0f, 1.0f, 1.0f, 1.0f);
+        if (!correct_physics_owner)
+            peerCol = Color(1.0f, 0.0f, 0.0f, 1.0f);
+        DebugRender::RenderText(
+            va("p: %i", this->sLastRecievedFrom), v29 + x, row + y,
+            peerCol, -510.0f, scale);
+        DebugRender::RenderText(
+            va("t: %i", level.time - this->sLastRecievedNetUpdate),
+            dword_E377FC + v29 + x, row + y, white, -510.0f, scale);
+    }
+    if (MPVehicle::sDebugNetworkUpdates != 0)
+    {
+        int v33 = y_start;
+        float v34 = MPVehicle::sInterpolationTime;
+        if (MPUIInterface::mGameConnectionType
+            != kGameConnectionTypeOnline)
+            v34 = MPVehicle::sInterpolationTimeLan;
+        int mTime = this->mLastReceivedTime.mTime;
+        int starvationTime =
+            mTime - (int)((this->mAverageUpdateInterval * v34) * -1000.0f);
+        if (this->mNumOccupants != 0)
+        {
+            int v36 = y_start + 15;
+            DebugRender::RenderText(
+                va("Last Received Time:\t%d", mTime), x_start, v36,
+                white, -510.0f, 0.9f);
+            v36 += 15;
+            DebugRender::RenderText(
+                va("Starvation Time:\t\t%d", starvationTime), x_start,
+                v36, white, -510.0f, 0.9f);
+            v36 += 15;
+            DebugRender::RenderText(
+                va("Starvation Delta:\t\t%d",
+                   starvationTime - this->mLastReceivedTime.mTime),
+                x_start, v36, white, -510.0f, 0.9f);
+            v36 += 15;
+            DebugRender::RenderText(
+                va("Last Received Delta:\t%d",
+                   MultiplayerMgr::sInst->getLocalTime().mTime
+                       - this->mLastReceivedTime.mTime),
+                x_start, v36, white, -510.0f, 0.9f);
+            v36 += 15;
+            DebugRender::RenderText(
+                va("Average Interval:\t\t%d",
+                   (int)(this->mAverageUpdateInterval * 1000.0f)),
+                x_start, v36, white, -510.0f, 0.9f);
+            v33 = v36 + 15;
+            DebugRender::RenderText(
+                va("Interp State:\t\t\t%s",
+                   VehicleDebug::InterpolationStateText
+                       [this->mInterpolationState]),
+                x_start, v33, white, -510.0f, 0.9f);
+        }
+        __m128 v134 = _mm_set1_ps(30.0f);
+        for (int i = 0; i < 40; ++i)
+        {
+            VehicleDebug::DebugUpdatePoint* p =
+                &VehicleDebug::points[i];
+            float radius = 5.0f;
+            if (currCl >= 16)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EntityManager.h";
+                AeAssert::gCurrentLine = 19;
+                AeAssert::gCurrentExpr = "idx<16";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            __m128 v45 = p->local.point.v;
+            __m128 v46 = _mm_sub_ps(
+                EntityManager::sInst->mPlayers[currCl]
+                    ->r.currentOrigin.v,
+                v45);
+            __m128 v47 = _mm_mul_ps(v46, v46);
+            float v157 = v47.m128_f32[0]
+                + (v47.m128_f32[1] + v47.m128_f32[2]);
+            if (distance_0 > sqrtf(v157))
+            {
+                int prev = (i - 1) & 0x1F;
+                if (prev < 0)
+                    prev = 39;
+                VehicleDebug::DebugUpdatePoint* pp =
+                    &VehicleDebug::points[prev];
+                __m128 v51 = _mm_mul_ps(p->remote.velocity.v,
+                                        p->remote.velocity.v);
+                float v155 = v51.m128_f32[0]
+                    + (v51.m128_f32[1] + v51.m128_f32[2]);
+                __m128 v52 = _mm_mul_ps(p->local.velocity.v,
+                                        p->local.velocity.v);
+                float v170 = v52.m128_f32[0]
+                    + (v52.m128_f32[1] + v52.m128_f32[2]);
+                __m128 v53 = _mm_sub_ps(p->local.point.v,
+                                        pp->local.point.v);
+                __m128 v54 = _mm_mul_ps(v53, v53);
+                float v168 = v54.m128_f32[0]
+                    + (v54.m128_f32[1] + v54.m128_f32[2]);
+                __m128 v56 = _mm_sub_ps(p->remote.point.v,
+                                        pp->remote.point.v);
+                __m128 v57 = _mm_mul_ps(v56, v56);
+                float v162 = v57.m128_f32[0]
+                    + (v57.m128_f32[1] + v57.m128_f32[2]);
+                int v58 = v33 + 15;
+                DebugRender::RenderText(
+                    va("Angles: %g %g",
+                       p->local.angles.v.m128_f32[1],
+                       p->remote.angles.v.m128_f32[1]),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v58 += 15;
+                DebugRender::RenderText(
+                    va("AVel: %g %g",
+                       p->local.aVelocity.v.m128_f32[2] * 180.0f
+                           * 0.31830987f,
+                       p->remote.aVelocity.v.m128_f32[2] * 180.0f
+                           * 0.31830987f),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v58 += 15;
+                DebugRender::RenderText(
+                    va("Vel: %g %g", sqrtf(v170), sqrtf(v155)),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v58 += 15;
+                DebugRender::RenderText(
+                    va("Dist: %g %g", sqrtf(v168), sqrtf(v162)),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v58 += 15;
+                DebugRender::RenderText(
+                    va("Delta: %g %g", p->local.timeDelta,
+                       p->remote.timeDelta),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v58 += 15;
+                DebugRender::RenderText(
+                    va("Last DDelta: %i",
+                       p->timeDeltaDifference),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v58 += 15;
+                DebugRender::RenderText(
+                    va("Net ADelta: %i",
+                       p->remote.timeDelta
+                           - p->timeDeltaDifference),
+                    x_start, v58, white, -510.0f, 0.9f);
+                v33 = v58 + 15;
+                DebugRender::RenderText(
+                    va("t: %g", p->t), x_start, v33, white,
+                    -510.0f, 0.9f);
+                radius = 10.0f;
+                if (i == VehicleDebug::localPoint)
+                    VehicleDebug::localPoint =
+                        (VehicleDebug::localPoint + 1) % 40;
+            }
+            float alpha = p->reverse ? 0.3f : 1.0f;
+            Color red(alpha, 0.0f, 0.0f, 0.3f);
+            DebugRender::RenderSphere(p->local.point, radius, red);
+            Color green(0.0f, alpha, 0.0f, 0.3f);
+            DebugRender::RenderSphere(p->remote.point, radius, green);
+            Color blue(0.0f, 0.0f, alpha, 0.3f);
+            DebugRender::RenderSphere(p->adjustedPoint, radius, blue);
+
+            // local angle forward line (red)
+            {
+                math::Vector4 v132;
+                v132.v = _mm_set1_ps(
+                    p->local.angles.v.m128_f32[1] * 0.017453292f);
+                math::Vector4 v122 = math::SinCos<3, 0, 3, 0>(v132);
+                math::Vector4 v130;
+                v130.v = _mm_set1_ps(
+                    p->local.angles.v.m128_f32[0] * 0.017453292f);
+                math::Vector4 v124 = math::SinCos<3, 0, 3, 0>(v130);
+                float dir[3];
+                dir[0] = v124.v.m128_f32[1] * v122.v.m128_f32[1];
+                dir[1] = v124.v.m128_f32[1] * v122.v.m128_f32[0];
+                dir[2] = -v124.v.m128_f32[0];
+                math::Position3 pt1 = p->local.point;
+                math::Position3 pt2;
+                pt2.v = _mm_add_ps(
+                    pt1.v,
+                    _mm_mul_ps(_mm_setr_ps(dir[0], dir[1], dir[2], 0.0f),
+                               v134));
+                Color lineRed(alpha, 0.0f, 0.0f, 1.0f);
+                DebugRender::RenderLine(pt1, pt2, lineRed, 0.2f);
+            }
+
+            // remote angle forward line (green)
+            {
+                math::Vector4 v120;
+                v120.v = _mm_set1_ps(
+                    p->remote.angles.v.m128_f32[1] * 0.017453292f);
+                math::Vector4 v126 = math::SinCos<3, 0, 3, 0>(v120);
+                math::Vector4 v133;
+                v133.v = _mm_set1_ps(
+                    p->remote.angles.v.m128_f32[0] * 0.017453292f);
+                math::Vector4 v131 = math::SinCos<3, 0, 3, 0>(v133);
+                float dir[3];
+                dir[0] = v131.v.m128_f32[1] * v126.v.m128_f32[1];
+                dir[1] = v131.v.m128_f32[1] * v126.v.m128_f32[0];
+                dir[2] = -v131.v.m128_f32[0];
+                math::Position3 pt1 = p->local.point;
+                math::Position3 pt2;
+                pt2.v = _mm_add_ps(
+                    pt1.v,
+                    _mm_mul_ps(_mm_setr_ps(dir[0], dir[1], dir[2], 0.0f),
+                               v134));
+                Color lineGreen(0.0f, alpha, 0.0f, 1.0f);
+                DebugRender::RenderLine(pt1, pt2, lineGreen, 0.2f);
+            }
+
+            // adjusted angle forward line (blue)
+            {
+                math::Vector4 v127;
+                v127.v = _mm_set1_ps(
+                    p->adjustedAngles.v.m128_f32[1] * 0.017453292f);
+                math::Vector4 v125 = math::SinCos<3, 0, 3, 0>(v127);
+                math::Vector4 v123;
+                v123.v = _mm_set1_ps(
+                    p->adjustedAngles.v.m128_f32[0] * 0.017453292f);
+                math::Vector4 v121 = math::SinCos<3, 0, 3, 0>(v123);
+                float dir[3];
+                dir[0] = v121.v.m128_f32[1] * v125.v.m128_f32[1];
+                dir[1] = v121.v.m128_f32[1] * v125.v.m128_f32[0];
+                dir[2] = -v121.v.m128_f32[0];
+                math::Position3 pt1 = p->local.point;
+                math::Position3 pt2;
+                pt2.v = _mm_add_ps(
+                    pt1.v,
+                    _mm_mul_ps(_mm_setr_ps(dir[0], dir[1], dir[2], 0.0f),
+                               v134));
+                Color lineBlue(0.0f, 0.0f, alpha, 1.0f);
+                DebugRender::RenderLine(pt1, pt2, lineBlue, 0.2f);
+            }
         }
     }
 }

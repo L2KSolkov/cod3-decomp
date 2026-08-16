@@ -336,6 +336,10 @@ public:
     void Step();                        // ?Step@MPVehicle@@QAEXXZ (mp.o 0x75D410)
     void SetGunnerState(int state);     // ?SetGunnerState@MPVehicle@@QAEXH@Z (mp.o 0x72E4D0)
     void UpdateInterpolation(const kuju::knet::sTime& time);  // ?UpdateInterpolation@MPVehicle@@QAEXABVsTime@knet@kuju@@@Z (mp.o 0x755D80)
+    static int   sDebugGeneral;            // ?sDebugGeneral@MPVehicle@@2HA @ 0xF93F90
+    static int   sDebugNetworkUpdates;     // ?sDebugNetworkUpdates@MPVehicle@@2HA @ 0xF93F98
+    static float sInterpolationTime;       // ?sInterpolationTime@MPVehicle@@2MA @ 0xE36E24
+    static float sInterpolationTimeLan;    // ?sInterpolationTimeLan@MPVehicle@@2MA @ 0xE36E28
     void SetPhysicsInfo(const math::Position3& position,
                         const math::Dir3& angles,
                         const math::Dir3& velocity);  // ?SetPhysicsInfo@MPVehicle@@QAEXABVPosition3@math@@ABVDir3@3@1@Z (mp.o 0x755C20)
