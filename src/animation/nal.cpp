@@ -755,7 +755,7 @@ bool subtitle_manager_play_subtitle(const char* tag, const char* prefix);
 }
 
 // class tag to match binary V-mangled template args
-struct nalPositionOrientation {
+class nalPositionOrientation {
 public:
     math::Position3 pos;
     math::Quaternion orient;
@@ -763,7 +763,7 @@ public:
     void operator*=(const nalPositionOrientation& rhs);  // ??XnalPositionOrientation@@QAEXABV0@@Z (0x560010)
 };
 
-struct nalMatrix4x4 : math::Mat44 {
+class nalMatrix4x4 : public math::Mat44 {
 public:
     nalMatrix4x4() {}
 

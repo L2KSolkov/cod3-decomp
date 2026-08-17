@@ -1090,7 +1090,7 @@ void GamePause::SetGamePaused(int client, bool paused)
 // ============================================================================
 // ScriptEventHandler lives in g_game2_misc.cpp (game2.o port); params are
 // ScriptEventParams* in the binary, void* in the tree's game2.o port.
-struct ScriptEventParams;
+class ScriptEventParams;
 struct ScriptEventHandler {
     unsigned char m_dlist_node[8];      // +0x00
     unsigned char mEvents[0x38];        // +0x08 (ScriptEvent mEvents[7])

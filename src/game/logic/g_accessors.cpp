@@ -1008,7 +1008,8 @@ Broc::entity::entity(const Broc::entity& rhs)
 }
 
 // ScriptEventParams ctor (g.o 0x4A6430)
-struct ScriptEventParams {
+class ScriptEventParams {
+public:
     int ent1;
     int ent2;
     float f1, f2, f3;

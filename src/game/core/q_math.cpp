@@ -2331,7 +2331,7 @@ void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
 }
 
 // nalMatrix4x4 (anim.o; global class, 4x4 row-major: x/y/z/w rows)
-struct nalMatrix4x4 : math::Mat44 {
+class nalMatrix4x4 : public math::Mat44 {
 public:
 };
 

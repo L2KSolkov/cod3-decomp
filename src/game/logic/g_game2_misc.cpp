@@ -13,7 +13,7 @@
 #include "filesystem/apk.h"
 #include "game/logic/g_inspector.h"
 
-struct ScriptEventParams;
+class ScriptEventParams;
 
 // ============================================================================
 // NAL surface used by AnimIK (animation/nal.cpp local views)

@@ -52,7 +52,7 @@ struct XModel;
 struct ScriptEventHandler;
 class Destructible;
 class trRefEntity;
-struct ScriptEventParams;
+class ScriptEventParams;
 template <typename T>
 class IVPointer {
 public:
@@ -102,7 +102,7 @@ public:
     void SetScriptEventHandler(class ScriptEventHandler* n);  // ?SetScriptEventHandler@Entity@@QAEXPAVScriptEventHandler@@@Z
     class trRefEntity& GetRenderEntity();  // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ (game.o)
     void ExecScriptHandler(HashString h,
-                           struct ScriptEventParams* params);  // ?ExecScriptHandler@Entity@@QAEXVHashString@@PAUScriptEventParams@@@Z (game.o)
+                           ScriptEventParams* params);  // ?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z (game.o)
 };
 extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
 

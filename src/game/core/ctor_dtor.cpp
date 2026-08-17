@@ -301,7 +301,8 @@ AeThreadManagerLocal AeThreadManagerLocal::sInst;
 }
 
 // ScriptEventParams (completed from game_types.h forward decl)
-struct ScriptEventParams {
+class ScriptEventParams {
+public:
     int ent1;
     int ent2;
     float f1, f2, f3;

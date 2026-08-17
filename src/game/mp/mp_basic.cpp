@@ -163,10 +163,11 @@ float futureTime = 0.2f;        // @ 0xE377C4 (landing trace lead)
 float traceDist = 30.0f;        // @ 0xE377C0 (ladder probe distance)
 
 // nalMatrix4x4 - anim matrix (nal.cpp 0x765)
-struct nalPositionOrientation {
+class nalPositionOrientation {
+public:
     float m_data[8];  // opaque
 };
-struct nalMatrix4x4 : math::Mat44 {
+class nalMatrix4x4 : public math::Mat44 {
 public:
     nalMatrix4x4() {}
     nalMatrix4x4(const nalPositionOrientation& po);  // game2.o 0x51B400
