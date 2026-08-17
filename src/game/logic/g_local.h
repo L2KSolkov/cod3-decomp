@@ -363,7 +363,10 @@ struct scr_vehicle_t {
     void*   mRBVeh;           // +0x518 rb_vehicle*
     float   treadTime;        // +0x51C
     float   treadTime2;       // +0x520
-    uint8_t _pad524[0x554 - 0x524];
+    uint8_t _pad524[0x530 - 0x524];
+    math::Position3 lastTreadPos;    // +0x530
+    math::Position3 lastTreadAngles; // +0x540
+    int     lastTreadTime;            // +0x550
     float   mUseRadius;       // +0x554
     uint8_t mHasEntryPoints;  // +0x558
     bool    mHatchOpen;        // +0x559
@@ -4715,7 +4718,7 @@ void  VEH_UpdateSteering(Entity* ent);            // g.o
 void  VEH_UpdateHatch(Entity* ent, int msec);     // g.o
 void  VEH_UpdateFollow(Entity* ent);              // g.o
 void  VEH_TryRecordFollowHistory(scr_vehicle_t* veh); // g.o
-void  VEH_UpdateShaderTime(Entity* ent);          // g.o
+void  VEH_UpdateShaderTime(Entity* ent, int msec); // g.o
 void  Scr_Vehicle_Think(Entity* pSelf, int msec); // g.o 0x490ED0
 void  VEH_UpdatePath(Entity* ent, int msec);     // g.o 0x47F8B0
 void  VEH_UpdateOverHeat(Entity* self, int msec);// g.o 0x47F630

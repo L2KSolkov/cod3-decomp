@@ -21,6 +21,7 @@ static vehicle_backup_s_local s_backup; // @ 0xEE60A0 (bss, g_scr_vehicle.cpp lo
 
 extern math::Position3 kVehSaftyMaxs;
 extern math::Position3 kVehSaftyMins;
+extern vmCvar_t g_vehicleTexScrollScale;
 
 // rb_vehicle statics + free helpers (physics.o; ported in g_physics.cpp)
 void rb_vehicle::update_parms(vehicle_rb_parameter* p, bool from_network)
@@ -205,7 +206,79 @@ void VEH_UpdateParticlesRBVeh(Entity* ent)
             VEH_UpdateWheelParticleEffects(ent, i);
     }
 }
-void VEH_UpdateShaderTime(Entity* e) { (void)e; }
+// ea: 0x44EA70 (g.o)
+void VEH_UpdateShaderTime(Entity* ent, int msec)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info->texScroll == 0)
+        return;
+
+    float frametime = (level.time - scr_vehicle->lastTreadTime) * 0.001f;
+    scr_vehicle->lastTreadTime = level.time;
+    if (frametime <= 0.0f || frametime > 1000.0f)
+        return;
+
+    float delta[3];
+    delta[0] = ent->r.currentOrigin.v.m128_f32[0]
+               - scr_vehicle->lastTreadPos.v.m128_f32[0];
+    delta[1] = ent->r.currentOrigin.v.m128_f32[1]
+               - scr_vehicle->lastTreadPos.v.m128_f32[1];
+    delta[2] = ent->r.currentOrigin.v.m128_f32[2]
+               - scr_vehicle->lastTreadPos.v.m128_f32[2];
+    float distanceSquared = delta[0] * delta[0]
+                            + delta[1] * delta[1]
+                            + delta[2] * delta[2];
+    float inverseFrametime = 1.0f / frametime;
+    float angle = vectoyaw(delta) - ent->r.currentAngles.v.m128_f32[1];
+    angle = AngleNormalize180(angle);
+
+    scr_vehicle->lastTreadPos.v.m128_f32[0] =
+        ent->r.currentOrigin.v.m128_f32[0];
+    scr_vehicle->lastTreadPos.v.m128_f32[1] =
+        ent->r.currentOrigin.v.m128_f32[1];
+    scr_vehicle->lastTreadPos.v.m128_f32[2] =
+        ent->r.currentOrigin.v.m128_f32[2];
+    scr_vehicle->lastTreadPos.v.m128_f32[3] =
+        ent->r.currentOrigin.v.m128_f32[3];
+
+    float scroll = (90.0f - fabsf(angle))
+                   * (sqrtf(distanceSquared) * inverseFrametime)
+                   * 0.011111111f;
+    if (fabsf(scroll) > 2.0f)
+    {
+        float value = g_vehicleTexScrollScale.value;
+        float scaledScroll = scroll * 0.0056818184f;
+        float contribution;
+        if (g_vehicleTexScrollScale.value <= 0.0f)
+        {
+            contribution = scaledScroll * info->texScrollScale;
+            value = (float)msec;
+        }
+        else
+        {
+            contribution = scaledScroll * (float)msec;
+        }
+        float treadDelta = contribution * value;
+        scr_vehicle->treadTime += treadDelta;
+        scr_vehicle->treadTime2 += treadDelta;
+    }
+
+    float angularDelta = AngleNormalize180(
+        ent->r.currentAngles.v.m128_f32[1]
+        - scr_vehicle->lastTreadAngles.v.m128_f32[1]);
+    angularDelta *= inverseFrametime;
+    scr_vehicle->lastTreadAngles.v.m128_f32[0] =
+        ent->r.currentAngles.v.m128_f32[0];
+    scr_vehicle->lastTreadAngles.v.m128_f32[1] =
+        ent->r.currentAngles.v.m128_f32[1];
+    scr_vehicle->lastTreadAngles.v.m128_f32[2] =
+        ent->r.currentAngles.v.m128_f32[2];
+    scr_vehicle->lastTreadAngles.v.m128_f32[3] =
+        ent->r.currentAngles.v.m128_f32[3];
+    scr_vehicle->treadTime += angularDelta;
+    scr_vehicle->treadTime2 -= angularDelta;
+}
 void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateSteering(Entity* e) { (void)e; }
 void VEH_UpdateWeapon(Entity* e) { (void)e; }
@@ -6801,7 +6874,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
     VEH_UpdateSteering(pSelf);
     VEH_UpdateHatch(pSelf, v37);
     VEH_UpdateFollow(pSelf);
-    VEH_UpdateShaderTime(pSelf);
+    VEH_UpdateShaderTime(pSelf, v37);
     VEH_UpdateSounds(pSelf, v37);
     if (veh->mRBVeh == nullptr)
         ChiefMammalInChargeOfVehicleDamageAndPushOut(pSelf);
