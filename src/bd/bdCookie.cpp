@@ -25,6 +25,30 @@ struct bdHMacSHA1 {
     ~bdHMacSHA1();
 };
 
+// bdHMacSHA1 - ea: 0x9EC450-0x9EC4A0 (bdCrypto:bdHMacSHA1.obj)
+bdHMacSHA1::bdHMacSHA1(const unsigned char* key, unsigned int keyLen)
+{
+    (void)key;
+    (void)keyLen;
+}
+
+bdHMacSHA1::~bdHMacSHA1()
+{
+}
+
+bool bdHMacSHA1::process(const unsigned char* data, unsigned int len)
+{
+    (void)data;
+    (void)len;
+    return true;
+}
+
+bool bdHMacSHA1::getData(unsigned char* out, unsigned int* outLen)
+{
+    memset(out, 0, *outLen);
+    return true;
+}
+
 struct bdTrulyRandomImpl {
     void getRandomUByte8(unsigned char* out, int count);
 };
