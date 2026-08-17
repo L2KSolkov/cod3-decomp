@@ -144,7 +144,7 @@ class FEMenuSystem;
 class PanelFile;
 class FEMenuEntry;
 struct UIListBox;
-struct OverlayMenu;
+class OverlayMenu;
 class DialogMenuSystem;
 class DialogMenu;
 class PanelQuad;
