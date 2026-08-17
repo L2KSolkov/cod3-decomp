@@ -1560,7 +1560,7 @@ inline void InGameMenuSystem::SetActiveMenu(int a2)
 class AARMenuSystem : public FEMenuSystem {
 public:
     AARMenuSystem();          // ??0AARMenuSystem@@QAE@XZ (mp_shell.o 0x7B02E0)
-    bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
+    virtual bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@UAE_NXZ (shell.o; stub)
     virtual void Update(float time_inc);  // ?Update@AARMenuSystem@@UAEXM@Z
     virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
     void UpdateSplitScreen();     // mp.o
