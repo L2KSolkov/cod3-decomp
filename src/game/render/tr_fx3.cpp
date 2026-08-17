@@ -177,7 +177,7 @@ public:
 
 class LightEffect {
     friend void RemoveLight(LightEffect* light);
-private:
+public:
     static PoolAllocator* sAllocator;  // ?sAllocator@LightEffect@@0PAVPoolAllocator@@A @ 0xF74470
 };
 PoolAllocator* LightEffect::sAllocator;

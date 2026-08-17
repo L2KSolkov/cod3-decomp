@@ -2480,6 +2480,7 @@ public:
     static void* operator new(unsigned int size);   // ??2LightEffect@@SAPAXI@Z @ 0x6E66A0
     static void operator delete(void* ptr);         // ??3LightEffect@@SAXPAX@Z @ 0x6E66C0
 };
+PoolAllocator* LightEffect::sAllocator;
 void* LightEffect::operator new(unsigned int size)
 {
     return sAllocator->Allocate(size, false);

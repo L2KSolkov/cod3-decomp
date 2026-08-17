@@ -178,6 +178,7 @@ public:
     ~EntityNotifyLocal();      // ?~EntityNotify@@QAE@XZ (g.o)
     static PoolAllocator* sAllocator;  // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A @ 0xF00E28
 };
+PoolAllocator* EntityNotifyLocal::sAllocator;
 
 // ae_pair (class tag V per binary mangling; same shape as g_accessors.cpp)
 template <typename T1, typename T2>
