@@ -71,6 +71,13 @@ cdl_profcounter cdl_profcounter_temp1;            // ?cdl_profcounter_temp1@@3Uc
 // External assert
 extern bool _tlAssert(const char* file, int line, const char* cond, const char* msg);
 
+extern int gjk(
+    const cdlConvex& a, const math::Mat43& a2b,
+    const cdlConvex& b, cdl_cinfo2& cinfo,
+    float sep_tresh2, bool full_gjk,
+    unsigned int abase, unsigned int anquads,
+    unsigned int bbase, unsigned int bnquads);
+
 static const __m128 Float4_SignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
 
 // SSE reassembly macros (match compiler's dot/hadd patterns)
@@ -120,6 +127,79 @@ math::Mat43 math::operator/(const math::Mat43& a, const math::Mat43& b) {
             _mm_mul_ps(_mm_shuffle_ps(a_w, a_w, 85), v8)),
         inverse_translation);
     return result;
+}
+
+// intersect — convex pair overlap test
+// ea: 0x81E130
+bool intersect(
+    const cdlConvex& a, const math::Mat43& a2w,
+    const cdlConvex& b, const math::Mat43& b2w,
+    float tresh)
+{
+    const float radius = a.m_sphere.v.m128_f32[3]
+        + b.m_sphere.v.m128_f32[3];
+
+    const __m128 b_center_world = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(b.m_sphere.v, b.m_sphere.v, 0), b2w.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(b.m_sphere.v, b.m_sphere.v, 0x55), b2w.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(b.m_sphere.v, b.m_sphere.v, 0xAA), b2w.z.v),
+            b2w.w.v));
+    const __m128 a_center_world = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0), a2w.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0x55), a2w.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0xAA), a2w.z.v),
+            a2w.w.v));
+    const __m128 center_delta = _mm_sub_ps(a_center_world, b_center_world);
+    if (DOT3(_mm_mul_ps(center_delta, center_delta)) > radius * radius)
+        return false;
+
+    const __m128 b_x = b2w.x.v;
+    const __m128 b_y = b2w.y.v;
+    const __m128 b_z = b2w.z.v;
+    const __m128 inverse_row_z = _mm_shuffle_ps(
+        _mm_shuffle_ps(b_x, b_y, 0xEE), b_z, 0xA8);
+    const __m128 inverse_row_y = _mm_shuffle_ps(
+        _mm_shuffle_ps(b_x, b_y, 0x44), b_z, 0xDD);
+    const __m128 inverse_row_x = _mm_shuffle_ps(
+        _mm_shuffle_ps(b_x, b_y, 0x44), b_z, 0x88);
+    const __m128 inverse_translation = _mm_xor_ps(
+        Float4_SignMask,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(b2w.w.v, b2w.w.v, 0), inverse_row_x),
+                _mm_mul_ps(_mm_shuffle_ps(b2w.w.v, b2w.w.v, 0x55), inverse_row_y)),
+            _mm_mul_ps(_mm_shuffle_ps(b2w.w.v, b2w.w.v, 0xAA), inverse_row_z)));
+
+    const auto transform_axis = [&](const __m128 axis) {
+        return _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(axis, axis, 0), inverse_row_x),
+                _mm_mul_ps(_mm_shuffle_ps(axis, axis, 0x55), inverse_row_y)),
+            _mm_mul_ps(_mm_shuffle_ps(axis, axis, 0xAA), inverse_row_z));
+    };
+
+    math::Mat43 a2b;
+    a2b.x.v = transform_axis(a2w.x.v);
+    a2b.y.v = transform_axis(a2w.y.v);
+    a2b.z.v = transform_axis(a2w.z.v);
+    a2b.w.v = _mm_add_ps(transform_axis(a2w.w.v), inverse_translation);
+
+    cdl_cinfo2 cinfo;
+    cinfo.ni.v = _mm_sub_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0), a2b.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0x55), a2b.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0xAA), a2b.z.v),
+                a2b.w.v)),
+        b.m_sphere.v);
+    return gjk(a, a2b, b, cinfo, tresh * tresh, true,
+               0, 0, 0, 0) != 0;
 }
 
 // ============================================================================

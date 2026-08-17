@@ -226,7 +226,7 @@ bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	bdSocket.cpp: UDP socke
 
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 
-cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	IN_PROGRESS	8/9 non-inline functions ported from IDA; convex intersect at 0x81E130 remains
+cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	9/9 non-inline functions ported from IDA; build-verified
 
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
