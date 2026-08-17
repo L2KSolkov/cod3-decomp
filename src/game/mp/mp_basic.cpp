@@ -125,6 +125,7 @@ extern int dword_F6419C[4 * 1580];  // cg.o @ 0xF6419C
 extern int dword_F641A0[4 * 1580];  // cg.o @ 0xF641A0
 extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
 extern int dword_F6A290[4 * 802];   // ?dword_F6A290@@3PAHA @ 0xF6A290
+extern int gDelayRenderForNFrames;  // render.o @ 0xD638E8
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void SV_SwapClients(int client1, int client2);  // sv.o (?SV_SwapClients@@YAXHH@Z)
 extern void SV_PostConnect();  // sv.o (?SV_PostConnect@@YAXXZ @ 0x914CE0)
@@ -11771,6 +11772,28 @@ sGameListing* MPUIInterface::GameListingGet(unsigned long& numGames)
         BlockUntilNetReady();
     numGames = mGameListingNumGames;
     return (sGameListing*)mGameListings;
+}
+
+// ea: 0x00765360
+void MPUIInterface::ExitGame()
+{
+    DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
+    if (DMS->IsSystemActive())
+    {
+        if (g_femanager.GetDMS(currCl)->mState == 2
+            || g_femanager.GetDMS(currCl)->mState == 1)
+            g_femanager.GetDMS(currCl)->SetState(
+                DialogMenuSystem::DMS_PENDING_SHUTDOWN);
+        else
+            g_femanager.GetDMS(currCl)->CloseDialog();
+        gDelayRenderForNFrames = 0;
+    }
+    MultiplayerMgr::sInst->Disconnect();
+    if (MPUIInterface::mGameConnectionType == kGameConnectionTypeOnline)
+        MPLiveEngine::GetHandle()->LeaveLiveSession();
+    g_femanager.mAARS->gap1C(g_femanager.mAARS, -1);
+    MPUIInterface::mInSession = false;
+    Cbuf_AddText("exitgame\n");
 }
 
 // ea: 0x0073E3C0

@@ -52,10 +52,6 @@ bool MPUIInterface::BlockUntilNetReady()
     instance = bdSingleton<bdNetImpl>::getInstance();
     return instance->getStatus() == BD_NET_DONE;
 }
-void MPUIInterface::ExitGame()
-{
-    // stub
-}
 void MPUIInterface::QueryFromID(XNKID* sessionID)
 {
     void* memory = mem_heap_malloc(0xD0);

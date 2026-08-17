@@ -596,6 +596,7 @@ public:
     static const bool IsLocalGame();  // ?IsLocalGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F490)
     static const char* GetMapString(unsigned long mapIndex);  // ?GetMapString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F830)
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z (mp.o 0x765FC0)
+    static void ExitGame();  // ?ExitGame@MPUIInterface@@SAXXZ (mp.o 0x765360)
     static bool BlockUntilNetReady();  // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ
     static bool GameListingStart();  // ?GameListingStart@MPUIInterface@@SA_NXZ (mp.o 0x72F540)
     static const int GetOptionFromValue(eSetting setting, int value,
@@ -802,10 +803,20 @@ public:
 
 class DialogMenuSystem : public FEMenuSystem {
 public:
+    enum eState {
+        DMS_STATE_NONE = 0,
+        DMS_NETWORK_ERROR = 1,
+        DMS_SIGNOUT_CONFIRMATION = 2,
+        DMS_PENDING_SHUTDOWN = 3,
+    };
+
+    unsigned char _dialogStatePad[0x14]; // +0x2C..+0x3F (IDA layout)
+    int mState;                           // +0x40 (IDA layout)
     DialogMenu* GetLayer(bool layer1);       // ?GetLayer@DialogMenuSystem@@QAEPAVDialogMenu@@_N@Z (shell.o 0x572830)
     void BringUp(const char* t, bool type_ok, bool type_yn,
                  const char* title_unloc, bool layer1);  // ?BringUp@DialogMenuSystem@@QAEXPBD_N101@Z (shell.o 0x58E3B0)
     void CloseDialog();                      // ?CloseDialog@DialogMenuSystem@@QAEXXZ (shell.o)
+    void SetState(eState newState);          // ?SetState@DialogMenuSystem@@QAEXW4eState@1@@Z (shell.o 0x586640)
     void HighlightOption(int index);         // ?HighlightOption@DialogMenuSystem@@QAEXH@Z (shell.o 0x57F1A0)
     int  GetActiveMenu()                     // ?GetActiveMenu@FEMenuSystem@@UAEHXZ (shell.o 0x571370)
     {
