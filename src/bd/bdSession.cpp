@@ -396,10 +396,10 @@ bool bdSession::startConnect(bdReference<bdConnection>& connection,
         proxy.log("bdPeer/session", "%s connection already exists.", connectionDesc);
         return false;
     }
-    // bdConnectionStore::create is an unresolved extern until that unit ports.
-    extern bdReference<bdConnection> bdConnectionStore_create(
-        const bdReference<bdCommonAddr>&, const XNKID&);
-    connection = bdConnectionStore_create(addr, secID);
+    bdConnectionStore* connectionStore =
+        bdSingleton<bdNetImpl>::getInstance()->getConnectionStore();
+    connection = connectionStore != NULL ? connectionStore->create(addr, secID)
+                                         : bdReference<bdConnection>();
     if (connection.m_ptr == NULL) {
         bdMessageProxy proxy(".\\bdSession\\bdSession.cpp",
                              "bool __thiscall bdSession::startConnect(class bdReference<class bdConnection> &,const class bdReference<class bdCommonAddr>,const XNKID &,const char *const )",

@@ -58,7 +58,7 @@ nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cp
 
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	PORTED	XBoxStorage filesystem-backed save/load; async Service loop; CRC trailer
 
-bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA; direct bdNetImpl interceptor/key-map calls now match dump
+bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA; direct bdNetImpl interceptor/key-map/create calls now match dump
 
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 
