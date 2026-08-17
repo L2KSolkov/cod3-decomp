@@ -339,7 +339,7 @@ char aMploadingMervi_0[25] = "MPLOADING_MERVILLE_TITLE";
 char aMpMerv[] = "mp_merv";
 extern const char* const szPlayLanMenuDescriptionReferences[3];  // @ 0xE381BC
 extern int dword_F641D0[1580 * 802];   // cg.o
-extern char byte_F64194[6320 * 802];   // cg.o
+extern unsigned char byte_F64194[6320 * 802];   // cg.o
 extern int dword_F641D4[1580 * 802];   // cg.o
 extern int dword_F6A28C[4 * 802];      // cg.o
 extern int dword_F6A290[4 * 802];      // cg.o

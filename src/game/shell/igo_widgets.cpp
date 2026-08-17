@@ -33,8 +33,8 @@ struct cgGlobal_t {
 extern cgGlobal_t cgGlobal;
 
 extern PlayerState& GetPlayerState(int idx);       // ?GetPlayerState@@YAAAVPlayerState@@H@Z
-extern vmCvar_t g_stanceFadeTime;   // ?g_stanceFadeTime@@3UvmCvar_t@@A @ 0xEAC288
-extern vmCvar_t g_stanceSolidTime;  // ?g_stanceSolidTime@@3UvmCvar_t@@A @ 0xEAE1C8
+vmCvar_t g_stanceFadeTime = {};
+vmCvar_t g_stanceSolidTime = {};
 extern float unk_F6A284[];          // @ 0xF6A284 (per-client viewport block)
 extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z
 
@@ -79,13 +79,13 @@ extern int BG_WeaponIsClipOnly(int iWeapon);    // game.o
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);  // game.o
 extern int CG_GetGrenadeCount();                // cg.o
 extern int CG_GetSpecialGrenadeCount();         // cg.o
-extern vmCvar_t g_grenadeFadeTime;   // ?g_grenadeFadeTime@@3UvmCvar_t@@A
-extern vmCvar_t g_grenadeSolidTime;  // ?g_grenadeSolidTime@@3UvmCvar_t@@A
+vmCvar_t g_grenadeFadeTime = {};
+vmCvar_t g_grenadeSolidTime = {};
 extern int dword_F6419C[];  // @ 0xF6419C (special weapon type)
 extern int dword_F641A0[];  // @ 0xF641A0 (special weapon end time)
 extern int dword_F641A4[];  // @ 0xF641A4 (special weapon duration)
-extern float percentToTrimBottom;  // @ 0xDF4460
-extern float percentToTrimTop;     // @ 0xDF445C
+float percentToTrimBottom = 0.1f;  // @ 0xDF4460
+float percentToTrimTop = 0.2f;     // @ 0xDF445C
 extern int dword_F6355C[];   // @ 0xF6355C
 extern int dword_F63F5C[];   // @ 0xF63F5C (hint icon)
 extern int dword_F63F60[];   // @ 0xF63F60 (hint start time)
@@ -287,8 +287,8 @@ extern vehicle_info_t* VEH_GetVehicleInfo(int iIndex);  // g.o
 extern float dword_F63CB4[];  // @ 0xF63CB4
 float COMPASS_STOP_OFFSET = 0.0001f;  // @ 0xDF4464
 extern int cg_aWeaponSelect[];  // ?cg_aWeaponSelect@@3PAHA @ 0xF5D078
-extern vmCvar_t g_ammoFadeTime;   // ?g_ammoFadeTime@@3UvmCvar_t@@A @ 0xEAE5C0
-extern vmCvar_t g_ammoSolidTime;  // ?g_ammoSolidTime@@3UvmCvar_t@@A @ 0xEA6668
+vmCvar_t g_ammoFadeTime = {};
+vmCvar_t g_ammoSolidTime = {};
 extern int Com_BitCheck(const int* const array, int bitNum);  // bg_weapons.cpp
 extern int BG_GetTotalAmmoReserve(const PlayerState* pPS,
                                   int iWeaponIndex);  // game.o
@@ -324,8 +324,8 @@ extern int Q_stricmp(const char* s1, const char* s2);  // g.o
 extern vmCvar_t cg_widescreen;  // cg.o
 
 // IGOCompassWidget cvars/data (verified VAs)
-extern vmCvar_t g_compassFadeTime;    // @ 0xEAE770
-extern vmCvar_t g_compassSolidTime;   // @ 0xEA5DD8
+vmCvar_t g_compassFadeTime = {};
+vmCvar_t g_compassSolidTime = {};
 extern vmCvar_t cg_hudObjectiveRingTime;  // @ 0xF5EFA8
 extern vmCvar_t cg_hudObjectiveNumRings;  // @ 0xF606D8
 extern vmCvar_t cg_hudCompassMinRange;    // @ 0xF5D6B0
