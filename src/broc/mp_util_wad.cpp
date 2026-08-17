@@ -6463,20 +6463,28 @@ void setup_effects(Broc::entity self) {
 }
 
 void* BlowUpIfUnderWorld__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(BlowUpIfUnderWorld, self);
 }
 void* BlowUpIfFlipped__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(BlowUpIfFlipped, self);
 }
 void* VehicleDamagedEffects__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(VehicleDamagedEffects, self);
 }
 void* deleteonextinguish__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(deleteonextinguish, self);
 }
 }
 namespace _mp_nano {
