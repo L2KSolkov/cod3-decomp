@@ -251,8 +251,8 @@ enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 void G_SetModel(Entity* ent, const char* modelName, TPakId pakId, int ngIndex);  // game2.o
 void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // game2.o
 void g_LinkEntity(Entity* ent);  // g.o
-void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o
-void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o
+void G_SetOrigin(Entity* ent, const math::Position3& origin);  // g.o
+void G_SetAngle(Entity* ent, const math::Position3& angle);    // g.o
 namespace BrocSys {
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
@@ -1846,7 +1846,14 @@ void bone_mass_info::calc_stuff(Entity* const owner)
 
 // Camera (cg.o view; minimal local copy; mVehicleCamMode +0x194 verified from
 // UpdateControls disasm: cmp dword ptr [eax+194h], 2/3). EVehicleCameraMode
-// enum comes from game/sv/sv_stubs.h.
+// enum values are from the IDA type dump (codmp_xboxr.xbe.h).
+enum EVehicleCameraMode : int32_t {
+    VEH_MODE_FIRSTPERSON = 0x0,
+    VEH_MODE_CHASECAM = 0x1,
+    VEH_MODE_HLO = 0x2,
+    VEH_MODE_STRAFE = 0x3,
+    VEH_MODE_MAX = 0x4,
+};
 class Camera {
 public:
     uint8_t         _pad0[0x30];
@@ -8431,7 +8438,7 @@ bool collide_ray_object_list(physics_colgeom_visitor* visitor,
                             (const unsigned char*)m_bank->patch_inds
                                     .m_elements
                                 + first_index,
-                            0, (int)num_indices, p0p, p1p, *t_, normal,
+                            0, (int)num_indices, p0p, p1p, *t_, &normal,
                             nullptr);
                         did_hit |= hit;
                     }
@@ -11925,7 +11932,7 @@ Entity* SpawnBrokenPiece(Entity* owner, const char* classname,
             else
                 v12->r.svFlags |= 0x10u;
             v12->r.contents = 0x202081;
-            G_SetOrigin(v12, origin);
+            G_SetOrigin(v12, *origin);
             g_LinkEntity(v12);
         }
         return v12;
@@ -14197,7 +14204,7 @@ void prop_phys_collision::collide_terrain(rb_extra_info* rb_inf)
                         reinterpret_cast<const math::Position3&>(wci->m_p0),
                         reinterpret_cast<const math::Position3&>(wci->m_p1),
                         wci->m_t,
-                        reinterpret_cast<math::Position3&>(wci->m_normal),
+                        reinterpret_cast<math::Position3*>(&wci->m_normal),
                         nullptr);
                 }
                 else  // CDL_BOX

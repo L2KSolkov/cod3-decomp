@@ -108,6 +108,12 @@ FEText::FEText(font_index f, const char* t, float x1, float y1, int z1,
         flags = (int16_t)(horizJust | vertJust | 5);
 }
 
+// ea: 0x005ADD00
+font_index FEText::GetFont()
+{
+    return font;
+}
+
 // ea: 0x0056BCE0
 FEText::~FEText()
 {

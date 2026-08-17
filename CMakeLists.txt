@@ -459,7 +459,10 @@ add_library(cod3_game_cl STATIC
     src/game/cl/cl_parse.cpp
 )
 add_library(cod3_game_streamer STATIC src/game/streamer/stubs_game.cpp src/game/streamer/pakmanager.cpp)
-add_library(cod3_game_physics STATIC src/game/physics/stubs_game.cpp)
+add_library(cod3_game_physics STATIC
+    src/game/physics/stubs_game.cpp
+    src/game/physics/g_physics.cpp
+)
 add_library(cod3_game_sv STATIC
     src/game/sv/stubs_game.cpp
     src/game/sv/sv_globals.cpp
