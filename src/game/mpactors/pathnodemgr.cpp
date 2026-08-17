@@ -42,7 +42,7 @@ extern void G_Printf(const char* fmt, ...);  // g.o
 extern char* vtos(const float* v);           // g.o
 extern const math::Position3 actorMaxs;      // 0xF99330
 extern const math::Position3 actorMins;      // 0xF99510
-extern vmCvar_t g_ignorePathErrors;          // ?g_ignorePathErrors@@3UvmCvar_t@@A @ 0xEAC5E8
+vmCvar_t g_ignorePathErrors = {};            // ?g_ignorePathErrors@@3UvmCvar_t@@A @ 0xEAC5E8
 
 // ea: 0x0077F1A0 (static helper, pathnodemgr.cpp)
 static void Path_UpdateBadPlaceCountForLink(PathNodes::PathLink* pLink,

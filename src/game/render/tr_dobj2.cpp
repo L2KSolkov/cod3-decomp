@@ -515,7 +515,7 @@ void nglSetClearFlags(unsigned int ClearFlags);
 void nglSetFBWriteMask(unsigned int WriteMask);
 void R_SetWindowQuadRect(nglQuad& q);  // tr_fx.cpp
 
-extern unsigned int dword_CB8600;  // @ 0xCB8600
+unsigned int dword_CB8600 = 0;      // @ 0xCB8600 (first blend value)
 
 void R_ShowAlphaChannel()
 {

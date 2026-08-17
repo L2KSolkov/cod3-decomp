@@ -17,7 +17,7 @@ extern math::Position3 playerMins;     // 0xEC9620
 extern const math::Position3 actorMaxs;  // 0xF99330
 extern const math::Position3 actorMins;  // 0xF99510
 extern const char* const pszTeamName[5];  // 0xE37BF8
-extern int g_iSentientFreeSequence;   // ?g_iSentientFreeSequence@@3HA @ 0xF992D0
+int g_iSentientFreeSequence = -1;     // ?g_iSentientFreeSequence@@3HA @ 0xF992D0
 extern void* SV_SaveWrite(const void* buffer, int len);  // sv.o
 extern const float AngleSubtract(float a1, float a2);     // core.o
 extern const float AngleNormalize360Accurate(float angle);  // core.o
@@ -27,7 +27,7 @@ extern void G_AddLean(Entity* ent, float* point);  // g.o
 extern void G_DPrintf(const char* fmt, ...);       // g.o
 extern void G_FreeEntityRefs(Entity* ed);          // g.o
 extern void Scr_FreeSentientFields(sentient_s* pSentient);  // scr.o
-extern int sLatency;                               // @ 0xE37C98
+int sLatency = 100;                                 // @ 0xE37C98
 extern int irand(int min, int max);                // core.o
 extern void Com_Printf(const char* fmt, ...);      // core.o
 extern const float VectorDistanceSquared(const float* const p1,
