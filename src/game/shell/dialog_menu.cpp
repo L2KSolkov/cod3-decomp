@@ -28,7 +28,7 @@ enum FULLSCREENBLUR_STATE {
 };
 extern FULLSCREENBLUR_STATE g_doFullScreenBlur[];
 extern float g_fullScreenBlurAmount[]; // ?g_fullScreenBlurAmount@@3PAMA
-extern float blur_amount_2;            // @ 0xDF4458
+float blur_amount_2 = 0.1f;            // @ 0xDF4458
 extern int gDelayRenderForNFrames;     // ?gDelayRenderForNFrames@@3HA
 extern int Sys_Milliseconds();         // ?Sys_Milliseconds@@YAHXZ
 

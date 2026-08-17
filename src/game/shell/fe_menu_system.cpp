@@ -17,9 +17,9 @@ extern const char* const defaultFileName;  // ?defaultFileName
 extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
 extern vmCvar_t cg_widescreen;         // ?cg_widescreen@@3UvmCvar_t@@A
-extern float blur_amount;              // ?blur_amount @ 0xDF4290
-extern float blur_amount_0;            // @ 0xDF4294
-extern float blur_amount_1;            // @ 0xDF4298
+float blur_amount = 0.1f;              // ?blur_amount @ 0xDF4290
+float blur_amount_0 = 0.1f;            // @ 0xDF4294
+float blur_amount_1 = 0.1f;            // @ 0xDF4298
 enum FULLSCREENBLUR_STATE {
     FULLSCREENBLUR_OFF = 0,
     FULLSCREENBLUR_START = 1,

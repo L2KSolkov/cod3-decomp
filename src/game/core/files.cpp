@@ -15,7 +15,7 @@
 // Externs (core.o data / libc / helpers)
 // ============================================================================
 extern int SEH_GetCurrentLanguage();
-extern const char* SEH_GetLanguageName(unsigned int iLanguage);  // shell.o
+extern const char* SEH_GetLanguageName(int iLanguage);  // shell.o
 extern int Q_islower(int c);
 extern int Q_stricmp(const char* s1, const char* s2);
 enum errorParm_t;

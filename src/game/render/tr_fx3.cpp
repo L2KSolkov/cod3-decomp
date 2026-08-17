@@ -12,6 +12,9 @@
 
 #include <stdint.h>
 
+struct nglShader;
+struct cdAepsShader;
+
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10, MJK = 11 };
 extern ECoderId gCurrentAuthor;
@@ -349,7 +352,7 @@ public:
 struct nglScene;
 extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
 extern void nglValidateMatrices(nglScene* scene);  // ngl.o
-extern bool nglProfileEvalShader(void* shader);    // ?nglProfileEvalShader@@YA_NPAUnglShader@@@Z
+extern bool nglProfileEvalShader(nglShader* shader);    // ?nglProfileEvalShader@@YA_NPAUnglShader@@@Z
 extern void UpdateLights(float mTickMSec);        // ?UpdateLights@@YAXM@Z
 extern void RemoveDeadEffects();                  // ?RemoveDeadEffects@@YAXXZ
 extern void FX_UpdateRainDrops(float dt);         // ?FX_UpdateRainDrops@@YAXM@Z
@@ -360,7 +363,7 @@ extern int gScreenshotInProgress;                 // ?gScreenshotInProgress@@3HA
 extern int currCl;                                // g.o
 extern int LocalClient_FirstLocalClientIndex();   // ?FirstLocalClientIndex@LocalClient@@SAHXZ
 extern cdl_proftimer cdl_proftimer_fx_update;     // ?cdl_proftimer_fx_update@@3Ucdl_proftimer@@A
-extern void* gCDAepsShader;                       // ?gCDAepsShader@@3PAVcdAepsShader@@A
+cdAepsShader* gCDAepsShader = nullptr;             // ?gCDAepsShader@@3PAVcdAepsShader@@A
 const math::Mat43* nglGetMatrix_WorldToView(nglScene* scene);  // ?nglGetMatrix_WorldToView@@YAPBVMat43@math@@PAUnglScene@@@Z
 
 // ea: 0x006DBC20
@@ -373,7 +376,8 @@ void FX_UpdateFX(bool firstClient)
            sizeof(pvp->mClipPlanes));
     pvp->mViewPos = ((nglSceneView*)nglBuildScene)->ViewPos;
     pvp->mProjectionX = ((nglSceneView*)nglBuildScene)->Projection.x.v.m128_f32[0];
-    if (!firstClient || !nglProfileEvalShader(gCDAepsShader))
+    if (!firstClient
+        || !nglProfileEvalShader(reinterpret_cast<nglShader*>(gCDAepsShader)))
         return;
     apsCommon2::SubmitSpawnedEffectQueue();
     UpdateLights((float)ServerTime_sInst.mTickMSec);
@@ -556,11 +560,11 @@ struct jqBatch {
     void* Scratch;                   // +0x08
     void* Static;                    // +0x0C
 };
-extern bool level_bMissionFailed;
-extern bool level_bMissionSuccess;
+struct level_locals_t;
+extern level_locals_t level;
 class AbstractEffectParticle;
 extern AbstractEffectParticle* gLastAbstractEffectParticle;
-extern void* g_scr_data_debris_bro_func;
+extern int g_scr_data_debris_bro_func;
 extern void apsCommon_SetCurrentPakId(int pakId);  // ?SetCurrentPakId@apsCommon@@SAXH@Z
 extern void apsCommon_SetPakAllocs(int v);         // ?SetPakAllocs@apsCommon@@SAXH@Z
 
@@ -650,11 +654,13 @@ void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqB
         if ((v4->mFlags & 8) != 0)
         {
             v4->mFlags &= (unsigned short)~8u;
-            if (!level_bMissionFailed && !level_bMissionSuccess)
+            const char* levelBytes = reinterpret_cast<const char*>(&level);
+            if (*(const int*)(levelBytes + 0xACC) == 0
+                && *(const int*)(levelBytes + 0xAC8) == 0)
             {
                 gLastAbstractEffectParticle =
                     (AbstractEffectParticle*)v4->mAbstractEffectParticle;
-                ((void (__cdecl*)())g_scr_data_debris_bro_func)();
+                ((void (__cdecl*)())(intptr_t)g_scr_data_debris_bro_func)();
             }
             gLastAbstractEffectParticle = nullptr;
         }
