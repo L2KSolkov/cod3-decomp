@@ -339,6 +339,16 @@ const char* const szTeamEntriesText[3] = {
     "MPSCRIPT_AUTO_SELECT_ALLCAPS", "MPSCRIPT_ALLIES_ALLCAPS",
     "MPSCRIPT_AXIS_ALLCAPS",
 };
+const char* const szInGameSwitchSidesBackgroundArt[9] = {
+    "bkg_detail_01", "bkg_detail_02", "bkg_detail_03", "bkg_detail_04",
+    "bkg_detail_05", "bkg_detail_06", "bkg_detail_07", "bkg_detail_08",
+    "bkg_detail_09",
+};
+const char* const szSwitchSidesBackgroundToTurnOff[5] = {
+    "bkg_detail_02", "bkg_detail_03", "bkg_detail_05", "bkg_detail_07",
+    "bkg_detail_09",
+};
+int FGdepth_0 = 20;  // 0xE3ADB0
 static const char* const szSwitchSidesBackgroundTeamWidgetsName[3] = {
     "icon_autosave", "icon_axis", "icon_allied",
 };
@@ -4795,6 +4805,72 @@ void InGameSwitchSides::SetPanelFileSplitScreen(PanelFile* pf)
     }
     FEText* title = mSplitScreenMenu->GetTextPointer("text_title");
     title->SetText("MPGAME_SIDE_SELECTION");
+}
+
+// ea: 0x007A2E60
+void InGameSwitchSides::SetPanelFileMain(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/InGameSwitchSides.cpp";
+        AeAssert::gCurrentLine = 89;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+
+    panel = pf;
+    if (mVersion > 0)
+        panel = pf->Clone();
+
+    panel->GetTextPointer("text_title")->SetText("MPGAME_SIDE_SELECTION");
+    FEText* helpbar = panel->GetTextPointer("text_helpbar");
+    FEMultiLineText* helpbarText =
+        (FEMultiLineText*)mem_heap_malloc(0, 0xA8);
+    FEMultiLineText* helpbarCopy = nullptr;
+    if (helpbarText != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float x = helpbar->GetX();
+        helpbarCopy = new (helpbarText)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = helpbarCopy;
+    helpbar1->SetNumLines(1);
+    helpbar1->SetText("MPFRONTEND_HELP_SELECT");
+
+    AddEntry(0, panel->GetTextPointer("text_autoselect"), false);
+    AddEntry(1, panel->GetTextPointer("text_allied"), false);
+    AddEntry(2, panel->GetTextPointer("text_axis"), false);
+    entries[0]->SetText(szTeamEntriesText[0]);
+    entries[1]->SetText(szTeamEntriesText[1]);
+    entries[2]->SetText(szTeamEntriesText[2]);
+
+    for (int i = 0; i < 9; ++i)
+    {
+        PanelQuad* quad = panel->GetPointer(szInGameSwitchSidesBackgroundArt[i]);
+        if (i == 0 || i == 3)
+            quad->SetZvalueAbs((float)FGdepth_0);
+        else
+            quad->SetZvalueAbs(400.0f);
+    }
+    panel->GetPointer("icon_axis")->SetZvalueAbs(350.0f);
+    panel->GetPointer("icon_allied")->SetZvalueAbs(350.0f);
+
+    for (int i = 0; i < 5; ++i)
+    {
+        PanelQuad* quad = panel->GetPointer(szSwitchSidesBackgroundToTurnOff[i]);
+        if (quad != nullptr)
+            quad->SetShown(false);
+    }
+    entries[0]->up = 2;
+    entries[2]->down = 0;
 }
 
 // ea: 0x007ABF70
