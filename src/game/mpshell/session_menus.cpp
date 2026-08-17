@@ -328,6 +328,11 @@ const char* const szClassReference[7] = {
     "MPGAME_SCOUT_ALLCAPS", "MPGAME_SUPPORT_ALLCAPS",
     "MPGAME_ANTIARMOR_ALLCAPS",
 };
+static const char* const szSwitchSidesBackgroundTeamWidgetsName[3] = {
+    "icon_autosave", "icon_axis", "icon_allied",
+};
+static const char* const szSwitchSidesBackgroundTeamAxis = "icon_axis";
+static const char* const szSwitchSidesBackgroundTeamAllied = "icon_allied";
 extern float unk_F6A280[802];  // viewport prev (cg.o)
 extern float unk_F6A284[802];  // viewport curr (cg.o)
 extern bool g_controllerConnected[];           // ?g_controllerConnected@@3PA_NA (game2.o)
@@ -431,6 +436,7 @@ extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
 extern void CG_FillRect(float x, float y, float width, float height,
                         const float* color, float z);  // ?CG_FillRect@@YAXMMMMQBMH@Z (cg.o)
 extern Entity* G_Spawn(TPakId pakId);  // ?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z (g.o)
+extern unsigned char BG_GetWeaponIndexForName(const char* name);
 
 int scoreboard_player_sorter(const void* left, const void* right);
 
@@ -5276,6 +5282,69 @@ void InGameSwitchSides::OnDown(int c)
     }
     if (highlighted != v5)
         UpdateModel();
+}
+
+// ea: 0x007AE080
+void InGameSwitchSides::UpdateModel()
+{
+    mModelPosition[0] = 20.0f;
+    mModelPosition[1] = -122.0f;
+    mModelPosition[2] = 90.0f;
+    mModelPosition[3] = 0.0f;
+    UpdateModelPosition();
+    mModelAngles[0] = 110.0f;
+    mModelAngles[1] = 0.0f;
+    mModelAngles[2] = 270.0f;
+    mModelAngles[3] = 0.0f;
+    UpdateModelPosition();
+    mAnimSpeed = 0.0f;
+    mColors[0] = 1.07854f;
+    mColors[1] = 0.99822003f;
+    mColors[2] = 0.80317003f;
+    mColors[3] = 1.0f;
+    mColors[4] = 1.07854f;
+    mColors[5] = 0.99822003f;
+    mColors[6] = 0.80317003f;
+    mColors[7] = 1.0f;
+    mDirections[0] = 0.63f;
+    mDirections[1] = 0.49000001f;
+    mDirections[2] = 0.597f;
+    mDirections[3] = 0.0f;
+    mDirections[4] = -0.76300001f;
+    mDirections[5] = -0.161f;
+    mDirections[6] = -0.625f;
+    mDirections[7] = 0.0f;
+    mBrightness[0] = 0.69999999f;
+    mBrightness[1] = 0.69999999f;
+
+    int weapon = 0;
+    team_t team = (team_t)m_eTeam;
+    if (highlighted == 0)
+    {
+        mBrightness[0] = 0.0f;
+        mBrightness[1] = 0.0f;
+        weapon = BG_GetWeaponIndexForName("thompson");
+        team = (team_t)irand(1, 3);
+    }
+    if (team == TEAM_AXIS)
+        weapon = BG_GetWeaponIndexForName("mp40");
+    else if (team == TEAM_ALLIES)
+        weapon = BG_GetWeaponIndexForName("thompson");
+    UpdateClassModel(1, team, weapon);
+
+    if (highlighted == 1)
+    {
+        panel->GetPointer(szSwitchSidesBackgroundTeamWidgetsName[0])
+            ->SetShown(false);
+        panel->GetPointer(szSwitchSidesBackgroundTeamAxis)->SetShown(false);
+        panel->GetPointer(szSwitchSidesBackgroundTeamAllied)->SetShown(true);
+        return;
+    }
+
+    panel->GetPointer(szSwitchSidesBackgroundTeamWidgetsName[0])
+        ->SetShown(highlighted == 0);
+    panel->GetPointer(szSwitchSidesBackgroundTeamAxis)->SetShown(true);
+    panel->GetPointer(szSwitchSidesBackgroundTeamAllied)->SetShown(false);
 }
 
 // ============================================================================
