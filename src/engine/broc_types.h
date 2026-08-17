@@ -355,6 +355,14 @@ struct ExtendedEntity {
     typedef bool (EqualsFunc)(unsigned int val, const char* str);
     typedef void (DestructFunc)(unsigned int& val);
 
+    // IDA local type: mp_level_wad supplies these callback implementations.
+    typedef void (__cdecl *GetFunctionsFunc)(unsigned int key,
+                                              InitFunc** init,
+                                              CopyFunc** copy,
+                                              EqualsFunc** equals,
+                                              DestructFunc** dtor);
+    static GetFunctionsFunc sGetFunctions;
+
     static InitFunc*     GetInit(unsigned int typeId);
     static CopyFunc*     GetCopier(unsigned int typeId);
     static EqualsFunc*   GetEquals(unsigned int typeId);

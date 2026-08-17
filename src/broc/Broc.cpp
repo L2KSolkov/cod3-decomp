@@ -79,6 +79,7 @@ namespace Broc {
 
 // IDA global (codmp_xboxr.xbe.c:956493; ea: 0x010F0568).
 BrocAPI gBrocAPI = {};
+ExtendedEntity::GetFunctionsFunc ExtendedEntity::sGetFunctions = nullptr;
 
 int MathsRandomInt(int iMax)
 {
@@ -871,10 +872,56 @@ void ExtendedEntity::SetUndefined(unsigned int) {}
 unsigned int* ExtendedEntity::SetVal(unsigned int, const string&) { return NULL; }
 unsigned int* ExtendedEntity::InternalSet(unsigned int, unsigned int) { return NULL; }
 const unsigned int* ExtendedEntity::InternalGet(unsigned int) const { return NULL; }
-ExtendedEntity::InitFunc* ExtendedEntity::GetInit(unsigned int) { return NULL; }
-ExtendedEntity::CopyFunc* ExtendedEntity::GetCopier(unsigned int) { return NULL; }
-ExtendedEntity::EqualsFunc* ExtendedEntity::GetEquals(unsigned int) { return NULL; }
-ExtendedEntity::DestructFunc* ExtendedEntity::GetDestructor(unsigned int) { return NULL; }
+// The IDA bodies also emit profiling events through fields not represented in
+// the current partial BrocAPI declaration; callback selection and exact
+// EEDefault fallbacks are preserved here.
+ExtendedEntity::InitFunc* ExtendedEntity::GetInit(unsigned int key)
+{
+    InitFunc* init = nullptr;
+    if (sGetFunctions != nullptr)
+    {
+        sGetFunctions(key, &init, nullptr, nullptr, nullptr);
+        if (init != nullptr)
+            return init;
+    }
+    return EEDefault::Initialize;
+}
+
+ExtendedEntity::CopyFunc* ExtendedEntity::GetCopier(unsigned int key)
+{
+    CopyFunc* copy = nullptr;
+    if (sGetFunctions != nullptr)
+    {
+        sGetFunctions(key, nullptr, &copy, nullptr, nullptr);
+        if (copy != nullptr)
+            return copy;
+    }
+    return EEDefault::Copy;
+}
+
+ExtendedEntity::EqualsFunc* ExtendedEntity::GetEquals(unsigned int key)
+{
+    EqualsFunc* equals = nullptr;
+    if (sGetFunctions != nullptr)
+    {
+        sGetFunctions(key, nullptr, nullptr, &equals, nullptr);
+        if (equals != nullptr)
+            return equals;
+    }
+    return EEDefault::Equals;
+}
+
+ExtendedEntity::DestructFunc* ExtendedEntity::GetDestructor(unsigned int key)
+{
+    DestructFunc* dtor = nullptr;
+    if (sGetFunctions != nullptr)
+    {
+        sGetFunctions(key, nullptr, nullptr, nullptr, &dtor);
+        if (dtor != nullptr)
+            return dtor;
+    }
+    return EEDefault::Destruct;
+}
 
 // ============================================================================
 // Stubs — wait / thread
