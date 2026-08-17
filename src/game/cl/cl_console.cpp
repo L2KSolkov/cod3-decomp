@@ -46,7 +46,7 @@ extern void CL_AddConsoleInfoColor(int iFirstInfo, const float* vColor);
 extern void CL_AddDeathMessageText(const char* pszString, int iForceColor);
 extern void* FEManager_GetFont(void* self, int f, float scale);
 struct FEManager; extern FEManager g_femanager;
-struct nglFont;
+class nglFont;
 extern void nglGetStringDimensions(nglFont* font, unsigned int* width,
                                    unsigned int* height, float scaleX,
                                    float scaleY, const char* fmt, ...);

@@ -19,7 +19,7 @@ extern void nglSetQuadZ(nglQuad* quad, float z);
 extern void nglSetQuadBlend(nglQuad* quad, unsigned int blend);
 extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
 extern void nglListAddQuad(nglQuad* quad);
-struct nglFont;
+class nglFont;
 extern void nglListAddString(nglFont* font, const char* text, float x,
                              float y, float z, unsigned int color,
                              float scaleX, float scaleY);
