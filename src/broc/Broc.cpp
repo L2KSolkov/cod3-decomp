@@ -77,6 +77,9 @@ bool IS_NAN(float x) {
 // ============================================================================
 namespace Broc {
 
+// IDA global (codmp_xboxr.xbe.c:956493; ea: 0x010F0568).
+BrocAPI gBrocAPI = {};
+
 int MathsRandomInt(int iMax)
 {
     if (iMax <= 0)
@@ -914,7 +917,7 @@ void GetVehicleNodeArray(const string&, const string&, void*) {}
 void GetAllVehicleNodes(void*) {}
 
 // ============================================================================
-// Stubs — EEHelper / EEDefault templates
+// EEHelper / EEDefault templates
 // ============================================================================
 
 namespace EEHelper {
@@ -932,10 +935,44 @@ namespace EEHelper {
 }
 
 namespace EEDefault {
-    unsigned int Initialize(const char*) { return 0; }
-    unsigned int Copy(unsigned int val) { return val; }
-    void Destruct(unsigned int&) {}
-    bool Equals(unsigned int, const char*) { return false; }
+    // ea: 0x00929840; IDA source line global is 103 (+1 in the call).
+    unsigned int Initialize(const char*)
+    {
+        if (gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                104, "No initializer found!"))
+            __debugbreak();
+        return 0;
+    }
+
+    // ea: 0x00929890; IDA source line global is 109 (+1 in the call).
+    unsigned int Copy(unsigned int)
+    {
+        if (gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                110, "No copier found!"))
+            __debugbreak();
+        return 0;
+    }
+
+    // ea: 0x009298E0; IDA source line global is 115 (+1 in the call).
+    void Destruct(unsigned int&)
+    {
+        if (gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                116, "No destructor found!"))
+            __debugbreak();
+    }
+
+    // ea: 0x00929930; IDA source line global is 120 (+1 in the call).
+    bool Equals(unsigned int, const char*)
+    {
+        if (gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                121, "No equality function found!"))
+            __debugbreak();
+        return false;
+    }
 }
 
 } // namespace Broc
