@@ -155,10 +155,12 @@ void BrocAnimDebug(Broc::entity) {}
 // ea: 0xC94ED0
 unsigned int BrocAnimResolver(const char* treename, const char* animname)
 {
+    HashStr tree;
+    HashStr anim;
     unsigned int val = 0;
-    const unsigned int treehash = Broc::string_hash(treename).mVal;
-    const unsigned int animhash = Broc::string_hash(animname).mVal;
-    if (mp_level_wad::ResolveAnim(treehash, animhash, &val, 0) != 0)
+    Broc::string_hash(&tree, treename);
+    Broc::string_hash(&anim, animname);
+    if (mp_level_wad::ResolveAnim(tree.mVal, anim.mVal, &val, 0) != 0)
         return val;
     return 0;
 }
