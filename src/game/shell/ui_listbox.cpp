@@ -1540,6 +1540,24 @@ void UIListBox::UpdateScrollBar()
     }
 }
 
+// ea: 0x72ABD0
+void UIListBox::SetColumnSelectable(int column, bool selectable)
+{
+    if (column < 0 || column >= mItemColumnsCount)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\UIListBox.h";
+        AeAssert::gCurrentLine = 125;
+        AeAssert::gCurrentExpr =
+            "column >= 0 && column < mItemColumnsCount";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "UIListBoxItem: State count must be greater then zero"))
+            __debugbreak();
+    }
+    mSelectedRowColorChangeColumns.mElements[column] = selectable;
+}
+
 // ea: 0x581D40
 void UIListBox::SetAllColumnsSelectable(bool selectable)
 {
