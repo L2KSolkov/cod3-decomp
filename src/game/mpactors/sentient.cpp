@@ -1027,6 +1027,76 @@ void __fastcall Sentient_UpdateActualChainPos(sentient_s* pSelf)
 // Chain / goal setters (sentient.cpp)
 // ============================================================================
 
+// ea: 0x00781130
+void __fastcall Sentient_NodeClaimRevoked(
+    sentient_s* pSelf, PathNodes::NodeHandle node)
+{
+    if (pSelf != nullptr)
+    {
+        if (pSelf->pEnt != nullptr && pSelf->pEnt->actor != nullptr)
+        {
+            uint16_t mValue = node.mValue;
+            if (node.mValue == 0 || node.mValue == 0xFFFF
+                || PathNodeMgr::sInst->GetNode(node) == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+                AeAssert::gCurrentLine = 1454;
+                AeAssert::gCurrentExpr = "node";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (pSelf->mClaimedNode.mValue != mValue)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+                AeAssert::gCurrentLine = 1455;
+                AeAssert::gCurrentExpr = "node == pSelf->mClaimedNode";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (pSelf->pEnt->actor == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+                AeAssert::gCurrentLine = 1457;
+                AeAssert::gCurrentExpr = "pSelf->pEnt->actor";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (mValue == pSelf->mClaimedNode.mValue)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+                AeAssert::gCurrentLine = 1461;
+                AeAssert::gCurrentExpr = "pSelf->mClaimedNode != node";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (mValue == pSelf->mDesiredChainPos.mValue)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+                AeAssert::gCurrentLine = 1462;
+                AeAssert::gCurrentExpr = "pSelf->mDesiredChainPos != node";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 1451;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("node is not claimed by anyone (pSelf is NULL)"))
+            __debugbreak();
+    }
+}
+
 // ea: 0x00784110
 void __fastcall Sentient_ClaimNode(sentient_s* pSelf,
                                    PathNodes::NodeHandle node)

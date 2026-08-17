@@ -109,6 +109,34 @@ void PathNodeMgr::UnloadBank(TPakId pakId)
         mLevelTOC = nullptr;
 }
 
+// ea: 0x007802E0
+void PathNodeMgr::DissociateSentient(sentient_s* pSentient)
+{
+    if (pSentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2789;
+        AeAssert::gCurrentExpr = "pSentient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::TOC1* toc = mLevelTOC;
+    if (toc != nullptr && toc->mNodeCount > 0)
+    {
+        int index = 0;
+        for (int remaining = toc->mNodeCount; remaining != 0; --remaining)
+        {
+            PathNodes::PathNode* nodes = mLevelTOC->mNodes;
+            sentient_s* owner = nodes[index].mDynamic.mOwner;
+            PathNodes::PathNodeDynamic* dynamic = &nodes[index].mDynamic;
+            if (owner == pSentient)
+                dynamic->mOwner = nullptr;
+            ++index;
+        }
+    }
+}
+
 // ea: 0x0077F3B0
 void PathNodeMgr::CleanUpManager()
 {
@@ -123,6 +151,66 @@ void PathNodeMgr::InitScriptVariables()
 {
     if (mLevelTOC != nullptr)
         InitScriptVariables(0);
+}
+
+// ea: 0x0077FE30
+PathNodes::PathNode* PathNodeMgr::FindChainPos(
+    const float* vOrigin, PathNodes::PathNode* pPrevChainPos)
+{
+    int v3 = 0;
+    if (vOrigin == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1769;
+        AeAssert::gCurrentExpr = "vOrigin";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (mLevelTOC == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1770;
+        AeAssert::gCurrentExpr = "mLevelTOC";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PathNodes::PathNode* pBestNode = nullptr;
+    int16_t wPrevChainId = pPrevChainPos != nullptr
+        ? pPrevChainPos->mConstant.mChainId : 0;
+    float fMinDistSqrd = 3.4028235e38f;
+    int count = mLevelTOC->mChainNodeCount;
+    if (count <= 0)
+        return nullptr;
+    do
+    {
+        PathNodes::PathNode* pNode = &mLevelTOC->mNodes[
+            mLevelTOC->mChainNodes[v3].mValue - 1];
+        if (pNode == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 1799;
+            AeAssert::gCurrentExpr = "pNode";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (pNode->mConstant.mChainId == wPrevChainId)
+        {
+            float dz = pNode->mConstant.mOrigin[2] - vOrigin[2];
+            float dy = pNode->mConstant.mOrigin[1] - vOrigin[1];
+            float dx = pNode->mConstant.mOrigin[0] - vOrigin[0];
+            float distSq = dz * dz + dy * dy + dx * dx;
+            if (fMinDistSqrd > distSq)
+            {
+                fMinDistSqrd = distSq;
+                pBestNode = pNode;
+            }
+        }
+        ++v3;
+    } while (v3 < count);
+    return pBestNode;
 }
 
 // ea: 0x0077F930
