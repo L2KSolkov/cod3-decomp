@@ -790,7 +790,7 @@ bool InGameMenuSystem::GetPanelFileUsers(
     int old_size = array.m_size;
     if (_stricmp(name, "MP_PM_GS_edit.PANEL") == 0)
     {
-        array.push_back((PanelFileUser*)GameSettingsEdit_Me(mClient));
+        array.push_back((PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[2]);
     }
     else
     {
@@ -813,58 +813,58 @@ bool InGameMenuSystem::GetPanelFileUsers(
                 }
                 if (strcmp(name, "MP_SS_PM_background.PANEL") == 0)
                 {
-                    array.push_back((PanelFileUser*)PauseMenu_Me(mClient));
+                    array.push_back((PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[0]);
                     return old_size != array.m_size;
                 }
                 if (_stricmp(name, "MP_class_select.panel") == 0)
                 {
                     array.push_back(
-                        (PanelFileUser*)WeaponSelectMenu_Me(mClient));
+                        (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[1]);
                     return old_size != array.m_size;
                 }
                 if (strcmp(name, "MP_PM_controller.PANEL") == 0)
                 {
                     array.push_back(
-                        (PanelFileUser*)InGameOptionsMenu_Me(mClient));
+                        (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[8]);
                     return old_size != array.m_size;
                 }
                 PanelFileUser* v6;
                 if (strcmp(name, "MP_SS_PM_options_edit.PANEL") == 0)
                 {
                     array.push_back(
-                        (PanelFileUser*)InGameOptionsMenu_Me(mClient));
-                    v6 = (PanelFileUser*)GameSettingsEdit_Me(mClient);
+                        (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[8]);
+                    v6 = (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[2];
                 }
                 else
                 {
                     if (strcmp(name, "MP_SS_PM_options_view.PANEL") == 0)
                     {
                         array.push_back(
-                            (PanelFileUser*)GameSettingsView_Me(mClient));
+                            (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[3]);
                         return old_size != array.m_size;
                     }
                     if (strcmp(name, "MP_spectator.panel") == 0)
                     {
                         array.push_back(
-                            (PanelFileUser*)SpectateMenu_Me(mClient));
+                            (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[12]);
                         return old_size != array.m_size;
                     }
                     if (strcmp(name, "SP_small_textbox_ingame.PANEL") == 0)
                     {
                         array.push_back(
-                            (PanelFileUser*)DialogMenuDisplay_Me(mClient));
-                        v6 = (PanelFileUser*)InGameOverlay_Me(mClient);
+                            (PanelFileUser*)DialogMenuDisplay::Me(mClient));
+                        v6 = (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[13];
                     }
                     else if (strcmp(name, "MP_SS_PM_textbox.PANEL") == 0)
                     {
                         array.push_back(
-                            (PanelFileUser*)HotJoinMenu_Me(mClient));
-                        v6 = (PanelFileUser*)DialogMenuDisplay_Me(mClient);
+                            (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[14]);
+                        v6 = (PanelFileUser*)DialogMenuDisplay::Me(mClient);
                     }
                     else if (_stricmp(name,
                                       "MP_ingame_scoreboard.panel") == 0)
                     {
-                        v6 = (PanelFileUser*)InGameScoreBoard_Me(mClient);
+                        v6 = (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[10];
                     }
                     else
                     {
@@ -872,15 +872,13 @@ bool InGameMenuSystem::GetPanelFileUsers(
                         if (_stricmp(name,
                                      "MP_PM_sideselection.PANEL") == 0)
                         {
-                            v6 = (PanelFileUser*)InGameSwitchSides_Me(
-                                mClient);
+                            v6 = (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[11];
                         }
                         else
                         {
                             if (_stricmp(v7, "MP_PM_xblive.PANEL") != 0)
                                 return old_size != array.m_size;
-                            v6 = (PanelFileUser*)
-                                XBoxLiveIngameOptionsCOD3_Me(mClient);
+                            v6 = (PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[5];
                         }
                     }
                 }
@@ -890,7 +888,7 @@ bool InGameMenuSystem::GetPanelFileUsers(
         }
         else
         {
-            array.push_back((PanelFileUser*)GameSettingsView_Me(mClient));
+            array.push_back((PanelFileUser*)g_femanager.GetIGMS(mClient)->menus[3]);
         }
     }
     return old_size != array.m_size;
