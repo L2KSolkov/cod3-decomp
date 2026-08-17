@@ -7940,6 +7940,98 @@ static const char* const szMPPauseMenuOptionTextReferences[7] = {
     "MPGAME_CONTROLLER", "MPGAME_VIEW_GAME_SETTINGS",
     "MPGAME_XBOX_LIVE_OPTIONS", "MPGAME_QUIT",
 };
+static const char* const szMPPauseSplitScreenEntriesText[7] = {
+    "text_option_01", "text_option_02", "text_option_03",
+    "text_option_04", "text_option_05", "text_option_06",
+    "text_option_07",
+};
+static const char* const szMPPauseBackgroundToTurnOff[3] = {
+    "bkg_detail_02", "bkg_detail_03", "bkg_detail_05",
+};
+
+// ea: 0x007A6530
+void PauseMenu::SetPanelFileMain(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\MPPauseMenu.cpp";
+        AeAssert::gCurrentLine = 92;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    panel = pf;
+    if (mVersion > 0)
+        panel = pf->Clone();
+    for (int i = 0; i < 7; ++i)
+    {
+        FEText* text = panel->GetTextPointer(szMPPauseEntriesText[i]);
+        text->SetText(szMPPauseMenuOptionTextReferences[i]);
+        AddMainEntry(i, text);
+    }
+    entries[0]->up = 6;
+    entries[6]->down = 0;
+    panel->GetTextPointer("text_title")
+        ->SetText("MPGAME_MULTIPLAYER_MENU");
+    FEText* helpbar = panel->GetTextPointer("text_helpbar");
+    FEMultiLineText* helpbarText =
+        (FEMultiLineText*)mem_heap_malloc(0xA8);
+    FEMultiLineText* helpbarCopy = nullptr;
+    if (helpbarText != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float x = helpbar->GetX();
+        (void)x;
+        helpbarCopy = new (helpbarText)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 1, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = helpbarCopy;
+    if (helpbarCopy != nullptr)
+        helpbarCopy->SetNumLines(1);
+    helpbar1->SetText("MPGAME_PAUSE_HELPBAR");
+    for (int i = 0; i < 3; ++i)
+    {
+        PanelQuad* background = panel->GetPointer(
+            szMPPauseBackgroundToTurnOff[i]);
+        if (background != nullptr)
+            background->SetShown(false);
+    }
+}
+
+// ea: 0x007AB860
+void PauseMenu::SetPanelFileSplitScreen(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\MPPauseMenu.cpp";
+        AeAssert::gCurrentLine = 138;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    mSplitScreenMenu = pf;
+    for (int i = 0; i < 7; ++i)
+    {
+        FEText* text = mSplitScreenMenu->GetTextPointer(
+            szMPPauseSplitScreenEntriesText[i]);
+        text->SetText(szMPPauseMenuOptionTextReferences[i]);
+        AddSplitScreenEntry(i, text);
+    }
+    entries[0]->up = 6;
+    entries[6]->down = 0;
+    mSplitScreenMenu->GetTextPointer("text_title")
+        ->SetText("MPGAME_MULTIPLAYER_MENU");
+}
+
 void AARPauseMenu::SetPanelFile(PanelFile* pf)
 {
     if (pf == nullptr)
