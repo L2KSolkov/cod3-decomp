@@ -2883,12 +2883,12 @@ void update_trigger_notifies(void)
 
 // ea: 0x00470BD0
 void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
-                             const math::Position3& vEnd, int iDamage, int iMOD)
+                             const math::Position3* vEnd, int iDamage, int iMOD)
 {
     math::Position3 mins;
     math::Position3 maxs;
-    mins.v = _mm_min_ps(vStart.v, vEnd.v);
-    maxs.v = _mm_max_ps(vStart.v, vEnd.v);
+    mins.v = _mm_min_ps(vStart.v, vEnd->v);
+    maxs.v = _mm_max_ps(vStart.v, vEnd->v);
     DbLinkedHandle<EntityHandleDb, Entity> entityList[256];
     int iNum = CM_AreaEntities(mins, maxs, entityList, 256, 0x400000);
     for (int v7 = 0; v7 < iNum; ++v7)
@@ -2902,7 +2902,7 @@ void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
             zeroMins.v = _mm_setzero_ps();
             zeroMaxs.v = _mm_setzero_ps();
             collision_context_t context;
-            if (SV_SightTraceToEntity(&vStart, &zeroMins, &zeroMaxs, &vEnd,
+                if (SV_SightTraceToEntity(&vStart, &zeroMins, &zeroMaxs, vEnd,
                                       mObject->mHandle, &context, 1) != 0)
             {
                 int h = pActivator->mHandle.mHandle.mVal;

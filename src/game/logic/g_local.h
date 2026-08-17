@@ -4601,7 +4601,7 @@ void  Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
 float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh);  // g.o 0x46F4F0
 void  G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx);  // g.o 0x452870
 void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
-                              const math::Position3& vEnd, int iDamage,
+                              const math::Position3* vEnd, int iDamage,
                               int iMOD);           // g.o 0x470BD0
 int   G_SpawnVehicle(Entity* ent, const char* typeName, int unused);  // g.o 0x488280
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o
