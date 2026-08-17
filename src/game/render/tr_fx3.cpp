@@ -334,21 +334,6 @@ struct nglSceneView {
     uint8_t _pad2[0x270 - 0xDC];
     math::Vector4 ClipPlanes[6];    // +0x270
 };
-class apsCommon2 {
-public:
-    struct PlayerViewPort {
-        uint8_t _pad[0x48];
-        math::Vector4 mClipPlanes[6];  // +0x48
-        math::Position3 mViewPos;      // +0xA8
-        float mProjectionX;            // +0xB8
-        bool mActive;                  // +0xBC
-    };
-    static PlayerViewPort* GetPlayerViewPort(unsigned int idx);  // ?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z
-    static void SubmitSpawnedEffectQueue();  // ?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ
-    static void SetupFrame(const math::Mat43& viewToWorld, float);  // ?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z
-    static void SetCurrentPakId(int pakId);  // ?SetCurrentPakId@apsCommon@@SAXH@Z
-    static void SetPakAllocs(int v);         // ?SetPakAllocs@apsCommon@@SAXH@Z
-};
 struct nglScene;
 extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
 extern void nglValidateMatrices(nglScene* scene);  // ngl.o
@@ -370,8 +355,8 @@ const math::Mat43* nglGetMatrix_WorldToView(nglScene* scene);  // ?nglGetMatrix_
 void FX_UpdateFX(bool firstClient)
 {
     nglValidateMatrices(nglBuildScene);
-    apsCommon2::PlayerViewPort* pvp =
-        apsCommon2::GetPlayerViewPort((unsigned int)currCl);
+    apsCommon::PlayerViewPort* pvp =
+        apsCommon::GetPlayerViewPort((unsigned int)currCl);
     memcpy(pvp->mClipPlanes, ((nglSceneView*)nglBuildScene)->ClipPlanes,
            sizeof(pvp->mClipPlanes));
     pvp->mViewPos = ((nglSceneView*)nglBuildScene)->ViewPos;
@@ -379,7 +364,7 @@ void FX_UpdateFX(bool firstClient)
     if (!firstClient
         || !nglProfileEvalShader(reinterpret_cast<nglShader*>(gCDAepsShader)))
         return;
-    apsCommon2::SubmitSpawnedEffectQueue();
+    apsCommon::SubmitSpawnedEffectQueue();
     UpdateLights((float)ServerTime_sInst.mTickMSec);
     float mTickDelta = ServerTime_sInst.mTickDelta;
     bool bUpdate = true;
@@ -403,8 +388,8 @@ void FX_UpdateFX(bool firstClient)
     if (currCl != LocalClient_FirstLocalClientIndex())
         gFXTime = gFXTime - dt;
     const math::Mat43* worldToView = nglGetMatrix_WorldToView(nglBuildScene);
-    apsCommon2::SetupFrame(*worldToView, -1.0f);
-    apsCommon2::GetPlayerViewPort(0)->mActive = false;  // dword_F6A290[0] == 2 placeholder
+    apsCommon::SetupFrame(*worldToView, -1.0f);
+    apsCommon::GetPlayerViewPort(0)->mActive = false;  // dword_F6A290[0] == 2 placeholder
     RemoveDeadEffects();
     ProcessEffectsCollisions();
     FX_UpdateRainDrops(dt);
@@ -687,5 +672,5 @@ void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqB
         effect->CalcSortKey();
         ++it;
     }
-    apsCommon2::GetPlayerViewPort(0);  // mBuildScene=nullptr equivalent skipped
+    apsCommon::GetPlayerViewPort(0);  // mBuildScene=nullptr equivalent skipped
 }
