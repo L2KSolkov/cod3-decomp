@@ -430,6 +430,7 @@ extern cgGlobal_t cgGlobal;   // 0xF5FE30 (cg.o)
 struct AARMenuSystem;
 namespace LocalClient {
 bool QuitClientOutOfGame(int client);  // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (cl.o)
+int NumLocalClients();                 // ?NumLocalClients@LocalClient@@YAHXZ (cl.o)
 int  PortToClient(int port);           // ?PortToClient@LocalClient@@YAHH@Z (cl.o)
 int  ClientToPort(int client);         // ?ClientToPort@LocalClient@@YAHH@Z (cl.o)
 void UpdatePlayerPorts(int fixedPort); // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (cl.o)
@@ -2795,6 +2796,35 @@ bool AARPauseMenu::ResponseYesQuit(int client)
 {
     Quit(client);
     return true;
+}
+
+// ea: 0x007A6BA0
+void AARPauseMenu::Quit(int client)
+{
+    FEMenu* menu;
+    if (LocalClient::NumLocalClients() <= 1
+        || (MPUIInterface::IsOnlineGame()
+            && MultiplayerMgr::sInst->IsLocalClientHost(client)))
+    {
+        extern void (*gpBrocAPI_mCallbackQuitGame)();
+        if (gpBrocAPI_mCallbackQuitGame != nullptr)
+            gpBrocAPI_mCallbackQuitGame();
+        menu = g_femanager.mAARS->menus[9];
+        ((AARPauseMenu*)menu)->m_iLastSelection = -1;
+        menu->system->ReturnToPreviousMenu(-1);
+    }
+    else
+    {
+        MultiplayerMgr::sInst->DropSplitScreenPlayer(client);
+        menu = g_femanager.mAARS->menus[9];
+        menu->system->ReturnToPreviousMenu(-1);
+    }
+
+    g_femanager.GetDMS(client)->MakeActive(-1);
+    ((AARPauseMenu*)menu)->m_iLastSelection = -1;
+    ((AARPauseMenu*)menu)->ClearAllButtons();
+    g_femanager.GetIGMS(client)->MakeActive(-1);
+    GamePause::SetGamePaused(client, false);
 }
 
 // ea: 0x007A8EB0
