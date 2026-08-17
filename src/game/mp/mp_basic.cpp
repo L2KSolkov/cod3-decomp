@@ -66,7 +66,8 @@ extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,
 extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  // core.o
 extern void tlPrintf(const char* format, ...);  // ?tlPrintf@@YAXPBDZZ
 extern void bdCore_quit();  // bdCore::quit
-extern void* gDWHeap;       // ?gDWHeap@@3PAVae_heap@@A
+class ae_heap;
+extern ae_heap* gDWHeap;    // ?gDWHeap@@3PAVae_heap@@A
 extern const float gMPIntPositionMin = -8191.0f; // ?gMPIntPositionMin@@3MA @ 0xE370D8
 int g_NumMapChanges = 0;                 // ?g_NumMapChanges@@3HA @ 0xF93FC0
 extern bool g_controllerConnectedErrorShown[];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
@@ -421,8 +422,16 @@ struct MP_ANIM_CELL_FIELDS {
 struct MP_ANIM_LOOKUP {
     MP_ANIM_CELL_FIELDS anims[4];
 };
-extern MP_ANIM_INDEX* base_anim_names;      // ?base_anim_names@@3PAUMP_ANIM_INDEX@@A (mp.o @ 0x1381388)
+unsigned int ValidAddress[14] = {
+    247507231u, 103005506u, 583820383u, 3433132743u,
+    4208230906u, 1242898952u, 2792623640u, 120074986u,
+    100976u, 3438793606u, 2356682967u, 125138u,
+    3928339780u, 3368331694u,
+};
+MP_ANIM_INDEX base_anim_names[500] = {};
+ae_heap* gDWHeap = nullptr;
 extern MP_ANIM_LOOKUP* base_anim_indices;   // ?base_anim_indices@@3PAUMP_ANIM_LOOKUP@@A (mp.o @ 0x138345C)
+MP_ANIM_LOOKUP* base_anim_indices = nullptr;
 
 // OverlayMenu (mp_shell.o) - session join feedback overlay
 class OverlayMenu {
