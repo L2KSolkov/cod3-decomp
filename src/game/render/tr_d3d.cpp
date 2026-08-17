@@ -76,7 +76,20 @@ void XboxNGLMidSceneCallBack(void* Data)
 // D3DDevice::SetRenderState - ea: 0x006E5650
 // ============================================================================
 void D3DDevice_SetRenderState_Deferred(unsigned int State, unsigned int Value);
-extern unsigned int DSI[0x5C];  // simple-state index table (xbox shim data)
+unsigned int DSI[92] = {
+    262752u, 262756u, 262760u, 262764u, 262768u, 262772u, 262776u, 262780u,
+    262792u, 262796u, 264800u, 264804u, 264808u, 264812u, 264816u, 264820u,
+    264824u, 264828u, 264832u, 264836u, 264840u, 264844u, 264848u, 264852u,
+    264856u, 264860u, 264864u, 264868u, 264872u, 264876u, 264880u, 264884u,
+    264888u, 264892u, 264896u, 264900u, 264904u, 264908u, 264912u, 264916u,
+    264920u, 264924u, 268280u, 269856u, 269860u, 269888u, 269892u, 269896u,
+    269900u, 269904u, 269908u, 269912u, 269916u, 269920u, 269712u, 269940u,
+    269944u, 262996u, 262972u, 262916u, 262912u, 262976u, 262980u, 262984u,
+    263004u, 262928u, 263036u, 263000u, 263028u, 263032u, 263012u, 263016u,
+    263020u, 263008u, 262992u, 262988u, 264696u, 263044u, 263048u, 262960u,
+    262964u, 262968u, 269688u, 267388u, 269712u, 269712u, 269712u, 269712u,
+    269712u, 269712u, 269712u, 269712u
+};  // DSI[92], copied from codmp_xboxr.xbe.c
 enum { D3DRS_DEFERRED_MAX_LOCAL = 0x50 };  // D3DRS_DEFERRED_MAX (xbox XDK)
 
 long __stdcall D3DDevice::SetRenderState(_D3DRENDERSTATETYPE State,
