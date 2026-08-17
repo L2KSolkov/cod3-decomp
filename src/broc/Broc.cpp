@@ -1289,7 +1289,14 @@ void waittillor(entity ent, HashStr label1, HashStr label2,
     if (gBrocAPI.mKillThread)
         gBrocAPI.mKillThreadExec();
 }
-void waittill(entity, const char*) {}
+// ea: 0x00929000. IDA hashes/registers the text and forwards to the hash form.
+void waittill(entity ent, const char* label)
+{
+    HashStr h;
+    string_hash(&h, label);
+    RegisterHashString(h.mVal, label);
+    waittill(ent, h);
+}
 // ea: 0x00929090. IDA records the pak handle and waits for a load notify.
 void waittill_loaded(TPakInfo info)
 {
