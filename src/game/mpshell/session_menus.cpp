@@ -2760,6 +2760,26 @@ void PressStartMenu::OnActivate()
     SetHigh(-1, true);
 }
 
+// ea: 0x0078EA80
+void PressStartMenu::SetPanelFile(PanelFile* pf)
+{
+    panel = pf;
+    if (panel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/PressStartMenu.cpp";
+        AeAssert::gCurrentLine = 56;
+        AeAssert::gCurrentExpr = "panel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Panel File invalid!"))
+            __debugbreak();
+    }
+    FEText* TextPointer = panel->GetTextPointer("press_start");
+    AddEntry(0, TextPointer, false);
+    entries[0]->SetText("MPFRONTEND_PRESS_START");
+}
+
 // ea: 0x0078EA10
 void PressStartMenu::Draw()
 {
