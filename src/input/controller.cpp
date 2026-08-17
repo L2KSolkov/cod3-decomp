@@ -74,6 +74,7 @@ public:
     bool button_pressed(ButtonIndex btn, int* p_controller); // controller.o
     bool button_pressed_clear(int index, ButtonIndex btn);
     void button_pressed_clear_all(int index);
+    void button_pressed_clear_all();
     bool button_released(int index, ButtonIndex btn);
     bool button_released(ButtonIndex btn, int* p_controller);
     bool button_released_clear(int index, ButtonIndex btn);
@@ -296,6 +297,21 @@ bool controller::button_pressed_clear(int index, ButtonIndex btn) {
 void controller::button_pressed_clear_all(int index) {
     for (int b = LEFTBUTTON; b < 16; ++b)
         button_pressed_clear(index, (ButtonIndex)b);
+}
+
+// ea: 0x5AD2D0 (controller.o)
+void controller::button_pressed_clear_all()
+{
+    if (is_locked)
+    {
+        button_pressed_clear_all(locked_port);
+        return;
+    }
+    for (int i = 0; i < num_controllers; ++i)
+    {
+        for (int b = LEFTBUTTON; b < 16; ++b)
+            button_pressed_clear(i, (ButtonIndex)b);
+    }
 }
 
 bool controller::button_released(int index, ButtonIndex btn) {
