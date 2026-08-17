@@ -8,6 +8,8 @@
 #include <cstring>
 #include <cstdarg>
 
+extern void tlPrintf(const char* fmt, ...);
+
 #ifdef _WIN32
 #include <windows.h>
 #define COD3_DEBUG_OUT(s) OutputDebugStringA(s)
@@ -139,11 +141,23 @@ bool Warning(const char* fmt, ...) {
 }
 
 // ============================================================================
-// SetupRouterAssert — configure assertion routing (static stub)
+// SetupRouterAssert — emit router assertion records
 // ea: 0x7BE430
 // ============================================================================
-void SetupRouterAssert(int a1, const char* a2, int a3, int a4, int a5, int a6, int a7, int a8) {
-    // TODO: reconstruct from ea:0x7BE430
+void SetupRouterAssert(int line, const char* pPakFile, const char* pPakResource,
+                       const char* pFile, const char* pAuthor,
+                       const char* pExpr, const char* pTxt,
+                       const char* pType) {
+    char pakBuf[256];
+    char buf[256];
+
+    _snprintf(pakBuf, sizeof(pakBuf), "%s(%s)", pPakFile, pPakResource);
+    _snprintf(buf, sizeof(buf), "RTCMD:O%s", pType);
+    tlPrintf(buf);
+    _snprintf(buf, sizeof(buf), "RTCMD:I%d", line, pFile, pakBuf, pAuthor, pExpr);
+    tlPrintf(buf);
+    _snprintf(buf, sizeof(buf), "RTCMD:T%s", pTxt);
+    tlPrintf(buf);
 }
 
 // ============================================================================
