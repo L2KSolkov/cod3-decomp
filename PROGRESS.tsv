@@ -208,7 +208,7 @@ render_xboxr:cdRiverShader.o	render_xboxr	cdRiverShader.o	engine	10	PORTED	cdRiv
 
 ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	PORTED	ngl_dx_texture.cpp: tex stage cache + front/back buffer + genmipmaps; D3D__TextureState/DTE shim decls; StageCache layout fixed (32B)
 
-phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys_xboxr] rbc_def_vehicle.cpp: wheel constraint (10 funcs)
+phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys_xboxr] rbc_def_vehicle.cpp: wheel constraint (10 funcs) plus IDA-backed pulse_sum_constraint_solver wheel/normal allocation helpers (0x885CC0/0x885D30/0x886030/0x8860B0)
 
 phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	PORTED	[phys_xboxr] phys_contact_manifold.cpp: manifold convex-poly (10 funcs)
 

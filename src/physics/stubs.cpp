@@ -110,26 +110,6 @@ pulse_sum_angular* pulse_sum_constraint_solver::create_pulse_sum_angular(
     (void)b1; (void)b1_r; (void)b2; (void)b2_r; (void)ud; (void)ps_cache;
     return nullptr;
 }
-pulse_sum_normal* pulse_sum_constraint_solver::create_pulse_sum_normal()
-{
-    return nullptr;
-}
-pulse_sum_wheel* pulse_sum_constraint_solver::create_pulse_sum_wheel()
-{
-    return nullptr;
-}
-pulse_sum_normal* pulse_sum_constraint_solver::create_pulse_sum_wheel_side(
-    pulse_sum_wheel* psw)
-{
-    (void)psw;
-    return nullptr;
-}
-pulse_sum_normal* pulse_sum_constraint_solver::create_pulse_sum_wheel_fwd(
-    pulse_sum_wheel* psw)
-{
-    (void)psw;
-    return nullptr;
-}
 pulse_sum_contact* pulse_sum_constraint_solver::create_pulse_sum_contact(
     rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t)
 {

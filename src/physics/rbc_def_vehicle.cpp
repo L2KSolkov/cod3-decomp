@@ -33,6 +33,115 @@ float lr_0;  // 0xE53F34 = 1.0f
 float lr_1;  // 0xE53F38 = 100.0f
 
 // ============================================================================
+// pulse_sum_constraint_solver allocation helpers - IDA inline COMDATs
+// ============================================================================
+pulse_sum_normal* pulse_sum_constraint_solver::create_pulse_sum_wheel_side(
+    pulse_sum_wheel* psw) {
+    char* addr = (char*)(((intptr_t)m_solver_memory_allocater.m_buffer_cur + 15) & ~15);
+    pulse_sum_normal* result;
+    if (addr + 160 > m_solver_memory_allocater.m_buffer_end) {
+        result = NULL;
+    } else {
+        m_solver_memory_allocater.m_buffer_cur = addr + 160;
+        result = (pulse_sum_normal*)addr;
+        if (addr != NULL) {
+            psw->m_side = result;
+            return result;
+        }
+    }
+    if (_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89, "addr",
+                  SOLVER_MEMORY_ALLOCATER_ERROR_MSG))
+        __debugbreak();
+    if (result != NULL) {
+        psw->m_side = result;
+        return result;
+    }
+    psw->m_side = NULL;
+    return NULL;
+}
+
+pulse_sum_normal* pulse_sum_constraint_solver::create_pulse_sum_wheel_fwd(
+    pulse_sum_wheel* psw) {
+    if (psw->m_side == NULL &&
+        _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver.h",
+                  201, "psw->m_side", defaultFileName))
+        __debugbreak();
+    char* addr = (char*)(((intptr_t)m_solver_memory_allocater.m_buffer_cur + 15) & ~15);
+    pulse_sum_normal* result;
+    if (addr + 160 > m_solver_memory_allocater.m_buffer_end) {
+        result = NULL;
+    } else {
+        m_solver_memory_allocater.m_buffer_cur = addr + 160;
+        result = (pulse_sum_normal*)addr;
+        if (addr != NULL) {
+            psw->m_fwd = result;
+            return result;
+        }
+    }
+    if (_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89, "addr",
+                  SOLVER_MEMORY_ALLOCATER_ERROR_MSG))
+        __debugbreak();
+    if (result != NULL) {
+        psw->m_fwd = result;
+        return result;
+    }
+    psw->m_fwd = NULL;
+    return NULL;
+}
+
+pulse_sum_normal* pulse_sum_constraint_solver::create_pulse_sum_normal() {
+    char* addr = (char*)(((intptr_t)m_solver_memory_allocater.m_buffer_cur + 15) & ~15);
+    pulse_sum_normal* result;
+    if (addr + 160 > m_solver_memory_allocater.m_buffer_end) {
+        result = NULL;
+    } else {
+        m_solver_memory_allocater.m_buffer_cur = addr + 160;
+        result = (pulse_sum_normal*)addr;
+        if (addr == NULL)
+            result = NULL;
+    }
+    if (result == NULL) {
+        if (_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89, "addr",
+                      SOLVER_MEMORY_ALLOCATER_ERROR_MSG))
+            __debugbreak();
+    }
+    pulse_sum_normal* last = m_list_pulse_sum_normal.m_last;
+    if (last != NULL)
+        last->m_link.m_next_link = result;
+    else
+        m_list_pulse_sum_normal.m_first = result;
+    m_list_pulse_sum_normal.m_last = result;
+    result->m_link.m_next_link = NULL;
+    return result;
+}
+
+pulse_sum_wheel* pulse_sum_constraint_solver::create_pulse_sum_wheel() {
+    char* addr = (char*)(((intptr_t)m_solver_memory_allocater.m_buffer_cur + 15) & ~15);
+    pulse_sum_wheel* result;
+    if (addr + 192 > m_solver_memory_allocater.m_buffer_end) {
+        result = NULL;
+    } else {
+        m_solver_memory_allocater.m_buffer_cur = addr + 192;
+        result = (pulse_sum_wheel*)addr;
+        if (addr == NULL)
+            result = NULL;
+    }
+    if (result == NULL) {
+        if (_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89, "addr",
+                      SOLVER_MEMORY_ALLOCATER_ERROR_MSG))
+            __debugbreak();
+    }
+    pulse_sum_wheel* last = m_list_pulse_sum_wheel.m_last;
+    if (last != NULL)
+        last->m_link.m_next_link = result;
+    else
+        m_list_pulse_sum_wheel.m_first = result;
+    m_list_pulse_sum_wheel.m_last = result;
+    result->m_link.m_next_link = NULL;
+    return result;
+}
+
+// ============================================================================
 // lerp_float â€” ea: 0x884E50
 // ============================================================================
 double lerp_float(float tgt, float cur, float rate, float delta_t) {
