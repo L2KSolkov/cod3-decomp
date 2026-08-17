@@ -434,12 +434,12 @@ struct worldFilterView {
 // BspTree view (mCells +0x18)
 struct BspTreeFilterView {
     uint8_t _pad[0x18];
-    unsigned int mCellsSize;   // +0x18
-    void* mCellsList;          // +0x1C
+    int mCellsSize;            // +0x18
+    BspCell* mCellsList;       // +0x1C
 };
 
 // BspCell view (modelRefs +0x38) + R_AddModelToCell(cell, re, sphere)
-void R_AddModelToCell(void* cell, trRefEntity* re,
+void R_AddModelToCell(BspCell* cell, trRefEntity* re,
                       const math::Vector4& sphere);  // tr_dpvs.cpp (0x6BF830)
 
 void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
@@ -514,7 +514,7 @@ void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
                     BspTreeFilterView* bspTree =
                         (BspTreeFilterView*)world->bspTree;
                     R_AddModelToCell(
-                        (char*)bspTree->mCellsList + 0x50 * cellNum,
+                        (BspCell*)((char*)bspTree->mCellsList + 0x50 * cellNum),
                         re, sphere);
                     break;
                 }

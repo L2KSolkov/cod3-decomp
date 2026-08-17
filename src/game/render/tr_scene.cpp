@@ -652,8 +652,8 @@ extern void nglSetAspectRatio(float a);
 extern void nglSetPerspectiveMatrix(float fov, float nearz, float farz);
 extern void nglSetWorldToViewMatrix(const math::Mat43* WorldToView);
 extern void nglListAddPointLight(unsigned int LightCat,
-                                 const math::Position3& Pos, float Near,
-                                 float Far, const math::Vector4& Color,
+                                 const math::Position3* Pos, float Near,
+                                 float Far, const math::Vector4* Color,
                                  bool isVertexPointLight);
 extern math::Position3 nglProjectPoint(const math::Position3& In,
                                        nglScene* Scene);
@@ -662,8 +662,8 @@ class nglFont;
 extern nglFont* nglSysFont;  // ?nglSysFont@@3PAVnglFont@@A @ 0x10E3580
 
 // q_math.o
-extern void AngleVectors(const float* angles, float* forward, float* right,
-                         float* up);  // ?AngleVectors@@YAXQBMQAM11@Z
+extern void AngleVectors(const float* const angles, float* const forward,
+                         float* const right, float* const up);
 
 // render.o scene helpers
 void R_RotateForViewer();
@@ -981,8 +981,8 @@ void R_RenderView(viewParms_t* parms)
         float sunPos[16];
         memset(&sunPos[4], 0, 32);
         nglListAddPointLight(0x40000000u,
-                             *((const math::Position3*)&mtx.w.v), 0.0f, 150.0f,
-                             *((const math::Vector4*)&sunPos[20]), false);
+                             (const math::Position3*)&mtx.w.v, 0.0f, 150.0f,
+                             (const math::Vector4*)&sunPos[20], false);
         sunPos[4] = 0.0f;
         sunPos[8] = 0.0f;
         sunPos[16] = 0.0f;
@@ -992,8 +992,8 @@ void R_RenderView(viewParms_t* parms)
             mtx.w.v, _mm_mul_ps(mtx.z.v, _mm_set1_ps(300.0f)));
         memcpy(&sunPos[4], &pos2, 16);
         nglListAddPointLight(0x40000000u,
-                             *((const math::Position3*)&sunPos[4]), 0.0f,
-                             150.0f, *((const math::Vector4*)&sunPos[20]),
+                             (const math::Position3*)&sunPos[4], 0.0f,
+                             150.0f, (const math::Vector4*)&sunPos[20],
                              false);
     }
     if (g_showLightGridDebugText != 0)
