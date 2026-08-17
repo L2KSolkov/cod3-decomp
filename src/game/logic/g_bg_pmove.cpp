@@ -2841,7 +2841,7 @@ extern PlayerState* PM_DeadMove();                // game.o 0x605420
 extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
 extern void PM_FoliageSounds();                   // game.o 0x63D100
 extern void PM_WaterEvents();                     // game.o 0x606280
-extern void PM_DropTimers();                      // game.o 0x606320
+extern PlayerState* PM_DropTimers();              // game.o 0x606320
 static float PM_CmdScale(usercmd_s* cmd);
 static void PM_Accelerate(float* wishdir, float wishspeed, float accel);
 // ea: 0x604CC0
@@ -3190,8 +3190,67 @@ PlayerState* PM_DeadMove()
 }
 void PM_CheckLadderMove() {}
 void PM_FoliageSounds() {}
-void PM_WaterEvents() {}
-void PM_DropTimers() {}
+// ea: 0x606280
+void PM_WaterEvents()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 3931;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    if (pml.previous_waterlevel == 0 && pm->waterlevel != 0)
+    {
+        PM_AddEvent(169);
+    }
+    else if (pml.previous_waterlevel != 0 && pm->waterlevel == 0)
+    {
+        PM_AddEvent(170);
+    }
+}
+
+// ea: 0x606320
+PlayerState* PM_DropTimers()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 3948;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    if (ps->pm_time == 0)
+        return ps;
+
+    if ((ps->pm_flags & 0x2000000) != 0
+        && ps->mGroundEntity.mHandle.mVal
+               == EntityManager::sInst->mWorld->mHandle.mHandle.mVal)
+    {
+        ps->pm_flags &= ~0x2000000u;
+        ps->pm_time = 0;
+    }
+
+    if (pml.msec < ps->pm_time)
+    {
+        ps->pm_time -= pml.msec;
+    }
+    else
+    {
+        ps->pm_flags &= 0xBFFFDCFFu;
+        ps->pm_time = 0;
+    }
+    return ps;
+}
 void PM_UpdateViewAngles(
     PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd, int msec,
     void (__cdecl* capsuleTrace)(trace_t*, const math::Position3&,
