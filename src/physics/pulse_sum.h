@@ -13,9 +13,9 @@
 
 extern const math::Dir3& Float4_Zero_212;
 extern const math::Dir3& Float4_Two_212;
-extern const math::Dir3& Float4_XAxis_214;
-extern const math::Dir3& Float4_YAxis_214;
-extern const math::Dir3& Float4_ZAxis_214;
+extern const __m128 Float4_XAxis_214;
+extern const __m128 Float4_YAxis_214;
+extern const __m128 Float4_ZAxis_214;
 
 // ============================================================================
 // Matrix helpers (inline COMDATs, render.o / rbc_def_ragdoll.o).

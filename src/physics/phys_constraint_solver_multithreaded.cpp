@@ -19,6 +19,10 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 extern void PHYS_ASSERT_UNIT(const math::Dir3* v);
 extern const math::Dir3& Float4_SignMask_214;
 
+const __m128 Float4_XAxis_214 = {1.0f, 0.0f, 0.0f, 0.0f};
+const __m128 Float4_YAxis_214 = {0.0f, 1.0f, 0.0f, 0.0f};
+const __m128 Float4_ZAxis_214 = {0.0f, 0.0f, 1.0f, 0.0f};
+
 // ============================================================================
 // phys_constraint_solver_multithreaded::init / shutdown - ea: 0x8932B0/0x8932C0
 // ============================================================================
@@ -941,7 +945,190 @@ void pulse_sum_point::apply(const math::Dir3* s_) {
 }
 
 void pulse_sum_point::calc_abs() {
-    // TODO: full anchor computation (COMDAT 0x8959D0); structural no-op.
+    pulse_sum_node* m_b1 = this->m_b1;
+    __m128 v2;
+    __m128* p_v;
+    __m128 v4;
+    __m128 v5;
+    __m128 v6;
+    __m128 v7;
+    __m128 v8;
+    __m128 v9;
+    pulse_sum_node* m_b2;
+    float m_inv_mass;
+    rigid_body* m_rb;
+    __m128 v13;
+    __m128 v14;
+    __m128 v15;
+    __m128 x;
+    __m128 v;
+    __m128 v18;
+    __m128 v19;
+    __m128 v20;
+    __m128 v21;
+    __m128 v22;
+    __m128 v23;
+    __m128 v24;
+    math::Dir3* p_m_cr23;
+    __m128 v26;
+    __m128 v27;
+    math::Dir3* p_m_cr31;
+    math::Dir3* p_m_cr12;
+    math::Dir3* p_m_denom;
+    __m128 v30;
+    __m128 v31;
+    __m128 v32;
+    __m128 v33;
+    __m128 v34;
+    __m128 v35;
+    __m128 v36;
+    __m128 v37;
+    __m128 v38;
+    __m128 v40;
+    math::Dir3 zz_4;
+    float v42;
+    __m128 v43;
+    __m128 v44;
+    math::Dir3 zx_4;
+
+    v43.m128_f32[0] = m_b1->m_inv_mass;
+    v43.m128_f32[1] = v43.m128_f32[0];
+    v43.m128_f32[2] = v43.m128_f32[0];
+    v2 = _mm_shuffle_ps(Float4_XAxis_214, Float4_XAxis_214, 9);
+    p_v = &m_b1->m_rb->m_world_inv_inertia.x.v;
+    v4 = _mm_shuffle_ps(Float4_XAxis_214, Float4_XAxis_214, 18);
+    v5 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9), v4),
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18), v2));
+    v6 = v43;
+    this->m_b1_apx.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v5, v5, 0), *p_v),
+            _mm_mul_ps(_mm_shuffle_ps(v5, v5, 85), p_v[1])),
+        _mm_mul_ps(_mm_shuffle_ps(v5, v5, 170), p_v[2]));
+    v44 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_apx.v, this->m_b1_apx.v, 9),
+                   _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_apx.v, this->m_b1_apx.v, 18),
+                   _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9)));
+    v44.m128_f32[0] += v6.m128_f32[0];
+    v36 = _mm_shuffle_ps(Float4_YAxis_214, Float4_YAxis_214, 9);
+    v34 = _mm_shuffle_ps(Float4_YAxis_214, Float4_YAxis_214, 18);
+    v7 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9), v34),
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18), v36));
+    this->m_b1_apy.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v7, v7, 0), *p_v),
+            _mm_mul_ps(_mm_shuffle_ps(v7, v7, 85), p_v[1])),
+        _mm_mul_ps(_mm_shuffle_ps(v7, v7, 170), p_v[2]));
+    zz_4.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_apy.v, this->m_b1_apy.v, 9),
+                   _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_apy.v, this->m_b1_apy.v, 18),
+                   _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9)));
+    zz_4.v.m128_f32[1] += _mm_shuffle_ps(v6, v6, 85).m128_f32[0];
+    v35 = _mm_shuffle_ps(Float4_ZAxis_214, Float4_ZAxis_214, 9);
+    v8 = _mm_shuffle_ps(Float4_ZAxis_214, Float4_ZAxis_214, 18);
+    v9 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9), v8),
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18), v35));
+    v37 = v8;
+    this->m_b1_apz.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v9, v9, 0), *p_v),
+            _mm_mul_ps(_mm_shuffle_ps(v9, v9, 85), p_v[1])),
+        _mm_mul_ps(_mm_shuffle_ps(v9, v9, 170), p_v[2]));
+    v40 = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_apz.v, this->m_b1_apz.v, 9),
+                   _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(this->m_b1_apz.v, this->m_b1_apz.v, 18),
+                   _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9)));
+    m_b2 = this->m_b2;
+    v40.m128_f32[2] += _mm_shuffle_ps(v6, v6, 170).m128_f32[0];
+    if (m_b2 != NULL) {
+        m_inv_mass = m_b2->m_inv_mass;
+        m_rb = m_b2->m_rb;
+        zx_4.v.m128_f32[0] = m_inv_mass;
+        zx_4.v.m128_f32[1] = m_inv_mass;
+        zx_4.v.m128_f32[2] = m_inv_mass;
+        v13 = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9), v4),
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18), v2));
+        v14 = _mm_mul_ps(_mm_shuffle_ps(v13, v13, 170), m_rb->m_world_inv_inertia.z.v);
+        v15 = _mm_mul_ps(_mm_shuffle_ps(v13, v13, 85), m_rb->m_world_inv_inertia.y.v);
+        x = m_rb->m_world_inv_inertia.x.v;
+        m_rb = (rigid_body*)((char*)m_rb + 128);
+        v = zx_4.v;
+        this->m_b2_apx.v = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v13, v13, 0), x), v15), v14);
+        v44 = _mm_add_ps(
+            v44,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(this->m_b2_apx.v, this->m_b2_apx.v, 9),
+                           _mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(this->m_b2_apx.v, this->m_b2_apx.v, 18),
+                           _mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9))));
+        v44.m128_f32[0] += zx_4.v.m128_f32[0];
+        v18 = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9), v34),
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18), v36));
+        this->m_b2_apy.v = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v18, v18, 0), m_rb->m_mat.x.v),
+                       _mm_mul_ps(_mm_shuffle_ps(v18, v18, 85), m_rb->m_mat.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(v18, v18, 170), m_rb->m_mat.z.v));
+        zz_4.v = _mm_add_ps(
+            zz_4.v,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(this->m_b2_apy.v, this->m_b2_apy.v, 9),
+                           _mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(this->m_b2_apy.v, this->m_b2_apy.v, 18),
+                           _mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9))));
+        zz_4.v.m128_f32[1] += _mm_shuffle_ps(v, v, 85).m128_f32[0];
+        v19 = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9), v37),
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18), v35));
+        this->m_b2_apz.v = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v19, v19, 0), m_rb->m_mat.x.v),
+                       _mm_mul_ps(_mm_shuffle_ps(v19, v19, 85), m_rb->m_mat.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(v19, v19, 170), m_rb->m_mat.z.v));
+        v40 = _mm_add_ps(
+            v40,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(this->m_b2_apz.v, this->m_b2_apz.v, 9),
+                           _mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(this->m_b2_apz.v, this->m_b2_apz.v, 18),
+                           _mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9))));
+        v40.m128_f32[2] += _mm_shuffle_ps(v, v, 170).m128_f32[0];
+    }
+    v20 = v40;
+    v21 = v44;
+    v22 = _mm_shuffle_ps(zz_4.v, zz_4.v, 18);
+    v38 = _mm_shuffle_ps(zz_4.v, zz_4.v, 9);
+    v23 = _mm_shuffle_ps(v20, v20, 9);
+    v24 = _mm_shuffle_ps(v20, v20, 18);
+    p_m_cr23 = &this->m_cr23;
+    p_m_cr23->v = _mm_sub_ps(_mm_mul_ps(v38, v24), _mm_mul_ps(v22, v23));
+    v26 = _mm_shuffle_ps(v21, v21, 9);
+    v27 = _mm_shuffle_ps(v21, v21, 18);
+    p_m_cr31 = &this->m_cr31;
+    p_m_cr31->v = _mm_sub_ps(_mm_mul_ps(v23, v27), _mm_mul_ps(v24, v26));
+    p_m_cr12 = &this->m_cr12;
+    p_m_cr12->v = _mm_sub_ps(_mm_mul_ps(v26, v22), _mm_mul_ps(v27, v38));
+    p_m_denom = &this->m_denom;
+    v30 = p_m_cr12->v;
+    p_m_denom->v.m128_f32[0] = v44.m128_f32[0];
+    p_m_denom->v.m128_f32[1] = _mm_shuffle_ps(zz_4.v, zz_4.v, 85).m128_f32[0];
+    v31 = _mm_mul_ps(v30, v40);
+    p_m_denom->v.m128_f32[2] = _mm_shuffle_ps(v40, v40, 170).m128_f32[0];
+    p_m_denom->v.m128_f32[3] = 0.0f;
+    v42 = v31.m128_f32[0] + (_mm_shuffle_ps(v31, v31, 85).m128_f32[0] +
+                             _mm_shuffle_ps(v31, v31, 170).m128_f32[0]);
+    v32 = _mm_set_ss(1.0f / v42);
+    v33 = _mm_shuffle_ps(v32, v32, 0);
+    p_m_cr23->v = _mm_mul_ps(p_m_cr23->v, v33);
+    p_m_cr31->v = _mm_mul_ps(p_m_cr31->v, v33);
+    p_m_cr12->v = _mm_mul_ps(p_m_cr12->v, v33);
 }
 
 void pulse_sum_point::project() {
