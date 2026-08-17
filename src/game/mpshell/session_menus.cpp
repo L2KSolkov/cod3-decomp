@@ -12553,6 +12553,27 @@ void MultilineOverlayMenu::Select(int entry_num)
 // Batch 16: remaining menu handlers
 // ============================================================================
 
+// ea: 0x0078C8A0
+CreateSessionAdvancedMenu::~CreateSessionAdvancedMenu()
+{
+    m_TimeLimitCombo = nullptr;
+    m_ScoreLimitCombo = nullptr;
+    m_TeamDamageCombo = nullptr;
+    m_AutoTeamBalanceCombo = nullptr;
+    m_VotingCombo = nullptr;
+    m_PenaltyVoteCombo = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pBackgroundArt.m_elements[i] = nullptr;
+    for (int i = 0; i < 6; ++i)
+        m_pBackgroundRow.m_elements[i] = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pBackgroundLine.m_elements[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pText.m_elements[i] = nullptr;
+    memset(&m_pSlotText, 0, sizeof(m_pSlotText));
+    memset(&m_pSlotArrow, 0, sizeof(m_pSlotArrow));
+}
+
 // ea: 0x0078CC50
 CreateLanSessionAdvancedMenu::~CreateLanSessionAdvancedMenu()
 {
