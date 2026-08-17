@@ -52,6 +52,11 @@ vmCvar_t bg_ladder_yawcap;          // ?bg_ladder_yawcap@@3UvmCvar_t@@A (game.o 
 vmCvar_t bg_lmg_yawcap;             // ?bg_lmg_yawcap@@3UvmCvar_t@@A (game.o @ 0x132B838)
 vmCvar_t bg_nofatigue;              // ?bg_nofatigue@@3UvmCvar_t@@A (game.o @ 0x1332E00)
 vmCvar_t bg_prone_yawcap;           // ?bg_prone_yawcap@@3UvmCvar_t@@A (game.o @ 0x1332ED8)
+vmCvar_t bg_foliagesnd_minspeed;
+vmCvar_t bg_foliagesnd_maxspeed;
+vmCvar_t bg_foliagesnd_slowinterval;
+vmCvar_t bg_foliagesnd_fastinterval;
+vmCvar_t bg_foliagesnd_resetinterval;
 vmCvar_t g_debugDamage;             // ?g_debugDamage@@3UvmCvar_t@@A (g.o @ 0x12A0388)
 vmCvar_t g_debugMove;               // ?g_debugMove@@3UvmCvar_t@@A (g.o @ 0x12955B0)
 vmCvar_t g_drawSmokeGren;           // ?g_drawSmokeGren@@3UvmCvar_t@@A (g.o @ 0x12956D0)

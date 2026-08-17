@@ -48,6 +48,11 @@ extern int dword_106000;     // ?dword_106000 (EF_* flags mask, BSS)
 extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
 extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // game.o 0x6072B0
 extern vmCvar_t bg_nofatigue;  // ?bg_nofatigue@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_foliagesnd_minspeed;
+extern vmCvar_t bg_foliagesnd_maxspeed;
+extern vmCvar_t bg_foliagesnd_slowinterval;
+extern vmCvar_t bg_foliagesnd_fastinterval;
+extern vmCvar_t bg_foliagesnd_resetinterval;
 extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
 weaponFileInfo_t** bg_weaponInfo = nullptr;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
 extern const char** pEventNamesList;      // ?pEventNamesList@@3PAPBDA (game.o)
@@ -2844,6 +2849,10 @@ extern void PM_WaterEvents();                     // game.o 0x606280
 extern PlayerState* PM_DropTimers();              // game.o 0x606320
 static float PM_CmdScale(usercmd_s* cmd);
 static void PM_Accelerate(float* wishdir, float wishspeed, float accel);
+void PM_trace(trace_t* results, const math::Position3& start,
+              const math::Position3& mins, const math::Position3& maxs,
+              const math::Position3& end,
+              const collision_context_t& context);
 // ea: 0x604CC0
 PlayerState* PM_Friction()
 {
@@ -3189,7 +3198,60 @@ PlayerState* PM_DeadMove()
     return ps;
 }
 void PM_CheckLadderMove() {}
-void PM_FoliageSounds() {}
+void PM_FoliageSounds()
+{
+    if (bg_foliagesnd_minspeed.integer <= pm->xyspeed)
+    {
+        float speedFraction =
+            (pm->xyspeed - (float)bg_foliagesnd_minspeed.integer)
+            / (float)(bg_foliagesnd_maxspeed.integer
+                      - bg_foliagesnd_minspeed.integer);
+        if (speedFraction > 1.0f)
+            speedFraction = 1.0f;
+
+        const int interval = (int)((float)(
+            bg_foliagesnd_fastinterval.integer
+            - bg_foliagesnd_slowinterval.integer) * speedFraction
+            + (float)bg_foliagesnd_slowinterval.integer);
+        if (pm->ps->iFoliageSoundTime + interval >= pm->cmd.serverTime)
+            return;
+
+        math::Position3 mins = pm->mins;
+        mins.v.m128_f32[0] *= 0.75f;
+        mins.v.m128_f32[1] *= 0.75f;
+        mins.v.m128_f32[2] *= 0.75f;
+
+        math::Position3 maxs = pm->maxs;
+        maxs.v.m128_f32[0] *= 0.75f;
+        maxs.v.m128_f32[1] *= 0.75f;
+        maxs.v.m128_f32[2] *= 0.9f;
+
+        player_collision_context_t context;
+        context.pass_entity1 = pm->ps->mClient;
+        context.pass_entity2.mHandle.mVal = 0;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        context.contentmask = 2;
+
+        trace_t trace;
+        trace.surfaceFlags = 0;
+        trace.contents = 0;
+        PM_trace(&trace, pm->ps->origin, mins, maxs, pm->ps->origin,
+                 context);
+        if (trace.startsolid != 0)
+        {
+            PM_AddEvent(162);
+            pm->ps->iFoliageSoundTime = pm->cmd.serverTime;
+        }
+        return;
+    }
+
+    if (bg_foliagesnd_resetinterval.integer + pm->ps->iFoliageSoundTime
+        < pm->cmd.serverTime)
+    {
+        pm->ps->iFoliageSoundTime = 0;
+    }
+}
 // ea: 0x606280
 void PM_WaterEvents()
 {
