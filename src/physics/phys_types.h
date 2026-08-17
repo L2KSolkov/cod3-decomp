@@ -811,6 +811,8 @@ struct rigid_body_constraint_contact : rigid_body_constraint {
     void epilog_cache() {}
 
     void verify_constraint(rigid_body* b1_, rigid_body* b2_);
+    void add_cpi_simple(contact_point_info* cpi, rigid_body* const b1_,
+                        rigid_body* const b2_);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
     void add_point_list(rigid_body* b1_, rigid_body* b2_,
                         const math::Dir3* list_b1_r_loc,

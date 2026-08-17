@@ -58,6 +58,34 @@ void rigid_body_constraint_contact::verify_constraint(rigid_body* b1_, rigid_bod
     verify_is_in_physics_system(this, b1_, b2_);
 }
 
+// rigid_body_constraint_contact::add_cpi_simple - ea: 0x878650
+void rigid_body_constraint_contact::add_cpi_simple(
+    contact_point_info* cpi, rigid_body* const b1_, rigid_body* const b2_) {
+    if (cpi == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+                  275, "cpi", defaultFileName))
+        __debugbreak();
+    if (cpi->m_list_b1_r_loc == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+                  276, "cpi->m_list_b1_r_loc", defaultFileName))
+        __debugbreak();
+    if (cpi->m_list_b2_r_loc == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+                  277, "cpi->m_list_b2_r_loc", defaultFileName))
+        __debugbreak();
+    if (cpi->m_list_pulse_sum_cache_info == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+                  278, "cpi->m_list_pulse_sum_cache_info", defaultFileName))
+        __debugbreak();
+    if (cpi->m_point_pair_count <= 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+                  279, "cpi->m_point_pair_count > 0", defaultFileName))
+        __debugbreak();
+    verify_constraint(b1_, b2_);
+    cpi->m_next_link = m_list_contact_point_info_buffer_1.m_first;
+    m_list_contact_point_info_buffer_1.m_first = cpi;
+}
+
 // ============================================================================
 // rigid_body_constraint_contact::setup_constraint â€” ea: 0x88AA90
 // ============================================================================
