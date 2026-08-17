@@ -16,6 +16,10 @@
 #include <stdint.h>
 #include <utility>
 
+namespace PlayerStats {
+int TotalScoreForStats(short* stats);
+}
+
 // ============================================================================
 // trace_t helpers (g.o 0x4A4FD0 / 0x4A4FF0)
 // ============================================================================
@@ -2764,6 +2768,15 @@ int clientPersistent_t::GetStat(int stat)
     return mStats[0][stat] + mStats[1][stat] + mStats[2][stat]
          + mStats[3][stat] + mStats[4][stat] + mStats[5][stat]
          + mStats[6][stat];
+}
+
+// clientPersistent_t::GetTotalScore (scr.o 0x5E9D40)
+int clientPersistent_t::GetTotalScore()
+{
+    int totalScore = mBaseScore;
+    for (int i = 7; i != 0; --i)
+        totalScore += PlayerStats::TotalScoreForStats(mStats[7 - i]);
+    return totalScore;
 }
 
 
