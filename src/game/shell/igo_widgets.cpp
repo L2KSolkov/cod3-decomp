@@ -210,11 +210,6 @@ struct MpPlayerView2 {
         return mId < 0x10u && mConnection != nullptr;
     }
 };
-struct MpPlayerManagerView {
-    MPPlayer* GetPlayer(unsigned char id);  // mp.o
-    MPPlayer* GetLocalPlayer(int nLocalPlayer);  // mp.o
-};
-
 struct KeyInfoEntry2 {
     int   mState;           // +0x00 (low 2 bits down, high 30 repeats)
     char* mBoundCmdName;    // +0x04
@@ -3219,8 +3214,8 @@ void IGOItemIcons::Draw()
     {
         return;
     }
-    MpPlayerManagerView* playerManager =
-        (MpPlayerManagerView*)MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    MPPlayerManager* playerManager =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
     for (int j = 0; j < 16; ++j)
     {
         MpPlayerView2* v4 = (MpPlayerView2*)playerManager->GetPlayer(
