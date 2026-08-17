@@ -98,6 +98,19 @@ void phys_contact_manifold_process::comp_contact_mat(const math::Dir3* contact_n
     this->contact_mat.z.v = normal;
 }
 
+// contact_point_info::set_closest_cached_psc - ea: 0x879690
+void contact_point_info::set_closest_cached_psc(const contact_point_info* cached_cpi)
+{
+    pulse_sum_cache_info* cache = m_list_pulse_sum_cache_info;
+    pulse_sum_cache_info* end = &cache[2 * m_point_pair_count];
+    math::Dir3* b1_r_loc = m_list_b1_r_loc;
+    for (math::Dir3* b2_r_loc = m_list_b2_r_loc; cache != end;
+         ++b2_r_loc, cache += 2, ++b1_r_loc) {
+        contact_point_info::set_closest_cached_psc(
+            cached_cpi, m_normal, *b1_r_loc, *b2_r_loc, cache);
+    }
+}
+
 // ?process@phys_contact_manifold_process@@QAEXPAVphys_collide_data@@@Z
 // (ea: 0x878C10, 2678B; stub until the manifold processing infra is ported)
 void phys_contact_manifold_process::process(phys_collide_data* d)

@@ -768,6 +768,7 @@ public:
                                        const math::Dir3& b1_r_loc,
                                        const math::Dir3& b2_r_loc,
                                        pulse_sum_cache_info* psc);
+    void set_closest_cached_psc(const contact_point_info* cached_cpi);
 };
 static_assert(sizeof(contact_point_info) == 0x50, "contact_point_info size mismatch");
 static_assert(offsetof(contact_point_info, m_normal) == 0x00, "contact_point_info::m_normal offset mismatch");
