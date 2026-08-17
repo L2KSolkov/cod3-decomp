@@ -3042,6 +3042,7 @@ struct CheckpointMgr {
     bool PrecludeExploderPiece(const char* exploderType,
                                int exploderId);  // g_checkpoint.cpp 0x622370
 };
+CheckpointMgr* CheckpointMgr::sInst = nullptr;
 
 // DebugRender (render.o; RenderText/RenderSphere defined in g_entity_misc.cpp)
 class DebugRender {
