@@ -54,6 +54,8 @@ public:
     static void ExitGame();        // ?ExitGame@MPUIInterface@@SAXXZ
 };
 
+bool MPUIInterface::mCableDisconnect = false;
+
 // ============================================================================
 // DialogMenuDisplay data
 // ============================================================================

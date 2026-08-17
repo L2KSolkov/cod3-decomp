@@ -20,6 +20,9 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
+EGameConnectionType MPUIInterface::mGameConnectionType =
+    kGameConnectionTypeOnline;
+
 // EDroppedItemTypes definition (avoid g_local.h anonymous-enum collisions)
 enum EDroppedItemTypes : int {
     kItemTypeSupport = 2,

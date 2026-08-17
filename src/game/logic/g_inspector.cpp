@@ -910,6 +910,8 @@ struct MPVehicle {
     static int sDebugGeneral;          // ?sDebugGeneral@MPVehicle@@2HA
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPVehicle@@2HA
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPVehicle@@2HA
+    static float sInterpolationTime;   // ?sInterpolationTime@MPVehicle@@2MA
+    static float sInterpolationTimeLan;// ?sInterpolationTimeLan@MPVehicle@@2MA
 };
 
 int MPPlayer::sDebugNetworkUpdates = 0;
@@ -917,9 +919,12 @@ int MPPlayer::sPauseNetworkUpdates = 0;
 int MPPeer::mRenderDataInfo = 1;
 int MPPeer::mRenderPlayerInfo = 0;
 int MPPeer::mRenderSessionInfo = 0;
+int MPPeer::mRenderEntityBufferInfo = 0;
 int MPVehicle::sDebugGeneral = 0;
 int MPVehicle::sDebugNetworkUpdates = 0;
 int MPVehicle::sPauseNetworkUpdates = 0;
+float MPVehicle::sInterpolationTime = 0.1f;
+float MPVehicle::sInterpolationTimeLan = 0.1f;
 
 // Multiplayer / HUD cvars (g.o / cg.o vmCvar data)
 extern vmCvar_t cg_thirdPerson;          // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
