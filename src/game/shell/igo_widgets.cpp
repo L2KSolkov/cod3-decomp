@@ -271,7 +271,7 @@ extern bool Com_BitCheck(int* array, int bitNum);  // bg_weapons.cpp
 extern int BG_GetTotalAmmoReserve(const PlayerState* pPS,
                                   int iWeaponIndex);  // game.o
 extern float vectoyaw(const float* vec);      // core.o
-extern float AngleNormalize360(float angle);  // core.o
+extern const float AngleNormalize360(float angle);  // core.o
 extern float dword_F63560[];  // @ 0xF63560 (client origin x)
 extern float dword_F63564[];  // @ 0xF63564 (client origin y)
 extern float dword_F63568[];  // @ 0xF63568 (client origin z)
@@ -325,9 +325,9 @@ extern float dword_F64140[];  // @ 0xF64140
 extern int   iLastCompassTime[];  // @ 0xF3A4C4
 extern int   dword_F62964[];  // @ 0xF62964
 extern float unk_F6A2B0[];    // @ 0xF6A2B0 (objective world data block)
-extern float AngleSubtract(float a1, float a2);   // core.o
-extern float AngleNormalize180(float angle);       // core.o
-extern float VectorNormalize2D(float* v);          // core.o
+extern const float AngleSubtract(float a1, float a2);   // core.o
+extern const float AngleNormalize180(float angle);       // core.o
+extern const float VectorNormalize2D(float* const v);    // core.o
 extern bool  IsPlayerSpotted(Entity* player);      // g.o
 extern bool  IsVehicleTank(Entity* ent);           // g.o
 extern Client g_clients[16];                       // g.o
