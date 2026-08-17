@@ -68,9 +68,9 @@ enum TPakInfo {
 };
 
 namespace AeStringSupport {
-void Concat(char* dst, int& dstLen, int dstCapacity,
+void Concat(char* dst, int* dstLen, int dstCapacity,
             const char* src);  // ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z
-void CStrToAeStr(char* dst, int& dstLen, int dstCapacity,
+void CStrToAeStr(char* dst, int* dstLen, int dstCapacity,
                  const char* src);  // ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z
 }
 
@@ -664,7 +664,7 @@ void AeThreadWaitState::GetCondText(ae_fixed_string<64, unsigned char>& str)
 {
     ae_formatted_string<64, unsigned char> v5(",(s) %04.3f", mTimeRemaining);
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63,
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63,
                             (const char*)v5.mBuff);
     str.mLength = (unsigned char)len;
 }
@@ -673,7 +673,7 @@ void AeThreadWaitState::GetCondText(ae_fixed_string<64, unsigned char>& str)
 void AeThreadWaitState::GetDebugTxt(ae_fixed_string<64, unsigned char>& str)
 {
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up from time wait");
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, "waking up from time wait");
     str.mLength = (unsigned char)len;
 }
 
@@ -706,7 +706,7 @@ void AeThreadWaitFramesState::GetCondText(
     ae_formatted_string<64, unsigned char> v5(",asleep for %04d frames",
                                               mFramesRemaining);
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63,
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63,
                             (const char*)v5.mBuff);
     str.mLength = (unsigned char)len;
 }
@@ -716,7 +716,7 @@ void AeThreadWaitFramesState::GetDebugTxt(
     ae_fixed_string<64, unsigned char>& str)
 {
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up from frame_wait");
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, "waking up from frame_wait");
     str.mLength = (unsigned char)len;
 }
 
@@ -753,11 +753,11 @@ void AeThreadPakNotifyState::GetCondText(
     ae_fixed_string<64, unsigned char>& str)
 {
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, ",waitpak ");
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, ",waitpak ");
     str.mLength = (unsigned char)len;
     const char* mStr = *(const char**)((char*)mPak + 4);  // longName.mStr
     int len2 = len;
-    AeStringSupport::Concat((char*)str.mBuff, len2, 63, mStr);
+    AeStringSupport::Concat((char*)str.mBuff, &len2, 63, mStr);
     str.mLength = (unsigned char)len2;
 }
 
@@ -768,11 +768,11 @@ void AeThreadPakNotifyState::GetDebugTxt(
     if (mResult == AeThreadState::kActionWakeUp)
     {
         int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+        AeStringSupport::Concat((char*)str.mBuff, &len, 63, "waking up for ");
         str.mLength = (unsigned char)len;
         const char* mStr = *(const char**)((char*)mPak + 4);  // longName.mStr
         int len2 = len;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63, mStr);
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63, mStr);
         str.mLength = (unsigned char)len2;
     }
 }
@@ -10924,8 +10924,8 @@ void BrocSys::NotifyPakLoadOperation(const char* operation,
 {
     char notify[254];
     int oLen = 0;
-    AeStringSupport::CStrToAeStr(notify, oLen, 254, operation);
-    AeStringSupport::Concat(notify, oLen, 254, longName);
+    AeStringSupport::CStrToAeStr(notify, &oLen, 254, operation);
+    AeStringSupport::Concat(notify, &oLen, 254, longName);
     Entity* mWorld = EntityManager::sInst->mWorld;
     if (mWorld != nullptr)
     {
@@ -21674,22 +21674,22 @@ void AeThreadEntityNotifyState::GetCondText(
     if (mResult == kActionWakeUp)
     {
         int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
+        AeStringSupport::Concat((char*)str.mBuff, &len, 63, ",(w) ");
         str.mLength = (unsigned char)len;
         const char* s = sHashStrings.lookup(mNotifyStr.mHash);
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len2;
     }
     else if (mResult == kActionSleep)
     {
         int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "(s) ");
+        AeStringSupport::Concat((char*)str.mBuff, &len, 63, "(s) ");
         str.mLength = (unsigned char)len;
         const char* s = sHashStrings.lookup(mNotifyStr.mHash);
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len2;
     }
@@ -21707,11 +21707,11 @@ void AeThreadEntityNotifyState::GetDebugTxt(
     else
         return;
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, prefix);
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, prefix);
     str.mLength = (unsigned char)len;
     const char* s = sHashStrings.lookup(mNotifyStr.mHash);
     int len2 = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+    AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                             s != nullptr ? s : "");
     str.mLength = (unsigned char)len2;
 }
@@ -21722,27 +21722,27 @@ void AeThreadEntityNotifyTimeoutState::GetCondText(
 {
     ae_formatted_string<64, unsigned char> v10(",(s) %04.3f", mTimeRemaining);
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, (const char*)v10.mBuff);
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, (const char*)v10.mBuff);
     str.mLength = (unsigned char)len;
     if (mResult == kActionWakeUp)
     {
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63, ",(w) ");
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63, ",(w) ");
         str.mLength = (unsigned char)len2;
         const char* s = sHashStrings.lookup(mNotifyStr.mHash);
         int len3 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len3, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len3;
     }
     else if (mResult == kActionSleep)
     {
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63, "(s) ");
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63, "(s) ");
         str.mLength = (unsigned char)len2;
         const char* s = sHashStrings.lookup(mNotifyStr.mHash);
         int len3 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len3, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len3, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len3;
     }
@@ -21757,27 +21757,27 @@ void AeThreadEntityNotifyTimeoutState::GetDebugTxt(
         int len = str.mLength;
         if (mTimeRemaining <= 0.0f)
         {
-            AeStringSupport::Concat((char*)str.mBuff, len, 63,
+            AeStringSupport::Concat((char*)str.mBuff, &len, 63,
                                     "waking up from time wait");
             str.mLength = (unsigned char)len;
             return;
         }
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+        AeStringSupport::Concat((char*)str.mBuff, &len, 63, "waking up for ");
         str.mLength = (unsigned char)len;
         const char* s = sHashStrings.lookup(mNotifyStr.mHash);
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len2;
     }
     else if (mResult == kActionTerminate)
     {
         int len = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len, 63, "terminating for ");
+        AeStringSupport::Concat((char*)str.mBuff, &len, 63, "terminating for ");
         str.mLength = (unsigned char)len;
         const char* s = sHashStrings.lookup(mNotifyStr.mHash);
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len2;
     }
@@ -21790,7 +21790,7 @@ void AeThreadEntityNotifyMatchState::GetCondText(
     if (mResult != kActionWakeUp)
         return;
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, ",(w) ");
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, ",(w) ");
     str.mLength = (unsigned char)len;
     for (int i = 0; i < 4; ++i)
     {
@@ -21799,24 +21799,24 @@ void AeThreadEntityNotifyMatchState::GetCondText(
         if (i != 0)
         {
             int len2 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " & ");
+            AeStringSupport::Concat((char*)str.mBuff, &len2, 63, " & ");
             str.mLength = (unsigned char)len2;
         }
         const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len2;
         if ((mEventMask & (1 << i)) == 0)
         {
             int len3 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(0)");
+            AeStringSupport::Concat((char*)str.mBuff, &len3, 63, "(0)");
             str.mLength = (unsigned char)len3;
         }
         else
         {
             int len3 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len3, 63, "(1)");
+            AeStringSupport::Concat((char*)str.mBuff, &len3, 63, "(1)");
             str.mLength = (unsigned char)len3;
         }
     }
@@ -21829,19 +21829,19 @@ void AeThreadEntityNotifyMatchState::GetDebugTxt(
     if (mResult != kActionWakeUp)
         return;
     int len = str.mLength;
-    AeStringSupport::Concat((char*)str.mBuff, len, 63, "waking up for ");
+    AeStringSupport::Concat((char*)str.mBuff, &len, 63, "waking up for ");
     str.mLength = (unsigned char)len;
     for (int i = 0; i < 4; ++i)
     {
         if (i != 0)
         {
             int len2 = str.mLength;
-            AeStringSupport::Concat((char*)str.mBuff, len2, 63, " and ");
+            AeStringSupport::Concat((char*)str.mBuff, &len2, 63, " and ");
             str.mLength = (unsigned char)len2;
         }
         const char* s = sHashStrings.lookup(mDebugNotifys[i].mHash);
         int len2 = str.mLength;
-        AeStringSupport::Concat((char*)str.mBuff, len2, 63,
+        AeStringSupport::Concat((char*)str.mBuff, &len2, 63,
                                 s != nullptr ? s : "");
         str.mLength = (unsigned char)len2;
     }
