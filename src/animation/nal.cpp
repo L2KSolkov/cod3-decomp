@@ -6634,7 +6634,7 @@ extern void AnglesToAxis(const math::Position3& angles,
 extern void G_GeneralLink(Entity* ent);      // ?G_GeneralLink@@YAXPAVEntity@@@Z (g_main.cpp)
 extern void VEH_SetPosition(Entity* ent, const math::Position3& origin,
                             const math::Position3& angles,
-                            const float* vel);  // g_scr_vehicle.cpp
+                            const math::Position3& vel);  // g_scr_vehicle.cpp
 extern void g_LinkEntity(Entity* ent);       // ?g_LinkEntity@@YAXPAVEntity@@@Z
 
 // rb_vehicle (g_physics.cpp) - minimal view for scene-anim camera vehicles
@@ -7392,6 +7392,8 @@ void SceneAnimClient::Advance(
             vehAngles.v = _mm_set_ps(0.0f, angles3[2], 0.0f, angles3[0]);
             math::Dir3 velocity;
             velocity.v = _mm_setzero_ps();
+            math::Position3 velocityPosition;
+            velocityPosition.v = velocity.v;
             void* mRBVeh = *(void**)((char*)scr_vehicle + 0x518);
             if (mRBVeh != nullptr)
             {
@@ -7406,8 +7408,7 @@ void SceneAnimClient::Advance(
             }
             else
             {
-                VEH_SetPosition(v19, newOrigin, vehAngles,
-                                (const float*)&velocity.v);
+                VEH_SetPosition(v19, newOrigin, vehAngles, velocityPosition);
             }
         }
         else
@@ -8374,7 +8375,7 @@ public:
 enum font_index { FONT_BUTTON = 2 };
 enum panel_layer { PANEL_LAYER_BACKGROUND = 0 };
 struct FEMultiLineText {
-    FEMultiLineText(font_index f, float x1, float y1, float z1,
+    FEMultiLineText(font_index f, float x1, float y1, int z1,
                     panel_layer layer, float s, int horizJust, int vertJust,
                     color32 col);  // real in XboxLiveMenus.cpp
 };

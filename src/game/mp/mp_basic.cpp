@@ -22501,7 +22501,7 @@ label10:
                 math::Position3 v27;
                 v27.v = this->mInterpolatedSpeed.v;
                 VEH_SetPosition(mEntity, this->mInterpolatedPosition,
-                                v28, v27.v.m128_f32);
+                                v28, v27);
             }
             SetSeatState(mEntity->scr_vehicle, 0, this->mDriverState);
             SetSeatState(mEntity->scr_vehicle, 1, this->mGunnerState);

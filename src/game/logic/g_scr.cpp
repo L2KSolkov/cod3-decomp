@@ -23363,8 +23363,7 @@ void BrocSys::AttachPath(unsigned int entityHandleVal,
             v8->phys.angles.v.m128_f32[0] = v8->pathPos.angles[0];
             v8->phys.angles.v.m128_f32[1] = v8->pathPos.angles[1];
             v8->phys.angles.v.m128_f32[2] = v8->pathPos.angles[2];
-            VEH_SetPosition(info, v8->phys.origin, v8->phys.angles,
-                            &zeroVel.v.m128_f32[0]);
+            VEH_SetPosition(info, v8->phys.origin, v8->phys.angles, zeroVel);
             v8->phys.prevOrigin = v8->phys.origin;
             v8->phys.prevAngles = v8->phys.angles;
             for (int i = 0; i < 6; ++i)
@@ -23380,8 +23379,7 @@ void BrocSys::AttachPath(unsigned int entityHandleVal,
                     && (v16->type == 1 || v16->type == 2))
                     VEH_GroundPlant(info, 0, ServerTime::sInst.mTickMSec);
             }
-            VEH_SetPosition(info, v8->phys.origin, v8->phys.angles,
-                            &zeroVel.v.m128_f32[0]);
+            VEH_SetPosition(info, v8->phys.origin, v8->phys.angles, zeroVel);
             v8->phys.prevOrigin = v8->phys.origin;
             v8->phys.prevAngles = v8->phys.angles;
             rb_vehicle* v12 = (rb_vehicle*)v8->mRBVeh;

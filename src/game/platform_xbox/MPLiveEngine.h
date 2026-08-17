@@ -185,7 +185,7 @@ struct MPPlayer {
     XUID xuid;                     // +0x88
 };
 
-struct MPPlayerManager;
+class MPPlayerManager;
 
 class MPPeer {
 public:
@@ -297,7 +297,8 @@ struct kuju_sTime {
     int mTime;
 };
 
-struct MPPlayerManager {
+class MPPlayerManager {
+public:
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // extern mp.o
     MPPlayer* GetPlayer(int id);                 // extern mp.o
     MPPlayer* GetPlayer(unsigned char id);       // extern mp.o

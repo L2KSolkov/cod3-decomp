@@ -4672,7 +4672,7 @@ void  VEH_UpdateOverHeat(Entity* self, int msec);// g.o 0x47F630
 void  ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf);  // g.o 0x488420
 void  VEH_SetPosition(Entity* ent, const math::Position3& origin,
                       const math::Position3& angles,
-                      const float* vel);  // g.o 0x46A370
+                      const math::Position3& vel);  // g.o 0x46A370
 void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
 void  VEH_Backup(Entity* ent);                   // g.o
 int16_t VP_GetNodeIndex(const Broc::string& name, float* origin);  // g.o ?VP_GetNodeIndex@@YAFABVstring@Broc@@QAM@Z

@@ -1481,7 +1481,8 @@ int16_t VEH_GetPlayerVehicleInfo(const char* name)
 
 // ea: 0x0046A370
 void VEH_SetPosition(Entity* ent, const math::Position3& origin,
-                     const math::Position3& angles)
+                     const math::Position3& angles,
+                     const math::Position3& vel)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
     if (ent->takedamage != 0)
@@ -2575,8 +2576,8 @@ void VEH_RespawnVehicle(Entity* ent)
     ent->r.currentAngles.v.m128_f32[0] = respawn_angles[0];
     ent->r.currentAngles.v.m128_f32[1] = respawn_angles[1];
     ent->r.currentAngles.v.m128_f32[2] = respawn_angles[2];
-    float vel[3] = { 0.0f, 0.0f, 0.0f };
-    VEH_SetPosition(ent, scr_vehicle->phys.origin, scr_vehicle->phys.angles);
+    VEH_SetPosition(ent, scr_vehicle->phys.origin, scr_vehicle->phys.angles,
+                    scr_vehicle->phys.vel);
     scr_vehicle->respawn_origin.v.m128_f32[0] = respawn_origin[0];
     scr_vehicle->respawn_origin.v.m128_f32[1] = respawn_origin[1];
     scr_vehicle->respawn_origin.v.m128_f32[2] = respawn_origin[2];
@@ -2628,7 +2629,7 @@ void SP_script_vehicle(Entity* pSelf)
             VEH_Backup(pSelf);
             if ((pSelf->flags & 0x400000) == 0)
                 VEH_SetPosition(pSelf, scr_vehicle->phys.origin,
-                                scr_vehicle->phys.angles);
+                                scr_vehicle->phys.angles, scr_vehicle->phys.vel);
         }
         pSelf->scr_vehicle->respawn_origin.v.m128_f32[0] = pSelf->r.currentOrigin.v.m128_f32[0];
         pSelf->scr_vehicle->respawn_origin.v.m128_f32[1] = pSelf->r.currentOrigin.v.m128_f32[1];
@@ -2732,7 +2733,8 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         if ((type == 1 || type == 2) && Entity_has_zone_collision(pSelf))
             VEH_GroundPlant(pSelf, 0, 10000);
         float vel[3] = { 0.0f, 0.0f, 0.0f };
-        VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles);
+        VEH_SetPosition(pSelf, scr_vehicle->phys.origin, scr_vehicle->phys.angles,
+                        scr_vehicle->phys.vel);
         scr_vehicle->phys.prevOrigin.v.m128_f32[0] = scr_vehicle->phys.origin.v.m128_f32[0];
         scr_vehicle->phys.prevOrigin.v.m128_f32[1] = scr_vehicle->phys.origin.v.m128_f32[1];
         scr_vehicle->phys.prevOrigin.v.m128_f32[2] = scr_vehicle->phys.origin.v.m128_f32[2];
@@ -6409,7 +6411,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
         VEH_VerifyPosition(pSelf);
     }
     if (*(char*)((char*)info + 0x21C) == 0)
-        VEH_SetPosition(pSelf, veh->phys.origin, veh->phys.angles);
+        VEH_SetPosition(pSelf, veh->phys.origin, veh->phys.angles, veh->phys.vel);
     if (pSelf->health > 0)
     {
         collision_context_t context;
