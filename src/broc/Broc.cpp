@@ -1137,7 +1137,13 @@ void thread_debug_wait_until(HashStr, HashStr, HashStr, HashStr) {}
 // Stubs — entity
 // ============================================================================
 
-void entity::UndefineEEField(unsigned int) {}
+// ea: 0x0092BA60. IDA forwards the field removal through the entity handle.
+void entity::UndefineEEField(unsigned int member)
+{
+    ExtendedEntity* ee = ExtendedEntity::GetExtendedEntity(GetHandle());
+    if (ee != nullptr)
+        ee->SetUndefined(member);
+}
 
 // ============================================================================
 // Stubs — path nodes
