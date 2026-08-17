@@ -111,6 +111,11 @@ float dword_F63F50[4 * 1580];
 float dword_F63F54[4 * 1580];
 float dword_F63F58[4 * 1580];
 float dword_F63550[4 * 1580];
+float dword_F63560[4 * 1580];
+float dword_F63564[4 * 1580];
+float dword_F63568[4 * 1580];
+float unk_F63634[4 * 1580];
+float dword_F63640[4 * 1580];
 float dword_F64068[4 * 1580];
 float dword_F6406C[4 * 1580];
 float dword_F64070[4 * 1580];
@@ -217,6 +222,7 @@ unsigned char byte_F641C0[4 * 6320];
 unsigned char unk_F6A294[4 * 3208];
 float unk_F6A298[4 * 802];
 float unk_F6A29C[4 * 802];
+float unk_F6A2B0[4 * 802];
 struct game_hudelem_s {
     struct {
         int type;  // +0x00

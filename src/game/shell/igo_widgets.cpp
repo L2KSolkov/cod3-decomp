@@ -343,7 +343,7 @@ vmCvar_t gCvarShowEnemy = {};
 extern float dword_F63C70[];  // @ 0xF63C70 (client origin x)
 extern float dword_F63C74[];  // @ 0xF63C74 (client origin y)
 extern float dword_F63C78[];  // @ 0xF63C78 (client origin z)
-extern float dword_F64140[];  // @ 0xF64140
+extern int   dword_F64140[];  // @ 0xF64140
 extern int   iLastCompassTime[];  // @ 0xF3A4C4
 extern int   dword_F62964[];  // @ 0xF62964
 extern float unk_F6A2B0[];    // @ 0xF6A2B0 (objective world data block)
@@ -6518,7 +6518,7 @@ void IGOCompassWidget::UpdateCompassRotation()
 {
     float fTargetYaw =
         AngleNormalize360(dword_F63CB4[1580 * currCl]
-                          - dword_F64140[1580 * currCl]);
+                          - *(float*)&dword_F64140[1580 * currCl]);
     int v3 = iLastCompassTime[currCl];
     if (v3 > cgGlobal.time || (cgGlobal.time - v3) > 500)
     {
