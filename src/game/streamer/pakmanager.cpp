@@ -3121,6 +3121,8 @@ ae_sized_array<TPakId, 99> loaded_ids;  // ?loaded_ids@@3V?$ae_sized_array@W4TPa
 class ae_heap {
 public:
     void** __vftable;  // +0x00
+    ae_heap(unsigned int size);
+    void* Malloc(unsigned int size, unsigned int alignment);
     void* Malloc(unsigned int size, int alignment);
     void Free(void* ptr);  // ?Free@ae_heap@@QAEXPAX@Z (core_xboxr)
     mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ (core_xboxr)
@@ -3129,10 +3131,18 @@ extern ae_heap* gActorHeap;  // ?gActorHeap@@3PAVae_heap@@A @ 0xF00E5C
 extern void* gBrocHeap;       // ?gBrocHeap@@3PAVae_heap@@A @ 0xF3ABE0 (g_globals.cpp)
 
 // Cross-object stubs (ae_heap core_xboxr; ported with core)
-void* ae_heap::Malloc(unsigned int size, int alignment)
+ae_heap::ae_heap(unsigned int size)
+{
+    (void)size;
+}
+void* ae_heap::Malloc(unsigned int size, unsigned int alignment)
 {
     (void)size; (void)alignment;
     return nullptr;
+}
+void* ae_heap::Malloc(unsigned int size, int alignment)
+{
+    return Malloc(size, (unsigned int)alignment);
 }
 void ae_heap::Free(void* ptr)
 {
