@@ -77,7 +77,13 @@ bool IS_NAN(float x) {
 // IDA globals @ 0x10F0540 / 0x10F0544.
 float gThreadSleepTime = 0.0f;
 int gThreadSleepFrames = 0;
+unsigned int gThreadSleepEntity = 0;
+int gThreadSleepNotify2 = 0;
 int gThreadSleepNotify1 = 0;
+int gThreadSleepNotify3 = 0;
+bool gThreadWaitForAll = false;
+float gTimeOut = 0.0f;
+int gThreadSleepNotify4 = 0;
 TPakInfo gThreadSleepPakfile = (TPakInfo)0;
 
 // ea: 0x00929060. IDA forwards hash registration through BrocAPI.
@@ -1181,7 +1187,34 @@ void wait_frame(int numFrames)
     if (gBrocAPI.mKillThread)
         gBrocAPI.mKillThreadExec();
 }
-void waittill(entity, HashStr) {}
+// ea: 0x00928BC0. IDA sets the notify state and sleeps on a non-null entity.
+void waittill(entity ent, HashStr labelHash)
+{
+    HashStr notify2 = {0};
+    HashStr notify3 = {0};
+    HashStr notify4 = {0};
+    thread_debug_wait_until(labelHash, notify2, notify3, notify4);
+    if (ent.GetHandle() == 0
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\include\\threads.inl",
+               110,
+               "null entity passed into waittill- thread will be killed"))
+        __debugbreak();
+    if (ent.GetHandle() != 0)
+    {
+        gThreadSleepEntity = ent.GetHandle();
+        gThreadSleepPakfile = (TPakInfo)0;
+        gThreadSleepNotify1 = labelHash.mVal;
+        gThreadSleepNotify2 = 0;
+        gThreadSleepNotify3 = 0;
+        gThreadSleepNotify4 = 0;
+        gThreadWaitForAll = false;
+        gTimeOut = 0.0f;
+        thread_sleep_until_notify();
+        if (gBrocAPI.mKillThread)
+            gBrocAPI.mKillThreadExec();
+    }
+}
 void waittill_timeout(entity, HashStr, float) {}
 void waittillmatch(entity, HashStr, HashStr, HashStr, HashStr) {}
 void waittillor(entity, HashStr, HashStr, HashStr, HashStr) {}
