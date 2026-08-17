@@ -332,6 +332,13 @@ const char* const szMPWeaponSplitScreenEntriesText[8] = {
     "text_option_01", "text_option_02", "text_option_03", "text_option_04",
     "text_option_05", "text_option_06", "text_option_07", "text_option_08",
 };
+const char* const szMPSwitchSidesSplitScreenEntriesText[3] = {
+    "text_option_01", "text_option_02", "text_option_03",
+};
+const char* const szTeamEntriesText[3] = {
+    "MPSCRIPT_AUTO_SELECT_ALLCAPS", "MPSCRIPT_ALLIES_ALLCAPS",
+    "MPSCRIPT_AXIS_ALLCAPS",
+};
 static const char* const szSwitchSidesBackgroundTeamWidgetsName[3] = {
     "icon_autosave", "icon_axis", "icon_allied",
 };
@@ -4763,6 +4770,31 @@ void WeaponSelectMenu::SetPanelFileSplitScreen(PanelFile* pf)
     }
     FEText* title = mSplitScreenMenu->GetTextPointer("text_title");
     title->SetText("MPGAME_SELECT_A_CLASS_ALLCAPS");
+}
+
+// ea: 0x007A9ED0
+void InGameSwitchSides::SetPanelFileSplitScreen(PanelFile* pf)
+{
+    mSplitScreenMenu = pf;
+    for (int i = 0; i < 3; ++i)
+    {
+        FEText* TextPointer =
+            mSplitScreenMenu->GetTextPointer(szMPSwitchSidesSplitScreenEntriesText[i]);
+        TextPointer->SetText(szTeamEntriesText[i]);
+        AddEntry(i, TextPointer, false);
+        if (i < 0 || i >= mSplitScreenTextEntries.m_size)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 93;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < m_size";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mSplitScreenTextEntries.m_elements[i] = entries[i];
+    }
+    FEText* title = mSplitScreenMenu->GetTextPointer("text_title");
+    title->SetText("MPGAME_SIDE_SELECTION");
 }
 
 // ea: 0x007ABF70
