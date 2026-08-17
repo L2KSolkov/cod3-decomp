@@ -731,7 +731,10 @@ struct BrocAPI {
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
     char _pad1A4[0x6D8 - 0x1A4];                          // +0x1A4
     void (*mDelete)(unsigned int);                        // +0x6D8
-    char _pad6DC[0xBDC - 0x6DC];                          // +0x6DC
+    char _pad6DC[0xBD0 - 0x6DC];                          // +0x6DC
+    void* (*mPoolAlloc)(unsigned int);                    // +0xBD0
+    void (*mPoolFree)(void*);                              // +0xBD4
+    char _padBD8[0xBDC - 0xBD8];                          // +0xBD8
     bool (*mAssert)(const char* file, int line, const char* msg);  // +0xBDC
     bool (*mWarning)(const char* file, int line, const char* msg);  // +0xBE0
     bool (*mError)(const char* file, int line, const char* msg);  // +0xBE4

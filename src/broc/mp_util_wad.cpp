@@ -6,7 +6,9 @@
 
 #include "mp_util_wad.h"
 #include "engine/broc_types.h"
+#include "game/AeThreadFunctor.h"
 #include <string.h>
+#include <new>
 
 using Broc::RandomFloatRange;
 using Broc::RandomInt;
@@ -8572,7 +8574,12 @@ void PickupFlag(Broc::entity self) {
     players.~dyn_array();
 }
 
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
 void* FlagThreadLauncher__functor(Broc::entity self) { (void)self; return NULL; }
 void* SwitchToSecondarySpawns__functor(Broc::entity self) {
