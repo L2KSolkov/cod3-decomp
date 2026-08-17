@@ -3963,6 +3963,54 @@ void AARBaseMenu::OnL1(int c)
 }
 
 // ea: 0x007A8E20
+bool AARMenuSystem::GetPanelFileUsers(
+    const char* name, ae_sized_array<PanelFileUser*, 12>& array)
+{
+    const int oldSize = array.m_size;
+    if (strcmp(name, "MP_AAR_PM_GS_edit.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[6]);
+    }
+    else if (strcmp(name, "MP_AAR_PM_GS_view.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[7]);
+    }
+    else if (strcmp(name, "MP_AAR_PM_controller.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)AARInGameOptionsMenu::Me(0));
+    }
+    else if (_stricmp(name, "MP_AAR_scoreboard.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[0]);
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[1]);
+    }
+    else if (_stricmp(name, "MP_AAR_personal_stats.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[2]);
+    }
+    else if (_stricmp(name, "MP_AAR_mapvote.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[4]);
+    }
+    else if (_stricmp(name, "MP_AAR_gamemode_vote.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[3]);
+    }
+    else if (strcmp(name, "MP_AAR_PM_mainmenu.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[9]);
+    }
+    else if (strcmp(name, "MP_AAR_PM_xblive.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)AARXBoxLiveIngameOptions::Me());
+    }
+    else if (strcmp(name, "SP_small_textbox_ingame.PANEL") == 0)
+    {
+        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[10]);
+    }
+    return oldSize != array.m_size;
+}
+
 void GameSettingsView::SetPanelFileMain(PanelFile* pf)
 {
     if (pf == nullptr)
