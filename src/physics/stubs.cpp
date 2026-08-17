@@ -103,13 +103,6 @@ void pulse_sum_wheel::set_side_fwd_ratios(float side_ratio, float fwd_ratio)
     m_side->m_pulse_limit_ratio = side_ratio;
     m_fwd->m_pulse_limit_ratio = fwd_ratio;
 }
-pulse_sum_angular* pulse_sum_constraint_solver::create_pulse_sum_angular(
-    rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
-    const math::Dir3* b2_r, const math::Dir3* ud, pulse_sum_cache* ps_cache)
-{
-    (void)b1; (void)b1_r; (void)b2; (void)b2_r; (void)ud; (void)ps_cache;
-    return nullptr;
-}
 pulse_sum_contact* pulse_sum_constraint_solver::create_pulse_sum_contact(
     rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t)
 {

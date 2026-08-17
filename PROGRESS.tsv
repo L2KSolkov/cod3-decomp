@@ -136,7 +136,7 @@ ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	PORTED	ngl_dx_scene.
 
 nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	PORTED	[phys_xboxr] rbc_def_generic.cpp: generic constraints (16 funcs)
+phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	PORTED	[phys_xboxr] rbc_def_generic.cpp: generic constraints (16 funcs) plus IDA-backed pulse_sum_constraint_solver::create_pulse_sum_angular (0x88A880)
 
 bdConnection:bdConnectionStatistics.obj	bdConnection	bdConnectionStatistics.obj	engine	16	PORTED	[bdConnection] bdConnectionStatistics.cpp: stats object (16 funcs)
 

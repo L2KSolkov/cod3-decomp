@@ -26,6 +26,37 @@ extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
 extern math::Dir3 construct_orth_ud(const math::Dir3& ud);
 
 // ============================================================================
+// pulse_sum_constraint_solver::create_pulse_sum_angular - ea: 0x88A880
+// ============================================================================
+pulse_sum_angular* pulse_sum_constraint_solver::create_pulse_sum_angular(
+    rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
+    const math::Dir3* b2_r, const math::Dir3* ud, pulse_sum_cache* ps_cache) {
+    char* addr = (char*)(((intptr_t)m_solver_memory_allocater.m_buffer_cur + 15) & ~15);
+    pulse_sum_angular* result;
+    if (addr + 144 > m_solver_memory_allocater.m_buffer_end) {
+        result = NULL;
+    } else {
+        m_solver_memory_allocater.m_buffer_cur = addr + 144;
+        result = (pulse_sum_angular*)addr;
+        if (addr == NULL)
+            result = NULL;
+    }
+    if (result == NULL &&
+        _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89, "addr",
+                  SOLVER_MEMORY_ALLOCATER_ERROR_MSG))
+        __debugbreak();
+    pulse_sum_angular* last = m_list_pulse_sum_angular.m_last;
+    if (last != NULL)
+        last->m_link.m_next_link = result;
+    else
+        m_list_pulse_sum_angular.m_first = result;
+    m_list_pulse_sum_angular.m_last = result;
+    result->m_link.m_next_link = NULL;
+    result->set(b1, b1_r, b2, b2_r, ud, ps_cache);
+    return result;
+}
+
+// ============================================================================
 // rigid_body_constraint_point::set â€” ea: 0x890320
 // ============================================================================
 void rigid_body_constraint_point::set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc) {
