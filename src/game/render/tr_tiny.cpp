@@ -160,7 +160,7 @@ nglMeshParams::nglMeshParams() { Flags = 0; }
 // ============================================================================
 // cdAepsShader virtual stubs (derives from tlInitList)
 // ============================================================================
-class nglMeshNode;
+struct nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 extern void mem_heap_free(void* ptr);
@@ -3032,10 +3032,10 @@ jqBatch::jqBatch()
 }
 
 // codListAddMesh
-class nglMeshNode;
+struct nglMeshNode;
 struct nglMesh;
 class nglMeshParams;
-struct nglShaderParamSet;
+class nglShaderParamSet;
 extern nglMeshNode* _codListAddMesh(nglMesh* mesh, const math::Mat43& localToWorld,
                                     nglMeshParams* meshParams,
                                     nglShaderParamSet* shaderParams,
@@ -3143,7 +3143,7 @@ float Clamp01(float iVal)  // ?Clamp01@@YAMM@Z @ 0x6E6DD0
     return 1.0f;
 }
 
-struct nglShaderParamSet : public nglParamSet {
+class nglShaderParamSet : public nglParamSet {
 public:
     static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA
     void Copy(const nglShaderParamSet& src);  // ?Copy@nglShaderParamSet@@QAEXABU1@@Z @ 0x6E7680

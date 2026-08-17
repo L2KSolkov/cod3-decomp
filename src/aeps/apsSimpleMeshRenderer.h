@@ -17,7 +17,7 @@
 #include <intrin.h>
 struct nglMesh;
 struct nglLightContext;
-class nglMeshNode;
+struct nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 // Forward declaration (apsSimpleMeshNode references the renderer)

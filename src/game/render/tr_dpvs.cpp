@@ -22,11 +22,11 @@ bool Assert(const char* fmtstring, ...);  // ?Assert@AeAssert@@YA_NPBDZZ
 bool Warning(const char* fmtstring, ...); // ?Warning@AeAssert@@YA_NPBDZZ
 }
 
-// Exact-tag forward decls (binary: nglMeshNode=class PAV, nglShaderParamSet=struct PAU)
-class nglMeshNode;
+// Exact-tag forward decls (binary: nglMeshNode=struct PAU, nglShaderParamSet=class PAV)
+struct nglMeshNode;
 struct nglMesh;
 class nglMeshParams;
-struct nglShaderParamSet;
+class nglShaderParamSet;
 struct nglScene;
 
 enum nglSceneParamType {

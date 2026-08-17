@@ -22,7 +22,7 @@ class nglFont;
 struct nglMorphSet;
 class nglMeshParams;
 class nglShaderParamSet;
-class nglMeshNode;
+struct nglMeshNode;
 
 // tl_system.o (tl_xboxr, ported)
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);

@@ -23,12 +23,13 @@ bool Assert(const char* fmtstring, ...);
 struct nglScene;
 struct nglMesh;
 class nglMeshParams;
-struct nglShaderParamSet {
+class nglShaderParamSet {
+public:
     unsigned char mData[4];
     static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA (ngl_dx_core.cpp)
 };
 static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");
-class nglMeshNode;
+struct nglMeshNode;
 struct XModelLod;
 struct DObjSkelMat;
 struct nglLightContext;

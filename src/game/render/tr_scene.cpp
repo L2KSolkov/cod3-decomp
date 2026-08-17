@@ -211,10 +211,10 @@ extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
 extern void* nglLockSectionIndices(nglMeshSection* Section);   // ngl.o
 extern void* nglLockSectionVertices(nglMeshSection* Section);  // ngl.o
 extern nglMesh* auxCloseScratchMesh(nglMesh* Mesh);            // aux.o
-extern void nglListAddMesh(nglMesh* Mesh, const math::Mat43& Mat,
-                           nglMeshParams* params,
-                           nglShaderParamSet* shaderParams,
-                           void (*callback)(nglMeshNode*));  // ngl.o
+extern nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& Mat,
+                                   nglMeshParams* params,
+                                   nglShaderParamSet* shaderParams,
+                                   void (*callback)(nglMeshNode*));  // ngl.o
 extern void j_nullsub_27(nglMeshSection* Section);  // nullsub
 extern void j_nullsub_67(nglMeshSection* Section);  // nullsub
 

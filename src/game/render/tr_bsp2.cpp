@@ -328,9 +328,9 @@ void R_RenderGlow()
 // R_RenderSky - ea: 0x006C69C0
 // ============================================================================
 struct nglMesh;
-struct nglMeshParams;
-struct nglShaderParamSet;
-class nglMeshNode;
+class nglMeshParams;
+class nglShaderParamSet;
+struct nglMeshNode;
 nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams, nglShaderParamSet* ShaderParams,
                             void (*fn)(nglMeshNode*));
