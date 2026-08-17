@@ -22,16 +22,18 @@ extern bool CompareButton(const char* text, const char* button,
 
 extern FEManager g_femanager;
 
-extern float GetXScalingForHUD(int window);   // cg.o
-extern float GetYScalingForHUD(int window);   // cg.o
-extern float GetPreviousHUDXPos(float pos, int window, char justification,
-                                float width);   // cg.o
-extern float GetCurrentHUDXPos(float pos, int window, char justification,
-                               float width);    // cg.o
-extern float GetCurrentHUDYPos(float pos, int window, char justification,
-                               float height);   // cg.o
-extern float GetPreviousHUDYPos(float pos, int window, char justification,
-                                float height);  // cg.o
+namespace View {
+float GetXScalingForHUD(int window);   // cg.o
+float GetYScalingForHUD(int window);   // cg.o
+float GetPreviousHUDXPos(float pos, int window, char justification,
+                         float width);   // cg.o
+float GetCurrentHUDXPos(float pos, int window, char justification,
+                        float width);    // cg.o
+float GetCurrentHUDYPos(float pos, int window, char justification,
+                        float height);   // cg.o
+float GetPreviousHUDYPos(float pos, int window, char justification,
+                         float height);  // cg.o
+}
 extern float GetYScalingForWindow(int window);  // fe_util.cpp
 extern float widescreen_scale;                  // shell.o data @ 0xDF43C8
 
@@ -356,12 +358,12 @@ void FEText::UpdateForHUDSplitScreen(int viewport, int old_viewport,
     {
         if (old_viewport != 0)
         {
-            float x_scale = GetXScalingForHUD(old_viewport);
-            float y_scale = GetYScalingForHUD(old_viewport);
-            float x_pos = GetPreviousHUDXPos(GetX(), old_viewport,
-                                             (char)justification, just_width);
-            float y_pos = GetPreviousHUDYPos(GetY(), old_viewport,
-                                             (char)justification, just_height);
+            float x_scale = View::GetXScalingForHUD(old_viewport);
+            float y_scale = View::GetYScalingForHUD(old_viewport);
+            float x_pos = View::GetPreviousHUDXPos(
+                GetX(), old_viewport, (char)justification, just_width);
+            float y_pos = View::GetPreviousHUDYPos(
+                GetY(), old_viewport, (char)justification, just_height);
             scale.x = scale.x * (1.0f / x_scale);
             scale_unselected.x = scale_unselected.x * (1.0f / x_scale);
             scale.y = scale.y * (1.0f / y_scale);
@@ -370,11 +372,11 @@ void FEText::UpdateForHUDSplitScreen(int viewport, int old_viewport,
         }
         if (viewport != 0)
         {
-            float x_scalea = GetXScalingForHUD(viewport);
-            float y_scalea = GetYScalingForHUD(viewport);
-            float just_widtha = GetCurrentHUDXPos(
+            float x_scalea = View::GetXScalingForHUD(viewport);
+            float y_scalea = View::GetYScalingForHUD(viewport);
+            float just_widtha = View::GetCurrentHUDXPos(
                 GetX(), viewport, (char)justification, just_width);
-            float justificationa = GetCurrentHUDYPos(
+            float justificationa = View::GetCurrentHUDYPos(
                 GetY(), viewport, (char)justification, just_height);
             scale.x = x_scalea * scale.x;
             scale_unselected.x = x_scalea * scale_unselected.x;
