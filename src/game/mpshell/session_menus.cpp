@@ -7,6 +7,10 @@
 #include "game/actor_types.h"
 #include "game/client_types.h"
 #include "bd/bdNet.h"
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_lighting.h"
+#include "ngl/nglRenderNode.h"
+#include "ngl/ngl_scene.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -223,18 +227,118 @@ struct XONLINE_FRIEND;
 extern "C" void __stdcall LiveEngine_Reboot(void* engine, int mode);
     // _LiveEngine_Reboot@8 (uixd:engine.obj)
 
-// Minimal views for ModelMenu animation helpers (anim.o / game2.o own the
-// real definitions; only the members used by mp_shell.o are declared).
-namespace nalGeneric { class nalGenericAnim; }
+// IDA-backed views used by ModelMenu::AddDObjToScene (game2.o).
+namespace nalGeneric {
+class nalGenericSkeleton;
+class nalGenericInstance;
+class nalGenericPose {
+public:
+    unsigned char* m_data;
+    unsigned int m_size;
+};
+class nalGenericAnim {
+public:
+    void* __vftable;                         // +0x00
+    void* NextAnim;                           // +0x04
+    unsigned char Name[0x20];                 // +0x08
+    int SkeletonNameIndex;                    // +0x28
+    unsigned int Version;                     // +0x2C
+    nalGenericSkeleton* Skeleton;             // +0x30
+    unsigned int Flags;                       // +0x34
+    float Duration;                            // +0x38
+    int InstanceCount;                        // +0x3C
+    float SampleRate;                         // +0x40
+    int FrameCount;                            // +0x44
+    int PrivateSize;                          // +0x48
+    int PrivateAlignment;                     // +0x4C
+    void* PrivateData;                        // +0x50
+    unsigned int* TrackBitMask;               // +0x54
+    unsigned char CachedPoseInfo[8];           // +0x58
+    void* CacheData;                           // +0x60
+    int BlockCount;                            // +0x64
+    int BlockUnit;                             // +0x68
+    void** BlockData;                          // +0x6C
+
+    nalGenericInstance* CreateInstance(nalGenericSkeleton* skeleton);
+};
+class nalGenericInstance {
+public:
+    void** __vftable;                          // +0x00
+    float Duration;                             // +0x04
+    float InverseDuration;                     // +0x08
+    const nalGenericSkeleton* Skeleton;        // +0x0C
+    nalGenericAnim* Anim;                      // +0x10
+    nalGenericPose PrevPose;                   // +0x14
+    float PrevT;                                // +0x24
+    void* OffsetMap;                            // +0x28
+    unsigned char* AnimCompTracks;             // +0x2C
+};
+}
+
 class DObj {
 public:
     void* tree[8];         // +0x00
-    void* animPlayers[8];  // +0x20
+    class AnimationPlayer* animPlayers[8]; // +0x20
+    void* mPose[8];        // +0x40
+    unsigned char modelParents[8]; // +0x60
+    unsigned char matOffset[8];    // +0x68
+    void* skel;             // +0x70
+    void* animToModel;      // +0x74
+    unsigned int gameId;    // +0x78
+    int ignoreCollision;    // +0x7C
+    IVPointer<XModel> models[8]; // +0x80
+    int mPakId;             // +0xC0
+    IVPointerRaw mPhysData; // +0xC4
+    unsigned short duplicateParts; // +0xCC
+    unsigned char numModels; // +0xCE
+    unsigned char numBones;  // +0xCF
+    Entity* mEntity;         // +0xD0
+    unsigned int mHandle;    // +0xD4
+    int mLOD;                // +0xD8
+    int mLODOverride;        // +0xDC
+    int mLODAnim;            // +0xE0
+    unsigned int mFlags;     // +0xE4
+    void SetLOD(int startLod);
 };
 class AnimationPlayer {
 public:
-    class nalPlayMethod;
-    class nalAnimCallback;
+    struct nalAnimState;
+    class nalAnimCallback {
+    public:
+        void** __vftable;                      // +0x00
+        nalGeneric::nalGenericAnim* curAnim;   // +0x04
+        virtual bool Invoke(AnimationPlayer* player);
+        virtual void Reference(nalGeneric::nalGenericAnim* anim);
+        virtual void Release();
+    };
+    class nalPlayMethod {
+    public:
+        void** __vftable;                      // +0x00
+        void* mNoteHandler;                    // +0x04
+        void Advance(nalAnimState* state, float delta);
+        void* CreateInstance(nalGeneric::nalGenericAnim* anim,
+                             nalGeneric::nalGenericSkeleton* skeleton);
+        void Reference(nalAnimState* state);
+        void Release();
+        void Compose(nalAnimState* state, nalGeneric::nalGenericPose& pose,
+                     nalGeneric::nalGenericPose& tmpPose,
+                     const nalGeneric::nalGenericPose& basePose);
+    };
+    struct nalAnimState {
+        nalGeneric::nalGenericInstance* instance; // +0x00
+        float speed;                         // +0x04
+        float tlimit;                        // +0x08
+        nalAnimCallback* callback;           // +0x0C
+        nalPlayMethod* play_method;          // +0x10
+        float t;                              // +0x14
+        float t_prev;                         // +0x18
+        float alpha;                          // +0x1C
+        float maxAlpha;                       // +0x20
+        float fadein_rate;                    // +0x24
+        int state;                             // +0x28
+        void Compose(nalGeneric::nalGenericPose& Pose,
+                     nalGeneric::nalGenericPose& tmpPose);
+    };
     enum AnimationPlayerModifierType {
         nalAdditiveModifier = 0x0,
         nalPartialModifier = 0x1,
@@ -246,6 +350,14 @@ public:
                       float fade_out, nalPlayMethod* play_method,
                       float callback_time, nalAnimCallback* callback,
                       float speed, float time_in_seconds_to_start);
+    void* Skeleton;                              // +0x00
+    nalGeneric::nalGenericPose BackgroundPose;  // +0x04
+    nalGeneric::nalGenericPose tmpPose;         // +0x14
+    int QueueSize;                               // +0x24
+    nalAnimState* AnimStates[3];                // +0x28
+    void* PartialAnimStates;                     // +0x34
+    void* PartialAnimStatePool;                 // +0x38
+    unsigned int AdvanceCount;                  // +0x3C
     void SetModifierType(unsigned int mask,
                          AnimationPlayerModifierType type);
 };
@@ -276,6 +388,11 @@ extern void G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o
 extern void DObjCreateAnimationPlayer(DObj* obj, int a2);  // render.o
 extern void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // g.o
 extern void g_UnlinkEntity(Entity* ent);  // g.o
+extern int R_AddMenuModelSurfaces(DObj* obj, Entity* entity,
+                                  const math::Mat43& matrix, float alpha,
+                                  nglShaderParamSet& shaderParams,
+                                  nglLightContext* ctx, bool render_shadow,
+                                  bool maxLod);
 struct weaponFileInfo_t {
     int weapClass;    // +0x00
     int type;         // +0x04
@@ -4205,6 +4322,170 @@ void WeaponSelectMenu::PanelFileUnloaded(PanelFile* pf)
 {
     FESplitScreenMenu::PanelFileUnloaded(pf);
     Cleanup();
+}
+
+// ea: 0x007ACAF0
+void ModelMenu::AddDObjToScene()
+{
+    const unsigned int handleValue = mClassModelEntity.mHandle.mVal;
+    const unsigned int index = handleValue & 0xFFF;
+    if (index >= 0x540
+        || (handleValue >> 12) !=
+               (unsigned int)EntityHandleDb::sInst.mElements[index].mKey
+        || EntityHandleDb::sInst.mElements[index].mObject == nullptr)
+        return;
+
+    bool renderModel = true;
+    if (mFirstFrame)
+    {
+        mFirstFrame = false;
+        renderModel = false;
+    }
+
+    const int weaponSheet = mCurrentWeaponSheet;
+    MP_ANIM_INDEX* animIndex =
+        weaponSheet == 5 ? MPPlayer::getAnimIndex(5, 0, 0, false)
+                         : MPPlayer::getAnimIndex(10, mCurrentAnim, 2, false);
+    Entity* modelEntity = EntityHandleDb::sInst.mElements[index].mObject;
+    DObj* obj = modelEntity->mDObj;
+    AnimationPlayer* player = obj != nullptr ? obj->animPlayers[0] : nullptr;
+    nalGeneric::nalGenericAnim* anim =
+        animIndex != nullptr ? animIndex->anim : nullptr;
+
+    if (player != nullptr && anim != nullptr)
+    {
+        int queueSize = player->QueueSize;
+        nalGeneric::nalGenericAnim* previousAnim = nullptr;
+        float fadeIn = weaponSheet == 5 ? 0.2f : 1.0f;
+        if (queueSize <= 0)
+        {
+            fadeIn = 0.0f;
+        }
+        else
+        {
+            previousAnim = player->AnimStates[0]->instance->Anim;
+        }
+
+        if (anim == previousAnim)
+        {
+            for (int i = 0; i < player->QueueSize; ++i)
+            {
+                AnimationPlayer::nalAnimState* state = player->AnimStates[i];
+                nalGeneric::nalGenericAnim* stateAnim =
+                    state->instance->Anim;
+                if (stateAnim != nullptr && (stateAnim->Flags & 1) != 0)
+                    state->speed = mAnimSpeed;
+            }
+        }
+        else
+        {
+            if (queueSize == 3)
+            {
+                player->AnimStates[2]->Compose(player->BackgroundPose,
+                                               player->tmpPose);
+                AnimationPlayer::nalAnimState* state = player->AnimStates[2];
+                if (state->callback != nullptr)
+                    state->callback->Release();
+                if (state->play_method != nullptr)
+                {
+                    typedef void(__thiscall *ReleaseMethod)(void*);
+                    void** vftable = state->play_method->__vftable;
+                    ((ReleaseMethod)vftable[4])(state->play_method);
+                }
+                if (state->instance != nullptr)
+                {
+                    typedef void(__thiscall *DeletingDestructor)(void*, int);
+                    void** vftable = state->instance->__vftable;
+                    ((DeletingDestructor)vftable[0])(state->instance, 1);
+                }
+            }
+            else
+            {
+                player->QueueSize = queueSize + 1;
+            }
+
+            const int newQueueSize = player->QueueSize;
+            AnimationPlayer::nalAnimState* state =
+                player->AnimStates[newQueueSize - 1];
+            for (int i = newQueueSize - 1; i > 0; --i)
+                player->AnimStates[i] = player->AnimStates[i - 1];
+            player->AnimStates[0] = state;
+
+            const float fadeInRate = fadeIn == 0.0f ? 0.0f : 1.0f / fadeIn;
+            nalGeneric::nalGenericInstance* instance =
+                anim->CreateInstance(
+                    (nalGeneric::nalGenericSkeleton*)player->Skeleton);
+            state->instance = instance;
+            state->speed = mAnimSpeed;
+            state->tlimit = 1.0f;
+            state->callback = nullptr;
+            state->play_method = nullptr;
+            state->t = instance->InverseDuration * 0.0f;
+            state->t_prev = state->t;
+            state->alpha = 0.0f;
+            state->maxAlpha = 1.0f;
+            state->fadein_rate = fadeInRate;
+            state->state = 1;
+            if (fadeInRate == 0.0f)
+                state->alpha = 1.0f;
+
+            if ((anim->Flags & 1) != 0 && previousAnim != nullptr
+                && (previousAnim->Flags & 1) != 0)
+            {
+                player->AnimStates[0]->tlimit =
+                    player->AnimStates[1]->t + player->AnimStates[0]->tlimit;
+                player->AnimStates[0]->t = player->AnimStates[1]->t;
+                player->AnimStates[0]->t_prev = player->AnimStates[0]->t;
+            }
+        }
+    }
+
+    modelEntity = EntityHandleDb::sInst.mElements[index].mObject;
+    obj = modelEntity->mDObj;
+    if (obj == nullptr)
+        return;
+
+    obj->SetLOD(0);
+    trRefEntity* renderEntity = modelEntity->mRenderEntity;
+    if (renderEntity == nullptr)
+        return;
+    const math::Vector4& color0 =
+        *reinterpret_cast<const math::Vector4*>(&mColors[0]);
+    const math::Vector4& color1 =
+        *reinterpret_cast<const math::Vector4*>(&mColors[4]);
+    math::Vector4 litColor0;
+    math::Vector4 litColor1;
+    litColor0.v = _mm_mul_ps(color0.v, _mm_set1_ps(mBrightness[0]));
+    litColor1.v = _mm_mul_ps(color1.v, _mm_set1_ps(mBrightness[1]));
+
+    nglValidateMatrices(nglBuildScene);
+    nglLightContext* lightContext = nglCreateLightContext();
+    const math::Dir3& direction0 =
+        *reinterpret_cast<const math::Dir3*>(&mDirections[0]);
+    const math::Dir3& direction1 =
+        *reinterpret_cast<const math::Dir3*>(&mDirections[4]);
+    nglListAddDirLight(0xFFFFFFFF, direction0, litColor0);
+    nglListAddDirLight(0xFFFFFFFF, direction1, litColor1);
+    nglSetAmbientLight(0.0f, 0.0f, 0.0f);
+
+    nglShaderParamSet* shaderParams = (nglShaderParamSet*)nglListAlloc(
+        4 * nglShaderParamSet::NumParams + 8, 8);
+    shaderParams->Array[0] = 0;
+    shaderParams->Array[1] = 0;
+    const unsigned int lightParamId = nglLightContextParamID;
+    const unsigned long long lightMask = 1ULL << lightParamId;
+    shaderParams->Array[0] |= (unsigned int)lightMask;
+    shaderParams->Array[1] |= (unsigned int)(lightMask >> 32);
+    shaderParams->Array[lightParamId + 2] = (unsigned int)lightContext;
+
+    if (renderModel)
+    {
+        const int added = R_AddMenuModelSurfaces(
+            obj, modelEntity, modelEntity->r.currentMat, 1.0f,
+            *shaderParams, lightContext, true, true);
+        unsigned char* renderBytes = reinterpret_cast<unsigned char*>(renderEntity);
+        renderBytes[251] ^= (unsigned char)((added ^ renderBytes[251]) & 1);
+    }
 }
 
 // ea: 0x007AE430
