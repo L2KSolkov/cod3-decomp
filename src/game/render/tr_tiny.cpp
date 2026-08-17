@@ -498,6 +498,21 @@ public:
 };
 const char* XModelParts::GetName() { return mName; }
 
+unsigned int XModelParts::GetBoneNameHash(unsigned int i) const
+{
+    if (i >= mHierarchy.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelParts.h";
+        AeAssert::gCurrentLine = 216;
+        AeAssert::gCurrentExpr = "i >= 0 && i < mHierarchy.size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad Bone Index"))
+            __debugbreak();
+    }
+    return mHierarchy[i].mNameHash;
+}
+
 enum TPakId { TPAKID_0 = 0 };
 class PakManager {
 public:
