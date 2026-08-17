@@ -1882,6 +1882,39 @@ AARMapVote* AARMapVote::Me()
     return (AARMapVote*)g_femanager.mAARS->menus[4];
 }
 
+// ea: 0x00791690
+void AARMapVote::VoteOnMap(int indexNewMap, int indexOldMap)
+{
+    const int mapLimit = g_NumBaseMaps + 1;
+    if (indexOldMap >= mapLimit) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARMapVote.cpp";
+        AeAssert::gCurrentLine = 538;
+        AeAssert::gCurrentExpr = "indexOldMap < kAARPMapLimit";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("vote on map out of allowed boundary"))
+            __debugbreak();
+    }
+    if (indexNewMap >= mapLimit) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARMapVote.cpp";
+        AeAssert::gCurrentLine = 539;
+        AeAssert::gCurrentExpr = "indexNewMap < kAARPMapLimit";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("vote on map out of allowed boundary"))
+            __debugbreak();
+    }
+    char value[32] = {};
+    if (indexOldMap >= 0 && indexOldMap < mapLimit) {
+        sprintf_s(value, "%i", --m_pMapVoteVals[indexOldMap]);
+        m_ListBox.SetText(indexOldMap, 1, value);
+    }
+    if (indexNewMap >= 0 && indexNewMap < mapLimit) {
+        sprintf_s(value, "%i", ++m_pMapVoteVals[indexNewMap]);
+        m_ListBox.SetText(indexNewMap, 1, value);
+    }
+}
+
 // ea: 0x00791540
 void AARMapVote::Init()
 {
@@ -1917,6 +1950,39 @@ void AARMapVote::OnRight(int c)
 AARGameModeVote* AARGameModeVote::Me()
 {
     return (AARGameModeVote*)g_femanager.mAARS->menus[3];
+}
+
+// ea: 0x007A5F80
+void AARGameModeVote::VoteOnMode(int indexNewMode, int indexOldMode)
+{
+    const unsigned int oldMode = (unsigned int)indexOldMode;
+    if (oldMode >= 7) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+        AeAssert::gCurrentLine = 438;
+        AeAssert::gCurrentExpr = "indexOldMode < max_modename";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("vote on mode out of allowed boundary"))
+            __debugbreak();
+    }
+    if (indexNewMode >= 7) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+        AeAssert::gCurrentLine = 439;
+        AeAssert::gCurrentExpr = "indexNewMode < max_modename";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("vote on mode out of allowed boundary"))
+            __debugbreak();
+    }
+    char value[32] = {};
+    if (oldMode <= 6) {
+        sprintf_s(value, "%i", --m_pModeVoteVals.m_elements[oldMode]);
+        m_ListBox.SetText((int)oldMode, 1, value);
+    }
+    if (indexNewMode <= 6) {
+        sprintf_s(value, "%i", ++m_pModeVoteVals.m_elements[indexNewMode]);
+        m_ListBox.SetText(indexNewMode, 1, value);
+    }
 }
 
 // ea: 0x007A62F0

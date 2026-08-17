@@ -1189,6 +1189,7 @@ public:
     AARMapVote(FEMenuSystem* s);  // ??0AARMapVote@@QAE@PAVFEMenuSystem@@@Z
     static AARMapVote* Me();          // ?Me@AARMapVote@@SAPAV1@XZ
     void TallyVotes();                // ?TallyVotes@AARMapVote@@QAEXXZ
+    void VoteOnMap(int indexNewMap, int indexOldMap); // ?VoteOnMap@AARMapVote@@QAEXHH@Z
     static unsigned char m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@AARMapVote@@1EA @ 0x1388D58
     virtual void Init();              // ?Init@AARMapVote@@UAEXXZ
     virtual void Draw();              // ?Draw@AARMapVote@@UAEXXZ
@@ -1231,6 +1232,7 @@ public:
     AARGameModeVote(FEMenuSystem* s);  // ??0AARGameModeVote@@QAE@PAVFEMenuSystem@@@Z
     static AARGameModeVote* Me();     // ?Me@AARGameModeVote@@SAPAV1@XZ
     void TallyVotes();                // ?TallyVotes@AARGameModeVote@@QAEXXZ
+    void VoteOnMode(int indexNewMode, int indexOldMode); // ?VoteOnMode@AARGameModeVote@@QAEXHH@Z
     void ResetPanel();                // ?ResetPanel@AARGameModeVote@@QAEXXZ
     virtual void Init();              // ?Init@AARGameModeVote@@UAEXXZ
     void OnDeactivate(AARBaseMenu* __formal);  // ?OnDeactivate@AARGameModeVote@@QAEXPAVAARBaseMenu@@@Z
