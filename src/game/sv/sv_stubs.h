@@ -651,6 +651,8 @@ public:
                                     const math::Position3& position,
                                     const math::Dir3& angles,
                                     const math::Dir3& velocity);  // ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@ABVPosition3@math@@ABVDir3@4@2@Z (mp.o 0x75AF40)
+    void VehicleRequestOwnership(Entity* vehicle,
+                                 Entity* newOwner);  // ?VehicleRequestOwnership@MultiplayerMgr@@QAEXPAVEntity@@0@Z (mp.o 0x750DA0)
     void AttemptToGetInVehicle(Entity* vehicle, Entity* player, int seatIdx,
                                int entryIdx);  // ?AttemptToGetInVehicle@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z
     void AttemptVehicleSeatChange(Entity* vehicle, Entity* player, int newSeatIdx);  // ?AttemptVehicleSeatChange@MultiplayerMgr@@QAEXPAVEntity@@0H@Z

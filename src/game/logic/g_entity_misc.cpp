@@ -2620,7 +2620,6 @@ void LiveWrapper_ClearRemotePlayers(void* self) { (void)self; }
 void MemoryUnitManager_Service() {}
 void MemPrint(const char* fmt, ...) { (void)fmt; }
 void MI_ResetMapList() {}
-void MP_ResolveAnims() {}
 void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
 void nflCloseFile(int a) { (void)a; }
 class nglRenderNode;

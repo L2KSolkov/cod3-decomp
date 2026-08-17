@@ -369,11 +369,6 @@ void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
 {
     (void)vehicle; (void)mat; (void)velocity;
 }
-void MultiplayerMgr::VehicleRequestOwnership(Entity* vehicle,
-                                             Entity* newOwner)
-{
-    (void)vehicle; (void)newOwner;
-}
 MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
 class EntityManager {
 public:

@@ -10,6 +10,7 @@
 #include "bd/bdQoSProbe.h"
 #include "bd/bdTiming/bdShortTimer.h"
 #include "bd/bdSessionInfo.h"
+#include "core/tlFixedString.h"
 
 #include <stdio.h>
 #include <math.h>
@@ -319,9 +320,16 @@ public:
 
 // AnimationPlayer (anim.o) - minimal view used by PlayAnimFlagAnim
 namespace nalGeneric {
-class nalGenericAnim;
+class nalGenericAnim {
+public:
+    static void* vtbl_ptr;  // ?vtbl_ptr@nalGenericAnim@nalGeneric@@2PAXA
+};
 class nalGenericPose;
 }
+void* nalGeneric::nalGenericAnim::vtbl_ptr = nullptr;
+class nalAnyPose;
+template <typename T> class nalAnimClass;
+extern nalAnimClass<nalAnyPose>* nalGetAnim(const tlFixedString& name);
 class AnimationPlayer {
 public:
     enum AnimationPlayerModifierType {
@@ -439,6 +447,32 @@ MP_ANIM_INDEX base_anim_names[500] = {};
 ae_heap* gDWHeap = nullptr;
 extern MP_ANIM_LOOKUP* base_anim_indices;   // ?base_anim_indices@@3PAUMP_ANIM_LOOKUP@@A (mp.o @ 0x138345C)
 MP_ANIM_LOOKUP* base_anim_indices = nullptr;
+
+// ea: 0x0074ECD0
+void MP_ResolveAnims()
+{
+    int result = numMPAnims;
+    int index = 0;
+    if (numMPAnims > 0)
+    {
+        MP_ANIM_INDEX* animIndex = base_anim_names;
+        do
+        {
+            tlFixedString name(animIndex->name);
+            void* anim = nalGetAnim(name);
+            if (anim == nullptr
+                || *(void**)anim != nalGeneric::nalGenericAnim::vtbl_ptr)
+                anim = nullptr;
+            animIndex->anim = (nalGeneric::nalGenericAnim*)anim;
+            if (anim == nullptr)
+                tlPrintf("FAILED resolve for anim %s\n", animIndex->name);
+            result = numMPAnims;
+            ++index;
+            ++animIndex;
+        }
+        while (index < numMPAnims);
+    }
+}
 
 // OverlayMenu (mp_shell.o) - session join feedback overlay
 class OverlayMenu {
@@ -8986,6 +9020,55 @@ EDroppedItemTypes MultiplayerMgr::GetDroppedItemType(itemType_t item)
         return (EDroppedItemTypes)2;  // kItemTypeSupport
     default:
         return (EDroppedItemTypes)1;  // kItemTypeWeapons
+    }
+}
+
+// ea: 0x00750DA0
+void MultiplayerMgr::VehicleRequestOwnership(Entity* vehicle, Entity* newOwner)
+{
+    Entity* currentOwner = nullptr;
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1770;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    if (vehicle == nullptr || vehicle->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1771;
+        AeAssert::gCurrentExpr = "vehicle && vehicle->scr_vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Invalid vehicle passed into RequestVehicleOwnership"))
+            __debugbreak();
+    }
+    if (newOwner != nullptr)
+    {
+        scr_vehicle_t* scrVehicle = vehicle->scr_vehicle;
+        unsigned int handle = scrVehicle->mPhysicsOwner.mHandle.mVal;
+        unsigned int index = handle & 0xFFF;
+        if (index < 0x540
+            && (handle >> 12) == (unsigned int)EntityHandleDb::sInst
+                                             .mElements[index]
+                                             .mKey)
+            currentOwner = EntityHandleDb::sInst.mElements[index].mObject;
+        if (newOwner != currentOwner
+            && *(int*)((char*)scrVehicle + 0x1BC) <= level.time + 500
+            && G_GetVehicleOccupantCount(vehicle) <= 0
+            && (mPeer == nullptr
+                || mPeer->GetPlayerManager()->IsLocalPlayer(newOwner)))
+        {
+            *(int*)((char*)scrVehicle + 0x1BC) = level.time;
+            mPeer->VehicleRequestOwnership(vehicle, newOwner);
+        }
     }
 }
 
