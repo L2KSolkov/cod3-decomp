@@ -176,6 +176,29 @@ static_assert(sizeof(DObjSkelMat) == 0x40, "DObjSkelMat size mismatch");
 static_assert(offsetof(DObjSkelMat, origin) == 0x30,
               "DObjSkelMat::origin offset mismatch");
 
+// cFreeList skeleton element types (g.o/game.o; verified against IDA).
+struct DSkel {
+    int animPartBits[4];
+    int controlPartBits[4];
+    int skelPartBits[4];
+    DObjSkelMat mat[1];
+};
+struct DSkelMax {
+    int animPartBits[4];
+    int controlPartBits[4];
+    int skelPartBits[4];
+    DObjSkelMat mat[88];
+};
+struct DSkel4 {
+    int animPartBits[4];
+    int controlPartBits[4];
+    int skelPartBits[4];
+    DObjSkelMat mat[4];
+};
+static_assert(sizeof(DSkel) == 0x70, "DSkel size mismatch");
+static_assert(sizeof(DSkelMax) == 0x1630, "DSkelMax size mismatch");
+static_assert(sizeof(DSkel4) == 0x130, "DSkel4 size mismatch");
+
 // ============================================================================
 // idVec3 - id-style 3-vector (12 bytes)
 // Size: 0x0C (12 bytes) - verified against IDA

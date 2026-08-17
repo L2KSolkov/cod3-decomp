@@ -1862,27 +1862,6 @@ template class phys_static_array<proxy_obj_t, 256>;
 template class phys_static_array<bounded_proxy_obj_t, 128>;
 
 // cFreeList real bodies (g.o 0x4AD540-0x4ADA70)
-struct DSkel {
-    int animPartBits[4];      // +0x00
-    int controlPartBits[4];   // +0x10
-    int skelPartBits[4];      // +0x20
-    DObjSkelMat mat[1];       // +0x30
-};
-struct DSkelMax {
-    int animPartBits[4];      // +0x00
-    int controlPartBits[4];   // +0x10
-    int skelPartBits[4];      // +0x20
-    DObjSkelMat mat[88];      // +0x30
-};
-struct DSkel4 {
-    int animPartBits[4];      // +0x00
-    int controlPartBits[4];   // +0x10
-    int skelPartBits[4];      // +0x20
-    DObjSkelMat mat[4];       // +0x30
-};
-static_assert(sizeof(DSkel) == 0x70, "DSkel size mismatch");
-static_assert(sizeof(DSkelMax) == 0x1630, "DSkelMax size mismatch");
-static_assert(sizeof(DSkel4) == 0x130, "DSkel4 size mismatch");
 template <typename T>
 void cFreeList<T>::Init(int num)
 {

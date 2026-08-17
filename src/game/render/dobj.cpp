@@ -44,14 +44,6 @@ const char* XModelParts::GetBoneName(unsigned int i) const
     return mHierarchy.mList[i].mName.mStr;
 }
 
-// DSkel - DObj skeleton part bits + matrices (IDA-verified)
-struct DSkel {
-    int animPartBits[4];      // +0x00
-    int controlPartBits[4];   // +0x10
-    int skelPartBits[4];      // +0x20
-    DObjSkelMat mat[1];       // +0x30
-};
-
 // ============================================================================
 // DObj model/bone accessors (DObj.cpp)
 // ============================================================================

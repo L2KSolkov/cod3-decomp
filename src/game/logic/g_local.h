@@ -4785,9 +4785,9 @@ int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
 void  cFreeList_Shutdown(void* freelist);          // core.o
 extern cFreeList<trRefEntity> gRefEntFreeList;     // g.o
 extern cFreeList<DObj> gDObjFreeList;              // g.o
-extern cFreeList<void> gDSkelFreeList;             // g.o
-extern cFreeList<void> gDSkelMaxFreeList;          // g.o
-extern cFreeList<void> gDSkel4FreeList;            // g.o
+extern cFreeList<DSkel> gDSkelFreeList;            // g.o
+extern cFreeList<DSkelMax> gDSkelMaxFreeList;      // g.o
+extern cFreeList<DSkel4> gDSkel4FreeList;          // g.o
 void  G_FreeInteractionInfo(void);                 // g.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes

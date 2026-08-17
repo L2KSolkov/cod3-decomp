@@ -243,9 +243,9 @@ bool Actor_IsMeleeInteractable(const actor_s* pSelf)  // ?Actor_IsMeleeInteracta
 }
 cFreeList<trRefEntity> gRefEntFreeList;   // ?gRefEntFreeList@@3V?$cFreeList@VtrRefEntity@@@@A (g.o)
 cFreeList<DObj> gDObjFreeList;            // ?gDObjFreeList@@3V?$cFreeList@VDObj@@@@A (g.o)
-cFreeList<void> gDSkelFreeList;           // ?gDSkelFreeList@@3V?$cFreeList@X@@A (g.o)
-cFreeList<void> gDSkelMaxFreeList;        // ?gDSkelMaxFreeList@@3V?$cFreeList@X@@A (g.o)
-cFreeList<void> gDSkel4FreeList;          // ?gDSkel4FreeList@@3V?$cFreeList@X@@A (g.o)
+cFreeList<DSkel> gDSkelFreeList;           // ?gDSkelFreeList@@3V?$cFreeList@UDSkel@@@@A (g.o)
+cFreeList<DSkelMax> gDSkelMaxFreeList;     // ?gDSkelMaxFreeList@@3V?$cFreeList@UDSkelMax@@@@A (g.o)
+cFreeList<DSkel4> gDSkel4FreeList;         // ?gDSkel4FreeList@@3V?$cFreeList@UDSkel4@@@@A (g.o)
 ae_vector<debug_sphere> debug_spheres;    // ?debug_spheres@@3V?$ae_vector@Udebug_sphere@@@@A (g.o @ 0xED2A98)
 ae_vector<debug_aabb> debug_aabbs;        // ?debug_aabbs@@3V?$ae_vector@Udebug_aabb@@@@A (g.o)
 ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> dobjects;             // 0x12C4D14

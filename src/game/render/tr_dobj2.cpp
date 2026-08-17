@@ -323,25 +323,6 @@ DObj::DObj(TPakId pakId)
 // ============================================================================
 // DObjFree - ea: 0x006C47A0
 // ============================================================================
-struct DSkel {
-    int animPartBits[4];       // +0x00
-    int controlPartBits[4];    // +0x10
-    int skelPartBits[4];       // +0x20
-    uint8_t mat[64];           // +0x30 (DObjSkelMat[1])
-};
-struct DSkel4 {
-    int animPartBits[4];       // +0x00
-    int controlPartBits[4];    // +0x10
-    int skelPartBits[4];       // +0x20
-    uint8_t mat[256];          // +0x30 (DObjSkelMat[4])
-};
-struct DSkelMax {
-    int animPartBits[4];       // +0x00
-    int controlPartBits[4];    // +0x10
-    int skelPartBits[4];       // +0x20
-    uint8_t mat[5632];         // +0x30 (DObjSkelMat[88])
-};
-
 void XAnimClearTree(XAnimTree* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
 void XAnimFreeTree(XAnimTree* tree);   // ?XAnimFreeTree@@YAXPAVXAnimTree@@@Z
 
