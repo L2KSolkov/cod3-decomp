@@ -154,8 +154,8 @@ class WheelMarkMgr {
 protected:
     static unsigned int NMarks;              // ?NMarks@WheelMarkMgr@@1IA (defined in tr_stats.cpp)
     static cdWheelMarkShaderMat* Material;   // ?Material@WheelMarkMgr@@1PAVcdWheelMarkShaderMat@@A @ 0xF7419C
-    static WheelMark Marks[16];              // ?Marks@WheelMarkMgr@@1PAVWheelMark@@A @ 0xF74490
 public:
+    static WheelMark Marks[16];              // ?Marks@WheelMarkMgr@@2PAVWheelMark@@A @ 0xF74490
     static void Init();                      // ?Init@WheelMarkMgr@@SAXXZ
     static void Exit();                      // ?Exit@WheelMarkMgr@@SAXXZ
     static WheelMark* Find(Entity* owner, wheel_e wheel);  // ?Find@WheelMarkMgr@@SAPAVWheelMark@@PAVEntity@@W4wheel_e@@@Z
