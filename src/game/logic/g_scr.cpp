@@ -10161,26 +10161,26 @@ extern int G_CallSpawnEntity(Entity* ent);  // ?G_CallSpawnEntity@@YAHPAVEntity@
 class AARMapVote {
 public:
     void ResetPanel();                 // ?ResetPanel@AARMapVote@@QAEXXZ (shell.o)
-    static void TallyVotes(void* self);  // ?TallyVotes@AARMapVote@@SAXPAV1@@Z (mp.o)
+    void TallyVotes();                  // ?TallyVotes@AARMapVote@@QAEXXZ (mp_shell.o)
 };
 class AARGameModeVote {
 public:
     void ResetPanel();                 // ?ResetPanel@AARGameModeVote@@QAEXXZ (shell.o)
-    static void TallyVotes(void* self);  // ?TallyVotes@AARGameModeVote@@SAXPAV1@@Z (mp.o)
+    void TallyVotes();                  // ?TallyVotes@AARGameModeVote@@QAEXXZ (mp_shell.o)
 };
 
 // ea: 0x005BC450
 void BrocSys::SettleMapVote()
 {
     if (MultiplayerMgr::sInst->IsHost())
-        AARMapVote::TallyVotes(g_femanager.mAARS->menus[4]);
+        ((AARMapVote*)g_femanager.mAARS->menus[4])->TallyVotes();
 }
 
 // ea: 0x005BC470
 void BrocSys::SettleGameModeVote()
 {
     if (MultiplayerMgr::sInst->IsHost())
-        AARGameModeVote::TallyVotes(g_femanager.mAARS->menus[3]);
+        ((AARGameModeVote*)g_femanager.mAARS->menus[3])->TallyVotes();
 }
 
 // ea: 0x005C1F30 (thunk)

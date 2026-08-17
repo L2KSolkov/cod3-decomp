@@ -11,7 +11,7 @@ if(MSVC)
     add_compile_options(/fp:precise /GR- /Zi)
     # /GR- disables RTTI (match original); enable if needed for type reconstruction
     # Phase 0: allow unresolved externals for green-link
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE:UNRESOLVED /DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE /DEBUG")
 endif()
 
 # Include directories
