@@ -103,6 +103,31 @@ bool Assert(const char* fmt, ...);
 struct fe_menusys_view {
     bool IsSystemActive();
 };
+
+class InGameMenuSystem {
+public:
+    virtual void ReturnToPreviousMenu(int fallback);
+};
+class DialogMenuSystem {
+public:
+    virtual void MakeActive(int menu);
+};
+class FEManager {
+public:
+    InGameMenuSystem* GetIGMS(int client);
+    DialogMenuSystem* GetDMS(int client);
+};
+extern FEManager g_femanager;
+class GamePause {
+public:
+    static void SetGamePaused(int client, bool paused);
+};
+class FEMenu {
+protected:
+    void ClearAllButtons();
+    friend class PauseMenu;
+};
+
 // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ family (shell.o; stub)
 bool fe_menusys_view::IsSystemActive()
 {
@@ -125,9 +150,12 @@ extern void FEManager_UpdateAARMenus(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateInGameMenus(fe_manager_view* self, float time_inc);
 
 // PauseMenu (cl.o; menus live on the InGameMenuSystem at +0x04)
-class PauseMenu {
+class PauseMenu : public FEMenu {
 public:
+    uint8_t _pad[0x4F];
+    int mVersion;  // +0x50
     static PauseMenu* Me(int version);  // ?Me@PauseMenu@@SAPAV1@H@Z (cl.o 0x928DB0)
+    void UnPause();
 };
 extern void* FEManager_GetIGMS(void* self, int client);  // g_entity_misc.cpp
 
@@ -138,6 +166,17 @@ PauseMenu* PauseMenu::Me(int version)
     void** menus = *(void***)((char*)igms + 4);  // InGameMenuSystem::menus
     return (PauseMenu*)menus[0];
 }
+
+void PauseMenu::UnPause()
+{
+    InGameMenuSystem* IGMS = g_femanager.GetIGMS(mVersion);
+    IGMS->ReturnToPreviousMenu(-1);
+    DialogMenuSystem* DMS = g_femanager.GetDMS(mVersion);
+    DMS->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ClearAllButtons();
+}
+
 // ea: 0x5397F0
 int InteractionController::DoRenderText(unsigned int index)
 {
