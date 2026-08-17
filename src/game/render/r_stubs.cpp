@@ -108,7 +108,7 @@ static math::Dir3 s_lightDir;       // dir
 static math::Vector4 s_lightColor;  // color_0
 static unsigned int s_lightInit;    // $S29_4
 
-extern float gLightGridBounceBack;  // ?gLightGridBounceBack@@3MA @ 0xDFA418
+float gLightGridBounceBack = 0.3f;  // ?gLightGridBounceBack@@3MA @ 0xDFA418
 extern void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir,
                                const math::Vector4& Color);  // ngl.o
 

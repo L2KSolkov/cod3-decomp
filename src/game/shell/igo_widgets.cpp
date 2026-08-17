@@ -285,7 +285,7 @@ struct vehicle_info_t {
 };
 extern vehicle_info_t* VEH_GetVehicleInfo(int iIndex);  // g.o
 extern float dword_F63CB4[];  // @ 0xF63CB4
-extern float COMPASS_STOP_OFFSET;  // @ 0xDF4464
+float COMPASS_STOP_OFFSET = 0.0001f;  // @ 0xDF4464
 extern int cg_aWeaponSelect[];  // ?cg_aWeaponSelect@@3PAHA @ 0xF5D078
 extern vmCvar_t g_ammoFadeTime;   // ?g_ammoFadeTime@@3UvmCvar_t@@A @ 0xEAE5C0
 extern vmCvar_t g_ammoSolidTime;  // ?g_ammoSolidTime@@3UvmCvar_t@@A @ 0xEA6668

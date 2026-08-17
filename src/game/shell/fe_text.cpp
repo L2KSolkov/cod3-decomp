@@ -11,7 +11,7 @@
 
 extern float sNaN;                       // ?sNaN@@3MA @ 0x10F19D0
 extern int cg_widescreen_integer;        // cg.o
-extern float widescreen_scale_0;         // shell.o data @ 0xF30D00-ish
+float widescreen_scale_0 = 0.75f;        // shell.o data @ 0xF30D00-ish
 extern const char* const defaultFileName;  // 0xCD67AE
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);            // core.o
@@ -35,7 +35,7 @@ float GetPreviousHUDYPos(float pos, int window, char justification,
                          float height);  // cg.o
 }
 extern float GetYScalingForWindow(int window);  // fe_util.cpp
-extern float widescreen_scale;                  // shell.o data @ 0xDF43C8
+float widescreen_scale = 0.75f;                // shell.o data @ 0xDF43C8
 
 class STBManager {
 public:

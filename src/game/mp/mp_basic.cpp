@@ -38,7 +38,7 @@ int XNetCleanup()
 }
 
 extern void nslUpdate();   // nsl_xboxr (nsl.cpp)
-extern char byte_1869F;    // unnamed byte global referenced by GetQosPing
+char byte_1869F;           // unnamed byte global referenced by GetQosPing
 extern bool gSkipMovies;   // GameXbox.cpp (?gSkipMovies@@3_NA)
 
 extern int XNetGetEthernetLinkStatus();   // Xbox XNet; Win32 shim (unresolved)
@@ -52,7 +52,7 @@ extern const float vectoyaw(const float* const v);   // math lib (?vectoyaw@@YA?
 extern const float AngleMod(const float a);          // math lib (?AngleMod@@YA?BMM@Z)
 extern const unsigned char DirToByte(const float* const dir);  // ?DirToByte@@YA?BEQBM@Z
 extern vmCvar_t cg_widescreen;   // ?cg_widescreen@@3UvmCvar_t@@A (cg.o)
-extern kuju::knet::sTime gStartupAverageUpdateInterval;  // @ 0xE370D4
+kuju::knet::sTime gStartupAverageUpdateInterval = { 500 };  // @ 0xE370D4
 extern void j_nullsub_96();      // ?nullsub_96 (shell.o)
 int dword_F32F40 = 0;            // 0xF32F40
 int dword_F34B34 = 0;            // 0xF34B34
@@ -131,7 +131,7 @@ extern void SV_ClientEnterWorld(client_s* client);  // sv.o (?SV_ClientEnterWorl
 extern const char* MI_GetMapShortname(char mapID);  // ?MI_GetMapShortname@@YAPADD@Z (mp_shell.o)
 extern void Cbuf_AddText(const char* text);         // ?Cbuf_AddText@@YAXPBD@Z (cl.o)
 float leftLegLiftDuration = 0.25f;                  // @ 0xE3739C
-extern char byte_100000;                            // @ 0x100000
+char byte_100000;                                   // @ 0x100000
 struct animEventList_t {
     int row;
     int column;
@@ -152,7 +152,11 @@ extern const float Float4_Zero_16[4] = {0.0f, 0.0f, 0.0f, 0.0f}; // @ 0xD190F0
 int lastThirdPerson = 0;       // @ 0xF99268
 extern vmCvar_t cg_thirdPerson;  // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
 float ladderClipPullin = 2.0f;  // @ 0xE377C8
-extern math::Dir3 rdir_4;       // @ 0xF99250 (step probe direction)
+math::Dir3 rdir_4;              // @ 0xF99250 (step probe direction)
+float threshhold = 0.5f;        // @ 0xE373A0
+float starvationAdd = 25.0f;    // @ 0xE377CC
+float starvationConsistencyScale = 1.5f;  // @ 0xE377D0
+float starvationIntervalScale = 1.0f;    // @ 0xE377D4
 int _S13_9 = 0;                // @ 0xF99264 (step probe init flag)
 float futureTime = 0.2f;        // @ 0xE377C4 (landing trace lead)
 float traceDist = 30.0f;        // @ 0xE377C0 (ladder probe distance)

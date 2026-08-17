@@ -18,7 +18,7 @@ extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
 extern SaveGameData* gSaveGameData;    // ?gSaveGameData@@3PAUSaveGameData@@A
-extern float g_GammaRamp;              // ?g_GammaRamp@@3MA (render.o)
+float g_GammaRamp = 1.0f;              // ?g_GammaRamp@@3MA (render.o)
 extern int g_MPAARTotalTime;           // mp.o
 extern kuju::knet::sTime g_MPAARTimer;  // mp.o
 extern float unk_F6A284[4 * 802];      // @ 0xF6A284 (cg.o)
