@@ -38,6 +38,23 @@ InitScriptFn InitScript(BrocAPI** gamesAPIptr,
 typedef mp_level::InitScriptFn (__cdecl* BrocEntryFn)(BrocAPI**,
                                                       BrocExports&);
 
+// ea: 0x005EF6C0
+vehicle_follow::vehicle_follow()
+{
+    claimedSlotEntityHandleList[0].mHandle.mVal = 0;
+    claimedSlotEntityHandleList[1].mHandle.mVal = 0;
+    claimedSlotEntityHandleList[2].mHandle.mVal = 0;
+    claimedSlotEntityHandleList[3].mHandle.mVal = 0;
+    claimedSlotEntityHandleList[4].mHandle.mVal = 0;
+    claimedSlotEntityHandleList[5].mHandle.mVal = 0;
+    memset(this, 0, sizeof(vehicle_follow));
+    columnSpacing = 144.0f;
+    rowSpacing = 144.0f;
+    columns = 2;
+    rows = 3;
+    minFollowDistance = 192.0f;
+}
+
 // ea: 0x005BC1A0
 BrocEntryFn XboxGetEntryFunction(const char* mapname)
 {
