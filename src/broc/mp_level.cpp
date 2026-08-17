@@ -135,6 +135,36 @@ unsigned BrocAnimResolver(const char*, const char*) { return 0; } // ea: 0xC94ED
 void BrocAnimDebug(Broc::entity) {} // ea: 0xC94F60
 void MainThreadHook(Broc::entity) {} // ea: 0xC94F80
 
+namespace mp_level {
+
+// ea: 0xC94E50
+void AnimNamespaceVariableResolver(int treename, int tree_index,
+                                   int animname, int index)
+{
+    mp_level_wad::ResolveAnim(static_cast<unsigned int>(treename),
+                              static_cast<unsigned int>(animname),
+                              nullptr,
+                              static_cast<unsigned int>(index + (tree_index << 16)));
+}
+
+// ea: 0xC94E90, 0xC94EB0, 0xC94F60
+void BrocAnimInitialize() {}
+void BrocAnimCleanup() {}
+void BrocAnimDebug(Broc::entity) {}
+
+// ea: 0xC94ED0
+unsigned int BrocAnimResolver(const char* treename, const char* animname)
+{
+    unsigned int val = 0;
+    const unsigned int treehash = Broc::string_hash(treename).mVal;
+    const unsigned int animhash = Broc::string_hash(animname).mVal;
+    if (mp_level_wad::ResolveAnim(treehash, animhash, &val, 0) != 0)
+        return val;
+    return 0;
+}
+
+} // namespace mp_level
+
 // ============================================================================
 // InitScript — entry point called by the engine at level load
 // ============================================================================
