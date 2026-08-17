@@ -14,6 +14,77 @@ float (*bytedirs)[3] = s_bytedirs;  // filled at runtime by table init
 #include <math.h>
 #include <string.h>
 
+namespace math {
+
+// ea: 0x004DC020
+float ATan(float y, float x)
+{
+    float invr;
+    float xa;
+    float a;
+    float ab;
+    float ac;
+    float aa;
+    float v4;
+    float v5;
+    float v6;
+    float v7;
+
+    xa = fabsf(x);
+    a = fabsf(y);
+    if (a + xa == 0.0f)
+        return 0.0f;
+    invr = 1.0f / sqrtf(y * y + x * x);
+    if (a <= xa)
+    {
+        v7 = invr * a;
+        if (v7 >= 0.5f)
+        {
+            ac = sqrtf(fabsf((1.0f - v7) * 0.5f));
+            v6 = (((((ac * ac) * ac) * (ac * ac) * (ac * ac) * -0.1079625f)
+                 - ((ac * ac) * ac * (ac * ac) * 0.15000001f))
+                - ((ac * ac) * ac * 0.33333331f))
+                - (ac * 2.0f) + 1.570796f;
+        }
+        else
+        {
+            v6 = (((((v7 * v7) * v7) * (v7 * v7) * (v7 * v7) * 0.053981241f)
+                 + ((v7 * v7) * v7 * (v7 * v7) * 0.075000003f))
+                + ((v7 * v7) * v7 * 0.1666667f)) + v7;
+        }
+    }
+    else
+    {
+        v4 = invr * xa;
+        if (v4 >= 0.5f)
+        {
+            ab = sqrtf(fabsf((1.0f - v4) * 0.5f));
+            v5 = (((((ab * ab) * ab) * (ab * ab) * (ab * ab) * -0.1079625f)
+                 - ((ab * ab) * ab * (ab * ab) * 0.15000001f))
+                - ((ab * ab) * ab * 0.33333331f))
+                - (ab * 2.0f) + 1.570796f;
+        }
+        else
+        {
+            v5 = (((((v4 * v4) * v4) * (v4 * v4) * (v4 * v4) * 0.053981241f)
+                 + ((v4 * v4) * v4 * (v4 * v4) * 0.075000003f))
+                + ((v4 * v4) * v4 * 0.1666667f)) + v4;
+        }
+        v6 = 1.5707964f - v5;
+    }
+    aa = v6;
+    if (x < 0.0f)
+    {
+        v6 = 3.1415927f - v6;
+        aa = v6;
+    }
+    if (y < 0.0f)
+        return 0.0f - v6;
+    return aa;
+}
+
+} // namespace math
+
 // ============================================================================
 // Externs (core.o data / libc)
 // ============================================================================
