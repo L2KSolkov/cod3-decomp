@@ -454,8 +454,8 @@ extern void init_dobj_trackers();
 extern void XAnimInit();
 extern void XAnimShutdown();
 extern void SetupActorHeap();
-extern int gNflMediaId;
 enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };
+extern nflMediaID gNflMediaId;
 extern unsigned int nflFileExists(nflMediaID mediaID, const char* filename);
 // Minimal singleton views (real symbols are static members, core.o; stub
 // definitions live in stubs_game.cpp until the classes are ported).

@@ -7023,10 +7023,10 @@ extern unsigned int nflInit(nflInitParamsBin* ip);  // nfl_common.o
 extern void nflStart(void* work);
 extern void nflGetMediaAlignments(unsigned int mediaID,
                                   nflMediaAlignmentsBin* ma);
-extern unsigned int gNflMediaId;  // ?gNflMediaId@@3IA
+extern nflMediaID gNflMediaId;    // ?gNflMediaId@@3W4nflMediaID@@A
 void* gNflMemAlloc = nullptr;     // ?gNflMemAlloc@@3PAXA
 unsigned int gNflAlignment = 0;   // ?gNflAlignment@@3IA
-unsigned int gNflMediaId = 0;
+nflMediaID gNflMediaId = NFL_MEDIA_DEFAULT;
 
 extern void nflShutdown();  // nfl_common.o
 

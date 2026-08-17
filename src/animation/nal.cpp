@@ -8341,9 +8341,9 @@ struct PakFileLocal {
 };
 
 extern TPakId CurPakId();  // streamer/pakmanager.cpp
-extern unsigned int gNflMediaId;  // ?gNflMediaId@@3IA (streamer)
 typedef unsigned int nflFileID;
 enum nflMediaID : unsigned { NFL_MEDIA_ID_DUMMY = 0 };
+extern nflMediaID gNflMediaId;  // ?gNflMediaId@@3W4nflMediaID@@A (streamer)
 extern nflFileID nflOpenFile(nflMediaID media, const char* name);  // filesystem/nfl.cpp
 extern void* PoolAllocator_Allocate(void* allocator, unsigned int size,
                                     bool forceHeapAlloc);

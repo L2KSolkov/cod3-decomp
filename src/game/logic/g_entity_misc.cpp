@@ -4346,7 +4346,7 @@ AudioBankMgr* AudioBankMgr::sInst = nullptr;
 // ============================================================================
 extern enum nflMediaID : unsigned;
 extern unsigned int nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YAIW4nflMediaID@@PBD@Z
-extern int gNflMediaId;                                     // nfl_xboxr
+extern nflMediaID gNflMediaId;                              // nfl_xboxr
 extern void* AssetBankSet_ctor(void* self);                 // streamer.o
 static tlFixedString dflt;          // ?dflt@@3VtlFixedString@@A @ 0xF58C04
 static bool s_dflt_init;            // $S13_7

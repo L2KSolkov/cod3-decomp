@@ -100,7 +100,7 @@ extern void AudioBankMgr_FinishLoading(void* self);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 extern void FEManager_UpdateLoadingMenu(void* self, float percentDone);
 
-extern int  gNflMediaId;
+extern nflMediaID gNflMediaId;
 extern struct BspTree* g_bspTree;
 class GroupFile;
 GroupFile* g_ScrFiles;  // ?g_ScrFiles@@3PAVGroupFile@@A (game.o)
