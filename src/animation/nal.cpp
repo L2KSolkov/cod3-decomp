@@ -755,7 +755,7 @@ bool subtitle_manager_play_subtitle(const char* tag, const char* prefix);
 }
 
 // class tag to match binary V-mangled template args
-class nalPositionOrientation {
+struct nalPositionOrientation {
 public:
     math::Position3 pos;
     math::Quaternion orient;
@@ -763,14 +763,15 @@ public:
     void operator*=(const nalPositionOrientation& rhs);  // ??XnalPositionOrientation@@QAEXABV0@@Z (0x560010)
 };
 
-class nalMatrix4x4 {
+struct nalMatrix4x4 : math::Mat44 {
 public:
-    float m[4][4];
-
     nalMatrix4x4() {}
 
     // ??0nalMatrix4x4@@QAE@ABVnalPositionOrientation@@@Z (game2.o 0x51B400)
     nalMatrix4x4(const nalPositionOrientation& po);
+
+    // ?Inverse@nalMatrix4x4@@QBE?AV1@XZ (game2.o 0x51B830)
+    nalMatrix4x4 Inverse() const;
 
     // ?Identity@nalMatrix4x4@@2V1@A
     static nalMatrix4x4 Identity;
@@ -6462,26 +6463,77 @@ nalMatrix4x4::nalMatrix4x4(const nalPositionOrientation& po)
 {
     nalMatrix4x4Local qm;
     qm.FromQuaternion(po.orient);
-    for (int r = 0; r < 4; ++r)
-    {
-        m[0][r] = qm.x.v.m128_f32[r];
-        m[1][r] = qm.y.v.m128_f32[r];
-        m[2][r] = qm.z.v.m128_f32[r];
-    }
-    m[3][0] = po.pos.v.m128_f32[0];
-    m[3][1] = po.pos.v.m128_f32[1];
-    m[3][2] = po.pos.v.m128_f32[2];
-    m[3][3] = 1.0f;
+    x = qm.x;
+    y = qm.y;
+    z = qm.z;
+    w = po.pos;
+    w.v.m128_f32[3] = 1.0f;
 }
 
 static nalMatrix4x4 nalMakeIdentity4x4()
 {
     nalMatrix4x4 m;
-    memset(m.m, 0, sizeof(m.m));
-    m.m[0][0] = m.m[1][1] = m.m[2][2] = m.m[3][3] = 1.0f;
+    memset(&m, 0, sizeof(m));
+    m.x.v.m128_f32[0] = m.y.v.m128_f32[1] =
+        m.z.v.m128_f32[2] = m.w.v.m128_f32[3] = 1.0f;
     return m;
 }
 nalMatrix4x4 nalMatrix4x4::Identity = nalMakeIdentity4x4();
+
+// IDA 0x517D10/0x517E00/0x51B720/0x51B830: cofactor expansion,
+// adjugate transpose, and determinant-zero identity fallback.
+static float nalMatrix4x4Cofactor(const nalMatrix4x4& matrix, int x, int y)
+{
+    float minor[3][3];
+    int minorRow = 0;
+    for (int row = 0; row < 4; ++row)
+    {
+        if (row == x)
+            continue;
+        int minorColumn = 0;
+        for (int column = 0; column < 4; ++column)
+        {
+            if (column == y)
+                continue;
+            const float* source = &matrix.x.v.m128_f32[0] + row * 4 + column;
+            minor[minorRow][minorColumn++] = *source;
+        }
+        ++minorRow;
+    }
+    const float determinant =
+        minor[0][0] * minor[1][1] * minor[2][2]
+        + minor[0][2] * minor[1][0] * minor[2][1]
+        + minor[0][1] * minor[1][2] * minor[2][0]
+        - minor[0][2] * minor[1][1] * minor[2][0]
+        - minor[0][0] * minor[1][2] * minor[2][1]
+        - minor[0][1] * minor[1][0] * minor[2][2];
+    return (((y ^ x) & 1) != 0) ? -determinant : determinant;
+}
+
+nalMatrix4x4 nalMatrix4x4::Inverse() const
+{
+    float determinant = 0.0f;
+    for (int i = 0; i < 4; ++i)
+        determinant += nalMatrix4x4Cofactor(*this, 0, i)
+                     * x.v.m128_f32[i];
+
+    nalMatrix4x4 result;
+    if (determinant == 0.0f)
+        return Identity;
+
+    float adjugate[4][4];
+    for (int row = 0; row < 4; ++row)
+        for (int column = 0; column < 4; ++column)
+            adjugate[column][row] =
+                nalMatrix4x4Cofactor(*this, row, column);
+
+    const float reciprocal = 1.0f / determinant;
+    for (int row = 0; row < 4; ++row)
+        for (int column = 0; column < 4; ++column)
+            (&result.x.v.m128_f32[0])[row * 4 + column] =
+                adjugate[row][column] * reciprocal;
+    return result;
+}
 
 // ??D@YA?AVnalPositionOrientation@@ABV0@0@Z (anim.o 0x55FEC0)
 // Compose: o = quat(a.o, b.o) [SSE verbatim], p = R(b.o) * a.p + b.p
@@ -7291,7 +7343,7 @@ void SceneAnimClient::Advance(
         if ((animInst->Anim->mFlags & 2) != 0)
         {
             nalMatrix4x4 m4(po);
-            memcpy(matBuf, m4.m, 64);
+            memcpy(matBuf, &m4, 64);
             Axis4ToAngles(matBuf, angles3);
         }
         else if (v19->tagInfo != nullptr)
@@ -7299,7 +7351,7 @@ void SceneAnimClient::Advance(
             float originM[4][4];
             memcpy(originM, &nalMatrix4x4::Identity, 64);
             nalMatrix4x4 m4(po);
-            memcpy(matBuf, m4.m, 64);
+            memcpy(matBuf, &m4, 64);
             tagInfo_t* tagInfo = v19->tagInfo;
             for (int r = 0; r < 4; ++r)
                 for (int c = 0; c < 3; ++c)
@@ -7352,7 +7404,7 @@ void SceneAnimClient::Advance(
             matBuf[3][3] = 1.0f;
             nalMatrix4x4 m4(po);
             float originM[4][4];
-            memcpy(originM, m4.m, 64);
+            memcpy(originM, &m4, 64);
             __m128 r0 = _mm_loadu_ps(matBuf[0]);
             __m128 r1 = _mm_loadu_ps(matBuf[1]);
             __m128 r2 = _mm_loadu_ps(matBuf[2]);
@@ -7612,19 +7664,19 @@ void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
     // SSE verbatim: out = axis.x*po.pos.x + axis.y*po.pos.y +
     // axis.z*po.pos.z (+ axis.w written by AnglesToAxis = origin)
     __m128 xmm0 = po.pos.v;
-    __m128 xmm1 = _mm_loadu_ps(&axis.m[1][0]);
+    __m128 xmm1 = axis.y.v;
     __m128 xmm2 = _mm_shuffle_ps(xmm0, xmm0, 0xAA);
     __m128 xmm3 = _mm_shuffle_ps(xmm0, xmm0, 0x55);
     __m128 xmm4 = _mm_shuffle_ps(xmm0, xmm0, 0);
     xmm2 = _mm_mul_ps(xmm2, xmm1);
-    xmm1 = _mm_loadu_ps(&axis.m[2][0]);
+    xmm1 = axis.z.v;
     xmm3 = _mm_mul_ps(xmm3, xmm1);
-    xmm1 = _mm_loadu_ps(&axis.m[0][0]);
+    xmm1 = axis.x.v;
     xmm4 = _mm_mul_ps(xmm4, xmm1);
     xmm4 = _mm_add_ps(xmm4, xmm3);
     xmm4 = _mm_add_ps(xmm4, xmm2);
     float out[3];
-    __m128 xmm5 = _mm_loadu_ps(&axis.m[3][0]);
+    __m128 xmm5 = axis.w.v;
     out[0] = xmm4.m128_f32[0] + xmm5.m128_f32[0];
     out[1] = xmm4.m128_f32[1] + xmm5.m128_f32[1];
     out[2] = xmm4.m128_f32[2] + xmm5.m128_f32[2];

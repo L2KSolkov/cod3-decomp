@@ -142,9 +142,8 @@ extern float traceDist;         // @ 0xE377C0 (ladder probe distance)
 struct nalPositionOrientation {
     float m_data[8];  // opaque
 };
-class nalMatrix4x4 {
+struct nalMatrix4x4 : math::Mat44 {
 public:
-    float m[4][4];
     nalMatrix4x4() {}
     nalMatrix4x4(const nalPositionOrientation& po);  // game2.o 0x51B400
     nalMatrix4x4 Inverse() const;  // ?Inverse@nalMatrix4x4@@QBE?AV1@XZ (game2.o 0x90AD30)

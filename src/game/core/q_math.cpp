@@ -2331,9 +2331,8 @@ void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
 }
 
 // nalMatrix4x4 (anim.o; global class, 4x4 row-major: x/y/z/w rows)
-class nalMatrix4x4 {
+struct nalMatrix4x4 : math::Mat44 {
 public:
-    float m[4][4];
 };
 
 // ea: 0x004C29C0
@@ -2344,22 +2343,12 @@ void AnglesToAxis(const math::Position3& angles,
     FastSinCos(angles.v.m128_f32[1] * 0.017453292f, &sy, &cy);
     FastSinCos(angles.v.m128_f32[0] * 0.017453292f, &sp, &cp);
     FastSinCos(angles.v.m128_f32[2] * 0.017453292f, &sr, &cr);
-    out.m[0][0] = cp * cy;
-    out.m[0][1] = cp * sy;
-    out.m[0][2] = 0.0f - sp;
-    out.m[0][3] = 0.0f;
-    out.m[1][0] = sr * sp * cy - cr * sy;
-    out.m[1][1] = sr * sp * sy + cr * cy;
-    out.m[1][2] = sr * cp;
-    out.m[1][3] = 0.0f;
-    out.m[2][0] = cr * sp * cy + sr * sy;
-    out.m[2][1] = cr * sp * sy - sr * cy;
-    out.m[2][2] = cr * cp;
-    out.m[2][3] = 0.0f;
-    out.m[3][0] = origin.v.m128_f32[0];
-    out.m[3][1] = origin.v.m128_f32[1];
-    out.m[3][2] = origin.v.m128_f32[2];
-    out.m[3][3] = origin.v.m128_f32[3];
+    out.x.v = _mm_setr_ps(cp * cy, cp * sy, 0.0f - sp, 0.0f);
+    out.y.v = _mm_setr_ps(sr * sp * cy - cr * sy,
+                          sr * sp * sy + cr * cy, sr * cp, 0.0f);
+    out.z.v = _mm_setr_ps(cr * sp * cy + sr * sy,
+                          cr * sp * sy - sr * cy, cr * cp, 0.0f);
+    out.w.v = origin.v;
 }
 
 // ea: 0x004C2B70
