@@ -9,6 +9,30 @@
 #include "core/math_types.h"
 #include <cstddef>
 
+struct cdlConvex;
+
+// cdl_cinfo1 — IDA local type used by the convex vtable collision entries.
+struct cdl_cinfo1 {
+    math::Position3 pi;
+    math::Dir3      ni;
+};
+static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
+
+// cdlConvex_vtbl — IDA local type at 0x81EA70 support call site.
+// The two gap fields are part of the 0x24-byte Xbox vtable layout.
+struct cdlConvex_vtbl {
+    void (__thiscall *dummy)(cdlConvex*);
+    unsigned char gap4[4];
+    math::Position3* (__thiscall *support)(cdlConvex*, math::Position3*, const math::Dir3*);
+    unsigned char gapC[4];
+    bool (__thiscall *collide_sphere)(cdlConvex*, const math::Position3*, float, cdl_cinfo1*, int*);
+    bool (__thiscall *collide_segment)(cdlConvex*, const math::Position3*, const math::Position3*, cdl_cinfo1*, int*, float*);
+    bool (__thiscall *collide_velocity_sphere)(cdlConvex*, const math::Position3*, cdl_cinfo1*, float, const math::Dir3*);
+    bool (__thiscall *intersect)(cdlConvex*, const math::Position3*, const math::Position3*, const math::Dir3*, int*);
+    int (__thiscall *get_type)(cdlConvex*);
+};
+static_assert(sizeof(cdlConvex_vtbl) == 0x24, "cdlConvex_vtbl size mismatch");
+
 // ============================================================================
 // cdlVirtual — vtable holder
 // ============================================================================
