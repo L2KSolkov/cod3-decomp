@@ -25,7 +25,7 @@
 
 extern const char* const defaultFileName;  // 0xCD67AE
 
-class nglTexture;
+struct nglTexture;
 class nglFont;
 class PanelMaterial;
 
