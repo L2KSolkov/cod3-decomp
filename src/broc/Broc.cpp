@@ -1215,7 +1215,34 @@ void waittill(entity ent, HashStr labelHash)
             gBrocAPI.mKillThreadExec();
     }
 }
-void waittill_timeout(entity, HashStr, float) {}
+// ea: 0x00928CF0. IDA uses the same notify state with a timeout value.
+void waittill_timeout(entity ent, HashStr labelHash, float t)
+{
+    HashStr notify2 = {0};
+    HashStr notify3 = {0};
+    HashStr notify4 = {0};
+    thread_debug_wait_until(labelHash, notify2, notify3, notify4);
+    if (ent.GetHandle() == 0
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\include\\threads.inl",
+               132,
+               "null entity passed into waittill- thread will be killed"))
+        __debugbreak();
+    if (ent.GetHandle() != 0)
+    {
+        gThreadSleepEntity = ent.GetHandle();
+        gThreadSleepPakfile = (TPakInfo)0;
+        gThreadSleepNotify1 = labelHash.mVal;
+        gThreadSleepNotify2 = 0;
+        gThreadSleepNotify3 = 0;
+        gThreadSleepNotify4 = 0;
+        gThreadWaitForAll = false;
+        gTimeOut = t;
+        thread_sleep_until_notify();
+        if (gBrocAPI.mKillThread)
+            gBrocAPI.mKillThreadExec();
+    }
+}
 void waittillmatch(entity, HashStr, HashStr, HashStr, HashStr) {}
 void waittillor(entity, HashStr, HashStr, HashStr, HashStr) {}
 void waittill(entity, const char*) {}
