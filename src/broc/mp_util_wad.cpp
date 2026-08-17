@@ -6520,8 +6520,10 @@ void WindBlowing(Broc::entity self) {
 }
 
 void* WindBlowing__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(WindBlowing, self);
 }
 
 // CreateGlobalWind - ea: 0x9648C0
