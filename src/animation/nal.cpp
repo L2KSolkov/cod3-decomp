@@ -2194,6 +2194,11 @@ public:
     void StopAnims();                         // ea: 0x007750C0
     void Advance(float deltaT);            // ?Advance@AnimationPlayer@@QAEXM@Z (game2.o)
     void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
+    void PlayModifier(nalGenericAnim* anim, float priority,
+                      unsigned int mask); // ea: 0x007752E0
+    void PlayModifier(nalGenericAnim* anim,
+                      AnimationPlayerModifierType type, float priority,
+                      unsigned int mask); // ea: 0x00775320
     void PlayModifier(nalGenericAnim* anim,
                       AnimationPlayerModifierType type, float priority,
                       unsigned int mask, bool ForceRestart, float fade_in,
@@ -2866,6 +2871,23 @@ LABEL_17:
         else
             state->base.t_prev = t;
     }
+}
+
+// ea: 0x007752E0
+void AnimationPlayer::PlayModifier(nalGenericAnim* anim, float priority,
+                                   unsigned int mask)
+{
+    PlayModifier(anim, nalPartialModifier, priority, mask, false, 0.2f, 0.2f,
+                  nullptr, 0.0f, nullptr, 1.0f, 0.0f);
+}
+
+// ea: 0x00775320
+void AnimationPlayer::PlayModifier(nalGenericAnim* anim,
+                                   AnimationPlayerModifierType type,
+                                   float priority, unsigned int mask)
+{
+    PlayModifier(anim, type, priority, mask, false, 0.2f, 0.2f, nullptr,
+                  0.0f, nullptr, 1.0f, 0.0f);
 }
 
 
