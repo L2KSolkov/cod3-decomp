@@ -558,7 +558,8 @@ struct jqBatch {
 };
 extern bool level_bMissionFailed;
 extern bool level_bMissionSuccess;
-extern void* gLastAbstractEffectParticle;
+class AbstractEffectParticle;
+extern AbstractEffectParticle* gLastAbstractEffectParticle;
 extern void* g_scr_data_debris_bro_func;
 extern void apsCommon_SetCurrentPakId(int pakId);  // ?SetCurrentPakId@apsCommon@@SAXH@Z
 extern void apsCommon_SetPakAllocs(int v);         // ?SetPakAllocs@apsCommon@@SAXH@Z
@@ -651,7 +652,8 @@ void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqB
             v4->mFlags &= (unsigned short)~8u;
             if (!level_bMissionFailed && !level_bMissionSuccess)
             {
-                gLastAbstractEffectParticle = v4->mAbstractEffectParticle;
+                gLastAbstractEffectParticle =
+                    (AbstractEffectParticle*)v4->mAbstractEffectParticle;
                 ((void (__cdecl*)())g_scr_data_debris_bro_func)();
             }
             gLastAbstractEffectParticle = nullptr;

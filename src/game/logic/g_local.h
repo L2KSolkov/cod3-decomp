@@ -3395,10 +3395,21 @@ struct cgGlobal_t {
 extern cgGlobal_t cgGlobal;   // 0xF5FE30
 
 // kuju::knet::sTime (4 bytes; mTime in milliseconds)
+#ifndef COD3_KUJU_KNET_SSTIME_DEFINED
+#define COD3_KUJU_KNET_SSTIME_DEFINED
+namespace kuju {
+namespace knet {
+class sTime {
+public:
+    int mTime;
+};
+}
+}
+#endif
 struct kuju_sTime {
     int mTime;  // +0x00
 };
-extern kuju_sTime g_MPAARTimer;   // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
+extern kuju::knet::sTime g_MPAARTimer;   // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
 extern int g_MPAARTotalTime;      // ?g_MPAARTotalTime@@3HA @ 0xE38468
 extern unsigned char byte_F64194[];  // 0xF64194
 extern int dword_F641D0[];           // 0xF641D0

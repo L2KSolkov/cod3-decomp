@@ -6700,7 +6700,8 @@ public:
     unsigned char _pad[0x08];
     unsigned int  mEffectNameHashStr;     // +0x08
 };
-extern AbstractEffect* gLastAbstractEffectParticle;  // aeps.o data
+class AbstractEffectParticle : public AbstractEffect {};
+extern AbstractEffectParticle* gLastAbstractEffectParticle;  // aeps.o data
 
 // LightEffect view (core.o; mInnerRadius +0x54, mOuterRadius +0x58,
 // mFlicker +0x3C, mFade +0x60 verified vs IDA)

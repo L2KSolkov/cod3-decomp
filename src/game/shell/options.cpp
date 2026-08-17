@@ -19,7 +19,7 @@ extern void mem_heap_free(void* ptr);  // core.o
 extern SaveGameData* gSaveGameData;    // ?gSaveGameData@@3PAUSaveGameData@@A
 extern float g_GammaRamp;              // ?g_GammaRamp@@3MA (render.o)
 extern int g_MPAARTotalTime;           // mp.o
-extern struct MPAARTimer { int mTime; } g_MPAARTimer;  // mp.o
+extern kuju::knet::sTime g_MPAARTimer;  // mp.o
 extern float unk_F6A284[4 * 802];      // @ 0xF6A284 (cg.o)
 extern float unk_F6A27C[4 * 802];      // @ 0xF6A27C (cg.o; old viewports)
 extern unsigned char unk_F6A294[4 * 3208];  // @ 0xF6A294 (cg.o)

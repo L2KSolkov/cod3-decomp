@@ -49,7 +49,7 @@ const char* szMPMainMenuXBoxOptionTextReferences[4] = {
 // Externs (shell.o / core.o / mp.o / mp_shell.o)
 // ============================================================================
 extern int g_MPAARTotalTime;
-extern struct MPAARTimer { int mTime; } g_MPAARTimer;
+extern kuju::knet::sTime g_MPAARTimer;
 extern void tlPrintf(const char* fmt, ...);
 extern bool gSkipFrontEnd;
 extern bool gSkipMovies;

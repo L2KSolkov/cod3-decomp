@@ -12,6 +12,11 @@ game_hudelem_s g_hudelems[16];  // ?g_hudelems@@3PAUgame_hudelem_s@@A @ 0xEA5580
 scr_data_t g_scr_data;          // ?g_scr_data@@3Uscr_data_t@@A @ 0xEE58D0
 int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
 int g_MPAARTotalTime = 30;             // ?g_MPAARTotalTime@@3HA (mp.o)
+kuju::knet::sTime g_MPAARTimer;         // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
+void* gDebugEntity;                     // ?gDebugEntity@@3PAXA @ 0xF3A5CC
+class AbstractEffectParticle;
+AbstractEffectParticle* gLastAbstractEffectParticle; // ?gLastAbstractEffectParticle@@3PAVAbstractEffectParticle@@A
+vmCvar_t g_changelevel_time;            // ?g_changelevel_time@@3UvmCvar_t@@A
 int g_bOptimize = 0;                  // ?g_bOptimize@@3HA (render.o)
 int gParticleBatchGroup = 0;          // ?gParticleBatchGroup@@3HA (render.o)
 int gDelayRenderForNFrames = 0;       // ?gDelayRenderForNFrames@@3HA (render.o)
