@@ -894,7 +894,41 @@ ExtendedEntity* ExtendedEntity::GetExtendedEntity(unsigned int handle)
 {
     return static_cast<ExtendedEntity*>(gBrocAPI.mGetExtendedEntity(handle));
 }
-void* ExtendedEntity::CreateExtendedEntity(const char**, int) { return NULL; }
+// ea: 0x00929AC0. IDA profiling events are omitted; allocation, key hashing,
+// callback lookup, validation, and initialization follow the decompiled body.
+void* ExtendedEntity::CreateExtendedEntity(const char** kvPairs, int nPairs)
+{
+    ExtendedEntity* ee = new (std::nothrow) ExtendedEntity();
+
+    for (int i = 0; i < nPairs; ++i)
+    {
+        const char* keystr = kvPairs[2 * i];
+        const char* valstr = kvPairs[2 * i + 1];
+        const unsigned int key = string_hash(keystr).mVal;
+        InitFunc* init = nullptr;
+        DestructFunc* dtor = nullptr;
+
+        if (sGetFunctions == nullptr
+            && gBrocAPI.mAssert(
+                   "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                   157,
+                   "sGetFunctions not initialized!"))
+            __debugbreak();
+
+        sGetFunctions(key, &init, nullptr, nullptr, &dtor);
+        if (init == nullptr && dtor != nullptr
+            && gBrocAPI.mAssert(
+                   "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                   160,
+                   "Key value can not be set in Graydiant.  Press Debug and look at \"keystr\""))
+            __debugbreak();
+
+        if (init != nullptr)
+            ee->InternalSet(key, init(valstr));
+    }
+
+    return ee;
+}
 // ea: 0x00929DB0; IDA invokes the scalar deleting destructor with delete flag.
 void ExtendedEntity::DeleteExtendedEntity(void* mem)
 {
