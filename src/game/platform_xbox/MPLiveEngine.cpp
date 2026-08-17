@@ -58,7 +58,18 @@ void MPUIInterface::ExitGame()
 }
 void MPUIInterface::QueryFromID(XNKID* sessionID)
 {
-    (void)sessionID;
+    void* memory = mem_heap_malloc(0xD0);
+    CFromIDQuery* query;
+    if (memory != NULL)
+        query = new (memory) CFromIDQuery();
+    else
+        query = NULL;
+
+    query->Query(*(unsigned __int64*)sessionID);
+    MPLiveEngine::GetHandle()->RunQuery(query);
+    MPUIInterface::mGameListingNumGames = 0;
+    MPUIInterface::mLiveQueryActive = true;
+    MPUIInterface::mQueryFromID = true;
 }
 void MPUIInterface::Step()
 {

@@ -332,6 +332,7 @@ public:
     static bool mCableDisconnect;  // ?mCableDisconnect@MPUIInterface@@1_NA
     static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
     static bool mInSession;         // ?mInSession@MPUIInterface@@1_NA
+    static unsigned long mGameListingNumGames; // ?mGameListingNumGames@MPUIInterface@@1KA
     static void bdNetStop();
     static void PlatformStop();
     static void PlatformStart();
