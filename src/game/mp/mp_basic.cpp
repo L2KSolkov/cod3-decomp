@@ -8576,6 +8576,23 @@ void MultiplayerMgr::MapRestart()
     mPeer->MapRestart();
 }
 
+// ea: 0x00750590
+void MultiplayerMgr::AttemptToRevivePlayer(Entity* player, Entity* medic)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1311;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->PlayerReviveRequest(player, medic);
+}
+
 // ea: 0x00750690
 void MultiplayerMgr::WeaponChange(int weapon)
 {
