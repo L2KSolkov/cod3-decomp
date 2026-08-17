@@ -5275,6 +5275,60 @@ SessionDetailsMenu::SessionDetailsMenu(FEMenuSystem* s)
     panel = nullptr;
 }
 
+// ea: 0x00790070
+void MultilineFrontendOverlayMenu::SetState(eState newState)
+{
+    entries[1]->SetScale(mTextScale);
+    mState = newState;
+    if (newState == NETWORK_ERROR_COUNTDOWN)
+    {
+        OverlayMenu* overlay = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        if (overlay == nullptr
+            || overlay->mState != OverlayMenu::FROM_ID_QUERYING)
+        {
+            entries[0]->SetTextNoLocalize((char*)defaultFileName);
+            mText = "MPFRONTEND_NETWORK_CONNECTION_TIMEOUT";
+            entries[2]->SetText("MPFRONTEND_TRY_AGAIN");
+            entries[2]->Disable(false);
+            entries[3]->SetText("MPFRONTEND_CANCEL");
+            entries[3]->Disable(false);
+            mCountdown = 5.9899998f;
+            helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
+        }
+    }
+    else if (newState == CONTROLLER_DISCONNECTED)
+    {
+        entries[0]->SetTextNoLocalize((char*)defaultFileName);
+        g_controllerConnectedErrorShown[
+            LocalClient::ClientToPort(currCl)] = true;
+        mText = BuildControllerMessage();
+        mAcceptMenu = -1;
+        mBackMenu = -1;
+        entries[2]->SetTextNoLocalize((char*)defaultFileName);
+        entries[2]->Disable(true);
+        entries[3]->SetTextNoLocalize((char*)defaultFileName);
+        entries[3]->Disable(true);
+        helpbar1->SetTextNoLocalize((char*)defaultFileName);
+    }
+    else if (newState != NO_OVERLAY)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/MultilineOverlayMenu.cpp";
+        AeAssert::gCurrentLine = 259;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    const char* text = (mText.mBlock != nullptr)
+        ? (const char*)&mText.mBlock[1] : defaultFileName;
+    mTextEntry->SetTextBox(text, 400, -1.0f);
+    mBackMenu = -1;
+    mAcceptMenu = -1;
+}
+
 // ea: 0x00790280
 void MultilineFrontendOverlayMenu::SetTempState(eState newState)
 {
