@@ -77,6 +77,52 @@ static const __m128 Float4_SignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
 #define DOT3(v) ((v).m128_f32[0] + ((v).m128_f32[1] + (v).m128_f32[2]))
 
 // ============================================================================
+// math::operator/ — compose A with the inverse affine transform B
+// ea: 0x81D260
+// ============================================================================
+math::Mat43 math::operator/(const math::Mat43& a, const math::Mat43& b) {
+    const __m128 b_y = b.y.v;
+    const __m128 b_z = b.z.v;
+    const __m128 v5 = _mm_shuffle_ps(b.x.v, b_y, 68);
+    const __m128 v6 = _mm_shuffle_ps(_mm_shuffle_ps(b.x.v, b_y, 238), b_z, 168);
+    const __m128 v7 = _mm_shuffle_ps(v5, b_z, 136);
+    const __m128 v8 = _mm_shuffle_ps(v5, b_z, 221);
+    const __m128 a_w = a.w.v;
+    const __m128 inverse_translation = _mm_add_ps(
+        _mm_mul_ps(_mm_shuffle_ps(a_w, a_w, 170), v6),
+        _mm_xor_ps(
+            Float4_SignMask,
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(b.w.v, b.w.v, 0), v7),
+                    _mm_mul_ps(_mm_shuffle_ps(b.w.v, b.w.v, 85), v8)),
+                _mm_mul_ps(_mm_shuffle_ps(b.w.v, b.w.v, 170), v6))));
+
+    math::Mat43 result;
+    result.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 0), v7),
+            _mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 85), v8)),
+        _mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 170), v6));
+    result.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 0), v7),
+            _mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 85), v8)),
+        _mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 170), v6));
+    result.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 0), v7),
+            _mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 85), v8)),
+        _mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 170), v6));
+    result.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a_w, a_w, 0), v7),
+            _mm_mul_ps(_mm_shuffle_ps(a_w, a_w, 85), v8)),
+        inverse_translation);
+    return result;
+}
+
+// ============================================================================
 // intersect — ray vs plane
 // ea: 0x81D4E0
 // ============================================================================

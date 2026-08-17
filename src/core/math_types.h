@@ -317,6 +317,7 @@ Position3 operator/(const Position3& _v, const Mat43& _m);  // ??Kmath@@YA?AVPos
 Mat33 Mul(const Mat33& _a, const Mat33& _b);  // ?Mul@math@@YA?AVMat33@1@ABV21@0@Z (g.o 0x4A77C0)
 Mat43 Mul(const Mat43& _a, const Mat43& _b);  // ?Mul@math@@YA?AVMat43@1@ABV21@0@Z (g.o 0x4A7BC0)
 Mat43 operator*(const Mat43& _a, const Mat43& _b);  // ??Dmath@@YA?AVMat43@0@ABV10@0@Z (g.o 0x4A7D90)
+Mat43 operator/(const Mat43& _a, const Mat43& _b);  // ??Kmath@@YA?AVMat43@0@ABV10@0@Z (cdl_common.o 0x81D260)
 Mat43 Inv(const Mat43& _m);                     // ?Inv@math@@YA?AVMat43@1@ABV21@@Z (g.o 0x4A80A0)
 Vector4 Cos(const Vector4& radians, const Vector4& frequency);  // ?Cos@math@@YA?AVVector4@1@ABV21@0@Z (g.o 0x4A83C0)
 bool Compare_all_lt(const Position3& _a, const Position3& _b);  // ?Compare_all_lt@math@@YA_NABVPosition3@1@0@Z (g.o 0x4A84D0)

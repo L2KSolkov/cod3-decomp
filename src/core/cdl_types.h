@@ -30,6 +30,35 @@ struct cdlConvex {
     int               m_checkCount;   // +0x0C
     math::Vector4     m_sphere;       // +0x10 (bounding sphere/center)
     math::Dir3        m_dims;         // +0x20 (half extents)
+
+    // cdl_common.o COMDAT helpers recovered from IDA.
+    math::Position3 get_min() const {
+        math::Position3 result;
+        result.v = _mm_sub_ps(m_sphere.v, m_dims.v);
+        return result;
+    }
+
+    math::Position3 get_max() const {
+        math::Position3 result;
+        result.v = _mm_add_ps(m_sphere.v, m_dims.v);
+        return result;
+    }
+
+    const math::Dir3& get_dims() const { return m_dims; }
+    const math::Vector4& get_center_local() const { return m_sphere; }
+    float get_radius() const { return m_sphere.v.m128_f32[3]; }
+
+    math::Position3 get_center(const math::Mat43& mat) const {
+        math::Position3 result;
+        result.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 0), mat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 85), mat.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 170), mat.z.v),
+                mat.w.v));
+        return result;
+    }
 };
 static_assert(sizeof(cdlConvex) == 0x30, "cdlConvex size mismatch");
 static_assert(offsetof(cdlConvex, __vftable)      == 0x00, "cdlConvex.__vftable offset mismatch");
