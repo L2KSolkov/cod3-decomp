@@ -75,7 +75,7 @@ public:
 // MPUIInterface::GetReturnMenu
 class MPUIInterface {
 public:
-    static int GetReturnMenu();  // ?GetReturnMenu@MPUIInterface@@SA?BHXZ
+    static const int GetReturnMenu();  // ?GetReturnMenu@MPUIInterface@@SA?BHXZ
 };
 
 // GetTextureData (ngl/frontend helper)
