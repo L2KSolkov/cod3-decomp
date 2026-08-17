@@ -864,7 +864,16 @@ ExtendedEntity::~ExtendedEntity() {}
 ExtendedEntity* ExtendedEntity::GetExtendedEntity(unsigned int) { return NULL; }
 void* ExtendedEntity::CreateExtendedEntity(const char**, int) { return NULL; }
 void ExtendedEntity::DeleteExtendedEntity(void*) {}
-bool ExtendedEntity::MatchExtendedEntityKey(void*, int, const char*) { return false; }
+// ea: 0x00929F60. Profiling events are omitted; lookup and typed comparison
+// follow the IDA body exactly.
+bool ExtendedEntity::MatchExtendedEntityKey(void* mem, int key, const char* text)
+{
+    ExtendedEntity* ptr = static_cast<ExtendedEntity*>(mem);
+    const unsigned int* value = ptr->InternalGet(static_cast<unsigned int>(key));
+    if (value == nullptr)
+        return false;
+    return ptr->GetEquals(static_cast<unsigned int>(key))(*value, text);
+}
 void* ExtendedEntity::CopyExtendedEntity(const void*) { return NULL; }
 void ExtendedEntity::InitScript(BrocExports&) {}
 // ea: 0x0092A7A0. IDA's profiling enter/leave events use BrocAPI members not
