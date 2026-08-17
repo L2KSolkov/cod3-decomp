@@ -135,7 +135,7 @@ extern bool gNANO_Animate;                       // ?gNANO_Animate@@3_NA (g.o)
 
 // AudioBankMgr view (game.o; full class in g_entity_misc.cpp)
 extern void* AudioBankMgr_sInst;  // ?sInst@AudioBankMgr@@2PAV1@A @ 0xF4EBD8
-class AudioBankMgrLocal {
+class AudioBankMgr {
 public:
     void LoadWbk(const tlFixedString& name, bool async);  // ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z
     void FreeWbk(const tlFixedString& name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z
@@ -5377,7 +5377,7 @@ void BrocSys::LoadWbk(const Broc::string& name)
                          ? (const char*)(name.mBlock + 1)
                          : defaultFileName;
     tlFixedString v2(v1);
-    ((AudioBankMgrLocal*)AudioBankMgr_sInst)->LoadWbk(v2, true);
+    ((AudioBankMgr*)AudioBankMgr_sInst)->LoadWbk(v2, true);
 }
 
 // ea: 0x005C3650
@@ -5387,7 +5387,7 @@ void BrocSys::FreeWbk(const Broc::string& name)
                          ? (const char*)(name.mBlock + 1)
                          : defaultFileName;
     tlFixedString v2(v1);
-    ((AudioBankMgrLocal*)AudioBankMgr_sInst)->FreeWbk(v2, true);
+    ((AudioBankMgr*)AudioBankMgr_sInst)->FreeWbk(v2, true);
 }
 
 // ea: 0x005C4520
