@@ -7,6 +7,72 @@
 #include "mp_anim_wad.h"
 #include "engine/broc_types.h"
 
+// IDA types: BroAnim is a 4-byte value wrapper and AnimRef is the 12-byte
+// {mAnim, mTreeNameHash, mVarNameHash} record used by generic_human.
+class BroAnim {
+public:
+    BroAnim() : mVal(0) {}
+    explicit BroAnim(unsigned int val) : mVal(val) {}
+    operator unsigned int() const { return mVal; }
+
+    unsigned int mVal;
+};
+
+namespace Broc {
+class AnimRef {
+public:
+    unsigned int GetAnim() const;
+    void SetAnim(unsigned int anim);
+    int IsUnresolved() const;
+
+    BroAnim mAnim;
+    int mTreeNameHash;
+    int mVarNameHash;
+};
+
+unsigned int AnimRef::GetAnim() const
+{
+    return static_cast<unsigned int>(mAnim);
+}
+
+void AnimRef::SetAnim(unsigned int anim)
+{
+    mAnim = BroAnim(anim);
+}
+
+int AnimRef::IsUnresolved() const
+{
+    return static_cast<unsigned int>(mAnim) == 0xFFFFFFFFu;
+}
+} // namespace Broc
+
+// generic_human anim ref (global data at 0x10F1F84, zero initialized).
+namespace generic_human {
+    Broc::AnimRef c_jeep_gunner_idle;
+
+    unsigned int ResolveAnim(unsigned int animhash, unsigned int* getVal,
+                             unsigned int setVal)
+    {
+        if (animhash != 0xD15054F1u)
+            return 0;
+        if (getVal != nullptr)
+            *getVal = c_jeep_gunner_idle.GetAnim();
+        else
+            c_jeep_gunner_idle.SetAnim(setVal);
+        return c_jeep_gunner_idle.GetAnim();
+    }
+
+    const char* ResolveAnimName(unsigned int anim)
+    {
+        return anim == c_jeep_gunner_idle.GetAnim() ? "c_jeep_gunner_idle" : nullptr;
+    }
+
+    bool ValidateAnimationIndices()
+    {
+        return c_jeep_gunner_idle.IsUnresolved() != 0;
+    }
+}
+
 // GetEE_* / IsEEDefined_* accessors (generated from RegisterHashStrings + manifest).
 
 namespace mp_anim_wad {
@@ -252,13 +318,6 @@ void RegisterHashStrings() {
     RegisterHashString(18939747, "walkdist");
     RegisterHashString(485534122, "weapon");
     RegisterHashString(324854774, "weaponinfo");
-}
-
-// generic_human anim refs (file-local in this object).
-namespace generic_human {
-int ResolveAnim(unsigned int animhash, unsigned int* getVal, unsigned int setVal);
-const char* ResolveAnimName(unsigned int anim);
-bool ValidateAnimationIndices();
 }
 
 int ResolveAnim(unsigned int treename, unsigned int animname,
