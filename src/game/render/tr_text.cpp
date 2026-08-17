@@ -25,10 +25,23 @@ CtrlIcon* CtrlIcon::sInst;
 
 // refimport_t (UI_GetFontInfo +0x84)
 struct refimport_t {
-    uint8_t _pad[0x84];
+    uint8_t _pad[0x80];
+    void (*AdjustFrom640)(float* x, float* y, float* w, float* h);  // +0x80
     nglFont* (*UI_GetFontInfo)(int font, float scale);  // +0x84
 };
 extern refimport_t ri;  // ?ri@@3Urefimport_t@@A @ 0xF741E8
+
+extern void RE_StretchPic(float x, float y, float w, float h, float s1,
+                          float t1, float s2, float t2, nglTexture* tex,
+                          float z);  // re_quad.cpp
+
+// ea: 0x006C02C0
+void R_Text_PaintConsoleIcon(float x, float y, float w, float h,
+                             nglTexture* tex)
+{
+    ri.AdjustFrom640(&x, &y, &w, &h);
+    RE_StretchPic(x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f, tex, 0.0f);
+}
 extern float sGlobalFontScale;  // ?sGlobalFontScale@@3MA @ 0xDFA444
 
 nglTexture* GetTextureData(const char* name, int image_type,
