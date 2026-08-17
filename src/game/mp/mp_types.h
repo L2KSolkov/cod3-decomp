@@ -592,6 +592,7 @@ public:
     static const int GetDefaultOption(eSetting setting,
                                       eGameType gameType);  // ?GetDefaultOption@MPUIInterface@@SA?BHW4eSetting@1@W4eGameType@@@Z (mp.o 0x73D0F0)
     static const bool IsLANGame();  // ?IsLANGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F470)
+    static const bool IsOnlineGame();  // ?IsOnlineGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F480)
     static const bool IsLocalGame();  // ?IsLocalGame@MPUIInterface@@SA?B_NXZ (mp.o 0x72F490)
     static const char* GetMapString(unsigned long mapIndex);  // ?GetMapString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F830)
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z (mp.o 0x765FC0)

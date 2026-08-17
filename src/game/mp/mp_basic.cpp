@@ -11032,10 +11032,91 @@ const bool MPUIInterface::IsLANGame()
     return mGameConnectionType == kGameConnectionTypeLan;
 }
 
+// ea: 0x0072F480
+const bool MPUIInterface::IsOnlineGame()
+{
+    return mGameConnectionType == kGameConnectionTypeOnline;
+}
+
 // ea: 0x0072F490
 const bool MPUIInterface::IsLocalGame()
 {
     return mGameConnectionType == kGameConnectionTypeLocal;
+}
+
+// ea: 0x0075AC10
+void MultiplayerMgr::LevelLoaded()
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->InitializeVehicles();
+}
+
+// ea: 0x00750330
+void MultiplayerMgr::AnimEvent(int animEvent)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->AnimEvent(animEvent);
+}
+
+// ea: 0x00750350
+void MultiplayerMgr::SpotEntity(Entity* ent)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->SpotEntity(ent);
+}
+
+// ea: 0x00750390
+void MultiplayerMgr::VehicleDeath(Entity* hitEntity, Entity* killer,
+                                  int weapon, int mod)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->VehicleDeath(hitEntity, killer, weapon, mod);
+}
+
+// ea: 0x007503B0
+void MultiplayerMgr::VehicleMantled(Entity* vehicle, Entity* killer)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->VehicleMantled(vehicle, killer);
+}
+
+// ea: 0x00750CA0
+void MultiplayerMgr::AttemptToGetInVehicle(Entity* vehicle, Entity* player,
+                                           int seatIdx, int entryIdx)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->AttemptToGetInVehicle(vehicle, player, seatIdx, entryIdx);
+}
+
+// ea: 0x007612B0
+void MultiplayerMgr::BulletHit(const math::Position3& position,
+                               const math::Dir3& normal,
+                               unsigned char surfaceType,
+                               unsigned char weapon,
+                               Entity* hitEntity)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->BulletHit(position, normal, surfaceType, weapon, hitEntity);
+}
+
+// ea: 0x007612D0
+void MultiplayerMgr::MeleeHit(Entity* hitEntity, Entity* attackerEntity,
+                              const math::Position3& position,
+                              const math::Dir3& normal,
+                              unsigned char surfaceType, short damage,
+                              unsigned char mod, int hitLocation)
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr)
+        peer->MeleeHit(hitEntity, attackerEntity, position, normal,
+                       surfaceType, damage, mod, hitLocation);
 }
 
 // ea: 0x0074EFD0 (profile dialog: confirm delete -> deleting screen)
