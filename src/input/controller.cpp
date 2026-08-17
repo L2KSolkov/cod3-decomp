@@ -75,6 +75,7 @@ public:
     bool button_pressed_clear(int index, ButtonIndex btn);
     void button_pressed_clear_all(int index);
     bool button_released(int index, ButtonIndex btn);
+    bool button_released(ButtonIndex btn, int* p_controller);
     bool button_released_clear(int index, ButtonIndex btn);
     bool any_button_pressed(int index);
     void stick_value(int index, StickIndex stick, int& outX, int& outY);
@@ -302,6 +303,28 @@ bool controller::button_released(int index, ButtonIndex btn) {
     bool now  = (s_pads[index].curButtons & mask) != 0;
     bool prev = (s_pads[index].lastButtons & mask) != 0;
     return !now && prev;
+}
+
+// ea: 0x7E2D20 (controller.o)
+bool controller::button_released(ButtonIndex btn, int* p_controller)
+{
+    bool any = false;
+    if (is_locked)
+    {
+        if (p_controller != nullptr)
+            *p_controller = locked_port;
+        return button_released(locked_port, btn);
+    }
+    for (int i = 0; i < num_controllers; ++i)
+    {
+        if (!accepting_input_from_controller[i])
+            continue;
+        bool released = button_released(i, btn);
+        if (released && !any && p_controller != nullptr)
+            *p_controller = i;
+        any = any || released;
+    }
+    return any;
 }
 
 bool controller::button_released_clear(int index, ButtonIndex btn) {
