@@ -6,17 +6,12 @@
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_scene.h"
 #include "render/ShaderCommon.h"
+#include "game/nextgen/nextgen.h"
 
 #include <intrin.h>
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);  // ?_tlAssert@@YA_NPBDH00@Z
-
-// CG_SceneBlur static helpers (cg.o)
-namespace CG_SceneBlur {
-void Set(int passes, float expansion);  // ?Set@CG_SceneBlur@@YAXHM@Z
-void End();                             // ?End@CG_SceneBlur@@YAXXZ
-}
 
 // FULLSCREENBLUR_STATE (IDA enum; codmp_xboxr.xbe.h)
 enum FULLSCREENBLUR_STATE {
