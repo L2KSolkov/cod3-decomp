@@ -8611,6 +8611,40 @@ void MultiplayerMgr::PickupItem(int netIndex, int itemType, Entity* player,
     mPeer->PickupItem(netIndex, itemType, player, scriptFrom);
 }
 
+// ea: 0x00750BC0
+void MultiplayerMgr::SwapKit(int playerClass, int netIndex)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1715;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SwapKit(playerClass, netIndex);
+}
+
+// ea: 0x00750CC0
+void MultiplayerMgr::GetOutOfVehicle(Entity* vehicle, int seatIdx)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1752;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->GetOutOfVehicle(vehicle, seatIdx);
+}
+
 // ea: 0x00750690
 void MultiplayerMgr::WeaponChange(int weapon)
 {

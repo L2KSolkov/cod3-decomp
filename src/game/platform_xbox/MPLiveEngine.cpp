@@ -161,6 +161,8 @@ void MultiplayerMgr::ProjectileExplosion(Entity* p, int w,
 {
     (void)p; (void)w; (void)pos; (void)n; (void)st; (void)o;
 }
+// Compatibility symbol used by the existing g_logic ABI view; the exact
+// IDA EHitLocation overload is implemented in mp_basic.cpp.
 void MultiplayerMgr::PlayerDead(Entity* p, Entity* inf, Entity* atk, int dmg,
                                 int mod, int w, const float* pos,
                                 const float* dir, int hl)
@@ -183,18 +185,10 @@ void MultiplayerMgr::AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
 {
     (void)vehicle; (void)player; (void)newSeatIdx;
 }
-void MultiplayerMgr::GetOutOfVehicle(Entity* vehicle, int seatIdx)
-{
-    (void)vehicle; (void)seatIdx;
-}
 void MultiplayerMgr::SwapWeapon(int weapon, int netIndex, int clipCount,
                                 int ammoCount)
 {
     (void)weapon; (void)netIndex; (void)clipCount; (void)ammoCount;
-}
-void MultiplayerMgr::SwapKit(int playerClass, int netIndex)
-{
-    (void)playerClass; (void)netIndex;
 }
 void MultiplayerMgr::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
                                      const math::Position3& position,
