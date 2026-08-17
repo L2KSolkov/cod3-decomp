@@ -7,10 +7,12 @@
 #include "game/client_types.h"
 #include "game/player_types.h"
 #include "game/actor_types.h"
+#include "game/logic/g_weaponfuncs.h"
 #include "core/tlFixedString.h"
 
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
+extern int cg_aWeaponSelectTime[4];               // ?cg_aWeaponSelectTime@@3PAHA
 extern DbLinkedHandle<EntityHandleDb, Entity> GetPlayersTank();
 extern FEManager g_femanager;
 extern int dword_F62960[];                        // @ 0xF62960 (cg client base)
@@ -62,36 +64,13 @@ struct BrocAPI {
 };
 extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
 
-// Minimal weapon-system views (full weaponFileInfo_t lives in game/logic/g_local.h).
-struct weaponFileInfo_t {
-    uint8_t _pad[0xAC];
-    int     type;          // +0xAC
-    int     weapClass;     // +0xB0
-    uint8_t _pad2a[0x594 - 0xB4];
-    char*   szRadiantName;   // +0x594
-    uint8_t _pad2b[0x5A0 - 0x598];
-    char*   szHudIcon;       // +0x5A0
-    uint8_t _pad3[0x5C4 - 0x5A4];
-    int     iClipSize;       // +0x5C4
-    uint8_t _pad4[0x5F8 - 0x5C8];
-    int     iFireTime;       // +0x5F8
-    uint8_t _pad5[0x720 - 0x5FC];
-    int     bWideListIcon;   // +0x720
-    int     bADSFire;        // +0x724
-    uint8_t _pad6[0x738 - 0x728];
-    int     bDoNotDrop;      // +0x738
-    uint8_t _pad7[0x778 - 0x73C];
-    int     iExplosionRadius;  // +0x778
-};
-// slot is +0xB4; add an accessor via byte offset cast since it precedes
-// szRadiantName in the struct.
 static inline int WeaponSlot(weaponFileInfo_t* w)
 {
-    return *(int*)((char*)w + 0xB4);
+    return w->slot;
 }
 static inline int WeaponClass(weaponFileInfo_t* w)
 {
-    return *(int*)((char*)w + 0xB0);
+    return w->weapClass;
 }
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // game.o
 extern int BG_ClipForWeapon(int iWeapon);       // game.o
@@ -210,10 +189,11 @@ struct KeyInfo {
 struct weaponInfo_s {
     uint8_t _pad[0x84];
     const char* pszTranslatedDisplayName;  // +0x84
-    uint8_t _pad2[0x4];
-    const char* pszTranslatedModename;     // +0x8C
+    const char* pszTranslatedModename;      // +0x88
 };
 extern weaponInfo_s cg_weapons[];  // ?cg_weapons@@3PAUweaponInfo_s@@A @ 0xF6AE60
+extern float* dword_F63B8C[];              // @ 0xF63B8C
+extern char* va(const char* fmt, ...);    // core.o
 
 // Minimal scr_vehicle_t view (full in game/logic/g_local.h); offsets from IDA.
 struct vehicleSeat_t {
@@ -1074,6 +1054,75 @@ void IGOWeaponNameWidget::Init(PanelFile* panel)
     memset(col, 255, sizeof(col));
     background->Init((Broc::vector*)xy, (color32*)col, (panel_layer)8,
                      10.0f, "weaponnameback");
+}
+
+// ea: 0x00567040
+void IGOWeaponNameWidget::Update(float time_inc)
+{
+    (void)time_inc;
+    if (!IsShown()
+        || EntityManager::sInst->GetPlayer(currCl) == nullptr
+        || EntityManager::sInst->GetPlayer(currCl)->client == nullptr)
+    {
+        return;
+    }
+
+    float alpha = (float)(cg_aWeaponSelectTime[currCl] - cgGlobal.time + 1800);
+    if (alpha < 0.0f
+        || (EntityManager::sInst->GetPlayer(currCl)->client->ps.eFlags
+            & 0x100000) != 0)
+    {
+        dont_draw = true;
+        return;
+    }
+
+    int weapon = cg_aWeaponSelect[currCl];
+    weaponFileInfo_t* info =
+        reinterpret_cast<weaponFileInfo_t*>(dword_F63B8C[1580 * currCl]);
+    if (weapon >= 0 && weapon < BG_GetNumWeapons()
+        && Com_BitCheck(GetPlayerState(currCl).weapons, weapon) != 0)
+    {
+        info = BG_GetInfoForWeapon(cg_aWeaponSelect[currCl]);
+    }
+
+    if (info == nullptr || info->index == 0)
+    {
+        dont_draw = true;
+        return;
+    }
+
+    float visibility = alpha * 0.0099999998f;
+    if (alpha >= 100.0f)
+        visibility = 1.0f;
+    dont_draw = false;
+    name->SetAlpha(visibility);
+    background->SetAlpha(visibility);
+
+    if (last_weapon_index != info->index)
+    {
+        int index = info->index;
+        const char* text;
+        if (*info->szModeName != 0)
+        {
+            text = va("%s / %s", cg_weapons[index].pszTranslatedDisplayName,
+                      cg_weapons[index].pszTranslatedModename);
+        }
+        else
+        {
+            text = va("%s", cg_weapons[index].pszTranslatedDisplayName);
+        }
+        name->SetTextNoLocalize(text);
+        float width = name->GetWidth(nullptr) + 16.0f;
+        float x = 545.0f - width;
+        View::GetCurrentHUDXPos(x, (int)unk_F6A284[802 * currCl], 0, 0.0f);
+        float y = View::GetCurrentHUDYPos(
+            365.0f, (int)unk_F6A284[802 * currCl], 0, 0.0f);
+        View::GetCurrentHUDXPos(545.0f, (int)unk_F6A284[802 * currCl], 0,
+                                0.0f);
+        float bottom = View::GetCurrentHUDYPos(
+            385.0f, (int)unk_F6A284[802 * currCl], 0, 0.0f);
+        background->SetPos(width, y, y, bottom);
+    }
 }
 
 // ea: 0x005672E0
