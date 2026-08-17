@@ -55,7 +55,7 @@ extern int dword_F32F40;         // 0xF32F40
 extern int dword_F34B34;         // 0xF34B34
 extern int dword_F36728;         // 0xF36728
 
-extern bool MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YA_ND@Z (mp_shell.o)
+extern char MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YADD@Z (mp_shell.o)
 extern const char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
 extern void ByteToDir(int b, float* dir);       // ?ByteToDir@@YAXHQAM@Z (core.o)
 extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,

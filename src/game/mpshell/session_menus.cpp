@@ -2568,8 +2568,24 @@ void SpectateMenu::OnSelect(int c)
     g_femanager.GetIGMS(mVersion)->MakeActiveAndReturn(10);
 }
 
+// ea: 0x00792DE0
+char MI_IsAvailableMap(char id)
+{
+    if (g_NumTotalMaps <= 0)
+        return 0;
+    int index = 0;
+    char* map_id = byte_E386C9;
+    while (*map_id != id)
+    {
+        if (++index >= g_NumTotalMaps)
+            return 0;
+        map_id += 114;
+    }
+    return 1;
+}
+
 // ea: 0x00793010
-char MI_GetMapIDbyIndex(char index)
+char MI_GetMapIDbyIndex(int index)
 {
     if (index != -1)
         return byte_E386C9[114 * index];
@@ -3220,7 +3236,7 @@ char* remove_underscores(char* str)
 }
 
 // ea: 0x00792E80
-char* MI_GetMapDisplayName(char id)
+const char* MI_GetMapDisplayName(char id)
 {
     if (g_NumTotalMaps <= 0)
         return "NULL";
@@ -3284,7 +3300,7 @@ char MI_GetMapPack(char id)
 }
 
 // ea: 0x00792F80
-char* MI_GetMapShortname(char id)
+const char* MI_GetMapShortname(char id)
 {
     if (g_NumTotalMaps <= 0)
         return "NULL";
