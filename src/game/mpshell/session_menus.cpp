@@ -87,6 +87,7 @@ public:
     static const bool StartClient(sGameListing& game, bool bStartGame,
                                   int nGameIndex);  // ?StartClient@MPUIInterface@@SA?B_NAAUsGameListing@@_NH@Z
     static bool GameListingStart();  // ?GameListingStart@MPUIInterface@@SA_NXZ
+    static void GameListingEnd();    // ?GameListingEnd@MPUIInterface@@SAXXZ
     static bool StartGame(bool forceRestart, bool blockUntilNetReady);  // ?StartGame@MPUIInterface@@SA_N_N0@Z
     static const int GetTimeLimitCount();  // ?GetTimeLimitCount@MPUIInterface@@SA?BHXZ
     static const int GetTimeLimit(unsigned long index);  // ?GetTimeLimit@MPUIInterface@@SA?BHK@Z
@@ -476,7 +477,11 @@ void player_die(Entity* self, Entity* inflictor, Entity* attacker, int damage,
 
 extern void tlPrintf(const char* fmt, ...);  // ?tlPrintf@@YAXPBDZZ (tl_system.o)
 extern "C" void __stdcall DmGetXboxName(char* name, unsigned int* size);  // xbox_shim
-extern void j_nullsub_46(void* self);  // g.o nullsub
+void j_nullsub_46(void* self)
+{
+    (void)self;
+    MPUIInterface::GameListingEnd();
+}
 extern void j_nullsub_58(void* self, bool use);  // g.o nullsub
 extern int irand(int min, int max);  // ?irand@@YAHHH@Z (g.o)
 extern int g_NumBdMessages;  // ?g_NumBdMessages@@3HA (bd.o)
