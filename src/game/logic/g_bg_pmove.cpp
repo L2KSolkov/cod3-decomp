@@ -2837,7 +2837,7 @@ extern void PM_AirMove(const collision_context_t& context);     // game.o 0x643C
 extern void PM_GroundTrace();                     // game.o 0x63C340
 extern void PM_NoclipMove();                      // game.o 0x6055A0
 extern void PM_UFOMove();                         // game.o 0x605850
-extern void PM_DeadMove();                        // game.o 0x605420
+extern PlayerState* PM_DeadMove();                // game.o 0x605420
 extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
 extern void PM_FoliageSounds();                   // game.o 0x63D100
 extern void PM_WaterEvents();                     // game.o 0x606280
@@ -2972,7 +2972,56 @@ void PM_AirMove(const collision_context_t& context) { (void)context; }
 void PM_GroundTrace() {}
 void PM_NoclipMove() {}
 void PM_UFOMove() {}
-void PM_DeadMove() {}
+// ea: 0x605420
+PlayerState* PM_DeadMove()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 690;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    if (pml.walking == 0)
+        return nullptr;
+
+    PlayerState* ps = pm->ps;
+    float speed = sqrtf(ps->velocity.v.m128_f32[0]
+                        * ps->velocity.v.m128_f32[0]
+                        + ps->velocity.v.m128_f32[1]
+                              * ps->velocity.v.m128_f32[1]
+                        + ps->velocity.v.m128_f32[2]
+                              * ps->velocity.v.m128_f32[2])
+                  - 20.0f;
+    if (speed <= 0.0f)
+    {
+        ps->velocity.v.m128_f32[2] = 0.0f;
+        ps->velocity.v.m128_f32[1] = 0.0f;
+        ps->velocity.v.m128_f32[0] = 0.0f;
+        return nullptr;
+    }
+
+    const float length = sqrtf(ps->velocity.v.m128_f32[0]
+                               * ps->velocity.v.m128_f32[0]
+                               + ps->velocity.v.m128_f32[1]
+                                     * ps->velocity.v.m128_f32[1]
+                               + ps->velocity.v.m128_f32[2]
+                                     * ps->velocity.v.m128_f32[2]);
+    if (length != 0.0f)
+    {
+        ps->velocity.v.m128_f32[0] /= length;
+        ps->velocity.v.m128_f32[1] /= length;
+        ps->velocity.v.m128_f32[2] /= length;
+    }
+    ps->velocity.v.m128_f32[0] *= speed;
+    ps->velocity.v.m128_f32[1] *= speed;
+    ps->velocity.v.m128_f32[2] *= speed;
+    return ps;
+}
 void PM_CheckLadderMove() {}
 void PM_FoliageSounds() {}
 void PM_WaterEvents() {}
