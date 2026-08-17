@@ -2614,7 +2614,7 @@ const jqPtr<T>& jqPtr<T>::operator=(void* v)  // ??4?$jqPtr@X@@QAEABV0@PAX@Z @ 0
 
 // D3DDevice::GetRenderState
 enum _D3DRENDERSTATETYPE { D3DRS_FIRST = 0 };
-extern "C" unsigned int D3D__RenderState[256];  // Xbox render-state array (Win32 shim)
+extern unsigned int D3D__RenderState[256];  // Xbox render-state array (Win32 shim)
 class D3DDevice {
 public:
     static long __stdcall GetRenderState(_D3DRENDERSTATETYPE State,
