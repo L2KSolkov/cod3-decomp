@@ -17,26 +17,89 @@ void __cod3_stub_physics(void) {
 void pulse_sum_angular::setup_vel_uni_standard(
     float delta_t, float max_penalty_restitution_vel)
 {
-    (void)delta_t; (void)max_penalty_restitution_vel;
+    if (delta_t <= 0.0041666669f)
+        delta_t = 0.0041666669f;
+    float delta_ta = -(get_pos() / delta_t);
+    m_big_dirt = delta_ta;
+    if (delta_ta < 0.0f)
+        m_big_dirt = delta_ta * 0.30000001f;
+    if ((0.0f - max_penalty_restitution_vel) > m_big_dirt)
+        m_big_dirt = 0.0f - max_penalty_restitution_vel;
+    float big_dirt = m_big_dirt;
+    m_cfm = 0.0f;
+    if (big_dirt < 0.0f) {
+        m_right_side = 0.0f;
+    } else {
+        m_right_side = big_dirt;
+        m_big_dirt = 0.0f;
+    }
 }
 void pulse_sum_normal::setup_vel_uni_standard(
     float delta_t, float max_penalty_restitution_vel)
 {
-    (void)delta_t; (void)max_penalty_restitution_vel;
+    if (delta_t <= 0.0041666669f)
+        delta_t = 0.0041666669f;
+    float delta_ta = -(get_pos() / delta_t);
+    m_big_dirt = delta_ta;
+    if (delta_ta < 0.0f)
+        m_big_dirt = delta_ta * 0.30000001f;
+    if ((0.0f - max_penalty_restitution_vel) > m_big_dirt)
+        m_big_dirt = 0.0f - max_penalty_restitution_vel;
+    float big_dirt = m_big_dirt;
+    m_cfm = 0.0f;
+    if (big_dirt < 0.0f) {
+        m_right_side = 0.0f;
+    } else {
+        m_right_side = big_dirt;
+        m_big_dirt = 0.0f;
+    }
 }
 void pulse_sum_normal::setup_vel_uni_standard_pos_adjust(
     float delta_t, float pos, float max_penalty_restitution_vel)
 {
-    (void)delta_t; (void)pos; (void)max_penalty_restitution_vel;
+    if (delta_t <= 0.0041666669f)
+        delta_t = 0.0041666669f;
+    float delta_ta = -((get_pos() + pos) / delta_t);
+    m_big_dirt = delta_ta;
+    if (delta_ta < 0.0f)
+        m_big_dirt = delta_ta * 0.30000001f;
+    if ((0.0f - max_penalty_restitution_vel) > m_big_dirt)
+        m_big_dirt = 0.0f - max_penalty_restitution_vel;
+    float big_dirt = m_big_dirt;
+    m_cfm = 0.0f;
+    if (big_dirt < 0.0f) {
+        m_right_side = 0.0f;
+    } else {
+        m_right_side = big_dirt;
+        m_big_dirt = 0.0f;
+    }
 }
 void pulse_sum_normal::set_pulse_sum_limits_parent_ratio(
     float limit_ratio, pulse_sum_normal* parent)
 {
-    (void)limit_ratio; (void)parent;
+    if (limit_ratio < 0.0f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal.h",
+                  227, "limit_ratio >= 0.0f", defaultFileName))
+        __debugbreak();
+    if (parent == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal.h",
+                  228, "parent", defaultFileName))
+        __debugbreak();
+    unsigned int flags = m_flags;
+    m_pulse_limit_ratio = limit_ratio;
+    m_pulse_parent = parent;
+    m_flags = flags | 1;
+    m_pulse_sum_min = 0.0f;
+    m_pulse_sum_max = 0.0f;
 }
 void pulse_sum_wheel::set_side_fwd_ratios(float side_ratio, float fwd_ratio)
 {
-    (void)side_ratio; (void)fwd_ratio;
+    if ((m_side == NULL || m_fwd == NULL) &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_wheel.h",
+                  40, "m_side && m_fwd", defaultFileName))
+        __debugbreak();
+    m_side->m_pulse_limit_ratio = side_ratio;
+    m_fwd->m_pulse_limit_ratio = fwd_ratio;
 }
 const math::Dir3* pulse_sum_contact::psc_cpi::get_relative_velocity(
     psc_cpi* self, math::Dir3* result)

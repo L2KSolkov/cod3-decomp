@@ -1040,7 +1040,23 @@ void pulse_sum_angular::apply(const float* s_) {
 }
 
 void pulse_sum_angular::calc_abs() {
-    // TODO: full anchor computation (COMDAT 0x896460).
+    math::Dir3 result;
+    const math::Dir3* b1_ap = rbint::inv_L(&result, m_b1->m_rb, &m_ud);
+    m_b1_ap.v = b1_ap->v;
+    __m128 v = _mm_mul_ps(m_b1_ap.v, m_ud.v);
+    m_denom = v.m128_f32[0] + _mm_shuffle_ps(v, v, 85).m128_f32[0] +
+              _mm_shuffle_ps(v, v, 170).m128_f32[0];
+    if (m_b2 != NULL) {
+        const math::Dir3* b2_ap = rbint::inv_L(&result, m_b2->m_rb, &m_ud);
+        m_b2_ap.v = b2_ap->v;
+        v = _mm_mul_ps(m_b2_ap.v, m_ud.v);
+        m_denom += v.m128_f32[0] + _mm_shuffle_ps(v, v, 85).m128_f32[0] +
+                   _mm_shuffle_ps(v, v, 170).m128_f32[0];
+    }
+    if (m_denom <= 0.0000099999997f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h",
+                  10, "m_denom > 0.00001f", defaultFileName))
+        __debugbreak();
 }
 
 void pulse_sum_angular::project() {
