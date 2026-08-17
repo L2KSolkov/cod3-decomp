@@ -6729,6 +6729,35 @@ void PauseMenu::SetGameSettingsText()
         entries[4]->SetText("MPGAME_EDIT_GAME_SETTINGS");
 }
 
+// ea: 0x00791BC0
+void PauseMenu::TeamChange()
+{
+    const int currentTeam =
+        EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam - 1;
+    MultiplayerMgr* multiplayer = MultiplayerMgr::sInst;
+    if (multiplayer->mPeer != nullptr)
+    {
+        if (currentTeam == 0)
+        {
+            multiplayer->ChangeTeam(
+                EntityManager::sInst->GetPlayer(mVersion), 2, false, false);
+        }
+        else if (currentTeam == 1)
+        {
+            multiplayer->ChangeTeam(
+                EntityManager::sInst->GetPlayer(mVersion), 1, false, false);
+        }
+    }
+
+    FEMenu** menus = g_femanager.GetIGMS(mVersion)->menus;
+    FEMenu* menu = *menus;
+    g_femanager.GetIGMS((int)(*menus)[1].entries)->ReturnToPreviousMenu(-1);
+    g_femanager.GetDMS((int)menu[1].entries)->MakeActive(-1);
+    GamePause::SetGamePaused(currCl, false);
+    ((MenuClearHelper*)menu)->ClearAll();
+    g_femanager.GetIGMS(mVersion)->MakeActive(-1);
+}
+
 // ea: 0x007A71E0
 FESplitScreenMenu::FESplitScreenMenu(const FESplitScreenMenu& s)
     : FEMenu(s.system, s.num_entries, 320, 240, 8, 0)
