@@ -302,13 +302,26 @@ public:
 // ============================================================================
 int g_NumBaseMaps = 0;       // ?g_NumBaseMaps@@3HA @ 0xF99860
 int g_NumTotalMaps = 0;      // ?g_NumTotalMaps@@3HA @ 0xF99864
-extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
-extern const char* const szClassReference[];  // ?szClassReference@@3PAPBDA @ 0x12782C
+char byte_E386C9[] = {'\0'};   // map-ID conversion table @ 0xE386C9
+const char* const szClassReference[7] = {
+    "MPGAME_RIFLEMAN_ALLCAPS", "MPGAME_INFANTRY_ALLCAPS",
+    "MPGAME_ASSAULT_ALLCAPS", "MPGAME_MEDIC_ALLCAPS",
+    "MPGAME_SCOUT_ALLCAPS", "MPGAME_SUPPORT_ALLCAPS",
+    "MPGAME_ANTIARMOR_ALLCAPS",
+};
 extern float unk_F6A280[802];  // viewport prev (cg.o)
 extern float unk_F6A284[802];  // viewport curr (cg.o)
 extern bool g_controllerConnected[];           // ?g_controllerConnected@@3PA_NA (game2.o)
 extern bool g_controllerConnectedErrorShown[]; // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
-extern const char* const szPlayLanMenuOptionTextReferences[];  // ?szPlayLanMenuOptionTextReferences@@3PAPBDA @ 0x12276B8
+const char* const szPlayLanMenuOptionTextReferences[3] = {
+    "MPFRONTEND_MM_CREATE_GAME", "MPFRONTEND_FIND_GAME",
+    "MPFRONTEND_MM_XBOX_LIVE_OPTIONS",
+};
+const char* const szPlayLanMenuDescriptionReferences[3] = {
+    "MPFRONTEND_CREATE_GAME_DESCRIPTION",
+    "MPFRONTEND_FIND_GAME_DESCRIPTION",
+    "MPFRONTEND_XBOXLIVEOPTIONS_DESCRIPTION",
+};
 
 struct Mapinfo_t {
     char map_pack;              // +0x00
@@ -319,10 +332,10 @@ struct Mapinfo_t {
     char map_location_string[32];  // +0x52
 };
 extern Mapinfo_t* g_TheMapInfo;  // ?g_TheMapInfo@@3PAUMapinfo_t@@A @ 0x1227BC8
-extern char aMpfrontendMerv[];   // @ 0xE386CA (map display-name table, 114-byte stride)
-extern char aMploadingMervi[];   // @ 0xE386DA (map location table)
-extern char aMploadingMervi_0[]; // @ 0xE386EA (map title table)
-extern char aMpMerv[];           // @ 0xE3870A (map short-name table)
+char aMpfrontendMerv[20] = "MPFRONTEND_MERVILLE";
+char aMploadingMervi[23] = "MPLOADING_MERVILLE_LOC";
+char aMploadingMervi_0[25] = "MPLOADING_MERVILLE_TITLE";
+char aMpMerv[] = "mp_merv";
 extern const char* const szPlayLanMenuDescriptionReferences[3];  // @ 0xE381BC
 extern int dword_F641D0[1580 * 802];   // cg.o
 extern char byte_F64194[6320 * 802];   // cg.o
