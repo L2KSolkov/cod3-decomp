@@ -7860,7 +7860,7 @@ bool collide_segment_poly(const math::Position3& p0,
     if (!poly.valid)
         return false;
 
-    const float* n = poly.n;
+    const float* n = poly.n.v.m128_f32;
     float v5 = n[3];
     float v30 = n[0] * p0.v.m128_f32[0]
         + n[1] * p0.v.m128_f32[1]
@@ -7883,9 +7883,9 @@ bool collide_segment_poly(const math::Position3& p0,
                    _mm_mul_ps(p1.v, _mm_set1_ps(v8))),
         _mm_set1_ps(v9 - v8));
 
-    const float* v0 = poly.v0;
-    const float* v1 = poly.v1;
-    const float* v2 = poly.v2;
+    const float* v0 = poly.v0.v.m128_f32;
+    const float* v1 = poly.v1.v.m128_f32;
+    const float* v2 = poly.v2.v.m128_f32;
     __m128 v16 = _mm_sub_ps(
         _mm_setr_ps(v0[0], v0[1], v0[2], v0[3]),
         _mm_setr_ps(v1[0], v1[1], v1[2], v1[3]));

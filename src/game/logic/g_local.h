@@ -369,16 +369,15 @@ struct scr_vehicle_t {
     math::Position3 lastTreadPos;    // +0x530
     math::Position3 lastTreadAngles; // +0x540
     int     lastTreadTime;            // +0x550
-    float   mUseRadius;       // +0x554
+    int     mUseRadius;       // +0x554
     uint8_t mHasEntryPoints;  // +0x558
     bool    mHatchOpen;        // +0x559
-    uint8_t _pad55A[0x560 - 0x55A];
-    int     noEntryTime;      // +0x560
-    int     noExitTime;       // +0x564
-    int     forceGunnerCrouchTime;  // +0x568
-    vehicleAnimMap_t* animMap;  // +0x56C
-    vehicle_follow* follow;   // +0x570
-    uint8_t wheel_polies[0x750 - 0x574];  // cdl_poly_inl_t[6] (untyped)
+    int     noEntryTime;      // +0x55C
+    int     noExitTime;       // +0x560
+    int     forceGunnerCrouchTime;  // +0x564
+    vehicleAnimMap_t* animMap;  // +0x568
+    vehicle_follow* follow;   // +0x56C
+    uint8_t wheel_polies[0x750 - 0x570];  // cdl_poly_inl_t[6] (untyped)
     static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
     static int sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2HA
     static int sDebugAnims;     // ?sDebugAnims@scr_vehicle_t@@2HA
@@ -422,7 +421,7 @@ static_assert(offsetof(scr_vehicle_t, altWeapon) == 0x19C, "scr_vehicle_t::altWe
 static_assert(offsetof(scr_vehicle_t, mLastRequestedOwnershipTime) == 0x1BC, "scr_vehicle_t::mLastRequestedOwnershipTime offset mismatch");
 static_assert(offsetof(scr_vehicle_t, boneIndex) == 0x460, "scr_vehicle_t::boneIndex offset mismatch");
 static_assert(offsetof(scr_vehicle_t, mRBVeh) == 0x518, "scr_vehicle_t::mRBVeh offset mismatch");
-static_assert(offsetof(scr_vehicle_t, animMap) == 0x56C, "scr_vehicle_t::animMap offset mismatch");
+static_assert(offsetof(scr_vehicle_t, animMap) == 0x568, "scr_vehicle_t::animMap offset mismatch");
 
 void Use_Item(Entity* ent, Entity* other, Entity* activator);
 void RespawnItem(Entity* ent, int unused);
@@ -1307,6 +1306,9 @@ void      SV_DObjGetHierarchyBits(Entity* entity, int boneIndex,
                                   int* const partBits);
 DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
 int       SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
+DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
+int       DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
+void      G_EntDetachAll(Entity* ent);
 void      AnglesToAxis(const math::Position3& angles, float (*const axis)[3]);
 void      DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
                                       const float (*const in2)[3], DObjSkelMat* out);
@@ -4158,17 +4160,16 @@ struct cdl_cinfo1 {
 };
 static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
 
-// cdl_poly_inl_t - inline triangle collision output (verified from disasm).
-// Uses float[4] (not __m128) so the struct stays 4-byte aligned at 0x48.
-struct cdl_poly_inl_t {
-    float v0[4];    // +0x00 (Position3)
-    float v1[4];    // +0x10
-    float v2[4];    // +0x20
-    float n[4];     // +0x30 (Vector4)
-    int   sflags;   // +0x40
-    bool  valid;    // +0x44
+// cdl_poly_inl_t - inline triangle collision output (IDA type 0x50 bytes).
+__declspec(align(16)) struct cdl_poly_inl_t {
+    math::Position3 v0;  // +0x00
+    math::Position3 v1;  // +0x10
+    math::Position3 v2;  // +0x20
+    math::Vector4    n;   // +0x30
+    int              sflags; // +0x40
+    bool             valid;  // +0x44
 };
-static_assert(sizeof(cdl_poly_inl_t) == 0x48, "cdl_poly_inl_t size mismatch");
+static_assert(sizeof(cdl_poly_inl_t) == 0x50, "cdl_poly_inl_t size mismatch");
 
 struct proximity_data_t {
     math::Position3 lo;              // +0x000
@@ -4659,7 +4660,8 @@ void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
                               int iMOD);           // g.o 0x470BD0
 int   G_SpawnVehicle(Entity* ent, const char* typeName, int unused);  // g.o 0x488280
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o
-void  VEH_InitVehicle(scr_vehicle_t* veh);         // g.o
+void  VEH_InitPhysics(Entity* ent);                    // g.o 0x44D7C0
+void  VEH_InitVehicle(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx); // g.o 0x487C30
 void  Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMOD);  // g.o
 void  update_trigger_notifies(void);               // g.o 0x471100
 void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
@@ -4830,7 +4832,7 @@ extern unsigned int s_wheelTagHashes[6];         // g.o @ 0xEE62CC
 extern unsigned int s_gunnerFlashTagHashes[4];   // g.o @ 0xEE62E4
 extern unsigned int s_entryPointTagHashes[6];    // g.o @ 0xEE62F4
 extern unsigned int s_flashTagHashes[4];         // g.o @ 0xEE630C
-extern unsigned int s_seatTagHashes[6];          // g.o @ 0xEE631C
+extern unsigned int s_seatTagHashes[11];         // g.o @ 0xEE631C
 bool  Entity_has_zone_collision(const void* self);  // game.o
 const float VectorDistance(const float* const v1, const float* const v2);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
@@ -5150,6 +5152,8 @@ private:
 
 public:
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
+    static rb_vehicle* add_vehicle();       // ?add_vehicle@rb_vehicle@@SAPAV1@XZ (physics.o 0x701AC0)
+    void init(Entity* owner, vehicle_rb_parameter* parameter); // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
     static void remove_vehicle(rb_vehicle* const v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
     void end_path();                            // physics.o ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);           // physics.o ?pause_physics@rb_vehicle@@QAEX_N@Z

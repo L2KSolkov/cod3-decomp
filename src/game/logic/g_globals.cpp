@@ -408,9 +408,11 @@ unsigned int s_entryPointTagHashes[6] = {
 unsigned int s_flashTagHashes[4] = {
     0x2B100B49, 0x1741CD4A, 0x2F400DFA, 0x1741CD6C,
 };
-unsigned int s_seatTagHashes[6] = {
+unsigned int s_seatTagHashes[11] = {
     0x88D82607, 0x9010854A, 0xACCA8E14,
     0xACCA8E15, 0xACCA8E16, 0xACCA8E17,
+    0x9010854A, 0xACCA8E14, 0x88D82607,
+    0x9010854A, 0xACCA8E14,
 };
 
 int g_drawDebugLos;            // @ 0xEB1108

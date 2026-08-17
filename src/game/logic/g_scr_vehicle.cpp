@@ -67,6 +67,8 @@ extern int VEH_Slide(Entity* ent, int gravity, int msec, int move,
                     int allowHit);
 extern void VEH_UpdateSoundLerps(Entity* ent, int msec);
 extern void VEH_FireGunnerWeapon(Entity* ent, int msec);
+extern bool AttachCurveVehicle(unsigned int entityHandleVal, char* filename,
+                               float topSpeed, float topSpeedReverse);
 extern void TraceSphereFull(const proximity_data_t* proximity_data,
                             trace_t* results, const math::Position3* start,
                             const math::Position3* mins,
@@ -365,7 +367,253 @@ void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
     g_LinkEntity(ent);
     RegisterItem(ent->s.weapon, 1);
 }
-void VEH_InitVehicle(scr_vehicle_t* veh) { (void)veh; }
+// ea: 0x0044D7C0
+void VEH_InitPhysics(Entity* ent)
+{
+    scr_vehicle_t* veh = ent->scr_vehicle;
+    for (int i = 0; i < 3; ++i)
+    {
+        veh->phys.origin.v.m128_f32[i] = ent->r.currentOrigin.v.m128_f32[i];
+        veh->phys.prevOrigin.v.m128_f32[i] = ent->r.currentOrigin.v.m128_f32[i];
+        veh->phys.angles.v.m128_f32[i] = ent->r.currentAngles.v.m128_f32[i];
+        veh->phys.prevAngles.v.m128_f32[i] = ent->r.currentAngles.v.m128_f32[i];
+        veh->phys.vel.v.m128_f32[i] = 0.0f;
+        veh->phys.rotVel.v.m128_f32[i] = 0.0f;
+    }
+    for (int i = 0; i < 6; ++i)
+    {
+        veh->phys.wheelZVel[i] = 0.0f;
+        veh->phys.wheelZPos[i] = 0.0f;
+        veh->phys.wheelSurfType[i] = 0;
+        veh->wheel_polies[i * 0x50 + 0x44] = 0;
+    }
+}
+
+// ea: 0x00487C30
+void VEH_InitVehicle(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx)
+{
+    vehicle_info_t* info = s_vehicleInfos[infoIdx];
+
+    G_VehInitPathPos(&veh->pathPos);
+    VEH_InitPhysics(ent);
+    veh->mEntity.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    veh->infoIdx = infoIdx;
+    veh->waitSpeed = -1.0f;
+    veh->waitNode = -1;
+    veh->fireTime = 0;
+    veh->fireBarrel = 0;
+    veh->turretState = 0;
+    veh->drawOnCompass = 0;
+    veh->drawAsEnemy = 0;
+    veh->barrelOffset = 0.0f;
+    veh->barrelBlocked = 0;
+    veh->altWeapon = 0;
+    veh->gunnerWeapon = 0;
+    veh->shooter = 0;
+    veh->noEntryTime = 0;
+
+    if (info->vehicleCurveFile[0] != 0)
+    {
+        AttachCurveVehicle(ent->mHandle.mHandle.mVal, info->vehicleCurveFile,
+                           info->vehicleSndTopSpeed,
+                           info->vehicleSndTopSpeedReverse);
+    }
+
+    veh->mHatchOpen = true;
+    if (info->type == 2)
+    {
+        veh->current.mHatchAngleRight = info->hatchOpenAngleRight;
+        veh->current.mHatchAngleLeft = info->hatchOpenAngleLeft;
+    }
+
+    int seatIndex = 0;
+    for (int i = 0; i < 11; ++i)
+    {
+        vehicleSeat_t& seat = veh->seats[i];
+        seat.occupant.mHandle.mVal = 0;
+
+        int boneIndex = -1;
+        if (seatIndex < info->numSeats)
+        {
+            boneIndex = SV_DObjGetBoneIndex(ent, s_seatTagHashes[i]);
+        }
+        else if (i >= 8)
+        {
+            const int previousIndex = i - 1;
+            if (previousIndex < 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 1516;
+                AeAssert::gCurrentExpr = "(j ) >= 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid seat index"))
+                    __debugbreak();
+            }
+            boneIndex = SV_DObjGetBoneIndex(ent, s_seatTagHashes[previousIndex]);
+        }
+
+        seat.boneIndex = boneIndex;
+        seat.gunMounted = false;
+        seat.weapon = 0;
+        seat.heat = 0.0f;
+        seat.overheating = false;
+        seat.flags = 0;
+        seat.firing = false;
+        if (boneIndex >= 0)
+            ++seatIndex;
+    }
+
+    veh->altWeapon = 0;
+    veh->gunnerWeapon = 0;
+    if (veh->seats[0].boneIndex < 0)
+        veh->seats[0].boneIndex = 0;
+    veh->spotTime = 0;
+    veh->mLastSpotter.mHandle.mVal = 0;
+    veh->mMantleTime = 0;
+    veh->mMantleEntity.mHandle.mVal = 0;
+    veh->mLastRequestedOwnershipTime = 0;
+
+    if (info->turretAltWeapon[0] != 0)
+    {
+        unsigned char weapon = BG_GetWeaponIndexForName(info->turretAltWeapon);
+        veh->altWeapon = weapon;
+        veh->seats[0].weapon = weapon;
+    }
+
+    G_EntDetachAll(ent);
+    if (info->turretAltModel[0] != 0)
+    {
+        TPakId pakId = (TPakId)ent->mPakId;
+        if (pakId == PAK_ID_INVALID)
+            pakId = CurPakId();
+        if (G_EntAttach(ent, info->turretAltModel, "tag_guncoax", 1, pakId))
+            veh->seats[0].gunMounted = true;
+    }
+    if (info->turretGunnerModel[0] != 0)
+    {
+        TPakId pakId = (TPakId)ent->mPakId;
+        if (pakId == PAK_ID_INVALID)
+            pakId = CurPakId();
+        if (G_EntAttach(ent, info->turretGunnerModel,
+                        "tag_gunner_barrel", 1, pakId))
+            veh->seats[1].gunMounted = true;
+    }
+    if (info->turretGunnerBaseModel[0] != 0)
+    {
+        TPakId pakId = (TPakId)ent->mPakId;
+        if (pakId == PAK_ID_INVALID)
+            pakId = CurPakId();
+        G_EntAttach(ent, info->turretGunnerBaseModel,
+                    "tag_gunner_turret", 1, pakId);
+    }
+
+    veh->manualMode = 0;
+    veh->hasTarget = 0;
+    veh->manualSpeed = 0.0f;
+    veh->manualAccel = 0.0f;
+    veh->manualTime = 0.0f;
+    veh->wheelRadius = 15.0f;
+    veh->mTargetEnt.mHandle.mVal = 0;
+    for (int i = 0; i < 3; ++i)
+    {
+        veh->targetOrigin[i] = 0.0f;
+        veh->targetOffset[i] = 0.0f;
+    }
+    veh->joltDir[0] = 0.0f;
+    veh->joltDir[1] = 0.0f;
+    veh->joltTime = 0.0f;
+    veh->joltWave = 0.0f;
+    veh->mIdleSndEnt.mHandle.mVal = 0;
+    veh->mEngineSndEnt.mHandle.mVal = 0;
+    veh->turretHitNum = 0;
+    veh->idleSndLerp = 0.0f;
+    veh->engineSndLerp = 0.0f;
+    veh->brakeSndLerp = 0.0f;
+    for (int i = 0; i < 6; ++i)
+    {
+        veh->mWheel_ParticleEffectHandle[i].mVal = 0;
+        veh->mSoundEffectHandle[i].mVal = 0;
+    }
+    veh->mPhysicsOwner.mHandle.mVal = 0;
+    veh->playersAttached = 0;
+    veh->mRumbleEffectHandle.mVal = 0;
+
+    math::Position3 zeroVelocity = {};
+    VEH_SetPosition(ent, ent->r.currentOrigin, ent->r.currentAngles,
+                    zeroVelocity);
+
+    static unsigned int wheelFrontLeftHash = 0;
+    static bool wheelFrontLeftHashInitialized = false;
+    if (!wheelFrontLeftHashInitialized)
+    {
+        wheelFrontLeftHash = HashString::CalcHash("tag_wheel_front_left");
+        wheelFrontLeftHashInitialized = true;
+    }
+    if (ent->mDObj != nullptr && ent->mDObj->skel != nullptr)
+    {
+        int boneIndex = DObjGetBoneIndex(ent->mDObj, wheelFrontLeftHash);
+        if (boneIndex >= 0)
+        {
+            DObjSkelMat* matrixArray = DObjGetMatrixArray(ent->mDObj, 0);
+            if (matrixArray != nullptr)
+                veh->wheelRadius = matrixArray[boneIndex].origin[2];
+        }
+    }
+
+    if (veh->mRBVeh != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 1640;
+        AeAssert::gCurrentExpr = "!veh->mRBVeh";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Vehicle never had physics removed. Tell James."))
+            __debugbreak();
+    }
+
+    veh->mRBVeh = nullptr;
+    if (info->vehiclePhysicsParms[0] != 0)
+    {
+        rb_vehicle* rbVehicle = rb_vehicle::add_vehicle();
+        veh->mRBVeh = rbVehicle;
+        if (rbVehicle != nullptr)
+        {
+            vehicle_rb_parameter* parms =
+                vehicle_rb_parameter::GetRBVehParameter(info->vehiclePhysicsParms);
+            if (parms == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 1650;
+                AeAssert::gCurrentExpr = "parms";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Failed to find vehicle physics settings for %s",
+                                        info->vehiclePhysicsParms))
+                    __debugbreak();
+            }
+            rbVehicle->init(ent, parms);
+            TPakId pakId = (TPakId)ent->mPakId;
+            if (pakId == PAK_ID_INVALID)
+                pakId = CurPakId();
+            IVPointer<Destructible> destructible =
+                DestructibleBankManager::sInst->GetDestructible(pakId, "vehicle");
+            ent->mDestructible = destructible;
+            ent->takedamage = 1;
+        }
+    }
+
+    if (info->turretGunnerWeapon[0] != 0)
+    {
+        unsigned char weapon = BG_GetWeaponIndexForName(info->turretGunnerWeapon);
+        veh->gunnerWeapon = weapon;
+        veh->seats[1].weapon = weapon;
+    }
+    veh->follow = nullptr;
+}
 void VEH_RemoveVehicle(void* veh) { (void)veh; }
 void VEH_UpdateAim(Entity* e) { (void)e; }
 
@@ -3873,7 +4121,7 @@ int G_SpawnVehicle(Entity* ent, const char* typeName, int /*unused*/)
         return 0;
     }
     VEH_InitEntity(ent, v3, infoIdxa);
-    VEH_InitVehicle(v3);
+    VEH_InitVehicle(ent, v3, infoIdxa);
     ent->s.brushmodel = 0;
     SV_SetBrushModel(ent);
     ent->r.contents = 0xA00000;
