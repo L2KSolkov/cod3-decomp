@@ -192,6 +192,7 @@ void j_nullsub_54(weaponParms* w, const float* a, float* b)
     (void)w; (void)a; (void)b;
 }
 void j_nullsub_57(actor_s* a) { (void)a; }
+void j_nullsub_58(void* self, bool use) { (void)self; (void)use; }
 void j_nullsub_60(actor_s* a) { (void)a; }
 void j_nullsub_64(Entity* a, Entity* b) { (void)a; (void)b; }
 void j_nullsub_67(nglMeshSection* s) { (void)s; }
