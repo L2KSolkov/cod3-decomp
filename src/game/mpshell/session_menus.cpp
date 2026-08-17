@@ -3143,6 +3143,21 @@ void CreateLanSessionAdvancedMenu::OnUp(int c)
     }
 }
 
+// ea: 0x0078CF10
+void CreateLanSessionAdvancedMenu::OnDown(int c)
+{
+    (void)c;
+    if (highlighted == 4)
+    {
+        highlighted = 0;
+        SetHigh(0, true);
+    }
+    else
+    {
+        Down();
+    }
+}
+
 // ea: 0x0078D7C0
 void GameSettingsEdit::UpdateMapChangeStatus(bool isAllowingMapVote)
 {
