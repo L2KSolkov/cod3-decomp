@@ -10843,6 +10843,51 @@ kuju::knetuser::cVoiceNetworkManager::cVoiceNetworkManager()
     mMissedPackets = 0;
 }
 
+// ea: 0x0072BDE0
+kuju::knetuser::cVoiceNetworkManager::~cVoiceNetworkManager()
+{
+}
+
+// ea: 0x0072BE30
+void kuju::knetuser::cVoiceNetworkManager::setPlayerDistance(
+    unsigned long sourcePlayer, unsigned long destPlayer, float distance)
+{
+    if (sourcePlayer == destPlayer)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp\\knetuser/cVoiceNetworkManager.h";
+        AeAssert::gCurrentLine = 333;
+        AeAssert::gCurrentExpr = "sourcePlayer != destPlayer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    if (sourcePlayer >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp\\knetuser/cVoiceNetworkManager.h";
+        AeAssert::gCurrentLine = 334;
+        AeAssert::gCurrentExpr = "sourcePlayer < 16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    if (destPlayer >= 0x10)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp\\knetuser/cVoiceNetworkManager.h";
+        AeAssert::gCurrentLine = 335;
+        AeAssert::gCurrentExpr = "destPlayer < 16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    mPlayerDistances[sourcePlayer][destPlayer] = distance;
+}
+
+const kuju::knet::sTime
+    kuju::knetuser::cVoiceNetworkManager::mVoiceLifeTime = { 800 };
+
 // ea: 0x00742DA0 (host-only map-restart broadcast)
 void MPPeer::MapRestart()
 {
