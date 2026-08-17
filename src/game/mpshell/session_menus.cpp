@@ -478,15 +478,13 @@ enum ESpectatorState : int {
     kSpectatorStateCount = 0x6,
 };
 
-// Minimal views for game-side symbols used by the menus
-struct BrocExports {
-    void (*mCallbackSpawnButtonPressed)(int entityHandle);  // +0xCD0 (Broc::entity)
-    void (*mCallbackPlayerClassChange)(int entityHandle, int playerClass);  // +0xC68
-};
-struct BrocAPI {
-    BrocExports mBrocExports;  // +0x00
-};
-extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
+struct BrocAPI;
+namespace Broc { struct BrocAPI; }
+extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A @ 0xF3ABDC
+static Broc::BrocAPI* GetBrocAPI()
+{
+    return reinterpret_cast<Broc::BrocAPI*>(gpBrocAPI);
+}
 
 // STBManager - string table bank manager (core.o owns the definition)
 class STBManager {
@@ -5200,12 +5198,12 @@ void SpectateMenu::OnCross(int c)
     if ((mState == kSpectatorStateSpawn
          || mState == kSpectatorStateDying
          || mState == kSpectatorStateDeadCanSpawn)
-        && gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed != nullptr)
+        && GetBrocAPI()->mBrocExports.mCallbackSpawnButtonPressed != nullptr)
     {
         PlayNavigationSound();
         Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
-        gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed(
-            (int)Player->mHandle.mHandle.mVal);
+        GetBrocAPI()->mBrocExports.mCallbackSpawnButtonPressed(
+            Broc::entity(Player->mHandle.mHandle.mVal));
         system->ReturnToPreviousMenu(-1);
     }
 }
@@ -6927,12 +6925,12 @@ void SpectateMenu::Update(float time_inc)
     (void)time_inc;
     if (g_femanager.GetDMS(mVersion)->mState != 1
         && mState == kSpectatorStateSpawn
-        && gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed != nullptr)
+        && GetBrocAPI()->mBrocExports.mCallbackSpawnButtonPressed != nullptr)
     {
         PlayNavigationSound();
         Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
-        gpBrocAPI->mBrocExports.mCallbackSpawnButtonPressed(
-            (int)Player->mHandle.mHandle.mVal);
+        GetBrocAPI()->mBrocExports.mCallbackSpawnButtonPressed(
+            Broc::entity(Player->mHandle.mHandle.mVal));
         system->ReturnToPreviousMenu(-1);
     }
 }
@@ -7690,6 +7688,43 @@ void InGameSwitchSides::NotifySameTeam()
     DialogMenuSystem* v10 = g_femanager.GetDMS(mVersion);
     v10->GetLayer(v10->GetActiveMenu() == 0)->triangleResponse =
         InGameSwitchSides::ResponseGoBack;
+}
+
+// ea: 0x007A3200
+void InGameSwitchSides::PickTeam()
+{
+    MPPeer* mPeer = MultiplayerMgr::sInst->mPeer;
+    if (MultiplayerMgr::sInst->mPeer != nullptr)
+    {
+        int team;
+        if (m_eTeam == TEAM_AXIS)
+        {
+            if (mPeer == nullptr)
+                goto done;
+            team = 1;
+        }
+        else
+        {
+            if (m_eTeam != TEAM_ALLIES || mPeer == nullptr)
+                goto done;
+            team = 2;
+        }
+        MultiplayerMgr::sInst->ChangeTeam(
+            EntityManager::sInst->GetPlayer(mVersion), team, false, false);
+        goto done;
+    }
+
+    Entity* player = EntityManager::sInst->GetPlayer(mVersion);
+    if (player->sentient != nullptr)
+        player->sentient->eTeam = (team_t)m_eTeam;
+    if (GetBrocAPI()->mBrocExports.mCallbackPlayerTeamChange != nullptr)
+    {
+        GetBrocAPI()->mBrocExports.mCallbackPlayerTeamChange(
+            Broc::entity(player->mHandle.mHandle.mVal), 1, 1);
+    }
+
+done:
+    ((PauseMenu*)g_femanager.GetIGMS(mVersion)->menus[0])->UnPause();
 }
 
 // ea: 0x007A9870
@@ -13463,7 +13498,7 @@ void WeaponSelectMenu::OnCross(int c)
 {
     (void)c;
     ActivationToggle(false);
-    if (gpBrocAPI->mBrocExports.mCallbackPlayerClassChange != nullptr)
+    if (GetBrocAPI()->mBrocExports.mCallbackPlayerClassChange != nullptr)
     {
         // player class change callback verified against IDA
     }
