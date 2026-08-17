@@ -42,6 +42,15 @@ void* PlaySound__functor(Broc::entity self, Broc::string sound,
                          Broc::bfloat delay);
 void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
                                    Broc::vector position);
+void* PlayTeamDialog__functor(Broc::entity self, Broc::string team,
+                              Broc::string sound, Broc::bfloat delay);
+void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
+                              Broc::string primaryteamsound,
+                              Broc::string secondaryteamsound,
+                              Broc::bfloat delay);
+void* PlayTeamSound__functor(Broc::entity self, Broc::string team,
+                             Broc::string teamsound,
+                             Broc::string otherteamsound);
 void* player_dying_sounds__functor(Broc::entity player);
 void* audio_crossfade_wait__functor(Broc::entity self);
 void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name);
@@ -6665,6 +6674,41 @@ void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
     if (storage != NULL)
         result = ::new (storage) AeThreadFunctor3<Broc::entity, Broc::string, Broc::vector>(PlaySoundAtLocation, self, sound, position);
     sound.~string();
+    return result;
+}
+void* PlayTeamDialog__functor(Broc::entity self, Broc::string team,
+                              Broc::string sound, Broc::bfloat delay) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>));
+    void* result = NULL;
+    if (storage != NULL)
+        result = ::new (storage) AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::bfloat>(PlayTeamDialog, self, team, sound, delay);
+    team.~string();
+    sound.~string();
+    return result;
+}
+void* PlayTeamDialog__functor(Broc::entity self, Broc::string primaryteam,
+                              Broc::string primaryteamsound,
+                              Broc::string secondaryteamsound,
+                              Broc::bfloat delay) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string, Broc::bfloat>));
+    void* result = NULL;
+    if (storage != NULL)
+        result = ::new (storage) AeThreadFunctor5<Broc::entity, Broc::string, Broc::string, Broc::string, Broc::bfloat>(PlayTeamDialog, self, primaryteam, primaryteamsound, secondaryteamsound, delay);
+    primaryteam.~string();
+    primaryteamsound.~string();
+    secondaryteamsound.~string();
+    return result;
+}
+void* PlayTeamSound__functor(Broc::entity self, Broc::string team,
+                             Broc::string teamsound,
+                             Broc::string otherteamsound) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>));
+    void* result = NULL;
+    if (storage != NULL)
+        result = ::new (storage) AeThreadFunctor4<Broc::entity, Broc::string, Broc::string, Broc::string>(PlayTeamSound, self, team, teamsound, otherteamsound);
+    team.~string();
+    teamsound.~string();
+    otherteamsound.~string();
     return result;
 }
 void* player_dying_sounds__functor(Broc::entity player) {

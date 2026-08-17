@@ -130,6 +130,70 @@ static_assert(sizeof(AeThreadFunctor3<Broc::entity, Broc::bint, Broc::bint>) == 
 static_assert(sizeof(AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>) == 20,
               "AeThreadFunctor3<entity,bfloat,const char*> size mismatch");
 
+// IDA-backed four-argument functor layout: base/vtable, function pointer,
+// entity argument, then the three captured values.
+template <typename T1, typename T2, typename T3, typename T4>
+class AeThreadFunctor4 : public AeThreadFunctor {
+public:
+    typedef void (__cdecl *Function)(Broc::entity, T2, T3, T4);
+
+    AeThreadFunctor4(Function fp, const Broc::entity& arg1,
+                     const T2& arg2, const T3& arg3, const T4& arg4)
+        : mFp(fp), mArg1(arg1), mArg2(arg2), mArg3(arg3), mArg4(arg4) {}
+
+    unsigned int GetEnt() override { return mArg1.GetHandle(); }
+
+    void CallFunction() override {
+        Broc::entity value(mArg1);
+        mFp(value, mArg2, mArg3, mArg4);
+    }
+
+    Function mFp;       // +0x04
+    Broc::entity mArg1; // +0x08
+    T2 mArg2;           // +0x0C
+    T3 mArg3;           // after mArg2
+    T4 mArg4;           // after mArg3
+};
+
+static_assert(sizeof(AeThreadFunctor4<Broc::entity, Broc::string, Broc::string,
+                                     Broc::bfloat>) == 24,
+              "AeThreadFunctor4<entity,string,string,bfloat> size mismatch");
+static_assert(sizeof(AeThreadFunctor4<Broc::entity, Broc::string, Broc::string,
+                                     Broc::string>) == 24,
+              "AeThreadFunctor4<entity,string,string,string> size mismatch");
+
+// IDA-backed five-argument functor layout: base/vtable, function pointer,
+// entity argument, then the four captured values.
+template <typename T1, typename T2, typename T3, typename T4, typename T5>
+class AeThreadFunctor5 : public AeThreadFunctor {
+public:
+    typedef void (__cdecl *Function)(Broc::entity, T2, T3, T4, T5);
+
+    AeThreadFunctor5(Function fp, const Broc::entity& arg1,
+                     const T2& arg2, const T3& arg3, const T4& arg4,
+                     const T5& arg5)
+        : mFp(fp), mArg1(arg1), mArg2(arg2), mArg3(arg3), mArg4(arg4),
+          mArg5(arg5) {}
+
+    unsigned int GetEnt() override { return mArg1.GetHandle(); }
+
+    void CallFunction() override {
+        Broc::entity value(mArg1);
+        mFp(value, mArg2, mArg3, mArg4, mArg5);
+    }
+
+    Function mFp;       // +0x04
+    Broc::entity mArg1; // +0x08
+    T2 mArg2;           // +0x0C
+    T3 mArg3;           // after mArg2
+    T4 mArg4;           // after mArg3
+    T5 mArg5;           // after mArg4
+};
+
+static_assert(sizeof(AeThreadFunctor5<Broc::entity, Broc::string, Broc::string,
+                                     Broc::string, Broc::bfloat>) == 28,
+              "AeThreadFunctor5<entity,string,string,string,bfloat> size mismatch");
+
 // ============================================================================
 // CallFunctor — invoke a thread functor.
 // ea: 0x7BADB0
