@@ -58,6 +58,32 @@ public:
 static_assert(sizeof(AeThreadFunctor1<Broc::entity>) == 12,
               "AeThreadFunctor1<Broc::entity> size mismatch");
 
+// IDA-backed two-argument functor layout: base/vtable, function pointer,
+// entity argument, then the second captured value.
+template <typename T1, typename T2> class AeThreadFunctor2 : public AeThreadFunctor {
+public:
+    typedef void (__cdecl *Function)(Broc::entity, T2);
+
+    AeThreadFunctor2(Function fp, const Broc::entity& arg1, const T2& arg2)
+        : mFp(fp), mArg1(arg1), mArg2(arg2) {}
+
+    unsigned int GetEnt() override { return mArg1.GetHandle(); }
+
+    void CallFunction() override {
+        Broc::entity value(mArg1);
+        mFp(value, mArg2);
+    }
+
+    Function mFp;       // +0x04
+    Broc::entity mArg1; // +0x08
+    T2 mArg2;            // +0x0C
+};
+
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::entity>) == 16,
+              "AeThreadFunctor2<Broc::entity,Broc::entity> size mismatch");
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>) == 16,
+              "AeThreadFunctor2<Broc::entity,bbool> size mismatch");
+
 // ============================================================================
 // CallFunctor — invoke a thread functor.
 // ea: 0x7BADB0
