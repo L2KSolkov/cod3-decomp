@@ -538,16 +538,16 @@ void SP_skyportal(Entity* ent)
 }
 
 // ea: 0x0045EAB0
-void G_ReplaceSpawnVars(const InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>& keyValuePairs)
+void G_ReplaceSpawnVars(const InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>* keyValuePairs)
 {
     level.numSpawnVars = 0;
     level.numSpawnVarChars = 0;
-    for (unsigned int v1 = 0; v1 < keyValuePairs.mSize; ++v1)
+    for (unsigned int v1 = 0; v1 < keyValuePairs->mSize; ++v1)
     {
-        unsigned int v3 = v1 < keyValuePairs.mSize ? v1 : 0;
-        level.spawnVars[level.numSpawnVars].key = keyValuePairs.mList[v3].mKey;
-        unsigned int v4 = v1 < keyValuePairs.mSize ? v1 : 0;
-        level.spawnVars[level.numSpawnVars++].value = keyValuePairs.mList[v4].mVal.mStr;
+        unsigned int v3 = v1 < keyValuePairs->mSize ? v1 : 0;
+        level.spawnVars[level.numSpawnVars].key = keyValuePairs->mList[v3].mKey;
+        unsigned int v4 = v1 < keyValuePairs->mSize ? v1 : 0;
+        level.spawnVars[level.numSpawnVars++].value = keyValuePairs->mList[v4].mVal.mStr;
     }
 }
 

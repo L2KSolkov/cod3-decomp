@@ -72,7 +72,7 @@ extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int CL_ShutdownDebugData();
 extern void CL_ShutdownInput();
 extern void CL_ShutdownUI();
-extern int StatMon_Reset();
+extern void StatMon_Reset();
 extern int CL_InitInput();
 extern void CL_InitGamepadCommands();
 extern void CL_InitKeyCommands();

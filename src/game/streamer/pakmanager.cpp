@@ -1413,7 +1413,8 @@ struct PakInfoNode {
 // InplaceVector<T> (ae/inplace/InplaceVector.h; full definition in
 // game/game_types.h) - minimal view
 template <typename T>
-struct InplaceVector {
+class InplaceVector {
+public:
     unsigned int mSize;  // +0x00
     T*           mList;  // +0x04
 };
@@ -2788,7 +2789,8 @@ struct InplaceTreeElementKV {
     InplaceString mVal;  // +0x04
 };
 template <typename K, typename V>
-struct InplaceTreeElement {
+class InplaceTreeElement {
+public:
     K mKey;  // +0x00
     V mVal;  // +0x04
 };

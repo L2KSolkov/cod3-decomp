@@ -433,7 +433,7 @@ void CL_ShutdownRef()
         // re.Shutdown(1)
         extern void re_ShutdownFn(int);
         re_ShutdownFn(1);
-        extern int StatMon_Reset();
+        extern void StatMon_Reset();
         StatMon_Reset();
     }
 }
@@ -452,7 +452,7 @@ void CL_InitRenderer()
     g_consoleField.widthInPixels = (int)((float)dword_F1719C - 32.0f);
     g_consoleField.charHeight = (float)g_console_char_height;
     g_consoleField.bFixedSize = 1;
-    extern int StatMon_Reset();
+    extern void StatMon_Reset();
     StatMon_Reset();
 }
 
