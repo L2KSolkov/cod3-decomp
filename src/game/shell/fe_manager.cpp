@@ -286,86 +286,86 @@ void FEManager::GetPanelFileUsers(
     {
         if (strcmp(v3, "instant_action.panel") == 0)
         {
-            array.push_back((PanelFileUser*)InstantActionMenu_Me());
+            array.push_back((PanelFileUser*)fems->menus[7]);
             return;
         }
         if (strcmp(v3, "MP_pre_mainmenu.PANEL") == 0)
         {
-            array.push_back((PanelFileUser*)MPMainMenuXBox_Me());
+            array.push_back((PanelFileUser*)fems->menus[8]);
             return;
         }
         if (strcmp(v3, "MP_creategame.PANEL") == 0)
         {
-            array.push_back((PanelFileUser*)CreateSessionMenu_Me());
+            array.push_back((PanelFileUser*)fems->menus[0]);
             return;
         }
         if (strcmp(v3, "MP_Xbox_system_link_CG.PANEL") == 0)
         {
-            array.push_back((PanelFileUser*)CreateLanSessionMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[1]);
             return;
         }
         if (strcmp(v3, "MP_SS_creatematch.PANEL") != 0)
         {
             if (strcmp(v3, "MP_findgame_optimatch.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)FindSessionMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[4]);
                 return;
             }
             if (strcmp(v3, "MP_Xbox_system_link_FG.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)FindLanSessionMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[5]);
                 return;
             }
             if (strcmp(v3, "initial_loading_screen.panel") == 0)
             {
-                array.push_back((PanelFileUser*)InitialLoadingMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[6]);
                 return;
             }
             if (strcmp(v3, "MP_Xbox_system_link.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)PlayLanMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[9]);
                 return;
             }
             if (strcmp(v3, "MP_mainmenu.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)PlayOnlineMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[10]);
                 return;
             }
             if (strcmp(v3, "press_start.panel") == 0)
             {
-                array.push_back((PanelFileUser*)PressStartMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[11]);
                 return;
             }
             if (strcmp(v3, "session_details.panel") == 0)
             {
-                array.push_back((PanelFileUser*)SessionDetailsMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[12]);
                 return;
             }
             if (strcmp(v3, "MP_gamelist.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)SessionListMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[13]);
                 return;
             }
             if (_stricmp(v3, "MP_Xbox_system_link_GL.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)SessionLanListMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[14]);
                 return;
             }
             if (strcmp(v3, "SP_small_textbox_frontend.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)OverlayMenu_Me(0));
+                array.push_back((PanelFileUser*)fems->menus[16]);
                 return;
             }
             if (strcmp(v3, "multiline_frontend_overlay.panel") == 0)
             {
                 array.push_back(
-                    (PanelFileUser*)MultilineFrontendOverlayMenu_Me());
+                    (PanelFileUser*)fems->menus[17]);
                 return;
             }
             if (strcmp(v3, "multiline_ingame_overlay.panel") == 0)
             {
                 array.push_back(
-                    (PanelFileUser*)MultilineIngameOverlayMenu_Me());
+                    (PanelFileUser*)mIGMS[currCl]->menus[9]);
                 return;
             }
             if (strcmp(v3, "hud_menu.panel") == 0
@@ -377,7 +377,7 @@ void FEManager::GetPanelFileUsers(
             }
             if (strcmp(v3, "mp_loadingscreen.panel") == 0)
             {
-                array.push_back((PanelFileUser*)LoadingMenu_Me());
+                array.push_back((PanelFileUser*)mIGMS[currCl]->menus[4]);
                 return;
             }
             if (strcmp(v3, "createprofile_menu.panel") == 0)
@@ -392,12 +392,12 @@ void FEManager::GetPanelFileUsers(
             }
             if (strcmp(v3, "MP_Xbox_liveoptions.PANEL") == 0)
             {
-                array.push_back((PanelFileUser*)XboxLiveOptionsMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[30]);
                 return;
             }
             if (strcmp(v3, "join_game.panel") == 0)
             {
-                array.push_back((PanelFileUser*)JoinGameMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[15]);
             }
             else if (strcmp(v3, "login_status.panel") == 0)
             {
@@ -406,33 +406,33 @@ void FEManager::GetPanelFileUsers(
             else if (strcmp(v3, "MP_creategame_advanced.PANEL") == 0)
             {
                 array.push_back(
-                    (PanelFileUser*)CreateSessionAdvancedMenu_Me());
+                    (PanelFileUser*)fems->menus[2]);
             }
             else if (strcmp(v3, "MP_Xbox_system_link_CGA.PANEL") == 0)
             {
                 array.push_back(
-                    (PanelFileUser*)CreateLanSessionAdvancedMenu_Me());
+                    (PanelFileUser*)fems->menus[3]);
             }
             else if (strcmp(v3, "SP_OP_gameplay.panel") == 0)
             {
-                array.push_back((PanelFileUser*)MPOptionsGameplayMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[19]);
             }
             else if (strcmp(v3, "SP_OP_con_main.panel") == 0)
             {
-                array.push_back((PanelFileUser*)MPOptionsControlsMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[20]);
             }
             else if (strcmp(v3, "SP_OP_screen.panel") == 0)
             {
-                array.push_back((PanelFileUser*)MPOptionsScreenMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[21]);
             }
             else if (strcmp(v3, "SP_OP_sound.panel") == 0)
             {
-                array.push_back((PanelFileUser*)MPOptionsSoundMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[22]);
             }
             else if (strcmp(v3, "SP_OP_pref_QM.panel") == 0)
             {
                 array.push_back(
-                    (PanelFileUser*)MPOptionsPreferencesMenu_Me());
+                    (PanelFileUser*)fems->menus[23]);
             }
             else if (strcmp(v3, "SP_OP_con_stick_XB.panel") == 0)
             {
@@ -448,11 +448,11 @@ void FEManager::GetPanelFileUsers(
             }
             else if (strcmp(v3, "SP_OP_mainmenu.panel") == 0)
             {
-                array.push_back((PanelFileUser*)MPProfileMainMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[27]);
             }
             else if (strcmp(v3, "SP_OP_editprofile.panel") == 0)
             {
-                array.push_back((PanelFileUser*)MPProfileEditMenu_Me());
+                array.push_back((PanelFileUser*)fems->menus[29]);
             }
             else
             {
