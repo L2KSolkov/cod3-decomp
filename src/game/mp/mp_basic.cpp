@@ -94,6 +94,9 @@ extern const float AngleSubtract(float a1, float a2);  // core.o (?AngleSubtract
 extern void YawVectors(float yaw, float* const forward,
                        float* const right);            // core.o
 extern bool gLogAllPktTypes;   // ?gLogAllPktTypes@@3_NA @ 0xF93FA0
+bool gLogAllPktTypes = false;  // ?gLogAllPktTypes@@3_NA (mp.o data)
+const float gMPFloatPositionMax = 8191.0f;  // mp.o data
+const float gMPFloatPositionMin = -8191.0f; // mp.o data
 extern int dword_E36ECC;       // @ 0xE36ECC (score stat scale)
 extern int dword_E36EE0;       // @ 0xE36EE0 (score stat scale)
 extern float distance;         // @ 0xE37624 (net debug draw radius filter)
@@ -16438,8 +16441,6 @@ short MPPlayerItems::AddItem(EDroppedItemTypes item, Entity* ent)
 bool MPUtility::ReadPosition(bdReference<bdBitBuffer> buffer,
                              float* position)
 {
-    extern float gMPFloatPositionMin;  // 0xE370E0
-    extern float gMPFloatPositionMax;  // 0xE370DC
     bool ok = buffer.m_ptr->readRangedFloat32(position[0],
                                               gMPFloatPositionMin,
                                               gMPFloatPositionMax, 1.0f);
@@ -22280,9 +22281,9 @@ struct DebugUpdatePoint {
     float t;                              // +0xD8
     uint8_t _padDC[0xE0 - 0xDC];
 };
-extern int localPoint;  // ?localPoint@VehicleDebug@@3HA @ 0xF93F94
-extern DebugUpdatePoint points[40];  // ?points@VehicleDebug@@3PAUDebugUpdatePoint@1@A @ 0xF93FD0
-extern const char* InterpolationStateText[];  // ?InterpolationStateText@VehicleDebug@@3PAPBDA @ 0xE36E18
+int localPoint = 0;  // ?localPoint@VehicleDebug@@3HA
+DebugUpdatePoint points[40] = {};  // ?points@VehicleDebug@@3PAUDebugUpdatePoint@1@A
+const char* InterpolationStateText[3] = {"Regular", "Starvation", "Stopped"};
 }  // namespace VehicleDebug
 
 // ea: 0x00755D80
@@ -26065,8 +26066,8 @@ struct DebugUpdatePoint {
     float           t;                     // +0xA4
     uint8_t         _padA8[0xB0 - 0xA8];
 };
-extern int localPoint;  // ?localPoint@PlayerDebug@@3HA @ 0xF93F84
-extern DebugUpdatePoint points[40];  // ?points@PlayerDebug@@3PAUDebugUpdatePoint@1@A @ 0xF962D0
+int localPoint = 0;  // ?localPoint@PlayerDebug@@3HA
+DebugUpdatePoint points[40] = {};  // ?points@PlayerDebug@@3PAUDebugUpdatePoint@1@A
 }  // namespace PlayerDebug
 
 // ea: 0x00736670

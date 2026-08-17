@@ -80,8 +80,8 @@ public:
 };
 
 extern int g_LightGridDecruftifier;  // ?g_LightGridDecruftifier@@3HA (g.o)
-extern float g_pointmultiplier;      // ?g_pointmultiplier@@3MA @ 0xDFA420
-extern bool g_pointmultiplieractive; // ?g_pointmultiplieractive@@3_NA @ 0xF743C8
+float g_pointmultiplier = 2.0f;      // ?g_pointmultiplier@@3MA (render.o data)
+bool g_pointmultiplieractive = false; // ?g_pointmultiplieractive@@3_NA (render.o data)
 
 void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir,
                         const math::Vector4& Color);  // ?nglListAddDirLight@@YAXIABVDir3@math@@ABVVector4@2@@Z
