@@ -316,6 +316,12 @@ public:
     static XBoxLiveIngameOptionsCOD3* Me(int version);  // ?Me@XBoxLiveIngameOptionsCOD3@@SAPAV1@H@Z
 };
 
+// ea: 0x00778C90
+XBoxLiveIngameOptionsCOD3* XBoxLiveIngameOptionsCOD3::Me(int client)
+{
+    return (XBoxLiveIngameOptionsCOD3*)g_femanager.GetIGMS(client)->menus[5];
+}
+
 // ============================================================================
 // mp_shell.o data
 // ============================================================================
