@@ -1291,6 +1291,28 @@ MPEntityHandle::MPEntityHandle()
 {
     mValue = 0;
 }
+MPEntityHandle::MPEntityHandle(unsigned short peerId, unsigned short index)
+{
+    if (((peerId + 1) & 0x1FFE0) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPEntityHandleDB.h";
+        AeAssert::gCurrentLine = 28;
+        AeAssert::gCurrentExpr = "(peerId + 1) >> 5 == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((index & 0xF800u) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPEntityHandleDB.h";
+        AeAssert::gCurrentLine = 28;
+        AeAssert::gCurrentExpr = "!( ((32 - 1) << (16 - 5)) & index )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    mValue = (unsigned short)(index | ((peerId + 1) << 11));
+}
 MPEntityHandle::MPEntityHandle(const MPEntityHandle& value)
 {
     mValue = value.mValue;
