@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <string.h>
 
+extern void DObjGetBounds(const DObj* obj, math::Position3& mins,
+                          math::Position3& maxs);
+
 // rb_vehicle statics + free helpers (physics.o; ported in g_physics.cpp)
 void rb_vehicle::update_parms(vehicle_rb_parameter* p, bool from_network)
 {
@@ -50,7 +53,85 @@ static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate);
 struct scr_vehicle_t;
 void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
 {
-    (void)ent; (void)veh; (void)a;
+    vehicle_info_t* info = s_vehicleInfos[a];
+    ent->die = 4;
+    ent->touch = 4;
+    ent->pain = 3;
+    ent->use = 3;
+    ent->controller = 2;
+    ent->entinfo = 2;
+    ent->think = THINK__ReturnToPos2;
+    ent->r.svFlags = 16;
+    ent->r.contents = byte_A00000;
+    ent->s.eType = 14;
+    ent->s.eFlags = 0;
+    ent->s.pos.trType = TR_INTERPOLATE;
+    ent->s.apos.trType = TR_INTERPOLATE;
+    ent->s.loopSound = 0;
+    ent->s.weapon = BG_GetWeaponIndexForName(info->turretWeapon);
+
+    veh->next.mSteeringAngle = 0.0f;
+    veh->next.mTurretAngles.v.m128_f32[0] = 0.0f;
+    veh->next.mTurretAngles.v.m128_f32[1] = 0.0f;
+    veh->next.mTurretAngles.v.m128_f32[2] = 0.0f;
+    veh->next.mBodyPosition.v.m128_f32[0] = 0.0f;
+    veh->next.mBodyPosition.v.m128_f32[1] = 0.0f;
+    veh->next.mBodyPosition.v.m128_f32[2] = 0.0f;
+    veh->current.mSteeringAngle = 0.0f;
+    veh->current.mTurretAngles.v.m128_f32[0] = 0.0f;
+    veh->current.mTurretAngles.v.m128_f32[1] = 0.0f;
+    veh->current.mTurretAngles.v.m128_f32[2] = 0.0f;
+    veh->current.mBodyPosition.v.m128_f32[0] = 0.0f;
+    veh->current.mBodyPosition.v.m128_f32[1] = 0.0f;
+    veh->current.mBodyPosition.v.m128_f32[2] = 0.0f;
+    veh->numWaitNotify = 0;
+    veh->treadTime = 0.0f;
+    veh->treadTime2 = 0.0f;
+    veh->mUseRadius = 128;
+    veh->mHasEntryPoints = false;
+
+    int flags = ent->flags;
+    proximity_data_t* proximity_data = ent->proximity_data;
+    ent->scr_vehicle = veh;
+    ent->nextthink = level.time + 1;
+    ent->takedamage = 1;
+    ent->speed = 0.0f;
+    ent->active = 0;
+    ent->clipmask = 0x810251;
+    ent->flags = flags | 0x1000;
+
+    if (proximity_data == nullptr)
+    {
+        TPakId pakId = (TPakId)ent->mPakId;
+        if (pakId == PAK_ID_INVALID)
+            pakId = CurPakId();
+        proximity_data = (proximity_data_t*)proximity_data_t::operator new(
+            0x1850u, pakId);
+        if (proximity_data != nullptr)
+            ::new (proximity_data) proximity_data_t();
+        ent->proximity_data = proximity_data;
+    }
+
+    ent->health = info->health;
+    ent->maxHealth = info->health;
+    veh->animMap = vehicleAnimMaps[info->type];
+    G_DObjUpdate(ent, false);
+    if (ent->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 1415;
+        AeAssert::gCurrentExpr = "ent->GetDObj()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Vehicle entity does not have an object - bad!"))
+            __debugbreak();
+    }
+    DObj* mDObj = ent->mDObj;
+    if (mDObj != nullptr)
+        DObjGetBounds(mDObj, ent->r.mins, ent->r.maxs);
+    g_LinkEntity(ent);
+    RegisterItem(ent->s.weapon, 1);
 }
 void VEH_InitVehicle(scr_vehicle_t* veh) { (void)veh; }
 void VEH_RemoveVehicle(void* veh) { (void)veh; }

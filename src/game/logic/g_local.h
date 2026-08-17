@@ -361,7 +361,9 @@ struct scr_vehicle_t {
     int     crashSound;       // +0x510
     float   crashVolume;      // +0x514
     void*   mRBVeh;           // +0x518 rb_vehicle*
-    uint8_t _pad51C[0x554 - 0x51C];
+    float   treadTime;        // +0x51C
+    float   treadTime2;       // +0x520
+    uint8_t _pad524[0x554 - 0x524];
     float   mUseRadius;       // +0x554
     uint8_t mHasEntryPoints;  // +0x558
     bool    mHatchOpen;        // +0x559
