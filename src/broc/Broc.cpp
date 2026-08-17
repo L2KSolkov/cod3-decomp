@@ -853,10 +853,24 @@ ExtendedEntity::ExtendedEntity() {
     mKVPairs = NULL;
 }
 
-ExtendedEntity::ExtendedEntity(const ExtendedEntity&) {
-    mCount = 0;
-    mCapacity = 0;
-    mKVPairs = NULL;
+// ea: 0x0092A380. IDA profiling events are omitted; allocation, typed copies,
+// and unused-slot initialization follow the decompiled body.
+ExtendedEntity::ExtendedEntity(const ExtendedEntity& rhs)
+{
+    mCount = rhs.mCount;
+    mCapacity = rhs.mCapacity;
+    mKVPairs = static_cast<KVPair*>(mem_alloc(8 * mCapacity, 4));
+    for (unsigned int i = 0; i < mCount; ++i)
+    {
+        mKVPairs[i].key = rhs.mKVPairs[i].key;
+        CopyFunc* copier = GetCopier(mKVPairs[i].key);
+        mKVPairs[i].val = copier(rhs.mKVPairs[i].val);
+    }
+    for (unsigned int j = mCount; j < mCapacity; ++j)
+    {
+        mKVPairs[j].key = 0;
+        mKVPairs[j].val = 0;
+    }
 }
 
 ExtendedEntity::~ExtendedEntity() {}
