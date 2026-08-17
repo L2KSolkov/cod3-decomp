@@ -425,9 +425,21 @@ class OverlayMenu {
 public:
     static OverlayMenu* Me(int version);  // ?Me@OverlayMenu@@SAPAV1@H@Z
     void SetState(int state);             // ?SetState@OverlayMenu@@QAEXW4eState@1@@Z
-    void* GetActiveMenu();                // vtable slot 0xE0
-    int   GetAcceptMenu();                // vtable slot 0x60
-    int   GetBackMenu();                  // vtable slot 0x64
+    // IDA vtable slot 0xE0 is FEMenu::GetSystem; the original decompile
+    // names its result as the active menu while reading FEMenuSystem state.
+    void* GetActiveMenu()
+    {
+        return *(void**)((char*)this + 0x08);
+    }
+    // IDA calls FEMenuSystem::GetActiveMenu through slot 0x60 on that result.
+    int GetAcceptMenu()
+    {
+        return *(int*)((char*)GetActiveMenu() + 0x1C);
+    }
+    int GetBackMenu()
+    {
+        return *(int*)((char*)GetActiveMenu() + 0x1C);
+    }
 };
 
 // HotJoinMenu (mp_shell.o) - split-screen hot-join menu

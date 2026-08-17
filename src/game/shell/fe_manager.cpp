@@ -544,6 +544,18 @@ DialogMenuSystem* FEManager::GetDMS(int client)
     return mDMS[client];
 }
 
+// ea: 0x005AEF60 (shell.o)
+bool FEManager::DMSMenusActiveAnyClient()
+{
+    for (DialogMenuSystem** menu = mDMS;
+         *menu == nullptr || !(*menu)->IsSystemActive();
+         ++menu)
+    {
+        return false;
+    }
+    return true;
+}
+
 // ea: 0x0057D6D0
 void FEManager::UpdateLoadingMenu(float percentDone)
 {
