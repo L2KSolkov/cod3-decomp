@@ -575,7 +575,58 @@ void VEH_UpdateShaderTime(Entity* ent, int msec)
     scr_vehicle->treadTime2 -= angularDelta;
 }
 void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
-void VEH_UpdateSteering(Entity* e) { (void)e; }
+
+// ea: 0x0044E880
+void VEH_UpdateSteering(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info->steerWheels == 0)
+    {
+        scr_vehicle->next.mSteeringAngle = 0.0f;
+        return;
+    }
+
+    float currentAngle = scr_vehicle->next.mSteeringAngle;
+    rb_vehicle* rb_veh = (rb_vehicle*)scr_vehicle->mRBVeh;
+    float maxAngle = rb_veh->m_parameter->m_steer_angle_max
+                     * rb_veh->m_steer_factor * 180.0f
+                     * 0.31830987f;
+    scr_vehicle->current.mSteeringAngle = currentAngle;
+
+    float steeringAngle = VEH_LerpAngle(maxAngle, currentAngle, 20.0f);
+    if (steeringAngle < -60.0f)
+        steeringAngle = -60.0f;
+    else if (steeringAngle > 60.0f)
+        steeringAngle = 60.0f;
+    scr_vehicle->next.mSteeringAngle = steeringAngle;
+
+    float delta[3];
+    delta[0] = scr_vehicle->phys.origin.v.m128_f32[0]
+               - scr_vehicle->lastTreadPos.v.m128_f32[0];
+    delta[1] = scr_vehicle->phys.origin.v.m128_f32[1]
+               - scr_vehicle->lastTreadPos.v.m128_f32[1];
+    delta[2] = scr_vehicle->phys.origin.v.m128_f32[2]
+               - scr_vehicle->lastTreadPos.v.m128_f32[2];
+
+    float angle = vectoyaw(delta) - ent->r.currentAngles.v.m128_f32[1];
+    angle = AngleNormalize180(angle);
+    float distanceSquared = delta[0] * delta[0] + delta[1] * delta[1]
+                            + delta[2] * delta[2];
+
+    scr_vehicle->lastTreadPos.v.m128_f32[0] =
+        scr_vehicle->phys.origin.v.m128_f32[0];
+    scr_vehicle->lastTreadPos.v.m128_f32[1] =
+        scr_vehicle->phys.origin.v.m128_f32[1];
+    scr_vehicle->lastTreadPos.v.m128_f32[2] =
+        scr_vehicle->phys.origin.v.m128_f32[2];
+    scr_vehicle->lastTreadPos.v.m128_f32[3] =
+        scr_vehicle->phys.origin.v.m128_f32[3];
+
+    scr_vehicle->wheelPitch +=
+        (90.0f - fabsf(angle)) * 0.011111111f * sqrtf(distanceSquared)
+        / (scr_vehicle->wheelRadius * 6.2831855f) * 360.0f;
+}
 void VEH_UpdateWeapon(Entity* e) { (void)e; }
 
 // ea: 0x46CB70 (g.o)
