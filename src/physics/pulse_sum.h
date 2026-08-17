@@ -168,6 +168,7 @@ struct pulse_sum_point {
 
     void set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
              const math::Dir3* b2_r, pulse_sum_cache* ps_cache);
+    void setup_vel_bi_standard(float delta_t);
     const math::Dir3* get_vel(const math::Dir3* result);
     const math::Dir3* get_pos(const math::Dir3* result);
     const math::Dir3* get_objective(const math::Dir3* result);
