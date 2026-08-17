@@ -20,17 +20,14 @@ extern int g_camera_cell;  // render.o @ 0x11E993C (defined in pakmanager.cpp)
 struct proximity_data_t;
 
 // portals (render.o @ 0x11EA840; defined in pakmanager.cpp)
-struct PortalCellView {
-    uint8_t _pad[320];
-    math::Vector4** m_planes;   // +320 (inner m_slot_array)
-    int m_alloc_count;          // +324
+template <typename T, int CAP>
+class phys_static_array {
+public:
+    char m_buffer[CAP * sizeof(T)];
+    T* const m_slot_array;
+    int m_alloc_count;
 };
-struct PortalsView {
-    uint8_t m_buffer[64 * 336];
-    PortalCellView* m_slot_array;  // +21504
-    int m_alloc_count;             // +21508
-};
-extern PortalsView portals;  // ?portals@@3V?$phys_static_array@V?$phys_static_array@VVector4@math@@$0BE@@@$0EA@@@A
+extern phys_static_array<phys_static_array<math::Vector4, 20>, 64> portals;
 
 // ParticleEffect view (mEffect +0x1C, cached_pos +0x00, cached_cell_index +0x10)
 class ParticleEffect {
@@ -78,7 +75,8 @@ int calc_cull_status(ParticleEffect* effect)
         int cellIdx = 0;
         for (; cellIdx < totalCells; ++cellIdx)
         {
-            PortalCellView* inner = &portals.m_slot_array[cellIdx];
+            phys_static_array<math::Vector4, 20>* inner =
+                &portals.m_slot_array[cellIdx];
             int planeCount = inner->m_alloc_count;
             int j = 0;
             for (; j < planeCount; ++j)
@@ -90,7 +88,7 @@ int calc_cull_status(ParticleEffect* effect)
                             114, "i >= 0 && i < m_alloc_count", "unknown"))
                         __debugbreak();
                 }
-                __m128 plane = inner->m_planes[j]->v;
+                __m128 plane = inner->m_slot_array[j].v;
                 float planeW = _mm_shuffle_ps(plane, plane, 255).m128_f32[0];
                 __m128 v12 = _mm_mul_ps(plane, center.v);
                 float dot = v12.m128_f32[0]
