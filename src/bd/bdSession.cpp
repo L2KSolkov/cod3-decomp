@@ -14,6 +14,7 @@
 #include "bd/bdSecurityKeyMap.h"
 #include "bd/bdSessionHandler.h"
 #include "bd/bdAddressMap.h"
+#include "bd/bdNet.h"
 
 // bdArray grow-and-append helper (bdArray is a raw data/capacity/size triple).
 template <typename T>
@@ -425,8 +426,8 @@ bool bdSession::startConnect(bdReference<bdConnection>& connection,
 // bdSession::connectToLocalHost - ea: 0x8B3820
 // ============================================================================
 bool bdSession::connectToLocalHost(const XNKID& secID) {
-    extern bdReference<bdCommonAddr> bdNetImpl_getLocalCommonAddr();
-    bdReference<bdCommonAddr> localAddr = bdNetImpl_getLocalCommonAddr();
+    bdReference<bdCommonAddr> localAddr =
+        bdSingleton<bdNetImpl>::getInstance()->getLocalCommonAddr();
     return startConnect(m_hostConnection, localAddr, secID, "local host");
 }
 
@@ -442,8 +443,8 @@ bool bdSession::connectToRemoteHost(const bdReference<bdCommonAddr>& hostAddr,
 // bdSession::connectToLocalPeer - ea: 0x8B3940
 // ============================================================================
 bool bdSession::connectToLocalPeer(const XNKID& secID) {
-    extern bdReference<bdCommonAddr> bdNetImpl_getLocalCommonAddr();
-    bdReference<bdCommonAddr> localAddr = bdNetImpl_getLocalCommonAddr();
+    bdReference<bdCommonAddr> localAddr =
+        bdSingleton<bdNetImpl>::getInstance()->getLocalCommonAddr();
     return startConnect(m_localConnection, localAddr, secID, "local peer");
 }
 
@@ -824,8 +825,8 @@ void bdSession::handleJoinReply(const bdReceivedMessage& message) {
     bool cleanUp = false;
 
     if (ok && joinAllowed) {
-        extern bdReference<bdCommonAddr> bdNetImpl_getLocalCommonAddr();
-        bdReference<bdCommonAddr> localAddr = bdNetImpl_getLocalCommonAddr();
+        bdReference<bdCommonAddr> localAddr =
+            bdSingleton<bdNetImpl>::getInstance()->getLocalCommonAddr();
         XNKID gameSecID;
         XNKEY gameSecKey;
         memset(&gameSecID, 0, sizeof(gameSecID));

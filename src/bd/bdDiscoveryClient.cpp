@@ -5,6 +5,7 @@
 // ============================================================================
 
 #include "bd/bdDiscovery.h"
+#include "bd/bdNet.h"
 
 #include <new>
 #include <string.h>
@@ -17,12 +18,6 @@
 class bdTrulyRandomImpl {
 public:
     void getRandomUByte8(unsigned char* buf, int count);
-};
-
-class bdNetImpl {
-public:
-    static bdNetImpl* getInstance();
-    void getLocalCommonAddr(bdReference<bdCommonAddr>& addr);
 };
 
 // ============================================================================
@@ -143,8 +138,8 @@ void bdDiscoveryClient::update() {
                     gameFound.m_ptr = bdSingleton<bdGameInfoFactoryImpl>::getInstance()->create();
                     if (gameFound.m_ptr != NULL)
                         gameFound.m_ptr->addRef();
-                    bdReference<bdCommonAddr> localAddr;
-                    bdNetImpl::getInstance()->getLocalCommonAddr(localAddr);
+                    bdReference<bdCommonAddr> localAddr =
+                        bdSingleton<bdNetImpl>::getInstance()->getLocalCommonAddr();
                     gameFound.m_ptr->deserialize(localAddr, payload);
                     bdMessageProxy proxy(".\\bdDiscovery\\bdDiscoveryClient.cpp",
                                          "void __thiscall bdDiscoveryClient::update(void)",
