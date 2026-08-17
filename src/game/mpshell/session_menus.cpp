@@ -7342,6 +7342,134 @@ void AARScoreboardBase::OnActivate()
     ClearButton(controller::SELECT);
 }
 
+// ea: 0x007AA0A0
+void AARScoreboardBase::Update(float time_inc)
+{
+    AARBaseMenu::SetTimerText();
+    m_ListBox.Update(time_inc);
+    if (!mFirstUpdate)
+        RecalculateWinningTeam();
+
+    MPPlayerManager* pPlayerManager =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    memset(&m_playerList, 0, sizeof(m_playerList));
+    int iPlayersSortedCount = 0;
+    m_iSecondaryScoreAllies[0] = 0;
+    m_iSecondaryScoreAxis[0] = 0;
+    m_iSecondaryScoreAllies[1] = 0;
+    m_iSecondaryScoreAxis[1] = 0;
+    m_iSecondaryScoreAllies[2] = 0;
+    m_iSecondaryScoreAxis[2] = 0;
+
+    for (int player = 0; player < 16; ++player)
+    {
+        Entity* pEntity = EntityManager::sInst->mPlayers[player];
+        if (pEntity == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARScoreboardBase.cpp";
+            AeAssert::gCurrentLine = 361;
+            AeAssert::gCurrentExpr = "pEntity";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Could not get entity from player"))
+                __debugbreak();
+            continue;
+        }
+        sentient_s* sentient = pEntity->sentient;
+        if (sentient == nullptr)
+            continue;
+
+        team_t eTeam = sentient->eTeam;
+        Client* client = pEntity->client;
+        int mBaseScore = client->pers.mBaseScore;
+        for (int stat = 0; stat < 7; ++stat)
+            mBaseScore +=
+                PlayerStats::TotalScoreForStats(client->pers.mStats[stat]);
+        int iKills = 0;
+        int iDeaths = 0;
+        for (int stat = 0; stat < 7; ++stat)
+        {
+            iKills += client->pers.mStats[stat][3];
+            iDeaths += client->pers.mStats[stat][4];
+        }
+
+        if (eTeam == TEAM_ALLIES)
+        {
+            m_iSecondaryScoreAllies[0] += mBaseScore;
+            m_iSecondaryScoreAllies[1] += iKills;
+            m_iSecondaryScoreAxis[2] += iDeaths;
+        }
+        else if (eTeam == TEAM_AXIS)
+        {
+            m_iSecondaryScoreAxis[0] += mBaseScore;
+            m_iSecondaryScoreAxis[1] += iKills;
+            m_iSecondaryScoreAllies[2] += iDeaths;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/AARScoreboardBase.cpp";
+            AeAssert::gCurrentLine = 415;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Unknown team while tiebreaking\n"))
+                __debugbreak();
+        }
+
+        if (eTeam == m_cgTeamShown || !cgGlobal.teamGame)
+        {
+            m_playerList.m_elements[iPlayersSortedCount].iScore = mBaseScore;
+            m_playerList.m_elements[iPlayersSortedCount].iKills = iKills;
+            m_playerList.m_elements[iPlayersSortedCount].iDeaths = iDeaths;
+            m_playerList.m_elements[iPlayersSortedCount].iPlayerIndex =
+                pPlayerManager->GetPlayerIndex(pEntity);
+            m_playerList.m_elements[iPlayersSortedCount].pEntity = pEntity;
+            ++iPlayersSortedCount;
+        }
+    }
+
+    if (mFirstUpdate)
+    {
+        mFirstUpdate = false;
+        return;
+    }
+
+    qsort(&m_playerList, iPlayersSortedCount,
+          sizeof(sScoreboardPlayerSlot), player_sorter);
+    m_ListBox.mBlockRefresh = true;
+    int row = 0;
+    for (int i = 0; i < iPlayersSortedCount; ++i)
+    {
+        Entity* pEntity = m_playerList.m_elements[i].pEntity;
+        if (pEntity != nullptr)
+        {
+            MPPlayer* player = pPlayerManager->GetPlayer(pEntity);
+            if (player != nullptr)
+                m_ListBox.SetPlayerID(row, player->GetId());
+            const char* playerName = pPlayerManager->GetPlayerName(
+                (unsigned char)m_playerList.m_elements[i].iPlayerIndex);
+            int playerClass = pEntity->client->pers.playerClass;
+            if (playerClass == -1)
+                playerClass = 2;
+            m_ListBox.SetText(row, 0, playerName);
+            m_ListBox.SetItemState(row, 1, playerClass + 1);
+            m_ListBox.SetText(row, 2,
+                              va("%i", m_playerList.m_elements[i].iScore));
+            m_ListBox.SetText(row, 3,
+                              va("%i", m_playerList.m_elements[i].iKills));
+            m_ListBox.SetText(row, 4,
+                              va("%i", m_playerList.m_elements[i].iDeaths));
+        }
+        ++row;
+    }
+    for (int j = iPlayersSortedCount; j < 16; ++j)
+        m_ListBox.ClearRow(j);
+    m_ListBox.mBlockRefresh = false;
+    m_ListBox.Refresh();
+}
+
 // ea: 0x007AF240
 void InGameSwitchSides::OnActivate()
 {
