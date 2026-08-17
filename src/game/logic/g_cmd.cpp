@@ -432,10 +432,39 @@ float EvalThrottleChange(unsigned int frameId, unsigned int entityHandleVal,
 }
 float EvalBrake(unsigned int, unsigned int, unsigned int, float,
                 float, unsigned int) { return -1.0f; }
-float EvalDriver(unsigned int, unsigned int, unsigned int, float,
-                 float, unsigned int) { return 0.0f; }
-float EvalPlayer(unsigned int, unsigned int, unsigned int, float,
-                 float, unsigned int) { return 0.0f; }
+float EvalDriver(unsigned int, unsigned int entityHandleVal, unsigned int,
+                 float, float, unsigned int)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return 0.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr || mObject->scr_vehicle == nullptr)
+        return 0.0f;
+    Entity* driver = HandleDbToEnt(mObject->scr_vehicle->seats[0].occupant);
+    if (driver != nullptr && IsPlayerFullySeatedInVehicle(driver))
+        return 1.0f;
+    return 0.0f;
+}
+float EvalPlayer(unsigned int, unsigned int entityHandleVal, unsigned int,
+                 float, float, unsigned int)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (mObject == nullptr || mObject->scr_vehicle == nullptr)
+        return 0.0f;
+    for (int i = 0; i < 11; ++i)
+    {
+        if (HandleDbToEnt(mObject->scr_vehicle->seats[i].occupant) == Player)
+            return 1.0f;
+    }
+    return 0.0f;
+}
 float EvalHealth(unsigned int, unsigned int entityHandleVal, unsigned int,
                  float, float, unsigned int)
 {
