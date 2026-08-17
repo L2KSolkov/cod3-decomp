@@ -215,6 +215,8 @@ int dword_F6A2AC[4 * 3208];
 unsigned char byte_F64194[4 * 6320];
 unsigned char byte_F641C0[4 * 6320];
 unsigned char unk_F6A294[4 * 3208];
+float unk_F6A298[4 * 802];
+float unk_F6A29C[4 * 802];
 struct game_hudelem_s {
     struct {
         int type;  // +0x00

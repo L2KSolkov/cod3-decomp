@@ -15,9 +15,9 @@ extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
 extern ELanguage gLanguage;          // 0x012F03A4
 extern int currCl;
 extern float sNaN;                   // ?sNaN@@3MA @ 0x10F19D0
-extern int unk_F6A294[4 * 3208];     // 0x00F6A294
-extern int unk_F6A298[4];            // 0x00F6A298
-extern int unk_F6A29C[4];            // 0x00F6A29C
+extern unsigned char unk_F6A294[4 * 3208]; // 0x00F6A294
+extern float unk_F6A298[4 * 802];         // 0x00F6A298
+extern float unk_F6A29C[4 * 802];         // 0x00F6A29C
 extern void ApplyControllerStickConfig(int stickConfig);
 extern void ApplyControllerButtonConfig(int buttonConfig);
 
