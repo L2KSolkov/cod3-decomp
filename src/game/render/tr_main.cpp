@@ -730,13 +730,13 @@ struct cdl_proftimer {
 extern cdl_proftimer cdl_proftimer_temp2;  // ?cdl_proftimer_temp2@@3Ucdl_proftimer@@A (tr_stats.cpp)
 extern void nglValidateMatrices(nglScene* Scene);  // ngl.o
 extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
-extern bool R_AddVehicleSurfaces(DObj* obj, Entity* entity,
-                                 const math::Mat43& matrix, float alpha,
-                                 bool render_shadow);  // 0x6D0B50 (unported)
-extern bool R_AddNonVehicleSurfaces(DObj* obj, Entity* entity,
-                                    const math::Mat43& matrix, float alpha,
-                                    bool render_shadow,
-                                    bool maxLod);  // 0x6D02D0 (unported)
+extern int R_AddVehicleSurfaces(DObj* obj, Entity* entity,
+                                const math::Mat43& matrix, float alpha,
+                                bool render_shadow);  // 0x6D0B50
+extern int R_AddNonVehicleSurfaces(DObj* obj, Entity* entity,
+                                   const math::Mat43& matrix, float alpha,
+                                   bool render_shadow,
+                                   bool maxLod);  // 0x6D02D0
 
 void R_AddXModelSurfaces(trRefEntity* ent)
 {
@@ -856,8 +856,8 @@ public:
     DObj* mDObj;                       // +0x23C
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
 };
-extern bool R_AddXModelSurfaces_DistanceHack(DObj* obj, Entity* entity,
-                                             const math::Mat43& matrix);  // 0x6CF200 (unported)
+extern int R_AddXModelSurfaces_DistanceHack(DObj* obj, Entity* entity,
+                                            const math::Mat43& matrix);  // 0x6CF200
 
 class EntityHandleDb {
 public:
