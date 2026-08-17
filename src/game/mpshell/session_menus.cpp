@@ -6638,6 +6638,18 @@ void WeaponSelectMenu::ClearClassGauges()
     }
 }
 
+// ea: 0x007AECA0
+void WeaponSelectMenu::ActivationToggle(bool a_bToggle)
+{
+    for (int i = 0; i < 4; ++i)
+        m_pTextKitLine[i]->SetShown(a_bToggle);
+    for (int j = 0; j < 6; ++j)
+        m_pSlotTextLine[j]->SetShown(a_bToggle);
+    m_pClassOptionHeader->SetText(szClassReference[highlighted]);
+    SetClassGauges();
+    SetSwitchKit();
+}
+
 // ea: 0x007AA010
 void AARScoreboardBase::OnActivate()
 {
