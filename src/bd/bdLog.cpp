@@ -411,6 +411,12 @@ bool bdSingletonRegistryAdd(bdSingletonDestroyFunction destroyFunction) {
     return registry != NULL && registry->add(destroyFunction);
 }
 
+void bdSingletonRegistryCleanUp() {
+    bdSingletonRegistryImpl* registry = getSingletonRegistry();
+    if (registry != NULL)
+        registry->cleanUp();
+}
+
 void destroyLogSingleton() {
     bdLogImpl* instance = bdSingleton<bdLogImpl>::m_instance;
     if (instance != NULL) {

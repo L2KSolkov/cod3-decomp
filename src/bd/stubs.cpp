@@ -49,10 +49,6 @@ void bdLogSubscriber::publish(const char* channel, const char* file,
 int g_NumBdMessages = 0;
 bool g_assertFalse = false;
 
-namespace bdMemory {
-void* (*m_reallocateFunc)(void* p, unsigned int size) = nullptr;
-}
-
 bdMessageProxy::bdMessageProxy(const char* file, const char* func,
                                unsigned int line, const char* flags)
     : m_file(file), m_function(func), m_line(line), m_baseChannel(flags)
@@ -519,55 +515,6 @@ bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
 {
     (void)data; (void)bitCount;
     return true;
-}
-
-// bdMemory (bdCore:bdMemory.obj; stubs - real impl delegates to malloc hooks)
-void* bdMemory::allocate(unsigned int size)
-{
-    (void)size;
-    return nullptr;
-}
-void* bdMemory::reallocate(void* p, unsigned int size)
-{
-    if (m_reallocateFunc != nullptr)
-    {
-        void* result = m_reallocateFunc(p, size);
-        if (result == nullptr)
-            __debugbreak();
-        return result;
-    }
-    return nullptr;
-}
-void bdMemory::deallocate(void* p)
-{
-    (void)p;
-}
-void bdMemory::setAllocateFunc(void* (*func)(unsigned int size))
-{
-    (void)func;
-}
-void bdMemory::setAlignedAllocateFunc(void* (*func)(unsigned int size,
-                                                    unsigned int align))
-{
-    (void)func;
-}
-void bdMemory::setDeallocateFunc(void (*func)(void* p))
-{
-    (void)func;
-}
-void bdMemory::setAlignedDeallocateFunc(void (*func)(void* p))
-{
-    (void)func;
-}
-void bdMemory::setReallocateFunc(void* (*func)(void* p, unsigned int size))
-{
-    (void)func;
-}
-void bdMemory::setAlignedReallocateFunc(void* (*func)(void* p,
-                                                      unsigned int size,
-                                                      unsigned int align))
-{
-    (void)func;
 }
 
 #define COD3_UNIMPLEMENTED(lib) \

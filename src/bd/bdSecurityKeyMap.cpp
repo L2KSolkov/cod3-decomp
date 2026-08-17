@@ -7,9 +7,9 @@
 #include "bd/bdSecurityKeyMap.h"
 
 extern "C" {
-int XNetCreateKey(XNKID* pxnkid, XNKEY* pxnkey);
-int XNetRegisterKey(const XNKID* pxnkid, const XNKEY* pxnkey);
-int XNetUnregisterKey(const XNKID* pxnkid);
+int __stdcall XNetCreateKey(XNKID* pxnkid, XNKEY* pxnkey);
+int __stdcall XNetRegisterKey(const XNKID* pxnkid, const XNKEY* pxnkey);
+int __stdcall XNetUnregisterKey(const XNKID* pxnkid);
 }
 
 // ============================================================================

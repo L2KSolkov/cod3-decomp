@@ -79,14 +79,14 @@ enum {
 };
 
 extern "C" {
-int XNetQosLookup(unsigned int cxna, const XNADDR** apxna, const XNKID** apxnkid,
-                  const XNKEY** apxnkey, unsigned int cina, const void* aina,
-                  const unsigned int* adwServiceId, unsigned int cProbes,
-                  unsigned int dwBitsPerSec, unsigned int dwFlags, void* hEvent,
-                  XNQOS** ppxnqos);
-int XNetQosListen(const XNKID* pxnkid, unsigned char* pb, unsigned int cb,
-                  unsigned int dwBitsPerSec, unsigned int dwFlags);
-int XNetQosRelease(XNQOS* pxnqos);
+int __stdcall XNetQosLookup(unsigned int cxna, const XNADDR** apxna, const XNKID** apxnkid,
+                             const XNKEY** apxnkey, unsigned int cina, const void* aina,
+                             const unsigned int* adwServiceId, unsigned int cProbes,
+                             unsigned int dwBitsPerSec, unsigned int dwFlags, void* hEvent,
+                             XNQOS** ppxnqos);
+int __stdcall XNetQosListen(const XNKID* pxnkid, unsigned char* pb, unsigned int cb,
+                            unsigned int dwBitsPerSec, unsigned int dwFlags);
+int __stdcall XNetQosRelease(XNQOS* pxnqos);
 }
 
 // ============================================================================

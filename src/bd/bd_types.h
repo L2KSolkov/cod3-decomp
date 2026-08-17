@@ -50,26 +50,61 @@ static_assert(sizeof(bdString) == 4, "bdString size mismatch");
 extern bool g_assertFalse;
 
 namespace bdMemory {
+extern void* (*m_allocateFunc)(unsigned int size);
+extern void (*m_deallocateFunc)(void* p);
 extern void* (*m_reallocateFunc)(void* p, unsigned int size);
+extern void* (*m_alignedAllocateFunc)(unsigned int size, unsigned int align);
+extern void (*m_alignedDeallocateFunc)(void* p);
+extern void* (*m_alignedReallocateFunc)(void* p, unsigned int size,
+                                        unsigned int align);
 void* allocate(unsigned int size);
 void  deallocate(void* p);
 void* reallocate(void* p, unsigned int size);
+void* alignedAllocate(unsigned int size, unsigned int align);
+void  alignedDeallocate(void* p);
+void* alignedReallocate(void* p, unsigned int size, unsigned int align);
 
-// bdCore allocation hook registration (bdCore:bdMemory.obj; not yet ported)
-void setAllocateFunc(void* (*func)(unsigned int size));
-void setAlignedAllocateFunc(void* (*func)(unsigned int size,
-                                           unsigned int align));
-void setDeallocateFunc(void (*func)(void* p));
-void setAlignedDeallocateFunc(void (*func)(void* p));
-void setReallocateFunc(void* (*func)(void* p, unsigned int size));
-void setAlignedReallocateFunc(void* (*func)(void* p, unsigned int size,
-                                            unsigned int align));
+void* (*setAllocateFunc(void* (*func)(unsigned int size)))(unsigned int size);
+void* (*setAlignedAllocateFunc(void* (*func)(unsigned int size,
+                                              unsigned int align)))(unsigned int,
+                                                                     unsigned int);
+void (*setDeallocateFunc(void (*func)(void* p)))(void* p);
+void (*setAlignedDeallocateFunc(void (*func)(void* p)))(void* p);
+void* (*setReallocateFunc(void* (*func)(void* p, unsigned int size)))(void*,
+                                                                        unsigned int);
+void* (*setAlignedReallocateFunc(void* (*func)(void* p, unsigned int size,
+                                                unsigned int align)))(void*,
+                                                                       unsigned int,
+                                                                       unsigned int);
+
+void* (*getAllocateFunc())(unsigned int size);
+void (*getDeallocateFunc())(void* p);
+void* (*getReallocateFunc())(void* p, unsigned int size);
+void* (*getAlignedAllocateFunc())(unsigned int size, unsigned int align);
+void (*getAlignedDeallocateFunc())(void* p);
+void* (*getAlignedReallocateFunc())(void* p, unsigned int size,
+                                    unsigned int align);
 }
 
-// bdCore init (bdCore:bdCore.obj; not yet ported)
+// bdMutex is the one-word platform mutex used by bdMallocMemory.
+class bdMutex {
+public:
+    bdMutex();
+    ~bdMutex();
+    void lock();
+    void unlock();
+
+private:
+    void* m_handle;
+};
+static_assert(sizeof(bdMutex) == sizeof(void*), "bdMutex size mismatch");
+
+// bdCore init/quit (bdCore:bdCore.obj).
 class bdCore {
 public:
     static void init(bool netEnabled);
+    static void quit();
+    static bool m_initialized;
 };
 
 // bdLogSubscriber / bdLogImpl - Demonware logging hub types (bdCore).
@@ -107,6 +142,7 @@ struct bdSingleton {
 
 typedef void (__cdecl *bdSingletonDestroyFunction)();
 bool bdSingletonRegistryAdd(bdSingletonDestroyFunction destroyFunction);
+void bdSingletonRegistryCleanUp();
 
 // ============================================================================
 // bdReference<T> — intrusive reference wrapper (4 bytes) — verified against IDA
@@ -131,6 +167,7 @@ static_assert(sizeof(bdReference<bdReferencable>) == 4, "bdReference size mismat
 // bdInAddr — IPv4 address (4 bytes)
 // ============================================================================
 int bdSnprintf(char* buf, unsigned int maxlen, const char* format, ...);
+int bdFprintf(void* stream, const char* format, ...);
 
 // ============================================================================
 // bdInAddr - IPv4 address (4 bytes). Default ctor leaves the COD3 invalid

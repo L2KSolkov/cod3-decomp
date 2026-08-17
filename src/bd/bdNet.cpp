@@ -10,7 +10,7 @@
 #include <new>
 
 extern "C" {
-unsigned int XNetGetTitleXnAddr(XNADDR* pxna);
+unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna);
 }
 
 // IDA 0x89CAB0: bdString stores its data pointer at offset 0 and the

@@ -18,14 +18,14 @@
 
 // Xbox XNet API declarations (shim resolves later).
 extern "C" {
-int XNetTsAddrToInAddr(const XNADDR* ptsa, unsigned int dwServiceId,
-                       const XNKID* pxnkid, struct in_addr* pina);
-int XNetXnAddrToInAddr(const XNADDR* pxna, const XNKID* pxnkid,
-                       struct in_addr* pina);
-int XNetInAddrToXnAddr(struct in_addr ina, XNADDR* pxna, XNKID* pxnkid);
-int XNetInAddrToString(struct in_addr ina, char* pchBuf, int cchBuf);
-int XNetGetConnectStatus(struct in_addr ina);
-int XNetUnregisterInAddr(struct in_addr ina);
+int __stdcall XNetTsAddrToInAddr(const XNADDR* ptsa, unsigned int dwServiceId,
+                                 const XNKID* pxnkid, struct in_addr* pina);
+int __stdcall XNetXnAddrToInAddr(const XNADDR* pxna, const XNKID* pxnkid,
+                                 struct in_addr* pina);
+int __stdcall XNetInAddrToXnAddr(struct in_addr ina, XNADDR* pxna, XNKID* pxnkid);
+int __stdcall XNetInAddrToString(struct in_addr ina, char* pchBuf, int cchBuf);
+int __stdcall XNetGetConnectStatus(struct in_addr ina);
+int __stdcall XNetUnregisterInAddr(struct in_addr ina);
 }
 
 // ============================================================================

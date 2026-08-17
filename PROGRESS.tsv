@@ -94,7 +94,7 @@ apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF 
 
 nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 
-bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 3: bdMemory hooks/setters/getters and aligned checks ported from IDA 0x89C580-0x89C7B4
 
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	PORTED	apsCommon.cpp (apsAllocator virtuals + camera/roll + LOD table + statics; apsSingleton<apsError>::sInstancePtr emitted here; InitShaders now calls void InitShader
 
@@ -406,7 +406,7 @@ nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	PORTED	Phase 2/3: n
 
 phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	PORTED	[phys_xboxr] phys_gjk.cpp: GJK simplex core (5 funcs)
 
-bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 3: bdMallocMemory allocation header/chain/reallocation/leak checks ported from IDA 0x89E710-0x8A03B9
 
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableSendWindow.cpp: unreliable send window (5 funcs) from Demonware 2.0 + IDA
 
@@ -448,7 +448,7 @@ phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_
 
 bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 
-bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 3: bdMutex one-word Win32 platform wrapper ported from IDA 0x8A0500-0x8A0537
 
 bdConnection:bdReceivedMessage.obj	bdConnection	bdReceivedMessage.obj	engine	4	PORTED	[bdConnection] bdReceivedMessage.cpp: received message (4 funcs) from Demonware 2.0 + IDA
 
@@ -508,9 +508,9 @@ bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: p
 
 bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 
-bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 3: bdCore init/quit and singleton reverse cleanup ported from IDA 0x89E900-0x89EA83
 
-bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	PORTED	Phase 3: aligned offset formula/free/realloc corrected from IDA 0x8A03D0-0x8A04F7
 
 bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	PORTED	bdSessionInfo.h/.cpp (session info formatters; bdSession/bdAddressMapImpl opaque)
 

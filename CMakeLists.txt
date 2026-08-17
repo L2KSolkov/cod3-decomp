@@ -194,6 +194,8 @@ add_library(cod3_bd STATIC
     src/bd/bdReference/bdReferencable.h
     src/bd/bdUtilities/bdBitOperations.h
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
+    src/bd/bdMemory/bdMallocMemory.h
+    src/bd/bdMemory/bdMallocMemory.cpp
     src/bd/bdTiming/bdShortTimer.h
     src/bd/bdTiming/bdPlatformTiming.cpp
     src/bd/bdStopwatch.h
@@ -500,6 +502,8 @@ add_library(cod3_game_nextgen STATIC
 add_library(cod3_xbox_shim STATIC
     platform/xbox_shim/xbox_shim.cpp
     platform/xbox_shim/xdk_stubs.cpp
+    platform/xbox_shim/xnet_stubs.cpp
+    platform/xbox_shim/xonline_stubs.cpp
 )
 
 # ============================================================================

@@ -10,8 +10,8 @@
 #include <new>
 
 extern "C" {
-int XNetConnect(struct in_addr ina);
-int XNetGetConnectStatus(struct in_addr ina);
+int __stdcall XNetConnect(struct in_addr ina);
+int __stdcall XNetGetConnectStatus(struct in_addr ina);
 }
 
 // ============================================================================

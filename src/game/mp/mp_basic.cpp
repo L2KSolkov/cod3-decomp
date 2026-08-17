@@ -41,7 +41,7 @@ extern void nslUpdate();   // nsl_xboxr (nsl.cpp)
 char byte_1869F;           // unnamed byte global referenced by GetQosPing
 extern bool gSkipMovies;   // GameXbox.cpp (?gSkipMovies@@3_NA)
 
-extern int XNetGetEthernetLinkStatus();   // Xbox XNet; Win32 shim (unresolved)
+extern "C" int __stdcall XNetGetEthernetLinkStatus();   // Xbox XNet; Win32 shim
 extern void VEH_RespawnVehicle(Entity* ent);  // g.o (?VEH_RespawnVehicle@@YAXPAVEntity@@@Z)
 extern void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker,
                        int damage, int meansOfDeath, int weapon,
