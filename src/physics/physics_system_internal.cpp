@@ -669,23 +669,56 @@ physics_system::~physics_system() {
 
 // ============================================================================
 // physics_system::solver_priority_sort - ea: 0x88F550
-// (TODO: full sort reconstruction deferred; contacts are sorted by priority
-// via bubble sort in the original.)
+// Contacts are sorted by priority via bidirectional bubble passes in the
+// release build.
 // ============================================================================
 void physics_system::solver_priority_sort() {
-    // Insertion-style sort of the contact list by m_solver_priority (descending).
-    phys_heap_memory_pool<rigid_body_constraint_contact>* pool = &m_list_rbc_contact;
-    for (int i = 1; i < pool->m_alloc_count; ++i) {
-        rigid_body_constraint_contact* key = pool->m_alloc_list[i];
-        int j = i - 1;
-        while (j >= 0 && pool->m_alloc_list[j]->m_solver_priority <
-                             key->m_solver_priority) {
-            pool->m_alloc_list[j + 1] = pool->m_alloc_list[j];
-            --j;
-        }
-        pool->m_alloc_list[j + 1] = key;
+    if (m_list_rbc_contact.m_alloc_count >= 4) {
+        phys_heap_memory_pool<rigid_body_constraint_contact>* pool =
+            &m_list_rbc_contact;
+        rigid_body_constraint_contact** list_end =
+            &pool->m_alloc_list[pool->m_alloc_count];
+        rigid_body_constraint_contact** current = pool->m_alloc_list;
+        phys_heap_memory_pool<rigid_body_constraint_contact>::iterator
+            list_before_begin(pool->m_alloc_list - 1);
+        phys_heap_memory_pool<rigid_body_constraint_contact>::iterator i(current);
+
+        bool swapped_backward;
+        do {
+            rigid_body_constraint_contact** next = current + 1;
+            bool swapped_forward = false;
+            phys_heap_memory_pool<rigid_body_constraint_contact>::iterator i_next(next);
+            if (next == list_end)
+                break;
+            do {
+                if ((*current)->m_solver_priority < (*next)->m_solver_priority) {
+                    swapped_forward = true;
+                    pool->swap_adjacent_fast(&i, &i_next);
+                }
+                current = next++;
+                i = phys_heap_memory_pool<rigid_body_constraint_contact>::iterator(current);
+                i_next = phys_heap_memory_pool<rigid_body_constraint_contact>::iterator(next);
+            } while (next != list_end);
+            if (!swapped_forward)
+                break;
+
+            rigid_body_constraint_contact** previous = current - 1;
+            swapped_backward = false;
+            i_next = phys_heap_memory_pool<rigid_body_constraint_contact>::iterator(previous);
+            if (previous == list_before_begin.m_ptr)
+                break;
+            do {
+                if ((*previous)->m_solver_priority < (*current)->m_solver_priority) {
+                    swapped_backward = true;
+                    pool->swap_adjacent_fast(&i_next, &i);
+                }
+                current = previous--;
+                i = phys_heap_memory_pool<rigid_body_constraint_contact>::iterator(current);
+                i_next = phys_heap_memory_pool<rigid_body_constraint_contact>::iterator(previous);
+            } while (previous != list_before_begin.m_ptr);
+        } while (swapped_backward);
+        pool->calc_index_array();
     }
-    pool->calc_index_array();
 }
 
 // ============================================================================
