@@ -7,8 +7,41 @@
 #include <stdio.h>
 #include <string.h>
 
-extern char* g_ctrlIconInfo[2][0x13];
-extern const char* off_DD8A5C[];
+extern const char* const defaultFileName;
+
+char* g_ctrlIconInfo[20][2] = {
+    {"BUTTON_1", "XBOX_B01"},
+    {"BUTTON_2", "XBOX_B02"},
+    {"BUTTON_3", "XBOX_B03"},
+    {"BUTTON_4", "XBOX_B04"},
+    {"TRIGGER_L1", "XBOX_B05"},
+    {"TRIGGER_R1", "XBOX_B06"},
+    {"DPAD", "XBOX_B07"},
+    {"DPAD_UP", "XBOX_B08"},
+    {"DPAD_DOWN", "XBOX_B09"},
+    {"DPAD_LEFT", "XBOX_B10"},
+    {"DPAD_RIGHT", "XBOX_B11"},
+    {"DPAD_UPDOWN", "XBOX_B12"},
+    {"DPAD_LEFTRIGHT", "XBOX_B13"},
+    {"BUTTON_START", "XBOX_B14"},
+    {"BUTTON_SELECT", "XBOX_B15"},
+    {"ANALOG_LEFT", "XBOX_B16"},
+    {"ANALOG_RIGHT", "XBOX_B17"},
+    {"XBOX_CLEAR", "XBOX_B18"},
+    {"XBOX_BLACK", "XBOX_B19"},
+    {(char*)defaultFileName, (char*)defaultFileName},
+};
+
+const char* off_DD8A5C[37] = {
+    "XBOX_B01", "BUTTON_2", "XBOX_B02", "BUTTON_3", "XBOX_B03",
+    "BUTTON_4", "XBOX_B04", "TRIGGER_L1", "XBOX_B05", "TRIGGER_R1",
+    "XBOX_B06", "DPAD", "XBOX_B07", "DPAD_UP", "XBOX_B08",
+    "DPAD_DOWN", "XBOX_B09", "DPAD_LEFT", "XBOX_B10", "DPAD_RIGHT",
+    "XBOX_B11", "DPAD_UPDOWN", "XBOX_B12", "DPAD_LEFTRIGHT", "XBOX_B13",
+    "BUTTON_START", "XBOX_B14", "BUTTON_SELECT", "XBOX_B15", "ANALOG_LEFT",
+    "XBOX_B16", "ANALOG_RIGHT", "XBOX_B17", "XBOX_CLEAR", "XBOX_B18",
+    "XBOX_BLACK", "XBOX_B19",
+};
 
 // ea: 0x004BD700
 bool CtrlIcon::ContainsIconTag(const char* text)

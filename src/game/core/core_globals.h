@@ -35,7 +35,7 @@ extern float (*bytedirs)[3];                  // 0x011C7790
 extern int   g_DOBJF_NOT_RENDERED_LAST_FRAME; // 0x011C7F2C
 extern bool  gUseControllerLagFix;            // 0x011C7F30
 extern const char* const gEmptyStr;           // 0x011C7F34
-extern char* (*g_ctrlIconInfo)[2];            // 0x011C7F58
+extern char* g_ctrlIconInfo[20][2];           // 0x011C7F58
 extern float gLensScaleAmount;                // 0x011C7FF8
 extern mat3_t mat3_default;                   // 0x011C8024
 
