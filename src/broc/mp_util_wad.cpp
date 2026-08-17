@@ -2989,7 +2989,7 @@ void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
 void CallbackPlayerEnter(Broc::entity player, int hot_joiner);
 void CallbackRoundOver(int condition, Broc::string team);
 void SendFlagStates(Broc::entity player);
-void WAR_Init();
+void WAR_Init(Broc::entity self);
 void WAR_FlagUpdate(Broc::entity self);
 void WAR_TouchFlag(Broc::entity self, Broc::entity other);
 Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
@@ -3005,6 +3005,7 @@ void DebugRenderSpawnPoints();
 void* main__functor(Broc::entity self);
 void* StartGame__functor(Broc::entity self);
 void* WARScore__functor(Broc::entity self);
+void* WAR_Init__functor(Broc::entity self);
 void* WAR_InitFlag__functor(Broc::entity self, int flag_id);
 void* WAR_FlagUpdate__functor(Broc::entity self);
 void* WAR_TouchFlag__functor(Broc::entity self, Broc::entity other);
@@ -3037,7 +3038,7 @@ void SwitchToRadioOnly(Broc::entity self);
 void AddRadioModel(Broc::entity self);
 void RemoveRadioModel(Broc::entity self);
 void ClearGame();
-void ResetGame();
+void ResetGame(Broc::entity self);
 Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
                             const Broc::string* team);
 void GetTriggerFromIndex();
@@ -3076,6 +3077,7 @@ void* main__functor(Broc::entity self);
 void* StartGame__functor(Broc::entity self);
 void* Host_FlowControl__functor(Broc::entity self);
 void* Track_Ownership__functor(Broc::entity self);
+void* ResetGame__functor(Broc::entity self);
 void* TriggerRadio__functor(Broc::entity self, Broc::entity other);
 }
 namespace _mp_scf {
@@ -7826,8 +7828,10 @@ void* SpecialClassAudio__functor(Broc::entity player) {
     return NULL;
 }
 void* ArtilleryDispenser__functor(Broc::entity player) {
-    (void)player;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(ArtilleryDispenser, player);
 }
 void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
                                    bool health, int rank0Time, int rank1Time,
@@ -9748,7 +9752,8 @@ void ClearGame() {
 }
 
 // ResetGame - ea: 0x95B540
-void ResetGame() {
+void ResetGame(Broc::entity self) {
+    (void)self;
     Broc::Code_DebugOut("*HQ* ResetGame\n");
     ClearGame();
     Broc::entity lvl;
@@ -10197,6 +10202,12 @@ void* Track_Ownership__functor(Broc::entity self) {
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(Track_Ownership, self);
+}
+void* ResetGame__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(ResetGame, self);
 }
 void* TriggerRadio__functor(Broc::entity self, Broc::entity other) {
     (void)self; (void)other;
@@ -10650,7 +10661,8 @@ void SendFlagStates(Broc::entity player) {
 }
 
 // WAR_Init - ea: 0x978D10
-void WAR_Init() {
+void WAR_Init(Broc::entity self) {
+    (void)self;
     Broc::entity lvl;
     lvl.___u0 = mp_util_wad::pLevel != NULL;
     HashStr n;
@@ -10831,6 +10843,12 @@ void* WARScore__functor(Broc::entity self) {
     if (storage == NULL)
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(WARScore, self);
+}
+void* WAR_Init__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(WAR_Init, self);
 }
 void* WAR_InitFlag__functor(Broc::entity self, int flag_id) {
     (void)self; (void)flag_id;
