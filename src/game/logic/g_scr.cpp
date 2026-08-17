@@ -4010,7 +4010,7 @@ void Scr_FreeAnimTreeAtIndex(int treeindex);
 void Scr_EmitAnimation(char* a, unsigned short b, unsigned int c);
 // BrocAddEntityThread (0x5BE3D0) - global
 void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
-                         class ScriptEventParams* params);
+                         struct ScriptEventParams* params);
 // BrocInitEntity (0x5C5790) - global
 void BrocInitEntity(
     Entity* ent,
@@ -11091,7 +11091,7 @@ int BrocSys::GetAnimFrameCount(unsigned int entityHandleVal,
 // ============================================================================
 
 // ScriptEventParams - script event arguments (verified vs IDA)
-class ScriptEventParams {
+struct ScriptEventParams {
 public:
     unsigned int ent1;  // +0x00
     unsigned int ent2;  // +0x04

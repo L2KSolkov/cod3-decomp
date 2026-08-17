@@ -1612,7 +1612,6 @@ struct VehicleNodeAllocator {
 enum hud_type { kHudTypeNone = 0 };  // full enumerator set from IDA TBD
 
 struct IGOFrontEnd {
-    uint8_t _pad0[0x04];
     void*   compassWidget[1];  // +0x04 (IGOCompassWidget*, indexed by client)
     uint8_t _pad08[0x14 - 0x08];
     void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
@@ -1624,8 +1623,8 @@ struct IGOFrontEnd {
     int     actionHintTimer[1];  // +0xA0
     uint8_t _padA4[0xA8 - 0xA4];
     const char* GetLMGKey();     // ?GetLMGKey@IGOFrontEnd@@QAEPBDXZ (shell.o 0x56DE50)
-    void Update(float time_inc);       // ?Update@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
-    void UpdateInScene(float time_inc);// ?UpdateInScene@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
+    virtual void Update(float time_inc);       // ?Update@IGOFrontEnd@@UAEXM@Z (shell.o)
+    virtual void UpdateInScene(float time_inc);// ?UpdateInScene@IGOFrontEnd@@UAEXM@Z (shell.o)
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
     void SetActionHint(int ref, int viewport);    // ?SetActionHint@IGOFrontEnd@@QAEXHH@Z
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
