@@ -4,58 +4,120 @@
 // ea: 0xC8F720-0xC95CC0 (MP_LEVEL segment, rwx data)
 // ============================================================================
 
-#include <cstdint>
+#include "engine/broc_types.h"
 
-struct BrocAPI {};
-struct BrocExports {};
+#include <cstring>
 
-// Forward types
-namespace Broc {
-    struct entity { uint32_t handle; };
-    struct vector { float x, y, z; };
-    struct BrocAPI {};
-    struct BrocExports {};
-}
+// mp_level's public entry-point ABI uses the global opaque BrocAPI/BrocExports
+// tags from the original object; the full runtime views live in engine/broc_types.h.
+struct BrocAPI;
+struct BrocExports;
 
 // ============================================================================
 // Animation & hash string registry
 // ============================================================================
 
-void RegisterHashStrings() {} // ea: 0xC8F720
+namespace mp_level_wad {
 
-unsigned ResolveAnim(unsigned type, unsigned index1, unsigned* out, unsigned index2) { // ea: 0xC8F740
-    return 0;
+// ea: 0xC8F720
+void RegisterHashStrings()
+{
+    // The callee belongs to the mp_util_wad family; keep this object-local
+    // entry point until that family is linked into the port.
 }
 
-const char* ResolveAnimName(unsigned index) { // ea: 0xC8F790
+// ea: 0xC8F740
+unsigned int ResolveAnim(unsigned int treename, unsigned int animname,
+                         unsigned int* getVal, unsigned int setVal)
+{
+    (void)treename;
+    (void)animname;
+    (void)getVal;
+    (void)setVal;
+    return false;
+}
+
+// ea: 0xC8F790
+const char* ResolveAnimName(unsigned int anim)
+{
+    (void)anim;
     return nullptr;
 }
 
-bool ValidateAnimationIndices() { // ea: 0xC8F7D0
-    return true;
+// ea: 0xC8F7D0
+bool ValidateAnimationIndices()
+{
+    return false;
 }
 
-unsigned GetBroAnim(unsigned index1, unsigned index2) { // ea: 0xC8F830
+// ea: 0xC8F830
+unsigned int GetBroAnim(unsigned int treename, unsigned int animname)
+{
+    (void)treename;
+    (void)animname;
     return 0;
 }
 
-bool GetNextAnimTree(int handle, char* buf, int size) { // ea: 0xC8F880
-    return false;
+// ea: 0xC8F880
+bool GetNextAnimTree(int index, char* treename, int bufSize)
+{
+    const char* animtrees[1] = { "generic_human" };
+    return index < 1 && std::strncpy(treename, animtrees[index], bufSize) != nullptr;
 }
+
+} // namespace mp_level_wad
 
 // ============================================================================
 // Script thread management
 // ============================================================================
 
-unsigned SpawnScriptThread(unsigned id, bool flag, Broc::entity ent,
-                           const Broc::vector* v1, const Broc::vector* v2,
-                           float a, float b, float c, Broc::vector* out) { // ea: 0xC8F8D0
+namespace mp_level_wad {
+
+unsigned int SpawnScriptThread(unsigned int fcn, bool createHandle,
+                               Broc::entity self, Broc::entity ent1,
+                               Broc::entity ent2, float f1, float f2) { // ea: 0xC8F8D0
+    (void)fcn;
+    (void)createHandle;
+    (void)self;
+    (void)ent1;
+    (void)ent2;
+    (void)f1;
+    (void)f2;
     return 0;
 }
 
-bool ScriptThreadExists(unsigned id) { // ea: 0xC901E0
-    return false;
+} // namespace mp_level_wad
+
+namespace mp_level_wad {
+
+// ea: 0xC901E0
+bool ScriptThreadExists(unsigned int fcn)
+{
+    bool result = false;
+    if (fcn > 0x886ABA4Au) {
+        if (fcn > 0xD1D46C1Du) {
+            if (fcn == 0xD84CF81Fu || fcn == 0xE2069A52u || fcn == 0xEFA1CD4Au)
+                return true;
+        } else if (fcn == 0xD1D46C1Du || fcn == 0xBFA4248Bu ||
+                   fcn == 0xCF389A90u || fcn == 0xD19F242Du) {
+            return true;
+        }
+    } else {
+        if (fcn == 0x886ABA4Au)
+            return true;
+        if (fcn <= 0x446C74FDu) {
+            if (fcn != 0x446C74FDu && fcn != 0x0C1FD1B6u &&
+                fcn != 0x0D0DDE0Eu && fcn != 0x2739A2B1u)
+                return result;
+            return true;
+        }
+        if (fcn == 0x60037BCAu || fcn == 0x75A5F0EFu || fcn == 0x80A56673u)
+            return true;
+    }
+    return result;
 }
+
+} // namespace mp_level_wad
 
 // ============================================================================
 // Level lifecycle
