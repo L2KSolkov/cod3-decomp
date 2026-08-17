@@ -66,13 +66,15 @@ extern trRefEntityLocal& Entity_GetRenderEntity(Entity* self);  // ?GetRenderEnt
 extern unsigned int nglLightContextParamID;   // ngl_lighting.cpp
 extern unsigned int cdSimpleAlphaAlphaParamID;  // tr_tiny.cpp
 
-class LightGridMgr2 {
+namespace LightGrid { struct TOC; }
+class LightGridData;
+class LightGridMgr {
 public:
-    void* GetLightGrid(const math::Position3& pos, int* cell);  // ?GetLightGrid@LightGridMgr@@QAEPBUTOC@1@ABVPosition3@math@@PAH@Z
-    void SampleLightGrid(void* toc, int cell, const math::Position3& pos,
-                         void* out);  // ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@1@HABVPosition3@math@@PAVMat44@4@2@Z
+    static LightGridMgr* sInst;  // ?sInst@LightGridMgr@@2PAV1@A
+    LightGrid::TOC* GetLightGrid(const math::Position3& pos, int* cell);
+    void SampleLightGrid(const LightGrid::TOC& toc, int cell,
+                         const math::Position3& pos, LightGridData* out);
 };
-extern LightGridMgr2* LightGridMgr_sInst;  // ?sInst@LightGridMgr@@2V1@A
 
 // ea: 0x006CEFA0
 nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
@@ -114,7 +116,7 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
             }
             else
             {
-                toc = LightGridMgr_sInst->GetLightGrid(
+                toc = LightGridMgr::sInst->GetLightGrid(
                     *(math::Position3*)&v30, &cellNum);
             }
             if (toc != nullptr)
@@ -131,13 +133,15 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
                         re.lastPos[1] = v31;
                         re.lastPos[2] = v32;
                     }
-                    LightGridMgr_sInst->SampleLightGrid(
-                        toc, entity->cell_index, *(math::Position3*)&v30, nullptr);
+                    LightGridMgr::sInst->SampleLightGrid(
+                        *(LightGrid::TOC*)toc, entity->cell_index,
+                        *(math::Position3*)&v30, nullptr);
                 }
                 else
                 {
-                    LightGridMgr_sInst->SampleLightGrid(
-                        toc, cellNum, *(math::Position3*)&v30, nullptr);
+                    LightGridMgr::sInst->SampleLightGrid(
+                        *(LightGrid::TOC*)toc, cellNum,
+                        *(math::Position3*)&v30, nullptr);
                 }
             }
             else
