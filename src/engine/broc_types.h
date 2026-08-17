@@ -706,7 +706,12 @@ struct BrocAPI {
     char _pad08[0x34 - 0x08];                             // +0x008
     bool mKillThread;                                     // +0x034
     unsigned char _pad35[0x38 - 0x35];                    // +0x035
-    char _pad38[0x58 - 0x38];                             // +0x038
+    char _pad38[0x44 - 0x38];                             // +0x038
+    void (*mThreadBackupStack)(unsigned int);             // +0x044
+    void (*mThreadGetDebugInfo)(Broc::string*, Broc::string*, Broc::string*); // +0x048
+    void (*mThreadSleepInternal)(float);                  // +0x04C
+    void (*mThreadSleepFrames)(int);                      // +0x050
+    void (*mThreadSleepUntilNotify)(unsigned int, TPakInfo, int, int, int, int, bool, float); // +0x054
     void (*mThreadTerminateOnNotify)(unsigned int, const int); // +0x058
     char _pad5C[0x68 - 0x5C];                             // +0x05C
     void (*mThreadDebugNotice)(const char*);              // +0x068
