@@ -1063,7 +1063,8 @@ struct hash_const_t {
     HashString trigger_use;        // +0x20C
     HashString trigger_damage;     // +0x210
     HashString trigger_lookat;     // +0x214 (133)
-    uint8_t    _pad218[0x224 - 0x218];
+    uint8_t    _pad218[0x220 - 0x218];
+    HashString turret_fire;         // +0x220
     HashString turret_on_target;   // +0x224 (137)
     HashString player_on_vehicle;  // +0x228 (138)
     HashString player_off_vehicle; // +0x22C (139)
@@ -4724,7 +4725,7 @@ void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
 void  VEH_UpdateClient(Entity* ent, int msec);    // g.o
 void  VEH_VerifyPosition(Entity* ent);            // g.o
 void  VEH_UpdateParticlesRBVeh(Entity* ent);      // g.o
-void  VEH_UpdateWeapon(Entity* ent);              // g.o
+void  VEH_UpdateWeapon(Entity* ent, int msec);    // g.o
 void  VEH_UpdateAim(Entity* ent);                 // g.o
 void  VEH_UpdateAltWeapon(Entity* ent, int msec); // g.o
 void  VEH_UpdateGunnerWeapon(Entity* ent, int msec); // g.o

@@ -80,12 +80,17 @@ extern float vehicleDeadZone;
 extern float delta_yaw_vel;
 extern unsigned char unk_F6A294[4 * 3208];
 extern const float AngleNormalize180Accurate(float angle);
+float decay = 5.0f; // IDA global @ 0xDD8250
 
 // Minimal controller view (controller_xboxr). The function-pointer block is
 // retained so locked_port/is_locked keep their IDA-verified offsets.
 class controller {
 public:
+    enum ButtonIndex {
+        L3 = 13,
+    };
     static controller* inst();
+    int button_value(int controller, ButtonIndex button);
     void (*button_value_fn)(int*);
     void (*button_released_fn)(int*);
     void (*button_released_clear_fn)(int*);
@@ -1775,7 +1780,204 @@ void VEH_UpdateSteering(Entity* ent)
         (90.0f - fabsf(angle)) * 0.011111111f * sqrtf(distanceSquared)
         / (scr_vehicle->wheelRadius * 6.2831855f) * 360.0f;
 }
-void VEH_UpdateWeapon(Entity* e) { (void)e; }
+// ea: 0x0047EF00
+void VEH_UpdateWeapon(Entity* ent, int msec)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+
+    trace_t trace;
+    trace.surfaceFlags = 0;
+    trace.contents = 0;
+    scr_vehicle->hasTarget = 0;
+    scr_vehicle->mTargetEnt.mHandle.mVal = 0;
+    scr_vehicle->fireTime -= msec;
+    scr_vehicle->targetOffset[0] = 0.0f;
+    scr_vehicle->targetOffset[1] = 0.0f;
+    scr_vehicle->targetOffset[2] = 0.0f;
+
+    Entity* owner = HandleDbToEnt(ent->r.mOwner);
+    if (owner == nullptr)
+        return;
+    Client* client = owner->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4293;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return;
+    }
+    if (!IsPlayerFullySeatedInVehicle(owner))
+        return;
+
+    if (info->type == 2 && client->ps.vehPos != 0)
+        return;
+
+    if (info->type == 1 && client->ps.vehPos == 0)
+    {
+        if (client->ps.vehPos == 0 && owner != nullptr
+            && owner->IsLocalPlayer()
+            && !GamePause::IsGamePaused(owner->GetPlayerIndex()))
+        {
+            const int port = dword_F6A28C[802 * owner->GetPlayerIndex()];
+            scr_vehicle->seats[0].firing =
+                controller::inst()->button_value(port, controller::L3) != 0;
+        }
+
+        if (scr_vehicle->seats[0].firing)
+        {
+            scr_vehicle->hornSndLerp = 1.0f;
+            if (!scr_vehicle->seats[0].overheating)
+                scr_vehicle->seats[0].heat += msec * 0.0005f;
+        }
+        else
+        {
+            scr_vehicle->hornSndLerp -= (msec * decay) * 0.001f;
+            if (scr_vehicle->hornSndLerp < 0.0f)
+                scr_vehicle->hornSndLerp = 0.0f;
+        }
+    }
+
+    if (info->type == 1 && client->ps.vehPos != 2)
+        return;
+
+    if (ent->s.weapon == 0 || scr_vehicle->boneIndex.barrel < 0
+        || scr_vehicle->boneIndex.flash[0] < 0
+        || (client->ps.eFlags & 0x400000) != 0)
+        return;
+
+    bool fireEvent = false;
+    weaponFileInfo_t* weaponInfo = nullptr;
+    if (owner->IsLocalPlayer() && !GamePause::IsGamePaused(owner->GetPlayerIndex()))
+    {
+        const unsigned char* clientBytes =
+            reinterpret_cast<const unsigned char*>(client);
+        if ((clientBytes[0x784] & 1) != 0
+            && (client->ps.pm_flags & 0x4000) == 0
+            && info->type != 1)
+        {
+            if (scr_vehicle->fireTime <= 0)
+            {
+                if (scr_vehicle->altWeapon != 0)
+                {
+                    Scr_Notify(ent, hash_const.turret_fire, 0);
+                }
+                else
+                {
+                    weaponFileInfo_t* weaponInfo =
+                        BG_GetInfoForWeapon(ent->s.weapon);
+                    if (weaponInfo == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                        AeAssert::gCurrentLine = 4369;
+                        AeAssert::gCurrentExpr = "weapInfo";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("No weapon info for vehicle"))
+                            __debugbreak();
+                    }
+                    if (!scr_vehicle->seats[0].overheating)
+                    {
+                        scr_vehicle->seats[0].heat +=
+                            (msec * weaponInfo->fFireHeat) * 0.001f;
+                        Scr_Notify(ent, hash_const.turret_fire, 0);
+                    }
+                }
+            }
+            fireEvent = true;
+        }
+        weaponInfo = BG_GetInfoForWeapon(ent->s.weapon);
+        if (fireEvent)
+        {
+            if (ent->isFiring == 0)
+            {
+                ent->isFiring = 1;
+                PostEffectEventWeapon(ent, weaponInfo->szInternalName,
+                                      (EAction)0x19);
+                ent->effectLoopingFire = PostEffectEventWeapon(
+                    ent, weaponInfo->szInternalName, (EAction)0x1A);
+            }
+        }
+        else if (ent->isFiring != 0)
+        {
+            Handle effect = ent->effectLoopingFire;
+            ent->isFiring = 0;
+            if (effect.mVal != 0)
+                EffectEventKill(effect);
+            PostEffectEventWeapon(ent, weaponInfo->szInternalName,
+                                  (EAction)0x1B);
+        }
+    }
+
+    scr_vehicle->hasTarget = 1;
+    DObjSkelMat flashMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, scr_vehicle->boneIndex.flash[0],
+                                  &flashMtx);
+    DObjSkelMat barrelMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, scr_vehicle->boneIndex.barrel,
+                                  &barrelMtx);
+
+    float forward[3];
+    AnglesToForward(client->ps.viewangles, forward);
+
+    float start[3];
+    if (owner->IsLocalPlayer())
+    {
+        const int offset = 1580 * owner->GetPlayerIndex();
+        start[0] = dword_F63C70[offset];
+        start[1] = dword_F63C70[offset + 1];
+        start[2] = dword_F63C70[offset + 2];
+    }
+    else
+    {
+        start[0] = barrelMtx.origin[0];
+        start[1] = barrelMtx.origin[1];
+        start[2] = barrelMtx.origin[2];
+    }
+
+    float end[3] = {
+        start[0] + forward[0] * 10240.0f,
+        start[1] + forward[1] * 10240.0f,
+        start[2] + forward[2] * 10240.0f
+    };
+    scr_vehicle->targetOrigin[0] = end[0];
+    scr_vehicle->targetOrigin[1] = end[1];
+    scr_vehicle->targetOrigin[2] = end[2];
+
+    if (!ent->has_zone_collision())
+    {
+        scr_vehicle->barrelBlocked = 1;
+        return;
+    }
+
+    collision_context_t context(ent->r.mOwner, ent->mHandle, 0x2802091);
+    math::Position3 startPos = native_to_cdl_pos3(start);
+    math::Position3 endPos = native_to_cdl_pos3(end);
+    g_LocationalTrace(&trace, startPos, endPos, context,
+                      bulletPriorityMap, 0.0f);
+    if (trace.fraction < 1.0f
+        || ((trace.mEntity.mHandle.mVal >> 8) & 0xFFu) != 0)
+    {
+        scr_vehicle->barrelBlocked = 1;
+        return;
+    }
+
+    math::Position3 barrelStart = native_to_cdl_pos3(barrelMtx.origin);
+    math::Position3 flashEnd = native_to_cdl_pos3(flashMtx.origin);
+    g_LocationalTrace(&trace, barrelStart, flashEnd, context,
+                      bulletPriorityMap, 0.0f);
+    if (trace.fraction < 1.0f)
+    {
+        scr_vehicle->targetOrigin[0] = trace.endpos.v.m128_f32[0];
+        scr_vehicle->targetOrigin[1] = trace.endpos.v.m128_f32[1];
+        scr_vehicle->targetOrigin[2] = trace.endpos.v.m128_f32[2];
+    }
+}
 
 // ea: 0x46CB70 (g.o)
 void VEH_VerifyPosition(Entity* ent)
@@ -8338,7 +8540,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
         VEH_DebugBox(veh->phys.origin, 4.0f, 1.0f, 1.0f, 0.0f);
     veh->barrelBlocked = 0;
     if (pSelf->active == 2 && HandleDbToEnt(pSelf->r.mOwner) != nullptr)
-        VEH_UpdateWeapon(pSelf);
+        VEH_UpdateWeapon(pSelf, v37);
     VEH_UpdateAim(pSelf);
     VEH_UpdateGunnerAim(pSelf);
     VEH_UpdateControllers(pSelf, v37);
