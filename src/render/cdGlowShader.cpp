@@ -10,7 +10,14 @@
 // ============================================================================
 #include "cdGlowShader.h"
 
-const _D3DVERTEXSHADERINPUT gGlowVertexElements[16] = {};  // ?gGlowVertexElements (render_xboxr @ 0xE3BB78)
+const _D3DVERTEXSHADERINPUT gGlowVertexElements[6] = {
+    {0, 0, 50, 0, 0},
+    {0, 12, 34, 0, 0},
+    {1, 20, 34, 0, 0},
+    {2, 28, 34, 0, 0},
+    {3, 36, 34, 0, 0},
+    {0, 0, 2, 0, 0},
+};  // ?gGlowVertexElements (render_xboxr @ 0xE3BB78)
 
 #include <intrin.h>
 

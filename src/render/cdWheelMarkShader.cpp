@@ -11,7 +11,11 @@
 // ============================================================================
 #include "cdWheelMarkShader.h"
 
-const _D3DVERTEXSHADERINPUT cdWheelMarkVertexElements[16] = {};  // ?cdWheelMarkVertexElements (render_xboxr @ 0xE3C7A0)
+const _D3DVERTEXSHADERINPUT cdWheelMarkVertexElements[3] = {
+    {0, 0, 50, 0, 0},
+    {0, 12, 68, 0, 0},
+    {0, 0, 2, 0, 0},
+};  // ?cdWheelMarkVertexElements (render_xboxr @ 0xE3C7A0)
 gpuVertexFormat cdWheelMarkVertexFormat;  // ?cdWheelMarkVertexFormat@@3UgpuVertexFormat@@A (render_xboxr)
 
 #include <intrin.h>

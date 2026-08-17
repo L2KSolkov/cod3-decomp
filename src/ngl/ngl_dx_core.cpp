@@ -42,46 +42,101 @@ unsigned int* nglDOFPixelShader::Shader = nullptr;        // ?Shader@nglDOFPixel
 unsigned int* nglGlowShaderPixelFX::Shader = nullptr;     // ?Shader@nglGlowShaderPixelFX@@3PAKA
 unsigned int* nglGlowShaderPixelPreFX::Shader = nullptr;  // ?Shader@nglGlowShaderPixelPreFX@@3PAKA
 unsigned int* nglGlowShaderPixelPostFX::Shader = nullptr; // ?Shader@nglGlowShaderPixelPostFX@@3PAKA
-unsigned int* nglGpuQuadPCVertexShader::VS = nullptr;
-unsigned int* nglGpuQuadPCUVVertexShader::VS = nullptr;
-unsigned int* nglGpuQuadPUVVertexShader::VS = nullptr;
-unsigned int* nglGpuQuadPUV4VertexShader::VS = nullptr;
-unsigned int* nglGpuQuadPUVMatColVertexShader::VS = nullptr;
-unsigned int* nglGpuDebugVertexShader::VS = nullptr;
-unsigned int** nglGpuColPixelShader::PS = nullptr;
-unsigned int** nglGpuTexPixelShader::PS = nullptr;
-unsigned int** nglGpuTexColPixelShader::PS = nullptr;
-unsigned int** nglGpuFilterPixelShader::PS = nullptr;
-unsigned int** nglGpuZFogPixelShader::PS = nullptr;
-unsigned int** nglGpuDebugPixelShader::PS = nullptr;
-unsigned int** nglDOFPixelShader::PS = nullptr;
-unsigned int** nglGlowShaderPixelFX::PS = nullptr;
-unsigned int** nglGlowShaderPixelPreFX::PS = nullptr;
-unsigned int** nglGlowShaderPixelPostFX::PS = nullptr;
-const unsigned int** nglGpuQuadPCVertexShader::VShaderTable = nullptr;
-const unsigned int** nglGpuQuadPCUVVertexShader::VShaderTable = nullptr;
-const unsigned int** nglGpuQuadPUVVertexShader::VShaderTable = nullptr;
-const unsigned int** nglGpuQuadPUV4VertexShader::VShaderTable = nullptr;
-const unsigned int** nglGpuQuadPUVMatColVertexShader::VShaderTable = nullptr;
-const unsigned int** nglGpuDebugVertexShader::VShaderTable = nullptr;
-const unsigned int** nglGpuColPixelShader::PShaderTable = nullptr;
-const unsigned int** nglGpuTexPixelShader::PShaderTable = nullptr;
-const unsigned int** nglGpuTexColPixelShader::PShaderTable = nullptr;
-const unsigned int** nglGpuFilterPixelShader::PShaderTable = nullptr;
-const unsigned int** nglGpuZFogPixelShader::PShaderTable = nullptr;
-const unsigned int** nglGpuDebugPixelShader::PShaderTable = nullptr;
-const unsigned int** nglDOFPixelShader::PShaderTable = nullptr;
-const unsigned int** nglGlowShaderPixelFX::PShaderTable = nullptr;
-const unsigned int** nglGlowShaderPixelPreFX::PShaderTable = nullptr;
-const unsigned int** nglGlowShaderPixelPostFX::PShaderTable = nullptr;
+// IDA declares one-element VS/PS storage arrays and one-element shader-table
+// arrays for each internal shader. The original microcode payloads are not
+// present in the Win32 port, so the table entries remain null.
+static unsigned int nglGpuQuadPCVertexShaderVS[1] = {};
+static unsigned int nglGpuQuadPCUVVertexShaderVS[1] = {};
+static unsigned int nglGpuQuadPUVVertexShaderVS[1] = {};
+static unsigned int nglGpuQuadPUV4VertexShaderVS[1] = {};
+static unsigned int nglGpuQuadPUVMatColVertexShaderVS[1] = {};
+static unsigned int nglGpuDebugVertexShaderVS[1] = {};
+static unsigned int* nglGpuColPixelShaderPS[1] = {};
+static unsigned int* nglGpuTexPixelShaderPS[1] = {};
+static unsigned int* nglGpuTexColPixelShaderPS[1] = {};
+static unsigned int* nglGpuFilterPixelShaderPS[1] = {};
+static unsigned int* nglGpuZFogPixelShaderPS[1] = {};
+static unsigned int* nglGpuDebugPixelShaderPS[1] = {};
+static unsigned int* nglDOFPixelShaderPS[1] = {};
+static unsigned int* nglGlowShaderPixelFXPS[1] = {};
+static unsigned int* nglGlowShaderPixelPreFXPS[1] = {};
+static unsigned int* nglGlowShaderPixelPostFXPS[1] = {};
+static const unsigned int* nglGpuQuadPCVertexShaderTable[1] = {};
+static const unsigned int* nglGpuQuadPCUVVertexShaderTable[1] = {};
+static const unsigned int* nglGpuPUVVertexShaderTable[1] = {};
+static const unsigned int* nglGpuPUV4VertexShaderTable[1] = {};
+static const unsigned int* nglGpuPUVMatColVertexShaderTable[1] = {};
+static const unsigned int* nglGpuDebugVertexShaderTable[1] = {};
+static const unsigned int* nglGpuColPixelShaderTable[1] = {};
+static const unsigned int* nglGpuTexPixelShaderTable[1] = {};
+static const unsigned int* nglGpuTexColPixelShaderTable[1] = {};
+static const unsigned int* nglGpuFilterPixelShaderTable[1] = {};
+static const unsigned int* nglGpuZFogPixelShaderTable[1] = {};
+static const unsigned int* nglGpuDebugPixelShaderTable[1] = {};
+static const unsigned int* nglDOFPixelShaderTable[1] = {};
+static const unsigned int* nglGlowShaderPixelFXTable[1] = {};
+static const unsigned int* nglGlowShaderPixelPreFXTable[1] = {};
+static const unsigned int* nglGlowShaderPixelPostFXTable[1] = {};
+unsigned int* nglGpuQuadPCVertexShader::VS = nglGpuQuadPCVertexShaderVS;
+unsigned int* nglGpuQuadPCUVVertexShader::VS = nglGpuQuadPCUVVertexShaderVS;
+unsigned int* nglGpuQuadPUVVertexShader::VS = nglGpuQuadPUVVertexShaderVS;
+unsigned int* nglGpuQuadPUV4VertexShader::VS = nglGpuQuadPUV4VertexShaderVS;
+unsigned int* nglGpuQuadPUVMatColVertexShader::VS = nglGpuQuadPUVMatColVertexShaderVS;
+unsigned int* nglGpuDebugVertexShader::VS = nglGpuDebugVertexShaderVS;
+unsigned int** nglGpuColPixelShader::PS = nglGpuColPixelShaderPS;
+unsigned int** nglGpuTexPixelShader::PS = nglGpuTexPixelShaderPS;
+unsigned int** nglGpuTexColPixelShader::PS = nglGpuTexColPixelShaderPS;
+unsigned int** nglGpuFilterPixelShader::PS = nglGpuFilterPixelShaderPS;
+unsigned int** nglGpuZFogPixelShader::PS = nglGpuZFogPixelShaderPS;
+unsigned int** nglGpuDebugPixelShader::PS = nglGpuDebugPixelShaderPS;
+unsigned int** nglDOFPixelShader::PS = nglDOFPixelShaderPS;
+unsigned int** nglGlowShaderPixelFX::PS = nglGlowShaderPixelFXPS;
+unsigned int** nglGlowShaderPixelPreFX::PS = nglGlowShaderPixelPreFXPS;
+unsigned int** nglGlowShaderPixelPostFX::PS = nglGlowShaderPixelPostFXPS;
+const unsigned int** nglGpuQuadPCVertexShader::VShaderTable = nglGpuQuadPCVertexShaderTable;
+const unsigned int** nglGpuQuadPCUVVertexShader::VShaderTable = nglGpuQuadPCUVVertexShaderTable;
+const unsigned int** nglGpuQuadPUVVertexShader::VShaderTable = nglGpuPUVVertexShaderTable;
+const unsigned int** nglGpuQuadPUV4VertexShader::VShaderTable = nglGpuPUV4VertexShaderTable;
+const unsigned int** nglGpuQuadPUVMatColVertexShader::VShaderTable = nglGpuPUVMatColVertexShaderTable;
+const unsigned int** nglGpuDebugVertexShader::VShaderTable = nglGpuDebugVertexShaderTable;
+const unsigned int** nglGpuColPixelShader::PShaderTable = nglGpuColPixelShaderTable;
+const unsigned int** nglGpuTexPixelShader::PShaderTable = nglGpuTexPixelShaderTable;
+const unsigned int** nglGpuTexColPixelShader::PShaderTable = nglGpuTexColPixelShaderTable;
+const unsigned int** nglGpuFilterPixelShader::PShaderTable = nglGpuFilterPixelShaderTable;
+const unsigned int** nglGpuZFogPixelShader::PShaderTable = nglGpuZFogPixelShaderTable;
+const unsigned int** nglGpuDebugPixelShader::PShaderTable = nglGpuDebugPixelShaderTable;
+const unsigned int** nglDOFPixelShader::PShaderTable = nglDOFPixelShaderTable;
+const unsigned int** nglGlowShaderPixelFX::PShaderTable = nglGlowShaderPixelFXTable;
+const unsigned int** nglGlowShaderPixelPreFX::PShaderTable = nglGlowShaderPixelPreFXTable;
+const unsigned int** nglGlowShaderPixelPostFX::PShaderTable = nglGlowShaderPixelPostFXTable;
 unsigned int nglShaderParamSet::NumParams = 0;   // ?NumParams@nglShaderParamSet@@2IA
 unsigned int nglSceneParamSet::NumParams = 0;    // ?NumParams@nglSceneParamSet@@2IA
 unsigned int gpuHashIndexBuffer = 0;             // ?gpuHashIndexBuffer@@3IA
 void* nglEmptyParamSet = nullptr;                // ?nglEmptyParamSet@@3PAXA (ngl_params.o @ 0x1241D70)
-const _D3DVERTEXSHADERINPUT nglGpuPCVertexElements[16] = {};    // ?nglGpuPCVertexElements (ngl_gpu.o)
-const _D3DVERTEXSHADERINPUT nglGpuPCUVVertexElements[16] = {};  // ?nglGpuPCUVVertexElements (ngl_gpu.o)
-const _D3DVERTEXSHADERINPUT nglGpuPUVVertexElements[16] = {};   // ?nglGpuPUVVertexElements (ngl_gpu.o)
-const _D3DVERTEXSHADERINPUT nglGpuPUV4VertexElements[16] = {};  // ?nglGpuPUV4VertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPCVertexElements[3] = {
+    {0, 0, 50, 0, 0},
+    {0, 12, 64, 0, 0},
+    {0, 0, 2, 0, 0},
+};    // ?nglGpuPCVertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPCUVVertexElements[4] = {
+    {0, 0, 50, 0, 0},
+    {0, 12, 64, 0, 0},
+    {0, 16, 34, 0, 0},
+    {0, 0, 2, 0, 0},
+};  // ?nglGpuPCUVVertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPUVVertexElements[3] = {
+    {0, 0, 50, 0, 0},
+    {0, 12, 34, 0, 0},
+    {0, 0, 2, 0, 0},
+};   // ?nglGpuPUVVertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPUV4VertexElements[6] = {
+    {0, 0, 50, 0, 0},
+    {0, 12, 34, 0, 0},
+    {1, 20, 34, 0, 0},
+    {2, 28, 34, 0, 0},
+    {3, 36, 34, 0, 0},
+    {0, 0, 2, 0, 0},
+};  // ?nglGpuPUV4VertexElements (ngl_gpu.o)
 gpuVertexFormat nglGpuPCVertexFmt;    // ?nglGpuPCVertexFmt (ngl_gpu.o)
 gpuVertexFormat nglGpuPUVVertexFmt;   // ?nglGpuPUVVertexFmt (ngl_gpu.o)
 gpuVertexFormat nglGpuPUV4VertexFmt;  // ?nglGpuPUV4VertexFmt (ngl_gpu.o)
