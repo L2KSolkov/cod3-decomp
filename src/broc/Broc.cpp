@@ -74,6 +74,10 @@ bool IS_NAN(float x) {
     return (__fpclass(x) & 0x297) != 0;
 }
 
+// IDA globals @ 0x10F0540 / 0x10F0544.
+float gThreadSleepTime = 0.0f;
+int gThreadSleepFrames = 0;
+
 // ============================================================================
 // Broc utility functions
 // ============================================================================
@@ -1115,9 +1119,32 @@ void ThreadExecute(AeThreadFunctor* thread)
 {
     thread->CallFunction();
 }
-void wait_accurate(float) {}
+// ea: 0x009289D0. IDA validates the time, records it, and enters the sleep
+// hook before honoring the kill-thread flag.
+void wait_accurate(float t)
+{
+    if (IS_NAN(t)
+        && gBrocAPI.mError(
+               "c:\\cod\\code\\script\\include\\threads.inl",
+               68,
+               "Cannot wait for undefined time"))
+        __debugbreak();
+    thread_debug_wait_msg(t);
+    gThreadSleepTime = t;
+    thread_sleep_time();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
 void wait(float) {}
-void wait_frame(int) {}
+// ea: 0x00928B70. IDA stores the frame count and enters the frame-sleep hook.
+void wait_frame(int numFrames)
+{
+    thread_debug_wait_msg(numFrames);
+    gThreadSleepFrames = numFrames;
+    thread_sleep_frames();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
 void waittill(entity, HashStr) {}
 void waittill_timeout(entity, HashStr, float) {}
 void waittillmatch(entity, HashStr, HashStr, HashStr, HashStr) {}
