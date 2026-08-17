@@ -3755,6 +3755,8 @@ extern int s_numNodes;                               // g.o 0xEA5DD0
 void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
 void    VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex);  // g.o 0x45C7F0
 void    VEH_UpdateSounds(Entity* ent, int msec);   // g.o 0x46D560
+void    VEH_DebugCapsule(const float* pos, float r, float rad, float height,
+                         float g, float b);          // g.o 0x463370
 void    VEH_Strcpy(unsigned char* pMember, const char* pKeyValue, int);  // g.o 0x44D350
 void    ParseVehicleConfigString(const char* name, const ConfigString* cfgstr);  // g.o 0x44EC90
 void    ParseVehiclePhysicsConfigString(const char* name, const ConfigString* cfgstr);  // g.o 0x463730

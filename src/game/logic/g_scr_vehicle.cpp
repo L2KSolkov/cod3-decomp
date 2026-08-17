@@ -150,6 +150,29 @@ void VEH_UpdateAim(Entity* e) { (void)e; }
 void VEH_UpdateAltWeapon(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
+
+// ea: 0x00463370
+void VEH_DebugCapsule(const float* pos, float r, float rad, float height,
+                      float g, float b)
+{
+    float color[4];
+    float top[3];
+    float dir[3];
+
+    top[0] = pos[0];
+    top[1] = pos[1];
+    top[2] = pos[2] + height;
+    color[0] = r;
+    color[1] = g;
+    color[2] = b;
+    color[3] = 1.0f;
+    dir[0] = 0.0f;
+    dir[1] = 0.0f;
+    dir[2] = 1.0f;
+    G_DebugCircleEx(pos, rad, dir, color, 1, 0);
+    G_DebugCircleEx(top, rad, dir, color, 1, 0);
+}
+
 float hatchLerpDuration = 0.5f; // g.o @ 0xDD7F50
 void VEH_UpdateHatch(Entity* ent, int)
 {
