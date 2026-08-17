@@ -913,6 +913,7 @@ struct phys_contact_manifold_process {
                                 const math::Dir3* p1);
     void intersect_poly_poly();
     void copy_poly(phys_contact_manifold* cman);
+    void comp_contact_mat(const math::Dir3* contact_normal);
     void process(phys_collide_data* d);  // ?process@phys_contact_manifold_process@@QAEXPAVphys_collide_data@@@Z (phys_collision.o)
 };
 static_assert(offsetof(phys_contact_manifold_process, contact_mat) == 0x000, "process::contact_mat offset mismatch");

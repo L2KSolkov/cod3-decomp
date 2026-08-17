@@ -6,6 +6,7 @@
 //   (process @0x878C10 — large; ported separately if/when infra available)
 // ============================================================================
 #include "physics/phys_types.h"
+#include "physics/pulse_sum.h"
 #include "core/math_types.h"
 
 #include <intrin.h>
@@ -67,6 +68,34 @@ const math::Dir3 calc_feature_normal(phys_contact_manifold* cman, const math::Di
     result.v.m128_f32[2] = *(float*)&normal_12;
     result.v.m128_f32[3] = *(float*)((char*)&normal_12 + 4);
     return result;
+}
+
+// phys_contact_manifold_process::comp_contact_mat - ea: 0x8787F0
+void phys_contact_manifold_process::comp_contact_mat(const math::Dir3* contact_normal)
+{
+    const __m128 normal = contact_normal->v;
+    __m128 nrow;
+    if (fabsf(normal.m128_f32[0]) >= 0.80000001f)
+        nrow = _mm_mul_ps(normal, _mm_set1_ps(normal.m128_f32[1]));
+    else
+        nrow = _mm_mul_ps(normal, _mm_set1_ps(normal.m128_f32[0]));
+
+    const __m128 yrow = _mm_sub_ps(_mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f), nrow);
+    __m128 ysq = _mm_mul_ps(yrow, yrow);
+    const float ylen = sqrtf(ysq.m128_f32[0]
+        + _mm_shuffle_ps(ysq, ysq, 85).m128_f32[0]
+        + _mm_shuffle_ps(ysq, ysq, 170).m128_f32[0]);
+    if (ylen <= 0.1f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\collision\\phys_contact_manifold.h",
+                     360, "nyrow > 0.1f", defaultFileName))
+        __debugbreak();
+
+    this->contact_mat.y.v = _mm_div_ps(yrow, _mm_set1_ps(ylen));
+    const __m128 y = this->contact_mat.y.v;
+    this->contact_mat.x.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(y, y, 9), _mm_shuffle_ps(normal, normal, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(y, y, 18), _mm_shuffle_ps(normal, normal, 9)));
+    this->contact_mat.z.v = normal;
 }
 
 // ?process@phys_contact_manifold_process@@QAEXPAVphys_collide_data@@@Z
