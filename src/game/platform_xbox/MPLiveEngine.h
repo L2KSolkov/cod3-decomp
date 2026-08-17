@@ -35,7 +35,8 @@ extern SaveGameData gSaveGameData[4];
 // ============================================================================
 // MPPlayerSet - 16-player bitmask (2 bytes, verified)
 // ============================================================================
-struct MPPlayerSet {
+class MPPlayerSet {
+public:
     unsigned short mBitPlayers;     // +0x00
 
     MPPlayerSet() : mBitPlayers(0) {}
