@@ -1243,8 +1243,52 @@ void waittill_timeout(entity ent, HashStr labelHash, float t)
             gBrocAPI.mKillThreadExec();
     }
 }
-void waittillmatch(entity, HashStr, HashStr, HashStr, HashStr) {}
-void waittillor(entity, HashStr, HashStr, HashStr, HashStr) {}
+// ea: 0x00928E20. IDA waits for all four labels.
+void waittillmatch(entity ent, HashStr label1, HashStr label2,
+                   HashStr label3, HashStr label4)
+{
+    thread_debug_wait_until(label1, label2, label3, label4);
+    if (ent.GetHandle() == 0
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\include\\threads.inl",
+               153,
+               "null entity passed into waittillmatch- thread will be killed"))
+        __debugbreak();
+    gThreadSleepEntity = ent.GetHandle();
+    gThreadSleepPakfile = (TPakInfo)0;
+    gThreadSleepNotify1 = label1.mVal;
+    gThreadSleepNotify2 = label2.mVal;
+    gThreadSleepNotify3 = label3.mVal;
+    gThreadSleepNotify4 = label4.mVal;
+    gThreadWaitForAll = true;
+    gTimeOut = 0.0f;
+    thread_sleep_until_notify();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
+// ea: 0x00928F10. IDA waits for any of the four labels.
+void waittillor(entity ent, HashStr label1, HashStr label2,
+                HashStr label3, HashStr label4)
+{
+    thread_debug_wait_until(label1, label2, label3, label4);
+    if (ent.GetHandle() == 0
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\include\\threads.inl",
+               172,
+               "null entity passed into waittillmatch- thread will be killed"))
+        __debugbreak();
+    gThreadSleepEntity = ent.GetHandle();
+    gThreadSleepPakfile = (TPakInfo)0;
+    gThreadSleepNotify1 = label1.mVal;
+    gThreadSleepNotify2 = label2.mVal;
+    gThreadSleepNotify3 = label3.mVal;
+    gThreadSleepNotify4 = label4.mVal;
+    gThreadWaitForAll = false;
+    gTimeOut = 0.0f;
+    thread_sleep_until_notify();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
 void waittill(entity, const char*) {}
 // ea: 0x00929090. IDA records the pak handle and waits for a load notify.
 void waittill_loaded(TPakInfo info)
