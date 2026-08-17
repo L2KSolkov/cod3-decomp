@@ -49,6 +49,10 @@ void* MoveSoundAlongLine__functor(Broc::entity toMove, Broc::vector start,
 void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
                     Broc::entity attacker, Broc::bint weapon,
                     Broc::bint means_of_damage);
+void* ThreadLineSound__functor(Broc::entity self);
+void* ThreadStaticSound__functor(Broc::entity self);
+void* sound_repeat__functor(Broc::entity self);
+void* PlayerLocation__functor(Broc::entity self);
 }
 namespace _mp_loadout {
 void local_player_joined(Broc::entity player);
@@ -1563,6 +1567,12 @@ void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num) {
 void plane_roll(Broc::entity self) {
     (void)self;
 }
+void* plane_roll__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(plane_roll, self);
+}
 }
 
 // ============================================================================
@@ -2923,6 +2933,8 @@ void* BlowUpIfUnderWorld__functor(Broc::entity self);
 void* BlowUpIfFlipped__functor(Broc::entity self);
 void* VehicleDamagedEffects__functor(Broc::entity self);
 void* deleteonextinguish__functor(Broc::entity self);
+void* inactivity_blowup__functor(Broc::entity self);
+void* fire__functor(Broc::entity self);
 }
 namespace _mp_nano { void main(); }
 namespace _mp_nano {
@@ -6491,6 +6503,18 @@ void* deleteonextinguish__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(deleteonextinguish, self);
 }
+void* inactivity_blowup__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(inactivity_blowup, self);
+}
+void* fire__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(fire, self);
+}
 }
 namespace _mp_nano {
 void main() {
@@ -6538,6 +6562,30 @@ unsigned int CreateGlobalWind(Broc::vector direction, Broc::bfloat speed) {
 }
 }
 namespace _mp_audio {
+void* ThreadLineSound__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(ThreadLineSound, self);
+}
+void* ThreadStaticSound__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(ThreadStaticSound, self);
+}
+void* sound_repeat__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(sound_repeat, self);
+}
+void* PlayerLocation__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(PlayerLocation, self);
+}
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage) {
     (void)guy;
     (void)damage;
