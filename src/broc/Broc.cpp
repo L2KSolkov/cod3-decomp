@@ -867,7 +867,17 @@ void ExtendedEntity::DeleteExtendedEntity(void*) {}
 bool ExtendedEntity::MatchExtendedEntityKey(void*, int, const char*) { return false; }
 void* ExtendedEntity::CopyExtendedEntity(const void*) { return NULL; }
 void ExtendedEntity::InitScript(BrocExports&) {}
-bool ExtendedEntity::IsDefined(unsigned int) const { return false; }
+// ea: 0x0092A7A0. IDA's profiling enter/leave events use BrocAPI members not
+// present in the current partial declaration; the key scan is unchanged.
+bool ExtendedEntity::IsDefined(unsigned int key) const
+{
+    for (unsigned int i = 0; i < mCount; ++i)
+    {
+        if (mKVPairs[i].key == key)
+            return true;
+    }
+    return false;
+}
 void ExtendedEntity::SetUndefined(unsigned int) {}
 unsigned int* ExtendedEntity::SetVal(unsigned int, const string&) { return NULL; }
 unsigned int* ExtendedEntity::InternalSet(unsigned int, unsigned int) { return NULL; }
