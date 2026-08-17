@@ -14,8 +14,7 @@
 #include <string.h>
 
 // ============================================================================
-// Logging shim (bdLog's bdMessageProxy) + assert flag - unresolved externs,
-// tolerated by /FORCE:UNRESOLVED until bdLog is ported.
+// Logging types from bdCore:bdLog.obj and bdCore:bdLogChannel.obj.
 // ============================================================================
 struct bdMessageProxy {
     const char* m_file;
@@ -83,14 +82,27 @@ public:
                          const char* message);
 };
 
+class bdLogChannel;
+
 class bdLogImpl {
 public:
+    bdLogImpl();
+    virtual ~bdLogImpl();
     void subscribe(const char* channel, bdLogSubscriber* subscriber);
+    void unsubscribe(const char* channel, bdLogSubscriber* subscriber);
+    void unsubscribeAll(bdLogSubscriber* subscriber);
+    void log(const char* file, const char* function, unsigned int line,
+             const char* channel, const char* message);
+    bdLogChannel* setRoot(const char* channel);
+
+    bdLogChannel* m_root;
 };
+static_assert(sizeof(bdLogImpl) == 8, "bdLogImpl size mismatch");
 
 template <typename T>
 struct bdSingleton {
     static T* getInstance();
+    static T* m_instance;
 };
 
 // ============================================================================

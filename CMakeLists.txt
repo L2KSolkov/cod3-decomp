@@ -214,6 +214,7 @@ add_library(cod3_bd STATIC
     src/bd/bdNet.cpp
     src/bd/bdGameInfo.cpp
     src/bd/bdAddressMap.cpp
+    src/bd/bdLog.cpp
     src/bd/bdDiscoveryListener.cpp
     src/bd/bdDiscoveryServer.cpp
     src/bd/bdDiscoveryClient.cpp
