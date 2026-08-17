@@ -881,7 +881,25 @@ void FETextFlashInfo::Reset()
 }
 
 extern FEMenuColorScheme color_schemes[];  // 0xDF3AE0
-extern const char* const FEMenuColorSchemeText[];  // 0xCEF370 (17 entries)
+const char* const FEMenuColorSchemeText[17] = {
+    "WHITE_RED",
+    "WHITE_FADE",
+    "REALLY_WHITE_FADE",
+    "BLACK_RED",
+    "REALLY_WHITE_RED",
+    "BROWN_BROWN",
+    "GREY_GREY",
+    "RED_RED",
+    "ALL_GREY",
+    "COLORS_MP_INGAME",
+    "BUTTON_TEXT_01",
+    "BODY_TEXT_01",
+    "BODY_TEXT_02",
+    "BODY_TEXT_03",
+    "BODY_TEXT_04",
+    "BODY_TEXT_05",
+    "BODY_TEXT_06",
+};
 
 // MultiLineString (32 bytes) - verified against IDA
 // ============================================================================
