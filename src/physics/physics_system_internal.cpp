@@ -146,6 +146,23 @@ void IPN_merge(rigid_body* dest, rigid_body* source) {
     source->m_partition_node.m_partition_size = 0;
 }
 
+// IPN_get_max_delta_t - ea: 0x88B4C0
+float IPN_get_max_delta_t(rigid_body* rb_partition_head) {
+    if (rb_partition_head->m_partition_node.m_partition_head != rb_partition_head &&
+        _tlAssert("source/physics_system_internal.cpp", 140,
+                  "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                  defaultFileName))
+        __debugbreak();
+
+    float max_delta_t = rb_partition_head->m_max_delta_t;
+    for (rigid_body* rb = rb_partition_head->m_partition_node.m_next_node;
+         rb != NULL; rb = rb->m_partition_node.m_next_node) {
+        if (rb->m_max_delta_t < max_delta_t)
+            max_delta_t = rb->m_max_delta_t;
+    }
+    return max_delta_t;
+}
+
 // ============================================================================
 // IPN_verify_time_scale - ea: 0x88B730
 // ============================================================================
@@ -190,6 +207,36 @@ void IPN_verify_time_scale(rigid_body* rb_partition_head) {
              rb_partition_head->m_partition_node.m_rbc_contact_first;
          mm != NULL; mm = (rigid_body_constraint_contact*)mm->m_next)
         verify_time_scale(mm, &rb_partition_head->m_time_scale);
+}
+
+// IPN_setup_time_step_info - ea: 0x88ED20
+void IPN_setup_time_step_info(rigid_body* rb_partition_head,
+                              int* next_psc_visit_counter,
+                              float outside_delta_t) {
+    if (rb_partition_head->m_partition_node.m_partition_head != rb_partition_head &&
+        _tlAssert("source/physics_system_internal.cpp", 229,
+                  "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                  defaultFileName))
+        __debugbreak();
+
+    IPN_verify_time_scale(rb_partition_head);
+    rb_partition_head->m_partition_node.m_group_delta_t =
+        rb_partition_head->m_time_scale.m_time * outside_delta_t;
+
+    float max_delta_t = IPN_get_max_delta_t(rb_partition_head);
+    int sub_steps = (int)(rb_partition_head->m_partition_node.m_group_delta_t /
+                          max_delta_t);
+    rb_partition_head->m_partition_node.m_sub_steps = sub_steps;
+    if (sub_steps == 0)
+        rb_partition_head->m_partition_node.m_sub_steps = 1;
+
+    sub_steps = rb_partition_head->m_partition_node.m_sub_steps;
+    if ((rb_partition_head->m_partition_node.m_group_delta_t / sub_steps) >
+        max_delta_t)
+        rb_partition_head->m_partition_node.m_sub_steps = sub_steps + 1;
+
+    if (*next_psc_visit_counter <= rb_partition_head->m_partition_node.m_sub_steps)
+        *next_psc_visit_counter = rb_partition_head->m_partition_node.m_sub_steps;
 }
 
 // ============================================================================
@@ -722,18 +769,211 @@ void physics_system::solver_priority_sort() {
 }
 
 // ============================================================================
-// TODO stubs (deferred from this unit; heavy reconstruction targets)
+// physics_system::generate_partitions_and_stuff - ea: 0x88C830
 // ============================================================================
+
+namespace {
+template <typename Constraint>
+void count_constraint_and_merge(Constraint* rbc) {
+    if (rbc->b1 != NULL)
+        ++rbc->b1->m_constraint_count;
+    if (rbc->b2 != NULL)
+        ++rbc->b2->m_constraint_count;
+
+    rigid_body* p1 = rbc->b1 ? rbc->b1->m_partition_node.m_partition_head : NULL;
+    rigid_body* p2 = rbc->b2 ? rbc->b2->m_partition_node.m_partition_head : NULL;
+    if (p1 != NULL && p2 != NULL && p1 != p2) {
+        if (p1->m_partition_node.m_partition_size <
+            p2->m_partition_node.m_partition_size)
+            IPN_merge(p2, p1);
+        else
+            IPN_merge(p1, p2);
+    }
+}
+
+template <typename Constraint>
+rigid_body* constraint_partition(Constraint* rbc) {
+    rigid_body* partition =
+        rbc->b1 ? rbc->b1->m_partition_node.m_partition_head : NULL;
+    if (partition == NULL) {
+        if ((rbc->b2 == NULL ||
+             rbc->b2->m_partition_node.m_partition_head == NULL) &&
+            _tlAssert("source/physics_system_internal.cpp", 288,
+                      "rbc.get_b2() && GIPN(rbc.get_b2())->m_partition_head",
+                      defaultFileName))
+            __debugbreak();
+        partition = rbc->b2->m_partition_node.m_partition_head;
+    }
+    if (partition->m_partition_node.m_partition_head != partition &&
+        _tlAssert("source/physics_system_internal.cpp", 186,
+                  "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                  defaultFileName))
+        __debugbreak();
+    return partition;
+}
+
+}
+
+void IPN_verify_rigid_bodies(rigid_body* rb_partition_head);
+
 void physics_system::generate_partitions_and_stuff(
     phys_constraint_solver_multithreaded_list_constraint_solver* list_cs,
     int* next_psc_visit_counter, float delta_t) {
-    // ea: 0x88C830 - TODO: full partition builder (37KB function).
-    (void)list_cs;
-    (void)next_psc_visit_counter;
-    (void)delta_t;
+    m_environment_rigid_body.m_constraint_count = 0;
+    m_environment_rigid_body.m_contact_count = 0;
+    m_environment_rigid_body.m_partition_node.m_partition_head = NULL;
+
+    for (int i = 0; i < m_list_user_rigid_body.m_alloc_count; ++i) {
+        user_rigid_body* rb = m_list_user_rigid_body.m_alloc_list[i];
+        rb->m_constraint_count = 0;
+        rb->m_contact_count = 0;
+        rb->m_partition_node.m_partition_head = NULL;
+    }
+    for (int i = 0; i < m_list_rigid_body.m_alloc_count; ++i) {
+        rigid_body* rb = m_list_rigid_body.m_alloc_list[i];
+        rb->m_constraint_count = 0;
+        rb->m_contact_count = 0;
+        rb->m_partition_node.m_partition_head = rb;
+        rb->m_partition_node.m_partition_tail = rb;
+        rb->m_partition_node.m_next_node = NULL;
+        rb->m_partition_node.m_partition_size = 1;
+    }
+
+    for (int i = 0; i < m_list_rbc_point.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_point.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_hinge.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_hinge.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_dist.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_dist.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_ragdoll.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_ragdoll.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_wheel.m_alloc_count; ++i) {
+        rigid_body_constraint_wheel* rbc = m_list_rbc_wheel.m_alloc_list[i];
+        count_constraint_and_merge(rbc);
+        if ((rbc->m_wheel_flags & 1) != 0) {
+            if (rbc->b1 != NULL)
+                ++rbc->b1->m_contact_count;
+            if (rbc->b2 != NULL)
+                ++rbc->b2->m_contact_count;
+        }
+    }
+    for (int i = 0; i < m_list_rbc_angular_actuator.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_angular_actuator.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_custom_orientation.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_custom_orientation.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_custom_path.m_alloc_count; ++i)
+        count_constraint_and_merge(m_list_rbc_custom_path.m_alloc_list[i]);
+    for (int i = 0; i < m_list_rbc_contact.m_alloc_count; ++i) {
+        rigid_body_constraint_contact* rbc = m_list_rbc_contact.m_alloc_list[i];
+        int cached_count = 0;
+        for (contact_point_info* cpi = rbc->m_list_contact_point_info_buffer_1.m_first;
+             cpi != NULL; cpi = cpi->m_next_link)
+            cached_count += cpi->m_point_pair_count;
+        int point_count = 0;
+        for (contact_point_info* cpi = rbc->m_list_contact_point_info_buffer_2.m_first;
+             cpi != NULL; cpi = cpi->m_next_link)
+            point_count += cpi->m_point_pair_count;
+        if (point_count < cached_count)
+            point_count = cached_count;
+        if (rbc->b1 != NULL)
+            rbc->b1->m_contact_count += point_count;
+        if (rbc->b2 != NULL)
+            rbc->b2->m_contact_count += point_count;
+        count_constraint_and_merge(rbc);
+    }
+
+    for (int i = 0; i < m_list_rigid_body.m_alloc_count; ++i) {
+        rigid_body* rb = m_list_rigid_body.m_alloc_list[i];
+        if (rb->m_partition_node.m_partition_size > 0) {
+            if (rb->m_partition_node.m_partition_head != rb &&
+                _tlAssert("source/physics_system_internal.cpp", 153,
+                          "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                          defaultFileName))
+                __debugbreak();
+            rb->m_partition_node.m_rbc_point_first = NULL;
+            rb->m_partition_node.m_rbc_hinge_first = NULL;
+            rb->m_partition_node.m_rbc_dist_first = NULL;
+            rb->m_partition_node.m_rbc_ragdoll_first = NULL;
+            rb->m_partition_node.m_rbc_wheel_first = NULL;
+            rb->m_partition_node.m_rbc_angular_actuator_first = NULL;
+            rb->m_partition_node.m_rbc_custom_orientation_first = NULL;
+            rb->m_partition_node.m_rbc_custom_path_first = NULL;
+            rb->m_partition_node.m_rbc_contact_first = NULL;
+            IPN_setup_time_step_info(rb, next_psc_visit_counter, delta_t);
+        }
+    }
+
+    for (int i = 0; i < m_list_rbc_point.m_alloc_count; ++i) {
+        rigid_body_constraint_point* rbc = m_list_rbc_point.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_point_first;
+        partition->m_partition_node.m_rbc_point_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_hinge.m_alloc_count; ++i) {
+        rigid_body_constraint_hinge* rbc = m_list_rbc_hinge.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_hinge_first;
+        partition->m_partition_node.m_rbc_hinge_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_dist.m_alloc_count; ++i) {
+        rigid_body_constraint_distance* rbc = m_list_rbc_dist.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_dist_first;
+        partition->m_partition_node.m_rbc_dist_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_ragdoll.m_alloc_count; ++i) {
+        rigid_body_constraint_ragdoll* rbc = m_list_rbc_ragdoll.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_ragdoll_first;
+        partition->m_partition_node.m_rbc_ragdoll_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_wheel.m_alloc_count; ++i) {
+        rigid_body_constraint_wheel* rbc = m_list_rbc_wheel.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_wheel_first;
+        partition->m_partition_node.m_rbc_wheel_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_angular_actuator.m_alloc_count; ++i) {
+        rigid_body_constraint_angular_actuator* rbc = m_list_rbc_angular_actuator.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_angular_actuator_first;
+        partition->m_partition_node.m_rbc_angular_actuator_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_custom_orientation.m_alloc_count; ++i) {
+        rigid_body_constraint_custom_orientation* rbc = m_list_rbc_custom_orientation.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_custom_orientation_first;
+        partition->m_partition_node.m_rbc_custom_orientation_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_custom_path.m_alloc_count; ++i) {
+        rigid_body_constraint_custom_path* rbc = m_list_rbc_custom_path.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_custom_path_first;
+        partition->m_partition_node.m_rbc_custom_path_first = rbc;
+    }
+    for (int i = 0; i < m_list_rbc_contact.m_alloc_count; ++i) {
+        rigid_body_constraint_contact* rbc = m_list_rbc_contact.m_alloc_list[i];
+        rigid_body* partition = constraint_partition(rbc);
+        rbc->m_next = partition->m_partition_node.m_rbc_contact_first;
+        partition->m_partition_node.m_rbc_contact_first = rbc;
+    }
+
+    for (int i = 0; i < m_list_rigid_body.m_alloc_count; ++i) {
+        rigid_body* rb = m_list_rigid_body.m_alloc_list[i];
+        if (rb->m_partition_node.m_partition_size > 0) {
+            rb->m_partition_node.m_next_partition_head =
+                list_cs->m_constraint_solver->m_first_partition_head;
+            list_cs->m_constraint_solver->m_first_partition_head = rb;
+        }
+    }
+    for (int i = 0; i < m_list_rigid_body.m_alloc_count; ++i) {
+        rigid_body* rb = m_list_rigid_body.m_alloc_list[i];
+        if (rb->m_partition_node.m_partition_size > 0)
+            IPN_verify_rigid_bodies(rb);
+    }
 }
 
-// IPN_verify_rigid_bodies - ea: 0x88B890 (debug verifier, 45KB function).
+// IPN_verify_rigid_bodies - ea: 0x88B890 (debug verifier).
 void IPN_verify_rigid_bodies(rigid_body* rb_partition_head) {
     (void)rb_partition_head;
 }
