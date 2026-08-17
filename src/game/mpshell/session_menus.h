@@ -1367,7 +1367,6 @@ public:
     virtual void OnActivate();             // ?OnActivate@PauseMenu@@UAEXXZ
     virtual void OnCross(int c);           // ?OnCross@PauseMenu@@UAEXH@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@PauseMenu@@UAEXXZ
-    void UnPause(int client);             // ?UnPause@PauseMenu@@QAEXH@Z (mp_shell.o)
 protected:
     void Quit();           // ?Quit@PauseMenu@@IAEXXZ (mp_shell.o 0x791BB0)
     void Suicide();        // ?Suicide@PauseMenu@@IAEXXZ (mp_shell.o 0x791D00)

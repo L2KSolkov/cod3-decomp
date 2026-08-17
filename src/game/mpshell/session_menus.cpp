@@ -3516,7 +3516,7 @@ void WeaponSelectMenu::CloseMenu()
     if (mReturnMenu < 0)
     {
         InGameMenuSystem* IGMS = g_femanager.GetIGMS(mVersion);
-        ((PauseMenu*)IGMS->menus[0])->UnPause(mVersion);
+        ((PauseMenu*)IGMS->menus[0])->UnPause();
     }
     else
     {
