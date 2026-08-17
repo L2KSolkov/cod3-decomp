@@ -12,6 +12,16 @@
 extern void DObjGetBounds(const DObj* obj, math::Position3& mins,
                           math::Position3& maxs);
 
+struct vehicle_backup_s_local
+{
+    vehicle_pathpos_t pathPos;
+    scr_vehicle_t::vehicle_physic_t phys;
+};
+static vehicle_backup_s_local s_backup; // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)
+
+extern math::Position3 kVehSaftyMaxs;
+extern math::Position3 kVehSaftyMins;
+
 // rb_vehicle statics + free helpers (physics.o; ported in g_physics.cpp)
 void rb_vehicle::update_parms(vehicle_rb_parameter* p, bool from_network)
 {
@@ -199,7 +209,65 @@ void VEH_UpdateShaderTime(Entity* e) { (void)e; }
 void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateSteering(Entity* e) { (void)e; }
 void VEH_UpdateWeapon(Entity* e) { (void)e; }
-void VEH_VerifyPosition(Entity* e) { (void)e; }
+
+// ea: 0x46CB70 (g.o)
+void VEH_VerifyPosition(Entity* ent)
+{
+    if (ent->r.bmodel != nullptr && level.MaxVehicles != 0)
+    {
+        for (int i = 0; i < level.MaxVehicles; ++i)
+        {
+            unsigned int mVal = s_vehicles[i].mEntity.mHandle.mVal;
+            unsigned int index = mVal & 0xFFF;
+            if (index >= 0x540
+                || (mVal >> 12)
+                       != (unsigned int)EntityHandleDb::sInst.mElements[index].mKey
+                || EntityHandleDb::sInst.mElements[index].mObject == nullptr
+                || mVal == ent->mHandle.mHandle.mVal)
+                continue;
+
+            index = mVal & 0xFFF;
+            if (index >= 0x540
+                || (mVal >> 12)
+                       != (unsigned int)EntityHandleDb::sInst.mElements[index].mKey)
+                continue;
+
+            Entity* other = EntityHandleDb::sInst.mElements[index].mObject;
+            if (other == nullptr || other->active != 2)
+                continue;
+
+            math::Position3 mins(
+                other->r.currentOrigin.v.m128_f32[0]
+                    + kVehSaftyMins.v.m128_f32[0],
+                other->r.currentOrigin.v.m128_f32[1]
+                    + kVehSaftyMins.v.m128_f32[1],
+                other->r.currentOrigin.v.m128_f32[2]
+                    + kVehSaftyMins.v.m128_f32[2]);
+            math::Position3 maxs(
+                other->r.currentOrigin.v.m128_f32[0]
+                    + kVehSaftyMaxs.v.m128_f32[0],
+                other->r.currentOrigin.v.m128_f32[1]
+                    + kVehSaftyMaxs.v.m128_f32[1],
+                other->r.currentOrigin.v.m128_f32[2]
+                    + kVehSaftyMaxs.v.m128_f32[2]);
+            if (g_EntityContactCapsule(mins, maxs, ent) != 0)
+                break;
+        }
+
+        if (ent->scr_vehicle->mRBVeh != nullptr)
+        {
+            ent->scr_vehicle->pathPos.speed = 0.0f;
+        }
+        else
+        {
+            memcpy(&ent->scr_vehicle->pathPos, &s_backup.pathPos,
+                   sizeof(vehicle_pathpos_t));
+            memcpy(&ent->scr_vehicle->phys, &s_backup.phys,
+                   sizeof(scr_vehicle_t::vehicle_physic_t));
+        }
+        ent->speed = 0.0f;
+    }
+}
 
 void VEH_TryRecordFollowHistory(scr_vehicle_t* veh)
 {
@@ -449,6 +517,9 @@ vehicle_info_t* s_vehicleInfos[64] = {};
 // g.o / physics.o vehicle data
 vmCvar_t g_vehicleDebug;         // ?g_vehicleDebug@@3UvmCvar_t@@A (g.o)
 vmCvar_t g_vehicleDrawPath;      // ?g_vehicleDrawPath@@3UvmCvar_t@@A (g.o)
+vmCvar_t g_vehicleTexScrollScale; // ?g_vehicleTexScrollScale@@3UvmCvar_t@@A (g.o)
+math::Position3 kVehSaftyMaxs(105.0f, 105.0f, 175.0f); // g.o data
+math::Position3 kVehSaftyMins(-105.0f, -105.0f, -25.0f); // g.o data
 VehicleNodeAllocator g_vehicleNodeManager;  // ?g_vehicleNodeManager@@3VVehicleNodeAllocator@@A (g.o)
 int g_vehicle_button_threshold = -1;        // ?g_vehicle_button_threshold@@3HA (physics.o)
 int rb_vehicle::sRenderAllVehicles = -1;    // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
@@ -6739,7 +6810,6 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
 
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
-static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)
 static float intensity_scale = 500.0f;  // @ 0xDD7F48
 static float hit_offset = 30.0f;        // @ 0xDD7F4C
 
@@ -6753,7 +6823,8 @@ void VEH_Backup(Entity* ent)
     scr_vehicle->phys.prevAngles.v.m128_f32[0] = ent->r.currentAngles.v.m128_f32[0];
     scr_vehicle->phys.prevAngles.v.m128_f32[1] = ent->r.currentAngles.v.m128_f32[1];
     scr_vehicle->phys.prevAngles.v.m128_f32[2] = ent->r.currentAngles.v.m128_f32[2];
-    s_backup = *scr_vehicle;
+    s_backup.pathPos = scr_vehicle->pathPos;
+    s_backup.phys = scr_vehicle->phys;
 }
 
 // ea: 0x0044D8F0
