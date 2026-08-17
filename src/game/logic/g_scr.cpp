@@ -4500,6 +4500,103 @@ unsigned int sKillAnimScript = 0xFFFFFFFF;  // ?sKillAnimScript@@3IA @ 0xF3AC0C 
 PoolAllocator* EndOnScriptNode::sAllocator;
 PoolAllocator* EntityNotifySetLocal::sAllocator;
 
+// IDA's sEntityNotifySet (0x00DD8AFC), kept as the local layout twin used by
+// the script-side notify state code in this translation unit.
+static AeStateList sEntityNotifySetLocalList = {0, nullptr, nullptr, nullptr};
+
+// ea: 0x004C1D80 (EntityNotifySet::EntityNotifySet)
+EntityNotifySetLocal::EntityNotifySetLocal(Entity* e)
+{
+    if (sEntityNotifySetLocalList.m_head == nullptr)
+    {
+        sEntityNotifySetLocalList.m_end = nullptr;
+        sEntityNotifySetLocalList.m_head =
+            (AeDListNode*)&sEntityNotifySetLocalList.m_end;
+        sEntityNotifySetLocalList.m_tail =
+            (AeDListNode*)&sEntityNotifySetLocalList.m_head;
+    }
+
+    m_dlist_node.mNext = nullptr;
+    m_dlist_node.mPrev = nullptr;
+    mEnt.mHandle.mVal = e->mHandle.mHandle.mVal;
+
+    mStrings.m_end = nullptr;
+    mStrings.m_head = (AeDListNode*)&mStrings.m_end;
+    mStrings.m_tail = (AeDListNode*)&mStrings.m_head;
+    mStrings.m_size = 0;
+
+    mEndOnList.m_size = 0;
+    mEndOnList.m_head = (AeDListNode*)&mEndOnList.m_end;
+    mEndOnList.m_end = nullptr;
+    mEndOnList.m_tail = (AeDListNode*)&mEndOnList.m_head;
+
+    AeDListNode* m_head = sEntityNotifySetLocalList.m_head;
+    AeDListNode* m_next = m_head != nullptr ? m_head->mNext : nullptr;
+    if (m_next != nullptr)
+    {
+        while (m_head != (AeDListNode*)this)
+        {
+            m_head = m_next;
+            m_next = m_next->mNext;
+            if (m_next == nullptr)
+                break;
+        }
+        if (m_next != nullptr && m_head == (AeDListNode*)this
+            && m_dlist_node.mNext != nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\EntityNotifySet.cpp";
+            AeAssert::gCurrentLine = 38;
+            AeAssert::gCurrentExpr =
+                "sEntityNotifySet.find( this ) == sEntityNotifySet.end()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("hmm?"))
+                __debugbreak();
+        }
+    }
+
+    m_dlist_node.mNext = (AeDListNode*)&sEntityNotifySetLocalList.m_end;
+    m_dlist_node.mPrev = sEntityNotifySetLocalList.m_tail;
+    sEntityNotifySetLocalList.m_tail->mNext = &m_dlist_node;
+    ++sEntityNotifySetLocalList.m_size;
+    sEntityNotifySetLocalList.m_tail = &m_dlist_node;
+}
+
+// ea: 0x004C6450 (EntityNotifySet::GetNotify)
+EntityNotify* EntityNotifySetLocal::GetNotify(const HashString& chk) const
+{
+    EntityNotifyLocal* result =
+        (EntityNotifyLocal*)mStrings.m_head;
+    AeDListNode* next = result != nullptr ? result->m_dlist_node.mNext : nullptr;
+    if (result == (EntityNotifyLocal*)&mStrings.m_end || next == nullptr)
+        return nullptr;
+    while (result->mStr != chk.mHash)
+    {
+        result = (EntityNotifyLocal*)next;
+        next = next->mNext;
+        if (next == nullptr)
+            return nullptr;
+    }
+    return (EntityNotify*)result;
+}
+
+// ea: 0x004C64D0 (EntityNotifySet::AssignScriptVariable)
+bool EntityNotifySetLocal::AssignScriptVariable(
+    const HashString& chk, WaitTilOutput* scriptVariable)
+{
+    EntityNotify* notify = GetNotify(chk);
+    if (notify == nullptr)
+        return false;
+    EntityNotifyLocal* localNotify = (EntityNotifyLocal*)notify;
+    if (localNotify->mParam == nullptr)
+        return false;
+
+    typedef void (__thiscall *WaitTilOutputAssign)(void*, void*);
+    void** vftable = *(void***)localNotify->mParam;
+    ((WaitTilOutputAssign)vftable[1])(localNotify->mParam, scriptVariable);
+    return true;
+}
+
 // ea: 0x005DB230
 EndOnScriptNode::EndOnScriptNode(AeThread* t)
 {
