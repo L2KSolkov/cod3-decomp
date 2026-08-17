@@ -479,6 +479,56 @@ const char* const szCreateSessionMenuBackgroundArt[6] = {
     "cg_bkg", "cg_bkg_detail_01", "cg_bkg_detail_02",
     "cg_bkg_detail_03", "cg_bkg_detail_04", "cg_bkg_detail_05",
 };
+const char* const szCreateSessionAdvMenuBgArt[4] = {
+    "bkg", "bkg_detail_01", "bkg_detail_02", "bkg_detail_03",
+};
+const char* const szCreateSessionAdvMenuBgRow[6] = {
+    "bkg_row_01", "bkg_row_02", "bkg_row_03",
+    "bkg_row_04", "bkg_row_05", "bkg_row_06",
+};
+const char* const szCreateSessionAdvMenuBgLine[5] = {
+    "bkg_line_01", "bkg_line_02", "bkg_line_03",
+    "bkg_line_04", "bkg_line_05",
+};
+const char* const szCreateSessionAdvMenuText[4] = {
+    "text_title_01", "text_title_02",
+    "text_title_description", "text_helpbar",
+};
+const char* const szCreateSessionAdvMenuTextRef[4] = {
+    "MPFRONTEND_PLAY_XBOX_LIVE",
+    "MPFRONTEND_CREATEGAME_ADVANCED_OPTIONS",
+    "MPFRONTEND_ADV_GAME_CREATE", "MPFRONTEND_HELP_SELECT_MOVEUD",
+};
+const char* const szCreateSessionAdvMenuSlotArrows[12] = {
+    "slot_01_arrow_left", "slot_01_arrow_right",
+    "slot_02_arrow_left", "slot_02_arrow_right",
+    "slot_03_arrow_left", "slot_03_arrow_right",
+    "slot_04_arrow_left", "slot_04_arrow_right",
+    "slot_05_arrow_left", "slot_05_arrow_right",
+    "slot_06_arrow_left", "slot_06_arrow_right",
+};
+const char* const szCreateSessionAdvMenuSlotText[12] = {
+    "slot_01_text_option", "slot_01_text_spec",
+    "slot_02_text_option", "slot_02_text_spec",
+    "slot_03_text_option", "slot_03_text_spec",
+    "slot_04_text_option", "slot_04_text_spec",
+    "slot_05_text_option", "slot_05_text_spec",
+    "slot_06_text_option", "slot_06_text_spec",
+};
+const char* const szCreateSessionAdvMenuSlotTextRef[12] = {
+    "MPFRONTEND_TIME_LIMIT_ALLCAPS", defaultFileName,
+    "MPFRONTEND_SCORE_LIMIT_ALLCAPS", defaultFileName,
+    "MPFRONTEND_AUTO_TEAM_BALANCE_ALLCAPS", defaultFileName,
+    "MPFRONTEND_TEAM_DAMAGE_ALLCAPS", defaultFileName,
+    "MPFRONTEND_AAR_VOTING_OPTION_ALLCAPS", defaultFileName,
+    "MPFRONTEND_PENALTY_VOTE_ALLCAPS", defaultFileName,
+};
+const char* const szOnOffOptions[2] = {
+    "MPFRONTEND_OFF", "MPFRONTEND_ON",
+};
+const char* const szCreateLanSessionAdvMenuBgArt[4] = {
+    "bkg", "bkg_detail_01", "bkg_detail_02", "bkg_detail_03",
+};
 const char* const szClassInformation[6] = {
     "MPGAME_DAMAGE_ALLCAPS", "MPGAME_RANGE_ALLCAPS",
     "MPGAME_ACCURACY_ALLCAPS", "MPGAME_MELEE_ALLCAPS",
@@ -6297,6 +6347,217 @@ void InGameSwitchSides::UpdateModel()
 // ============================================================================
 // Batch 12: advanced session menus + pause/suicide/spectate/vote handlers
 // ============================================================================
+
+// ea: 0x007952F0
+void CreateSessionAdvancedMenu::SetPanelFile(PanelFile* pf)
+{
+    if (pf == nullptr)
+        ASSERT("pf", "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 276);
+    panel = pf;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_pBackgroundArt[i] != nullptr)
+            ASSERT("m_pBackgroundArt[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 282);
+        m_pBackgroundArt[i] = panel->GetPointer(szCreateSessionAdvMenuBgArt[i]);
+        if (m_pBackgroundArt[i] == nullptr)
+            ASSERT("m_pBackgroundArt[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 285);
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_pText[i] != nullptr)
+            ASSERT("m_pText[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 291);
+        m_pText[i] = panel->GetTextPointer(szCreateSessionAdvMenuText[i]);
+        if (m_pText[i] == nullptr)
+            ASSERT("m_pText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 294);
+        const char* translatedText = szCreateSessionAdvMenuTextRef[i];
+        if (i == 3)
+        {
+            FEMultiLineText* helpbarText =
+                (FEMultiLineText*)mem_heap_malloc(0xA8u);
+            if (helpbarText != nullptr)
+            {
+                FEText* text = m_pText[3];
+                color32 col = text->GetColor();
+                panel_layer layer = (panel_layer)text->GetScaleX();
+                helpbarText = new (helpbarText)
+                    FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
+                                    layer, 0.0f, 0, (int)col.i, col);
+            }
+            helpbar1 = helpbarText;
+            helpbar1->SetNumLines(1);
+            helpbar1->SetText(translatedText);
+        }
+        else
+        {
+            m_pText[i]->SetText(translatedText);
+        }
+    }
+    SetDefaultColorScheme(10);
+
+    for (int i = 0; i < 6; ++i)
+    {
+        if (m_pBackgroundRow[i] != nullptr)
+            ASSERT("m_pBackgroundRow[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 315);
+        m_pBackgroundRow[i] = panel->GetPointer(szCreateSessionAdvMenuBgRow[i]);
+        if (m_pBackgroundRow[i] == nullptr)
+            ASSERT("m_pBackgroundRow[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 318);
+        m_pBackgroundRow[i]->SetShown(true);
+    }
+
+    for (int i = 0; i < 5; ++i)
+    {
+        if (m_pBackgroundLine[i] != nullptr)
+            ASSERT("m_pBackgroundLine[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 326);
+        m_pBackgroundLine[i] = panel->GetPointer(szCreateSessionAdvMenuBgLine[i]);
+        if (m_pBackgroundLine[i] == nullptr)
+            ASSERT("m_pBackgroundLine[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 329);
+        m_pBackgroundLine[i]->SetShown(true);
+    }
+    SetDefaultColorScheme(10);
+
+    for (int i = 0; i < 12; ++i)
+    {
+        if (m_pSlotArrow[i] != nullptr)
+            ASSERT("m_pSlotArrow[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 339);
+        m_pSlotArrow[i] = panel->GetPointer(szCreateSessionAdvMenuSlotArrows[i]);
+        if (m_pSlotArrow[i] == nullptr)
+            ASSERT("m_pSlotArrow[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 342);
+        m_pSlotArrow[i]->SetShown(true);
+    }
+
+    for (int i = 0; i < 12; ++i)
+    {
+        if (m_pSlotText[i] != nullptr)
+            ASSERT("m_pSlotText[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 350);
+        m_pSlotText[i] = panel->GetTextPointer(szCreateSessionAdvMenuSlotText[i]);
+        if (m_pSlotText[i] == nullptr)
+            ASSERT("m_pSlotText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 353);
+        m_pSlotText[i]->SetText(szCreateSessionAdvMenuSlotTextRef[i]);
+    }
+    SetDefaultColorScheme(10);
+
+    AddEntry(0, panel->GetTextPointer("slot_01_text_option"), false);
+    m_TimeLimitCombo = AddComboBox(
+        1, MPUIInterface::GetTimeLimitCount(),
+        panel->GetTextPointer("slot_01_text_spec"),
+        panel->GetPointer("slot_01_arrow_left"),
+        panel->GetPointer("slot_01_arrow_right"));
+    if (m_TimeLimitCombo == nullptr)
+        ASSERT("m_TimeLimitCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 365);
+    for (int jj = 0; jj < MPUIInterface::GetTimeLimitCount(); ++jj)
+    {
+        char szNum[32];
+        sprintf(szNum, "%i", MPUIInterface::GetTimeLimit(jj));
+        Broc::string option(szNum);
+        m_TimeLimitCombo->AddOption(option);
+    }
+
+    AddEntry(2, panel->GetTextPointer("slot_02_text_option"), false);
+    m_ScoreLimitCombo = AddComboBox(
+        3, MPUIInterface::mMaxScoreLimitCount,
+        panel->GetTextPointer("slot_02_text_spec"),
+        panel->GetPointer("slot_02_arrow_left"),
+        panel->GetPointer("slot_02_arrow_right"));
+    if (m_ScoreLimitCombo == nullptr)
+        ASSERT("m_ScoreLimitCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 377);
+    for (int kk = 0;
+         kk < MPUIInterface::GetScoreLimitCount(GAME_TYPE_WAR); ++kk)
+    {
+        char string[32];
+        sprintf(string, "%i",
+                MPUIInterface::GetScoreLimit(kk, GAME_TYPE_WAR));
+        Broc::string option(string);
+        m_ScoreLimitCombo->AddOption(option);
+    }
+
+    AddEntry(4, panel->GetTextPointer("slot_03_text_option"), false);
+    m_AutoTeamBalanceCombo = AddComboBox(
+        5, 2, panel->GetTextPointer("slot_03_text_spec"),
+        panel->GetPointer("slot_03_arrow_left"),
+        panel->GetPointer("slot_03_arrow_right"));
+    if (m_AutoTeamBalanceCombo == nullptr)
+        ASSERT("m_AutoTeamBalanceCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 392);
+    for (int i = 0; i < 2; ++i)
+    {
+        Broc::string option(szOnOffOptions[i]);
+        m_AutoTeamBalanceCombo->AddOption(option);
+    }
+
+    AddEntry(6, panel->GetTextPointer("slot_04_text_option"), false);
+    m_TeamDamageCombo = AddComboBox(
+        7, 2, panel->GetTextPointer("slot_04_text_spec"),
+        panel->GetPointer("slot_04_arrow_left"),
+        panel->GetPointer("slot_04_arrow_right"));
+    if (m_TeamDamageCombo == nullptr)
+        ASSERT("m_TeamDamageCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 401);
+    for (int i = 0; i < 2; ++i)
+    {
+        Broc::string option(szOnOffOptions[i]);
+        m_TeamDamageCombo->AddOption(option);
+    }
+
+    AddEntry(8, panel->GetTextPointer("slot_05_text_option"), false);
+    m_VotingCombo = AddComboBox(
+        9, 2, panel->GetTextPointer("slot_05_text_spec"),
+        panel->GetPointer("slot_05_arrow_left"),
+        panel->GetPointer("slot_05_arrow_right"));
+    if (m_VotingCombo == nullptr)
+        ASSERT("m_VotingCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 410);
+    for (int i = 0; i < 2; ++i)
+    {
+        Broc::string option(szOnOffOptions[i]);
+        m_VotingCombo->AddOption(option);
+    }
+
+    AddEntry(10, panel->GetTextPointer("slot_06_text_option"), false);
+    m_PenaltyVoteCombo = AddComboBox(
+        11, 2, panel->GetTextPointer("slot_06_text_spec"),
+        panel->GetPointer("slot_06_arrow_left"),
+        panel->GetPointer("slot_06_arrow_right"));
+    if (m_PenaltyVoteCombo == nullptr)
+        ASSERT("m_PenaltyVoteCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateSessionAdvancedMenu.cpp", 419);
+    for (int i = 0; i < 2; ++i)
+    {
+        Broc::string option(szOnOffOptions[i]);
+        m_PenaltyVoteCombo->AddOption(option);
+    }
+
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+    entries[1]->up = 11;
+    entries[1]->down = 3;
+    entries[3]->up = 1;
+    entries[3]->down = 5;
+    entries[5]->up = 3;
+    entries[5]->down = 7;
+    entries[7]->up = 5;
+    entries[7]->down = 9;
+    entries[9]->up = 7;
+    entries[9]->down = 11;
+    entries[11]->up = 9;
+    entries[11]->down = 1;
+}
 
 // ea: 0x0078C940
 void CreateSessionAdvancedMenu::OnDeactivate(FEMenu* m)
