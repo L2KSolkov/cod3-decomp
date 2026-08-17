@@ -102,6 +102,7 @@ public:
     static void ExitFrontend(int returnMenu);  // ?ExitFrontend@MPUIInterface@@SAXH@Z
     static void SetQueryParams(sServerQueryParams& params);  // ?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z
     static void CancelJoin();  // ?CancelJoin@MPUIInterface@@SAXXZ
+    static void SetupCvars(bool useCurrent);  // ?SetupCvars@MPUIInterface@@SAX_N@Z
 
     static sServerCreateParams mServerParams;      // ?mServerParams@MPUIInterface@@1UsServerCreateParams@@A
     static sServerCreateParams mNextServerParams;  // ?mNextServerParams@MPUIInterface@@1UsServerCreateParams@@A
@@ -1447,6 +1448,68 @@ void GameSettingsEdit::OnCross(int c)
 // ea: 0x0078D740
 bool GameSettingsEdit::ResponseNoJustGoBackToPauseMenuHelper()
 {
+    system->ReturnToPreviousMenu(-1);
+    return true;
+}
+
+void GameSettingsEdit::SetGameTypeDefaults()
+{
+    if (mLastGameType ==
+        static_cast<FEComboBox*>(entries[0])->GetCurrOption())
+        return;
+
+    if (mLastGameType == GAME_TYPE_DM)
+    {
+        static_cast<FEComboBox*>(entries[4])->SetCurrOption(1);
+        static_cast<FEComboBox*>(entries[7])->SetCurrOption(1);
+    }
+
+    mLastGameType =
+        static_cast<FEComboBox*>(entries[0])->GetCurrOption();
+    GetScoreLimitsForGameType((eGameType)mLastGameType);
+    static_cast<FEComboBox*>(entries[3])->SetCurrOption(
+        MPUIInterface::GetDefaultOption(
+            MPUIInterface::SETTING_SCORE_LIMIT,
+            (eGameType)mLastGameType));
+    static_cast<FEComboBox*>(entries[2])->SetCurrOption(
+        MPUIInterface::GetDefaultOption(
+            MPUIInterface::SETTING_TIME_LIMIT,
+            (eGameType)mLastGameType));
+    DisableTeamGameOptions(mLastGameType == GAME_TYPE_DM);
+}
+
+bool GameSettingsEdit::ResponseYesApplyNowHelper()
+{
+    mNextServerParams->mGameType =
+        (unsigned char)static_cast<FEComboBox*>(entries[0])->GetCurrOption();
+    int mapOption = static_cast<FEComboBox*>(entries[1])->GetCurrOption();
+    mNextServerParams->mMapID =
+        mapOption == -1 ? (unsigned char)-1 :
+                          (unsigned char)byte_E386C9[114 * mapOption];
+    mNextServerParams->mTimeLimit =
+        (unsigned char)static_cast<FEComboBox*>(entries[2])->GetCurrOption();
+    mNextServerParams->mScoreLimit =
+        (unsigned char)static_cast<FEComboBox*>(entries[3])->GetCurrOption();
+    mNextServerParams->mTeamBalancing =
+        (unsigned char)static_cast<FEComboBox*>(entries[5])->GetCurrOption();
+    mNextServerParams->mFriendlyFire =
+        (unsigned char)static_cast<FEComboBox*>(entries[4])->GetCurrOption();
+    mNextServerParams->mEnableAARVote =
+        (unsigned char)static_cast<FEComboBox*>(entries[6])->GetCurrOption();
+    mNextServerParams->mEnablePenaltyVote =
+        (unsigned char)static_cast<FEComboBox*>(entries[7])->GetCurrOption();
+    mNextServerParams->mRespawnTime =
+        (unsigned char)MPUIInterface::GetDefaultOption(
+            MPUIInterface::SETTING_RESPAWN_TIME,
+            (eGameType)mNextServerParams->mGameType);
+    MPUIInterface::SetupCvars(false);
+    MultiplayerMgr::sInst->SendServerParams();
+    void (*callbackHostOptionsChanged)(int) =
+        gpBrocAPI != nullptr
+            ? *(void (**)(int))((unsigned char*)gpBrocAPI + 0xCE8)
+            : nullptr;
+    if (callbackHostOptionsChanged != nullptr)
+        callbackHostOptionsChanged(1);
     system->ReturnToPreviousMenu(-1);
     return true;
 }
