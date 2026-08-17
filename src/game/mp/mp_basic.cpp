@@ -57,7 +57,7 @@ extern int dword_F36728;         // 0xF36728
 
 extern char MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YADD@Z (mp_shell.o)
 extern const char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
-extern void ByteToDir(int b, float* dir);       // ?ByteToDir@@YAXHQAM@Z (core.o)
+extern void ByteToDir(int b, float* const dir); // ?ByteToDir@@YAXHQAM@Z (core.o)
 extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,
                         bool stopPhysics, bool isRevive);  // ?ClientSpawn@@YAXPAVEntity@@QBM1_N2@Z (g.o)
 extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  // core.o

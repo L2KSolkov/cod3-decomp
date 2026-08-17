@@ -47,6 +47,7 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 // ============================================================================
@@ -104,6 +105,22 @@ int MathsRandomIntRange(int iMin, int iMax)
 float MathsRandomFloatRange(float fMin, float fMax)
 {
     return fMin < fMax ? flrand(fMin, fMax) : flrand(fMax, fMin);
+}
+
+float MathsLog(float fVal)
+{
+    if (fVal <= 0.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../script/include\\maths.h";
+        AeAssert::gCurrentLine = 101;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "value passed into natural log function out of range ( value <= 0.0f )"))
+            __debugbreak();
+    }
+    return logf(fVal);
 }
 
 // ea: 0x004926420
