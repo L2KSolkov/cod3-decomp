@@ -468,6 +468,12 @@ public:
     bool SetTimerText();                    // ?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ (game_xbox.o)
 };
 
+// ea: 0x00778FB0
+AARXBoxLiveIngameOptions* AARXBoxLiveIngameOptions::Me()
+{
+    return (AARXBoxLiveIngameOptions*)g_femanager.mAARS->menus[8];
+}
+
 enum ESpectatorState : int {
     kSpectatorStateIntermission = 0x0,
     kSpectatorStateSpawn = 0x1,
