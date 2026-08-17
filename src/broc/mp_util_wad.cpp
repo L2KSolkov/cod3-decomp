@@ -78,8 +78,8 @@ void DisplayYouWillSpawnWithMessage(Broc::entity self);
 void* SpecialClassAudio__functor(Broc::entity player);
 void* ArtilleryDispenser__functor(Broc::entity player);
 void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
-                                   bool health, int rank0Time, int rank1Time,
-                                   int rank2Time);
+                                   Broc::bbool health, Broc::bint rank0Time,
+                                   Broc::bint rank1Time, Broc::bint rank2Time);
 void* NotifyWhenTimerExpires__functor(Broc::entity player, Broc::bint time,
                                       HashStr notifyString);
 }
@@ -140,7 +140,8 @@ void* TeamChangeKillPlayer__functor(Broc::entity player);
 void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
 void* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap);
 void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
-                          int delay, bool reviveable, bool fade);
+                          Broc::bint delay, Broc::bbool reviveable,
+                          Broc::bbool fade);
 void* UpdateSpectateCritical__functor(Broc::entity guy);
 void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
 void* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
@@ -7971,12 +7972,14 @@ void* ArtilleryDispenser__functor(Broc::entity player) {
     return ::new (storage) AeThreadFunctor1<Broc::entity>(ArtilleryDispenser, player);
 }
 void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
-                                   bool health, int rank0Time, int rank1Time,
-                                   int rank2Time) {
-    (void)player; (void)health; (void)rank0Time; (void)rank1Time;
-    (void)rank2Time;
+                                   Broc::bbool health, Broc::bint rank0Time,
+                                   Broc::bint rank1Time, Broc::bint rank2Time) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor6<Broc::entity, Broc::string, Broc::bbool, Broc::bint, Broc::bint, Broc::bint>));
+    void* result = NULL;
+    if (storage != NULL)
+        result = ::new (storage) AeThreadFunctor6<Broc::entity, Broc::string, Broc::bbool, Broc::bint, Broc::bint, Broc::bint>(HealthAmmoDispenser, player, weapon, health, rank0Time, rank1Time, rank2Time);
     weapon.~string();
-    return NULL;
+    return result;
 }
 void* NotifyWhenTimerExpires__functor(Broc::entity player, Broc::bint time,
                                       HashStr notifyString) {
@@ -12029,9 +12032,12 @@ void* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCa
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(HealthRegenPlayerBreathing, self, healthCap);
 }
 void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
-                          int delay, bool reviveable, bool fade) {
-    (void)player; (void)team_killer; (void)delay; (void)reviveable; (void)fade;
-    return NULL;
+                          Broc::bint delay, Broc::bbool reviveable,
+                          Broc::bbool fade) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor5<Broc::entity, Broc::entity, Broc::bint, Broc::bbool, Broc::bbool>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor5<Broc::entity, Broc::entity, Broc::bint, Broc::bbool, Broc::bbool>(DeathState, player, team_killer, delay, reviveable, fade);
 }
 void* UpdateSpectateCritical__functor(Broc::entity guy) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
