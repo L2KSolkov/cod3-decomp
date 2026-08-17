@@ -5,6 +5,7 @@
 // ============================================================================
 
 #include "engine/broc_types.h"
+#include "game/AeThreadFunctor.h"
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
@@ -1109,7 +1110,11 @@ ExtendedEntity::DestructFunc* ExtendedEntity::GetDestructor(unsigned int key)
 
 Broc::entity Broc::gEntityUndef;
 
-void ThreadExecute(void*) {}
+// ea: 0x009289A0. IDA invokes the thread functor's virtual CallFunction.
+void ThreadExecute(AeThreadFunctor* thread)
+{
+    thread->CallFunction();
+}
 void wait_accurate(float) {}
 void wait(float) {}
 void wait_frame(int) {}

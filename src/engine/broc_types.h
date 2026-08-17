@@ -8,6 +8,8 @@
 
 #include <stdint.h>
 
+class AeThreadFunctor;
+
 // Size assertions are 32-bit only (4-byte pointers)
 #if defined(_WIN32) && !defined(_WIN64)
 #define COD3_STATIC_ASSERT_32BIT(expr, msg) static_assert(expr, msg)
@@ -449,7 +451,7 @@ namespace EEDefault {
 // ============================================================================
 // Broc wait / thread functions
 // ============================================================================
-void ThreadExecute(void* functor);
+void ThreadExecute(AeThreadFunctor* functor);
 void wait_accurate(float seconds);
 void wait(float seconds);
 void wait_frame(int frames);
@@ -598,7 +600,7 @@ struct BrocExports {
     void (*mSetScriptExplodedMap)(void*);                     // +0x7C
     unsigned int (*mSpawnScriptThread)(unsigned int, bool, Broc::entity, Broc::entity, Broc::entity, float, float, float, Broc::vector*);  // +0x80
     bool (*mScriptThreadExists)(unsigned int);                // +0x84
-    void (*mThreadExecute)(void*);                            // +0x88
+    void (*mThreadExecute)(AeThreadFunctor*);                 // +0x88
     void (*mScriptedInit)(const Broc::entity, void*);         // +0x8C
     void (*mAnimDebug)(const Broc::entity);                   // +0x90
     void (*mShutdown)();                                      // +0x94
