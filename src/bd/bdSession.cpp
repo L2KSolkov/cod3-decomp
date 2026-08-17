@@ -478,8 +478,7 @@ bool bdSession::join(const bdReference<bdCommonAddr>& hostAddr, const XNKID& sec
     }
 
     if (ok) {
-        extern void bdNetImpl_registerDispatchInterceptor(bdSession*);
-        bdNetImpl_registerDispatchInterceptor(this);
+        bdSingleton<bdNetImpl>::getInstance()->registerDispatchInterceptor(this);
         m_secID = secID;
         m_secKey = secKey;
         m_gameSecID = secID;
@@ -574,8 +573,8 @@ void bdSession::cleanup() {
     m_sessionJoinRequest.m_ptr = NULL;
 
     if (m_registeredKey) {
-        extern bdSecurityKeyMap* bdNetImpl_getKeyMap();
-        bdSecurityKeyMap* keyMap = bdNetImpl_getKeyMap();
+        bdSecurityKeyMap* keyMap =
+            bdSingleton<bdNetImpl>::getInstance()->getKeyMap();
         if (keyMap != NULL)
             keyMap->remove(m_gameSecID);
         m_registeredKey = false;
@@ -583,9 +582,8 @@ void bdSession::cleanup() {
     memset(&m_gameSecKey, 0, sizeof(m_gameSecKey));
     memset(&m_gameSecID, 0, sizeof(m_gameSecID));
 
-    extern void bdNetImpl_unregisterDispatchInterceptor(bdSession*);
-    bdNetImpl_unregisterDispatchInterceptor(this);
-    bdNetImpl_unregisterDispatchInterceptor(this);
+    bdSingleton<bdNetImpl>::getInstance()->unregisterDispatchInterceptor(this);
+    bdSingleton<bdNetImpl>::getInstance()->unregisterDispatchInterceptor(this);
 }
 
 // ============================================================================

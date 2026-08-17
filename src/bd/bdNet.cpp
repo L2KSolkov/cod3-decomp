@@ -36,6 +36,44 @@ bdNetImpl::~bdNetImpl() {
 }
 
 // ============================================================================
+// bdSingleton<bdNetImpl>::getInstance - ea: 0x778310
+// Exact allocation/registry path from the IDA C dump.
+// ============================================================================
+static void destroyNetSingleton() {
+    bdNetImpl* instance = bdSingleton<bdNetImpl>::m_instance;
+    if (instance != NULL) {
+        instance->~bdNetImpl();
+        bdMemory::deallocate(instance);
+        bdSingleton<bdNetImpl>::m_instance = NULL;
+    }
+}
+
+template <>
+bdNetImpl* bdSingleton<bdNetImpl>::m_instance = NULL;
+
+template <>
+bdNetImpl* bdSingleton<bdNetImpl>::getInstance() {
+    bdNetImpl* result = bdSingleton<bdNetImpl>::m_instance;
+    if (result == NULL) {
+        void* memory = bdMemory::allocate(0x90u);
+        bdNetImpl* instance =
+            memory != NULL ? new (memory) bdNetImpl() : NULL;
+        bdSingleton<bdNetImpl>::m_instance = instance;
+        if (instance != NULL &&
+            bdSingletonRegistryAdd(&destroyNetSingleton))
+            return bdSingleton<bdNetImpl>::m_instance;
+        if (instance != NULL) {
+            instance->~bdNetImpl();
+            bdMemory::deallocate(instance);
+            bdSingleton<bdNetImpl>::m_instance = NULL;
+        }
+        __debugbreak();
+        return bdSingleton<bdNetImpl>::m_instance;
+    }
+    return result;
+}
+
+// ============================================================================
 // bdNetImpl::getStatus - ea: 0x8AF0D0
 // ============================================================================
 bdNetStatus bdNetImpl::getStatus() const {

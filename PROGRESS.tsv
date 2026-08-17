@@ -58,7 +58,7 @@ nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cp
 
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	PORTED	XBoxStorage filesystem-backed save/load; async Service loop; CRC trailer
 
-bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA
+bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA; direct bdNetImpl interceptor/key-map calls now match dump
 
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 
@@ -160,7 +160,7 @@ phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys
 
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	PORTED	physics_system_internal.cpp: ctor/dtor/allocate_buffer/create_inst/destroy_inst/free_buffer/get_alignment/get_buffer_size/frame_advance/time_step/solver_priority_sort/verify_time_scale/IPN_merge/IPN_verify_time_scale; pool/heap/solver inline templates (allocate_buffer/destroy/calc_index/swap_adjacent/iterators, phys_link_list, pulse_sum_point, solver_info, list_constraint_solver); rbint prolog/take_step/mul_L/calc_col_mat(urb); 2 heavy funcs (IPN_verify_rigid_bodies, generate_partitions_and_stuff) TODO-stubbed
 
-bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: network singleton (14 funcs) from Demonware 2.0 + IDA
+bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: network singleton (14 funcs) plus IDA-confirmed bdSingleton<bdNetImpl>::getInstance allocation/registry cleanup
 
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 
