@@ -549,6 +549,26 @@ unsigned char FindLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAcces
 unsigned char AARMapVote::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@AARMapVote@@1EA @ 0x1388D58
 int PlayOnlineMenu::m_currSelection;  // ?m_currSelection@PlayOnlineMenu@@1HA @ 0xE381C4
 
+unsigned char WeaponSelectMenu::m_AxisClassStats[7][6] = {
+    {16u, 32u, 16u, 4u, 16u, 4u},
+    {2u, 4u, 8u, 8u, 32u, 16u},
+    {4u, 8u, 16u, 16u, 8u, 16u},
+    {32u, 2u, 2u, 16u, 16u, 4u},
+    {16u, 32u, 32u, 8u, 16u, 4u},
+    {32u, 8u, 8u, 16u, 4u, 32u},
+    {32u, 32u, 4u, 32u, 4u, 2u},
+};
+
+unsigned char WeaponSelectMenu::m_AlliedClassStats[7][6] = {
+    {8u, 16u, 16u, 4u, 16u, 8u},
+    {2u, 4u, 8u, 8u, 32u, 32u},
+    {4u, 8u, 16u, 16u, 8u, 16u},
+    {32u, 2u, 2u, 16u, 16u, 4u},
+    {16u, 32u, 32u, 4u, 16u, 4u},
+    {32u, 8u, 8u, 16u, 4u, 32u},
+    {32u, 32u, 4u, 32u, 4u, 2u},
+};
+
 // ============================================================================
 // Small accessors (mp_shell.o, 16-byte functions)
 // ============================================================================
@@ -6702,6 +6722,45 @@ void WeaponSelectMenu::ClearClassGauges()
         for (int j = 0; j < 5; ++j)
         {
             m_pSlotGauge->m_elements[j]->SetShown(false);
+        }
+        ++m_pSlotGauge;
+    }
+}
+
+// ea: 0x007A1890
+void WeaponSelectMenu::SetClassGauges()
+{
+    const bool bIsAllied =
+        EntityManager::sInst->GetPlayer(mVersion)->sentient->eTeam == TEAM_ALLIES;
+    if (highlighted >= 7)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp";
+        AeAssert::gCurrentLine = 568;
+        AeAssert::gCurrentExpr = "highlighted < CLASS_MAX";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of bounds!"))
+            __debugbreak();
+    }
+
+    ae_array<PanelQuad*, 5>* m_pSlotGauge = this->m_pSlotGauge;
+    for (int v2 = 0; v2 < 6; ++v2)
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            const bool bGaugesShown = bIsAllied
+                ? m_AlliedClassStats[highlighted][v2] > (1 << i)
+                : m_AxisClassStats[highlighted][v2] > (1 << i);
+            if (i < 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 31;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            m_pSlotGauge->m_elements[i]->SetShown(bGaugesShown);
         }
         ++m_pSlotGauge;
     }

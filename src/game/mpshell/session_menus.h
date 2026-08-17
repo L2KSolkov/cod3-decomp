@@ -892,6 +892,8 @@ static_assert(sizeof(ModelMenu) == 0x110,
 
 class __declspec(align(16)) WeaponSelectMenu : public ModelMenu {
 public:
+    static unsigned char m_AxisClassStats[7][6];
+    static unsigned char m_AlliedClassStats[7][6];
     bool Allow_Exit;               // +0x110
     uint8_t _pad111[3];
     FEComboBox* weaponCombo;       // +0x114
