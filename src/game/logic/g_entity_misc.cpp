@@ -294,7 +294,7 @@ extern void* nglLockSectionVertices(nglMeshSection* Section);
 extern nglMesh* auxCloseScratchMesh(nglMesh* m);  // ?auxCloseScratchMesh (ngl_aux.o)
 struct nglMeshParams;
 struct nglShaderParamSet;
-struct nglMeshNode;
+class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,
                                    const math::Mat43& LocalToWorld,
                                    nglMeshParams* MeshParams,
@@ -2856,7 +2856,7 @@ void* DbTablesetMgr_Find(void* self, TPakId pak, const char* name,
 struct nglMesh;
 struct nglMeshParams;
 struct nglShaderParamSet;
-struct nglMeshNode;
+class nglMeshNode;
 nglMeshNode* nglListAddMesh(nglMesh* mesh, const math::Mat43& m,
                             nglMeshParams* mp, nglShaderParamSet* sp,
                             void (*fn)(nglMeshNode*))

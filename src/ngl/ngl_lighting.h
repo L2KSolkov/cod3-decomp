@@ -9,7 +9,7 @@
 #include "core/math_types.h"
 
 struct nglTexture;
-struct nglMeshNode;
+class nglMeshNode;
 struct nglScene;
 
 // ============================================================================

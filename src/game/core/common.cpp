@@ -411,7 +411,7 @@ extern void* DynamicDecalMgr_sInst;
 extern void SmokeGrenadeMgr_Update(void* self, float deltaT);
 extern void* SmokeGrenadeMgr_sInst;
 extern void EntityNotifySet_UpdateList();
-extern int update_trigger_notifies();
+extern void update_trigger_notifies();
 class subtitle_manager {
 public:
     static void frame_advance(int time_delta);  // ?frame_advance@subtitle_manager@@SAXH@Z
@@ -472,7 +472,7 @@ class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst()
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static void CreateInst(); static void DeleteInst(); };
-struct SceneManager { public: static void CreateInst(); static void DeleteInst(); };
+class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
 class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };

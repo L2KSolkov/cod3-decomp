@@ -11694,7 +11694,7 @@ extern void* nglLockSectionVertices(nglMeshSection* Section);
 extern nglMesh* auxCloseScratchMesh(nglMesh* m);
 struct nglMeshParams;
 struct nglShaderParamSet;
-struct nglMeshNode;
+class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,
                                    const math::Mat43& LocalToWorld,
                                    nglMeshParams* MeshParams,

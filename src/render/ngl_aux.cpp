@@ -161,7 +161,7 @@ math::Vector4* auxGetSphere(math::Vector4* result, nglMeshSection* Section) {
 }
 
 // ============================================================================
-// cdGetClipResult - ea: 0x7C2DF0
+// cdGetClipResult - ea: 0x7C2DF0 (nglMeshNode is the IDA class-tag type)
 // ============================================================================
 int cdGetClipResult(const nglMeshSection* Section, const nglMeshNode* MeshNode,
                     nglScene* Scene) {

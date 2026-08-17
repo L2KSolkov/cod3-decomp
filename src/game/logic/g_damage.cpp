@@ -1201,7 +1201,7 @@ label_88:
                         int v35 = ent->damage;
                         if (v35 != 0)
                             G_CheckHitTriggerDamage(other, ent->r.currentOrigin,
-                                                    &trace->endpos, v35, ent->methodOfDeath);
+                                                    trace->endpos, v35, ent->methodOfDeath);
                         if (v62 != 0 || trace->partName.mHash != 0)
                             v62 = 1;
                         unsigned char v37 = DirToByte(trace->normal.v.m128_f32);

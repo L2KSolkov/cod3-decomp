@@ -58,8 +58,8 @@ int dword_F32F40 = 0;            // 0xF32F40
 int dword_F34B34 = 0;            // 0xF34B34
 int dword_F36728 = 0;            // 0xF36728
 
-extern char MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YADD@Z (mp_shell.o)
-extern const char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
+extern bool MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YA_ND@Z (mp_shell.o)
+extern char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
 extern void ByteToDir(int b, float* const dir); // ?ByteToDir@@YAXHQAM@Z (core.o)
 extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,
                         bool stopPhysics, bool isRevive);  // ?ClientSpawn@@YAXPAVEntity@@QBM1_N2@Z (g.o)
@@ -73,7 +73,7 @@ int g_NumMapChanges = 0;                 // ?g_NumMapChanges@@3HA @ 0xF93FC0
 extern bool g_controllerConnectedErrorShown[];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
 extern int g_NumBaseMaps;      // ?g_NumBaseMaps@@3HA (mp_shell.o)
 extern int g_NumTotalMaps;     // ?g_NumTotalMaps@@3HA @ 0xF99864
-extern char MI_GetMapIDbyIndex(int index);  // ?MI_GetMapIDbyIndex@@YADD@Z (mp_shell.o)
+extern char MI_GetMapIDbyIndex(char index);  // ?MI_GetMapIDbyIndex@@YADD@Z (mp_shell.o)
 extern void CG_EntityEvent(Entity* entity, int event, int bPredict);  // cg.o
 extern cvar_t* ik_ADS;         // ?ik_ADS@@3PAUcvar_t@@A (game2.o)
 extern int numMPAnims;         // ?numMPAnims@@3HA (mp.o)
@@ -129,7 +129,7 @@ extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void SV_SwapClients(int client1, int client2);  // sv.o (?SV_SwapClients@@YAXHH@Z)
 extern void SV_PostConnect();  // sv.o (?SV_PostConnect@@YAXXZ @ 0x914CE0)
 extern void SV_ClientEnterWorld(client_s* client);  // sv.o (?SV_ClientEnterWorld@@YAXPAUclient_s@@@Z @ 0x90F2C0)
-extern const char* MI_GetMapShortname(char mapID);  // ?MI_GetMapShortname@@YAPADD@Z (mp_shell.o)
+extern char* MI_GetMapShortname(char mapID);  // ?MI_GetMapShortname@@YAPADD@Z (mp_shell.o)
 extern void Cbuf_AddText(const char* text);         // ?Cbuf_AddText@@YAXPBD@Z (cl.o)
 float leftLegLiftDuration = 0.25f;                  // @ 0xE3739C
 char byte_100000;                                   // @ 0x100000

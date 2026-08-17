@@ -5,7 +5,7 @@
 #ifndef COD3_NGL_NGL_DX_SHADER_H
 #define COD3_NGL_NGL_DX_SHADER_H
 
-struct nglMeshNode;
+class nglMeshNode;
 struct nglMeshSection;
 
 // ngl_dx_shader.o (functions, defined in ngl_dx_shader.cpp)

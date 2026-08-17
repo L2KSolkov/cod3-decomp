@@ -2619,7 +2619,7 @@ int XModelGetStaticBounds(IVPointer<XModel> model, float (*axis)[3],
 extern IVPointer<XModel> gDefaultXmodel;  // render.o @ 0x11EA6C8
 IVPointer<XModel> gDefaultXmodel = { nullptr, PAK_ID_INVALID };
 extern void CM_LinkStaticModel(StaticModel* staticModel);  // game.o (g_cm_load.cpp)
-extern math::Position3 native_to_cdl_pos3(const float* v);  // g.o inline 0x4AF1C0
+extern const math::Position3 native_to_cdl_pos3(const float* v);  // g.o inline 0x4AF1C0
 extern BspTree* g_bspTree;  // game.o @ 0xF743DC
 
 extern void AngleVectors(const float* const angles, float* const forward,
@@ -2796,7 +2796,7 @@ public:
 };
 
 extern void G_ReplaceSpawnVars(
-    const InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>*
+    const InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>&
         keyValuePairs);  // g.o (g_spawn.cpp)
 extern void BrocInitEntity(
     Entity* ent,
@@ -3064,7 +3064,7 @@ public:
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
 // mDebugRenderEnts +0x1B4, mDebugRenderLights +0x1B5)
 struct SceneEntity;
-struct SceneManager {
+class SceneManager {
 public:
     uint8_t _pad[0x04];                      // vftable (AssetBankSet base)
     void*   mPlayerFootstepMaterial;         // +0x04
@@ -5198,7 +5198,7 @@ void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
     v32->mPersistentIndex = (int16_t)persIndex;
     ConvertEntity(scnEnt, v32);
     v32->mClassNameHash.mHash = HashString(v32->mClassName).mHash;
-    G_ReplaceSpawnVars(&scnEnt->mHashPairs);
+    G_ReplaceSpawnVars(scnEnt->mHashPairs);
     if (!ValidForGametype())
     {
         G_FreeEntity(v32, 0);

@@ -22,7 +22,7 @@ class nglFont;
 struct nglMorphSet;
 class nglMeshParams;
 struct nglShaderParamSet;
-struct nglMeshNode;
+class nglMeshNode;
 
 // tl_system.o (tl_xboxr, ported)
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
@@ -195,7 +195,8 @@ static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch")
 // ============================================================================
 // nglMeshNode - per-instance mesh render data (144 bytes, verified against IDA).
 // ============================================================================
-struct nglMeshNode {
+class nglMeshNode {
+public:
     math::Mat43       LocalToWorld;   // +0x00
     math::Mat44       LocalToScreen;  // +0x40
     nglMesh*          Mesh;           // +0x80

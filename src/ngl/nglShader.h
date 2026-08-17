@@ -12,7 +12,7 @@
 #include "render/cdDebugVertexDef.h"  // tlInitList
 
 struct nglMesh;
-struct nglMeshNode;
+class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 

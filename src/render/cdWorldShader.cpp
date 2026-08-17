@@ -1,3 +1,4 @@
+// IDA ABI: nglMeshNode uses the class tag in render_xboxr exports.
 // ============================================================================
 // cdWorldShader.cpp — world shader (5 non-inline funcs).
 // Source: source/cdWorldShader.cpp (render_xboxr)

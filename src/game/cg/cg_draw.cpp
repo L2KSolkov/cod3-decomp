@@ -269,7 +269,7 @@ extern void* nglLockSectionIndices(nglMeshSection* section);
 extern void* nglLockSectionVertices(nglMeshSection* section);
 struct nglMeshParams;
 struct nglShaderParamSet;
-struct nglMeshNode;
+class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
                                    const math::Mat43& localToWorld,
                                    nglMeshParams* meshParams,

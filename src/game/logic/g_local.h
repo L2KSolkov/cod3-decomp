@@ -3238,7 +3238,7 @@ float __fastcall Actor_CanSeePointEx(
 bool G_IsPlayerDrivingVehicle(Entity* player);
 const float VectorDistanceSquared2D(const math::Position3& p1,
                                     const math::Position3& p2);
-math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?AVPosition3@math@@QBM@Z
+const math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
 void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
                                  Entity* ent, int a5);
 
@@ -3596,7 +3596,7 @@ void  G_MissileTrace(trace_t* results, const math::Position3& start,
 void  j_nullsub_84(Entity* pOriginator, int eType, int iTeamFlags,
                    const float* vStart, const float* vEnd, float fRadiusSqrd);
 void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
-                              const math::Position3* vEnd, int iDamage, int iMOD);
+                              const math::Position3& vEnd, int iDamage, int iMOD);
 const float VectorDistance(const float* const v1, const float* const v2);
 void  AnglesToAxis(const float* const angles, float (*const axis)[3]);
 void  MatrixInverse(const float (*const in)[3], float (*const out)[3]);
@@ -3951,9 +3951,9 @@ class DynamicDecalMgr {
 public:
     static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A @ 0xF74478
     static DynamicDecalMgr* Inst();  // ?Inst@DynamicDecalMgr@@SAPAV1@XZ (g.o 0x4A9E70)
-    void Add(void* texture, float zBias, bool alphaBlend, int maxNum,
+    void Add(nglTexture* texture, float zBias, bool alphaBlend, int maxNum,
              const math::Position3& pos, const math::Position3& normal,
-             float radius, float angle, const float* color,
+             float radius, float angle, const Color& color,
              bool isHighPriority);  // ?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@1@Z
 };
 void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
@@ -4601,13 +4601,13 @@ void  Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
 float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh);  // g.o 0x46F4F0
 void  G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx);  // g.o 0x452870
 void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
-                              const math::Position3* vEnd, int iDamage,
+                              const math::Position3& vEnd, int iDamage,
                               int iMOD);           // g.o 0x470BD0
 int   G_SpawnVehicle(Entity* ent, const char* typeName, int unused);  // g.o 0x488280
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o
 void  VEH_InitVehicle(scr_vehicle_t* veh);         // g.o
 void  Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMOD);  // g.o
-int   update_trigger_notifies(void);               // g.o 0x471100
+void  update_trigger_notifies(void);               // g.o 0x471100
 void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
 void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
 void  G_EntUnlink(Entity* ent);                  // g.o 0x460190

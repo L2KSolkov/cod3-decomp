@@ -2450,7 +2450,7 @@ struct weaponParms;
 extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
 extern bool Weapon_Revive_Test(Entity* ent, weaponParms* wp,
                                Entity** traceEnt);
-extern int Weapon_Mine_Test(Entity* ent, weaponParms* wp,
+extern bool Weapon_Mine_Test(Entity* ent, weaponParms* wp,
                             math::Position3* position, math::Dir3* normal);
 
 // weaponFileInfo_t extra fields (offsets verified from disassembly)

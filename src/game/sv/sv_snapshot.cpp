@@ -32,7 +32,7 @@ extern int   CM_LeafArea(int leafnum);
 extern int   CM_LeafCluster(int leafnum);
 extern unsigned char* CM_ClusterPVS(int cluster);
 extern int   CM_AreasConnected(int area1, int area2);
-extern math::Position3 native_to_cdl_pos3(const float* v);
+extern const math::Position3 native_to_cdl_pos3(const float* v);
 
 // ============================================================================
 // SV_WriteSnapshotToClient — ea: 0x51F990 (static)

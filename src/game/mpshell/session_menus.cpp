@@ -4127,7 +4127,7 @@ void SpectateMenu::OnSelect(int c)
 }
 
 // ea: 0x00792DE0
-char MI_IsAvailableMap(char id)
+bool MI_IsAvailableMap(char id)
 {
     if (g_NumTotalMaps <= 0)
         return 0;
@@ -4143,7 +4143,7 @@ char MI_IsAvailableMap(char id)
 }
 
 // ea: 0x00793010
-char MI_GetMapIDbyIndex(int index)
+char MI_GetMapIDbyIndex(char index)
 {
     if (index != -1)
         return byte_E386C9[114 * index];
@@ -5148,7 +5148,7 @@ char* remove_underscores(char* str)
 }
 
 // ea: 0x00792E80
-const char* MI_GetMapDisplayName(char id)
+char* MI_GetMapDisplayName(char id)
 {
     if (g_NumTotalMaps <= 0)
         return "NULL";
@@ -5212,7 +5212,7 @@ char MI_GetMapPack(char id)
 }
 
 // ea: 0x00792F80
-const char* MI_GetMapShortname(char id)
+char* MI_GetMapShortname(char id)
 {
     if (g_NumTotalMaps <= 0)
         return "NULL";

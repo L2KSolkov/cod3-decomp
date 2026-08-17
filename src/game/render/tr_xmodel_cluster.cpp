@@ -29,7 +29,7 @@ public:
     static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA (ngl_dx_core.cpp)
 };
 static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");
-struct nglMeshNode;
+class nglMeshNode;
 struct XModelLod;
 struct DObjSkelMat;
 struct nglLightContext;

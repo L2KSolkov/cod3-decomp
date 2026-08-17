@@ -1710,7 +1710,7 @@ struct CollisionDesc {
 int dword_DF6AE4[4 * 6];  // cg.o BSS
 extern int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle,
                               char* flashTag);
-extern math::Position3 native_to_cdl_pos3(const float* v);
+extern const math::Position3 native_to_cdl_pos3(const float* v);
 extern void CG_SpawnTracer(const math::Position3* pstart,
                            const math::Position3* pend, int ammo);
 extern void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,

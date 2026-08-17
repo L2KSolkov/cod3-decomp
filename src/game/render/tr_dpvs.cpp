@@ -22,8 +22,8 @@ bool Assert(const char* fmtstring, ...);  // ?Assert@AeAssert@@YA_NPBDZZ
 bool Warning(const char* fmtstring, ...); // ?Warning@AeAssert@@YA_NPBDZZ
 }
 
-// Exact-tag forward decls (binary: nglMeshNode and nglShaderParamSet are structs)
-struct nglMeshNode;
+// Exact-tag forward decls (ngl mesh API uses the existing struct tag)
+class nglMeshNode;
 struct nglMesh;
 class nglMeshParams;
 struct nglShaderParamSet;

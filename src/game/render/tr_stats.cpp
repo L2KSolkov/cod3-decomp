@@ -177,8 +177,9 @@ void TranslucentStat::Shutdown()
 // ============================================================================
 class WheelMarkMgr {
 protected:
-    static unsigned int NMarks;  // ?NMarks@WheelMarkMgr@@1IA @ 0xF7447C
-    static void Reset();         // ?Reset@WheelMarkMgr@@SAXXZ
+    static unsigned int NMarks;
+public:
+    static void Reset();
 };
 
 unsigned int WheelMarkMgr::NMarks;

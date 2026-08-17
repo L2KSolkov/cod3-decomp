@@ -4,7 +4,7 @@
 
 #include "game/logic/g_local.h"
 
-int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
+bool Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
                     math::Dir3* normal);
 
 // ea: 0x0077C4D0 (mp_actors.o)
@@ -252,7 +252,7 @@ void Think_EnableMine(Entity* ent, int /*unused*/)
 }
 
 // ea: 0x0045F980
-int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position, math::Dir3* normal)
+bool Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position, math::Dir3* normal)
 {
     math::Position3 start;
     start.v.m128_f32[0] = (wp->forward[0] * delta) + wp->muzzleTrace[0];
@@ -1555,7 +1555,7 @@ void Weapon_Melee(Entity* ent, weaponParms* wp)
         muzzlePos.v.m128_f32[1] = wp->muzzleTrace[1];
         muzzlePos.v.m128_f32[2] = wp->muzzleTrace[2];
         muzzlePos.v.m128_f32[3] = 0.0f;
-        G_CheckHitTriggerDamage(ent, muzzlePos, &tr.endpos, damage, 11);
+        G_CheckHitTriggerDamage(ent, muzzlePos, tr.endpos, damage, 11);
         if ((((unsigned char*)&tr.normal.v.m128_f32[2])[0] & 0x10) != 0
             || tr.normal.v.m128_f32[1] == 1.0f)
             goto melee_miss;
@@ -1748,9 +1748,9 @@ void Bullet_Fire_Fake_Extended(
                         wp->pWeapInfo->pDecals[surfType];
                     if (decal != nullptr)
                     {
-                        float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+                        Color color(0.5f, 0.5f, 0.5f, 1.0f);
                         float angle = rand() * 0.000095876727f;
-                        void* tex = decal->level1_cg_texture;
+                        nglTexture* tex = (nglTexture*)decal->level1_cg_texture;
                         if (tex != nullptr)
                         {
                             bool isHighPriority = attacker->s.eType == 1;
@@ -1971,7 +1971,7 @@ void Bullet_Fire_Extended(
     startPos.v.m128_f32[1] = start[1];
     startPos.v.m128_f32[2] = start[2];
     startPos.v.m128_f32[3] = 0.0f;
-    G_CheckHitTriggerDamage(attacker, startPos, &tr.endpos, damage,
+    G_CheckHitTriggerDamage(attacker, startPos, tr.endpos, damage,
                             sourceMod);
     Entity* hitEnt = EntFromHandle(tr.surfaceFlags);
     if (tr.normal.v.m128_f32[1] < 1.0f)
@@ -2107,9 +2107,9 @@ hit_event:
                                        & 0x1F];
             if (decal != nullptr)
             {
-                float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+                Color color(0.5f, 0.5f, 0.5f, 1.0f);
                 float angle = rand() * 0.000095876727f;
-                void* tex = decal->level1_cg_texture;
+                nglTexture* tex = (nglTexture*)decal->level1_cg_texture;
                 if (tex != nullptr)
                 {
                     bool isHighPriority = attacker->s.eType == 1;

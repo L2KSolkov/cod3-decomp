@@ -194,7 +194,7 @@ struct polyVert_t {
 struct nglMeshSection;
 struct gpuVertexFormat;
 struct nglMaterial;
-struct nglMeshNode;
+class nglMeshNode;
 class cdScratchMaterial {
 public:
     cdScratchMaterial(nglTexture* tex, unsigned int BlendMode, int a3,
@@ -740,7 +740,8 @@ public:
     uint8_t _pad[0x118];
     float sundirection[3];  // +0x118
 };
-struct SceneManager {
+class SceneManager {
+public:
     uint8_t _pad[0x1A0];
     WorldSpawn* mWorldSpawn;         // +0x1A0
     void RenderInstanceGroups();     // ?RenderInstanceGroups@SceneManager@@QAEXXZ

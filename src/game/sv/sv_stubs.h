@@ -1502,7 +1502,7 @@ public:
 // ============================================================================
 // SceneManager Ã¢â‚¬â€ scene/static-model manager (opaque)
 // ============================================================================
-struct SceneManager {
+class SceneManager {
 public:
     uint8_t _pad[4];
     static SceneManager* sInst;          // ?sInst@SceneManager@@2PAV1@A

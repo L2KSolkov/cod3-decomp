@@ -160,7 +160,7 @@ nglMeshParams::nglMeshParams() { Flags = 0; }
 // ============================================================================
 // cdAepsShader virtual stubs (derives from tlInitList)
 // ============================================================================
-struct nglMeshNode;
+class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 extern void mem_heap_free(void* ptr);
@@ -420,7 +420,7 @@ void dpvs_plane_t::SetAllocator(PoolAllocator* allocator) { sAllocator = allocat
 // SceneManager / XModelParts / PakManager / apsBounds
 // ============================================================================
 class WorldSpawn;
-struct SceneManager {
+class SceneManager {
 public:
     uint8_t _pad[0x1A0];
     const WorldSpawn* mWorldSpawn;   // +0x1A0
@@ -3130,7 +3130,7 @@ jqBatch::jqBatch()
 }
 
 // codListAddMesh
-struct nglMeshNode;
+class nglMeshNode;
 struct nglMesh;
 class nglMeshParams;
 struct nglShaderParamSet;
