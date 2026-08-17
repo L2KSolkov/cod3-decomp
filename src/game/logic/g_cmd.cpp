@@ -313,6 +313,37 @@ void CurveManager::AddConditionFunc(
 // Curve evaluator statics (CurveManager.cpp; file-static Eval* helpers)
 extern unsigned int AeHash(const char* str);  // ae_hash.cpp
 float g_VehSndSmoothingMaxVelocity = 40.0f;  // ?g_VehSndSmoothingMaxVelocity@@3MA (game.o @ 0xDF6BB0)
+unsigned int s_SurfaceHashes[23];             // game.o @ 0xF53AC8
+unsigned int s_SurfaceValues[23] = {         // game.o @ 0xDF6B50
+    0u, 22u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u,
+    11u, 12u, 13u, 14u, 15u, 16u, 17u, 18u, 19u, 20u, 21u
+};
+static void InitializeSurfaceHashes()
+{
+    s_SurfaceHashes[0] = AeHash("NONE");
+    s_SurfaceHashes[1] = AeHash("ASPHALT");
+    s_SurfaceHashes[2] = AeHash("BARK");
+    s_SurfaceHashes[3] = AeHash("BRICK");
+    s_SurfaceHashes[4] = AeHash("CARPET");
+    s_SurfaceHashes[5] = AeHash("CLOTH");
+    s_SurfaceHashes[6] = AeHash("CONCRETE");
+    s_SurfaceHashes[7] = AeHash("DIRT");
+    s_SurfaceHashes[8] = AeHash("FLESH");
+    s_SurfaceHashes[9] = AeHash("FOLIAGE");
+    s_SurfaceHashes[10] = AeHash("GLASS");
+    s_SurfaceHashes[11] = AeHash("GRASS");
+    s_SurfaceHashes[12] = AeHash("GRAVEL");
+    s_SurfaceHashes[13] = AeHash("ICE");
+    s_SurfaceHashes[14] = AeHash("METAL");
+    s_SurfaceHashes[15] = AeHash("MUD");
+    s_SurfaceHashes[16] = AeHash("PAPER");
+    s_SurfaceHashes[17] = AeHash("PLASTER");
+    s_SurfaceHashes[18] = AeHash("ROCK");
+    s_SurfaceHashes[19] = AeHash("SAND");
+    s_SurfaceHashes[20] = AeHash("SNOW");
+    s_SurfaceHashes[21] = AeHash("WATER");
+    s_SurfaceHashes[22] = AeHash("WOOD");
+}
 typedef float (__cdecl* CurveEvalFn)(unsigned int, unsigned int,
                                      unsigned int, float, float,
                                      unsigned int);
@@ -435,8 +466,40 @@ float EvalSpringCompressionKey(unsigned int, unsigned int, unsigned int,
                                float, float, unsigned int) { return 0.0f; }
 float EvalRepeatInterval(unsigned int, unsigned int, unsigned int, float,
                          float, unsigned int) { return 0.0f; }
-float EvalSurface(unsigned int, unsigned int, unsigned int, float,
-                  float, unsigned int) { return 0.0f; }
+float EvalSurface(unsigned int, unsigned int entityHandleVal, unsigned int type,
+                  float, float, unsigned int)
+{
+    unsigned int v3 = entityHandleVal & 0xFFF;
+    if (v3 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v3].mKey)
+        return 0.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    if (mObject == nullptr || mObject->scr_vehicle == nullptr)
+        return 0.0f;
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    int typeOfVehicle = s_vehicleInfos[scr_vehicle->infoIdx]->type;
+    int numberOfWheels;
+    if (typeOfVehicle == 1)
+        numberOfWheels = 4;
+    else if (typeOfVehicle == 2)
+        numberOfWheels = 6;
+    else
+        return 0.0f;
+    int surfaceIndex = 0;
+    while (s_SurfaceHashes[surfaceIndex] != type)
+    {
+        if (++surfaceIndex >= 23)
+            return 0.0f;
+    }
+    unsigned int surfaceValue = s_SurfaceValues[surfaceIndex];
+    float retVal = 0.0f;
+    for (int i = 0; i < numberOfWheels; ++i)
+    {
+        if (scr_vehicle->phys.wheelSurfType[i] == (int)surfaceValue)
+            retVal += 1.0f;
+    }
+    return retVal / numberOfWheels;
+}
 float EvalSpringCompressionCond(unsigned int, unsigned int, unsigned int,
                                 float, float, unsigned int) { return 0.0f; }
 float EvalThrottle(unsigned int, unsigned int entityHandleVal, unsigned int,
@@ -543,6 +606,7 @@ extern void reserved_dlist_CurveEffectListElem_delete_all(
 // ea: 0x00638160
 CurveManager::CurveManager()
 {
+    InitializeSurfaceHashes();
     this->mCurveList.m_size = 0;
     this->mCurveList.m_end = nullptr;
     this->mCurveList.m_head = &this->mCurveList.m_end;
