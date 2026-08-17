@@ -3,6 +3,9 @@
 // Types and bodies verified against IDA (codmp_xboxr.xbe).
 // ============================================================================
 
+#include "ngl/nglDebug.h"
+#include "game/game_types.h"
+#include "game/trace_types.h"
 #include "core/math_types.h"
 #include "core/ae_array.h"
 #include "aeps/apsEffect.h"
@@ -12,8 +15,11 @@
 
 #include <stdint.h>
 
-struct nglShader;
 struct cdAepsShader;
+
+struct proximity_data_t {
+    uint8_t _data[0x1850];
+};
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10, MJK = 11 };
@@ -216,6 +222,10 @@ public:
 // ParticleEffect view (IDA layout; full methods in tr_fx2.cpp)
 class ParticleEffect {
 public:
+    struct RaycastData {
+        apsBounds mBounds;                // +0x00
+        proximity_data_t mProximityData; // +0x20
+    };
     float cached_pos[4];       // +0x00
     int cached_cell_index;     // +0x10
     int culled;                // +0x14
@@ -229,7 +239,7 @@ public:
     short mBoneIndex;          // +0x30
     unsigned short mFlags;     // +0x32
     int mPakId;                // +0x34
-    void* mRaycastData;        // +0x38
+    RaycastData* mRaycastData; // +0x38
 
     static ParticleEffect* sArrayData;  // ?sArrayData@ParticleEffect@@2PAV1@A (tr_fx2.cpp)
     static ae_sized_array<ae_pair<short, short>, 256> sArray;  // (tr_fx2.cpp)
@@ -261,9 +271,9 @@ void Cmd_PFXReport_f()
 class ae_heap {
 public:
     void** __vftable;
-    struct mem_heap2* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ
+    struct mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ
 };
-struct mem_heap2 {
+struct mem_heap {
     uint8_t _pad[0x484];
     unsigned int size;      // +0x484
     unsigned int used_byte; // +0x488
@@ -280,7 +290,7 @@ bool IsOkToSpawnNewEffect(apsEffectTemplate* Tmpl, int juice)
         pfx_free_pool_empty = true;
     else
         pfx_free_pool_empty = false;
-    mem_heap2* v2 = ((ae_heap*)gApsHeap)->GetHeapPointer();
+    mem_heap* v2 = ((ae_heap*)gApsHeap)->GetHeapPointer();
     bool apsHeapAboutFull = (float)v2->used_byte > (float)v2->size * 0.80000001f;
     if (apsEffect::TestAlloc(Tmpl) != 0 && !pfx_free_pool_empty && !apsHeapAboutFull)
         return true;
@@ -337,7 +347,7 @@ struct nglSceneView {
 struct nglScene;
 extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
 extern void nglValidateMatrices(nglScene* scene);  // ngl.o
-extern bool nglProfileEvalShader(nglShader* shader);    // ?nglProfileEvalShader@@YA_NPAUnglShader@@@Z
+extern bool nglProfileEvalShader(struct nglShader* shader);    // ?nglProfileEvalShader@@YA_NPAUnglShader@@@Z
 extern void UpdateLights(float mTickMSec);        // ?UpdateLights@@YAXM@Z
 extern void RemoveDeadEffects();                  // ?RemoveDeadEffects@@YAXXZ
 extern void FX_UpdateRainDrops(float dt);         // ?FX_UpdateRainDrops@@YAXM@Z
@@ -402,34 +412,12 @@ void FX_UpdateFX(bool firstClient)
 // ============================================================================
 // ProcessEffectsCollisions - ea: 0x006DA3F0
 // ============================================================================
-struct apsCollisionData {
-    uint8_t _pad[0x10];
-    unsigned int mNumRaycastRequests;  // +0x10
-    struct RaycastRequest {
-        math::Position3 start;      // +0x00
-        math::Position3 end;        // +0x10
-        math::Position3 result;     // +0x20
-        float fraction;             // +0x30
-        math::Dir3 normal;          // +0x34
-    } mRaycastRequests[1];          // +0x14
-};
-struct proximity_data_t {
-    uint8_t _pad[0x20];
-};
 struct ParticleRaycastData {
-    uint8_t _pad[0x20];
-    proximity_data_t mProximityData; // +0x20
+    apsBounds mBounds;                 // +0x00
+    proximity_data_t mProximityData;  // +0x20
 };
-struct trace_t {
-    math::Position3 endpos;          // +0x00
-    math::Dir3 normal;               // +0x10
-    float fraction;                  // +0x20
-    int surfaceFlags;                // +0x24
-    int contents;                    // +0x28
-    uint8_t _pad2C[0x24];             // +0x2C
-};
-extern void ProximityUpdate(ParticleRaycastData& data,
-                            const apsCollisionData& col);  // ?ProximityUpdate@@YAXAAURaycastData@ParticleEffect@@ABUCollisionData@apsEffect@@@Z
+extern void ProximityUpdate(ParticleEffect::RaycastData& data,
+                            const apsEffect::CollisionData& col);  // ?ProximityUpdate@@YAXAAURaycastData@ParticleEffect@@ABUCollisionData@apsEffect@@@Z
 extern void TracePoint(const proximity_data_t& proximity, trace_t* trace,
                        const math::Position3& start,
                        const math::Position3& end, int contentmask);
@@ -451,39 +439,41 @@ void ProcessEffectsCollisions()  // ?ProcessEffectsCollisions@@YAXXZ @ 0x6DA3F0
                 && AeAssert::Assert("ParticleEffect pointer invalid. How did we get here?"))
                 __debugbreak();
         }
-        apsCollisionData* col = (apsCollisionData*)v2->mEffect->mCollisionData;
+        apsEffect::CollisionData* col = v2->mEffect->mCollisionData;
         if (col != nullptr)
         {
             if (v2->mRaycastData == nullptr)
             {
-                ParticleRaycastData* rd =
-                    (ParticleRaycastData*)tlMemAlloc(0x1870u, 0x10u, 0);
+                ParticleEffect::RaycastData* rd =
+                    (ParticleEffect::RaycastData*)tlMemAlloc(0x1870u, 0x10u, 0);
                 if (rd != nullptr)
                 {
-                    new (rd) ParticleRaycastData();
+                    rd->mBounds.Init();
+                    new (&rd->mProximityData) proximity_data_t();
                 }
                 v2->mRaycastData = rd;
             }
             if (col->mNumRaycastRequests != 0)
             {
-                ProximityUpdate(*(ParticleRaycastData*)v2->mRaycastData, *col);
+                ProximityUpdate(*(ParticleEffect::RaycastData*)v2->mRaycastData, *col);
                 unsigned int n = col->mNumRaycastRequests;
                 for (unsigned int i = 0; i < n; ++i)
                 {
-                    apsCollisionData::RaycastRequest& req = col->mRaycastRequests[i];
+                    apsEffect::RaycastRequest& req = col->mRaycastRequests[i];
+                    apsEffect::RaycastResult& result = col->mRaycastResults[req.resultID];
                     trace_t trace;
                     memset(&trace, 0, sizeof(trace));
-                    TracePoint(((ParticleRaycastData*)v2->mRaycastData)->mProximityData,
+                    TracePoint(((ParticleEffect::RaycastData*)v2->mRaycastData)->mProximityData,
                                &trace, req.start, req.end, 41951377);
                     if (trace.fraction == 1.0f || trace.contents == 0)
                     {
-                        req.fraction = -1.0f;
+                        result.t = -1.0f;
                     }
                     else
                     {
-                        req.result = trace.endpos;
-                        req.normal = trace.normal;
-                        req.fraction = trace.fraction;
+                        result.position = trace.endpos;
+                        result.normal = trace.normal;
+                        result.t = trace.fraction;
                     }
                 }
                 col->mNumRaycastRequests = 0;
@@ -533,8 +523,14 @@ public:
 };
 DObjHandleDbLocal2 DObjHandleDbLocal2::sInst;
 EntityHandleDbLocal3 EntityHandleDbLocal3::sInst;
-extern bool FX_GetBoneOrientation2(unsigned int handle, short bone,
-                                   float* ori);  // ?FX_GetBoneOrientation@@YA_NV?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@HPAUorientation_t@@@Z
+struct orientation_t {
+    float origin[3];   // +0x00
+    float axis[3][3];  // +0x0C
+};
+class DObjHandleDb;
+extern bool FX_GetBoneOrientation(DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle,
+                                  int boltBoneIndex,
+                                  orientation_t* pOrient);  // ?FX_GetBoneOrientation@@YA_NV?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@HPAUorientation_t@@@Z
 extern void AnglesToAxis(const math::Position3& angles,
                          const math::Position3& origin,
                          math::Mat43& mat);
@@ -626,12 +622,13 @@ void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqB
         }
         else
         {
-            float ori[13];
-            if (FX_GetBoneOrientation2((unsigned int)v4->mDObjHandle,
-                                       v4->mBoneIndex, ori))
+            orientation_t ori;
+            DbLinkedHandle<DObjHandleDb, DObj> boltObjHandle(
+                (int)(uintptr_t)v4->mDObjHandle);
+            if (FX_GetBoneOrientation(boltObjHandle, v4->mBoneIndex, &ori))
             {
                 math::Mat43 mat;
-                memcpy(&mat, ori, 52);
+                memcpy(&mat, &ori, sizeof(ori));
                 effect->SetLocalToWorldTransform(mat);
             }
         }

@@ -114,6 +114,7 @@ class XModel {
 public:
     uint8_t _pad[0x24];
     XModelLod* lod[5];              // +0x24
+    XModelParts* GetXModelParts(int lodIndex);  // ?GetXModelParts@XModel@@QAEPAVXModelParts@@H@Z
     const XModelParts* GetXModelParts(int lodIndex) const;  // ?GetXModelParts@XModel@@QBEPBVXModelParts@@H@Z (g.o)
 };
 
@@ -314,8 +315,6 @@ struct XModelLocal {
     uint8_t _pad[0x24];
     XModelLodLocal* lod[5];          // +0x24
 };
-extern XModelParts* XModel_GetXModelParts(XModel* xmodel, int lodIndex);  // ?GetXModelParts@XModel@@QAEPAVXModelParts@@H@Z (g.o)
-
 void do_shadow(DObj* obj, int model_index, int bone_index,
                nglMesh* mesh, const math::Mat43& matrix,
                const math::Mat43& worldMatrix, nglMeshParams& meshParams,
@@ -376,7 +375,7 @@ void do_shadow(DObj* obj, int model_index, int bone_index,
             mPakId = dobj->models[0].mPakId;
         }
         ValidatePakId(mPakId);
-        XModelParts* parts = XModel_GetXModelParts(mValue, lod);
+        XModelParts* parts = mValue->GetXModelParts(lod);
         nglMesh* v17 =
             ((XModelPartsLocal*)parts)->mMeshPtrs.mList[bone_index];
         if (v17 == nullptr)

@@ -31,9 +31,7 @@ FULLSCREENBLUR_STATE g_doFullScreenBlur[1];  // ?g_doFullScreenBlur@@3PAW4FULLSC
 float g_fullScreenBlurAmount[1];             // ?g_fullScreenBlurAmount@@3PAMA @ 0xF743F8
 extern float g_screendelta;                  // ?g_screendelta@@3MA (core.o)
 
-// View::Window (IDA type; size 0x1C) - View is a namespace in the binary
-namespace View {
-struct Window {
+struct View_Window {
     float XPos;    // +0x00
     float YPos;    // +0x04
     float Width;   // +0x08
@@ -42,7 +40,8 @@ struct Window {
     float FovY;    // +0x14
     unsigned int Safety;  // +0x18
 };
-const Window& GetCurrentWindow(int clientIndex);  // ?GetCurrentWindow@View@@YAABUWindow@1@H@Z
+namespace View {
+const View_Window* GetCurrentWindow(int clientIndex);  // ?GetCurrentWindow@View@@YAPBUView_Window@@H@Z
 }
 extern int currCl;  // ?currCl@@3HA
 extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
@@ -114,11 +113,11 @@ void XboxNGLPostSceneCallBack(void* Data)
 // ============================================================================
 void R_SetWindowQuadRect(nglQuad& q)
 {
-    const View::Window& CurrentWindow = View::GetCurrentWindow(currCl);
-    float x1 = (CurrentWindow.XPos + 1.0f) * 0.5f;
-    float y1 = (CurrentWindow.YPos + 1.0f) * 0.5f;
-    float x2 = ((CurrentWindow.Width + CurrentWindow.XPos) + 1.0f) * 0.5f;
-    float y2 = ((CurrentWindow.Height + CurrentWindow.YPos) + 1.0f) * 0.5f;
+    const View_Window* CurrentWindow = View::GetCurrentWindow(currCl);
+    float x1 = (CurrentWindow->XPos + 1.0f) * 0.5f;
+    float y1 = (CurrentWindow->YPos + 1.0f) * 0.5f;
+    float x2 = ((CurrentWindow->Width + CurrentWindow->XPos) + 1.0f) * 0.5f;
+    float y2 = ((CurrentWindow->Height + CurrentWindow->YPos) + 1.0f) * 0.5f;
     float v5 = (float)nglGetScreenHeight() * y2;
     float v4 = (float)nglGetScreenWidth() * x2;
     float v3 = (float)nglGetScreenHeight() * y1;
