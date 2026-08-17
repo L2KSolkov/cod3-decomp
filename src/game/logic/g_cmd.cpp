@@ -371,18 +371,41 @@ float EvalSurface(unsigned int, unsigned int, unsigned int, float,
                   float, unsigned int) { return 0.0f; }
 float EvalSpringCompressionCond(unsigned int, unsigned int, unsigned int,
                                 float, float, unsigned int) { return 0.0f; }
-float EvalThrottle(unsigned int, unsigned int, unsigned int, float,
-                   float, unsigned int) { return 0.0f; }
+float EvalThrottle(unsigned int, unsigned int entityHandleVal, unsigned int,
+                   float min, float, unsigned int)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    if (v4 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v4].mKey)
+        return min - 1.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    if (mObject == nullptr || mObject->scr_vehicle == nullptr)
+        return min - 1.0f;
+    if (mObject->scr_vehicle->GetThrottle() == 0.0f)
+        return 0.0f;
+    return 1.0f;
+}
 float EvalThrottleChange(unsigned int, unsigned int, unsigned int, float,
                          float, unsigned int) { return 0.0f; }
 float EvalBrake(unsigned int, unsigned int, unsigned int, float,
-                float, unsigned int) { return 0.0f; }
+                float, unsigned int) { return -1.0f; }
 float EvalDriver(unsigned int, unsigned int, unsigned int, float,
                  float, unsigned int) { return 0.0f; }
 float EvalPlayer(unsigned int, unsigned int, unsigned int, float,
                  float, unsigned int) { return 0.0f; }
-float EvalHealth(unsigned int, unsigned int, unsigned int, float,
-                 float, unsigned int) { return 0.0f; }
+float EvalHealth(unsigned int, unsigned int entityHandleVal, unsigned int,
+                 float, float, unsigned int)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    if (v2 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr && mObject->health > 0)
+            return (float)mObject->health / (float)mObject->maxHealth;
+    }
+    return -1.0f;
+}
 extern void DebugCurveRender();                         // game.o 0x60EEE0
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
 extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20

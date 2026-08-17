@@ -703,3 +703,5 @@ mp.o COMPLETE (770/770): player/vehicle step+interpolation, manager+peer handler
 
 mp.o voice-fix	mp.o	game	770	PORTED	IDA dump-backed cVoiceNetworkManager destructor, setPlayerDistance assertions/indexing, and mVoiceLifeTime={800}; linker unresolved count 33->30
 mp_shell.o COMPLETE (680/680): session/overlay/vote/settings/AAR/scoreboard menus, pause/hotjoin/spectate, model+weapon select, create/find/play lan+online panels, overlay state machines, AARMenuSystem ctor, vote tally/send, panel-file + helpbar construction
+
+game.o		game.o	game	663	IN_PROGRESS	batch 40 COMPLETE (3/3): EvalThrottle, EvalBrake, EvalHealth bodies ported from IDA; build clean; no runtime tests
