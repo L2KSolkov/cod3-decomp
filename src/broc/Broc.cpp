@@ -888,7 +888,11 @@ ExtendedEntity::~ExtendedEntity()
     mKVPairs = nullptr;
 }
 
-ExtendedEntity* ExtendedEntity::GetExtendedEntity(unsigned int) { return NULL; }
+// ea: 0x00929980. IDA forwards directly to BrocAPI::mGetExtendedEntity.
+ExtendedEntity* ExtendedEntity::GetExtendedEntity(unsigned int handle)
+{
+    return static_cast<ExtendedEntity*>(gBrocAPI.mGetExtendedEntity(handle));
+}
 void* ExtendedEntity::CreateExtendedEntity(const char**, int) { return NULL; }
 // ea: 0x00929DB0; IDA invokes the scalar deleting destructor with delete flag.
 void ExtendedEntity::DeleteExtendedEntity(void* mem)
