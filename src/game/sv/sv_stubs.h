@@ -1534,7 +1534,13 @@ class InGameMenuSystem : public FEMenuSystem {
 public:
     void SetActiveMenu(int a2);   // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
     bool IsSystemActive();        // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
-    int  GetActiveMenu();         // ?GetActiveMenu@InGameMenuSystem@@QAEHXZ (shell.o 0x571370)
+    // IDA exports FEMenuSystem::GetActiveMenu; this derived view reads the
+    // inherited m_active field at +0x1C without inventing a new symbol.
+    int GetActiveMenu() const
+    {
+        return *reinterpret_cast<const int*>(
+            reinterpret_cast<const unsigned char*>(this) + 0x1C);
+    }
     void ActivateMenu(int menu);  // ?ActivateMenu@InGameMenuSystem@@QAEXH@Z (shell.o 0x572FD0)
     virtual bool IsMenuActive(int menu);     // ?IsMenuActive@FEMenuSystem@@UAE_NH@Z (0x570BC0)
     virtual void MakeActive(int index);      // ?MakeActive@FEMenuSystem@@UAEXH@Z (0x570B20)
