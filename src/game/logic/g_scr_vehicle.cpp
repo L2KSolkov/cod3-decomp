@@ -614,7 +614,177 @@ void VEH_InitVehicle(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx)
     }
     veh->follow = nullptr;
 }
-void VEH_UpdateAim(Entity* e) { (void)e; }
+// ea: 0x0047D940
+void VEH_UpdateAim(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info->type == 1)
+        return;
+
+    Entity* owner = HandleDbToEnt(ent->r.mOwner);
+    if (scr_vehicle->hasTarget == 0 || ent->health <= 0 || owner == nullptr
+        || !IsPlayerFullySeatedInVehicle(owner) || owner->client == nullptr
+        || owner->client->mVehicleAnimPauseRemoteAngles
+        || owner->client->ps.vehPos != 0)
+    {
+        if (scr_vehicle->turretState == 2)
+            scr_vehicle->turretState = 1;
+        else if (scr_vehicle->turretState == 1)
+            scr_vehicle->turretState = 0;
+        return;
+    }
+
+    Entity* tgtEnt = HandleDbToEnt(scr_vehicle->mTargetEnt);
+    float targetPos[3];
+    if (tgtEnt != nullptr)
+    {
+        targetPos[0] = tgtEnt->r.currentOrigin.v.m128_f32[0]
+                     + scr_vehicle->targetOffset[0];
+        targetPos[1] = tgtEnt->r.currentOrigin.v.m128_f32[1]
+                     + scr_vehicle->targetOffset[1];
+        targetPos[2] = tgtEnt->r.currentOrigin.v.m128_f32[2]
+                     + scr_vehicle->targetOffset[2];
+    }
+    else
+    {
+        targetPos[0] = scr_vehicle->targetOrigin[0];
+        targetPos[1] = scr_vehicle->targetOrigin[1];
+        targetPos[2] = scr_vehicle->targetOrigin[2];
+    }
+
+    if (scr_vehicle->boneIndex.barrel < 0)
+        return;
+
+    DObjSkelMat barrelMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, scr_vehicle->boneIndex.barrel,
+                                  &barrelMtx);
+
+    float vehicleAngles[3] = {
+        ent->r.currentAngles.v.m128_f32[0],
+        ent->r.currentAngles.v.m128_f32[1],
+        ent->r.currentAngles.v.m128_f32[2]
+    };
+    if ((owner->client->ps.eFlags & 0x200000) == 0
+        && info->spClientSeat == 0)
+    {
+        vehicleAngles[1] = owner->client->ps.viewangles[1];
+    }
+
+    float ownerAngles[3] = {
+        owner->client->ps.viewangles[0],
+        owner->client->ps.viewangles[1],
+        0.0f
+    };
+    float ownerAxis[3][3];
+    float vehicleAxis[3][3];
+    float inverseVehicleAxis[3][3];
+    float relativeAxis[3][3];
+    float targetAngles[3];
+    AnglesToAxis(ownerAngles, ownerAxis);
+    AnglesToAxis(vehicleAngles, vehicleAxis);
+    MatrixTranspose(vehicleAxis, inverseVehicleAxis);
+    MatrixMultiply(ownerAxis, inverseVehicleAxis, relativeAxis);
+    AxisToAngles(relativeAxis, targetAngles);
+
+    scr_vehicle->current.mTurretAngles.v.m128_f32[0] =
+        scr_vehicle->next.mTurretAngles.v.m128_f32[0];
+    scr_vehicle->current.mTurretAngles.v.m128_f32[1] =
+        AngleNormalize180(scr_vehicle->next.mTurretAngles.v.m128_f32[1]);
+    scr_vehicle->current.mTurretAngles.v.m128_f32[2] = 0.0f;
+
+    math::Position3 targetAnglePos = native_to_cdl_pos3(targetAngles);
+    math::Position3 deltaAngles;
+    AnglesSubtract(targetAnglePos, scr_vehicle->current.mTurretAngles,
+                   deltaAngles);
+    const float absPitch = fabsf(deltaAngles.v.m128_f32[0]);
+    const float absYaw = fabsf(deltaAngles.v.m128_f32[1]);
+
+    scr_vehicle->next.mTurretAngles.v.m128_f32[0] = VEH_LerpAngle(
+        targetAngles[0], scr_vehicle->current.mTurretAngles.v.m128_f32[0],
+        info->turretRotRate);
+    scr_vehicle->next.mTurretAngles.v.m128_f32[1] = VEH_LerpAngle(
+        targetAngles[1], scr_vehicle->current.mTurretAngles.v.m128_f32[1],
+        info->turretRotRate);
+
+    float pitch = -info->turretVertSpanDown;
+    if (pitch <= scr_vehicle->next.mTurretAngles.v.m128_f32[0])
+    {
+        pitch = scr_vehicle->next.mTurretAngles.v.m128_f32[0];
+        if (pitch > info->turretVertSpanUp)
+            pitch = info->turretVertSpanUp;
+    }
+    scr_vehicle->next.mTurretAngles.v.m128_f32[0] = pitch;
+
+    float yaw = scr_vehicle->next.mTurretAngles.v.m128_f32[1];
+    if (yaw < -info->turretHorizSpanRight)
+        yaw = -info->turretHorizSpanRight;
+    else if (yaw > info->turretHorizSpanLeft)
+        yaw = info->turretHorizSpanLeft;
+    scr_vehicle->next.mTurretAngles.v.m128_f32[1] = yaw;
+
+    if (info->type == 5)
+    {
+        float* viewAngles = owner->client->ps.viewangles;
+        float viewPitch = viewAngles[0];
+        if (viewPitch < -info->turretVertSpanDown)
+            viewPitch = -info->turretVertSpanDown;
+        else if (viewPitch > info->turretVertSpanUp)
+            viewPitch = info->turretVertSpanUp;
+        if (viewPitch != viewAngles[0])
+        {
+            viewAngles[0] = viewPitch;
+            SetClientViewAngle(owner, viewAngles);
+        }
+
+        float deltaYaw = AngleNormalize180(
+            viewAngles[1] - AngleNormalize360(vehicleAngles[1]));
+        if (fabsf(deltaYaw) > info->turretHorizSpanLeft)
+        {
+            viewAngles[1] = deltaYaw <= 0.0f
+                              ? AngleNormalize360(vehicleAngles[1]
+                                                  - info->turretHorizSpanLeft)
+                              : AngleNormalize360(vehicleAngles[1]
+                                                  + info->turretHorizSpanLeft);
+            SetClientViewAngle(owner, viewAngles);
+        }
+    }
+
+    if (fabsf(deltaAngles.v.m128_f32[0]) >= 0.3f
+            && scr_vehicle->next.mTurretAngles.v.m128_f32[0] == 0.0f
+        || fabsf(deltaAngles.v.m128_f32[1]) >= 0.3f
+            && scr_vehicle->next.mTurretAngles.v.m128_f32[1] == 0.0f)
+    {
+        scr_vehicle->turretState = 2;
+    }
+    else if (scr_vehicle->turretState == 2)
+    {
+        scr_vehicle->turretState = 1;
+    }
+    else if (scr_vehicle->turretState == 1)
+    {
+        scr_vehicle->turretState = 0;
+    }
+
+    if (scr_vehicle->hasTarget != 0 && absPitch < 1.0f && absYaw < 1.0f)
+    {
+        Scr_Notify(ent, hash_const.turret_on_target, 0);
+        if (tgtEnt != nullptr && ((com_frameNumber + ((int)ent >> 5)) & 3) != 0)
+        {
+            collision_context_t context(ent->mHandle, tgtEnt->mHandle, 1);
+            math::Position3 zeroMins;
+            math::Position3 zeroMaxs;
+            zeroMins.v = _mm_setzero_ps();
+            zeroMaxs.v = _mm_setzero_ps();
+            math::Position3 start = native_to_cdl_pos3(barrelMtx.origin);
+            math::Position3 end = native_to_cdl_pos3(targetPos);
+            g_SightTrace(&scr_vehicle->turretHitNum, start, zeroMins,
+                         zeroMaxs, end, context);
+            if (scr_vehicle->turretHitNum == 0)
+                Scr_Notify(ent, hash_const.turret_on_vistarget, 0);
+        }
+    }
+}
 
 // ea: 0x004904B0
 void VEH_UpdateAltWeapon(Entity* ent, int msec)
