@@ -9,6 +9,7 @@
 
 #include "core/math_types.h"
 #include "cdl_types.h"
+#include <cmath>
 #include <cstring>
 #include <stdint.h>
 
@@ -89,6 +90,8 @@ cdl_profcounter cdl_profcounter_gjk;
 // Tolerance settings
 static float abs_error2 = 0.0001f;
 static float rel_error2 = 0.01f;
+static const float SEP_TRESHOLD2_0 = 1.0f;
+static const float PEN_TRESHOLD2_0 = 0.010000001f;
 
 // ============================================================================
 // compute_det — recompute determinant tables from current y_0 points
@@ -214,7 +217,8 @@ int gjk(
     bool full,
     unsigned int maxIter,
     unsigned int flags,
-    unsigned int __formal)
+    unsigned int __formal,
+    unsigned int __formal2)
 {
     // Full implementation at ea:0x81EA70 (~700 instructions of SSE-optimized GJK)
     // Requires support-mapping virtual calls on cdlConvex and determinant tables.
@@ -234,7 +238,21 @@ int collide_partial(
     const cdlConvex& convexB, const math::Mat43& bToWorld,
     cdl_cinfo2& cinfo)
 {
-    return gjk(convexA, aToWorld, convexB, bToWorld, cinfo, 0.0f, false, 20, 0, 0);
+    const int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo,
+                           SEP_TRESHOLD2_0, false, 0, 0, 0, 0);
+    if (result == 1) {
+        const __m128 squared = _mm_mul_ps(cinfo.ni.v, cinfo.ni.v);
+        const float length2 = dot3(squared);
+        if (length2 <= PEN_TRESHOLD2_0)
+            return 2;
+
+        const float length = std::sqrt(length2);
+        cinfo.ni.v = _mm_div_ps(cinfo.ni.v, _mm_set1_ps(length));
+        const __m128 half_normal = _mm_mul_ps(cinfo.ni.v, _mm_set1_ps(0.5f));
+        cinfo.pa.v = _mm_sub_ps(cinfo.pa.v, half_normal);
+        cinfo.pb.v = _mm_add_ps(cinfo.pb.v, half_normal);
+    }
+    return result;
 }
 
 // ============================================================================
@@ -246,7 +264,7 @@ bool collide_full(
     const cdlConvex& convexB, const math::Mat43& bToWorld,
     cdl_cinfo2& cinfo)
 {
-    int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo, 0.0f, true, 50, 0, 0);
+    int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo, 0.0f, true, 0, 0, 0, 0);
     return result == 0;  // 0 = colliding
 }
 
@@ -263,6 +281,6 @@ bool collide(
     unsigned int absTresh,
     unsigned int relTresh)
 {
-    int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo, 0.0f, true, maxIter, flags, 0);
+    int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo, 0.0f, true, maxIter, flags, absTresh, relTresh);
     return result == 0;
 }
