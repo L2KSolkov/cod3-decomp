@@ -73,8 +73,16 @@ public:
     static void init(bool netEnabled);
 };
 
-// bdLogImpl - Demonware logging hub (bdCore:bdLogImpl.obj; not yet ported)
-class bdLogSubscriber;
+// bdLogSubscriber / bdLogImpl - Demonware logging hub types (bdCore).
+class bdLogSubscriber {
+public:
+    bdLogSubscriber();
+    virtual ~bdLogSubscriber();
+    virtual void publish(const char* channel, const char* file,
+                         const char* function, unsigned int line,
+                         const char* message);
+};
+
 class bdLogImpl {
 public:
     void subscribe(const char* channel, bdLogSubscriber* subscriber);

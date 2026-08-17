@@ -454,7 +454,7 @@ static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
 class MultiplayerMgr {
 public:
-    class MPLogSubscriber {
+    class MPLogSubscriber : public bdLogSubscriber {
     public:
         virtual ~MPLogSubscriber();  // ??1MPLogSubscriber@MultiplayerMgr@@UAE@XZ
     private:

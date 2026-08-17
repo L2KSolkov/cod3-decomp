@@ -21,6 +21,8 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
+MultiplayerMgr::MPLogSubscriber::~MPLogSubscriber() = default;  // 0x00774FF0
+
 EGameConnectionType MPUIInterface::mGameConnectionType =
     kGameConnectionTypeOnline;
 

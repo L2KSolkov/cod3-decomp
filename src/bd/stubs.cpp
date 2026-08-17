@@ -9,6 +9,42 @@
 
 extern const char* const defaultFileName;
 
+// bdLogSubscriber — base logging callbacks (bdCore @ 0x89D240).
+bdLogSubscriber::bdLogSubscriber() = default;
+bdLogSubscriber::~bdLogSubscriber() = default;
+
+void bdLogSubscriber::publish(const char* channel, const char* file,
+                               const char* function, unsigned int line,
+                               const char* message)
+{
+    char output[2048];
+    const char* slash = strrchr(file, '\\');
+    unsigned int offset = slash != nullptr ? (unsigned int)(slash - file + 1) : 0;
+    if (strstr(channel, "info") == channel)
+    {
+        bdSnprintf(output, sizeof(output), "%s(%u): %s\n\tINFO: %s\n",
+                   file + offset, line, function, message);
+        OutputDebugStringA(output);
+    }
+    else if (strstr(channel, "warn") == channel)
+    {
+        bdSnprintf(output, sizeof(output), "%s(%u): %s\n\tWARNING: %s\n",
+                   file + offset, line, function, message);
+        OutputDebugStringA(output);
+    }
+    else if (strstr(channel, "err") == channel)
+    {
+        bdSnprintf(output, sizeof(output), "%s(%u): %s\n\tERROR: %s\n",
+                   file + offset, line, function, message);
+        OutputDebugStringA(output);
+    }
+    else
+    {
+        OutputDebugStringA("bdLogSubscriber::publish: invalid channel name!\n");
+        DebugBreak();
+    }
+}
+
 // IDA globals from bd.o.
 int g_NumBdMessages = 0;
 bool g_assertFalse = false;
