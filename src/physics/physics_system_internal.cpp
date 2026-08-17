@@ -973,7 +973,48 @@ void physics_system::generate_partitions_and_stuff(
     }
 }
 
-// IPN_verify_rigid_bodies - ea: 0x88B890 (debug verifier).
+namespace {
+template <typename Constraint>
+void verify_partition_constraint_list(Constraint* first, int assert_line) {
+    for (Constraint* rbc = first; rbc != NULL;
+         rbc = (Constraint*)rbc->m_next) {
+        if (!g_physics_system->is_member(rbc->b1) ||
+            !g_physics_system->is_member(rbc->b2)) {
+            if (_tlAssert(
+                    "c:/cod/code/tl/physics/include/rbc_defs\\rbc_def_types.inc",
+                    assert_line,
+                    "g_physics_system->is_member(rbc->get_b1()) && g_physics_system->is_member(rbc->get_b2())",
+                    defaultFileName))
+                __debugbreak();
+        }
+    }
+}
+}
+
+// IPN_verify_rigid_bodies - ea: 0x88B890
 void IPN_verify_rigid_bodies(rigid_body* rb_partition_head) {
-    (void)rb_partition_head;
+    if (rb_partition_head->m_partition_node.m_partition_head != rb_partition_head &&
+        _tlAssert("source/physics_system_internal.cpp", 218,
+                  "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                  defaultFileName))
+        __debugbreak();
+
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_point_first, 1);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_hinge_first, 2);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_dist_first, 3);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_ragdoll_first, 5);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_wheel_first, 6);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_angular_actuator_first, 7);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_custom_orientation_first, 8);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_custom_path_first, 9);
+    verify_partition_constraint_list(
+        rb_partition_head->m_partition_node.m_rbc_contact_first, 10);
 }
