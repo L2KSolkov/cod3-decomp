@@ -214,11 +214,43 @@ void SubStr(char* dst, int* dstLen, const char* src, int begin, int count, int s
 }
 
 // ============================================================================
-// Split — tokenize string by delimiter (stub — to be completed during porting)
+// Split — split a length-prefixed string at the first delimiter
 // ea: 0x7BF0A0
 // ============================================================================
-void Split(char* dst, int* p1, char* p2, int delim, int p3) {
-    // TODO: reconstruct from ea:0x7BF0A0
+void Split(char* dstBuff, int* dstLen, char* srcBuff, int* srcLen,
+           char splitOn, int capacity) {
+    int i;
+    for (i = 0; i < *srcLen; ++i) {
+        if (srcBuff[i] == splitOn)
+            break;
+    }
+
+    char tmpbuff[512];
+    char* v = srcBuff;
+    if (i >= *srcLen) {
+        ptrdiff_t offset = dstBuff - srcBuff;
+        char c;
+        do {
+            c = *v;
+            v[offset] = *v;
+            ++v;
+        } while (c != 0);
+        *dstLen = *srcLen;
+        *srcBuff = 0;
+        *srcLen = 0;
+    } else {
+        ptrdiff_t offset = tmpbuff - srcBuff;
+        char c;
+        v = srcBuff;
+        do {
+            c = *v;
+            v[offset] = *v;
+            ++v;
+        } while (c != 0);
+        SubStr(dstBuff, dstLen, tmpbuff, 0, i, capacity);
+        SubStr(srcBuff, srcLen, tmpbuff, i + 1,
+               *srcLen - (i + 1), capacity);
+    }
 }
 
 // ============================================================================
