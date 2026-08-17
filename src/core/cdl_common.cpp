@@ -174,19 +174,29 @@ bool intersect(
                 _mm_mul_ps(_mm_shuffle_ps(b2w.w.v, b2w.w.v, 0x55), inverse_row_y)),
             _mm_mul_ps(_mm_shuffle_ps(b2w.w.v, b2w.w.v, 0xAA), inverse_row_z)));
 
-    const auto transform_axis = [&](const __m128 axis) {
-        return _mm_add_ps(
-            _mm_add_ps(
-                _mm_mul_ps(_mm_shuffle_ps(axis, axis, 0), inverse_row_x),
-                _mm_mul_ps(_mm_shuffle_ps(axis, axis, 0x55), inverse_row_y)),
-            _mm_mul_ps(_mm_shuffle_ps(axis, axis, 0xAA), inverse_row_z));
-    };
-
     math::Mat43 a2b;
-    a2b.x.v = transform_axis(a2w.x.v);
-    a2b.y.v = transform_axis(a2w.y.v);
-    a2b.z.v = transform_axis(a2w.z.v);
-    a2b.w.v = _mm_add_ps(transform_axis(a2w.w.v), inverse_translation);
+    a2b.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a2w.x.v, a2w.x.v, 0), inverse_row_x),
+            _mm_mul_ps(_mm_shuffle_ps(a2w.x.v, a2w.x.v, 0x55), inverse_row_y)),
+        _mm_mul_ps(_mm_shuffle_ps(a2w.x.v, a2w.x.v, 0xAA), inverse_row_z));
+    a2b.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a2w.y.v, a2w.y.v, 0), inverse_row_x),
+            _mm_mul_ps(_mm_shuffle_ps(a2w.y.v, a2w.y.v, 0x55), inverse_row_y)),
+        _mm_mul_ps(_mm_shuffle_ps(a2w.y.v, a2w.y.v, 0xAA), inverse_row_z));
+    a2b.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a2w.z.v, a2w.z.v, 0), inverse_row_x),
+            _mm_mul_ps(_mm_shuffle_ps(a2w.z.v, a2w.z.v, 0x55), inverse_row_y)),
+        _mm_mul_ps(_mm_shuffle_ps(a2w.z.v, a2w.z.v, 0xAA), inverse_row_z));
+    a2b.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 0), inverse_row_x),
+            _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 0x55), inverse_row_y)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 0xAA), inverse_row_z),
+            inverse_translation));
 
     cdl_cinfo2 cinfo;
     cinfo.ni.v = _mm_sub_ps(
