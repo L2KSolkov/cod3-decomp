@@ -6,6 +6,9 @@
 
 #include <cstdint>
 
+struct BrocAPI {};
+struct BrocExports {};
+
 // Forward types
 namespace Broc {
     struct entity { uint32_t handle; };
@@ -75,6 +78,10 @@ void MainThreadHook(Broc::entity) {} // ea: 0xC94F80
 // ============================================================================
 typedef void (*InitFunc)();
 
-InitFunc InitScript(Broc::BrocAPI**, Broc::BrocExports&) { // ea: 0xC95CC0
+namespace mp_level {
+
+InitFunc InitScript(BrocAPI**, BrocExports&) { // ea: 0xC95CC0
     return mp_level_main;
 }
+
+} // namespace mp_level
