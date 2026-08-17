@@ -153,6 +153,104 @@ void PathNodeMgr::InitScriptVariables()
         InitScriptVariables(0);
 }
 
+// ea: 0x0077F620
+void PathNodeMgr::InitScriptVariables(int zoneIndex)
+{
+    PathNodes::TOC1* zone = mLevelTOC;
+    if (zone == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1109;
+        AeAssert::gCurrentExpr = "zone";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    for (int i = 0; i < zone->mVariableCount; ++i)
+    {
+        if (zoneIndex != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 1114;
+            AeAssert::gCurrentExpr =
+                "zone->mVariables[i].mNode.GetZone() == zoneIndex";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+
+        PathNodes::NodeVariableSaver* variable = &zone->mVariables[i];
+        const unsigned int nodeHandle =
+            zone->mNodes[variable->mNode.mValue - 1].mHandle.mValue;
+        const char* key = variable->mKey;
+        const char* valueText = variable->mValue;
+        const unsigned int keyHash = HashString::CalcHash(key);
+        const int valueInt = atoi(valueText);
+        const float valueFloat = (float)atof(valueText);
+
+        extern cvar_t* cl_noprint;
+        if (cl_noprint != nullptr && cl_noprint->integer == 0)
+            tlPrintf("node(%d) %s = %s\n", nodeHandle, key, valueText);
+
+        if (gpBrocAPI != nullptr)
+        {
+            typedef void (*SetPNodeFieldFloat)(unsigned int, unsigned int,
+                                               float);
+            typedef void (*SetPNodeFieldInt)(unsigned int, unsigned int,
+                                             int);
+            typedef void (*SetPNodeFieldString)(unsigned int, unsigned int,
+                                                Broc::string);
+            SetPNodeFieldFloat setFloat =
+                *reinterpret_cast<SetPNodeFieldFloat*>(
+                    reinterpret_cast<unsigned char*>(gpBrocAPI) + 0xC0C);
+            SetPNodeFieldInt setInt =
+                *reinterpret_cast<SetPNodeFieldInt*>(
+                    reinterpret_cast<unsigned char*>(gpBrocAPI) + 0xC04);
+            SetPNodeFieldString setString =
+                *reinterpret_cast<SetPNodeFieldString*>(
+                    reinterpret_cast<unsigned char*>(gpBrocAPI) + 0xBFC);
+
+            if (_stricmp(key, "script_delay") == 0)
+                setFloat(nodeHandle, keyHash, valueFloat);
+
+            if (_stricmp(key, "_color") != 0)
+            {
+                if (_stricmp(key, "script_mg42") == 0
+                    || _stricmp(key, "script_fb_id") == 0)
+                {
+                    setInt(nodeHandle, keyHash, valueInt);
+                }
+                else if (_stricmp(key, "script_delay") == 0)
+                {
+                    setFloat(nodeHandle, keyHash, valueFloat);
+                }
+                else if (_stricmp(key, "script_waittill") == 0
+                         || _stricmp(key, "script_chain") == 0
+                         || _stricmp(key, "script_door") == 0
+                         || _stricmp(key, "script_ambush_type") == 0)
+                {
+                    Broc::string value(valueText);
+                    setString(nodeHandle, keyHash, value);
+                }
+                else if (_stricmp(key, "script_ambush_trigger_distance")
+                         == 0)
+                {
+                    setInt(nodeHandle, keyHash, valueInt);
+                }
+                else if (cl_noprint != nullptr && cl_noprint->integer == 0)
+                {
+                    tlPrintf("pathnode field KEY=%s, VAL=%s will be "
+                             "inaccessable",
+                             key, valueText);
+                }
+            }
+        }
+    }
+}
+
 // ea: 0x0077FE30
 PathNodes::PathNode* PathNodeMgr::FindChainPos(
     const float* vOrigin, PathNodes::PathNode* pPrevChainPos)
