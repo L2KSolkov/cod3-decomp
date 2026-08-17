@@ -1662,6 +1662,7 @@ public:
     bool AllocedData;                // +0x0C
     nalGenericPose(const nalGenericPose& other, bool copy);  // ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z
     nalGenericPose(const nalGenericSkeleton* skeleton, int); // ...PBVnalGenericSkeleton@1@H@Z
+    nalGenericPose& operator=(const nalGenericPose& other);  // ??4nalGenericPose@nalGeneric@@QAEAAV01@ABV01@@Z
     ~nalGenericPose();               // ??1nalGenericPose@nalGeneric@@QAE@XZ
 };
 class nalGenericSkeleton {
@@ -1673,7 +1674,86 @@ public:
 struct nalPartialAnimStateLocal {
     nalPartialAnimStateLocal* next;  // +0x00
 };
-extern void AnimationPlayer_Reset(AnimationPlayer* self);  // ?Reset@AnimationPlayer@@QAEXXZ
+
+// AnimationPlayer::Reset (game2.o @ 0x55F410).  These views use the IDA
+// layouts for the state records while keeping the owning class opaque here.
+struct AnimationPlayerResetAnimState {
+    void* instance;       // +0x00
+    float speed;          // +0x04
+    float tlimit;         // +0x08
+    void* callback;       // +0x0C
+    void* play_method;    // +0x10
+    uint8_t _pad[0x14];   // +0x14..+0x27
+    unsigned int state;   // +0x28
+};
+struct AnimationPlayerResetPartialState {
+    AnimationPlayerResetAnimState base; // +0x00
+    unsigned int CreationAdvanceCount;  // +0x2C
+    AnimationPlayerResetPartialState* next; // +0x30
+    uint8_t _pad[0x10];                  // +0x34..+0x43
+};
+struct AnimationPlayerResetLayout {
+    nalGeneric::nalGenericSkeleton* Skeleton; // +0x00
+    nalGeneric::nalGenericPose BackgroundPose; // +0x04
+    nalGeneric::nalGenericPose tmpPose;        // +0x14
+    int QueueSize;                              // +0x24
+    AnimationPlayerResetAnimState* AnimStates[3]; // +0x28
+    AnimationPlayerResetPartialState* PartialAnimStates; // +0x34
+    AnimationPlayerResetPartialState* PartialAnimStatePool; // +0x38
+    unsigned int AdvanceCount;                  // +0x3C
+};
+
+void AnimationPlayer_Reset(AnimationPlayer* self)  // ?Reset@AnimationPlayer@@QAEXXZ
+{
+    AnimationPlayerResetLayout* player = (AnimationPlayerResetLayout*)self;
+    player->BackgroundPose = player->Skeleton->DefaultPose;
+
+    for (int i = 0; i < player->QueueSize; ++i)
+    {
+        AnimationPlayerResetAnimState* state = player->AnimStates[i];
+        if (state->callback != nullptr)
+        {
+            void (**vftable)(void*) = *(void (***)(void*))state->callback;
+            ((void(__thiscall*)(void*))vftable[2])(state->callback);
+        }
+        if (state->play_method != nullptr)
+        {
+            void (**vftable)(void*) = *(void (***)(void*))state->play_method;
+            ((void(__thiscall*)(void*))vftable[4])(state->play_method);
+        }
+        if (state->instance != nullptr)
+        {
+            void (**vftable)(void*) = *(void (***)(void*))state->instance;
+            ((void(__thiscall*)(void*, int))vftable[0])(state->instance, 1);
+        }
+    }
+
+    AnimationPlayerResetPartialState* partial = player->PartialAnimStates;
+    player->QueueSize = 0;
+    while (partial != nullptr)
+    {
+        AnimationPlayerResetPartialState* state = partial;
+        partial = partial->next;
+        if (state->base.callback != nullptr)
+        {
+            void (**vftable)(void*) = *(void (***)(void*))state->base.callback;
+            ((void(__thiscall*)(void*))vftable[2])(state->base.callback);
+        }
+        if (state->base.play_method != nullptr)
+        {
+            void (**vftable)(void*) = *(void (***)(void*))state->base.play_method;
+            ((void(__thiscall*)(void*))vftable[4])(state->base.play_method);
+        }
+        if (state->base.instance != nullptr)
+        {
+            void (**vftable)(void*) = *(void (***)(void*))state->base.instance;
+            ((void(__thiscall*)(void*, int))vftable[0])(state->base.instance, 1);
+        }
+        state->next = player->PartialAnimStatePool;
+        player->PartialAnimStatePool = state;
+    }
+    player->PartialAnimStates = nullptr;
+}
 AnimationPlayer::AnimationPlayer(nalGeneric::nalGenericSkeleton* skeleton)  // ??0AnimationPlayer@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z @ 0x6EBC50
 {
     void* L = (void*)this;
