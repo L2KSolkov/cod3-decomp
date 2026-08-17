@@ -316,6 +316,19 @@ public:
     static XBoxLiveIngameOptionsCOD3* Me(int version);  // ?Me@XBoxLiveIngameOptionsCOD3@@SAPAV1@H@Z
 };
 
+class AARXBoxLiveIngameOptions : public XBoxLiveIngameOptionsCOD3 {
+public:
+    AARXBoxLiveIngameOptions(FEMenuSystem* s);  // ??0AARXBoxLiveIngameOptions@@QAE@PAVFEMenuSystem@@@Z (mp_xbox.o)
+    static AARXBoxLiveIngameOptions* Me();  // ?Me@AARXBoxLiveIngameOptions@@SAPAV1@XZ (game_xbox.o)
+    bool SetTimerText();                    // ?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ (game_xbox.o)
+};
+
+// ea: 0x00778FB0
+AARXBoxLiveIngameOptions* AARXBoxLiveIngameOptions::Me()
+{
+    return (AARXBoxLiveIngameOptions*)g_femanager.mAARS->menus[8];
+}
+
 // ea: 0x00778C90
 XBoxLiveIngameOptionsCOD3* XBoxLiveIngameOptionsCOD3::Me(int client)
 {
@@ -466,19 +479,6 @@ extern Entity* G_Spawn(TPakId pakId);  // ?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z (g
 extern unsigned char BG_GetWeaponIndexForName(const char* name);
 
 int scoreboard_player_sorter(const void* left, const void* right);
-
-class AARXBoxLiveIngameOptions {
-public:
-    AARXBoxLiveIngameOptions(FEMenuSystem* s);  // ??0AARXBoxLiveIngameOptions@@QAE@PAVFEMenuSystem@@@Z (mp_xbox.o)
-    static AARXBoxLiveIngameOptions* Me();  // ?Me@AARXBoxLiveIngameOptions@@SAPAV1@XZ (game_xbox.o)
-    bool SetTimerText();                    // ?SetTimerText@AARXBoxLiveIngameOptions@@QAE_NXZ (game_xbox.o)
-};
-
-// ea: 0x00778FB0
-AARXBoxLiveIngameOptions* AARXBoxLiveIngameOptions::Me()
-{
-    return (AARXBoxLiveIngameOptions*)g_femanager.mAARS->menus[8];
-}
 
 enum ESpectatorState : int {
     kSpectatorStateIntermission = 0x0,
@@ -6066,6 +6066,22 @@ void HotJoinMenu::OnCross(int c)
 
 extern int g_MPAARTotalTime;               // ?g_MPAARTotalTime@@3HA @ 0xE38468
 extern kuju::knet::sTime g_MPAARTimer;     // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
+
+// ea: 0x007790C0
+bool AARXBoxLiveIngameOptions::SetTimerText()
+{
+    float fSecondsLeftTilNextGame =
+        (float)g_MPAARTotalTime
+        - ((float)MultiplayerMgr::sInst->getLocalTime().mTime
+           - (float)g_MPAARTimer.mTime) * 0.001f;
+    char szElapsedSeconds[4];
+    _snprintf(szElapsedSeconds, 3u, "%d", (int)fSecondsLeftTilNextGame);
+    if (fSecondsLeftTilNextGame < 10.0f)
+        strcpy(&szElapsedSeconds[1], " ");
+    panel->GetTextPointer("text_timer_numbers")
+        ->SetText(szElapsedSeconds);
+    return fSecondsLeftTilNextGame > 0.5f;
+}
 
 // ea: 0x007A3720
 void AARBaseMenu::SetTimerText()
