@@ -7,6 +7,7 @@
 #include "ngl/ngl_scene.h"
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
+#include "game/platform_xbox/XboxLive.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -52,18 +53,8 @@ public:
     void Play(const char* name);  // ?Play@MusicMgr@@QAEXPBD@Z
 };
 
-// MPLiveEngine / LiveWrapper minimal views (game_xbox.o / mp.o)
+// MPLiveEngine minimal view (mp.o)
 class MPLiveEngine;
-class LivePlayer;
-class LiveWrapper {
-public:
-    static LiveWrapper* theWrapper;  // ?theWrapper@LiveWrapper@@1PAV1@A
-    LivePlayer* GetLocalPlayer(unsigned int portNumber);  // ?GetLocalPlayer@LiveWrapper@@QAEPAVLivePlayer@@K@Z
-};
-class LivePlayer {
-public:
-    unsigned short gamertag[16];  // +0x10
-};
 class MPLiveEngine {
 public:
     int internalState;      // +0x04

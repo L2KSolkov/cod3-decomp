@@ -4,6 +4,7 @@
 
 #include "game/shell/shell_types.h"
 #include "game/sv/sv_stubs.h"
+#include "game/platform_xbox/XboxLive.h"
 
 #include <math.h>
 
@@ -16,19 +17,6 @@ extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);     // core.o
 
 extern FEManager g_femanager;
-
-// Minimal LiveWrapper/LivePlayer views (mp.o/game_xbox.o externs; manglings
-// from IDA). Full types live in platform_xbox/XboxLive.h.
-class LiveWrapper;
-class LivePlayer {
-public:
-    virtual const _XUID* __stdcall GetXUID() const;  // ?GetXUID@LivePlayer@@UBGPBU_XUID@@XZ (game_xbox.o)
-};
-class LiveWrapper {
-public:
-    static LiveWrapper* theWrapper;  // ?theWrapper@LiveWrapper@@1PAV1@A
-    LivePlayer* GetLocalPlayer(unsigned int portNumber);  // ?GetLocalPlayer@LiveWrapper@@QAEPAVLivePlayer@@K@Z
-};
 
 // default highlight colors (shell.o data @ 0xDF3BF4)
 static color32 lUIHighlightListBoxDefaultSelectedColor(0xFFFFFFFF);
@@ -1198,7 +1186,7 @@ void UIPlayerListBox::CheckIfLocalPlayer(int row)
         LivePlayer* LocalPlayer =
             LiveWrapper::theWrapper->GetLocalPlayer(i);
         _XUID* v9 = &mPlayerXUIDs.mElements[row];
-        const _XUID* v10 = LocalPlayer->GetXUID();
+        const XUID* v10 = &LocalPlayer->xuid;
         if (v10->qwValue == v9->qwValue)
             break;
         if (++i >= 4)
