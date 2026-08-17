@@ -325,6 +325,7 @@ add_library(cod3_game_mp STATIC
 )
 add_library(cod3_game_mpshell STATIC
     src/game/mpshell/stubs_game.cpp
+    src/game/mpshell/hotjoin_methods.cpp
     src/game/mpshell/session_menus.cpp
 )
 add_library(cod3_game_shell STATIC

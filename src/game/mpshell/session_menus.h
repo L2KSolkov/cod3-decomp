@@ -1288,6 +1288,7 @@ public:
     void* mPlayerMgr;                    // +0x4C (MPPlayerManager*)
     int   mController;                   // +0x50
     int   mVersion;                      // +0x54
+    static HotJoinMenu* Me(int version);  // ?Me@HotJoinMenu@@SAPAV1@H@Z
     HotJoinMenu(FEMenuSystem* pauseMenuSystem);  // ??0HotJoinMenu@@QAE@PAVFEMenuSystem@@@Z
     virtual void OnDeactivate(FEMenu* m);  // ?OnDeactivate@HotJoinMenu@@UAEXPAVFEMenu@@@Z
     virtual void Update(float time_inc);   // ?Update@HotJoinMenu@@UAEXM@Z
@@ -1300,6 +1301,8 @@ public:
     virtual void OnCross(int c);           // ?OnCross@HotJoinMenu@@UAEXH@Z
     virtual void OnDown(int c);            // ?OnDown@HotJoinMenu@@UAEXH@Z
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@HotJoinMenu@@UAEXPAVPanelFile@@@Z
+    void Close(bool joined);              // ?Close@HotJoinMenu@@QAEX_N@Z
+    void DisplayError(const char* error_msg); // ?DisplayError@HotJoinMenu@@QAEXPBD@Z
     void Join();                           // ?Join@HotJoinMenu@@QAEXXZ
 };
 static_assert(sizeof(HotJoinMenu) == 0x58,
