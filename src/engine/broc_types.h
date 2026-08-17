@@ -419,8 +419,16 @@ COD3_STATIC_ASSERT_32BIT(sizeof(hudelem) == 4, "Broc::hudelem size mismatch");
 // EEHelper / EEDefault — template helpers for ExtendedEntity field types
 // ============================================================================
 namespace EEHelper {
+    template <typename T> struct EqualsArg {
+        typedef unsigned int type;
+    };
+    template <> struct EqualsArg<float> {
+        typedef float type;
+    };
+
     template <typename T> unsigned int Initialize(const char* key);
-    template <typename T> bool Equals(unsigned int val, const char* str);
+    template <typename T>
+    bool Equals(typename EqualsArg<T>::type val, const char* str);
     template <typename T> unsigned int Copy(unsigned int val);
 }
 
@@ -693,7 +701,11 @@ struct BrocAPI {
     bool (*mWarning)(const char* file, int line, const char* msg);  // +0xBE0
     bool (*mError)(const char* file, int line, const char* msg);  // +0xBE4
     struct BrocExports mBrocExports;                      // +0xBE8
-    char _padBrocExports[0xF1C - (0xBE8 + 0x1C8)];        // +0xDB0
+    float (*mAtoF)(const char*);                           // +0xDB0
+    int (*mAtoI)(const char*);                             // +0xDB4
+    unsigned int (*mStringHash)(const char*);              // +0xDB8
+    void* (*mGetExtendedEntity)(unsigned int);             // +0xDBC
+    char _padBrocExports[0xF1C - (0xBE8 + 0x1C8 + 0x10)]; // +0xDC0
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     void (*m_entity_set_origin)(unsigned int, Broc::vector);  // +0xF20
     Broc::string* (*m_entity_get_model)(Broc::string*, unsigned int);  // +0xF24

@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 #include <new>
 
 // ============================================================================
@@ -1052,16 +1053,59 @@ void GetAllVehicleNodes(void*) {}
 
 namespace EEHelper {
     template <typename T> unsigned int Initialize(const char*) { return 0; }
-    template <typename T> bool Equals(unsigned int, const char*) { return false; }
+    template <typename T>
+    bool Equals(typename EqualsArg<T>::type, const char*) { return false; }
     template <typename T> unsigned int Copy(unsigned int val) { return val; }
 
-    template unsigned int Initialize<float>(const char*);
-    template unsigned int Initialize<int>(const char*);
-    template unsigned int Initialize<string>(const char*);
-    template bool Equals<int>(unsigned int, const char*);
-    template bool Equals<float>(unsigned int, const char*);
-    template bool Equals<string>(unsigned int, const char*);
-    template unsigned int Copy<string>(unsigned int);
+    // ea: 0x009295A0; IDA calls BrocAPI::mAtoF and returns the raw float bits.
+    template <> unsigned int Initialize<float>(const char* text)
+    {
+        const float value = gBrocAPI.mAtoF(text);
+        unsigned int bits = 0;
+        memcpy(&bits, &value, sizeof(bits));
+        return bits;
+    }
+
+    // ea: 0x009295E0; IDA calls BrocAPI::mAtoI.
+    template <> unsigned int Initialize<int>(const char* text)
+    {
+        return static_cast<unsigned int>(gBrocAPI.mAtoI(text));
+    }
+
+    // ea: 0x00929620; the string object is constructed in the returned raw
+    // four-byte ExtendedEntity slot, matching IDA's placement-new body.
+    template <> unsigned int Initialize<string>(const char* text)
+    {
+        unsigned int raw = 0;
+        new (&raw) string(text, 0);
+        return raw;
+    }
+
+    // ea: 0x009296C0.
+    template <> bool Equals<int>(unsigned int lhs, const char* text)
+    {
+        return static_cast<unsigned int>(atoi(text)) == lhs;
+    }
+
+    // ea: 0x00929700.
+    template <> bool Equals<float>(float lhs, const char* text)
+    {
+        return lhs == static_cast<float>(atof(text));
+    }
+
+    // ea: 0x00929760.
+    template <> bool Equals<string>(unsigned int lhs, const char* text)
+    {
+        return operator==(*reinterpret_cast<const string*>(&lhs), text);
+    }
+
+    // ea: 0x00929790; copy the raw string object into the returned slot.
+    template <> unsigned int Copy<string>(unsigned int data)
+    {
+        unsigned int raw = 0;
+        new (&raw) string(*reinterpret_cast<const string*>(&data), 0);
+        return raw;
+    }
 }
 
 namespace EEDefault {
