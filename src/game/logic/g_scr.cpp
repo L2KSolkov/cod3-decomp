@@ -21371,6 +21371,11 @@ void AeThread::ProcessState()
     }
 }
 
+void AeThread_ProcessState(AeThread* self)
+{
+    self->ProcessState();
+}
+
 // ea: 0x005C92B0
 bool AeThread::HasEndCond(int notify) const
 {
