@@ -40,7 +40,7 @@ nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams, nglShaderParamSet* ShaderParams,
                             void (*fn)(nglMeshNode*));
 nglScene* nglListBeginScene(nglSceneParamType ParamSource);
-void nglListEndScene();
+nglScene* nglListEndScene();
 extern nglScene* nglBuildScene;
 
 // ngl_debug.o

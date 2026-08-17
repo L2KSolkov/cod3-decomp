@@ -778,7 +778,7 @@ ApsGameClient::ApsDebugLine::ApsDebugLine() { age = 0.0f; }
 // ============================================================================
 enum nglSceneParamType { NGLSCENE_PARENT = 0 };
 extern nglScene* nglListBeginScene(nglSceneParamType ParamSource);
-extern void nglListEndScene();
+extern nglScene* nglListEndScene();
 void codListBeginScene(nglSceneParamType paramSource)  // ?codListBeginScene@@YAXW4nglSceneParamType@@@Z @ 0x6EBB40
 {
     nglListBeginScene(paramSource);
