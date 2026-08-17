@@ -5822,6 +5822,72 @@ void PlayLanMenu::OnActivate()
     SetDescriptionText();
 }
 
+// ea: 0x007A90B0
+void PlayLanMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    movie_manager::frame_advance();
+    mListBox.Update(time_inc);
+    if (!mJoiningFriend)
+    {
+        if (MPUIInterface::mLiveQueryActive && MPUIInterface::mQueryFromID)
+        {
+            OverlayMenu* overlay = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            overlay->SetState((OverlayMenu::eState)16);
+            OverlayMenu* fems = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            fems->mAcceptMenu = 9;
+            OverlayMenu* menu = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            menu->mBackMenu = 9;
+            system->AddOverlay(16);
+            mJoiningFriend = true;
+            MPUIInterface::Step();
+            return;
+        }
+        MPUIInterface::Step();
+        return;
+    }
+    if (MPUIInterface::mLiveQueryActive && MPUIInterface::mQueryFromID)
+    {
+        MPUIInterface::Step();
+        return;
+    }
+    unsigned long numGames = 0;
+    MPUIInterface::GameListingGet(numGames);
+    if (numGames == 0)
+    {
+        OverlayMenu* overlay = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        overlay->SetState(OverlayMenu::JOIN_FAILED);
+        OverlayMenu* fems = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        fems->mAcceptMenu = 9;
+        OverlayMenu* menu = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        menu->mBackMenu = 9;
+        system->AddOverlay(16);
+        mJoiningFriend = false;
+        MPUIInterface::Step();
+        return;
+    }
+    MPUIInterface::mGameConnectionType =
+        MPUIInterface::kGameConnectionTypeOnline;
+    OverlayMenu* overlay = g_femanager.fems != nullptr
+        ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+    overlay->SetState(OverlayMenu::JOINING_START);
+    OverlayMenu* menu = g_femanager.fems != nullptr
+        ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+    menu->mBackMenu = 9;
+    OverlayMenu* fems = g_femanager.fems != nullptr
+        ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+    *(float*)((char*)fems + 0x60) = 0.0f;
+    system->AddOverlay(16);
+    mJoiningFriend = false;
+    MPUIInterface::Step();
+}
+
 // ea: 0x007A9BE0
 WeaponSelectMenu::WeaponSelectMenu(FEMenuSystem* pauseMenuSystem)
     : ModelMenu(pauseMenuSystem, 7)
