@@ -73,8 +73,11 @@ extern char MI_GetMapIDbyIndex(int index);  // ?MI_GetMapIDbyIndex@@YADD@Z (mp_s
 extern void CG_EntityEvent(Entity* entity, int event, int bPredict);  // cg.o
 extern cvar_t* ik_ADS;         // ?ik_ADS@@3PAUcvar_t@@A (game2.o)
 extern int numMPAnims;         // ?numMPAnims@@3HA (mp.o)
-extern float AnimIK_painDurationMin;   // ?painDurationMin@AnimIK@@2MA (game2.o)
-extern float AnimIK_painDurationMax;   // ?painDurationMax@AnimIK@@2MA (game2.o)
+class AnimIK {
+public:
+    static float painDurationMin;      // ?painDurationMin@AnimIK@@2MA (game2.o)
+    static float painDurationMax;      // ?painDurationMax@AnimIK@@2MA (game2.o)
+};
 extern float AnimIK_painAmpMin;        // ?painAmpMin@AnimIK@@2MA (game2.o)
 extern float AnimIK_painAmpMax;        // ?painAmpMax@AnimIK@@2MA (game2.o)
 extern int cl_stance_ss[];     // ?cl_stance_ss@@3PAHA (cl.o @ 0x1304C74)
@@ -20788,10 +20791,10 @@ void MPPlayerManager::HandlePainFlinch(
                                 bLowBlow;
                             float r = (float)random();
                             ent->client->AnimIKPainEvents[v5].duration =
-                                (AnimIK_painDurationMax
-                                 - AnimIK_painDurationMin)
+                                (AnimIK::painDurationMax
+                                 - AnimIK::painDurationMin)
                                     * r
-                                + AnimIK_painDurationMin;
+                                + AnimIK::painDurationMin;
                             ent->client->AnimIKPainEvents[v5].amplitude =
                                 (AnimIK_painAmpMax - AnimIK_painAmpMin) * r
                                 + AnimIK_painAmpMin;

@@ -257,6 +257,8 @@ void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 // ============================================================================
 class AnimIK {
 public:
+    static float painDurationMin;    // ?painDurationMin@AnimIK@@2MA
+    static float painDurationMax;    // ?painDurationMax@AnimIK@@2MA
     float ikJoints[0x50 / 4];       // +0x00 AnimIKJointVars_t[4]
     int initialized;                // +0x50
     void* pose;                     // +0x54
@@ -299,6 +301,9 @@ public:
                 nalGeneric::nalGenericPose* inPose);   // ea: 0x50BBC0
 };
 static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
+
+float AnimIK::painDurationMin = 0.0f;
+float AnimIK::painDurationMax = 0.0f;
 
 // ?AnimIKGlobal@@3VAnimIK@@A (game2.o data @ 0xF05660)
 AnimIK AnimIKGlobal;
