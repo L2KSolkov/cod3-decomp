@@ -80,6 +80,7 @@ namespace Broc {
 
 // IDA global (codmp_xboxr.xbe.c:956493; ea: 0x010F0568).
 BrocAPI gBrocAPI = {};
+ExtendedEntity ExtendedEntity::nullEnt;
 ExtendedEntity::GetFunctionsFunc ExtendedEntity::sGetFunctions = nullptr;
 
 int MathsRandomInt(int iMax)
@@ -949,7 +950,50 @@ void ExtendedEntity::SetUndefined(unsigned int key)
     }
 }
 unsigned int* ExtendedEntity::SetVal(unsigned int, const string&) { return NULL; }
-unsigned int* ExtendedEntity::InternalSet(unsigned int, unsigned int) { return NULL; }
+// ea: 0x0092ACF0. IDA profiling events are omitted; null-entity handling,
+// typed replacement, growth, and slot initialization follow the decompiled
+// implementation.
+unsigned int* ExtendedEntity::InternalSet(unsigned int key, unsigned int val)
+{
+    if (this == &ExtendedEntity::nullEnt)
+    {
+        if (gBrocAPI.mThreadGetId() == gBrocAPI.mBrocExports.mMainThreadHandle
+            && gBrocAPI.mError(
+                   "c:\\cod\\code\\script\\include\\extendedentity.cpp",
+                   344,
+                   "deref of null entity in the main level thread is not allowed"))
+            __debugbreak();
+        if (gBrocAPI.mKillThread)
+            gBrocAPI.mKillThreadExec();
+    }
+
+    for (unsigned int i = 0; i < mCount; ++i)
+    {
+        if (mKVPairs[i].key != key)
+            continue;
+        GetDestructor(mKVPairs[i].key)(mKVPairs[i].val);
+        mKVPairs[i].val = val;
+        return &mKVPairs[i].val;
+    }
+
+    if (mCount == mCapacity)
+    {
+        mCapacity += 8;
+        KVPair* oldKVPairs = mKVPairs;
+        mKVPairs = static_cast<KVPair*>(mem_alloc(8 * mCapacity, 4));
+        memcpy(mKVPairs, oldKVPairs, 8 * mCount);
+        for (unsigned int j = mCount; j < mCapacity; ++j)
+        {
+            mKVPairs[j].key = 0;
+            mKVPairs[j].val = 0;
+        }
+        mem_free(oldKVPairs);
+    }
+
+    mKVPairs[mCount].key = key;
+    mKVPairs[mCount].val = val;
+    return &mKVPairs[mCount++].val;
+}
 // ea: 0x0092B0E0. IDA profiling events are omitted as documented above.
 const unsigned int* ExtendedEntity::InternalGet(unsigned int key) const
 {

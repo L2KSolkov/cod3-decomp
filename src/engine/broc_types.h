@@ -333,6 +333,8 @@ struct ExtendedEntity {
     unsigned int mCapacity;  // +0x04
     KVPair*      mKVPairs;   // +0x08
 
+    static ExtendedEntity nullEnt; // IDA global @ 0x10F197C
+
     ExtendedEntity();
     ExtendedEntity(const ExtendedEntity& other);
     ~ExtendedEntity();
@@ -687,7 +689,12 @@ COD3_STATIC_ASSERT_32BIT(sizeof(BrocExports) == 0x1C8, "BrocExports size mismatc
 struct BrocAPI {
     void (*mPrint)(const char*);                          // +0x000
     void (*mPrintLn)(const char*);                        // +0x004
-    char _pad08[0x94 - 0x08];                             // +0x008
+    char _pad08[0x34 - 0x08];                             // +0x008
+    bool mKillThread;                                     // +0x034
+    unsigned char _pad35[0x38 - 0x35];                    // +0x035
+    char _pad38[0x6C - 0x38];                             // +0x038
+    unsigned int (*mThreadGetId)();                       // +0x06C
+    char _pad70[0x94 - 0x70];                             // +0x070
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
     unsigned int (*mGetEntByNum)(int);                    // +0x098
     char _pad9C[0x184 - 0x9C];                            // +0x09C
@@ -751,7 +758,8 @@ struct BrocAPI {
     void (*m_entity_set_persistent_player_nextPlayerClass)(unsigned int, __int16);  // +0x12F8
     int (*m_entity_get_persistent_player_playerState)(unsigned int);  // +0x12FC
     void (*m_entity_set_persistent_player_playerState)(unsigned int, int);  // +0x1300
-    char _pad1304[0x133C - 0x1304];                       // +0x1304 (total 0x133C = 4924)
+    char _pad1304[0x1338 - 0x1304];                       // +0x1304
+    void (*mKillThreadExec)();                            // +0x1338
 };
 static_assert(sizeof(BrocAPI) == 0x133C, "BrocAPI size mismatch");
 
