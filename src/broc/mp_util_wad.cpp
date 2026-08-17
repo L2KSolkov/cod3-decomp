@@ -6573,8 +6573,10 @@ void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
     return NULL;
 }
 void* player_dying_sounds__functor(Broc::entity player) {
-    (void)player;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(player_dying_sounds, player);
 }
 }
 // ============================================================================
