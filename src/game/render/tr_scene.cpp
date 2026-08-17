@@ -7,6 +7,7 @@
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_scene.h"
 #include "ngl/ngl_lighting.h"
+#include "game/nextgen/nextgen.h"
 
 #include <math.h>
 #include <string.h>
@@ -767,13 +768,6 @@ void Render();  // ?Render@StatusBar@@YAXXZ
 namespace MemGraph {
 void Render();  // ?Render@MemGraph@@YAXXZ
 }
-namespace CG_MotionBlur {
-void AddPostCallback();  // ?AddPostCallback@CG_MotionBlur@@YAXXZ
-}
-namespace CG_SceneBlur {
-void AddPostCallback();  // ?AddPostCallback@CG_SceneBlur@@YAXXZ
-}
-
 // cdl_proftimer (member start/stop)
 struct cdl_proftimer {
 public:
