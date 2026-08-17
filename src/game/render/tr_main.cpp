@@ -833,9 +833,9 @@ struct BspTreeView {
     unsigned int mCellsSize;   // +0x18 (InplaceVector<BspCell>::mSize)
     BspCellView* mCellsList;   // +0x1C
 };
-extern int g_allVisualCount;  // ?g_allVisualCount@@3HA (g.o)
-extern int g_visualCount;     // ?g_visualCount@@3HA (g.o)
-extern int g_xmodelCount;     // ?g_xmodelCount@@3HA (g.o)
+int g_allVisualCount = 0;     // ?g_allVisualCount@@3HA (g.o)
+int g_visualCount = 0;        // ?g_visualCount@@3HA (g.o)
+int g_xmodelCount = 0;        // ?g_xmodelCount@@3HA (g.o)
 extern int g_alwaysCount;     // ?g_alwaysCount@@3HA (g.o)
 extern int g_limitVisualRange;  // ?g_limitVisualRange@@3HA
 extern int g_renderSphere;    // ?g_renderSphere@@3HA
