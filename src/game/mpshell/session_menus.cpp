@@ -470,7 +470,7 @@ enum hitLocation_t : int;
 struct MenuClearHelper : FEMenu {
     void ClearAll() { ClearAllButtons(); }
 };
-void player_die(void* self, void* inflictor, void* attacker, int damage,
+void player_die(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 int meansOfDeath, int iWeapon, const float* vPosition,
                 const float* vDir, hitLocation_t hitLoc);  // ?player_die@@YAXPAVEntity@@00HHHPBM1W4hitLocation_t@@@Z (g.o)
 
