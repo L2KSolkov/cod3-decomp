@@ -276,11 +276,12 @@ bool collide(
     const cdlConvex& convexA, const math::Mat43& aToWorld,
     const cdlConvex& convexB, const math::Mat43& bToWorld,
     cdl_cinfo2& cinfo,
-    unsigned int maxIter,
-    unsigned int flags,
-    unsigned int absTresh,
-    unsigned int relTresh)
+    unsigned int abase,
+    unsigned int anquads,
+    unsigned int bbase,
+    unsigned int bnquads)
 {
-    int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo, 0.0f, true, maxIter, flags, absTresh, relTresh);
+    int result = gjk(convexA, aToWorld, convexB, bToWorld, cinfo,
+                     SEP_TRESHOLD2_0, false, abase, anquads, bbase, bnquads);
     return result == 0;
 }
