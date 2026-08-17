@@ -49,6 +49,13 @@ extern const float colorOrange[4];
 extern const float colorLtGreen[4];
 extern const float colorLtOrange[4];
 
+// IDA render.o data at 0xD0154C, 0xD0157C, 0xD0161C, 0xD0165C, 0xD0166C.
+const float colorBlack[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+const float colorLtGreen[4] = { 0.0f, 0.7f, 0.0f, 1.0f };
+const float colorWhite[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+const float colorOrange[4] = { 1.0f, 0.7f, 0.0f, 1.0f };
+const float colorLtOrange[4] = { 0.75f, 0.525f, 0.0f, 1.0f };
+
 // ============================================================================
 // RE_Text_PaintWithCursor - ea: 0x006C6070
 // ============================================================================
