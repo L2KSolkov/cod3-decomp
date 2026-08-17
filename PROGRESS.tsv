@@ -704,4 +704,4 @@ mp.o COMPLETE (770/770): player/vehicle step+interpolation, manager+peer handler
 mp.o voice-fix	mp.o	game	770	PORTED	IDA dump-backed cVoiceNetworkManager destructor, setPlayerDistance assertions/indexing, and mVoiceLifeTime={800}; linker unresolved count 33->30
 mp_shell.o COMPLETE (680/680): session/overlay/vote/settings/AAR/scoreboard menus, pause/hotjoin/spectate, model+weapon select, create/find/play lan+online panels, overlay state machines, AARMenuSystem ctor, vote tally/send, panel-file + helpbar construction
 
-game.o		game.o	game	663	IN_PROGRESS	batch 47 COMPLETE (14/14): VEH_UpdateParticlesRBVeh ported from IDA; rb_vehicle +0x320 verified as m_wheels pointer array despite decompiler member label; exact 4/6-wheel loop and assertion; prior vehicle ports retained; build clean; no runtime tests
+game.o		game.o	game	663	IN_PROGRESS	batch 48 COMPLETE (15/15): VEH_UpdateHatch ported from IDA with hatchLerpDuration=0.5 and exact right/left target/current interpolation; vehicle_info_t hatch/player/driver fields added at IDA offsets; prior vehicle ports retained; build clean; no runtime tests

@@ -2774,7 +2774,11 @@ struct vehicle_info_t {
     char    mMantleHintString[32];  // +0x25C
     int     mMantleHintStringIndex; // +0x27C
     int     vehicleAnimMatrixColumn;  // +0x280
-    uint8_t _pad284[0x2EC - 0x284];
+    char    playerInteractionName[32]; // +0x284
+    char    playerEIName[32];       // +0x2A4
+    float   hatchOpenAngleRight;    // +0x2C4
+    float   hatchOpenAngleLeft;     // +0x2C8
+    char    driverIdleAnim[32];     // +0x2CC
     char    nameOverlay[32];        // +0x2EC
     int     inactiveBlowupSeconds;  // +0x30C
 };

@@ -44,7 +44,9 @@ void rb_vehicle_update_from_network(rb_vehicle* self,
     (void)self; (void)position; (void)angles; (void)vel; (void)aVel;
 }
 
-// VEH_* free artifacts (g.o; stubs, port later)
+static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate);
+
+// VEH_* free artifacts (g.o)
 struct scr_vehicle_t;
 void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
 {
@@ -57,7 +59,37 @@ void VEH_UpdateAltWeapon(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateFollow(Entity* e) { (void)e; }
 void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
-void VEH_UpdateHatch(Entity* e, int a) { (void)e; (void)a; }
+float hatchLerpDuration = 0.5f; // g.o @ 0xDD7F50
+void VEH_UpdateHatch(Entity* ent, int)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info->type == 2)
+    {
+        float targetRight = scr_vehicle->mHatchOpen
+                                 ? info->hatchOpenAngleRight
+                                 : 0.0f;
+        float currentRight = scr_vehicle->next.mHatchAngleRight;
+        scr_vehicle->current.mHatchAngleRight = currentRight;
+        scr_vehicle->next.mHatchAngleRight =
+            VEH_LerpAngle(targetRight, currentRight,
+                          info->hatchOpenAngleRight / hatchLerpDuration);
+
+        float targetLeft = scr_vehicle->mHatchOpen
+                                ? info->hatchOpenAngleLeft
+                                : 0.0f;
+        float currentLeft = scr_vehicle->next.mHatchAngleLeft;
+        scr_vehicle->current.mHatchAngleLeft = currentLeft;
+        scr_vehicle->next.mHatchAngleLeft =
+            VEH_LerpAngle(targetLeft, currentLeft,
+                          info->hatchOpenAngleLeft / hatchLerpDuration);
+    }
+    else
+    {
+        scr_vehicle->next.mHatchAngleRight = 0.0f;
+        scr_vehicle->next.mHatchAngleLeft = 0.0f;
+    }
+}
 void VEH_UpdateParticlesRBVeh(Entity* ent)
 {
     scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
