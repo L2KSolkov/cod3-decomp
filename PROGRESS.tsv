@@ -226,7 +226,7 @@ bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	bdSocket.cpp: UDP socke
 
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 
-cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
+cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	IN_PROGRESS	8/9 non-inline functions ported from IDA; convex intersect at 0x81E130 remains
 
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
@@ -390,7 +390,7 @@ zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO
 
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	PORTED	apsAction.cpp (apsAction base: ctor/dtor/SetParam/SetDomain/Fixup; apsArray<T>+apsVirtualBase+apsDestroy/apsFixUp in apsAction.h; removed stale apsSuppliedActions stubs
 
-cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
+cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	IN_PROGRESS	compute_det and collide_partial ported; gjk/collide_full/collide remain
 
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
@@ -530,7 +530,7 @@ zlib_xboxr:adler32.o	zlib_xboxr	adler32.o	engine	2	PORTED
 
 aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	PORTED	apsDebug.h/.cpp (PrintWarning/Print + mbEnabled data, Enabled/SetEnabled inline)
 
-cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
+cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	cdl_init and cdl_profile_reset ported and build-verified
 
 nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
