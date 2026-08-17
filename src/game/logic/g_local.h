@@ -2978,7 +2978,8 @@ struct weaponFileInfo_t {
     int     iAltDropTime;         // +0x62C
     int     iAltRaiseTime;        // +0x630
     int     iFuseTime;            // +0x634
-    uint8_t _pad2b[0x640 - 0x638];
+    uint8_t _pad2b[0x63C - 0x638];
+    float   fMoveSpeedScale;          // +0x63C
     float   fAdsZoomFov;          // +0x640
     uint8_t _pad644[0x668 - 0x644];
     float   fHipSpreadStandMin;   // +0x668

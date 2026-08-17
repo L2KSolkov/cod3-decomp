@@ -95,6 +95,7 @@ extern int iGrenadeHudTweak;          // game.o @ 0xDF8E60
 extern float gCurrentGrenadeTimeLeft; // game.o @ 0xF4EC0C
 extern float gLastGrenadeTimeLeft;    // game.o @ 0xF4EC08
 extern float ratio;                   // game.o @ 0xF4EC10
+float pm_sprintFatigue = 0.33333334f; // IDA global @ 0xD0153C
 extern int gInteractArmsWeaponIndex;  // game.o @ 0xF4EBF4
 extern PlayerState* GetPlayerState(int idx);  // ?GetPlayerState@@YAAAVPlayerState@@H@Z
 PlayerState* GetPlayerState(int idx)  // ?GetPlayerState@@YAPAVPlayerState@@H@Z (stub)
@@ -5198,6 +5199,99 @@ __m128 PM_GetViewHeightLerp(int iFromHeight, int iToHeight)
     if (fraction > 1.0f)
         return _mm_set_ss(1.0f);
     return _mm_set_ss(fraction);
+}
+
+// ea: 0x6147A0
+float PM_CmdScale_Walk(usercmd_s* cmd)
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 896;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    const float forward = cmd->forwardmove < 0
+                              ? cmd->forwardmove * ps->backSpeedScale
+                              : (float)cmd->forwardmove;
+    float scale = fabsf(forward);
+    const float strafe = fabsf(cmd->rightmove * ps->strafeSpeedScale);
+    if (scale <= strafe)
+        scale = strafe;
+    if (scale == 0.0f)
+        return 0.0f;
+
+    scale = (float)ps->speed * scale
+            / (sqrtf((float)(cmd->rightmove * cmd->rightmove
+                             + cmd->forwardmove * cmd->forwardmove))
+               * 127.0f);
+
+    if ((ps->pm_flags & 0x10000) == 0)
+    {
+        bool useRunScale = (ps->pm_flags & 0x80) != 0 || ps->leanf != 0.0f;
+        if (!useRunScale && ps->weaponstate == 13)
+        {
+            weaponFileInfo_t* info = BG_GetInfoForWeapon(ps->weapon);
+            useRunScale = info->weapClass == WEAPCLASS_LMG;
+        }
+        scale *= useRunScale ? ps->runSpeedScale : ps->walkSpeedScale;
+    }
+
+    if (ps->pm_type != 2 && ps->pm_type != 3)
+    {
+        const int stance = PM_GetEffectiveStance(ps);
+        float lerp = PM_GetViewHeightLerp(ps->crouchViewHeight,
+                                          ps->proneViewHeight).m128_f32[0];
+        if (lerp != 0.0f)
+        {
+            scale *= ((1.0f - lerp) * ps->crouchSpeedScale
+                      + lerp * ps->proneSpeedScale);
+        }
+        else
+        {
+            lerp = PM_GetViewHeightLerp(ps->proneViewHeight,
+                                        ps->crouchViewHeight).m128_f32[0];
+            if (lerp != 0.0f)
+            {
+                scale *= ((1.0f - lerp) * ps->proneSpeedScale
+                          + lerp * ps->crouchSpeedScale);
+            }
+            else if (stance == 1)
+            {
+                scale *= ps->proneSpeedScale;
+            }
+            else if (stance == 2)
+            {
+                scale *= ps->crouchSpeedScale;
+            }
+        }
+    }
+
+    if (pm->waterlevel != 0)
+        scale *= 1.0f - (pm->waterlevel * pm_sprintFatigue * 0.5f);
+
+    weaponFileInfo_t* info = BG_GetInfoForWeapon(ps->weapon);
+    if (info == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 958;
+        AeAssert::gCurrentExpr = "info";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ps->weapon != 0 && info->fMoveSpeedScale > 0.0f
+        && (ps->pm_flags & 0x10000) == 0)
+        scale *= info->fMoveSpeedScale;
+    if ((cmd->buttons & 0x200) != 0)
+        scale *= 0.9f;
+    return scale;
 }
 
 // ============================================================================
