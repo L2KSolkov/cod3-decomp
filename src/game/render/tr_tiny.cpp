@@ -1789,13 +1789,16 @@ AnimationPlayer::~AnimationPlayer()  // ??1AnimationPlayer@@QAE@XZ @ 0x6EBD00
 }
 
 // DObjGeomTraceline (real trace_t/DObjTrace_s/XModel layouts)
-struct trace_tLocal {
+// IDA trace_t layout used by XModelTraceLine (0x50 bytes).
+struct trace_t {
     math::Position3 endpos;          // +0x00
     math::Dir3 normal;               // +0x10
     float fraction;                  // +0x20
     int surfaceFlags;                // +0x24
     int contents;                    // +0x28
+    unsigned char _pad2C[0x24];       // +0x2C
 };
+static_assert(sizeof(trace_t) == 0x50, "trace_t layout mismatch");
 struct DObjTrace_s {
     float fraction;                  // +0x00
     int surfaceflags;                // +0x04
@@ -1805,7 +1808,7 @@ struct DObjTrace_s {
     unsigned char startsolid;        // +0x1C
     unsigned char allsolid;          // +0x1D
 };
-extern int XModelTraceLine(IVPointer<XModel> model, trace_tLocal* trace,
+extern int XModelTraceLine(IVPointer<XModel> model, trace_t* trace,
                            DObjSkelMat* mats, const float* start,
                            const float* end, int contentmask);
 extern DObjSkelMat* DObjGetMatrixArray(const class DObj* obj, int partIndex);
@@ -1813,7 +1816,7 @@ void DObjGeomTraceline(const class DObj* obj, const math::Position3& localStart,
                        const math::Position3& localEnd, int contentmask,
                        DObjTrace_s* results, float)  // ?DObjGeomTraceline@@YAXPBVDObj@@ABVPosition3@math@@1HPAUDObjTrace_s@@M@Z @ 0x6CDDA0
 {
-    trace_tLocal trace;
+    trace_t trace;
     trace.surfaceFlags = 0;
     trace.contents = 0;
     DObjSkelMat* mats = DObjGetMatrixArray(obj, 0);

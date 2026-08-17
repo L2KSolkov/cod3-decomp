@@ -9,6 +9,8 @@
 #include <string.h>
 #include <intrin.h>
 
+class nglFont;
+
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
 
@@ -1028,7 +1030,7 @@ void CL_InitRef()
     extern int CG_GetGameModel(short);
     extern void CG_DObjCalcPose(void*, void*, int*);
     extern void SCR_AdjustFrom640(float*, float*, float*, float*);
-    extern void* CL_GetFontInfo(int, float);
+    extern nglFont* CL_GetFontInfo(int, float);
     extern void* GetRefAPI(int apiVersion, void* rimp);
     ri.Cmd_AddCommand = Cmd_AddCommand;
     ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
@@ -1057,7 +1059,7 @@ void CL_InitRef()
     ri.CG_GetGameModel = CG_GetGameModel;
     ri.CG_DObjCalcPose = CG_DObjCalcPose;
     ri.AdjustFrom640 = SCR_AdjustFrom640;
-    ri.UI_GetFontInfo = CL_GetFontInfo;
+    ri.UI_GetFontInfo = reinterpret_cast<void* (*)(int, float)>(CL_GetFontInfo);
     refexport_t2* RefAPI = (refexport_t2*)GetRefAPI(14, &ri);
     Com_Printf("-------------------------------\n");
     if (!RefAPI)

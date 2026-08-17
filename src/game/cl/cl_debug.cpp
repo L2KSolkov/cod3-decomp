@@ -5,6 +5,7 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "game/ui_types.h"
 
 #include <string.h>
 
@@ -188,9 +189,9 @@ int CG_GetGameModel(short modelindex)
 }
 
 // ea: 0x52D000
-void* CL_GetFontInfo(int font, float scale)
+nglFont* CL_GetFontInfo(int font, float scale)
 {
-    extern void* FEManager_GetFont(void* self, int f, float scale);
+    extern nglFont* FEManager_GetFont(void* self, int f, float scale);
     return FEManager_GetFont(&g_femanager, font, scale);
 }
 
