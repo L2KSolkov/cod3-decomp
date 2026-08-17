@@ -38,7 +38,8 @@ namespace _mp_audio {
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage);
 void* audio_spawner__functor(Broc::entity self, Broc::string sound);
 void* ambient_system__functor(Broc::entity self, Broc::string spawn_package);
-void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay);
+void* PlaySound__functor(Broc::entity self, Broc::string sound,
+                         Broc::bfloat delay);
 void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
                                    Broc::vector position);
 void* player_dying_sounds__functor(Broc::entity player);
@@ -70,7 +71,7 @@ void* ArtilleryDispenser__functor(Broc::entity player);
 void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
                                    bool health, int rank0Time, int rank1Time,
                                    int rank2Time);
-void* NotifyWhenTimerExpires__functor(Broc::entity player, int time,
+void* NotifyWhenTimerExpires__functor(Broc::entity player, Broc::bint time,
                                       HashStr notifyString);
 }
 namespace _mp_shellshock {
@@ -3027,8 +3028,8 @@ void* WAR_InitFlag__functor(Broc::entity self, int flag_id);
 void* WAR_FlagUpdate__functor(Broc::entity self);
 void* WAR_TouchFlag__functor(Broc::entity self);
 void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self);
-void* PlayCapturedSounds__functor(Broc::entity self, int team,
-                                  int originalWarIndex);
+void* PlayCapturedSounds__functor(Broc::entity self, Broc::bint team,
+                                  Broc::bint originalWarIndex);
 }
 namespace _mp_hq { void* main__functor(Broc::entity self); }
 namespace _mp_hq {
@@ -3156,7 +3157,8 @@ void CallbackDebugRender();
 void* main__functor(Broc::entity self);
 void* StartGame__functor(Broc::entity self);
 void* ObjectiveUpdater__functor(Broc::entity guy);
-void* WaitThenPickFlagToLaunch__functor(Broc::entity self, float wait_time,
+void* WaitThenPickFlagToLaunch__functor(Broc::entity self,
+                                        Broc::bfloat wait_time,
                                         const char* message);
 void* WaitForFlagTimeOut__functor(Broc::entity flag);
 void* WaitForNoTouchFlag__functor(Broc::entity toucher);
@@ -6642,21 +6644,28 @@ void* ThreadStaticSoundRandomPlay__functor(Broc::entity self,
 }
 void* MoveSoundAlongLine__functor(Broc::entity toMove, Broc::vector start,
                                   Broc::vector end) {
-    (void)toMove; (void)start; (void)end;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::vector, Broc::vector>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor3<Broc::entity, Broc::vector, Broc::vector>(MoveSoundAlongLine, toMove, start, end);
 }
-void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay) {
-    (void)self;
-    (void)delay;
+void* PlaySound__functor(Broc::entity self, Broc::string sound,
+                         Broc::bfloat delay) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::string, Broc::bfloat>));
+    void* result = NULL;
+    if (storage != NULL)
+        result = ::new (storage) AeThreadFunctor3<Broc::entity, Broc::string, Broc::bfloat>(PlaySound, self, sound, delay);
     sound.~string();
-    return NULL;
+    return result;
 }
 void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
                                    Broc::vector position) {
-    (void)self;
-    (void)position;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::string, Broc::vector>));
+    void* result = NULL;
+    if (storage != NULL)
+        result = ::new (storage) AeThreadFunctor3<Broc::entity, Broc::string, Broc::vector>(PlaySoundAtLocation, self, sound, position);
     sound.~string();
-    return NULL;
+    return result;
 }
 void* player_dying_sounds__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
@@ -7925,10 +7934,12 @@ void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
     weapon.~string();
     return NULL;
 }
-void* NotifyWhenTimerExpires__functor(Broc::entity player, int time,
+void* NotifyWhenTimerExpires__functor(Broc::entity player, Broc::bint time,
                                       HashStr notifyString) {
-    (void)player; (void)time; (void)notifyString;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::bint, HashStr>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor3<Broc::entity, Broc::bint, HashStr>(NotifyWhenTimerExpires, player, time, notifyString);
 }
 }
 
@@ -9412,10 +9423,13 @@ void* ObjectiveUpdater__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(ObjectiveUpdater, guy);
 }
-void* WaitThenPickFlagToLaunch__functor(Broc::entity self, float wait_time,
+void* WaitThenPickFlagToLaunch__functor(Broc::entity self,
+                                        Broc::bfloat wait_time,
                                         const char* message) {
-    (void)self; (void)wait_time; (void)message;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>(WaitThenPickFlagToLaunch, self, wait_time, message);
 }
 void* WaitForFlagTimeOut__functor(Broc::entity flag) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
@@ -10970,10 +10984,12 @@ void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(WarnPlayerAboutInactiveFlag, self);
 }
-void* PlayCapturedSounds__functor(Broc::entity self, int team,
-                                  int originalWarIndex) {
-    (void)self; (void)team; (void)originalWarIndex;
-    return NULL;
+void* PlayCapturedSounds__functor(Broc::entity self, Broc::bint team,
+                                  Broc::bint originalWarIndex) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor3<Broc::entity, Broc::bint, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor3<Broc::entity, Broc::bint, Broc::bint>(PlayCapturedSounds, self, team, originalWarIndex);
 }
 
 // PlayCapturedSounds - ea: 0x974FA0
