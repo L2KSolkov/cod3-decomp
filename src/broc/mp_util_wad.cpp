@@ -36,6 +36,8 @@ void RegisterHashStrings();
 // ============================================================================
 namespace _mp_audio {
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage);
+void* audio_spawner__functor(Broc::entity self, Broc::string sound);
+void* ambient_system__functor(Broc::entity self, Broc::string spawn_package);
 void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay);
 void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
                                    Broc::vector position);
@@ -122,11 +124,11 @@ void* HostHasMigrated__functor(Broc::entity self);
 void* RespawnPlayer__functor(Broc::entity guy, Broc::string team);
 void* LocalPlayerRespawn__functor(Broc::entity player);
 void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished);
-void* reenable_medic_call__functor(Broc::entity self, int time);
-void* HandleJoinAfterRoundOver__functor(Broc::entity self, int timeleft);
+void* reenable_medic_call__functor(Broc::entity self, Broc::bint time);
+void* HandleJoinAfterRoundOver__functor(Broc::entity self, Broc::bint timeleft);
 void* TeamChangeKillPlayer__functor(Broc::entity player);
 void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
-void* HealthRegenPlayerBreathing__functor(Broc::entity self, int healthCap);
+void* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap);
 void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
                           int delay, bool reviveable, bool fade);
 void* UpdateSpectateCritical__functor(Broc::entity guy);
@@ -134,7 +136,7 @@ void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
 void* UpdateSpectateDead__functor(Broc::entity guy, Broc::bbool canspawn);
 void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
 void* SpawnLocalSpectator__functor(Broc::entity guy);
-void* restart_round__functor(Broc::entity selfLevel, int waitTime);
+void* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime);
 void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime);
 void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position);
 void* NewHost__functor(Broc::entity self);
@@ -6571,6 +6573,18 @@ unsigned int CreateGlobalWind(Broc::vector direction, Broc::bfloat speed) {
 }
 }
 namespace _mp_audio {
+void* audio_spawner__functor(Broc::entity self, Broc::string sound) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(audio_spawner, self, sound);
+}
+void* ambient_system__functor(Broc::entity self, Broc::string spawn_package) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(ambient_system, self, spawn_package);
+}
 void* interior_triggering_device__functor(Broc::entity trigger,
                                           Broc::entity other) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::entity>));
@@ -6614,15 +6628,17 @@ void* audio_crossfade_wait__functor(Broc::entity self) {
     return ::new (storage) AeThreadFunctor1<Broc::entity>(audio_crossfade_wait, self);
 }
 void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name) {
-    (void)self;
-    name.~string();
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(ThreadStaticSoundPlay, self, name);
 }
 void* ThreadStaticSoundRandomPlay__functor(Broc::entity self,
                                            Broc::string name) {
-    (void)self;
-    name.~string();
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(ThreadStaticSoundRandomPlay, self, name);
 }
 void* MoveSoundAlongLine__functor(Broc::entity toMove, Broc::vector start,
                                   Broc::vector end) {
@@ -11893,7 +11909,10 @@ void* QuitGameThread__functor(Broc::entity selfLevel) {
     return ::new (storage) AeThreadFunctor1<Broc::entity>(QuitGameThread, selfLevel);
 }
 void* QuitGameWithMessage__functor(Broc::entity self, HashStr message) {
-    (void)self; (void)message; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, HashStr>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, HashStr>(QuitGameWithMessage, self, message);
 }
 void* HostHasMigrated__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
@@ -11902,9 +11921,10 @@ void* HostHasMigrated__functor(Broc::entity self) {
     return ::new (storage) AeThreadFunctor1<Broc::entity>(HostHasMigrated, self);
 }
 void* RespawnPlayer__functor(Broc::entity guy, Broc::string team) {
-    (void)guy;
-    team.~string();
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::string>(RespawnPlayer, guy, team);
 }
 void* LocalPlayerRespawn__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
@@ -11918,11 +11938,17 @@ void* PunishedForTeamKill__functor(Broc::entity ent, Broc::bbool punished) {
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bbool>(PunishedForTeamKill, ent, punished);
 }
-void* reenable_medic_call__functor(Broc::entity self, int time) {
-    (void)self; (void)time; return NULL;
+void* reenable_medic_call__functor(Broc::entity self, Broc::bint time) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(reenable_medic_call, self, time);
 }
-void* HandleJoinAfterRoundOver__functor(Broc::entity self, int timeleft) {
-    (void)self; (void)timeleft; return NULL;
+void* HandleJoinAfterRoundOver__functor(Broc::entity self, Broc::bint timeleft) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(HandleJoinAfterRoundOver, self, timeleft);
 }
 void* TeamChangeKillPlayer__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
@@ -11936,8 +11962,11 @@ void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player) {
         return NULL;
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::entity>(FadeUpWhenLoaded, self, player);
 }
-void* HealthRegenPlayerBreathing__functor(Broc::entity self, int healthCap) {
-    (void)self; (void)healthCap; return NULL;
+void* HealthRegenPlayerBreathing__functor(Broc::entity self, Broc::bint healthCap) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(HealthRegenPlayerBreathing, self, healthCap);
 }
 void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
                           int delay, bool reviveable, bool fade) {
@@ -11974,8 +12003,11 @@ void* SpawnLocalSpectator__functor(Broc::entity guy) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(SpawnLocalSpectator, guy);
 }
-void* restart_round__functor(Broc::entity selfLevel, int waitTime) {
-    (void)selfLevel; (void)waitTime; return NULL;
+void* restart_round__functor(Broc::entity selfLevel, Broc::bint waitTime) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(restart_round, selfLevel, waitTime);
 }
 void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>));
@@ -11984,7 +12016,10 @@ void* finish_starting_round__functor(Broc::entity self, Broc::bbool firstTime) {
     return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bbool>(finish_starting_round, self, firstTime);
 }
 void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position) {
-    (void)self; (void)position; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::vector>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::vector>(AddArtilleryObjective, self, position);
 }
 void* NewHost__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));

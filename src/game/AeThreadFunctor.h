@@ -83,6 +83,16 @@ static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::entity>) == 16,
               "AeThreadFunctor2<Broc::entity,Broc::entity> size mismatch");
 static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::bbool>) == 16,
               "AeThreadFunctor2<Broc::entity,bbool> size mismatch");
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>) == 16,
+              "AeThreadFunctor2<Broc::entity,bint> size mismatch");
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::bfloat>) == 16,
+              "AeThreadFunctor2<Broc::entity,bfloat> size mismatch");
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::string>) == 16,
+              "AeThreadFunctor2<Broc::entity,string> size mismatch");
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, HashStr>) == 16,
+              "AeThreadFunctor2<Broc::entity,HashStr> size mismatch");
+static_assert(sizeof(AeThreadFunctor2<Broc::entity, Broc::vector>) == 24,
+              "AeThreadFunctor2<Broc::entity,vector> size mismatch");
 
 // ============================================================================
 // CallFunctor — invoke a thread functor.
