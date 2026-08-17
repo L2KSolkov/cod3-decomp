@@ -58,8 +58,15 @@ public:
     int  stick_value_y(int controller, StickIndex stick);     // ?stick_value_y@controller@@QAEHHW4StickIndex@1@@Z
     void stick_value(int controller, StickIndex stick, int& x,
                      int& y);                                 // ?stick_value@controller@@QAEXHW4StickIndex@1@AAH1@Z
+    void (*button_value_fn)(int*);
+    void (*button_released_fn)(int*);
+    void (*button_released_clear_fn)(int*);
+    void (*button_pressed_fn)(int*);
+    void (*button_pressed_clear_fn)(int*);
+    void (*stick_value_fn)(int*, int*);
     int  locked_port;
     bool is_locked;
+    bool accepting_input_from_controller[4];
 };
 
 // ============================================================================

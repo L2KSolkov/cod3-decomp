@@ -329,8 +329,13 @@ public:
     static bool mLiveQueryActive;   // ?mLiveQueryActive@MPUIInterface@@1_NA
     static bool mQueryFromID;       // ?mQueryFromID@MPUIInterface@@1_NA
     static bool mIsViewableOnline;  // ?mIsViewableOnline@MPUIInterface@@1_NA
+    static bool mCableDisconnect;  // ?mCableDisconnect@MPUIInterface@@1_NA
     static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
     static bool mInSession;         // ?mInSession@MPUIInterface@@1_NA
+    static void bdNetStop();
+    static void PlatformStop();
+    static void PlatformStart();
+    static void Reboot();
 };
 
 // game_xbox.o / game2.o globals used by MPLiveEngine

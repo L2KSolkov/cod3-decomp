@@ -7,7 +7,6 @@
 
 #include "game/ui_types.h"
 #include "game/platform_xbox/MPLiveEngine.h"
-#include "game/platform_xbox/XboxLiveMenus.h"
 
 // ============================================================================
 // JoinGameMenu - 0x50 (verified)
@@ -56,7 +55,7 @@ public:
     void OnTriangle(int c);
     void OnDown(int c);
     void OnUp(int c);
-    void UpdateWidescreen(bool widescreen);
+    void UpdateWidescreen(BOOL widescreen);
     void OnLive(int c);
     void OnSystemLink();
     void OnCross(int c);

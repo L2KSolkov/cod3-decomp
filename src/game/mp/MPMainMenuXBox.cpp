@@ -59,37 +59,114 @@ struct kuju_knet_sTime {
     float mTime;
 };
 
+extern int cg_widescreen_integer;
+
+// These overlay views mirror the IDA layouts used by mp_xbox.o.  The owning
+// implementations and vtables remain in the session/menu translation unit.
+class OverlayMenuBase {
+public:
+    virtual void Update(float time_inc);
+    unsigned char _pad4[0x4C];
+    int mAcceptMenu;
+    int mBackMenu;
+};
+
+class OverlayMenu : public OverlayMenuBase {
+public:
+    enum eState : int {
+        SIGNING_IN = 1,
+        GAME_LISTING = 2,
+        GAME_LISTING_START = 3,
+        NO_GAMES = 4,
+        JOINING_START = 5,
+        JOINING = 6,
+        JOIN_REFUSED = 7,
+        JOIN_FAILED = 8,
+        CANNOT_CONNECT_TO_HOST = 9,
+        CANNOT_CONNECT_TO_PEERS = 10,
+        JOIN_SUCCESS = 11,
+        BDNET_STARTING = 12,
+        BDNET_START_FAILED = 13,
+        FROM_ID_QUERYING = 14,
+    };
+
+    unsigned char _pad58[0x14];
+    int mGameListingNum;
+
+    static OverlayMenu* Me(int version);
+    void SetState(eState state);
+    virtual void Update(float time_inc);
+};
+
+class InGameOverlay : public OverlayMenuBase {
+public:
+    enum eState : int {
+        NONE = 0,
+        OVERLAY_SIGNIN_SIGNOUT = 1,
+        OVERLAY_APPEAR_ONLINE = 2,
+        OVERLAY_APPEAR_OFFLINE = 3,
+        OVERLAY_TOGGLE_VOICE = 4,
+        OVERLAY_JOIN_FRIEND = 5,
+        OVERLAY_REBOOT_REQUIRED = 6,
+        OVERLAY_AAR_SIGNIN_SIGNOUT = 7,
+        OVERLAY_AAR_APPEAR_ONLINE = 8,
+        OVERLAY_AAR_APPEAR_OFFLINE = 9,
+        OVERLAY_AAR_TOGGLE_VOICE = 10,
+        OVERLAY_AAR_JOIN_FRIEND = 11,
+        OVERLAY_AAR_REBOOT_REQUIRED = 12,
+        NUM_STATES = 13,
+    };
+
+    static InGameOverlay* Me(int version);
+    void SetState(eState state);
+};
+
+class AAROverlay : public OverlayMenuBase {
+public:
+    enum eState : int {
+        NONE = 0,
+        OVERLAY_SIGNIN_SIGNOUT = 1,
+        OVERLAY_APPEAR_ONLINE = 2,
+        OVERLAY_APPEAR_OFFLINE = 3,
+        OVERLAY_TOGGLE_VOICE = 4,
+        OVERLAY_JOIN_FRIEND = 5,
+        OVERLAY_REBOOT_REQUIRED = 6,
+        OVERLAY_AAR_SIGNIN_SIGNOUT = 7,
+        OVERLAY_AAR_APPEAR_ONLINE = 8,
+        OVERLAY_AAR_APPEAR_OFFLINE = 9,
+        OVERLAY_AAR_TOGGLE_VOICE = 10,
+        OVERLAY_AAR_JOIN_FRIEND = 11,
+        OVERLAY_AAR_REBOOT_REQUIRED = 12,
+        NUM_STATES = 13,
+    };
+
+    static AAROverlay* Me(int version);
+    void SetState(eState state);
+};
+
+class STBManager {
+public:
+    static STBManager* sInst;
+    const char* GetSTBString(const char* pszReference);
+};
+
 #define ICON_GAME_INVITE ((char*)0x20000)
 #define ICON_FRIEND_REQUEST ((char*)0x10000)
 extern int gDelayRenderForNFrames;
 
-struct OverlayMenuUpdate {
-    void Update(int v);
-};
-
-// InGameOverlay / AAROverlay (shell.o)
-struct InGameOverlay {
-    static InGameOverlay* Me(int version);
-    static void SetState(InGameOverlay* self, int state);
-    int mAcceptMenu;
-    int mBackMenu;
-};
-enum {
-    OVERLAY_APPEAR_ONLINE = 16,
-    OVERLAY_APPEAR_OFFLINE = 17,
-    OVERLAY_SIGNIN_SIGNOUT = 18,
-    OVERLAY_TOGGLE_VOICE = 19,
-    OVERLAY_REBOOT_REQUIRED = 20,
-    OVERLAY_JOIN_FRIEND = 21,
-};
-struct AAROverlay {
-    static void SetState(AAROverlay* self, int state);
-    int mAcceptMenu;
-    int mBackMenu;
-};
 struct AARMenuSystem {
+    unsigned char _pad0[4];
     FEMenu** menus;
 };
+
+struct FEManager {
+    unsigned char _pad0[0x1C];
+    FEMenuSystem* fems;
+    unsigned char _pad20[0xAC];
+    AARMenuSystem* mAARS;
+    InGameMenuSystem* GetIGMS(int client);
+};
+extern FEManager g_femanager;
 
 // SaveGameData invite fields (StubData.savedInvite at +0x314)
 struct XONLINE_ACCEPTED_GAMEINVITE {
@@ -103,64 +180,21 @@ struct SavedInviteData {
     XONLINE_FRIEND_INVITE* asFriend;
 };
 
-// Zero the savedInvite's InviteAcceptTime (StubData.savedInvite at +0x314;
-// InviteAcceptTime is the first FILETIME pair -> cleared when starting).
-extern void ClearSavedInviteTime(SaveGameData* g);
+// The IDA type layout puts InviteAcceptTime.dwHighDateTime at +0x68 in the
+// accepted-invite block at SaveGameData::savedInvite (+0x314).
+static void ClearSavedInviteTime(SaveGameData* g)
+{
+    *reinterpret_cast<unsigned int*>(g->savedInvite + 0x68 + 4) = 0;
+}
 
 // MPProfileMainMenu (mp_shell.o)
-struct MPProfileMainMenu {
-    static void Me();
+class MPProfileMainMenu {
+public:
+    static MPProfileMainMenu* Me();
     static void LoadProfileData();
 };
 
-namespace MPUIInterface {
-bool IsOnlineGame();
-bool IsLANGame();
-bool IsLocalGame();
-bool InSession();
-void ExitGame();
-void QueryFromID(XNKID* sessionID);
-void Step();
-  void bdNetStop();
-void PlatformStop();
-void PlatformStart();
-void Reboot();
-extern bool mLiveQueryActive;
-extern bool mQueryFromID;
-extern bool mIsViewableOnline;
-extern bool mCableDisconnect;
-int mGameConnectionType = 1;  // namespace twin (binary's static lives in mp.o)
-// EGameConnectionType (IDA types): Lan=0, Online=1, Local=2
-enum { kGameConnectionTypeLan = 0, kGameConnectionTypeOnline = 1,
-       kGameConnectionTypeLocal = 2 };
-
-// ea: 0x0072F480 (mp.o)
-bool IsOnlineGame()  // ?IsOnlineGame@MPUIInterface@@YA_NXZ
-{
-    return mGameConnectionType == kGameConnectionTypeOnline;
-}
-
-// ea: 0x0072F470 (mp.o)
-bool IsLANGame()
-{
-    return mGameConnectionType == kGameConnectionTypeLan;
-}
-
-// ea: 0x0072F490 (mp.o)
-bool IsLocalGame()
-{
-    return mGameConnectionType == kGameConnectionTypeLocal;
-}
-}
-
-class controller { public:
-    bool* accepting_input_from_controller;
-    int locked_port;
-    bool is_locked;
-    static controller* inst();
-    static int num_controllers;
-};
-extern void Controller_LockPort(int port);
+extern void Controller_LockPort(unsigned int port);
 
 // ============================================================================
 // JoinGameMenu
@@ -194,7 +228,7 @@ void JoinGameMenu::OnActivate()
     }
     if (Handle->internalState == kSigningIn)
     {
-        OverlayMenu::Me(0)->SetState(16);  // SIGNING_IN
+        OverlayMenu::Me(0)->SetState(OverlayMenu::SIGNING_IN);
         system->AddOverlay(16);
         OverlayMenu::Me(0)->Update(1058642330);
     }
@@ -206,7 +240,7 @@ void JoinGameMenu::OnActivate()
 void JoinGameMenu::Draw()
 {
     if (panel != nullptr)
-        PanelFile::Draw(panel);
+        panel->Draw();
     FEMenu::Draw();
 }
 
@@ -228,7 +262,7 @@ void JoinGameMenu::Update(float time_inc)
                 {
                     ClearSavedInviteTime(&gSaveGameData[0]);
                     mJoiningGame = false;
-                    OverlayMenu::Me(0)->SetState(23);  // JOIN_FAILED
+                    OverlayMenu::Me(0)->SetState(OverlayMenu::JOIN_FAILED);
                     OverlayMenu::Me(0)->mAcceptMenu = 10;
                     OverlayMenu::Me(0)->mBackMenu = 10;
                     system->AddOverlay(16);
@@ -252,7 +286,7 @@ void JoinGameMenu::Update(float time_inc)
                     ClearSavedInviteTime(&gSaveGameData[0]);
                     MPUIInterface::mGameConnectionType =
                         MPUIInterface::kGameConnectionTypeOnline;
-                    OverlayMenu::Me(0)->SetState(24);  // JOINING_START
+                    OverlayMenu::Me(0)->SetState(OverlayMenu::JOINING_START);
                     OverlayMenu::Me(0)->mBackMenu = 10;
                     OverlayMenu::Me(0)->mGameListingNum = 0;
                     system->AddOverlay(16);
@@ -264,9 +298,10 @@ void JoinGameMenu::Update(float time_inc)
         {
             Handle->DoWork();
             if (!mSignedInFromInvite)
-                Handle->JoinGame((XONLINE_FRIEND*)&gSaveGameData[0].savedInvite[0x28]);
+                Handle->JoinGame(
+                    reinterpret_cast<XONLINE_FRIEND*>(gSaveGameData[0].savedInvite));
             Handle->DoWork();
-            OverlayMenu::Me(0)->SetState(16);
+            OverlayMenu::Me(0)->SetState(OverlayMenu::SIGNING_IN);
             OverlayMenu::Me(0)->mAcceptMenu = 10;
             OverlayMenu::Me(0)->mBackMenu = 10;
             system->AddOverlay(16);
@@ -302,9 +337,9 @@ void JoinGameMenu::SetPanelFile(PanelFile* pf)
     {
         ASSERT("panel", "c:\\cod\\code\\game\\mp/ui/JoinGameMenu.cpp", 170);
     }
-    FEText* TextPointer = PanelFile::GetTextPointer(panel, "join_message");
+    FEText* TextPointer = panel->GetTextPointer("join_message");
     FEMenu::AddEntry(0, TextPointer, false);
-    FEText* v6 = PanelFile::GetTextPointer(panel, "Helpbar");
+    FEText* v6 = panel->GetTextPointer("Helpbar");
     FEMenu::AddEntry(1, v6, false);
     entries[0]->SetText("Joining Game");
 }
@@ -354,7 +389,7 @@ MPMainMenuXBox* MPMainMenuXBox::Me()
 void MPMainMenuXBox::Draw()
 {
     if (panel != nullptr)
-        PanelFile::Draw(panel);
+        panel->Draw();
     FEMenu::Draw();
 }
 
@@ -383,7 +418,7 @@ void MPMainMenuXBox::OnXBoxLive(int c)
         else
         {
             system->AddOverlay(16);
-            OverlayMenu::Me(0)->SetState(16);  // SIGNING_IN
+            OverlayMenu::Me(0)->SetState(OverlayMenu::SIGNING_IN);
     OverlayMenu::Me(0)->Update(1058642330);
             mWaitingForSignIn = true;
         }
@@ -511,7 +546,7 @@ void MPMainMenuXBox::OnCross(int c)
             system->MakeActiveAndReturn(9);
             tlPrintf("OnCross in main menu setting enable link check to true\n");
             MultiplayerMgr::sInst->mLinkCheckEnabled = true;
-            MultiplayerMgr::Step(MultiplayerMgr::sInst, 0, false, true);
+            MultiplayerMgr::sInst->Step(0, false, true);
         }
     }
     else
@@ -536,15 +571,15 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
     };
     for (int j = 0; j < 12; ++j)
     {
-        m_pBackgroundArt[j] = PanelFile::GetPointer(panel, bgNames[j]);
+        m_pBackgroundArt[j] = panel->GetPointer(bgNames[j]);
         if (m_pBackgroundArt[j] == nullptr)
         {
             ASSERT("m_pBackgroundArt[i]",
                    "c:\\cod\\code\\game\\mp/ui/MPMainMenuXBox.cpp", 597);
         }
     }
-    PanelFile::GetPointer(panel, "bkg_btn_back_04")->SetShown(false);
-    PanelFile::GetPointer(panel, "bkg_btn_line_03")->SetShown(false);
+    panel->GetPointer("bkg_btn_back_04")->SetShown(false);
+    panel->GetPointer("bkg_btn_line_03")->SetShown(false);
 
     const char* optionTextNames[3] = {
         "text_option_01", "text_option_02", "text_option_03",
@@ -552,7 +587,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
     for (int k = 0; k < 3; ++k)
     {
         FEText* TextPointer =
-            PanelFile::GetTextPointer(panel, optionTextNames[k]);
+            panel->GetTextPointer(optionTextNames[k]);
         mListBox.SetItem(k, 0, TextPointer, 0);
         mListBox.SetText(k, 0, szMPMainMenuXBoxOptionTextReferences[k]);
     }
@@ -563,7 +598,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
     };
     for (int v8 = 0; v8 < 4; ++v8)
     {
-        m_pText[v8] = PanelFile::GetTextPointer(panel, textNames[v8]);
+        m_pText[v8] = panel->GetTextPointer(textNames[v8]);
         if (m_pText[v8] == nullptr)
         {
             ASSERT("m_pText[i]", "c:\\cod\\code\\game\\mp/ui/MPMainMenuXBox.cpp", 647);
@@ -576,7 +611,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
             {
                 FEText* v36 = m_pText[3];
                 color32 v37;
-                v37.i = v36->GetColor();
+                v37 = v36->GetColor();
                 float layer = v36->GetScaleX();
                 float x1 = v36->GetY();
                 float v20 = v36->GetX();
@@ -592,7 +627,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
         }
         else if (v8 == 0)
         {
-            m_pText[0]->SetText("FEMENU_MULTI", 0);
+            m_pText[0]->SetText("FEMENU_MULTI");
         }
     }
 
@@ -606,7 +641,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
     {
         FEText* v35 = m_pText[2];
         color32 v37;
-        v37.i = v35->GetColor();
+        v37 = v35->GetColor();
         float layera = v35->GetScaleX();
         float x1a = v35->GetY();
         float v21 = v35->GetX();
@@ -623,7 +658,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
     };
     for (int m = 0; m < 3; ++m)
     {
-        m_pImages[m] = PanelFile::GetPointer(panel, imageNames[m]);
+        m_pImages[m] = panel->GetPointer(imageNames[m]);
         if (m_pImages[m] == nullptr)
         {
             ASSERT("m_pImages[i]",
@@ -651,8 +686,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
 void MPMainMenuXBox::SetOptionText()
 {
     int m_currSelection = this->m_currSelection;
-    m_pText[1]->SetText(szMPMainMenuXBoxOptionTextReferences[m_currSelection],
-                        0);
+    m_pText[1]->SetText(szMPMainMenuXBoxOptionTextReferences[m_currSelection]);
     const char* descRefs[3] = {
         "MPFRONTEND_XBOXLIVE_DESCRIPTION",
         "MPFRONTEND_SYSTEMLINK_DESCRIPTION",
@@ -719,38 +753,6 @@ void MPMainMenuXBox::Update(float time_inc)
 // XBoxLiveIngameOptionsCOD3
 // ============================================================================
 
-// ea: 0x77AD10
-XBoxLiveIngameOptionsCOD3::XBoxLiveIngameOptionsCOD3(FEMenuSystem* s)
-    : FEMenu(s, 0, 320, 240, 8, 0), m_ListBox(5, 1, 5, true)
-{
-    memset(m_pOldTextColor.m_elements, 0, sizeof(m_pOldTextColor.m_elements));
-    memset(m_pOldSelectedTextColor.m_elements, 0,
-           sizeof(m_pOldSelectedTextColor.m_elements));
-    m_currSelection = 0;
-    friendIcon = 0;
-    wasSignedIn = false;
-    waitingForSignIn = false;
-    mJoiningFriend = false;
-    default_color_scheme = 10;
-    memset(m_pBackgroundArt.m_elements, 0, sizeof(m_pBackgroundArt.m_elements));
-    memset(m_pText.m_elements, 0, sizeof(m_pText.m_elements));
-    memset(m_pLineArt.m_elements, 0, sizeof(m_pLineArt.m_elements));
-    mVersion = s->GetCurrentClient();
-}
-
-// ea: 0x77AE60
-XBoxLiveIngameOptionsCOD3::~XBoxLiveIngameOptionsCOD3()
-{
-    memset(m_pBackgroundArt.m_elements, 0, sizeof(m_pBackgroundArt.m_elements));
-    memset(m_pText.m_elements, 0, sizeof(m_pText.m_elements));
-    memset(m_pLineArt.m_elements, 0, sizeof(m_pLineArt.m_elements));
-    memset(m_pOldTextColor.m_elements, 0, sizeof(m_pOldTextColor.m_elements));
-    memset(m_pOldSelectedTextColor.m_elements, 0,
-           sizeof(m_pOldSelectedTextColor.m_elements));
-    m_ListBox.~UIListBox();
-    FEMenu::~FEMenu();
-}
-
 // ea: 0x778C50
 void XBoxLiveIngameOptionsCOD3::Init()
 {
@@ -760,7 +762,7 @@ void XBoxLiveIngameOptionsCOD3::Init()
 void XBoxLiveIngameOptionsCOD3::Draw()
 {
     if (panel != nullptr)
-        PanelFile::Draw(panel);
+        panel->Draw();
     FEMenu::Draw();
 }
 
@@ -769,12 +771,6 @@ void XBoxLiveIngameOptionsCOD3::OnDeactivate(FEMenu* m)
 {
     (void)m;
     FEMenu::ClearAllButtons();
-}
-
-// ea: 0x778C90
-XBoxLiveIngameOptionsCOD3* XBoxLiveIngameOptionsCOD3::Me(int client)
-{
-    return (XBoxLiveIngameOptionsCOD3*)g_femanager.GetIGMS(client)->menus[5];
 }
 
 // ea: 0x778CB0
@@ -843,21 +839,21 @@ void XBoxLiveIngameOptionsCOD3::OnCross(int c)
         {
         case 0:
             if (MPUIInterface::mIsViewableOnline)
-                InGameOverlay::SetState(InGameOverlay::Me(0), OVERLAY_APPEAR_OFFLINE);
+                InGameOverlay::Me(0)->SetState(InGameOverlay::OVERLAY_APPEAR_OFFLINE);
             else
-                InGameOverlay::SetState(InGameOverlay::Me(0), OVERLAY_APPEAR_ONLINE);
+                InGameOverlay::Me(0)->SetState(InGameOverlay::OVERLAY_APPEAR_ONLINE);
             InGameOverlay::Me(0)->mAcceptMenu = 5;
             InGameOverlay::Me(0)->mBackMenu = 5;
             system->AddOverlay(13);
             break;
         case 1:
-            LiveWrapper::ShowFriendsList(Handle, Handle->actualPort);
+            Handle->ShowFriendsList(Handle->actualPort);
             break;
         case 2:
-            LiveWrapper::ShowPlayersList(Handle, Handle->actualPort, 0);
+            Handle->ShowPlayersList(Handle->actualPort, 0);
             break;
         case 3:
-            InGameOverlay::SetState(InGameOverlay::Me(0), OVERLAY_TOGGLE_VOICE);
+            InGameOverlay::Me(0)->SetState(InGameOverlay::OVERLAY_TOGGLE_VOICE);
             InGameOverlay::Me(0)->mAcceptMenu = 5;
             InGameOverlay::Me(0)->mBackMenu = 5;
             system->AddOverlay(13);
@@ -865,8 +861,8 @@ void XBoxLiveIngameOptionsCOD3::OnCross(int c)
         case 4:
             if (wasSignedIn)
             {
-                InGameOverlay::SetState(InGameOverlay::Me(0),
-                                        OVERLAY_SIGNIN_SIGNOUT);
+                InGameOverlay::Me(0)->SetState(
+                    InGameOverlay::OVERLAY_SIGNIN_SIGNOUT);
                 InGameOverlay::Me(0)->mAcceptMenu = 5;
                 InGameOverlay::Me(0)->mBackMenu = 5;
                 system->AddOverlay(13);
@@ -916,7 +912,7 @@ void XBoxLiveIngameOptionsCOD3::ButtonHeldAction()
 // ea: 0x778F30
 void XBoxLiveIngameOptionsCOD3::UpdateSplitScreen()
 {
-    PanelFile::UpdateSplitScreen(panel, 0, 0);
+    panel->UpdateSplitScreen(0, 0);
 }
 
 // ea: 0x778F60
@@ -929,7 +925,7 @@ void XBoxLiveIngameOptionsCOD3::WireForSignedOut()
     for (int i = 0; i < 4; ++i)
     {
         FEText* TextPointer =
-            PanelFile::GetTextPointer(panel, szSlotText[i]);
+            panel->GetTextPointer(szSlotText[i]);
         TextPointer->SetAlpha(1036831949);
     }
 }
@@ -944,7 +940,7 @@ void XBoxLiveIngameOptionsCOD3::WireForSignedIn()
     for (int i = 0; i < 4; ++i)
     {
         FEText* TextPointer =
-            PanelFile::GetTextPointer(panel, szSlotText[i]);
+            panel->GetTextPointer(szSlotText[i]);
         TextPointer->SetColorMenuItem(m_pOldTextColor[i].i,
                                       m_pOldSelectedTextColor[i].i);
     }
@@ -955,10 +951,10 @@ void XBoxLiveIngameOptionsCOD3::OnActivate()
 {
     FEMenu::OnActivate();
     friendIcon = 0;
-    if (PanelFile::GetPointer(panel, "game_invite") != nullptr)
-        PanelFile::GetPointer(panel, "game_invite")->SetShown(false);
-    if (PanelFile::GetPointer(panel, "friend_request") != nullptr)
-        PanelFile::GetPointer(panel, "friend_request")->SetShown(false);
+    if (panel->GetPointer("game_invite") != nullptr)
+        panel->GetPointer("game_invite")->SetShown(false);
+    if (panel->GetPointer("friend_request") != nullptr)
+        panel->GetPointer("friend_request")->SetShown(false);
     MPLiveEngine* Handle = MPLiveEngine::GetHandle();
     LiveWrapper::theWrapper->SetNotificationFlag(Handle->actualPort, 0, true);
     if (Handle->internalState != kSignedIn)
@@ -977,20 +973,20 @@ void XBoxLiveIngameOptionsCOD3::Update(float time_inc)
     char* Icon = LiveWrapper::theWrapper->GetIcon(0);
     if (Icon == nullptr || MPLiveEngine::GetHandle()->internalState != kSignedIn)
     {
-        PanelFile::GetPointer(panel, "game_invite")->SetShown(false);
+        panel->GetPointer("game_invite")->SetShown(false);
         goto LABEL_8;
     }
     if (Icon == ICON_GAME_INVITE)
     {
-        PanelFile::GetPointer(panel, "game_invite")->SetShown(true);
+        panel->GetPointer("game_invite")->SetShown(true);
 LABEL_8:
-        PanelFile::GetPointer(panel, "friend_request")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(false);
         goto LABEL_9;
     }
     if (Icon == ICON_FRIEND_REQUEST)
     {
-        PanelFile::GetPointer(panel, "game_invite")->SetShown(false);
-        PanelFile::GetPointer(panel, "friend_request")->SetShown(true);
+        panel->GetPointer("game_invite")->SetShown(false);
+        panel->GetPointer("friend_request")->SetShown(true);
     }
 LABEL_9:
     if (waitingForSignIn
@@ -1003,7 +999,7 @@ LABEL_9:
     {
         Handle->lastNotification = kLiveOk;
         Handle->renderingEnabled = false;
-        InGameOverlay::SetState(InGameOverlay::Me(0), OVERLAY_REBOOT_REQUIRED);
+        InGameOverlay::Me(0)->SetState(InGameOverlay::OVERLAY_REBOOT_REQUIRED);
         InGameOverlay::Me(0)->mAcceptMenu = 5;
         InGameOverlay::Me(0)->mBackMenu = 5;
         system->AddOverlay(13);
@@ -1011,7 +1007,7 @@ LABEL_9:
     else if (Handle->lastNotification == kConfirmFriendJoin)
     {
         Handle->lastNotification = kLiveOk;
-        InGameOverlay::SetState(InGameOverlay::Me(0), OVERLAY_JOIN_FRIEND);
+        InGameOverlay::Me(0)->SetState(InGameOverlay::OVERLAY_JOIN_FRIEND);
         InGameOverlay::Me(0)->mAcceptMenu = 5;
         InGameOverlay::Me(0)->mBackMenu = 5;
         system->AddOverlay(13);
@@ -1055,7 +1051,7 @@ void XBoxLiveIngameOptionsCOD3::SetPanelFile(PanelFile* pf)
     }
     bool v4 = mVersion <= 0;
     if (!v4)
-        panel = PanelFile::Clone(pf);
+        panel = pf->Clone();
     // Full wiring mirrors XboxLiveOptionsMenu::SetPanelFile (see that port).
     const char* bgNames[6] = {
         "bkg", "bkg_line_01", "bkg_line_02", "bkg_line_03", "bkg_line_04",
@@ -1063,7 +1059,7 @@ void XBoxLiveIngameOptionsCOD3::SetPanelFile(PanelFile* pf)
     };
     for (int i = 0; i < 6; ++i)
     {
-        m_pBackgroundArt[i] = PanelFile::GetPointer(panel, bgNames[i]);
+        m_pBackgroundArt[i] = panel->GetPointer(bgNames[i]);
         if (m_pBackgroundArt[i] == nullptr)
             m_pBackgroundArt[i] = nullptr;
         else
@@ -1071,7 +1067,7 @@ void XBoxLiveIngameOptionsCOD3::SetPanelFile(PanelFile* pf)
     }
     const char* textNames[2] = { "text_screen_title", "text_helpbar" };
     for (int i = 0; i < 2; ++i)
-        m_pText[i] = PanelFile::GetTextPointer(panel, textNames[i]);
+        m_pText[i] = panel->GetTextPointer(textNames[i]);
     m_ListBox.SetAllColumnsSelectable(false);
     m_ListBox.mSelectedFlashing = true;
     m_ListBox.Refresh();
@@ -1080,24 +1076,6 @@ void XBoxLiveIngameOptionsCOD3::SetPanelFile(PanelFile* pf)
 // ============================================================================
 // AARXBoxLiveIngameOptions
 // ============================================================================
-
-// ea: 0x77AF10
-AARXBoxLiveIngameOptions::AARXBoxLiveIngameOptions(FEMenuSystem* s)
-    : XBoxLiveIngameOptionsCOD3(s)
-{
-    mVersion = s->GetCurrentClient();
-}
-
-// ea: 0x77AF70
-AARXBoxLiveIngameOptions::~AARXBoxLiveIngameOptions()
-{
-}
-
-// ea: 0x778FB0
-AARXBoxLiveIngameOptions* AARXBoxLiveIngameOptions::Me()
-{
-    return (AARXBoxLiveIngameOptions*)g_femanager.mAARS->menus[8];
-}
 
 // ea: 0x778FC0
 void AARXBoxLiveIngameOptions::OnCross(int c)
@@ -1111,23 +1089,23 @@ void AARXBoxLiveIngameOptions::OnCross(int c)
         {
         case 0:
             if (MPUIInterface::mIsViewableOnline)
-                AAROverlay::SetState(v5, OVERLAY_APPEAR_OFFLINE);
+                v5->SetState(AAROverlay::OVERLAY_APPEAR_OFFLINE);
             else
-                AAROverlay::SetState(v5, OVERLAY_APPEAR_ONLINE);
+                v5->SetState(AAROverlay::OVERLAY_APPEAR_ONLINE);
             goto LABEL_9;
         case 1:
-            LiveWrapper::ShowFriendsList(Handle, Handle->actualPort);
+            Handle->ShowFriendsList(Handle->actualPort);
             return;
         case 2:
-            LiveWrapper::ShowPlayersList(Handle, Handle->actualPort, 0);
+            Handle->ShowPlayersList(Handle->actualPort, 0);
             return;
         case 3:
-            AAROverlay::SetState(v5, OVERLAY_TOGGLE_VOICE);
+            v5->SetState(AAROverlay::OVERLAY_TOGGLE_VOICE);
             goto LABEL_9;
         case 4:
             if (wasSignedIn)
             {
-                AAROverlay::SetState(v5, OVERLAY_SIGNIN_SIGNOUT);
+                v5->SetState(AAROverlay::OVERLAY_SIGNIN_SIGNOUT);
 LABEL_9:
                 v5->mAcceptMenu = 8;
                 v5->mBackMenu = 8;
@@ -1145,38 +1123,20 @@ LABEL_9:
     }
 }
 
-// ea: 0x7790C0
-bool AARXBoxLiveIngameOptions::SetTimerText()
-{
-    kuju_knet_sTime fSecondsLeftTilNextGame;
-    fSecondsLeftTilNextGame.mTime =
-        (float)g_MPAARTotalTime
-        - ((float)MultiplayerMgr::sInst->getLocalTime().mTime
-           - (float)g_MPAARTimer.mTime) * 0.001f;
-    char szElapsedSeconds[4];
-    snprintf(szElapsedSeconds, 3, "%d", (int)fSecondsLeftTilNextGame.mTime);
-    if (fSecondsLeftTilNextGame.mTime < 10.0f)
-        strcpy(&szElapsedSeconds[1], " ");
-    FEText* TextPointer =
-        PanelFile::GetTextPointer(panel, "text_timer_numbers");
-    TextPointer->SetText(szElapsedSeconds, 0);
-    return fSecondsLeftTilNextGame.mTime > 0.5f;
-}
-
 // ea: 0x77A7C0
 void AARXBoxLiveIngameOptions::OnActivate()
 {
     XBoxLiveIngameOptionsCOD3::OnActivate();
-    PanelFile::GetPointer(panel, "bkg")->SetShown(true);
+    panel->GetPointer("bkg")->SetShown(true);
     FEText* TextPointer =
-        PanelFile::GetTextPointer(panel, "text_timer_numbers");
+        panel->GetTextPointer("text_timer_numbers");
     TextPointer->SetShown(true);
-    FEText* v4 = PanelFile::GetTextPointer(panel, "text_timer_text");
+    FEText* v4 = panel->GetTextPointer("text_timer_text");
     v4->SetShown(true);
-    v4->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME", 0);
-    FEText* v6 = PanelFile::GetTextPointer(panel, "text_title_AAR");
+    v4->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    FEText* v6 = panel->GetTextPointer("text_title_AAR");
     v6->SetShown(true);
-    v6->SetText("MPGAME_AFTER_ACTION_REVIEW", 0);
+    v6->SetText("MPGAME_AFTER_ACTION_REVIEW");
 }
 
 // ea: 0x77AB20
