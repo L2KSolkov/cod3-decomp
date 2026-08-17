@@ -3200,6 +3200,19 @@ void CreateLanSessionAdvancedMenu::OnDown(int c)
     }
 }
 
+// ea: 0x0078CD70
+void CreateLanSessionAdvancedMenu::Update(float time_inc)
+{
+    FEMenu::Update(time_inc);
+    MPUIInterface::Step();
+    entries[0]->Highlight(highlighted == 1, true);
+    entries[2]->Highlight(highlighted == 3, true);
+    entries[4]->Highlight(highlighted == 5, true);
+    entries[6]->Highlight(highlighted == 7, true);
+    entries[8]->Highlight(highlighted == 9, true);
+    entries[10]->Highlight(highlighted == 11, true);
+}
+
 // ea: 0x0078D7C0
 void GameSettingsEdit::UpdateMapChangeStatus(bool isAllowingMapVote)
 {
