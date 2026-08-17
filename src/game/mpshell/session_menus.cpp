@@ -13,6 +13,8 @@
 #include <math.h>
 #include <new>
 
+extern void* mem_heap_malloc(unsigned int size);
+
 #define ASSERT(expr, file, line)                                          \
     do {                                                                  \
         AeAssert::gCurrentAuthor = AeAssert::COD3;                        \
@@ -91,6 +93,7 @@ public:
     static bool StartGame(bool forceRestart, bool blockUntilNetReady);  // ?StartGame@MPUIInterface@@SA_N_N0@Z
     static const int GetTimeLimitCount();  // ?GetTimeLimitCount@MPUIInterface@@SA?BHXZ
     static const int GetTimeLimit(unsigned long index);  // ?GetTimeLimit@MPUIInterface@@SA?BHK@Z
+    static const int GetMaxPlayersCount();  // ?GetMaxPlayersCount@MPUIInterface@@SA?BHXZ
     static const int GetMaxPlayers(unsigned long index);  // ?GetMaxPlayers@MPUIInterface@@SA?BHK@Z
     static const char* GetGameTypeString(unsigned long gameType);  // ?GetGameTypeString@MPUIInterface@@SAPBDK@Z
     static sGameListing* GameListingGet(unsigned long& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
@@ -418,6 +421,33 @@ const char* const szSwitchSidesBackgroundToTurnOff[5] = {
     "bkg_detail_09",
 };
 int FGdepth_0 = 20;  // 0xE3ADB0
+const char* const szCreateLanSessionMenuSlotTextReferences[6] = {
+    "MPFRONTEND_GAME_MODE_ALLCAPS", defaultFileName,
+    "MPFRONTEND_MAP_NAME_ALLCAPS", defaultFileName,
+    "MPFRONTEND_NUMBER_OF_PLAYERS_ALLCAPS", defaultFileName,
+};
+const char* const szCreateLanSessionMenuSlotText[6] = {
+    "sl_slot_01_text_option", "sl_slot_01_text_spec",
+    "sl_slot_02_text_option", "sl_slot_02_text_spec",
+    "sl_slot_03_text_option", "sl_slot_03_text_spec",
+};
+const char* const szCreateLanSessionMenuSlotGeometry[6] = {
+    "sl_slot_01_arrow_left", "sl_slot_01_arrow_right",
+    "sl_slot_02_arrow_left", "sl_slot_02_arrow_right",
+    "sl_slot_03_arrow_left", "sl_slot_03_arrow_right",
+};
+const char* const szCreateLanSessionMenuTextReferences[4] = {
+    "MPFRONTEND_PLAY_XBOX_LIVE", "MPFRONTEND_MM_CREATE_GAME",
+    "MPFRONTEND_SELECT_GAME_CREATE_EXPLANATION",
+    "MPFRONTEND_CREATE_GAME_HELP_BAR",
+};
+const char* const szCreateLanSessionMenuText[4] = {
+    "sl_text_title_01", "sl_text_title_02",
+    "sl_text_title_description", "text_helpbar",
+};
+const char* const szCreateLanSessionMenuBackgroundArt[4] = {
+    "sl_bkg", "sl_bkg_detail_01", "sl_bkg_detail_02", "sl_bkg_detail_03",
+};
 static const char* const szSwitchSidesBackgroundTeamWidgetsName[3] = {
     "icon_autosave", "icon_axis", "icon_allied",
 };
@@ -1459,6 +1489,149 @@ void CreateLanSessionMenu::OnRight(int c)
     {
         SetMapDefaults();
     }
+}
+
+// ea: 0x00794490
+void CreateLanSessionMenu::SetPanelFile(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        ASSERT("pf", "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 115);
+        return;
+    }
+    panel = pf;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_pBackgroundArt[i] != nullptr)
+            ASSERT("0 == m_pBackgroundArt[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 124);
+        m_pBackgroundArt[i] = panel->GetPointer(szCreateLanSessionMenuBackgroundArt[i]);
+        if (m_pBackgroundArt[i] == nullptr)
+            ASSERT("m_pBackgroundArt[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 127);
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_pText[i] != nullptr)
+            ASSERT("0 == m_pText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 133);
+        m_pText[i] = panel->GetTextPointer(szCreateLanSessionMenuText[i]);
+        if (m_pText[i] == nullptr)
+            ASSERT("m_pText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 136);
+
+        const char* translatedText = szCreateLanSessionMenuTextReferences[i];
+        if (i == 3)
+        {
+            FEMultiLineText* helpbarText =
+                (FEMultiLineText*)mem_heap_malloc(0xA8u);
+            if (helpbarText != nullptr)
+            {
+                FEText* text = m_pText[3];
+                color32 col = text->GetColor();
+                panel_layer layer = (panel_layer)text->GetScaleX();
+                helpbarText = new (helpbarText)
+                    FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
+                                    layer, 0.0f, 0, (int)col.i, col);
+            }
+            helpbar1 = helpbarText;
+            helpbar1->SetNumLines(1);
+            helpbar1->SetText(translatedText);
+        }
+        else
+        {
+            m_pText[i]->SetText(translatedText);
+        }
+    }
+    SetDefaultColorScheme(10);
+
+    for (int i = 0; i < 6; ++i)
+    {
+        if (m_pSlotGeometry[i] != nullptr)
+            ASSERT("0 == m_pSlotGeometry[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 163);
+        m_pSlotGeometry[i] = panel->GetPointer(szCreateLanSessionMenuSlotGeometry[i]);
+        if (m_pSlotGeometry[i] == nullptr)
+            ASSERT("m_pSlotGeometry[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 166);
+        m_pSlotGeometry[i]->SetShown(true);
+    }
+
+    for (int i = 0; i < 6; ++i)
+    {
+        if (m_pSlotText[i] != nullptr)
+            ASSERT("0 == m_pSlotText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 173);
+        m_pSlotText[i] = panel->GetTextPointer(szCreateLanSessionMenuSlotText[i]);
+        if (m_pSlotText[i] == nullptr)
+            ASSERT("m_pSlotText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 176);
+        m_pSlotText[i]->SetText(szCreateLanSessionMenuSlotTextReferences[i]);
+    }
+    SetDefaultColorScheme(10);
+
+    AddEntry(0, panel->GetTextPointer("sl_slot_01_text_option"), false);
+    mGameModeCombo = AddComboBox(
+        1, 6, panel->GetTextPointer("sl_slot_01_text_spec"),
+        panel->GetPointer("sl_slot_01_arrow_left"),
+        panel->GetPointer("sl_slot_01_arrow_right"));
+    if (mGameModeCombo == nullptr)
+        ASSERT("mGameModeCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 188);
+    for (int i = 0; i < 6; ++i)
+    {
+        Broc::string option(MPUIInterface::GetGameTypeString(i));
+        mGameModeCombo->AddOption(option);
+    }
+
+    AddEntry(2, panel->GetTextPointer("sl_slot_02_text_option"), false);
+    mStartingMapCombo = AddComboBox(
+        3, 64, panel->GetTextPointer("sl_slot_02_text_spec"),
+        panel->GetPointer("sl_slot_02_arrow_left"),
+        panel->GetPointer("sl_slot_02_arrow_right"));
+    if (mStartingMapCombo == nullptr)
+        ASSERT("mStartingMapCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 197);
+    for (int i = 0; i < g_NumBaseMaps; ++i)
+    {
+        const char mapIndex = i == 0xFF ? (char)-1 : byte_E386C9[114 * i];
+        Broc::string option(MPUIInterface::GetMapString((unsigned char)mapIndex));
+        mStartingMapCombo->AddOption(option);
+    }
+
+    AddEntry(4, panel->GetTextPointer("sl_slot_03_text_option"), false);
+    const int maxPlayersCount = MPUIInterface::GetMaxPlayersCount();
+    mNumberOfPlayersCombo = AddComboBox(
+        5, maxPlayersCount, panel->GetTextPointer("sl_slot_03_text_spec"),
+        panel->GetPointer("sl_slot_03_arrow_left"),
+        panel->GetPointer("sl_slot_03_arrow_right"));
+    if (mNumberOfPlayersCombo == nullptr)
+        ASSERT("mNumberOfPlayersCombo",
+               "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 207);
+    memset(m_iNumberOfPlayersConversion, 0,
+           sizeof(m_iNumberOfPlayersConversion));
+    for (int i = 0; i < maxPlayersCount; ++i)
+    {
+        if (i >= 30)
+            ASSERT("i < 30",
+                   "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 211);
+        m_iNumberOfPlayersConversion[i] = MPUIInterface::GetMaxPlayers(i);
+        char optionText[16];
+        sprintf(optionText, "%d", m_iNumberOfPlayersConversion[i]);
+        Broc::string option(optionText);
+        mNumberOfPlayersCombo->AddOptionNoLocalize(option);
+    }
+    mNumberOfPlayersCombo->SetCurrOption((short)MPUIInterface::GetDefaultOption(
+        MPUIInterface::SETTING_MAX_PLAYERS, GAME_TYPE_WAR));
+
+    entries[5]->up = 3;
+    entries[5]->down = 1;
+    entries[1]->up = 5;
+    entries[1]->down = 3;
+    entries[3]->up = 1;
+    entries[3]->down = 5;
 }
 
 // ============================================================================
