@@ -87,11 +87,11 @@ extern int dword_F641A4[];  // @ 0xF641A4 (special weapon duration)
 float percentToTrimBottom = 0.1f;  // @ 0xDF4460
 float percentToTrimTop = 0.2f;     // @ 0xDF445C
 extern int dword_F6355C[];   // @ 0xF6355C
-extern int dword_F63F5C[];   // @ 0xF63F5C (hint icon)
-extern int dword_F63F60[];   // @ 0xF63F60 (hint start time)
-extern int dword_F63F64[];   // @ 0xF63F64 (hint fade time)
-extern int dword_F63F68[];   // @ 0xF63F68
-extern int dword_F63F6C[];   // @ 0xF63F6C
+int dword_F63F5C[4 * 1580] = {};   // @ 0xF63F5C (hint icon)
+int dword_F63F60[4 * 1580] = {};   // @ 0xF63F60 (hint start time)
+int dword_F63F64[4 * 1580] = {};   // @ 0xF63F64 (hint fade time)
+int dword_F63F68[4 * 1580] = {};   // @ 0xF63F68
+int dword_F63F6C[4 * 1580] = {};   // @ 0xF63F6C
 extern vmCvar_t cg_cursorHints;  // ?cg_cursorHints@@3UvmCvar_t@@A @ 0xF61378
 extern vmCvar_t cg_hintFadeTime; // ?cg_hintFadeTime@@3UvmCvar_t@@A @ 0xF611C8
 extern vmCvar_t mp_headIconReviveMaxAlphaDist;  // @ 0xEAC318
@@ -105,7 +105,7 @@ extern vmCvar_t mp_itemIconMaxAlphaDist;  // @ 0xEA5E68
 extern vmCvar_t mp_itemIconMinAlphaDist;  // @ 0xEB0F18
 extern vmCvar_t mp_itemIconMinScreenSize; // @ 0xEA51D0
 extern vmCvar_t mp_itemIconDistAboveItem; // @ 0xEA6540
-extern int mpviewport;       // @ 0xF3A574
+int mpviewport = 0;          // @ 0xF3A574
 extern const char* CG_ConfigString(unsigned int index);  // cg.o
 extern int BG_GetNumWeapons();  // game.o
 extern bool IsVehicleSpotted(Entity* vehicle);  // g.o
@@ -304,7 +304,7 @@ extern float dword_F63C58[];  // @ 0xF63C58 (screen w)
 extern float dword_F63C5C[];  // @ 0xF63C5C (screen h)
 extern float unk_F63634[];    // @ 0xF63634 (client yaw)
 extern float unk_F6A280[];    // @ 0xF6A280 (previous viewport)
-extern int dword_F64198[];    // @ 0xF64198
+int dword_F64198[4 * 1580] = {};    // @ 0xF64198
 extern vmCvar_t gCvarShowVehMap;  // ?gCvarShowVehMap@@3UvmCvar_t@@A @ 0xEA64B0
 extern int gRenderCG_2D;      // ?gRenderCG_2D@@3HA (g.o)
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);  // g.o
