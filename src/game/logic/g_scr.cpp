@@ -7619,10 +7619,25 @@ public:
 // AnimBroRef registration list (scr.o data)
 template <typename T>
 struct ae_array_dynamic {
-    T**            m_elements;  // +0x00
+    T*             m_elements;  // +0x00
     unsigned short m_capacity;  // +0x04
     short          m_size;      // +0x06
-    void push_back(T const* elt);
+    void push_back(T const* elt)
+    {
+        if (m_size >= (short)m_capacity) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 99;
+            AeAssert::gCurrentExpr = "m_size < m_capacity";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no room left in array"))
+                __debugbreak();
+        }
+        if (m_size < (short)m_capacity) {
+            m_elements[m_size] = *elt;
+            ++m_size;
+        }
+    }
 };
 ae_array_dynamic<AnimBroRef*> gAnimRefRegList;  // scr.o data
 
