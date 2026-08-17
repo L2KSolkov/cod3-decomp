@@ -167,7 +167,11 @@ struct MpPlayerView2 {
     char     mName[32];    // +0x68
     uint8_t  _pad3[0x25C - 0x88];
     int16_t  mTeam;        // +0x25C
-    bool IsValid() const;  // mp.o
+    // ea: 0x00735FF0 (MPPlayer::IsValid)
+    bool IsValid() const
+    {
+        return mId < 0x10u && mConnection != nullptr;
+    }
 };
 struct MpPlayerManagerView {
     MPPlayer* GetPlayer(unsigned char id);  // mp.o
