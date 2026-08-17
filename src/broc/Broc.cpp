@@ -949,7 +949,14 @@ void ExtendedEntity::SetUndefined(unsigned int key)
         return;
     }
 }
-unsigned int* ExtendedEntity::SetVal(unsigned int, const string&) { return NULL; }
+// ea: 0x0092AC40. IDA placement-copies the string into the raw slot and
+// delegates ownership/replacement to InternalSet.
+unsigned int* ExtendedEntity::SetVal(unsigned int key, const string& val)
+{
+    unsigned int raw = 0;
+    new (&raw) string(val, 0);
+    return InternalSet(key, raw);
+}
 // ea: 0x0092ACF0. IDA profiling events are omitted; null-entity handling,
 // typed replacement, growth, and slot initialization follow the decompiled
 // implementation.
