@@ -4841,6 +4841,28 @@ bool PauseMenu::ResponseNoNevermind(int client)
     return true;
 }
 
+// ea: 0x007AB990
+void PauseMenu::AttemptSuicide()
+{
+    DialogMenuSystem* dms = g_femanager.GetDMS(mVersion);
+    dms->BringUp("MPGAME_SUICIDE_QUERY", false, false,
+                 "MPGAME_SUICIDE", true);
+    DialogMenu* layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_YES", PauseMenu::ResponseYesSuicide);
+    dms = g_femanager.GetDMS(mVersion);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_NO", PauseMenu::ResponseNoNevermind);
+    j_nullsub_58(dms, true);
+    dms = g_femanager.GetDMS(mVersion);
+    dms->HighlightOption(1);
+    dms = g_femanager.GetDMS(mVersion);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->Reformat(true, 0);
+    dms = g_femanager.GetDMS(mVersion);
+    dms->GetLayer(dms->GetActiveMenu() == 0)->triangleResponse =
+        PauseMenu::ResponseGoBack;
+}
+
 // ea: 0x007A6880
 void PauseMenu::AttemptQuit()
 {
