@@ -194,16 +194,16 @@ struct MpPlayerManagerView {
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // mp.o
 };
 
-struct KeyInfoEntry {
+struct KeyInfoEntry2 {
     int   mState;           // +0x00 (low 2 bits down, high 30 repeats)
     char* mBoundCmdName;    // +0x04
 };
+template <typename T, int N>
+struct ae_array_fixed {
+    T m_elements[N];
+};
 struct KeyInfo {
-    struct KeyTable {
-        KeyInfoEntry m_elements[256];
-        int          m_size;
-    };
-    static KeyTable mKeys[1];  // ?mKeys@KeyInfo@@0V?$ae_sized_array@V?$ae_sized_array@VKeyInfoEntry@@$0BAA@@@$00@@A (cl.o)
+    static ae_array_fixed<ae_array_fixed<KeyInfoEntry2, 256>, 1> mKeys;
     static int GetKey(const char* boundCmdName, int clnt);  // ?GetKey@KeyInfo@@SAHPBDH@Z
 };
 struct weaponInfo_s {
@@ -5631,7 +5631,7 @@ void IGOFrontEnd::FindKeyBindings()
     for (int i = 0; i < 256; ++i)
     {
         const char* mBoundCmdName =
-            KeyInfo::mKeys[currCl].m_elements[i].mBoundCmdName;
+            KeyInfo::mKeys.m_elements[currCl].m_elements[i].mBoundCmdName;
         if (activate_key[0] == 0 && Q_stricmp(mBoundCmdName, "+activate") == 0)
         {
             Q_strncpyz(activate_key, Key_KeynumToString(i, 1), 8);

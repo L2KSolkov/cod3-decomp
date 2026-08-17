@@ -29,11 +29,10 @@ public:
 };
 
 // apsMemory (aepsMemory)
-class apsMemory {
-public:
-    static void Reset();                // ?Reset@apsMemory@@YAXXZ
-    static unsigned int AddPool(int numBlocks, int blockSize);  // ?AddPool@apsMemory@@YAIHH@Z
-};
+namespace apsMemory {
+    void Reset();
+    unsigned int AddPool(int numBlocks, int blockSize);
+}
 
 // render.o data (scene counters / proj shadow)
 int r_firstSceneDlight;   // ?r_firstSceneDlight@@3HA @ 0xF74274
@@ -731,6 +730,8 @@ public:
     static unsigned int NMarks;   // ?NMarks@WheelMarkMgr@@1IA
     static WheelMark* Marks;      // ?Marks@WheelMarkMgr@@1PAVWheelMark@@A
 };
+
+unsigned int WheelMarkMgr::NMarks;
 
 // WorldSpawn / SceneManager (struct tags per sInst mangle PAU1)
 class WorldSpawn {
