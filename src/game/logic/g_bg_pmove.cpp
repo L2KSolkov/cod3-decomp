@@ -2835,13 +2835,15 @@ void PM_LadderMove(const collision_context_t& context);  // game.o 0x6458E0
 extern void PM_WalkMove(const collision_context_t& context);    // game.o 0x643E40
 extern void PM_AirMove(const collision_context_t& context);     // game.o 0x643C50
 extern void PM_GroundTrace();                     // game.o 0x63C340
-extern void PM_NoclipMove();                      // game.o 0x6055A0
+extern PlayerState* PM_NoclipMove();              // game.o 0x6055A0
 extern void PM_UFOMove();                         // game.o 0x605850
 extern PlayerState* PM_DeadMove();                // game.o 0x605420
 extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
 extern void PM_FoliageSounds();                   // game.o 0x63D100
 extern void PM_WaterEvents();                     // game.o 0x606280
 extern void PM_DropTimers();                      // game.o 0x606320
+static float PM_CmdScale(usercmd_s* cmd);
+static void PM_Accelerate(float* wishdir, float wishspeed, float accel);
 // ea: 0x604CC0
 PlayerState* PM_Friction()
 {
@@ -2970,7 +2972,90 @@ void PM_Footsteps() {}
 void PM_WalkMove(const collision_context_t& context) { (void)context; }
 void PM_AirMove(const collision_context_t& context) { (void)context; }
 void PM_GroundTrace() {}
-void PM_NoclipMove() {}
+// ea: 0x6055A0
+PlayerState* PM_NoclipMove()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1707;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    ps->viewHeightTarget = bg_viewheight_standing.integer;
+    ps->standViewHeight = bg_viewheight_standing.integer;
+
+    float speed = sqrtf(ps->velocity.v.m128_f32[0]
+                        * ps->velocity.v.m128_f32[0]
+                        + ps->velocity.v.m128_f32[1]
+                              * ps->velocity.v.m128_f32[1]
+                        + ps->velocity.v.m128_f32[2]
+                              * ps->velocity.v.m128_f32[2]);
+    if (pm->cmd.forwardmove == 0 && pm->cmd.rightmove == 0)
+    {
+        if (pm->cmd.upmove != 0)
+        {
+            ps->velocity.v.m128_f32[1] = 0.0f;
+            ps->velocity.v.m128_f32[0] = 0.0f;
+            ps->velocity.v.m128_f32[2] = (float)pm->cmd.upmove;
+            speed = 127.0f;
+        }
+        else
+        {
+            ps->velocity.v.m128_f32[0] = 0.0f;
+            ps->velocity.v.m128_f32[1] = 0.0f;
+            ps->velocity.v.m128_f32[2] = 0.0f;
+            speed = 0.0f;
+        }
+    }
+    else if (speed < 1.0f)
+    {
+        ps->velocity.v.m128_f32[0] = 0.0f;
+        ps->velocity.v.m128_f32[1] = 0.0f;
+        ps->velocity.v.m128_f32[2] = 0.0f;
+    }
+
+    if (speed >= 1.0f)
+    {
+        const float control = speed >= 100.0f ? speed : 100.0f;
+        float newSpeed = speed - (pml.frametime * control) * 8.25f;
+        if (newSpeed < 0.0f)
+            newSpeed = 0.0f;
+        const float scale = newSpeed / speed;
+        ps->velocity.v.m128_f32[0] *= scale;
+        ps->velocity.v.m128_f32[1] *= scale;
+        ps->velocity.v.m128_f32[2] *= scale;
+    }
+
+    float scale = PM_CmdScale(&pm->cmd);
+    const float sprintSpeedScale =
+        ((ps->pm_flags & 0x10000) != 0 && pm->cmd.forwardmove > 0)
+            ? ps->sprintSpeedScale
+            : 1.0f;
+    const int forwardmove = pm->cmd.forwardmove;
+    const int rightmove = pm->cmd.rightmove;
+    const int upmove = pm->cmd.upmove;
+    float wishdir[3];
+    wishdir[0] = (pml.forward[0] * forwardmove * sprintSpeedScale)
+                 + (pml.right[0] * rightmove);
+    wishdir[1] = (pml.forward[1] * forwardmove * sprintSpeedScale)
+                 + (pml.right[1] * rightmove);
+    wishdir[2] = (float)upmove
+                 + (pml.forward[2] * forwardmove * sprintSpeedScale)
+                 + (pml.right[2] * rightmove);
+    scale = VectorNormalize(wishdir) * scale;
+    PM_Accelerate(wishdir, scale, 9.0f);
+
+    ps->origin.v.m128_f32[0] += ps->velocity.v.m128_f32[0] * pml.frametime;
+    ps->origin.v.m128_f32[1] += ps->velocity.v.m128_f32[1] * pml.frametime;
+    ps->origin.v.m128_f32[2] += ps->velocity.v.m128_f32[2] * pml.frametime;
+    return ps;
+}
 void PM_UFOMove() {}
 // ea: 0x605420
 PlayerState* PM_DeadMove()
