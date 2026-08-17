@@ -5,6 +5,7 @@
 // ============================================================================
 
 #include "MPLiveEngine.h"
+#include "bd/bdNet.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -35,10 +36,21 @@ bool MPUIInterface::InSession()  // ?InSession@MPUIInterface@@SA?B_NXZ
     return mInSession;
 }
 
-// mp.o statics (stubs; ported later)
+// ea: 0x00765E00
 bool MPUIInterface::BlockUntilNetReady()
 {
-    return false;
+    bdNetImpl* instance = bdSingleton<bdNetImpl>::getInstance();
+    if (instance->getStatus() == BD_NET_PENDING)
+    {
+        do
+        {
+            MultiplayerMgr::sInst->Step(0, false, true);
+            instance = bdSingleton<bdNetImpl>::getInstance();
+        }
+        while (instance->getStatus() == BD_NET_PENDING);
+    }
+    instance = bdSingleton<bdNetImpl>::getInstance();
+    return instance->getStatus() == BD_NET_DONE;
 }
 void MPUIInterface::ExitGame()
 {
