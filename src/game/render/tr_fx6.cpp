@@ -34,13 +34,9 @@ struct EntityView {
 };
 
 // PostEffectEventScriptCall (sret Handle; game.o)
-struct BrocVec {
-    float x;
-    float y;
-    float z;
-};
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
-                                 const BrocVec& pos, const BrocVec& facing,
+                                 const Broc::vector& pos,
+                                 const Broc::vector& facing,
                                  bool queue, TPakId pakid,
                                  bool important);  // ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z
 
@@ -163,9 +159,9 @@ void FX_UpdateRainDrops(float timeDelta)
                     _mm_sub_ps(offset2, _mm_mul_ps(norm, _mm_set1_ps(d))),
                     move));
 
-            BrocVec facing = { 0.0f, 0.0f, 1.0f };
-            BrocVec bpos = { pos.v.m128_f32[0], pos.v.m128_f32[1],
-                             pos.v.m128_f32[2] };
+            Broc::vector facing = { 0.0f, 0.0f, 1.0f };
+            Broc::vector bpos = { pos.v.m128_f32[0], pos.v.m128_f32[1],
+                                  pos.v.m128_f32[2] };
             PostEffectEventScriptCall((Entity*)Player, "rain_splash_md",
                                       bpos, facing, false,
                                       (TPakId)-1, false);
