@@ -11127,6 +11127,12 @@ bool MultiplayerMgr::IsHost()
             == bdSession::BD_SESSION_HOST;
 }
 
+// ea: 0x007402F0
+bool MultiplayerMgr::IsLocalPlayer(Entity* player)
+{
+    return mPeer == nullptr || mPeer->GetPlayerManager()->IsLocalPlayer(player);
+}
+
 // ea: 0x0074EFD0 (profile dialog: confirm delete -> deleting screen)
 bool MPProfileMainMenu::DialogResponseDeleteConfirm(int index)
 {

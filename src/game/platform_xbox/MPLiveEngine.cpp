@@ -165,11 +165,6 @@ void MultiplayerMgr::Step(int earlyOutInterval, bool fromThread,
 {
     (void)earlyOutInterval; (void)fromThread; (void)a_bFromGame;
 }
-bool MultiplayerMgr::IsLocalPlayer(Entity* player)
-{
-    (void)player;
-    return false;
-}
 bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
 {
     (void)player;
