@@ -138,7 +138,6 @@ void VEH_RemoveVehicle(void* veh) { (void)veh; }
 void VEH_UpdateAim(Entity* e) { (void)e; }
 void VEH_UpdateAltWeapon(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
-void VEH_UpdateFollow(Entity* e) { (void)e; }
 void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
 float hatchLerpDuration = 0.5f; // g.o @ 0xDD7F50
 void VEH_UpdateHatch(Entity* ent, int)
@@ -201,6 +200,123 @@ void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateSteering(Entity* e) { (void)e; }
 void VEH_UpdateWeapon(Entity* e) { (void)e; }
 void VEH_VerifyPosition(Entity* e) { (void)e; }
+
+void VEH_TryRecordFollowHistory(scr_vehicle_t* veh)
+{
+    if (veh->follow->numHistoryBufferEntries <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3782;
+        AeAssert::gCurrentExpr =
+            "veh->follow->numHistoryBufferEntries > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    vehicle_follow* follow = veh->follow;
+    int previousIndex = (follow->historyBufferFront + 39) % 40;
+    float deltaX = veh->phys.origin.v.m128_f32[0]
+                   - follow->positionHistory[previousIndex][0];
+    float deltaY = veh->phys.origin.v.m128_f32[1]
+                   - follow->positionHistory[previousIndex][1];
+    float deltaZ = veh->phys.origin.v.m128_f32[2]
+                   - follow->positionHistory[previousIndex][2];
+    if (deltaZ * deltaZ + deltaY * deltaY + deltaX * deltaX >= 324.0f)
+    {
+        follow->positionHistory[follow->historyBufferFront][0] =
+            veh->phys.origin.v.m128_f32[0];
+        veh->follow->positionHistory[veh->follow->historyBufferFront][1] =
+            veh->phys.origin.v.m128_f32[1];
+        veh->follow->positionHistory[veh->follow->historyBufferFront][2] =
+            veh->phys.origin.v.m128_f32[2];
+        ++veh->follow->numHistoryBufferEntries;
+        if (veh->follow->numHistoryBufferEntries > 40)
+            veh->follow->numHistoryBufferEntries = 40;
+        veh->follow->historyBufferFront =
+            (veh->follow->historyBufferFront + 1) % 40;
+    }
+}
+
+void VEH_UpdateFollow(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_follow* follow = scr_vehicle->follow;
+    if (follow == nullptr)
+        return;
+
+    unsigned int handleValue =
+        follow->claimedSlotEntityHandleList[0].mHandle.mVal;
+    unsigned int index = handleValue & 0xFFF;
+    int activeCount = 0;
+    if (index < 0x540
+        && (handleValue >> 12) == EntityHandleDb::sInst.mElements[index].mKey)
+    {
+        activeCount = EntityHandleDb::sInst.mElements[index].mObject != nullptr;
+    }
+
+    handleValue = follow->claimedSlotEntityHandleList[1].mHandle.mVal;
+    index = handleValue & 0xFFF;
+    if (index < 0x540
+        && (handleValue >> 12) == EntityHandleDb::sInst.mElements[index].mKey
+        && EntityHandleDb::sInst.mElements[index].mObject != nullptr)
+    {
+        ++activeCount;
+    }
+
+    handleValue = follow->claimedSlotEntityHandleList[2].mHandle.mVal;
+    index = handleValue & 0xFFF;
+    if (index < 0x540
+        && (handleValue >> 12) == EntityHandleDb::sInst.mElements[index].mKey
+        && EntityHandleDb::sInst.mElements[index].mObject != nullptr)
+    {
+        ++activeCount;
+    }
+
+    handleValue = follow->claimedSlotEntityHandleList[3].mHandle.mVal;
+    index = handleValue & 0xFFF;
+    if (index < 0x540
+        && (handleValue >> 12) == EntityHandleDb::sInst.mElements[index].mKey
+        && EntityHandleDb::sInst.mElements[index].mObject != nullptr)
+    {
+        ++activeCount;
+    }
+
+    handleValue = follow->claimedSlotEntityHandleList[4].mHandle.mVal;
+    index = handleValue & 0xFFF;
+    if (index < 0x540
+        && (handleValue >> 12) == EntityHandleDb::sInst.mElements[index].mKey
+        && EntityHandleDb::sInst.mElements[index].mObject != nullptr)
+    {
+        ++activeCount;
+    }
+
+    handleValue = follow->claimedSlotEntityHandleList[5].mHandle.mVal;
+    index = handleValue & 0xFFF;
+    if (index < 0x540
+        && (handleValue >> 12) == EntityHandleDb::sInst.mElements[index].mKey
+        && EntityHandleDb::sInst.mElements[index].mObject != nullptr)
+    {
+        ++activeCount;
+    }
+
+    if (activeCount != follow->numFollowingActors)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3966;
+        AeAssert::gCurrentExpr =
+            "active_count == veh->follow->numFollowingActors";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    VEH_TryRecordFollowHistory(scr_vehicle);
+    if (scr_vehicle->follow->numFollowingActors > 0)
+        VEH_UpdateFollowFormation(scr_vehicle);
+}
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 class RumbleEffectInstanceHandle {
@@ -984,30 +1100,27 @@ void VEH_GenerateRelativeFormationTable(scr_vehicle_t* veh)
 }
 
 // ea: 0x0044E260
-void VEH_UpdateFollowFormation(scr_vehicle_t* veh, float requiredDistance)
+void VEH_UpdateFollowFormation(scr_vehicle_t* veh)
 {
     float up[3] = {0.0f, 0.0f, 1.0f};
     vehicle_follow* follow = veh->follow;
     int v3 = (follow->historyBufferFront + 39) % 40;
+    float minFollowDistance = follow->minFollowDistance;
     float requiredTotalRowDistance =
         (follow->actualRows - 1) * follow->rowSpacing;
     int GenericDistancedFollowHistoryIndex =
         VEH_GetGenericDistancedFollowHistoryIndex(
-            veh, veh->phys.origin.v.m128_f32, requiredDistance, v3);
-    float v5 = 0.0f;
+            veh, veh->phys.origin.v.m128_f32, minFollowDistance, v3);
     int v6 = VEH_GetGenericDistancedFollowHistoryIndex(
         veh,
         veh->follow->positionHistory[(GenericDistancedFollowHistoryIndex + 39) % 40],
-        v5, (GenericDistancedFollowHistoryIndex + 39) % 40);
+        requiredTotalRowDistance, (GenericDistancedFollowHistoryIndex + 39) % 40);
     int numFollowingActors = veh->follow->numFollowingActors;
     int v8 = 0;
     int slot = 0;
     if (numFollowingActors > 0)
     {
-        int v28 = 4 * (3 * v6 + 27);
         int v9 = GenericDistancedFollowHistoryIndex;
-        int v29 = 12 * v6;
-        int v32 = 4 * (3 * GenericDistancedFollowHistoryIndex + 27);
         requiredTotalRowDistance = 0.0f;
         do
         {
@@ -1018,12 +1131,12 @@ void VEH_UpdateFollowFormation(scr_vehicle_t* veh, float requiredDistance)
             int v14 = v12;
             float minMaxDelta[3];
             minMaxDelta[0] = v10->positionHistory[v9][0]
-                             - v10->positionHistory[v29 / 12][0];
+                             - v10->positionHistory[v6][0];
             float v15 = v10->positionHistory[v9][1]
-                        - v10->positionHistory[v29 / 12][1];
+                        - v10->positionHistory[v6][1];
             minMaxDelta[1] = v15;
-            minMaxDelta[2] = *(float*)((char*)&v10->numFollowingActors + v32)
-                             - *(float*)((char*)&v10->numFollowingActors + v28);
+            minMaxDelta[2] = v10->positionHistory[v9][2]
+                             - v10->positionHistory[v6][2];
             float angleDiff[3];
             vectoangles(minMaxDelta, angleDiff);
             float rotatedRelativePosition[3];
@@ -1035,8 +1148,7 @@ void VEH_UpdateFollowFormation(scr_vehicle_t* veh, float requiredDistance)
             veh->follow->slotGoalPosition[slot][1] =
                 veh->follow->positionHistory[v9][1] + rotatedRelativePosition[1];
             veh->follow->slotGoalPosition[slot][2] =
-                *(float*)((char*)veh->follow + v32)
-                + rotatedRelativePosition[2];
+                veh->follow->positionHistory[v9][2] + rotatedRelativePosition[2];
             v8 = slot + 1;
             slot = v8;
         } while (v8 < veh->follow->numFollowingActors);
@@ -1109,7 +1221,7 @@ bool VEH_AcquirePlayerFollowSlot(Entity* vehicle, Entity* follower)
             follower->mHandle.mHandle.mVal;
         follower->actor->iFollowSlot = scr_vehicle->follow->numFollowingActors++;
         VEH_GenerateRelativeFormationTable(scr_vehicle);
-        VEH_UpdateFollowFormation(scr_vehicle, 0.0f);
+        VEH_UpdateFollowFormation(scr_vehicle);
         return true;
     }
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -1244,7 +1356,7 @@ void VEH_ReleasePlayerFollowSlot(Entity* vehicle, Entity* follower)
         actor->iFollowSlot = iFollowSlot;
     }
     VEH_GenerateRelativeFormationTable(scr_vehicle);
-    VEH_UpdateFollowFormation(scr_vehicle, 0.0f);
+    VEH_UpdateFollowFormation(scr_vehicle);
 }
 
 // ea: 0x0044E6A0

@@ -4714,6 +4714,7 @@ void  VEH_UpdateGunnerWeapon(Entity* ent);        // g.o
 void  VEH_UpdateSteering(Entity* ent);            // g.o
 void  VEH_UpdateHatch(Entity* ent, int msec);     // g.o
 void  VEH_UpdateFollow(Entity* ent);              // g.o
+void  VEH_TryRecordFollowHistory(scr_vehicle_t* veh); // g.o
 void  VEH_UpdateShaderTime(Entity* ent);          // g.o
 void  Scr_Vehicle_Think(Entity* pSelf, int msec); // g.o 0x490ED0
 void  VEH_UpdatePath(Entity* ent, int msec);     // g.o 0x47F8B0
@@ -4855,7 +4856,7 @@ void  VEH_ReleasePlayerFollowSlot(Entity* vehicle, Entity* follower);  // g.o 0x
 const float (*VEH_GetPlayerFollowGoalPosition(const Entity* vehicle,
                                               const Entity* follower))[3];  // g.o 0x44E6A0
 void  VEH_GenerateRelativeFormationTable(scr_vehicle_t* veh);  // g.o 0x44DFE0
-void  VEH_UpdateFollowFormation(scr_vehicle_t* veh, float requiredDistance);  // g.o 0x44E260
+void  VEH_UpdateFollowFormation(scr_vehicle_t* veh);  // g.o 0x44E260
 int   VEH_GetGenericDistancedFollowHistoryIndex(scr_vehicle_t* veh,
                                                 const float* origin,
                                                 float requiredDistance,
