@@ -700,7 +700,7 @@ class FEMultiLineText {
 public:
     FEMultiLineText(font_index f, float x1, float y1, int z1,
                     panel_layer layer, float s, int horizJust,
-                    int vertJust, color32* col);  // ??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z (shell.o)
+                    int vertJust, color32 col);  // ??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z (shell.o)
     virtual ~FEMultiLineText();      // ??1FEMultiLineText@@UAE@XZ (shell.o)
     virtual void UpdateForWidescreen(bool widescreen);  // ?UpdateForWidescreen@FEMultiLineText@@UAEX_N@Z (shell.o)
     virtual void SetTextBoxNoLocalize(Broc::string text, int width,

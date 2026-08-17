@@ -1309,7 +1309,7 @@ void MPOptionsSoundMenu::SetPanelFile(PanelFile* pf)
         float v37 = TextPointer->GetX();
         v5 = new (v5)
             FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, &col);
+                            0.0f, 0, (int)col.i, col);
     }
     this->helpbar1 = v5;
     if (v5 != nullptr)
@@ -1345,7 +1345,7 @@ void MPOptionsSoundMenu::SetPanelFile(PanelFile* pf)
         if (v15 != nullptr)
             v15 = new (v15)
                 FEMultiLineText(v13->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v46.i, &v46);
+                                32.0f, 64, (int)v46.i, v46);
         this->mInstructionsText = v15;
         if (v15 != nullptr)
             v15->SetNumLines(5);
@@ -1386,7 +1386,7 @@ void MPOptionsControlsMenu::SetPanelFile(PanelFile* pf)
         float v64 = TextPointer->GetX();
         v5 = new (v5)
             FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, &col);
+                            0.0f, 0, (int)col.i, col);
     }
     this->helpbar1 = v5;
     if (v5 != nullptr)
@@ -1420,7 +1420,7 @@ void MPOptionsControlsMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v15->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v81.i, &v81);
+                                32.0f, 64, (int)v81.i, v81);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
@@ -1487,7 +1487,7 @@ void MPOptionsGameplayMenu::SetPanelFile(PanelFile* pf)
         float v34 = TextPointer->GetX();
         v5 = new (v5)
             FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, &col);
+                            0.0f, 0, (int)col.i, col);
     }
     this->helpbar1 = v5;
     if (v5 != nullptr)
@@ -1521,7 +1521,7 @@ void MPOptionsGameplayMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v15->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)col2.i, &col2);
+                                32.0f, 64, (int)col2.i, col2);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
@@ -1569,7 +1569,7 @@ void MPOptionsPreferencesMenu::SetPanelFile(PanelFile* pf)
         float v66 = TextPointer->GetX();
         v5 = new (v5)
             FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, &col);
+                            0.0f, 0, (int)col.i, col);
     }
     this->helpbar1 = v5;
     if (v5 != nullptr)
@@ -1603,7 +1603,7 @@ void MPOptionsPreferencesMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v15->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v86.i, &v86);
+                                32.0f, 64, (int)v86.i, v86);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
@@ -1770,7 +1770,7 @@ void MPProfileEditMenu::SetPanelFile(PanelFile* pf)
         float v20 = TextPointer->GetX();
         v5 = new (v5)
             FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, &col);
+                            0.0f, 0, (int)col.i, col);
     }
     this->helpbar1 = v5;
     if (v5 != nullptr)
@@ -1804,7 +1804,7 @@ void MPProfileEditMenu::SetPanelFile(PanelFile* pf)
         if (v14 != nullptr)
             v14 = new (v14)
                 FEMultiLineText(v12->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v28.i, &v28);
+                                32.0f, 64, (int)v28.i, v28);
         this->mInstructionsText = v14;
         if (v14 != nullptr)
             v14->SetNumLines(5);
@@ -1839,7 +1839,7 @@ void MPProfileMainMenu::SetPanelFile(PanelFile* pf)
         float v26 = TextPointer->GetX();
         v6 = new (v6)
             FEMultiLineText(TextPointer->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, &col);
+                            0.0f, 0, (int)col.i, col);
     }
     this->mHelpBar = v6;
     if (v6 != nullptr)
@@ -1885,7 +1885,7 @@ void MPOptionsScreenMenu::SetPanelFile(PanelFile* pf)
         font_index v7 = TextPointer->GetFont();
         v5 = new (v5)
             FEMultiLineText(v7, x1, 0.0f, 0, layer, 0.0f, 0,
-                            (int)col.i, &col);
+                            (int)col.i, col);
     }
     this->helpbar1 = v5;
     if (v5 != nullptr)
@@ -1920,7 +1920,7 @@ void MPOptionsScreenMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v16, x1a, 0.0f, 0, layera, 32.0f, 64,
-                                (int)v50.i, &v50);
+                                (int)v50.i, v50);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
