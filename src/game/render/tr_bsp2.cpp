@@ -329,7 +329,7 @@ void R_RenderGlow()
 // ============================================================================
 struct nglMesh;
 class nglMeshParams;
-class nglShaderParamSet;
+struct nglShaderParamSet;
 struct nglMeshNode;
 nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams, nglShaderParamSet* ShaderParams,

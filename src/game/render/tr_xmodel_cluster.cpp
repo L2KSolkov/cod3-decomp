@@ -23,7 +23,7 @@ bool Assert(const char* fmtstring, ...);
 struct nglScene;
 struct nglMesh;
 class nglMeshParams;
-class nglShaderParamSet {
+struct nglShaderParamSet {
 public:
     unsigned char mData[4];
     static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA (ngl_dx_core.cpp)

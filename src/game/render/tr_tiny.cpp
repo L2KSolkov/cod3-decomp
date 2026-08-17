@@ -3050,7 +3050,7 @@ jqBatch::jqBatch()
 struct nglMeshNode;
 struct nglMesh;
 class nglMeshParams;
-class nglShaderParamSet;
+struct nglShaderParamSet;
 extern nglMeshNode* _codListAddMesh(nglMesh* mesh, const math::Mat43& localToWorld,
                                     nglMeshParams* meshParams,
                                     nglShaderParamSet* shaderParams,
@@ -3158,7 +3158,7 @@ float Clamp01(float iVal)  // ?Clamp01@@YAMM@Z @ 0x6E6DD0
     return 1.0f;
 }
 
-class nglShaderParamSet : public nglParamSet {
+struct nglShaderParamSet : public nglParamSet {
 public:
     static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA
     void Copy(const nglShaderParamSet& src);  // ?Copy@nglShaderParamSet@@QAEXABU1@@Z @ 0x6E7680

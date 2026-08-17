@@ -21,7 +21,7 @@ struct nglMaterial;
 class nglFont;
 struct nglMorphSet;
 class nglMeshParams;
-class nglShaderParamSet;
+struct nglShaderParamSet;
 struct nglMeshNode;
 
 // tl_system.o (tl_xboxr, ported)
@@ -183,7 +183,7 @@ static_assert(sizeof(nglSkeleton) == 0x0C, "nglSkeleton size mismatch");
 // ============================================================================
 // Shader/scene parameter sets (4 bytes each, verified against IDA).
 // ============================================================================
-class nglShaderParamSet : public nglParamSet {
+struct nglShaderParamSet : public nglParamSet {
 public:
     static unsigned int NumParams;  // ngl_params.o (0x14D2AA4)
     nglShaderParamSet();            // inline COMDAT (game.o)
