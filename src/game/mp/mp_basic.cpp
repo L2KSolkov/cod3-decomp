@@ -167,6 +167,8 @@ void InitMPCallbacks();  // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
 }
 namespace View {
 void UpdateViewports(int client);  // ?UpdateViewports@View@@YAXH@Z (cg.o)
+void UpdateViewports();
+void UpdateViewports(int) { UpdateViewports(); }
 }
 namespace LocalClient {
 int  NumLocalClients();
