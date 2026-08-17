@@ -15,6 +15,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <float.h>
+#include <string.h>
 #include <intrin.h>
 #include <new>
 
@@ -816,6 +817,30 @@ unsigned char MPPlayer::GetId() const
 void MPPlayer::SetId(unsigned char id)
 {
     mId = id;
+}
+
+// ea: 0x0072B820
+void MPPlayer::SetName(const char* name)
+{
+    strncpy(mName, name, 0x20u);
+    mName[31] = 0;
+}
+
+// ea: 0x00777CA0
+void MPPlayer::RemoveItem(EDroppedItemTypes item, ::MPEntityHandle handle)
+{
+    if (handle.mValue == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp\\MPPlayer.h";
+        AeAssert::gCurrentLine = 252;
+        AeAssert::gCurrentExpr = "handle.IsAssigned()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("RemoveItem: Invalid handle"))
+            __debugbreak();
+    }
+    MPPlayerItems* items = reinterpret_cast<MPPlayerItems*>((char*)this + 0x0C);
+    items->RemoveItem(item, (short)(handle.mValue & 0x7FF));
 }
 
 // ea: 0x0072CE70
