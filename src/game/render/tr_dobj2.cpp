@@ -8,6 +8,7 @@
 #include "aeps/apsEffect.h"
 #include "game/logic/g_local.h"
 #include "ngl/ngl_lighting.h"
+#include "ngl/ngl_scene.h"
 #include "ngl/ngl_dx_core.h"
 #include "ngl/ngl_dx_quad.h"
 #include "render/cdGlassShader.h"
@@ -509,7 +510,7 @@ void RE_Shutdown(int destroyWindow)
 // R_ShowAlphaChannel - ea: 0x006C67F0
 // ============================================================================
 struct nglScene;
-extern nglScene* nglListBeginScene(int ParamSource);
+extern nglScene* nglListBeginScene(nglSceneParamType ParamSource);
 void nglSetClearFlags(unsigned int ClearFlags);
 void nglSetFBWriteMask(unsigned int WriteMask);
 void R_SetWindowQuadRect(nglQuad& q);  // tr_fx.cpp
@@ -519,14 +520,14 @@ extern unsigned int dword_CB8600;  // @ 0xCB8600
 void R_ShowAlphaChannel()
 {
     nglQuad q;
-    nglListBeginScene(1);  // NGLSCENE_PARENT
+    nglListBeginScene(NGLSCENE_PARENT);
     nglSetClearFlags(0);
     nglSetFBWriteMask(0x10101u);
     nglInitQuad(&q);
     R_SetWindowQuadRect(q);
     nglListAddQuad(&q);
     nglListEndScene();
-    nglListBeginScene(1);  // NGLSCENE_PARENT
+    nglListBeginScene(NGLSCENE_PARENT);
     nglSetClearFlags(0);
     nglSetFBWriteMask(0x10101u);
     nglInitQuad(&q);

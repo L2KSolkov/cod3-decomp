@@ -96,7 +96,7 @@ static inline int WeaponClass(weaponFileInfo_t* w)
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // game.o
 extern int BG_ClipForWeapon(int iWeapon);       // game.o
 extern int BG_AmmoForWeapon(int iWeapon);       // game.o
-extern bool BG_WeaponIsClipOnly(int iWeapon);   // game.o
+extern int BG_WeaponIsClipOnly(int iWeapon);    // game.o
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);  // game.o
 extern int CG_GetGrenadeCount();                // cg.o
 extern int CG_GetSpecialGrenadeCount();         // cg.o
@@ -127,10 +127,11 @@ extern vmCvar_t mp_itemIconMinAlphaDist;  // @ 0xEB0F18
 extern vmCvar_t mp_itemIconMinScreenSize; // @ 0xEA51D0
 extern vmCvar_t mp_itemIconDistAboveItem; // @ 0xEA6540
 extern int mpviewport;       // @ 0xF3A574
-extern const char* CG_ConfigString(int index);  // cg.o
+extern const char* CG_ConfigString(unsigned int index);  // cg.o
 extern int BG_GetNumWeapons();  // game.o
 extern bool IsVehicleSpotted(Entity* vehicle);  // g.o
-extern float VectorDistance(const float* v1, const float* v2);  // core.o
+extern const float VectorDistance(const float* const v1,
+                                  const float* const v2);  // core.o
 struct nglScene;
 extern math::Position3* nglProjectPoint(math::Position3* result,
                                         const math::Position3* In,
@@ -267,10 +268,10 @@ extern float COMPASS_STOP_OFFSET;  // @ 0xDF4464
 extern int cg_aWeaponSelect[];  // ?cg_aWeaponSelect@@3PAHA @ 0xF5D078
 extern vmCvar_t g_ammoFadeTime;   // ?g_ammoFadeTime@@3UvmCvar_t@@A @ 0xEAE5C0
 extern vmCvar_t g_ammoSolidTime;  // ?g_ammoSolidTime@@3UvmCvar_t@@A @ 0xEA6668
-extern bool Com_BitCheck(int* array, int bitNum);  // bg_weapons.cpp
+extern int Com_BitCheck(const int* const array, int bitNum);  // bg_weapons.cpp
 extern int BG_GetTotalAmmoReserve(const PlayerState* pPS,
                                   int iWeaponIndex);  // game.o
-extern float vectoyaw(const float* vec);      // core.o
+extern const float vectoyaw(const float* const vec);      // core.o
 extern const float AngleNormalize360(float angle);  // core.o
 extern float dword_F63560[];  // @ 0xF63560 (client origin x)
 extern float dword_F63564[];  // @ 0xF63564 (client origin y)
@@ -292,7 +293,7 @@ extern char* Key_KeynumToString(int keynum, int bTranslate);  // cl.o
 // ngl / view render helpers
 struct nglScene;
 enum nglSceneParamType : int { NGLSCENE_DEFAULTS = 0 };
-extern nglScene* nglListBeginScene(int ParamSource);  // ngl/ngl_scene.h
+extern nglScene* nglListBeginScene(nglSceneParamType ParamSource);  // ngl/ngl_scene.h
 extern void nglSetClearFlags(unsigned int ClearFlags);
 extern nglScene* nglListEndScene();
 namespace View {
@@ -336,7 +337,7 @@ extern void __fastcall Sentient_GetOrigin(const sentient_s* pSelf,
                                           float* const vOriginOut);  // mp_actors.o
 extern bool G_GetTankIndex(DbLinkedHandle<EntityHandleDb, Entity> entity,
                            int* index, bool* enemy);  // g.o
-extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);      // g.o
 
