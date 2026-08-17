@@ -625,7 +625,129 @@ bool collide(
     unsigned int bbase,
     unsigned int bnquads)
 {
-    int result = gjk(a, a2b, b, _cinfo,
-                     SEP_TRESHOLD2_0, false, abase, anquads, bbase, bnquads);
-    return result == 0;
+    // ea: 0x81F6B0
+    cdl_proftimer_collide.start();
+    ++cdl_profcounter_collide_calls.value;
+
+    cdl_cinfo2 gjk_cinfo;
+    gjk_cinfo.ni = _cinfo.ni;
+    const int result = gjk(a, a2b, b, gjk_cinfo,
+                           SEP_TRESHOLD2_0, false,
+                           abase, anquads, bbase, bnquads);
+    _cinfo.ni = gjk_cinfo.ni;
+
+    if (result == 0)
+    {
+        ++cdl_profcounter_gjk_separated.value;
+        cdl_proftimer_collide.stop();
+        return false;
+    }
+
+    const float length2 = dot3(_mm_mul_ps(_cinfo.ni.v, _cinfo.ni.v));
+    if (result == 1 && length2 > PEN_TRESHOLD2_0)
+    {
+        const float length = std::sqrt(length2);
+        _cinfo.ni.v = _mm_div_ps(
+            _cinfo.ni.v, _mm_set1_ps(length));
+        const __m128 half_normal = _mm_mul_ps(
+            _cinfo.ni.v, _mm_set1_ps(0.5f));
+        _cinfo.pa.v = _mm_sub_ps(gjk_cinfo.pa.v, half_normal);
+        _cinfo.pb.v = _mm_add_ps(gjk_cinfo.pb.v, half_normal);
+        cdl_proftimer_collide.stop();
+        return true;
+    }
+
+    ++cdl_profcounter_gjk_invalid.value;
+
+    math::Mat43 m;
+    m.x.v.m128_f32[0] = a2b.x.v.m128_f32[3];
+    m.x.v.m128_f32[1] = a2b.y.v.m128_f32[0];
+    m.x.v.m128_f32[2] = a2b.y.v.m128_f32[1];
+    m.x.v.m128_f32[3] = a2b.y.v.m128_f32[2];
+    m.y.v.m128_f32[0] = a2b.y.v.m128_f32[3];
+    m.y.v.m128_f32[1] = a2b.z.v.m128_f32[0];
+    m.y.v.m128_f32[2] = a2b.z.v.m128_f32[1];
+    m.y.v.m128_f32[3] = a2b.z.v.m128_f32[2];
+    m.z.v.m128_f32[0] = a2b.z.v.m128_f32[3];
+    m.z.v.m128_f32[1] = a2b.w.v.m128_f32[0];
+    m.z.v.m128_f32[2] = a2b.w.v.m128_f32[1];
+    m.z.v.m128_f32[3] = a2b.w.v.m128_f32[2];
+    m.w.v.m128_f32[0] = a2b.w.v.m128_f32[3];
+
+    math::Position3 center;
+    center.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0), a2b.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0x55), a2b.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(a.m_sphere.v, a.m_sphere.v, 0xAA), a2b.z.v),
+            a2b.w.v));
+    const cdlConvex_vtbl* b_vtbl =
+        reinterpret_cast<const cdlConvex_vtbl*>(b.__vftable);
+    cdl_cinfo1 tmp_cinfo;
+    int sphere_face = -1;
+    if (!b_vtbl->collide_sphere(
+            const_cast<cdlConvex*>(&b), &center,
+            a.m_sphere.v.m128_f32[3], &tmp_cinfo, &sphere_face))
+    {
+        _cinfo.ni = tmp_cinfo.ni;
+        ++cdl_profcounter_gjk_separated.value;
+        cdl_proftimer_collide.stop();
+        return false;
+    }
+
+    _cinfo.ni = tmp_cinfo.ni;
+    float old_dd = -1.0e10f;
+    unsigned int iters = 0;
+    for (;;)
+    {
+        m.w.v = _mm_add_ps(m.w.v, tmp_cinfo.ni.v);
+        cdl_cinfo2 iter_cinfo;
+        iter_cinfo.ni = _cinfo.ni;
+        const int iter_result = gjk(a, m, b, iter_cinfo,
+                                    SEP_TRESHOLD2_0, true,
+                                    abase, anquads, bbase, bnquads);
+        _cinfo.ni = iter_cinfo.ni;
+        const float iter_length2 = dot3(
+            _mm_mul_ps(_cinfo.ni.v, _cinfo.ni.v));
+        if (iter_result != 0)
+        {
+            ++iters;
+            if (iters > 5)
+            {
+                cdl_proftimer_collide.stop();
+                return false;
+            }
+            continue;
+        }
+
+        const float limit = static_cast<float>(iters + 2);
+        if (iter_length2 > limit * limit)
+        {
+            cdl_proftimer_collide.stop();
+            return false;
+        }
+
+        const float length = std::sqrt(iter_length2);
+        _cinfo.ni.v = _mm_div_ps(
+            _cinfo.ni.v, _mm_set1_ps(length));
+        const float alignment = dot3(
+            _mm_mul_ps(_cinfo.ni.v, tmp_cinfo.ni.v));
+        if (alignment > 0.99800003f ||
+            old_dd > (alignment - 0.0049999999f))
+        {
+            const __m128 half_normal = _mm_mul_ps(
+                _cinfo.ni.v, _mm_set1_ps(0.5f));
+            _cinfo.pa.v = _mm_add_ps(
+                iter_cinfo.pa.v,
+                _mm_sub_ps(_mm_sub_ps(a2b.w.v, m.w.v), half_normal));
+            _cinfo.pb = iter_cinfo.pb;
+            cdl_proftimer_collide.stop();
+            return true;
+        }
+
+        tmp_cinfo.ni = _cinfo.ni;
+        m.w.v = a2b.w.v;
+        old_dd = alignment;
+    }
 }
