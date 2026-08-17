@@ -539,8 +539,78 @@ bool collide_full(
     const cdlConvex& b,
     cdl_cinfo2& cinfo)
 {
-    int result = gjk(a, a2b, b, cinfo, 0.0f, true, 0, 0, 0, 0);
-    return result == 0;  // 0 = colliding
+    // ea: 0x81F3D0
+    math::Dir3 tmp_rdir;
+    math::Position3 new_pos;
+    math::Mat43 m;
+    math::Dir3 sd_len = cinfo.ni;
+    float old_dd;
+    unsigned int iters = 0;
+
+    m.x.v.m128_f32[0] = a2b.x.v.m128_f32[3];
+    m.x.v.m128_f32[1] = a2b.y.v.m128_f32[0];
+    m.x.v.m128_f32[2] = a2b.y.v.m128_f32[1];
+    m.x.v.m128_f32[3] = a2b.y.v.m128_f32[2];
+    m.y.v.m128_f32[0] = a2b.y.v.m128_f32[3];
+    m.y.v.m128_f32[1] = a2b.z.v.m128_f32[0];
+    m.y.v.m128_f32[2] = a2b.z.v.m128_f32[1];
+    m.y.v.m128_f32[3] = a2b.z.v.m128_f32[2];
+    m.z.v.m128_f32[0] = a2b.z.v.m128_f32[3];
+    m.z.v.m128_f32[1] = a2b.w.v.m128_f32[0];
+    m.z.v.m128_f32[2] = a2b.w.v.m128_f32[1];
+    m.z.v.m128_f32[3] = a2b.w.v.m128_f32[2];
+    m.w.v.m128_f32[0] = a2b.w.v.m128_f32[3];
+
+    int result = gjk(a, a2b, b, cinfo, SEP_TRESHOLD2_0, false,
+                     0, 0, 0, 0);
+    if (result == 0)
+    {
+        const float length2 = dot3(_mm_mul_ps(cinfo.ni.v, cinfo.ni.v));
+        const float length = std::sqrt(length2);
+        cinfo.ni.v = _mm_div_ps(cinfo.ni.v, _mm_set1_ps(length));
+        return false;
+    }
+
+    old_dd = -1.0e10f;
+    tmp_rdir.v = _mm_set1_ps(50.0f);
+    for (;;)
+    {
+        const __m128 offset = _mm_mul_ps(sd_len.v, tmp_rdir.v);
+        new_pos.v = _mm_add_ps(m.w.v, offset);
+        m.w.v = new_pos.v;
+        cinfo.ni = sd_len;
+
+        result = gjk(a, m, b, cinfo, SEP_TRESHOLD2_0, true,
+                     0, 0, 0, 0);
+        const float length2 = dot3(_mm_mul_ps(cinfo.ni.v, cinfo.ni.v));
+        const float length = std::sqrt(length2);
+        ++iters;
+        if (result != 0)
+        {
+            if (iters > 5)
+                return false;
+            continue;
+        }
+
+        cinfo.ni.v = _mm_div_ps(cinfo.ni.v, _mm_set1_ps(length));
+        const float alignment = dot3(_mm_mul_ps(cinfo.ni.v, sd_len.v));
+        if (alignment > 0.995f || old_dd > (alignment - 0.0049999999f))
+            break;
+
+        sd_len = cinfo.ni;
+        m.z.v.m128_f32[1] = a2b.w.v.m128_f32[0];
+        m.z.v.m128_f32[2] = a2b.w.v.m128_f32[1];
+        m.z.v.m128_f32[3] = a2b.w.v.m128_f32[2];
+        old_dd = alignment;
+        m.w.v.m128_f32[0] = a2b.w.v.m128_f32[3];
+    }
+
+    const __m128 half_normal = _mm_mul_ps(cinfo.ni.v, _mm_set1_ps(0.5f));
+    cinfo.pb.v = _mm_add_ps(cinfo.pb.v, half_normal);
+    cinfo.pa.v = _mm_add_ps(
+        cinfo.pa.v,
+        _mm_sub_ps(_mm_sub_ps(a2b.w.v, new_pos.v), half_normal));
+    return true;
 }
 
 // ============================================================================

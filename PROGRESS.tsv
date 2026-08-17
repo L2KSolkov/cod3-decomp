@@ -390,7 +390,7 @@ zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO
 
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	PORTED	apsAction.cpp (apsAction base: ctor/dtor/SetParam/SetDomain/Fixup; apsArray<T>+apsVirtualBase+apsDestroy/apsFixUp in apsAction.h; removed stale apsSuppliedActions stubs
 
-cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	IN_PROGRESS	compute_det, gjk, and collide_partial ported from IDA; collide_full/collide remain
+cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	IN_PROGRESS	compute_det, gjk, collide_partial, and collide_full ported from IDA; collide remains
 
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
