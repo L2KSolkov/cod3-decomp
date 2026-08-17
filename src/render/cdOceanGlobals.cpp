@@ -75,6 +75,145 @@ void SetSeaLevel(int bank, float seaLevel) {
 }
 
 // ============================================================================
+// SetLayerAlpha — set the two layer alpha parameters for a bank.
+// ea: 0x7C01B0
+// ============================================================================
+void SetLayerAlpha(int bank, float a, float b) {
+    if (bank < 0 || bank >= 4) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
+        AeAssert::gCurrentLine = 20;
+        AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid bank"))
+            __debugbreak();
+    }
+    sBanks[bank].mParams.v.m128_f32[1] = a;
+    sBanks[bank].mParams.v.m128_f32[2] = b;
+}
+
+// ============================================================================
+// SetLayerScroll — set a UV scroll pair for a bank layer.
+// ea: 0x7C0260
+// ============================================================================
+void SetLayerScroll(int bank, int layer, float u, float v) {
+    if (bank < 0 || bank >= 4) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
+        AeAssert::gCurrentLine = 27;
+        AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid bank"))
+            __debugbreak();
+    }
+    math::Vector4* target = nullptr;
+    switch (layer) {
+    case 0:
+        target = &sBanks[bank].mUVScroll1;
+        target->v.m128_f32[0] = u;
+        target->v.m128_f32[1] = v;
+        return;
+    case 1:
+        target = &sBanks[bank].mUVScroll1;
+        target->v.m128_f32[2] = u;
+        target->v.m128_f32[3] = v;
+        return;
+    case 2:
+        target = &sBanks[bank].mUVScroll2;
+        target->v.m128_f32[0] = u;
+        target->v.m128_f32[1] = v;
+        return;
+    default:
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
+        AeAssert::gCurrentLine = 43;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid layer"))
+            __debugbreak();
+        return;
+    }
+}
+
+// ============================================================================
+// SetLayerScale — set a UV scale pair for a bank layer.
+// ea: 0x7C03B0
+// ============================================================================
+void SetLayerScale(int bank, int layer, float u, float v) {
+    if (bank < 0 || bank >= 4) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
+        AeAssert::gCurrentLine = 49;
+        AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid bank"))
+            __debugbreak();
+    }
+    math::Vector4* target = nullptr;
+    switch (layer) {
+    case 0:
+        target = &sBanks[bank].mUVScale1;
+        target->v.m128_f32[0] = u;
+        target->v.m128_f32[1] = v;
+        return;
+    case 1:
+        target = &sBanks[bank].mUVScale1;
+        target->v.m128_f32[2] = u;
+        target->v.m128_f32[3] = v;
+        return;
+    case 2:
+        target = &sBanks[bank].mUVScale2;
+        target->v.m128_f32[0] = u;
+        target->v.m128_f32[1] = v;
+        return;
+    default:
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
+        AeAssert::gCurrentLine = 66;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid layer"))
+            __debugbreak();
+        return;
+    }
+}
+
+// ============================================================================
+// SetWaveOrigin — set an XY origin pair for one of four waves.
+// ea: 0x7C0500
+// ============================================================================
+void SetWaveOrigin(int bank, int wave, float x, float y) {
+    if (bank < 0 || bank >= 4) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
+        AeAssert::gCurrentLine = 73;
+        AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid bank"))
+            __debugbreak();
+    }
+    math::Vector4* target = nullptr;
+    switch (wave) {
+    case 0:
+        target = &sBanks[bank].mOrigin12;
+        target->v.m128_f32[0] = x;
+        target->v.m128_f32[1] = y;
+        return;
+    case 1:
+        target = &sBanks[bank].mOrigin12;
+        target->v.m128_f32[2] = x;
+        target->v.m128_f32[3] = y;
+        return;
+    case 2:
+        target = &sBanks[bank].mOrigin34;
+        target->v.m128_f32[0] = x;
+        target->v.m128_f32[1] = y;
+        return;
+    case 3:
+        target = &sBanks[bank].mOrigin34;
+        target->v.m128_f32[2] = x;
+        target->v.m128_f32[3] = y;
+        return;
+    default:
+        return;
+    }
+}
+
+// ============================================================================
 // SetWaveHeading — set the heading for a bank's wave.
 // ea: 0x7C0620
 // ============================================================================

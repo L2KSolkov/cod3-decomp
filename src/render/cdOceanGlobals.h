@@ -53,6 +53,10 @@ static_assert(sizeof(WaveBank) == 0xD0, "WaveBank size mismatch");
 extern WaveBank sBanks[4];  // ?sBanks@cdOceanGlobals@@3PAUWaveBank@1@A @0x10DDB50
 
 void SetSeaLevel(int bank, float seaLevel);      // @0x7C0120
+void SetLayerAlpha(int bank, float a, float b);  // @0x7C01B0
+void SetLayerScroll(int bank, int layer, float u, float v); // @0x7C0260
+void SetLayerScale(int bank, int layer, float u, float v);  // @0x7C03B0
+void SetWaveOrigin(int bank, int wave, float x, float y);   // @0x7C0500
 void SetWaveHeading(int bank, int wave, float heading);    // @0x7C0620
 void SetWaveDistance(int bank, int wave, float distance);  // @0x7C0690
 void SetWaveWavelength(int bank, int wave, float wavelength);  // @0x7C0700
