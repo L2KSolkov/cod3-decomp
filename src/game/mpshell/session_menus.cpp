@@ -2632,6 +2632,31 @@ ModelMenu::~ModelMenu()
 {
 }
 
+// ea: 0x007A73F0
+ModelMenu::ModelMenu(FEMenuSystem* pauseMenuSystem, int num_entries)
+    : FESplitScreenMenu(pauseMenuSystem, num_entries)
+{
+    mClassModelEntity.mHandle.mVal = 0;
+    mInnerRadius = 20.0f;
+    mOuterRadius = 500.0f;
+    mDistance = 150.0f;
+    mAnimSpeed = 0.64999998f;
+    mCurrentWeapon = 0;
+    mCurrentClass = 0;
+    mCurrentAnim = 0;
+    mCurrentAnimAds = false;
+    mCurrentWeaponSheet = 0;
+    mNextAnimChangeTime = 0;
+    mCurrentTeam = TEAM_ALLIES;
+    mFirstFrame = true;
+    mModelAngles[0] = 0.0f;
+    mModelAngles[1] = 0.0f;
+    mModelAngles[2] = 0.0f;
+    mModelPosition[0] = 0.0f;
+    mModelPosition[1] = 0.0f;
+    mModelPosition[2] = 0.0f;
+}
+
 // ea: 0x0079AB30 (thunk)
 void GameSettingsEdit::Draw()
 {
