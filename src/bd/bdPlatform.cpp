@@ -216,3 +216,23 @@ bdUInt64 bdPlatformSocket::s_packetsRecvd=0;
 void bdGetRandomUChar8(unsigned char* d, bdUInt n) {
     for (bdUInt i = 0; i < n; ++i) d[i] = (unsigned char)(rand() & 0xFF);
 }
+
+class bdTrulyRandomImpl {
+public:
+    void getRandomUByte8(unsigned char* out, int count);
+    unsigned int getRandomUInt();
+};
+
+// bdTrulyRandomImpl::getRandomUByte8 - ea: 0x9EBFF0
+void bdTrulyRandomImpl::getRandomUByte8(unsigned char* out, int count) {
+    bdGetRandomUChar8(out, (bdUInt)count);
+}
+
+// bdTrulyRandomImpl::getRandomUInt - ea: 0x9EC020
+unsigned int bdTrulyRandomImpl::getRandomUInt() {
+    unsigned char bytes[4];
+    bdGetRandomUChar8(bytes, 4);
+    return ((unsigned int)bytes[1] << 24)
+         | ((unsigned int)bytes[2] << 16)
+         | ((unsigned int)bytes[3] << 8);
+}
