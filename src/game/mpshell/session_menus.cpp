@@ -349,6 +349,35 @@ XBoxLiveIngameOptionsCOD3* XBoxLiveIngameOptionsCOD3::Me(int client)
     return (XBoxLiveIngameOptionsCOD3*)g_femanager.GetIGMS(client)->menus[5];
 }
 
+// ea: 0x0077AD10
+XBoxLiveIngameOptionsCOD3::XBoxLiveIngameOptionsCOD3(FEMenuSystem* s)
+    : FEMenu(s, 0, 320, 240, 8, 0), m_ListBox(5, 1, 5, true)
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        m_pOldTextColor.m_elements[i].i = 0;
+        m_pOldSelectedTextColor.m_elements[i].i = 0;
+    }
+    m_currSelection = 0;
+    friendIcon = 0;
+    wasSignedIn = false;
+    waitingForSignIn = false;
+    mJoiningFriend = false;
+    default_color_scheme = 10;
+    for (int i = 0; i < 6; ++i)
+        m_pBackgroundArt.m_elements[i] = nullptr;
+    for (int i = 0; i < 2; ++i)
+        m_pText.m_elements[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pLineArt.m_elements[i] = nullptr;
+    for (int i = 0; i < 5; ++i)
+    {
+        m_pOldTextColor.m_elements[i].i = 0;
+        m_pOldSelectedTextColor.m_elements[i].i = 0;
+    }
+    mVersion = s->GetCurrentClient();
+}
+
 // ea: 0x0077AF10
 AARXBoxLiveIngameOptions::AARXBoxLiveIngameOptions(FEMenuSystem* s)
     : XBoxLiveIngameOptionsCOD3(s)
