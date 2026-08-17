@@ -318,6 +318,7 @@ public:
         nalFullModifier = 2,
     };
     // nalAnimState / nalPartialAnimState (anim.o 0x539F20 family)
+    class nalPlayMethod;
     class nalAnimCallback;
     struct nalAnimState {
         void* instance;        // +0x00
@@ -380,7 +381,7 @@ public:
     void PlayModifier(nalGeneric::nalGenericAnim* anim,
                       AnimationPlayerModifierType type, float priority,
                       unsigned int mask, bool ForceRestart, float fade_in,
-                      float fade_out, void* play_method,
+                      float fade_out, nalPlayMethod* play_method,
                       float callback_time, nalAnimCallback* callback,
                       float speed,
                       float time_in_seconds_to_start);  // ?PlayModifier@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@W4AnimationPlayerModifierType@1@MIPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM_NMM@Z (anim.o)
@@ -396,8 +397,8 @@ public:
     void StopAnims();                        // ?StopAnims@AnimationPlayer@@QAEXXZ (anim.o)
     void Reset();                            // ?Reset@AnimationPlayer@@QAEXXZ (anim.o)
     void Play(nalGeneric::nalGenericAnim* anim, bool ForceRestart,
-              float fade_in, void* play_method, float callback_time,
-              void* callback, float speed,
+              float fade_in, nalPlayMethod* play_method, float callback_time,
+              nalAnimCallback* callback, float speed,
               float time_in_seconds_to_start);  // ?Play@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@_NMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM@Z
 };
 
