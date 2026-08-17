@@ -8324,6 +8324,63 @@ void AARMapVote::SelectMap(int indexMap)
         delete v6;
 }
 
+// ea: 0x0079CF40
+void SessionListMenu::RepopulateSessionList()
+{
+    int visibleRow = 0;
+    unsigned long numGames = 0;
+    MultiplayerMgr::sInst->mPeer->DeleteQosProbes();
+    sGameListing* games = MPUIInterface::GameListingGet(numGames);
+    if (numGames == 0)
+        return;
+
+    m_ListBox.Clear();
+    mNumGames = 0;
+    unsigned int sourceIndex = 0;
+    int* visibleMap = mVisibleListToGameListMap;
+    for (; sourceIndex < numGames; ++sourceIndex, ++visibleMap)
+    {
+        *visibleMap = -1;
+        sGameListing* game = games != nullptr ? &games[sourceIndex] : nullptr;
+        if (game == nullptr || !game->mValidVersion)
+            continue;
+
+        sMPGameInfoView* info = (sMPGameInfoView*)game->mGameInfo;
+        int mapIndex = 0;
+        if (g_NumTotalMaps > 0)
+        {
+            char* mapRecord = byte_E386C9;
+            while (*mapRecord != info->mMapID)
+            {
+                ++mapIndex;
+                mapRecord += 114;
+                if (mapIndex >= g_NumTotalMaps)
+                    break;
+            }
+            if (mapIndex < g_NumTotalMaps && info->mGameType < 6u)
+            {
+                *visibleMap = (int)sourceIndex;
+                m_ListBox.SetText(visibleRow, 0, info->mName);
+                int openPlayers = info->m_publicOpen + info->m_publicFilled;
+                int totalPlayers = openPlayers + info->m_privateOpen
+                                   + info->m_privateFilled;
+                char maxPlayers[16];
+                sprintf(maxPlayers, "%d %s %d", openPlayers,
+                        STBManager::sInst->GetSTBString("MPFRONTEND_OF"),
+                        totalPlayers);
+                m_ListBox.SetText(visibleRow, 1, maxPlayers);
+                m_ListBox.SetText(visibleRow, 2,
+                                  MPUIInterface::GetGameTypeString(
+                                      info->mGameType));
+                m_ListBox.SetText(visibleRow++, 3,
+                                  MPUIInterface::GetMapString(info->mMapID));
+            }
+        }
+    }
+    m_ListBox.Refresh();
+    UpdateGameInfo();
+}
+
 // ea: 0x0079DCC0
 void SessionLanListMenu::RepopulateSessionList()
 {
