@@ -23,9 +23,7 @@ class bdSession;
 // bdString - minimal placeholder (used only inside bdArray<bdString>).
 // ============================================================================
 struct bdString {
-    char* m_buffer;
-    unsigned int m_length;
-    unsigned int m_capacity;
+    char* m_string;
 
     bdString();                          // ??0bdString@@QAE@XZ (bdCore)
     bdString(const char* s);             // ??0bdString@@QAE@PBD@Z (bdCore)

@@ -13,6 +13,12 @@ extern "C" {
 unsigned int XNetGetTitleXnAddr(XNADDR* pxna);
 }
 
+// IDA 0x89CAB0: bdString stores its data pointer at offset 0 and the
+// allocation header's length two words before that buffer.
+unsigned int bdString::getLength() const {
+    return reinterpret_cast<const unsigned int*>(m_string)[-2];
+}
+
 // ============================================================================
 // bdNetImpl::bdNetImpl - ea: 0x8AFC20
 // ============================================================================
