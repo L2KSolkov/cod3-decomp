@@ -888,7 +888,13 @@ bool ExtendedEntity::MatchExtendedEntityKey(void* mem, int key, const char* text
         return false;
     return ptr->GetEquals(static_cast<unsigned int>(key))(*value, text);
 }
-void* ExtendedEntity::CopyExtendedEntity(const void*) { return NULL; }
+// ea: 0x0092A140. IDA allocates one ExtendedEntity and invokes the copy
+// constructor; profiling bookkeeping is omitted with the other Broc wrappers.
+void* ExtendedEntity::CopyExtendedEntity(const void* source)
+{
+    return new (std::nothrow) ExtendedEntity(
+        *static_cast<const ExtendedEntity*>(source));
+}
 void ExtendedEntity::InitScript(BrocExports&) {}
 // ea: 0x0092A7A0. IDA's profiling enter/leave events use BrocAPI members not
 // present in the current partial declaration; the key scan is unchanged.
