@@ -80,6 +80,12 @@ int gThreadSleepFrames = 0;
 int gThreadSleepNotify1 = 0;
 TPakInfo gThreadSleepPakfile = (TPakInfo)0;
 
+// ea: 0x00929060. IDA forwards hash registration through BrocAPI.
+void RegisterHashString(int hash, const char* text)
+{
+    Broc::gBrocAPI.mRegisterHashString(hash, text);
+}
+
 // ============================================================================
 // Broc utility functions
 // ============================================================================
@@ -841,6 +847,13 @@ HashStr string_hash(const string& str) {
     return string_hash(str.c_str());
 }
 
+// ea: 0x00928710. IDA hashes through the runtime callback into the result.
+HashStr* string_hash(HashStr* result, const char* str)
+{
+    result->mVal = gBrocAPI.mStringHash(str);
+    return result;
+}
+
 bool operator==(HashStr lhs, const string& rhs) {
     HashStr rhsHash = string_hash(rhs);
     return lhs.mVal == rhsHash.mVal;
@@ -1191,7 +1204,14 @@ void waittill_unloaded(TPakInfo info)
     if (gBrocAPI.mKillThread)
         gBrocAPI.mKillThreadExec();
 }
-void endon(entity, const char*) {}
+// ea: 0x00929130. IDA hashes/registers the label before terminating on it.
+void endon(entity ent, const char* label)
+{
+    HashStr h;
+    string_hash(&h, label);
+    RegisterHashString(h.mVal, label);
+    gBrocAPI.mThreadTerminateOnNotify(ent.GetHandle(), h.mVal);
+}
 void thread_sleep_time(void) {}
 void thread_sleep_frames(void) {}
 void thread_sleep_until_notify(void) {}

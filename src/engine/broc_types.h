@@ -695,7 +695,9 @@ struct BrocAPI {
     char _pad08[0x34 - 0x08];                             // +0x008
     bool mKillThread;                                     // +0x034
     unsigned char _pad35[0x38 - 0x35];                    // +0x035
-    char _pad38[0x6C - 0x38];                             // +0x038
+    char _pad38[0x58 - 0x38];                             // +0x038
+    void (*mThreadTerminateOnNotify)(unsigned int, const int); // +0x058
+    char _pad5C[0x6C - 0x5C];                             // +0x05C
     unsigned int (*mThreadGetId)();                       // +0x06C
     char _pad70[0x94 - 0x70];                             // +0x070
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
@@ -717,7 +719,9 @@ struct BrocAPI {
     int (*mAtoI)(const char*);                             // +0xDB4
     unsigned int (*mStringHash)(const char*);              // +0xDB8
     void* (*mGetExtendedEntity)(unsigned int);             // +0xDBC
-    char _padBrocExports[0xF1C - (0xBE8 + 0x1C8 + 0x10)]; // +0xDC0
+    char _padBrocExports[0xE00 - (0xBE8 + 0x1C8 + 0x10)]; // +0xDC0
+    void (*mRegisterHashString)(int, const char*);         // +0xE00
+    char _padE04[0xF1C - 0xE04];                           // +0xE04
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     void (*m_entity_set_origin)(unsigned int, Broc::vector);  // +0xF20
     Broc::string* (*m_entity_get_model)(Broc::string*, unsigned int);  // +0xF24
@@ -1009,6 +1013,7 @@ template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 }
 
 bool IS_NAN(float x);  // global (defined in Broc.cpp)
+void RegisterHashString(int hash, const char* text); // ea: 0x929060
 
 // Forward (defined in game/actor_types.h)
 struct sentient_s;
