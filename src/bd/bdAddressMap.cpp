@@ -39,6 +39,31 @@ bdAddrHandle::~bdAddrHandle() {
 }
 
 // ============================================================================
+// bdCommonAddr constructors - ea: 0x89DAF0 / 0x89DD60 (bdCore)
+// ============================================================================
+bdCommonAddr::bdCommonAddr()
+    : bdReferencable() {
+    m_port = 0;
+    m_titleId = 0;
+    m_isLoopback = false;
+}
+
+bdCommonAddr::bdCommonAddr(const XNADDR& addr, uint16_t port)
+    : bdReferencable() {
+    memcpy(&m_addr, &addr, sizeof(m_addr));
+    m_port = port;
+    m_hash = 0;
+    m_titleId = 0;
+    m_isLoopback = true;
+    m_hash = m_addr.abEnet[0];
+    m_hash = m_addr.abEnet[1] + 31 * m_hash;
+    m_hash = m_addr.abEnet[2] + 31 * m_hash;
+    m_hash = m_addr.abEnet[3] + 31 * m_hash;
+    m_hash = m_addr.abEnet[4] + 31 * m_hash;
+    m_hash = 31 * m_hash + m_addr.abEnet[5];
+}
+
+// ============================================================================
 // bdCommonAddr (hostAddr copy with new addr/port) - ea: 0x8B75F3 usage
 // ============================================================================
 bdCommonAddr::bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr,
