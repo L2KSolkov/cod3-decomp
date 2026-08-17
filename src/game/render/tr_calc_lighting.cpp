@@ -53,12 +53,14 @@ struct BspCellLocal {
     uint8_t _pad[0x48];
     void* mLgridToc;                 // +0x48
 };
-struct BspTreeLocal2 {
+struct BspTree {
     uint8_t _pad[0x18];
-    BspCellLocal* mCellsList;        // +0x18
-    unsigned int mCellsSize;         // +0x1C
+    struct {
+        int mSize;                   // +0x18
+        BspCellLocal* mList;         // +0x1C
+    } mCells;                        // InplaceVector<BspCell>
 };
-extern BspTreeLocal2* g_bspTree;     // ?g_bspTree@@3PAUBspTree@@A
+extern BspTree* g_bspTree;           // ?g_bspTree@@3PAUBspTree@@A
 extern void ModelLightingHack();     // ?ModelLightingHack@@YAXXZ
 extern nglLightContext* nglCreateLightContext();  // ?nglCreateLightContext@@YAPAUnglLightContext@@XZ
 extern void nglListAddLight(int type, void* data, int unknown);  // ?nglListAddLight@@YAXW4nglLightType@@PAXH@Z
@@ -112,7 +114,7 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
             {
                 cellNum = entity->cell_index;
                 if (cellNum != -1)
-                    toc = g_bspTree->mCellsList[cellNum].mLgridToc;
+                    toc = g_bspTree->mCells.mList[cellNum].mLgridToc;
             }
             else
             {
