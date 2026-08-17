@@ -413,22 +413,24 @@ struct apsCollisionData {
         math::Dir3 normal;          // +0x34
     } mRaycastRequests[1];          // +0x14
 };
+struct proximity_data_t {
+    uint8_t _pad[0x20];
+};
 struct ParticleRaycastData {
     uint8_t _pad[0x20];
-    struct proximity_data_tLocal {
-        uint8_t _pad[0x20];
-    } mProximityData;               // +0x20
+    proximity_data_t mProximityData; // +0x20
 };
-struct trace_tFx {
+struct trace_t {
     math::Position3 endpos;          // +0x00
     math::Dir3 normal;               // +0x10
     float fraction;                  // +0x20
     int surfaceFlags;                // +0x24
     int contents;                    // +0x28
+    uint8_t _pad2C[0x24];             // +0x2C
 };
 extern void ProximityUpdate(ParticleRaycastData& data,
                             const apsCollisionData& col);  // ?ProximityUpdate@@YAXAAURaycastData@ParticleEffect@@ABUCollisionData@apsEffect@@@Z
-extern void TracePoint(const void* proximity, trace_tFx* trace,
+extern void TracePoint(const proximity_data_t& proximity, trace_t* trace,
                        const math::Position3& start,
                        const math::Position3& end, int contentmask);
 
@@ -469,9 +471,9 @@ void ProcessEffectsCollisions()  // ?ProcessEffectsCollisions@@YAXXZ @ 0x6DA3F0
                 for (unsigned int i = 0; i < n; ++i)
                 {
                     apsCollisionData::RaycastRequest& req = col->mRaycastRequests[i];
-                    trace_tFx trace;
+                    trace_t trace;
                     memset(&trace, 0, sizeof(trace));
-                    TracePoint(&((ParticleRaycastData*)v2->mRaycastData)->mProximityData,
+                    TracePoint(((ParticleRaycastData*)v2->mRaycastData)->mProximityData,
                                &trace, req.start, req.end, 41951377);
                     if (trace.fraction == 1.0f || trace.contents == 0)
                     {
@@ -531,14 +533,12 @@ public:
 };
 DObjHandleDbLocal2 DObjHandleDbLocal2::sInst;
 EntityHandleDbLocal3 EntityHandleDbLocal3::sInst;
-extern void apsMemory_ClearBlockAllocator();   // ?ClearBlockAllocator@apsMemory@@SAXXZ
-extern void apsMemory_SetBlockAllocator();     // ?SetBlockAllocator@apsMemory@@SAXXZ
-extern void apsEffect_SetCulled(apsEffect* effect, int v);    // ?SetCulled@apsEffect@@QAEXH@Z
 extern bool FX_GetBoneOrientation2(unsigned int handle, short bone,
                                    float* ori);  // ?FX_GetBoneOrientation@@YA_NV?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@HPAUorientation_t@@@Z
-extern void AnglesToAxis2(const math::Position3& angles,
-                          const math::Position3& origin, float* out);  // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVnalMatrix4x4@@@Z
-extern void View_IsSplitScreen();               // ?IsSplitScreen@View@@YA_NXZ
+extern void AnglesToAxis(const math::Position3& angles,
+                         const math::Position3& origin,
+                         math::Mat43& mat);
+namespace View { bool IsSplitScreen(); }
 struct jqBatch {
     void* Input;                     // +0x00
     void* Output;                    // +0x04
@@ -556,7 +556,7 @@ extern void apsCommon_SetPakAllocs(int v);         // ?SetPakAllocs@apsCommon@@S
 void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqBatch@@@Z @ 0x6DA720
 {
     char bUpdate = *(char*)batch->Static;
-    View_IsSplitScreen();
+    View::IsSplitScreen();
     ParticleEffect** it = gParticleEffectList.mElements;
     ParticleEffect** end = &gParticleEffectList.mElements[gParticleEffectList.mSize];
     while (it != end)
@@ -618,8 +618,8 @@ void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqB
                 }
                 else
                 {
-                    AnglesToAxis2(v10->r.currentAngles, v10->r.currentOrigin,
-                                  (float*)&mat);
+                    AnglesToAxis(v10->r.currentAngles, v10->r.currentOrigin,
+                                 mat);
                 }
                 effect->SetLocalToWorldTransform(mat);
             }
@@ -658,15 +658,15 @@ void ThreadedUpdateEffects(jqBatch* batch)  // ?ThreadedUpdateEffects@@YAXPAUjqB
             }
             else
             {
-                apsMemory_ClearBlockAllocator();
-                apsCommon_SetCurrentPakId(mPakId);
-                apsCommon_SetPakAllocs(1);
+                    apsMemory::ClearBlockAllocator();
+                apsCommon::SetCurrentPakId(mPakId);
+                apsCommon::SetPakAllocs(1);
                 v4->culled = 0;
-                apsEffect_SetCulled(effect, 0);
+                    effect->SetCulled(0);
                 effect->Update(gFXTime);
-                apsMemory_SetBlockAllocator();
-                apsCommon_SetCurrentPakId(-1);
-                apsCommon_SetPakAllocs(0);
+                    apsMemory::SetBlockAllocator();
+                apsCommon::SetCurrentPakId(-1);
+                apsCommon::SetPakAllocs(0);
             }
         }
         effect->CalcSortKey();
