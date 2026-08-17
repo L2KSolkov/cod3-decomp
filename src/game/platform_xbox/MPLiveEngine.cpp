@@ -154,13 +154,6 @@ void MultiplayerMgr::GetNextDroppedItemID(void* result, int itemType,
 
 // mp.o member stubs (real logic lives in mp.o; ported later).
 void MultiplayerMgr::StartDevServer() {}
-void MultiplayerMgr::ProjectileExplosion(Entity* p, int w,
-                                         const math::Position3& pos,
-                                         const math::Dir3& n,
-                                         unsigned char st, Entity* o)
-{
-    (void)p; (void)w; (void)pos; (void)n; (void)st; (void)o;
-}
 // Compatibility symbol used by the existing g_logic ABI view; the exact
 // IDA EHitLocation overload is implemented in mp_basic.cpp.
 void MultiplayerMgr::PlayerDead(Entity* p, Entity* inf, Entity* atk, int dmg,

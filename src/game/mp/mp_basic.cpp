@@ -8706,6 +8706,28 @@ void MultiplayerMgr::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
                            hitLocation);
 }
 
+// ea: 0x00761340
+void MultiplayerMgr::ProjectileExplosion(Entity* projectile, int weapon,
+                                         const math::Position3& position,
+                                         const math::Dir3& normal,
+                                         unsigned char surfaceType,
+                                         Entity* owner)
+{
+    if (mPeer != nullptr)
+    {
+        ::MPEntityHandle handle;
+        handle.mValue = 0;
+        if (owner != nullptr && owner->client != nullptr)
+        {
+            handle = ((MPPlayerManager*)((char*)mPeer + 0x74E0))
+                         ->FindDroppedItemID((EDroppedItemTypes)kItemTypeMines,
+                                             projectile, owner);
+        }
+        mPeer->ProjectileExplosion(weapon, position, normal, surfaceType,
+                                    handle);
+    }
+}
+
 // ea: 0x00750690
 void MultiplayerMgr::WeaponChange(int weapon)
 {
