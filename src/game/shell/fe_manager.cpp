@@ -113,7 +113,6 @@ extern MPProfileMainMenu* MPProfileMainMenu_Me();
 extern MPProfileEditMenu* MPProfileEditMenu_Me();
 extern AARMenuSystem* AARMenuSystem_ctor(void* mem);
 extern DialogMenuSystem* DialogMenuSystem_ctor(void* mem, int client);
-extern void* ProfileManager_vftable;  // ??_7ProfileManager@@6B@
 
 // ============================================================================
 // FEManager
@@ -268,8 +267,7 @@ void FEManager::ReleaseFrontEnd()
     fems = nullptr;
     if (mProfileManager != nullptr)
     {
-        *(void**)mProfileManager = &ProfileManager_vftable;
-        MemoryUnitManager::RegisterInsertRemoveObserver(nullptr);
+        mProfileManager->~ProfileManager();
         mem_heap_free(mProfileManager);
     }
     mProfileManager = nullptr;
