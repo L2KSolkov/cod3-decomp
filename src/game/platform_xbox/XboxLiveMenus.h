@@ -111,7 +111,8 @@ extern const char* szXBoxOptionReferences[5];
 extern const char* szXBoxOptionDescriptionReferences[5];
 
 // shell.o / mp.o externs used by the menus
-struct OverlayMenu {
+class OverlayMenu {
+public:
     static OverlayMenu* Me(int version);
     void SetState(int state);
     void Update(int v);
