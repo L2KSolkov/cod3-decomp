@@ -58,7 +58,31 @@ void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateFollow(Entity* e) { (void)e; }
 void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
 void VEH_UpdateHatch(Entity* e, int a) { (void)e; (void)a; }
-void VEH_UpdateParticlesRBVeh(Entity* e) { (void)e; }
+void VEH_UpdateParticlesRBVeh(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info->type != 1 && info->type != 2)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 2630;
+        AeAssert::gCurrentExpr =
+            "( info->type == VEH_WHEELS_4 ) || ( info->type == VEH_TANK )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int numWheels = 2 * (info->type != 1) + 4;
+    if (scr_vehicle->mRBVeh == nullptr)
+        return;
+    rb_vehicle* rb_veh = (rb_vehicle*)scr_vehicle->mRBVeh;
+    for (int i = 0; i < numWheels; ++i)
+    {
+        if (rb_veh->m_wheels[i] != nullptr)
+            VEH_UpdateWheelParticleEffects(ent, i);
+    }
+}
 void VEH_UpdateShaderTime(Entity* e) { (void)e; }
 void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateSteering(Entity* e) { (void)e; }
