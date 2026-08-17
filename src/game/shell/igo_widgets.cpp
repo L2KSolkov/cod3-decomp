@@ -92,8 +92,8 @@ int dword_F63F60[4 * 1580] = {};   // @ 0xF63F60 (hint start time)
 int dword_F63F64[4 * 1580] = {};   // @ 0xF63F64 (hint fade time)
 int dword_F63F68[4 * 1580] = {};   // @ 0xF63F68
 int dword_F63F6C[4 * 1580] = {};   // @ 0xF63F6C
-extern vmCvar_t cg_cursorHints;  // ?cg_cursorHints@@3UvmCvar_t@@A @ 0xF61378
-extern vmCvar_t cg_hintFadeTime; // ?cg_hintFadeTime@@3UvmCvar_t@@A @ 0xF611C8
+vmCvar_t cg_cursorHints = {};
+vmCvar_t cg_hintFadeTime = {};
 extern vmCvar_t mp_headIconReviveMaxAlphaDist;  // @ 0xEAC318
 extern vmCvar_t mp_headIconReviveMinAlphaDist;  // @ 0xEB0DF8
 extern vmCvar_t mp_headIconDistAbovePlayer;   // @ 0xEA7518
@@ -305,7 +305,7 @@ extern float dword_F63C5C[];  // @ 0xF63C5C (screen h)
 extern float unk_F63634[];    // @ 0xF63634 (client yaw)
 extern float unk_F6A280[];    // @ 0xF6A280 (previous viewport)
 int dword_F64198[4 * 1580] = {};    // @ 0xF64198
-extern vmCvar_t gCvarShowVehMap;  // ?gCvarShowVehMap@@3UvmCvar_t@@A @ 0xEA64B0
+vmCvar_t gCvarShowVehMap = {};
 extern int gRenderCG_2D;      // ?gRenderCG_2D@@3HA (g.o)
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);  // g.o
 
@@ -326,20 +326,20 @@ extern vmCvar_t cg_widescreen;  // cg.o
 // IGOCompassWidget cvars/data (verified VAs)
 vmCvar_t g_compassFadeTime = {};
 vmCvar_t g_compassSolidTime = {};
-extern vmCvar_t cg_hudObjectiveRingTime;  // @ 0xF5EFA8
-extern vmCvar_t cg_hudObjectiveNumRings;  // @ 0xF606D8
-extern vmCvar_t cg_hudCompassMinRange;    // @ 0xF5D6B0
-extern vmCvar_t cg_hudObjectiveMaxRange;  // @ 0xF5CE38
-extern vmCvar_t cg_hudCompassMaxRange;    // @ 0xF5B6A0
-extern vmCvar_t cg_hudObjectiveMinAlpha;  // @ 0xF5C1D0
-extern vmCvar_t cg_hudCompassMinRadius;   // @ 0xF5EDF8
+vmCvar_t cg_hudObjectiveRingTime = {};
+vmCvar_t cg_hudObjectiveNumRings = {};
+vmCvar_t cg_hudCompassMinRange = {};
+vmCvar_t cg_hudObjectiveMaxRange = {};
+vmCvar_t cg_hudCompassMaxRange = {};
+vmCvar_t cg_hudObjectiveMinAlpha = {};
+vmCvar_t cg_hudCompassMinRadius = {};
 extern vmCvar_t cg_hudCompassSize;        // @ 0xF60528
 extern vmCvar_t cg_hudCompassSpringyPointers;  // @ 0xF5CAD8
-extern vmCvar_t cg_hudObjectiveMinHeight;     // @ 0xF5C140
-extern vmCvar_t cg_hudObjectiveMaxHeight;     // @ 0xF5ECD8
+vmCvar_t cg_hudObjectiveMinHeight = {};
+vmCvar_t cg_hudObjectiveMaxHeight = {};
 extern vmCvar_t mp_objectiveSize;         // @ 0xEABD78
 extern vmCvar_t mp_objectiveFarAlpha;     // @ 0xEAC8B8
-extern vmCvar_t gCvarShowEnemy;           // @ 0xEA6420
+vmCvar_t gCvarShowEnemy = {};
 extern float dword_F63C70[];  // @ 0xF63C70 (client origin x)
 extern float dword_F63C74[];  // @ 0xF63C74 (client origin y)
 extern float dword_F63C78[];  // @ 0xF63C78 (client origin z)
