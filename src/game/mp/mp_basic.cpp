@@ -8780,6 +8780,63 @@ void MultiplayerMgr::StartDevServer()
     }
 }
 
+// ea: 0x00765E50
+void MPUIInterface::Step()
+{
+    MultiplayerMgr::sInst->Step(0, false, true);
+    MPUIInterface::HandleQuery();
+
+    MPPeer* peer = MultiplayerMgr::sInst->mPeer;
+    if (peer != nullptr)
+    {
+        MPLanDiscovery* lanDiscovery =
+            (MPLanDiscovery*)((char*)peer + 0x73D0);
+        bdDiscoveryClient* discoveryClient =
+            (bdDiscoveryClient*)((char*)lanDiscovery + 0x08);
+        bool wasActive = MPUIInterface::mLanDiscoveryActive;
+        bdDiscoveryStatus status = discoveryClient->getStatus();
+        bool done = status == BD_DISCOVERY_IDLE
+                    || status == BD_DISCOVERY_ERROR;
+        if (!done)
+            discoveryClient->update();
+        MPUIInterface::mLanDiscoveryActive = !done;
+
+        if (wasActive && done)
+        {
+            unsigned int numResults = lanDiscovery->mNumResults;
+            if (numResults != 0)
+            {
+                sGameListing* listing =
+                    (sGameListing*)MPUIInterface::mGameListings;
+                unsigned int index = 0;
+                do
+                {
+                    if (index >= 0x19)
+                        break;
+
+                    listing->mSize = 16;
+                    bdReference<bdGameInfo> result;
+                    result.m_ptr = nullptr;
+                    lanDiscovery->GetResult(index, result);
+                    bdGameInfo* gameInfo = result.m_ptr;
+                    if (listing->mGameInfo.m_ptr != nullptr
+                        && listing->mGameInfo.m_ptr->m_refCount-- == 1)
+                        delete listing->mGameInfo.m_ptr;
+                    listing->mGameInfo.m_ptr = (MPGameInfo*)gameInfo;
+                    if (gameInfo != nullptr)
+                        ++gameInfo->m_refCount;
+                    listing->mValidVersion = 1;
+                    if (gameInfo != nullptr && gameInfo->m_refCount-- == 1)
+                        delete gameInfo;
+                    ++index;
+                    ++listing;
+                } while (index < numResults);
+            }
+            MPUIInterface::mGameListingNumGames = numResults;
+        }
+    }
+}
+
 // ea: 0x00750690
 void MultiplayerMgr::WeaponChange(int weapon)
 {

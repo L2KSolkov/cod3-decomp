@@ -67,11 +67,6 @@ void MPUIInterface::QueryFromID(XNKID* sessionID)
     MPUIInterface::mLiveQueryActive = true;
     MPUIInterface::mQueryFromID = true;
 }
-void MPUIInterface::Step()
-{
-    // stub
-}
-
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================

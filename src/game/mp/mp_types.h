@@ -609,6 +609,7 @@ public:
                           bool blockUntilNetReady);  // ?StartGame@MPUIInterface@@SA_N_N0@Z (mp.o 0x7660E0)
     static const bool StartServer(bool forceRestart,
                                   bool blockUntilNetReady);  // ?StartServer@MPUIInterface@@SA?B_N_N0@Z (mp.o 0x766260)
+    static void Step();  // ?Step@MPUIInterface@@SAXXZ (mp.o 0x765E50)
 
     static int  mReturnMenu;  // ?mReturnMenu@MPUIInterface@@1HA @ 0xF0A124
     static bool mKicked;      // ?mKicked@MPUIInterface@@1_NA @ 0xF0A128
