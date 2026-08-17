@@ -1422,6 +1422,52 @@ CreateLanSessionAdvancedMenu* CreateLanSessionAdvancedMenu::Me()
 // GameSettingsEdit / GameSettingsView (mp_shell.o GameSettings*.cpp)
 // ============================================================================
 
+GameSettingsView::GameSettingsView(FEMenuSystem* s)
+    : FESplitScreenMenu(s, 0), mSafeText()
+{
+    mScrollBarUpFader.mQuad = nullptr;
+    mScrollBarUpFader.mAlphaTo = 1.0f;
+    mScrollBarUpFader.mTime = 0.0f;
+    mScrollBarUpFader.mAlphaDelta = 0.0f;
+    mScrollBarUpFader.mAlpha = 0.0f;
+    mScrollBarUpFader.mFading = false;
+    mScrollBarDownFader.mQuad = nullptr;
+    mScrollBarDownFader.mAlphaTo = 1.0f;
+    mScrollBarDownFader.mTime = 0.0f;
+    mScrollBarDownFader.mAlphaDelta = 0.0f;
+    mScrollBarDownFader.mAlpha = 0.0f;
+    mScrollBarDownFader.mFading = false;
+    default_color_scheme = 10;
+    mVersion = s->GetCurrentClient();
+}
+
+GameSettingsEdit::GameSettingsEdit(FEMenuSystem* s)
+    : FESplitScreenMenu(s, 8), mSafeText()
+{
+    mNextServerParams = nullptr;
+    iLastOptionSelected = 0;
+    mScrollBarTopY = 0;
+    mScrollBarBottomY = 0;
+    mScrollBarYInc = 0;
+    mScrollBarThumb = nullptr;
+    mScrollBarUpFader.mQuad = nullptr;
+    mScrollBarUpFader.mAlphaTo = 1.0f;
+    mScrollBarUpFader.mTime = 0.0f;
+    mScrollBarUpFader.mAlphaDelta = 0.0f;
+    mScrollBarUpFader.mAlpha = 0.0f;
+    mScrollBarUpFader.mFading = false;
+    mScrollBarDownFader.mQuad = nullptr;
+    mScrollBarDownFader.mAlphaTo = 1.0f;
+    mScrollBarDownFader.mTime = 0.0f;
+    mScrollBarDownFader.mAlphaDelta = 0.0f;
+    mScrollBarDownFader.mAlpha = 0.0f;
+    mScrollBarDownFader.mFading = false;
+    m_ucLastHighlighted = 0;
+    m_FirstTimeAccessedByte = 0;
+    default_color_scheme = 10;
+    mVersion = s->GetCurrentClient();
+}
+
 // ea: 0x0078D5A0
 void GameSettingsEdit::Init()
 {
