@@ -611,6 +611,43 @@ const char* const szFindSessionMenuSlotGeometry[12] = {
 const char* const szFindSessionBoolean[3] = {
     "MPFRONTEND_ANY", "MPFRONTEND_OFF", "MPFRONTEND_ON",
 };
+const char* const szFindLanSessionMenuSlotText[10] = {
+    "fg_slot_01_text_option", "fg_slot_01_text_spec",
+    "fg_slot_02_text_option", "fg_slot_02_text_spec",
+    "fg_slot_03_text_option", "fg_slot_03_text_spec",
+    "fg_slot_04_text_option", "fg_slot_04_text_spec",
+    "fg_slot_05_text_option", "fg_slot_05_text_spec",
+};
+const char* const szFindLanSessionMenuSlotTextReferences[10] = {
+    "MPFRONTEND_GAME_MODE_ALLCAPS", defaultFileName,
+    "MPFRONTEND_MAP_NAME_ALLCAPS", defaultFileName,
+    "MPFRONTEND_NUMBER_OF_PLAYERS_ALLCAPS", defaultFileName,
+    "MPFRONTEND_AUTO_TEAM_BALANCE_ALLCAPS", defaultFileName,
+    "MPFRONTEND_TEAM_DAMAGE_ALLCAPS", defaultFileName,
+};
+const char* const szFindLanSessionMenuText[4] = {
+    "fg_text_title_01", "fg_text_title_02",
+    "fg_text_title_description", "text_helpbar",
+};
+const char* const szFindLanSessionMenuTextReferences[4] = {
+    "MPFRONTEND_PLAY_SYSTEM_LINK", "MPFRONTEND_FIND_GAME",
+    "MPFRONTEND_SELECT_GAME_TYPE_EXPLANATION",
+    "MPFRONTEND_HELP_BAR_FIND_GAME",
+};
+const char* const szFindLanSessionMenuBackgroundArt[4] = {
+    "fg_bkg", "fg_bkg_detail_01", "fg_bkg_detail_02", "fg_bkg_detail_03",
+};
+const char* const szFindLanSessionMenuSlotGeometry[12] = {
+    "fg_slot_01_arrow_left", "fg_slot_01_arrow_right",
+    "fg_slot_02_arrow_left", "fg_slot_02_arrow_right",
+    "fg_slot_03_arrow_left", "fg_slot_03_arrow_right",
+    "fg_slot_04_arrow_left", "fg_slot_04_arrow_right",
+    "fg_slot_05_arrow_left", "fg_slot_05_arrow_right",
+    "fg_slot_06_arrow_left", "fg_slot_06_arrow_right",
+};
+const char* const szFindLanSessionBoolean[3] = {
+    "MPFRONTEND_ANY", "MPFRONTEND_OFF", "MPFRONTEND_ON",
+};
 const char* const szClassInformation[6] = {
     "MPGAME_DAMAGE_ALLCAPS", "MPGAME_RANGE_ALLCAPS",
     "MPGAME_ACCURACY_ALLCAPS", "MPGAME_MELEE_ALLCAPS",
@@ -6631,6 +6668,220 @@ void FindSessionMenu::SetPanelFile(PanelFile* pf)
         m_TeamDamageCombo->AddOption(option);
     }
     m_TeamDamageCombo->SetCurrOption(0);
+
+    entries[1]->up = 9;
+    entries[1]->down = 3;
+    entries[3]->up = 1;
+    entries[3]->down = 5;
+    entries[5]->up = 3;
+    entries[5]->down = 7;
+    entries[7]->up = 5;
+    entries[7]->down = 9;
+    entries[9]->up = 7;
+    entries[9]->down = 1;
+}
+
+// ea: 0x00798DA0
+void FindLanSessionMenu::SetPanelFile(PanelFile* pf)
+{
+    if (pf == nullptr)
+        ASSERT("pf", "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 126);
+    panel = pf;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_pBackgroundArt[i] != nullptr)
+            ASSERT("0 == m_pBackgroundArt[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 135);
+        m_pBackgroundArt[i] = panel->GetPointer(szFindLanSessionMenuBackgroundArt[i]);
+        if (m_pBackgroundArt[i] == nullptr)
+            ASSERT("m_pBackgroundArt[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 138);
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_pText[i] != nullptr)
+            ASSERT("0 == m_pText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 144);
+        m_pText[i] = panel->GetTextPointer(szFindLanSessionMenuText[i]);
+        if (m_pText[i] == nullptr)
+            ASSERT("m_pText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 147);
+        const char* translatedText = szFindLanSessionMenuTextReferences[i];
+        if (i == 3)
+        {
+            FEMultiLineText* helpbarText =
+                (FEMultiLineText*)mem_heap_malloc(0xA8u);
+            if (helpbarText != nullptr)
+            {
+                FEText* text = m_pText[3];
+                color32 col = text->GetColor();
+                panel_layer layer = (panel_layer)text->GetScaleX();
+                helpbarText = new (helpbarText)
+                    FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
+                                    layer, 0.0f, 0, (int)col.i, col);
+            }
+            helpbar1 = helpbarText;
+            helpbar1->SetNumLines(1);
+            helpbar1->SetText(translatedText);
+        }
+        else
+        {
+            m_pText[i]->SetText(translatedText);
+        }
+    }
+    SetDefaultColorScheme(10);
+
+    for (int i = 0; i < 12; ++i)
+    {
+        if (m_pSlotGeometry[i] != nullptr)
+            ASSERT("0 == m_pSlotGeometry[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 174);
+        m_pSlotGeometry[i] = panel->GetPointer(szFindLanSessionMenuSlotGeometry[i]);
+        if (m_pSlotGeometry[i] == nullptr)
+            ASSERT("m_pSlotGeometry[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 177);
+        m_pSlotGeometry[i]->SetShown(i <= 9);
+    }
+
+    for (int i = 0; i < 10; ++i)
+    {
+        if (m_pSlotText[i] != nullptr)
+            ASSERT("0 == m_pSlotText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 191);
+        m_pSlotText[i] = panel->GetTextPointer(szFindLanSessionMenuSlotText[i]);
+        if (m_pSlotText[i] == nullptr)
+            ASSERT("m_pSlotText[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 194);
+        m_pSlotText[i]->SetText(szFindLanSessionMenuSlotTextReferences[i]);
+    }
+    SetDefaultColorScheme(10);
+
+    AddEntry(0, panel->GetTextPointer("fg_slot_01_text_option"), false);
+    mGameModeCombo = AddComboBox(
+        1, 7, panel->GetTextPointer("fg_slot_01_text_spec"),
+        panel->GetPointer("fg_slot_01_arrow_left"),
+        panel->GetPointer("fg_slot_01_arrow_right"));
+    if (mGameModeCombo == nullptr)
+        ASSERT("mGameModeCombo",
+               "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 209);
+    {
+        Broc::string option("MPFRONTEND_ANY");
+        mGameModeCombo->AddOption(option);
+    }
+    for (int i = 0; i < 6; ++i)
+    {
+        Broc::string option(MPUIInterface::GetGameTypeString(i));
+        mGameModeCombo->AddOption(option);
+    }
+    mGameModeCombo->SetCurrOption(0);
+
+    AddEntry(2, panel->GetTextPointer("fg_slot_02_text_option"), false);
+    mStartingMapCombo = AddComboBox(
+        3, 65, panel->GetTextPointer("fg_slot_02_text_spec"),
+        panel->GetPointer("fg_slot_02_arrow_left"),
+        panel->GetPointer("fg_slot_02_arrow_right"));
+    if (mStartingMapCombo == nullptr)
+        ASSERT("mStartingMapCombo",
+               "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 222);
+    {
+        Broc::string option("MPFRONTEND_ANY");
+        mStartingMapCombo->AddOption(option);
+    }
+    for (int i = 0; i < g_NumBaseMaps; ++i)
+    {
+        const char mapIndex = i == 0xFF ? (char)-1 : byte_E386C9[114 * i];
+        Broc::string option(MPUIInterface::GetMapString(
+            (unsigned char)mapIndex));
+        mStartingMapCombo->AddOption(option);
+    }
+    mStartingMapCombo->SetCurrOption(0);
+
+    AddEntry(4, panel->GetTextPointer("fg_slot_03_text_option"), false);
+    const int maxPlayersCount = MPUIInterface::GetMaxPlayersCount();
+    mNumberOfPlayersCombo = AddComboBox(
+        5, maxPlayersCount + 1,
+        panel->GetTextPointer("fg_slot_03_text_spec"),
+        panel->GetPointer("fg_slot_03_arrow_left"),
+        panel->GetPointer("fg_slot_03_arrow_right"));
+    if (mNumberOfPlayersCombo == nullptr)
+        ASSERT("mNumberOfPlayersCombo",
+               "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 236);
+    {
+        Broc::string option("MPFRONTEND_ANY");
+        mNumberOfPlayersCombo->AddOption(option);
+    }
+    for (int i = 0; i < MPUIInterface::GetMaxPlayersCount(); ++i)
+    {
+        char szString[16];
+        sprintf(szString, "%d", MPUIInterface::GetMaxPlayers(i));
+        Broc::string option(szString);
+        mNumberOfPlayersCombo->AddOptionNoLocalize(option);
+    }
+    mNumberOfPlayersCombo->SetCurrOption(0);
+
+    AddEntry(6, panel->GetTextPointer("fg_slot_04_text_option"), false);
+    m_AutoTeamBalanceCombo = AddComboBox(
+        7, 3, panel->GetTextPointer("fg_slot_04_text_spec"),
+        panel->GetPointer("fg_slot_04_arrow_left"),
+        panel->GetPointer("fg_slot_04_arrow_right"));
+    if (m_AutoTeamBalanceCombo == nullptr)
+        ASSERT("m_AutoTeamBalanceCombo",
+               "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 252);
+    for (int i = 0; i < 3; ++i)
+    {
+        Broc::string option(szFindLanSessionBoolean[i]);
+        m_AutoTeamBalanceCombo->AddOption(option);
+    }
+    m_AutoTeamBalanceCombo->SetCurrOption(0);
+
+    AddEntry(8, panel->GetTextPointer("fg_slot_05_text_option"), false);
+    m_TeamDamageCombo = AddComboBox(
+        9, 3, panel->GetTextPointer("fg_slot_05_text_spec"),
+        panel->GetPointer("fg_slot_05_arrow_left"),
+        panel->GetPointer("fg_slot_05_arrow_right"));
+    if (m_TeamDamageCombo == nullptr)
+        ASSERT("m_TeamDamageCombo",
+               "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 264);
+    for (int i = 0; i < 3; ++i)
+    {
+        Broc::string option(szFindLanSessionBoolean[i]);
+        m_TeamDamageCombo->AddOption(option);
+    }
+    m_TeamDamageCombo->SetCurrOption(0);
+
+    const char* backgroundRow[6] = {
+        "bkg_row_01", "bkg_row_02", "bkg_row_03",
+        "bkg_row_04", "bkg_row_05", "bkg_row_06",
+    };
+    for (int i = 0; i < 6; ++i)
+    {
+        if (m_pBackgroundRow[i] != nullptr)
+            ASSERT("0 == m_pBackgroundRow[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 285);
+        m_pBackgroundRow[i] = panel->GetPointer(backgroundRow[i]);
+        if (m_pBackgroundRow[i] == nullptr)
+            ASSERT("m_pBackgroundRow[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 288);
+        m_pBackgroundRow[i]->SetShown(i <= 4);
+    }
+
+    const char* backgroundLine[5] = {
+        "bkg_line_01", "bkg_line_02", "bkg_line_03",
+        "bkg_line_04", "bkg_line_05",
+    };
+    for (int i = 0; i < 5; ++i)
+    {
+        if (m_pBackgroundLine[i] != nullptr)
+            ASSERT("0 == m_pBackgroundLine[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 311);
+        m_pBackgroundLine[i] = panel->GetPointer(backgroundLine[i]);
+        if (m_pBackgroundLine[i] == nullptr)
+            ASSERT("m_pBackgroundLine[i]",
+                   "c:\\cod\\code\\game\\mp/ui/FindLanSessionMenu.cpp", 314);
+        m_pBackgroundLine[i]->SetShown(true);
+    }
 
     entries[1]->up = 9;
     entries[1]->down = 3;
