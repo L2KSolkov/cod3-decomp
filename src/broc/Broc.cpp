@@ -118,6 +118,12 @@ float MathsRandomFloatRange(float fMin, float fMax)
     return fMin < fMax ? flrand(fMin, fMax) : flrand(fMax, fMin);
 }
 
+// ea: 0x00928B40. IDA forwards to the runtime's typed random-range callback.
+float RandomFloatRange(float fMin, float fMax)
+{
+    return gBrocAPI.mMathsRandomFloatRange(fMin, fMax);
+}
+
 float MathsLog(float fVal)
 {
     if (fVal <= 0.0f)
@@ -1135,7 +1141,22 @@ void wait_accurate(float t)
     if (gBrocAPI.mKillThread)
         gBrocAPI.mKillThreadExec();
 }
-void wait(float) {}
+// ea: 0x00928A70. IDA validates the time, randomizes the interval, and sleeps.
+void wait(float t)
+{
+    if (IS_NAN(t)
+        && gBrocAPI.mError(
+               "c:\\cod\\code\\script\\include\\threads.inl",
+               83,
+               "Cannot wait for undefined time"))
+        __debugbreak();
+    const float ta = RandomFloatRange(t, 1.05f * t);
+    thread_debug_wait_msg(ta);
+    gThreadSleepTime = ta;
+    thread_sleep_time();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
 // ea: 0x00928B70. IDA stores the frame count and enters the frame-sleep hook.
 void wait_frame(int numFrames)
 {

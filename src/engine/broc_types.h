@@ -699,7 +699,9 @@ struct BrocAPI {
     char _pad70[0x94 - 0x70];                             // +0x070
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
     unsigned int (*mGetEntByNum)(int);                    // +0x098
-    char _pad9C[0x184 - 0x9C];                            // +0x09C
+    char _pad9C[0x14C - 0x9C];                            // +0x09C
+    float (*mMathsRandomFloatRange)(float, float);         // +0x14C
+    char _pad150[0x184 - 0x150];                          // +0x150
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
     char _pad188[0x1A0 - 0x188];                          // +0x188
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
