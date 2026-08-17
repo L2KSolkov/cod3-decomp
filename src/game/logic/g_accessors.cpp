@@ -2226,6 +2226,12 @@ player_collision_context_t::player_collision_context_t(
     contentmask = mask;
 }
 
+// player_collision_context_t default constructor (used by PM contexts)
+player_collision_context_t::player_collision_context_t()
+    : collision_context_t()
+{
+}
+
 // ============================================================================
 // Batch 28: HandleDb/DbLinkedHandle/IVPointer/BitSet/WaitTilOutput cluster
 // ============================================================================
