@@ -1246,7 +1246,7 @@ math::Mat43 Entity::GetRelMat(int boneIndex)
 // Entity::SetAlwaysRender - ea: 0x620AE0 (Entity.cpp)
 // ============================================================================
 // FLAG 0x200000 = always render (byte_200000)
-static ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 32>
+ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 32>
     g_AlwaysRenderEnts;  // ?g_AlwaysRenderEnts@@3V?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@A @ 0xDF8260
 
 // ea: 0x00620AE0

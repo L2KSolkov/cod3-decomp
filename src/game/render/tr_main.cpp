@@ -836,7 +836,7 @@ struct BspTreeView {
 int g_allVisualCount = 0;     // ?g_allVisualCount@@3HA (g.o)
 int g_visualCount = 0;        // ?g_visualCount@@3HA (g.o)
 int g_xmodelCount = 0;        // ?g_xmodelCount@@3HA (g.o)
-extern int g_alwaysCount;     // ?g_alwaysCount@@3HA (g.o)
+int g_alwaysCount = 0;        // ?g_alwaysCount@@3HA (g.o)
 extern int g_limitVisualRange;  // ?g_limitVisualRange@@3HA
 extern int g_renderSphere;    // ?g_renderSphere@@3HA
 
@@ -889,7 +889,7 @@ struct PhysArrayHugeModels {
     trRefEntity* m_slot_array[64];   // +0x100
     unsigned int m_alloc_count;      // +0x104
 };
-extern PhysArrayHugeModels g_huge_models;  // ?g_huge_models@@3V?$phys_static_array@PAVtrRefEntity@@$0EA@@@A (render.o)
+PhysArrayHugeModels g_huge_models = {};  // ?g_huge_models@@3V?$phys_static_array@PAVtrRefEntity@@$0EA@@@A (render.o)
 class Color {
 public:
     float r, g, b, a;

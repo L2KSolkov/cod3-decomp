@@ -127,7 +127,7 @@ struct dpvs_plane_t {
     unsigned char side[3]; // +0x10
     unsigned char frontal; // +0x13
 };
-extern int r_zfar_value;  // float value member of ?r_zfar@@3PAUcvar_t@@A
+extern cvar_t* r_zfar;     // ?r_zfar@@3PAUcvar_t@@A
 extern "C" struct dpvs_t g_dpvs;  // plain C symbol @ 0xF75600
 struct drawSurf_s;        // tr renderer surface
 struct trStatistics_t;    // tr renderer statistics
@@ -245,7 +245,7 @@ void R_SetPlaneSidesDPVS(dpvs_plane_t* plane)
 // ea: 0x006BF380
 float RE_GetFarPlaneDist()
 {
-    float zfar = *(float*)&r_zfar_value;
+    float zfar = r_zfar->value;
     if (g_dpvs.cullDist > zfar)
         return g_dpvs.cullDist;
     return zfar;
