@@ -5867,6 +5867,127 @@ void AARBaseMenu::SetTimerText()
         text->SetText(szElapsedSeconds);
 }
 
+// ea: 0x007A3950
+void AARScoreboardBase::SetPanelFile(PanelFile* pf)
+{
+    AARBaseMenu::SetPanelFile(pf);
+
+    m_pYourTeamScore.m_elements[0] =
+        panel->GetPointer("sb_colorband_icon_american");
+    m_pYourTeamScore.m_elements[1] =
+        panel->GetPointer("sb_colorband_icon_german");
+    m_pYourTeamScore.m_elements[5] = panel->GetPointer("sb_colorband_lose_team");
+    m_pYourTeamScore.m_elements[4] = panel->GetPointer("sb_colorband_win_team");
+    m_pUppercaseText.m_elements[0] =
+        panel->GetTextPointer("sb_text_title_team_name");
+    m_pUppercaseText.m_elements[1] = panel->GetTextPointer("text_title_AAR");
+    m_pUppercaseText.m_elements[2] =
+        panel->GetTextPointer("sb_text_title_section");
+    m_pUppercaseText.m_elements[3] =
+        panel->GetTextPointer("sb_text_title_section");
+    m_pUppercaseText.m_elements[8] = panel->GetTextPointer("text_helpbar");
+    m_pUppercaseText.m_elements[4] = panel->GetTextPointer("sb_text_loser_name");
+    m_pUppercaseText.m_elements[5] = panel->GetTextPointer("sb_text_loser_score");
+    m_pUppercaseText.m_elements[6] = panel->GetTextPointer("sb_text_winner_name");
+    m_pUppercaseText.m_elements[7] = panel->GetTextPointer("sb_text_winner_score");
+    m_pUppercaseText.m_elements[9] = panel->GetTextPointer("sb_text_icon_class");
+    m_pUppercaseText.m_elements[10] = panel->GetTextPointer("sb_text_icon_deaths");
+    m_pUppercaseText.m_elements[11] = panel->GetTextPointer("sb_text_icon_kills");
+    m_pUppercaseText.m_elements[12] = panel->GetTextPointer("sb_text_icon_score");
+
+    FEText* helpbar = m_pUppercaseText.m_elements[8];
+    FEMultiLineText* helpbar1Text =
+        (FEMultiLineText*)mem_heap_malloc(0, 0xA8u);
+    if (helpbar1Text != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float x = helpbar->GetX();
+        helpbar1Text = new (helpbar1Text)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = helpbar1Text;
+    helpbar1->SetNumLines(1);
+
+    FEMultiLineText* helpbar2Text =
+        (FEMultiLineText*)mem_heap_malloc(0, 0xA8u);
+    if (helpbar2Text != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float x = helpbar->GetX();
+        helpbar2Text = new (helpbar2Text)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar2 = helpbar2Text;
+    helpbar2->SetNumLines(1);
+
+    m_ListBox.SetScrollBarFromPanelFile(panel);
+    m_ListBox.mHighlightQuad = panel->GetPointer("sb_player_hilite");
+    if (m_ListBox.mHighlightQuad != nullptr)
+        m_ListBox.mHighlightQuad->SetShown(false);
+    m_ListBox.SetColumnStateCount(1, 8);
+    m_pUppercaseText.m_elements[1]->SetText("MPGAME_AFTER_ACTION_REVIEW");
+    m_pUppercaseText.m_elements[9]->SetText("C");
+    m_pUppercaseText.m_elements[12]->SetText("S");
+    m_pUppercaseText.m_elements[11]->SetText("K");
+    m_pUppercaseText.m_elements[10]->SetText("D");
+
+    char szSlotGeometry[24];
+    for (int j = 0; j < 10; ++j)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_AST_H", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 1);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_AST_L", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 2);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_RFM", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 3);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_MED", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 4);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_SPT", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 5);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_ATA", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 6);
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_ci_SCT", j + 1);
+        m_ListBox.SetItem(j, 1, panel->GetPointer(szSlotGeometry), 7);
+    }
+
+    color32 nameColor;
+    nameColor.i = -2702166;
+    color32 nameSelectedColor;
+    nameSelectedColor.i = -2133408598;
+    for (int k = 0; k < 10; ++k)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_name", k + 1);
+        FEText* text = panel->GetTextPointer(szSlotGeometry);
+        m_ListBox.SetItem(k, 0, text, 0);
+        text->SetColorMenuItem(nameColor, nameSelectedColor);
+    }
+    for (int m = 0; m < 10; ++m)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_scrore", m + 1);
+        m_ListBox.SetItem(m, 2, panel->GetTextPointer(szSlotGeometry), 0);
+    }
+    for (int n = 0; n < 10; ++n)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_kills", n + 1);
+        m_ListBox.SetItem(n, 3, panel->GetTextPointer(szSlotGeometry), 0);
+    }
+    for (int ii = 0; ii < 10; ++ii)
+    {
+        _snprintf(szSlotGeometry, 0x17u, "sb_slot_%02d_text_deaths", ii + 1);
+        m_ListBox.SetItem(ii, 4, panel->GetTextPointer(szSlotGeometry), 0);
+    }
+    m_ListBox.Refresh();
+    m_ListBox.SelectLine(0);
+    m_ListBox.mHighlightedSelectedTextColor.i = -3618616;
+    m_ListBox.mHighlightedUnselectedTextColor.i = -7553346;
+}
+
 // ea: 0x0078D850
 void GameSettingsEdit::GetScoreLimitsForGameType(eGameType gameType)
 {
