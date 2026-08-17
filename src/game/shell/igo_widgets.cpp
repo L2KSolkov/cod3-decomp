@@ -153,7 +153,44 @@ struct MpPlayerItems {
     ae_vector<sDroppedItem> mDroppedSupport;  // +0x0C
     ae_vector<sDroppedItem> mDroppedMines;    // +0x18
     ae_vector<sDroppedItem> mDroppedKits;     // +0x24
-    Entity* FindItem(EDroppedItemTypes item, short id);
+    // ea: 0x00755140 (MPPlayerItems::FindItem)
+    Entity* FindItem(EDroppedItemTypes item, short id)
+    {
+        ae_vector<sDroppedItem>* list;
+        switch (item)
+        {
+        case kItemTypeSupport:
+            list = &mDroppedSupport;
+            break;
+        case kItemTypeMines:
+            list = &mDroppedMines;
+            break;
+        case kItemTypeKits:
+            list = &mDroppedKits;
+            break;
+        default:
+            list = &mDroppedWeapons;
+            break;
+        }
+        if (list->mSize <= id)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MPPlayerItems.cpp";
+            AeAssert::gCurrentLine = 118;
+            AeAssert::gCurrentExpr = "size > id";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("FindItem: Invalid ID"))
+                __debugbreak();
+        }
+        unsigned int mVal = list->mElements[id].handle.mHandle.mVal;
+        unsigned int index = mVal & 0xFFF;
+        if (index < 0x540
+            && mVal >> 12 == (unsigned int)EntityHandleDb::sInst
+                                      .mElements[index].mKey)
+            return EntityHandleDb::sInst.mElements[index].mObject;
+        return nullptr;
+    }
 };
 
 // mp.o player view with mItems/mClientIndex fields (full layout in mp.o).
