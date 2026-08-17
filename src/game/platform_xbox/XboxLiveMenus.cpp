@@ -94,7 +94,7 @@ extern bool g_IgnoreUIXInput;
 FEManager g_femanager;
 int currCl;
 int cg_widescreen_integer;
-int controller::num_controllers;
+int controller::num_controllers = 4;
 
 extern void tlPrintf(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);

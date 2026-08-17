@@ -58,6 +58,7 @@ public:
     };
 
     static const int MAX_CONTROLLERS = 4;
+    static int num_controllers;
 
     controller();
     ~controller();
@@ -77,12 +78,19 @@ public:
     bool button_released_clear(int index, ButtonIndex btn);
     bool any_button_pressed(int index);
     void stick_value(int index, StickIndex stick, int& outX, int& outY);
+    void stick_value(StickIndex stick, int* outX, int* outY, int* p_controller);
+    void stick_value(int index, StickIndex stick, int* outX, int* outY);
+    int stick_value_x(StickIndex stick, int* p_controller);
+    int stick_value_x(int index, StickIndex stick);
+    int stick_value_y(StickIndex stick, int* p_controller);
+    int stick_value_y(int index, StickIndex stick);
 
     void rumble(int index, RumbleIndex motor, float speed);
     void stop_all_rumble();
 
     int  locked_port;
     bool is_locked;
+    bool accepting_input_from_controller[MAX_CONTROLLERS];
 
     // g.o accessors (?get_is_locked@controller@@QAE_NXZ / ?get_locked_port@controller@@QAEHXZ)
     bool get_is_locked();
@@ -122,6 +130,8 @@ controller::controller()
     : locked_port(0)
     , is_locked(false)
 {
+    for (int i = 0; i < MAX_CONTROLLERS; ++i)
+        accepting_input_from_controller[i] = true;
     if (s_initialized) return;
     s_initialized = true;
     s_instance = this;
@@ -322,6 +332,98 @@ void controller::stick_value(int index, StickIndex stick, int& outX, int& outY) 
         outX = s_pads[index].thumbRX;
         outY = -s_pads[index].thumbRY;
     }
+}
+
+void controller::stick_value(StickIndex stick, int* outX, int* outY,
+                             int* p_controller) {
+    int largestX = 0;
+    int largestY = 0;
+    if (is_locked) {
+        if (p_controller != nullptr)
+            *p_controller = locked_port;
+        stick_value(locked_port, stick, *outX, *outY);
+        return;
+    }
+    for (int i = 0; i < num_controllers; ++i) {
+        if (accepting_input_from_controller[i]) {
+            int x = 0, y = 0;
+            stick_value(i, stick, x, y);
+            if (x * x > largestX * largestX || y * y > largestY * largestY) {
+                largestX = x;
+                largestY = y;
+                if (p_controller != nullptr)
+                    *p_controller = i;
+            }
+        }
+    }
+    if (outX != nullptr)
+        *outX = largestX;
+    if (outY != nullptr)
+        *outY = largestY;
+}
+
+void controller::stick_value(int index, StickIndex stick, int* outX, int* outY) {
+    if (outX == nullptr || outY == nullptr)
+        return;
+    stick_value(index, stick, *outX, *outY);
+}
+
+int controller::stick_value_x(StickIndex stick, int* p_controller) {
+    int largest = 0;
+    if (is_locked) {
+        if (p_controller != nullptr)
+            *p_controller = locked_port;
+        int y = 0;
+        stick_value(locked_port, stick, largest, y);
+        return largest;
+    }
+    for (int i = 0; i < num_controllers; ++i) {
+        if (accepting_input_from_controller[i]) {
+            int x = 0, y = 0;
+            stick_value(i, stick, x, y);
+            if (x * x > largest * largest) {
+                largest = x;
+                if (p_controller != nullptr)
+                    *p_controller = i;
+            }
+        }
+    }
+    return largest;
+}
+
+int controller::stick_value_y(StickIndex stick, int* p_controller) {
+    int largest = 0;
+    if (is_locked) {
+        if (p_controller != nullptr)
+            *p_controller = locked_port;
+        int x = 0;
+        stick_value(locked_port, stick, x, largest);
+        return largest;
+    }
+    for (int i = 0; i < num_controllers; ++i) {
+        if (accepting_input_from_controller[i]) {
+            int x = 0, y = 0;
+            stick_value(i, stick, x, y);
+            if (y * y > largest * largest) {
+                largest = y;
+                if (p_controller != nullptr)
+                    *p_controller = i;
+            }
+        }
+    }
+    return largest;
+}
+
+int controller::stick_value_x(int index, StickIndex stick) {
+    int x = 0, y = 0;
+    stick_value(index, stick, x, y);
+    return x;
+}
+
+int controller::stick_value_y(int index, StickIndex stick) {
+    int x = 0, y = 0;
+    stick_value(index, stick, x, y);
+    return y;
 }
 
 WORD controller::compute_motor_speed(float speed) {
