@@ -668,6 +668,14 @@ math::Position3* nglProjectPoint(math::Position3* result, const math::Position3*
     return result;
 }
 
+// IDA 0x83D410 by-value overload (the compiler lowers this to the same
+// hidden-result projection routine above).
+math::Position3 nglProjectPoint(const math::Position3& In, nglScene* Scene) {
+    math::Position3 result;
+    nglProjectPoint(&result, &In, Scene);
+    return result;
+}
+
 math::Position3* nglUnprojectPoint(math::Position3* result, const math::Position3* In,
                                    nglScene* Scene) {
     if (Scene->MatricesDirty) {
