@@ -313,7 +313,21 @@ public:
 // XBoxLiveIngameOptionsCOD3 - FE menu (mp_xbox.o owns the definition)
 class XBoxLiveIngameOptionsCOD3 : public FEMenu {
 public:
+    XBoxLiveIngameOptionsCOD3(FEMenuSystem* s);  // ??0XBoxLiveIngameOptionsCOD3@@QAE@PAVFEMenuSystem@@@Z
     static XBoxLiveIngameOptionsCOD3* Me(int version);  // ?Me@XBoxLiveIngameOptionsCOD3@@SAPAV1@H@Z
+    ae_array<PanelQuad*, 6> m_pBackgroundArt;       // +0x4C
+    ae_array<FEText*, 2> m_pText;                   // +0x64
+    ae_array<PanelQuad*, 4> m_pLineArt;             // +0x6C
+    ae_array<color32, 5> m_pOldTextColor;           // +0x7C
+    ae_array<color32, 5> m_pOldSelectedTextColor;   // +0x90
+    UIListBox m_ListBox;                            // +0xA4
+    int m_currSelection;                            // +0x150
+    int mVersion;                                   // +0x154
+    FEComboBox* m_pAppearOnline;                    // +0x158
+    unsigned int friendIcon;                        // +0x15C
+    bool wasSignedIn;                               // +0x160
+    bool waitingForSignIn;                          // +0x161
+    bool mJoiningFriend;                            // +0x162
 };
 
 class AARXBoxLiveIngameOptions : public XBoxLiveIngameOptionsCOD3 {
@@ -333,6 +347,13 @@ AARXBoxLiveIngameOptions* AARXBoxLiveIngameOptions::Me()
 XBoxLiveIngameOptionsCOD3* XBoxLiveIngameOptionsCOD3::Me(int client)
 {
     return (XBoxLiveIngameOptionsCOD3*)g_femanager.GetIGMS(client)->menus[5];
+}
+
+// ea: 0x0077AF10
+AARXBoxLiveIngameOptions::AARXBoxLiveIngameOptions(FEMenuSystem* s)
+    : XBoxLiveIngameOptionsCOD3(s)
+{
+    mVersion = s->GetCurrentClient();
 }
 
 // ============================================================================
