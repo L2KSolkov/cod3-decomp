@@ -101,6 +101,33 @@ void pulse_sum_constraint_solver::create_point(
 }
 
 // ============================================================================
+// pulse_sum_constraint_solver::create_hinge - ea: 0x88A910
+// ============================================================================
+void pulse_sum_constraint_solver::create_hinge(
+    rigid_body* b1, const math::Dir3* b1_axis, rigid_body* b2,
+    const math::Dir3* b2_axis, const math::Dir3* a1, const math::Dir3* a2,
+    pulse_sum_cache* ps_cache, float delta_t) {
+    pulse_sum_angular* first = create_pulse_sum_angular(
+        b1, b1_axis, b2, b2_axis, a1, ps_cache);
+    first->m_pulse_sum_min = -10000000.0f;
+    first->m_pulse_sum_max = 10000000.0f;
+    float dt = delta_t;
+    if (delta_t <= 0.0041666669f)
+        dt = 0.0041666669f;
+    first->m_right_side = 0.0f;
+    first->m_cfm = 0.0f;
+    first->m_big_dirt = first->get_pos() / dt * -0.5f;
+
+    pulse_sum_angular* second = create_pulse_sum_angular(
+        b1, b1_axis, b2, b2_axis, a2, ps_cache + 1);
+    second->m_pulse_sum_min = -10000000.0f;
+    second->m_pulse_sum_max = 10000000.0f;
+    second->m_right_side = 0.0f;
+    second->m_cfm = 0.0f;
+    second->m_big_dirt = second->get_pos() / dt * -0.5f;
+}
+
+// ============================================================================
 // rigid_body_constraint_point::set â€” ea: 0x890320
 // ============================================================================
 void rigid_body_constraint_point::set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc) {

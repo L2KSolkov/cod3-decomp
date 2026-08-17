@@ -109,15 +109,6 @@ pulse_sum_contact* pulse_sum_constraint_solver::create_pulse_sum_contact(
     (void)b1; (void)b2; (void)cpi; (void)delta_t;
     return nullptr;
 }
-void pulse_sum_constraint_solver::create_hinge(
-    rigid_body* b1, const math::Dir3* b1_axis, rigid_body* b2,
-    const math::Dir3* b2_axis, const math::Dir3* a1, const math::Dir3* a2,
-    pulse_sum_cache* ps_cache, float delta_t)
-{
-    (void)b1; (void)b1_axis; (void)b2; (void)b2_axis; (void)a1; (void)a2;
-    (void)ps_cache; (void)delta_t;
-}
-
 const __m128 Float4_XAxis_210 = {1.0f, 0.0f, 0.0f, 0.0f};
 const __m128 Float4_YAxis_210 = {0.0f, 1.0f, 0.0f, 0.0f};
 const __m128 Float4_ZAxis_210 = {0.0f, 0.0f, 1.0f, 0.0f};
