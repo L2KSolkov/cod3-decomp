@@ -66,6 +66,9 @@ extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,
 extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  // core.o
 extern void tlPrintf(const char* format, ...);  // ?tlPrintf@@YAXPBDZZ
 extern void bdCore_quit();  // bdCore::quit
+extern char* Q_strlwr(char* s1);  // core.o
+extern char MI_GetMapIDbyShortname(char* shortname);  // mp_shell.o
+extern int LocalClient_ConfigureLocalClients();  // cl.o bridge
 class ae_heap;
 extern ae_heap* gDWHeap;    // ?gDWHeap@@3PAVae_heap@@A
 extern const float gMPIntPositionMin = -8191.0f; // ?gMPIntPositionMin@@3MA @ 0xE370D8
@@ -8725,6 +8728,55 @@ void MultiplayerMgr::ProjectileExplosion(Entity* projectile, int weapon,
         }
         mPeer->ProjectileExplosion(weapon, position, normal, surfaceType,
                                     handle);
+    }
+}
+
+// ea: 0x00766510
+void MultiplayerMgr::StartDevServer()
+{
+    char xbox_name[256];
+    int size = 255;
+
+    MPUIInterface::PlatformStart();
+    DmGetXboxName(xbox_name, (unsigned int*)&size);
+    strncpy(MPUIInterface::mServerParams.mName, xbox_name, 0x18u);
+
+    cvar_t* gameType = Cvar_Get("mp_gametype", "dm", 0);
+    if (_stricmp("dm", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 5;
+    else if (_stricmp("tdm", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 4;
+    else if (_stricmp("war", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 0;
+    else if (_stricmp("ctf", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 1;
+    else if (_stricmp("scf", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 2;
+    else if (_stricmp("dom", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 7;
+    else if (_stricmp("hq", gameType->string) == 0)
+        MPUIInterface::mServerParams.mGameType = 3;
+
+    char* mapName = Cmd_Argv(1);
+    if (mapName != nullptr)
+    {
+        Q_strlwr(mapName);
+        MPUIInterface::mServerParams.mMapID =
+            MI_GetMapIDbyShortname(mapName);
+        MPUIInterface::mGameConnectionType = kGameConnectionTypeLan;
+        dword_F6A290[0] = 2;
+        LocalClient_ConfigureLocalClients();
+        if (!MPUIInterface::StartServer(true, true))
+        {
+            OverlayMenu* overlay = OverlayMenu::Me(0);
+            overlay->SetState(14);  // FROM_ID_QUERYING
+            *(int*)((char*)overlay + 0x50) = 8;
+            *(int*)((char*)overlay + 0x54) = 8;
+            typedef void (__thiscall* AddOverlayFn)(FEMenuSystem*, int);
+            AddOverlayFn addOverlay =
+                (AddOverlayFn)(*(void***)g_femanager.fems)[14];
+            addOverlay(g_femanager.fems, 16);
+        }
     }
 }
 
