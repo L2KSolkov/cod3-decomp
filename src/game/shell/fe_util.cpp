@@ -17,7 +17,7 @@ extern int g_currentAsian;         // shell.o data
 extern const char* const defaultFileName;  // 0xCD67AE
 
 int SEH_GetCurrentLanguage();  // game.o stub
-extern int XGetLanguage();     // platform shim
+extern unsigned int XGetLanguage();     // platform shim
 extern char* va(const char* fmt, ...);  // core.o
 
 struct nglTexture;

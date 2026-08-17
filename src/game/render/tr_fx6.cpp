@@ -18,7 +18,8 @@ static unsigned int s_rainInit;  // $S69_2
 
 extern bool gEnableRainDrops;  // ?gEnableRainDrops@@3_NA (tr_fx2.cpp)
 extern int currCl;             // ?currCl@@3HA @ 0xF1579C
-extern int _rand();            // ?rand@@YAHXZ (CRT)
+extern "C" int rand();
+#define _rand rand
 
 // Entity view (r +0xE0, mHandle +0x234)
 struct EntitySharedView {

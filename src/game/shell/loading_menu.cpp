@@ -65,10 +65,10 @@ public:
     static sServerCreateParams mServerParams;  // ?mServerParams@MPUIInterface@@1UsServerCreateParams@@A (mp.o)
 };
 
-bool MI_IsAvailableMap(unsigned char id);        // ?MI_IsAvailableMap@@YA_ND@Z (mp_shell.o)
-const char* MI_GetMapTitle(unsigned char id);    // ?MI_GetMapTitle@@YAPADD@Z (mp_shell.o)
-const char* MI_GetMapLocation(unsigned char id); // ?MI_GetMapLocation@@YAPADD@Z (mp_shell.o)
-char MI_GetMapIndexbyID(unsigned char ID);       // ?MI_GetMapIndexbyID@@YADD@Z (mp_shell.o)
+char MI_IsAvailableMap(char id);        // ?MI_IsAvailableMap@@YADD@Z (mp_shell.o)
+char* MI_GetMapTitle(char id);          // ?MI_GetMapTitle@@YAPADD@Z (mp_shell.o)
+char* MI_GetMapLocation(char id);       // ?MI_GetMapLocation@@YAPADD@Z (mp_shell.o)
+char MI_GetMapIndexbyID(char ID);       // ?MI_GetMapIndexbyID@@YADD@Z (mp_shell.o)
 
 // ============================================================================
 // LoadingMenu data (shell.o InGameMenus.cpp data; VAs from IDA)

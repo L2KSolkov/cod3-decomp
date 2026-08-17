@@ -178,6 +178,10 @@ int LocalClient_PortToClient()
 {
     return LocalClient::PortToClient(0);
 }
+int LocalClient_PortToClient(int port)
+{
+    return LocalClient::PortToClient(port);
+}
 
 // ea: 0x52F020
 bool LocalClient::PortIsState(int port, int state)
