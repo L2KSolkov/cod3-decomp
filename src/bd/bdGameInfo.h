@@ -69,10 +69,11 @@ public:
     bdCreatorBase<bdGameInfo>* m_creator;  // +0x00
 
     bdGameInfoFactoryImpl();
-    virtual ~bdGameInfoFactoryImpl();
+    ~bdGameInfoFactoryImpl();
     bdGameInfo* create() const;
     void setClass(bdCreatorBase<bdGameInfo>* creator);
 };
+static_assert(sizeof(bdGameInfoFactoryImpl) == 4, "bdGameInfoFactoryImpl size mismatch");
 
 // ============================================================================
 // bdGameInfoFactory â€” factory base (4 bytes)

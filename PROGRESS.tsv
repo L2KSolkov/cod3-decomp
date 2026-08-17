@@ -412,7 +412,7 @@ bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	
 
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableReceiveWindow.cpp: unreliable recv window (5 funcs) from Demonware 2.0 + IDA
 
-bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: game info factory (5 funcs)
+bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: IDA-confirmed 4-byte bdGameInfoFactoryImpl layout, factory methods, and exact bdSingleton getInstance/register cleanup (5 funcs)
 
 bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	PORTED	[bdNet] bdDiscoveryListener.cpp: discovery listener (5 funcs) from Demonware 2.0 + IDA
 

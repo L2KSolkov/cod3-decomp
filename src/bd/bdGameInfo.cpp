@@ -14,6 +14,7 @@
 // ============================================================================
 namespace bdMemory {
 void* allocate(unsigned int size);
+void deallocate(void* p);
 }
 
 // ============================================================================
@@ -231,6 +232,49 @@ bdGameInfoFactoryImpl::bdGameInfoFactoryImpl()
 bdGameInfoFactoryImpl::~bdGameInfoFactoryImpl() {
     if (this->m_creator != NULL)
         delete this->m_creator;
+}
+
+// ============================================================================
+// bdSingleton<bdGameInfoFactoryImpl>::getInstance - ea: 0x778210
+// Exact singleton allocation/registry path from the IDA C dump.
+// ============================================================================
+static void destroyGameInfoFactorySingleton() {
+    bdGameInfoFactoryImpl* instance =
+        bdSingleton<bdGameInfoFactoryImpl>::m_instance;
+    if (instance != NULL) {
+        instance->~bdGameInfoFactoryImpl();
+        bdMemory::deallocate(instance);
+        bdSingleton<bdGameInfoFactoryImpl>::m_instance = NULL;
+    }
+}
+
+template <>
+bdGameInfoFactoryImpl* bdSingleton<bdGameInfoFactoryImpl>::m_instance = NULL;
+
+template <>
+bdGameInfoFactoryImpl* bdSingleton<bdGameInfoFactoryImpl>::getInstance() {
+    bdGameInfoFactoryImpl* result =
+        bdSingleton<bdGameInfoFactoryImpl>::m_instance;
+    if (result != NULL)
+        return result;
+
+    void* memory = bdMemory::allocate(4u);
+    bdGameInfoFactoryImpl* instance =
+        memory != NULL ? new (memory) bdGameInfoFactoryImpl() : NULL;
+    bdSingleton<bdGameInfoFactoryImpl>::m_instance = instance;
+    if (instance == NULL) {
+        __debugbreak();
+        return bdSingleton<bdGameInfoFactoryImpl>::m_instance;
+    }
+
+    if (bdSingletonRegistryAdd(&destroyGameInfoFactorySingleton))
+        return bdSingleton<bdGameInfoFactoryImpl>::m_instance;
+
+    instance->~bdGameInfoFactoryImpl();
+    bdMemory::deallocate(instance);
+    bdSingleton<bdGameInfoFactoryImpl>::m_instance = NULL;
+    __debugbreak();
+    return bdSingleton<bdGameInfoFactoryImpl>::m_instance;
 }
 
 // ============================================================================
