@@ -4863,6 +4863,35 @@ void PauseMenu::AttemptSuicide()
         PauseMenu::ResponseGoBack;
 }
 
+// ea: 0x007A69F0
+void PauseMenu::AttemptTeamChange()
+{
+    const char* message = "MPGAME_SWITCH_SIDES";
+    Entity* player = EntityManager::sInst->GetPlayer(mVersion);
+    if (player != nullptr && player->sentient != nullptr)
+    {
+        message = "MPGAME_SWITCH_SIDES_AXIS";
+        if (player->sentient->eTeam != TEAM_ALLIES)
+            message = "MPGAME_SWITCH_SIDES_ALLIES";
+    }
+    DialogMenuSystem* dms = g_femanager.GetDMS(mVersion);
+    dms->BringUp(message, false, false, "MPGAME_SELECT_TEAM", true);
+    DialogMenu* layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_YES", PauseMenu::ResponseYesTeamChange);
+    dms = g_femanager.GetDMS(mVersion);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_NO", PauseMenu::ResponseNoNevermind);
+    j_nullsub_58(dms, true);
+    dms = g_femanager.GetDMS(mVersion);
+    dms->HighlightOption(1);
+    dms = g_femanager.GetDMS(mVersion);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->Reformat(true, 0);
+    dms = g_femanager.GetDMS(mVersion);
+    dms->GetLayer(dms->GetActiveMenu() == 0)->triangleResponse =
+        PauseMenu::ResponseGoBack;
+}
+
 // ea: 0x007A6880
 void PauseMenu::AttemptQuit()
 {
