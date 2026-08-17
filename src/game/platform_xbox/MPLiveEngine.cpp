@@ -178,11 +178,6 @@ bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
     (void)player;
     return false;
 }
-void MultiplayerMgr::PickupItem(int netIndex, int itemType, Entity* player,
-                                bool scriptFrom)
-{
-    (void)netIndex; (void)itemType; (void)player; (void)scriptFrom;
-}
 void MultiplayerMgr::AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
                                               int newSeatIdx)
 {
