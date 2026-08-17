@@ -2592,6 +2592,14 @@ char MI_GetMapIDbyIndex(int index)
     return index;
 }
 
+// ea: 0x00793470
+void AARMenuSystem::ActivateMenu(int menu)
+{
+    is_active = true;
+    GamePause::SetAllPaused(true);
+    FEMenuSystem::MakeActive(menu);
+}
+
 // ea: 0x00793520
 void AARMenuSystem::CheckForNoMenus()
 {
