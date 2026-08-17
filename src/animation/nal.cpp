@@ -2181,6 +2181,16 @@ public:
     bool IsIdle();                         // ea: 0x007753C0
     bool IsIdleNonTorso(bool checkLooping); // ea: 0x00775480
     bool IsTorsoAnimPlaying();             // ea: 0x00775580
+    void SetModifierFrame(unsigned int mask, float t); // ea: 0x00775040
+    void SetModifierType(unsigned int mask,
+                         AnimationPlayerModifierType type); // ea: 0x00775080
+    void SetModifierCallback(unsigned int mask,
+                             nalAnimCallback* callback); // ea: 0x00775190
+    bool SetModifierAlpha(unsigned int mask, float priority,
+                          nalGenericAnim* anim, float maxAlpha); // 0x7751C0
+    bool SetModifierSpeed(unsigned int mask, float priority,
+                          nalGenericAnim* anim, float speed); // 0x775230
+    nalGenericAnim* GetModifierAnim(unsigned int mask); // ea: 0x007752A0
     void Advance(float deltaT);            // ?Advance@AnimationPlayer@@QAEXM@Z (game2.o)
     void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
     void PlayModifier(nalGenericAnim* anim,
@@ -2489,6 +2499,12 @@ static unsigned int AnimationPlayerAnimFlags(
     return *(unsigned int*)((char*)anim + 0x34);
 }
 
+static nalGenericAnim* AnimationPlayerAnim(
+    const AnimationPlayer::nalAnimState* state)
+{
+    return *(nalGenericAnim**)((char*)state->instance + 0x04);
+}
+
 // ea: 0x007753C0
 bool AnimationPlayer::IsIdle()
 {
@@ -2601,6 +2617,102 @@ bool AnimationPlayer::IsTorsoAnimPlaying()
             return false;
     }
     return true;
+}
+
+// ea: 0x00775040
+void AnimationPlayer::SetModifierFrame(unsigned int mask, float t)
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial != nullptr)
+    {
+        while (partial->mask != mask)
+        {
+            partial = partial->next;
+            if (partial == nullptr)
+                return;
+        }
+        partial->base.t = t;
+    }
+}
+
+// ea: 0x00775080
+void AnimationPlayer::SetModifierType(unsigned int mask,
+                                       AnimationPlayerModifierType type)
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial != nullptr)
+    {
+        while (partial->mask != mask)
+        {
+            partial = partial->next;
+            if (partial == nullptr)
+                return;
+        }
+        partial->type = type;
+    }
+}
+
+// ea: 0x00775190
+void AnimationPlayer::SetModifierCallback(unsigned int mask,
+                                           nalAnimCallback* callback)
+{
+    for (nalPartialAnimState* partial = PartialAnimStates;
+         partial != nullptr; partial = partial->next)
+    {
+        if (partial->mask == mask)
+            partial->base.callback = callback;
+    }
+}
+
+// ea: 0x007751C0
+bool AnimationPlayer::SetModifierAlpha(unsigned int mask, float priority,
+                                        nalGenericAnim* anim, float maxAlpha)
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial == nullptr)
+        return false;
+    while (partial->priority != priority || partial->mask != mask
+           || AnimationPlayerAnim(&partial->base) != anim)
+    {
+        partial = partial->next;
+        if (partial == nullptr)
+            return false;
+    }
+    partial->base.maxAlpha = maxAlpha;
+    return true;
+}
+
+// ea: 0x00775230
+bool AnimationPlayer::SetModifierSpeed(unsigned int mask, float priority,
+                                        nalGenericAnim* anim, float speed)
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial == nullptr)
+        return false;
+    while (partial->priority != priority || partial->mask != mask
+           || AnimationPlayerAnim(&partial->base) != anim)
+    {
+        partial = partial->next;
+        if (partial == nullptr)
+            return false;
+    }
+    partial->base.speed = speed;
+    return true;
+}
+
+// ea: 0x007752A0
+nalGenericAnim* AnimationPlayer::GetModifierAnim(unsigned int mask)
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial == nullptr)
+        return nullptr;
+    while (partial->mask != mask)
+    {
+        partial = partial->next;
+        if (partial == nullptr)
+            return nullptr;
+    }
+    return AnimationPlayerAnim(&partial->base);
 }
 
 // ea: 0x0053A2A0
