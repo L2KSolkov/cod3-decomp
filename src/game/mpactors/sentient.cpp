@@ -1721,6 +1721,84 @@ PathNodes::PathNode* __fastcall Sentient_NearestCoverNode(
     return result;
 }
 
+// ea: 0x00783DA0
+PathNodes::PathNode* __fastcall Sentient_NearestNode(
+    sentient_s* pSelf, float (*const vNormal)[2], float* const fDist,
+    int iPlaneCount, int iCheckDontLink, float distanceThreshold,
+    int ignoreNegotiationBegin)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 553;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    const PathNodes::NodeHandle* nearestHandle =
+        reinterpret_cast<const PathNodes::NodeHandle*>(&pSelf->mNearestNode);
+    if (pSelf->bNearestNodeValid == 0
+        || nearestHandle->mValue == 0
+        || nearestHandle->mValue == 0xFFFF
+        || PathNodeMgr::sInst->GetNode(*nearestHandle) == nullptr
+        || PathNodeMgr::sInst->GetNode(*nearestHandle)->mDynamic.mLinkCount == 0)
+    {
+        PathNodes::PathSort nodes[64];
+        float vOrigin[3];
+        Sentient_GetOrigin(pSelf, vOrigin);
+        int iTypeFlags = -2;
+        if (ignoreNegotiationBegin != 0)
+            iTypeFlags = -65538;
+        PathNodes::PathNode* nearest = Path_NearestNodeNotCrossPlanes(
+            vOrigin, nodes, 64, iTypeFlags, distanceThreshold, vNormal, fDist,
+            iPlaneCount, &ignoreNegotiationBegin);
+        int iNodeCount = ignoreNegotiationBegin;
+        if (nearest != nullptr)
+        {
+            reinterpret_cast<PathNodes::NodeHandle*>(&pSelf->mNearestNode)
+                ->mValue = nearest->mHandle.mValue;
+            pSelf->bNearestNodeBad = 0;
+        }
+        else
+        {
+            if (ignoreNegotiationBegin != 0)
+            {
+                reinterpret_cast<PathNodes::NodeHandle*>(&pSelf->mNearestNode)
+                    ->mValue = nodes[0].pNode->mHandle.mValue;
+            }
+            pSelf->bNearestNodeBad = 1;
+        }
+        if (iNodeCount != 0
+            && (PathNodeMgr::sInst->GetNode(*nearestHandle)
+                    ->mConstant.mType <= PathNodes::NODE_BADNODE
+                || PathNodeMgr::sInst->GetNode(*nearestHandle)
+                       ->mConstant.mType >= PathNodes::NODE_NUMTYPES))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+            AeAssert::gCurrentLine = 588;
+            AeAssert::gCurrentExpr =
+                "!iNodeCount || (pSelf->mNearestNode->mConstant.mType > "
+                "PathNodes::NODE_BADNODE && pSelf->mNearestNode->mConstant.mType "
+                "< PathNodes::NODE_NUMTYPES)";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        pSelf->bNearestNodeValid = 1;
+    }
+    if (pSelf->bNearestNodeValid == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 592;
+        AeAssert::gCurrentExpr = "pSelf->bNearestNodeValid";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return PathNodeMgr::sInst->GetNode(*nearestHandle);
+}
+
 // ea: 0x00783FA0
 PathNodes::PathNode* __fastcall Sentient_FindNearestNodeToSentient(
     sentient_s* pTarget, float (*const vNormal)[2], float* const fDist,
