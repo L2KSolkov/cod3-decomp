@@ -8559,6 +8559,23 @@ void MultiplayerMgr::Disconnect()
     mPeer->Disconnect();
 }
 
+// ea: 0x00751100
+void MultiplayerMgr::MapRestart()
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1877;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->MapRestart();
+}
+
 // ea: 0x00750690
 void MultiplayerMgr::WeaponChange(int weapon)
 {

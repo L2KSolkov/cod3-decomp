@@ -154,7 +154,6 @@ void MultiplayerMgr::GetNextDroppedItemID(void* result, int itemType,
 
 // mp.o member stubs (real logic lives in mp.o; ported later).
 void MultiplayerMgr::StartDevServer() {}
-void MultiplayerMgr::MapRestart() {}
 void MultiplayerMgr::ProjectileExplosion(Entity* p, int w,
                                          const math::Position3& pos,
                                          const math::Dir3& n,
