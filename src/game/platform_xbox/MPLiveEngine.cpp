@@ -152,11 +152,6 @@ void MultiplayerMgr::GetNextDroppedItemID(void* result, int itemType,
     (void)result; (void)itemType; (void)owner;
 }
 
-void MultiplayerMgr::DropHotJoiningPlayers()
-{
-    // stub
-}
-
 // mp.o member stubs (real logic lives in mp.o; ported later).
 void MultiplayerMgr::StartDevServer() {}
 void MultiplayerMgr::MapRestart() {}

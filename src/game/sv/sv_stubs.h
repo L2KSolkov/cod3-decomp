@@ -494,6 +494,7 @@ public:
     void StartDevServer();
     void Stop();                                // ?Stop@MultiplayerMgr@@QAEXXZ (mp.o 0x72C480)
     void AttemptHotJoin(int clientIndex);       // ?AttemptHotJoin@MultiplayerMgr@@QAEXH@Z (mp.o 0x751160)
+    void DropHotJoiningPlayers();               // ?DropHotJoiningPlayers@MultiplayerMgr@@QAEXXZ (mp.o 0x7359C0)
     void RemoveDroppedItems();                  // ?RemoveDroppedItems@MultiplayerMgr@@QAEXXZ (mp.o 0x7614C0)
     bool getValidNetConnection(const char* address);  // ?getValidNetConnection@MultiplayerMgr@@QAE_NPBD@Z (mp.o 0x72C790)
     ~MultiplayerMgr();                          // ??1MultiplayerMgr@@QAE@XZ (mp.o 0x766060)

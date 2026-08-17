@@ -11021,6 +11021,23 @@ MPPlayerManager* MPPeer::GetPlayerManager()
     return (MPPlayerManager*)((char*)this + 0x74E0);
 }
 
+// ea: 0x007359C0
+void MultiplayerMgr::DropHotJoiningPlayers()
+{
+    if (mPeer != nullptr)
+    {
+        MPPlayerManager* playerManager = mPeer->GetPlayerManager();
+        if (*(unsigned char*)((char*)playerManager + 0x4111) != 17
+            && dword_F6A290[0] == 1)
+        {
+            dword_F6A290[0] = 0;
+            InGameMenuSystem* IGMS = g_femanager.GetIGMS(0);
+            IGMS->gap1C(IGMS, -1);
+        }
+        View::UpdateNumViewports();
+    }
+}
+
 // ea: 0x0072E8D0 (mLocalPlayerIndex at +0x4111)
 bool MPPlayerManager::AddingLocalPlayer() const
 {
