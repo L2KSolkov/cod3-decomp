@@ -681,6 +681,11 @@ DialogMenuSystem::DialogMenuSystem(int client)
     mState = DMS_STATE_NONE;
 }
 
+DialogMenuSystem* DialogMenuSystem_ctor(void* mem, int client)
+{
+    return new (mem) DialogMenuSystem(client);
+}
+
 // ea: 0x005941D0
 DialogMenuSystem::~DialogMenuSystem()
 {

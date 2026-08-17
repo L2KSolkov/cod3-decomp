@@ -12450,3 +12450,8 @@ HotJoinMenu* HotJoinMenu_ctor(void* mem, FEMenuSystem* s)
 {
     return new (mem) HotJoinMenu(s);
 }
+
+AARMenuSystem* AARMenuSystem_ctor(void* mem)
+{
+    return new (mem) AARMenuSystem();
+}
