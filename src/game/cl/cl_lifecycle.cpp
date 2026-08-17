@@ -125,6 +125,29 @@ struct clientConnection_t {
 };
 clientConnection_t clc[2];  // ?clc@@3PAUclientConnection_t@@A (cl.o @ 0x12FC6F0)
 
+enum netsrc_t {
+    NS_CLIENT = 0,
+    NS_SERVER = 1,
+};
+
+// IDA 0x72C170: exchange the complete connection state while preserving the
+// socket and qport fields belonging to each destination connection.
+void clientConnection_t::Swap(clientConnection_t* to)
+{
+    netsrc_t saveSock1 = *reinterpret_cast<netsrc_t*>(data + 0x4018);
+    int saveQport2 = *reinterpret_cast<int*>(to->data + 0x4018 + 28);
+    int saveQport1 = *reinterpret_cast<int*>(data + 0x4018 + 28);
+    netsrc_t saveSock2 = *reinterpret_cast<netsrc_t*>(to->data + 0x4018);
+    unsigned char temp[0x4C48];
+    memcpy(temp, data, sizeof(temp));
+    memcpy(data, to->data, sizeof(data));
+    memcpy(to->data, temp, sizeof(temp));
+    *reinterpret_cast<int*>(data + 0x4018 + 28) = saveQport1;
+    *reinterpret_cast<netsrc_t*>(data + 0x4018) = saveSock1;
+    *reinterpret_cast<int*>(to->data + 0x4018 + 28) = saveQport2;
+    *reinterpret_cast<netsrc_t*>(to->data + 0x4018) = saveSock2;
+}
+
 // cls.configstrings - Broc::string[1024] (the "servername" field aliases it)
 struct Broc_string_view2 {
     void* mBlock;
