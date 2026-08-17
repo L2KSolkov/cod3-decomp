@@ -8580,7 +8580,12 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
+}
 void* FlagThreadLauncher__functor(Broc::entity self) { (void)self; return NULL; }
 void* SwitchToSecondarySpawns__functor(Broc::entity self) {
     (void)self; return NULL;
@@ -9257,7 +9262,12 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
+}
 void* ObjectiveUpdater__functor(Broc::entity guy) { (void)guy; return NULL; }
 void* WaitThenPickFlagToLaunch__functor(Broc::entity self, float wait_time,
                                         const char* message) {
@@ -10110,7 +10120,12 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
+}
 void* Host_FlowControl__functor(Broc::entity self) { (void)self; return NULL; }
 void* Track_Ownership__functor(Broc::entity self) { (void)self; return NULL; }
 void* TriggerRadio__functor(Broc::entity self, Broc::entity other) {
@@ -10733,7 +10748,12 @@ void* main__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
 }
-void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
+}
 void* WARScore__functor(Broc::entity self) { (void)self; return NULL; }
 void* WAR_InitFlag__functor(Broc::entity self, int flag_id) {
     (void)self; (void)flag_id;
@@ -11884,8 +11904,10 @@ void main(Broc::entity self) {
 }
 
 void* StartGame__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
 }
 
 // CallbackPlayerKilled - ea: 0x9733F0
