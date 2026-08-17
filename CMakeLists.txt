@@ -195,6 +195,7 @@ add_library(cod3_bd STATIC
     src/bd/bdUtilities/bdBitOperations.h
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
     src/bd/bdTiming/bdShortTimer.h
+    src/bd/bdTiming/bdPlatformTiming.cpp
     src/bd/bdStopwatch.h
     src/bd/bdStopwatch.cpp
     src/bd/bdSequenceNumber.cpp
