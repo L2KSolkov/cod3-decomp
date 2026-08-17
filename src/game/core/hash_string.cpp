@@ -12,11 +12,15 @@ extern unsigned int AeHash(const char* str);
 
 struct LanguageName {
     const char* first;
-    const char* second;
+    ELanguage second;
 };
-extern LanguageName sLanguageNames[6];
+LanguageName sLanguageNames[6] = {
+    {"English", kLanguageEnglish}, {"German", kLanguageGerman},
+    {"French", kLanguageFrench}, {"Spanish", kLanguageSpanish},
+    {"Italian", kLanguageItalian}, {"Unlocalized", kLanguageJapanese},
+};
 const char* sLanguageIds[6] = {"en", "de", "fr", "sp", "it", "un"};
-extern int dword_DD8B74[12];
+int dword_DD8B74[12] = {};
 
 // ea: 0x004BD6B0
 unsigned int CalcHash(const char* str)

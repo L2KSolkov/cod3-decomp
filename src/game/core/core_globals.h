@@ -25,6 +25,7 @@ enum ELanguage {
     kLanguageSpanish = 3,
     kLanguageItalian = 4,
     kLanguageJapanese = 5,
+    kLanguageUnlocalized = 6,
 };
 struct ae_heap;
 

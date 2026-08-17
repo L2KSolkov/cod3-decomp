@@ -587,7 +587,7 @@ extern int r_numdlights;        // ?r_numdlights@@3HA @ 0xF741E4
 extern int r_firstSceneDlight;  // ?r_firstSceneDlight@@3HA @ 0xF74274
 extern int r_numpolys;          // ?r_numpolys@@3HA @ 0xF742FC
 extern int r_firstScenePoly;    // ?r_firstScenePoly@@3HA @ 0xF742B0
-extern int skyboxportal;        // ?skyboxportal@@3HA @ 0xF743B0
+int skyboxportal = 0;           // ?skyboxportal@@3HA @ 0xF743B0
 int drawskyboxportal = 0;       // ?drawskyboxportal@@3HA @ 0xF74188
 extern int currCl;              // ?currCl@@3HA @ 0xF1579C
 float g_zfar = 8192.0f;         // ?g_zfar@@3MA @ 0xDFB000
@@ -640,7 +640,7 @@ extern float sNear, sFar, sStart, sEnd, sRed, sGreen, sBlue;
 // ShaderCommon statics
 namespace ShaderCommon {
 extern math::Position3 gGlowSunPosScreen;  // ?gGlowSunPosScreen@ShaderCommon@@3VPosition3@math@@A @ 0x10DDF40
-extern float gGlowGodRaysFadeOut;          // ?gGlowGodRaysFadeOut@ShaderCommon@@3MA @ 0x10DDF20
+float gGlowGodRaysFadeOut = 0.0f;          // ?gGlowGodRaysFadeOut@ShaderCommon@@3MA @ 0x10DDF20
 }
 math::Position3 ShaderCommon::gGlowSunPosScreen;
 

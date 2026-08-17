@@ -14,7 +14,7 @@ extern nglScene* nglBuildScene;   // ?nglBuildScene@@3PAUnglScene@@A
 extern int sCurColor;             // ?sCurColor@@3IA @ 0xF74290
 extern float sGlobalFontScale;    // ?sGlobalFontScale@@3MA @ 0xDFA444
 extern unsigned char* fdFile;     // ?fdFile@@3PAEA @ 0xF742AC
-extern int fdOffset;              // ?fdOffset@@3HA @ 0xF743AC
+int fdOffset = 0;                 // ?fdOffset@@3HA @ 0xF743AC
 
 // dpvs_t view (cullDist +0xD8; full layout in tr_dpvs.cpp)
 struct dpvs_t {
