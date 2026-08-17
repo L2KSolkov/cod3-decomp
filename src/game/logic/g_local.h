@@ -4607,7 +4607,7 @@ int   G_SpawnVehicle(Entity* ent, const char* typeName, int unused);  // g.o 0x4
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o
 void  VEH_InitVehicle(scr_vehicle_t* veh);         // g.o
 void  Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMOD);  // g.o
-void  update_trigger_notifies(void);               // g.o 0x471100
+int   update_trigger_notifies(void);               // g.o 0x471100
 void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
 void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
 void  G_EntUnlink(Entity* ent);                  // g.o 0x460190

@@ -2842,7 +2842,7 @@ void G_AddEvent(Entity* ent, int event, int eventParm)
 }
 
 // ea: 0x00471100
-void update_trigger_notifies(void)
+int update_trigger_notifies(void)
 {
     int result = g_performanceTest.integer;
     if (g_performanceTest.integer == 0)
@@ -2879,6 +2879,7 @@ void update_trigger_notifies(void)
         }
         level.triggerListSize = 0;
     }
+    return result;
 }
 
 // ea: 0x00470BD0
