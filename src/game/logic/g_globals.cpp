@@ -11,6 +11,10 @@ cgGlobal_t cgGlobal;           // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
 game_hudelem_s g_hudelems[16];  // ?g_hudelems@@3PAUgame_hudelem_s@@A @ 0xEA5580
 scr_data_t g_scr_data;          // ?g_scr_data@@3Uscr_data_t@@A @ 0xEE58D0
 int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
+int g_MPAARTotalTime = 30;             // ?g_MPAARTotalTime@@3HA (mp.o)
+int g_bOptimize = 0;                  // ?g_bOptimize@@3HA (render.o)
+int gParticleBatchGroup = 0;          // ?gParticleBatchGroup@@3HA (render.o)
+int gDelayRenderForNFrames = 0;       // ?gDelayRenderForNFrames@@3HA (render.o)
 vmCvar_t bg_viewheight_standing;   // ?bg_viewheight_standing@@3UvmCvar_t@@A (game.o)
 vmCvar_t bg_viewheight_crouched;   // ?bg_viewheight_crouched@@3UvmCvar_t@@A (game.o @ 0x1334D40)
 vmCvar_t bg_viewheight_prone;      // ?bg_viewheight_prone@@3UvmCvar_t@@A (game.o @ 0x132DF30)

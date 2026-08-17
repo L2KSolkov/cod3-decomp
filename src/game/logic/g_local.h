@@ -3239,7 +3239,7 @@ float __fastcall Actor_CanSeePointEx(
 bool G_IsPlayerDrivingVehicle(Entity* player);
 const float VectorDistanceSquared2D(const math::Position3& p1,
                                     const math::Position3& p2);
-const math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
+math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?AVPosition3@math@@QBM@Z
 void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
                                  Entity* ent, int a5);
 

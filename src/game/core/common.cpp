@@ -469,7 +469,7 @@ class PhysDataBankManager { public: static void CreateInst(); static void Delete
 class AITypeManager { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
-class MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
+struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static void CreateInst(); static void DeleteInst(); };
 class SceneManager { public: static void CreateInst(); static void DeleteInst(); };

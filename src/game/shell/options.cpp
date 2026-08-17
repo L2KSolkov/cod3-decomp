@@ -39,7 +39,7 @@ public:
 };
 
 // MusicMgr minimal view
-class MusicMgr {
+struct MusicMgr {
 public:
     static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A @ 0xF4EBE4
     void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o)

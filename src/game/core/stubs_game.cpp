@@ -27,7 +27,7 @@ class AITypeManager { public: static void CreateInst(); static void DeleteInst()
 class SoundDevice { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
-class MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
+struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
 class DbTablesetMgr { public: static void CreateInst(); static void DeleteInst(); };
 class EffectEventSys { public: static void CreateInst(); static void DeleteInst(); };

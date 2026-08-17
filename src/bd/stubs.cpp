@@ -9,6 +9,10 @@
 
 extern const char* const defaultFileName;
 
+// IDA globals from bd.o.
+int g_NumBdMessages = 0;
+bool g_assertFalse = false;
+
 // bdByteBuffer ctor - ?0bdByteBuffer@@QAE@I@Z (bdCore:bdByteBuffer.o)
 bdByteBuffer::bdByteBuffer(unsigned int size)
 {

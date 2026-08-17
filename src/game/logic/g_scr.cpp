@@ -792,7 +792,7 @@ extern bool XAnimNotetrackExists(scr_anim_s anim,
 extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
-class MusicMgr {
+struct MusicMgr {
 public:
     static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A
     void Play(const char* name);          // ?Play@MusicMgr@@QAEXPBD@Z

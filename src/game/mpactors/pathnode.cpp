@@ -33,7 +33,12 @@ extern void FastSinCos(float radians, float* psin, float* pcos);  // core.o
 
 // nodeColorTable / nodeStringTable - debug draw tables (mp_actors.o data)
 extern const float nodeColorTable[0x13][4];   // 0xD1F0B8
-extern const char* nodeStringTable[0x13];     // ?nodeStringTable@@3PAPBDA @ 0xE37A20
+const char* nodeStringTable[0x13] = {
+    "BAD NODE", "Path", "Cover Stand", "Cover Crouch", "Cover Prone",
+    "Cover Right", "Cover Left", "Cover Wide Right", "Cover Wide Left",
+    "Conceal Stand", "Conceal Crouch", "Conceal Prone", "Stack",
+    "Reacquire", "Balcony", "Scripted", "Begin", "End", "Ambush"
+};
 
 namespace BrocHelper {
 unsigned int (__cdecl* GetBroFuncByName(const char* name,

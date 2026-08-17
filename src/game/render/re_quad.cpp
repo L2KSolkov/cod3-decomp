@@ -27,6 +27,7 @@ extern "C" dpvs_t g_dpvs;  // plain C symbol @ 0xF75600
 struct refimport_t {
     void* (*UI_GetFontInfo)(int font, float scale);
 };
+refimport_t ri = {};
 extern refimport_t ri;            // ?ri@@3Urefimport_t@@A @ 0xF741E8
 
 extern void nglInitQuad(nglQuad* Quad);  // ngl.o

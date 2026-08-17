@@ -871,7 +871,7 @@ public:
 };
 
 // MusicMgr / STBManager / controller - cross-object extern views
-class MusicMgr {
+struct MusicMgr {
 public:
     static MusicMgr* sInst;   // ?sInst@MusicMgr@@2PAV1@A (game.o)
     void Stop(float fadeOutTime);  // ?Stop@MusicMgr@@QAEXM@Z (game.o 0x221830)

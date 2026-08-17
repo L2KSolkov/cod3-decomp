@@ -6,6 +6,9 @@
 #include "ngl/ngl_dx_quad.h"
 
 #include <string.h>
+
+void j_nullsub_96() {}
+
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o
 extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
@@ -18,7 +21,7 @@ extern int unk_F6A29C[4];            // 0x00F6A29C
 extern void ApplyControllerStickConfig(int stickConfig);
 extern void ApplyControllerButtonConfig(int buttonConfig);
 
-class MusicMgr {
+struct MusicMgr {
 public:
     static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A
     void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o)

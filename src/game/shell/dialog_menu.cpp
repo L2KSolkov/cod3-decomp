@@ -19,7 +19,14 @@ extern float dword_F64158[];           // @ 0xF64158
 extern float g_time_inc;               // ?g_time_inc@@3MA
 extern bool gStillDrawMenus;           // ?gStillDrawMenus@@3_NA
 extern bool g_controllerConnectedErrorShown[];  // ?g_controllerConnectedErrorShown@@3PA_NA
-extern int g_doFullScreenBlur[];       // ?g_doFullScreenBlur@@3PAW4FULLSCREENBLUR_STATE@@A
+enum FULLSCREENBLUR_STATE {
+    FULLSCREENBLUR_OFF = 0,
+    FULLSCREENBLUR_START = 1,
+    FULLSCREENBLUR_RUNNING = 2,
+    FULLSCREENBLUR_FINISHED = 3,
+    FULLSCREENBLUR_THISFRAMEONLY = 4,
+};
+extern FULLSCREENBLUR_STATE g_doFullScreenBlur[];
 extern float g_fullScreenBlurAmount[]; // ?g_fullScreenBlurAmount@@3PAMA
 extern float blur_amount_2;            // @ 0xDF4458
 extern int gDelayRenderForNFrames;     // ?gDelayRenderForNFrames@@3HA
@@ -728,7 +735,7 @@ void DialogMenuSystem::Update(float time_inc)
             SetDefaultColorScheme(1);
         else
             SetDefaultColorScheme(4);
-        g_doFullScreenBlur[mClient] = 2;  // FULLSCREENBLUR_THISFRAMEONLY
+        g_doFullScreenBlur[mClient] = FULLSCREENBLUR_THISFRAMEONLY;
         g_fullScreenBlurAmount[mClient] = blur_amount_2;
     }
 }

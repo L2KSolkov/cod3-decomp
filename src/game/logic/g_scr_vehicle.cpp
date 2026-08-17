@@ -165,7 +165,7 @@ struct phys_static_memory_pool {
 phys_static_memory_pool<vehicle_rb_parameter, 10> g_vehicle_rb_parameters;
 
 // ea: 0x004AF1C0 (g.o inline COMDAT)
-const math::Position3 native_to_cdl_pos3(const float* v)
+math::Position3 native_to_cdl_pos3(const float* v)
 {
     math::Position3 result;
     result.v = _mm_setr_ps(v[0], v[1], v[2], 0.0f);

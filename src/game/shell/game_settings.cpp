@@ -38,6 +38,7 @@ public:
 // ============================================================================
 class GameSettings : public MemoryUnitManager::Observer {
 public:
+    static GameSettings* sInst;                         // ?sInst@GameSettings@@2PAV1@A
     MemoryUnitManager::Container container;  // +0x04 (648 bytes)
     SaveGameData* m_temp_buffer;             // +0x28C
     bool m_mc_has_save;                      // +0x290
@@ -89,6 +90,8 @@ static_assert(offsetof(GameSettings, m_temp_buffer) == 0x28C,
               "GameSettings::m_temp_buffer offset mismatch");
 static_assert(offsetof(GameSettings, m_cur_name) == 0x292,
               "GameSettings::m_cur_name offset mismatch");
+
+GameSettings* GameSettings::sInst = nullptr;
 static_assert(offsetof(GameSettings, m_continued_without_saving) == 0x29E,
               "GameSettings::m_continued_without_saving offset mismatch");
 

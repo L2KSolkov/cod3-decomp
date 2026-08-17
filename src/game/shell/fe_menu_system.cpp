@@ -20,7 +20,14 @@ extern vmCvar_t cg_widescreen;         // ?cg_widescreen@@3UvmCvar_t@@A
 extern float blur_amount;              // ?blur_amount @ 0xDF4290
 extern float blur_amount_0;            // @ 0xDF4294
 extern float blur_amount_1;            // @ 0xDF4298
-extern int g_doFullScreenBlur[];       // ?g_doFullScreenBlur@@3PAW4FULLSCREENBLUR_STATE@@A
+enum FULLSCREENBLUR_STATE {
+    FULLSCREENBLUR_OFF = 0,
+    FULLSCREENBLUR_START = 1,
+    FULLSCREENBLUR_RUNNING = 2,
+    FULLSCREENBLUR_FINISHED = 3,
+    FULLSCREENBLUR_THISFRAMEONLY = 4,
+};
+extern FULLSCREENBLUR_STATE g_doFullScreenBlur[];
 extern float g_fullScreenBlurAmount[]; // ?g_fullScreenBlurAmount@@3PAMA
 extern bool gSkipFrontEnd;             // ?gSkipFrontEnd@@3_NA
 extern int unk_F6A28C[];               // @ 0xF6A28C (per-client controller)
@@ -39,7 +46,7 @@ public:
 };
 
 // MusicMgr minimal view
-class MusicMgr {
+struct MusicMgr {
 public:
     static MusicMgr* sInst;  // ?sInst@MusicMgr@@2PAV1@A @ 0xF4EBE4
     void Play(const char* name);  // ?Play@MusicMgr@@QAEXPBD@Z
@@ -566,7 +573,7 @@ void InGameMenuSystem::ActivateMenu(int menu)
     GamePause::SetGamePaused(mClient, true);
     if (m_active != 12)
     {
-        g_doFullScreenBlur[mClient] = 2;  // FULLSCREENBLUR_THISFRAMEONLY
+        g_doFullScreenBlur[mClient] = FULLSCREENBLUR_THISFRAMEONLY;
         g_fullScreenBlurAmount[mClient] = blur_amount;
     }
     MakeActive(menu, -1);
@@ -591,7 +598,7 @@ void InGameMenuSystem::ActivatePauseMenu()
     GamePause::SetGamePaused(mClient, true);
     if (m_active != 12)
     {
-        g_doFullScreenBlur[mClient] = 2;  // FULLSCREENBLUR_THISFRAMEONLY
+        g_doFullScreenBlur[mClient] = FULLSCREENBLUR_THISFRAMEONLY;
         g_fullScreenBlurAmount[mClient] = blur_amount_0;
     }
     MakeActive(0, -1);
@@ -634,7 +641,7 @@ void InGameMenuSystem::Update(float time_inc)
     }
     if (m_active != 12)
     {
-        g_doFullScreenBlur[mClient] = 2;  // FULLSCREENBLUR_THISFRAMEONLY
+        g_doFullScreenBlur[mClient] = FULLSCREENBLUR_THISFRAMEONLY;
         g_fullScreenBlurAmount[mClient] = blur_amount_1;
     }
 }
