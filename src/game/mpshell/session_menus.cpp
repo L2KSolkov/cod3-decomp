@@ -448,6 +448,30 @@ const char* const szCreateLanSessionMenuText[4] = {
 const char* const szCreateLanSessionMenuBackgroundArt[4] = {
     "sl_bkg", "sl_bkg_detail_01", "sl_bkg_detail_02", "sl_bkg_detail_03",
 };
+const char* const szClassInformation[6] = {
+    "MPGAME_DAMAGE_ALLCAPS", "MPGAME_RANGE_ALLCAPS",
+    "MPGAME_ACCURACY_ALLCAPS", "MPGAME_MELEE_ALLCAPS",
+    "MPGAME_SPEED_ALLCAPS", "MPGAME_RATE_OF_FIRE_ALLCAPS",
+};
+const char* const szClassIcon[7] = {
+    "ci_rifleman", "ci_assault_light", "ci_assault_heavy", "ci_medic",
+    "ci_scout", "ci_support", "ci_anti_armor",
+};
+const char* const szBackgroundWidgetsName[12] = {
+    "cs_bkg_detail_01", "cs_bkg_detail_02", "cs_bkg_detail_03",
+    "cs_bkg_detail_04", "cs_bkg_detail_05", "cs_bkg_detail_06",
+    "cs_bkg_detail_07", "cs_bkg_detail_08", "cs_bkg_detail_09",
+    "cs_bkg_detail_10", "cs_colorband_01", "cs_colorband_02",
+};
+const char* const szBackgroundTeamWidgetsName[2] = {
+    "sb_colorband_icon_german", "sb_colorband_icon_american",
+};
+const char* const szWeaponSelectBackgroundToTurnOff[7] = {
+    "cs_bkg_detail_02", "cs_bkg_detail_03", "cs_bkg_detail_06",
+    "cs_bkg_detail_07", "cs_bkg_detail_08", "cs_bkg_detail_09",
+    "cs_bkg_detail_10",
+};
+int FGdepth = 20;  // 0xE3ADAC
 static const char* const szSwitchSidesBackgroundTeamWidgetsName[3] = {
     "icon_autosave", "icon_axis", "icon_allied",
 };
@@ -5221,6 +5245,135 @@ void WeaponSelectMenu::SetPanelFileSplitScreen(PanelFile* pf)
     }
     FEText* title = mSplitScreenMenu->GetTextPointer("text_title");
     title->SetText("MPGAME_SELECT_A_CLASS_ALLCAPS");
+}
+
+// ea: 0x007A0C20
+void WeaponSelectMenu::SetPanelFileMain(PanelFile* pf)
+{
+    if (pf == nullptr)
+        ASSERT("pf", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 380);
+    panel = pf;
+    if (mVersion > 0)
+        panel = pf->Clone();
+
+    m_pClassOptionHeader = panel->GetTextPointer("cs_text_class_option_header");
+    if (m_pClassOptionHeader == nullptr)
+        ASSERT("m_pClassOptionHeader",
+               "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 389);
+    static const char* const classOptionText[7] = {
+        "cs_text_class_option_01", "cs_text_class_option_02",
+        "cs_text_class_option_03", "cs_text_class_option_04",
+        "cs_text_class_option_05", "cs_text_class_option_06",
+        "cs_text_class_option_07",
+    };
+    for (int i = 0; i < 7; ++i)
+    {
+        FEText* text = panel->GetTextPointer(classOptionText[i]);
+        if (text == nullptr)
+            ASSERT("pText", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 404);
+        text->SetText(szClassReference[i]);
+        AddEntry(i, text, false);
+    }
+    for (int i = 0; i < 7; ++i)
+    {
+        if (m_pClassIcons[i] != nullptr)
+            ASSERT("0 == m_pClassIcons[i]",
+                   "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 413);
+        m_pClassIcons[i] = panel->GetPointer(szClassIcon[i]);
+        m_pClassIcons[i]->SetShown(false);
+        if (m_pClassIcons[i] == nullptr)
+            ASSERT("m_pClassIcons[i]",
+                   "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 416);
+    }
+
+    FEText* helpbar = panel->GetTextPointer("cs_text_helpbar");
+    FEMultiLineText* helpbarText = (FEMultiLineText*)mem_heap_malloc(0xA8u);
+    if (helpbarText != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        helpbarText = new (helpbarText)
+            FEMultiLineText(helpbar->GetFont(), helpbar->GetY(), 0.0f, 0,
+                            layer, 0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = helpbarText;
+    helpbar1->SetNumLines(1);
+
+    FEText* temp = panel->GetTextPointer("cs_text_kit_option");
+    if (temp == nullptr)
+        ASSERT("temp", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 424);
+    temp->SetText("MPGAME_KIT_ALLCAPS");
+    temp = panel->GetTextPointer("cs_text_title_class_select");
+    if (temp == nullptr)
+        ASSERT("temp", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 428);
+    temp->SetText("MPGAME_CLASS_SELECTION_ALLCAPS");
+    temp = panel->GetTextPointer("cs_text_title_description");
+    if (temp == nullptr)
+        ASSERT("temp", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 432);
+    temp->SetText("MPGAME_SELECT_A_CLASS_ALLCAPS");
+    temp->SetZvalueAbs(0.0f);
+
+    PanelQuad* quad = panel->GetPointer("cs_scroll_arrow_left");
+    if (quad == nullptr)
+        ASSERT("tempQuad", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 437);
+    quad->SetShown(false);
+    quad = panel->GetPointer("cs_scroll_arrow_right");
+    if (quad == nullptr)
+        ASSERT("tempQuad", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 441);
+    quad->SetShown(false);
+
+    char slotGeometry[64];
+    for (int i = 0; i < 4; ++i)
+    {
+        _snprintf(slotGeometry, sizeof(slotGeometry), "cs_text_kit_line_%02d", i + 1);
+        m_pTextKitLine[i] = panel->GetTextPointer(slotGeometry);
+        if (m_pTextKitLine[i] == nullptr)
+            ASSERT("m_pTextKitLine[i]",
+                   "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 450);
+    }
+    for (int i = 0; i < 6; ++i)
+    {
+        _snprintf(slotGeometry, sizeof(slotGeometry), "cs_slot_%02d_text_line", i + 1);
+        if (m_pSlotTextLine[i] != nullptr)
+            ASSERT("m_pSlotTextLine[i] == 0",
+                   "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 460);
+        m_pSlotTextLine[i] = panel->GetTextPointer(slotGeometry);
+        if (m_pSlotTextLine[i] == nullptr)
+            ASSERT("m_pSlotTextLine[i]",
+                   "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 462);
+        m_pSlotTextLine[i]->SetText(szClassInformation[i]);
+    }
+    for (int i = 0; i < 6; ++i)
+    {
+        for (int j = 0; j < 5; ++j)
+        {
+            _snprintf(slotGeometry, sizeof(slotGeometry),
+                      "cs_slot_%02d_gauge_%02d", i + 1, j + 1);
+            if (m_pSlotGauge[i][j] != nullptr)
+                ASSERT("m_pSlotGauge[i][j] == 0",
+                       "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 474);
+            m_pSlotGauge[i][j] = panel->GetPointer(slotGeometry);
+            if (m_pSlotGauge[i][j] == nullptr)
+                ASSERT("m_pSlotGauge[i][j]",
+                       "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 476);
+        }
+    }
+    for (int i = 0; i < 12; ++i)
+    {
+        quad = panel->GetPointer(szBackgroundWidgetsName[i]);
+        quad->SetZvalueAbs((i == 0 || i == 3) ? (float)FGdepth : 400.0f);
+    }
+    panel->GetPointer(szBackgroundTeamWidgetsName[0])->SetZvalueAbs(350.0f);
+    panel->GetPointer(szBackgroundTeamWidgetsName[1])->SetZvalueAbs(350.0f);
+    panel->GetPointer("cs_bkg_image_temp")->SetShown(false);
+    for (int i = 0; i < 7; ++i)
+    {
+        quad = panel->GetPointer(szWeaponSelectBackgroundToTurnOff[i]);
+        if (quad != nullptr)
+            quad->SetShown(false);
+    }
+    entries[0]->up = 6;
+    entries[6]->down = 0;
 }
 
 // ea: 0x007A9ED0
