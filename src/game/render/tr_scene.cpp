@@ -330,11 +330,11 @@ void nglListAddDirProjectorLight(unsigned int LightCat,
                                  unsigned int BlendMode,
                                  nglTexture* Tex);
 
-extern math::Mat43 gProjShadowMat;     // ?gProjShadowMat@@3VMat43@math@@A @ 0xF755B0
+math::Mat43 gProjShadowMat;            // ?gProjShadowMat@@3VMat43@math@@A @ 0xF755B0
 float gProjShadowSize = 700.0f;        // ?gProjShadowSize@@3MA (render.o @ 0xDFB144; init 700.0 per IDA bytes)
-float gProjShadowAlpha = 0.0f;         // ?gProjShadowAlpha@@3MA (render.o @ 0x11EA640)
-extern float gProjShadowZTop;          // ?gProjShadowZTop@@3MA @ 0xDFB14C
-extern float gProjShadowZBottom;       // ?gProjShadowZBottom@@3MA @ 0xDFB150
+float gProjShadowAlpha = 0.3f;         // ?gProjShadowAlpha@@3MA (render.o @ 0x11EA640)
+float gProjShadowZTop = 100.0f;        // ?gProjShadowZTop@@3MA @ 0xDFB14C
+float gProjShadowZBottom = 500.0f;     // ?gProjShadowZBottom@@3MA @ 0xDFB150
 extern nglScene* gProjShadowScene;     // ?gProjShadowScene@@3PAUnglScene@@A @ 0xF74434
 extern bool gProjShadowQuad;           // ?gProjShadowQuad@@3_NA @ 0xF74438
 nglScene* gProjShadowScene = nullptr;
@@ -587,10 +587,10 @@ extern int r_firstSceneDlight;  // ?r_firstSceneDlight@@3HA @ 0xF74274
 extern int r_numpolys;          // ?r_numpolys@@3HA @ 0xF742FC
 extern int r_firstScenePoly;    // ?r_firstScenePoly@@3HA @ 0xF742B0
 extern int skyboxportal;        // ?skyboxportal@@3HA @ 0xF743B0
-extern int drawskyboxportal;    // ?drawskyboxportal@@3HA @ 0xF74188
+int drawskyboxportal = 0;       // ?drawskyboxportal@@3HA @ 0xF74188
 extern int currCl;              // ?currCl@@3HA @ 0xF1579C
-extern float g_zfar;            // ?g_zfar@@3MA @ 0xDFB000
-extern void* tempScene;         // ?tempScene@@3PAUnglScene@@A @ 0xF7442C
+float g_zfar = 8192.0f;         // ?g_zfar@@3MA @ 0xDFB000
+nglScene* tempScene = nullptr;  // ?tempScene@@3PAUnglScene@@A @ 0xF7442C
 extern int gParticleBatchGroup; // ?gParticleBatchGroup@@3HA @ 0xF742B8
 extern int gRenderSky;          // ?gRenderSky@@3HA @ 0xDFB008
 extern int gRenderFX;           // ?gRenderFX@@3HA @ 0xDFB020
@@ -1100,7 +1100,7 @@ void R_RenderView(viewParms_t* parms)
 // ============================================================================
 // R_RenderViewModels - ea: 0x006D7430
 // ============================================================================
-extern int gRenderViewModels;  // ?gRenderViewModels@@3HA @ 0xDFB01C
+int gRenderViewModels = 1;     // ?gRenderViewModels@@3HA @ 0xDFB01C
 extern void nglValidateMatrices(nglScene* Scene);
 class DObj;
 extern int R_AddViewModelSurfaces(int client_index, DObj* obj,
