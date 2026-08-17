@@ -508,7 +508,7 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                         *(const math::Position3*)v1,
                         *(const math::Position3*)v2,
                         *(const math::Dir3*)normal,
-                        *(math::Position3*)&outcenter.v.m128_f32[0]))
+                        &*(math::Position3*)&outcenter.v.m128_f32[0]))
                     hit = true;
             }
         }
@@ -651,7 +651,7 @@ bool push_in_world(math::Position3& pos, float radius,
                                              *(const math::Position3*)v1,
                                              *(const math::Position3*)v2,
                                              *(const math::Dir3*)normal,
-                                             *(math::Position3*)center))
+                                             (math::Position3*)center))
                 hit = true;
         }
         pos.v.m128_f32[0] = center[0];

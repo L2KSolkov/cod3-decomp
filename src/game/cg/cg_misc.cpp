@@ -2442,7 +2442,7 @@ extern weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS,
 extern int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
                                     weapSlot_t preferedSlot);
 extern int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex);
-extern void PM_KillQueuedReloadSound(PlayerState* ps);
+extern void PM_KillQueuedReloadSound(PlayerState& ps);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern void* gpBrocAPI;  // 0x00F3ABDC
@@ -2697,7 +2697,7 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                     (weapSlot_t)0 /* WEAPSLOT_NONE */);
             }
             Entity* v7 = EntityManager::sInst->GetPlayer( currCl);
-            PM_KillQueuedReloadSound(&v7->client->ps);
+            PM_KillQueuedReloadSound(v7->client->ps);
             if (StackSlotForWeapon != 0)
             {
                 for (int i = (StackSlotForWeapon + v3 + 8) % 9 + 1;

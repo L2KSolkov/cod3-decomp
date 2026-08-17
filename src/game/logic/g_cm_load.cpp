@@ -3087,9 +3087,11 @@ void rtree_visitor_t::post_process(int bi, proximity_data_t& proximity_data)
 // TestInLeaf (CGBank) - ea: 0x623530 (CollisionMgr.cpp CGBank leaf sweep)
 // ============================================================================
 // ea: 0x00623530
-void TestInLeaf(traceWork_t* tw, const CGBank* bank,
-                const rtree_visitor_t* visitor)
+void TestInLeaf(traceWork_t* tw, const CGBank& bank_ref,
+                const rtree_visitor_t& visitor_ref)
 {
+    const CGBank* bank = &bank_ref;
+    const rtree_visitor_t* visitor = &visitor_ref;
     cmgr_mem_ctx_t ctx;
     math::Position3* verts = alloc_verts();
 
@@ -4195,12 +4197,17 @@ bool SightTrace(traceWork_t* tw, const math::Position3& p0,
 extern int SightTraceThroughLeaf(traceWork_t* tw,
                                  const DCGSet* set);  // game.o 0x624070
 
-int SightTrace(int oldHitNum, const math::Position3* start,
-               const math::Position3* end, const math::Position3* mins,
-               const math::Position3* maxs, DCGSet* model,
-               const math::Position3* origin, int brushmask, int capsule,
-               void* sphere)
+int SightTrace(int oldHitNum, const math::Position3& start_ref,
+               const math::Position3& end_ref, const math::Position3& mins_ref,
+               const math::Position3& maxs_ref, DCGSet* model,
+               const math::Position3& origin_ref, int brushmask, int capsule,
+               sphere_t* sphere)
 {
+    const math::Position3* start = &start_ref;
+    const math::Position3* end = &end_ref;
+    const math::Position3* mins = &mins_ref;
+    const math::Position3* maxs = &maxs_ref;
+    const math::Position3* origin = &origin_ref;
     if ((__fpclass(start->v.m128_f32[0]) & 0x297) != 0
         || (__fpclass(start->v.m128_f32[1]) & 0x297) != 0
         || (__fpclass(start->v.m128_f32[2]) & 0x297) != 0)
@@ -5294,7 +5301,7 @@ void PositionTest(traceWork_t* tw)
         rtree_visitor_t visitor(bank);
         traverse_rtree(lo, hi, bank->rtree_root, visitor);
         visitor.filter_objects(tw->contents);
-        TestInLeaf(tw, bank, &visitor);
+        TestInLeaf(tw, *bank, visitor);
         if (tw->trace_allsolid != 0)
             return;
     }
@@ -6056,7 +6063,7 @@ bool collide_segment(traceWork_t* tw, const math::Position3& p0,
                                 &((const unsigned char*)
                                       bank->patch_inds.m_elements)
                                     [first_index],
-                                0, (int)patch->num_inds, p0, p1, t, normal,
+                                0, (int)patch->num_inds, p0, p1, t, &normal,
                                 &tid))
                         {
                             __m128 p = _mm_add_ps(
@@ -6226,7 +6233,7 @@ int SightTraceXFormed(int hitNum, const math::Position3& start,
     {
         sphere.offset.v.m128_f32[2] = half;
     }
-    return SightTrace(hitNum, &start2, &end2, &mins2, &maxs2, model, &origin,
+    return SightTrace(hitNum, start2, end2, mins2, maxs2, model, origin,
                       brushmask, capsule, &sphere);
 }
 
@@ -6664,7 +6671,7 @@ bool push_sphere_in_world(math::Position3& pos, float radius,
             math::Vector4 plane = calc_normal(v0, v1, v2);
             hit |= new_push_out_sphere_triangle(
                 sphere_center, radius, v0, v1, v2, (math::Dir3&)plane,
-                sphere_center);
+                &sphere_center);
         }
 
         pos = sphere_center;
@@ -7451,8 +7458,9 @@ bool collide_segment(const cdl_object_t& obj, const math::Dir3* vert_list,
                      const unsigned char* index_list,
                      unsigned short first_vert, int num_indices,
                      const math::Position3& p0, const math::Position3& p1,
-                     float& t, math::Position3& normal, int* tid)
+                     float& t, math::Position3* normal_ptr, int* tid)
 {
+    math::Position3& normal = *normal_ptr;
     math::Dir3 center;
     center.v = _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
                            0.0f);

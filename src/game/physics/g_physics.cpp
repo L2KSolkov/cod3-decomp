@@ -614,7 +614,7 @@ bool collide_segment(const cdl_object_t& obj, const math::Dir3* vert_list,
                      const unsigned char* index_list,
                      unsigned short first_vert, int num_indices,
                      const math::Position3& p0, const math::Position3& p1,
-                     float& t, math::Position3& normal,
+                     float& t, math::Position3* normal,
                      int* tid);  // game.o 0x61EB80
 bool collide_box_segment(const math::Position3& p0,
                          const math::Position3& p1,

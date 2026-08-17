@@ -1568,7 +1568,7 @@ int fireSide;
 extern void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* info);
 extern int CG_StartAnimBlend(int weaponNum, DObj* dobj, int toAnimIndex,
                              unsigned int fromAnimIndex, float blendTime);
-extern void PM_KillQueuedReloadSound(PlayerState* ps);
+extern void PM_KillQueuedReloadSound(PlayerState& ps);
 
 // ea: 0x0069ED70
 void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
@@ -1774,7 +1774,7 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
             if (EntityManager::sInst->GetPlayer( currCl)
                     ->client->ps.queuedReloadSoundPlayStarted)
             {
-                PM_KillQueuedReloadSound(GetPlayerState(currCl));
+                PM_KillQueuedReloadSound(*GetPlayerState(currCl));
             }
         LABEL_88:
             dword_F6A2A8[802 * currCl] = ps->weapAnim;

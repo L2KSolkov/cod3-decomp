@@ -1365,8 +1365,9 @@ bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
                                   const math::Position3& v1,
                                   const math::Position3& v2,
                                   const math::Dir3& normal,
-                                  math::Position3& new_sphere_center)
+                                  math::Position3* new_sphere_center_ptr)
 {
+    math::Position3& new_sphere_center = *new_sphere_center_ptr;
     float c[3] = { sphere_center.v.m128_f32[0],
                    sphere_center.v.m128_f32[1],
                    sphere_center.v.m128_f32[2] };
@@ -1539,8 +1540,9 @@ bool trace_sphere_through_sphere(const math::Position3& c0, float r0,
 int trace_point_through_cylinder(const math::Position3& sa,
                                  const math::Position3& sb,
                                  const math::Position3& p,
-                                 const math::Position3& q, float r, float* t)
+                                 const math::Position3& q, float r, float& t_ref)
 {
+    float* t = &t_ref;
     float v6[3] = { q.v.m128_f32[0] - p.v.m128_f32[0],
                     q.v.m128_f32[1] - p.v.m128_f32[1],
                     q.v.m128_f32[2] - p.v.m128_f32[2] };

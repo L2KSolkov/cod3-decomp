@@ -90,9 +90,9 @@ extern void          CM_ClipMoveToEntities(moveclip_t* clip,
 extern int           CM_PointSightTraceToEntities(sightpointtrace_t* clip,
                                                   const collision_context_t& context);
 extern int           CM_ClipSightTraceToEntities(sightclip_t* clip, const collision_context_t& context);
-extern int           SightTrace(int oldHitNum, const math::Position3* start, const math::Position3* end,
-                                const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
-                                const math::Position3* origin, int brushmask, int capsule, void* sphere);
+extern int           SightTrace(int oldHitNum, const math::Position3& start, const math::Position3& end,
+                                const math::Position3& mins, const math::Position3& maxs, DCGSet* model,
+                                const math::Position3& origin, int brushmask, int capsule, sphere_t* sphere);
 extern int           CM_PointContents(const math::Position3& p, DCGSet* model);
 extern int           CM_AreaEntities(const math::Position3& mins,
                                      const math::Position3& maxs,
@@ -722,7 +722,8 @@ void SV_SightTrace(int* hit, const math::Position3* start, const math::Position3
     }
     math::Position3 zero;
     zero.v = Float4_Zero_2.v;
-    *hit = SightTrace(*hit, start, end, mins, maxs, NULL, &zero, context->contentmask, capsule, NULL);
+    *hit = SightTrace(*hit, *start, *end, *mins, *maxs, NULL, zero,
+                      context->contentmask, capsule, NULL);
     if (*hit == 0) {
         float v9 = ((((maxs->v.m128_f32[0] - mins->v.m128_f32[0]) + maxs->v.m128_f32[1]) - mins->v.m128_f32[1])
                     + maxs->v.m128_f32[2]) - mins->v.m128_f32[2];

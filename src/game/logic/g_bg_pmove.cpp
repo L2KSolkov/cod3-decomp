@@ -129,7 +129,7 @@ extern void ProjectPointOnPlane(float* const dst, const float* const p,
 int  PM_WeaponAmmoAvailable(int wp);  // game.o 0x607E50
 int  PM_WeaponClipEmpty(int wp);      // game.o 0x607E80
 int  PM_Weapon_FinishRechamber();     // game.o 0x607FD0
-void PM_KillQueuedReloadSound(PlayerState* ps);  // game.o 0x6080E0
+void PM_KillQueuedReloadSound(PlayerState& ps);  // game.o 0x6080E0
 void PM_SetProneMovementOverride();              // game.o 0x606590
 void PM_WeaponUseAmmo(int wp, int amount);       // game.o 0x607E10
 void PM_Weapon_SetFPSFireAnim();                 // game.o 0x6089C0
@@ -874,7 +874,7 @@ int PM_Weapon_FinishReload(int delayedAction)
             ps->weaponstate = 0;
             PM_StartWeaponAnim(0);
             if (!pm->ps->queuedReloadSoundPlayStarted)
-                PM_KillQueuedReloadSound(pm->ps);
+                PM_KillQueuedReloadSound(*pm->ps);
             return false;
         }
         if (weaponstate != 14 && weaponstate != 5 && weaponstate != 6)
@@ -1493,7 +1493,7 @@ void PM_Weapon_CheckForReload()
             case 12:
             case 13:
                 if (v5->queuedReloadSoundPlayStarted)
-                    PM_KillQueuedReloadSound(v5);
+                    PM_KillQueuedReloadSound(*v5);
                 break;
             case 5:
             case 6:
@@ -3958,7 +3958,7 @@ extern bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
                                          const math::Position3& v1,
                                          const math::Position3& v2,
                                          const math::Dir3& normal,
-                                         math::Position3& new_sphere_center);
+                                         math::Position3* new_sphere_center);
     // game.o 0x60D860
 extern math::Vector4 calc_normal(const math::Position3& v0,
                                  const math::Position3& v1,
@@ -4258,7 +4258,7 @@ bool push_in_world(pmove_t& pm, float radius,
             math::Dir3 nd;
             nd.v = n.v;
             hit |= new_push_out_sphere_triangle(
-                probe, radius, v0, v1, v2, nd, probe);
+                probe, radius, v0, v1, v2, nd, &probe);
         }
         if ((__fpclass(probe.v.m128_f32[0]) & 0x297) == 0
             && (__fpclass(probe.v.m128_f32[1]) & 0x297) == 0
@@ -6378,8 +6378,9 @@ int PM_WeaponClipEmpty(int wp)
 // ============================================================================
 // PM_KillQueuedReloadSound - ea: 0x6080E0
 // ============================================================================
-void PM_KillQueuedReloadSound(PlayerState* ps)
+void PM_KillQueuedReloadSound(PlayerState& ps_ref)
 {
+    PlayerState* ps = &ps_ref;
     unsigned int mVal = ps->queuedReloadSound.mVal;
     if (mVal != 0)
     {
@@ -8132,6 +8133,39 @@ LABEL_71:
     goto fail;
 }
 
+// IDA's public ABI uses references for the vector and callback parameters;
+// keep the existing pointer-form body behind this exact entry point.
+int BG_CheckProneValid(
+    DbLinkedHandle<EntityHandleDb, Entity> passEntity,
+    const math::Position3& vPos, float fSize, float fHeight, float fYaw,
+    float* pfTorsoHeight, float* pfTorsoPitch, float* pfWaistPitch,
+    int bAlreadyProne, int bOnGround, const math::Dir3& vGroundNormal,
+    void (__cdecl* traceFunc)(trace_t*, const math::Position3&,
+                              const math::Position3&, const math::Position3&,
+                              const math::Position3&,
+                              const collision_context_t&),
+    void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3&,
+                                 const math::Position3&, const math::Position3&,
+                                 const math::Position3&,
+                                 const collision_context_t&),
+    int (__cdecl* pointcontents)(const math::Position3&,
+                                 const collision_context_t&),
+    proneCheckType_t proneCheckType, float prone_feet_dist)
+{
+    typedef void (__cdecl* TracePtr)(trace_t*, const math::Position3*,
+                                     const math::Position3*,
+                                     const math::Position3*,
+                                     const math::Position3*,
+                                     const collision_context_t&);
+    typedef int (__cdecl* ContentsPtr)(const math::Position3*,
+                                       const collision_context_t&);
+    return BG_CheckProneValid(
+        passEntity, &vPos, fSize, fHeight, fYaw, pfTorsoHeight,
+        pfTorsoPitch, pfWaistPitch, bAlreadyProne, bOnGround, &vGroundNormal,
+        (TracePtr)traceFunc, (TracePtr)boxTraceFunc,
+        (ContentsPtr)pointcontents, proneCheckType, prone_feet_dist);
+}
+
 // ============================================================================
 // BG_CheckProne - ea: 0x6146F0 (tail-calls BG_CheckProneValid)
 // ============================================================================
@@ -8745,9 +8779,9 @@ extern float UnGetLeanFraction(float fFrac);    // game.o 0x6116C0
 // ea: 0x00621B60
 void PM_UpdateLean(PlayerState* ps, usercmd_s* cmd,
                    void (__cdecl* capsuleTrace)(
-                       trace_t*, const math::Position3*,
-                       const math::Position3*, const math::Position3*,
-                       const math::Position3*, const collision_context_t*))
+                       trace_t*, const math::Position3&,
+                       const math::Position3&, const math::Position3&,
+                       const math::Position3&, const collision_context_t&))
 {
     int buttons = cmd->buttons;
     int v5 = 0;
@@ -8842,8 +8876,8 @@ void PM_UpdateLean(PlayerState* ps, usercmd_s* cmd,
         context.pass_owner2.mHandle.mVal = 0;
         context.contentmask = 0;
         trace_t tr;
-        capsuleTrace(&tr, &start, &v25, &v19, &start,
-                     (const collision_context_t*)&context);
+        capsuleTrace(&tr, start, v25, v19, start,
+                     (const collision_context_t&)context);
         LeanFraction = UnGetLeanFraction(tr.fraction);
         if (fabsf(ps->leanf) > LeanFraction)
         {
@@ -10991,12 +11025,7 @@ void PM_UpdateViewAngles(
             if (pm_type >= 6)
             {
                 PM_UpdateLean(
-                    ps, cmd,
-                    (void (__cdecl*)(trace_t*, const math::Position3*,
-                                     const math::Position3*,
-                                     const math::Position3*,
-                                     const math::Position3*,
-                                     const collision_context_t*))capsuleTrace);
+                    ps, cmd, capsuleTrace);
                 return;
             }
             int v10 = (int16_t)((int16_t)ps->delta_angles[0]
@@ -11297,12 +11326,7 @@ LABEL_92:
             PM_UpdateMeleeAssistAim(ps, msec);
             if (ps->pm_type != 3 && ps->pm_type != 2 && ps->pm_type != 4)
                 PM_UpdateLean(
-                    ps, cmd,
-                    (void (__cdecl*)(trace_t*, const math::Position3*,
-                                     const math::Position3*,
-                                     const math::Position3*,
-                                     const math::Position3*,
-                                     const collision_context_t*))capsuleTrace);
+                    ps, cmd, capsuleTrace);
         }
     }
 }

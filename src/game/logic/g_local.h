@@ -3776,7 +3776,7 @@ bool collide_segment(const cdl_object_t& obj, const math::Dir3* vert_list,
                      const unsigned char* index_list,
                      unsigned short first_vert, int num_indices,
                      const math::Position3& p0, const math::Position3& p1,
-                     float& t, math::Position3& normal,
+                     float& t, math::Position3* normal,
                      int* tid);  // game.o 0x61EB80
 bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
                      const math::Position3& p0, const math::Position3& p1,
@@ -4214,7 +4214,7 @@ bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
                                   const math::Position3& v1,
                                   const math::Position3& v2,
                                   const math::Dir3& normal,
-                                  math::Position3& new_sphere_center);  // game.o 0x60D860
+                                  math::Position3* new_sphere_center);  // game.o 0x60D860
 bool collide_ray_triangle(const math::Position3& p0, const math::Dir3& u0,
                           const math::Position3& v0,
                           const math::Position3& v1,
@@ -4400,7 +4400,7 @@ int trace_point_through_cylinder(const math::Position3& sa,
                                  const math::Position3& sb,
                                  const math::Position3& p,
                                  const math::Position3& q, float r,
-                                 float* t);  // game.o 0x60DFE0
+                                 float& t);  // game.o 0x60DFE0
 bool sight_trace_point_patch(const math::Position3* verts,
                              const unsigned char* inds,
                              unsigned short ninds,
