@@ -161,6 +161,70 @@ float dist2(const math::Position3& point, const cdlAABB& obb, const math::Mat43&
 }
 
 // ============================================================================
+// intersect — point against transformed AABB
+// ea: 0x81D5E0
+// ============================================================================
+bool intersect(const cdlAABB& a, const math::Mat43& a2w, const math::Position3& point) {
+    const __m128 v3 = a2w.y.v;
+    const __m128 v4 = a2w.z.v;
+    const __m128 v5 = _mm_shuffle_ps(a2w.x.v, v3, 68);
+    const __m128 v6 = _mm_shuffle_ps(_mm_shuffle_ps(a2w.x.v, v3, 238), v4, 168);
+    const __m128 v8 = _mm_shuffle_ps(v5, v4, 221);
+    const __m128 v9 = _mm_shuffle_ps(v5, v4, 136);
+    const __m128 v10 = _mm_xor_ps(
+        Float4_SignMask,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 0), v9),
+                _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 85), v8)),
+            _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 170), v6)));
+    const __m128 v14 = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(point.v, point.v, 0), v9),
+            _mm_mul_ps(_mm_shuffle_ps(point.v, point.v, 85), v8)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(point.v, point.v, 170), v6), v10));
+    return ((_mm_movemask_ps(_mm_cmplt_ps(v14, _mm_add_ps(a.m_sphere.v, a.m_dims.v))) & 7) == 7)
+        && ((_mm_movemask_ps(_mm_cmplt_ps(_mm_sub_ps(a.m_sphere.v, a.m_dims.v), v14)) & 7) == 7);
+}
+
+// ============================================================================
+// intersect — sphere against transformed AABB
+// ea: 0x81D6F0
+// ============================================================================
+bool intersect(const cdlAABB& a, const math::Mat43& a2w, const cdlSphere& sphere) {
+    const __m128 sphere_data = sphere.m_sphere.v;
+    const __m128 v3 = a2w.y.v;
+    const __m128 v4 = a2w.z.v;
+    const __m128 v5 = _mm_shuffle_ps(a2w.x.v, v3, 68);
+    const __m128 v6 = _mm_shuffle_ps(_mm_shuffle_ps(a2w.x.v, v3, 238), v4, 168);
+    const __m128 v8 = _mm_shuffle_ps(v5, v4, 221);
+    const __m128 v9 = _mm_shuffle_ps(v5, v4, 136);
+    const float radius = _mm_shuffle_ps(sphere_data, sphere_data, 255).m128_f32[0];
+    const __m128 inverse_translation = _mm_xor_ps(
+        Float4_SignMask,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 0), v9),
+                _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 85), v8)),
+            _mm_mul_ps(_mm_shuffle_ps(a2w.w.v, a2w.w.v, 170), v6)));
+    const __m128 local_center = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(sphere_data, sphere_data, 0), v9),
+            _mm_mul_ps(_mm_shuffle_ps(sphere_data, sphere_data, 85), v8)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(sphere_data, sphere_data, 170), v6), inverse_translation));
+    const __m128 min_corner = _mm_sub_ps(a.m_sphere.v, a.m_dims.v);
+    const __m128 max_corner = _mm_add_ps(a.m_sphere.v, a.m_dims.v);
+    const __m128 radius2 = _mm_setr_ps(radius * radius, radius * radius, radius * radius, 0.0f);
+    if ((_mm_movemask_ps(_mm_cmplt_ps(min_corner, _mm_add_ps(local_center, radius2))) & 7) != 7)
+        return false;
+    if ((_mm_movemask_ps(_mm_cmplt_ps(_mm_sub_ps(local_center, radius2), max_corner)) & 7) != 7)
+        return false;
+    const __m128 delta = _mm_sub_ps(_mm_min_ps(max_corner, _mm_max_ps(min_corner, local_center)), local_center);
+    const __m128 squared = _mm_mul_ps(delta, delta);
+    return DOT3(squared) <= ((radius * radius) * (radius * radius));
+}
+
+// ============================================================================
 // dist2 — squared distance between two triangular regions (line * line sweep)
 // ea: 0x81DF30
 // Used for mesh-vs-mesh distance queries.
