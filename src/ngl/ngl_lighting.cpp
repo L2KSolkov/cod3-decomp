@@ -382,14 +382,14 @@ void nglListAddProjLightNode(nglLightType Type, void* NodeData, int LightCat) {
 // ============================================================================
 // nglListAddDirLight - ea: 0x846270
 // ============================================================================
-void nglListAddDirLight(unsigned int LightCat, const math::Dir3* Dir, const math::Vector4* Color) {
+void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math::Vector4& Color) {
     nglDirLightInfo* v3 = (nglDirLightInfo*)nglListAlloc(0x20, 0x10);
     if (v3 != NULL) {
-        v3->Dir = *Dir;
-        v3->Color.v = _mm_shuffle_ps(Color->v, _mm_shuffle_ps(_mm_set1_ps(1.0f), Color->v, 160), 52);
+        v3->Dir = Dir;
+        v3->Color.v = _mm_shuffle_ps(Color.v, _mm_shuffle_ps(_mm_set1_ps(1.0f), Color.v, 160), 52);
         nglListAddLight(NGLLIGHT_DIRECTIONAL, v3, (int)LightCat);
         if (nglSyncDebug.DumpSceneFile != 0)
-            nglSceneDumpDirLight((char)LightCat, Dir, Color);
+            nglSceneDumpDirLight((char)LightCat, &Dir, &Color);
     }
 }
 

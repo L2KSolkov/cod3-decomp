@@ -130,7 +130,7 @@ nglDirLightInfo* nglGetSingleDirLight(nglDirLightInfo* Out, const math::Position
 void nglGetDirLightMatrix(nglMeshNode* MeshNode, math::Mat44* Dir, math::Mat44* Color);
 nglLightContext* nglCreateLightContext();
 void nglListAddLight(nglLightType Type, void* NodeData, int LightCat);
-void nglListAddDirLight(unsigned int LightCat, const math::Dir3* Dir, const math::Vector4* Color);
+void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math::Vector4& Color);
 void nglListAddPointLight(unsigned int LightCat, const math::Position3* Pos,
                           float Near, float Far, const math::Vector4* Color,
                           bool isVertexPointLight);
