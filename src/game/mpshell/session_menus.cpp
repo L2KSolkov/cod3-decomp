@@ -3258,6 +3258,25 @@ void PauseMenu::OnDeactivate(FEMenu* m)
     m_iLastSelection = highlighted;
 }
 
+// ea: 0x0078F090
+void OverlayMenuBase::OnTriangle(int c)
+{
+    (void)c;
+    if (mBackMenu < 0)
+        return;
+
+    system->RemoveOverlay();
+    if (system->GetActiveMenu() == 14)
+    {
+        system->MakeActive(mBackMenu,
+                           g_femanager.fems->menus[14]->highlighted);
+    }
+    else if (system->GetActiveMenu() != mBackMenu)
+    {
+        system->MakeActive(mBackMenu);
+    }
+}
+
 // ea: 0x00791D50
 void PauseMenu::ButtonHeldAction()
 {
@@ -3276,10 +3295,51 @@ void AARPauseMenu::ButtonHeldAction()
         OnUp(0);
 }
 
+// ea: 0x00791F20
+void AARPauseMenu::OnActivate()
+{
+    tlPrintf("AARPauseMenu::OnActivate()\n");
+    if (MultiplayerMgr::sInst->mRankedGame
+        || !MultiplayerMgr::sInst->IsLocalClientHost(0))
+        entries[4]->SetText("MPGAME_VIEW_GAME_SETTINGS");
+    else
+        entries[4]->SetText("MPGAME_EDIT_GAME_SETTINGS");
+
+    FEMenu::OnActivate();
+    ClearButton((controller::ButtonIndex)(controller::R3
+                                          | controller::RIGHTBUTTON));
+    MPLiveEngine* handle = MPLiveEngine::GetHandle();
+    LiveWrapper::theWrapper->SetNotificationFlag(handle->actualPort, 0,
+                                                  true);
+    panel->GetPointer("bkg_line_07")->SetShown(true);
+    entries[0]->Disable(true);
+    entries[1]->Disable(true);
+    entries[2]->Disable(true);
+    m_iLastSelection = 3;
+    highlighted = 3;
+    SetHigh(3, true);
+    entries[3]->Highlight(true, true);
+    panel->GetPointer("bkg")->SetShown(true);
+    panel->GetTextPointer("text_timer_numbers")->SetShown(true);
+    panel->GetTextPointer("text_timer_text")->SetShown(true);
+    panel->GetTextPointer("text_timer_text")
+        ->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    panel->GetTextPointer("text_title_AAR")->SetShown(true);
+    panel->GetTextPointer("text_title_AAR")
+        ->SetText("MPGAME_AFTER_ACTION_REVIEW");
+}
+
 // ea: 0x00791E00
 void AARPauseMenu::ResponseGoBack(int client)
 {
     g_femanager.GetDMS(client)->CloseDialog();
+}
+
+// ea: 0x007B9960 (inline)
+bool AARPauseMenu::ResponseNoNevermind(int client)
+{
+    (void)client;
+    return true;
 }
 
 // ea: 0x00791E30
@@ -4575,6 +4635,74 @@ bool PauseMenu::ResponseYesQuit(int client)
     return true;
 }
 
+// ea: 0x007B9950 (inline)
+bool PauseMenu::ResponseNoNevermind(int client)
+{
+    (void)client;
+    return true;
+}
+
+// ea: 0x007A6880
+void PauseMenu::AttemptQuit()
+{
+    const char* title = defaultFileName;
+    const char* message;
+    if (!MultiplayerMgr::sInst->mRankedGame
+        && MultiplayerMgr::sInst->IsHost()
+        && MPUIInterface::IsOnlineGame()
+        && MultiplayerMgr::sInst->GetCurrentPlayerCount() <= 2)
+        message = "MPGAME_END_SESSION";
+    else
+        message = "MPGAME_LEAVE_SESSION";
+
+    DialogMenuSystem* dms = g_femanager.GetDMS(mVersion);
+    dms->BringUp(message, false, false, title, true);
+    DialogMenu* layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_YES", PauseMenu::ResponseYesQuit);
+    dms = g_femanager.GetDMS(mVersion);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_NO", PauseMenu::ResponseNoNevermind);
+    j_nullsub_58(dms, true);
+    dms = g_femanager.GetDMS(mVersion);
+    dms->HighlightOption(1);
+    dms = g_femanager.GetDMS(mVersion);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->Reformat(true, 0);
+    dms = g_femanager.GetDMS(mVersion);
+    dms->GetLayer(dms->GetActiveMenu() == 0)->triangleResponse =
+        PauseMenu::ResponseGoBack;
+}
+
+// ea: 0x007A6C90
+void AARPauseMenu::AttemptQuit()
+{
+    const char* message;
+    if (!MultiplayerMgr::sInst->mRankedGame
+        && MultiplayerMgr::sInst->IsHost()
+        && MPUIInterface::IsOnlineGame()
+        && MultiplayerMgr::sInst->GetCurrentPlayerCount() <= 2)
+        message = "MPGAME_END_SESSION";
+    else
+        message = "MPGAME_LEAVE_SESSION";
+
+    DialogMenuSystem* dms = g_femanager.GetDMS(0);
+    dms->BringUp(message, false, false, defaultFileName, true);
+    DialogMenu* layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_YES", AARPauseMenu::ResponseYesQuit);
+    dms = g_femanager.GetDMS(0);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->AddOption("INGAME_DIALOG_NO", AARPauseMenu::ResponseNoNevermind);
+    j_nullsub_58(dms, true);
+    dms = g_femanager.GetDMS(0);
+    dms->HighlightOption(1);
+    dms = g_femanager.GetDMS(0);
+    layer = dms->GetLayer(dms->GetActiveMenu() == 0);
+    layer->Reformat(true, 0);
+    dms = g_femanager.GetDMS(0);
+    dms->GetLayer(dms->GetActiveMenu() == 0)->triangleResponse =
+        AARPauseMenu::ResponseGoBack;
+}
+
 // ea: 0x00792600
 void HotJoinMenu::Join()
 {
@@ -5120,6 +5248,24 @@ void HotJoinMenu::OnCross(int c)
 
 extern int g_MPAARTotalTime;               // ?g_MPAARTotalTime@@3HA @ 0xE38468
 extern kuju::knet::sTime g_MPAARTimer;     // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
+
+// ea: 0x007A3720
+void AARBaseMenu::SetTimerText()
+{
+    kuju::knet::sTime fSecondsLeftTilNextGame;
+    fSecondsLeftTilNextGame.mTime =
+        g_MPAARTotalTime
+        - (int)((MultiplayerMgr::sInst->getLocalTime().mTime
+                - g_MPAARTimer.mTime) * 0.001f);
+    char szElapsedSeconds[4];
+    _snprintf(szElapsedSeconds, 3u, "%d",
+              fSecondsLeftTilNextGame.mTime);
+    if (fSecondsLeftTilNextGame.mTime < 10)
+        strcpy(&szElapsedSeconds[1], " ");
+    FEText* text = m_pTimerText.m_elements[0];
+    if (text != nullptr)
+        text->SetText(szElapsedSeconds);
+}
 
 // ea: 0x0078D850
 void GameSettingsEdit::GetScoreLimitsForGameType(eGameType gameType)

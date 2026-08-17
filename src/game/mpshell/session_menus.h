@@ -1279,6 +1279,7 @@ public:
     virtual void OnDeactivate(FEMenu* pMenu);   // ?OnDeactivate@AARPauseMenu@@UAEXPAVFEMenu@@@Z
     void UnPause(int client);                   // ?UnPause@AARPauseMenu@@QAEXH@Z
     static bool ResponseYesQuit(int client);    // ?ResponseYesQuit@AARPauseMenu@@SA_NH@Z
+    static bool ResponseNoNevermind(int client); // ?ResponseNoNevermind@AARPauseMenu@@SA_NH@Z
     static void Quit(int client);               // ?Quit@AARPauseMenu@@SAXH@Z
     void AttemptQuit();                         // ?AttemptQuit@AARPauseMenu@@QAEXXZ
     static void ResponseGoBack(int client);     // ?ResponseGoBack@AARPauseMenu@@SAXH@Z
@@ -1379,6 +1380,7 @@ protected:
     static bool ResponseYesTeamChange(int client);  // ?ResponseYesTeamChange@PauseMenu@@KA_NH@Z
     static void ResponseGoBack(int client);         // ?ResponseGoBack@PauseMenu@@KAXH@Z
     static bool ResponseYesQuit(int client);        // ?ResponseYesQuit@PauseMenu@@KA_NH@Z
+    static bool ResponseNoNevermind(int client);    // ?ResponseNoNevermind@PauseMenu@@KA_NH@Z
     static bool ResponseYesSuicide(int client);     // ?ResponseYesSuicide@PauseMenu@@KA_NH@Z
 };
 static_assert(sizeof(PauseMenu) == 0x6C,
