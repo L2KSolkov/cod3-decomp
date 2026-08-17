@@ -79,6 +79,7 @@ public:
     bool button_released(ButtonIndex btn, int* p_controller);
     bool button_released_clear(int index, ButtonIndex btn);
     bool any_button_pressed(int index);
+    bool any_button_pressed(int* p_controller);
     void stick_value(int index, StickIndex stick, int& outX, int& outY);
     void stick_value(StickIndex stick, int* outX, int* outY, int* p_controller);
     void stick_value(int index, StickIndex stick, int* outX, int* outY);
@@ -356,6 +357,20 @@ bool controller::button_released_clear(int index, ButtonIndex btn) {
 
 bool controller::any_button_pressed(int index) {
     return s_pads[index].curButtons != s_pads[index].lastButtons;
+}
+
+// ea: 0x7E2EA0 (controller.o)
+bool controller::any_button_pressed(int* p_controller)
+{
+    ButtonIndex button = SQUARE;
+    while (true)
+    {
+        if (button_pressed(button, p_controller))
+            return true;
+        button = static_cast<ButtonIndex>(button + 1);
+        if (button > SELECT)
+            return false;
+    }
 }
 
 void controller::stick_value(int index, StickIndex stick, int& outX, int& outY) {
