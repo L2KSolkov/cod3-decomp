@@ -3282,7 +3282,7 @@ unsigned int CallbackLocalPlayerKicked();                // ea: 0x944730
 unsigned int CallbackHostMigrated();                     // ea: 0x9447C0
 void QuitGameWithMessage(Broc::entity self, HashStr message);  // ea: 0x9448E0
 void HostHasMigrated(Broc::entity self);                 // ea: 0x944A00
-void NewHost();                                          // ea: 0x944F40
+void NewHost(Broc::entity self);                         // ea: 0x944F40
 void FadeUpWhenLoaded(Broc::entity self, Broc::entity player);  // ea: 0x944F90
 void RespawnPlayer(Broc::entity guy, Broc::string team);  // ea: 0x9450D0
 void Spectate(Broc::entity self, Broc::bint target, Broc::bbool isIntermission);  // ea: 0x945350
@@ -3291,7 +3291,7 @@ void DeathState(Broc::entity self, Broc::entity inflictor, Broc::bint weapon,
 void FollowClient(Broc::entity self, Broc::bint index);  // ea: 0x9459F0
 void LocalPlayerIntermission(Broc::entity self);         // ea: 0x945BC0
 void LocalPlayerRespawn(Broc::entity self);              // ea: 0x945D30
-void RunFrame();                                         // ea: 0x946040
+void RunFrame(Broc::entity selfLevel);                   // ea: 0x946040
 void CreateClock(Broc::bint timeLimit);                  // ea: 0x946080
 void StartRound(Broc::bbool firstTime);                  // ea: 0x946110
 void finish_starting_round(Broc::entity self, Broc::bbool isRoundOver);  // ea: 0x946630
@@ -3307,7 +3307,7 @@ void put_player_into_spectate_mode(Broc::entity guy);    // ea: 0x948A30
 void SpawnLocalSpectator(Broc::entity self);             // ea: 0x948B70
 void SpawnSpectator(Broc::entity self);                  // ea: 0x948FC0
 void SpawnIntermission(Broc::entity self);               // ea: 0x949200
-void QuitGameThread();                                   // ea: 0x9495C0
+void QuitGameThread(Broc::entity selfLevel);             // ea: 0x9495C0
 Broc::bint* GetRespawnTime(Broc::bint* result, Broc::entity player);  // ea: 0x949620
 Broc::bint* GetGoingToDieTime(Broc::bint* result);       // ea: 0x949B60
 void UpdateSpectateCritical(Broc::entity self);          // ea: 0x949BB0
@@ -3862,7 +3862,8 @@ void CreateClock(Broc::bint timeLimit) {
 }
 
 // RunFrame - ea: 0x946040
-void RunFrame() {
+void RunFrame(Broc::entity selfLevel) {
+    (void)selfLevel;
     for (;;) {
         waitframe();
         CheckTimeLimit();
@@ -3999,14 +4000,16 @@ void ProgressBarDelete() {
 }
 
 // QuitGameThread - ea: 0x9495C0
-void QuitGameThread() {
+void QuitGameThread(Broc::entity selfLevel) {
+    (void)selfLevel;
     Broc::Code_ScreenFadeToBlack(0xFAu, -1);
     Broc::wait(0.25f);
     Broc::Code_QuitGame();
 }
 
 // NewHost - ea: 0x944F40
-void NewHost() {
+void NewHost(Broc::entity self) {
+    (void)self;
     Broc::SetTutorialText((int)0x4D843295u, 0);
     Broc::wait(4.0f);
 }
@@ -11775,13 +11778,19 @@ void* StopFollowing__functor(Broc::entity self, bool blackNow) {
     (void)self; (void)blackNow; return NULL;
 }
 void* QuitGameThread__functor(Broc::entity selfLevel) {
-    (void)selfLevel; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(QuitGameThread, selfLevel);
 }
 void* QuitGameWithMessage__functor(Broc::entity self, HashStr message) {
     (void)self; (void)message; return NULL;
 }
 void* HostHasMigrated__functor(Broc::entity self) {
-    (void)self; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(HostHasMigrated, self);
 }
 void* RespawnPlayer__functor(Broc::entity guy, Broc::string team) {
     (void)guy;
@@ -11789,7 +11798,10 @@ void* RespawnPlayer__functor(Broc::entity guy, Broc::string team) {
     return NULL;
 }
 void* LocalPlayerRespawn__functor(Broc::entity player) {
-    (void)player; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(LocalPlayerRespawn, player);
 }
 void* PunishedForTeamKill__functor(Broc::entity ent, bool punished) {
     (void)ent; (void)punished; return NULL;
@@ -11801,7 +11813,10 @@ void* HandleJoinAfterRoundOver__functor(Broc::entity self, int timeleft) {
     (void)self; (void)timeleft; return NULL;
 }
 void* TeamChangeKillPlayer__functor(Broc::entity player) {
-    (void)player; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(TeamChangeKillPlayer, player);
 }
 void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player) {
     (void)self; (void)player; return NULL;
@@ -11815,19 +11830,31 @@ void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
     return NULL;
 }
 void* UpdateSpectateCritical__functor(Broc::entity guy) {
-    (void)guy; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(UpdateSpectateCritical, guy);
 }
 void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy) {
-    (void)guy; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(UpdateSpectateCriticalGoingToDie, guy);
 }
 void* UpdateSpectateDead__functor(Broc::entity guy, bool canspawn) {
     (void)guy; (void)canspawn; return NULL;
 }
 void* UpdateSpectateSpawn__functor(Broc::entity localPlayer) {
-    (void)localPlayer; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(UpdateSpectateSpawn, localPlayer);
 }
 void* SpawnLocalSpectator__functor(Broc::entity guy) {
-    (void)guy; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(SpawnLocalSpectator, guy);
 }
 void* restart_round__functor(Broc::entity selfLevel, int waitTime) {
     (void)selfLevel; (void)waitTime; return NULL;
@@ -11839,13 +11866,22 @@ void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position) {
     (void)self; (void)position; return NULL;
 }
 void* NewHost__functor(Broc::entity self) {
-    (void)self; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(NewHost, self);
 }
 void* LocalPlayerIntermission__functor(Broc::entity player) {
-    (void)player; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(LocalPlayerIntermission, player);
 }
 void* RunFrame__functor(Broc::entity selfLevel) {
-    (void)selfLevel; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(RunFrame, selfLevel);
 }
 }
 
