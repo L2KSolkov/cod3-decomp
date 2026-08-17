@@ -3953,6 +3953,120 @@ void AARBaseMenu::OnL1(int c)
 }
 
 // ea: 0x007A8E20
+void GameSettingsView::SetPanelFileMain(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/GameSettingsView.cpp";
+        AeAssert::gCurrentLine = 66;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    panel = pf;
+    if (mVersion > 0)
+        panel = pf->Clone();
+
+    FEText* helpbar = panel->GetTextPointer("text_helpbar");
+    FEMultiLineText* helpbarText =
+        (FEMultiLineText*)mem_heap_malloc(0, 0xA8);
+    FEMultiLineText* helpbarCopy = nullptr;
+    if (helpbarText != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float x = helpbar->GetX();
+        helpbarCopy = new (helpbarText)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 1, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = helpbarCopy;
+    if (helpbarCopy != nullptr)
+        helpbarCopy->SetNumLines(1);
+    helpbar1->SetText("MPGAME_HELPBAR_BACK");
+
+    panel->GetTextPointer("text_title")->SetText("MPGAME_VIEW_GAME_SETTINGS");
+    panel->GetTextPointer("slot_01_text_option")->SetText("MPGAME_GAME_MODE");
+    panel->GetTextPointer("slot_02_text_option")->SetText("MPGAME_MAP");
+    panel->GetTextPointer("slot_03_text_option")->SetText("MPGAME_TIME_LIMIT");
+    panel->GetTextPointer("slot_04_text_option")->SetText("MPGAME_SCORE_LIMIT");
+    panel->GetTextPointer("slot_05_text_option")->SetText("MPGAME_TEAM_DAMAGE");
+    panel->GetTextPointer("slot_06_text_option")->SetText("MPGAME_AUTO_TEAM_BALANCE");
+    panel->GetTextPointer("slot_07_text_option")->SetText("MPGAME_AAR_VOTING_OPTION_ALLCAPS");
+    panel->GetTextPointer("slot_08_text_option")->SetText("MPGAME_PENALTY_VOTE_ALLCAPS");
+    panel->GetPointer("bkg_line_08")->SetShown(false);
+    panel->GetPointer("bkg_line_09")->SetShown(false);
+}
+
+void GameSettingsView::SetPanelFileSplitScreen(PanelFile* pf)
+{
+    mSplitScreenMenu = pf;
+    pf->GetTextPointer("text_title")->SetText("MPGAME_VIEW_GAME_SETTINGS");
+    mScrollBarUpFader.mQuad = mSplitScreenMenu->GetPointer("scroll_arrow_up");
+    mScrollBarDownFader.mQuad = mSplitScreenMenu->GetPointer("scroll_arrow_down");
+    mScrollBarThumb = mSplitScreenMenu->GetPointer("scroll_indicator");
+    mScrollBarTopY = (int)mSplitScreenMenu->GetPointer("scroll_indicator_reference")->GetMin().y;
+    mScrollBarBottomY = (int)mSplitScreenMenu->GetPointer("scroll_indicator_reference")->GetMax().y;
+    mScrollBarYInc = (int)((mScrollBarBottomY - mScrollBarTopY) * 0.25f);
+    if (mScrollBarThumb != nullptr)
+        mScrollBarThumb->SetCenterPos(
+            mScrollBarThumb->GetCenterX(),
+            (float)((highlighted * mScrollBarYInc) + mScrollBarTopY));
+}
+
+void GameSettingsView::UpdateOptions()
+{
+    char string[20];
+    panel->GetTextPointer("slot_01_text_spec")
+        ->SetText(MPUIInterface::GetGameTypeString(mCurrentServerParams->mGameType));
+    panel->GetTextPointer("slot_02_text_spec")
+        ->SetText(MPUIInterface::GetMapString(mCurrentServerParams->mMapID));
+    sprintf(string, "%d", MPUIInterface::GetTimeLimit(mCurrentServerParams->mTimeLimit));
+    panel->GetTextPointer("slot_03_text_spec")->SetText(string);
+    sprintf(string, "%d", MPUIInterface::GetScoreLimit(
+                               mCurrentServerParams->mScoreLimit,
+                               (eGameType)mCurrentServerParams->mGameType));
+    panel->GetTextPointer("slot_04_text_spec")->SetText(string);
+    panel->GetTextPointer("slot_05_text_spec")
+        ->SetText(mCurrentServerParams->mFriendlyFire ? "MPGAME_ENABLED" : "MPGAME_DISABLED");
+    panel->GetTextPointer("slot_06_text_spec")
+        ->SetText(mCurrentServerParams->mTeamBalancing ? "MPGAME_ENABLED" : "MPGAME_DISABLED");
+    panel->GetTextPointer("slot_07_text_spec")
+        ->SetText(mCurrentServerParams->mEnableAARVote ? "MPGAME_ENABLED" : "MPGAME_DISABLED");
+    panel->GetTextPointer("slot_08_text_spec")
+        ->SetText(mCurrentServerParams->mEnablePenaltyVote ? "MPGAME_ENABLED" : "MPGAME_DISABLED");
+}
+
+void GameSettingsView::UpdateSplitScreenOptions(int last_highlighted)
+{
+    (void)last_highlighted;
+    if (mViewport != 0)
+    {
+        static const char* const labels[8] = {
+            "MPGAME_GAME_MODE", "MPGAME_MAP", "MPGAME_TIME_LIMIT",
+            "MPGAME_SCORE_LIMIT", "MPGAME_TEAM_DAMAGE",
+            "MPGAME_AUTO_TEAM_BALANCE", "MPGAME_AAR_VOTING_OPTION_ALLCAPS",
+            "MPGAME_PENALTY_VOTE_ALLCAPS",
+        };
+        int top = (8 - highlighted >= 4) ? highlighted : 4;
+        for (int i = 1; i <= 4; ++i)
+        {
+            FEText* title = mSplitScreenMenu->GetTextPointer(va("option_0%i_text_title", i));
+            title->SetText(labels[top + i - 1]);
+            FEText* edit = mSplitScreenMenu->GetTextPointer(va("option_0%i_text_edit", i));
+            edit->SetShown(true);
+            UpdateOption(top + i - 1, edit);
+        }
+        SetHigh(highlighted, true);
+        if (mScrollBarThumb != nullptr)
+            mScrollBarThumb->SetCenterPos(
+                mScrollBarThumb->GetCenterX(),
+                (float)((mScrollBarYInc * highlighted) + mScrollBarTopY));
+    }
+}
+
 void GameSettingsView::SetPanelFile(PanelFile* pf)
 {
     if (_stricmp(pf->mName, "MP_SS_PM_options_view.PANEL") == 0)
@@ -4017,6 +4131,166 @@ void AARScoreboardLoser::OnActivate()
 }
 
 // ea: 0x007ABBD0
+void GameSettingsEdit::SetPanelFileMain(PanelFile* pf)
+{
+    if (pf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/GameSettingsEdit.cpp";
+        AeAssert::gCurrentLine = 76;
+        AeAssert::gCurrentExpr = "pf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid panel file pointer"))
+            __debugbreak();
+    }
+    panel = pf;
+    if (mVersion > 0)
+        panel = pf->Clone();
+
+    FEText* helpbar = panel->GetTextPointer("text_helpbar");
+    FEMultiLineText* helpbarText =
+        (FEMultiLineText*)mem_heap_malloc(0, 0xA8);
+    FEMultiLineText* helpbarCopy = nullptr;
+    if (helpbarText != nullptr)
+    {
+        color32 col = helpbar->GetColor();
+        panel_layer layer = (panel_layer)helpbar->GetScaleX();
+        float x1 = helpbar->GetY();
+        float x = helpbar->GetX();
+        helpbarCopy = new (helpbarText)
+            FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 1, layer,
+                            0.0f, 0, (int)col.i, col);
+    }
+    helpbar1 = helpbarCopy;
+    if (helpbarCopy != nullptr)
+        helpbarCopy->SetNumLines(1);
+    helpbar1->SetText("MPGAME_HELPBAR_BACK");
+
+    static const char* const labels[8] = {
+        "MPGAME_GAME_MODE", "MPGAME_MAP", "MPGAME_TIME_LIMIT",
+        "MPGAME_SCORE_LIMIT", "MPGAME_TEAM_DAMAGE",
+        "MPGAME_AUTO_TEAM_BALANCE", "MPGAME_AAR_VOTING_OPTION_ALLCAPS",
+        "MPGAME_PENALTY_VOTE_ALLCAPS",
+    };
+    panel->GetTextPointer("text_title")->SetText("MPGAME_EDIT_GAME_SETTINGS");
+    for (int i = 0; i < 8; ++i)
+        panel->GetTextPointer(va("slot_0%i_text_option", i + 1))->SetText(labels[i]);
+
+    AddMainComboBox(0, 6, panel->GetTextPointer("slot_01_text_spec"),
+                    panel->GetTextPointer("slot_01_text_option"),
+                    panel->GetPointer("slot_01_arrow_left"),
+                    panel->GetPointer("slot_01_arrow_right"));
+    AddMainComboBox(1, 64, panel->GetTextPointer("slot_02_text_spec"),
+                    panel->GetTextPointer("slot_02_text_option"),
+                    panel->GetPointer("slot_02_arrow_left"),
+                    panel->GetPointer("slot_02_arrow_right"));
+    AddMainComboBox(2, MPUIInterface::GetTimeLimitCount(),
+                    panel->GetTextPointer("slot_03_text_spec"),
+                    panel->GetTextPointer("slot_03_text_option"),
+                    panel->GetPointer("slot_03_arrow_left"),
+                    panel->GetPointer("slot_03_arrow_right"));
+    AddMainComboBox(3, MPUIInterface::mMaxScoreLimitCount,
+                    panel->GetTextPointer("slot_04_text_spec"),
+                    panel->GetTextPointer("slot_04_text_option"),
+                    panel->GetPointer("slot_04_arrow_left"),
+                    panel->GetPointer("slot_04_arrow_right"));
+    for (int i = 4; i < 8; ++i)
+        AddMainComboBox(i, 2,
+                        panel->GetTextPointer(va("slot_0%i_text_spec", i + 1)),
+                        panel->GetTextPointer(va("slot_0%i_text_option", i + 1)),
+                        panel->GetPointer(va("slot_0%i_arrow_left", i + 1)),
+                        panel->GetPointer(va("slot_0%i_arrow_right", i + 1)));
+    AddOptionsToCombos();
+    entries[0]->up = 7;
+    entries[7]->down = 0;
+    PanelQuad* left = panel->GetPointer("slot_09_arrow_left");
+    if (left != nullptr)
+        left->SetShown(false);
+    PanelQuad* right = panel->GetPointer("slot_09_arrow_right");
+    if (right != nullptr)
+        right->SetShown(false);
+}
+
+void GameSettingsEdit::SetPanelFileSplitScreen(PanelFile* pf)
+{
+    mSplitScreenMenu = pf;
+    pf->GetTextPointer("text_title")->SetText("MPGAME_EDIT_GAME_SETTINGS");
+    for (int i = 0; i < 8; ++i)
+    {
+        FEText* edit = pf->GetTextPointer("option_01_text_edit");
+        FEText* label = pf->GetTextPointer((i == 0) ? "option_01_text_edit" : va("option_0%i_text_edit", i + 1));
+        PanelQuad* left = pf->GetPointer((i == 0) ? "option_01_arrow_left" : va("option_0%i_arrow_left", i + 1));
+        PanelQuad* right = pf->GetPointer((i == 0) ? "option_01_arrow_left" : va("option_0%i_arrow_right", i + 1));
+        int count = (i == 0) ? 6 : (i == 1 ? 64 : (i == 2 ? MPUIInterface::GetTimeLimitCount() : (i == 3 ? MPUIInterface::mMaxScoreLimitCount : 2)));
+        AddSplitScreenComboBox(i, count, edit, label, left, right);
+    }
+    AddOptionsToCombos();
+    FEText* safe = pf->GetTextPointer("option_01_text_edit");
+    mSafeText.CopyFrom(safe);
+    mSafeText.SetShown(false);
+    entries[0]->up = 7;
+    entries[7]->down = 0;
+    mScrollBarUpFader.mQuad = pf->GetPointer("scroll_arrow_up");
+    mScrollBarDownFader.mQuad = pf->GetPointer("scroll_arrow_down");
+    mScrollBarThumb = pf->GetPointer("scroll_indicator");
+    mScrollBarTopY = (int)pf->GetPointer("scroll_indicator_reference")->GetMin().y;
+    mScrollBarBottomY = (int)pf->GetPointer("scroll_indicator_reference")->GetMax().y;
+    mScrollBarYInc = (int)((mScrollBarBottomY - mScrollBarTopY) / (num_entries - 1.0f));
+    if (mScrollBarThumb != nullptr)
+        mScrollBarThumb->SetCenterPos(
+            mScrollBarThumb->GetCenterX(),
+            (float)((highlighted * mScrollBarYInc) + mScrollBarTopY));
+}
+
+void GameSettingsEdit::UpdateScrollBar()
+{
+    if (mScrollBarThumb != nullptr)
+        mScrollBarThumb->SetCenterPos(
+            mScrollBarThumb->GetCenterX(),
+            (float)((mScrollBarYInc * highlighted) + mScrollBarTopY));
+}
+
+void GameSettingsEdit::UpdateSplitScreenOptions(int last_highlighted)
+{
+    if (mViewport != 0)
+    {
+        static const char* const labels[8] = {
+            "MPGAME_GAME_MODE", "MPGAME_MAP", "MPGAME_TIME_LIMIT",
+            "MPGAME_SCORE_LIMIT", "MPGAME_TEAM_DAMAGE",
+            "MPGAME_AUTO_TEAM_BALANCE", "MPGAME_AAR_VOTING_OPTION_ALLCAPS",
+            "MPGAME_PENALTY_VOTE_ALLCAPS",
+        };
+        int top;
+        if (highlighted >= 2)
+            top = (num_entries - highlighted >= 3)
+                ? ((last_highlighted <= highlighted) ? highlighted - 2 : highlighted - 1)
+                : num_entries - 4;
+        else
+            top = 0;
+        for (int i = 0; i < num_entries; ++i)
+            static_cast<FEComboBox*>(entries[i])->SetWidgets(
+                &mSafeText, &mSafeText, nullptr, nullptr);
+        for (int i = 0; i < 4; ++i)
+        {
+            int entry = top + i;
+            FEText* title = mSplitScreenMenu->GetTextPointer(va("option_0%i_text_title", i + 1));
+            title->SetText(labels[entry]);
+            PanelQuad* right = mSplitScreenMenu->GetPointer(va("option_0%i_arrow_right", i + 1));
+            PanelQuad* left = mSplitScreenMenu->GetPointer(va("option_0%i_arrow_left", i + 1));
+            FEText* selection = mSplitScreenMenu->GetTextPointer(va("option_0%i_text_edit", i + 1));
+            right->SetShown(true);
+            left->SetShown(true);
+            selection->SetShown(true);
+            FEComboBox* combo = static_cast<FEComboBox*>(entries[entry]);
+            combo->SetWidgets(selection, title, left, right);
+            int value = combo->GetValue();
+            combo->SetValue(value);
+            combo->AdjustColor();
+        }
+        SetHigh(highlighted, true);
+        UpdateScrollBar();
+    }
+}
+
 void GameSettingsEdit::SetPanelFile(PanelFile* pf)
 {
     if (_stricmp(pf->mName, "MP_SS_PM_options_edit.PANEL") == 0)

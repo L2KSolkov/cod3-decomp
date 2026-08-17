@@ -1563,7 +1563,6 @@ public:
     virtual bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@UAE_NXZ (shell.o; stub)
     virtual void Update(float time_inc);  // ?Update@AARMenuSystem@@UAEXM@Z
     virtual void Draw();          // ?Draw@AARMenuSystem@@UAEXXZ (mp_shell.o 0x7934A0)
-    void UpdateSplitScreen();     // mp.o
     void ActivateMenu(int menu);  // ?ActivateMenu@AARMenuSystem@@QAEXH@Z (shell.o; stub)
     bool mPreviousWidescreen;     // +0x2C
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@AARMenuSystem@@UAEX_N@Z (mp_shell.o)
