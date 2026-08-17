@@ -208,6 +208,7 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // ?Cvar_Get@@YAPAUcvar_t@@PBD0H@Z
 extern void AssertCvarRange(cvar_t* cv, int shouldBeIntegral, float minVal,
                             float maxVal);  // render.o 0x6C0310
+extern char* va(const char* fmt, ...);       // core.o
 extern void Swap_Init();                    // render.o
 extern void R_ToggleSmpFrame();             // render.o
 extern void HackUpGLConfig();               // render.o
@@ -216,6 +217,33 @@ extern void R_SetViewModelScale(int a1, float a2, float a3, int a4, int a5,
 extern void R_ScreenShot_f();               // screenshot.cpp
 extern void R_ScreenShotHigh_f();           // render.o
 extern int g_bOptimize;                     // ?g_bOptimize@@3HA @ 0xF743D0
+
+// ea: 0x006C0310
+void AssertCvarRange(cvar_t* cv, int shouldBeIntegral, float minVal,
+                     float maxVal)
+{
+    if (shouldBeIntegral != 0 && cv->value != cv->integer)
+    {
+        ri.Printf(2, "WARNING: cvar '%s' must be integral (%f)\n", cv->name,
+                  cv->value);
+        ri.Cvar_Set(cv->name, va("%d", cv->integer));
+    }
+    if (minVal <= cv->value)
+    {
+        if (cv->value > maxVal)
+        {
+            ri.Printf(2, "WARNING: cvar '%s' out of range (%f > %f)\n",
+                      cv->name, cv->value, maxVal);
+            ri.Cvar_Set(cv->name, va("%f", maxVal));
+        }
+    }
+    else
+    {
+        ri.Printf(2, "WARNING: cvar '%s' out of range (%f < %f)\n", cv->name,
+                  cv->value, minVal);
+        ri.Cvar_Set(cv->name, va("%f", minVal));
+    }
+}
 
 // glfog_t / glfogType_t (tr_fog.cpp defines the data)
 struct glfog_t {
