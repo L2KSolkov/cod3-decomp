@@ -91,6 +91,7 @@ public:
     unsigned int mFlags;            // +0xE4
     void SetLOD(int startLod);      // ?SetLOD@DObj@@QAEXH@Z
     void SetLODAnim(int startLod);  // ?SetLODAnim@DObj@@QAEXH@Z
+    void SetLODOverride(int startLod);  // ?SetLODOverride@DObj@@QAEXH@Z
 };
 class XModelParts {
 public:
@@ -139,7 +140,6 @@ extern void ValidatePakId(int pakId);  // ?ValidatePakId@@YAXW4TPakId@@@Z
 extern math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43& m,
                                                    nglMeshParams* p,
                                                    float* scale);  // ?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@PAM@Z
-extern void DObj_SetLODOverride(DObj* obj, int lod);  // ?SetLODOverride@DObj@@QAEXH@Z
 extern void* nglListAlloc(unsigned int size, unsigned int align);  // ?nglListAlloc@@YAPAXII@Z
 extern nglMeshNode* _codListAddMesh(nglMesh* mesh,
                                     const math::Mat43& localToWorld,
@@ -351,7 +351,7 @@ void do_shadow(DObj* obj, int model_index, int bone_index,
     else
     {
         nglScene* oldScene = nglListSelectScene(gProjShadowScene);
-        DObj_SetLODOverride(obj, 4);
+        obj->SetLODOverride(4);
         int lod;
         if (model_index != 0)
         {
