@@ -174,6 +174,12 @@ struct sMPGameInfoView {
     unsigned char mMapID;          // +0x44
     unsigned char mGameType;       // +0x45
     unsigned char mGameSubType;    // +0x46
+    bool mTeamBalancing;            // +0x47
+    bool mFriendlyFire;             // +0x48
+    bool mEnableAARVote;            // +0x49
+    bool mEnablePenaltyVote;        // +0x4A
+    uint8_t _pad4B[1];              // +0x4B
+    int mQosProbeHandle;            // +0x4C
 };
 
 // ============================================================================
@@ -5794,6 +5800,87 @@ void SessionDetailsMenu::Update(float time_inc)
     else
     {
         system->MakeActive(8);
+    }
+}
+
+// ea: 0x0079CD20
+void SessionListMenu::UpdateGameInfo()
+{
+    unsigned long numGames = 0;
+    sGameListing* games = MPUIInterface::GameListingGet(numGames);
+    if (numGames == 0
+        || m_ListBox.mTopLine + m_ListBox.mSelectedLine < 0)
+        return;
+    int listIndex = m_ListBox.mTopLine + m_ListBox.mSelectedLine;
+    if (mVisibleListToGameListMap[listIndex] < 0)
+        return;
+
+    sGameListing* game = &games[mVisibleListToGameListMap[listIndex]];
+    sMPGameInfoView* info = (sMPGameInfoView*)game->mGameInfo;
+    panel->GetTextPointer("gl_text_tip_title")
+        ->SetTextNoLocalize(info->mName);
+    panel->GetTextPointer("gl_text_spec_02b")
+        ->SetText(info->mTeamBalancing ? "MPFRONTEND_ON" : "MPFRONTEND_OFF");
+    panel->GetTextPointer("gl_text_spec_03b")
+        ->SetText(info->mFriendlyFire ? "MPFRONTEND_ON" : "MPFRONTEND_OFF");
+
+    for (int i = 0; i < 5; ++i)
+        m_pConnectionStars[i]->SetAlpha(0.2f);
+
+    int rating = 0;
+    if (info->mQosProbeHandle >= 0)
+    {
+        rating = 1;
+        if (MultiplayerMgr::sInst->mPeer->IsQosComplete(info->mQosProbeHandle))
+        {
+            rating = 2;
+            if (MultiplayerMgr::sInst->mPeer->IsQosSuccessful(
+                    info->mQosProbeHandle))
+            {
+                rating = 3;
+                if (MultiplayerMgr::sInst->mPeer->GetQosPing(
+                        info->mQosProbeHandle) < 0.25f)
+                {
+                    rating = 4;
+                    if (MultiplayerMgr::sInst->mPeer->GetQosPing(
+                            info->mQosProbeHandle) < 0.12f)
+                        rating = 5;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < rating; ++i)
+        m_pConnectionStars[i]->SetAlpha(1.0f);
+}
+
+// ea: 0x0079DB60
+void SessionLanListMenu::UpdateGameInfo()
+{
+    unsigned long numGames = 0;
+    sGameListing* games = MPUIInterface::GameListingGet(numGames);
+    if (numGames == 0
+        || m_ListBox.mTopLine + m_ListBox.mSelectedLine < 0)
+        return;
+    int listIndex = m_ListBox.mTopLine + m_ListBox.mSelectedLine;
+    if (mVisibleListToGameListMap[listIndex] < 0)
+        return;
+
+    sGameListing* game = &games[mVisibleListToGameListMap[listIndex]];
+    sMPGameInfoView* info = (sMPGameInfoView*)game->mGameInfo;
+    panel->GetTextPointer("gl_text_tip_title")
+        ->SetTextNoLocalize(info->mName);
+    panel->GetTextPointer("gl_text_spec_02b")
+        ->SetText(info->mEnableAARVote ? "MPFRONTEND_ON" : "MPFRONTEND_OFF");
+    panel->GetTextPointer("gl_text_spec_03b")
+        ->SetText(info->mEnablePenaltyVote ? "MPFRONTEND_ON" : "MPFRONTEND_OFF");
+
+    for (int i = 0; i < 5; ++i)
+        m_pConnectionStars[i]->SetAlpha(0.5f);
+    const int ratings[5] = { 1500, 1000, 600, 400, 200 };
+    for (int i = 0; i < 5; ++i)
+    {
+        if (game->mPing < ratings[i])
+            m_pConnectionStars[i]->SetAlpha(1.0f);
     }
 }
 
