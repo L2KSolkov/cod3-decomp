@@ -2747,6 +2747,18 @@ void clientPersistent_t::Clear()
     rank = 0;
 }
 
+// clientPersistent_t::GetStat (g.o 0x5E9C80)
+int clientPersistent_t::GetStat(int stat)
+{
+    if (stat > 0x1C) {
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid stat index."))
+            __debugbreak();
+    }
+    return mStats[0][stat] + mStats[1][stat] + mStats[2][stat]
+         + mStats[3][stat] + mStats[4][stat] + mStats[5][stat]
+         + mStats[6][stat];
+}
+
 
 // DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
 template <>

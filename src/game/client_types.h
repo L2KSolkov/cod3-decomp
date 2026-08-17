@@ -80,7 +80,7 @@ struct clientPersistent_t {
     int     maxHealth;                              // +0x214
 
     void Clear();  // ?Clear@clientPersistent_t@@QAEXXZ (g.o 0x4AF940)
-    short GetStat(int stat);  // ?GetStat@clientPersistent_t@@QAEHH@Z
+    int GetStat(int stat);    // ?GetStat@clientPersistent_t@@QAEHH@Z
     int GetTotalScore();  // ?GetTotalScore@clientPersistent_t@@QAEHXZ (scr.o inline)
 };
 static_assert(sizeof(clientPersistent_t) == 0x218, "clientPersistent_t size mismatch");
