@@ -8645,6 +8645,67 @@ void MultiplayerMgr::GetOutOfVehicle(Entity* vehicle, int seatIdx)
     mPeer->GetOutOfVehicle(vehicle, seatIdx);
 }
 
+// ea: 0x00750D30
+void MultiplayerMgr::AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
+                                              int newSeatIdx)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1761;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->AttemptVehicleSeatChange(vehicle, player, newSeatIdx);
+}
+
+// ea: 0x007615E0
+void MultiplayerMgr::SwapWeapon(int weapon, int netIndex, int clipCount,
+                                int ammoCount)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1707;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->SwapWeapon(weapon, netIndex, clipCount, ammoCount);
+}
+
+// ea: 0x007502A0
+void MultiplayerMgr::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
+                                     const math::Position3& position,
+                                     const math::Dir3& normal,
+                                     unsigned char surfaceType,
+                                     unsigned char weapon, short damage,
+                                     unsigned char damageFlags,
+                                     unsigned char mod, int hitLocation)
+{
+    if (mPeer == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+        AeAssert::gCurrentLine = 1133;
+        AeAssert::gCurrentExpr = "mPeer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Peer has not been created yet"))
+            __debugbreak();
+    }
+    mPeer->BulletHitPlayer(hitEntity, attackerEntity, position, normal,
+                           surfaceType, weapon, damage, damageFlags, mod,
+                           hitLocation);
+}
+
 // ea: 0x00750690
 void MultiplayerMgr::WeaponChange(int weapon)
 {

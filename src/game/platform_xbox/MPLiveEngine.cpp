@@ -180,28 +180,6 @@ bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
     (void)player;
     return false;
 }
-void MultiplayerMgr::AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
-                                              int newSeatIdx)
-{
-    (void)vehicle; (void)player; (void)newSeatIdx;
-}
-void MultiplayerMgr::SwapWeapon(int weapon, int netIndex, int clipCount,
-                                int ammoCount)
-{
-    (void)weapon; (void)netIndex; (void)clipCount; (void)ammoCount;
-}
-void MultiplayerMgr::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
-                                     const math::Position3& position,
-                                     const math::Dir3& normal,
-                                     unsigned char surfaceType,
-                                     unsigned char weapon, short damage,
-                                     unsigned char damageFlags,
-                                     unsigned char mod, int hitLocation)
-{
-    (void)hitEntity; (void)attackerEntity; (void)position; (void)normal;
-    (void)surfaceType; (void)weapon; (void)damage; (void)damageFlags;
-    (void)mod; (void)hitLocation;
-}
 
 // MPPlayerManager / MPPlayerSet stubs (mp.o; ported later)
 MPPlayer* MPPlayerManager::GetLocalPlayer(int nLocalPlayer)
