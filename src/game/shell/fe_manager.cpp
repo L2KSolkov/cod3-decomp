@@ -20,7 +20,7 @@ extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
 extern ELanguage gLanguage;            // ?gLanguage@@3W4ELanguage@@A
 extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
-extern bool onlyOnce;                  // ?onlyOnce @ 0xF3A4C8
+bool onlyOnce = false;                 // ?onlyOnce @ 0xF3A4C8
 extern void codNflUpdate();            // g_entity_misc.cpp
 extern const char* GetLanguageId(ELanguage l);  // ?GetLanguageId@@YAPBDW4ELanguage@@@Z
 extern void GetXboxLanguage();         // fe_util.cpp

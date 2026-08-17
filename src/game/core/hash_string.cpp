@@ -15,7 +15,7 @@ struct LanguageName {
     const char* second;
 };
 extern LanguageName sLanguageNames[6];
-extern const char* sLanguageIds[6];
+const char* sLanguageIds[6] = {"en", "de", "fr", "sp", "it", "un"};
 extern int dword_DD8B74[12];
 
 // ea: 0x004BD6B0
