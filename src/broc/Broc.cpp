@@ -951,7 +951,14 @@ void* ExtendedEntity::CopyExtendedEntity(const void* source)
     return new (std::nothrow) ExtendedEntity(
         *static_cast<const ExtendedEntity*>(source));
 }
-void ExtendedEntity::InitScript(BrocExports&) {}
+// ea: 0x0092A2F0. IDA installs the four ExtendedEntity callbacks directly.
+void ExtendedEntity::InitScript(BrocExports& exports)
+{
+    exports.mCreateExtendedEntity = ExtendedEntity::CreateExtendedEntity;
+    exports.mDeleteExtendedEntity = ExtendedEntity::DeleteExtendedEntity;
+    exports.mMatchExtendedEntityKey = ExtendedEntity::MatchExtendedEntityKey;
+    exports.mCopyExtendedEntity = ExtendedEntity::CopyExtendedEntity;
+}
 // ea: 0x0092A7A0. IDA's profiling enter/leave events use BrocAPI members not
 // present in the current partial declaration; the key scan is unchanged.
 bool ExtendedEntity::IsDefined(unsigned int key) const
