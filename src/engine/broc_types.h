@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 class AeThreadFunctor;
+enum TPakInfo : int;
 
 // Size assertions are 32-bit only (4-byte pointers)
 #if defined(_WIN32) && !defined(_WIN64)
@@ -461,8 +462,8 @@ void waittill_timeout(entity ent, HashStr signal, float timeout);
 void waittillmatch(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
 void waittillor(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
 void waittill(entity ent, const char* signal);
-void waittill_loaded(unsigned int pakInfo);
-void waittill_unloaded(unsigned int pakInfo);
+void waittill_loaded(TPakInfo pakInfo);
+void waittill_unloaded(TPakInfo pakInfo);
 void endon(entity ent, const char* event);
 void endon(entity ent, HashStr label);
 void thread_sleep_time(void);

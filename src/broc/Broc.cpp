@@ -77,6 +77,8 @@ bool IS_NAN(float x) {
 // IDA globals @ 0x10F0540 / 0x10F0544.
 float gThreadSleepTime = 0.0f;
 int gThreadSleepFrames = 0;
+int gThreadSleepNotify1 = 0;
+TPakInfo gThreadSleepPakfile = (TPakInfo)0;
 
 // ============================================================================
 // Broc utility functions
@@ -1171,8 +1173,24 @@ void waittill_timeout(entity, HashStr, float) {}
 void waittillmatch(entity, HashStr, HashStr, HashStr, HashStr) {}
 void waittillor(entity, HashStr, HashStr, HashStr, HashStr) {}
 void waittill(entity, const char*) {}
-void waittill_loaded(unsigned int) {}
-void waittill_unloaded(unsigned int) {}
+// ea: 0x00929090. IDA records the pak handle and waits for a load notify.
+void waittill_loaded(TPakInfo info)
+{
+    gThreadSleepPakfile = info;
+    gThreadSleepNotify1 = 1;
+    thread_sleep_until_notify();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
+// ea: 0x009290E0. The unload path differs only in its notify selector.
+void waittill_unloaded(TPakInfo info)
+{
+    gThreadSleepPakfile = info;
+    gThreadSleepNotify1 = 0;
+    thread_sleep_until_notify();
+    if (gBrocAPI.mKillThread)
+        gBrocAPI.mKillThreadExec();
+}
 void endon(entity, const char*) {}
 void thread_sleep_time(void) {}
 void thread_sleep_frames(void) {}
