@@ -900,7 +900,16 @@ void ExtendedEntity::SetUndefined(unsigned int key)
 }
 unsigned int* ExtendedEntity::SetVal(unsigned int, const string&) { return NULL; }
 unsigned int* ExtendedEntity::InternalSet(unsigned int, unsigned int) { return NULL; }
-const unsigned int* ExtendedEntity::InternalGet(unsigned int) const { return NULL; }
+// ea: 0x0092B0E0. IDA profiling events are omitted as documented above.
+const unsigned int* ExtendedEntity::InternalGet(unsigned int key) const
+{
+    for (unsigned int i = 0; i < mCount; ++i)
+    {
+        if (mKVPairs[i].key == key)
+            return &mKVPairs[i].val;
+    }
+    return nullptr;
+}
 // The IDA bodies also emit profiling events through fields not represented in
 // the current partial BrocAPI declaration; callback selection and exact
 // EEDefault fallbacks are preserved here.
