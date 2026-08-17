@@ -258,11 +258,6 @@ MPPlayer* MPPlayerManager::GetLocalPlayer(int nLocalPlayer)
     (void)nLocalPlayer;
     return nullptr;
 }
-MPPlayer* MPPlayerManager::GetPlayer(int id)
-{
-    (void)id;
-    return nullptr;
-}
 MPPlayer* MPPlayerManager::GetPlayer(unsigned char id)
 {
     (void)id;

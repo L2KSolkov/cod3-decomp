@@ -1933,7 +1933,6 @@ enum MPVehicleEventType : int {
 
 class MPPlayerManager {
 public:
-    MPPlayer* GetPlayer(int id);
     MPPlayer* GetPlayer(unsigned char id);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@E@Z (mp.o)
     MPPlayer* GetPlayer(bdReference<bdConnection> connection);  // ?GetPlayer@MPPlayerManager@@QAEPAVMPPlayer@@V?$bdReference@VbdConnection@@@@@Z (mp.o 0x737770)
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // ?GetLocalPlayer@MPPlayerManager@@QAEPAVMPPlayer@@H@Z (mp.o)
