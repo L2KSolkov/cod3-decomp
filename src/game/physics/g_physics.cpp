@@ -2136,9 +2136,8 @@ struct scr_vehicle_t {
     void*   mRBVeh;                     // +0x518 (legacy local-view field)
 
     // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
-    // (g.o; g_scr_vehicle.cpp defines the pointer-arg variant)
-    void CollisionDamage(Entity* ent, const math::Position3* pos,
-                         const math::Position3* dir, float intensity);
+    void CollisionDamage(Entity* ent, const math::Position3& pos,
+                         const math::Position3& dir, float intensity);
     void AssignPhysics(Entity* player);  // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z (g.o)
 };
 
@@ -8046,8 +8045,8 @@ void process_prop_collide_callbacks()
                             }
                             math::Position3 pos;
                             pos.v = world_hit;
-                            sv->CollisionDamage(p->m_rb_inf->m_ent, &pos,
-                                &coord, v / scale);
+                            sv->CollisionDamage(p->m_rb_inf->m_ent, pos,
+                                coord, v / scale);
                         }
                     }
                 }
@@ -12131,13 +12130,10 @@ enum hitLocation_t {
     HITLOC_NUM = 0x13,
 };
 
-// Port-local dietable (defined in g_entity_misc.cpp; uses Broc's EHitLocation
-// tag + PBM const-qualification; binary's QBM/W4hitLocation_t form is a
-// separate pre-existing mismatch).
-enum EHitLocation : int;
+// dietable (defined in g_entity_misc.cpp).
 extern void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
                            int damage, int mod, int weapon, const float* point,
-                           const float* dir, EHitLocation hitLoc);
+                           const float* dir, hitLocation_t hitLoc);
 
 // ea: 0x6F61C0
 void KillEntity(Entity* e)
@@ -12168,7 +12164,7 @@ void KillEntity(Entity* e)
         dietable[v9](
             e, ea, Player, v4, 0, 0,
             &e->r.currentOrigin.v.m128_f32[0], dir,
-            (EHitLocation)HITLOC_NONE);
+            (hitLocation_t)HITLOC_NONE);
     }
     else if ((e->flags & 0x2000000) != 0)
     {
