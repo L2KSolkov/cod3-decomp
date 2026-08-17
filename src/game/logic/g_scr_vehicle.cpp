@@ -65,6 +65,7 @@ extern void VEH_GroundTrace(Entity* ent);
 extern void VEH_GroundMove(Entity* ent, int msec);
 extern int VEH_Slide(Entity* ent, int gravity, int msec, int move,
                     int allowHit);
+extern void VEH_UpdateSoundLerps(Entity* ent, int msec);
 extern void TraceSphereFull(const proximity_data_t* proximity_data,
                             trace_t* results, const math::Position3* start,
                             const math::Position3* mins,
@@ -948,7 +949,228 @@ void VEH_UpdateShaderTime(Entity* ent, int msec)
     scr_vehicle->treadTime += angularDelta;
     scr_vehicle->treadTime2 -= angularDelta;
 }
-void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
+// ea: 0x0046D310
+void VEH_UpdateSoundLerps(Entity* ent, int msec)
+{
+    scr_vehicle_t* vehicle = ent->scr_vehicle;
+    float idleTarget = 0.0f;
+    float engineTarget = 0.0f;
+    float brakeTarget = 0.0f;
+    if (HandleDbToEnt(ent->r.mOwner) != nullptr)
+    {
+        const float speed = ent->speed;
+        if (speed <= 1.0f)
+        {
+            const float rotVelSq =
+                vehicle->phys.rotVel.v.m128_f32[0]
+                    * vehicle->phys.rotVel.v.m128_f32[0]
+                + vehicle->phys.rotVel.v.m128_f32[1]
+                    * vehicle->phys.rotVel.v.m128_f32[1]
+                + vehicle->phys.rotVel.v.m128_f32[2]
+                    * vehicle->phys.rotVel.v.m128_f32[2];
+            if (rotVelSq <= 1.0f)
+            {
+                idleTarget = 1.0f;
+                engineTarget = 0.0f;
+            }
+            else
+            {
+                idleTarget = 0.0f;
+                engineTarget = 1.0f;
+            }
+        }
+        else
+        {
+            engineTarget = (speed - 1.0f) * 0.011494253f;
+            if (engineTarget >= 1.0f)
+                engineTarget = 1.0f;
+            idleTarget = 1.0f - engineTarget;
+        }
+
+        rb_vehicle* rbVeh = (rb_vehicle*)vehicle->mRBVeh;
+        if (rbVeh != nullptr)
+        {
+            if ((rbVeh->m_state_flags & 2) != 0)
+            {
+                brakeTarget = 1.0f;
+                vehicle->brakeSndLerp = 1.0f;
+            }
+            else
+            {
+                brakeTarget = 0.0f;
+            }
+
+            const float rotEngineDest =
+                fabsf(vehicle->phys.rotVel.v.m128_f32[2]) * 1.6666666f;
+            if (rotEngineDest > 0.1f && rotEngineDest > engineTarget)
+            {
+                engineTarget = 1.0f;
+                if (rotEngineDest <= 1.0f)
+                    engineTarget = rotEngineDest;
+                idleTarget = 1.0f - engineTarget;
+            }
+        }
+    }
+
+    const float frameSeconds = msec * 0.001f;
+    const float idleCurrent = vehicle->idleSndLerp;
+    const float idleDelta = idleTarget - idleCurrent;
+    const float idleStep = frameSeconds * idleDelta * 4.0f;
+    if (fabsf(idleDelta) <= 0.0049999999f
+        || fabsf(idleStep) > fabsf(idleDelta))
+        vehicle->idleSndLerp = idleTarget;
+    else
+        vehicle->idleSndLerp = idleCurrent + idleStep;
+
+    const float engineCurrent = vehicle->engineSndLerp;
+    const float engineDelta = engineTarget - engineCurrent;
+    const float engineStep = frameSeconds * engineDelta * 4.0f;
+    if (fabsf(engineDelta) <= 0.0049999999f
+        || fabsf(engineStep) > fabsf(engineDelta))
+        vehicle->engineSndLerp = engineTarget;
+    else
+        vehicle->engineSndLerp = engineCurrent + engineStep;
+
+    const float brakeCurrent = vehicle->brakeSndLerp;
+    const float brakeDelta = brakeTarget - brakeCurrent;
+    const float brakeStep = frameSeconds * brakeDelta * 4.0f;
+    if (fabsf(brakeDelta) <= 0.0049999999f
+        || fabsf(brakeStep) > fabsf(brakeDelta))
+        vehicle->brakeSndLerp = brakeTarget;
+    else
+        vehicle->brakeSndLerp = brakeCurrent + brakeStep;
+}
+
+// ea: 0x0046D560
+void VEH_UpdateSounds(Entity* ent, int msec)
+{
+    scr_vehicle_t* vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[vehicle->infoIdx];
+    ent->s.loopSound = 0;
+    VEH_UpdateSoundLerps(ent, msec);
+
+    const EAction idleAction = (EAction)0x23;
+    const int engineAction = vehicle->playersAttached != 0 ? 38 : 37;
+    const EAction idleStartAction = vehicle->playersAttached != 0
+        ? (EAction)0x24
+        : idleAction;
+
+    if (vehicle->playEngineSound == 0)
+    {
+        if (vehicle->mSoundEffectHandle[0].mVal != 0)
+            EffectEventStopEmitting(vehicle->mSoundEffectHandle[0]);
+        const Handle engineEffect = vehicle->mSoundEffectHandle[1];
+        vehicle->mSoundEffectHandle[0].mVal = 0;
+        if (engineEffect.mVal != 0)
+            EffectEventStopEmitting(engineEffect);
+        vehicle->mSoundEffectHandle[1].mVal = 0;
+    }
+    else
+    {
+        if (vehicle->idleSndLerp <= 0.0049999999f)
+        {
+            if (vehicle->mSoundEffectHandle[0].mVal != 0)
+                EffectEventStopEmitting(vehicle->mSoundEffectHandle[0]);
+            vehicle->mSoundEffectHandle[0].mVal = 0;
+        }
+        else
+        {
+            if (vehicle->mSoundEffectHandle[0].mVal == 0)
+                vehicle->mSoundEffectHandle[0] =
+                    PostEffectEventVehicle(ent, info->name,
+                                           idleStartAction);
+            EffectEventAdjustEffect_Scale(vehicle->mSoundEffectHandle[0],
+                                          "SOUND_VOLUME",
+                                          vehicle->idleSndLerp);
+        }
+
+        if (vehicle->engineSndLerp <= 0.0049999999f)
+        {
+            if (vehicle->mSoundEffectHandle[1].mVal != 0)
+                EffectEventStopEmitting(vehicle->mSoundEffectHandle[1]);
+            vehicle->mSoundEffectHandle[1].mVal = 0;
+        }
+        else
+        {
+            if (vehicle->mSoundEffectHandle[1].mVal == 0)
+                vehicle->mSoundEffectHandle[1] =
+                    PostEffectEventVehicle(ent, info->name,
+                                           (EAction)engineAction);
+            EffectEventAdjustEffect_Scale(vehicle->mSoundEffectHandle[1],
+                                          "SOUND_VOLUME",
+                                          vehicle->engineSndLerp);
+        }
+    }
+
+    if (vehicle->brakeSndLerp <= 0.0049999999f)
+    {
+        if (vehicle->mSoundEffectHandle[2].mVal != 0)
+            EffectEventStopEmitting(vehicle->mSoundEffectHandle[2]);
+        vehicle->mSoundEffectHandle[2].mVal = 0;
+    }
+    else
+    {
+        if (vehicle->mSoundEffectHandle[2].mVal == 0)
+            vehicle->mSoundEffectHandle[2] =
+                PostEffectEventVehicle(ent, info->name, (EAction)0x33);
+        EffectEventAdjustEffect_Scale(vehicle->mSoundEffectHandle[2],
+                                      "SOUND_VOLUME", vehicle->brakeSndLerp);
+    }
+
+    if (vehicle->turretState == 2)
+    {
+        if (vehicle->mSoundEffectHandle[3].mVal == 0)
+            vehicle->mSoundEffectHandle[3] =
+                PostEffectEventVehicle(ent, info->name, (EAction)0x2D);
+    }
+    else if (vehicle->turretState == 1)
+    {
+        if (vehicle->mSoundEffectHandle[3].mVal != 0)
+        {
+            EffectEventStopEmitting(vehicle->mSoundEffectHandle[3]);
+            vehicle->mSoundEffectHandle[3].mVal = 0;
+        }
+        if (vehicle->mSoundEffectHandle[4].mVal == 0)
+            vehicle->mSoundEffectHandle[4] =
+                PostEffectEventVehicle(ent, info->name, (EAction)0x2E);
+    }
+    else
+    {
+        if (vehicle->mSoundEffectHandle[3].mVal != 0)
+        {
+            EffectEventStopEmitting(vehicle->mSoundEffectHandle[3]);
+            vehicle->mSoundEffectHandle[3].mVal = 0;
+        }
+        if (vehicle->mSoundEffectHandle[4].mVal != 0)
+            vehicle->mSoundEffectHandle[4].mVal = 0;
+    }
+
+    if (vehicle->crashSound != 0)
+    {
+        const Handle crashEffect =
+            PostEffectEventVehicle(ent, info->name, (EAction)0x32);
+        EffectEventAdjustEffect_Scale(crashEffect, "SOUND_VOLUME",
+                                      vehicle->crashVolume);
+        vehicle->crashSound = 0;
+    }
+
+    if (HandleDbToEnt(vehicle->seats[0].occupant) == nullptr)
+        vehicle->hornSndLerp = 0.0f;
+    if (vehicle->hornSndLerp <= 0.0049999999f
+        || vehicle->seats[0].overheating)
+    {
+        if (vehicle->mSoundEffectHandle[5].mVal != 0)
+        {
+            EffectEventStopEmitting(vehicle->mSoundEffectHandle[5]);
+            vehicle->mSoundEffectHandle[5].mVal = 0;
+        }
+    }
+    else if (vehicle->mSoundEffectHandle[5].mVal == 0)
+    {
+        vehicle->mSoundEffectHandle[5] = PostEffectEventVehicle(
+            ent, info->name, (EAction)(0x30 | 0x4));
+    }
+}
 
 // ea: 0x0044E880
 void VEH_UpdateSteering(Entity* ent)
