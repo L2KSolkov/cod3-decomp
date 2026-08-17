@@ -722,7 +722,8 @@ struct BrocAPI {
     void* (*mGetExtendedEntity)(unsigned int);             // +0xDBC
     char _padBrocExports[0xE00 - (0xBE8 + 0x1C8 + 0x10)]; // +0xDC0
     void (*mRegisterHashString)(int, const char*);         // +0xE00
-    char _padE04[0xF1C - 0xE04];                           // +0xE04
+    const char* (*mHashToStr)(int);                        // +0xE04
+    char _padE08[0xF1C - 0xE08];                           // +0xE08
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     void (*m_entity_set_origin)(unsigned int, Broc::vector);  // +0xF20
     Broc::string* (*m_entity_get_model)(Broc::string*, unsigned int);  // +0xF24
@@ -1015,6 +1016,7 @@ template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 
 bool IS_NAN(float x);  // global (defined in Broc.cpp)
 void RegisterHashString(int hash, const char* text); // ea: 0x929060
+const char* ToStr(int hash); // ea: 0x929570
 
 // Forward (defined in game/actor_types.h)
 struct sentient_s;

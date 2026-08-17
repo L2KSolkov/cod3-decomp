@@ -92,6 +92,12 @@ void RegisterHashString(int hash, const char* text)
     Broc::gBrocAPI.mRegisterHashString(hash, text);
 }
 
+// ea: 0x00929570. IDA forwards hash-to-text conversion through BrocAPI.
+const char* ToStr(int hash)
+{
+    return Broc::gBrocAPI.mHashToStr(hash);
+}
+
 // ============================================================================
 // Broc utility functions
 // ============================================================================
@@ -1334,7 +1340,26 @@ void thread_debug_wait_msg(float time)
     sprintf(tmpBuf, "going to sleep for %3.2f seconds", time);
     gBrocAPI.mThreadDebugNotice(tmpBuf);
 }
-void thread_debug_wait_until(HashStr, HashStr, HashStr, HashStr) {}
+// ea: 0x00929370. IDA formats the non-zero notify labels in order.
+void thread_debug_wait_until(HashStr notify1, HashStr notify2,
+                             HashStr notify3, HashStr notify4)
+{
+    char tmpBuf[1024];
+    if (notify2.mVal == 0)
+        sprintf(tmpBuf, "sleeping until %s", ToStr(notify1.mVal));
+    else if (notify3.mVal == 0)
+        sprintf(tmpBuf, "sleeping until %s,%s",
+                ToStr(notify1.mVal), ToStr(notify2.mVal));
+    else if (notify4.mVal == 0)
+        sprintf(tmpBuf, "sleeping until %s,%s,%s",
+                ToStr(notify1.mVal), ToStr(notify2.mVal),
+                ToStr(notify3.mVal));
+    else
+        sprintf(tmpBuf, "sleeping until %s,%s,%s,%s",
+                ToStr(notify1.mVal), ToStr(notify2.mVal),
+                ToStr(notify3.mVal), ToStr(notify4.mVal));
+    gBrocAPI.mThreadDebugNotice(tmpBuf);
+}
 
 // ============================================================================
 // Stubs — entity
