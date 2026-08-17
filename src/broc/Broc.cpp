@@ -28,6 +28,12 @@ extern const float VectorDistance(const float* const v1, const float* const v2);
 extern const float VectorDistanceSquared(const float* const p1,
                                          const float* const p2);
 extern void FastSinCos(float radians, float* psin, float* pcos);
+extern void vectoangles(const float* const vec, float* const angles);
+extern void AngleVectors(const float* const angles, float* const forward,
+                         float* const right, float* const up);
+extern void AnglesToUp(const float* const angles, float* const up);
+extern void AnglesToRight(const float* const angles, float* const right);
+extern void AnglesToForward(const float* const angles, float* const forward);
 
 extern "C" int __fpclass(float);
 
@@ -117,6 +123,50 @@ int VecCloser(const vector* vRef, const vector* vA, const vector* vB) {
 // ea: 0x005EF680
 void MathFastSinCos(float fAng, float* sin, float* cos) {
     FastSinCos((fAng * 3.1415927f) * 0.0055555557f, sin, cos);
+}
+
+// ea: 0x005EE110
+void normalize(vector* v) {
+    float len = sqrtf(v->x * v->x + v->y * v->y + v->z * v->z);
+    if (len != 0.0f)
+    {
+        v->x = (1.0f / len) * v->x;
+        float z = (1.0f / len) * v->z;
+        v->y = (1.0f / len) * v->y;
+        v->z = z;
+    }
+}
+
+// ea: 0x005EE1A0
+void VecNormalize(vector* vecOut, const vector* vecIn) {
+    *vecOut = *vecIn;
+    normalize(vecOut);
+}
+
+// ea: 0x005E9780
+void VecToAngles(vector* vecOut, const vector* vecIn) {
+    vectoangles(&vecIn->x, &vecOut->x);
+}
+
+// ea: 0x005E97A0
+void VecAnglesToVectors(const vector* angles, vector* forward,
+                        vector* right, vector* up) {
+    AngleVectors(&angles->x, &forward->x, &right->x, &up->x);
+}
+
+// ea: 0x005EF530
+void VecAnglesToUp(vector* vecOut, const vector* angles) {
+    ::AnglesToUp(&angles->x, &vecOut->x);
+}
+
+// ea: 0x005EF550
+void VecAnglesToRight(vector* vecOut, const vector* angles) {
+    ::AnglesToRight(&angles->x, &vecOut->x);
+}
+
+// ea: 0x005EF570
+void VecAnglesToForward(vector* vecOut, const vector* angles) {
+    ::AnglesToForward(&angles->x, &vecOut->x);
 }
 
 // ea: 0x0049287C0
