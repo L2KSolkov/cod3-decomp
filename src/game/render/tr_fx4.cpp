@@ -8,6 +8,7 @@
 #include "aeps/apsEffect.h"
 
 #include <stdint.h>
+#include <string.h>
 
 // AeAssert (game.o)
 namespace AeAssert {
@@ -157,11 +158,17 @@ struct dpvs_plane_t {
 
 PoolAllocator* dpvs_plane_t::sAllocator;
 
+class BspCell;
+
 class BspPortal {
 public:
-    int numPortalVerts;      // +0x00
-    math::Vector4 plane;     // +0x04
+    dpvs_plane_t plane;           // +0x00
+    BspCell* cell;                // +0x20
+    math::Position3* firstPortalVert; // +0x24
+    int numPortalVerts;            // +0x28
+    int active;                    // +0x2C
 };
+static_assert(sizeof(BspPortal) == 0x30, "BspPortal size mismatch");
 
 // local accessor (Vector4 data member)
 static inline __m128 PlaneV(const math::Vector4& p) { return p.v; }
@@ -178,8 +185,150 @@ struct cdl_proftimer {
 };
 extern cdl_proftimer cdl_proftimer_temp1;
 
-void R_ChopPortalWinding(const dpvs_plane_t* plane);          // tr_dpvs.cpp
-dpvs_plane_t* R_PortalClipPlanesInternal(int iNumPoints);     // file-static
+static inline float Dot3(__m128 a, __m128 b)
+{
+    __m128 product = _mm_mul_ps(a, b);
+    return product.m128_f32[0] + product.m128_f32[1] + product.m128_f32[2];
+}
+
+// IDA usercall body at 0x6BF510.  The original keeps positive/on-plane
+// vertices and emits the crossing point for every non-on transition.
+static const math::Position3* ClipPortalWinding(const dpvs_plane_t* plane,
+                                                const math::Position3* input,
+                                                int* count,
+                                                math::Position3* output)
+{
+    const int n = *count;
+    float distance[32];
+    unsigned char side[32];
+    int negativeCount = 0;
+    int positiveCount = 0;
+
+    for (int i = 0; i < n; ++i)
+    {
+        distance[i] = Dot3(input[i].v, plane->data.v) - plane->data.v.m128_f32[3];
+        side[i] = 2;
+        if (distance[i] < -0.005f)
+        {
+            side[i] = 1;
+            ++negativeCount;
+        }
+        else if (distance[i] > 0.005f)
+        {
+            side[i] = 0;
+            ++positiveCount;
+        }
+    }
+
+    if (positiveCount == 0)
+        return input;
+    if (negativeCount == 0)
+    {
+        *count = 0;
+        return nullptr;
+    }
+
+    int newCount = 0;
+    for (int i = 0; i < n; ++i)
+    {
+        const int next = (i + 1) % n;
+        if (side[i] == 0 || side[i] == 2)
+            output[newCount++] = input[i];
+
+        if (side[next] != 2 && side[next] != side[i])
+        {
+            const float t = distance[i] / (distance[i] - distance[next]);
+            output[newCount].v = _mm_add_ps(
+                input[i].v,
+                _mm_mul_ps(_mm_sub_ps(input[next].v, input[i].v),
+                           _mm_set1_ps(t)));
+            ++newCount;
+            if (newCount == 32)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+                AeAssert::gCurrentLine = 680;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("MAX_POINTS_ON_PORTAL reached (CD)"))
+                    __debugbreak();
+                break;
+            }
+        }
+    }
+
+    if (newCount < 3)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+        AeAssert::gCurrentLine = 685;
+        AeAssert::gCurrentExpr = "iNewPts >= 3";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    *count = newCount;
+    return output;
+}
+
+// IDA usercall body at 0x6C4FB0.  It builds one plane per non-degenerate
+// portal edge in the pool supplied by dpvs_plane_t::sAllocator.
+static dpvs_plane_t* BuildPortalClipPlanes(int count,
+                                           const math::Position3* points)
+{
+    if (count == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+        AeAssert::gCurrentLine = 337;
+        AeAssert::gCurrentExpr = "iNumPoints";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    dpvs_plane_t* result = (dpvs_plane_t*)dpvs_plane_t::sAllocator->Allocate(
+        32u * (unsigned int)count, false);
+    math::Dir3 normal[32];
+    math::Dir3 delta[32];
+
+    for (int i = 0; i < count; ++i)
+    {
+        normal[i].v = _mm_sub_ps(points[i].v, g_dpvs.origin.v);
+        const int next = (i + 1) % count;
+        delta[i].v = _mm_sub_ps(points[next].v, points[i].v);
+    }
+
+    dpvs_plane_t* write = result;
+    for (int i = 0; i < count; ++i)
+    {
+        const __m128 d = delta[i].v;
+        const __m128 n = normal[i].v;
+        __m128 cross = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(d, d, _MM_SHUFFLE(3, 0, 2, 1)),
+                       _mm_shuffle_ps(n, n, _MM_SHUFFLE(3, 1, 0, 2))),
+            _mm_mul_ps(_mm_shuffle_ps(d, d, _MM_SHUFFLE(3, 1, 0, 2)),
+                       _mm_shuffle_ps(n, n, _MM_SHUFFLE(3, 0, 2, 1))));
+        const float lengthSquared = Dot3(cross, cross);
+        if (lengthSquared < 0.000001f)
+            continue;
+
+        uint32_t bits;
+        memcpy(&bits, &lengthSquared, sizeof(bits));
+        bits = 0x5F3759DFu - (bits >> 1);
+        float inverseLength;
+        memcpy(&inverseLength, &bits, sizeof(inverseLength));
+        inverseLength = (1.5f - ((lengthSquared * 0.5f)
+                                  * inverseLength * inverseLength)) * inverseLength;
+        cross = _mm_mul_ps(cross, _mm_set1_ps(inverseLength));
+
+        write->data.v = cross;
+        write->side[0] = cross.m128_f32[0] <= 0.0f ? 0 : 0xC;
+        write->side[1] = cross.m128_f32[1] <= 0.0f ? 4 : 16;
+        write->side[2] = cross.m128_f32[2] <= 0.0f ? 8 : 20;
+        write->data.v.m128_f32[3] = Dot3(cross, g_dpvs.origin.v) - 0.005f;
+        ++write;
+    }
+    return result;
+}
 
 // ============================================================================
 // R_PortalClipPlanes - ea: 0x006C5520
@@ -190,12 +339,16 @@ dpvs_plane_t* R_PortalClipPlanes(BspPortal* portal,
                                  int iPlaneCount, int* piNumPoints)
 {
     *piNumPoints = portal->numPortalVerts;
+    const math::Position3* points = portal->firstPortalVert;
+    alignas(16) math::Position3 clipPoints[64];
+    const math::Position3* current = points;
+    math::Position3* output = clipPoints;
     cdl_proftimer_temp1.value = 0;
-    R_ChopPortalWinding(parentPlane);
+    current = ClipPortalWinding(parentPlane, current, piNumPoints, output);
     if (*piNumPoints != 0)
     {
-        __m128 v5 = _mm_mul_ps(g_dpvs.origin.v, PlaneV(portal->plane));
-        float dist = _mm_shuffle_ps(PlaneV(portal->plane), PlaneV(portal->plane), 255).m128_f32[0]
+        __m128 v5 = _mm_mul_ps(g_dpvs.origin.v, PlaneV(portal->plane.data));
+        float dist = _mm_shuffle_ps(PlaneV(portal->plane.data), PlaneV(portal->plane.data), 255).m128_f32[0]
                    - (v5.m128_f32[0]
                       + (_mm_shuffle_ps(v5, v5, 85).m128_f32[0]
                          + _mm_shuffle_ps(v5, v5, 170).m128_f32[0]));
@@ -213,9 +366,11 @@ dpvs_plane_t* R_PortalClipPlanes(BspPortal* portal,
                 goto clipInternal;
             while (1)
             {
-                R_ChopPortalWinding(planes + v_1020);
+                math::Position3* nextOutput = (output == clipPoints) ? clipPoints + 32 : clipPoints;
+                current = ClipPortalWinding(planes + v_1020, current, piNumPoints, nextOutput);
                 if (*piNumPoints == 0)
                     break;
+                output = nextOutput;
                 ++v_1020;
                 if (v_1020 >= iPlaneCount)
                     goto clipInternal;
@@ -224,17 +379,21 @@ dpvs_plane_t* R_PortalClipPlanes(BspPortal* portal,
         }
         else
         {
-            R_ChopPortalWinding(g_dpvs.farPlane);
+            math::Position3* nextOutput = (output == clipPoints) ? clipPoints + 32 : clipPoints;
+            current = ClipPortalWinding(g_dpvs.farPlane, current, piNumPoints, nextOutput);
             if (*piNumPoints != 0)
             {
+                output = nextOutput;
                 int v_1020 = 0;
                 if (iPlaneCount <= 0)
                     goto clipInternal;
                 while (1)
                 {
-                    R_ChopPortalWinding(planes + v_1020);
+                    nextOutput = (output == clipPoints) ? clipPoints + 32 : clipPoints;
+                    current = ClipPortalWinding(planes + v_1020, current, piNumPoints, nextOutput);
                     if (*piNumPoints == 0)
                         break;
+                    output = nextOutput;
                     ++v_1020;
                     if (v_1020 >= iPlaneCount)
                         goto clipInternal;
@@ -245,5 +404,5 @@ dpvs_plane_t* R_PortalClipPlanes(BspPortal* portal,
     }
     return nullptr;
 clipInternal:
-    return R_PortalClipPlanesInternal(*piNumPoints);
+    return BuildPortalClipPlanes(*piNumPoints, current);
 }
