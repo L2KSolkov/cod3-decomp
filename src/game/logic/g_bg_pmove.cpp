@@ -5160,6 +5160,46 @@ int PM_GetViewHeightLerpTime(const PlayerState* ps, int iTarget, int bDown)
     return 200;
 }
 
+// ea: 0x606180
+__m128 PM_GetViewHeightLerp(int iFromHeight, int iToHeight)
+{
+    PlayerState* ps = pm->ps;
+    const int viewHeightLerpTime = ps->viewHeightLerpTime;
+    if (viewHeightLerpTime == 0)
+        return _mm_setzero_ps();
+
+    if (iFromHeight != -1 && iToHeight != -1
+        && (iToHeight != ps->viewHeightLerpTarget
+            || (iToHeight == ps->crouchViewHeight
+                && (iFromHeight != ps->proneViewHeight
+                    || ps->viewHeightLerpDown != 0)
+                && (iFromHeight != ps->standViewHeight
+                    || ps->viewHeightLerpDown == 0))))
+        return _mm_setzero_ps();
+
+    int lerpDuration;
+    if (ps->viewHeightLerpTarget == ps->proneViewHeight)
+    {
+        lerpDuration = 400;
+    }
+    else if (ps->viewHeightLerpTarget == ps->crouchViewHeight)
+    {
+        lerpDuration = ps->viewHeightLerpDown != 0 ? 200 : 400;
+    }
+    else
+    {
+        lerpDuration = 200;
+    }
+
+    float fraction = (float)(pm->cmd.serverTime - viewHeightLerpTime)
+                     / (float)lerpDuration;
+    if (fraction < 0.0f)
+        return _mm_setzero_ps();
+    if (fraction > 1.0f)
+        return _mm_set_ss(1.0f);
+    return _mm_set_ss(fraction);
+}
+
 // ============================================================================
 // PM_ShouldMakeFootsteps - ea: 0x606250
 // ============================================================================
