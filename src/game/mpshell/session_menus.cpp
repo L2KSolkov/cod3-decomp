@@ -57,7 +57,7 @@ public:
         kGameConnectionTypeLocal = 2,
     };
 
-    static const bool IsOnlineGame();   // ?IsOnlineGame@MPUIInterface@@SA?B_NXZ
+    static bool IsOnlineGame();         // ?IsOnlineGame@MPUIInterface@@SA_NXZ
     static const bool IsLANGame();      // ?IsLANGame@MPUIInterface@@SA?B_NXZ
     static void Step();                 // ?Step@MPUIInterface@@SAXXZ
     static const int GetDefaultOption(eSetting setting,

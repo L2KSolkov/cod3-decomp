@@ -1324,13 +1324,14 @@ extern int dword_F641A0[4 * 1580];
 extern int dword_F641A4[4 * 1580];
 extern void mem_heap_free(void* ptr);  // ?mem_heap_free@@YAXPAX@Z
 
-namespace MPUIInterface {
-void ExitGame();  // ?ExitGame@MPUIInterface@@SAXXZ (mp.o)
-bool NextRoundMapChanges();  // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ (mp.o)
-bool IsOnlineGame();  // mp.o
-bool IsLANGame();     // mp.o
-bool IsLocalGame();   // mp.o
-}
+class MPUIInterface {
+public:
+    static void ExitGame();  // ?ExitGame@MPUIInterface@@SAXXZ (mp.o)
+    static bool NextRoundMapChanges();  // ?NextRoundMapChanges@MPUIInterface@@SA_NXZ (mp.o)
+    static bool IsOnlineGame();  // mp.o
+    static const bool IsLANGame();     // mp.o
+    static const bool IsLocalGame();   // mp.o
+};
 
 // ae_heap wrapper view (streamer.o 0x684DD0; definition in pakmanager.cpp)
 struct mem_heap;
