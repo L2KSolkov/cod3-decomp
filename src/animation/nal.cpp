@@ -2191,6 +2191,7 @@ public:
     bool SetModifierSpeed(unsigned int mask, float priority,
                           nalGenericAnim* anim, float speed); // 0x775230
     nalGenericAnim* GetModifierAnim(unsigned int mask); // ea: 0x007752A0
+    void StopAnims();                         // ea: 0x007750C0
     void Advance(float deltaT);            // ?Advance@AnimationPlayer@@QAEXM@Z (game2.o)
     void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
     void PlayModifier(nalGenericAnim* anim,
@@ -2713,6 +2714,38 @@ nalGenericAnim* AnimationPlayer::GetModifierAnim(unsigned int mask)
             return nullptr;
     }
     return AnimationPlayerAnim(&partial->base);
+}
+
+// ea: 0x007750C0
+void AnimationPlayer::StopAnims()
+{
+    int index = 0;
+    if (QueueSize <= 0)
+    {
+        QueueSize = 0;
+        return;
+    }
+
+    nalAnimState** states = AnimStates;
+    do
+    {
+        nalAnimState* state = *states;
+        if (state->callback != nullptr)
+            state->callback->Release();
+        if (state->play_method != nullptr)
+        {
+            void** vtable = *(void***)state->play_method;
+            ((void (__thiscall*)(void*))vtable[4])(state->play_method);
+        }
+        if (state->instance != nullptr)
+        {
+            void** vtable = *(void***)state->instance;
+            ((void (__thiscall*)(void*, int))vtable[0])(state->instance, 1);
+        }
+        ++states;
+        ++index;
+    } while (index < QueueSize);
+    QueueSize = 0;
 }
 
 // ea: 0x0053A2A0
