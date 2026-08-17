@@ -1231,6 +1231,7 @@ public:
     AARGameModeVote(FEMenuSystem* s);  // ??0AARGameModeVote@@QAE@PAVFEMenuSystem@@@Z
     static AARGameModeVote* Me();     // ?Me@AARGameModeVote@@SAPAV1@XZ
     void TallyVotes();                // ?TallyVotes@AARGameModeVote@@QAEXXZ
+    void ResetPanel();                // ?ResetPanel@AARGameModeVote@@QAEXXZ
     virtual void Init();              // ?Init@AARGameModeVote@@UAEXXZ
     void OnDeactivate(AARBaseMenu* __formal);  // ?OnDeactivate@AARGameModeVote@@QAEXPAVAARBaseMenu@@@Z
     virtual void OnLeft(int c);       // ?OnLeft@AARGameModeVote@@UAEXH@Z

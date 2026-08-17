@@ -1919,6 +1919,21 @@ AARGameModeVote* AARGameModeVote::Me()
     return (AARGameModeVote*)g_femanager.mAARS->menus[3];
 }
 
+// ea: 0x007A62F0
+void AARGameModeVote::ResetPanel()
+{
+    m_currentRow = 0;
+    if (m_iSelectedMode > -1)
+        m_ListBox.mHighlights.mElements[m_iSelectedMode] = false;
+    m_ListBox.Refresh();
+    m_iSelectedMode = -1;
+    for (int i = 0; i < 7; ++i) {
+        m_pModeVoteVals.m_elements[i] = 0;
+        m_ListBox.SetText(i, 1, "0");
+    }
+    m_ListBox.SelectLine(0);
+}
+
 // ea: 0x00791870
 void AARGameModeVote::Init()
 {
