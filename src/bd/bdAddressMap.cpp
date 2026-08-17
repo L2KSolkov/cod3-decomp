@@ -74,6 +74,55 @@ bdCommonAddr::bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr,
       m_natType(hostAddr.m_ptr->m_natType) {
 }
 
+// bdCommonAddr::serialize - ea: 0x89E050 (bdSocket:bdCommonAddr-xbox.obj)
+void bdCommonAddr::serialize(uint8_t* buffer) const {
+    unsigned int offset = 0;
+    const bool ok =
+        bdBytePacker::appendBasicType(buffer, 0x2A, offset, &offset,
+                                      &m_addr, sizeof(m_addr))
+        && bdBytePacker::appendBasicType(buffer, 0x2A, offset, &offset,
+                                         &m_port, sizeof(m_port))
+        && bdBytePacker::appendBasicType(buffer, 0x2A, offset, &offset,
+                                         &m_titleId, sizeof(m_titleId));
+    if (!ok) {
+        bdMessageProxy proxy(".\\bdSocket\\bdCommonAddr-xbox.cpp",
+                             "void __thiscall bdCommonAddr::serialize(unsigned char []) const",
+                             0x5D, "dw/err");
+        proxy.log("defaultFileName", "Unable to serialize common addr.");
+    }
+}
+
+// bdCommonAddr::deserialize - ea: 0x89E1C0 (bdSocket:bdCommonAddr-xbox.obj)
+bool bdCommonAddr::deserialize(const bdReference<bdCommonAddr>& ref,
+                               const uint8_t* buffer) {
+    unsigned int offset = 0;
+    const bool ok =
+        bdBytePacker::removeBasicType(buffer, 0x2A, offset, &offset,
+                                      &m_addr, sizeof(m_addr))
+        && bdBytePacker::removeBasicType(buffer, 0x2A, offset, &offset,
+                                         &m_port, sizeof(m_port))
+        && bdBytePacker::removeBasicType(buffer, 0x2A, offset, &offset,
+                                         &m_titleId, sizeof(m_titleId));
+    if (!ok) {
+        bdMessageProxy proxy(".\\bdSocket\\bdCommonAddr-xbox.cpp",
+                             "bool __thiscall bdCommonAddr::deserialize(class bdReference<class bdCommonAddr>,const unsigned char [])",
+                             0x73, "dw/err");
+        proxy.log("defaultFileName", "Unable to deserialize common addr.");
+        return false;
+    }
+
+    m_hash = 0;
+    m_hash = m_addr.abEnet[0];
+    m_hash = m_addr.abEnet[1] + 31 * m_hash;
+    m_hash = m_addr.abEnet[2] + 31 * m_hash;
+    m_hash = m_addr.abEnet[3] + 31 * m_hash;
+    m_hash = m_addr.abEnet[4] + 31 * m_hash;
+    m_hash = m_addr.abEnet[5] + 31 * m_hash;
+    if (ref.m_ptr != nullptr && ref.m_ptr->m_hash == m_hash)
+        m_isLoopback = true;
+    return true;
+}
+
 // ============================================================================
 // bdAddressMapImpl::bdAddressMapImpl - ea: 0x8B7440
 // ============================================================================
