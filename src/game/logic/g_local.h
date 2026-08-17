@@ -2714,7 +2714,8 @@ struct vehicle_info_t {
     float   projectileDamage;       // +0x3C
     int     spClientSeat;           // +0x40
     int     numSeats;               // +0x44
-    uint8_t _pad48[0x50 - 0x48];
+    int     hudIndex;                // +0x48
+    float   texScrollScale;          // +0x4C
     float   maxSpeed;               // +0x50
     float   accel;                  // +0x54
     float   rotRate;                // +0x58
@@ -2728,16 +2729,48 @@ struct vehicle_info_t {
     float   boundsHeight;           // +0x78
     float   boundsLength;           // +0x7C
     int     health;                 // +0x80
-    uint8_t _pad84[0x174 - 0x84];
+    char    turretWeapon[32];        // +0x84
+    char    turretAltWeapon[32];     // +0xA4
+    char    turretAltModel[32];      // +0xC4
+    char    turretGunnerWeapon[32];  // +0xE4
+    char    turretGunnerModel[32];   // +0x104
+    char    turretGunnerBaseModel[32]; // +0x124
+    char    eventName[32];           // +0x144
+    float   turretHorizSpanLeft;     // +0x164
+    float   turretHorizSpanRight;    // +0x168
+    float   turretVertSpanUp;        // +0x16C
+    float   turretVertSpanDown;      // +0x170
     float   turretRotRate;          // +0x174
-    uint8_t _pad178[0x180 - 0x178];
+    float   turretSwirlLerpRate;     // +0x178
+    float   turretSwirlPitchFactor;  // +0x17C
     float   turretGunnerVertSpanUp; // +0x180
     float   turretGunnerVertSpanDown; // +0x184
     float   engineSndSpeed;         // +0x188
     uint8_t _pad18C[0x190 - 0x18C];
     math::Position3 mins;           // +0x190
     math::Position3 maxs;           // +0x1A0
-    uint8_t _pad1B0[0x25C - 0x1B0];
+    float   cameraZOffset;           // +0x1B0
+    float   cameraFPHeightOffset;    // +0x1B4
+    float   cameraFPFwdOffset;       // +0x1B8
+    float   cameraFPHeightLerp;      // +0x1BC
+    float   cameraChaseOffsetX;      // +0x1C0
+    float   cameraChaseOffsetY;      // +0x1C4
+    float   cameraChaseOffsetZ;      // +0x1C8
+    float   cameraChaseRadiusInner;  // +0x1CC
+    float   cameraChaseRadiusOuter;  // +0x1D0
+    float   cameraVehViewRadius;     // +0x1D4
+    float   cameraVehViewMaxPitch;   // +0x1D8
+    float   cameraVehViewMaxPitchDistAdj; // +0x1DC
+    float   cameraVehViewFwdBackRatio; // +0x1E0
+    float   cameraVehViewMoveInPitch; // +0x1E4
+    float   camLinkedPitchFactor;    // +0x1E8
+    float   pitchBasedCamOffsetX;    // +0x1EC
+    float   pitchBasedCamOffsetZ;    // +0x1F0
+    float   vehicleSndTopSpeed;      // +0x1F4
+    float   vehicleSndTopSpeedReverse; // +0x1F8
+    char    vehicleCurveFile[32];    // +0x1FC
+    char    vehiclePhysicsParms[32]; // +0x21C
+    char    vehiclePhysicsParmsThird[32]; // +0x23C
     char    mMantleHintString[32];  // +0x25C
     int     mMantleHintStringIndex; // +0x27C
     int     vehicleAnimMatrixColumn;  // +0x280

@@ -312,6 +312,7 @@ void CurveManager::AddConditionFunc(
 
 // Curve evaluator statics (CurveManager.cpp; file-static Eval* helpers)
 extern unsigned int AeHash(const char* str);  // ae_hash.cpp
+float g_VehSndSmoothingMaxVelocity = 40.0f;  // ?g_VehSndSmoothingMaxVelocity@@3MA (game.o @ 0xDF6BB0)
 typedef float (__cdecl* CurveEvalFn)(unsigned int, unsigned int,
                                      unsigned int, float, float,
                                      unsigned int);
@@ -374,8 +375,62 @@ float EvalImpact(unsigned int frameId, unsigned int entityHandleVal,
 }
 
 // Remaining curve evaluators (full ports deferred; stub to keep linking)
-float EvalVelocity(unsigned int, unsigned int, unsigned int, float,
-                   float, unsigned int) { return 0.0f; }
+float EvalVelocity(unsigned int, unsigned int entityHandleVal, unsigned int,
+                   float, float, unsigned int)
+{
+    unsigned int v2 = entityHandleVal & 0xFFF;
+    float maxVehicleSpeed = 400.0f;
+    float maxVehicleSpeedReverse = -400.0f;
+    if (v2 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v2].mKey)
+        return 0.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+    if (mObject == nullptr)
+        return 0.0f;
+    Curve* curve = mObject->curve;
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    if (curve == nullptr || scr_vehicle == nullptr)
+        return 0.0f;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info != nullptr)
+    {
+        maxVehicleSpeed = info->vehicleSndTopSpeed;
+        maxVehicleSpeedReverse = info->vehicleSndTopSpeedReverse;
+    }
+    float speed = scr_vehicle->GetAverageWheelSpeed() * 10.0f;
+    curve->mTargetSpeed = speed;
+    if (speed > maxVehicleSpeed)
+        curve->mTargetSpeed = maxVehicleSpeed;
+    else if (maxVehicleSpeedReverse > speed)
+        curve->mTargetSpeed = maxVehicleSpeedReverse;
+    if (curve->mTargetSpeed <= curve->mCurrentSmoothing)
+    {
+        if (curve->mCurrentSmoothing > curve->mTargetSpeed)
+        {
+            float next = curve->mCurrentSmoothing
+                         - g_VehSndSmoothingMaxVelocity;
+            curve->mCurrentSmoothingVelocity =
+                -g_VehSndSmoothingMaxVelocity;
+            curve->mCurrentSmoothing = next;
+            if (curve->mTargetSpeed > next)
+                curve->mCurrentSmoothing = curve->mTargetSpeed;
+        }
+    }
+    else
+    {
+        curve->mCurrentSmoothingVelocity =
+            g_VehSndSmoothingMaxVelocity;
+        float next = g_VehSndSmoothingMaxVelocity
+                     + curve->mCurrentSmoothing;
+        curve->mCurrentSmoothing = next;
+        if (next > curve->mTargetSpeed)
+            curve->mCurrentSmoothing = curve->mTargetSpeed;
+    }
+    float speeda = curve->mCurrentSmoothing;
+    if (speeda < 0.0f)
+        speeda = -speeda;
+    return speeda / maxVehicleSpeed;
+}
 float EvalSpringCompressionKey(unsigned int, unsigned int, unsigned int,
                                float, float, unsigned int) { return 0.0f; }
 float EvalRepeatInterval(unsigned int, unsigned int, unsigned int, float,
