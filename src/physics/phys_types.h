@@ -858,6 +858,9 @@ struct phys_contact_manifold {
 
     const float& compute_convex_poly_area();
     const float& compute_convex_poly_perimeter();
+    void reset_list_mesh_point();
+    void alloc_sorted_list_mesh_point();
+    void xform_mesh_points(const math::Mat43* xform);
     void qsort(contact_manifold_mesh_point** i0_mp, contact_manifold_mesh_point** i1_mp);
     void setup_list_sorted_mesh_point();
     void generate_convex_poly_internal();

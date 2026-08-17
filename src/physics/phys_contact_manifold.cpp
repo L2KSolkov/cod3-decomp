@@ -20,6 +20,49 @@
 // ============================================================================
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+// phys_contact_manifold::reset_list_mesh_point - ea: 0x8786A0
+void phys_contact_manifold::reset_list_mesh_point() {
+    phys_memory_heap* allocater = m_allocater;
+    allocater->m_buffer_cur = (char*)(((uintptr_t)allocater->m_buffer_cur + 15) & ~uintptr_t(15));
+    if (allocater->m_buffer_cur >= allocater->m_buffer_end
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 96,
+                     "m_buffer_cur < m_buffer_end", g_contact_manifold_error_msg))
+        __debugbreak();
+    m_list_mesh_point = (contact_manifold_mesh_point*)allocater->m_buffer_cur;
+    m_list_mesh_point_count = 0;
+}
+
+// phys_contact_manifold::alloc_sorted_list_mesh_point - ea: 0x8786F0
+void phys_contact_manifold::alloc_sorted_list_mesh_point() {
+    phys_memory_heap* allocater = m_allocater;
+    allocater->m_buffer_cur = (char*)(((uintptr_t)allocater->m_buffer_cur + 3) & ~uintptr_t(3));
+    if (allocater->m_buffer_cur >= allocater->m_buffer_end
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 96,
+                     "m_buffer_cur < m_buffer_end", g_contact_manifold_error_msg))
+        __debugbreak();
+    m_list_sorted_mesh_point = (contact_manifold_mesh_point**)allocater->m_buffer_cur;
+    allocater->m_buffer_cur += 4 * m_list_mesh_point_count;
+    if (allocater->m_buffer_cur > allocater->m_buffer_end
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 104,
+                     "m_buffer_cur <= m_buffer_end", g_contact_manifold_error_msg))
+        __debugbreak();
+}
+
+// phys_contact_manifold::xform_mesh_points - ea: 0x878770
+void phys_contact_manifold::xform_mesh_points(const math::Mat43* xform) {
+    for (contact_manifold_mesh_point* i = m_list_mesh_point;
+         i != &m_list_mesh_point[m_list_mesh_point_count]; ++i) {
+        const __m128 p = i->m_p.v;
+        i->m_p.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(p, p, 0), xform->x.v),
+                _mm_mul_ps(_mm_shuffle_ps(p, p, 85), xform->y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(p, p, 170), xform->z.v),
+                xform->w.v));
+    }
+}
+
 // ============================================================================
 // phys_contact_manifold::compute_convex_poly_area â€” ea: 0x8873A0
 // ============================================================================
