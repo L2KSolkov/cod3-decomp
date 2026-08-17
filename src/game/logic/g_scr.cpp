@@ -10573,8 +10573,8 @@ extern const char* BG_GetWeaponTypeName(weapType_t type);  // g_bg_pmove.cpp (0x
 extern void Bullet_Fire(Entity* attacker, float spread, int damage,
                         weaponParms* wp, Entity* ignore,
                         float range);  // g.o
-extern int XAnimIsVariationChunk(AnimTree* anims,
-                                 unsigned int animIndex);  // nal.cpp (anim.o)
+extern bool XAnimIsVariationChunk(AnimTree* anims,
+                                  unsigned int animIndex);  // nal.cpp (anim.o)
 extern int XAnimGetFrameCount(AnimTree* anims,
                               unsigned int animIndex);  // anim.o
 extern IVPointer<XModel> SV_XModelGet(const char* name);  // ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z (sv_game.cpp)
