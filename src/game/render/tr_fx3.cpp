@@ -323,7 +323,7 @@ public:
     unsigned int mTickMSec;         // +0x0C
     static ServerTime sInst;        // ?sInst@ServerTime@@2V1@A
 };
-extern ServerTime ServerTime_sInst;  // g.o
+ServerTime ServerTime_sInst;         // g.o
 struct nglSceneView {
     uint8_t _pad[0x8C];
     math::Position3 ViewPos;        // +0x8C
@@ -540,6 +540,8 @@ public:
     DbElement mElements[0x540];      // +0xA8
     static EntityHandleDbLocal3 sInst;  // ?sInst@EntityHandleDb@@0V1@A
 };
+DObjHandleDbLocal2 DObjHandleDbLocal2::sInst;
+EntityHandleDbLocal3 EntityHandleDbLocal3::sInst;
 extern void apsMemory_ClearBlockAllocator();   // ?ClearBlockAllocator@apsMemory@@SAXXZ
 extern void apsMemory_SetBlockAllocator();     // ?SetBlockAllocator@apsMemory@@SAXXZ
 extern void apsEffect_SetCulled(apsEffect* effect, int v);    // ?SetCulled@apsEffect@@QAEXH@Z
