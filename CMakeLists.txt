@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(cod3mp VERSION 0.1.0 LANGUAGES CXX ASM_MASM)
+project(cod3mp VERSION 0.1.0 LANGUAGES C CXX ASM_MASM)
 
 # 32-bit x86 only — the code assumes 4-byte pointers
 set(CMAKE_CXX_STANDARD 14)
@@ -23,6 +23,25 @@ include_directories(${CMAKE_SOURCE_DIR}/platform/xbox_shim)
 # ============================================================================
 # Engine libraries (Treyarch)
 # ============================================================================
+add_library(cod3_zlib STATIC
+    third_party/zlib/adler32.c
+    third_party/zlib/compress.c
+    third_party/zlib/crc32.c
+    third_party/zlib/deflate.c
+    third_party/zlib/gzclose.c
+    third_party/zlib/gzlib.c
+    third_party/zlib/gzread.c
+    third_party/zlib/gzwrite.c
+    third_party/zlib/infback.c
+    third_party/zlib/inffast.c
+    third_party/zlib/inflate.c
+    third_party/zlib/inftrees.c
+    third_party/zlib/trees.c
+    third_party/zlib/uncompr.c
+    third_party/zlib/zutil.c
+)
+target_include_directories(cod3_zlib PUBLIC third_party/zlib)
+
 add_library(cod3_broc STATIC
     src/broc/Broc.cpp
     src/broc/mp_anim_wad.cpp
@@ -513,6 +532,7 @@ add_executable(cod3mp
     platform/win32/main.cpp
 )
 target_link_libraries(cod3mp PRIVATE
+    cod3_zlib
     cod3_broc
     cod3_physics
     cod3_ngl

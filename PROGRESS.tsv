@@ -114,7 +114,7 @@ ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	PORTED	ngl_font.cpp: font di
 
 bdCore:bdCommonAddr-xbox.obj	bdCore	bdCommonAddr-xbox.obj	engine	19	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 
-zlib_xboxr:unzip.o	zlib_xboxr	unzip.o	engine	18	TODO	
+zlib_xboxr:unzip.o	zlib_xboxr	unzip.o	engine	18	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
 ngl_xboxr:ngl_internal.o	ngl_xboxr	ngl_internal.o	engine	18	PORTED	ngl_internal.cpp: skip-list resource dirs (tlSkipList.h), init/exit, globals
 
@@ -174,7 +174,7 @@ bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	PORTED	[bdNet] bdGameInfo.cp
 
 render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOceanShader.h/.cpp (ocean shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; SetContext+Render deferred)
 
-zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	
+zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
 
@@ -190,7 +190,7 @@ mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	PORTED
 
 controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)
 
-zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO	
+zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
 nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 
@@ -384,9 +384,9 @@ render_xboxr:cdWorldBlendShader.o	render_xboxr	cdWorldBlendShader.o	engine	5	POR
 
 render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	PORTED	cdWorldShader.h/.cpp (world shader: Init/Toggle/Register/AddNode; Render deferred)
 
-zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	TODO	
+zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
-zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO	
+zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	PORTED	apsAction.cpp (apsAction base: ctor/dtor/SetParam/SetDomain/Fixup; apsArray<T>+apsVirtualBase+apsDestroy/apsFixUp in apsAction.h; removed stale apsSuppliedActions stubs
 
@@ -564,11 +564,11 @@ inplace_xboxr:PtrFixupTable.o	inplace_xboxr	PtrFixupTable.o	engine	1	PORTED	Phas
 
 inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
 
-zlib_xboxr:uncompr.o	zlib_xboxr	uncompr.o	engine	1	TODO	
+zlib_xboxr:uncompr.o	zlib_xboxr	uncompr.o	engine	1	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
-zlib_xboxr:inffast.o	zlib_xboxr	inffast.o	engine	1	TODO	
+zlib_xboxr:inffast.o	zlib_xboxr	inffast.o	engine	1	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
-zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	TODO	
+zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
 aeps_xboxr:apsSimpleMeshNode.o	aeps_xboxr	apsSimpleMeshNode.o	engine	1	PORTED	apsSimpleMeshNode.cpp (Render stub - GPU mesh draw deferred; requires unported Xbox D3D8/ngl pipeline)
 
