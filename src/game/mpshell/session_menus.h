@@ -1190,6 +1190,7 @@ public:
     static AARMapVote* Me();          // ?Me@AARMapVote@@SAPAV1@XZ
     void TallyVotes();                // ?TallyVotes@AARMapVote@@QAEXXZ
     void VoteOnMap(int indexNewMap, int indexOldMap); // ?VoteOnMap@AARMapVote@@QAEXHH@Z
+    void ResetPanel();                // ?ResetPanel@AARMapVote@@QAEXXZ
     static unsigned char m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@AARMapVote@@1EA @ 0x1388D58
     virtual void Init();              // ?Init@AARMapVote@@UAEXXZ
     virtual void Draw();              // ?Draw@AARMapVote@@UAEXXZ

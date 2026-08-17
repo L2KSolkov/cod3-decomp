@@ -22,6 +22,23 @@
             __debugbreak();                                               \
     } while (0)
 
+// MPVote layout from IDA (mp.o; currVote at MPPlayerManager +0x5914).
+struct AARMPVoteReset {
+    unsigned char voteStartTime[4];
+    int mVoteType;
+    unsigned char voteIndex;
+    unsigned char mYesVotes;
+    unsigned char mNoVotes;
+    unsigned char callerIndex;
+    unsigned char voteSubject;
+    unsigned char eligableVoters;
+    unsigned char _pad0E[2];
+    int arrPlayerMapVotes[16];
+    bool localVoted;
+    unsigned char _tail[3];
+};
+static_assert(sizeof(AARMPVoteReset) == 0x54, "MPVote layout mismatch");
+
 // ============================================================================
 // MPUIInterface - minimal view with binary-exact manglings (mp.o owns the
 // real definitions; only members used by mp_shell.o are declared).
@@ -1880,6 +1897,41 @@ void AARPersonalStats::OnRight(int c)
 AARMapVote* AARMapVote::Me()
 {
     return (AARMapVote*)g_femanager.mAARS->menus[4];
+}
+
+// ea: 0x007A54D0
+void AARMapVote::ResetPanel()
+{
+    const int mapLimit = g_NumBaseMaps + 1;
+    if (m_currentRow >= mapLimit || m_currentRow < 0) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\mp/ui/AARMapVote.cpp";
+        AeAssert::gCurrentLine = 611;
+        AeAssert::gCurrentExpr = "m_currentRow < kAARPMapLimit && m_currentRow >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("indexing error"))
+            __debugbreak();
+    }
+    m_currentRow = 0;
+    if (m_iSelectedMap > -1)
+        m_ListBox.mHighlights.mElements[m_iSelectedMap] = false;
+    m_ListBox.Refresh();
+    m_iSelectedMap = -1;
+    for (int i = 0; i < 64; ++i)
+        m_pMapVoteVals[i] = 0;
+    for (int i = 0; i < mapLimit; ++i)
+        m_ListBox.SetText(i, 1, "0");
+    m_ListBox.SelectLine(0);
+
+    AARMPVoteReset vote = {};
+    memset(vote.arrPlayerMapVotes, 0xFF, sizeof(vote.arrPlayerMapVotes));
+    vote.voteSubject = 0xFF;
+    vote.callerIndex = 0xFF;
+    vote.mVoteType = 0; // kNoVote
+    vote.localVoted = false;
+    MPPlayerManager* playerManager =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    *reinterpret_cast<AARMPVoteReset*>(reinterpret_cast<char*>(playerManager) + 0x5914) =
+        vote;
 }
 
 // ea: 0x00791690
