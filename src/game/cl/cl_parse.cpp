@@ -7,6 +7,7 @@
 #include "cl_console.h"
 
 #include <string.h>
+#include <intrin.h>
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
@@ -201,21 +202,21 @@ struct trGlobals_t {
 };
 extern trGlobals_t tr;
 
-struct cdl_proftimer_cls {
-    float value;
-    unsigned int _pad[3];
-    void start();
-    void stop();
+struct cdl_proftimer {
+    unsigned __int64 stamp;
+    unsigned __int64 value;
+    void start() { stamp = __rdtsc(); }
+    void stop() { value += __rdtsc() - stamp; }
 };
-extern cdl_proftimer_cls cdl_proftimer_draw;
-extern cdl_proftimer_cls cdl_proftimer_audio;
-extern cdl_proftimer_cls cdl_proftimer_streaming;
-extern cdl_proftimer_cls cdl_proftimer_pak_mgr;
-extern cdl_proftimer_cls cdl_proftimer_music_mgr;
-extern cdl_proftimer_cls cdl_proftimer_effect_sys;
-extern cdl_proftimer_cls cdl_proftimer_rumble_mgr;
-extern cdl_proftimer_cls cdl_proftimer_scn_effect;
-extern cdl_proftimer_cls cdl_proftimer_entities;
+extern cdl_proftimer cdl_proftimer_draw;
+extern cdl_proftimer cdl_proftimer_audio;
+extern cdl_proftimer cdl_proftimer_streaming;
+extern cdl_proftimer cdl_proftimer_pak_mgr;
+extern cdl_proftimer cdl_proftimer_music_mgr;
+extern cdl_proftimer cdl_proftimer_effect_sys;
+extern cdl_proftimer cdl_proftimer_rumble_mgr;
+extern cdl_proftimer cdl_proftimer_scn_effect;
+extern cdl_proftimer cdl_proftimer_entities;
 
 // cls.configstrings (Broc::string[1024], aliased via servername)
 struct Broc_string_view2 {

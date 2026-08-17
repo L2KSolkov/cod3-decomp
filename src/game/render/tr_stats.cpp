@@ -21,9 +21,11 @@ bool Assert(const char* fmtstring, ...);
 
 // cdl_proftimer (cdl_base.h; value +0x00)
 struct cdl_proftimer {
-    float value;          // +0x00
-    uint32_t _pad[3];     // +0x04
-    uint64_t stamp;       // +0x10
+    uint64_t stamp;        // +0x00
+    uint64_t value;        // +0x08
+};
+struct cdl_profcounter {
+    uint64_t value;
 };
 
 void cdl_profile_reset();  // ?cdl_profile_reset@@YAXXZ (cdl_base.cpp)
@@ -77,8 +79,8 @@ CDL_PROFTIMER_EXTERN(ent_advance)
 CDL_PROFTIMER_EXTERN(fx_all)
 CDL_PROFTIMER_EXTERN(fx_update)
 CDL_PROFTIMER_EXTERN(fx_render)
-extern cdl_proftimer cdl_profcounter_temp0;  // ?cdl_profcounter_temp0@@3Ucdl_proftimer@@A
-extern cdl_proftimer cdl_profcounter_temp1;  // ?cdl_profcounter_temp1@@3Ucdl_proftimer@@A
+extern cdl_profcounter cdl_profcounter_temp0;  // ?cdl_profcounter_temp0@@3Ucdl_profcounter@@A
+extern cdl_profcounter cdl_profcounter_temp1;  // ?cdl_profcounter_temp1@@3Ucdl_profcounter@@A
 
 // ============================================================================
 // profile_reset - ea: 0x006C4370

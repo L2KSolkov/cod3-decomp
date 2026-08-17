@@ -172,7 +172,11 @@ extern "C" struct dpvs_t {
     uint8_t _pad[0xD4 - 0x10];
     dpvs_plane_t* farPlane;      // +0xD4
 } g_dpvs;  // tr_dpvs.cpp
-extern float cdl_proftimer_temp1;
+struct cdl_proftimer {
+    unsigned __int64 stamp;
+    unsigned __int64 value;
+};
+extern cdl_proftimer cdl_proftimer_temp1;
 
 void R_ChopPortalWinding(const dpvs_plane_t* plane);          // tr_dpvs.cpp
 dpvs_plane_t* R_PortalClipPlanesInternal(int iNumPoints);     // file-static
@@ -186,7 +190,7 @@ dpvs_plane_t* R_PortalClipPlanes(BspPortal* portal,
                                  int iPlaneCount, int* piNumPoints)
 {
     *piNumPoints = portal->numPortalVerts;
-    cdl_proftimer_temp1 = 0;
+    cdl_proftimer_temp1.value = 0;
     R_ChopPortalWinding(parentPlane);
     if (*piNumPoints != 0)
     {

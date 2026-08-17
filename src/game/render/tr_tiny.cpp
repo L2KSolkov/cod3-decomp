@@ -625,11 +625,10 @@ int DObj::GetLOD() const
 void DObj::ClearLODOverride() { mLODOverride = -1; }
 void DObj::ClearLODAnim() { mLODAnim = -1; }
 
-class cdl_proftimer {
+struct cdl_proftimer {
 public:
-    float value;                     // +0x00
-    uint8_t _pad[4];
-    __int64 ticks;                   // +0x08
+    unsigned __int64 stamp;          // +0x00
+    unsigned __int64 value;          // +0x08
     void start();                    // ?start@cdl_proftimer@@QAEXXZ
     void stop();                     // ?stop@cdl_proftimer@@QAEXXZ
     float get_elapsed();             // ?get_elapsed@cdl_proftimer@@QAEMXZ @ 0x6E7EB0
@@ -3282,7 +3281,7 @@ template void nglParamSet::Set<cdSimpleAlphaAlphaParamType, float>(
 
 float cdl_proftimer::get_elapsed()  // ?get_elapsed@cdl_proftimer@@QAEMXZ @ 0x6E7EB0
 {
-    return (float)((double)ticks * 0.0000013636364);
+    return (float)((double)value * 0.0000013636364);
 }
 void int_clamp(int& ioIVal, float& ioFVal, int iLo, int iHi)  // ?int_clamp@@YAXAAHAAMHH@Z @ 0x6E69A0
 {

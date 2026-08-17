@@ -10,6 +10,7 @@
 #include "core/math_types.h"
 #include "cdl_types.h"
 #include <cstring>
+#include <stdint.h>
 
 // ============================================================================
 // GJK Global State (mirrors .bss layout at 0x10E0BC0-0x10E0DE0)
@@ -26,23 +27,23 @@ static unsigned int w_mask;        // walker mask (ea: 0x10E0CC0)
 static unsigned int w_ind;         // walker index (ea: 0x10E0CCC)
 
 // Profile counters
-struct cdl_proftimer { float value; unsigned int _pad[3]; };
-struct cdl_profcounter { int value; unsigned int _pad[3]; };
-static cdl_proftimer cdl_proftimer_closest;
-static cdl_proftimer cdl_proftimer_support;
-static cdl_proftimer cdl_proftimer_collide;
-static cdl_proftimer cdl_proftimer_gjk;
-static cdl_proftimer cdl_proftimer_push_out_sphere;
-static cdl_proftimer cdl_proftimer_test1;
-static cdl_proftimer cdl_proftimer_test2;
-static cdl_proftimer cdl_proftimer_local_failure;
-static cdl_proftimer cdl_proftimer_partial_failure;
-static cdl_proftimer cdl_proftimer_full_failure;
-static cdl_proftimer cdl_proftimer_make_hull;
-static cdl_profcounter cdl_profcounter_collide_calls;
-static cdl_profcounter cdl_profcounter_gjk_separated;
-static cdl_profcounter cdl_profcounter_gjk_invalid;
-static cdl_profcounter cdl_profcounter_gjk;
+struct cdl_proftimer { uint64_t stamp; uint64_t value; };
+struct cdl_profcounter { uint64_t value; };
+cdl_proftimer cdl_proftimer_closest;
+cdl_proftimer cdl_proftimer_support;
+cdl_proftimer cdl_proftimer_collide;
+cdl_proftimer cdl_proftimer_gjk;
+cdl_proftimer cdl_proftimer_push_out_sphere;
+cdl_proftimer cdl_proftimer_test1;
+cdl_proftimer cdl_proftimer_test2;
+cdl_proftimer cdl_proftimer_local_failure;
+cdl_proftimer cdl_proftimer_partial_failure;
+cdl_proftimer cdl_proftimer_full_failure;
+cdl_proftimer cdl_proftimer_make_hull;
+cdl_profcounter cdl_profcounter_collide_calls;
+cdl_profcounter cdl_profcounter_gjk_separated;
+cdl_profcounter cdl_profcounter_gjk_invalid;
+cdl_profcounter cdl_profcounter_gjk;
 
 // Tolerance settings
 static float abs_error2 = 0.0001f;

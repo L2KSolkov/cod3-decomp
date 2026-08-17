@@ -771,8 +771,10 @@ void AddPostCallback();  // ?AddPostCallback@CG_SceneBlur@@YAXXZ
 }
 
 // cdl_proftimer (member start/stop)
-class cdl_proftimer {
+struct cdl_proftimer {
 public:
+    unsigned __int64 stamp;
+    unsigned __int64 value;
     void start();  // ?start@cdl_proftimer@@QAEXXZ
     void stop();   // ?stop@cdl_proftimer@@QAEXXZ
 };

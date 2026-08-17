@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <intrin.h>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "core/ae_fixed_string.h"
@@ -11678,10 +11679,10 @@ extern void EffectEventStopEmitting(Handle effect);
 
 // ?start@cdl_proftimer@@QAEXXZ / ?stop@cdl_proftimer@@QAEXXZ (stubs)
 struct cdl_proftimer {
-    float value;  // +0x00
-    unsigned int _pad[3];
-    void start() {}
-    void stop() {}
+    unsigned __int64 stamp;  // +0x00
+    unsigned __int64 value;  // +0x08
+    void start() { stamp = __rdtsc(); }
+    void stop() { value += __rdtsc() - stamp; }
 };
 cdl_proftimer cdl_proftimer_interact;  // ?cdl_proftimer_interact@@3Ucdl_proftimer@@A
 

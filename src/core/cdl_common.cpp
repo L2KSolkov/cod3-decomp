@@ -7,30 +7,26 @@
 #include "core/math_types.h"
 #include "cdl_types.h"
 #include <math.h>
+#include <stdint.h>
 
 // CDL profiler globals (cdl_xboxr:cdl_common.o) - debug timing data
 struct cdl_proftimer {
-    float value;
-    unsigned int _pad[3];
-    void start();
-    void stop();
-};
-struct cdl_proftimer_cls {
-    float value;
-    unsigned int _pad[3];
+    uint64_t stamp;
+    uint64_t value;
     void start();
     void stop();
 };
 struct cdl_profcounter {
-    int value;
-    unsigned int _pad[3];
+    uint64_t value;
 };
-void cdl_proftimer_cls::start() {}
-void cdl_proftimer_cls::stop() {}
 // ?cdl_proftimer_update_rb@@3Ucdl_proftimer@@A (game.o data @ 0x01334968)
 cdl_proftimer cdl_proftimer_update_rb;
 cdl_proftimer cdl_proftimer_vmcalls;              // ?cdl_proftimer_vmcalls@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_cl_msgs;              // ?cdl_proftimer_cl_msgs@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_temp2;                // ?cdl_proftimer_temp2@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_fx_all;               // ?cdl_proftimer_fx_all@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_fx_update;            // ?cdl_proftimer_fx_update@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_fx_render;            // ?cdl_proftimer_fx_render@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_cvar;                 // ?cdl_proftimer_cvar@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_dobj_anim;            // ?cdl_proftimer_dobj_anim@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_ent_actors;           // ?cdl_proftimer_ent_actors@@3Ucdl_proftimer@@A
@@ -40,16 +36,37 @@ cdl_proftimer cdl_proftimer_sight_trace_sphere;   // ?cdl_proftimer_sight_trace_
 cdl_proftimer cdl_proftimer_temp0;                // ?cdl_proftimer_temp0@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_trace_point_list;     // ?cdl_proftimer_trace_point_list@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_trace_sphere_list;    // ?cdl_proftimer_trace_sphere_list@@3Ucdl_proftimer@@A
-cdl_proftimer_cls cdl_proftimer_draw;             // ?cdl_proftimer_draw@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_audio;            // ?cdl_proftimer_audio@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_streaming;        // ?cdl_proftimer_streaming@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_pak_mgr;          // ?cdl_proftimer_pak_mgr@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_music_mgr;        // ?cdl_proftimer_music_mgr@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_effect_sys;       // ?cdl_proftimer_effect_sys@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_rumble_mgr;       // ?cdl_proftimer_rumble_mgr@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_scn_effect;       // ?cdl_proftimer_scn_effect@@3Ucdl_proftimer_cls@@A
-cdl_proftimer_cls cdl_proftimer_entities;         // ?cdl_proftimer_entities@@3Ucdl_proftimer_cls@@A
+cdl_proftimer cdl_proftimer_segment_patch;        // ?cdl_proftimer_segment_patch@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_segment_brush;        // ?cdl_proftimer_segment_brush@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_traverse;             // ?cdl_proftimer_traverse@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_vsphere_poly;         // ?cdl_proftimer_vsphere_poly@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_collide_segment_list; // ?cdl_proftimer_collide_segment_list@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_vsphere_traverse;     // ?cdl_proftimer_vsphere_traverse@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_vsphere_brush;        // ?cdl_proftimer_vsphere_brush@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_vsphere_patch;        // ?cdl_proftimer_vsphere_patch@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_wheel_collision;      // ?cdl_proftimer_wheel_collision@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_temp1;                // ?cdl_proftimer_temp1@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_temp3;                // ?cdl_proftimer_temp3@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_drones;               // ?cdl_proftimer_drones@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_task_sys;             // ?cdl_proftimer_task_sys@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_smoke_mgr;            // ?cdl_proftimer_smoke_mgr@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_notifies;             // ?cdl_proftimer_notifies@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_subtitles;            // ?cdl_proftimer_subtitles@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_aethread;             // ?cdl_proftimer_aethread@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_scn_anim;             // ?cdl_proftimer_scn_anim@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_veh_ctrl;             // ?cdl_proftimer_veh_ctrl@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_ent_advance;          // ?cdl_proftimer_ent_advance@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_draw;                 // ?cdl_proftimer_draw@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_audio;                // ?cdl_proftimer_audio@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_streaming;            // ?cdl_proftimer_streaming@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_pak_mgr;              // ?cdl_proftimer_pak_mgr@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_music_mgr;            // ?cdl_proftimer_music_mgr@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_effect_sys;           // ?cdl_proftimer_effect_sys@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_rumble_mgr;           // ?cdl_proftimer_rumble_mgr@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_scn_effect;           // ?cdl_proftimer_scn_effect@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_entities;             // ?cdl_proftimer_entities@@3Ucdl_proftimer@@A
 cdl_profcounter cdl_profcounter_temp0;            // ?cdl_profcounter_temp0@@3Ucdl_profcounter@@A
+cdl_profcounter cdl_profcounter_temp1;            // ?cdl_profcounter_temp1@@3Ucdl_profcounter@@A
 
 // External assert
 extern bool _tlAssert(const char* file, int line, const char* cond, const char* msg);

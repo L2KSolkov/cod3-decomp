@@ -612,11 +612,10 @@ extern vmCvar_t bg_viewheight_prone;          // game.o
 
 // cdl_proftimer - profile timing accumulator (game.o)
 struct cdl_proftimer {
-    float    value;      // +0x00
-    uint32_t _pad[3];    // +0x04
-    uint64_t stamp;      // +0x10
+    uint64_t stamp;      // +0x00
+    uint64_t value;      // +0x08
     void start() { stamp = __rdtsc(); }           // ea: 0x004A91A0 (inline)
-    void stop() { value += (float)(__rdtsc() - stamp); }  // ea: 0x004A91E0 (inline)
+    void stop() { value += __rdtsc() - stamp; }   // ea: 0x004A91E0 (inline)
 };
 
 // ============================================================================

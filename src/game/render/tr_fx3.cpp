@@ -22,11 +22,10 @@ bool IsIgnored();
 bool Assert(const char* fmtstring, ...);
 }
 
-class cdl_proftimer {
+struct cdl_proftimer {
 public:
-    float value;                     // +0x00
-    uint8_t _pad[4];
-    __int64 ticks;                   // +0x08
+    unsigned __int64 stamp;          // +0x00
+    unsigned __int64 value;          // +0x08
     void start();                    // ?start@cdl_proftimer@@QAEXXZ
     void stop();                     // ?stop@cdl_proftimer@@QAEXXZ
     float get_elapsed();             // ?get_elapsed@cdl_proftimer@@QAEMXZ

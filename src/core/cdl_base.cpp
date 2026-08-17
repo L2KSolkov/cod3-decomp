@@ -7,13 +7,13 @@
 #include <cstring>
 
 // External profile counters (declared in cdl_gjk.cpp)
-extern struct cdl_proftimer { float value; unsigned int _pad[3]; }
+extern struct cdl_proftimer { unsigned __int64 stamp; unsigned __int64 value; }
     cdl_proftimer_closest, cdl_proftimer_support, cdl_proftimer_collide,
     cdl_proftimer_gjk, cdl_proftimer_push_out_sphere,
     cdl_proftimer_test1, cdl_proftimer_test2,
     cdl_proftimer_local_failure, cdl_proftimer_partial_failure,
     cdl_proftimer_full_failure, cdl_proftimer_make_hull;
-extern struct cdl_profcounter { int value; unsigned int _pad[3]; }
+extern struct cdl_profcounter { unsigned __int64 value; }
     cdl_profcounter_collide_calls, cdl_profcounter_gjk_separated,
     cdl_profcounter_gjk_invalid, cdl_profcounter_gjk;
 
