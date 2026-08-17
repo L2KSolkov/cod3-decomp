@@ -24,6 +24,9 @@ static void mem_free(void* ptr) {
 
 extern int gNumStringsAlloc;
 extern int gNumStringsFreed;
+extern const float VectorDistance(const float* const v1, const float* const v2);
+extern const float VectorDistanceSquared(const float* const p1,
+                                         const float* const p2);
 
 extern "C" int __fpclass(float);
 
@@ -82,6 +85,32 @@ unsigned int length(const char* txta) {
 // ea: 0x005EE0D0
 float length(const vector& v) {
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+// ea: 0x005E9690
+float length2(const vector* v) {
+    return v->x * v->x + v->y * v->y + v->z * v->z;
+}
+
+// ea: 0x005E96C0
+float dot(const vector* a, const vector* b) {
+    return a->z * b->z + a->y * b->y + a->x * b->x;
+}
+
+// ea: 0x005E96F0
+float VecDistance(const vector* v0, const vector* v1) {
+    return VectorDistance(&v0->x, &v1->x);
+}
+
+// ea: 0x005E9710
+float VecDistanceSquared(const vector* v0, const vector* v1) {
+    return VectorDistanceSquared(&v0->x, &v1->x);
+}
+
+// ea: 0x005E9730
+int VecCloser(const vector* vRef, const vector* vA, const vector* vB) {
+    float fDistASqrd = VectorDistanceSquared(&vA->x, &vRef->x);
+    return VectorDistanceSquared(&vB->x, &vRef->x) > fDistASqrd;
 }
 
 // ea: 0x0049287C0
