@@ -5056,7 +5056,11 @@ public:
     math::Dir3 m_b2_hitp_loc;  // +0x10
     uint8_t _pad20[0x90 - 0x20];
     float   m_wheel_vel;       // +0x90
-    uint8_t _pad94[0xA8 - 0x94];
+    float   m_wheel_fwd;       // +0x94
+    float   m_wheel_pos;       // +0x98
+    float   m_wheel_displaced_center_dist; // +0x9C
+    float   m_wheel_normal_force; // +0xA0
+    unsigned int m_wheel_state; // +0xA4
     unsigned int m_wheel_flags;  // +0xA8
 
     enum wheel_flags_e : int {

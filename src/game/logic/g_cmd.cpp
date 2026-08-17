@@ -318,6 +318,8 @@ unsigned int s_SurfaceValues[23] = {         // game.o @ 0xDF6B50
     0u, 22u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u,
     11u, 12u, 13u, 14u, 15u, 16u, 17u, 18u, 19u, 20u, 21u
 };
+unsigned int curFrame = 0;                  // game.o @ 0xDF8DDC
+float cachedVal = 0.0f;                     // game.o @ 0xF58C5C
 static void InitializeSurfaceHashes()
 {
     s_SurfaceHashes[0] = AeHash("NONE");
@@ -462,8 +464,69 @@ float EvalVelocity(unsigned int, unsigned int entityHandleVal, unsigned int,
         speeda = -speeda;
     return speeda / maxVehicleSpeed;
 }
-float EvalSpringCompressionKey(unsigned int, unsigned int, unsigned int,
-                               float, float, unsigned int) { return 0.0f; }
+static float EvalSpringCompressionShared(unsigned int frameId,
+                                         unsigned int entityHandleVal,
+                                         float type,
+                                         float* lastSuspensionTravel)
+{
+    if (curFrame == frameId)
+        return cachedVal;
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    if (mObject == nullptr || mObject->scr_vehicle == nullptr
+        || mObject->scr_vehicle->mRBVeh == nullptr)
+    {
+        return type - 1.0f;
+    }
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    int typeOfVehicle = info->type;
+    int numberOfWheels;
+    if (typeOfVehicle == 1)
+        numberOfWheels = 4;
+    else if (typeOfVehicle == 2)
+        numberOfWheels = 6;
+    else
+        return 0.0f;
+    float suspensionTravel = info->suspensionTravel;
+    float maxChange = 0.0f;
+    rb_vehicle* rb_veh = (rb_vehicle*)scr_vehicle->mRBVeh;
+    for (int i = 0; i < numberOfWheels; ++i)
+    {
+        rigid_body_constraint_wheel* wheel = rb_veh->m_wheels[i];
+        if (wheel != nullptr)
+        {
+            float displaced = wheel->m_wheel_displaced_center_dist;
+            if (displaced > suspensionTravel)
+                suspensionTravel = displaced;
+            if (displaced - lastSuspensionTravel[i] > maxChange)
+                maxChange = displaced - lastSuspensionTravel[i];
+            lastSuspensionTravel[i] = displaced;
+        }
+    }
+    cachedVal = maxChange / suspensionTravel;
+    curFrame = frameId;
+    return cachedVal;
+}
+float EvalSpringCompressionKey(unsigned int frameId,
+                               unsigned int entityHandleVal, unsigned int,
+                               float min, float, unsigned int)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr && mObject->curve != nullptr)
+            return EvalSpringCompressionShared(
+                frameId, entityHandleVal, min,
+                mObject->curve->mLastSuspensionTravelKey);
+    }
+    return min - 1.0f;
+}
 float EvalRepeatInterval(unsigned int, unsigned int, unsigned int, float,
                          float, unsigned int) { return 0.0f; }
 float EvalSurface(unsigned int, unsigned int entityHandleVal, unsigned int type,
@@ -500,8 +563,22 @@ float EvalSurface(unsigned int, unsigned int entityHandleVal, unsigned int type,
     }
     return retVal / numberOfWheels;
 }
-float EvalSpringCompressionCond(unsigned int, unsigned int, unsigned int,
-                                float, float, unsigned int) { return 0.0f; }
+float EvalSpringCompressionCond(unsigned int frameId,
+                                unsigned int entityHandleVal, unsigned int,
+                                float min, float, unsigned int)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    if (v4 < 0x540
+        && entityHandleVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr && mObject->curve != nullptr)
+            return EvalSpringCompressionShared(
+                frameId, entityHandleVal, min,
+                mObject->curve->mLastSuspensionTravelCond);
+    }
+    return min - 1.0f;
+}
 float EvalThrottle(unsigned int, unsigned int entityHandleVal, unsigned int,
                    float min, float, unsigned int)
 {
