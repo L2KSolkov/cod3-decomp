@@ -197,6 +197,94 @@ bool PathNodeMgr::IsConnectedTo(const PathNodes::PathNode* pNode1,
     return true;
 }
 
+// ea: 0x00782B10
+bool PathNodeMgr::NodeNumsVisible(
+    const PathNodes::NodeHandle& iNode1,
+    const PathNodes::NodeHandle& iNode2) const
+{
+    if (iNode1.mValue == 0 || iNode1.mValue == 0xFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1333;
+        AeAssert::gCurrentExpr = "iNode1.IsAssigned()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iNode2.mValue == 0 || iNode2.mValue == 0xFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1334;
+        AeAssert::gCurrentExpr = "iNode2.IsAssigned()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iNode2.mValue == iNode1.mValue)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1335;
+        AeAssert::gCurrentExpr = "iNode1 != iNode2";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    unsigned char* mVisData = mLevelTOC2->mVisData;
+    unsigned int v6 = iNode1.mValue - 1;
+    unsigned int v7 = iNode2.mValue - 1;
+    int v8;
+    if (v6 >= v7)
+        v8 = (int)(v6 + mLevelTOC->mNodeCount * v7);
+    else
+        v8 = (int)(v7 + mLevelTOC->mNodeCount * v6);
+    return mVisData != nullptr &&
+           ((1 << (v8 & 7)) & mVisData[v8 >> 3]) != 0;
+}
+
+// ea: 0x00782C70
+bool PathNodeMgr::ExpandedNodeNumsVisible(
+    const PathNodes::NodeHandle& iNode1,
+    const PathNodes::NodeHandle& iNode2) const
+{
+    if (iNode1.mValue == 0 || iNode1.mValue == 0xFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1369;
+        AeAssert::gCurrentExpr = "iNode1.IsAssigned()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iNode2.mValue == 0 || iNode2.mValue == 0xFFFF)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1370;
+        AeAssert::gCurrentExpr = "iNode2.IsAssigned()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (iNode2.mValue == iNode1.mValue)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1371;
+        AeAssert::gCurrentExpr = "iNode1 != iNode2";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    unsigned char* mVisData = mLevelTOC2->mVisData;
+    unsigned int v5 = iNode1.mValue - 1;
+    unsigned int v6 = iNode2.mValue - 1;
+    int v7;
+    if (v5 <= v6)
+        v7 = (int)(v5 + mLevelTOC->mNodeCount * (v6 - 1));
+    else
+        v7 = (int)(v6 + mLevelTOC->mNodeCount * (v5 - 1));
+    return mVisData != nullptr &&
+           ((1 << (v7 & 7)) & mVisData[v7 >> 3]) != 0;
+}
+
 // ea: 0x0077FBE0
 PathNodes::PathNodeTree* PathNodeMgr::CreateTree_r(
     PathNodes::PathNode** treeNodes, PathNodes::PathNodeTree** tree)
