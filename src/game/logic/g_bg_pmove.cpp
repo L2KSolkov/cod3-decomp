@@ -103,10 +103,11 @@ extern float ratio;                   // game.o @ 0xF4EC10
 float pm_sprintFatigue = 0.33333334f; // IDA global @ 0xD0153C
 extern int gInteractArmsWeaponIndex;  // game.o @ 0xF4EBF4
 extern PlayerState* GetPlayerState(int idx);  // ?GetPlayerState@@YAAAVPlayerState@@H@Z
-PlayerState* GetPlayerState(int idx)  // ?GetPlayerState@@YAPAVPlayerState@@H@Z (stub)
+// ea: 0x004A8A50
+PlayerState* GetPlayerState(int idx)
 {
-    (void)idx;
-    return nullptr;
+    return reinterpret_cast<PlayerState*>(
+        EntityManager::sInst->GetPlayer(idx)->client);
 }
 extern void PM_UpdateAimDownSightLerp();      // game.o 0x62F670
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);  // game.o 0x607A70
