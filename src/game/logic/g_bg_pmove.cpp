@@ -2900,6 +2900,70 @@ PlayerState* PM_Friction()
     return ps;
 }
 
+// ea: 0x6050F0
+PlayerState* PM_SetMovementDir()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 989;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    const int pm_flags = ps->pm_flags;
+    if ((pm_flags & 1) != 0 && (dword_106000 & ps->eFlags) == 0)
+    {
+        int movementDir = (int)AngleDelta(ps->proneDirection,
+                                          ps->viewangles[1]);
+        if (abs(movementDir) > 90)
+            movementDir = movementDir <= 0 ? -90 : 90;
+        ps->movementDir = movementDir;
+        return ps;
+    }
+
+    int movementDir;
+    if ((pm_flags & 0x10) != 0)
+    {
+        const float ladderYaw = vectoyaw(ps->vLadderVec) + 180.0f;
+        movementDir = (int)AngleDelta(ladderYaw, ps->viewangles[1]);
+    }
+    else
+    {
+        float moved[3] = {
+            ps->origin.v.m128_f32[0] - pml.previous_origin[0],
+            ps->origin.v.m128_f32[1] - pml.previous_origin[1],
+            ps->origin.v.m128_f32[2] - pml.previous_origin[2]
+        };
+        const float speed = sqrtf(moved[2] * moved[2]
+                                  + moved[1] * moved[1]
+                                  + moved[0] * moved[0]);
+        if (pm->cmd.forwardmove == 0 && pm->cmd.rightmove == 0
+            || ps->mGroundEntity.mHandle.mVal == 0 || speed == 0.0f
+            || speed <= pml.frametime * 5.0f)
+        {
+            ps->movementDir = 0;
+            return ps;
+        }
+
+        float dir[3];
+        VectorNormalize2(moved, dir);
+        vectoangles(dir, dir);
+        movementDir = (int)AngleDelta(dir[1], ps->viewangles[1]);
+        if (pm->cmd.forwardmove < 0)
+            movementDir = (int)AngleNormalize180(movementDir + 180.0f);
+    }
+
+    if (abs(movementDir) > 90)
+        movementDir = movementDir <= 0 ? -90 : 90;
+    ps->movementDir = movementDir;
+    return ps;
+}
+
 // PM move-mode stubs (game.o; port later)
 void PM_Footsteps() {}
 void PM_WalkMove(const collision_context_t& context) { (void)context; }
