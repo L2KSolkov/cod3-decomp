@@ -97,6 +97,14 @@ extern bool gLogAllPktTypes;   // ?gLogAllPktTypes@@3_NA @ 0xF93FA0
 bool gLogAllPktTypes = false;  // ?gLogAllPktTypes@@3_NA (mp.o data)
 const float gMPFloatPositionMax = 8191.0f;  // mp.o data
 const float gMPFloatPositionMin = -8191.0f; // mp.o data
+int lCount = 0;                              // @ 0xF99298
+unsigned __int64 sTotalBytesSent = 0;        // @ 0xF99288
+unsigned __int64 sTotalBytesReceived = 0;    // @ 0xF99278
+unsigned int _S8_41 = 0;                     // @ 0xF99294
+float sendRate = 0.0f;                       // @ 0xF99274
+float recvRate = 0.0f;                       // @ 0xF99270
+float vSendRate = 0.0f;                      // @ 0xF9926C
+unsigned __int64 gsVoiceBytesSubmitted = 0;  // @ 0xF93F78
 int dword_E36ECC = 1065353216;  // @ 0xE36ECC (score stat scale)
 int dword_E36EE0 = 0;            // @ 0xE36EE0 (score stat scale)
 float distance = 100.0f;         // @ 0xE37624 (net debug draw radius filter)
@@ -25163,14 +25171,6 @@ void kuju::knetuser::cVoiceNetworkManager::handlePacket(
 // ea: 0x0075C420
 void MPPeer::DebugRender()
 {
-    extern int lCount;              // @ 0xF99298
-    extern unsigned __int64 sTotalBytesSent;      // @ 0xF99288
-    extern unsigned __int64 sTotalBytesReceived;  // @ 0xF99278
-    extern unsigned int _S8_41;    // @ 0xF99294
-    extern float sendRate;         // @ 0xF99274
-    extern float recvRate;         // @ 0xF99270
-    extern float vSendRate;        // @ 0xF9926C
-    extern unsigned __int64 gsVoiceBytesSubmitted;  // ?gsVoiceBytesSubmitted@@3_KA @ 0xF93F78
     MPPlayerManager* p_mPlayerManager =
         (MPPlayerManager*)((char*)this + 0x74E0);
     p_mPlayerManager->DebugRender();
