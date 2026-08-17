@@ -21,6 +21,8 @@ public:
 namespace Broc {
 class AnimRef {
 public:
+    AnimRef() : mAnim(), mTreeNameHash(0), mVarNameHash(0) {}
+    AnimRef(int treename, int varname);
     unsigned int GetAnim() const;
     void SetAnim(unsigned int anim);
     int IsUnresolved() const;
@@ -29,6 +31,11 @@ public:
     int mTreeNameHash;
     int mVarNameHash;
 };
+
+AnimRef::AnimRef(int treename, int varname)
+    : mAnim(0xFFFFFFFFu), mTreeNameHash(treename), mVarNameHash(varname)
+{
+}
 
 unsigned int AnimRef::GetAnim() const
 {
