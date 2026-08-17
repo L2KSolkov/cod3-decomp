@@ -132,9 +132,20 @@ extern const char* MI_GetMapShortname(char mapID);  // ?MI_GetMapShortname@@YAPA
 extern void Cbuf_AddText(const char* text);         // ?Cbuf_AddText@@YAXPBD@Z (cl.o)
 float leftLegLiftDuration = 0.25f;                  // @ 0xE3739C
 extern char byte_100000;                            // @ 0x100000
-extern int dword_E37628[];  // animEvents row table @ 0xE37628
-extern int dword_E3762C[];  // animEvents column table @ 0xE3762C
-extern int dword_E37630[];  // animEvents sheet table @ 0xE37630
+struct animEventList_t {
+    int row;
+    int column;
+    int sheet;
+};
+animEventList_t animEvents[25] = {
+    {1, 0, 10}, {2, 0, 10}, {0, 3, -1}, {2, 3, -1},
+    {11, 0, 10}, {12, 0, 10}, {3, 0, 10}, {37, 0, -1},
+    {37, 1, -1}, {-1, -1, -1}, {3, 0, 0}, {4, 0, 10},
+    {5, 0, 10}, {6, 0, 10}, {7, 0, 10}, {8, 0, 10},
+    {9, 0, 10}, {10, 0, 10}, {13, 0, 10}, {15, 0, 10},
+    {16, 0, 10}, {17, 0, 10}, {18, 0, 10}, {0, 0, 0},
+    {0, 0, 0},
+};
 extern const float Float4_Zero_16[4] = {0.0f, 0.0f, 0.0f, 0.0f}; // @ 0xD190F0
 
 // Step@MPPlayer globals (cg.o / game.o data)
@@ -2905,13 +2916,13 @@ void MPPlayerManager::HandleAnimEvent(
                                     break;
                                 }
                             }
-                            int row = dword_E37628[3 * v10];
-                            if (row >= 0 || dword_E3762C[3 * v10] >= 0)
+                            int row = animEvents[v10].row;
+                            if (row >= 0 || animEvents[v10].column >= 0)
                             {
                                 if (v10 == 2 && v8->bProne)
                                     row = 2;
-                                int v13 = dword_E3762C[3 * v10];
-                                int v14 = dword_E37630[3 * v10];
+                                int v13 = animEvents[v10].column;
+                                int v14 = animEvents[v10].sheet;
                                 if (v14 < 0)
                                     v14 = v8->mAnimFlags & 0x1F;
                                 v8->AnimEvent(row, v13, v14);
