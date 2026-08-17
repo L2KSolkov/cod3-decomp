@@ -197,6 +197,18 @@ public:
 };
 PoolAllocator* EntityNotifyLocal::sAllocator;
 
+// ea: 0x004B5650 (EntityNotify::~EntityNotify)
+EntityNotifyLocal::~EntityNotifyLocal()
+{
+    if (mParam != nullptr)
+    {
+        typedef void (__thiscall *WaitTilOutputDtor)(void*, int);
+        WaitTilOutputDtor dtor = *(WaitTilOutputDtor*)mParam;
+        dtor(mParam, 1);
+    }
+    mParam = nullptr;
+}
+
 // ae_pair (class tag V per binary mangling; same shape as g_accessors.cpp)
 template <typename T1, typename T2>
 class ae_pair {
