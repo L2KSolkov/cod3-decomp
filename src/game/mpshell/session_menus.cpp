@@ -430,6 +430,7 @@ extern int dword_186A0;                // damage constant (game.o)
 extern vmCvar_t cg_widescreen;         // cg.o @ 0xF5CC88
 extern void CG_FillRect(float x, float y, float width, float height,
                         const float* color, float z);  // ?CG_FillRect@@YAXMMMMQBMH@Z (cg.o)
+extern Entity* G_Spawn(TPakId pakId);  // ?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z (g.o)
 
 int scoreboard_player_sorter(const void* left, const void* right);
 
@@ -2580,6 +2581,50 @@ void ModelMenu::Update(float time_inc)
 // ea: 0x00793450
 void ModelMenu::DebugControls()
 {
+}
+
+// ea: 0x007AC5E0
+void ModelMenu::OnActivate()
+{
+    SwapMenus();
+    FEMenu::OnActivate();
+
+    const unsigned int handleValue = mClassModelEntity.mHandle.mVal;
+    const unsigned int index = handleValue & 0xFFF;
+    mFirstFrame = true;
+    if (index >= 0x540
+        || (handleValue >> 12) !=
+               (unsigned int)EntityHandleDb::sInst.mElements[index].mKey
+        || EntityHandleDb::sInst.mElements[index].mObject == nullptr)
+    {
+        TPakId pakId = PakManager::sInst->FindPakId(kPakTypeGlobal);
+        Entity* spawned = G_Spawn(pakId);
+        if (spawned != nullptr)
+        {
+            const unsigned int spawnedHandle = spawned->mHandle.mHandle.mVal;
+            const unsigned int spawnedIndex = spawnedHandle & 0xFFF;
+            Entity* model = nullptr;
+            mClassModelEntity.mHandle.mVal = spawnedHandle;
+            if (spawnedIndex < 0x540
+                && (spawnedHandle >> 12) ==
+                       (unsigned int)EntityHandleDb::sInst
+                           .mElements[spawnedIndex]
+                           .mKey)
+                model = EntityHandleDb::sInst.mElements[spawnedIndex].mObject;
+
+            model->r.currentAngles.v = _mm_loadu_ps(mModelAngles);
+            const unsigned int modelIndex =
+                mClassModelEntity.mHandle.mVal & 0xFFF;
+            Entity* positioned = nullptr;
+            if (modelIndex < 0x540
+                && (mClassModelEntity.mHandle.mVal >> 12) ==
+                       (unsigned int)EntityHandleDb::sInst
+                           .mElements[modelIndex]
+                           .mKey)
+                positioned = EntityHandleDb::sInst.mElements[modelIndex].mObject;
+            positioned->r.currentOrigin.v = _mm_loadu_ps(mModelPosition);
+        }
+    }
 }
 
 // ea: 0x007A74B0
