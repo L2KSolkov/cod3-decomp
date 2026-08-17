@@ -11119,6 +11119,14 @@ void MultiplayerMgr::MeleeHit(Entity* hitEntity, Entity* attackerEntity,
                        surfaceType, damage, mod, hitLocation);
 }
 
+// ea: 0x00735880
+bool MultiplayerMgr::IsHost()
+{
+    return mPeer != nullptr
+        && ((bdSession*)((char*)mPeer + 0x7448))->getRole()
+            == bdSession::BD_SESSION_HOST;
+}
+
 // ea: 0x0074EFD0 (profile dialog: confirm delete -> deleting screen)
 bool MPProfileMainMenu::DialogResponseDeleteConfirm(int index)
 {
