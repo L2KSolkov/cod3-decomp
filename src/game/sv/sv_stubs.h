@@ -330,6 +330,11 @@ struct ControllerDisconnectedMenu;
 
 struct FEManager {
 public:
+    struct sPanelPakData {
+        PanelFile* mPanelFile;
+        TPakId     mPakId;
+    };
+
     // +0x00 vftable (1 ptr)
     nglFont* fonts[4];                  // +0x04
     IGOFrontEnd* IGO;                   // +0x14
@@ -357,7 +362,7 @@ public:
     DialogMenuSystem* mDMS[1];          // +0xC4
     InGameMenuSystem* mIGMS[1];          // +0xC8
     AARMenuSystem* mAARS;               // +0xCC
-    uint8_t mPanelArray[800];           // +0xD0 (100 x sPanelPakData, opaque)
+    sPanelPakData mPanelArray[100];      // +0xD0
     int     mNumPanels;                 // +0x3F0
     // +0x3F4 .. 0x3F4 remaining pad
     void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
