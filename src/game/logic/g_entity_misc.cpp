@@ -3847,6 +3847,32 @@ void SoundDevice::DebugRender()
 SoundDevice::SoundHandleDb SoundDevice::SoundHandleDb::sInst;  // @ 0xF50D10
 SoundDevice* SoundDevice::sInst = nullptr;                     // @ 0xF4EBDC
 
+template <>
+SoundDevice::Sound*
+DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>::operator*() const
+{
+    unsigned int index = mHandle.mVal & 0xFFF;
+    if (index < 0x200
+        && mHandle.mVal >> 12
+               == (unsigned int)SoundDevice::SoundHandleDb::sInst
+                      .mElements[index].mKey)
+        return SoundDevice::SoundHandleDb::sInst.mElements[index].mObject;
+    return nullptr;
+}
+
+template <>
+SoundDevice::Sound*
+DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>::operator->() const
+{
+    unsigned int index = mHandle.mVal & 0xFFF;
+    if (index < 0x200
+        && mHandle.mVal >> 12
+               == (unsigned int)SoundDevice::SoundHandleDb::sInst
+                      .mElements[index].mKey)
+        return SoundDevice::SoundHandleDb::sInst.mElements[index].mObject;
+    return nullptr;
+}
+
 // ea: 0x00621670
 SoundDevice::Sound* SoundDevice::GetSoundForHandle(
     DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle)
