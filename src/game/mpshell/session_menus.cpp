@@ -5724,6 +5724,43 @@ void SessionDetailsMenu::OnActivate()
     entries[3]->SetText((const char*)&defaultFileName);
 }
 
+// ea: 0x007A9550
+void SessionDetailsMenu::Update(float time_inc)
+{
+    if (!MPUIInterface::IsOnlineGame()
+        || MPLiveEngine::GetHandle()->internalState == kSignedIn)
+    {
+        FEMenu::Update(time_inc);
+        movie_manager::frame_advance();
+        MPUIInterface::Step();
+        unsigned long numGames = 0;
+        MPUIInterface::GameListingGet(numGames);
+        if (numGames != 0)
+        {
+            if (numGames != mNumGames)
+            {
+                mNumGames = numGames;
+                UpdateDetails();
+            }
+        }
+        else
+        {
+            OverlayMenu* overlay = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            overlay->SetState(OverlayMenu::NO_GAMES);
+            OverlayMenu* fems = g_femanager.fems != nullptr
+                ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+            fems->mAcceptMenu = 7;
+            fems->mBackMenu = 7;
+            system->AddOverlay(16);
+        }
+    }
+    else
+    {
+        system->MakeActive(8);
+    }
+}
+
 // ea: 0x0079C760
 void PlayOnlineMenu::OnActivate()
 {
