@@ -160,7 +160,7 @@ void CG_BoldGameMessage(const char* msg)
 }
 
 // ea: 0x00697260
-void CG_Obituary(Entity* target, Entity* attacker, int parm)
+void CG_Obituary(Entity* target, Entity* attacker, int parm, bool teamGame)
 {
     unsigned int v4 = 0;
     const char* szKillIcon;

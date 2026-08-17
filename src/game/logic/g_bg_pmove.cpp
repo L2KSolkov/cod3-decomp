@@ -46,7 +46,7 @@ pmove_t* pm = nullptr;       // ?pm@@3PAUpmove_t@@A (game.o @ 0x133360C)
 pml_t pml;                   // ?pml@@3Upml_t@@A (game.o)
 extern int dword_106000;     // ?dword_106000 (EF_* flags mask, BSS)
 extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
-extern const char* BG_GetWeaponSlotNameForIndex(unsigned int iSlot);  // game.o 0x6072B0
+extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // game.o 0x6072B0
 extern vmCvar_t bg_nofatigue;  // ?bg_nofatigue@@3UvmCvar_t@@A (game.o)
 extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
 weaponFileInfo_t** bg_weaponInfo = nullptr;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
@@ -5881,7 +5881,7 @@ int BG_GetWeaponSlotForName(const char* pszSlotName)
 // ============================================================================
 // BG_GetWeaponSlotNameForIndex - ea: 0x6072B0
 // ============================================================================
-const char* BG_GetWeaponSlotNameForIndex(unsigned int iSlot)
+const char* BG_GetWeaponSlotNameForIndex(int iSlot)
 {
     if (iSlot >= 0xA)
     {
