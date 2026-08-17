@@ -66,6 +66,7 @@ extern void VEH_GroundMove(Entity* ent, int msec);
 extern int VEH_Slide(Entity* ent, int gravity, int msec, int move,
                     int allowHit);
 extern void VEH_UpdateSoundLerps(Entity* ent, int msec);
+extern void VEH_FireGunnerWeapon(Entity* ent, int msec);
 extern void TraceSphereFull(const proximity_data_t* proximity_data,
                             trace_t* results, const math::Position3* start,
                             const math::Position3* mins,
@@ -796,7 +797,141 @@ void VEH_GroundMove(Entity* ent, int msec)
     }
 }
 
-void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
+// ea: 0x00490680
+void VEH_UpdateGunnerWeapon(Entity* ent, int msec)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    trace_t trace;
+    trace.surfaceFlags = 0;
+    trace.contents = 0;
+
+    if (scr_vehicle->gunnerWeapon == 0
+        || !scr_vehicle->seats[1].gunMounted)
+        return;
+
+    const int gunnerBarrel = scr_vehicle->boneIndex.gunner_barrel;
+    if (gunnerBarrel < 0)
+        return;
+
+    scr_vehicle->gunnerFireTime -= msec;
+
+    DObjSkelMat barrelMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, gunnerBarrel, &barrelMtx);
+
+    DbLinkedHandle<EntityHandleDb, Entity> gunOperator =
+        scr_vehicle->seats[1].occupant;
+    Entity* gunner = HandleDbToEnt(gunOperator);
+    if (gunner == nullptr)
+    {
+        scr_vehicle->seats[1].firing = false;
+        return;
+    }
+
+    float start[3];
+    float forward[3];
+    if (EntityManager::sInst->IsLocalPlayer(gunner))
+    {
+        Client* client = gunner->client;
+        if (client == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 4849;
+            AeAssert::gCurrentExpr = "client";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+
+        if (!IsPlayerFullySeatedInVehicle(gunner))
+            return;
+
+        // IDA: the gunner fire input is the unnamed Client byte at +0x784.
+        const unsigned char* clientBytes =
+            reinterpret_cast<const unsigned char*>(client);
+        scr_vehicle->seats[1].firing = (clientBytes[0x784] & 1) != 0;
+
+        weaponFileInfo_t* weaponInfo =
+            BG_GetInfoForWeapon(scr_vehicle->gunnerWeapon);
+        if (scr_vehicle->seats[1].firing)
+        {
+            if (ent->isFiring == 0)
+            {
+                ent->isFiring = 1;
+                PostEffectEventWeapon(
+                    ent, weaponInfo->szInternalName, (EAction)0x19);
+                ent->effectLoopingFire = PostEffectEventWeapon(
+                    ent, weaponInfo->szInternalName, (EAction)0x1A);
+            }
+        }
+        else if (ent->isFiring != 0)
+        {
+            Handle effect = ent->effectLoopingFire;
+            ent->isFiring = 0;
+            if (effect.mVal != 0)
+                EffectEventKill(effect);
+            PostEffectEventWeapon(
+                ent, weaponInfo->szInternalName, (EAction)0x1B);
+        }
+
+        if ((client->ps.pm_flags & 0x4000) != 0)
+            scr_vehicle->seats[1].firing = false;
+        if (GamePause::IsGamePaused(gunner->GetPlayerIndex()))
+            scr_vehicle->seats[1].firing = false;
+
+        const int offset = 1580 * gunner->GetPlayerIndex();
+        start[0] = dword_F63C70[offset];
+        start[1] = dword_F63C70[offset + 1];
+        start[2] = dword_F63C70[offset + 2];
+        AnglesToForward(client->ps.viewangles, forward);
+    }
+    else
+    {
+        if (gunner->client == nullptr
+            || !IsPlayerFullySeatedInVehicle(gunner))
+            return;
+
+        start[0] = barrelMtx.origin[0];
+        start[1] = barrelMtx.origin[1];
+        start[2] = barrelMtx.origin[2];
+        forward[0] = barrelMtx.axis[0][0];
+        forward[1] = barrelMtx.axis[0][1];
+        forward[2] = barrelMtx.axis[0][2];
+    }
+
+    float end[3];
+    end[0] = start[0] + forward[0] * 10240.0f;
+    end[1] = start[1] + forward[1] * 10240.0f;
+    end[2] = start[2] + forward[2] * 10240.0f;
+
+    if (ent->has_zone_collision())
+    {
+        collision_context_t context(gunOperator, 41951377);
+        math::Position3 startPos = native_to_cdl_pos3(start);
+        math::Position3 endPos = native_to_cdl_pos3(end);
+        g_LocationalTrace(&trace, startPos, endPos, context,
+                          bulletPriorityMap, 0.0f);
+        if (trace.fraction < 1.0f)
+        {
+            scr_vehicle->targetOrigin[0] = trace.endpos.v.m128_f32[0];
+            scr_vehicle->targetOrigin[1] = trace.endpos.v.m128_f32[1];
+            scr_vehicle->targetOrigin[2] = trace.endpos.v.m128_f32[2];
+        }
+    }
+    else
+    {
+        scr_vehicle->barrelBlocked = 1;
+    }
+
+    if (scr_vehicle->gunnerFireTime <= 0)
+    {
+        const bool firing = scr_vehicle->seats[1].firing;
+        scr_vehicle->gunnerFireTime = 0;
+        if (firing && !scr_vehicle->seats[1].overheating)
+            VEH_FireGunnerWeapon(ent, msec);
+    }
+}
 
 // ea: 0x00463370
 void VEH_DebugCapsule(const float* pos, float r, float rad, float height,
@@ -7791,7 +7926,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
     VEH_UpdateGunnerAim(pSelf);
     VEH_UpdateControllers(pSelf, v37);
     VEH_UpdateAltWeapon(pSelf, v37);
-    VEH_UpdateGunnerWeapon(pSelf);
+    VEH_UpdateGunnerWeapon(pSelf, v37);
     VEH_UpdateOverHeat(pSelf, v37);
     if (veh->joltTime > 0.0f)
     {

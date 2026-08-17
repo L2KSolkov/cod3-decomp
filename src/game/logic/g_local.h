@@ -4725,7 +4725,7 @@ void  VEH_UpdateParticlesRBVeh(Entity* ent);      // g.o
 void  VEH_UpdateWeapon(Entity* ent);              // g.o
 void  VEH_UpdateAim(Entity* ent);                 // g.o
 void  VEH_UpdateAltWeapon(Entity* ent, int msec); // g.o
-void  VEH_UpdateGunnerWeapon(Entity* ent);        // g.o
+void  VEH_UpdateGunnerWeapon(Entity* ent, int msec); // g.o
 void  VEH_UpdateSteering(Entity* ent);            // g.o
 void  VEH_UpdateHatch(Entity* ent, int msec);     // g.o
 void  VEH_UpdateFollow(Entity* ent);              // g.o
