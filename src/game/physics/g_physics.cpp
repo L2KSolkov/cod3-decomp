@@ -839,6 +839,7 @@ public:
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
     void init(Entity* owner, vehicle_rb_parameter* parameter);  // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
+    void set_actuator_enabled(bool b);  // ?set_actuator_enabled@rb_vehicle@@QAEX_N@Z
     void set(float power_braking_factor, float braking_factor,
              float desired_speed_factor, float acceleration_factor,
              float coasting_factor, float reference_wheel_radius,
@@ -4256,6 +4257,16 @@ void rb_vehicle::set_brake(float braking)
             __debugbreak();
     }
     m_brake = braking;
+}
+
+// ea: 0x005EE790
+void rb_vehicle::set_actuator_enabled(bool b)
+{
+    unsigned int mMask = m_flags.mMask;
+    if (b)
+        m_flags.mMask = mMask & 0xFFFFFBFF;
+    else
+        m_flags.mMask = mMask | 0x400;
 }
 
 // ea: 0x6F2A50 (inline COMDAT)
