@@ -634,6 +634,214 @@ const OverlayMenu::eState OverlayMenu::GetState()
     return mState;
 }
 
+// ea: 0x0079F010
+void OverlayMenu::SetState(eState state)
+{
+    if (panel != nullptr)
+    {
+        const char* locTxt = nullptr;
+        helpbar2->SetText((const char*)&defaultFileName);
+        mState = state;
+        m_ListBox.SetText(0, 0, (const char*)&defaultFileName);
+        m_ListBox.SetText(1, 0, (const char*)&defaultFileName);
+
+        switch (state)
+        {
+        case SIGNING_IN:
+        case GAME_LISTING:
+            if (state == GAME_LISTING)
+                mTimeout = 30.0f;
+            locTxt = state == SIGNING_IN
+                ? "MPFRONTEND_SIGNING_IN" : "MPFRONTEND_SEARCHING";
+            helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+            break;
+        case GAME_LISTING_START:
+            mTimeout = 30.0f;
+            mbStartGame = true;
+            mDelayStart = 5;
+            locTxt = "MPFRONTEND_SEARCHING";
+            helpbar1->SetTextNoLocalize((const char*)&defaultFileName);
+            break;
+        case NO_GAMES:
+            locTxt = "MPFRONTEND_NO_SESSIONS_FOUND";
+            if (system->GetActiveMenu() == 13 || system->GetActiveMenu() == 14)
+            {
+                j_nullsub_46(this);
+                helpbar1->SetText("MPFRONTEND_HELP_NOSESSIONS_XBOX");
+            }
+            else
+            {
+                helpbar1->SetText("MPFRONTEND_HELP_NOSESSIONS_NOREFRESH_XBOX");
+            }
+            break;
+        case JOINING_START:
+            mbStartGame = true;
+            mDelayStart = 5;
+            locTxt = "MPFRONTEND_JOINING";
+            helpbar1->SetTextNoLocalize((const char*)&defaultFileName);
+            m_ListBox.SetText(0, 0, (const char*)&defaultFileName);
+            m_ListBox.SetText(1, 0, (const char*)&defaultFileName);
+            mTimeout = MPUIInterface::IsOnlineGame() ? 30.0f : 10.0f;
+            break;
+        case JOINING:
+            locTxt = "MPFRONTEND_JOINING";
+            helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+            mTimeout = MPUIInterface::IsOnlineGame() ? 30.0f : 10.0f;
+            m_ListBox.SetText(0, 0, (const char*)&defaultFileName);
+            m_ListBox.SetText(1, 0, (const char*)&defaultFileName);
+            break;
+        case (eState)0xC:
+            break;
+        case JOIN_REFUSED:
+            if (MPUIInterface::IsOnlineGame())
+            {
+                locTxt = "MPFRONTEND_GAME_UNAVAILABLE";
+                helpbar1->SetText("MPFRONTEND_HELP_CONTINUE");
+            }
+            else
+            {
+                locTxt = "MPFRONTEND_GAME_SESSION_FULL";
+                helpbar1->SetText("MPFRONTEND_HELP_BACK");
+            }
+            break;
+        case JOIN_FAILED:
+            locTxt = "MPFRONTEND_GAME_UNAVAILABLE";
+            if (MPUIInterface::IsOnlineGame())
+                helpbar1->SetText("MPFRONTEND_HELP_CONTINUE");
+            else
+                helpbar1->SetText("MPFRONTEND_HELP_BACK");
+            break;
+        case CANNOT_CONNECT_TO_HOST:
+            locTxt = "MPFRONTEND_GAME_SESSION_FULL";
+            if (MPUIInterface::IsOnlineGame())
+                helpbar1->SetText("MPFRONTEND_HELP_CONTINUE");
+            else
+                helpbar1->SetText("MPFRONTEND_HELP_BACK");
+            break;
+        case CANNOT_CONNECT_TO_PEERS:
+            if (MPUIInterface::IsOnlineGame())
+            {
+                locTxt = "MPFRONTEND_GAME_UNAVAILABLE";
+                helpbar1->SetText("MPFRONTEND_HELP_CONTINUE");
+            }
+            else
+            {
+                locTxt = "MPFRONTEND_CANNOT_CONNECT_TO_HOST";
+                helpbar1->SetText("MPFRONTEND_HELP_BACK");
+            }
+            break;
+        case JOIN_SUCCESS:
+            if (MPUIInterface::IsOnlineGame())
+            {
+                locTxt = "MPFRONTEND_GAME_UNAVAILABLE";
+                helpbar1->SetText("MPFRONTEND_HELP_CONTINUE");
+            }
+            else
+            {
+                locTxt = "MPFRONTEND_CANNOT_CONNECT_TO_PEERS";
+                helpbar1->SetText("MPFRONTEND_HELP_BACK");
+            }
+            break;
+        case (eState)0xD:
+            locTxt = "MPFRONTEND_BDNET_STARTING";
+            mTimeout = 4.0f;
+            if (helpbar != nullptr)
+                helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+            break;
+        case (eState)0xE:
+            locTxt = "MPFRONTEND_NETWORK_CONNECTION_TIMEOUT";
+            helpbar1->SetText("MPFRONTEND_HELP_BACK");
+            mTimeout = 4.0f;
+            break;
+        case (eState)0xF:
+            locTxt = "MPFRONTEND_GAME_UNAVAILABLE";
+            helpbar1->SetText("MPFRONTEND_HELP_CREATE_BACK");
+            break;
+        case (eState)0x10:
+            mbStartGame = true;
+            mDelayStart = 5;
+            m_ListBox.SetText(0, 0, (const char*)&defaultFileName);
+            m_ListBox.SetText(1, 0, (const char*)&defaultFileName);
+            locTxt = "MPFRONTEND_JOINING";
+            helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
+            mTimeout = MPUIInterface::IsOnlineGame() ? 30.0f : 10.0f;
+            m_ListBox.SetText(0, 0, (const char*)&defaultFileName);
+            m_ListBox.SetText(1, 0, (const char*)&defaultFileName);
+            break;
+        case (eState)0x11:
+            locTxt = "MPFRONTEND_XBOX_LIVE_OPTION_OVERLAY_SIGNOUT";
+            m_ListBox.SetColumnSelectable(0, true);
+            for (int i = 0; i < 2; ++i)
+                m_pOptionText.m_elements[i]->SetShown(true);
+            m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+            m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+            m_ListBox.Refresh();
+            m_currSelection = 1;
+            m_ListBox.SelectLine(1);
+            helpbar1->SetText((const char*)&defaultFileName);
+            break;
+        case (eState)0x12:
+            locTxt = "MPFRONTEND_XBOX_OPTIONS_APPEAR_ONLINE_OVERLAY";
+            m_ListBox.SetColumnSelectable(0, true);
+            for (int i = 0; i < 2; ++i)
+                m_pOptionText.m_elements[i]->SetShown(true);
+            m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+            m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+            m_ListBox.Refresh();
+            m_currSelection = 0;
+            m_ListBox.SelectLine(0);
+            helpbar1->SetText((const char*)&defaultFileName);
+            break;
+        case (eState)0x13:
+            locTxt = "MPFRONTEND_XBOX_OPTIONS_APPEAR_OFFLINE_OVERLAY";
+            m_ListBox.SetColumnSelectable(0, true);
+            for (int i = 0; i < 2; ++i)
+                m_pOptionText.m_elements[i]->SetShown(true);
+            m_ListBox.SetText(0, 0, "MPFRONTEND_YES");
+            m_ListBox.SetText(1, 0, "MPFRONTEND_NO");
+            m_ListBox.Refresh();
+            m_currSelection = 0;
+            m_ListBox.SelectLine(0);
+            helpbar1->SetText((const char*)&defaultFileName);
+            break;
+        case (eState)0x14:
+            locTxt = "MPFRONTEND_VOICE_OPTIONS";
+            m_ListBox.SetColumnSelectable(0, true);
+            for (int i = 0; i < 2; ++i)
+                m_pOptionText.m_elements[i]->SetShown(true);
+            m_ListBox.SetText(0, 0, "MPFRONTEND_VOICE_CHOICE_HEADSET");
+            m_ListBox.SetText(1, 0, "MPFRONTEND_VOICE_CHOICE_SPEAKERS");
+            m_ListBox.Refresh();
+            m_currSelection = 0;
+            m_ListBox.SelectLine(0);
+            helpbar1->SetText((const char*)&defaultFileName);
+            break;
+        default:
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/ui/OverlayMenu.cpp";
+            AeAssert::gCurrentLine = 1394;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            break;
+        }
+
+        mDotTimer = 0.0f;
+        mBackMenu = -1;
+        mAcceptMenu = -1;
+        mText = locTxt != nullptr
+            ? STBManager::sInst->GetSTBString(locTxt) : "Missing String!";
+        if (entries[0] != nullptr)
+        {
+            const char* text = mText.mBlock != nullptr
+                ? (const char*)&mText.mBlock[1] : defaultFileName;
+            Broc::string entryText(text);
+            entries[0]->SetText(entryText);
+        }
+    }
+}
+
 // ============================================================================
 // CreateSessionMenu (mp_shell.o CreateSessionMenu.cpp)
 // ============================================================================
