@@ -6629,9 +6629,10 @@ void* PlayerLocation__functor(Broc::entity self) {
     return ::new (storage) AeThreadFunctor1<Broc::entity>(PlayerLocation, self);
 }
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage) {
-    (void)guy;
-    (void)damage;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor2<Broc::entity, Broc::bint>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor2<Broc::entity, Broc::bint>(PlayPainSound, guy, damage);
 }
 void* audio_crossfade_wait__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
