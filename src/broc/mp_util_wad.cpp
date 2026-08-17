@@ -2991,7 +2991,7 @@ void CallbackRoundOver(int condition, Broc::string team);
 void SendFlagStates(Broc::entity player);
 void WAR_Init(Broc::entity self);
 void WAR_FlagUpdate(Broc::entity self);
-void WAR_TouchFlag(Broc::entity self, Broc::entity other);
+void WAR_TouchFlag(Broc::entity self);
 Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
 void UpdateAllowedCap(Broc::entity flag);
 void AllowCap(Broc::entity flag, Broc::bint team);
@@ -3008,7 +3008,7 @@ void* WARScore__functor(Broc::entity self);
 void* WAR_Init__functor(Broc::entity self);
 void* WAR_InitFlag__functor(Broc::entity self, int flag_id);
 void* WAR_FlagUpdate__functor(Broc::entity self);
-void* WAR_TouchFlag__functor(Broc::entity self, Broc::entity other);
+void* WAR_TouchFlag__functor(Broc::entity self);
 void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self);
 void* PlayCapturedSounds__functor(Broc::entity self, int team,
                                   int originalWarIndex);
@@ -3033,7 +3033,7 @@ void ShowSetupGraphic(Broc::entity guy);
 void ShowDestructionGraphic(Broc::entity guy);
 void ShowLosingHQGraphic(Broc::entity guy);
 void ShowProgressBar(Broc::entity self, Broc::string colour);
-void TriggerRadio(Broc::entity self, Broc::entity other);
+void TriggerRadio(Broc::entity self);
 void SwitchToRadioOnly(Broc::entity self);
 void AddRadioModel(Broc::entity self);
 void RemoveRadioModel(Broc::entity self);
@@ -3078,7 +3078,7 @@ void* StartGame__functor(Broc::entity self);
 void* Host_FlowControl__functor(Broc::entity self);
 void* Track_Ownership__functor(Broc::entity self);
 void* ResetGame__functor(Broc::entity self);
-void* TriggerRadio__functor(Broc::entity self, Broc::entity other);
+void* TriggerRadio__functor(Broc::entity self);
 }
 namespace _mp_scf {
 void main(Broc::entity self);
@@ -6544,8 +6544,10 @@ void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage) {
     return NULL;
 }
 void* audio_crossfade_wait__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(audio_crossfade_wait, self);
 }
 void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name) {
     (void)self;
@@ -7824,8 +7826,10 @@ void HealthAmmoDispenser(Broc::entity player, Broc::string weapon,
 }
 
 void* SpecialClassAudio__functor(Broc::entity player) {
-    (void)player;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(SpecialClassAudio, player);
 }
 void* ArtilleryDispenser__functor(Broc::entity player) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
@@ -10209,9 +10213,11 @@ void* ResetGame__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(ResetGame, self);
 }
-void* TriggerRadio__functor(Broc::entity self, Broc::entity other) {
-    (void)self; (void)other;
-    return NULL;
+void* TriggerRadio__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(TriggerRadio, self);
 }
 
 // HQ_Destroyed - ea: 0x957570
@@ -10255,8 +10261,8 @@ void RemoveRadioModel(Broc::entity self) {
 }
 
 // TriggerRadio - ea: 0x9593E0
-void TriggerRadio(Broc::entity self, Broc::entity other) {
-    (void)self; (void)other;
+void TriggerRadio(Broc::entity self) {
+    (void)self;
     // Radio capture / radioTriggerTime updates are handled via the runtime
     // capture hooks; entry point preserved.
 }
@@ -10683,8 +10689,8 @@ void WAR_FlagUpdate(Broc::entity self) {
 }
 
 // WAR_TouchFlag - ea: 0x97B000
-void WAR_TouchFlag(Broc::entity self, Broc::entity other) {
-    (void)self; (void)other;
+void WAR_TouchFlag(Broc::entity self) {
+    (void)self;
 }
 
 // GetCapSpeed - ea: 0x97B580
@@ -10860,9 +10866,11 @@ void* WAR_FlagUpdate__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(WAR_FlagUpdate, self);
 }
-void* WAR_TouchFlag__functor(Broc::entity self, Broc::entity other) {
-    (void)self; (void)other;
-    return NULL;
+void* WAR_TouchFlag__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(WAR_TouchFlag, self);
 }
 void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self) {
     void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
