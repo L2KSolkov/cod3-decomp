@@ -13,6 +13,132 @@ extern const char* const defaultFileName;
 int g_NumBdMessages = 0;
 bool g_assertFalse = false;
 
+namespace bdBytePacker {
+
+// 0x0089EC80 / 0x0089ED40 / 0x0089ECE0 / 0x0089EDA0 (bdCore)
+bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
+                     unsigned int* newOffset, const void* value,
+                     unsigned int valueSize)
+{
+    *newOffset = offset;
+    if (offset >= destSize)
+    {
+        while (g_assertFalse)
+            ;
+    }
+    else if (destSize - offset >= valueSize)
+    {
+        if (dest != nullptr)
+            memcpy((unsigned char*)dest + offset, value, valueSize);
+        *newOffset = offset + valueSize;
+        return true;
+    }
+    return false;
+}
+
+bool appendBuffer(void* dest, unsigned int destSize, unsigned int offset,
+                  unsigned int* newOffset, const unsigned char* src,
+                  unsigned int size)
+{
+    *newOffset = offset;
+    if (offset >= destSize)
+    {
+        while (g_assertFalse)
+            ;
+    }
+    else if (destSize - offset >= size)
+    {
+        if (dest != nullptr)
+            memcpy((unsigned char*)dest + offset, src, size);
+        *newOffset = offset + size;
+        return true;
+    }
+    return false;
+}
+
+bool removeBasicType(const unsigned char* src, unsigned int srcSize,
+                     unsigned int offset, unsigned int* newOffset,
+                     void* value, unsigned int valueSize)
+{
+    *newOffset = offset;
+    if (offset >= srcSize)
+    {
+        while (g_assertFalse)
+            ;
+    }
+    else if (srcSize - offset >= valueSize)
+    {
+        if (src != nullptr)
+            memcpy(value, src + offset, valueSize);
+        *newOffset = offset + valueSize;
+        return true;
+    }
+    return false;
+}
+
+bool removeBuffer(const unsigned char* src, unsigned int srcSize,
+                  unsigned int offset, unsigned int* newOffset, void* dest,
+                  unsigned int size)
+{
+    *newOffset = offset;
+    if (offset >= srcSize)
+    {
+        while (g_assertFalse)
+            ;
+    }
+    else if (srcSize - offset >= size)
+    {
+        if (src != nullptr)
+            memcpy(dest, src + offset, size);
+        *newOffset = offset + size;
+        return true;
+    }
+    return false;
+}
+
+// 0x0089EEF0 / 0x0089F000 (bdCore)
+bool appendEncodedUInt16(void* dest, unsigned int destSize,
+                         unsigned int offset, unsigned int* newOffset,
+                         unsigned short value)
+{
+    unsigned short v = value;
+    if (value <= 0x7Fu)
+        return appendBasicType(dest, destSize, offset, newOffset, &value, 1);
+    unsigned char first = (unsigned char)((v >> 8) | 0x80);
+    if (!appendBasicType(dest, destSize, offset, newOffset, &first, 1))
+        return false;
+    unsigned int next = *newOffset;
+    unsigned char second = (unsigned char)v;
+    if (appendBasicType(dest, destSize, next, newOffset, &second, 1))
+        return true;
+    return false;
+}
+
+bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize,
+                         unsigned int offset, unsigned int* newOffset,
+                         unsigned short* value)
+{
+    unsigned char first = 0;
+    if (!removeBasicType(src, srcSize, offset, newOffset, &first, 1))
+    {
+        *value = first;
+        return false;
+    }
+    if (first < 0x80u)
+    {
+        *value = first;
+        return true;
+    }
+    unsigned int next = *newOffset;
+    unsigned char second = 0;
+    bool ok = removeBasicType(src, srcSize, next, newOffset, &second, 1);
+    *value = (unsigned short)(((unsigned short)(first & 0x7Fu) << 8)
+                              + (ok ? second : 0));
+    return ok;
+}
+
+}
+
 // bdByteBuffer ctor - ?0bdByteBuffer@@QAE@I@Z (bdCore:bdByteBuffer.o)
 bdByteBuffer::bdByteBuffer(unsigned int size)
 {
