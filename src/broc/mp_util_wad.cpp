@@ -9251,7 +9251,12 @@ void PickupFlag(Broc::entity self) {
     }
 }
 
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
 void* ObjectiveUpdater__functor(Broc::entity guy) { (void)guy; return NULL; }
 void* WaitThenPickFlagToLaunch__functor(Broc::entity self, float wait_time,
@@ -10099,7 +10104,12 @@ Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping) {
     return result;
 }
 
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
 void* Host_FlowControl__functor(Broc::entity self) { (void)self; return NULL; }
 void* Track_Ownership__functor(Broc::entity self) { (void)self; return NULL; }
@@ -10717,7 +10727,12 @@ void DebugRenderSpawnPoints() {
     }
 }
 
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
 void* WARScore__functor(Broc::entity self) { (void)self; return NULL; }
 void* WAR_InitFlag__functor(Broc::entity self, int flag_id) {
@@ -11742,7 +11757,12 @@ void* RunFrame__functor(Broc::entity selfLevel) {
 // _mp_minefield.
 // ============================================================================
 namespace _mp_minefield {
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 
 // main - ea: 0x963EE0
 void main(Broc::entity self) {
@@ -11841,7 +11861,12 @@ void minefield_kill(Broc::entity self, Broc::entity trigger) {
 // _mp_tdm.
 // ============================================================================
 namespace _mp_tdm {
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* main__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(main, self);
+}
 
 // main - ea: 0x973280
 void main(Broc::entity self) {
