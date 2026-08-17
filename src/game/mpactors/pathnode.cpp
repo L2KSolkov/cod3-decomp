@@ -32,7 +32,27 @@ extern int irand(int min, int max);           // core.o
 extern void FastSinCos(float radians, float* psin, float* pcos);  // core.o
 
 // nodeColorTable / nodeStringTable - debug draw tables (mp_actors.o data)
-extern const float nodeColorTable[0x13][4];   // 0xD1F0B8
+const float nodeColorTable[0x13][4] = {
+    { 1.0f, 0.0f, 0.0f, 1.0f },
+    { 1.0f, 0.0f, 1.0f, 1.0f },
+    { 0.0f, 0.54f, 0.66f, 1.0f },
+    { 0.0f, 0.93f, 0.72f, 1.0f },
+    { 0.0f, 0.6f, 0.46f, 1.0f },
+    { 0.85f, 0.85f, 0.1f, 1.0f },
+    { 1.0f, 0.7f, 0.0f, 1.0f },
+    { 0.75f, 0.75f, 0.0f, 1.0f },
+    { 0.75f, 0.53f, 0.38f, 1.0f },
+    { 0.0f, 0.0f, 1.0f, 1.0f },
+    { 0.0f, 0.0f, 0.75f, 1.0f },
+    { 0.0f, 0.0f, 0.5f, 1.0f },
+    { 0.87f, 0.0f, 0.41f, 1.0f },
+    { 0.52f, 0.52f, 0.6f, 1.0f },
+    { 0.5f, 0.5f, 0.0f, 1.0f },
+    { 0.72f, 0.72f, 0.83f, 1.0f },
+    { 0.5f, 0.6f, 0.5f, 1.0f },
+    { 0.6f, 0.5f, 0.5f, 1.0f },
+    { 0.89f, 0.65f, 0.4f, 1.0f },
+};
 const char* nodeStringTable[0x13] = {
     "BAD NODE", "Path", "Cover Stand", "Cover Crouch", "Cover Prone",
     "Cover Right", "Cover Left", "Cover Wide Right", "Cover Wide Left",
