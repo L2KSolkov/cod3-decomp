@@ -159,5 +159,25 @@ PUBLIC ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z
     jmp ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV01@@Z
 ??0const_iterator@?$reserved_dlist@VPakFile@@@@QAE@ABV1@@Z ENDP
 
+; mp.o anonymous-namespace helpers: exact Xbox hash names forward to the
+; IDA-derived bodies in mp_basic.cpp (MSVC assigns a different local hash).
+EXTERN _cod3_mp_StopPartialAnimation : PROC
+PUBLIC ?StopPartialAnimation@?A0x26f4efd5@@YAXPAVDObj@@I@Z
+?StopPartialAnimation@?A0x26f4efd5@@YAXPAVDObj@@I@Z PROC
+    jmp _cod3_mp_StopPartialAnimation
+?StopPartialAnimation@?A0x26f4efd5@@YAXPAVDObj@@I@Z ENDP
+
+EXTERN _cod3_mp_FreeEntity : PROC
+PUBLIC ?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z
+?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z PROC
+    jmp _cod3_mp_FreeEntity
+?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z ENDP
+
+EXTERN _cod3_mp_PlayPartialAnimationRate : PROC
+PUBLIC ?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z
+?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z PROC
+    jmp _cod3_mp_PlayPartialAnimationRate
+?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z ENDP
+
 _TEXT ENDS
 END

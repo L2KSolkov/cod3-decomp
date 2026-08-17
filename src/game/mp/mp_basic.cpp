@@ -12258,6 +12258,24 @@ void PlayPartialAnimationRate(DObj* dobj, MP_ANIM_INDEX* anim_index,
 }
 }  // namespace
 
+extern "C" void cod3_mp_FreeEntity(Entity* ent)
+{
+    FreeEntity(ent);
+}
+
+extern "C" void cod3_mp_StopPartialAnimation(DObj* dobj, unsigned int mask)
+{
+    StopPartialAnimation(dobj, mask);
+}
+
+extern "C" void cod3_mp_PlayPartialAnimationRate(
+    DObj* dobj, MP_ANIM_INDEX* anim_index, unsigned int mask,
+    float alpha, float speedScale, bool forceTorso)
+{
+    PlayPartialAnimationRate(dobj, anim_index, mask, alpha, speedScale,
+                             forceTorso);
+}
+
 // Force emission of the mp.o anon helper: 0x0072D070 is dead code in the
 // release XBE (IDA: zero xrefs to it or its j_ thunk 0x421B30; the Xbox-era
 // compiler kept unreferenced COMDATs, modern MSVC drops them at compile time).
