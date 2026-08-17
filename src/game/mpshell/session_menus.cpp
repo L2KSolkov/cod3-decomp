@@ -12882,6 +12882,16 @@ OverlayMenu* OverlayMenu_ctor(void* mem, FEMenuSystem* s, int numEntries)
     return new (mem) OverlayMenu(s, numEntries);
 }
 
+GameSettingsView* GameSettingsView_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) GameSettingsView(s);
+}
+
+GameSettingsEdit* GameSettingsEdit_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) GameSettingsEdit(s);
+}
+
 MultilineOverlayMenu* MultilineOverlayMenu_ctor(void* mem, FEMenuSystem* s)
 {
     return new (mem) MultilineOverlayMenu(s);
