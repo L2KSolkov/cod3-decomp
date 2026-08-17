@@ -1665,6 +1665,40 @@ void PlayLanMenu::OnDeactivate(FEMenu* m)
     (void)m;
 }
 
+void PlayLanMenu::OnUp(int c)
+{
+    mListBox.OnUp(c);
+    ClearPreviewImages();
+    m_pImages[mListBox.mTopLine + mListBox.mSelectedLine]->SetShown(true);
+    m_pText[1]->SetText(
+        szPlayLanMenuOptionTextReferences[mListBox.mTopLine
+                                          + mListBox.mSelectedLine]);
+    static const char* const descriptions[3] = {
+        "MPFRONTEND_CREATE_GAME_DESCRIPTION",
+        "MPFRONTEND_FIND_GAME_DESCRIPTION",
+        "MPFRONTEND_XBOXLIVEOPTIONS_DESCRIPTION",
+    };
+    m_pText[2]->SetText(
+        descriptions[mListBox.mTopLine + mListBox.mSelectedLine]);
+}
+
+void PlayLanMenu::OnDown(int c)
+{
+    mListBox.OnDown(c);
+    ClearPreviewImages();
+    m_pImages[mListBox.mTopLine + mListBox.mSelectedLine]->SetShown(true);
+    m_pText[1]->SetText(
+        szPlayLanMenuOptionTextReferences[mListBox.mTopLine
+                                          + mListBox.mSelectedLine]);
+    static const char* const descriptions[3] = {
+        "MPFRONTEND_CREATE_GAME_DESCRIPTION",
+        "MPFRONTEND_FIND_GAME_DESCRIPTION",
+        "MPFRONTEND_XBOXLIVEOPTIONS_DESCRIPTION",
+    };
+    m_pText[2]->SetText(
+        descriptions[mListBox.mTopLine + mListBox.mSelectedLine]);
+}
+
 // ea: 0x0078E770
 void PlayLanMenu::OnTriangle(int c)
 {
