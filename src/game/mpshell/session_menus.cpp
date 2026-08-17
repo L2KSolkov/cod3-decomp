@@ -3103,6 +3103,26 @@ void SessionListMenu::OnSquare(int c)
     InitMenu();
 }
 
+// ea: 0x007A99A0
+void SessionListMenu::InitMenu()
+{
+    m_ListBox.Clear();
+    mNumGames = 0;
+    if (MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+    {
+        if (system->CurrentOverlay() != -1)
+            system->RemoveOverlay();
+        system->AddOverlay(16);
+        OverlayMenu* overlay = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        overlay->SetState(OverlayMenu::GAME_LISTING_START);
+        OverlayMenu* fems = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        fems->mAcceptMenu = 4;
+        fems->mBackMenu = 10;
+    }
+}
+
 // ea: 0x007AD600
 void SessionLanListMenu::OnSquare(int c)
 {
