@@ -11133,6 +11133,15 @@ bool MultiplayerMgr::IsLocalPlayer(Entity* player)
     return mPeer == nullptr || mPeer->GetPlayerManager()->IsLocalPlayer(player);
 }
 
+// ea: 0x007506F0
+void MultiplayerMgr::ExitLevel()
+{
+    MPPeer* peer = mPeer;
+    if (peer != nullptr
+        && peer->GetSessionStatus() != bdSession::BD_SESSION_NOT_CONNECTED)
+        peer->GetPlayerManager()->LocalPlayerExitGame();
+}
+
 // ea: 0x0074EFD0 (profile dialog: confirm delete -> deleting screen)
 bool MPProfileMainMenu::DialogResponseDeleteConfirm(int index)
 {

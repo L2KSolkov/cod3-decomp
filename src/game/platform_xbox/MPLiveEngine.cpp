@@ -139,7 +139,6 @@ void MultiplayerMgr::DropHotJoiningPlayers()
 }
 
 // mp.o member stubs (real logic lives in mp.o; ported later).
-void MultiplayerMgr::ExitLevel() {}
 void MultiplayerMgr::StartDevServer() {}
 void MultiplayerMgr::MapRestart() {}
 void MultiplayerMgr::ProjectileExplosion(Entity* p, int w,
