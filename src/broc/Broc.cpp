@@ -34,8 +34,20 @@ extern void AngleVectors(const float* const angles, float* const forward,
 extern void AnglesToUp(const float* const angles, float* const up);
 extern void AnglesToRight(const float* const angles, float* const right);
 extern void AnglesToForward(const float* const angles, float* const forward);
+extern int irand(int min, int max);
+extern float flrand(float min, float max);
 
 extern "C" int __fpclass(float);
+
+namespace AeAssert {
+enum ECoderId : int;
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
 
 // ============================================================================
 // ae_pair — lightweight pair used by AllocBlock
@@ -63,6 +75,36 @@ bool IS_NAN(float x) {
 // Broc utility functions
 // ============================================================================
 namespace Broc {
+
+int MathsRandomInt(int iMax)
+{
+    if (iMax <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../script/include\\maths.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "iMax > 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("RandomInt range must be positive integer.\n"))
+            __debugbreak();
+    }
+    return irand(0, iMax);
+}
+
+float MathsRandomFloat(float fMax)
+{
+    return flrand(0.0f, fMax);
+}
+
+int MathsRandomIntRange(int iMin, int iMax)
+{
+    return iMax > iMin ? irand(iMin, iMax) : irand(iMax, iMin);
+}
+
+float MathsRandomFloatRange(float fMin, float fMax)
+{
+    return fMin < fMax ? flrand(fMin, fMax) : flrand(fMax, fMin);
+}
 
 // ea: 0x004926420
 bool IsAlpha(char ca) {
