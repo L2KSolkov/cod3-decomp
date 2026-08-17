@@ -10432,7 +10432,7 @@ int CallbackGetFlagBeingContested(Broc::entity player) {
 
 // GetNumPlayersContestingFlag - ea: 0x9785F0
 int GetNumPlayersContestingFlag() {
-    return 0;
+    return (int)mp_util_wad::pLevel->capCount;
 }
 
 // WARScore - ea: 0x975980
