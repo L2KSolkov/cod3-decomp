@@ -15,7 +15,7 @@
 #define BD_MAX_DISCOVERY_RESPONSE_SIZE 1500
 
 // Cross-object externs (bdNet/bdCore units; unresolved until ported).
-class bdTrulyRandomImpl {
+struct bdTrulyRandomImpl {
 public:
     void getRandomUByte8(unsigned char* buf, int count);
 };

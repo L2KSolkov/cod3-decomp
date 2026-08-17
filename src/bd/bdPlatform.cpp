@@ -33,6 +33,22 @@
   typedef float    bdFloat32;
 #endif
 
+#include <new>
+
+namespace bdMemory {
+void* allocate(unsigned int size);
+void deallocate(void* p);
+}
+
+template <typename T>
+struct bdSingleton {
+    static T* getInstance();
+    static T* m_instance;
+};
+
+typedef void (__cdecl *bdSingletonDestroyFunction)();
+bool bdSingletonRegistryAdd(bdSingletonDestroyFunction destroyFunction);
+
 // ============================================================================
 // bdPlatformTiming (Windows only — POSIX stubs for compile test)
 // ============================================================================
@@ -217,7 +233,7 @@ void bdGetRandomUChar8(unsigned char* d, bdUInt n) {
     for (bdUInt i = 0; i < n; ++i) d[i] = (unsigned char)(rand() & 0xFF);
 }
 
-class bdTrulyRandomImpl {
+struct bdTrulyRandomImpl {
 public:
     void getRandomUByte8(unsigned char* out, int count);
     unsigned int getRandomUInt();
@@ -235,4 +251,34 @@ unsigned int bdTrulyRandomImpl::getRandomUInt() {
     return ((unsigned int)bytes[1] << 24)
          | ((unsigned int)bytes[2] << 16)
          | ((unsigned int)bytes[3] << 8);
+}
+
+static void destroyTrulyRandomSingleton() {
+    bdTrulyRandomImpl* instance = bdSingleton<bdTrulyRandomImpl>::m_instance;
+    if (instance != NULL) {
+        instance->~bdTrulyRandomImpl();
+        bdMemory::deallocate(instance);
+        bdSingleton<bdTrulyRandomImpl>::m_instance = NULL;
+    }
+}
+
+template <>
+bdTrulyRandomImpl* bdSingleton<bdTrulyRandomImpl>::m_instance = NULL;
+
+template <>
+bdTrulyRandomImpl* bdSingleton<bdTrulyRandomImpl>::getInstance() {
+    bdTrulyRandomImpl* instance = bdSingleton<bdTrulyRandomImpl>::m_instance;
+    if (instance == NULL) {
+        void* memory = bdMemory::allocate(1);
+        instance = memory != NULL ? new (memory) bdTrulyRandomImpl() : NULL;
+        bdSingleton<bdTrulyRandomImpl>::m_instance = instance;
+        if (instance != NULL && bdSingletonRegistryAdd(&destroyTrulyRandomSingleton))
+            return instance;
+        if (instance != NULL) {
+            instance->~bdTrulyRandomImpl();
+            bdMemory::deallocate(instance);
+            bdSingleton<bdTrulyRandomImpl>::m_instance = NULL;
+        }
+    }
+    return bdSingleton<bdTrulyRandomImpl>::m_instance;
 }

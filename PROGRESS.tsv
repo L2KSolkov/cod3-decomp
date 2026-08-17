@@ -516,7 +516,7 @@ bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	PORTED	bdSessionInfo.
 
 bdPeer:bdSessionHandler.obj	bdPeer	bdSessionHandler.obj	engine	3	PORTED	bdSessionHandler.h/.cpp (bdSessionInterceptor interface + default handler)
 
-bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	PORTED	bdPlatform.cpp: IDA-backed struct type and 1-byte registry-backed singleton; random byte/uint methods retain release behavior
 
 core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 

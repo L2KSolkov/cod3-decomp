@@ -28,7 +28,7 @@
 #define BD_UC_RTO_MIN 0.02f
 #define BD_UC_RTO_MAX 2.0f
 
-class bdTrulyRandomImpl {
+struct bdTrulyRandomImpl {
 public:
     unsigned int getRandomUInt();
 };
