@@ -1468,6 +1468,20 @@ bool ScriptEventHandler::AddEvent(HashString h, HashString callback)
     return false;
 }
 
+// ea: 0x005E9AF0
+bool Entity::AddScriptEvent(HashString h, HashString callback)
+{
+    if (mScriptEventHandler == nullptr)
+    {
+        void* v4 = PoolAllocator_Allocate(ScriptEventHandler_sAllocator,
+                                           0x44u, false);
+        mScriptEventHandler = v4 != nullptr
+            ? new (v4) ScriptEventHandler
+            : nullptr;
+    }
+    return mScriptEventHandler->AddEvent(h, callback);
+}
+
 // ============================================================================
 // FnReverseOptions - flip all effect-sound toggles
 // ea: 0x4F4510
