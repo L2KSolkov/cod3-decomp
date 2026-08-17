@@ -138,11 +138,11 @@ extern int dword_E37630[];  // animEvents sheet table @ 0xE37630
 extern const float Float4_Zero_16[4] = {0.0f, 0.0f, 0.0f, 0.0f}; // @ 0xD190F0
 
 // Step@MPPlayer globals (cg.o / game.o data)
-extern int  lastThirdPerson;   // @ 0xF99268
+int lastThirdPerson = 0;       // @ 0xF99268
 extern vmCvar_t cg_thirdPerson;  // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
 float ladderClipPullin = 2.0f;  // @ 0xE377C8
 extern math::Dir3 rdir_4;       // @ 0xF99250 (step probe direction)
-extern int  _S13_9;             // @ 0xF99264 (step probe init flag)
+int _S13_9 = 0;                // @ 0xF99264 (step probe init flag)
 float futureTime = 0.2f;        // @ 0xE377C4 (landing trace lead)
 float traceDist = 30.0f;        // @ 0xE377C0 (ladder probe distance)
 
