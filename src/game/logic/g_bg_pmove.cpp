@@ -2849,6 +2849,9 @@ extern void PM_WaterEvents();                     // game.o 0x606280
 extern PlayerState* PM_DropTimers();              // game.o 0x606320
 static float PM_CmdScale(usercmd_s* cmd);
 static void PM_Accelerate(float* wishdir, float wishspeed, float accel);
+void PM_FootstepEvent(int iOldBobCycle, int iNewBobCycle, int bFootStep);
+int PM_ShouldMakeFootsteps();
+__m128 PM_GetViewHeightLerp(int iFromHeight, int iToHeight);
 void PM_trace(trace_t* results, const math::Position3& start,
               const math::Position3& mins, const math::Position3& maxs,
               const math::Position3& end,
@@ -2977,7 +2980,203 @@ PlayerState* PM_SetMovementDir()
 }
 
 // PM move-mode stubs (game.o; port later)
-void PM_Footsteps() {}
+void PM_Footsteps()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 3628;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    if (pm->ps->pm_type >= 6)
+        return;
+
+    pm->xyspeed = sqrtf(pm->ps->velocity.v.m128_f32[0]
+                        * pm->ps->velocity.v.m128_f32[0]
+                        + pm->ps->velocity.v.m128_f32[1]
+                              * pm->ps->velocity.v.m128_f32[1]);
+    pmove_t* move = pm;
+    PlayerState* ps = pm->ps;
+    if ((dword_106000 & ps->eFlags) != 0)
+        return;
+
+    const int viewHeightTarget = ps->viewHeightTarget;
+    const int stance = viewHeightTarget == ps->crouchViewHeight
+                           ? 2
+                           : (viewHeightTarget == ps->proneViewHeight ? 1 : 0);
+
+    if (ps->mGroundEntity.mHandle.mVal == 0 && ps->pm_type != 1)
+    {
+        const int pm_flags = ps->pm_flags;
+        if ((pm_flags & 0x10) != 0)
+        {
+            if (pm->cmd.serverTime - ps->jumpTime < 300)
+                return;
+
+            const float verticalVelocity = ps->velocity.v.m128_f32[2];
+            const float bobScale =
+                ((pm_flags & 0x80) == 0 && ps->leanf == 0.0f)
+                    ? (verticalVelocity / (ps->runSpeedScale * 95.25f))
+                          * 0.45f
+                    : (verticalVelocity / (ps->walkSpeedScale * 95.25f))
+                          * 0.35f;
+            const int oldBobCycle = ps->bobCycle;
+            ps->bobCycle = (int)(pml.msec * bobScale) + oldBobCycle;
+            PM_FootstepEvent(oldBobCycle, ps->bobCycle, 1);
+        }
+
+        if (stance == (ps->pm_flags & 3))
+            return;
+    }
+
+    const int bWalking = ps->pm_flags & 0x80;
+    if (move->xyspeed >= 4.0f && ps->pm_type != 1)
+    {
+        const char forwardmove = move->cmd.forwardmove;
+        float speed = (float)ps->speed;
+        if (forwardmove != 0)
+        {
+            if (move->cmd.rightmove != 0)
+            {
+                const float strafeScale =
+                    ((ps->strafeSpeedScale - 1.0f) * 0.75f) + 1.0f;
+                speed = ((strafeScale + 1.0f) * speed) * 0.5f;
+                if (forwardmove < 0)
+                    speed = ((ps->backSpeedScale + 1.0f) * speed) * 0.5f;
+            }
+            else if (forwardmove < 0)
+            {
+                speed *= ps->backSpeedScale;
+            }
+        }
+        else
+        {
+            if (move->cmd.rightmove == 0)
+                goto speed_scale;
+            const float strafeScale =
+                ((ps->strafeSpeedScale - 1.0f) * 0.75f) + 1.0f;
+            speed *= strafeScale;
+        }
+
+    speed_scale:
+        const float movementScale =
+            (ps->pm_flags & 0x80) != 0
+                ? ps->walkSpeedScale
+                : ((ps->pm_flags & 0x10000) != 0
+                       ? ps->sprintSpeedScale
+                       : ps->runSpeedScale);
+        float scaledSpeed = movementScale * speed;
+        const float crouchToProne =
+            PM_GetViewHeightLerp(ps->crouchViewHeight,
+                                 ps->proneViewHeight).m128_f32[0];
+        int animationStance = stance;
+        float bobFraction;
+        if (crouchToProne == 0.0f)
+        {
+            const float proneToCrouch =
+                PM_GetViewHeightLerp(ps->proneViewHeight,
+                                     ps->crouchViewHeight).m128_f32[0];
+            if (proneToCrouch == 0.0f)
+            {
+                if (stance == 1)
+                {
+                    scaledSpeed *= ps->proneSpeedScale;
+                    goto prone_bob;
+                }
+                if (stance == 2)
+                {
+                    scaledSpeed *= ps->crouchSpeedScale;
+                    goto crouch_bob;
+                }
+            }
+            else
+            {
+                scaledSpeed *= ((1.0f - proneToCrouch)
+                                * ps->proneSpeedScale
+                                + ps->crouchSpeedScale * proneToCrouch);
+            }
+        }
+        else
+        {
+            scaledSpeed *= ((1.0f - crouchToProne)
+                            * ps->crouchSpeedScale
+                            + ps->proneSpeedScale * crouchToProne);
+        }
+
+        if (animationStance == 1)
+        {
+        prone_bob:
+            bobFraction = move->xyspeed / scaledSpeed
+                          * (bWalking != 0 ? 0.24f : 0.25f);
+            ps->legsAnim = (ps->pm_flags & 0x40) != 0 ? 6 : 5;
+        }
+        else if (animationStance == 2)
+        {
+        crouch_bob:
+            bobFraction = move->xyspeed / scaledSpeed
+                          * (bWalking != 0 ? 0.315f : 0.34f);
+            if ((ps->pm_flags & 0x40) != 0)
+                ps->legsAnim = bWalking != 0 ? 14 : 22;
+            else
+                ps->legsAnim = bWalking != 0 ? 13 : 21;
+        }
+        else
+        {
+            bobFraction = move->xyspeed / scaledSpeed;
+            if ((ps->pm_flags & 0x40) != 0)
+            {
+                if (bWalking != 0)
+                {
+                    bobFraction *= 0.325f;
+                    ps->legsAnim = 10;
+                }
+                else
+                {
+                    bobFraction *= 0.36f;
+                    ps->legsAnim = 18;
+                }
+            }
+            else if (bWalking != 0)
+            {
+                bobFraction *= 0.305f;
+                ps->legsAnim = 9;
+            }
+            else
+            {
+                bobFraction *= 0.335f;
+                ps->legsAnim = 17;
+            }
+        }
+
+        const int footstep = PM_ShouldMakeFootsteps();
+        const int oldBobCycle = ps->bobCycle;
+        ps->bobCycle = (int)(pml.msec * bobFraction) + oldBobCycle;
+        if (move->cmd.forwardmove != 0 || move->cmd.rightmove != 0)
+        {
+            PM_FootstepEvent(oldBobCycle, ps->bobCycle, footstep);
+        }
+        else if (move->xyspeed <= 120.0f)
+        {
+            if (ps->viewHeightTarget == ps->proneViewHeight)
+                ps->legsAnim = 2;
+            else
+                ps->legsAnim = ps->viewHeightTarget == ps->crouchViewHeight;
+        }
+        return;
+    }
+
+    if (move->xyspeed < 1.0f)
+        ps->bobCycle = 0;
+    if (ps->viewHeightTarget == ps->proneViewHeight)
+        ps->legsAnim = 2;
+    else
+        ps->legsAnim = ps->viewHeightTarget == ps->crouchViewHeight;
+}
 void PM_WalkMove(const collision_context_t& context) { (void)context; }
 void PM_AirMove(const collision_context_t& context) { (void)context; }
 void PM_GroundTrace() {}
