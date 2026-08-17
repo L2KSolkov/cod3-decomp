@@ -1377,10 +1377,101 @@ void entity::UndefineEEField(unsigned int member)
 // Stubs — path nodes
 // ============================================================================
 
-void GetNodeArray(const string&, const string&, void*) {}
-void GetAllNodes(void*) {}
-void GetVehicleNodeArray(const string&, const string&, void*) {}
-void GetAllVehicleNodes(void*) {}
+// ea: 0x0092BAB0. IDA fills pathnode handles returned by the runtime.
+void GetNodeArray(const string& val, const string& key,
+                  dyn_array<pathnode>* nodearr)
+{
+    nodearr->clear();
+    int intarr[1024];
+    const int size = gBrocAPI.mGetNode(&val, &key, intarr, 1024);
+    if ((size < 0 || size == 1024)
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 83,
+               "getnodearray- there may be more node than the current capacity"))
+        __debugbreak();
+    nodearr->reserve((unsigned int)(size + nodearr->mSize));
+    for (int i = 0; i < size; ++i)
+        nodearr->push_back(pathnode(intarr[i]));
+}
+
+// ea: 0x0092BC10. IDA queries all path nodes with blank filters.
+void GetAllNodes(dyn_array<pathnode>* nodearr)
+{
+    nodearr->clear();
+    string blank((string::Block*)nullptr);
+    int intarr[1024];
+    const int size = gBrocAPI.mGetNode(&blank, &blank, intarr, 1024);
+    if (size == 1024
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 96,
+               "getnodearray- there may be more node than the current capacity"))
+        __debugbreak();
+    if (size > 0)
+    {
+        nodearr->reserve((unsigned int)(size + nodearr->mSize));
+        for (int i = 0; i < size; ++i)
+            nodearr->push_back(pathnode(intarr[i]));
+    }
+}
+
+// ea: 0x0092BD90. IDA fills vehicle-node handles returned by the runtime.
+void GetVehicleNodeArray(const string& val, const string& key,
+                         dyn_array<vehiclenode>* nodearr)
+{
+    nodearr->clear();
+    int intarr[1024];
+    const int size = gBrocAPI.mGetVehicleNode(&val, &key, intarr, 1024);
+    if (size == 1024
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 112,
+               "getnodearray- there may be more node than the current capacity"))
+        __debugbreak();
+    if (size > 0)
+    {
+        nodearr->reserve((unsigned int)(size + nodearr->mSize));
+        for (int i = 0; i < size; ++i)
+            nodearr->push_back(vehiclenode(intarr[i]));
+    }
+}
+
+// ea: 0x0092BEE0. IDA queries all vehicle nodes into pathnode handles.
+void GetAllVehicleNodes(dyn_array<pathnode>* nodearr)
+{
+    nodearr->clear();
+    string blank1((string::Block*)nullptr);
+    string blank2((string::Block*)nullptr);
+    int intarr[1024];
+    const int size = gBrocAPI.mGetVehicleNode(&blank2, &blank1, intarr, 1024);
+    if (size == 1024
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 129,
+               "getnodearray- there may be more node than the current capacity"))
+        __debugbreak();
+    nodearr->reserve((unsigned int)(size + nodearr->mSize));
+    for (int i = 0; i < size; ++i)
+        nodearr->push_back(pathnode(intarr[i]));
+}
+
+// ea: 0x0092C0B0. IDA queries all vehicle nodes into vehiclenode handles.
+void GetAllVehicleNodes(dyn_array<vehiclenode>* nodearr)
+{
+    nodearr->clear();
+    string blank1((string::Block*)nullptr);
+    string blank2((string::Block*)nullptr);
+    int intarr[1024];
+    const int size = gBrocAPI.mGetVehicleNode(&blank2, &blank1, intarr, 1024);
+    if (size == 1024
+        && gBrocAPI.mAssert(
+               "c:\\cod\\code\\script\\gen\\broc.cpp", 142,
+               "GetVehicleNodeArray- there may be more node than the current capacity"))
+        __debugbreak();
+    if (size > 0)
+    {
+        nodearr->reserve((unsigned int)(size + nodearr->mSize));
+        for (int i = 0; i < size; ++i)
+            nodearr->push_back(vehiclenode(intarr[i]));
+    }
+}
 
 // ============================================================================
 // EEHelper / EEDefault templates

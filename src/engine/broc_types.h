@@ -139,6 +139,8 @@ public:
         mSize = newSize;
     }
 
+    void clear() { resize(0, 0); }
+
     void push_back(const T& elt) {
         if (mSize >= mCapacity) {
             unsigned int newCap = mCapacity ? mCapacity * 2 : 4;
@@ -394,6 +396,9 @@ COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity::KVPair) == 8, "Broc::ExtendedEnt
 class pathnode {
 public:
     unsigned int ___u0;
+
+    pathnode() : ___u0(0) {}
+    explicit pathnode(int value) : ___u0((unsigned int)value) {}
 };
 // Binary mangle uses class tag V for pathnode (PAVpathnode@Broc@@).
 COD3_STATIC_ASSERT_32BIT(sizeof(pathnode) == 4, "Broc::pathnode size mismatch");
@@ -402,6 +407,9 @@ COD3_STATIC_ASSERT_32BIT(sizeof(pathnode) == 4, "Broc::pathnode size mismatch");
 class vehiclenode {
 public:
     unsigned int ___u0;
+
+    vehiclenode() : ___u0(0) {}
+    explicit vehiclenode(int value) : ___u0((unsigned int)value) {}
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(vehiclenode) == 4, "Broc::vehiclenode size mismatch");
 
@@ -476,10 +484,13 @@ void thread_debug_wait_until(HashStr a, HashStr b, HashStr c, HashStr d);
 // ============================================================================
 // Broc path node functions
 // ============================================================================
-void GetNodeArray(const string& name1, const string& name2, void* result);
-void GetAllNodes(void* result);
-void GetVehicleNodeArray(const string& name1, const string& name2, void* result);
-void GetAllVehicleNodes(void* result);
+void GetNodeArray(const string& name1, const string& name2,
+                  dyn_array<pathnode>* result);
+void GetAllNodes(dyn_array<pathnode>* result);
+void GetVehicleNodeArray(const string& name1, const string& name2,
+                         dyn_array<vehiclenode>* result);
+void GetAllVehicleNodes(dyn_array<pathnode>* result);
+void GetAllVehicleNodes(dyn_array<vehiclenode>* result);
 
 // ============================================================================
 // Boxed types used by Broc::string constructors
@@ -703,7 +714,11 @@ struct BrocAPI {
     char _pad70[0x94 - 0x70];                             // +0x070
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
     unsigned int (*mGetEntByNum)(int);                    // +0x098
-    char _pad9C[0x14C - 0x9C];                            // +0x09C
+    char _pad9C[0xA4 - 0x9C];                             // +0x09C
+    int (*mGetNode)(const Broc::string*, const Broc::string*, int*, int); // +0x0A4
+    char _padA8[0xAC - 0xA8];                             // +0x0A8
+    int (*mGetVehicleNode)(const Broc::string*, const Broc::string*, int*, int); // +0x0AC
+    char _padB0[0x14C - 0xB0];                            // +0x0B0
     float (*mMathsRandomFloatRange)(float, float);         // +0x14C
     char _pad150[0x184 - 0x150];                          // +0x150
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
