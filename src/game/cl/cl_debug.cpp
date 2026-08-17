@@ -104,7 +104,7 @@ int callCount;            // ?callCount@@3HA (cl.o)
 int curListener;          // ?curListener@@3HA (cl.o)
 int iLastCompassTime_0;   // ?iLastCompassTime_0@@3HA (cl.o)
 int iLastCompassTime_1;   // ?iLastCompassTime_1@@3HA (cl.o)
-int unk_F6A28C = 0;       // ?unk_F6A28C@@3HA (cl.o)
+int unk_F6A28C[4 * 802] = {};   // ?unk_F6A28C@@3PAHA (cl.o)
 extern void re_LocateDebugStrings(int a1, int a2);
 extern void re_LocateDebugLines(int a1, int a2);
 // CL_SaveMessageType artifact (cl.o; stub)

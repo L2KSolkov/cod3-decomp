@@ -89,7 +89,7 @@ struct BspCell {
     uint8_t _pad[0x48];
     void* mLgridToc;             // +0x48
 };
-class BspTree {
+struct BspTree {
 public:
     uint8_t _pad[0x18];
     unsigned int mCellsSize;     // +0x18

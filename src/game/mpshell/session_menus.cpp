@@ -287,8 +287,8 @@ extern int g_NumBaseMaps;    // ?g_NumBaseMaps@@3HA @ 0x1388D60
 extern int g_NumTotalMaps;   // ?g_NumTotalMaps@@3HA @ 0x1388D64
 extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
 extern const char* const szClassReference[];  // ?szClassReference@@3PAPBDA @ 0x12782C
-extern int unk_F6A280[802];  // viewport prev (cg.o)
-extern int unk_F6A284[802];  // viewport curr (cg.o)
+extern float unk_F6A280[802];  // viewport prev (cg.o)
+extern float unk_F6A284[802];  // viewport curr (cg.o)
 extern bool g_controllerConnected[];           // ?g_controllerConnected@@3PA_NA (game2.o)
 extern bool g_controllerConnectedErrorShown[]; // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
 extern const char* const szPlayLanMenuOptionTextReferences[];  // ?szPlayLanMenuOptionTextReferences@@3PAPBDA @ 0x12276B8

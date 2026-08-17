@@ -338,6 +338,8 @@ extern float gProjShadowZTop;          // ?gProjShadowZTop@@3MA @ 0xDFB14C
 extern float gProjShadowZBottom;       // ?gProjShadowZBottom@@3MA @ 0xDFB150
 extern nglScene* gProjShadowScene;     // ?gProjShadowScene@@3PAUnglScene@@A @ 0xF74434
 extern bool gProjShadowQuad;           // ?gProjShadowQuad@@3_NA @ 0xF74438
+nglScene* gProjShadowScene = nullptr;
+bool gProjShadowQuad = false;
 
 void cdProjShadow_Begin()
 {
@@ -603,7 +605,7 @@ extern int gRenderStatusBar;    // ?gRenderStatusBar@@3HA @ 0xDFB010
 extern int g_showLightGridDistribution;  // ?g_showLightGridDistribution@@3HA @ 0xF04908
 extern int g_showLightGridDebugText;     // ?g_showLightGridDebugText@@3HA @ 0xF04904
 extern int g_useOnScreenSoundPosDebugging;  // ?g_useOnScreenSoundPosDebugging@@3HA @ 0xF04970
-extern "C" int unk_F6A284[];   // @ 0xF6A284
+extern float unk_F6A284[];       // @ 0xF6A284
 
 // vmCvar_t (cg_widescreen; integer +0x0C)
 struct vmCvar_t {
@@ -640,6 +642,7 @@ namespace ShaderCommon {
 extern math::Position3 gGlowSunPosScreen;  // ?gGlowSunPosScreen@ShaderCommon@@3VPosition3@math@@A @ 0x10DDF40
 extern float gGlowGodRaysFadeOut;          // ?gGlowGodRaysFadeOut@ShaderCommon@@3MA @ 0x10DDF20
 }
+math::Position3 ShaderCommon::gGlowSunPosScreen;
 
 // ngl.o exports
 extern void nglSetEndOfRenderCallback(void (*Fn)(void*), void* Data);
@@ -786,6 +789,7 @@ class TlSystemCallbacks {
     friend void R_RenderView(viewParms_t* parms);
     static bool sWarningsEnabled;  // ?sWarningsEnabled@TlSystemCallbacks@@0_NA
 };
+bool TlSystemCallbacks::sWarningsEnabled = true;
 
 // ============================================================================
 // RE_RenderScene - ea: 0x006DC6C0

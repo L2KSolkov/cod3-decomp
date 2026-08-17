@@ -420,7 +420,7 @@ void dpvs_plane_t::SetAllocator(PoolAllocator* allocator) { sAllocator = allocat
 // SceneManager / XModelParts / PakManager / apsBounds
 // ============================================================================
 class WorldSpawn;
-class SceneManager {
+struct SceneManager {
 public:
     uint8_t _pad[0x1A0];
     const WorldSpawn* mWorldSpawn;   // +0x1A0

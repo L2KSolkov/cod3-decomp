@@ -127,6 +127,7 @@ float unk_F640A8[4 * 6320];
 float unk_F6A278[4 * 802];
 float unk_F6A27C[4 * 802];
 float unk_F6A284[4 * 802];
+float unk_F6A280[4 * 802];
 float unk_F6A288[4 * 802];
 int dword_F62944[4 * 1580];
 int dword_F62948[4 * 1580];

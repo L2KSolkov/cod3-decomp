@@ -13,6 +13,9 @@
 
 // IDA-verified views for render.o globals
 struct BspTree;
+int sCurColor = -1;
+float sGlobalFontScale = 1.0f;
+unsigned char* fdFile = nullptr;
 // world_t (IDA type; size 0x10C)
 struct world_t {
     char name[128];     // +0x00

@@ -30,7 +30,7 @@ struct BspNode {
 };
 static_assert(sizeof(BspNode) == 0x10, "BspNode size mismatch");
 
-class BspTree {
+struct BspTree {
 public:
     uint8_t _pad[8];
     unsigned int mNodesSize;   // +0x08

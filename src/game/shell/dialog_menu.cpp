@@ -12,10 +12,10 @@ extern int currCl;                     // ?currCl@@3HA @ 0xF1579C
 extern const char* const defaultFileName;  // ?defaultFileName
 extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
-extern int unk_F6A284[];               // @ 0xF6A284
-extern int unk_F6A280[];               // @ 0xF6A280
+extern float unk_F6A284[];             // @ 0xF6A284
+extern float unk_F6A280[];             // @ 0xF6A280
 extern int unk_F6A28C[];               // @ 0xF6A28C
-extern float dword_F64158[];           // @ 0xF64158
+extern int dword_F64158[];             // @ 0xF64158
 extern float g_time_inc;               // ?g_time_inc@@3MA
 extern bool gStillDrawMenus;           // ?gStillDrawMenus@@3_NA
 extern bool g_controllerConnectedErrorShown[];  // ?g_controllerConnectedErrorShown@@3PA_NA

@@ -29,7 +29,7 @@ struct MultiplayerMgr {
     static MultiplayerMgr* sInst;
     void DropHotJoiningPlayers();
 };
-extern int unk_F6A28C;   // primary controller port
+extern int unk_F6A28C[];  // per-client controller ports
 extern int dword_F6A28C; // active port
 
 // msg_t (message buffer, from server_types)
@@ -82,7 +82,7 @@ public:
 // ea: 0x52EF50
 void LocalClient::InitializeClientControllers()
 {
-    unk_F6A28C = 0;
+    unk_F6A28C[0] = 0;
 }
 void LocalClient_InitializeClientControllers()
 {
@@ -160,7 +160,7 @@ int LocalClient_ClientToPort(int client)
 {
     if (client != 0)
         return 0;
-    return unk_F6A28C;
+    return unk_F6A28C[0];
 }
 
 // ea: 0x52F010
@@ -189,12 +189,12 @@ int LocalClient_PortIsState(int port, int state)
 int LocalClient::PortToValidClient(int port)
 {
     int result = 0;
-    int* v2 = &unk_F6A28C;
+    int* v2 = &unk_F6A28C[0];
     while (v2[1] == 0 || *v2 != port)
     {
         v2 += 802;
         ++result;
-        if (v2 >= &unk_F6A28C + 802 * 4)
+        if (v2 >= &unk_F6A28C[802 * 4])
             return 0;
     }
     return result;
@@ -208,7 +208,7 @@ int LocalClient_PortToValidClient(int port)
 void LocalClient::SetClientPort(int client, int port)
 {
     if (client == 0)
-        unk_F6A28C = port;
+        unk_F6A28C[0] = port;
 }
 void LocalClient_SetClientPort(int client, int port)
 {

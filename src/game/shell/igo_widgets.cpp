@@ -33,7 +33,7 @@ extern cgGlobal_t cgGlobal;
 extern PlayerState& GetPlayerState(int idx);       // ?GetPlayerState@@YAAAVPlayerState@@H@Z
 extern vmCvar_t g_stanceFadeTime;   // ?g_stanceFadeTime@@3UvmCvar_t@@A @ 0xEAC288
 extern vmCvar_t g_stanceSolidTime;  // ?g_stanceSolidTime@@3UvmCvar_t@@A @ 0xEAE1C8
-extern int unk_F6A284[];            // @ 0xF6A284 (per-client viewport block)
+extern float unk_F6A284[];          // @ 0xF6A284 (per-client viewport block)
 extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z
 
 // Global-scope twin of BrocAPI (broc_types.h's lives in namespace Broc);
@@ -281,7 +281,7 @@ extern float dword_F63C54[];  // @ 0xF63C54 (screen y0)
 extern float dword_F63C58[];  // @ 0xF63C58 (screen w)
 extern float dword_F63C5C[];  // @ 0xF63C5C (screen h)
 extern float unk_F63634[];    // @ 0xF63634 (client yaw)
-extern int unk_F6A280[];      // @ 0xF6A280 (previous viewport)
+extern float unk_F6A280[];    // @ 0xF6A280 (previous viewport)
 extern int dword_F64198[];    // @ 0xF64198
 extern vmCvar_t gCvarShowVehMap;  // ?gCvarShowVehMap@@3UvmCvar_t@@A @ 0xEA64B0
 extern int gRenderCG_2D;      // ?gRenderCG_2D@@3HA (g.o)
