@@ -565,6 +565,12 @@ InGameMenuSystem::InGameMenuSystem(int client)
         menus[i]->Init();
 }
 
+// ea: 0x005B8CD0
+InGameMenuSystem::~InGameMenuSystem()
+{
+    FEMenuSystem::~FEMenuSystem();
+}
+
 // ea: 0x00572FD0
 void InGameMenuSystem::ActivateMenu(int menu)
 {
