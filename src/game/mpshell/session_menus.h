@@ -8,6 +8,7 @@
 #include "game/shell/shell_types.h"
 
 struct sServerCreateParams;  // full definition in session_menus.cpp
+class Entity;
 enum eGameType : int;        // full definition in session_menus.cpp
 enum EPlayerClass : int {
     kPlayerClassRifleman = 0,
@@ -1337,6 +1338,10 @@ public:
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@SpectateMenu@@UAEXPAVPanelFile@@@Z
     virtual void UpdateSplitScreen();      // ?UpdateSplitScreen@SpectateMenu@@UAEXXZ
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@SpectateMenu@@UAEX_N@Z
+    void Clear();                           // ?Clear@SpectateMenu@@QAEXXZ
+    void UpdateSeconds();                   // ?UpdateSeconds@SpectateMenu@@QAEXXZ
+    void SetMedic(bool medic);              // ?SetMedic@SpectateMenu@@QAEX_N@Z
+    void SetTeamKill(bool team_kill, Entity* killer); // ?SetTeamKill@SpectateMenu@@QAEX_NPAVEntity@@@Z
     void UpdateState();                    // ?UpdateState@SpectateMenu@@QAEXXZ
     void UpdateHelpbar();                  // ?UpdateHelpbar@SpectateMenu@@QAEXXZ
 };

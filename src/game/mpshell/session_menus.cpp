@@ -1998,6 +1998,176 @@ SpectateMenu::~SpectateMenu()
 {
 }
 
+// ea: 0x00792700
+void SpectateMenu::Clear()
+{
+    mMedic = false;
+    mTeamKill = false;
+}
+
+// ea: 0x00792780
+void SpectateMenu::UpdateSeconds()
+{
+    FEText* time = (FEText*)mTime;
+    if (mSeconds > 0)
+    {
+        switch (mState)
+        {
+        case kSpectatorStateInjured:
+        case kSpectatorStateDead:
+            time->SetShown(true);
+            time->SetTextNoLocalize(
+                va(STBManager::sInst->GetSTBString("MPSCRIPT_WAITING_FOR_RESPAWN"),
+                   mSeconds));
+            break;
+        case kSpectatorStateDying:
+            time->SetShown(false);
+            time->SetTextNoLocalize(
+                va(STBManager::sInst->GetSTBString("MPSCRIPT_YOU_WILL_DIE"),
+                   mSeconds));
+            break;
+        case kSpectatorStateDeadCanSpawn:
+            time->SetShown(true);
+            time->SetTextNoLocalize(
+                va(STBManager::sInst->GetSTBString("MPSCRIPT_RESPAWNING_IN_TIME"),
+                   mSeconds));
+            break;
+        default:
+            time->SetShown(false);
+            break;
+        }
+    }
+    else
+    {
+        time->SetShown(false);
+    }
+}
+
+// ea: 0x00792880
+void SpectateMenu::UpdateHelpbar()
+{
+    switch (mState)
+    {
+    case kSpectatorStateIntermission:
+        helpbar1->SetShown(false);
+        return;
+    case kSpectatorStateSpawn:
+        helpbar1->SetShown(true);
+        helpbar1->SetText("MPGAME_SELECT_KIT");
+        return;
+    case kSpectatorStateInjured:
+    case kSpectatorStateDying:
+        helpbar1->SetShown(true);
+        if (mTeamKill && MPUIInterface::mServerParams.mEnablePenaltyVote != 0)
+        {
+            if (!mMedic)
+            {
+                helpbar1->SetText("MPGAME_SELECT_KIT_TEAM_KILL");
+            }
+            else
+            {
+                helpbar1->SetText("MPGAME_SELECT_KIT_CALL_MEDIC_TEAM_KILL");
+            }
+        }
+        else if (mMedic)
+        {
+            helpbar1->SetText("MPGAME_SELECT_KIT_CALL_MEDIC");
+        }
+        else
+        {
+            helpbar1->SetText("MPGAME_SELECT_KIT");
+        }
+        return;
+    case kSpectatorStateDead:
+    case kSpectatorStateDeadCanSpawn:
+        helpbar1->SetShown(true);
+        if (mTeamKill)
+        {
+            helpbar1->SetText("MPGAME_SELECT_KIT_TEAM_KILL");
+        }
+        else
+        {
+            helpbar1->SetText("MPGAME_SELECT_KIT");
+        }
+        return;
+    default:
+        return;
+    }
+}
+
+// ea: 0x007A7000
+void SpectateMenu::SetMedic(bool medic)
+{
+    if (cgGlobal.teamGame)
+    {
+        mMedic = medic;
+        UpdateHelpbar();
+    }
+}
+
+// ea: 0x00792970
+void SpectateMenu::SetTeamKill(bool team_kill, Entity* killer)
+{
+    if (MPUIInterface::mServerParams.mEnablePenaltyVote != 0)
+    {
+        mTeamKill = team_kill;
+        mLastTeamKiller = killer;
+        UpdateHelpbar();
+    }
+}
+
+// ea: 0x007A7020
+void SpectateMenu::UpdateState()
+{
+    FEText* header = (FEText*)mHeader;
+    FEText* message = (FEText*)mMessage;
+    FEText* button_press = (FEText*)mButtonPress;
+    switch (mState)
+    {
+    case kSpectatorStateIntermission:
+    case kSpectatorStateSpawn:
+        header->SetShown(false);
+        message->SetShown(false);
+        ((FEText*)mTime)->SetShown(false);
+        button_press->SetShown(false);
+        UpdateSeconds();
+        UpdateHelpbar();
+        return;
+    case kSpectatorStateInjured:
+        header->SetShown(false);
+        message->SetShown(true);
+        ((FEText*)mTime)->SetShown(true);
+        button_press->SetShown(false);
+        message->SetText("MPSCRIPT_YOU_ARE_INJURED");
+        UpdateSeconds();
+        UpdateHelpbar();
+        return;
+    case kSpectatorStateDying:
+        header->SetShown(false);
+        message->SetShown(true);
+        ((FEText*)mTime)->SetShown(false);
+        button_press->SetShown(true);
+        message->SetText("MPSCRIPT_YOU_ARE_INJURED");
+        break;
+    case kSpectatorStateDead:
+        header->SetShown(false);
+        message->SetShown(true);
+        button_press->SetShown(false);
+        message->SetText("MPSCRIPT_YOU_ARE_DEAD");
+        break;
+    case kSpectatorStateDeadCanSpawn:
+        header->SetShown(false);
+        message->SetShown(true);
+        button_press->SetShown(true);
+        message->SetText("MPSCRIPT_YOU_ARE_DEAD");
+        break;
+    default:
+        break;
+    }
+    UpdateSeconds();
+    UpdateHelpbar();
+}
+
 // ============================================================================
 // MI_UpdateMapList / ModelMenu
 // ============================================================================
