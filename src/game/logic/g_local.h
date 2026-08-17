@@ -3752,7 +3752,7 @@ void  DebugDumpAnims(void);                          // g.o 0x468C60
 void  Cmd_LockPVS_f(void);                           // g.o 0x456080
 void  ChangePlayersMaxHealth(int newMaxHealth);      // g.o 0x449F60
 void  Scr_Vehicle_GetIn(Entity* vehicle, Entity* occupant, int health,
-                        unsigned int seatIdx, int entryIdx);  // g.o 0x4918E0
+                        int seatIdx, int entryIdx);  // g.o 0x4918E0
 void  G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
                           float angleLerpRate);      // g.o 0x4492B0
 void  G_CheckLoadGame(int savegame, int unused);  // g.o 0x458120
@@ -4640,7 +4640,7 @@ Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType, weaponParms* wp);
 void  StopFollowing(Entity* ent);                // g.o 0x456160
 void  Spread_Fire_Fake(Entity* attacker, float gunPitch, float gunYaw,
                        const float* weaponPosition, int weapon, float spread,
-                       float coneAngleTangent, unsigned int seed);  // g.o 0x481500
+                       float coneAngleTangent, int seed);  // g.o 0x481500
 void  Cmd_SetViewpos_f(Entity* ent);             // g.o 0x461930
 void  G_AddInvalidatedNode(Entity* pEnt, PathNodes::PathNode* pNode);  // g.o 0x455C10
 void  Sentient_Clean(sentient_s* sentient);      // mp_actors.o
