@@ -1216,7 +1216,13 @@ void thread_sleep_time(void) {}
 void thread_sleep_frames(void) {}
 void thread_sleep_until_notify(void) {}
 void thread_debug_wait_msg(int) {}
-void thread_debug_wait_msg(float) {}
+// ea: 0x00929320. IDA formats the wait duration and emits a thread notice.
+void thread_debug_wait_msg(float time)
+{
+    char tmpBuf[64];
+    sprintf(tmpBuf, "going to sleep for %3.2f seconds", time);
+    gBrocAPI.mThreadDebugNotice(tmpBuf);
+}
 void thread_debug_wait_until(HashStr, HashStr, HashStr, HashStr) {}
 
 // ============================================================================

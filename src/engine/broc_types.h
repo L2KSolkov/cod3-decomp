@@ -697,7 +697,8 @@ struct BrocAPI {
     unsigned char _pad35[0x38 - 0x35];                    // +0x035
     char _pad38[0x58 - 0x38];                             // +0x038
     void (*mThreadTerminateOnNotify)(unsigned int, const int); // +0x058
-    char _pad5C[0x6C - 0x5C];                             // +0x05C
+    char _pad5C[0x68 - 0x5C];                             // +0x05C
+    void (*mThreadDebugNotice)(const char*);              // +0x068
     unsigned int (*mThreadGetId)();                       // +0x06C
     char _pad70[0x94 - 0x70];                             // +0x070
     unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
