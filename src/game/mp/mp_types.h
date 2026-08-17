@@ -806,7 +806,11 @@ public:
                  const char* title_unloc, bool layer1);  // ?BringUp@DialogMenuSystem@@QAEXPBD_N101@Z (shell.o 0x58E3B0)
     void CloseDialog();                      // ?CloseDialog@DialogMenuSystem@@QAEXXZ (shell.o)
     void HighlightOption(int index);         // ?HighlightOption@DialogMenuSystem@@QAEXH@Z (shell.o 0x57F1A0)
-    int  GetActiveMenu();                    // ?GetActiveMenu@FEMenuSystem@@UAEHXZ (shell.o 0x571370)
+    int  GetActiveMenu()                     // ?GetActiveMenu@FEMenuSystem@@UAEHXZ (shell.o 0x571370)
+    {
+        return *reinterpret_cast<const int*>(
+            reinterpret_cast<const unsigned char*>(this) + 0x1C);
+    }
 };
 
 // FEMenuEntry - one menu row (vtable + 20 bytes; SetValue/GetValue at slots
