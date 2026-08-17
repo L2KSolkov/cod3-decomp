@@ -283,8 +283,8 @@ public:
 // ============================================================================
 // mp_shell.o data
 // ============================================================================
-extern int g_NumBaseMaps;    // ?g_NumBaseMaps@@3HA @ 0x1388D60
-extern int g_NumTotalMaps;   // ?g_NumTotalMaps@@3HA @ 0x1388D64
+int g_NumBaseMaps = 0;       // ?g_NumBaseMaps@@3HA @ 0xF99860
+int g_NumTotalMaps = 0;      // ?g_NumTotalMaps@@3HA @ 0xF99864
 extern char byte_E386C9[];   // map-ID conversion table @ 0xE386C9
 extern const char* const szClassReference[];  // ?szClassReference@@3PAPBDA @ 0x12782C
 extern float unk_F6A280[802];  // viewport prev (cg.o)
