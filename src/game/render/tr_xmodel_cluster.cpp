@@ -171,14 +171,14 @@ extern void render_view_model_weapon(int client_index,
                                      math::Mat43& modelTransform);  // ?render_view_model_weapon@@YAXHAAVnglMeshParams@@AAVMat43@math@@@Z
 
 // trGlobals view (viewParms.zFar +0x180)
-struct trGlobalsView {
+struct trGlobals_t {
     uint8_t _pad[0x10];
     struct {
         uint8_t _pad[0x180];
         float zFar;  // +0x180
     } viewParms;     // +0x10
 };
-extern trGlobalsView tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+extern trGlobals_t tr;    // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 struct nglMeshLocal {
     uint8_t _pad[0x0C];

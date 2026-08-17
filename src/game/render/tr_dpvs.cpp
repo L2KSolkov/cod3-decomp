@@ -417,13 +417,13 @@ struct trRefdefFilterView {
     short num_world_dlights;  // +0x20
     short num_model_dlights;  // +0x22
 };
-struct trGlobalsFilterView {
+struct trGlobals_t {
     uint8_t _pad[0x26C];
     trRefdefFilterView refdef;   // +0x26C
     uint8_t _pad2[0x290 - 0x270];
     void* world;                 // +0x290
 };
-extern trGlobalsFilterView tr;  // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+extern trGlobals_t tr;          // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 
 // world_t view (bspTree +0x100)
 struct worldFilterView {
