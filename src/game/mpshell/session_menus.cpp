@@ -3123,6 +3123,22 @@ void SessionListMenu::InitMenu()
     }
 }
 
+// ea: 0x007A9B70
+void SessionLanListMenu::InitMenu()
+{
+    m_ListBox.Clear();
+    mNumGames = 0;
+    if (MultiplayerMgr::sInst->oneOffCheckLinkStatus())
+    {
+        if (system->CurrentOverlay() != -1)
+            system->RemoveOverlay();
+        system->AddOverlay(16);
+        OverlayMenu* overlay = g_femanager.fems != nullptr
+            ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
+        overlay->SetState(OverlayMenu::GAME_LISTING_START);
+    }
+}
+
 // ea: 0x007AD600
 void SessionLanListMenu::OnSquare(int c)
 {
