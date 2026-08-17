@@ -3571,6 +3571,22 @@ void AAROverlay::OnUp(int c)
     }
 }
 
+// ea: 0x0078FBC0
+void AAROverlay::OnDown(int c)
+{
+    m_ListBox.OnDown(c);
+    int nextSelection = m_currSelection + 1;
+    bool wasNegative = m_currSelection < 0;
+    m_currSelection = nextSelection;
+    bool overflow = ((nextSelection ^ 1)
+                     & (nextSelection ^ (nextSelection - 1))) < 0;
+    if (!(wasNegative ^ overflow | (nextSelection == 1)))
+    {
+        m_currSelection = 0;
+        m_ListBox.SelectLine(0);
+    }
+}
+
 // ea: 0x00790580
 VoteGameTypeMenu::VoteGameTypeMenu(FEMenuSystem* pauseMenuSystem)
     : FEMenu(pauseMenuSystem, 2, 320, 260, 8, 0)
