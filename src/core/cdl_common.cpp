@@ -171,35 +171,38 @@ float dist2(
     const math::Position3& q0,
     const math::Position3& q1)
 {
-    __m128 dP = _mm_sub_ps(p1.v, p0.v);
-    __m128 dQ = _mm_sub_ps(q1.v, q0.v);
+    __m128 v4 = _mm_sub_ps(p1.v, p0.v);
+    __m128 v5 = _mm_mul_ps(v4, v4);
+    __m128 v6 = _mm_sub_ps(q1.v, p0.v);
+    __m128 v7 = _mm_mul_ps(v4, v6);
+    float v24 = DOT3(v5);
+    __m128 v8 = _mm_mul_ps(v6, v6);
+    float v27 = DOT3(v7);
+    float best = DOT3(v8) - ((v27 * v27) / v24);
 
-    __m128 dp_sq = _mm_mul_ps(dP, dP);
-    float lenDP2 = DOT3(dp_sq);
+    __m128 v10 = _mm_sub_ps(q0.v, p1.v);
+    __m128 v11 = _mm_mul_ps(v10, v10);
+    __m128 v12 = _mm_sub_ps(q1.v, p1.v);
+    float v25 = DOT3(v11);
+    __m128 v13 = _mm_mul_ps(v12, v12);
+    __m128 v14 = _mm_mul_ps(v10, v12);
+    float v20 = DOT3(v13);
+    float v22 = DOT3(v14);
+    if (best > (v20 - ((v22 * v22) / v25)))
+        best = v20 - ((v22 * v22) / v25);
 
-    __m128 v0 = _mm_sub_ps(p0.v, q0.v);
+    __m128 v15 = _mm_sub_ps(q0.v, p0.v);
+    __m128 v16 = _mm_mul_ps(v15, v15);
+    float v23 = DOT3(v16);
+    __m128 v17 = _mm_mul_ps(v6, v6);
+    float v26 = DOT3(v17);
+    __m128 v18 = _mm_mul_ps(v15, v6);
+    float v21 = DOT3(v18);
+    if (best > (v26 - ((v21 * v21) / v23)))
+        best = v26 - ((v21 * v21) / v23);
 
-    __m128 dp_dq = _mm_mul_ps(dP, dQ);
-    float dpdq = DOT3(dp_dq);
-
-    __m128 v0_dp = _mm_mul_ps(v0, dP);
-    float v0dp = DOT3(v0_dp);
-
-    __m128 dq_sq = _mm_mul_ps(dQ, dQ);
-    float lenDQ2 = DOT3(dq_sq);
-
-    __m128 v0_dq = _mm_mul_ps(v0, dQ);
-    float v0dq = DOT3(v0_dq);
-
-    // Squared distance: line segment vs line segment
-    // Find closest points on two lines, clamp to segments
-    // This is a standard geometric primitive.
-
-    float best = lenDP2 - ((v0dp * v0dp) / (lenDQ2 < 0.0001f ? 0.0001f : lenDQ2));
-    // Stub: full implementation is ea:0x81DF30 (SSE-optimized, ~200 instructions)
-    // This function will be finalized when physics porting requires bit-exactness.
-    if (best < 0.0001f) best = 0.0001f;
-
+    if (best < 0.000099999997f)
+        return 0.000099999997f;
     return best;
 }
 
