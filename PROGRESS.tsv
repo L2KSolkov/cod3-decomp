@@ -444,7 +444,7 @@ ngl_xboxr:ngl_dx_buf.o	ngl_xboxr	ngl_dx_buf.o	engine	4	PORTED	ngl_dx_buf.cpp: wo
 
 ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	PORTED	ngl_dx_mesh.cpp: vertex-decl bank dedup + section D3D pointer fixups + clip-result; owns nglVertexDeclarationBank; ngliReleaseSection empty
 
-phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_xboxr] rbc_def_contact.cpp: contact constraint (4 funcs)
+phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_xboxr] rbc_def_contact.cpp: contact constraint (4 funcs) plus IDA-backed pulse_sum_constraint_solver::create_pulse_sum_contact (0x88AC40)
 
 bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 

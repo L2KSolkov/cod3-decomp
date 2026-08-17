@@ -16,6 +16,29 @@
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
 // ============================================================================
+// pulse_sum_constraint_solver::create_pulse_sum_contact - ea: 0x88AC40
+// ============================================================================
+pulse_sum_contact* pulse_sum_constraint_solver::create_pulse_sum_contact(
+    rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t) {
+    pulse_sum_contact* result = (pulse_sum_contact*)m_solver_memory_allocater.allocate(
+        160 * cpi->m_point_pair_count + 64, 16, (cpi->m_flags & 2) != 0,
+        SOLVER_MEMORY_ALLOCATER_ERROR_MSG);
+    if (result != NULL) {
+        pulse_sum_contact* last = m_list_pulse_sum_contact.m_last;
+        if (last != NULL)
+            last->m_link.m_next_link = result;
+        else
+            m_list_pulse_sum_contact.m_first = result;
+        m_list_pulse_sum_contact.m_last = result;
+        result->m_link.m_next_link = NULL;
+        result->m_list_cpi = (pulse_sum_contact::psc_cpi*)&result[1];
+        result->m_list_cpi_count = cpi->m_point_pair_count;
+        result->set(b1, b2, cpi, delta_t);
+    }
+    return result;
+}
+
+// ============================================================================
 // contact_point_info::get_cpi_allocater â€” ea: 0x88AA20
 // ============================================================================
 phys_memory_heap* contact_point_info::get_cpi_allocater() {

@@ -103,12 +103,6 @@ void pulse_sum_wheel::set_side_fwd_ratios(float side_ratio, float fwd_ratio)
     m_side->m_pulse_limit_ratio = side_ratio;
     m_fwd->m_pulse_limit_ratio = fwd_ratio;
 }
-pulse_sum_contact* pulse_sum_constraint_solver::create_pulse_sum_contact(
-    rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t)
-{
-    (void)b1; (void)b2; (void)cpi; (void)delta_t;
-    return nullptr;
-}
 const __m128 Float4_XAxis_210 = {1.0f, 0.0f, 0.0f, 0.0f};
 const __m128 Float4_YAxis_210 = {0.0f, 1.0f, 0.0f, 0.0f};
 const __m128 Float4_ZAxis_210 = {0.0f, 0.0f, 1.0f, 0.0f};
