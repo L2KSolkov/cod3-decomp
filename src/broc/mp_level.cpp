@@ -47,7 +47,7 @@ const char* ResolveAnimName(unsigned int anim)
 // ea: 0xC8F7D0
 bool ValidateAnimationIndices()
 {
-    return false;
+    return true;
 }
 
 // ea: 0xC8F830
