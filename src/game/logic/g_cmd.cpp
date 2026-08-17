@@ -202,7 +202,20 @@ PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
 class Curve {
 public:
     CurveNode m_dlist_node;             // +0x00
-    float mCurveParams[19];             // +0x08..+0x54 (15 zeroed by ctor)
+    union {
+        struct {
+            float mTargetSpeed;                 // +0x08
+            float mCurrentSmoothing;            // +0x0C
+            float mCurrentSmoothingVelocity;    // +0x10
+            float mLastSuspensionTravelKey[6];  // +0x14
+            float mLastSuspensionTravelCond[6]; // +0x2C
+            float mThrottle;                    // +0x44
+            unsigned int mThrottleChange;       // +0x48
+            float mImpactIntensity;             // +0x4C
+            float mCachedImpactIntensity;       // +0x50
+        };
+        float mCurveParams[19];                 // +0x08..+0x54
+    };
     unsigned int mEntityHandle;         // +0x54
     unsigned char* mCurveData;          // +0x58
     struct EffectList {
@@ -385,8 +398,38 @@ float EvalThrottle(unsigned int, unsigned int entityHandleVal, unsigned int,
         return 0.0f;
     return 1.0f;
 }
-float EvalThrottleChange(unsigned int, unsigned int, unsigned int, float,
-                         float, unsigned int) { return 0.0f; }
+float EvalThrottleChange(unsigned int frameId, unsigned int entityHandleVal,
+                         unsigned int, float min, float max, unsigned int)
+{
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    if (v5 >= 0x540
+        || entityHandleVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey)
+        return min - 1.0f;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+    if (mObject == nullptr)
+        return min - 1.0f;
+    Curve* curve = mObject->curve;
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    if (curve == nullptr || scr_vehicle == nullptr)
+        return min - 1.0f;
+    extern unsigned int curFrame_1;  // ?curFrame_1@@3IA (game.o @ 0xDF8DE4)
+    if (curFrame_1 != frameId)
+    {
+        curve->mThrottleChange = 0;
+        float Throttle = scr_vehicle->GetThrottle();
+        float v10 = -1.0f;
+        if (Throttle > 0.5f)
+            v10 = 1.0f;
+        else if (Throttle >= -0.5f)
+            v10 = 0.0f;
+        if (max > 0.0f && v10 > 0.0f && v10 != curve->mThrottle)
+            curve->mThrottleChange = 1;
+        if (min > 0.0f && v10 < 0.0f && v10 != curve->mThrottle)
+            curve->mThrottleChange = 1;
+        curve->mThrottle = v10;
+    }
+    return (float)curve->mThrottleChange;
+}
 float EvalBrake(unsigned int, unsigned int, unsigned int, float,
                 float, unsigned int) { return -1.0f; }
 float EvalDriver(unsigned int, unsigned int, unsigned int, float,

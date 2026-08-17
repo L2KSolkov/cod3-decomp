@@ -1612,6 +1612,7 @@ void AnimationPlayer_DebugDump(Entity* ent)
     (void)ent;
 }
 int curFrame_0 = 0;  // ?curFrame_0@@3HA (game.o @ 0xDF8DE0)
+unsigned int curFrame_1 = 0;  // ?curFrame_1@@3IA (game.o @ 0xDF8DE4)
 
 // g.o / shell.o / render.o / scr.o stubs (port later)
 PlayerState& GetPlayerState(int idx)
