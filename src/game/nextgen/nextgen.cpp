@@ -9,6 +9,7 @@
 #include "game/sv/server_types.h"  // netadr_t, client_s (sv_stubs.h deps)
 #include "game/sv/sv_stubs.h"      // ServerTime
 #include "ngl/ngl_dx_quad.h"   // nglQuad, nglBuildScene
+#include "ngl/ngl_dx_filters.h"
 #include "ngl/nglTexture.h"
 
 // ============================================================================
@@ -22,11 +23,6 @@ extern nglTexture* nglGetFrontBufferTex(void);
 extern void nglSetQuadTex(nglQuad* Quad, nglTexture* Tex);
 extern void nglRenderQuad(nglQuad* Quad);
 extern void nglSetSceneCallBack(nglSceneCallbackType Type, void (*Fn)(void*), void* Data);
-
-// nglDxFilters (ngl_xboxr) â€” minimal view; full definition when ngl_dx_filters.o is ported
-struct nglDxFilters {
-    static void RenderBlur(nglTexture* SrcTex, nglTexture* DstTex);
-};
 
 // ============================================================================
 // CG_MotionBlur statics (file-local, .data @0xE01E20..0xE01E30)
