@@ -82,9 +82,9 @@ void Link_Frame()
 // CurveManager - ea: 0x60F1B0..0x60F200
 // ============================================================================
 struct RemainingTime {
-    int   mTrackId;       // +0x00
-    int   mEntityId;      // +0x04
-    float mRemainingTime; // +0x08
+    unsigned int mEntityId;      // +0x00
+    unsigned int mTrackId;       // +0x04
+    float        mRemainingTime; // +0x08
 };
 
 class CurveManager {
@@ -407,7 +407,7 @@ float EvalImpact(unsigned int frameId, unsigned int entityHandleVal,
     return *(float*)((char*)mObject->curve + 0x60);
 }
 
-// Remaining curve evaluators (full ports deferred; stub to keep linking)
+// Remaining curve evaluators
 float EvalVelocity(unsigned int, unsigned int entityHandleVal, unsigned int,
                    float, float, unsigned int)
 {
@@ -527,8 +527,43 @@ float EvalSpringCompressionKey(unsigned int frameId,
     }
     return min - 1.0f;
 }
-float EvalRepeatInterval(unsigned int, unsigned int, unsigned int, float,
-                         float, unsigned int) { return 0.0f; }
+float EvalRepeatInterval(unsigned int, unsigned int entityHandleVal,
+                         unsigned int, float min, float max,
+                         unsigned int trackId)
+{
+    CurveManager* curveMan = CurveManager::sInst;
+    if (curveMan == nullptr)
+        return -1.0f;
+
+    int freeSlot = -1;
+    bool hasActiveMatch = false;
+    for (int i = 0; i < 50; ++i)
+    {
+        RemainingTime* slot = &curveMan->mRemainingTime[i];
+        if (slot->mTrackId == trackId
+            && slot->mEntityId == entityHandleVal
+            && slot->mRemainingTime != 0.0f)
+        {
+            hasActiveMatch = true;
+        }
+        if (slot->mRemainingTime == 0.0f)
+            freeSlot = i;
+    }
+    if (hasActiveMatch || freeSlot < 0)
+        return min - 1.0f;
+
+    float nextRepeatInterval = min;
+    if (max > min)
+    {
+        nextRepeatInterval = (rand() * (max - min))
+                             * 0.000030518509f + min;
+    }
+    RemainingTime* slot = &curveMan->mRemainingTime[freeSlot];
+    slot->mEntityId = entityHandleVal;
+    slot->mTrackId = trackId;
+    slot->mRemainingTime = nextRepeatInterval;
+    return nextRepeatInterval;
+}
 float EvalSurface(unsigned int, unsigned int entityHandleVal, unsigned int type,
                   float, float, unsigned int)
 {
