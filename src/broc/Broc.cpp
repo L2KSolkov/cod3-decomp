@@ -79,6 +79,11 @@ unsigned int length(const char* txta) {
     return len;
 }
 
+// ea: 0x005EE0D0
+float length(const vector& v) {
+    return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
 // ea: 0x0049287C0
 int strcmp(const char* lhsa, const char* rhsa) {
     while (*lhsa && *rhsa) {
