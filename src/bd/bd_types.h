@@ -27,6 +27,27 @@ struct bdMessageProxy {
     void log(const char* channel, const char* format, ...) const;
 };
 
+// bdString / bdStringData (bdCore types, verified against IDA)
+struct bdStringData {
+    unsigned int m_referenceCount;
+    unsigned int m_length;
+    unsigned int m_capacity;
+};
+static_assert(sizeof(bdStringData) == 12, "bdStringData size mismatch");
+
+class bdString {
+public:
+    char* m_string;
+
+    bdString();
+    bdString(const char* value);
+    bdString(const bdString& value);
+    ~bdString();
+    unsigned int getLength() const;
+    const char* getBuffer() const;
+};
+static_assert(sizeof(bdString) == 4, "bdString size mismatch");
+
 extern bool g_assertFalse;
 
 namespace bdMemory {

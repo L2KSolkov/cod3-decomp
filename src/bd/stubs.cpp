@@ -23,6 +23,64 @@ bdMessageProxy::bdMessageProxy(const char* file, const char* func,
 {
 }
 
+namespace {
+struct bdEmptyStringStorage {
+    bdStringData data;
+    char string[1];
+};
+bdEmptyStringStorage g_emptyStringStorage = {{1, 0, 0}, {0}};
+}
+
+// ea: 0x0089CB30
+bdString::bdString()
+    : m_string(g_emptyStringStorage.string)
+{
+    ++g_emptyStringStorage.data.m_referenceCount;
+}
+
+// ea: 0x0089CB50
+bdString::bdString(const char* value)
+{
+    const unsigned int length = (unsigned int)strlen(value);
+    if (length != 0)
+    {
+        const unsigned int capacity = ((length + 1 + 0x3F) >> 6) << 6;
+        char* storage = (char*)bdMemory::allocate(capacity + sizeof(bdStringData));
+        bdStringData* data = (bdStringData*)storage;
+        data->m_referenceCount = 1;
+        data->m_length = length;
+        data->m_capacity = capacity;
+        m_string = storage + sizeof(bdStringData);
+        memcpy(m_string, value, length + 1);
+    }
+    else
+    {
+        m_string = g_emptyStringStorage.string;
+        ++g_emptyStringStorage.data.m_referenceCount;
+    }
+}
+
+// ea: 0x0089CAA0
+bdString::bdString(const bdString& value)
+    : m_string(value.m_string)
+{
+    ++*((unsigned int*)m_string - 3);
+}
+
+// ea: 0x0089CC30
+bdString::~bdString()
+{
+    unsigned int* referenceCount = (unsigned int*)m_string - 3;
+    if (--*referenceCount == 0)
+        bdMemory::deallocate(referenceCount);
+}
+
+// ea: 0x0089CA50
+const char* bdString::getBuffer() const
+{
+    return m_string;
+}
+
 namespace bdBytePacker {
 
 // 0x0089EC80 / 0x0089ED40 / 0x0089ECE0 / 0x0089EDA0 (bdCore)

@@ -20,19 +20,6 @@ class bdDHKey;
 class bdSession;
 
 // ============================================================================
-// bdString - minimal placeholder (used only inside bdArray<bdString>).
-// ============================================================================
-struct bdString {
-    char* m_string;
-
-    bdString();                          // ??0bdString@@QAE@XZ (bdCore)
-    bdString(const char* s);             // ??0bdString@@QAE@PBD@Z (bdCore)
-    ~bdString();                         // ??1bdString@@QAE@XZ (bdCore)
-    unsigned int getLength() const;      // ?getLength@bdString@@QBEIXZ (bdCore)
-    const char* getBuffer() const;       // ?getBuffer@bdString@@QBEPBDXZ (bdCore)
-};
-
-// ============================================================================
 // bdNetStartParams - startup parameters (0x2C bytes).
 // ============================================================================
 struct bdNetStartParams {
