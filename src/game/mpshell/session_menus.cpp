@@ -276,7 +276,17 @@ struct weaponFileInfo_t {
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);  // cl.o
 
 // BuildControllerMessage - controller-disconnect message (mp_shell.o 0x78FC00)
-Broc::string BuildControllerMessage();
+Broc::string BuildControllerMessage()
+{
+    Broc::string controllerMessage("MPFRONTEND_CONTROLLER_DISCONNECTED");
+    char portString[4];
+    strcpy(portString, "1");
+    portString[0] += controller::inst()->locked_port;
+    controllerMessage += portString;
+    controllerMessage += " ";
+    controllerMessage += "MPFRONTEND_AND_START_TO_CONTINUE";
+    return controllerMessage;
+}
 
 class MPLiveEngine : public LiveWrapper {
 public:
