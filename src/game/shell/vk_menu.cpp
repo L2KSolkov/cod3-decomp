@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <new>
 
 extern FEManager g_femanager;          // ?g_femanager@@3UFEManager@@A
 extern int currCl;                     // ?currCl@@3HA @ 0xF1579C
@@ -53,6 +54,11 @@ VKMenu::VKMenu(FEMenuSystem* s)
     mNameLength = 0;
     mNameValid = false;
     default_color_scheme = 19;
+}
+
+VKMenu* VKMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) VKMenu(s);
 }
 
 // ea: 0x005942F0

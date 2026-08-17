@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <intrin.h>
+#include <new>
 
 extern FEManager g_femanager;          // ?g_femanager@@3UFEManager@@A
 extern int currCl;                     // ?currCl@@3HA @ 0xF1579C
@@ -3222,4 +3223,24 @@ void GammaScreenMenu::SetPanelFile(PanelFile* pf)
     mGaugeArrowRight->SetShown(false);
     mPanel->GetPointer("gauge_back_01")->SetShown(false);
     mPanel->GetPointer("gauge_back_02")->SetShown(false);
+}
+
+InGameOptionsMenu* InGameOptionsMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InGameOptionsMenu(s);
+}
+
+OptionsStickMenu* OptionsStickMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) OptionsStickMenu(s);
+}
+
+OptionsButtonMenu* OptionsButtonMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) OptionsButtonMenu(s);
+}
+
+GammaScreenMenu* GammaScreenMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) GammaScreenMenu(s);
 }

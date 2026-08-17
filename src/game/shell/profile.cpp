@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <intrin.h>
+#include <new>
 
 extern FEManager g_femanager;          // ?g_femanager@@3UFEManager@@A
 extern int currCl;                     // ?currCl@@3HA @ 0xF1579C
@@ -2282,4 +2283,9 @@ MemCardCheckMenu::MemCardCheckMenu(FEMenuSystem* s)
 MemCardCheckMenu::~MemCardCheckMenu()
 {
     FEMenu::~FEMenu();
+}
+
+MemCardCheckMenu* MemCardCheckMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MemCardCheckMenu(s);
 }

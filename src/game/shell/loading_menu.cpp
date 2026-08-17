@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <new>
 
 extern unsigned int AeHash(const char* str);        // core/ae_hash.cpp (binary _AeHash 0x7BF220)
 extern void* mem_heap_malloc(unsigned int size);    // core.o
@@ -554,4 +555,9 @@ void LoadingMenu::SetPanelFile(PanelFile* pf)
         m_fLoadingBarTop = m_pLoadingBar->GetMin().y;
         m_fLoadingBarBottom = m_pLoadingBar->GetMax().y;
     }
+}
+
+LoadingMenu* LoadingMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) LoadingMenu(s);
 }
