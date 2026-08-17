@@ -60,6 +60,208 @@ void rb_vehicle_update_from_network(rb_vehicle* self,
 
 static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate);
 
+// Minimal controller view (controller_xboxr). The function-pointer block is
+// retained so locked_port/is_locked keep their IDA-verified offsets.
+class controller {
+public:
+    static controller* inst();
+    void (*button_value_fn)(int*);
+    void (*button_released_fn)(int*);
+    void (*button_released_clear_fn)(int*);
+    void (*button_pressed_fn)(int*);
+    void (*button_pressed_clear_fn)(int*);
+    void (*stick_value_fn)(int*, int*);
+    int locked_port;
+    bool is_locked;
+    bool accepting_input_from_controller[4];
+};
+
+enum EPadAliasButton {
+    kPadAliasButtonInvalid = -1,
+    kPadAliasButtonGas = 0,
+    kPadAliasButtonReverse = 1,
+    kPadAliasButtonHandBrake = 2,
+    kPadAliasButtonAlignTurret = 3,
+    kPadAliasButtonFireCoax = 4,
+    kPadAliasButtonSwitchSeats = 5,
+};
+
+enum EPadAliasStick {
+    kPadAliasStickInvalid = -1,
+    kPadAliasStickVehicleSteering = 0,
+    kPadAliasStickTankSteering = 1,
+};
+
+class PadAliasMgr {
+public:
+    struct Context {
+        ae_sized_array<ae_sized_array<EPadAliasButton, 16>, 4> mButtonAlias;
+        ae_sized_array<ae_sized_array<EPadAliasStick, 2>, 4> mStickAlias;
+        int GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias);
+    };
+    Context mCtx[3];
+    static PadAliasMgr* sInst;
+};
+
+extern int dword_F6A28C[4 * 802];
+extern int g_vehicle_button_threshold;
+
+// ea: 0x0048FA30
+void VEH_FireAltWeapon(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    if (!scr_vehicle->seats[0].gunMounted)
+        return;
+
+    weaponFileInfo_t* info = BG_GetInfoForWeapon(scr_vehicle->altWeapon);
+    scr_vehicle->altFireTime = info->iFireTime;
+
+    weaponParms wp;
+    memset(&wp, 0, sizeof(wp));
+    wp.pWeapInfo = info;
+
+    int coax = scr_vehicle->boneIndex.coax;
+    if (coax < 0)
+        coax = scr_vehicle->boneIndex.flash[0];
+
+    DObjSkelMat flashMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, coax, &flashMtx);
+
+    unsigned int ownerValue = ent->r.mOwner.mHandle.mVal;
+    unsigned int ownerIndex = ownerValue & 0xFFF;
+    Entity* owner = nullptr;
+    if (ownerIndex < 0x540
+        && (ownerValue >> 12)
+               == (unsigned int)EntityHandleDb::sInst.mElements[ownerIndex].mKey)
+        owner = EntityHandleDb::sInst.mElements[ownerIndex].mObject;
+
+    float muzzleOrigin[3] = {
+        flashMtx.origin[0], flashMtx.origin[1], flashMtx.origin[2]
+    };
+    float gunAngles[3] = {
+        flashMtx.axis[0][0], flashMtx.axis[0][1], flashMtx.axis[0][2]
+    };
+    float muzzleAngles[3];
+    vectoangles(gunAngles, muzzleAngles);
+    if (owner != nullptr && scr_vehicle->barrelBlocked == 0
+        && (scr_vehicle->targetOrigin[0] != 0.0f
+            || scr_vehicle->targetOrigin[1] != 0.0f
+            || scr_vehicle->targetOrigin[2] != 0.0f))
+    {
+        wp.muzzleTrace[0] = scr_vehicle->targetOrigin[0] - muzzleOrigin[0];
+        wp.muzzleTrace[1] = scr_vehicle->targetOrigin[1] - muzzleOrigin[1];
+        wp.muzzleTrace[2] = scr_vehicle->targetOrigin[2] - muzzleOrigin[2];
+        VectorNormalize(wp.muzzleTrace);
+
+        float targetAngles[3];
+        vectoangles(wp.muzzleTrace, targetAngles);
+        math::Position3 muzzlePos = native_to_cdl_pos3(muzzleAngles);
+        math::Position3 targetPos = native_to_cdl_pos3(targetAngles);
+        math::Position3 angleDelta;
+        AnglesSubtract(muzzlePos, targetPos, angleDelta);
+        float pitch = angleDelta.v.m128_f32[2];
+        if (pitch < -10.0f)
+            pitch = -10.0f;
+        else if (pitch > 10.0f)
+            pitch = 10.0f;
+        angleDelta.v.m128_f32[2] = pitch;
+
+        math::Position3 adjustedAngles;
+        AnglesSubtract(muzzlePos, angleDelta, adjustedAngles);
+        AnglesToForward(adjustedAngles.v.m128_f32, wp.muzzleTrace);
+        gunAngles[0] = wp.muzzleTrace[0];
+        gunAngles[1] = wp.muzzleTrace[1];
+        gunAngles[2] = wp.muzzleTrace[2];
+    }
+
+    wp.forward[0] = flashMtx.axis[1][0];
+    wp.forward[1] = flashMtx.axis[1][1];
+    wp.forward[2] = flashMtx.axis[1][2];
+    wp.right[0] = flashMtx.axis[2][0];
+    wp.right[1] = flashMtx.axis[2][1];
+    wp.right[2] = flashMtx.axis[2][2];
+    if (scr_vehicle->barrelBlocked != 0)
+    {
+        wp.up[0] = (0.0f - scr_vehicle->barrelOffset) * gunAngles[0]
+                 + muzzleOrigin[0];
+        wp.up[1] = (0.0f - scr_vehicle->barrelOffset) * gunAngles[1]
+                 + muzzleOrigin[1];
+        wp.up[2] = (0.0f - scr_vehicle->barrelOffset) * gunAngles[2]
+                 + muzzleOrigin[2];
+    }
+    else
+    {
+        wp.up[0] = muzzleOrigin[0];
+        wp.up[1] = muzzleOrigin[1];
+        wp.up[2] = muzzleOrigin[2];
+    }
+
+    unsigned int occupantValue = scr_vehicle->seats[0].occupant.mHandle.mVal;
+    unsigned int occupantIndex = occupantValue & 0xFFF;
+    if (occupantIndex >= 0x540
+        || (occupantValue >> 12)
+               != (unsigned int)EntityHandleDb::sInst.mElements[occupantIndex].mKey
+        || EntityHandleDb::sInst.mElements[occupantIndex].mObject == nullptr)
+        return;
+
+    Entity* occupant = EntityHandleDb::sInst.mElements[occupantIndex].mObject;
+    if (info->type != WEAPTYPE_BULLET)
+    {
+        Weapon_RocketLauncher_Fire(ent, 0.0f, &wp, 10.0f, true);
+        return;
+    }
+
+    float spread = (info->accuracy - 1.0f) * 10.0f;
+    int damage = info->iDamage;
+    if (EntityManager::sInst->IsLocalPlayer(occupant))
+        Bullet_Fire(occupant, spread, damage, &wp, ent, 0.0f);
+    else
+        Bullet_Fire_Fake(occupant, 0.0f, damage, &wp, ent, 0.0f);
+
+    CG_FireWeapon(occupant, &occupant->s, 187, 0);
+    scr_vehicle->seats[0].heat +=
+        (info->iFireTime * info->fFireHeat) * 0.00075000001f;
+
+    for (int i = 0; i < 11; ++i)
+    {
+        unsigned int value = scr_vehicle->seats[i].occupant.mHandle.mVal;
+        unsigned int index = value & 0xFFF;
+        if (index >= 0x540
+            || (value >> 12)
+                   != (unsigned int)EntityHandleDb::sInst.mElements[index].mKey)
+            continue;
+        Entity* passenger = EntityHandleDb::sInst.mElements[index].mObject;
+        if (passenger == nullptr
+            || !EntityManager::sInst->IsLocalPlayer(passenger))
+            continue;
+
+        int client = passenger->client->mServerClientIndex;
+        void* rumble = RumbleManager_Inst(client);
+        if (rumble == nullptr)
+            continue;
+
+        RumbleEffect effect;
+        effect.mRumbleDataArray[0].enabled = true;
+        effect.mRumbleDataArray[0].delay = 0.5f;
+        effect.mRumbleDataArray[1].delay = 0.2f;
+        effect.mRumbleDataArray[1].enabled = false;
+        effect.mRumbleDataArray[1].intensity = 0.0f;
+        RumbleEffect_SetIntensity(&effect, kRumbleLEFT, 0.5f);
+        float intensity;
+        if (i != 0)
+        {
+            RumbleEffect_SetIntensity(&effect, kRumbleRIGHT, 0.2f);
+            intensity = 0.5f;
+        }
+        else
+        {
+            RumbleEffect_SetIntensity(&effect, kRumbleRIGHT, 0.5f);
+            intensity = 1.0f;
+        }
+        RumbleManager_Play(rumble, &effect, intensity);
+    }
+}
+
 // VEH_* free artifacts (g.o)
 struct scr_vehicle_t;
 void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
@@ -147,7 +349,77 @@ void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
 void VEH_InitVehicle(scr_vehicle_t* veh) { (void)veh; }
 void VEH_RemoveVehicle(void* veh) { (void)veh; }
 void VEH_UpdateAim(Entity* e) { (void)e; }
-void VEH_UpdateAltWeapon(Entity* e, int a) { (void)e; (void)a; }
+
+// ea: 0x004904B0
+void VEH_UpdateAltWeapon(Entity* ent, int msec)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    if (scr_vehicle->altWeapon == 0 || !scr_vehicle->seats[0].gunMounted)
+        return;
+
+    unsigned int mVal = ent->r.mOwner.mHandle.mVal;
+    unsigned int index = mVal & 0xFFF;
+    Entity* owner = nullptr;
+    if (index < 0x540
+        && (mVal >> 12)
+               == (unsigned int)EntityHandleDb::sInst.mElements[index].mKey)
+        owner = EntityHandleDb::sInst.mElements[index].mObject;
+
+    if (owner == nullptr)
+    {
+        scr_vehicle->seats[0].firing = false;
+        goto update_alt_fire;
+    }
+    if (!EntityManager::sInst->IsLocalPlayer(owner))
+        goto update_alt_fire;
+
+    Client* client = owner->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4752;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (client->ps.vehPos == 0)
+    {
+        int locked_port = dword_F6A28C[802 * owner->GetPlayerIndex()];
+        controller* input = controller::inst();
+        if (input->is_locked)
+            locked_port = input->locked_port;
+        scr_vehicle->seats[0].firing =
+            PadAliasMgr::sInst->mCtx[1].GetButtonValue(
+                locked_port, kPadAliasButtonFireCoax)
+            > g_vehicle_button_threshold;
+        if ((owner->client->ps.pm_flags & 0x4000) != 0)
+            scr_vehicle->seats[0].firing = false;
+        if (!IsPlayerFullySeatedInVehicle(owner))
+            scr_vehicle->seats[0].firing = false;
+        if (GamePause::IsGamePaused(owner->GetPlayerIndex()))
+        {
+            scr_vehicle->seats[0].firing = false;
+            goto update_alt_fire;
+        }
+    }
+
+update_alt_fire:
+    {
+        int remaining = scr_vehicle->altFireTime - msec;
+        bool reached = scr_vehicle->altFireTime == msec;
+        scr_vehicle->altFireTime = remaining;
+        if (remaining < 0 || reached)
+        {
+            bool firing = scr_vehicle->seats[0].firing;
+            scr_vehicle->altFireTime = 0;
+            if (firing && !scr_vehicle->seats[0].overheating)
+                VEH_FireAltWeapon(ent);
+        }
+    }
+}
+
 void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
 void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
 
@@ -492,13 +764,6 @@ public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
     RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
                                     float intensity);
-};
-
-
-// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
-class controller { public:
-    int locked_port;
-    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
 };
 
 

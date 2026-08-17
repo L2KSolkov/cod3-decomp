@@ -280,14 +280,15 @@ struct scr_vehicle_t {
     int     turretState;  // +0x190
     int     drawOnCompass;   // +0x194
     int     drawAsEnemy;     // +0x198
-    uint8_t _pad19C[0x1A0 - 0x19C];
+    int     altWeapon;      // +0x19C
     int     gunnerWeapon;     // +0x1A0
     int     shooter;          // +0x1A4
-    uint8_t _pad1A8[0x1AC - 0x1A8];
+    int     lastOccupantTime;  // +0x1A8
     int     spotTime;         // +0x1AC
     DbLinkedHandle<EntityHandleDb, Entity> mLastSpotter;  // +0x1B0
     int     mMantleTime;  // +0x1B4
     DbLinkedHandle<EntityHandleDb, Entity> mMantleEntity;  // +0x1B8
+    int     mLastRequestedOwnershipTime;  // +0x1BC
     math::Position3 respawn_origin;  // +0x1C0
     math::Position3 respawn_angles;  // +0x1D0
     vehicleSeat_t seats[11];  // +0x1E0 (0x134 bytes)
@@ -318,7 +319,6 @@ struct scr_vehicle_t {
     Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
     Handle  mRumbleEffectHandle;  // +0x3C4
     int     playersAttached;  // +0x3C8
-    int     lastOccupantTime;  // +0x3C8 (alias; only read when playersAttached==0)
     float   idleSndLerp;    // +0x3CC
     float   engineSndLerp;  // +0x3D0
     float   brakeSndLerp;   // +0x3D4
@@ -410,6 +410,8 @@ struct scr_vehicle_t {
     void  UpdateAnimRoute(Entity* ent, Entity* player);  // ?UpdateAnimRoute@scr_vehicle_t@@QAEXPAVEntity@@0@Z
 };
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
+static_assert(offsetof(scr_vehicle_t, altWeapon) == 0x19C, "scr_vehicle_t::altWeapon offset mismatch");
+static_assert(offsetof(scr_vehicle_t, mLastRequestedOwnershipTime) == 0x1BC, "scr_vehicle_t::mLastRequestedOwnershipTime offset mismatch");
 static_assert(offsetof(scr_vehicle_t, boneIndex) == 0x460, "scr_vehicle_t::boneIndex offset mismatch");
 static_assert(offsetof(scr_vehicle_t, mRBVeh) == 0x518, "scr_vehicle_t::mRBVeh offset mismatch");
 static_assert(offsetof(scr_vehicle_t, animMap) == 0x56C, "scr_vehicle_t::animMap offset mismatch");
