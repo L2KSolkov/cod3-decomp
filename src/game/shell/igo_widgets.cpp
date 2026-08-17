@@ -350,7 +350,6 @@ extern float unk_F6A2B0[];    // @ 0xF6A2B0 (objective world data block)
 extern const float AngleSubtract(float a1, float a2);   // core.o
 extern const float AngleNormalize180(float angle);       // core.o
 extern const float VectorNormalize2D(float* const v);    // core.o
-extern bool  IsPlayerSpotted(Entity* player);      // g.o
 extern bool  IsVehicleTank(Entity* ent);           // g.o
 extern Client g_clients[16];                       // g.o
 extern team_t Sentient_EnemyTeam(team_t eTeam);    // mp_actors.o
@@ -403,6 +402,14 @@ struct level_locals_t {  // minimal view; offsets from IDA (full 0x2688 bytes)
     uint16_t       MaxVehicles;  // +0xC10
 };
 extern level_locals_t level;        // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
+
+bool IsPlayerSpotted(Entity* player)
+{
+    if (player == nullptr || player->client == nullptr)
+        return false;
+    int spotTime = player->client->ps.spotTime;
+    return spotTime != 0 && spotTime + 15000 >= level.time;
+}
 
 // mp.o extern (same minimal view as loading_menu.cpp)
 struct sServerCreateParams {
