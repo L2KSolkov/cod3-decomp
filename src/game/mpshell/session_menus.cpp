@@ -1711,6 +1711,12 @@ void PlayLanMenu::OnDeactivate(FEMenu* m)
     (void)m;
 }
 
+void PlayLanMenu::ClearPreviewImages()
+{
+    for (int i = 0; i < 3; ++i)
+        m_pImages[i]->SetShown(false);
+}
+
 void PlayLanMenu::OnUp(int c)
 {
     mListBox.OnUp(c);
