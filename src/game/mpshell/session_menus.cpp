@@ -7481,6 +7481,223 @@ void WeaponSelectMenu::SetClassGauges()
     }
 }
 
+// ea: 0x007AD670
+void WeaponSelectMenu::SetSwitchKit()
+{
+    for (int i = 0; i < 4; ++i)
+        m_pTextKitLine[i]->SetText((const char*)&defaultFileName);
+
+    switch (m_sLocalPlayerTeam)
+    {
+    case 0:
+    case 1:
+    case 2:
+        break;
+    case 3:
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 624);
+        break;
+    case 4:
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 627);
+        break;
+    case 5:
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 630);
+        break;
+    default:
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 633);
+        break;
+    }
+
+    const bool bIsBattleMode = MPUIInterface::mServerParams.mGameType == 5;
+    int weapon = 0;
+    int realPlayerClass = 0;
+
+    switch (highlighted)
+    {
+    case 0:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 0;
+        m_pClassIcons[0]->SetShown(true);
+        realPlayerClass = 2;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("kar98");
+            m_pTextKitLine[0]->SetText("WEAPON_KAR98K_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("m1garand");
+            m_pTextKitLine[0]->SetText("WEAPON_M1GARAND_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+        {
+            m_pTextKitLine[3]->SetText("WEAPON_GRENADE_LAUNCHER_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_SMOKE_ALLCAPS");
+        }
+        break;
+    case 1:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 1;
+        m_pClassIcons[1]->SetShown(true);
+        realPlayerClass = 1;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("mp40");
+            m_pTextKitLine[0]->SetText("WEAPON_MP40_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("thompson");
+            m_pTextKitLine[0]->SetText("WEAPON_THOMPSON_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+        {
+            m_pTextKitLine[3]->SetText("WEAPON_MINES_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_STICKY_GRENADE_ALLCAPS");
+        }
+        break;
+    case 2:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 2;
+        m_pClassIcons[2]->SetShown(true);
+        realPlayerClass = 0;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("mp44");
+            m_pTextKitLine[0]->SetText("WEAPON_MP44_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("bar");
+            m_pTextKitLine[0]->SetText("WEAPON_BAR_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+            m_pTextKitLine[3]->SetText("WEAPON_MINES_ALLCAPS");
+        break;
+    case 3:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 3;
+        m_pClassIcons[3]->SetShown(true);
+        realPlayerClass = 3;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("shotgun");
+            m_pTextKitLine[0]->SetText("WEAPON_TRENCHGUN_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("shotgun");
+            m_pTextKitLine[0]->SetText("WEAPON_TRENCHGUN_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+        {
+            m_pTextKitLine[3]->SetText("WEAPON_REVIVE_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_SMOKE_ALLCAPS");
+        }
+        break;
+    case 4:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 4;
+        m_pClassIcons[4]->SetShown(true);
+        realPlayerClass = 6;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("kar98_sniper");
+            m_pTextKitLine[0]->SetText("WEAPON_SCOPEDKAR98K_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("springfield");
+            m_pTextKitLine[0]->SetText("WEAPON_SPRINGFIELD_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+            m_pTextKitLine[3]->SetText("WEAPON_BINOCULARS_ARTILLERY_ALLCAPS");
+        break;
+    case 5:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 5;
+        m_pClassIcons[5]->SetShown(true);
+        realPlayerClass = 4;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("mg34");
+            m_pTextKitLine[0]->SetText("WEAPON_MG34_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("mg30cal");
+            m_pTextKitLine[0]->SetText("WEAPON_MG30CAL_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+            m_pTextKitLine[3]->SetText("WEAPON_AMMO_ALLCAPS");
+        break;
+    case 6:
+        m_pClassIcons[m_playerclass]->SetShown(false);
+        m_playerclass = 6;
+        m_pClassIcons[6]->SetShown(true);
+        realPlayerClass = 5;
+        if (m_sLocalPlayerTeam == 1)
+        {
+            weapon = BG_GetWeaponIndexForName("panzerschreck");
+            m_pTextKitLine[0]->SetText("WEAPON_PANZERSCHRECK_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_P38_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_STIELHANDGRANATE_ALLCAPS");
+        }
+        else if (m_sLocalPlayerTeam == 2)
+        {
+            weapon = BG_GetWeaponIndexForName("bazooka");
+            m_pTextKitLine[0]->SetText("WEAPON_BAZOOKA_ALLCAPS");
+            m_pTextKitLine[1]->SetText("WEAPON_COLT45_ALLCAPS");
+            if (bIsBattleMode)
+                m_pTextKitLine[2]->SetText("WEAPON_FRAGGRENADE_ALLCAPS");
+        }
+        if (!bIsBattleMode)
+        {
+            m_pTextKitLine[2]->SetText("WEAPON_STICKY_GRENADE_ALLCAPS");
+            m_pTextKitLine[3]->SetText("WEAPON_AMMO_ALLCAPS");
+        }
+        break;
+    case 7:
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 862);
+        break;
+    default:
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/WeaponSelectMenu.cpp", 866);
+        break;
+    }
+
+    ModelMenu::UpdateClassModel(realPlayerClass, m_sLocalPlayerTeam, weapon);
+}
+
 // ea: 0x007AECA0
 void WeaponSelectMenu::ActivationToggle(bool a_bToggle)
 {
