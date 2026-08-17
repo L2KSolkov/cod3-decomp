@@ -168,7 +168,7 @@ struct phys_memory_heap {
     void* allocate(int size, int alignment, bool no_error,
                    const char* error_msg);
 
-    void* fast_align_start(int alignment, const char* error_msg);
+    char* fast_align_start(int alignment, const char* error_msg);
 
     // allocate_no_error - ea: 0x65FC20 (inline COMDAT, game.o)
     char* allocate_no_error(int size, int alignment) {
@@ -839,6 +839,14 @@ static_assert(sizeof(contact_manifold_mesh_point) == 0x20, "contact_manifold_mes
 
 class phys_collide_data;
 struct phys_gjk_geom;
+struct phys_contact_manifold;
+struct phys_gjk_geom_vtbl {
+    const math::Dir3* (__thiscall* support)(phys_gjk_geom*, const math::Dir3*, const math::Dir3*);
+    const math::Dir3* (__thiscall* get_center)(phys_gjk_geom*, const math::Dir3*);
+    void (__thiscall* get_feature)(phys_gjk_geom*, phys_contact_manifold*);
+    float (__thiscall* get_geom_radius)(phys_gjk_geom*);
+};
+static_assert(sizeof(phys_gjk_geom_vtbl) == 0x10, "phys_gjk_geom_vtbl size mismatch");
 
 // ============================================================================
 // phys_contact_manifold — collision manifold (64 bytes)
@@ -1028,10 +1036,13 @@ static_assert(offsetof(phys_gjk_info, m_set_list) == 0x1EC, "gjk_info::m_set_lis
 // phys_gjk_geom â€” GJK geometry interface (4 bytes)
 // ============================================================================
 struct phys_gjk_geom {
-    struct phys_gjk_geom_vtbl* __vftable;  // +0x00
+    phys_gjk_geom_vtbl* __vftable;  // +0x00
 
     const math::Dir3* support(const math::Dir3* result, const math::Mat43* xform,
                               const math::Dir3* v) const;
+    void get_feature(phys_contact_manifold* cman) const {
+        __vftable->get_feature(const_cast<phys_gjk_geom*>(this), cman);
+    }
     float get_geom_radius() const;
 };
 static_assert(sizeof(phys_gjk_geom) == 0x4, "phys_gjk_geom size mismatch");

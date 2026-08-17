@@ -1666,13 +1666,13 @@ struct phys_list_condition_functor_has_no_constraints {
 // Contact-manifold helpers (phys_contact_manifold.o / phys_util.o)
 // ============================================================================
 extern bool phys_v2_le(const math::Dir3& v1, const math::Dir3& v2);
-extern const float& phys_v2_cross(const math::Dir3& v1, const math::Dir3& v2);
-extern const math::Dir3* phys_v2_rotr(const math::Dir3& result, const math::Dir3& v);
-extern const math::Dir3* phys_v3_to_v2_inv_multiply(const math::Dir3* result,
+extern double phys_v2_cross(const math::Dir3* v1, const math::Dir3* v2);
+extern const math::Dir3* phys_v2_rotr(math::Dir3* result, const math::Dir3* v);
+extern const math::Dir3* phys_v3_to_v2_inv_multiply(math::Dir3* result,
                                                     const math::Mat43* m, const math::Dir3* v);
-extern void displace_contact_p(contact_manifold_mesh_point** mp, const math::Dir3& d,
+extern void displace_contact_p(contact_manifold_mesh_point** mp, const math::Dir3* d,
                                const math::Mat43* contact_mat);
-extern const char* g_contact_manifold_error_msg;
+extern const char* const g_contact_manifold_error_msg;
 
 // ============================================================================
 // GJK constants and helpers

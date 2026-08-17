@@ -19,6 +19,47 @@
 // Cross-object externs
 // ============================================================================
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
+const char* const g_contact_manifold_error_msg =
+    "contact_manifold memory overflow: INCREASE phys_contact_manifold_process::ALLOCATER_MEMORY_SIZE";
+
+// phys_contact_manifold::rht - ea: 0x8889F0
+bool phys_contact_manifold::rht(const math::Dir3* e1, const math::Dir3* e2,
+                                float min_length2, float min_sin_sq) {
+    const double cross = phys_v2_cross(e1, e2);
+    if (cross <= 0.0)
+        return false;
+    const __m128 e1_mul = _mm_mul_ps(e1->v, e1->v);
+    const float e1_sq = e1_mul.m128_f32[0]
+        + _mm_shuffle_ps(e1_mul, e1_mul, 85).m128_f32[0]
+        + _mm_shuffle_ps(e1_mul, e1_mul, 170).m128_f32[0];
+    if (min_length2 >= e1_sq)
+        return false;
+    const __m128 e2_mul = _mm_mul_ps(e2->v, e2->v);
+    const float e2_sq = e2_mul.m128_f32[0]
+        + _mm_shuffle_ps(e2_mul, e2_mul, 85).m128_f32[0]
+        + _mm_shuffle_ps(e2_mul, e2_mul, 170).m128_f32[0];
+    return min_length2 < e2_sq
+        && min_sin_sq < (float)((cross * cross) / (e2_sq * e1_sq));
+}
+
+// phys_contact_manifold_process::isect_info::init - ea: 0x888AC0
+void phys_contact_manifold_process::isect_info::init(phys_contact_manifold* cman) {
+    m_cman = cman;
+    m_i = cman->m_list_contact_point;
+    m_next_i = m_i + 1;
+    m_last_i = &m_i[cman->m_list_contact_point_count - 1];
+    m_edge.v = _mm_sub_ps((*m_next_i)->m_contact_p.v, (*m_i)->m_contact_p.v);
+}
+
+// phys_contact_manifold_process::isect_info::update - ea: 0x888B30
+void phys_contact_manifold_process::isect_info::update() {
+    m_i = m_next_i;
+    if (m_next_i == m_last_i)
+        m_next_i = m_cman->m_list_contact_point;
+    else
+        ++m_next_i;
+    m_edge.v = _mm_sub_ps((*m_next_i)->m_contact_p.v, (*m_i)->m_contact_p.v);
+}
 
 // phys_contact_manifold::reset_list_mesh_point - ea: 0x8786A0
 void phys_contact_manifold::reset_list_mesh_point() {
@@ -502,13 +543,13 @@ bool phys_contact_manifold_process::find_bottom(bridge* b, isect_info* left_cman
     v29d.v = v29;
     math::Dir3 v29e;
     v29e.v = v29b;
-    float v42 = phys_v2_cross(v29d, v29e);
+    float v42 = (float)phys_v2_cross(&v29d, &v29e);
     if (v42 <= 0.000099999997f) {
         b->m_intersection_p = (*b->m_right_i)->m_contact_p;
     } else {
         math::Dir3 v28;
         v28.v = _mm_sub_ps(*v20, *p_v);
-        float v26 = phys_v2_cross(v28, v29e);
+        float v26 = (float)phys_v2_cross(&v28, &v29e);
         float t = v26 / v42;
         b->m_intersection_p.v = _mm_add_ps(*p_v, _mm_mul_ps(v29, _mm_set1_ps(t)));
     }
@@ -645,7 +686,7 @@ void phys_contact_manifold_process::intersect_poly_poly() {
             do {
                 v5->m_left_i = v4->m_i;
                 v5->m_right_i = nvdisplace->m_i;
-                if (phys_v2_cross(v4->m_edge, nvdisplace->m_edge) < 0.0f) {
+                if (phys_v2_cross(&v4->m_edge, &nvdisplace->m_edge) < 0.0) {
                     v5->m_intersection_p = nvdisplace->m_edge;
                     nvdisplace->update();
                 } else {
@@ -660,7 +701,7 @@ void phys_contact_manifold_process::intersect_poly_poly() {
                 if (cross <= 0.0f) {
                     if (cross >= 0.0f) {
                         math::Dir3 v20;
-                        phys_v2_rotr(v20, v5->m_intersection_p);
+                        phys_v2_rotr(&v20, &v5->m_intersection_p);
                         __m128 v21 = _mm_mul_ps(v20.v, v20.v);
                         float len = sqrt(v21.m128_f32[0]
                                          + (_mm_shuffle_ps(v21, v21, 85).m128_f32[0]
@@ -671,7 +712,7 @@ void phys_contact_manifold_process::intersect_poly_poly() {
                                 __debugbreak();
                         }
                         v20.v = _mm_mul_ps(v20.v, _mm_set1_ps(0.034000002f / len));
-                        displace_contact_p(nvdisplace->m_cman->m_list_contact_point, v20,
+                        displace_contact_p(nvdisplace->m_cman->m_list_contact_point, &v20,
                                            &this->contact_mat);
                     } else {
                         if (left_gb != NULL) {

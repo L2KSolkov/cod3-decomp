@@ -24,6 +24,68 @@
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern const math::Dir3& Float4_Zero_206;
 
+// phys_memory_heap::fast_align_start - ea: 0x878550
+char* phys_memory_heap::fast_align_start(int alignment, const char* error_msg) {
+    char* aligned = (char*)(((uintptr_t)&m_buffer_cur[alignment - 1])
+                            & ~(uintptr_t)(alignment - 1));
+    m_buffer_cur = aligned;
+    if (aligned < m_buffer_end)
+        return m_buffer_cur;
+    if (!_tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 96,
+                   "m_buffer_cur < m_buffer_end", error_msg))
+        __debugbreak();
+    return m_buffer_cur;
+}
+
+// phys_v2_cross - ea: 0x887160
+double phys_v2_cross(const math::Dir3* v1, const math::Dir3* v2) {
+    return v2->v.m128_f32[1] * v1->v.m128_f32[0]
+         - v1->v.m128_f32[1] * v2->v.m128_f32[0];
+}
+
+// phys_v2_le - ea: 0x8871D0
+bool phys_v2_le(const math::Dir3& v1, const math::Dir3& v2) {
+    return v2.v.m128_f32[0] > v1.v.m128_f32[0]
+        || (v1.v.m128_f32[0] == v2.v.m128_f32[0]
+            && v2.v.m128_f32[1] > v1.v.m128_f32[1]);
+}
+
+// phys_v2_rotr - ea: 0x887270
+const math::Dir3* phys_v2_rotr(math::Dir3* result, const math::Dir3* v) {
+    result->v.m128_f32[0] = -v->v.m128_f32[1];
+    result->v.m128_f32[1] = v->v.m128_f32[0];
+    result->v.m128_f32[3] = 0.0f;
+    return result;
+}
+
+// phys_v3_to_v2_inv_multiply - ea: 0x888BB0
+const math::Dir3* phys_v3_to_v2_inv_multiply(math::Dir3* result,
+                                             const math::Mat43* m,
+                                             const math::Dir3* v) {
+    const __m128 vx = _mm_mul_ps(v->v, m->x.v);
+    const __m128 vy = _mm_mul_ps(v->v, m->y.v);
+    result->v.m128_f32[0] = vx.m128_f32[0]
+        + _mm_shuffle_ps(vx, vx, 85).m128_f32[0]
+        + _mm_shuffle_ps(vx, vx, 170).m128_f32[0];
+    result->v.m128_f32[1] = vy.m128_f32[0]
+        + _mm_shuffle_ps(vy, vy, 85).m128_f32[0]
+        + _mm_shuffle_ps(vy, vy, 170).m128_f32[0];
+    return result;
+}
+
+// displace_contact_p - ea: 0x888C50
+void displace_contact_p(contact_manifold_mesh_point** mp, const math::Dir3* d,
+                        const math::Mat43* contact_mat) {
+    (*mp)->m_contact_p.v = _mm_add_ps((*mp)->m_contact_p.v, d->v);
+    (*mp)->m_p.v = _mm_add_ps(
+        (*mp)->m_p.v,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(d->v, d->v, 0), contact_mat->x.v),
+                _mm_mul_ps(_mm_shuffle_ps(d->v, d->v, 85), contact_mat->y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(d->v, d->v, 170), contact_mat->z.v)));
+}
+
 // MSVC low/high dword helpers (used to mirror release decompile register reuse)
 #define LODWORD(x) (*((unsigned int*)&(x)))
 #define HIDWORD(x) (*((unsigned int*)&(x) + 1))
@@ -487,4 +549,3 @@ void calc_bound_box(const math::Dir3* vert_list, int vert_count, math::Dir3* dim
 }
 
 }  // namespace nuge
-
