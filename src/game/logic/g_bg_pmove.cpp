@@ -2852,6 +2852,9 @@ static void PM_Accelerate(float* wishdir, float wishspeed, float accel);
 void PM_FootstepEvent(int iOldBobCycle, int iNewBobCycle, int bFootStep);
 int PM_ShouldMakeFootsteps();
 __m128 PM_GetViewHeightLerp(int iFromHeight, int iToHeight);
+void PM_StepSlideMove(int gravity);
+void resolve_collisions(const collision_context_t& context,
+                        const math::Position3& old_pos);
 void PM_trace(trace_t* results, const math::Position3& start,
               const math::Position3& mins, const math::Position3& maxs,
               const math::Position3& end,
@@ -3178,7 +3181,55 @@ void PM_Footsteps()
         ps->legsAnim = ps->viewHeightTarget == ps->crouchViewHeight;
 }
 void PM_WalkMove(const collision_context_t& context) { (void)context; }
-void PM_AirMove(const collision_context_t& context) { (void)context; }
+void PM_AirMove(const collision_context_t& context)
+{
+    PlayerState* ps = pm->ps;
+    math::Position3 oldPos;
+    oldPos.v = ps->origin.v;
+
+    PM_Friction();
+
+    usercmd_s cmd = pm->cmd;
+    const float scale = PM_CmdScale(&cmd);
+    pml.forward[2] = 0.0f;
+    pml.right[2] = 0.0f;
+    VectorNormalize(pml.forward);
+    VectorNormalize(pml.right);
+
+    float wishdir[3] = {
+        (pml.right[0] * (float)pm->cmd.rightmove)
+            + (pml.forward[0] * (float)pm->cmd.forwardmove),
+        (pml.right[1] * (float)pm->cmd.rightmove)
+            + (pml.forward[1] * (float)pm->cmd.forwardmove),
+        0.0f
+    };
+    const float wishspeed = VectorNormalize(wishdir) * scale;
+    PM_Accelerate(wishdir, wishspeed, 1.0f);
+
+    if (pml.groundPlane != 0)
+    {
+        const float velocityDot =
+            (ps->velocity.v.m128_f32[0]
+             * pml.groundTrace.normal.v.m128_f32[0])
+            + (ps->velocity.v.m128_f32[1]
+               * pml.groundTrace.normal.v.m128_f32[1])
+            + (ps->velocity.v.m128_f32[2]
+               * pml.groundTrace.normal.v.m128_f32[2]);
+        const float adjust = velocityDot >= 0.0f
+                                 ? velocityDot * 0.99900097f
+                                 : velocityDot * 1.001f;
+        ps->velocity.v.m128_f32[0] -=
+            pml.groundTrace.normal.v.m128_f32[0] * adjust;
+        ps->velocity.v.m128_f32[1] -=
+            pml.groundTrace.normal.v.m128_f32[1] * adjust;
+        ps->velocity.v.m128_f32[2] -=
+            pml.groundTrace.normal.v.m128_f32[2] * adjust;
+    }
+
+    PM_StepSlideMove(1);
+    PM_SetMovementDir();
+    resolve_collisions(context, oldPos);
+}
 void PM_GroundTrace() {}
 // ea: 0x6055A0
 PlayerState* PM_NoclipMove()
