@@ -355,6 +355,9 @@ float radius_0 = 15.0f;        // @ 0xDD8264 (vehicle collision push radius)
 float radius_2 = 40.0f;        // @ 0xDD8260 (ClientThink tunnel radius)
 float udelta = 1.0f;           // @ 0xDD81FC (VEH_Slide sphere offsets)
 float fdelta = 0.6f;           // @ 0xDD8200
+float veh_radius = 75.0f;      // @ 0xDD673C (VEH_GroundTrace proximity radius)
+float vehicleDeadZone = 20.0f; // @ 0xDD81F8 (VEH_UpdatePO input dead zone)
+float delta_yaw_vel = 0.0f;     // @ 0xEB10FC (VEH_UpdatePO rotation state)
 float helmetBounce = 0.65f;    // @ 0xDD8210 (SpawnHelmet phys data)
 float helmetFriction = 0.65f;  // @ 0xDD8214
 float helmetMass = 0.035f;     // @ 0xDD8218
@@ -362,7 +365,7 @@ int   timeToAdd = 20000;       // @ 0xDD821C (helmet self-free time)
 vmCvar_t g_weaponAmmoPools;    // @ 0x01297030
 vmCvar_t g_weaponRespawn;      // @ 0x01296988
 PoolAllocator* Task::sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
-scr_vehicle_t s_phys;          // g_scr_vehicle.cpp static scratch
+local_physic_s s_phys;         // g_scr_vehicle.cpp static scratch
 const float s_invalidAngles[3] = { 3.1415927f, 3.1415927f, 3.1415927f };  // @ 0xDD7414
 float dword_DD7418 = 3.1415927f;  // @ 0xDD7418
 float dword_DD741C = 3.1415927f;  // @ 0xDD741C

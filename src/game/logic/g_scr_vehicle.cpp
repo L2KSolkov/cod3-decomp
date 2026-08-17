@@ -60,6 +60,23 @@ void rb_vehicle_update_from_network(rb_vehicle* self,
 
 static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate);
 
+extern void VEH_UpdatePO(Entity* ent, char* move, int msec);
+extern void VEH_GroundTrace(Entity* ent);
+extern void VEH_GroundMove(Entity* ent, int msec);
+extern int VEH_Slide(Entity* ent, int gravity, int msec, int move,
+                    int allowHit);
+extern void TraceSphereFull(const proximity_data_t* proximity_data,
+                            trace_t* results, const math::Position3* start,
+                            const math::Position3* mins,
+                            const math::Position3* maxs,
+                            const math::Position3* end,
+                            const collision_context_t* context);
+extern float veh_radius;
+extern float vehicleDeadZone;
+extern float delta_yaw_vel;
+extern unsigned char unk_F6A294[4 * 3208];
+extern const float AngleNormalize180Accurate(float angle);
+
 // Minimal controller view (controller_xboxr). The function-pointer block is
 // retained so locked_port/is_locked keep their IDA-verified offsets.
 class controller {
@@ -420,7 +437,364 @@ update_alt_fire:
     }
 }
 
-void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
+// ea: 0x0046D8D0
+void VEH_UpdateClient(Entity* ent, int msec)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    scr_vehicle_t::vehicle_physic_t* phys = &scr_vehicle->phys;
+    char move[3] = { 0, 0, 0 };
+
+    Entity* owner = HandleDbToEnt(ent->r.mOwner);
+    if (owner != nullptr)
+    {
+        if (owner->client == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 5377;
+            AeAssert::gCurrentExpr = "player->client";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (IsPlayerFullySeatedInVehicle(owner))
+        {
+            Entity* physicsOwner = HandleDbToEnt(scr_vehicle->mPhysicsOwner);
+            if (EntityManager::sInst->IsLocalPlayer(physicsOwner))
+            {
+                owner->client->ps.eFlags |= 0x200000;
+                Client* client = owner->client;
+                if ((client->ps.eFlags & 0x400000) == 0
+                    && (client->ps.pm_flags & 0x4000) == 0)
+                {
+                    move[0] = client->pers.cmd.forwardmove;
+                    move[1] = client->pers.cmd.rightmove;
+                    move[2] = client->pers.cmd.upmove;
+                    if (move[2] > 0)
+                        client->ps.eFlags &= ~0x200000u;
+                }
+
+                Entity* player = HandleDbToEnt(scr_vehicle->mPhysicsOwner);
+                if (GamePause::IsGamePaused(player->GetPlayerIndex()))
+                {
+                    move[0] = 0;
+                    move[1] = 0;
+                    move[2] = 0;
+                }
+                VEH_UpdatePO(ent, move, msec);
+            }
+        }
+    }
+
+    VEH_GroundTrace(ent);
+    Entity* physicsOwner = HandleDbToEnt(scr_vehicle->mPhysicsOwner);
+    if (EntityManager::sInst->IsLocalPlayer(physicsOwner))
+        VEH_GroundMove(ent, msec);
+
+    if (HandleDbToEnt(ent->r.mOwner) != nullptr)
+    {
+        ent->speed = sqrtf(phys->vel.v.m128_f32[0]
+                           * phys->vel.v.m128_f32[0]
+                           + phys->vel.v.m128_f32[1]
+                                 * phys->vel.v.m128_f32[1]
+                           + phys->vel.v.m128_f32[2]
+                                 * phys->vel.v.m128_f32[2]);
+    }
+    else
+    {
+        phys->vel.v.m128_f32[2] = 0.0f;
+        phys->vel.v.m128_f32[1] = 0.0f;
+        phys->vel.v.m128_f32[0] = 0.0f;
+        ent->speed = 0.0f;
+    }
+
+    if (ent->speed < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5440;
+        AeAssert::gCurrentExpr = "ent->speed >= 0.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    if (g_vehicleDebug.integer != 0)
+        VEH_DebugCapsule(phys->origin.v.m128_f32, 1.0f,
+                         info->mins.v.m128_f32[0],
+                         info->maxs.v.m128_f32[0], 1.0f, 0.0f);
+}
+
+// ea: 0x00463420
+void VEH_GroundTrace(Entity* ent)
+{
+    scr_vehicle_t::vehicle_physic_t* phys = &ent->scr_vehicle->phys;
+    static bool initialized = false;
+    static TouchEntityData entities;
+    if (!initialized)
+    {
+        initialized = true;
+        memset(entities.touch, 0, sizeof(entities.touch));
+    }
+
+    proximity_data_t proximity;
+    math::Position3 start;
+    start.v.m128_f32[0] = phys->origin.v.m128_f32[0];
+    start.v.m128_f32[1] = phys->origin.v.m128_f32[1];
+    start.v.m128_f32[2] = phys->origin.v.m128_f32[2] + 50.0f;
+    start.v.m128_f32[3] = 0.0f;
+    math::Position3 end;
+    end.v.m128_f32[0] = phys->origin.v.m128_f32[0];
+    end.v.m128_f32[1] = phys->origin.v.m128_f32[1];
+    end.v.m128_f32[2] = phys->origin.v.m128_f32[2] - 50.0f;
+    end.v.m128_f32[3] = 0.0f;
+    prepare_collision_objects(ent, start, end, veh_radius, ent->clipmask,
+                              proximity, entities);
+
+    math::Position3 mins;
+    mins.v.m128_f32[0] = -40.0f;
+    mins.v.m128_f32[1] = -40.0f;
+    mins.v.m128_f32[2] = 0.0f;
+    mins.v.m128_f32[3] = 0.0f;
+    math::Position3 maxs;
+    maxs.v.m128_f32[0] = 40.0f;
+    maxs.v.m128_f32[1] = 40.0f;
+    maxs.v.m128_f32[2] = 80.0f;
+    maxs.v.m128_f32[3] = 0.0f;
+
+    collision_context_t context;
+    context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = ent->clipmask & 0xFF7FFFFF;
+
+    trace_t trace;
+    TraceSphereFull(&proximity, &trace, &start, &mins, &maxs, &end,
+                    &context);
+    if (trace.allsolid != 0 || trace.startsolid != 0)
+    {
+        mins.v.m128_f32[0] = -20.0f;
+        mins.v.m128_f32[1] = -20.0f;
+        mins.v.m128_f32[2] = 0.0f;
+        mins.v.m128_f32[3] = 0.0f;
+        maxs.v.m128_f32[0] = 20.0f;
+        maxs.v.m128_f32[1] = 20.0f;
+        maxs.v.m128_f32[2] = 40.0f;
+        maxs.v.m128_f32[3] = 0.0f;
+        TraceSphereFull(&proximity, &trace, &start, &mins, &maxs, &end,
+                        &context);
+    }
+
+    memcpy(&s_phys, &trace, sizeof(trace_t));
+    s_phys.hasGround = 0;
+    s_phys.onGround = 0;
+    phys->origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+    phys->origin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+    phys->origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+
+    if (trace.fraction != 1.0f
+        && (phys->origin.v.m128_f32[2] <= 0.0f
+            || (phys->origin.v.m128_f32[0]
+                    * trace.normal.v.m128_f32[0]
+                + phys->origin.v.m128_f32[1]
+                    * trace.normal.v.m128_f32[1]
+                + phys->origin.v.m128_f32[2]
+                    * trace.normal.v.m128_f32[2]) <= 10.0f))
+    {
+        s_phys.hasGround = 1;
+        if (trace.normal.v.m128_f32[2] >= 0.69999999f)
+            s_phys.onGround = 1;
+    }
+}
+
+// ea: 0x0046A5C0
+void VEH_UpdatePO(Entity* ent, char* move, int msec)
+{
+    scr_vehicle_t* vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[vehicle->infoIdx];
+    float ownerViewYaw = 0.0f;
+    Entity* owner = HandleDbToEnt(ent->r.mOwner);
+    if (owner != nullptr)
+        ownerViewYaw = owner->client->ps.viewangles[1];
+
+    const int steerInput = move[1];
+    const float steerAbs = fabsf((float)steerInput);
+    float steer = 0.0f;
+    if (vehicleDeadZone <= steerAbs)
+    {
+        const int sign = steerInput > 0 ? 1 : (steerInput >= 0 ? 0 : -1);
+        steer = ((steerAbs - vehicleDeadZone)
+                 / (128.0f - vehicleDeadZone)) * sign;
+    }
+
+    const int forwardInput = move[0];
+    const float forwardAbs = fabsf((float)forwardInput);
+    float forwardInputScaled = 0.0f;
+    if (vehicleDeadZone <= forwardAbs)
+    {
+        const int sign = forwardInput > 0
+            ? 1
+            : (forwardInput >= 0 ? 0 : -1);
+        forwardInputScaled = ((forwardAbs - vehicleDeadZone)
+                              / (128.0f - vehicleDeadZone)) * sign;
+    }
+
+    const float input = sqrtf(forwardInputScaled * forwardInputScaled
+                              + steer * steer);
+    float moveDirection[3] = { steer, forwardInputScaled, 0.0f };
+    float deltaYaw = vectoyaw(moveDirection) + ownerViewYaw - 90.0f;
+    bool reverse = false;
+    unsigned char tankStyle = 1;
+
+    if (owner != nullptr && owner->IsLocalPlayer())
+    {
+        tankStyle = unk_F6A294[3208 * owner->client->mServerClientIndex];
+        if (tankStyle == 0)
+        {
+            deltaYaw = 0.0f;
+            if (input != 0.0f)
+                deltaYaw = AngleNormalize180Accurate(
+                    ownerViewYaw - vehicle->phys.angles.v.m128_f32[1]);
+        }
+        else
+        {
+            deltaYaw = -info->rotRate * steer;
+        }
+    }
+    else
+    {
+        deltaYaw = -info->rotRate * steer;
+    }
+
+    if (fabsf(deltaYaw) > forwardInputScaled * 50.0f + 105.0f)
+    {
+        const int sign = deltaYaw > 0.0f
+            ? 1
+            : (deltaYaw >= 0.0f ? 0 : -1);
+        deltaYaw -= sign * 180.0f;
+        reverse = true;
+    }
+
+    const float frameSeconds = msec * 0.001f;
+    float rotationStep = info->rotAccel * frameSeconds;
+    float rotationDelta = deltaYaw - delta_yaw_vel;
+    if (rotationDelta < -rotationStep)
+        rotationDelta = -rotationStep;
+    else if (rotationDelta > rotationStep)
+        rotationDelta = rotationStep;
+    float rotationRate = rotationDelta + delta_yaw_vel;
+    delta_yaw_vel = rotationRate;
+    if (rotationRate < -info->rotRate)
+        rotationRate = -info->rotRate;
+    else if (rotationRate > info->rotRate)
+        rotationRate = info->rotRate;
+    delta_yaw_vel = rotationRate;
+
+    vehicle->phys.angles.v.m128_f32[1] = AngleNormalize360(
+        vehicle->phys.angles.v.m128_f32[1] + frameSeconds * rotationRate);
+    vehicle->phys.angles.v.m128_f32[0] = 0.0f;
+    vehicle->phys.angles.v.m128_f32[2] = 0.0f;
+    vehicle->next.mTurretAngles.v.m128_f32[1] = AngleNormalize360(
+        vehicle->next.mTurretAngles.v.m128_f32[1]
+        - frameSeconds * rotationRate);
+
+    float forward[3];
+    YawVectors(vehicle->phys.angles.v.m128_f32[1], forward, nullptr);
+    const float horizontalSpeed = sqrtf(
+        vehicle->phys.vel.v.m128_f32[0] * vehicle->phys.vel.v.m128_f32[0]
+        + vehicle->phys.vel.v.m128_f32[1] * vehicle->phys.vel.v.m128_f32[1]);
+    float signedSpeed = horizontalSpeed;
+    if (vehicle->phys.vel.v.m128_f32[0] * forward[0]
+            + vehicle->phys.vel.v.m128_f32[1] * forward[1]
+            + vehicle->phys.vel.v.m128_f32[2] * forward[2] < 0.0f)
+        signedSpeed = -horizontalSpeed;
+
+    float targetSpeed;
+    if (tankStyle != 0)
+    {
+        targetSpeed = info->maxSpeed * forwardInputScaled;
+    }
+    else
+    {
+        targetSpeed = (reverse ? -info->maxSpeed : info->maxSpeed) * input;
+        if (info->maxSpeed * 0.69999999f < fabsf(signedSpeed))
+        {
+            const float absDeltaYaw = fabsf(deltaYaw);
+            if (absDeltaYaw >= 85.0f)
+                targetSpeed *= 0.1f;
+            else
+            {
+                const float scale = (85.0f - absDeltaYaw) * 0.011764706f;
+                targetSpeed *= scale * scale * 0.80000001f + 0.1f;
+            }
+        }
+    }
+
+    const float acceleration = frameSeconds * info->accel;
+    float speedDelta = targetSpeed - signedSpeed;
+    if (speedDelta < -acceleration)
+        speedDelta = -acceleration;
+    else if (speedDelta > acceleration)
+        speedDelta = acceleration;
+    const float newSpeed = signedSpeed + speedDelta;
+    vehicle->phys.vel.v.m128_f32[0] = forward[0] * newSpeed;
+    vehicle->phys.vel.v.m128_f32[1] = forward[1] * newSpeed;
+}
+
+// ea: 0x0046C7D0
+void VEH_GroundMove(Entity* ent, int msec)
+{
+    scr_vehicle_t* vehicle = ent->scr_vehicle;
+    scr_vehicle_t::vehicle_physic_t* phys = &vehicle->phys;
+    const float velocity = sqrtf(
+        phys->vel.v.m128_f32[0] * phys->vel.v.m128_f32[0]
+        + phys->vel.v.m128_f32[1] * phys->vel.v.m128_f32[1]
+        + phys->vel.v.m128_f32[2] * phys->vel.v.m128_f32[2]);
+    if (velocity != 0.0f)
+    {
+        const float oldX = phys->vel.v.m128_f32[0];
+        const float oldY = phys->vel.v.m128_f32[1];
+        const float oldZ = phys->vel.v.m128_f32[2];
+        const float dot = oldX * s_phys.groundTrace.normal.v.m128_f32[0]
+                        + oldY * s_phys.groundTrace.normal.v.m128_f32[1]
+                        + oldZ * s_phys.groundTrace.normal.v.m128_f32[2];
+        const float correction = dot >= 0.0f ? dot * 0.99009901f
+                                             : dot * 1.01f;
+        phys->vel.v.m128_f32[0]
+            = oldX - s_phys.groundTrace.normal.v.m128_f32[0] * correction;
+        phys->vel.v.m128_f32[1]
+            = oldY - s_phys.groundTrace.normal.v.m128_f32[1] * correction;
+        phys->vel.v.m128_f32[2]
+            = oldZ - s_phys.groundTrace.normal.v.m128_f32[2] * correction;
+        if (phys->vel.v.m128_f32[0] * oldX
+                + phys->vel.v.m128_f32[1] * oldY
+                + phys->vel.v.m128_f32[2] * oldZ > 0.0f)
+        {
+            VectorNormalize(phys->vel);
+            phys->vel.v.m128_f32[0] *= velocity;
+            phys->vel.v.m128_f32[1] *= velocity;
+            phys->vel.v.m128_f32[2] *= velocity;
+        }
+    }
+
+    const int first = VEH_Slide(ent, 0, msec, 0, 0);
+    const int second = VEH_Slide(ent, 0, msec, 1, first != 0);
+    if (second != 0)
+    {
+        if (second > 1 && VEH_Slide(ent, 0, msec, 0, 0) > 1)
+            vehicle->phys.angles = vehicle->phys.prevAngles;
+        vehicle->lastCollision = level.time;
+    }
+    else
+    {
+        vehicle->lastNoCollision = level.time;
+        vehicle->goodOrigin = phys->origin;
+        vehicle->goodAngles = phys->angles;
+    }
+}
+
 void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
 
 // ea: 0x00463370

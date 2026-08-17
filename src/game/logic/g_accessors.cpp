@@ -2501,17 +2501,12 @@ bool rb_vehicle::is_driving_path() const
     return (m_flags & 0x200) != 0;
 }
 
-// local_physic_s ctor (g.o 0x4B0B60) - pmove scratch with groundTrace
-class local_physic_s {
-public:
-    uint8_t _pad[0x50];  // scratch layout; groundTrace is a trace_t
-    trace_t groundTrace; // +0x50
-    local_physic_s();
-};
 local_physic_s::local_physic_s()
 {
     groundTrace.mEntity.mHandle.mVal = 0;
     groundTrace.partName.mHash = 0;
+    hasGround = 0;
+    onGround = 0;
 }
 // ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
 template class ae_formatted_string<256, unsigned short>;

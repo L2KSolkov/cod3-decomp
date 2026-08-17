@@ -357,7 +357,9 @@ struct scr_vehicle_t {
     int     numWaitNotify;    // +0x4DC
     int     lastCollision;    // +0x4E0
     int     lastNoCollision;  // +0x4E4
-    uint8_t _pad4E8[0x510 - 0x4E8];
+    uint8_t _pad4E8[0x4F0 - 0x4E8];
+    math::Position3 goodOrigin; // +0x4F0
+    math::Position3 goodAngles; // +0x500
     int     crashSound;       // +0x510
     float   crashVolume;      // +0x514
     void*   mRBVeh;           // +0x518 rb_vehicle*
@@ -377,9 +379,6 @@ struct scr_vehicle_t {
     vehicleAnimMap_t* animMap;  // +0x56C
     vehicle_follow* follow;   // +0x570
     uint8_t wheel_polies[0x750 - 0x574];  // cdl_poly_inl_t[6] (untyped)
-    bool    hasGround;     // +0x750 (static s_phys scratch)
-    uint8_t _pad751[0x760 - 0x751];
-    trace_t groundTrace;   // +0x760 (static s_phys scratch)
     static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
     static int sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2HA
     static int sDebugAnims;     // ?sDebugAnims@scr_vehicle_t@@2HA
@@ -409,6 +408,15 @@ struct scr_vehicle_t {
     void  DebugRender();                      // ?DebugRender@scr_vehicle_t@@QAEXXZ
     void  UpdateAnimRoute(Entity* ent, Entity* player);  // ?UpdateAnimRoute@scr_vehicle_t@@QAEXPAVEntity@@0@Z
 };
+
+// Static local-vehicle collision scratch (IDA local_physic_s, 0x60 bytes).
+struct local_physic_s {
+    trace_t groundTrace;  // +0x00
+    int hasGround;        // +0x50
+    int onGround;         // +0x54
+    local_physic_s();     // g.o 0x4B0B60
+};
+static_assert(sizeof(local_physic_s) == 0x60, "local_physic_s size mismatch");
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
 static_assert(offsetof(scr_vehicle_t, altWeapon) == 0x19C, "scr_vehicle_t::altWeapon offset mismatch");
 static_assert(offsetof(scr_vehicle_t, mLastRequestedOwnershipTime) == 0x1BC, "scr_vehicle_t::mLastRequestedOwnershipTime offset mismatch");
@@ -3948,7 +3956,7 @@ int    G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck);  // g.o 
 int16_t G_GetVehicleInfoIndex(const char* name); // g.o 0x44F010
 extern int s_clientThink;                        // g.o
 extern int lastGunnerCrouchMsg;                  // g.o
-extern scr_vehicle_t s_phys;                     // g.o
+extern local_physic_s s_phys;                    // g.o
 extern int byte_A00000;                          // g.o .data
 extern vmCvar_t cg_redFlashTime;                 // cg.o
 extern int dword_F64018[4 * 1580];               // cg.o @ 0xF64018
