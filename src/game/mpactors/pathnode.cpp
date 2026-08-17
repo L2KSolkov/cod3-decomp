@@ -4,10 +4,12 @@
 
 #include "game/logic/g_local.h"
 #include "game/actor_types.h"
+#include "core/ae_array.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 #include <intrin.h>
 
 extern level_locals_t level;           // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
@@ -192,6 +194,111 @@ int Path_CompareNodesDecreasing(const void* pe1, const void* pe2)
     if (((const float*)pe1)[1] <= ((const float*)pe2)[1])
         return 1;
     return -1;
+}
+
+// ea: 0x007814D0
+PathNodes::PathNode* __cdecl Path_NearestNodeNotCrossPlanes(
+    const float* const vOrigin, PathNodes::PathSort* nodes, int iMaxNodes,
+    int iTypeFlags, float fMaxDist, float (*const vNormal)[2],
+    float* const fDist, int iPlaneCount, int* returnCount)
+{
+    const int iNodeCount = PathNodeMgr::sInst->NodesInCylinder(
+        vOrigin, fMaxDist, 64.0f, nodes, iMaxNodes, iTypeFlags);
+    qsort(nodes, iNodeCount, sizeof(PathNodes::PathSort),
+          Path_CompareNodesIncreasing);
+
+    math::Position3 maxs = actorMaxs;
+    math::Position3 mins = actorMins;
+    mins.v.m128_f32[2] += 17.0f;
+
+    ae_sized_array<PathNodes::PathNode*, 512> failedNodes;
+    if (iNodeCount >= failedNodes.capacity())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\pathnode.cpp";
+        AeAssert::gCurrentLine = 1343;
+        AeAssert::gCurrentExpr = "iNodeCount < failedNodes.capacity()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Need to increase faildNodes capacity"))
+            __debugbreak();
+    }
+
+    *returnCount = iNodeCount;
+
+    collision_context_t context;
+    context.pass_entity1.mHandle.mVal = 0;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x820011;
+
+    for (int i = 0; i < iNodeCount; ++i)
+    {
+        PathNodes::PathNode* pNode = nodes[i].pNode;
+        const float* nodeOrigin = pNode->mConstant.mOrigin;
+        if (vOrigin[0] > nodeOrigin[0] + actorMins.v.m128_f32[0] - 1.0f
+            && nodeOrigin[0] + actorMaxs.v.m128_f32[0] + 1.0f > vOrigin[0]
+            && vOrigin[1]
+                   > actorMins.v.m128_f32[1] + nodeOrigin[1] - 1.0f
+            && actorMaxs.v.m128_f32[1] + nodeOrigin[1] + 1.0f > vOrigin[1]
+            && vOrigin[2]
+                   > nodeOrigin[2] + actorMins.v.m128_f32[2] - 1.0f
+            && nodeOrigin[2] + actorMaxs.v.m128_f32[2] + 1.0f > vOrigin[2])
+            return pNode;
+
+        int planeIndex = 0;
+        if (iPlaneCount > 0)
+        {
+            while (vNormal[planeIndex][1] * nodeOrigin[1]
+                       + vNormal[planeIndex][0] * nodeOrigin[0]
+                   <= fDist[planeIndex])
+            {
+                if (++planeIndex >= iPlaneCount)
+                    break;
+            }
+            if (planeIndex < iPlaneCount)
+            {
+                if (failedNodes.size() >= failedNodes.capacity())
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 31;
+                    AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                failedNodes.push_back(pNode);
+                continue;
+            }
+        }
+
+        math::Position3 start;
+        start.v = _mm_setr_ps(nodeOrigin[0], nodeOrigin[1], nodeOrigin[2],
+                              0.0f);
+        math::Position3 end;
+        end.v = _mm_setr_ps(vOrigin[0], vOrigin[1], vOrigin[2], 0.0f);
+        int hitNum = 0;
+        g_SightTraceCapsule(&hitNum, start, mins, maxs, end, context);
+        if (hitNum == 0)
+            return pNode;
+    }
+
+    for (int i = 0; i < failedNodes.size(); ++i)
+    {
+        PathNodes::PathNode* pNode = failedNodes[i];
+        const float* nodeOrigin = pNode->mConstant.mOrigin;
+        math::Position3 start;
+        start.v = _mm_setr_ps(vOrigin[0], vOrigin[1], vOrigin[2], 0.0f);
+        math::Position3 end;
+        end.v = _mm_setr_ps(nodeOrigin[0], nodeOrigin[1], nodeOrigin[2],
+                            0.0f);
+        int hitNum = 0;
+        g_SightTraceCapsule(&hitNum, start, mins, maxs, end, context);
+        if (hitNum == 0)
+            return pNode;
+    }
+    return nullptr;
 }
 
 // ea: 0x0077E440
