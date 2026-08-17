@@ -11497,6 +11497,64 @@ void path_constraint_update(rigid_body_constraint_custom_path* vpc, Entity* veh)
         vpc->b1_r_loc.v.m128_f32[0] = -6.0f;  // 0xC0C00000
 }
 
+extern float sNaN;
+
+void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
+                  const math::Dir3& hitd, float force, bool local_hitp,
+                  hitLocation_t hitLoc);
+
+// Broc RBSimpleAPI entry point (IDA 0x6002A0): resolve the entity handle and
+// forward the vector payload to the entity-based implementation above.
+void ApplyPhysics(unsigned int ehandle, const Broc::vector& hitp,
+                  const Broc::vector& hitd, float force, bool local_hitp)
+{
+    if (hitp.x == sNaN && hitp.y == sNaN && hitp.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.h";
+        AeAssert::gCurrentLine = 10;
+        AeAssert::gCurrentExpr = "_hitp.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid values passed to ApplyPhysics"))
+            __debugbreak();
+    }
+    if (hitd.x == sNaN && hitd.y == sNaN && hitd.z == sNaN)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.h";
+        AeAssert::gCurrentLine = 11;
+        AeAssert::gCurrentExpr = "_hitd.IsDefined()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("invalid values passed to ApplyPhysics"))
+            __debugbreak();
+    }
+    if ((hitp.x != sNaN || hitp.y != sNaN || hitp.z != sNaN)
+        && (hitd.x != sNaN || hitd.y != sNaN || hitd.z != sNaN))
+    {
+        math::Position3 hp;
+        hp.v = _mm_set_ps(0.0f, hitp.z, hitp.y, hitp.x);
+        math::Dir3 hd;
+        hd.v = _mm_set_ps(0.0f, hitd.z, hitd.y, hitd.x);
+        unsigned int index = ehandle & 0xFFF;
+        Entity* ent = nullptr;
+        if (index < 0x540
+            && (ehandle >> 12) == (unsigned int)EntityHandleDb::sInst.mElements[index].mKey)
+            ent = EntityHandleDb::sInst.mElements[index].mObject;
+        if (ent != nullptr)
+            ApplyPhysics(ent, hp, hd, force, local_hitp, (hitLocation_t)4);
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.h";
+            AeAssert::gCurrentLine = 22;
+            AeAssert::gCurrentExpr = "hitEnt";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Undefined entity passed to ApplyPhyics"))
+                __debugbreak();
+        }
+    }
+}
+
 // ea: 0x70D0D0
 void StopPhysics(Entity* e)
 {
@@ -11523,6 +11581,28 @@ void StopPhysics(Entity* e)
         {
             rb_prop_system::remove_entity(e);
         }
+    }
+}
+
+// Broc RBSimpleAPI entry point (IDA 0x600600).
+void StopPhysics(unsigned int ehandle)
+{
+    unsigned int index = ehandle & 0xFFF;
+    Entity* ent = nullptr;
+    if (index < 0x540
+        && (ehandle >> 12) == (unsigned int)EntityHandleDb::sInst.mElements[index].mKey)
+        ent = EntityHandleDb::sInst.mElements[index].mObject;
+    if (ent != nullptr)
+        StopPhysics(ent);
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.h";
+        AeAssert::gCurrentLine = 37;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Undefined entity passed to StopPhyics"))
+            __debugbreak();
     }
 }
 
