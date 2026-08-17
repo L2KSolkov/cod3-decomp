@@ -500,13 +500,13 @@ class CDefaultResult;  // full definition below
 class CDefaultQuery {
 public:
     CDefaultQuery();  // ??0CDefaultQuery@@QAE@XZ (shell.o)
-    int Query(unsigned __int64 queryGameType, unsigned __int64 queryGameMap,
-              unsigned __int64 queryGameVersion,
-              unsigned __int64 queryFriendlyFire,
-              unsigned __int64 queryTeamBalancing,
-              unsigned __int64 querySubType,
-              unsigned __int64 queryMaxPlayers,
-              unsigned __int64 queryMinPlayers);  // ?Query@CDefaultQuery@@QAEJ_K0000000@Z (shell.o)
+    long Query(unsigned __int64 queryGameType, unsigned __int64 queryGameMap,
+               unsigned __int64 queryGameVersion,
+               unsigned __int64 queryFriendlyFire,
+               unsigned __int64 queryTeamBalancing,
+               unsigned __int64 querySubType,
+               unsigned __int64 queryMaxPlayers,
+               unsigned __int64 queryMinPlayers);  // ?Query@CDefaultQuery@@QAEJ_K0000000@Z (shell.o)
 };
 struct sGameListing {
     int mSize;                          // +0x00
