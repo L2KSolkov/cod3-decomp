@@ -48,7 +48,8 @@ bool bdInetAddr::deserialize(const void* buffer, unsigned int bufferSize,
                              unsigned int offset, unsigned int* newOffset) {
     *newOffset = offset;
     return bdBytePacker::removeBuffer((const unsigned char*)buffer, bufferSize,
-                                      offset, newOffset, this, 4u);
+                                      offset, newOffset,
+                                      (unsigned char*)this, 4u);
 }
 
 // ============================================================================

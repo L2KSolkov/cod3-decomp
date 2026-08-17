@@ -18,6 +18,11 @@
 // tolerated by /FORCE:UNRESOLVED until bdLog is ported.
 // ============================================================================
 struct bdMessageProxy {
+    const char* m_file;
+    const char* m_function;
+    unsigned int m_line;
+    const char* m_baseChannel;
+
     bdMessageProxy(const char* file, const char* func, unsigned int line, const char* flags);
     void log(const char* channel, const char* format, ...) const;
 };
@@ -25,6 +30,7 @@ struct bdMessageProxy {
 extern bool g_assertFalse;
 
 namespace bdMemory {
+extern void* (*m_reallocateFunc)(void* p, unsigned int size);
 void* allocate(unsigned int size);
 void  deallocate(void* p);
 void* reallocate(void* p, unsigned int size);
@@ -1328,7 +1334,7 @@ bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
 bool removeBasicType(const unsigned char* src, unsigned int srcSize, unsigned int offset,
                      unsigned int* newOffset, void* value, unsigned int valueSize);
 bool removeBuffer(const unsigned char* src, unsigned int srcSize, unsigned int offset,
-                  unsigned int* newOffset, void* dest, unsigned int size);
+                  unsigned int* newOffset, unsigned char* dest, unsigned int size);
 bool appendEncodedUInt16(void* dest, unsigned int destSize, unsigned int offset,
                          unsigned int* newOffset, unsigned short value);
 bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize, unsigned int offset,

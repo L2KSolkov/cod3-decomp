@@ -13,6 +13,16 @@ extern const char* const defaultFileName;
 int g_NumBdMessages = 0;
 bool g_assertFalse = false;
 
+namespace bdMemory {
+void* (*m_reallocateFunc)(void* p, unsigned int size) = nullptr;
+}
+
+bdMessageProxy::bdMessageProxy(const char* file, const char* func,
+                               unsigned int line, const char* flags)
+    : m_file(file), m_function(func), m_line(line), m_baseChannel(flags)
+{
+}
+
 namespace bdBytePacker {
 
 // 0x0089EC80 / 0x0089ED40 / 0x0089ECE0 / 0x0089EDA0 (bdCore)
@@ -77,7 +87,7 @@ bool removeBasicType(const unsigned char* src, unsigned int srcSize,
 }
 
 bool removeBuffer(const unsigned char* src, unsigned int srcSize,
-                  unsigned int offset, unsigned int* newOffset, void* dest,
+                  unsigned int offset, unsigned int* newOffset, unsigned char* dest,
                   unsigned int size)
 {
     *newOffset = offset;
@@ -421,6 +431,17 @@ bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
 void* bdMemory::allocate(unsigned int size)
 {
     (void)size;
+    return nullptr;
+}
+void* bdMemory::reallocate(void* p, unsigned int size)
+{
+    if (m_reallocateFunc != nullptr)
+    {
+        void* result = m_reallocateFunc(p, size);
+        if (result == nullptr)
+            __debugbreak();
+        return result;
+    }
     return nullptr;
 }
 void bdMemory::deallocate(void* p)
