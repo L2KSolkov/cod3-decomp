@@ -157,11 +157,6 @@ void MultiplayerMgr::PlayerDead(Entity* p, Entity* inf, Entity* atk, int dmg,
     (void)p; (void)inf; (void)atk; (void)dmg; (void)mod; (void)w;
     (void)pos; (void)dir; (void)hl;
 }
-void MultiplayerMgr::Step(int earlyOutInterval, bool fromThread,
-                          bool a_bFromGame)
-{
-    (void)earlyOutInterval; (void)fromThread; (void)a_bFromGame;
-}
 bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
 {
     (void)player;

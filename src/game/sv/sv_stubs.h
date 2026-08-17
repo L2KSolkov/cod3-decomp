@@ -15,6 +15,7 @@
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
 #include "bd/bdSession.h"
+#include "bd/bdStopwatch.h"
 
 // bd headers pull windows.h via bdReferencable.h; undo its GetObjectA macro
 // so HandleDb::GetObject keeps the binary's mangled name.
@@ -472,14 +473,26 @@ public:
         int mVal;
     };  // +0x00 opaque
     MPPeer* mPeer;                  // +0x00
-    uint8_t _pad[0x35 - 0x4];
+    bool    m_bFromGame;            // +0x04
+    uint8_t _pad05[0x08 - 0x05];
+    bdStopwatch mStopwatch;         // +0x08
+    bdStopwatch mConsistencyStopwatch; // +0x18
+    float   mLastSendTime;          // +0x28
+    float   mSendInterval;          // +0x2C
+    float   mConnectingSendInterval; // +0x30
+    bool    mPlayerUpdateQueued;    // +0x34
     bool    mRankedGame;            // +0x35
     bool    mInitialized;           // +0x36
     uint8_t _pad37[0x38 - 0x37];
     kuju::knet::sTime mUpdateTime;  // +0x38
     uint8_t _pad2[0x40 - 0x3C];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
-    uint8_t _pad3[0x50 - 0x41];
+    uint8_t _pad41[0x44 - 0x41];
+    kuju::knet::sTime mTimeLinkWentDown; // +0x44
+    kuju::knet::sTime mLastLinkStatusCheckTime; // +0x48
+    bool    mOldLinkStatus;         // +0x4C
+    bool    mLinkStatus;            // +0x4D
+    uint8_t _pad4E[0x50 - 0x4E];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
     static MultiplayerMgr* Inst();  // ?Inst@MultiplayerMgr@@SAPAV1@XZ (g.o 0x4A9780)
     MultiplayerMgr();               // ??0MultiplayerMgr@@QAE@XZ (mp.o 0x7610F0)
@@ -1305,7 +1318,8 @@ extern const char* seps;         // ?seps@@3PBDB @ 0xDF3948
 // Misc enums / constants
 // ============================================================================
 enum EThreadOwner {
-    kMainThread = 0,
+    kLoadingThread = 0,
+    kMainThread = 1,
 };
 
 enum EGamePhase {
@@ -1529,6 +1543,7 @@ public:
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
     bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
+    int CurrentOverlay();               // ?CurrentOverlay@FEMenuSystem@@QAEHXZ (shell.o)
     FEMenuSystem(int s, font_index f);  // ??0FEMenuSystem@@QAE@HW4font_index@@@Z (shell.o 0x57DD70)
     virtual void InitAll();             // ?InitAll@FEMenuSystem@@UAEXXZ (shell.o 0x570AA0)
     virtual void Add(FEMenu* m);        // ?Add@FEMenuSystem@@UAEXPAVFEMenu@@@Z (shell.o 0x570A30)

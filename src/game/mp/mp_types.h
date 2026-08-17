@@ -621,6 +621,7 @@ public:
     static bool mInSession;           // ?mInSession@MPUIInterface@@1_NA (defined in MPLiveEngine.cpp)
     static bool mHostMigrated;        // ?mHostMigrated@MPUIInterface@@1_NA
     static bool mHostDisconnected;    // ?mHostDisconnected@MPUIInterface@@1_NA
+    static bool mCableDisconnect;     // ?mCableDisconnect@MPUIInterface@@1_NA
     static unsigned long mGameListingNumGames;  // ?mGameListingNumGames@MPUIInterface@@1KA @ 0xF93FB0
     static unsigned char mGameListings[1600];   // ?mGameListings@MPUIInterface@@1PAEA @ 0xF93DC8
     static bool mQueryFromID;                   // ?mQueryFromID@MPUIInterface@@1_NA @ 0xF93FAC
@@ -903,11 +904,19 @@ public:
 
 class controller {
 public:
+    enum ButtonIndex {
+        LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,
+        SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7,
+        R1 = 8, L1 = 9, R2 = 10, L2 = 11, R3 = 12, L3 = 13,
+        START = 14, SELECT = 15,
+    };
     uint8_t _pad[0x18];
     int     locked_port;          // +0x18
     uint8_t is_locked;            // +0x1C
     uint8_t accepting_input_from_controller[4];  // +0x1D
     static controller* inst();    // ?inst@controller@@SAPAV1@XZ (controller.o)
+    bool button_pressed(int controller, ButtonIndex btn); // controller.o
+    int button_value(int controller, ButtonIndex btn);    // controller.o
 };
 
 // GameSettings - shell.o global settings (temp profile buffer size)

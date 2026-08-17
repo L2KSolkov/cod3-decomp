@@ -57,6 +57,8 @@ extern void j_nullsub_96();      // ?nullsub_96 (shell.o)
 int dword_F32F40 = 0;            // 0xF32F40
 int dword_F34B34 = 0;            // 0xF34B34
 int dword_F36728 = 0;            // 0xF36728
+int nastycount = -1;              // mp.o global @ 0xE37918
+int g_TEMP_ViewSetup = 0;         // mp.o global @ 0xF61708
 
 extern bool MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YA_ND@Z (mp_shell.o)
 extern char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
@@ -458,6 +460,16 @@ public:
     {
         return *(int*)((char*)GetActiveMenu() + 0x1C);
     }
+};
+
+class MultilineFrontendOverlayMenu {
+public:
+    enum eState {
+        NETWORK_ERROR_COUNTDOWN = 1,
+    };
+    unsigned char _pad[0x68];
+    int mState;                    // +0x68
+    static MultilineFrontendOverlayMenu* Me();
 };
 
 // HotJoinMenu (mp_shell.o) - split-screen hot-join menu
@@ -9016,6 +9028,197 @@ kuju::knet::sTime MultiplayerMgr::getLocalTime()
     kuju::knet::sTime result;
     result.mTime = (int)((double)elapsed * sOOFreq * 1000.0);
     return result;
+}
+
+// ea: 0x007657C0
+void MultiplayerMgr::Step(int earlyOutInterval, bool fromThread,
+                           bool a_bFromGame)
+{
+    if (fromThread
+        && (g_networkOwner != kLoadingThread || !gMPLoadingUnthreaded))
+        return;
+
+    m_bFromGame = a_bFromGame;
+    controller* pad = controller::inst();
+    if (pad->button_value(0, controller::SELECT) != 0
+        && pad->button_pressed(0, controller::L1))
+        MPPeer::mRenderSessionInfo = MPPeer::mRenderSessionInfo == 0;
+
+    pad = controller::inst();
+    if (pad->button_value(0, controller::SELECT) != 0
+        && pad->button_pressed(0, controller::R1))
+        g_TEMP_ViewSetup = g_TEMP_ViewSetup != 0 ? 0 : 2;
+
+    int lastTime = mUpdateTime.mTime;
+    kuju::knet::sTime lastUpdateTime;
+    lastUpdateTime.mTime = lastTime;
+    kuju::knet::sTime currentTime = getLocalTime();
+    if (earlyOutInterval > 0
+        && currentTime.mTime - lastTime < earlyOutInterval)
+        return;
+
+    mUpdateTime = currentTime;
+    if (mPeer != nullptr)
+    {
+        MPPlayerManager* playerManager =
+            (MPPlayerManager*)((char*)mPeer + 0x74E0);
+        MPVote* vote = (MPVote*)((char*)playerManager + 0x5914);
+        if (vote->voteStartTime.mTime != 0
+            && (currentTime.mTime * 0.001f
+                - vote->voteStartTime.mTime * 0.001f) >= 60.0f)
+            MPUIInterface::ResolveVote();
+    }
+
+    bdNetImpl* net = bdSingleton<bdNetImpl>::getInstance();
+    bool wasInitialized = mInitialized;
+    if (net->getStatus() == BD_NET_PENDING)
+        net->pump();
+    mInitialized = net->getStatus() == BD_NET_DONE;
+    bool becameInitialized = !wasInitialized && mInitialized;
+
+    if (MPUIInterface::mKicked && cls.state != 1 && gpBrocAPI != nullptr)
+    {
+        if (gpBrocAPI->mBrocExports.mCallbackLocalPlayerKicked != nullptr)
+        {
+            gpBrocAPI->mBrocExports.mCallbackLocalPlayerKicked();
+            MPUIInterface::mKicked = false;
+        }
+    }
+
+    if (becameInitialized && mPeer == nullptr)
+    {
+        void* memory = tlMemAlloc(0xD2B0u, 0x10u, 0);
+        MPPeer* peer = nullptr;
+        if (memory != nullptr)
+            peer = ::new (memory) MPPeer();
+        mPeer = peer;
+    }
+
+    if (mInitialized)
+    {
+        MPPlayerManager* playerManager =
+            (MPPlayerManager*)((char*)mPeer + 0x74E0);
+        if (*(bool*)((char*)playerManager + 0x4112)
+            && *(int*)((char*)playerManager + 0x0C) > 0)
+            playerManager->DispatchBufferedMessages();
+
+        net->receiveAndDispatchAll();
+        if (a_bFromGame)
+            mPeer->Step((mUpdateTime.mTime - lastUpdateTime.mTime) * 0.001f,
+                        fromThread);
+
+        bool isConnecting = false;
+        if (mPeer != nullptr)
+        {
+            bdSession* session = (bdSession*)((char*)mPeer + 0x7448);
+            bdSession::bdSessionStatus status = session->getStatus();
+            if (status == bdSession::BD_SESSION_CONNECTING_TO_HOST
+                || status == bdSession::BD_SESSION_CONNECTING_TO_PEERS)
+                isConnecting = true;
+        }
+
+        if (mPlayerUpdateQueued
+            || mStopwatch.getElapsedTimeInSeconds() > mSendInterval
+            || (isConnecting
+                && mStopwatch.getElapsedTimeInSeconds()
+                    > mConnectingSendInterval))
+        {
+            extern int g_NumBdMessages;
+            if (g_NumBdMessages != 0
+                && mConsistencyStopwatch.getElapsedTimeInSeconds() > 1.0f)
+                mConsistencyStopwatch.start();
+            net->sendAll();
+            mStopwatch.start();
+            mPlayerUpdateQueued = false;
+            g_NumBdMessages = 0;
+        }
+    }
+
+    DialogMenuSystem* dms = g_femanager.GetDMS(currCl);
+    if (dms != nullptr && dms->mState == DialogMenuSystem::DMS_PENDING_SHUTDOWN)
+    {
+        if (nastycount == -1)
+            nastycount = 10;
+        else if (nastycount != 0)
+            --nastycount;
+        else
+        {
+            dms->SetState(DialogMenuSystem::DMS_STATE_NONE);
+            nastycount = -1;
+        }
+    }
+    else
+        nastycount = -1;
+
+    updateLinkStatus();
+    FEMenuSystem* fems = g_femanager.fems;
+    if (mLinkCheckEnabled && !mLinkStatus)
+    {
+        if (fems != nullptr && fems->IsSystemActive())
+        {
+            if (fems->CurrentOverlay() != 17
+                || MultilineFrontendOverlayMenu::Me()->mState
+                    != MultilineFrontendOverlayMenu::NETWORK_ERROR_COUNTDOWN)
+            {
+                dms = g_femanager.GetDMS(currCl);
+                if (dms != nullptr && dms->mState == 1)
+                {
+                    dms->SetState(DialogMenuSystem::DMS_STATE_NONE);
+                    dms->CloseDialog();
+                }
+                if (fems->CurrentOverlay() < 0)
+                {
+                    OverlayMenu* overlay = OverlayMenu::Me(0);
+                    MPUIInterface::mCableDisconnect = true;
+                    typedef void (__thiscall* RemoveOverlayFn)(FEMenuSystem*);
+                    RemoveOverlayFn removeOverlay =
+                        (RemoveOverlayFn)(*(void***)fems)[15];
+                    removeOverlay(fems);
+                    overlay = OverlayMenu::Me(0);
+                    overlay->SetState(14);
+                    *(int*)((char*)overlay + 0x50) = 8;
+                    *(int*)((char*)overlay + 0x54) = 8;
+                    typedef void (__thiscall* AddOverlayFn)(FEMenuSystem*, int);
+                    AddOverlayFn addOverlay =
+                        (AddOverlayFn)(*(void***)fems)[14];
+                    addOverlay(fems, 16);
+                }
+            }
+        }
+        else
+        {
+            dms = g_femanager.GetDMS(currCl);
+            if (dms != nullptr)
+                dms->SetState(DialogMenuSystem::DMS_NETWORK_ERROR);
+        }
+    }
+    else
+    {
+        if (MPUIInterface::mCableDisconnect)
+            MPUIInterface::mCableDisconnect = false;
+        if (fems != nullptr && fems->IsSystemActive())
+        {
+            if (fems->CurrentOverlay() == 17
+                && MultilineFrontendOverlayMenu::Me()->mState
+                    == MultilineFrontendOverlayMenu::NETWORK_ERROR_COUNTDOWN)
+            {
+                typedef void (__thiscall* RemoveOverlayFn)(FEMenuSystem*);
+                RemoveOverlayFn removeOverlay =
+                    (RemoveOverlayFn)(*(void***)fems)[15];
+                removeOverlay(fems);
+                (*fems->gap1C)(fems, 8.0f);
+            }
+        }
+        else
+        {
+            dms = g_femanager.GetDMS(currCl);
+            if (dms != nullptr && dms->mState == 1)
+            {
+                dms->SetState(DialogMenuSystem::DMS_STATE_NONE);
+                dms->CloseDialog();
+            }
+        }
+    }
 }
 
 // ea: 0x0072C700 (mLastLinkStatusCheckTime +0x48, mTimeLinkWentDown +0x44,
