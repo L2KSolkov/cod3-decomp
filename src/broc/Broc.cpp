@@ -27,6 +27,7 @@ extern int gNumStringsFreed;
 extern const float VectorDistance(const float* const v1, const float* const v2);
 extern const float VectorDistanceSquared(const float* const p1,
                                          const float* const p2);
+extern void FastSinCos(float radians, float* psin, float* pcos);
 
 extern "C" int __fpclass(float);
 
@@ -111,6 +112,11 @@ float VecDistanceSquared(const vector* v0, const vector* v1) {
 int VecCloser(const vector* vRef, const vector* vA, const vector* vB) {
     float fDistASqrd = VectorDistanceSquared(&vA->x, &vRef->x);
     return VectorDistanceSquared(&vB->x, &vRef->x) > fDistASqrd;
+}
+
+// ea: 0x005EF680
+void MathFastSinCos(float fAng, float* sin, float* cos) {
+    FastSinCos((fAng * 3.1415927f) * 0.0055555557f, sin, cos);
 }
 
 // ea: 0x0049287C0
