@@ -275,6 +275,8 @@ void* StreamZoneManager_sInst;
 void* TestFPS_sInst;
 void* TimerRenderBars_sInst;
 void* ScriptEventHandler_sAllocator;
+PoolAllocator* WaitTilOutput_sAllocator;
+PoolAllocator* EntityNotify_sAllocator;
 void* EntityNotifySet_sAllocator;
 void* RumbleEffectInstance_sAllocator;
 void* CTitleFontRenderer_vftable;
