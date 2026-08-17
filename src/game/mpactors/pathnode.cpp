@@ -18,7 +18,7 @@ extern const math::Position3 actorMins;  // 0xF99510
 extern int currCl;                     // ?currCl@@3HA
 extern char* va(const char* fmt, ...); // core.o
 extern void Scr_Error(const char* error);  // core.o
-extern void Z_FreeInternal(void* ptr);     // core.o
+extern "C" void _Z_FreeInternal(void* ptr);     // core.o
 extern void G_DebugLine(const float* start, const float* end,
                         const float* color, int depthTest,
                         int duration);     // g.o
@@ -205,7 +205,7 @@ void Path_Shutdown()
 {
     if (debugPath != nullptr)
     {
-        Z_FreeInternal(debugPath);
+        _Z_FreeInternal(debugPath);
         debugPath = nullptr;
     }
 }
