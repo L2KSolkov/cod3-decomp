@@ -86,6 +86,11 @@ void rigid_body_constraint_contact::add_cpi_simple(
     m_list_contact_point_info_buffer_1.m_first = cpi;
 }
 
+// rigid_body_constraint_contact::get_cached_cpi - ea: 0x878690
+const contact_point_info* rigid_body_constraint_contact::get_cached_cpi() const {
+    return m_list_contact_point_info_buffer_2.m_first;
+}
+
 // ============================================================================
 // rigid_body_constraint_contact::setup_constraint â€” ea: 0x88AA90
 // ============================================================================
