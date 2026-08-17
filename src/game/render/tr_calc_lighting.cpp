@@ -5,6 +5,7 @@
 // ============================================================================
 
 #include "core/math_types.h"
+#include "engine/broc_types.h"
 
 #include <stdint.h>
 
@@ -29,7 +30,8 @@ public:
     Entity* parent;                  // +0x00
     Entity* next;                    // +0x04
 };
-struct trRefEntityLocal {
+class trRefEntity {
+public:
     uint8_t _pad[0x148];
     float lastPos[3];                // +0x148
     bool moved;                      // +0x154
@@ -47,6 +49,7 @@ public:
     short cell_index;                // +0x3BC
     uint8_t _pad3[0x3D4 - 0x3BE];
     tagInfoLocal* tagInfo;           // +0x3D4
+    trRefEntity& GetRenderEntity();
 };
 
 struct BspCellLocal {
@@ -64,7 +67,6 @@ extern BspTree* g_bspTree;           // ?g_bspTree@@3PAUBspTree@@A
 extern void ModelLightingHack();     // ?ModelLightingHack@@YAXXZ
 extern nglLightContext* nglCreateLightContext();  // ?nglCreateLightContext@@YAPAUnglLightContext@@XZ
 extern void nglListAddLight(int type, void* data, int unknown);  // ?nglListAddLight@@YAXW4nglLightType@@PAXH@Z
-extern trRefEntityLocal& Entity_GetRenderEntity(Entity* self);  // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ
 extern unsigned int nglLightContextParamID;   // ngl_lighting.cpp
 extern unsigned int cdSimpleAlphaAlphaParamID;  // tr_tiny.cpp
 
@@ -125,7 +127,7 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
             {
                 if (entity != nullptr)
                 {
-                    trRefEntityLocal& re = Entity_GetRenderEntity(entity);
+                    trRefEntity& re = entity->GetRenderEntity();
                     bool moved = re.lastPos[0] != v30 || re.lastPos[1] != v31
                                 || re.lastPos[2] != v32;
                     re.moved = moved;
@@ -178,7 +180,6 @@ public:
     float treadTime2;                // +0x520
 };
 // Entity::scr_vehicle @ +0x260 (already in Entity above? add accessor)
-extern unsigned int HashString_CalcHash(const char* str);  // ?CalcHash@HashString@@SAIPBD@Z
 extern void* nglListAlloc(unsigned int size, unsigned int align);  // ?nglListAlloc@@YAPAXII@Z
 extern void make_rotate(math::Mat43& m, int axis, float angle);  // ?make_rotate@@YAXAAVMat43@math@@HM@Z
 extern unsigned int TextureMatrixParamID;    // ?TextureMatrixParamID@@3IA
@@ -196,22 +197,22 @@ bool AddTextureMatrix(Entity* ent, unsigned int boneNameHash,
     if ((g_tagInit & 1) == 0)
     {
         g_tagInit |= 1;
-        g_tag_tread_left = HashString_CalcHash("tag_tread_left");
+        g_tag_tread_left = HashString::CalcHash("tag_tread_left");
     }
     if ((g_tagInit & 2) == 0)
     {
         g_tagInit |= 2;
-        g_tag_tread_right = HashString_CalcHash("tag_tread_right");
+        g_tag_tread_right = HashString::CalcHash("tag_tread_right");
     }
     if ((g_tagInit & 4) == 0)
     {
         g_tagInit |= 4;
-        g_tag_left_gear_hash = HashString_CalcHash("tag_gear_left");
+        g_tag_left_gear_hash = HashString::CalcHash("tag_gear_left");
     }
     if ((g_tagInit & 8) == 0)
     {
         g_tagInit |= 8;
-        g_tag_right_gear_hash = HashString_CalcHash("tag_gear_right");
+        g_tag_right_gear_hash = HashString::CalcHash("tag_gear_right");
     }
 
     scr_vehicle_t* veh = (scr_vehicle_t*)*(void**)((char*)ent + 0x260);

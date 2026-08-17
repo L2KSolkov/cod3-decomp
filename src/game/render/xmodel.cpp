@@ -10,7 +10,7 @@
 #include <intrin.h>
 
 extern void* mem_heap_malloc(unsigned int size);  // core.o
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file,
                                  int line);  // core.o
 extern void Com_Memcpy(void* dest, const void* src, unsigned int count);  // core.o

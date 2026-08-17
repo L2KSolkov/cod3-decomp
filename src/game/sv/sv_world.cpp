@@ -82,7 +82,7 @@ extern void          CM_PointTraceStaticModels(trace_t* results,
                                                const math::Position3& start,
                                                const math::Position3& end,
                                                const collision_context_t& context);
-struct TouchEntityData;
+class TouchEntityData;
 extern void          CM_PointTraceToEntities(pointtrace_t* clip,
                                              const TouchEntityData& context);
 extern void          CM_ClipMoveToEntities(moveclip_t* clip,

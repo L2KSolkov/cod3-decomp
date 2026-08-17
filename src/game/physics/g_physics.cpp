@@ -231,7 +231,7 @@ void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
 // G_Damage (game.o g_combat.cpp; declared for the wheel-collide damage call)
 void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
               const float* dir, const float* point, int damage, int dflags,
-              int mod, EHitLocation hitLoc, int weapon);
+              int mod, hitLocation_t hitLoc, int weapon);
 enum phys_bones {
     rb_torso = 0,
     rb_head = 1,
@@ -7112,7 +7112,7 @@ void collide_segment(wheel_collision_info* wci, Entity* wci_ent, Entity* ent1,
             float dir[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
             G_Damage(ent1, wci_ent, wci_ent, dir,
                      &wci->m_p0.v.m128_f32[0], 1, 0, 0x20,
-                     (EHitLocation)0, -1);
+                     (hitLocation_t)0, -1);
             if ((ent1->mFlags & 0x400000) != 0 || ent1->actor != nullptr
                 || ent1->client != nullptr || ent1->think == 0x0C)
                 return;
@@ -7305,7 +7305,7 @@ bool collide_entities_callback::process(phys_collide_data* d)
             neg_normal.v = _mm_xor_ps(Float4_SignMask_12, normal.v);
             G_Damage(ent2, ent1, ent1, &neg_normal.v.m128_f32[0],
                      &hitp.v.m128_f32[0], damage, 0, 32,
-                     (EHitLocation)0 /* HITLOC_NONE */, -1);
+                     (hitLocation_t)0 /* HITLOC_NONE */, -1);
         }
     }
     rb_vehicle* v24 = ent1->scr_vehicle != nullptr
@@ -14515,7 +14515,7 @@ void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
                                     mObject, m_ent, m_ent,
                                     &neg.m128_f32[0],
                                     &p1_world.v.m128_f32[0], damage, 0, 32,
-                                    (EHitLocation)0, -1);
+                                    (hitLocation_t)0, -1);
                             }
                             process_actor = false;
                         }
