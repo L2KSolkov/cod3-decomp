@@ -2079,6 +2079,7 @@ extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
 class AnimationPlayer {
 public:
     enum AnimationPlayerModifierType {
+        nalAdditiveModifier = 0,
         nalPartialModifier = 1,
         nalFullModifier = 2,
     };
@@ -2177,6 +2178,9 @@ public:
     void _StopOrHoldModifiers(unsigned int mask,
                               float priority);  // ea: 0x0053A230
     int GetQueueSize();                    // ea: 0x0053A2A0
+    bool IsIdle();                         // ea: 0x007753C0
+    bool IsIdleNonTorso(bool checkLooping); // ea: 0x00775480
+    bool IsTorsoAnimPlaying();             // ea: 0x00775580
     void Advance(float deltaT);            // ?Advance@AnimationPlayer@@QAEXM@Z (game2.o)
     void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
     void PlayModifier(nalGenericAnim* anim,
@@ -2475,6 +2479,128 @@ void AnimationPlayer::_StopOrHoldModifiers(unsigned int mask, float priority)
             i->base.callback = nullptr;
         }
     }
+}
+
+static unsigned int AnimationPlayerAnimFlags(
+    const AnimationPlayer::nalAnimState* state)
+{
+    void* instance = state->instance;
+    void* anim = *(void**)((char*)instance + 0x04);
+    return *(unsigned int*)((char*)anim + 0x34);
+}
+
+// ea: 0x007753C0
+bool AnimationPlayer::IsIdle()
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial != nullptr)
+    {
+        while ((AnimationPlayerAnimFlags(&partial->base) & 1) == 0)
+        {
+            if (partial->base.t > 0.0f && partial->base.t < 1.0f)
+                break;
+            if (partial->base.t_prev > 0.0f && partial->base.t_prev < 1.0f)
+                break;
+            partial = partial->next;
+            if (partial == nullptr)
+                goto queue;
+        }
+        return false;
+    }
+
+queue:
+    int queueSize = QueueSize;
+    if (queueSize > 0)
+    {
+        int index = 0;
+        nalAnimState** state = AnimStates;
+        for (;; ++state)
+        {
+            nalAnimState* current = *state;
+            if ((AnimationPlayerAnimFlags(current) & 1) != 0)
+                break;
+            if (current->t > 0.0f && current->t < 1.0f)
+                break;
+            if (current->t_prev > 0.0f && current->t_prev < 1.0f)
+                break;
+            if (++index >= queueSize)
+                return true;
+        }
+        return false;
+    }
+    return true;
+}
+
+// ea: 0x00775480
+bool AnimationPlayer::IsIdleNonTorso(bool checkLooping)
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial != nullptr)
+    {
+        while (true)
+        {
+            if (partial->type != nalAdditiveModifier)
+            {
+                unsigned int looping = AnimationPlayerAnimFlags(&partial->base) & 1;
+                if (looping == 0 || checkLooping)
+                {
+                    if (looping != 0)
+                        return false;
+                    if (partial->base.t > 0.0f && partial->base.t < 1.0f)
+                        return false;
+                    if (partial->base.t_prev > 0.0f
+                        && partial->base.t_prev < 1.0f)
+                        return false;
+                }
+            }
+            partial = partial->next;
+            if (partial == nullptr)
+                goto queue;
+        }
+    }
+
+queue:
+    int queueSize = QueueSize;
+    int index = 0;
+    if (queueSize <= 0)
+        return true;
+    nalAnimState** state = AnimStates;
+    for (;; ++state)
+    {
+        nalAnimState* current = *state;
+        unsigned int looping = AnimationPlayerAnimFlags(current) & 1;
+        if (looping == 0 || !checkLooping)
+        {
+            if (looping != 0)
+                break;
+            if (current->t >= 0.0f && current->t < 1.0f)
+                break;
+            if (current->t_prev > 0.0f && current->t_prev < 1.0f)
+                break;
+        }
+        if (++index >= queueSize)
+            return true;
+    }
+    return false;
+}
+
+// ea: 0x00775580
+bool AnimationPlayer::IsTorsoAnimPlaying()
+{
+    nalPartialAnimState* partial = PartialAnimStates;
+    if (partial == nullptr)
+        return false;
+    while (((AnimationPlayerAnimFlags(&partial->base) & 1) == 0
+            && (partial->base.t < 0.0f || partial->base.t >= 1.0f)
+            && (partial->base.t_prev < 0.0f
+                || partial->base.t_prev >= 1.0f))
+           || partial->type != nalAdditiveModifier)
+    {
+        partial = partial->next;
+        if (partial == nullptr)
+            return false;
+    }
+    return true;
 }
 
 // ea: 0x0053A2A0
