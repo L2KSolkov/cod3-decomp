@@ -2639,6 +2639,86 @@ void CreateLanSessionAdvancedMenu::Draw()
     FEMenu::Draw();
 }
 
+// ea: 0x00795120
+void CreateSessionAdvancedMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    for (int i = 0; i < 4; ++i)
+        m_pBackgroundArt.m_elements[i]->SetShown(true);
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+    m_ScoreLimitCombo->ClearOptions();
+    for (int j = 0;
+         j < MPUIInterface::GetScoreLimitCount(
+                 (eGameType)MPUIInterface::mServerParams.mGameType);
+         ++j)
+    {
+        char szNum[32];
+        sprintf(szNum, "%i",
+                MPUIInterface::GetScoreLimit(
+                    j, (eGameType)MPUIInterface::mServerParams.mGameType));
+        Broc::string option(szNum);
+        m_ScoreLimitCombo->AddOption(option);
+    }
+    entries[7]->Disable(MPUIInterface::mServerParams.mGameType == 5);
+    entries[5]->Disable(MPUIInterface::mServerParams.mGameType == 5);
+    entries[11]->Disable(MPUIInterface::mServerParams.mGameType == 5);
+    m_TimeLimitCombo->SetCurrOption(MPUIInterface::mServerParams.mTimeLimit);
+    m_ScoreLimitCombo->SetCurrOption(MPUIInterface::mServerParams.mScoreLimit);
+    m_AutoTeamBalanceCombo->SetCurrOption(
+        MPUIInterface::mServerParams.mTeamBalancing);
+    m_TeamDamageCombo->SetCurrOption(
+        MPUIInterface::mServerParams.mFriendlyFire);
+    m_VotingCombo->SetCurrOption(MPUIInterface::mServerParams.mEnableAARVote);
+    m_PenaltyVoteCombo->SetCurrOption(
+        MPUIInterface::mServerParams.mEnablePenaltyVote);
+    GrabSessionName();
+}
+
+// ea: 0x007964D0
+void CreateLanSessionAdvancedMenu::OnActivate()
+{
+    FEMenu::OnActivate();
+    for (int i = 0; i < 4; ++i)
+        m_pBackgroundArt.m_elements[i]->SetShown(true);
+    SetHigh(1, true);
+    highlighted = 1;
+    entries[0]->Highlight(true, true);
+    m_ScoreLimitCombo->ClearOptions();
+    for (int j = 0;
+         j < MPUIInterface::GetScoreLimitCount(
+                 (eGameType)MPUIInterface::mServerParams.mGameType);
+         ++j)
+    {
+        char szNum[32];
+        sprintf(szNum, "%i",
+                MPUIInterface::GetScoreLimit(
+                    j, (eGameType)MPUIInterface::mServerParams.mGameType));
+        Broc::string option(szNum);
+        m_ScoreLimitCombo->AddOption(option);
+    }
+    entries[7]->Disable(MPUIInterface::mServerParams.mGameType == 5);
+    entries[5]->Disable(MPUIInterface::mServerParams.mGameType == 5);
+    entries[11]->Disable(MPUIInterface::mServerParams.mGameType == 5);
+    m_TimeLimitCombo->SetCurrOption(MPUIInterface::mServerParams.mTimeLimit);
+    m_ScoreLimitCombo->SetCurrOption(MPUIInterface::mServerParams.mScoreLimit);
+    m_AutoTeamBalanceCombo->SetCurrOption(
+        MPUIInterface::mServerParams.mTeamBalancing);
+    m_TeamDamageCombo->SetCurrOption(
+        MPUIInterface::mServerParams.mFriendlyFire);
+    m_VotingCombo->SetCurrOption(MPUIInterface::mServerParams.mEnableAARVote);
+    m_PenaltyVoteCombo->SetCurrOption(
+        MPUIInterface::mServerParams.mEnablePenaltyVote);
+    if (MPUIInterface::IsLANGame())
+    {
+        char Source[256];
+        unsigned int size = 255;
+        DmGetXboxName(Source, &size);
+        strncpy(m_szSessionName, Source, 0x10u);
+    }
+}
+
 // ea: 0x0078D6D0
 void GameSettingsEdit::OnDeactivate(FESplitScreenMenu* m)
 {
