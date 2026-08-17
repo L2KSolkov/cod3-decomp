@@ -405,6 +405,17 @@ int  ClientToPort(int client);         // ?ClientToPort@LocalClient@@YAHH@Z (cl.
 void UpdatePlayerPorts(int fixedPort); // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (cl.o)
 }
 
+extern bool LocalClient_QuitClientOutOfGame(int client);
+extern int LocalClient_PortToClient(int port);
+extern int LocalClient_ClientToPort(int client);
+extern void LocalClient_UpdatePlayerPorts(int fixedPort);
+namespace LocalClient {
+bool QuitClientOutOfGame(int client) { return LocalClient_QuitClientOutOfGame(client); }
+int PortToClient(int port) { return LocalClient_PortToClient(port); }
+int ClientToPort(int client) { return LocalClient_ClientToPort(client); }
+void UpdatePlayerPorts(int fixedPort) { LocalClient_UpdatePlayerPorts(fixedPort); }
+}
+
 unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateSessionMenu@@1EA @ 0x1388D54
 unsigned char CreateLanSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateLanSessionMenu@@1EA @ 0x1388D55
 unsigned char FindSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@FindSessionMenu@@1EA @ 0x1388D56

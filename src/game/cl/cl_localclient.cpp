@@ -66,6 +66,7 @@ public:
     static void InitializeClientControllers();      // ?InitializeClientControllers@LocalClient@@YAXXZ (0x52EF50)
     static int  LastLocalClientIndex();          // ?LastLocalClientIndex@LocalClient@@YAHXZ (0x52EF60)
     static void SetLastLocalClientIndex(int index); // ?SetLastLocalClientIndex@LocalClient@@YAXH@Z (0x52EF70)
+    static int  FirstLocalClientIndex();
     static int  NumLocalClients();               // ?NumLocalClients@LocalClient@@YAHXZ (0x52EFA0)
     static void SetFirstLocalClientIndex(int index);// ?SetFirstLocalClientIndex@LocalClient@@YAXH@Z (0x52EF90)
     static void SetNumLocalClients(int num);     // ?SetNumLocalClients@LocalClient@@YAXH@Z (0x52EFB0)
@@ -110,9 +111,13 @@ void LocalClient_SetLastLocalClientIndex(int index)
 }
 
 // ea: 0x52EF80
-int LocalClient_FirstLocalClientIndex()
+int LocalClient::FirstLocalClientIndex()
 {
     return lFirstLocalClientIndex;
+}
+int LocalClient_FirstLocalClientIndex()
+{
+    return LocalClient::FirstLocalClientIndex();
 }
 
 // ea: 0x52EF90

@@ -169,11 +169,23 @@ namespace View {
 void UpdateViewports(int client);  // ?UpdateViewports@View@@YAXH@Z (cg.o)
 }
 namespace LocalClient {
-int  NumLocalClients();  // ?NumLocalClients@LocalClient@@YAHXZ (cl.o)
-void SetNumLocalClients(int num);  // ?SetNumLocalClients@LocalClient@@YAXH@Z (cl.o)
-void UpdatePlayerPorts(int fixedPort);  // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (cl.o)
-int  FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHXZ (cl.o)
-int  LastLocalClientIndex();   // ?LastLocalClientIndex@LocalClient@@YAHXZ (cl.o)
+int  NumLocalClients();
+void SetNumLocalClients(int num);
+void UpdatePlayerPorts(int fixedPort);
+int  FirstLocalClientIndex();
+int  LastLocalClientIndex();
+}
+extern int LocalClient_NumLocalClients();
+extern void LocalClient_SetNumLocalClients(int num);
+extern void LocalClient_UpdatePlayerPorts(int fixedPort);
+extern int LocalClient_FirstLocalClientIndex();
+extern int LocalClient_LastLocalClientIndex();
+namespace LocalClient {
+int NumLocalClients() { return LocalClient_NumLocalClients(); }
+void SetNumLocalClients(int num) { LocalClient_SetNumLocalClients(num); }
+void UpdatePlayerPorts(int fixedPort) { LocalClient_UpdatePlayerPorts(fixedPort); }
+int FirstLocalClientIndex() { return LocalClient_FirstLocalClientIndex(); }
+int LastLocalClientIndex() { return LocalClient_LastLocalClientIndex(); }
 }
 
 // PadAliasMgr controller button helper (controller layer; stub)
