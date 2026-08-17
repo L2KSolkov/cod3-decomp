@@ -873,11 +873,27 @@ ExtendedEntity::ExtendedEntity(const ExtendedEntity& rhs)
     }
 }
 
-ExtendedEntity::~ExtendedEntity() {}
+// ea: 0x0092A5D0. Profiling events are omitted; typed destruction and storage
+// release follow the IDA body.
+ExtendedEntity::~ExtendedEntity()
+{
+    for (unsigned int i = 0; i < mCount; ++i)
+    {
+        GetDestructor(mKVPairs[i].key)(mKVPairs[i].val);
+        mKVPairs[i].key = 0;
+        mKVPairs[i].val = 0;
+    }
+    mem_free(mKVPairs);
+    mKVPairs = nullptr;
+}
 
 ExtendedEntity* ExtendedEntity::GetExtendedEntity(unsigned int) { return NULL; }
 void* ExtendedEntity::CreateExtendedEntity(const char**, int) { return NULL; }
-void ExtendedEntity::DeleteExtendedEntity(void*) {}
+// ea: 0x00929DB0; IDA invokes the scalar deleting destructor with delete flag.
+void ExtendedEntity::DeleteExtendedEntity(void* mem)
+{
+    delete static_cast<ExtendedEntity*>(mem);
+}
 // ea: 0x00929F60. Profiling events are omitted; lookup and typed comparison
 // follow the IDA body exactly.
 bool ExtendedEntity::MatchExtendedEntityKey(void* mem, int key, const char* text)
