@@ -2958,7 +2958,7 @@ void main(Broc::entity self);
 void StartGame(Broc::entity self);
 void PlayCapturedSounds(Broc::entity self, Broc::bint team,
                         Broc::bint originalWarIndex);
-void WARScore();
+void WARScore(Broc::entity self);
 void GiveTeamMembersPoints(Broc::vector origin, Broc::bfloat radius,
                            Broc::string team);
 void CallbackHostMigrated();
@@ -2990,7 +2990,7 @@ void CallbackPlayerEnter(Broc::entity player, int hot_joiner);
 void CallbackRoundOver(int condition, Broc::string team);
 void SendFlagStates(Broc::entity player);
 void WAR_Init();
-void WAR_FlagUpdate();
+void WAR_FlagUpdate(Broc::entity self);
 void WAR_TouchFlag(Broc::entity self, Broc::entity other);
 Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
 void UpdateAllowedCap(Broc::entity flag);
@@ -10171,8 +10171,18 @@ void* StartGame__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
 }
-void* Host_FlowControl__functor(Broc::entity self) { (void)self; return NULL; }
-void* Track_Ownership__functor(Broc::entity self) { (void)self; return NULL; }
+void* Host_FlowControl__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(Host_FlowControl, self);
+}
+void* Track_Ownership__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(Track_Ownership, self);
+}
 void* TriggerRadio__functor(Broc::entity self, Broc::entity other) {
     (void)self; (void)other;
     return NULL;
@@ -10513,7 +10523,8 @@ int GetNumPlayersContestingFlag() {
 }
 
 // WARScore - ea: 0x975980
-void WARScore() {
+void WARScore(Broc::entity self) {
+    (void)self;
     Broc::bint winningTeam(0);
     Broc::bint points(0);
     Broc::bint pointsTimer(0);
@@ -10639,7 +10650,8 @@ void WAR_Init() {
 }
 
 // WAR_FlagUpdate - ea: 0x9790C0
-void WAR_FlagUpdate() {
+void WAR_FlagUpdate(Broc::entity self) {
+    (void)self;
     // Per-frame flag model/status update driven by the capture hooks.
 }
 
@@ -10799,20 +10811,31 @@ void* StartGame__functor(Broc::entity self) {
         return NULL;
     return ::new (storage) AeThreadFunctor1<Broc::entity>(StartGame, self);
 }
-void* WARScore__functor(Broc::entity self) { (void)self; return NULL; }
+void* WARScore__functor(Broc::entity self) {
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(WARScore, self);
+}
 void* WAR_InitFlag__functor(Broc::entity self, int flag_id) {
     (void)self; (void)flag_id;
     return NULL;
 }
 void* WAR_FlagUpdate__functor(Broc::entity self) {
-    (void)self; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(WAR_FlagUpdate, self);
 }
 void* WAR_TouchFlag__functor(Broc::entity self, Broc::entity other) {
     (void)self; (void)other;
     return NULL;
 }
 void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self) {
-    (void)self; return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(WarnPlayerAboutInactiveFlag, self);
 }
 void* PlayCapturedSounds__functor(Broc::entity self, int team,
                                   int originalWarIndex) {
