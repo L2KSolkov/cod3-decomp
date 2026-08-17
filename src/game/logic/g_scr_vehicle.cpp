@@ -4140,9 +4140,19 @@ done:
     ;
 }
 
-static float VEH_LerpAngle(float rate)
+static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate)
 {
-    return 0.0f;
+    while (targetAngle - currentAngle > 180.0f)
+        targetAngle -= 360.0f;
+    while (targetAngle - currentAngle < -180.0f)
+        targetAngle += 360.0f;
+    float delta = targetAngle - currentAngle;
+    float step = ServerTime::sInst.mTickDelta * rate;
+    if (delta <= 0.0f)
+        step = -step;
+    if (fabsf(delta) <= 0.005f || fabsf(step) > fabsf(delta))
+        return AngleNormalize180(targetAngle);
+    return AngleNormalize180(step + currentAngle);
 }
 
 // ea: 0x0047E030
@@ -4157,10 +4167,17 @@ void VEH_UpdateGunnerAim(Entity* ent)
         Entity* v6 = HandleDbToEnt(scr_vehicle->seats[6].occupant);
         if (v6 == nullptr)
         {
+            float targetYaw = 0.0f;
+            if (info->type == 2 && info->vehicleAnimMatrixColumn == 0)
+                targetYaw = 45.0f;
             scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
-                VEH_LerpAngle(120.0f);
+                VEH_LerpAngle(targetYaw,
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[1],
+                              120.0f);
             scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
-                VEH_LerpAngle(90.0f);
+                VEH_LerpAngle(0.0f,
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[0],
+                              90.0f);
             scr_vehicle->next.mGunnerAngles.v =
                 scr_vehicle->current.mGunnerAngles.v;
         }
@@ -4174,7 +4191,9 @@ void VEH_UpdateGunnerAim(Entity* ent)
         if (client->mVehicleAnimMoving || client->mVehicleAnimPauseRemoteAngles)
         {
             scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
-                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+                VEH_LerpAngle(0.0f,
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[0],
+                              info->turretRotRate);
             return;
         }
         if (EntityManager::sInst->IsLocalPlayer(mObject)
@@ -4182,7 +4201,9 @@ void VEH_UpdateGunnerAim(Entity* ent)
                    ->IsTweening())
         {
             scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
-                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+                VEH_LerpAngle(0.0f,
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[0],
+                              info->turretRotRate);
             return;
         }
     }
@@ -4324,9 +4345,13 @@ no_target:
             MatrixMultiply(viewAxis, invTgt, relMtx);
             AxisToAngles(relMtx, angles);
             scr_vehicle->next.mGunnerAngles.v.m128_f32[0] =
-                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+                VEH_LerpAngle(angles[0],
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[0],
+                              info->turretRotRate);
             scr_vehicle->next.mGunnerAngles.v.m128_f32[1] =
-                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+                VEH_LerpAngle(angles[1],
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[1],
+                              info->turretRotRate);
             float pitch = -info->turretGunnerVertSpanDown;
             if (pitch <= scr_vehicle->next.mGunnerAngles.v.m128_f32[0])
             {
@@ -4391,11 +4416,15 @@ no_target:
         else
         {
             scr_vehicle->next.mGunnerAngles.v.m128_f32[0] =
-                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+                VEH_LerpAngle(0.0f,
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[0],
+                              info->turretRotRate);
             scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
                 scr_vehicle->next.mGunnerAngles.v.m128_f32[0];
             scr_vehicle->next.mGunnerAngles.v.m128_f32[1] =
-                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+                VEH_LerpAngle(0.0f,
+                              scr_vehicle->current.mGunnerAngles.v.m128_f32[1],
+                              info->turretRotRate);
             scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
                 scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
         }
@@ -4446,7 +4475,9 @@ void scr_vehicle_t::UpdateAnimRoute(Entity* ent, Entity* player)
             float delta =
                 AngleNormalize180(AngleSubtract(angles2[1], angles1[1]));
             float rate = fabsf(delta) * 1.3333334f;
-            float angleb = VEH_LerpAngle(rate);
+            float angleb = VEH_LerpAngle(delta,
+                                         client->mVehicleAnimAngleOffset[1],
+                                         rate);
             client->mVehicleAnimAngleOffset[1] =
                 AngleNormalize180(angleb);
             client = player->client;
