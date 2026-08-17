@@ -11927,8 +11927,10 @@ void main(Broc::entity self) {
 }
 
 void* minefield_think__functor(Broc::entity self) {
-    (void)self;
-    return NULL;
+    void* storage = AeThreadFunctor::operator new(sizeof(AeThreadFunctor1<Broc::entity>));
+    if (storage == NULL)
+        return NULL;
+    return ::new (storage) AeThreadFunctor1<Broc::entity>(minefield_think, self);
 }
 
 // minefield_think - ea: 0x964150
