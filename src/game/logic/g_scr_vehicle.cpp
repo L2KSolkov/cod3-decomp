@@ -614,7 +614,6 @@ void VEH_InitVehicle(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx)
     }
     veh->follow = nullptr;
 }
-void VEH_RemoveVehicle(void* veh) { (void)veh; }
 void VEH_UpdateAim(Entity* e) { (void)e; }
 
 // ea: 0x004904B0
@@ -4264,7 +4263,7 @@ void VEH_RespawnVehicle(Entity* ent)
     respawn_angles[2] = scr_vehicle->respawn_angles.v.m128_f32[2];
     if (mRBVeh != nullptr)
     {
-        VEH_RemoveVehicle(mRBVeh);
+        rb_vehicle::remove_vehicle((rb_vehicle*)mRBVeh);
         scr_vehicle->mRBVeh = nullptr;
     }
     ent->s.eFlags &= ~0x80u;
