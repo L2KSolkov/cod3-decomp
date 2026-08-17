@@ -214,8 +214,6 @@ extern "C" void __stdcall LiveEngine_Reboot(void* engine, int mode);
 // Minimal views for ModelMenu animation helpers (anim.o / game2.o own the
 // real definitions; only the members used by mp_shell.o are declared).
 namespace nalGeneric { class nalGenericAnim; }
-class nalPlayMethod;
-class nalAnimCallback;
 class DObj {
 public:
     void* tree[8];         // +0x00
@@ -223,6 +221,8 @@ public:
 };
 class AnimationPlayer {
 public:
+    class nalPlayMethod;
+    class nalAnimCallback;
     enum AnimationPlayerModifierType {
         nalAdditiveModifier = 0x0,
         nalPartialModifier = 0x1,
