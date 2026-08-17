@@ -2841,6 +2841,65 @@ extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
 extern void PM_FoliageSounds();                   // game.o 0x63D100
 extern void PM_WaterEvents();                     // game.o 0x606280
 extern void PM_DropTimers();                      // game.o 0x606320
+// ea: 0x604CC0
+PlayerState* PM_Friction()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 694;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    float verticalVelocity = ps->velocity.v.m128_f32[2];
+    if (pml.walking != 0)
+        verticalVelocity = 0.0f;
+
+    float speed = sqrtf(verticalVelocity * verticalVelocity
+                        + ps->velocity.v.m128_f32[1]
+                              * ps->velocity.v.m128_f32[1]
+                        + ps->velocity.v.m128_f32[0]
+                              * ps->velocity.v.m128_f32[0]);
+    if (speed < 1.0f)
+    {
+        ps->velocity.v.m128_f32[2] = 0.0f;
+        ps->velocity.v.m128_f32[1] = 0.0f;
+        ps->velocity.v.m128_f32[0] = 0.0f;
+        return ps;
+    }
+
+    unsigned char waterlevel = pm->waterlevel;
+    float drop = 0.0f;
+    if (waterlevel <= 1 && pml.walking != 0
+        && (pml.groundTrace.surfaceFlags & 2) == 0)
+    {
+        const int pm_flags = ps->pm_flags;
+        if ((pm_flags & 0x200) == 0)
+        {
+            float control = speed >= 100.0f ? speed : 100.0f;
+            if ((pm_flags & 0x100) != 0)
+                control *= 0.3f;
+            drop = (pml.frametime * control) * 5.5f;
+        }
+    }
+    if (waterlevel != 0)
+        drop = ((waterlevel * pml.frametime) * speed) + drop;
+    if (ps->pm_type == 4)
+        drop = ((pml.frametime * speed) * 5.0f) + drop;
+
+    float scale = (speed - drop) < 0.0f ? 0.0f : speed - drop;
+    scale /= speed;
+    ps->velocity.v.m128_f32[0] *= scale;
+    ps->velocity.v.m128_f32[1] *= scale;
+    ps->velocity.v.m128_f32[2] *= scale;
+    return ps;
+}
+
 // PM move-mode stubs (game.o; port later)
 void PM_Footsteps() {}
 void PM_WalkMove(const collision_context_t& context) { (void)context; }
