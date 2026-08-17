@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <new>
 
 #define ASSERT(expr, file, line)                                          \
     do {                                                                  \
@@ -12256,4 +12257,131 @@ void PauseMenu::Update(float time_inc)
         panel->GetPointer("game_invite")->SetShown(false);
         panel->GetPointer("friend_request")->SetShown(false);
     }
+}
+
+CreateSessionMenu* CreateSessionMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) CreateSessionMenu(s);
+}
+
+CreateLanSessionMenu* CreateLanSessionMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) CreateLanSessionMenu(s);
+}
+
+CreateSessionAdvancedMenu* CreateSessionAdvancedMenu_ctor(void* mem,
+                                                          FEMenuSystem* s)
+{
+    return new (mem) CreateSessionAdvancedMenu(s);
+}
+
+CreateLanSessionAdvancedMenu* CreateLanSessionAdvancedMenu_ctor(
+    void* mem, FEMenuSystem* s)
+{
+    return new (mem) CreateLanSessionAdvancedMenu(s);
+}
+
+FindSessionMenu* FindSessionMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) FindSessionMenu(s);
+}
+
+FindLanSessionMenu* FindLanSessionMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) FindLanSessionMenu(s);
+}
+
+InitialLoadingMenu* InitialLoadingMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InitialLoadingMenu(s);
+}
+
+InstantActionMenu* InstantActionMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InstantActionMenu(s);
+}
+
+PlayLanMenu* PlayLanMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) PlayLanMenu(s);
+}
+
+PlayOnlineMenu* PlayOnlineMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) PlayOnlineMenu(s);
+}
+
+PressStartMenu* PressStartMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) PressStartMenu(s);
+}
+
+SessionDetailsMenu* SessionDetailsMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) SessionDetailsMenu(s);
+}
+
+SessionListMenu* SessionListMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) SessionListMenu(s);
+}
+
+SessionLanListMenu* SessionLanListMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) SessionLanListMenu(s);
+}
+
+OverlayMenu* OverlayMenu_ctor(void* mem, FEMenuSystem* s, int numEntries)
+{
+    return new (mem) OverlayMenu(s, numEntries);
+}
+
+MultilineOverlayMenu* MultilineOverlayMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MultilineOverlayMenu(s);
+}
+
+PauseMenu* PauseMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) PauseMenu(s);
+}
+
+WeaponSelectMenu* WeaponSelectMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) WeaponSelectMenu(s);
+}
+
+VoteMapMenu* VoteMapMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) VoteMapMenu(s);
+}
+
+VoteGameTypeMenu* VoteGameTypeMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) VoteGameTypeMenu(s);
+}
+
+InGameScoreBoard* InGameScoreBoard_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InGameScoreBoard(s);
+}
+
+InGameSwitchSides* InGameSwitchSides_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InGameSwitchSides(s);
+}
+
+SpectateMenu* SpectateMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) SpectateMenu(s);
+}
+
+InGameOverlay* InGameOverlay_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InGameOverlay(s);
+}
+
+HotJoinMenu* HotJoinMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) HotJoinMenu(s);
 }
