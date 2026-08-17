@@ -2855,7 +2855,23 @@ extern void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* cmd);  // game.o 0
 extern void Cbuf_AddServerText_f();  // game.o 0x60E5F0
 void Cbuf_AddServerText_f()
 {
-    // stub
+    unsigned int textLength = (unsigned int)strlen(g_text);
+    if ((sv_cmd_text.cmdsize + (int)textLength + 1) < sv_cmd_text.maxsize)
+    {
+        memcpy(&sv_cmd_text.data[sv_cmd_text.cmdsize], g_text, textLength);
+        sv_cmd_text.cmdsize += textLength;
+        sv_cmd_text.data[sv_cmd_text.cmdsize++] = 10;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cmd.cpp";
+        AeAssert::gCurrentLine = 242;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Cbuf_AddServerText_f overflow"))
+            __debugbreak();
+    }
 }
 
 // ea: 0x0061F730
