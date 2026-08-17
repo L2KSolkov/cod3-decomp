@@ -6058,6 +6058,22 @@ AARBaseMenu::AARBaseMenu(FEMenuSystem* s, int entry_count)
     m_pTimerText[1] = nullptr;
 }
 
+// ea: 0x007B0140
+AARScoreboardBase::AARScoreboardBase(FEMenuSystem* pauseMenuSystem)
+    : AARBaseMenu(pauseMenuSystem, 0), m_ListBox(10, 5, 16, true)
+{
+    m_bPreviousCursorState = true;
+    m_bShowMyTeamScore = true;
+    m_iShowMyTeamScorePadOffset = 0;
+    m_iShowOtherTeamScorePadOffset = 0;
+    mFirstUpdate = true;
+    for (int i = 0; i < 6; ++i)
+        m_pYourTeamScore[i] = nullptr;
+    memset(&m_pUppercaseText, 0, sizeof(m_pUppercaseText));
+    flags = (int16_t)(flags | 0x180u);
+    default_color_scheme = 10;
+}
+
 // ea: 0x007A94C0
 void SessionDetailsMenu::OnActivate()
 {
