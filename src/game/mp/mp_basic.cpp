@@ -1140,6 +1140,42 @@ void MPPlayerManager::HandleVehicleEnter(
     }
 }
 
+MPOptionsScreenMenu* MPOptionsScreenMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPOptionsScreenMenu(s);
+}
+
+MPOptionsSoundMenu* MPOptionsSoundMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPOptionsSoundMenu(s);
+}
+
+MPOptionsControlsMenu* MPOptionsControlsMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPOptionsControlsMenu(s);
+}
+
+MPOptionsGameplayMenu* MPOptionsGameplayMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPOptionsGameplayMenu(s);
+}
+
+MPOptionsPreferencesMenu* MPOptionsPreferencesMenu_ctor(
+    void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPOptionsPreferencesMenu(s);
+}
+
+MPProfileEditMenu* MPProfileEditMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPProfileEditMenu(s);
+}
+
+MPProfileMainMenu* MPProfileMainMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPProfileMainMenu(s);
+}
+
 // ea: 0x0074BD60
 void MPPlayerManager::HandleVoteResponse(
     const bdReceivedMessage& receivedMsg)

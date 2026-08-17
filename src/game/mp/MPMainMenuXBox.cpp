@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+#include <new>
 
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
@@ -1183,4 +1184,20 @@ void AARXBoxLiveIngameOptions::Update(float time_inc)
 {
     XBoxLiveIngameOptionsCOD3::Update(time_inc);
     SetTimerText();
+}
+
+JoinGameMenu* JoinGameMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) JoinGameMenu(s);
+}
+
+MPMainMenuXBox* MPMainMenuXBox_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) MPMainMenuXBox(s);
+}
+
+XBoxLiveIngameOptionsCOD3* XBoxLiveIngameOptionsCOD3_ctor(
+    void* mem, FEMenuSystem* s)
+{
+    return new (mem) XBoxLiveIngameOptionsCOD3(s);
 }

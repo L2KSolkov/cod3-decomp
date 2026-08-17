@@ -10,6 +10,7 @@ void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
 {
     (void)viewport; (void)old_viewport;
 }
+
 void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 {
     (void)widescreen;
@@ -1109,4 +1110,14 @@ void RenderUIX(void*)
     nglDxCheckErrorD3D(0, "c:\\cod\\code\\game\\xbox_main.cpp", 534);
     nglDxState.Init();
     nglDxInitShaders(false);
+}
+
+XboxLiveOptionsMenu* XboxLiveOptionsMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) XboxLiveOptionsMenu(s);
+}
+
+InGameLiveOptionsMenu* InGameLiveOptionsMenu_ctor(void* mem, FEMenuSystem* s)
+{
+    return new (mem) InGameLiveOptionsMenu(s);
 }
