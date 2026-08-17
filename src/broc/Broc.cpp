@@ -878,7 +878,26 @@ bool ExtendedEntity::IsDefined(unsigned int key) const
     }
     return false;
 }
-void ExtendedEntity::SetUndefined(unsigned int) {}
+// ea: 0x0092A990. Profiling enter/leave events are omitted for the same
+// partial-BrocAPI reason documented above IsDefined.
+void ExtendedEntity::SetUndefined(unsigned int key)
+{
+    for (unsigned int i = 0; i < mCount; ++i)
+    {
+        if (mKVPairs[i].key != key)
+            continue;
+
+        GetDestructor(mKVPairs[i].key)(mKVPairs[i].val);
+        if (i < --mCount)
+        {
+            mKVPairs[i].key = mKVPairs[mCount].key;
+            mKVPairs[i].val = mKVPairs[mCount].val;
+        }
+        mKVPairs[mCount].key = 0;
+        mKVPairs[mCount].val = 0;
+        return;
+    }
+}
 unsigned int* ExtendedEntity::SetVal(unsigned int, const string&) { return NULL; }
 unsigned int* ExtendedEntity::InternalSet(unsigned int, unsigned int) { return NULL; }
 const unsigned int* ExtendedEntity::InternalGet(unsigned int) const { return NULL; }
