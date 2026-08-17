@@ -3,6 +3,8 @@
 // When ported, functions move from here to their real .cpp files.
 
 #include <stdio.h>
+#include <math.h>
+#include <intrin.h>
 
 #define COD3_UNIMPLEMENTED(lib) \
     fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
@@ -101,12 +103,6 @@ void pulse_sum_wheel::set_side_fwd_ratios(float side_ratio, float fwd_ratio)
     m_side->m_pulse_limit_ratio = side_ratio;
     m_fwd->m_pulse_limit_ratio = fwd_ratio;
 }
-const math::Dir3* pulse_sum_contact::psc_cpi::get_relative_velocity(
-    psc_cpi* self, math::Dir3* result)
-{
-    (void)self; (void)result;
-    return nullptr;
-}
 pulse_sum_angular* pulse_sum_constraint_solver::create_pulse_sum_angular(
     rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
     const math::Dir3* b2_r, const math::Dir3* ud, pulse_sum_cache* ps_cache)
@@ -155,10 +151,55 @@ void pulse_sum_constraint_solver::create_hinge(
     (void)ps_cache; (void)delta_t;
 }
 
-// construct_orth_ud (rbc_def_ragdoll.o inline; stub)
-const math::Dir3 construct_orth_ud(const math::Dir3& v, const math::Dir3& ud)
+const __m128 Float4_XAxis_210 = {1.0f, 0.0f, 0.0f, 0.0f};
+const __m128 Float4_YAxis_210 = {0.0f, 1.0f, 0.0f, 0.0f};
+const __m128 Float4_ZAxis_210 = {0.0f, 0.0f, 1.0f, 0.0f};
+
+// construct_orth_ud - ea: 0x88A2D0
+math::Dir3 construct_orth_ud(const math::Dir3& ud)
 {
-    (void)v; (void)ud;
-    math::Dir3 r = {};
-    return r;
+    __m128 v2 = _mm_mul_ps(ud.v, ud.v);
+    float ud_len = sqrt(v2.m128_f32[0]
+                        + _mm_shuffle_ps(v2, v2, 85).m128_f32[0]
+                        + _mm_shuffle_ps(v2, v2, 170).m128_f32[0]);
+    if (fabs(ud_len - 1.0f) >= 0.000099999997f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 259,
+                  "fabsf(nud - 1.0f) < .0001f", defaultFileName))
+        __debugbreak();
+
+    __m128 v = ud.v;
+    __m128 v4 = _mm_shuffle_ps(v, v, 18);
+    __m128 v5 = _mm_shuffle_ps(v, v, 9);
+    __m128 v6 = _mm_sub_ps(
+        _mm_mul_ps(v5, _mm_shuffle_ps(Float4_XAxis_210, Float4_XAxis_210, 18)),
+        _mm_mul_ps(v4, _mm_shuffle_ps(Float4_XAxis_210, Float4_XAxis_210, 9)));
+    __m128 v7 = _mm_mul_ps(v6, v6);
+    float len = sqrt(v7.m128_f32[0]
+                     + _mm_shuffle_ps(v7, v7, 85).m128_f32[0]
+                     + _mm_shuffle_ps(v7, v7, 170).m128_f32[0]);
+    if (len < 0.000099999997f) {
+        v6 = _mm_sub_ps(
+            _mm_mul_ps(v5, _mm_shuffle_ps(Float4_YAxis_210, Float4_YAxis_210, 18)),
+            _mm_mul_ps(v4, _mm_shuffle_ps(Float4_YAxis_210, Float4_YAxis_210, 9)));
+        __m128 v9 = _mm_mul_ps(v6, v6);
+        len = sqrt(v9.m128_f32[0]
+                   + _mm_shuffle_ps(v9, v9, 85).m128_f32[0]
+                   + _mm_shuffle_ps(v9, v9, 170).m128_f32[0]);
+        if (len < 0.000099999997f) {
+            v6 = _mm_sub_ps(
+                _mm_mul_ps(v5, _mm_shuffle_ps(Float4_ZAxis_210, Float4_ZAxis_210, 18)),
+                _mm_mul_ps(v4, _mm_shuffle_ps(Float4_ZAxis_210, Float4_ZAxis_210, 9)));
+            __m128 v11 = _mm_mul_ps(v6, v6);
+            len = sqrt(v11.m128_f32[0]
+                       + _mm_shuffle_ps(v11, v11, 85).m128_f32[0]
+                       + _mm_shuffle_ps(v11, v11, 170).m128_f32[0]);
+            if (len < 0.000099999997f &&
+                _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 274,
+                          "0", "not possible"))
+                __debugbreak();
+        }
+    }
+    math::Dir3 result;
+    result.v = _mm_div_ps(v6, _mm_set1_ps(len));
+    return result;
 }

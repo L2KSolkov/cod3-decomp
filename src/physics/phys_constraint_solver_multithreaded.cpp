@@ -18,6 +18,7 @@
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void PHYS_ASSERT_UNIT(const math::Dir3* v);
 extern const math::Dir3& Float4_SignMask_214;
+extern math::Dir3 construct_orth_ud(const math::Dir3& ud);
 
 const __m128 Float4_XAxis_214 = {1.0f, 0.0f, 0.0f, 0.0f};
 const __m128 Float4_YAxis_214 = {0.0f, 1.0f, 0.0f, 0.0f};
@@ -758,11 +759,10 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
                     __debugbreak();
                 v12->m_b2_ap_n.v = relative_velocity_4.v;
             }
-            math::Dir3 v27;
-            v12->get_relative_velocity(v12, &v27);
-            v12->calc_abs_and_fric_dir(v12, &v27);
+            math::Dir3 v27 = v12->get_relative_velocity(this);
+            v12->calc_abs_and_fric_dir(this, &v27);
             v12->m_pulse_sum_cache = (pulse_sum_cache*)&cpi->m_list_pulse_sum_cache_info[pp_i / 0x10u];
-            v12->setup_vel_uni_restitution(v12, &v27, cpi->m_bounce_coef,
+            v12->setup_vel_uni_restitution(this, &v27, cpi->m_bounce_coef,
                                            cpi->m_max_restitution_vel, delta_t, 170.0f);
             b2_idx += 10;
             pp_i += 16;
@@ -847,10 +847,44 @@ float pulse_sum_normal::clamp_pulse_sum(float ps) {
 }
 
 void pulse_sum_normal::calc_abs(const math::Dir3* b1_r_displace) {
-    // TODO: full anchor-point computation (COMDAT 0x895950); structural no-op
-    // keeps layout stable. b1_ap/b2_ap are computed from world-inv-inertia in
-    // the original.
-    (void)b1_r_displace;
+    rigid_body* m_rb = this->m_b1->m_rb;
+    __m128 v5 = _mm_add_ps(this->m_b1_r.v, b1_r_displace->v);
+    math::Dir3 v13;
+    v13.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(v5, v5, 9), _mm_shuffle_ps(this->m_ud.v, this->m_ud.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(v5, v5, 18), _mm_shuffle_ps(this->m_ud.v, this->m_ud.v, 9)));
+    math::Dir3 v12;
+    this->m_b1_ap.v = rbint::inv_L(&v12, m_rb, &v13)->v;
+    pulse_sum_node* m_b1 = this->m_b1;
+    pulse_sum_node* m_b2 = this->m_b2;
+    __m128 v8 = _mm_mul_ps(
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b1_ap.v, this->m_b1_ap.v, 9),
+                       _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b1_ap.v, this->m_b1_ap.v, 18),
+                       _mm_shuffle_ps(this->m_b1_r.v, this->m_b1_r.v, 9))),
+        this->m_ud.v);
+    float v14 = v8.m128_f32[0] + (_mm_shuffle_ps(v8, v8, 85).m128_f32[0] +
+                                  _mm_shuffle_ps(v8, v8, 170).m128_f32[0]);
+    this->m_denom = m_b1->m_inv_mass + v14;
+    if (m_b2 != NULL) {
+        const rigid_body* v11 = m_b2->m_rb;
+        v13.v = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 9),
+                       _mm_shuffle_ps(this->m_ud.v, this->m_ud.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(this->m_b2_r.v, this->m_b2_r.v, 18),
+                       _mm_shuffle_ps(this->m_ud.v, this->m_ud.v, 9)));
+        this->m_b2_ap.v = rbint::inv_L(&v12, v11, &v13)->v;
+        __m128 v9 = _mm_mul_ps(this->m_b2_ap.v, v13.v);
+        pulse_sum_node* v10 = this->m_b2;
+        v14 = v9.m128_f32[0] + (_mm_shuffle_ps(v9, v9, 85).m128_f32[0] +
+                                _mm_shuffle_ps(v9, v9, 170).m128_f32[0]);
+        this->m_denom = (v10->m_inv_mass + v14) + this->m_denom;
+    }
+    if (this->m_denom <= 0.0000099999997f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h",
+                  11, "m_denom > 0.00001f", defaultFileName))
+        __debugbreak();
 }
 
 void pulse_sum_normal::set_object_vel(const math::Dir3* object_vel) {
@@ -1555,20 +1589,278 @@ void pulse_sum_contact::psc_cpi::apply(psc_cpi* self, const vec2* s_) {
     }
 }
 
-void pulse_sum_contact::psc_cpi::calc_abs_and_fric_dir(psc_cpi* self, const math::Dir3* relative_velocity) {
-    // TODO: full anchor + friction-dir computation (COMDAT 0x896B80).
-    (void)relative_velocity;
+math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity_change_dir(
+    pulse_sum_contact* psc) {
+    math::Dir3 v3;
+    v3.v = psc->m_ud_n.v;
+    pulse_sum_node* m_b2 = psc->m_b2;
+    __m128 v5 = _mm_add_ps(
+        _mm_mul_ps(v3.v, _mm_set1_ps(psc->m_b1->m_inv_mass)),
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_b1_ap_n.v, m_b1_ap_n.v, 9),
+                       _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(m_b1_ap_n.v, m_b1_ap_n.v, 18),
+                       _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 9))));
+    math::Dir3 result;
+    result.v = v5;
+    if (m_b2 != NULL) {
+        result.v = _mm_add_ps(
+            v5,
+            _mm_add_ps(
+                _mm_mul_ps(v3.v, _mm_set1_ps(m_b2->m_inv_mass)),
+                _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(m_b2_ap_n.v, m_b2_ap_n.v, 9),
+                               _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 18)),
+                    _mm_mul_ps(_mm_shuffle_ps(m_b2_ap_n.v, m_b2_ap_n.v, 18),
+                               _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 9)))));
+    }
+    return result;
+}
+
+math::Dir3 pulse_sum_contact::psc_cpi::get_last_relative_velocity(
+    pulse_sum_contact* psc) {
+    pulse_sum_node* m_b2 = psc->m_b2;
+    math::Dir3 b2_ap_n;
+    if (m_b2 != NULL) {
+        rigid_body* rb = m_b2->m_rb;
+        b2_ap_n.v = _mm_add_ps(
+            rb->m_last_t_vel.v,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_last_a_vel.v, rb->m_last_a_vel.v, 9),
+                           _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_last_a_vel.v, rb->m_last_a_vel.v, 18),
+                           _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 9))));
+    } else {
+        b2_ap_n.v = m_b2_ap_n.v;
+    }
+    rigid_body* rb = psc->m_b1->m_rb;
+    math::Dir3 result;
+    result.v = _mm_sub_ps(
+        _mm_add_ps(
+            rb->m_last_t_vel.v,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_last_a_vel.v, rb->m_last_a_vel.v, 9),
+                           _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_last_a_vel.v, rb->m_last_a_vel.v, 18),
+                           _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 9)))),
+        b2_ap_n.v);
+    return result;
+}
+
+math::Dir3 pulse_sum_contact::psc_cpi::get_relative_velocity(
+    pulse_sum_contact* psc) {
+    pulse_sum_node* m_b2 = psc->m_b2;
+    math::Dir3 b2_ap_n;
+    if (m_b2 != NULL) {
+        rigid_body* rb = m_b2->m_rb;
+        b2_ap_n.v = _mm_add_ps(
+            rb->m_mat.w.v,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_a_vel.v, rb->m_a_vel.v, 9),
+                           _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_a_vel.v, rb->m_a_vel.v, 18),
+                           _mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 9))));
+    } else {
+        b2_ap_n.v = m_b2_ap_n.v;
+    }
+    rigid_body* rb = psc->m_b1->m_rb;
+    math::Dir3 result;
+    result.v = _mm_sub_ps(
+        _mm_add_ps(
+            rb->m_t_vel.v,
+            _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_a_vel.v, rb->m_a_vel.v, 9),
+                           _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(rb->m_a_vel.v, rb->m_a_vel.v, 18),
+                           _mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 9)))),
+        b2_ap_n.v);
+    return result;
+}
+
+float pulse_sum_contact::psc_cpi::get_impact_vel(
+    pulse_sum_contact* psc, const math::Dir3* relative_velocity) {
+    math::Dir3 last = get_last_relative_velocity(psc);
+    __m128 n = psc->m_ud_n.v;
+    __m128 v6 = _mm_mul_ps(last.v, n);
+    float last_vel = v6.m128_f32[0]
+                   + _mm_shuffle_ps(v6, v6, 85).m128_f32[0]
+                   + _mm_shuffle_ps(v6, v6, 170).m128_f32[0];
+    __m128 v7 = _mm_mul_ps(relative_velocity->v, n);
+    float vel = v7.m128_f32[0]
+              + _mm_shuffle_ps(v7, v7, 85).m128_f32[0]
+              + _mm_shuffle_ps(v7, v7, 170).m128_f32[0];
+    return vel <= last_vel ? last_vel : vel;
+}
+
+float pulse_sum_contact::psc_cpi::get_impact_dist(pulse_sum_contact* psc) {
+    pulse_sum_node* m_b2 = psc->m_b2;
+    math::Dir3 b2_r;
+    const math::Dir3* p_m_b2_r;
+    if (m_b2 != NULL) {
+        rigid_body* rb = m_b2->m_rb;
+        if ((~(rb->m_flags >> 6) & 1) == 0 &&
+            _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
+                      "debug_flag_is_not_in_collision()", defaultFileName))
+            __debugbreak();
+        b2_r.v = _mm_add_ps(rb->m_mat.w.v, m_b2_r.v);
+        p_m_b2_r = &b2_r;
+    } else {
+        p_m_b2_r = &m_b2_r;
+    }
+    rigid_body* rb = psc->m_b1->m_rb;
+    if ((~(rb->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:/cod/code/tl/physics/include\\rigid_body.h", 79,
+                  "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    __m128 v = _mm_mul_ps(
+        _mm_sub_ps(_mm_add_ps(rb->m_mat.w.v, m_b1_r.v), p_m_b2_r->v),
+        psc->m_ud_n.v);
+    return v.m128_f32[0]
+         + _mm_shuffle_ps(v, v, 85).m128_f32[0]
+         + _mm_shuffle_ps(v, v, 170).m128_f32[0];
+}
+
+void pulse_sum_contact::psc_cpi::calc_fric_dir(
+    pulse_sum_contact* psc, const math::Dir3* relative_velocity) {
+    m_ud_f1.v = relative_velocity->v;
+    math::Dir3 ud_n;
+    ud_n.v = psc->m_ud_n.v;
+    __m128 v6 = _mm_mul_ps(m_ud_f1.v, ud_n.v);
+    float mag = v6.m128_f32[0]
+              + _mm_shuffle_ps(v6, v6, 85).m128_f32[0]
+              + _mm_shuffle_ps(v6, v6, 170).m128_f32[0];
+    m_ud_f1.v = _mm_sub_ps(m_ud_f1.v, _mm_mul_ps(ud_n.v, _mm_set1_ps(mag)));
+    __m128 v8 = _mm_mul_ps(m_ud_f1.v, m_ud_f1.v);
+    float len = sqrt(v8.m128_f32[0]
+                     + _mm_shuffle_ps(v8, v8, 85).m128_f32[0]
+                     + _mm_shuffle_ps(v8, v8, 170).m128_f32[0]);
+    if (len < 0.000099999997f) {
+        m_ud_f1 = get_relative_velocity_change_dir(psc);
+        __m128 v11 = _mm_mul_ps(m_ud_f1.v, ud_n.v);
+        float dot = v11.m128_f32[0]
+                  + _mm_shuffle_ps(v11, v11, 85).m128_f32[0]
+                  + _mm_shuffle_ps(v11, v11, 170).m128_f32[0];
+        m_ud_f1.v = _mm_sub_ps(m_ud_f1.v, _mm_mul_ps(ud_n.v, _mm_set1_ps(dot)));
+        __m128 v12 = _mm_mul_ps(m_ud_f1.v, m_ud_f1.v);
+        len = sqrt(v12.m128_f32[0]
+                   + _mm_shuffle_ps(v12, v12, 85).m128_f32[0]
+                   + _mm_shuffle_ps(v12, v12, 170).m128_f32[0]);
+        if (len < 0.000099999997f)
+            m_ud_f1 = construct_orth_ud(ud_n);
+    }
+    m_ud_f1.v = _mm_mul_ps(m_ud_f1.v, _mm_set1_ps(1.0f / (len < 0.000099999997f ? 1.0f : len)));
+}
+
+void pulse_sum_contact::psc_cpi::calc_abs_and_fric_dir(
+    pulse_sum_contact* psc, const math::Dir3* relative_velocity) {
+    rigid_body* rb = psc->m_b1->m_rb;
+    math::Dir3 b1_t_n;
+    b1_t_n.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 9),
+                   _mm_shuffle_ps(psc->m_ud_n.v, psc->m_ud_n.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 18),
+                   _mm_shuffle_ps(psc->m_ud_n.v, psc->m_ud_n.v, 9)));
+    rbint::inv_L(&m_b1_ap_n, rb, &b1_t_n);
+    __m128 v5 = _mm_mul_ps(m_b1_ap_n.v, b1_t_n.v);
+    m_denom_xx = psc->m_b1->m_inv_mass
+               + v5.m128_f32[0]
+               + _mm_shuffle_ps(v5, v5, 85).m128_f32[0]
+               + _mm_shuffle_ps(v5, v5, 170).m128_f32[0];
+    math::Dir3 b2_t_n;
+    if (psc->m_b2 != NULL) {
+        b2_t_n.v = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 9),
+                       _mm_shuffle_ps(psc->m_ud_n.v, psc->m_ud_n.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 18),
+                       _mm_shuffle_ps(psc->m_ud_n.v, psc->m_ud_n.v, 9)));
+        rbint::inv_L(&m_b2_ap_n, psc->m_b2->m_rb, &b2_t_n);
+        __m128 v8 = _mm_mul_ps(m_b2_ap_n.v, b2_t_n.v);
+        m_denom_xx += psc->m_b2->m_inv_mass
+                    + v8.m128_f32[0]
+                    + _mm_shuffle_ps(v8, v8, 85).m128_f32[0]
+                    + _mm_shuffle_ps(v8, v8, 170).m128_f32[0];
+    }
+    calc_fric_dir(psc, relative_velocity);
+    math::Dir3 b1_t_f1;
+    b1_t_f1.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 9),
+                   _mm_shuffle_ps(m_ud_f1.v, m_ud_f1.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(m_b1_r.v, m_b1_r.v, 18),
+                   _mm_shuffle_ps(m_ud_f1.v, m_ud_f1.v, 9)));
+    rbint::inv_L(&m_b1_ap_f1, rb, &b1_t_f1);
+    __m128 v11 = _mm_mul_ps(m_b1_ap_f1.v, b1_t_f1.v);
+    __m128 v12 = _mm_mul_ps(m_b1_ap_f1.v, b1_t_n.v);
+    m_denom_yy = psc->m_b1->m_inv_mass
+               + v11.m128_f32[0]
+               + _mm_shuffle_ps(v11, v11, 85).m128_f32[0]
+               + _mm_shuffle_ps(v11, v11, 170).m128_f32[0];
+    m_denom_xy = v12.m128_f32[0]
+               + _mm_shuffle_ps(v12, v12, 85).m128_f32[0]
+               + _mm_shuffle_ps(v12, v12, 170).m128_f32[0];
+    if (psc->m_b2 != NULL) {
+        math::Dir3 b2_t_f1;
+        b2_t_f1.v = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 9),
+                       _mm_shuffle_ps(m_ud_f1.v, m_ud_f1.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(m_b2_r.v, m_b2_r.v, 18),
+                       _mm_shuffle_ps(m_ud_f1.v, m_ud_f1.v, 9)));
+        rbint::inv_L(&m_b2_ap_f1, psc->m_b2->m_rb, &b2_t_f1);
+        __m128 v15 = _mm_mul_ps(m_b2_ap_f1.v, b2_t_f1.v);
+        __m128 v16 = _mm_mul_ps(m_b2_ap_f1.v, b2_t_n.v);
+        m_denom_yy += psc->m_b2->m_inv_mass
+                    + v15.m128_f32[0]
+                    + _mm_shuffle_ps(v15, v15, 85).m128_f32[0]
+                    + _mm_shuffle_ps(v15, v15, 170).m128_f32[0];
+        m_denom_xy += v16.m128_f32[0]
+                    + _mm_shuffle_ps(v16, v16, 85).m128_f32[0]
+                    + _mm_shuffle_ps(v16, v16, 170).m128_f32[0];
+    }
+    if (m_denom_xx <= 0.0f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h",
+                  58, "m_denom_xx > 0.0f", defaultFileName))
+        __debugbreak();
+    if (m_denom_yy <= 0.0f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new_inline.h",
+                  59, "m_denom_yy > 0.0f", defaultFileName))
+        __debugbreak();
 }
 
 void pulse_sum_contact::psc_cpi::setup_vel_uni_restitution(
-    psc_cpi* self, const math::Dir3* relative_velocity, float restitution_k,
+    pulse_sum_contact* psc, const math::Dir3* relative_velocity, float restitution_k,
     float max_restitution_v, float delta_t, float max_penalty_restitution_vel) {
-    // TODO: full restitution setup (COMDAT 0x897660).
-    (void)relative_velocity;
-    (void)restitution_k;
-    (void)max_restitution_v;
-    (void)delta_t;
-    (void)max_penalty_restitution_vel;
+    float rv = get_impact_dist(psc);
+    float dt = delta_t;
+    if (delta_t <= 0.0041666669f)
+        dt = 0.0041666669f;
+    m_big_dirt = -(rv / dt);
+    if (-(rv / dt) < 0.0f)
+        m_big_dirt = (-(rv / dt)) * 0.30000001f;
+    if (-max_penalty_restitution_vel > m_big_dirt)
+        m_big_dirt = -max_penalty_restitution_vel;
+    float big_dirt = m_big_dirt;
+    if (big_dirt < 0.0f) {
+        m_right_side.x = 0.0f;
+        m_right_side.y = 0.0f;
+    } else {
+        m_right_side.x = big_dirt;
+        m_right_side.y = 0.0f;
+        m_big_dirt = 0.0f;
+    }
+    if (restitution_k > 0.0000099999997f && max_restitution_v > 0.0000099999997f && rv >= 0.0f) {
+        float min_impact_vel = psc->m_b1->m_rb->m_gravity_multiplier;
+        float rva = get_impact_vel(psc, relative_velocity);
+        if (rva > min_impact_vel) {
+            float v11 = rva * restitution_k;
+            if (v11 > max_restitution_v)
+                v11 = max_restitution_v;
+            if (m_big_dirt > -0.0000099999997f) {
+                m_right_side.x -= v11;
+            } else if (m_big_dirt > -v11) {
+                m_big_dirt = 0.0f;
+                m_right_side.x = -v11;
+            }
+        }
+    }
 }
 
 void pulse_sum_contact::psc_cpi::set_object_vel(psc_cpi* self, const math::Dir3* object_vel) {

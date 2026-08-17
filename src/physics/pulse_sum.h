@@ -271,16 +271,16 @@ struct pulse_sum_contact::psc_cpi {
 
     void set_object_vel(psc_cpi* self, const math::Dir3* object_vel);
     void set_object_col_pt(psc_cpi* self, const math::Dir3* object_col_pt);
-    const math::Dir3* get_relative_velocity_change_dir(psc_cpi* self);
-    const math::Dir3* get_relative_velocity(psc_cpi* self, math::Dir3* result);
-    const math::Dir3* get_last_relative_velocity(psc_cpi* self, math::Dir3* result);
-    float get_impact_vel(psc_cpi* self, const math::Dir3* normal);
-    float get_impact_dist(psc_cpi* self);
-    void  setup_vel_uni_restitution(psc_cpi* self, const math::Dir3* relative_velocity,
+    math::Dir3 get_relative_velocity_change_dir(pulse_sum_contact* psc);
+    math::Dir3 get_relative_velocity(pulse_sum_contact* psc);
+    math::Dir3 get_last_relative_velocity(pulse_sum_contact* psc);
+    float get_impact_vel(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
+    float get_impact_dist(pulse_sum_contact* psc);
+    void  setup_vel_uni_restitution(pulse_sum_contact* psc, const math::Dir3* relative_velocity,
                                     float restitution_k, float max_restitution_v,
                                     float delta_t, float max_penalty_restitution_vel);
-    void  calc_fric_dir(psc_cpi* self, const math::Dir3* relative_velocity);
-    void  calc_abs_and_fric_dir(psc_cpi* self, const math::Dir3* relative_velocity);
+    void  calc_fric_dir(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
+    void  calc_abs_and_fric_dir(pulse_sum_contact* psc, const math::Dir3* relative_velocity);
     void  apply(psc_cpi* self, const vec2* s_);
     void  clamp_n(psc_cpi* self);
     void  clamp_f(psc_cpi* self);

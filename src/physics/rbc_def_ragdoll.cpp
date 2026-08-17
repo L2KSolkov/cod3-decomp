@@ -19,8 +19,7 @@
 // ============================================================================
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void PHYS_ASSERT_UNIT(const math::Dir3& v);
-extern const math::Dir3 construct_orth_ud(const math::Dir3& v,
-                                          const math::Dir3& ud);
+extern math::Dir3 construct_orth_ud(const math::Dir3& ud);
 
 #define MAX_JOINT_LIMITS 2
 
@@ -121,7 +120,7 @@ void rigid_body_constraint_ragdoll::set_snider_style(const math::Dir3& b1_axis_l
     if ((this->m_flags & 4) != 0) {
         math::Dir3 v20;
         this->m_b1_a1_loc.v =
-            construct_orth_ud(v20, this->m_b1_axis_loc).v;
+            construct_orth_ud(this->m_b1_axis_loc).v;
         __m128 v17 = _mm_sub_ps(
             _mm_mul_ps(_mm_shuffle_ps(this->m_b1_axis_loc.v, this->m_b1_axis_loc.v, 9),
                        _mm_shuffle_ps(this->m_b1_a1_loc.v, this->m_b1_a1_loc.v, 18)),
@@ -192,7 +191,7 @@ void rigid_body_constraint_ragdoll::set_hinge(const math::Dir3& b1_axis_loc,
     this->m_b1_ref_loc.v = _mm_div_ps(v21, _mm_set1_ps(len3));
     this->m_flags |= 4u;
     math::Dir3 v38;
-    this->m_b1_a1_loc.v = construct_orth_ud(v38, this->m_b1_axis_loc).v;
+    this->m_b1_a1_loc.v = construct_orth_ud(this->m_b1_axis_loc).v;
     __m128 v39 = _mm_sub_ps(
         _mm_mul_ps(_mm_shuffle_ps(this->m_b1_axis_loc.v, this->m_b1_axis_loc.v, 9),
                    _mm_shuffle_ps(this->m_b1_a1_loc.v, this->m_b1_a1_loc.v, 18)),
