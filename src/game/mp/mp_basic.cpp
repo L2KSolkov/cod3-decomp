@@ -54,9 +54,9 @@ extern const unsigned char DirToByte(const float* const dir);  // ?DirToByte@@YA
 extern vmCvar_t cg_widescreen;   // ?cg_widescreen@@3UvmCvar_t@@A (cg.o)
 extern kuju::knet::sTime gStartupAverageUpdateInterval;  // @ 0xE370D4
 extern void j_nullsub_96();      // ?nullsub_96 (shell.o)
-extern int dword_F32F40;         // 0xF32F40
-extern int dword_F34B34;         // 0xF34B34
-extern int dword_F36728;         // 0xF36728
+int dword_F32F40 = 0;            // 0xF32F40
+int dword_F34B34 = 0;            // 0xF34B34
+int dword_F36728 = 0;            // 0xF36728
 
 extern char MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YADD@Z (mp_shell.o)
 extern const char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
@@ -67,8 +67,8 @@ extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  /
 extern void tlPrintf(const char* format, ...);  // ?tlPrintf@@YAXPBDZZ
 extern void bdCore_quit();  // bdCore::quit
 extern void* gDWHeap;       // ?gDWHeap@@3PAVae_heap@@A
-extern int gMPIntPositionMin;  // ?gMPIntPositionMin@@3HA @ 0xE370D8
-extern int g_NumMapChanges;    // ?g_NumMapChanges@@3HA @ 0xF93FC0
+extern const float gMPIntPositionMin = -8191.0f; // ?gMPIntPositionMin@@3MA @ 0xE370D8
+int g_NumMapChanges = 0;                 // ?g_NumMapChanges@@3HA @ 0xF93FC0
 extern bool g_controllerConnectedErrorShown[];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
 extern int g_NumBaseMaps;      // ?g_NumBaseMaps@@3HA (mp_shell.o)
 extern int g_NumTotalMaps;     // ?g_NumTotalMaps@@3HA @ 0xF99864
@@ -81,8 +81,8 @@ public:
     static float painDurationMin;      // ?painDurationMin@AnimIK@@2MA (game2.o)
     static float painDurationMax;      // ?painDurationMax@AnimIK@@2MA (game2.o)
 };
-extern float AnimIK_painAmpMin;        // ?painAmpMin@AnimIK@@2MA (game2.o)
-extern float AnimIK_painAmpMax;        // ?painAmpMax@AnimIK@@2MA (game2.o)
+float AnimIK_painAmpMin = 0.4f;        // ?painAmpMin@AnimIK@@2MA (game2.o)
+float AnimIK_painAmpMax = 1.0f;        // ?painAmpMax@AnimIK@@2MA (game2.o)
 extern int cl_stance_ss[];     // ?cl_stance_ss@@3PAHA (cl.o @ 0x1304C74)
 extern Entity* LaunchItem(TPakId pakId, const gitem_s* item, float* origin,
                           float* angles, float* velocity,
@@ -97,21 +97,21 @@ extern bool gLogAllPktTypes;   // ?gLogAllPktTypes@@3_NA @ 0xF93FA0
 bool gLogAllPktTypes = false;  // ?gLogAllPktTypes@@3_NA (mp.o data)
 const float gMPFloatPositionMax = 8191.0f;  // mp.o data
 const float gMPFloatPositionMin = -8191.0f; // mp.o data
-extern int dword_E36ECC;       // @ 0xE36ECC (score stat scale)
-extern int dword_E36EE0;       // @ 0xE36EE0 (score stat scale)
-extern float distance;         // @ 0xE37624 (net debug draw radius filter)
-extern float distance_0;       // @ 0xE377D8 (vehicle net debug radius filter)
-extern int   x;                // @ 0xE377E4 (debug text origin)
-extern int   y;                // @ 0xE37804
-extern int   x_start;          // @ 0xE377E0
-extern int   y_start;          // @ 0xE377DC
-extern float text_scale;       // @ 0xE37808
-extern int   columns[];        // @ 0xE377E8 (debug column offsets)
-extern int   dword_E377EC;     // @ 0xE377EC
-extern int   dword_E377F0;     // @ 0xE377F0
-extern int   dword_E377F4;     // @ 0xE377F4
-extern int   dword_E377F8;     // @ 0xE377F8
-extern int   dword_E377FC;     // @ 0xE377FC
+int dword_E36ECC = 1065353216;  // @ 0xE36ECC (score stat scale)
+int dword_E36EE0 = 0;            // @ 0xE36EE0 (score stat scale)
+float distance = 100.0f;         // @ 0xE37624 (net debug draw radius filter)
+float distance_0 = 100.0f;       // @ 0xE377D8 (vehicle net debug radius filter)
+int x = 20;                      // @ 0xE377E4 (debug text origin)
+int y = 50;                      // @ 0xE37804
+int x_start = 350;               // @ 0xE377E0
+int y_start = 145;               // @ 0xE377DC
+float text_scale = 0.5f;         // @ 0xE37808
+int columns[6] = {0, 170, 70, 70, 90, 40}; // @ 0xE377E8
+int dword_E377EC = 170;          // @ 0xE377EC
+int dword_E377F0 = 70;           // @ 0xE377F0
+int dword_E377F4 = 70;           // @ 0xE377F4
+int dword_E377F8 = 90;           // @ 0xE377F8
+int dword_E377FC = 40;           // @ 0xE377FC
 extern int dword_F6419C[4 * 1580];  // cg.o @ 0xF6419C
 extern int dword_F641A0[4 * 1580];  // cg.o @ 0xF641A0
 extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
@@ -122,21 +122,21 @@ extern void SV_PostConnect();  // sv.o (?SV_PostConnect@@YAXXZ @ 0x914CE0)
 extern void SV_ClientEnterWorld(client_s* client);  // sv.o (?SV_ClientEnterWorld@@YAXPAUclient_s@@@Z @ 0x90F2C0)
 extern const char* MI_GetMapShortname(char mapID);  // ?MI_GetMapShortname@@YAPADD@Z (mp_shell.o)
 extern void Cbuf_AddText(const char* text);         // ?Cbuf_AddText@@YAXPBD@Z (cl.o)
-extern float leftLegLiftDuration;                   // @ 0xE3739C
+float leftLegLiftDuration = 0.25f;                  // @ 0xE3739C
 extern char byte_100000;                            // @ 0x100000
 extern int dword_E37628[];  // animEvents row table @ 0xE37628
 extern int dword_E3762C[];  // animEvents column table @ 0xE3762C
 extern int dword_E37630[];  // animEvents sheet table @ 0xE37630
-extern const float Float4_Zero_16[4];  // @ 0xD190F0
+extern const float Float4_Zero_16[4] = {0.0f, 0.0f, 0.0f, 0.0f}; // @ 0xD190F0
 
 // Step@MPPlayer globals (cg.o / game.o data)
 extern int  lastThirdPerson;   // @ 0xF99268
 extern vmCvar_t cg_thirdPerson;  // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
-extern float ladderClipPullin;  // @ 0xE377C8
+float ladderClipPullin = 2.0f;  // @ 0xE377C8
 extern math::Dir3 rdir_4;       // @ 0xF99250 (step probe direction)
 extern int  _S13_9;             // @ 0xF99264 (step probe init flag)
-extern float futureTime;        // @ 0xE377C4 (landing trace lead)
-extern float traceDist;         // @ 0xE377C0 (ladder probe distance)
+float futureTime = 0.2f;        // @ 0xE377C4 (landing trace lead)
+float traceDist = 30.0f;        // @ 0xE377C0 (ladder probe distance)
 
 // nalMatrix4x4 - anim matrix (nal.cpp 0x765)
 struct nalPositionOrientation {
