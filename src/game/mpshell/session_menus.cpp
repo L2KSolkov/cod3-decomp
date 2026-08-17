@@ -9169,6 +9169,66 @@ void AARMapVote::SelectMap(int indexMap)
         delete v6;
 }
 
+// ea: 0x007A60E0
+void AARGameModeVote::SelectMode(int indexMode)
+{
+    if (m_iSelectedMode > -1)
+        m_ListBox.mHighlights.mElements[m_iSelectedMode] = false;
+    int v3 = indexMode;
+    if (indexMode >= 7)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/AARGameModeVote.cpp";
+        AeAssert::gCurrentLine = 475;
+        AeAssert::gCurrentExpr = "indexMode < max_modename";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Index is out of bounds of avail. modes!"))
+            __debugbreak();
+    }
+    m_ListBox.mHighlights.mElements[v3] = true;
+    m_ListBox.Refresh();
+    unsigned char oldVote = (unsigned char)m_iSelectedMode;
+    m_iSelectedMode = v3;
+    bdMessage* v5 = (bdMessage*)bdMemory::allocate(0x18u);
+    bdMessage* v6 = (v5 != nullptr) ? new (v5) bdMessage(0x68u, false) : nullptr;
+    if (v6 != nullptr)
+        ++v6->m_refCount;
+    ++g_NumBdMessages;
+    bdReference<bdBitBuffer> buffer = v6->getPayload();
+    MPPlayerManager* pMan =
+        MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+    unsigned char v20 = 3;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    v20 = pMan->getPlayerIndex(0);
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    v20 = oldVote;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    v20 = (unsigned char)m_iSelectedMode;
+    buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
+    buffer.m_ptr->writeBits(&v20, 8u);
+    bdReference<bdMessage> v14;
+    v14.m_ptr = v6;
+    if (v6 != nullptr)
+        ++v6->m_refCount;
+    pMan->SendAll(v14, true, false);
+    if (buffer.m_ptr != nullptr)
+    {
+        int v12 = buffer.m_ptr->m_refCount - 1;
+        buffer.m_ptr->m_refCount = v12;
+        if (v12 == 0)
+        {
+            delete buffer.m_ptr;
+            buffer.m_ptr = nullptr;
+        }
+    }
+    if (v6 != nullptr && v6->m_refCount-- == 1)
+        delete v6;
+}
+
 // ea: 0x0079CF40
 void SessionListMenu::RepopulateSessionList()
 {
