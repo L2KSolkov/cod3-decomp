@@ -130,6 +130,42 @@ bdAddressMapImpl::bdAddressMapImpl()
     : m_me() {
 }
 
+bdAddressMapImpl::~bdAddressMapImpl() {
+    if (m_me.m_ptr != NULL && m_me.m_ptr->releaseRef() == 0)
+        delete m_me.m_ptr;
+    m_me.m_ptr = NULL;
+}
+
+static void destroyAddressMapSingleton() {
+    bdAddressMapImpl* instance = bdSingleton<bdAddressMapImpl>::m_instance;
+    if (instance != NULL) {
+        instance->~bdAddressMapImpl();
+        bdMemory::deallocate(instance);
+        bdSingleton<bdAddressMapImpl>::m_instance = NULL;
+    }
+}
+
+template <>
+bdAddressMapImpl* bdSingleton<bdAddressMapImpl>::m_instance = NULL;
+
+template <>
+bdAddressMapImpl* bdSingleton<bdAddressMapImpl>::getInstance() {
+    bdAddressMapImpl* instance = bdSingleton<bdAddressMapImpl>::m_instance;
+    if (instance == NULL) {
+        void* memory = bdMemory::allocate(4);
+        instance = memory != NULL ? new (memory) bdAddressMapImpl() : NULL;
+        bdSingleton<bdAddressMapImpl>::m_instance = instance;
+        if (instance != NULL && bdSingletonRegistryAdd(&destroyAddressMapSingleton))
+            return instance;
+        if (instance != NULL) {
+            instance->~bdAddressMapImpl();
+            bdMemory::deallocate(instance);
+            bdSingleton<bdAddressMapImpl>::m_instance = NULL;
+        }
+    }
+    return bdSingleton<bdAddressMapImpl>::m_instance;
+}
+
 // ============================================================================
 // bdAddressMapImpl::getInstance - bdSingleton COMDAT (unresolved extern)
 // ============================================================================

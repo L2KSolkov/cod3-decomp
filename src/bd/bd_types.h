@@ -105,6 +105,9 @@ struct bdSingleton {
     static T* m_instance;
 };
 
+typedef void (__cdecl *bdSingletonDestroyFunction)();
+bool bdSingletonRegistryAdd(bdSingletonDestroyFunction destroyFunction);
+
 // ============================================================================
 // bdReference<T> — intrusive reference wrapper (4 bytes) — verified against IDA
 // ============================================================================

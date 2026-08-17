@@ -14,6 +14,7 @@ struct XNKID;
 class bdAddressMapImpl {
 public:
     bdAddressMapImpl();
+    ~bdAddressMapImpl();
     static bdAddressMapImpl* getInstance();
 
     bool commonAddrToAddr(const bdReference<bdCommonAddr>& ca, const XNKID& xnkid,
