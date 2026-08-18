@@ -29,7 +29,26 @@ typedef unsigned nslVoiceID;
 // Enums
 // ============================================================================
 enum nslSpeakerMode        { NSL_SPEAKER_STEREO=0, NSL_SPEAKER_5_1=1, NSL_SPEAKER_MONO=2 };
-enum nslWaveBankLoaderState{ NSL_WB_LOADING=0, NSL_WB_READY=1, NSL_WB_FAILED=2 };
+enum nslWaveBankLoaderState {
+    NSL_WAVE_BANK_LOADER_ERROR_INVALIDBANK = -5,
+    NSL_WAVE_BANK_LOADER_ERROR_NOMEMORY = -4,
+    NSL_WAVE_BANK_LOADER_ERROR_READING = -3,
+    NSL_WAVE_BANK_LOADER_ERROR_NOARAM = -2,
+    NSL_WAVE_BANK_LOADER_STATE_CANCELED = -1,
+    NSL_WAVE_BANK_LOADER_STATE_INITIAL = 0,
+    NSL_WAVE_BANK_LOADER_STATE_COMPLETED = 1,
+    NSL_WAVE_BANK_LOADER_STATE_START_READ_HEADER = 2,
+    NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_HEADER = 3,
+    NSL_WAVE_BANK_LOADER_STATE_START_READ_DIR_SECTION = 4,
+    NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_DIR_SECTION = 5,
+    NSL_WAVE_BANK_LOADER_STATE_START_READ_ARAM_SECTION = 6,
+    NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_ARAM_SECTION = 7,
+    NSL_WAVE_BANK_LOADER_STATE_START_COPY_ARAM_SECTION = 8,
+    NSL_WAVE_BANK_LOADER_STATE_CHECK_COPY_ARAM_SECTION = 9,
+    NSL_WAVE_BANK_LOADER_STATE_START_READ_PRIMED_STREAMS = 10,
+    NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_PRIMED_STREAMS = 11,
+    NSL_WAVE_BANK_LOADER_STATE_CANCELING = 0x100
+};
 enum nslVoiceState         { NSL_VOICE_FREE=0, NSL_VOICE_PLAYING=1, NSL_VOICE_PAUSED=2 };
 // Values verified vs disasm SoundDevice::Sound::IsPlaying (compares 4/2/3/5)
 enum nslSourceState        { NSL_SOURCE_STATE_INVALID=0,
@@ -83,7 +102,20 @@ struct nslVoice {};
 struct nslListener {};
 struct nslWaveName {};
 struct nslDriverParams {};
-struct nslWaveBankLoader {};
+enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = (unsigned)-1 };
+struct nslWaveBankLoader {
+    nslWaveBankLoaderState state;
+    unsigned flags;
+    nflRequestID rid;
+    int stid;
+    nflFileID file;
+    unsigned fileOffset;
+    nslWaveBank* waveBank;
+    unsigned waveBankSize;
+    unsigned aramSize;
+    unsigned aramOffset;
+    void* aram;
+};
 
 // Release globals verified from IDA addresses 0xE4B680, 0x10E11AC-0x10E11F0,
 // and 0x10E1220.  These are the state consumed by the bank-slot functions.
@@ -95,6 +127,8 @@ static unsigned nsl_time = 0;
 static unsigned nsl_frame = 0;
 static unsigned nsl_waveBankLoadOrder = 0;
 nslWaveBankSlot* nsl_waveBankSlots = nullptr;
+static unsigned char nsl_waveBankLoaderBuffer[4096] = {};
+static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
 static void* nsl_sourceEntries = nullptr;
 static void* nsl_emitterEntries = nullptr;
@@ -111,6 +145,17 @@ nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flag
 int nslWaveBankGetState(nslWaveBankID waveBankID);
 unsigned nslWaveBankSlotsGetUsedCount();
 unsigned nslWaveBankSlotsGetLoadingCount();
+void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankLoadFlags,
+                           nflFileID file, unsigned fileOffset);
+enum nflRequestState : unsigned {
+    NFL_REQUEST_STATE_INVALID = (unsigned)-1,
+    NFL_REQUEST_STATE_COMPLETED = 0,
+    NFL_REQUEST_STATE_CANCELED = 1,
+    NFL_REQUEST_STATE_TIMEOUT = 2,
+    NFL_REQUEST_STATE_ERROR = 3,
+    NFL_REQUEST_STATE_ACTIVE = 4
+};
+extern void nflCancelRequest(nflRequestID requestID);
 
 // IDA nslInit_Allocate (0x826800): callers pass size on the stack and 0x100
 // in ECX.  The 32-bit release arithmetic is preserved for the Win32 target.
@@ -404,9 +449,29 @@ void          nslWaveBankSortRecursive(nslWaveBank*, int, int, int (*cmp)(const 
 // ============================================================================
 // nslWaveBankLoader — async wave bank loading
 // ============================================================================
-void          nslWaveBankLoaderInit(nslWaveBankLoader*, unsigned, nflFileID, unsigned) {}
-int           nslWaveBankLoaderUpdate(nslWaveBankLoader*) { return 1; }
-void          nslWaveBankLoaderCancel(nslWaveBankLoader*) {}
+void          nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader,
+                                    unsigned waveBankLoadFlags, nflFileID file,
+                                    unsigned fileOffset) {
+    std::memset(waveBankLoader, 0, sizeof(nslWaveBankLoader));
+    waveBankLoader->flags = waveBankLoadFlags;
+    waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
+    waveBankLoader->file = file;
+    waveBankLoader->rid = NFL_REQUEST_ID_INVALID;
+    waveBankLoader->fileOffset = fileOffset;
+    waveBankLoader->waveBank = reinterpret_cast<nslWaveBank*>(nsl_waveBankLoaderBuffer);
+    waveBankLoader->stid = -1;
+}
+nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader*) {
+    return NSL_WAVE_BANK_LOADER_STATE_INITIAL;
+}
+void          nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader) {
+    if (waveBankLoader->state != NSL_WAVE_BANK_LOADER_STATE_CANCELED &&
+        waveBankLoader->state != NSL_WAVE_BANK_LOADER_STATE_CANCELING) {
+        waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CANCELING;
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            nflCancelRequest(waveBankLoader->rid);
+    }
+}
 
 // ============================================================================
 // nslGroup — sound groups
