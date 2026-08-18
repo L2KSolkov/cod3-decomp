@@ -42,6 +42,7 @@ extern void G_Printf(const char* fmt, ...);  // g.o
 extern char* vtos(const float* v);           // g.o
 extern const math::Position3 actorMaxs;      // 0xF99330
 extern const math::Position3 actorMins;      // 0xF99510
+extern const char* nodeStringTable[PathNodes::NODE_NUMTYPES]; // 0xE37A20
 vmCvar_t g_ignorePathErrors = {};            // ?g_ignorePathErrors@@3UvmCvar_t@@A @ 0xEAC5E8
 
 // ea: 0x0077F1A0 (static helper, pathnodemgr.cpp)
@@ -807,6 +808,26 @@ void PathNodeMgr::CheckpointResetNodes()
         PathNodes::PathNode* node = &levelTOC->mNodes[i];
         node->mDynamic.mFreeTime = 0;
         node->mTransient.mSearchFrame = -2;
+    }
+}
+
+// ea: 0x00780880
+void PathNodeMgr::NodeList()
+{
+    int counters[PathNodes::NODE_NUMTYPES] = {};
+    int total = 0;
+    PathNodes::TOC1* levelTOC = mLevelTOC;
+    if (levelTOC != nullptr)
+    {
+        for (int i = 0; i < levelTOC->mNodeCount; ++i)
+            ++counters[levelTOC->mNodes[i].mConstant.mType];
+
+        for (int i = 0; i < PathNodes::NODE_NUMTYPES; ++i)
+        {
+            G_Printf("%s nodes %d\n", nodeStringTable[i], counters[i]);
+            total += counters[i];
+        }
+        G_Printf("total nodes %d of %d\n", total, 2048);
     }
 }
 

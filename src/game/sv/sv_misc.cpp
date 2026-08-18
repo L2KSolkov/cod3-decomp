@@ -169,7 +169,6 @@ void PathNodeMgr::AttachSentientToChainNode(sentient_s* pSentient,
 }
 void PathNodeMgr::ConnectPathsForEntity(Entity* ent) { (void)ent; }
 void PathNodeMgr::DisconnectPathsForEntity(Entity* ent) { (void)ent; }
-void PathNodeMgr::NodeList() {}
 
 // AeThreadManager (core.o; stubs, port later)
 void AeThreadManager::Execute(float deltaT)
