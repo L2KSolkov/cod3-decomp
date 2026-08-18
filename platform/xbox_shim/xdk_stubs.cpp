@@ -73,6 +73,10 @@ static unsigned int gNullWidth = 640;
 static unsigned int gNullHeight = 480;
 static void (*gNullVBlankCallback)(_D3DVBLANKDATA*) = NULL;
 static unsigned int gNullFence = 0;
+// Xbox push buffers are intentionally discarded by the D3D9 backend.  NGL's
+// ported quad/filter/font paths still write the requested DWORD count before
+// EndPush, so provide writable host storage instead of returning NULL.
+static unsigned int* gNullPushBuffer = NULL;
 
 // NGL's Xbox render-state method cells are owned by the Win32 shim.  The
 // source-side state code already identifies the slots that are used by the
@@ -481,7 +485,18 @@ D3DSurface* __stdcall D3DCubeTexture_GetCubeMapSurface2(D3DBaseTexture* Texture,
     return Info == NULL ? NULL : (D3DSurface*)nullD3DCreateSurface(Info->Width, Info->Height,
                                                                     Info->Usage, Info->Format, 0);
 }
-unsigned int* __stdcall D3DDevice_BeginPush(unsigned int) { return NULL; }
+unsigned int* __stdcall D3DDevice_BeginPush(unsigned int Count) {
+    if (gNullPushBuffer != NULL) {
+        free(gNullPushBuffer);
+        gNullPushBuffer = NULL;
+    }
+    if (Count == 0)
+        Count = 1;
+    gNullPushBuffer = (unsigned int*)calloc(Count, sizeof(unsigned int));
+    if (gNullPushBuffer == NULL)
+        return NULL;
+    return gNullPushBuffer;
+}
 void __stdcall D3DDevice_BlockOnFence(unsigned int) {}
 void __stdcall D3DDevice_BlockUntilIdle(void) {}
 void __stdcall D3DDevice_Clear(unsigned int Count, unsigned int ClearFlags,
@@ -561,7 +576,10 @@ void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
     gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount, VertexData, VertexStride);
 }
-void __stdcall D3DDevice_EndPush(unsigned int*) {}
+void __stdcall D3DDevice_EndPush(unsigned int*) {
+    free(gNullPushBuffer);
+    gNullPushBuffer = NULL;
+}
 D3DBaseTexture* __stdcall D3DDevice_GetBackBuffer2(int BackBuffer) {
     nullD3DInitDeviceResources();
     return (D3DBaseTexture*)(BackBuffer < 0 ? gNullFrontBuffer : gNullBackBuffer);
