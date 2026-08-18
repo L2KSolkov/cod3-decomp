@@ -47,7 +47,7 @@ aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED
 
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	PORTED	physics_system.cpp/h: phys_sys API (create/destroy/slots/init/frame/update_constraint_infos/get_user_rigid_body); phys_heap_memory_pool<T> + phys_inplace_avl_tree templates (add/find/remove/rotate/avl_max) in pulse_sum.h; real 0x360 physics_system layout; constraint ctors; rbint/rbcint + list functors; create<T> free template incl. contact tree-insert
 
-nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	IN_PROGRESS	Phase 3: nsl.cpp; nslUpdateEmitters ported from IDA; nslUpdateSources and remaining source functions still pending
 
 ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	PORTED	ngl_scene.cpp: full scene graph + matrices (Perspective/Ortho/Viewport/InvScissor/ViewportToWorld/UI), projection/viewport/scissor/fog/clear setters, matrix getters, project/unproject, scene begin/end/present, hires screenshots, frame-buffer sync, callback setters; owns nglBuildScene/nglRootBuildScene/list work + end-of-frame callbacks; nglScene full 0x400 layout
 
@@ -535,7 +535,7 @@ aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	PORTED	apsDebug.h/.cpp (Pri
 
 cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	cdl_init and cdl_profile_reset ported and build-verified
 
-nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	IN_PROGRESS	Phase 3: nslUpdateListener ported; nslUpdate is pending nslUpdateSources dependency
 
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 

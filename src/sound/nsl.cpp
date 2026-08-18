@@ -370,6 +370,25 @@ static int nslSlotIndex(const txSlotPool* pool, txSlot slot) {
         reinterpret_cast<const unsigned char*>(pool->slots) + pool->stride * result);
     return entry->slot == slot ? static_cast<int>(result) : -1;
 }
+
+// ea: 0x0082CCB0
+static txSlot nslSlotFirst(const txSlotPool* pool) {
+    return pool->usedSlots.next->slot;
+}
+
+// ea: 0x0082CCD0
+static txSlot nslSlotNext(const txSlotPool* pool, txSlot slot) {
+    const unsigned result =
+        slot & (static_cast<unsigned>(pool->mask) | 0x80000000u);
+    if (result < static_cast<unsigned>(pool->count)) {
+        txSlotEntry* entry = reinterpret_cast<txSlotEntry*>(
+            reinterpret_cast<unsigned char*>(pool->slots) +
+            pool->stride * result);
+        if (slot == entry->slot)
+            return entry->next->slot;
+    }
+    return TX_SLOT_INVALID;
+}
 extern "C" void txSlotFree(txSlotPool* pool, txSlot slot);
 
 // Forward declarations for the IDA-backed bank layer below.
@@ -953,6 +972,22 @@ void          nslUpdateBanks() {
         nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
     }
 }
+
+// ea: 0x00822520
+void          nslUpdateEmitters() {
+    txSlot slot = nslSlotFirst(&nsl_emitterPool);
+    while (slot != TX_SLOT_INVALID) {
+        const txSlot next = nslSlotNext(&nsl_emitterPool, slot);
+        const int index = nslSlotIndex(&nsl_emitterPool, slot);
+        nslEmitter* emitter = reinterpret_cast<nslEmitter*>(
+            reinterpret_cast<unsigned char*>(nsl_emitters) +
+            nslEmitterStride * static_cast<unsigned>(index));
+        emitter->paramsUsed |= emitter->paramsUpdate;
+        emitter->paramsUpdate = 0;
+        slot = next;
+    }
+}
+
 // ea: 0x00826A00
 void          nslStart(void* work) {
     if (work == nullptr || nsl_work != nullptr)
