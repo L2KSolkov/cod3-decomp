@@ -1,110 +1,825 @@
-// ============================================================================
-// NVL — NGL Video Library (FMV movie playback)
-// From nvl_xboxr: nvl_base.o + nvl_xbox.o + nvl_afmv.o + afmv_dx_*.o
-// ea: 0x82E100-0x833270 (47 funcs, 5 objects)
-// Xbox-only AFMV codec — stubbed for Win32.
-// ============================================================================
+// NVL - NGL Video Library (AFMV movie playback).
 
 #include <cstdint>
+#include <cstring>
+#include "../ngl/nglTexture.h"
 
-// Forward
-typedef unsigned nflFileID;
-typedef unsigned nflRequestID;
-typedef unsigned nflRequestState;
-struct nglTexture;
+struct IDirectSoundBuffer;
 
-enum nvlResult       { NVL_OK=0, NVL_ERR=1 };
-enum nvlMovieState   { NVL_STOPPED=0, NVL_PLAYING=1, NVL_PAUSED=2 };
-enum nvlFrameState   { NVL_FRAME_NONE=0, NVL_FRAME_READY=1, NVL_FRAME_END=2 };
-
-// ============================================================================
-// nvlMovie — AFMV movie decoder (Xbox hardware-accelerated, stubbed)
-// ============================================================================
-
-class nvlMovie {
-public:
-    void  ProcessAudioChunk() {}      // ea: 0x82E100
-    void  StartAudioPlayback() {}     // ea: 0x82E1E0
-    void  StopAudioPlayback() {}      // ea: 0x82E230
-    ~nvlMovie() {}                    // ea: 0x82E3A0
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
+enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = 0xFFFFFFFFu };
+enum nflStreamID : unsigned {
+    NFL_STREAM_ID_INVALID = 0xFFFFFFFFu,
+    NFL_STREAM_ID_DEFAULT = 0,
+};
+enum nflPriority : unsigned {
+    NFL_PRIORITY_INVALID = 0xFFFFFFFFu,
+    NFL_PRIORITY_LOWEST = 0,
+    NFL_PRIORITY_LOW = 1,
+    NFL_PRIORITY_NORMAL = 2,
+    NFL_PRIORITY_HIGH = 3,
+    NFL_PRIORITY_HIGHEST = 4,
+};
+enum nflRequestType : unsigned {
+    NFL_REQUEST_TYPE_INVALID = 0xFFFFFFFFu,
+    NFL_REQUEST_TYPE_READ = 0,
+    NFL_REQUEST_TYPE_WRITE = 1,
+};
+enum nflRequestState : unsigned {
+    NFL_REQUEST_STATE_INVALID = 0xFFFFFFFFu,
+    NFL_REQUEST_STATE_COMPLETED = 0,
+    NFL_REQUEST_STATE_CANCELED = 1,
+    NFL_REQUEST_STATE_TIMEOUT = 2,
+    NFL_REQUEST_STATE_ERROR = 3,
+    NFL_REQUEST_STATE_ACTIVE = 4,
 };
 
-bool nvlInit() { return true; }      // ea: 0x82E270
-void nvlShutdown() {}                // ea: 0x82E390
+enum nvlFrameState : int {
+    NVL_FRAME_ERROR = -1,
+    NVL_FRAME_READY = 0,
+    NVL_FRAME_STREAMING = 1,
+    NVL_FRAME_DECODING = 2,
+    NVL_FRAME_LAST = 3,
+    NVL_FRAME_NONE = 4,
+};
+enum nvlResult : int {
+    NVL_RESULT_ERROR = -1,
+    NVL_RESULT_OK = 0,
+};
+enum nvlMovieState : int {
+    NVL_STATE_ERROR = -1,
+    NVL_STATE_PAUSE = 0,
+    NVL_STATE_PLAY = 1,
+    NVL_STATE_LOOP = 3,
+    NVL_STATE_RESET_PAUSE = 0x10,
+    NVL_STATE_RESET_PLAY = 0x11,
+    NVL_STATE_RESET_LOOP = 0x13,
+};
+enum nvlPhase : int {
+    NVL_PHASE_FIRST = 0,
+    NVL_PHASE_EMPTY = 1,
+    NVL_PHASE_DECODED = 2,
+    NVL_PHASE_RENDERING = 3,
+};
 
-// ============================================================================
-// nvlMovieBase — abstract movie player interface
-// ============================================================================
+struct nflRequestParams {
+    nflFileID fileID;
+    nflStreamID streamID;
+    void (*callback)(nflRequestState, nflRequestID, void*);
+    nflRequestType type;
+    nflPriority priority;
+    unsigned fileOffset;
+    void* buffer;
+    unsigned dataSize;
+    unsigned timeout;
+    void* userData;
+};
+static_assert(sizeof(nflRequestParams) == 40, "NVL NFL request layout mismatch");
+
+extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
+extern void tlMemFree(void* ptr);
+extern bool _tlAssert(const char* file, int line, const char* expr, const char* message);
+extern void tlFatal(const char* format, ...);
+extern void tlPrintf(const char* format, ...);
+extern nflRequestID nflAddRequest(const nflRequestParams* params);
+extern unsigned nflReadFile(nflFileID fileID, unsigned fileOffset, void* buffer, unsigned dataSize);
+extern nglTexture* nglCreateTexture(unsigned flags, unsigned format, int width, int height,
+                                    int depth, int levels);
+extern void nglDestroyTexture(nglTexture* texture);
+extern void nglSetEndOfVBlankCallback(void (*fn)(void*), void* data);
+extern void MacroBlockIdctCopy(short* mb, unsigned char* dest, int stride);
+extern void MacroBlockIdctAdd(int last, short* mb, unsigned char* dest, int stride);
+
+struct afmv_motion_t {
+    unsigned char* ref[2][3];
+    unsigned char** ref2[2];
+    int pmv[2][2];
+    int f_code[2];
+};
+static_assert(sizeof(afmv_motion_t) == 56, "AFMV motion layout mismatch");
+
+struct afmv_mbtab { unsigned char modes; unsigned char len; };
+struct afmv_dmvt { signed char dmv; unsigned char len; };
+static const afmv_mbtab afmv_mb_i[2] = {{17, 2}, {1, 1}};
+static const afmv_mbtab afmv_mb_p[32] = {
+    {17,6},{18,5},{26,5},{1,5},{8,3},{8,3},{8,3},{8,3},
+    {2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},
+    {10,1},{10,1},{10,1},{10,1},{10,1},{10,1},{10,1},{10,1},
+    {10,1},{10,1},{10,1},{10,1},{10,1},{10,1},{10,1},{10,1}
+};
+static const afmv_mbtab afmv_mb_b[64] = {
+    {0,0},{17,6},{22,6},{26,6},{30,5},{30,5},{1,5},{1,5},
+    {8,4},{8,4},{8,4},{8,4},{10,4},{10,4},{10,4},{10,4},
+    {4,3},{4,3},{4,3},{4,3},{4,3},{4,3},{4,3},{4,3},
+    {6,3},{6,3},{6,3},{6,3},{6,3},{6,3},{6,3},{6,3},
+    {12,2},{12,2},{12,2},{12,2},{12,2},{12,2},{12,2},{12,2},
+    {12,2},{12,2},{12,2},{12,2},{12,2},{12,2},{12,2},{12,2},
+    {14,2},{14,2},{14,2},{14,2},{14,2},{14,2},{14,2},{14,2},
+    {14,2},{14,2},{14,2},{14,2},{14,2},{14,2},{14,2},{14,2}
+};
+static const afmv_dmvt afmv_dmv_2[4] = {{0,1},{0,1},{1,2},{-1,2}};
+static const int afmv_alternate_scale[32] = {
+    0,1,2,3,4,5,6,7,8,10,12,14,16,18,20,22,
+    24,28,32,36,40,44,48,52,56,64,72,80,88,96,104,112
+};
+
+class nvlMovieBase;
+class nvlMovie;
+void nvl_RequestCallback(nflRequestState reason, nflRequestID requestID, nvlMovieBase* userData);
 
 class nvlMovieBase {
 public:
-    nvlMovieBase() {}                        // ea: 0x82E730
-    virtual ~nvlMovieBase() {}               // ea: 0x82E780
-    virtual nvlResult     InitMovie()                 { return NVL_ERR; }  // ea: 0x82E790
-    virtual nvlFrameState DecodeFrame()               { return NVL_FRAME_NONE; } // ea: 0x82E530
-    virtual void          Reset()                     {} // ea: 0x82E590
+    nvlMovieBase();
+    virtual ~nvlMovieBase();
+    virtual nvlResult InitMovie();
+    virtual nvlFrameState DecodeFrame();
+    virtual void Reset();
 
-    static unsigned     GetVersion()                  { return 0x100; }  // ea: 0x82E3F0
-    static void         SetConvertNTSCtoPAL(bool)     {} // ea: 0x82E540
-    nflFileID           GetFileID()                   { return 0; }     // ea: 0x82E400
-    nflFileID           ReleaseMovie()                { return 0; }     // ea: 0x82E410
-    nvlMovieState       SetMovieState(nvlMovieState s) { return s; }    // ea: 0x82E4C0
-    nvlMovieState       GetMovieState()               { return NVL_STOPPED; } // ea: 0x82E4D0
-    void                SetUserDataCallback(void (*cb)(void*,unsigned,bool,void*), void* ctx) {} // ea: 0x82E4E0
-    int                 GetNumFrames()                { return 0; }     // ea: 0x82E500
-    int                 GetFrameNumber()              { return 0; }     // ea: 0x82E510
-    nglTexture*         GetTexture()                  { return nullptr; } // ea: 0x82E520
-    nvlResult           SetAudioTrack(int t)          { return NVL_ERR; } // ea: 0x82E550
-    bool                IsBufferLoading()             { return false; }  // ea: 0x82E560
-    bool                BufferCheckBytes(int len, bool wait) { return false; } // ea: 0x82E970
-    bool                IsBufferFull()                { return false; }  // ea: 0x82EB80
-    void                RequestCallback(nflRequestState, nflRequestID) {} // ea: 0x82EBF0
+    static char* GetVersion();
+    static void SetConvertNTSCtoPAL(bool convertPal);
+    nflFileID GetFileID();
+    nflFileID ReleaseMovie();
+    nvlMovieState SetMovieState(nvlMovieState newState);
+    nvlMovieState GetMovieState();
+    void SetUserDataCallback(void (*callback)(unsigned char*, unsigned, bool, void*), void* user);
+    int GetNumFrames();
+    int GetFrameNumber();
+    nglTexture* GetTexture();
+    nvlResult SetAudioTrack(int audioTrackID);
+    bool IsBufferLoading();
+    bool BufferCheckBytes(int thisDataSize, bool update);
+    bool IsBufferFull();
+    void RequestCallback(nflRequestState reason, nflRequestID callreqID);
 
 protected:
-    void CheckNextNFLRequest() {}        // ea: 0x82E610
+    void CheckNextNFLRequest();
+
+    int mWidth;
+    int mHeight;
+    int mWorkBufferSize;
+    int mImageBufferSize;
+    int mStreamBufferSize;
+    unsigned char* mDataBuffer;
+    unsigned char* mImageBuffer;
+    unsigned char* mIntBuffer[4];
+    nglTexture* mSwapTexture[2];
+    nvlPhase mMoviePhase;
+    int mTotalFrames;
+    int mFrameNumber;
+    nvlMovieState mMovieState;
+    int mAudiotrackID;
+    float mConvertRate;
+    void (*mUserDataCallback)(unsigned char*, unsigned, bool, void*);
+    void* mUserData;
+    int mPackOffset;
+    nflFileID mFileID;
+    nflRequestID mRequestID[4];
+    bool mBufferValid[4];
+    int mAssetFlags;
+    int mMovieFlags;
+    bool mBackBuffer;
+    int mFileSize;
+    int mFileOffset;
+    int mReadBuffer;
+    int mPlayBuffer;
+    int mPackBuffer;
+    int mFirstBuffer;
+    int mLastBuffer;
+    int mLastBufferSize;
+    unsigned char mQuantizerMatrix[2][64];
+    unsigned char* mBufYUV[3][3];
+    unsigned char* mBufRGB;
+    unsigned char* mDecodePnt;
+    unsigned char* mParserPnt;
+    static bool mConvertPal;
 };
+static_assert(sizeof(nvlMovieBase) == 336, "NVL base layout mismatch");
 
-// ============================================================================
-// nvlAFMVMovie — AFMV format movie decoder (Xbox P3SIMD, stubbed)
-// ============================================================================
-
-struct afmv_motion_t;
-
-typedef void (*afmv_motion_func_t)(char*, const char*, int, int);
+bool nvlMovieBase::mConvertPal = false;
 
 class nvlAFMVMovie : public nvlMovieBase {
 public:
-    nvlAFMVMovie() {}                            // ea: 0x82ECE0
-    ~nvlAFMVMovie() {}                           // ea: 0x82ED60
-    nvlResult InitMovie() override { return NVL_ERR; } // ea: 0x82ED80
-    nvlFrameState DecodeFrame() override { return NVL_FRAME_NONE; } // ea: 0x830FF0
+    nvlAFMVMovie();
+    ~nvlAFMVMovie() override;
+    nvlResult InitMovie() override;
+    nvlFrameState DecodeFrame() override;
+    nvlResult ParseHeader(nflFileID fileID, bool backBuffer, int offset, int formal);
+    void PrecalcScaler(int index);
+    unsigned GetMBModes();
+    void GetQuantScale();
+    int GetMotionDiff(int fCode);
+    int SignExtendVector(int vector, char fCode);
+    int GetDMV();
+    int GetCBP();
+    unsigned GetLuminanceDiff();
+    unsigned GetChromaDiff();
+    void IntraDCT(int cc, unsigned char* dst, int stride);
+    void NonIntraDCT(int formal, unsigned char* dst, int stride);
 
-    nvlResult ParseHeader(nflFileID, bool, int, int) { return NVL_ERR; } // ea: 0x82EDF0
+protected:
+    void ProcessUserDataChunk(bool firstChunk);
+    void GetIntraCoefB14(const unsigned short* table);
+    void GetIntraCoefB15(const unsigned short* table);
+    int GetNonIntraCoef(const unsigned short* table);
+    void DoMotionFrame(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
+    void DoMotionField(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
+    void DoMotionDualP(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
+    void DoMotionSame(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
+    void DoMotionCopy(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
+    int DecodeSlice();
 
-private:
-    void ProcessUserDataChunk(bool) {}           // ea: 0x82EFA0
-    void GetIntraCoefB14(const unsigned short*) {} // ea: 0x82F010
-    void GetIntraCoefB15(const unsigned short*) {} // ea: 0x82F2C0
-    int  GetNonIntraCoef(const unsigned short*)   { return 0; } // ea: 0x82F540
-    void DoMotionFrame(afmv_motion_t*, afmv_motion_func_t) {} // ea: 0x82F810
-    void DoMotionField(afmv_motion_t*, afmv_motion_func_t) {} // ea: 0x82FA20
-    void DoMotionDualP(afmv_motion_t*, afmv_motion_func_t) {} // ea: 0x82FE70
-    void DoMotionSame(afmv_motion_t*,  afmv_motion_func_t) {} // ea: 0x830440
-    void DoMotionCopy(afmv_motion_t*,  afmv_motion_func_t) {} // ea: 0x830580
-    int  DecodeSlice() { return 0; }             // ea: 0x830630
+    bool mAudioIsValid;
+    unsigned mShifter;
+    int mBitCount;
+    short* mDCTblock;
+    unsigned short* mCurrentQuantizer[2];
+    unsigned short mQuantizerPrescale[2][32][64];
+    unsigned char mProfileLevel;
+    unsigned mPictureType;
+    afmv_motion_t mForwVector;
+    afmv_motion_t mBackVector;
+    void (*mMotionParser[5])(nvlMovie*, afmv_motion_t*, void (*const)(unsigned char*, const unsigned char*, int, int));
+    short mDcDctPred[3];
+    int mHorzOffset;
+    int mStride;
+    int mUVStride;
+    int mSliceStride;
+    int mSliceUVStride;
+    int mLimitX;
+    int mLimitY;
+    int mLimitY8;
+    int mLimitY16;
+    int mVertOffset;
+    unsigned char* mDest[3];
+    unsigned char* temp_rgb;
+    unsigned mBufIndex;
+    unsigned mFrameReady;
+    unsigned mIntraDcPrecision;
+    unsigned mFramePredFrameDct;
+    unsigned mIntraVlcFormat;
+    const unsigned char* mScanMatrix;
+    char mScaled[2];
+    char mQScaleType;
+
+public:
+    static unsigned char* mAudioData;
+    static int mAudioOffset;
+    static unsigned mAudioStartOffset;
 };
 
-// ============================================================================
-// AFMV DCT IDCT (Xbox SIMD, stubbed)
-// ============================================================================
+class nvlMovie : public nvlAFMVMovie {
+public:
+    void ProcessAudioChunk();
+    void StartAudioPlayback();
+    void StopAudioPlayback();
+    ~nvlMovie() override;
+    static IDirectSoundBuffer* mAudioBuffer;
+};
 
-void MacroBlockIdct(short* coeffs) {}               // ea: 0x832260
-void MacroBlockIdctCopy(short* coeffs, char* dst, int stride) {} // ea: 0x832A10
-void MacroBlockIdctAdd(int stride, short* coeffs, char* dst, int dstStride) {} // ea: 0x832A90
+static_assert(sizeof(nvlAFMVMovie) == 8784, "AFMV movie layout mismatch");
+static_assert(sizeof(nvlMovie) == 8784, "NVL movie layout mismatch");
 
-// ============================================================================
-// AFMV YUV→RGB conversion (Xbox GPU, stubbed)
-// ============================================================================
+unsigned char* nvlLockTexture(nglTexture* texture, bool backBuffer) {
+    D3DLOCKED_RECT rect = {};
+    D3DTexture_LockRect(reinterpret_cast<D3DTexture*>(texture->Texture), 0, &rect, nullptr,
+                        backBuffer ? 0x40u : 0u);
+    return static_cast<unsigned char*>(rect.pBits);
+}
 
-void afmvYUV2RGB16(char** planes, char* dst, int width) {} // ea: 0x833130
-void afmvYUV2RGB32(char** planes, char* dst, int width) {} // ea: 0x833270
+void nvlUnlockTexture(nglTexture*, bool) {}
+
+IDirectSoundBuffer* nvlMovie::mAudioBuffer = nullptr;
+unsigned char* nvlAFMVMovie::mAudioData = nullptr;
+int nvlAFMVMovie::mAudioOffset = 0;
+unsigned nvlAFMVMovie::mAudioStartOffset = 0;
+static unsigned char nvlVersionByte = 0;
+
+char* nvlMovieBase::GetVersion() { return reinterpret_cast<char*>(&nvlVersionByte); }
+nflFileID nvlMovieBase::GetFileID() { return mFileID; }
+
+nflFileID nvlMovieBase::ReleaseMovie() {
+    nglSetEndOfVBlankCallback(nullptr, nullptr);
+    if (!mBackBuffer) {
+        if ((mAssetFlags & 1) != 0) {
+            for (int i = 0; i < 2; ++i) {
+                nglDestroyTexture(mSwapTexture[i]);
+                mSwapTexture[i] = nullptr;
+            }
+        }
+        mAssetFlags >>= 1;
+    }
+    if ((mAssetFlags & 1) != 0) {
+        tlMemFree(mImageBuffer);
+        mImageBuffer = nullptr;
+    }
+    const int imageFlag = mAssetFlags >> 1;
+    mAssetFlags >>= 1;
+    if ((imageFlag & 1) != 0) {
+        for (int i = 0; i < 4; ++i) {
+            tlMemFree(mIntBuffer[i]);
+            mIntBuffer[i] = nullptr;
+        }
+    }
+    const int dataFlag = mAssetFlags >> 1;
+    mAssetFlags >>= 1;
+    if ((dataFlag & 1) != 0) {
+        tlMemFree(mDataBuffer);
+        mDataBuffer = nullptr;
+    }
+    const nflFileID result = mFileID;
+    mAssetFlags = 0;
+    return result;
+}
+
+nvlMovieState nvlMovieBase::SetMovieState(nvlMovieState newState) { mMovieState = newState; return newState; }
+nvlMovieState nvlMovieBase::GetMovieState() { return mMovieState; }
+void nvlMovieBase::SetUserDataCallback(void (*callback)(unsigned char*, unsigned, bool, void*), void* user) {
+    mUserDataCallback = callback;
+    mUserData = user;
+}
+int nvlMovieBase::GetNumFrames() { return mTotalFrames; }
+int nvlMovieBase::GetFrameNumber() { return mFrameNumber; }
+nglTexture* nvlMovieBase::GetTexture() { return mSwapTexture[0]; }
+nvlFrameState nvlMovieBase::DecodeFrame() { return NVL_FRAME_ERROR; }
+void nvlMovieBase::SetConvertNTSCtoPAL(bool convertPal) { mConvertPal = convertPal; }
+nvlResult nvlMovieBase::SetAudioTrack(int audioTrackID) { mAudiotrackID = audioTrackID; return NVL_RESULT_OK; }
+bool nvlMovieBase::IsBufferLoading() {
+    return mRequestID[0] != NFL_REQUEST_ID_INVALID || mRequestID[1] != NFL_REQUEST_ID_INVALID ||
+           mRequestID[2] != NFL_REQUEST_ID_INVALID || mRequestID[3] != NFL_REQUEST_ID_INVALID;
+}
+
+void nvlMovieBase::Reset() {
+    mFirstBuffer = 15;
+    mLastBuffer = 15;
+    mDecodePnt = mIntBuffer[0];
+    mParserPnt = mIntBuffer[0];
+    mFrameNumber = 0;
+    mConvertRate = 0.0f;
+    mMoviePhase = NVL_PHASE_FIRST;
+    mReadBuffer = 0;
+    mPlayBuffer = 3;
+    mPackBuffer = 0;
+    mLastBufferSize = 0;
+    mFileOffset = 0;
+    for (int i = 0; i < 4; ++i) {
+        mRequestID[i] = NFL_REQUEST_ID_INVALID;
+        mBufferValid[i] = false;
+    }
+}
+
+void nvlMovieBase::CheckNextNFLRequest() {
+    nflRequestParams request = {};
+    request.fileID = NFL_FILE_ID_INVALID;
+    request.streamID = NFL_STREAM_ID_DEFAULT;
+    request.callback = nullptr;
+    request.type = NFL_REQUEST_TYPE_INVALID;
+    request.priority = NFL_PRIORITY_NORMAL;
+    if (mReadBuffer == mPlayBuffer)
+        return;
+    do {
+        const int readBuffer = mReadBuffer;
+        if (mRequestID[readBuffer] != NFL_REQUEST_ID_INVALID)
+            break;
+        const int fileOffset = mFileOffset;
+        request.fileID = mFileID;
+        request.streamID = NFL_STREAM_ID_DEFAULT;
+        request.callback = reinterpret_cast<void (*)(nflRequestState, nflRequestID, void*)>(nvl_RequestCallback);
+        request.type = NFL_REQUEST_TYPE_READ;
+        request.priority = NFL_PRIORITY_NORMAL;
+        request.fileOffset = static_cast<unsigned>(fileOffset + mPackOffset);
+        request.buffer = mIntBuffer[readBuffer];
+        request.timeout = 0;
+        request.userData = this;
+        if (fileOffset == 0)
+            mFirstBuffer = readBuffer;
+        const unsigned streamBufferSize = static_cast<unsigned>(mStreamBufferSize);
+        const unsigned remaining = static_cast<unsigned>(mFileSize - fileOffset);
+        if (remaining <= streamBufferSize) {
+            mLastBufferSize = static_cast<int>(remaining);
+            mLastBuffer = readBuffer;
+            mFileOffset = 0;
+            request.dataSize = (remaining + 2047u) & 0xFFFFF800u;
+        } else {
+            request.dataSize = streamBufferSize;
+            mFileOffset = static_cast<int>(streamBufferSize) + fileOffset;
+        }
+        mRequestID[readBuffer] = nflAddRequest(&request);
+        mReadBuffer = (readBuffer + 1) & 3;
+    } while (mReadBuffer != mPlayBuffer);
+}
+
+nvlMovieBase::nvlMovieBase() {
+    mDataBuffer = nullptr;
+    for (int i = 0; i < 4; ++i) mIntBuffer[i] = nullptr;
+    for (int i = 0; i < 2; ++i) mSwapTexture[i] = nullptr;
+    mBackBuffer = false;
+    mAssetFlags = 0;
+    mHeight = 0;
+    mWidth = 0;
+    mImageBufferSize = 0;
+    mStreamBufferSize = 0;
+    mWorkBufferSize = 0;
+    mAudiotrackID = 0;
+    mUserDataCallback = nullptr;
+    mUserData = nullptr;
+    Reset();
+}
+nvlMovieBase::~nvlMovieBase() { ReleaseMovie(); }
+
+nvlResult nvlMovieBase::InitMovie() {
+    if (mAssetFlags != 0 && _tlAssert("src/nvl_base.cpp", 70, "!mAssetFlags",
+                                      "NVL: This movie was already started"))
+        __debugbreak();
+    mAssetFlags = 2;
+    if (mDataBuffer == nullptr) {
+        mDataBuffer = static_cast<unsigned char*>(tlMemAlloc(static_cast<unsigned>(mWorkBufferSize), 0x40, 0));
+        mAssetFlags |= 1;
+    }
+    mAssetFlags *= 2;
+    if (mIntBuffer[0] == nullptr) {
+        for (int i = 0; i < 4; ++i)
+            mIntBuffer[i] = static_cast<unsigned char*>(tlMemAlloc(static_cast<unsigned>(mStreamBufferSize), 0x40, 0));
+        mAssetFlags |= 1;
+    }
+    mAssetFlags *= 2;
+    if (mImageBuffer == nullptr && mImageBufferSize != 0) {
+        mImageBuffer = static_cast<unsigned char*>(tlMemAlloc(static_cast<unsigned>(mImageBufferSize), 0x80, 0));
+        mAssetFlags |= 1;
+    }
+    if (!mBackBuffer) {
+        mAssetFlags *= 2;
+        if (mSwapTexture[0] == nullptr) {
+            for (int i = 0; i < 2; ++i)
+                mSwapTexture[i] = nglCreateTexture(0, 0x12, mWidth, mHeight, 0, 1);
+            mAssetFlags |= 1;
+        }
+    }
+    Reset();
+    mMovieState = NVL_STATE_PLAY;
+    for (int i = 0; i < 4; ++i) mRequestID[i] = NFL_REQUEST_ID_INVALID;
+    CheckNextNFLRequest();
+    unsigned char* data = mDataBuffer;
+    if (mMovieFlags == 1) {
+        int widthBytes = 16 * mWidth;
+        mBufYUV[0][0] = data;
+        unsigned char* next = data + widthBytes;
+        widthBytes >>= 2;
+        mBufYUV[0][1] = next;
+        next += widthBytes;
+        mBufYUV[0][2] = next;
+        data = next + widthBytes;
+    } else if (mMovieFlags == 3 || mMovieFlags == 7) {
+        const int width = mWidth;
+        const int planeSize = width * mHeight;
+        mBufYUV[0][0] = data;
+        data += planeSize;
+        mBufYUV[0][1] = data;
+        data += planeSize >> 2;
+        mBufYUV[0][2] = data;
+        data += planeSize >> 2;
+        mBufYUV[1][0] = data;
+        data += planeSize;
+        mBufYUV[1][1] = data;
+        data += planeSize >> 2;
+        mBufYUV[1][2] = data;
+        data += planeSize >> 2;
+        const int sliceWidth = width * 16;
+        mBufYUV[2][0] = data;
+        data += sliceWidth;
+        mBufYUV[2][1] = data;
+        data += sliceWidth >> 2;
+        mBufYUV[2][2] = data;
+        mBufRGB = data + (sliceWidth >> 2);
+        return NVL_RESULT_OK;
+    }
+    mBufRGB = data;
+    return NVL_RESULT_OK;
+}
+
+bool nvlMovieBase::BufferCheckBytes(int thisDataSize, bool update) {
+    const int oldPlayBuffer = mPlayBuffer;
+    if (oldPlayBuffer != mPackBuffer) {
+        mBufferValid[oldPlayBuffer] = false;
+        mPlayBuffer = mPackBuffer;
+        CheckNextNFLRequest();
+    }
+    const int playBuffer = mPlayBuffer;
+    if (!mBufferValid[playBuffer]) return false;
+    const int lastBufferSize = playBuffer == mLastBuffer ? mLastBufferSize : mStreamBufferSize;
+    unsigned char* parser = mParserPnt;
+    const int bytesToEnd = static_cast<int>(&mIntBuffer[playBuffer][lastBufferSize] - parser);
+    if (thisDataSize > bytesToEnd) {
+        const int nextBuffer = (playBuffer + 1) & 3;
+        if (!mBufferValid[nextBuffer]) return false;
+        if (playBuffer == mLastBuffer) {
+            mBufferValid[playBuffer] = false;
+            mPlayBuffer = (mPlayBuffer + 1) & 3;
+            mPackBuffer = mPlayBuffer;
+            mDecodePnt = mIntBuffer[mPlayBuffer];
+            mParserPnt = mIntBuffer[mPlayBuffer];
+            mLastBuffer = 15;
+            CheckNextNFLRequest();
+            if (update) {
+                mParserPnt += thisDataSize;
+                return true;
+            }
+        } else if (!update) {
+            std::memcpy(mIntBuffer[playBuffer], parser, static_cast<size_t>(bytesToEnd));
+            std::memcpy(mIntBuffer[mPlayBuffer] + bytesToEnd,
+                        mIntBuffer[(mPlayBuffer + 1) & 3],
+                        static_cast<size_t>(thisDataSize - bytesToEnd));
+            mDecodePnt = mIntBuffer[mPlayBuffer];
+            return true;
+        } else {
+            const int carry = thisDataSize - bytesToEnd;
+            mPackBuffer = nextBuffer;
+            const unsigned alignedEnd = (static_cast<unsigned>(bytesToEnd) + 31u) & ~31u;
+            unsigned char* alignedParser = reinterpret_cast<unsigned char*>(
+                reinterpret_cast<uintptr_t>(parser) & ~static_cast<uintptr_t>(31));
+            const unsigned alignedCarry = (static_cast<unsigned>(carry) + 31u) & ~31u;
+            std::memmove(alignedParser - alignedCarry, alignedParser, alignedEnd);
+            std::memcpy(alignedParser + alignedEnd - alignedCarry,
+                        mIntBuffer[mPackBuffer], alignedCarry);
+            mDecodePnt = parser - alignedCarry;
+            mParserPnt = parser + (mIntBuffer[mPackBuffer] - mIntBuffer[mPlayBuffer])
+                         - mStreamBufferSize + thisDataSize;
+        }
+    } else {
+        mDecodePnt = parser;
+        if (update) {
+            mParserPnt = parser + thisDataSize;
+            return true;
+        }
+    }
+    return true;
+}
+
+bool nvlMovieBase::IsBufferFull() {
+    bool allValid = true;
+    if (mMovieState != NVL_STATE_ERROR) {
+        if (!mBufferValid[0]) allValid = mPlayBuffer == 0;
+        if (!mBufferValid[1] && mPlayBuffer != 1) allValid = false;
+        if (!mBufferValid[2] && mPlayBuffer != 2) allValid = false;
+        if (mBufferValid[3] || mPlayBuffer == 3) {
+            if (!allValid) CheckNextNFLRequest();
+            return allValid;
+        }
+        CheckNextNFLRequest();
+        return false;
+    }
+    return true;
+}
+
+void nvlMovieBase::RequestCallback(nflRequestState reason, nflRequestID callreqID) {
+    int index = 0;
+    while (index < 4 && mRequestID[index] != callreqID) ++index;
+    if (index < 4) {
+        if (reason != NFL_REQUEST_STATE_COMPLETED) {
+            mMovieState = NVL_STATE_ERROR;
+            tlFatal("NVL error: NFL reported error reading file\n");
+        } else {
+            mRequestID[index] = NFL_REQUEST_ID_INVALID;
+            mBufferValid[index] = true;
+            CheckNextNFLRequest();
+        }
+    } else if (_tlAssert("src/nvl_base.cpp", 490, "0",
+                         "NVL: NFL callback with an invalid ID!\n")) {
+        __debugbreak();
+    }
+}
+
+void nvl_RequestCallback(nflRequestState reason, nflRequestID requestID, nvlMovieBase* userData) {
+    if (reason != NFL_REQUEST_STATE_CANCELED) userData->RequestCallback(reason, requestID);
+}
+
+nvlAFMVMovie::nvlAFMVMovie() : mDCTblock(nullptr) {
+    mDCTblock = static_cast<short*>(tlMemAlloc(0x80, 0x40, 0));
+    if (mDCTblock == nullptr && _tlAssert("src/nvl_afmv.cpp", 63, "mDCTblock",
+                                          "NVL: Could not allocate memory for decoder DCT block"))
+        __debugbreak();
+    std::memset(mDCTblock, 0, 0x80);
+    mScaled[1] = 0;
+    mScaled[0] = 0;
+    mAudioOffset = 0;
+    mAudioStartOffset = 0;
+    mAudioIsValid = false;
+}
+nvlAFMVMovie::~nvlAFMVMovie() { tlMemFree(mDCTblock); }
+nvlResult nvlAFMVMovie::InitMovie() {
+    mUVStride = mWidth >> 1;
+    mSliceStride = 16 * mWidth;
+    mStride = mWidth;
+    mSliceUVStride = (16 * mWidth) >> 2;
+    mLimitX = 2 * mWidth - 32;
+    mLimitY16 = 2 * (mHeight - 16);
+    mBufIndex = 0;
+    mLimitY8 = 2 * mHeight - 16;
+    mLimitY = mHeight - 16;
+    return nvlMovieBase::InitMovie();
+}
+
+void nvlAFMVMovie::PrecalcScaler(int index) {
+    if (mScaled[index] == mQScaleType)
+        return;
+    mScaled[index] = mQScaleType;
+    for (int scale = 0; scale < 32; ++scale) {
+        const int factor = mQScaleType != 0 ? afmv_alternate_scale[scale] : 2 * scale;
+        for (int i = 0; i < 64; ++i)
+            mQuantizerPrescale[index][scale][i] = static_cast<unsigned short>(factor * mQuantizerMatrix[index][i]);
+    }
+}
+
+unsigned nvlAFMVMovie::GetMBModes() {
+    unsigned result;
+    switch (mPictureType) {
+    case 1: {
+        const afmv_mbtab& tab = afmv_mb_i[mShifter >> 31];
+        mShifter <<= tab.len;
+        mBitCount += tab.len;
+        result = tab.modes;
+        if (mFramePredFrameDct != 0)
+            return result;
+        const unsigned old = mShifter;
+        mShifter <<= 1;
+        ++mBitCount;
+        return result | 32 * (old >> 31);
+    }
+    case 2: {
+        const afmv_mbtab& tab = afmv_mb_p[(mShifter >> 27) & 31];
+        mShifter <<= tab.len;
+        mBitCount += tab.len;
+        int modes = tab.modes;
+        if (mFramePredFrameDct != 0)
+            return (modes & 8) != 0 ? static_cast<unsigned>(modes | 0x88) : static_cast<unsigned>(modes | 8);
+        if ((modes & 8) != 0) {
+            const unsigned old = mShifter;
+            mShifter <<= 2;
+            modes |= (old >> 24) & 0xC0;
+            mBitCount += 2;
+        }
+        if ((modes & 3) != 0) {
+            const unsigned old = mShifter;
+            mShifter <<= 1;
+            modes |= 32 * (old >> 31);
+            ++mBitCount;
+        }
+        return static_cast<unsigned>(modes | 8);
+    }
+    case 3: {
+        const afmv_mbtab& tab = afmv_mb_b[(mShifter >> 26) & 63];
+        mShifter <<= tab.len;
+        mBitCount += tab.len;
+        result = tab.modes;
+        if (mFramePredFrameDct != 0)
+            return result | 0x80;
+        result |= (mShifter >> 24) & 0xC0;
+        mShifter <<= 2;
+        mBitCount += 2;
+        if ((result & 3) != 0) {
+            const unsigned old = mShifter;
+            mShifter <<= 1;
+            ++mBitCount;
+            result |= 32 * (old >> 31);
+        }
+        return result;
+    }
+    default:
+        return 0;
+    }
+}
+
+void nvlAFMVMovie::GetQuantScale() {
+    const unsigned scale = mShifter >> 27;
+    mShifter <<= 5;
+    mBitCount += 5;
+    mCurrentQuantizer[0] = mQuantizerPrescale[0][scale];
+    mCurrentQuantizer[1] = mQuantizerPrescale[1][scale];
+}
+
+int nvlAFMVMovie::SignExtendVector(int vector, char fCode) {
+    return vector << (27 - fCode) >> (27 - fCode);
+}
+
+int nvlAFMVMovie::GetDMV() {
+    const afmv_dmvt& tab = afmv_dmv_2[mShifter >> 30];
+    mShifter <<= tab.len;
+    mBitCount += tab.len;
+    return tab.dmv;
+}
+
+int nvlAFMVMovie::GetMotionDiff(int) {
+    // The VLC tables for this helper are still being transcribed from the IDA data segment.
+    return 0;
+}
+
+int nvlAFMVMovie::GetCBP() {
+    // The CBP VLC table is a data-segment object in the XBE and is not yet represented in the Win32 type set.
+    return 0;
+}
+
+unsigned nvlAFMVMovie::GetLuminanceDiff() { return 0; }
+unsigned nvlAFMVMovie::GetChromaDiff() { return 0; }
+
+void nvlAFMVMovie::IntraDCT(int cc, unsigned char* dst, int stride) {
+    if (mBitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= bits << mBitCount;
+        mBitCount -= 16;
+    }
+    mDcDctPred[cc] += static_cast<short>(cc != 0 ? GetChromaDiff() : GetLuminanceDiff());
+    mDCTblock[0] = mDcDctPred[cc];
+    if (mIntraVlcFormat != 0)
+        GetIntraCoefB15(mCurrentQuantizer[0]);
+    else
+        GetIntraCoefB14(mCurrentQuantizer[0]);
+    MacroBlockIdctCopy(mDCTblock, dst, stride);
+}
+
+void nvlAFMVMovie::NonIntraDCT(int, unsigned char* dst, int stride) {
+    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock, dst, stride);
+}
+
+nvlFrameState nvlAFMVMovie::DecodeFrame() { return NVL_FRAME_ERROR; }
+nvlResult nvlAFMVMovie::ParseHeader(nflFileID fileID, bool backBuffer, int offset, int) {
+    mMovieState = NVL_STATE_ERROR;
+    unsigned* fileHeader = static_cast<unsigned*>(tlMemAlloc(0x800, 0x40, 0));
+    if (fileHeader == nullptr && _tlAssert("src/nvl_afmv.cpp", 110, "file_header",
+                                           "NVL: Could not allocate memory for header parsing"))
+        __debugbreak();
+    if (nflReadFile(fileID, static_cast<unsigned>(offset), fileHeader, 0x800) != 0x800)
+        return NVL_RESULT_ERROR;
+    if (fileHeader[0] != 1447904833u &&
+        _tlAssert("src/nvl_afmv.cpp", 116,
+                  "tl_le32( file_header->afmv_id ) == NVL_AFMV_ID",
+                  "NVL: Invalid file format"))
+        __debugbreak();
+    mFileID = fileID;
+    mPackOffset = offset;
+    mBackBuffer = backBuffer;
+    mFileSize = static_cast<int>(fileHeader[1]);
+    mWidth = static_cast<int>(fileHeader[4]);
+    mHeight = static_cast<int>(fileHeader[5]);
+    mTotalFrames = static_cast<int>(fileHeader[6]);
+    mMovieFlags = static_cast<int>(fileHeader[14]);
+    std::memcpy(mQuantizerMatrix, fileHeader + 4, 0x40);
+    std::memcpy(mQuantizerMatrix[1], fileHeader + 20, sizeof(mQuantizerMatrix[1]));
+    tlMemFree(fileHeader);
+
+    mStreamBufferSize = 0x40000;
+    if (mFileSize < 0x100000) {
+        do {
+            mStreamBufferSize >>= 1;
+        } while (mFileSize < 4 * mStreamBufferSize);
+    }
+    const int format = mMovieFlags - 1;
+    mWorkBufferSize = 0;
+    if (format == 0) {
+        mWorkBufferSize = 24 * mWidth;
+    } else if (format == 2) {
+        mWorkBufferSize = 3 * mWidth * mHeight;
+    } else if (format == 6) {
+        mWorkBufferSize = 3 * mWidth * (mHeight + 8);
+    } else {
+        if (_tlAssert("src/nvl_afmv.cpp", 167, "0", "NVL: Invalid file header\n"))
+            __debugbreak();
+        return NVL_RESULT_ERROR;
+    }
+    if (mBackBuffer)
+        mWorkBufferSize += mWidth << 6;
+    Reset();
+    return NVL_RESULT_OK;
+}
+void nvlAFMVMovie::ProcessUserDataChunk(bool headerData) {
+    if (mUserDataCallback == nullptr)
+        return;
+    if (headerData) {
+        mUserDataCallback(mDecodePnt + 8, 32, true, mUserData);
+        mUserDataCallback(mDecodePnt + 40, *mDecodePnt - 32, false, mUserData);
+    } else {
+        mUserDataCallback(mDecodePnt + 8, *mDecodePnt, false, mUserData);
+    }
+}
+void nvlAFMVMovie::GetIntraCoefB14(const unsigned short*) {}
+void nvlAFMVMovie::GetIntraCoefB15(const unsigned short*) {}
+int nvlAFMVMovie::GetNonIntraCoef(const unsigned short*) { return 0; }
+void nvlAFMVMovie::DoMotionFrame(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
+void nvlAFMVMovie::DoMotionField(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
+void nvlAFMVMovie::DoMotionDualP(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
+void nvlAFMVMovie::DoMotionSame(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
+void nvlAFMVMovie::DoMotionCopy(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
+int nvlAFMVMovie::DecodeSlice() { return 0; }
+
+void nvlMovie::ProcessAudioChunk() {}
+void nvlMovie::StartAudioPlayback() {}
+void nvlMovie::StopAudioPlayback() {}
+nvlMovie::~nvlMovie() = default;
+
+bool nvlInit() { return true; }
+void nvlShutdown() { tlMemFree(nvlAFMVMovie::mAudioData); }
+
+void MacroBlockIdct(short*) {}
+void MacroBlockIdctCopy(short*, unsigned char*, int) {}
+void MacroBlockIdctAdd(int, short*, unsigned char*, int) {}
+void afmvYUV2RGB16(unsigned char**, unsigned char*, int) {}
+void afmvYUV2RGB32(unsigned char**, unsigned char*, int) {}

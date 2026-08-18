@@ -2622,7 +2622,6 @@ void MemoryUnitManager_Service() {}
 void MemPrint(const char* fmt, ...) { (void)fmt; }
 void MI_ResetMapList() {}
 void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
-void nflCloseFile(int a) { (void)a; }
 class nglRenderNode;
 void nglAdvanceRenderNode() {}
 void nglBeginRenderNode(nglRenderNode* n) { (void)n; }
@@ -4290,7 +4289,7 @@ int AnimNotifyTask::Find(unsigned int key)
 // ============================================================================
 // AudioBankMgr - ea: 0x6127D0..0x612980
 // ============================================================================
-typedef int nflFileID;  // filesystem/nfl.cpp / core_systems.h use int
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
 enum ELanguage : int {};  // core_globals.h ABI twin (mangles W4ELanguage)
 extern nslWaveID nslGetWave(const char* name);   // ?nslGetWave (nsl)
 extern void nslFreeBank(nslBankID bankID);       // ?nslFreeBank (nsl)
@@ -4344,8 +4343,8 @@ AudioBankMgr* AudioBankMgr::sInst = nullptr;
 // ============================================================================
 // AudioBankMgr ctor / RegisterWbk - ea: 0x621440 / 0x621470
 // ============================================================================
-extern enum nflMediaID : unsigned;
-extern unsigned int nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YAIW4nflMediaID@@PBD@Z
+enum nflMediaID : unsigned;
+extern nflFileID nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YA?AW4nflFileID@@W4nflMediaID@@PBD@Z
 extern nflMediaID gNflMediaId;                              // nfl_xboxr
 extern void* AssetBankSet_ctor(void* self);                 // streamer.o
 static tlFixedString dflt;          // ?dflt@@3VtlFixedString@@A @ 0xF58C04
@@ -4371,7 +4370,7 @@ void AudioBankMgr::RegisterWbk(const tlFixedString& name, const char* path,
     }
     if (name == dflt)
         path = "sp_test\\default.wbk";
-    unsigned int fileId = nflOpenFile((nflMediaID)gNflMediaId, path);
+    nflFileID fileId = nflOpenFile((nflMediaID)gNflMediaId, path);
     if (fileId == -1)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -4496,7 +4495,7 @@ bool AudioBankMgr::IsFinished() const
 extern void codNflUpdate();                    // nfl_xboxr
 extern void nslUpdateBanks();                  // nsl_xboxr
 extern int  nslGetBankState(nslBankID bankID); // nsl_xboxr
-extern nslBankID nslLoadBank(unsigned int flags, nflFileID file,
+extern nslBankID nslLoadBank(unsigned int flags, unsigned int file,
                              unsigned int fileOffset);  // nsl_xboxr
 extern void tlPrintf(const char* fmt, ...);    // tl_xboxr
 
@@ -4839,7 +4838,7 @@ void AudioBankMgr::LoadWbkInternal(WbkEntry& wbk, const char* path,
         const char* v6 = this->LanguageStr(lang);
         tlPrintf("[wbk] loading wbk [%s]: %s\n",
                  (const char*)&wbk + 4, v6);
-        nslBankID Bank = nslLoadBank(0, wbk.fileID[lang], 0);
+        nslBankID Bank = nslLoadBank(0, (unsigned int)wbk.fileID[lang], 0);
         wbk.bankId[lang] = Bank;
         wbk.state[lang] = kLoading;
         if (Bank == NSL_BANK_ID_INVALID)
@@ -5616,7 +5615,7 @@ nslBankID SoundDevice::SyncLoadBank(const char* filename)
             __debugbreak();
         return (nslBankID)-1;
     }
-    nslBankID Bank = nslLoadBank(0, v2, 0);
+    nslBankID Bank = nslLoadBank(0, (unsigned int)v2, 0);
     nslBankID v5 = Bank;
     if (Bank == NSL_BANK_ID_INVALID)
     {

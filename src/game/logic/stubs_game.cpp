@@ -25,12 +25,6 @@ int VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
     return 0;
 }
 
-// ea: 0x00452090 (g.o) - stub
-void VP_GetAngles(vehicle_pathpos_t* vpp, float* angles)
-{
-    (void)vpp; (void)angles;
-}
-
 // ScriptMover_Updatemove (g.o) - stub; address pending IDA confirmation.
 int ScriptMover_Updatemove(float speed, float time, math::Position3* dest)
 {

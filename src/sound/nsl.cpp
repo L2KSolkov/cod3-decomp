@@ -98,7 +98,7 @@ const char*   nslWaveGetName(nslWaveID) { return ""; }       // ?nslWaveGetName@
 const char*   nslWaveGetGroupName(nslWaveID) { return ""; }  // ?nslWaveGetGroupName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
 const char*   nslGetWaveGroup(nslWaveID) { return ""; }      // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
-nslBankID      nslLoadBank(unsigned int, int, unsigned int) { return NSL_BANK_ID_INVALID; }  // ?nslLoadBank@@YA?AW4nslBankID@@HII@Z
+nslBankID      nslLoadBank(unsigned int, unsigned int, unsigned int) { return NSL_BANK_ID_INVALID; }  // ?nslLoadBank@@YA?AW4nslBankID@@III@Z
 nslWaveID      nslGetWave(const char*) { return NSL_WAVE_ID_INVALID; }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
 float          nslGetWaveParam(nslWaveID, int, float defaultValue) { return defaultValue; }  // ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z
 float         nslGetSourceParam(nslSourceID, int, float defaultValue) { return defaultValue; }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)

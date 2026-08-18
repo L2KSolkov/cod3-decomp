@@ -448,70 +448,67 @@ void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
 void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
                int srcLen);
 }
-typedef unsigned nflState;
-typedef unsigned nflFileID;
-enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };  // matches filesystem/nfl.cpp
-#define NFL_FILE_ID_INVALID ((nflFileID)-1)
+enum nflState : unsigned {
+    NFL_STATE_INVALID = 0xFFFFFFFFu,
+    NFL_STATE_IDLE = 0,
+    NFL_STATE_BUSY = 1,
+    NFL_STATE_ERROR = 2,
+};
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
+enum nflMediaID : unsigned {
+    NFL_MEDIA_DEFAULT = 0,
+    NFL_MEDIA_ID_DISC = 1,
+    NFL_MEDIA_ID_HOST = 2,
+    NFL_MEDIA_ID_LINK = 4,
+};
+enum nflRequestState : unsigned {
+    NFL_REQUEST_STATE_INVALID = 0xFFFFFFFFu,
+    NFL_REQUEST_STATE_COMPLETED = 0,
+    NFL_REQUEST_STATE_CANCELED = 1,
+    NFL_REQUEST_STATE_TIMEOUT = 2,
+    NFL_REQUEST_STATE_ERROR = 3,
+    NFL_REQUEST_STATE_ACTIVE = 4,
+};
+enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = 0xFFFFFFFFu };
+enum nflPriority : unsigned {
+    NFL_PRIORITY_LOWEST = 0,
+    NFL_PRIORITY_LOW = 1,
+    NFL_PRIORITY_NORMAL = 2,
+    NFL_PRIORITY_HIGH = 3,
+    NFL_PRIORITY_HIGHEST = 4,
+};
 extern nflFileID nflOpenFile(nflMediaID media, const char* name);  // filesystem/nfl.cpp
 extern void nflUpdate();
 extern nflState nflGetState();
 extern unsigned int nflReadFile(nflFileID file, unsigned offset, void* buf,
                                 unsigned size);
-#define NFL_STATE_ERROR 2
 extern void mem_break();  // mem_heap.cpp
 
-// nfl async (nfl_common.o; streamer-side stubs)
-typedef unsigned int nflRequestID;
+// nfl async (nfl_common.o)
 #define NFL_PRIORITY_LOWEST 0
-typedef void (*nflReadCallback)(unsigned int state, unsigned int);
+typedef void (*nflReadCallback)(nflRequestState, nflRequestID, void*);
 extern nflRequestID nflReadFileAsyncWithCallBack(
     nflFileID fileID, unsigned int fileOffset, void* buffer,
     unsigned int dataSize, nflReadCallback callback);
 extern void nflSetRequestPriority(nflRequestID requestID,
-                                  unsigned int priority);
-nflRequestID nflReadFileAsyncWithCallBack(
-    nflFileID fileID, unsigned int fileOffset, void* buffer,
-    unsigned int dataSize, nflReadCallback callback)
-{
-    (void)fileID; (void)fileOffset; (void)buffer; (void)dataSize;
-    (void)callback;
-    return 0;
-}
-void nflSetRequestPriority(nflRequestID requestID, unsigned int priority)
-{
-    (void)requestID; (void)priority;
-}
+                                  nflPriority priority);
 extern nflFileID nflOpenFileEx(nflMediaID media, const char* fileName,
                                unsigned int* fileSize);  // nfl_common.o
 extern void nflCancelFileRequests(nflFileID fileID);     // nfl_common.o
 extern void nflCloseFile(nflFileID file);                // filesystem/nfl.cpp
 extern unsigned int nflFileExists(nflMediaID media,
                                   const char* name);     // filesystem/nfl.cpp
-nflFileID nflOpenFileEx(nflMediaID media, const char* fileName,
-                        unsigned int* fileSize)
-{
-    (void)media; (void)fileSize;
-    return nflOpenFile(media, fileName);
-}
-void nflCancelFileRequests(nflFileID fileID)
-{
-    (void)fileID;
-}
-struct nflRequestInfoStub {
-    unsigned int bytesCompleted;  // +0x00 (nfl_common.o request info)
+struct nflRequestInfo {
+    unsigned int bytesCompleted;
+    unsigned int timeElapsed;
+    unsigned int activeTimeElapsed;
 };
-extern void nflGetRequestInfo(nflRequestID requestID,
-                              nflRequestInfoStub* requestInfo);
-void nflGetRequestInfo(nflRequestID requestID,
-                       nflRequestInfoStub* requestInfo)
+extern nflRequestInfo* nflGetRequestInfo(nflRequestID requestID,
+                                         nflRequestInfo* requestInfo);
+void codNflCallback(nflRequestState state, nflRequestID requestId, void* userData);
+void codNflCallback(nflRequestState state, nflRequestID requestId, void* userData)
 {
-    (void)requestID;
-    requestInfo->bytesCompleted = 0;
-}
-void codNflCallback(unsigned int state, unsigned int requestId);
-void codNflCallback(unsigned int state, unsigned int requestId)
-{
-    (void)state; (void)requestId;
+    (void)state; (void)requestId; (void)userData;
 }
 
 namespace AeAssert {
@@ -1121,20 +1118,7 @@ struct LoadStats {
                          unsigned __int64 end);  // ?GetTime@LoadStats@@SAM_K0@Z
 };
 
-// nfl (nfl_xboxr) request state/id enums
-enum nflRequestState {
-    NFL_REQUEST_STATE_INVALID = -1,
-    NFL_REQUEST_STATE_COMPLETED = 0,
-    NFL_REQUEST_STATE_CANCELED = 1,
-    NFL_REQUEST_STATE_TIMEOUT = 2,
-    NFL_REQUEST_STATE_ERROR = 3,
-    NFL_REQUEST_STATE_ACTIVE = 4,
-};
-typedef unsigned int nflRequestID;
-typedef unsigned int nflFileID;
-#define NFL_REQUEST_ID_INVALID ((nflRequestID)-1)
-// nfl.cpp defines nflRequestState as unsigned; match its mangled symbol
-extern unsigned int nflGetRequestState(unsigned int requestID);
+extern nflRequestState nflGetRequestState(nflRequestID requestID);
 
 struct PakInfoNode;
 class PoolAllocator;
@@ -5747,7 +5731,7 @@ void* PakFile::PakReadDataAsync(unsigned char* buffer,
     }
     nflRequestID v8 = nflReadFileAsyncWithCallBack(
         mFileId, isHeader, uncompressedSize, compressedSize, codNflCallback);
-    nflSetRequestPriority(v8, NFL_PRIORITY_LOWEST);
+    nflSetRequestPriority(v8, (nflPriority)NFL_PRIORITY_LOWEST);
     *buffer = (unsigned char)v8;
     return buffer;
 }
@@ -6999,46 +6983,36 @@ void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
 // ============================================================================
 // StartupNfl (streamer.o 0x666F50) - binary nfl API view
 // ============================================================================
-struct nflInitParamsBin {
+struct nflInitParams {
     unsigned int maxFiles;     // +0x00
     unsigned int maxStreams;   // +0x04
     unsigned int maxRequests;  // +0x08
     unsigned int bufferMode;   // +0x0C
     unsigned int threadMode;   // +0x10
 
-    nflInitParamsBin();  // ??0nflInitParams@@QAE@XZ (streamer.o 0x681820)
 };
-struct nflMediaAlignmentsBin {
+struct nflMediaAlignments {
     unsigned int mediaAlignment;        // +0x00
     unsigned int memoryAlignment;       // +0x04
     unsigned int transferSizeAlignment; // +0x08
 };
+struct nfdDriver;
 
 enum {
     NFL_BUFFER_MODE_UNALIGNED = 0,
     NFL_BUFFER_MODE_ALL = 3,
     NFL_THREAD_MODE_SINGLE = 0,
 };
-extern unsigned int nflInit(nflInitParamsBin* ip);  // nfl_common.o
+extern unsigned int nflInit(const nflInitParams* ip);  // nfl_common.o
 extern void nflStart(void* work);
-extern void nflGetMediaAlignments(unsigned int mediaID,
-                                  nflMediaAlignmentsBin* ma);
+extern nflMediaAlignments* nflGetMediaAlignments(nflMediaID mediaID,
+                                                 nflMediaAlignments* ma);
 extern nflMediaID gNflMediaId;    // ?gNflMediaId@@3W4nflMediaID@@A
 void* gNflMemAlloc = nullptr;     // ?gNflMemAlloc@@3PAXA
 unsigned int gNflAlignment = 0;   // ?gNflAlignment@@3IA
 nflMediaID gNflMediaId = NFL_MEDIA_DEFAULT;
 
 extern void nflShutdown();  // nfl_common.o
-
-// ea: 0x681820
-nflInitParamsBin::nflInitParamsBin()
-{
-    maxFiles = 64;
-    maxStreams = 16;
-    maxRequests = 256;
-    bufferMode = NFL_BUFFER_MODE_ALL;
-    threadMode = NFL_THREAD_MODE_SINGLE;
-}
 
 // ea: 0x6658C0
 void ShutdownNfl()
@@ -7047,23 +7021,10 @@ void ShutdownNfl()
     gNflMemAlloc = nullptr;
 }
 
-unsigned int nflInit(nflInitParamsBin* ip)
-{
-    (void)ip;
-    return 4096;
-}
-void nflGetMediaAlignments(unsigned int mediaID, nflMediaAlignmentsBin* ma)
-{
-    (void)mediaID;
-    ma->mediaAlignment = 0;
-    ma->memoryAlignment = 0;
-    ma->transferSizeAlignment = 0;
-}
-
 // ea: 0x666F50
 void StartupNfl()
 {
-    nflInitParamsBin v2;
+    nflInitParams v2;
     v2.maxFiles = 128;
     v2.maxRequests = 128;
     v2.maxStreams = 1;
@@ -7072,7 +7033,7 @@ void StartupNfl()
     unsigned int v0 = nflInit(&v2);
     gNflMemAlloc = mem_heap_malloc(v0);
     nflStart(gNflMemAlloc);
-    nflMediaAlignmentsBin mediaAlignments;
+    nflMediaAlignments mediaAlignments;
     nflGetMediaAlignments(gNflMediaId, &mediaAlignments);
     unsigned int mediaAlignment = mediaAlignments.mediaAlignment;
     if (mediaAlignments.mediaAlignment <= mediaAlignments.memoryAlignment)
@@ -7241,7 +7202,7 @@ void PakFile::RenderDebug()
         }
         else
         {
-            bankProgress = nflGetRequestProgress(bank->requestId);
+            bankProgress = (float)nflGetRequestProgress((nflRequestID)bank->requestId);
         }
         if ((bank->flags & PAK_BANK_FLAG_READ_DONE) != 0)
             bankProgress = 1.0f;
@@ -10019,7 +9980,7 @@ const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
                     oneBank.gc.main = 1.0f;
                     oneBank.gc.aram = 0.0f;
                     PakFile::TRequestId id;
-                    id.nflId = sec.banks[bankIndex].fileOffset;
+                    id.nflId = (nflRequestID)sec.banks[bankIndex].fileOffset;
                     TBankAlloc bankAlloc = {};
                     TBankAlloc v31 = BankManager::sInst->Allocate(oneBank);
                     bankAlloc = v31;
@@ -10029,12 +9990,12 @@ const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
                     v31.mram_alloc2.mBits[1] = (unsigned int)v30.size;
                     PakHeader::Bank& bank = sec.banks[bankIndex];
                     if (bank.compressedSize != 0)
-                        id.nflId =
+                        id.nflId = (nflRequestID)
                             *(unsigned char*)pak->PakReadDataAsync(
                                 (unsigned char*)&id, v30.data, fileSize,
                                 bank.compressedSize, id.nflId);
                     else
-                        id.nflId =
+                        id.nflId = (nflRequestID)
                             *(unsigned char*)pak->PakReadDataAsync(
                                 (unsigned char*)&id, v30.data,
                                 (fileSize + 0x7FFF) & 0xFFFF8000, 0,
@@ -13164,7 +13125,7 @@ void PakFile::InitiateHeaderRead()
             __debugbreak();
     }
     PakReadDataAsync(buffer, mHeaderBuffer, sHeaderBufferSize, 0, false);
-    mHeaderRequestId.nflId = buffer[0];
+    mHeaderRequestId.nflId = (nflRequestID)buffer[0];
     gThroughputMeasurer.mStart = gThroughputMeasurer.safeGetTime();
     gThroughputMeasurer.mBytes = 0;
     if (mHeaderRequestId.nflId == NFL_REQUEST_ID_INVALID)
@@ -13799,7 +13760,7 @@ bool PakFile::IsNextFileReady()
     if ((v7->flags & PAK_BANK_FLAG_READ_DONE) != 0)
         return true;
     TRequestId requestId;
-    requestId.nflId = v7->requestId;
+    requestId.nflId = (nflRequestID)v7->requestId;
     if (requestId.nflId != NFL_REQUEST_ID_INVALID)
     {
         if (IsRequestDone(&requestId))
@@ -13819,7 +13780,7 @@ bool PakFile::IsNextFileReady()
                     && AeAssert::Assert("sanity check"))
                     __debugbreak();
             }
-            nflRequestInfoStub request_info;
+            nflRequestInfo request_info;
             nflGetRequestInfo(requestId.nflId, &request_info);
             gThroughputMeasurer.Update((int)request_info.bytesCompleted);
         }

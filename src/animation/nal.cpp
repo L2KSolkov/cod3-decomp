@@ -747,7 +747,8 @@ extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
-extern void nflCloseFile(int file);  // filesystem/nfl.cpp
+enum nflFileID : unsigned;
+extern void nflCloseFile(nflFileID file);  // filesystem/nfl.cpp
 extern void PoolAllocator_Release(void* allocator, void* ptr);
 // ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o stub)
 namespace SoundDevice {
@@ -6058,7 +6059,7 @@ void KillSceneAnim(SceneAnimInfo* info)
         typedef void (__thiscall* DtorFn)(void*, unsigned int);
         ((DtorFn)((void**)*(void**)mInst)[0])(mInst, 1);
     }
-    nflCloseFile(info->mFileID);
+    nflCloseFile((nflFileID)info->mFileID);
     PoolAllocator_Release(SceneAnimInfo_sAllocator, info);
 }
 
@@ -8341,8 +8342,13 @@ struct PakFileLocal {
 };
 
 extern TPakId CurPakId();  // streamer/pakmanager.cpp
-typedef unsigned int nflFileID;
-enum nflMediaID : unsigned { NFL_MEDIA_ID_DUMMY = 0 };
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
+enum nflMediaID : unsigned {
+    NFL_MEDIA_DEFAULT = 0,
+    NFL_MEDIA_ID_DISC = 1,
+    NFL_MEDIA_ID_HOST = 2,
+    NFL_MEDIA_ID_LINK = 4,
+};
 extern nflMediaID gNflMediaId;  // ?gNflMediaId@@3W4nflMediaID@@A (streamer)
 extern nflFileID nflOpenFile(nflMediaID media, const char* name);  // filesystem/nfl.cpp
 extern void* PoolAllocator_Allocate(void* allocator, unsigned int size,

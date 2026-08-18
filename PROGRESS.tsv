@@ -50,7 +50,7 @@ ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	PORTED	ngl_scene.cpp: full
 
 mp_xbox.o		mp_xbox.o	game	61	PORTED	MPMainMenuXBox.cpp (61/61): JoinGameMenu + MPMainMenuXBox + XBoxLiveIngameOptionsCOD3 + AARXBoxLiveIngameOptions menu classes; FEMenu/UIListBox bases extern (shell.o/core.o)
 
-nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (IDA-typed file/request/stream layer; txSlot ABI, driver scheduling, callbacks, workspace preallocation, and Win32 lifecycle aligned)
 
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
 
@@ -106,7 +106,7 @@ render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	PORTED	ShaderC
 
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	Phase 2: nvl.cpp (video codec stubs)
+nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	IN_PROGRESS	NVL base layout and NFL streaming lifecycle ported from IDA; AFMV integration remains
 
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
 
@@ -144,9 +144,9 @@ mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_he
 
 nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (IDA-typed transaction slot pools; free-list direction matched to IDA assembly)
 
-nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	Phase 2: nvl.cpp (video codec stubs)
+nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	IN_PROGRESS	AFMV layout/header and bitstream helpers in progress; VLC/decoder routines remain
 
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	PORTED	[bdConnection] bdConnection.cpp: connection base (15 funcs)
 
@@ -178,7 +178,7 @@ zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	PORTED	Replaced by upstream 
 
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
 
-nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (IDA-backed NFL diagnostics)
 
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	PORTED	[ngl_xboxr] ngl_gpu_meshedit.cpp: GPU mesh sections (12 funcs)
 
@@ -192,7 +192,7 @@ controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Pha
 
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
-nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (IDA-typed path normalization/helpers)
 
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)
 
@@ -230,9 +230,9 @@ cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	9/9 non-inline fun
 
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (Win32 NFL common API and request pump integration)
 
-nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (IDA-named Win32 driver globals, 4/0x1000/0x800/0x20000 buffer geometry, callback handles, overlapped I/O, and completion/error path)
 
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 
@@ -260,7 +260,7 @@ aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math hel
 
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (transaction memory/logging helpers)
 
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	PORTED	ngl_texture.cpp: texture dir globals + apk callbacks; tlSkipList.h/tlFixedString.h rewritten binary-exact; apk.h/cpp field layouts fixed (apkFile at +8)
 
@@ -348,7 +348,7 @@ aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	PORTED	apsRegister.cp
 
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	PORTED	apsBillboardRenderer.h/.cpp (billboard renderer + node + DefaultRender template + apsLight::LightInfo)
 
-nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (video codec stubs)
+nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	IN_PROGRESS	Win32 audio backend not yet mapped; Xbox DirectSound calls remain to port
 
 bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	bdSecurityKeyMap.cpp: XNet key registry (6 funcs) from IDAverified against COD3 decompilation
 
@@ -396,7 +396,7 @@ nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audi
 
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (transaction matching/slot helpers)
 
 ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	PORTED	ngl_dx_debug.cpp: shader profile print/record/compare + ngliShaderProfile.h; verified vs cod_3p reference (older NGL) + IDA
 
@@ -436,7 +436,7 @@ aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVer
 
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	PORTED	apsPFD.cpp (field descriptor: sizes/offsets/stride + sElementSizes data)
 
-nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (driver alignment/completion path)
 
 ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	6	PORTED	ngl_dx_state.cpp: nglDxRenderState Reset/SetBlendMode/FSAAFixup/Init/SetBlendColor/SetMaxAnisotropy (4 non-inline + 2 inline-ish); verbatim BM bitfield; XDK state-cache externs in d3d8.h
 
@@ -500,7 +500,7 @@ aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRe
 
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	Phase 2: nvl.cpp (video codec stubs)
+nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	IN_PROGRESS	IDCT entry points/layouts identified; SIMD implementation remains
 
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	ngl_dx_scenedump.cpp: nglHostOpen/Printf/Close (host file I/O)
 
@@ -536,7 +536,7 @@ nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (au
 
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	PORTED	Phase 2: nvl.cpp (video codec stubs)
+nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	IN_PROGRESS	RGB conversion entry points identified; IDA SIMD conversion remains
 
 ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	PORTED	ngl_dx_quad.h/.cpp (push-buffer quad render + ViewToScreenZ/SetTextureUV inlines)
 
@@ -592,7 +592,7 @@ aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	P
 
 nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (IDA media binding compatibility and DISC|HOST registry)
 
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 

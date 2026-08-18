@@ -18,7 +18,7 @@
 // ============================================================================
 // nvl minimal view (stub bodies; real codec is nvl_xboxr, stubbed)
 // ============================================================================
-typedef unsigned nflFileID;
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
 struct nglTexture;
 
 enum nvlResult {
@@ -51,7 +51,7 @@ public:
     unsigned char* mIntBuffer[4]; // +0x20
 
     nglTexture* GetTexture() { return nullptr; }     // 0x82E520
-    nflFileID   ReleaseMovie() { return 0; }         // 0x82E410
+    nflFileID   ReleaseMovie() { return (nflFileID)0; }         // 0x82E410
     nvlResult   SetAudioTrack(int t) { (void)t; return NVL_RESULT_ERROR; }  // 0x82E550
     bool        IsBufferLoading() { return false; }  // 0x82E560
     bool        IsBufferFull() { return false; }     // 0x82EB80
@@ -101,6 +101,9 @@ public:
 // nfl movie helpers (filesystem/nfl.cpp)
 enum nflMediaID : unsigned {
     NFL_MEDIA_DEFAULT = 0,
+    NFL_MEDIA_ID_DISC = 1,
+    NFL_MEDIA_ID_HOST = 2,
+    NFL_MEDIA_ID_LINK = 4,
 };
 extern nflMediaID gNflMediaId;  // ?gNflMediaId@@3W4nflMediaID@@A @ 0xE36B50
 extern nflFileID nflOpenFileEx(nflMediaID media, const char* name,
