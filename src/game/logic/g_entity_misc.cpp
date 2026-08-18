@@ -2967,9 +2967,16 @@ void (*gEntryFp)() = nullptr;
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
 void Init() {}
+bool IsValidClientType(Entity* pEnt);
 void TakeWeapon(Entity* pSelf, const char* pszWeaponName)
 {
-    (void)pSelf; (void)pszWeaponName;
+    if (IsValidClientType(pSelf))
+    {
+        int weaponIndex = BG_GetWeaponIndexForName(pszWeaponName);
+        pSelf->client->ps.ammo[BG_AmmoForWeapon(weaponIndex)] = 0;
+        pSelf->client->ps.ammoclip[BG_ClipForWeapon(weaponIndex)] = 0;
+        BG_TakePlayerWeapon(&pSelf->client->ps, weaponIndex);
+    }
 }
 // ea: 0x005BDF20
 void CopyExtendedEntity(const Entity* source, Entity* dest)
