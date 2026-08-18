@@ -1238,8 +1238,88 @@ void apsAngleTrackElementZAction::Act(unsigned char* iBegin, unsigned char* iEnd
 // Attractor actions
 // ============================================================================
 apsPointAttractorAction::apsPointAttractorAction()
-    : apsAction(3, 1, eAsync, 0x40u) {}
-void apsPointAttractorAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(6, 0, eAsync, 0x4001u) {}
+
+// ea: 0x0080E8E0
+void apsPointAttractorAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                  apsGroup* ioGroup, apsEffect*, float, float iTimeDelta) {
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float centerZ = mParams.mElements[4];
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float centerY = mParams.mElements[3];
+
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    math::Dir3 center;
+    center.v = _mm_setr_ps(mParams.mElements[2], centerY, centerZ, 0.0f);
+
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float force = mParams.mElements[5] * iTimeDelta;
+
+    if ((ioGroup->mFlags & 2u) == 0)
+        center = apsMath::XForm3d_1(ioGroup->mLocalToWorld, center);
+
+    if ((ioGroup->mPFD.mFields & (1u << apsPFDField_Position)) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* position =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Position);
+
+    if ((ioGroup->mPFD.mFields & (1u << apsPFDField_Velocity)) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* velocity =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Velocity);
+    const int positionStride = ioGroup->mPFD.mStride;
+    const int velocityStride = ioGroup->mPFD.mStride;
+
+    while (position < iEnd) {
+        const __m128 positionValue = _mm_setr_ps(
+            reinterpret_cast<float*>(position)[0],
+            reinterpret_cast<float*>(position)[1],
+            reinterpret_cast<float*>(position)[2], 0.0f);
+        const __m128 delta = _mm_sub_ps(positionValue, center.v);
+        const __m128 squared = _mm_mul_ps(delta, delta);
+        const float distanceSquared = squared.m128_f32[0] +
+                                      (squared.m128_f32[1] + squared.m128_f32[2]);
+        float clampedDistanceSquared = distanceSquared;
+        if (clampedDistanceSquared < 0.001f)
+            clampedDistanceSquared = 0.001f;
+
+        const float distance = std::sqrt(clampedDistanceSquared);
+        const __m128 normalizedDelta =
+            _mm_div_ps(delta, _mm_set1_ps(distance));
+        const __m128 adjustment = _mm_mul_ps(
+            normalizedDelta,
+            _mm_set1_ps(force / clampedDistanceSquared));
+
+        const __m128 oldVelocity = _mm_setr_ps(
+            reinterpret_cast<float*>(velocity)[0],
+            reinterpret_cast<float*>(velocity)[1],
+            reinterpret_cast<float*>(velocity)[2], 0.0f);
+        const __m128 newVelocity = _mm_sub_ps(oldVelocity, adjustment);
+        reinterpret_cast<float*>(velocity)[0] = newVelocity.m128_f32[0];
+        reinterpret_cast<float*>(velocity)[1] = newVelocity.m128_f32[1];
+        reinterpret_cast<float*>(velocity)[2] = newVelocity.m128_f32[2];
+
+        position += positionStride;
+        velocity += velocityStride;
+    }
+}
 
 apsLineAttractorAction::apsLineAttractorAction()
     : apsAction(3, 2, eAsync, 0x40u) {}
