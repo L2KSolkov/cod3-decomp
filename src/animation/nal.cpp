@@ -575,7 +575,29 @@ nalClientSceneAnim::nalClientSceneAnim()
 nalClientSceneAnim::~nalClientSceneAnim()
 {
 }
-class nalHeap {};
+class nalHeap {
+public:
+    virtual ~nalHeap();
+    virtual void* Allocate(int size) = 0;
+    virtual void Free(void* address, int size) = 0;
+    virtual int GetSize() = 0;
+    virtual int GetUsedSpace() = 0;
+};
+
+class nalAnimHeap : public nalHeap {
+public:
+    nalAnimHeap();
+    ~nalAnimHeap() override;
+    void* Allocate(int size) override;
+    void Free(void* address, int size) override;
+    int GetSize() override;
+    int GetUsedSpace() override;
+    void Init(int size);
+
+    int HeapSize;
+    int UsedSize;
+};
+static_assert(sizeof(nalAnimHeap) == 12, "nalAnimHeap layout mismatch");
 class nalSceneAnim;
 class nalSceneAnimInstance;
 class nalStreamInstance;
@@ -922,6 +944,53 @@ template class nalAnimClass<nalGeneric::nalGenericPose>;
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
 extern void tlMemFree(void* ptr);
+
+// ea: 0x00854370
+void nalAnimHeap::Init(int size)
+{
+    HeapSize = size;
+    UsedSize = 0;
+}
+
+// ea: 0x00854C90
+nalAnimHeap::nalAnimHeap()
+{
+}
+
+// ea: 0x00854CA0
+void* nalAnimHeap::Allocate(int size)
+{
+    const int usedSize = size + UsedSize;
+    if (usedSize > HeapSize)
+        return nullptr;
+    UsedSize = usedSize;
+    return tlMemAlloc(static_cast<unsigned int>(size), 0x10u, 0u);
+}
+
+// ea: 0x00854CD0
+void nalAnimHeap::Free(void* address, int size)
+{
+    UsedSize -= size;
+    tlMemFree(address);
+}
+
+// ea: 0x00854CF0
+int nalAnimHeap::GetSize()
+{
+    return HeapSize;
+}
+
+// ea: 0x00854D00
+int nalAnimHeap::GetUsedSpace()
+{
+    return UsedSize;
+}
+
+// ea: 0x00854480
+nalAnimHeap::~nalAnimHeap()
+{
+}
+
 extern void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
