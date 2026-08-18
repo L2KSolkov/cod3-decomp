@@ -299,7 +299,7 @@ aeps_xboxr:apsActionList.o	aeps_xboxr	apsActionList.o	engine	7	PORTED	apsActionL
 
 nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: all nslListener.o functions ported from IDA, including listener group lookup, matrix/orientation normalization, position/velocity updates, and release frame-delta globals
 
-nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	IN_PROGRESS	Phase 3: speaker mode, init-parameter copy, nslInit guard, and nslExit cleanup matched to IDA; DirectSound-backed init/start path remains
+nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: speaker mode, 0x44-byte init-parameter copy, work allocation, nslStart group/ARAM setup, nslExit cleanup, and IDA-matched driver ABI stubs ported; DirectSound backend remains a separate shim
 
 nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 

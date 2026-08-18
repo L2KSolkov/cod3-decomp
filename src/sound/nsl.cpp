@@ -324,6 +324,8 @@ static char nsl_waveObjectDirectory[512] = {};
 static unsigned char nsl_waveBankLoaderBuffer[4096] = {};
 static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
+static void* base = nullptr;
+static unsigned dword_E4B69C = 0;
 // Listener-frame globals and initial speaker table from IDA's release data.
 nslSpeaker nsl_speakers[8] = {
     {{-1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
@@ -380,6 +382,7 @@ static unsigned char ignoreAssert_0 = 0;
 static unsigned char ignoreAssert_1 = 0;
 static unsigned char ignoreAssert_2 = 0;
 static unsigned char ignoreAssert_3 = 0;
+static unsigned char ignoreAssert_14 = 0;
 int nsl_random_play = 0;
 nslWave* wave = nullptr;
 const char* waveName = nullptr;
@@ -470,6 +473,8 @@ nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flag
 int nslWaveBankGetState(nslWaveBankID waveBankID);
 unsigned nslWaveBankSlotsGetUsedCount();
 unsigned nslWaveBankSlotsGetLoadingCount();
+nslGroup* nslListenerGetGroup(unsigned listenerIndex);
+nslGroup* nslGetMasterGroup();
 void* nslAramAlloc(unsigned size, unsigned flags);
 void nslAramFree(void* ptr);
 void* nslMemoryAlloc(unsigned size);
@@ -521,6 +526,9 @@ static void* nslInit_Allocate(unsigned size, unsigned align) {
 // ============================================================================
 void nslStop();
 void nslUpdate();
+int nslDriverInit(nslInitParams* ip);
+int nslDriverStart();
+void nslAramInit(void* aramBase, unsigned aramSize);
 
 int          nslInit(const nslInitParams* ip) {
     if (nsl_workUsed != 0) {
@@ -528,7 +536,9 @@ int          nslInit(const nslInitParams* ip) {
         return -1;
     }
     if (ip != nullptr)
-        nsl_initParams = *ip;
+        std::memcpy(&nsl_initParams, ip, 0x44u);
+    if (ip != nullptr && (byte_E4B6A4 & 1u) == 0u)
+        nslDriverInit(&nsl_initParams);
 
     nsl_sourceEntries = static_cast<txSlotEntry*>(
         nslInit_Allocate(12u * nsl_initParams.maxSources, 0x100u));
@@ -568,12 +578,12 @@ int          nslInit(const nslInitParams* ip) {
     return nsl_work != nullptr ? -1 : static_cast<int>(nsl_workUsed);
 }
 void         nslShutdown() {}
-// ea: 0x004267B0
+// ea: 0x008267B0
 nslSpeakerMode nslGetSpeakerMode() {
     const int value = static_cast<int>(nsl_speakerMode);
     return static_cast<nslSpeakerMode>(value < 0 ? -value : value);
 }
-// ea: 0x004267C0
+// ea: 0x008267C0
 void         nslSetSpeakerMode(nslSpeakerMode speakerMode) {
     const int value = static_cast<int>(speakerMode);
     nsl_speakerMode = static_cast<nslSpeakerMode>(-(value < 0 ? -value : value));
@@ -585,7 +595,7 @@ void         nslGetInitParams(nslInitParams* ip) {
 void         nslInitDefaults() {}
 void         nslFinalInit() {}
 bool         nslIsInitDone() { return true; }
-// ea: 0x00426C50
+// ea: 0x00826C50
 unsigned     nslGetVersion() { return 4; }
 
 // ============================================================================
@@ -1367,20 +1377,69 @@ void          nslUpdateEmitters() {
 
 // ea: 0x00826A00
 void          nslStart(void* work) {
-    if (work == nullptr || nsl_work != nullptr)
+    if (work == nullptr) {
+        txAssertFailed(&ignoreAssert_14, "work", "nslStart",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslInit.cpp", 105);
+    }
+    if (nsl_work != nullptr) {
+        txPrintf("NSL", 0, "Already called\n");
         return;
+    }
     nsl_workLimit = nsl_workUsed;
     nsl_workUsed = 0;
     nsl_work = work;
-    if (nslInit(nullptr) < 0)
+    if (nslInit(nullptr) < 0) {
+        txPrintf("NSL", 0,
+                 "work=%p size=%d. Init failed! Please check your nslStart() parameters\n",
+                 work, nsl_workUsed);
         return;
+    }
+    txPrintf("NSL", 5, "maxSources=%d maxEmitters=%d size=%d (%dKb)\n",
+             nsl_initParams.maxSources, nsl_initParams.maxEmitters,
+             nsl_workUsed, nsl_workUsed >> 10);
     std::memset(nsl_work, 0, nsl_workUsed);
-    if (nsl_initParams.aramBase != 0 && nsl_waveBankSlots != nullptr)
+    if (nsl_initParams.aramBase != 0)
         nsl_waveBankSlots->waveBankID = nsl_initParams.aramBase;
     nslSlotPoolInit(&nsl_sourcePool, nsl_sourceEntries,
                     static_cast<int>(nsl_initParams.maxSources), 12u);
     nslSlotPoolInit(&nsl_emitterPool, nsl_emitterEntries,
                     static_cast<int>(nsl_initParams.maxEmitters), 12u);
+    nslGroup* masterGroup = nslGetMasterGroup();
+    masterGroup->params[0] = 1.0f;
+    masterGroup->params[1] = 1.0f;
+    masterGroup->params[4] = 0.0f;
+    masterGroup->params[5] = 0.0f;
+    for (int listenerIndex = 0; listenerIndex < 4; ++listenerIndex) {
+        nslGroup* group = nslListenerGetGroup(
+            static_cast<unsigned>(listenerIndex));
+        group->params[0] = 1.0f;
+        group->params[1] = 1.0f;
+        group->params[4] = 0.0f;
+        group->params[5] = 0.0f;
+        group->params[19] = 0.0f;
+        group->params[20] = 0.0f;
+        group->params[21] = 0.0f;
+        group->params[46] = 0.0f;
+        group->params[47] = 0.0f;
+        group->params[48] = 1.0f;
+        group->params[49] = 0.0f;
+        group->params[50] = 1.0f;
+        group->params[51] = 0.0f;
+    }
+    if ((byte_E4B6A4 & 1u) != 0u) {
+        unsigned aramSize = dword_E4B69C;
+        if (aramSize == 0u) {
+            aramSize = 0x4000000u;
+            dword_E4B69C = aramSize;
+        }
+        if (base == nullptr)
+            base = nslMemoryAlloc(aramSize);
+    }
+    if (base != nullptr && dword_E4B69C > 0u)
+        nslAramInit(base, dword_E4B69C);
+    if ((byte_E4B6A4 & 1u) == 0u)
+        nslDriverStart();
+    nslUpdate();
 }
 // ea: 0x00826C20
 void          nslExit() {
@@ -3779,7 +3838,8 @@ float         nslDriverClamp(float value, float min, float max) {
     return value;
 }
 void          nslDriverCalculateRolloff(float* out, float dist, const nslWave*) {}
-void          nslDriverInit() {}
+int           nslDriverInit(nslInitParams*) { return 0; }
+int           nslDriverStart() { return 0; }
 void          nslDriverShutdown() {}
 void          nslDriverUpdate() {}
 void          nslDriverSet3DEnabled(bool) {}
