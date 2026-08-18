@@ -136,6 +136,12 @@ enum nflFileID : unsigned { NFL_FILE_ID_INVALID = (unsigned)-1 };
 struct nslWave {
     unsigned char opaque[40]; // IDA type_inspect: nslWave size 0x28; fields not needed by this loader step.
 };
+// IDA type_inspect: nslParam is an 8-byte map followed by a flexible float array.
+struct nslParam {
+    unsigned __int64 map;
+    float values[0];
+};
+static_assert(sizeof(nslParam) == 8, "IDA nslParam layout");
 struct nslWaveName {
     union {
         const char* name;
@@ -313,6 +319,7 @@ nslWaveID nslWaveLookup(const char* waveName);
 int nslWaveIsStreaming(nslWaveID waveID);
 int nslWaveIsLooping(nslWaveID waveID);
 unsigned nslWaveGetLength(nslWaveID waveID);
+float nslWaveGetParam(nslWaveID waveID, unsigned paramIndex, float defaultValue);
 const char* nslWaveGetName(nslWaveID waveID);
 const char* nslWaveGetGroupName(nslWaveID waveID);
 void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankLoadFlags,
@@ -727,7 +734,10 @@ enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
 nslBankID      nslLoadBank(unsigned int flags, unsigned int file, unsigned int fileOffset) { return static_cast<nslBankID>(nslWaveBankLoad(static_cast<nflFileID>(file), fileOffset, flags)); }  // ?nslLoadBank@@YA?AW4nslBankID@@III@Z
 // ea: 0x00820310
 nslWaveID      nslGetWave(const char* name) { return nslWaveLookup(name); }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
-float          nslGetWaveParam(nslWaveID, int, float defaultValue) { return defaultValue; }  // ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z
+// ea: 0x00820330
+float          nslGetWaveParam(nslWaveID waveID, int paramIndex, float defaultValue) {
+    return nslWaveGetParam(waveID, static_cast<unsigned>(paramIndex), defaultValue);
+}  // ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z
 // ea: 0x00820FF0
 float         nslGetSourceParam(nslSourceID sid, int index, float defaultValue) {
     nslSource* source = nslSourcePtr(sid);
@@ -957,6 +967,46 @@ int           nslWaveIsLooping(nslWaveID waveID) {
     const unsigned char* metadata =
         *reinterpret_cast<const unsigned char* const*>(wave);
     return (metadata[5] >> 1) & 1u;
+}
+// ea: 0x00826D90
+static int nslParam_Index_1(const nslParam* params, unsigned __int64 param) {
+    const unsigned low = static_cast<unsigned>(param);
+    const unsigned high = static_cast<unsigned>(param >> 32);
+    const bool lowIsPow2 = low != 0 && ((low - 1u) & low) == 0;
+    const bool highIsPow2 = high != 0 && ((high - 1u) & high) == 0;
+    if (static_cast<unsigned>(lowIsPow2) + static_cast<unsigned>(highIsPow2) != 1u &&
+        _tlAssert("c:/cod/code/tl/nsl2/include\\nsl/param.h", 199,
+                  "tlIsPow2((unsigned)param)+tlIsPow2((unsigned)(param>>32))==1",
+                  "Param must be power of two (e.g. only one bit set)")) {
+        __debugbreak();
+    }
+    if ((param & params->map) != param)
+        return -1;
+    unsigned __int64 value = (param * 2u) - 1u;
+    value &= params->map;
+    int bitCount = 0;
+    while (value != 0) {
+        bitCount += static_cast<int>(value & 1u);
+        value >>= 1;
+    }
+    return bitCount - 1;
+}
+// ea: 0x00827170
+float         nslWaveGetParam(nslWaveID waveID, unsigned paramIndex,
+                              float defaultValue) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr || paramIndex >= 0x40u)
+        return defaultValue;
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    const uintptr_t paramAddress = reinterpret_cast<uintptr_t>(metadata) + 0x10u;
+    if (paramAddress == 0)
+        return defaultValue;
+    const nslParam* params = reinterpret_cast<const nslParam*>(paramAddress);
+    const int index = nslParam_Index_1(params, UINT64_C(1) << paramIndex);
+    if (index == -1)
+        return defaultValue;
+    return params->values[index];
 }
 
 // ============================================================================
