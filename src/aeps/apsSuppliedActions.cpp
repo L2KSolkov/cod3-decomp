@@ -1824,8 +1824,195 @@ void apsDecayLineAttractorAction::Act(unsigned char* iBegin,
 }
 
 apsKappaTauAction::apsKappaTauAction()
-    : apsAction(2, 0, eAsync, 0x40u) {}
-void apsKappaTauAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(11, 0, eAsync, 0x7C4000u) {}
+// ea: 0x0080F500
+void apsKappaTauAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                            apsGroup* ioGroup, apsEffect*, float, float iTimeDelta) {
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float speed = mParams.mElements[2];
+
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float minCurvature = mParams.mElements[5];
+
+    if (mParams.mSize <= 6 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float maxCurvature = mParams.mElements[6];
+
+    if (mParams.mSize <= 9 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float minTorsion = mParams.mElements[9];
+
+    if (mParams.mSize <= 10 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float maxTorsion = mParams.mElements[10];
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float minCurvatureChange = mParams.mElements[3];
+
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float maxCurvatureChange = mParams.mElements[4];
+
+    if (mParams.mSize <= 7 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float minTorsionChange = mParams.mElements[7];
+
+    if (mParams.mSize <= 8 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float maxTorsionChange = mParams.mElements[8];
+
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* velocityField = iBegin + ioGroup->mPFD.mOffsets[14];
+    const int velocityStride = ioGroup->mPFD.mStride;
+
+    if ((ioGroup->mPFD.mFields & 0x40000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* binormalField = iBegin + ioGroup->mPFD.mOffsets[18];
+    const int binormalStride = ioGroup->mPFD.mStride;
+
+    if ((ioGroup->mPFD.mFields & 0x80000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* normalField = iBegin + ioGroup->mPFD.mOffsets[19];
+    const int normalStride = ioGroup->mPFD.mStride;
+
+    if ((ioGroup->mPFD.mFields & 0x100000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* tangentField = iBegin + ioGroup->mPFD.mOffsets[20];
+    const int tangentStride = ioGroup->mPFD.mStride;
+
+    if ((ioGroup->mPFD.mFields & 0x200000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* curvatureField = iBegin + ioGroup->mPFD.mOffsets[21];
+    const int curvatureStride = ioGroup->mPFD.mStride;
+
+    if ((ioGroup->mPFD.mFields & 0x400000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* torsionField = iBegin + ioGroup->mPFD.mOffsets[22];
+    const int torsionStride = ioGroup->mPFD.mStride;
+
+    if (velocityField < iEnd) {
+        const __m128 speedVector = _mm_set1_ps(speed);
+        const __m128 timeDeltaVector = _mm_set1_ps(iTimeDelta);
+        const float curvatureChangeRange = maxCurvatureChange - minCurvatureChange;
+        while (velocityField < iEnd) {
+            float* const velocity = reinterpret_cast<float*>(velocityField);
+            float* const binormal = reinterpret_cast<float*>(binormalField);
+            float* const normal = reinterpret_cast<float*>(normalField);
+            float* const tangent = reinterpret_cast<float*>(tangentField);
+            float* const curvature = reinterpret_cast<float*>(curvatureField);
+            float* const torsion = reinterpret_cast<float*>(torsionField);
+
+            const float oldCurvature = *curvature;
+            const float oldTorsion = *torsion;
+            const __m128 binormalVector = _mm_setr_ps(
+                binormal[0], binormal[1], binormal[2], 0.0f);
+            const __m128 normalVector = _mm_setr_ps(
+                normal[0], normal[1], normal[2], 0.0f);
+            const __m128 tangentVector = _mm_setr_ps(
+                tangent[0], tangent[1], tangent[2], 0.0f);
+
+            const __m128 newVelocity = _mm_mul_ps(binormalVector, speedVector);
+            const __m128 newBinormal = _mm_add_ps(
+                binormalVector,
+                _mm_mul_ps(_mm_mul_ps(normalVector, _mm_set1_ps(oldCurvature)),
+                           timeDeltaVector));
+            const __m128 newTangent = _mm_sub_ps(
+                tangentVector,
+                _mm_mul_ps(_mm_mul_ps(normalVector, _mm_set1_ps(oldTorsion)),
+                           timeDeltaVector));
+
+            const __m128 newBinormalSquared = _mm_mul_ps(newBinormal, newBinormal);
+            const float newBinormalLength = sqrt(
+                newBinormalSquared.m128_f32[0] +
+                (newBinormalSquared.m128_f32[1] + newBinormalSquared.m128_f32[2]));
+            const __m128 normalizedBinormal = _mm_div_ps(
+                newBinormal, _mm_set1_ps(newBinormalLength));
+
+            const __m128 newTangentSquared = _mm_mul_ps(newTangent, newTangent);
+            const float newTangentLength = sqrt(
+                newTangentSquared.m128_f32[0] +
+                (newTangentSquared.m128_f32[1] + newTangentSquared.m128_f32[2]));
+            const __m128 normalizedTangent = _mm_div_ps(
+                newTangent, _mm_set1_ps(newTangentLength));
+            const __m128 newNormal = _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(normalizedBinormal, normalizedBinormal, 9),
+                           _mm_shuffle_ps(normalizedTangent, normalizedTangent, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(normalizedBinormal, normalizedBinormal, 18),
+                           _mm_shuffle_ps(normalizedTangent, normalizedTangent, 9)));
+
+            const float newCurvature =
+                (apsMath::gDefaultRandomNumberGenerator.GetFloat() *
+                     curvatureChangeRange + minCurvatureChange) * iTimeDelta +
+                oldCurvature;
+            const float newTorsion =
+                (apsMath::gDefaultRandomNumberGenerator.GetFloat() *
+                     (maxTorsionChange - minTorsionChange) + minTorsionChange) *
+                    iTimeDelta + oldTorsion;
+            const float clampedCurvature =
+                newCurvature < minCurvature ? minCurvature :
+                (newCurvature > maxCurvature ? maxCurvature : newCurvature);
+            const float clampedTorsion =
+                newTorsion < minTorsion ? minTorsion :
+                (newTorsion > maxTorsion ? maxTorsion : newTorsion);
+
+            velocity[0] = newVelocity.m128_f32[0];
+            velocity[1] = newVelocity.m128_f32[1];
+            velocity[2] = newVelocity.m128_f32[2];
+            normal[0] = newNormal.m128_f32[0];
+            normal[1] = newNormal.m128_f32[1];
+            normal[2] = newNormal.m128_f32[2];
+            binormal[0] = normalizedBinormal.m128_f32[0];
+            binormal[1] = normalizedBinormal.m128_f32[1];
+            binormal[2] = normalizedBinormal.m128_f32[2];
+            tangent[0] = normalizedTangent.m128_f32[0];
+            tangent[1] = normalizedTangent.m128_f32[1];
+            tangent[2] = normalizedTangent.m128_f32[2];
+            *curvature = clampedCurvature;
+            *torsion = clampedTorsion;
+
+            velocityField += velocityStride;
+            binormalField += binormalStride;
+            normalField += normalStride;
+            tangentField += tangentStride;
+            curvatureField += curvatureStride;
+            torsionField += torsionStride;
+        }
+    }
+}
 
 // ============================================================================
 // Spawn (nested effects)
