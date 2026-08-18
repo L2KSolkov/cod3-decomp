@@ -146,7 +146,7 @@ nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	PORTED	Phase 3: nsl.cpp (audio
 
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (IDA-typed transaction slot pools; free-list direction matched to IDA assembly)
 
-nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	IN_PROGRESS	IDA-grounded AFMV VLC/DC, coefficient, motion-compensation, and MC table ports compile; DecodeSlice/DecodeFrame remain
+nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	IN_PROGRESS	IDA-grounded AFMV VLC/DC, coefficient, motion-compensation, IDCT/RGB, DecodeSlice, and DecodeFrame ports compile; audio backend remains
 
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	PORTED	[bdConnection] bdConnection.cpp: connection base (15 funcs)
 

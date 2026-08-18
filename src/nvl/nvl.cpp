@@ -87,9 +87,11 @@ extern unsigned nflReadFile(nflFileID fileID, unsigned fileOffset, void* buffer,
 extern nglTexture* nglCreateTexture(unsigned flags, unsigned format, int width, int height,
                                     int depth, int levels);
 extern void nglDestroyTexture(nglTexture* texture);
+extern nglTexture* nglGetBackBufferTex();
 extern void nglSetEndOfVBlankCallback(void (*fn)(void*), void* data);
 extern void MacroBlockIdctCopy(short* mb, unsigned char* dest, int stride);
 extern void MacroBlockIdctAdd(int last, short* mb, unsigned char* dest, int stride);
+extern void afmvYUV2RGB32(unsigned char** src_yuv, unsigned char* dest_rgb, int width);
 
 struct afmv_motion_t {
     unsigned char* ref[2][3];
@@ -626,6 +628,28 @@ static const afmv_vlc2 afmv_mv_10[48] = {
     {5,7},{5,7},{5,7},{5,7},{5,7},{5,7},{5,7},{5,7},
     {4,7},{4,7},{4,7},{4,7},{4,7},{4,7},{4,7},{4,7}
 };
+struct afmv_mbatab { unsigned char mba; unsigned char len; };
+static const afmv_mbatab afmv_mba_5[30] = {
+    {8,1},{15,8},{6,5},{5,5},{4,4},{4,4},{3,4},{3,4},
+    {2,3},{2,3},{2,3},{2,3},{1,3},{1,3},{1,3},{1,3},
+    {0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},
+    {0,1},{0,1},{0,1},{0,1},{0,1},{0,1}
+};
+static const afmv_mbatab afmv_mba_11[104] = {
+    {32,11},{31,11},{30,11},{29,11},{28,11},{27,11},{26,11},{25,11},
+    {24,11},{23,11},{22,11},{21,11},{20,10},{20,10},{19,10},{19,10},
+    {18,10},{18,10},{17,10},{17,10},{16,10},{16,10},{15,10},{15,10},
+    {14,8},{14,8},{14,8},{14,8},{14,8},{14,8},{14,8},{14,8},
+    {13,8},{13,8},{13,8},{13,8},{13,8},{13,8},{13,8},{13,8},
+    {12,8},{12,8},{12,8},{12,8},{12,8},{12,8},{12,8},{12,8},
+    {11,8},{11,8},{11,8},{11,8},{11,8},{11,8},{11,8},{11,8},
+    {10,8},{10,8},{10,8},{10,8},{10,8},{10,8},{10,8},{10,8},
+    {9,8},{9,8},{9,8},{9,8},{9,8},{9,8},{9,8},{9,8},
+    {8,7},{8,7},{8,7},{8,7},{8,7},{8,7},{8,7},{8,7},
+    {8,7},{8,7},{8,7},{8,7},{8,7},{8,7},{8,7},{8,7},
+    {7,7},{7,7},{7,7},{7,7},{7,7},{7,7},{7,7},{7,7},
+    {7,7},{7,7},{7,7},{7,7},{7,7},{7,7},{7,7},{7,7}
+};
 static const afmv_vlc2 afmv_dc_lum[31] = {
     {1,2},{1,2},{1,2},{1,2},{1,2},{1,2},{1,2},{1,2},
     {2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},
@@ -675,6 +699,18 @@ static const unsigned char afmv_cbp_small[128] = {
     0x15,0x08,0x15,0x08,0x1A,0x08,0x1A,0x08,0x13,0x08,0x13,0x08,0x1C,0x08,0x1C,0x08,
     0x25,0x08,0x25,0x08,0x2A,0x08,0x2A,0x08,0x23,0x08,0x23,0x08,0x2C,0x08,0x2C,0x08,
     0x31,0x08,0x31,0x08,0x32,0x08,0x32,0x08,0x34,0x08,0x34,0x08,0x38,0x08,0x38,0x08
+};
+static const unsigned char afmv_scan_norm[64] = {
+    0,1,8,16,9,2,3,10,17,24,32,25,18,11,4,5,
+    12,19,26,33,40,48,41,34,27,20,13,6,7,14,21,28,
+    35,42,49,56,57,50,43,36,29,22,15,23,30,37,44,51,
+    58,59,52,45,38,31,39,46,53,60,61,54,47,55,62,63
+};
+static const unsigned char afmv_scan_alt[64] = {
+    0,8,16,24,1,9,2,10,17,25,32,40,48,56,57,49,
+    41,33,26,18,3,11,4,12,19,27,34,42,50,58,35,43,
+    51,59,20,28,5,13,6,14,21,29,36,44,52,60,37,45,
+    53,61,22,30,7,15,23,31,38,46,54,62,39,47,55,63
 };
 
 class nvlMovieBase;
@@ -757,6 +793,9 @@ public:
     ~nvlAFMVMovie() override;
     nvlResult InitMovie() override;
     nvlFrameState DecodeFrame() override;
+    virtual void ProcessAudioChunk();
+    virtual void StartAudioPlayback();
+    virtual void StopAudioPlayback();
     nvlResult ParseHeader(nflFileID fileID, bool backBuffer, int offset, int formal);
     void PrecalcScaler(int index);
     unsigned GetMBModes();
@@ -823,9 +862,9 @@ public:
 
 class nvlMovie : public nvlAFMVMovie {
 public:
-    void ProcessAudioChunk();
-    void StartAudioPlayback();
-    void StopAudioPlayback();
+    void ProcessAudioChunk() override;
+    void StartAudioPlayback() override;
+    void StopAudioPlayback() override;
     ~nvlMovie() override;
     static IDirectSoundBuffer* mAudioBuffer;
 };
@@ -1406,7 +1445,180 @@ void nvlAFMVMovie::NonIntraDCT(int, unsigned char* dst, int stride) {
     MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock, dst, stride);
 }
 
-nvlFrameState nvlAFMVMovie::DecodeFrame() { return NVL_FRAME_ERROR; }
+nvlFrameState nvlAFMVMovie::DecodeFrame() {
+    if (mMoviePhase == NVL_PHASE_FIRST) {
+        const bool firstMovieFrame = mMovieFlags == 7;
+        mMoviePhase = NVL_PHASE_EMPTY;
+        if (firstMovieFrame) {
+            --mFrameNumber;
+            nvlAFMVMovie::DecodeFrame();
+        }
+    }
+
+    unsigned char chunkType = 0;
+    while (true) {
+        while (true) {
+            while (true) {
+                if (!BufferCheckBytes(8, false))
+                    return NVL_FRAME_STREAMING;
+                if (mPlayBuffer == mFirstBuffer) {
+                    mParserPnt += 0x90;
+                    mDecodePnt = mParserPnt;
+                    mFirstBuffer = 15;
+                    mAudioStartOffset = static_cast<unsigned>(mAudioOffset);
+                }
+                if (!BufferCheckBytes(*mDecodePnt + 8, true))
+                    return NVL_FRAME_STREAMING;
+                chunkType = mDecodePnt[4];
+                if ((chunkType & 0x80u) == 0)
+                    break;
+                ProcessAudioChunk();
+            }
+            if ((chunkType & 0xC0u) != 0)
+                break;
+            if (chunkType == 1) {
+                if (mUserDataCallback != nullptr) {
+                    mUserDataCallback(mDecodePnt + 8, 32, true, mUserData);
+                    mUserDataCallback(mDecodePnt + 40, *mDecodePnt - 32, false, mUserData);
+                }
+            } else if (mUserDataCallback != nullptr) {
+                mUserDataCallback(mDecodePnt + 8, *mDecodePnt, false, mUserData);
+            }
+        }
+        if (!nvlMovieBase::mConvertPal)
+            break;
+        if (mConvertRate <= 1.0f || (chunkType & 0xF0u) != 0x60u)
+            break;
+        ++mFrameNumber;
+        mConvertRate -= 1.0f;
+    }
+
+    mConvertRate += 0.1988f;
+    const unsigned char headerFlags = mDecodePnt[4];
+    mPictureType = ((headerFlags >> 4) & 3u) + 1;
+    mForwVector.f_code[0] = mDecodePnt[5] >> 4;
+    mForwVector.f_code[1] = mDecodePnt[5] & 0xF;
+    mBackVector.f_code[0] = mDecodePnt[6] >> 4;
+    mBackVector.f_code[1] = mDecodePnt[6] & 0xF;
+    mIntraDcPrecision = mDecodePnt[7];
+    mFramePredFrameDct = headerFlags & 8u;
+    mQScaleType = headerFlags & 4u;
+    mIntraVlcFormat = headerFlags & 2u;
+    mScanMatrix = (headerFlags & 1u) != 0 ? afmv_scan_alt : afmv_scan_norm;
+
+    if ((mMovieFlags & 2) != 0) {
+        if (mPictureType == 3) {
+            const unsigned previous = mBufIndex ^ 1u;
+            mForwVector.ref[0][0] = mBufYUV[previous][0];
+            mForwVector.ref[0][1] = mBufYUV[previous][1];
+            mForwVector.ref[0][2] = mBufYUV[previous][2];
+            mBackVector.ref[0][0] = mBufYUV[mBufIndex][0];
+            mBackVector.ref[0][1] = mBufYUV[mBufIndex][1];
+            mBackVector.ref[0][2] = mBufYUV[mBufIndex][2];
+            PrecalcScaler(1);
+            PrecalcScaler(0);
+        } else {
+            if (mPictureType == 2) {
+                mForwVector.ref[0][0] = mBufYUV[mBufIndex][0];
+                mForwVector.ref[0][1] = mBufYUV[mBufIndex][1];
+                mForwVector.ref[0][2] = mBufYUV[mBufIndex][2];
+                PrecalcScaler(1);
+            }
+            PrecalcScaler(0);
+            mBufIndex ^= 1u;
+        }
+    }
+
+    nglTexture* backBufferTexture = mBackBuffer ? nglGetBackBufferTex() : mSwapTexture[1];
+    D3DLOCKED_RECT lockedRect = {};
+    D3DTexture_LockRect(reinterpret_cast<D3DTexture*>(backBufferTexture->Texture), 0,
+                        &lockedRect, nullptr, mBackBuffer ? 0x40u : 0u);
+    unsigned char* rgbDest = static_cast<unsigned char*>(lockedRect.pBits);
+    const bool useSliceRGB = mMovieFlags == 1 || mPictureType == 3;
+    if (mMovieFlags == 1) {
+        mDest[0] = mBufYUV[0][0];
+        mDest[1] = mBufYUV[0][1];
+        mDest[2] = mBufYUV[0][2];
+    } else if (mPictureType == 3) {
+        mDest[0] = mBufYUV[2][0];
+        mDest[1] = mBufYUV[2][1];
+        mDest[2] = mBufYUV[2][2];
+    } else {
+        mDest[0] = mBufYUV[mBufIndex][0];
+        mDest[1] = mBufYUV[mBufIndex][1];
+        mDest[2] = mBufYUV[mBufIndex][2];
+    }
+
+    unsigned char* nextSlice = mDecodePnt + 8;
+    mDecodePnt = nextSlice;
+    unsigned nextOffset = *reinterpret_cast<unsigned*>(nextSlice);
+    mVertOffset = 0;
+
+    auto finish_frame = [&]() -> nvlFrameState {
+        if (!useSliceRGB) {
+            const unsigned sourceIndex = (mMovieFlags == 3) ? mBufIndex : (mBufIndex ^ 1u);
+            mDest[0] = mBufYUV[sourceIndex][0];
+            mDest[1] = mBufYUV[sourceIndex][1];
+            mDest[2] = mBufYUV[sourceIndex][2];
+            mVertOffset = 0;
+            while (mVertOffset < mHeight) {
+                afmvYUV2RGB32(mDest, rgbDest, mWidth);
+                mDest[0] += mSliceStride;
+                mDest[1] += mSliceUVStride;
+                mDest[2] += mSliceUVStride;
+                rgbDest += 64 * mWidth;
+                mVertOffset += 16;
+            }
+        }
+        nglTexture* oldTexture = mSwapTexture[0];
+        mSwapTexture[0] = mSwapTexture[1];
+        mSwapTexture[1] = oldTexture;
+        const int oldFrame = mFrameNumber;
+        if (oldFrame == mTotalFrames || oldFrame == 0) {
+            StartAudioPlayback();
+            mFrameNumber = 1;
+        } else {
+            mFrameNumber = oldFrame + 1;
+        }
+        if (mFrameNumber != mTotalFrames)
+            return NVL_FRAME_READY;
+        StopAudioPlayback();
+        return NVL_FRAME_LAST;
+    };
+
+    if (mHeight <= 0)
+        return finish_frame();
+    while (true) {
+        mDecodePnt = nextSlice;
+        if (nextOffset != 0xFACADECAu) {
+            const unsigned sliceOffset = nextOffset & 0xFFFFu;
+            nextSlice += sliceOffset;
+            nextOffset = *reinterpret_cast<unsigned*>(nextSlice);
+            if ((nextOffset & 0xFFFF0000u) != 0xFACA0000u) {
+                if (_tlAssert("src/nvl_afmv.cpp", 386,
+                              "(next_offset & 0xFFFF0000) == 0xFACA0000",
+                              "NVL: Invalid slice start code"))
+                    __debugbreak();
+                mMovieState = NVL_STATE_ERROR;
+                return NVL_FRAME_ERROR;
+            }
+            *reinterpret_cast<unsigned*>(nextSlice) = 0;
+        }
+        mDecodePnt += 4;
+        DecodeSlice();
+        if (useSliceRGB) {
+            afmvYUV2RGB32(mDest, rgbDest, mWidth);
+            rgbDest += 64 * mWidth;
+        } else {
+            mDest[0] += mSliceStride;
+            mDest[1] += mSliceUVStride;
+            mDest[2] += mSliceUVStride;
+        }
+        mVertOffset += 16;
+        if (mVertOffset >= mHeight)
+            return finish_frame();
+    }
+}
 nvlResult nvlAFMVMovie::ParseHeader(nflFileID fileID, bool backBuffer, int offset, int) {
     mMovieState = NVL_STATE_ERROR;
     unsigned* fileHeader = static_cast<unsigned*>(tlMemAlloc(0x800, 0x40, 0));
@@ -2115,8 +2327,262 @@ void nvlAFMVMovie::DoMotionCopy(
     motionFunc[4](&mDest[1][mHorzOffset >> 1], &motion->ref[0][1][uvOffset], mUVStride, 8);
     motionFunc[4](&mDest[2][mHorzOffset >> 1], &motion->ref[0][2][uvOffset], mUVStride, 8);
 }
-int nvlAFMVMovie::DecodeSlice() { return 0; }
+int nvlAFMVMovie::DecodeSlice() {
+    auto read_be16 = [](const unsigned char* p) -> unsigned {
+        return (static_cast<unsigned>(p[0]) << 8) | p[1];
+    };
+    auto reset_motion = [](afmv_motion_t& motion) {
+        motion.pmv[0][0] = 0;
+        motion.pmv[0][1] = 0;
+        motion.pmv[1][0] = 0;
+        motion.pmv[1][1] = 0;
+    };
+    auto refill = [&]() {
+        if (mBitCount > 0) {
+            mShifter |= read_be16(mDecodePnt) << mBitCount;
+            mDecodePnt += 2;
+            mBitCount -= 16;
+        }
+    };
 
+    const unsigned startCode = (static_cast<unsigned>(mDecodePnt[0]) << 24) |
+                                (static_cast<unsigned>(mDecodePnt[1]) << 16) |
+                                (static_cast<unsigned>(mDecodePnt[2]) << 8) |
+                                mDecodePnt[3];
+    mDecodePnt += 4;
+    mDcDctPred[0] = 0x4000;
+    mDcDctPred[1] = 0x4000;
+    mDcDctPred[2] = 0x4000;
+    mShifter = startCode;
+    const unsigned initialScale = startCode >> 27;
+    mCurrentQuantizer[0] = mQuantizerPrescale[0][initialScale];
+    mCurrentQuantizer[1] = mQuantizerPrescale[1][initialScale];
+    mShifter *= 32;
+    reset_motion(mForwVector);
+    reset_motion(mBackVector);
+    mBitCount = -11;
+    while ((mShifter & 0x80000000u) != 0) {
+        mShifter <<= 9;
+        mBitCount += 9;
+        refill();
+    }
+
+    int dctStride = 0;
+    const afmv_mbatab* mba = nullptr;
+    if (mShifter >= 0x08000000u) {
+        mba = &afmv_mba_5[mShifter >> 26];
+    } else {
+        while (true) {
+            if (mShifter >= 0x01800000u)
+                break;
+            if ((mShifter & 0xFFF00000u) != 0x00800000u)
+                return 1;
+            mShifter <<= 11;
+            mBitCount += 11;
+            dctStride += 33;
+            refill();
+            if (mShifter >= 0x08000000u)
+                break;
+        }
+        mba = &afmv_mba_5[8 + (mShifter >> 20)];
+    }
+    mShifter <<= mba->len + 1;
+    mBitCount += mba->len + 1;
+    mHorzOffset = 16 * (dctStride + mba->mba);
+    while (mHorzOffset - mWidth >= 0) {
+        if (_tlAssert("src/nvl_afmv.cpp", 1586, "0",
+                      "NVL: We shouldn't reach the end of the slice here."))
+            __debugbreak();
+        mHorzOffset -= mWidth;
+        mVertOffset += 16;
+    }
+    if (mVertOffset > mLimitY)
+        return 1;
+
+    while (true) {
+        refill();
+        unsigned mbModes = GetMBModes();
+        const unsigned macroblockModes = mbModes;
+        if ((mbModes & 0x10u) != 0) {
+            GetQuantScale();
+        }
+        if ((mbModes & 1u) != 0) {
+            reset_motion(mForwVector);
+            reset_motion(mBackVector);
+            int dctOffset;
+            int dctOutputStride;
+            if ((mbModes & 0x20u) != 0) {
+                dctOffset = mStride;
+                dctOutputStride = 2 * mStride;
+            } else {
+                dctOffset = 8 * mStride;
+                dctOutputStride = mStride;
+            }
+            unsigned char* luma = &mDest[0][mHorzOffset];
+            const int lumaOffset = mHorzOffset;
+            IntraDCT(0, luma, dctOutputStride);
+            IntraDCT(0, luma + 8, dctOutputStride);
+            unsigned char* secondLuma = luma + dctOffset;
+            IntraDCT(0, secondLuma, dctOutputStride);
+            IntraDCT(0, secondLuma + 8, dctOutputStride);
+            IntraDCT(1, &mDest[1][lumaOffset >> 1], mUVStride);
+            IntraDCT(2, &mDest[2][lumaOffset >> 1], mUVStride);
+        } else {
+            switch (mbModes >> 6) {
+            case 0: {
+                if ((mbModes & 8u) != 0)
+                    DoMotionCopy(&mForwVector, afmv_mc.put);
+                if ((mbModes & 4u) != 0)
+                    DoMotionCopy(&mBackVector, (mbModes & 8u) != 0 ? afmv_mc.avg : afmv_mc.put);
+                break;
+            }
+            case 1: {
+                if ((mbModes & 8u) != 0)
+                    DoMotionField(&mForwVector, afmv_mc.put);
+                if ((mbModes & 4u) != 0)
+                    DoMotionField(&mBackVector, (mbModes & 8u) != 0 ? afmv_mc.avg : afmv_mc.put);
+                break;
+            }
+            case 2: {
+                if ((mbModes & 8u) != 0)
+                    DoMotionFrame(&mForwVector, afmv_mc.put);
+                if ((mbModes & 4u) != 0)
+                    DoMotionFrame(&mBackVector, (mbModes & 8u) != 0 ? afmv_mc.avg : afmv_mc.put);
+                break;
+            }
+            case 3: {
+                if ((mbModes & 8u) != 0)
+                    DoMotionDualP(&mForwVector, afmv_mc.put);
+                if ((mbModes & 4u) != 0)
+                    DoMotionDualP(&mBackVector, (mbModes & 8u) != 0 ? afmv_mc.avg : afmv_mc.put);
+                break;
+            }
+            case 4: {
+                if ((mbModes & 8u) != 0)
+                    DoMotionSame(&mForwVector, afmv_mc.put);
+                if ((mbModes & 4u) != 0)
+                    DoMotionSame(&mBackVector, (mbModes & 8u) != 0 ? afmv_mc.avg : afmv_mc.put);
+                break;
+            }
+            default:
+                break;
+            }
+            if ((mbModes & 2u) != 0) {
+                int dctOffset;
+                int dctOutputStride;
+                if ((mbModes & 0x20u) != 0) {
+                    dctOffset = mStride;
+                    dctOutputStride = 2 * mStride;
+                } else {
+                    dctOffset = 8 * mStride;
+                    dctOutputStride = mStride;
+                }
+                const unsigned char codedBlockPattern = static_cast<unsigned char>(GetCBP());
+                unsigned char* luma = &mDest[0][mHorzOffset];
+                if ((codedBlockPattern & 1u) != 0)
+                    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock,
+                                      luma, dctOutputStride);
+                if ((codedBlockPattern & 2u) != 0)
+                    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock,
+                                      luma + 8, dctOutputStride);
+                if ((codedBlockPattern & 4u) != 0)
+                    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock,
+                                      luma + dctOffset, dctOutputStride);
+                if ((codedBlockPattern & 8u) != 0)
+                    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock,
+                                      luma + dctOffset + 8, dctOutputStride);
+                if ((codedBlockPattern & 0x10u) != 0)
+                    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock,
+                                      &mDest[1][mHorzOffset >> 1], mUVStride);
+                if ((codedBlockPattern & 0x20u) != 0)
+                    MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock,
+                                      &mDest[2][mHorzOffset >> 1], mUVStride);
+            }
+            mDcDctPred[0] = 0x4000;
+            mDcDctPred[1] = 0x4000;
+            mDcDctPred[2] = 0x4000;
+        }
+
+        mHorzOffset += 16;
+        if (mHorzOffset == mWidth) {
+            if (mVertOffset >= mLimitY) {
+                mFrameReady = 1;
+                return 0;
+            }
+            mHorzOffset = 0;
+        }
+        refill();
+
+        int dctSkipStride = 0;
+        if (mShifter < 0x10000000u) {
+            while (true) {
+                if (mShifter >= 0x03000000u) {
+                    mba = &afmv_mba_5[8 + (mShifter >> 21)];
+                    break;
+                }
+                if ((mShifter & 0xFFE00000u) != 0x01000000u)
+                    return 0;
+                mShifter <<= 11;
+                mBitCount += 11;
+                dctSkipStride += 33;
+                refill();
+                if (mShifter >= 0x10000000u) {
+                    mba = &afmv_mba_5[mShifter >> 27];
+                    break;
+                }
+            }
+        } else {
+            mba = &afmv_mba_5[mShifter >> 27];
+        }
+        mShifter <<= mba->len;
+        mBitCount += mba->len;
+        int skipped = static_cast<int>(mba->mba) + dctSkipStride;
+        if (skipped != 0) {
+            mDcDctPred[0] = 0x4000;
+            mDcDctPred[1] = 0x4000;
+            mDcDctPred[2] = 0x4000;
+            if (mPictureType == 2) {
+                do {
+                    DoMotionCopy(&mForwVector, afmv_mc.put);
+                    mHorzOffset += 16;
+                    if (mHorzOffset == mWidth) {
+                        if (mVertOffset >= mLimitY) {
+                            mFrameReady = 1;
+                            return 0;
+                        }
+                        mHorzOffset = 0;
+                    }
+                } while (--skipped != 0);
+            } else {
+                if (mPictureType != 3) {
+                    if (_tlAssert("src/nvl_afmv.cpp", 1775, "mPictureType == PIC_TYPE_B",
+                                  "Motion compensation found on I picture."))
+                        __debugbreak();
+                }
+                const bool forward = (macroblockModes & 8u) != 0;
+                const bool backward = (macroblockModes & 4u) != 0;
+                do {
+                    if (forward)
+                        DoMotionSame(&mForwVector, afmv_mc.put);
+                    if (backward)
+                        DoMotionSame(&mBackVector, forward ? afmv_mc.avg : afmv_mc.put);
+                    mHorzOffset += 16;
+                    if (mHorzOffset == mWidth) {
+                        if (mVertOffset >= mLimitY) {
+                            mFrameReady = 1;
+                            return 0;
+                        }
+                        mHorzOffset = 0;
+                    }
+                } while (--skipped != 0);
+            }
+        }
+    }
+}
+
+void nvlAFMVMovie::ProcessAudioChunk() {}
+void nvlAFMVMovie::StartAudioPlayback() {}
+void nvlAFMVMovie::StopAudioPlayback() {}
 void nvlMovie::ProcessAudioChunk() {}
 void nvlMovie::StartAudioPlayback() {}
 void nvlMovie::StopAudioPlayback() {}
