@@ -914,8 +914,86 @@ apsWorldPlaneReflectionAction::apsWorldPlaneReflectionAction()
 void apsWorldPlaneReflectionAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
 
 apsUVAFrameAnimAction::apsUVAFrameAnimAction()
-    : apsAction(3, 0, eAsync, 0x20000u) {}
-void apsUVAFrameAnimAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(6, 0, eAsync, 0x100u) {}
+// ea: 0x0080E2B0
+void apsUVAFrameAnimAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                apsGroup* ioGroup, apsEffect*, float,
+                                float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    float frameIncrement = 0.0f;
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float frameCycles = mParams.mElements[5];
+    const bool fpsBasedOnFrameCycles = frameCycles > 0.0f;
+    if (!fpsBasedOnFrameCycles) {
+        if (mParams.mSize <= 4 &&
+            _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                      "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+            __debugbreak();
+        frameIncrement = mParams.mElements[4] * iTimeDelta;
+    }
+
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float beginFrame = mParams.mElements[2];
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float endFrame = mParams.mElements[3];
+    const float framesPerCycle = endFrame - beginFrame;
+
+    if ((ioGroup->mPFD.mFields & 0x100u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int frameOffset = ioGroup->mPFD.mOffsets[8];
+    if ((ioGroup->mPFD.mFields & 0x200u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int ageOffset = ioGroup->mPFD.mOffsets[9];
+    if ((ioGroup->mPFD.mFields & 0x400u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAgeOffset = ioGroup->mPFD.mOffsets[10];
+
+    unsigned char* frameField = iBegin + frameOffset;
+    const unsigned char* endFrameField = iEnd + frameOffset;
+    unsigned char* ageField = iBegin + ageOffset;
+    unsigned char* maxAgeField = iBegin + maxAgeOffset;
+    while (frameField != endFrameField) {
+        float* frame = reinterpret_cast<float*>(frameField);
+        const float* age = reinterpret_cast<const float*>(ageField);
+        const float* maxAge = reinterpret_cast<const float*>(maxAgeField);
+        if (fpsBasedOnFrameCycles) {
+            if (*maxAge <= *age + iTimeDelta) {
+                frameIncrement = 0.0f;
+            } else {
+                frameIncrement = (framesPerCycle * frameCycles * iTimeDelta) / *maxAge;
+            }
+        }
+
+        float nextFrame = *frame;
+        if (beginFrame > nextFrame)
+            nextFrame = beginFrame;
+        nextFrame += frameIncrement;
+        if (nextFrame >= endFrame)
+            nextFrame = (nextFrame - endFrame) + beginFrame;
+        if (beginFrame > nextFrame)
+            nextFrame = endFrame - (beginFrame - nextFrame);
+        *frame = nextFrame;
+
+        frameField += stride;
+        ageField += stride;
+        maxAgeField += stride;
+    }
+}
 
 // ============================================================================
 // Angle-tracking actions
