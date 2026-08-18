@@ -183,7 +183,75 @@ void apsLifetimeAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 // ============================================================================
 apsAlphaFadeAction::apsAlphaFadeAction()
     : apsAction(2, 0, eAsync, 0x10u) {}
-void apsAlphaFadeAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080C760
+void apsAlphaFadeAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                             apsGroup* ioGroup, apsEffect*, float, float iTimeDelta) {
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float beginTime = mParams.mElements[3];
+
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float beginAlpha = mParams.mElements[2];
+
+    if ((ioGroup->mPFD.mFields & 0x200u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int ageOffset = ioGroup->mPFD.mOffsets[9];
+
+    if ((ioGroup->mPFD.mFields & 0x400u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAgeOffset = ioGroup->mPFD.mOffsets[10];
+
+    if ((ioGroup->mPFD.mFields & 0x10u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int alphaOffset = ioGroup->mPFD.mOffsets[4];
+
+    if ((ioGroup->mPFD.mFields & 0x8000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int flagsOffset = ioGroup->mPFD.mOffsets[27];
+
+    if ((ioGroup->mPFD.mFields & 0x8000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAlphaOffset = ioGroup->mPFD.mOffsets[15];
+
+    const float scale = beginAlpha / (1.0f - beginTime);
+    const int stride = ioGroup->mPFD.mStride;
+    for (unsigned char* particle = iBegin; particle != iEnd; particle += stride) {
+        float* alpha = reinterpret_cast<float*>(particle + alphaOffset);
+        const float maxAlpha = *reinterpret_cast<float*>(particle + maxAlphaOffset);
+        const unsigned char flags = *(particle + flagsOffset);
+
+        if ((flags & 4u) != 0) {
+            FadeOutParticle(ioGroup, particle, alpha, maxAlpha, iTimeDelta);
+            continue;
+        }
+
+        const float maxAge = *reinterpret_cast<float*>(particle + maxAgeOffset);
+        const float age = *reinterpret_cast<float*>(particle + ageOffset);
+        float newAlpha = 0.0f;
+        if ((maxAge * beginTime) <= age) {
+            if (maxAge > age)
+                newAlpha = (1.0f - (age / maxAge)) * scale;
+        } else {
+            newAlpha = beginAlpha;
+        }
+        *alpha = newAlpha;
+    }
+}
 
 apsAlphaFadeInOutAction::apsAlphaFadeInOutAction()
     : apsAction(5, 0, eAsync, 0x8008610u) {}
