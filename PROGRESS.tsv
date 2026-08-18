@@ -297,7 +297,7 @@ aeps_xboxr:apsGroupMgr.o	aeps_xboxr	apsGroupMgr.o	engine	7	PORTED	apsGroupMgr.cp
 
 aeps_xboxr:apsActionList.o	aeps_xboxr	apsActionList.o	engine	7	PORTED	apsActionList.cpp (Apply/EnhancePFD/Fixup/ctor/dtor/Add + anon GetVisibleParticleUpdateDelay; g_updateLOD static table; apsEffect.h minimal views; apsArray push_back/push_front
 
-nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: all nslListener.o functions ported from IDA, including listener group lookup, matrix/orientation normalization, position/velocity updates, and release frame-delta globals
 
 nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 

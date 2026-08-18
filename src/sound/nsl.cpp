@@ -336,6 +336,24 @@ nslSpeaker nsl_speakers[8] = {
     {{ 0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}}
 };
 float nsl_listenerMatrix[3][3] = {};
+static float nsl_frontA[3] = {};
+static float dword_10E10CC = 0.0f;
+static float dword_10E10D0 = 0.0f;
+static float nsl_frontB[3] = {};
+static float dword_10E10D8 = 0.0f;
+static float dword_10E10DC = 0.0f;
+static float nsl_topB[3] = {};
+static float dword_10E10E4 = 0.0f;
+static float dword_10E10E8 = 0.0f;
+static float nsl_frontC[3] = {};
+static float dword_10E10F0 = 0.0f;
+static float dword_10E10F4 = 0.0f;
+static float nsl_topC[3] = {};
+static float dword_10E10FC = 0.0f;
+static float dword_10E1100 = 0.0f;
+static float nsl_topA[3] = {};
+static float dword_10E1108 = 0.0f;
+static float dword_10E110C = 0.0f;
 static float dword_10E11CC = 0.0f;
 static float dword_10E11D0 = 0.0f;
 static float v3a = 0.0f;
@@ -2979,6 +2997,7 @@ void          nslUpdateSources() {
 // nslListener — audio listener (3D ears)
 // ============================================================================
 static int    s_NumberOfListeners = 1;
+static float* txVectorNormalize(float* dst, const float* src);
 
 // ea: 0x00823D50
 int           nslGetNumberOfListeners() { return s_NumberOfListeners; }
@@ -2998,7 +3017,24 @@ nslGroup*     nslListenerGetGroup(unsigned listenerIndex) {
 }
 
 // ea: 0x00823DD0
-void          nslListenerSetMatrix(unsigned, const float (*)[4]) {}
+void          nslListenerSetMatrix(unsigned listenerIndex, const float (*m)[4]) {
+    nslGroup* group = nslListenerGetGroup(listenerIndex);
+    if (group == nullptr)
+        return;
+    group->params[19] = (*m)[3];
+    group->params[20] = (*m)[7];
+    group->params[21] = (*m)[11];
+    group->params[49] = (*m)[4];
+    group->params[50] = (*m)[5];
+    group->params[52] = (*m)[6];
+    group->params[46] = (*m)[8];
+    group->params[47] = (*m)[9];
+    group->params[49] = (*m)[10];
+    txVectorNormalize(group->params + 46, group->params + 46);
+    txVectorNormalize(group->params + 49, group->params + 49);
+    group->paramsUpdate |= UINT64_C(0x380000) |
+                           (UINT64_C(0xFC000) << 32);
+}
 
 // ea: 0x00823E60
 void          nslListenerSetPosition(unsigned listenerIndex, const float* pos) {
@@ -3023,7 +3059,40 @@ void          nslListenerSetVelocity(unsigned listenerIndex, const float* vel) {
 }
 
 // ea: 0x00823EE0
-void          nslListenerSetOrientation(unsigned, const float*, const float*) {}
+void          nslListenerSetOrientation(unsigned listenerIndex, const float* frt,
+                                         const float* top) {
+    nslGroup* group = nslListenerGetGroup(listenerIndex);
+    if (group == nullptr)
+        return;
+    group->params[49] = top[0];
+    group->params[50] = top[1];
+    group->params[51] = top[2];
+    group->params[46] = frt[0];
+    group->params[47] = frt[1];
+    group->params[48] = frt[2];
+    txVectorNormalize(group->params + 46, group->params + 46);
+    txVectorNormalize(group->params + 49, group->params + 49);
+    group->paramsUpdate |= UINT64_C(0xFC000) << 32;
+
+    nsl_frontA[0] = group->params[46];
+    dword_10E10CC = group->params[47];
+    dword_10E10D0 = group->params[48];
+    nsl_frontB[0] = frt[0];
+    dword_10E10D8 = frt[1];
+    dword_10E10DC = frt[2];
+    nsl_frontC[0] = nsl_frontA[0] - nsl_frontB[0];
+    dword_10E10F0 = dword_10E10CC - dword_10E10D8;
+    dword_10E10F4 = dword_10E10D0 - dword_10E10DC;
+    nsl_topA[0] = group->params[49];
+    dword_10E1108 = group->params[50];
+    dword_10E110C = group->params[51];
+    nsl_topB[0] = top[0];
+    dword_10E10E4 = top[1];
+    dword_10E10E8 = top[2];
+    nsl_topC[0] = nsl_topA[0] - nsl_topB[0];
+    dword_10E10FC = dword_10E1108 - dword_10E10E4;
+    dword_10E1100 = dword_10E110C - dword_10E10E8;
+}
 void          nslListenerSetDopplerFactor(unsigned, float) {}
 
 // ea: 0x008232D0
