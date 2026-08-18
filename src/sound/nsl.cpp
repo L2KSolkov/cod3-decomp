@@ -437,6 +437,15 @@ void          nslSourceSetConeAngles(nslSourceID, float, float) {}
 void          nslSourceSetConeOutsideVolume(nslSourceID, float) {}
 void          nslSourceSetMinDistance(nslSourceID, float) {}
 void          nslSourceSetMaxDistance(nslSourceID, float) {}
+// ea: 0x00820F10
+void          nslSetSourceParam(nslSourceID sid, int index, float value) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr || index >= 0x40u)
+        return;
+    const unsigned __int64 mask = 1ull << index;
+    source->paramsUpdate |= mask;
+    source->params[index] = value;
+}
 
 // Voice enumeration (used by EffectEventSys::NumberOfVoicesUsed)
 unsigned      nslGetNumVoices() { return 0; }
@@ -515,7 +524,13 @@ enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
 nslBankID      nslLoadBank(unsigned int flags, unsigned int file, unsigned int fileOffset) { return static_cast<nslBankID>(nslWaveBankLoad(static_cast<nflFileID>(file), fileOffset, flags)); }  // ?nslLoadBank@@YA?AW4nslBankID@@III@Z
 nslWaveID      nslGetWave(const char*) { return NSL_WAVE_ID_INVALID; }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
 float          nslGetWaveParam(nslWaveID, int, float defaultValue) { return defaultValue; }  // ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z
-float         nslGetSourceParam(nslSourceID, int, float defaultValue) { return defaultValue; }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
+// ea: 0x00820FF0
+float         nslGetSourceParam(nslSourceID sid, int index, float defaultValue) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr || index < 0 || index >= 0x40)
+        return defaultValue;
+    return source->params[index];
+}  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
 int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z (nslSource.o)
 
@@ -527,7 +542,6 @@ void          nslFreeSource(nslSourceID);
 void          nslStopSource(nslSourceID sid) { nslFreeSource(sid); }
 void          nslQueueSource(nslSourceID) {}
 void          nslFreeSource(nslSourceID) {}
-void          nslSetSourceParam(nslSourceID, int, float) {}
 void          nslSetSourcePosition(nslSourceID, const float*) {}
 void          nslSetSourceVelocity(nslSourceID, const float*) {}
 void          nslDampen(float) {}
