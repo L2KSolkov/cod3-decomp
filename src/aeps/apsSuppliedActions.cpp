@@ -19,7 +19,10 @@
 #include "apsInternal.h"
 
 #include <cmath>
+#include <cstdio>
 #include <cstring>
+
+extern void tlWarning(const char* Format, ...);
 
 // IDA global @ 0x00D3C190 (Float4_NegZAxis_123).
 const __m128 Float4_NegZAxis_123 = {0.0f, 0.0f, -1.0f, 0.0f};
@@ -2320,8 +2323,112 @@ unsigned int apsTrajectoryAction::GetSplineInfo(float*&, float&, float&,
 // Env-collide (world raycast)
 // ============================================================================
 apsEnvCollideAction::apsEnvCollideAction()
-    : apsAction(3, 0, eAsync, 0x14040u) {}
-void apsEnvCollideAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(2, 0, eAsync, 0xF8004001u) {}
+// ea: 0x0080B340
+void apsEnvCollideAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                              apsGroup* ioGroup, apsEffect* iEffect, float,
+                              float) {
+    if ((ioGroup->mPFD.mFields & 0x08000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int flagsOffset = ioGroup->mPFD.mOffsets[27];
+
+    if ((ioGroup->mPFD.mFields & 0x10000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int previousPositionOffset = ioGroup->mPFD.mOffsets[28];
+
+    if ((ioGroup->mPFD.mFields & 0x20000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int lastCollisionNormalOffset = ioGroup->mPFD.mOffsets[29];
+
+    if ((ioGroup->mPFD.mFields & 1u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int positionOffset = ioGroup->mPFD.mOffsets[0];
+
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+
+    if ((ioGroup->mPFD.mFields & 0x40000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int collisionResultIdOffset = ioGroup->mPFD.mOffsets[30];
+
+    if ((ioGroup->mPFD.mFields & 0x80000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int raycastCountdownOffset = ioGroup->mPFD.mOffsets[31];
+
+    const int stride = ioGroup->mPFD.mStride;
+    for (unsigned char* particle = iBegin; particle != iEnd;
+         particle += stride) {
+        const float* previousPosition = reinterpret_cast<const float*>(
+            particle + previousPositionOffset);
+        const float* currentPosition = reinterpret_cast<const float*>(
+            particle + positionOffset);
+        const math::Dir3 previous(previousPosition[0], previousPosition[1],
+                                  previousPosition[2]);
+        const math::Dir3 current(currentPosition[0], currentPosition[1],
+                                 currentPosition[2]);
+
+        if (ioGroup->ParticleIsMarkedForRemoval(particle))
+            continue;
+
+        unsigned int& collisionResultId = *reinterpret_cast<unsigned int*>(
+            particle + collisionResultIdOffset);
+        if (collisionResultId != 0xFFFFFFFFu) {
+            const apsEffect::RaycastResult& result =
+                iEffect->GetRaycastResult(collisionResultId);
+            if (result.t >= 0.0f) {
+                float* position = reinterpret_cast<float*>(particle + positionOffset);
+                position[0] = result.position.v.m128_f32[0];
+                position[1] = result.position.v.m128_f32[1];
+                position[2] = result.position.v.m128_f32[2];
+
+                float* collisionNormal = reinterpret_cast<float*>(
+                    particle + lastCollisionNormalOffset);
+                collisionNormal[0] = result.normal.v.m128_f32[0];
+                collisionNormal[1] = result.normal.v.m128_f32[1];
+                collisionNormal[2] = result.normal.v.m128_f32[2];
+                ioGroup->MarkParticleForRemoval(particle);
+            }
+            collisionResultId = 0xFFFFFFFFu;
+        }
+
+        unsigned int& raycastCountdown = *reinterpret_cast<unsigned int*>(
+            particle + raycastCountdownOffset);
+        if (raycastCountdown != 0) {
+            --raycastCountdown;
+            continue;
+        }
+
+        collisionResultId = iEffect->RequestRaycast(previous, current);
+        if (collisionResultId == 0xFFFFFFFFu) {
+            if (iEffect->mTemplate == 0 &&
+                _tlAssert("c:/cod/code/tl/aeps/include\\apsEffect.h", 182,
+                          "mTemplate", "null template"))
+                __debugbreak();
+            char warning[0x200];
+            _snprintf(warning, sizeof(warning),
+                      "AEPS warning: raycast request denied. template=%s",
+                      iEffect->mTemplate->mName);
+            tlWarning(warning);
+        } else {
+            raycastCountdown = apsEffect::GetRaycastCountdownMaxValue();
+            *reinterpret_cast<unsigned char*>(particle + flagsOffset) |= 2u;
+        }
+    }
+}
 
 // ============================================================================
 // File-scope global — gCheckSplineData (0x014CFF50 in .data)
