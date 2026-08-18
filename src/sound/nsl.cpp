@@ -300,6 +300,7 @@ static int nslSlotIndex(const txSlotPool* pool, txSlot slot) {
         reinterpret_cast<const unsigned char*>(pool->slots) + pool->stride * result);
     return entry->slot == slot ? static_cast<int>(result) : -1;
 }
+extern "C" void txSlotFree(txSlotPool* pool, txSlot slot);
 
 // Forward declarations for the IDA-backed bank layer below.
 unsigned nslDriverVoiceSize();
@@ -756,7 +757,22 @@ int           nslIsWaveStreamed(nslWaveID waveID) { return nslWaveIsStreaming(wa
 // nslCompat.o / nslSource.o family (stubbed; manglings match binary)
 int           nslGetBankState(nslBankID bankID) { return nslWaveBankGetState(static_cast<nslWaveBankID>(bankID)); }
 void          nslFreeBank(nslBankID bankID) { nslWaveBankFree(static_cast<nslWaveBankID>(bankID)); }
-void          nslFreeSource(nslSourceID);
+// ea: 0x00820920
+void          nslFreeSource(nslSourceID sid) {
+    const int index = nslSlotIndex(&nsl_sourcePool, static_cast<txSlot>(sid));
+    if (index == -1)
+        return;
+    nslSource* source = reinterpret_cast<nslSource*>(
+        reinterpret_cast<unsigned char*>(nsl_sources) +
+        nslSourceStride * static_cast<unsigned>(index));
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    const int voice = *reinterpret_cast<const int*>(raw + 0x118u);
+    if (voice != -1)
+        nslVoiceFree(voice);
+    txSlotFree(&nsl_sourcePool, static_cast<txSlot>(sid));
+}
 // ea: 0x00820B50
 void          nslStopSource(nslSourceID sid) { nslFreeSource(sid); }
 // ea: 0x008208C0
@@ -779,7 +795,6 @@ void          nslQueueSource(nslSourceID sid) {
         return;
     reinterpret_cast<unsigned char*>(source)[0x122] |= 1u;
 }
-void          nslFreeSource(nslSourceID) {}
 void          nslDampen(float) {}
 void          nslUndampen() {}
 // ea: 0x00821890
