@@ -63,6 +63,7 @@ extern nslVoice* nslGetVoice(unsigned int a);
 extern nslSourceState nslGetSourceState(nslSourceID sid);
 extern const char* nslGetSourceName(nslSourceID sid);
 extern int nslIsWaveLooped(nslWaveID wave);
+extern nslWaveID nslGetWave(const char* name);
 
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
 
@@ -242,8 +243,8 @@ extern unsigned int SoundDevice_QueueSound(
 // SoundDevice free artifacts (sound.o surface; stubs, port later)
 unsigned int SoundDevice_FindWave(void* sInst, const char* name)
 {
-    (void)sInst; (void)name;
-    return (unsigned int)-1;
+    (void)sInst;
+    return (unsigned int)nslGetWave(name);
 }
 unsigned int SoundDevice_PlaySound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
