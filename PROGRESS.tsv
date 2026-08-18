@@ -741,4 +741,5 @@ game.o		game.o	game	663	IN_PROGRESS	batch 80 COMPLETE: SoundDevice::GetNumberOfL
 mp.o		mp.o	game	770	PORTED	IDA/map decorated-symbol audit is 770/770 after restoring qualifier-exact MP signatures; vcvars32 build clean with no compiler/linker errors (only existing /FORCE warning)
 game.o		game.o	game	663	PORTED	Current dumpbin audit resolves all 663 game.o inventory symbols; vcvars32 build is clean and the x86 CDB startup run reaches Com_Frame without AV/RTC/buffer-overrun failures
 core.o	effect_events.cpp	game	1	PORTED	SoundDevice_FindWave bridge now delegates to the IDA-backed nslGetWave path instead of unconditionally returning NSL_WAVE_ID_INVALID; canonical vcvars32 build clean
+render.o	effect_events.cpp	render	1	PORTED	LightEffect::IsLightFinished ported from IDA 0x006C3500: PakManager slot validity, kill/lifetime sentinel, and active-state gates; canonical vcvars32 build clean
 anim.o		anim.o	game	408	PORTED	Current object-symbol audit has 0 missing across 741 anim.o inventory rows; restored IDA/map-exact duration, generic-skeleton, and IsType decorations; vcvars32 build clean

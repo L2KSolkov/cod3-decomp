@@ -280,10 +280,22 @@ struct SoundDeviceInst {
 SoundDeviceInst* SoundDevice_sInst = nullptr;  // ?SoundDevice_sInst (core.o)
 
 CameraShake* g_cameraShake = nullptr;
-// ?IsLightFinished@LightEffect@@QAE_NXZ (core.o; stub)
+// ea: 0x006C3500 (render.o)
 bool LightEffect::IsLightFinished()
 {
-    return false;
+    if (this->mPakId == PAK_ID_INVALID)
+        return true;
+
+    // PakManager::mSlots is an IDA-typed PakFile*[99] array at +0x40.
+    const void* const* slots = reinterpret_cast<const void* const*>(
+        reinterpret_cast<const unsigned char*>(PakManager::sInst) + 0x40);
+    if (slots[this->mPakId] == nullptr || this->mKill)
+        return true;
+
+    if (this->mMSecLifetime != -1000.0f && this->mMSecLifetime < 0.0f)
+        return true;
+
+    return !this->mActive;
 }
 int dword_F6A290[4 * 0x322];
 int g_debug_sync_queries = 0;
