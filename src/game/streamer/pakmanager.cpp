@@ -11909,7 +11909,7 @@ tlResourceDirectory<nalSceneAnim>* nalSceneAnimDirectory = nullptr;             
 extern int nalReleaseSkeleton(nalBaseSkeleton* skeleton);  // nal.cpp
 extern int nalReleaseAnimFile(nalAnimFile* file);          // nal.cpp
 extern int nalReleaseSceneAnim(nalSceneAnim* sceneAnim);   // nal.cpp
-extern nalBaseSkeleton* nalLoadSkeletonInPlace(void* data);  // nal.cpp
+extern nalBaseSkeleton* nalLoadSkeletonInPlace(nalBaseSkeleton* data);  // nal.cpp
 extern nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& FileName,
                                            void* Data);      // nal.cpp
 extern void XAnimEntryInvalidate();  // anim.o 0x92D5E0
@@ -14614,7 +14614,7 @@ void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,
 {
     (void)size; (void)pak;
     PakHeapContext heap_ctx(pakId, false);
-    if (nalLoadSkeletonInPlace(data) == nullptr)
+    if (nalLoadSkeletonInPlace(reinterpret_cast<nalBaseSkeleton*>(data)) == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DecodePakFile.cpp";

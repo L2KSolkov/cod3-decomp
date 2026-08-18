@@ -246,7 +246,7 @@ ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	PORTED	ngl_dx_shade
 
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	PORTED	ngl_xb_palette.cpp: palette create/destroy/bind + nglPalette.h; D3DPalette/_D3DCAPS8/palette shims in d3d8.h
 
-nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (IDA-typed nalBaseSkeleton layout/constructor and GetVersion accessor; remaining skeleton resource bodies are explicit stubs)
+nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: IDA-backed nal.cpp skeleton resource management (nalGetSkeleton, nalConstructSkeleton, nalLoadSkeletonInPlace, StandardLoad/StandardRelease, nalLoadSkeleton, nalReleaseSkeleton, nalReleaseAllSkeletons); build and CDB startup validated through both global .xbskel loads
 
 bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	bdLog.cpp: bdLogImpl, bdMessageProxy, and singleton registration ported from IDA dump; compile/link gate leaves no bdLog unresolveds
 

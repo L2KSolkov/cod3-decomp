@@ -536,12 +536,13 @@ static_assert(sizeof(nalCachedLODInfo) == 4,
 class nalAnyPose;
 template <typename T> class nalAnimClass;
 
-struct nalFileBuf {
+struct tlFileBuf {
     unsigned char* Buf;
     unsigned Size;
     unsigned UserData;
 };
-static_assert(sizeof(nalFileBuf) == 12, "NAL file buffer layout mismatch");
+static_assert(sizeof(tlFileBuf) == 12, "tlFileBuf layout mismatch");
+using nalFileBuf = tlFileBuf;
 
 struct nalAnimFileHeader {
     unsigned Version;
@@ -961,6 +962,9 @@ extern void* tlMemAlloc(unsigned int size, unsigned int align,
 extern void tlMemFree(void* ptr);
 extern void tlFatal(const char* fmt, ...);
 extern void tlWarning(const char* fmt, ...);
+extern bool tlReadFile(const char* filename, tlFileBuf* out,
+                       unsigned align, unsigned flags);
+extern void tlReleaseFile(tlFileBuf* buf);
 
 // ea: 0x00854370
 void nalAnimHeap::Init(int size)
@@ -2404,18 +2408,22 @@ int nalGetDecompCacheSize() { return 0x4000; }
 // ============================================================================
 // nal skeleton resource management
 // ============================================================================
-nalBaseSkeleton* nalGetSkeleton(const tlFixedString&) { return nullptr; }
-
 // Resource directories are owned by InstanceBankMgr (streamer.o).  These are
 // the release globals at 0x10EC618 / 0x10E95F8 / 0x10E95FC.
 extern tlResourceDirectory<nalBaseSkeleton>* nalSkeletonDirectory;
 extern tlResourceDirectory<nalAnimFile>* nalAnimFileDirectory;
 extern tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalAnimDirectory;
 
-// ea: 0x008730F0
-nalBaseSkeleton* nalConstructSkeleton(void* data)
+// ea: 0x008730D0
+nalBaseSkeleton* nalGetSkeleton(const tlFixedString* name)
 {
-    nalBaseSkeleton* skeleton = static_cast<nalBaseSkeleton*>(data);
+    return nalSkeletonDirectory->Find(*name);
+}
+
+// ea: 0x008730F0
+nalBaseSkeleton* nalConstructSkeleton(char* data)
+{
+    nalBaseSkeleton* skeleton = reinterpret_cast<nalBaseSkeleton*>(data);
     tlInstanceBank::Instance* instance = nalTypeInstanceBank.Search(
         skeleton->AnimTypeName);
     if (instance == nullptr
@@ -2439,13 +2447,12 @@ nalBaseSkeleton* nalConstructSkeleton(void* data)
 }
 
 // ea: 0x00873170
-nalBaseSkeleton* nalLoadSkeletonInPlace(void* data)
+nalBaseSkeleton* nalLoadSkeletonInPlace(nalBaseSkeleton* data)
 {
-    nalBaseSkeleton* original = static_cast<nalBaseSkeleton*>(data);
-    nalBaseSkeleton* skeleton = nalSkeletonDirectory->Find(original->Name);
+    nalBaseSkeleton* skeleton = nalSkeletonDirectory->Find(data->Name);
     if (skeleton != nullptr)
     {
-        if (skeleton != original
+        if (skeleton != data
             && _tlAssert("source/common/nal_skeleton.cpp", 45,
                          "Skeleton == OrigSkeleton",
                          "skeleton found in directory wasn't the same"))
@@ -2456,14 +2463,107 @@ nalBaseSkeleton* nalLoadSkeletonInPlace(void* data)
         return skeleton;
     }
 
-    skeleton = nalConstructSkeleton(original);
+    skeleton = nalConstructSkeleton(reinterpret_cast<char*>(data));
     nalSkeletonDirectory->Add(skeleton);
     return skeleton;
 }
-nalBaseSkeleton* nalLoadSkeleton(const tlFixedString&) { return nullptr; }
-int nalReleaseSkeleton(nalBaseSkeleton*) { return 0; }
-int nalReleaseSkeleton(const tlFixedString&) { return 0; }
-void nalReleaseAllSkeletons() {}
+
+// ea: 0x008731E0
+template <>
+nalBaseSkeleton* tlResourceDirectory<nalBaseSkeleton>::StandardLoad(
+    const tlFixedString& key)
+{
+    char filePath[256];
+    tlFileBuf fileBuf;
+    snprintf(filePath, sizeof(filePath), "%s%s.%s", nalSkeletonPath,
+             key.str, "xbskel");
+    if (!tlReadFile(filePath, &fileBuf, 0x10u, 0u))
+    {
+        tlWarning("Unable to open %s.\n", filePath);
+        return nullptr;
+    }
+
+    nalBaseSkeleton* skeleton = nalConstructSkeleton(
+        reinterpret_cast<char*>(fileBuf.Buf));
+    skeleton->FileBuf = fileBuf;
+
+    const uint32_t* loadedName = reinterpret_cast<const uint32_t*>(
+        &skeleton->Name);
+    const uint32_t* requestedName = reinterpret_cast<const uint32_t*>(&key);
+    int i = 0;
+    for (; i < 8 && loadedName[i] == requestedName[i]; ++i)
+        {}
+    if (i < 8
+        && _tlAssert("source/common/nal_skeleton.cpp", 76,
+                     "skeleton->GetName() == name",
+                     "name used to load didn't match internal skeleton name"))
+    {
+        __debugbreak();
+    }
+
+    Add(skeleton);
+    return skeleton;
+}
+
+// ea: 0x00873300
+template <>
+int tlResourceDirectory<nalBaseSkeleton>::StandardRelease(
+    nalBaseSkeleton* skeleton, int force, bool)
+{
+    if (skeleton == nullptr)
+        return 0;
+
+    int result;
+    if (force == 0)
+    {
+        const bool last = skeleton->RefCount == 1;
+        result = skeleton->RefCount - 1;
+        skeleton->RefCount = result;
+        if (result >= 0 && !last)
+            return result;
+    }
+
+    Del(skeleton);
+    skeleton->Release();
+    if (skeleton->FileBuf.Buf != nullptr)
+        tlReleaseFile(&skeleton->FileBuf);
+    return 0;
+}
+
+// ea: 0x008732D0
+nalBaseSkeleton* nalLoadSkeleton(const tlFixedString* FileName)
+{
+    nalBaseSkeleton* result = nalSkeletonDirectory->Find(*FileName);
+    if (result == nullptr)
+        return nalSkeletonDirectory->Load(*FileName);
+    ++result->RefCount;
+    return result;
+}
+
+// ea: 0x00873350
+int nalReleaseSkeleton(nalBaseSkeleton* skeleton)
+{
+    return nalSkeletonDirectory->Release(skeleton, 0, false);
+}
+
+// ea: 0x00873370
+nalBaseSkeleton* nalReleaseSkeleton(const tlFixedString* name)
+{
+    nalBaseSkeleton* result = nalSkeletonDirectory->Find(*name);
+    if (result != nullptr)
+    {
+        return reinterpret_cast<nalBaseSkeleton*>(static_cast<uintptr_t>(
+            nalSkeletonDirectory->Release(result, 0, false)));
+    }
+    return result;
+}
+
+// ea: 0x008733A0
+int nalReleaseAllSkeletons()
+{
+    nalSkeletonDirectory->ReleaseAll(false, false, 1);
+    return 0;
+}
 
 // ============================================================================
 // nal animation file management
@@ -9389,7 +9489,7 @@ __declspec(noinline) nalGenericSkeleton* DObjGetValidSubModelSkeleton(
         while (v8[v9] == nullptr)
             ++v9;
         void* xmodelParts = *(void**)((char*)v8[v9] + 0x08);
-        *(void**)((char*)xmodelParts + 0x38) = nalGetSkeleton(name);
+        *(void**)((char*)xmodelParts + 0x38) = nalGetSkeleton(&name);
         ValidatePakId(obj->models[i].mPakId);
         void* v12 = obj->models[i].mValue;
         void** v13 = *(void***)((char*)v12 + 0x24);
