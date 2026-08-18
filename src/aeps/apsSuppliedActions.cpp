@@ -18,6 +18,10 @@
 #include "apsEffect.h"
 
 #include <cmath>
+#include <cstring>
+
+// IDA global @ 0x00D3C190 (Float4_NegZAxis_123).
+const __m128 Float4_NegZAxis_123 = {0.0f, 0.0f, -1.0f, 0.0f};
 
 namespace {
 
@@ -1000,7 +1004,137 @@ void apsUVAFrameAnimAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 // ============================================================================
 apsAngleTrackVelocityAction::apsAngleTrackVelocityAction()
     : apsAction(0, 0, eAsync, 0x40u) {}
-void apsAngleTrackVelocityAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+
+// ea: 0x0080A670
+// The mesh-orientation branch tracks each particle's velocity with a
+// quaternion.  The release helper intentionally obtains both offsets through
+// apsPFD::GetOffset, preserving its missing-field assertion semantics.
+void apsAngleTrackMeshOrientation(unsigned char* iBegin, unsigned char* iEnd,
+                                  apsGroup* ioGroup, apsEffect*, float) {
+    const int stride = ioGroup->mPFD.mStride;
+    const int velocityOffset = ioGroup->mPFD.GetOffset(apsPFDField_Velocity);
+    const int orientationOffset = ioGroup->mPFD.GetOffset(apsPFDField_Orientation);
+
+    unsigned char* velocity = iBegin + velocityOffset;
+    const unsigned char* velocityEnd = iEnd + velocityOffset;
+    unsigned char* orientation = iBegin + orientationOffset;
+
+    while (velocity != velocityEnd) {
+        math::Dir3 direction;
+        direction.v = _mm_setr_ps(
+            reinterpret_cast<float*>(velocity)[0],
+            reinterpret_cast<float*>(velocity)[1],
+            reinterpret_cast<float*>(velocity)[2], 0.0f);
+
+        if ((ioGroup->mFlags & 2) != 0) {
+            direction.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(direction.v, direction.v, 0),
+                               ioGroup->mLocalToWorld.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(direction.v, direction.v, 85),
+                               ioGroup->mLocalToWorld.y.v)),
+                _mm_mul_ps(_mm_shuffle_ps(direction.v, direction.v, 170),
+                           ioGroup->mLocalToWorld.z.v));
+        }
+
+        const __m128 squared = _mm_mul_ps(direction.v, direction.v);
+        const float lengthSquared = squared.m128_f32[0] +
+                                    (squared.m128_f32[1] + squared.m128_f32[2]);
+        const float length = sqrt(lengthSquared);
+        direction.v = _mm_div_ps(direction.v, _mm_set1_ps(length));
+
+        math::Dir3 up;
+        up.v = Float4_NegZAxis_123;
+        math::Mat43 matrix;
+        apsMath::CreateFromVectorsDirUp(matrix, direction, up);
+        const apsQuaternion orientationQuaternion = apsMath::QuaternionFromMatrix(matrix);
+
+        float* orientationFloats = reinterpret_cast<float*>(orientation);
+        orientationFloats[0] = orientationQuaternion.x;
+        orientationFloats[1] = orientationQuaternion.y;
+        orientationFloats[2] = orientationQuaternion.z;
+        orientationFloats[3] = orientationQuaternion.w;
+
+        velocity += stride;
+        orientation += stride;
+    }
+}
+
+// ea: 0x0080A830
+void apsAngleTrackVelocityAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                       apsGroup* ioGroup, apsEffect* iEffect,
+                                       float, float iTimeDelta) {
+    if ((ioGroup->mPFD.mFields & 0x20u) != 0) {
+        apsAngleTrackMeshOrientation(iBegin, iEnd, ioGroup, iEffect, iTimeDelta);
+        return;
+    }
+
+    const int stride = ioGroup->mPFD.mStride;
+    const int velocityOffset = ioGroup->mPFD.GetOffset(apsPFDField_Velocity);
+    const int angleOffset = ioGroup->mPFD.GetOffset(apsPFDField_Angle);
+    const apsCommon::CameraSettings& camera = apsCommon::mCamera;
+    const float rollOffset = camera.mRoll - 1.5707964f;
+
+    unsigned char* velocity = iBegin + velocityOffset;
+    const unsigned char* velocityEnd = iEnd + velocityOffset;
+    unsigned char* angle = iBegin + angleOffset;
+
+    if ((ioGroup->mFlags & 2) != 0) {
+        while (velocity != velocityEnd) {
+            math::Dir3 direction;
+            direction.v = _mm_setr_ps(
+                reinterpret_cast<float*>(velocity)[0],
+                reinterpret_cast<float*>(velocity)[1],
+                reinterpret_cast<float*>(velocity)[2], 0.0f);
+            direction.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(direction.v, direction.v, 0),
+                               ioGroup->mLocalToWorld.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(direction.v, direction.v, 85),
+                               ioGroup->mLocalToWorld.y.v)),
+                _mm_mul_ps(_mm_shuffle_ps(direction.v, direction.v, 170),
+                           ioGroup->mLocalToWorld.z.v));
+
+            const __m128 upProduct = _mm_mul_ps(direction.v, camera.mUp.v);
+            const __m128 leftProduct = _mm_mul_ps(direction.v, camera.mLeft.v);
+            const float upDot = upProduct.m128_f32[0] +
+                                (upProduct.m128_f32[1] + upProduct.m128_f32[2]);
+            const float leftDot = leftProduct.m128_f32[0] +
+                                  (leftProduct.m128_f32[1] + leftProduct.m128_f32[2]);
+            if (upDot != 0.0f || leftDot != 0.0f) {
+                const double angleValue = apsMath::ATan(upDot, leftDot) +
+                                           static_cast<double>(rollOffset);
+                *reinterpret_cast<float*>(angle) =
+                    static_cast<float>(angleValue * camera.mXFlip);
+            }
+
+            velocity += stride;
+            angle += stride;
+        }
+    } else {
+        while (velocity != velocityEnd) {
+            const math::Dir3 direction(_mm_setr_ps(
+                reinterpret_cast<float*>(velocity)[0],
+                reinterpret_cast<float*>(velocity)[1],
+                reinterpret_cast<float*>(velocity)[2], 0.0f));
+            const __m128 upProduct = _mm_mul_ps(direction.v, camera.mUp.v);
+            const __m128 leftProduct = _mm_mul_ps(direction.v, camera.mLeft.v);
+            const float upDot = upProduct.m128_f32[0] +
+                                (upProduct.m128_f32[1] + upProduct.m128_f32[2]);
+            const float leftDot = leftProduct.m128_f32[0] +
+                                  (leftProduct.m128_f32[1] + leftProduct.m128_f32[2]);
+            if (upDot != 0.0f || leftDot != 0.0f) {
+                const double angleValue = apsMath::ATan(upDot, leftDot) +
+                                           static_cast<double>(rollOffset);
+                *reinterpret_cast<float*>(angle) =
+                    static_cast<float>(angleValue * camera.mXFlip);
+            }
+
+            velocity += stride;
+            angle += stride;
+        }
+    }
+}
 
 apsAngleTrackElementXAction::apsAngleTrackElementXAction()
     : apsAction(0, 0, eAsync, 0x1000u) {}
