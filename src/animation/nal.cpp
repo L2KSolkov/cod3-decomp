@@ -1142,9 +1142,9 @@ public:
     void Init(nalHeap* heap);
     void Release() {}
     void MemFree(void* ptr, unsigned size);
-    void Free(nalObject*) {}
+    void Free(nalObject* object);
     void Touch(nalObject* object);
-    nalObject* MemAlloc(unsigned, unsigned) { return nullptr; }
+    void* MemAlloc(unsigned size, unsigned formal);
     nalObject* Allocate(const nalCachedPoseInfo&, int, int, nalObject**) { return nullptr; }
     void IncreaseLOD(nalObject*, const nalCachedPoseInfo&, int, int) {}
 
@@ -1204,6 +1204,55 @@ void nalAnimCache::Touch(nalAnimCache::nalObject* object)
     else
         LRUObject = object;
     MRUObject = object;
+}
+
+// ea: 0x00868740
+void nalAnimCache::Free(nalAnimCache::nalObject* object)
+{
+    if (object == nullptr)
+        return;
+
+    if (object->DataPtr != nullptr)
+        *object->DataPtr = nullptr;
+
+    nalAnimCache::nalObject* prev = object->Prev;
+    if (prev != nullptr)
+        prev->Next = object->Next;
+    else
+        MRUObject = object->Next;
+
+    nalAnimCache::nalObject* next = object->Next;
+    if (next != nullptr)
+        next->Prev = object->Prev;
+    else
+        LRUObject = object->Prev;
+
+    nalAnimCache::nalLOD* nextLOD = object->NextLOD;
+    Heap->Free(object, object->Size);
+    while (nextLOD != nullptr)
+    {
+        nalAnimCache::nalLOD* currentLOD = nextLOD;
+        nextLOD = nextLOD->NextLOD;
+        Heap->Free(currentLOD, currentLOD->Size);
+    }
+}
+
+// ea: 0x00868830
+void* nalAnimCache::MemAlloc(unsigned size, unsigned formal)
+{
+    (void)formal;
+    if (LRUObject == nullptr)
+        return nullptr;
+
+    void* allocation = nullptr;
+    do
+    {
+        allocation = Heap->Allocate(static_cast<int>(size));
+        if (allocation != nullptr)
+            break;
+        Free(LRUObject);
+    } while (LRUObject != nullptr);
+    return allocation;
 }
 
 // ============================================================================
