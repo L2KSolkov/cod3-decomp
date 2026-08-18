@@ -15,6 +15,7 @@
 // ============================================================================
 #include "apsSuppliedActions.h"
 #include "apsGroup.h"
+#include "apsEffect.h"
 
 namespace {
 
@@ -33,6 +34,18 @@ double ModifyEmitCountByChance(float chanceToRemoveModifier, float originalCount
     if (chance <= 1.0f)
         clampedChance = chance;
     return (1.0f - clampedChance) * originalCount;
+}
+
+// ea: 0x00809CA0 - release helper used by alpha-fade actions.
+void FadeOutParticle(const apsGroup* group, unsigned char* particle,
+                     float* alphaPtr, float alphaFadePerSec, float deltaSec) {
+    const float alpha = *alphaPtr - (alphaFadePerSec * deltaSec);
+    if (alpha >= 0.001f) {
+        *alphaPtr = alpha;
+    } else {
+        *alphaPtr = 0.0f;
+        group->MarkParticleForRemoval(particle);
+    }
 }
 
 } // namespace
@@ -190,11 +203,40 @@ apsLinearScaleAction::apsLinearScaleAction(int iNumParams, int iNumDomains,
     : apsAction(iNumParams, iNumDomains, eAsync,
                 iRequiredParticleFields | 2u) {}
 void  apsLinearScaleAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
-float apsLinearScaleAction::GetScaleAmountForFrame(apsEffect&, float) const { return 0.0f; }
+// ea: 0x0080CEE0
+float apsLinearScaleAction::GetScaleAmountForFrame(apsEffect&, float iTimeDelta) const {
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    return iTimeDelta * mParams.mElements[2];
+}
 
 apsLinearScaleSyncAction::apsLinearScaleSyncAction()
     : apsLinearScaleAction(5, 0, 2u) {}
-float apsLinearScaleSyncAction::GetScaleAmountForFrame(apsEffect&, float) const { return 0.0f; }
+// ea: 0x0080CF20
+float apsLinearScaleSyncAction::GetScaleAmountForFrame(apsEffect& iEffect,
+                                                       float iTimeDelta) const {
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float start = mParams.mElements[2];
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float end = mParams.mElements[3];
+
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    return static_cast<float>((std::pow(static_cast<double>(iEffect.mParentAgePercent),
+                                         static_cast<double>(mParams.mElements[4])) *
+                               (end - start) + start) * iTimeDelta);
+}
 
 apsExponentialScaleAction::apsExponentialScaleAction()
     : apsAction(3, 0, eAsync, 2u) {}
