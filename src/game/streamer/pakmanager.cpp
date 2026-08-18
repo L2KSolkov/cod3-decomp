@@ -14,6 +14,7 @@
 #include <new>
 #include "core/mem_heap.h"
 #include "core/memory_types.h"
+#include "core/PoolAllocator.h"
 #include "core/color.h"
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
@@ -21,6 +22,7 @@
 #include "ngl/ngl_dx_quad.h"
 #include "filesystem/apk.h"
 #include "core/ae_fixed_string.h"
+#include "core/PoolAllocator.h"
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 #include "engine/broc_types.h"
@@ -834,39 +836,6 @@ public:
                    ae_sized_array<mem_info, 32>* output);  // ?GetAllocs@BankManager@@QBEXUTBankAlloc@@ABVNumBanks@@AAV?$ae_sized_array@Vmem_info@@$0CA@@@@Z
     mem_info get_alloc(const TBankAlloc& bat, int which,
                        bool mram) const;  // ?get_alloc@BankManager@@QBE?AVmem_info@@ABUTBankAlloc@@H_N@Z
-};
-
-template <typename T, int N>
-class ae_sized_array {
-public:
-    T m_elements[N];  // +0x00
-    int m_size;       // +N*sizeof(T)
-
-    void push_back(const T& elt)
-    {
-        if (m_size < N)
-            m_elements[m_size++] = elt;
-    }
-
-    // ?pop_back@?$ae_sized_array@...@@@@QAEAA...@@XZ (0x682050)
-    T& pop_back()
-    {
-        if (m_size != 0)
-            m_size = m_size - 1;
-        return m_elements[m_size];
-    }
-
-    // ?back@?$ae_sized_array@...@@@@QAEAA...@@XZ (0x685900)
-    T& back()
-    {
-        return m_elements[m_size - 1 <= 0 ? 0 : m_size - 1];
-    }
-
-    // ?set_size@?$ae_sized_array@...@@@@QAEXH@Z (0x683E70)
-    void set_size(int s)
-    {
-        m_size = s;
-    }
 };
 
 template <typename T, int N>
@@ -1978,21 +1947,6 @@ public:
     void AsyncUnloadPak(TPakId id);  // ?AsyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z
 };
 
-// PoolAllocator (core/PoolAllocator.h)
-class PoolAllocator {
-public:
-    struct PoolConfig {
-        unsigned short blockSize;   // +0x00
-        unsigned short numBlocks;   // +0x02
-        unsigned short blockAlign;  // +0x04
-        char*          block;       // +0x08
-    };
-
-    PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList,
-                  unsigned int flags);  // ??0PoolAllocator@@QAE@ABV?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@I@Z
-    void* Allocate(unsigned int size, bool forceHeapAlloc = false);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
-    void Release(void* ptr);  // ?Release@PoolAllocator@@QAEXPAX@Z
-};
 extern PoolAllocator* gPakMemHeapAllocator;  // ?gPakMemHeapAllocator@@3PAVPoolAllocator@@A @ 0xF592F0
 PoolAllocator* PakFile::sAllocator = nullptr;  // ?sAllocator@PakFile@@0PAVPoolAllocator@@A @ 0xF592EC
 
