@@ -519,9 +519,14 @@ static void* nslInit_Allocate(unsigned size, unsigned align) {
 // ============================================================================
 // nslInit — init/shutdown
 // ============================================================================
+void nslStop();
+void nslUpdate();
+
 int          nslInit(const nslInitParams* ip) {
-    if (nsl_workUsed != 0)
+    if (nsl_workUsed != 0) {
+        txPrintf("NSL", 0, "Already called\n");
         return -1;
+    }
     if (ip != nullptr)
         nsl_initParams = *ip;
 
@@ -573,7 +578,10 @@ void         nslSetSpeakerMode(nslSpeakerMode speakerMode) {
     const int value = static_cast<int>(speakerMode);
     nsl_speakerMode = static_cast<nslSpeakerMode>(-(value < 0 ? -value : value));
 }
-void         nslGetInitParams(nslInitParams*) {}
+// ea: 0x008267E0
+void         nslGetInitParams(nslInitParams* ip) {
+    std::memcpy(ip, &nsl_initParams, 0x44u);
+}
 void         nslInitDefaults() {}
 void         nslFinalInit() {}
 bool         nslIsInitDone() { return true; }
@@ -1374,7 +1382,14 @@ void          nslStart(void* work) {
     nslSlotPoolInit(&nsl_emitterPool, nsl_emitterEntries,
                     static_cast<int>(nsl_initParams.maxEmitters), 12u);
 }
-void          nslExit() {}
+// ea: 0x00826C20
+void          nslExit() {
+    nslStop();
+    nslUpdate();
+    nsl_work = nullptr;
+    nsl_workUsed = 0;
+    nsl_workLimit = 0;
+}
 void          nslSetEffect(const void*) {}
 void          nslSetListenerPosition(const float*) {}
 void          nslSetListenerOrientation(const float*, const float*) {}
