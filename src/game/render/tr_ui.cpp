@@ -133,12 +133,13 @@ void RE_Text_ConsolePaint(float x, float y, int font, float scale,
                           const float* color, const short* psString,
                           float charWidth, int limit, int style);  // tr_font.cpp
 void RE_Text_PaintWithCursor(float x, float y, int font, float scale,
-                             const float* color, const char* text, int cursorPos,
+                             const float* const color, const char* text, int cursorPos,
                              char cursor, float depth, int limit,
                              int style);   // tr_text.cpp
-void j_nullsub_110();
-void j_nullsub_111();
-void j_nullsub_112();
+// IDA labels these three renderer slots as nullsub forwarding thunks.
+void j_nullsub_110() {}
+void j_nullsub_111() {}
+void j_nullsub_112() {}
 
 refexport_t* GetRefAPI(int apiVersion, refimport_t* rimp)
 {

@@ -38,6 +38,7 @@ extern void Key_Bind_f();
 extern void Key_Unbind_f();
 extern void Key_Unbindall_f();
 extern void Key_Bindlist_f();
+extern void CL_InitRef();
 extern void Field_CharEvent(field_t* edit, int ch);
 extern int dword_F170E0;
 int dword_F170E8;
@@ -95,7 +96,7 @@ int CL_RestoreMessageType(unsigned char* buffer, int used, int total,
     (void)type; (void)linewidth;
     return 0;
 }
-extern int ColorIndex(unsigned char c);
+extern unsigned char ColorIndex(unsigned char c);
 extern void Con_Linefeed(int type, int duration, int flags);
 extern void SoundDevice_StopAllSounds(void* self);
 
@@ -367,6 +368,7 @@ void CL_Init()
     cl_showMouseRate = Cvar_Get("cl_showmouserate", "0", 0);
     CL_InitGamepadCommands();
     CL_InitKeyCommands();
+    CL_InitRef();
 }
 
 // ea: 0x532700

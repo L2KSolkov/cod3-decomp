@@ -350,7 +350,7 @@ float* tv(float x, float y, float z)
 // Com_* misc helpers
 // ============================================================================
 // ea: 0x00610470
-int ColorIndex(unsigned char c)
+unsigned char ColorIndex(unsigned char c)
 {
     int result = c - 48;
     if (result >= 0xA)

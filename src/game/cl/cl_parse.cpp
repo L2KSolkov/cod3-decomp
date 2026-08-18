@@ -238,7 +238,7 @@ struct clSnapshotEntry2 {
 clSnapshotEntry2 cl_snapshots[2][4];  // ?cl_snapshots@@3PAY03UclSnapshotEntry2@@A (cl.o)
 
 // Renderer export/import interfaces (cl.o cl_main.cpp)
-struct refimport_t2 {
+struct refimport_t {
     void (*Printf)(int, const char*, ...);
     void (*Error)(errorParm_t, const char*, ...);
     int (*Milliseconds)();
@@ -328,7 +328,7 @@ struct refexport_t2 {
     void (*Text_PaintWithCursor)(float, float, int, float, const float*,
                                  const char*, int, char, float, int, int);
 };
-refexport_t2 re2;  // ?re2@@3Urefexport_t2@@A (cl.o)
+struct refexport_t;
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -1006,7 +1006,7 @@ int clc_lastPacketTime[2 * 4882];  // cl.o BSS
 void CL_InitRef()
 {
     Com_Printf("----- Initializing Renderer ----\n");
-    refimport_t2 ri;
+    refimport_t ri;
     extern void Cmd_RemoveCommand(const char*);
     extern int Cmd_Argc();
     extern char* Cmd_Argv(int);
@@ -1031,7 +1031,7 @@ void CL_InitRef()
     extern void CG_DObjCalcPose(void*, void*, int*);
     extern void SCR_AdjustFrom640(float*, float*, float*, float*);
     extern nglFont* CL_GetFontInfo(int, float);
-    extern void* GetRefAPI(int apiVersion, void* rimp);
+    extern refexport_t* GetRefAPI(int apiVersion, refimport_t* rimp);
     ri.Cmd_AddCommand = Cmd_AddCommand;
     ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
     ri.Cmd_Argc = Cmd_Argc;
@@ -1060,11 +1060,11 @@ void CL_InitRef()
     ri.CG_DObjCalcPose = CG_DObjCalcPose;
     ri.AdjustFrom640 = SCR_AdjustFrom640;
     ri.UI_GetFontInfo = reinterpret_cast<void* (*)(int, float)>(CL_GetFontInfo);
-    refexport_t2* RefAPI = (refexport_t2*)GetRefAPI(14, &ri);
+    refexport_t* RefAPI = GetRefAPI(14, &ri);
     Com_Printf("-------------------------------\n");
     if (!RefAPI)
         Com_Error((errorParm_t)0, "EXE_ERR_COULDNT_INIT_REFRESH");
-    memcpy(&re2, RefAPI, sizeof(re2));
+    // GetRefAPI fills the renderer's global refexport_t and returns its address.
     extern void GamePause_SetGamePaused(int client, bool paused);
     GamePause_SetGamePaused(currCl, 0);
 }

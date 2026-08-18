@@ -2226,12 +2226,6 @@ void* FX_PlaySimpleEffectID(TPakId pakId, int id, math::Position3* org)
     (void)pakId; (void)id; (void)org;
     return nullptr;
 }
-void* GetRefAPI(int version, void* ri)
-{
-    (void)version; (void)ri;
-    return nullptr;
-}
-
 void* AssetBankSet_ctor(void* self)
 {
     (void)self;
@@ -2651,7 +2645,12 @@ void R_ShutdownDebug() {}
 void R_ToggleSmpFrame() {}
 void RE_AddRefEntityToScene(void* a, int b) { (void)a; (void)b; }
 void RE_AddViewModelToScene(void* a) { (void)a; }
-void re_BeginRegistration(int* a) { (void)a; }
+struct glconfig_t;
+extern void RE_BeginRegistration(glconfig_t* glconfigOut);
+void re_BeginRegistration(int* a)
+{
+    RE_BeginRegistration(reinterpret_cast<glconfig_t*>(a));
+}
 void re_DebugLines(int a) { (void)a; }
 void re_DebugStrings(int a) { (void)a; }
 void re_DrawQuadPic(const float* a, const float* b, void* c)
