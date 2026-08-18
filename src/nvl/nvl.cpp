@@ -227,6 +227,199 @@ static __m64 afmv_pxor(__m64 a, __m64 b) { return afmv_from_bits(afmv_to_bits(a)
 #define _m_por afmv_por
 #define _m_pxor afmv_pxor
 
+static __m64 afmv_paddd(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 2; ++i)
+        result |= static_cast<std::uint64_t>(static_cast<std::uint32_t>(av >> (i * 32)) +
+                                             static_cast<std::uint32_t>(bv >> (i * 32))) << (i * 32);
+    return afmv_from_bits(result);
+}
+static __m64 afmv_psubd(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 2; ++i)
+        result |= static_cast<std::uint64_t>(static_cast<std::uint32_t>(av >> (i * 32)) -
+                                             static_cast<std::uint32_t>(bv >> (i * 32))) << (i * 32);
+    return afmv_from_bits(result);
+}
+static __m64 afmv_psradi(__m64 a, unsigned count) {
+    const std::uint64_t av = afmv_to_bits(a);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 2; ++i) {
+        const std::int32_t lane = static_cast<std::int32_t>(static_cast<std::uint32_t>(av >> (i * 32)));
+        result |= static_cast<std::uint64_t>(static_cast<std::uint32_t>(lane >> count)) << (i * 32);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_psrawi(__m64 a, unsigned count) {
+    const std::uint64_t av = afmv_to_bits(a);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        const std::int16_t lane = static_cast<std::int16_t>(static_cast<std::uint16_t>(av >> (i * 16)));
+        result |= static_cast<std::uint64_t>(static_cast<std::uint16_t>(lane >> count)) << (i * 16);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_pmulhw(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        const std::int32_t product = static_cast<std::int16_t>(static_cast<std::uint16_t>(av >> (i * 16))) *
+                                     static_cast<std::int16_t>(static_cast<std::uint16_t>(bv >> (i * 16)));
+        result |= static_cast<std::uint64_t>(static_cast<std::uint16_t>(product >> 16)) << (i * 16);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_paddsw(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        const int sum = static_cast<std::int16_t>(static_cast<std::uint16_t>(av >> (i * 16))) +
+                        static_cast<std::int16_t>(static_cast<std::uint16_t>(bv >> (i * 16)));
+        const int clipped = sum < -32768 ? -32768 : sum > 32767 ? 32767 : sum;
+        result |= static_cast<std::uint64_t>(static_cast<std::uint16_t>(clipped)) << (i * 16);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_psubsw(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        const int difference = static_cast<std::int16_t>(static_cast<std::uint16_t>(av >> (i * 16))) -
+                               static_cast<std::int16_t>(static_cast<std::uint16_t>(bv >> (i * 16)));
+        const int clipped = difference < -32768 ? -32768 : difference > 32767 ? 32767 : difference;
+        result |= static_cast<std::uint64_t>(static_cast<std::uint16_t>(clipped)) << (i * 16);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_paddusb(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 8; ++i) {
+        const unsigned sum = static_cast<unsigned>((av >> (i * 8)) & 0xFFu) +
+                              static_cast<unsigned>((bv >> (i * 8)) & 0xFFu);
+        result |= static_cast<std::uint64_t>(sum > 255 ? 255 : sum) << (i * 8);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_punpcklbw(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        result |= ((av >> (i * 8)) & 0xFFu) << (i * 16);
+        result |= ((bv >> (i * 8)) & 0xFFu) << (i * 16 + 8);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_punpckhbw(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        result |= ((av >> ((i + 4) * 8)) & 0xFFu) << (i * 16);
+        result |= ((bv >> ((i + 4) * 8)) & 0xFFu) << (i * 16 + 8);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_punpcklwd(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 2; ++i) {
+        result |= ((av >> (i * 16)) & 0xFFFFu) << (i * 32);
+        result |= ((bv >> (i * 16)) & 0xFFFFu) << (i * 32 + 16);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_punpckldq(__m64 a, __m64 b) {
+    return afmv_from_bits((afmv_to_bits(a) & 0xFFFFFFFFu) |
+                          ((afmv_to_bits(b) & 0xFFFFFFFFu) << 32));
+}
+static __m64 afmv_pshufw(__m64 a, unsigned imm) {
+    const std::uint64_t av = afmv_to_bits(a);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i)
+        result |= ((av >> (((imm >> (i * 2)) & 3u) * 16)) & 0xFFFFu) << (i * 16);
+    return afmv_from_bits(result);
+}
+static __m64 afmv_pmaddwd(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 2; ++i) {
+        const unsigned word = i * 2;
+        const std::int64_t sum = static_cast<std::int16_t>(static_cast<std::uint16_t>(av >> (word * 16))) *
+                                     static_cast<std::int16_t>(static_cast<std::uint16_t>(bv >> (word * 16))) +
+                                 static_cast<std::int16_t>(static_cast<std::uint16_t>(av >> ((word + 1) * 16))) *
+                                     static_cast<std::int16_t>(static_cast<std::uint16_t>(bv >> ((word + 1) * 16)));
+        result |= static_cast<std::uint64_t>(static_cast<std::uint32_t>(sum)) << (i * 32);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_packssdw(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i) {
+        const std::int64_t raw = static_cast<std::int32_t>(static_cast<std::uint32_t>((i < 2 ? av : bv) >> ((i & 1) * 32)));
+        const int clipped = raw < -32768 ? -32768 : raw > 32767 ? 32767 : static_cast<int>(raw);
+        result |= static_cast<std::uint64_t>(static_cast<std::uint16_t>(clipped)) << (i * 16);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_packuswb(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 8; ++i) {
+        const std::int32_t raw = static_cast<std::int16_t>(static_cast<std::uint16_t>((i < 4 ? av : bv) >> ((i & 3) * 16)));
+        const unsigned clipped = raw < 0 ? 0u : raw > 255 ? 255u : static_cast<unsigned>(raw);
+        result |= static_cast<std::uint64_t>(clipped) << (i * 8);
+    }
+    return afmv_from_bits(result);
+}
+#define _m_paddd afmv_paddd
+#define _m_psubd afmv_psubd
+#define _m_psradi afmv_psradi
+#define _m_psrawi afmv_psrawi
+#define _m_pmulhw afmv_pmulhw
+#define _m_paddsw afmv_paddsw
+#define _m_psubsw afmv_psubsw
+#define _m_paddusb afmv_paddusb
+#define _m_punpcklbw afmv_punpcklbw
+#define _m_punpckhbw afmv_punpckhbw
+#define _m_punpcklwd afmv_punpcklwd
+#define _m_punpckldq afmv_punpckldq
+#define _m_pshufw afmv_pshufw
+#define _m_pmaddwd afmv_pmaddwd
+#define _m_packssdw afmv_packssdw
+#define _m_packuswb afmv_packuswb
+
+static const std::int16_t one_corr[4] = {1, 1, 1, 1};
+static const std::int16_t round_inv_row[4] = {16384, 0, 16384, 0};
+static const std::int16_t round_inv_col[4] = {32, 32, 32, 32};
+static const std::int16_t round_inv_corr[4] = {31, 31, 31, 31};
+static const std::int16_t tg_1_16[4] = {13036, 13036, 13036, 13036};
+static const std::int16_t tg_2_16[4] = {27146, 27146, 27146, 27146};
+static const std::int16_t tg_3_16[4] = {-21746, -21746, -21746, -21746};
+static const std::int16_t cos_4_16[4] = {-19195, -19195, -19195, -19195};
+static const std::int16_t tab_i_04[32] = {
+    16384,21407,16384,8867,16384,8867,-16384,-21407,
+    16384,-8867,16384,-21407,-16384,21407,16384,-8867,
+    22725,19266,19266,-4520,12873,4520,-22725,-12873,
+    12873,-22725,4520,-12873,4520,19266,19266,-22725};
+static const std::int16_t tab_i_17[32] = {
+    22725,29692,22725,12299,22725,12299,-22725,-29692,
+    22725,-12299,22725,-29692,-22725,29692,22725,-12299,
+    31521,26722,26722,-6270,17855,6270,-31521,-17855,
+    17855,-31521,6270,-17855,6270,26722,26722,-31521};
+static const std::int16_t tab_i_26[32] = {
+    21407,27969,21407,11585,21407,11585,-21407,-27969,
+    21407,-11585,21407,-27969,-21407,27969,21407,-11585,
+    29692,25172,25172,-5906,16819,5906,-29692,-16819,
+    16819,-29692,5906,-16819,5906,25172,25172,-29692};
+static const std::int16_t tab_i_35[32] = {
+    19266,25172,19266,10426,19266,10426,-19266,-25172,
+    19266,-10426,19266,-25172,-19266,25172,19266,-10426,
+    26722,22654,22654,-5315,15137,5315,-26722,-15137,
+    15137,-26722,5315,-15137,5315,22654,22654,-26722};
+
 static __m64 afmv_load64(const unsigned char* p) {
     __m64 value;
     std::memcpy(&value, p, sizeof(value));
@@ -1916,8 +2109,171 @@ nvlMovie::~nvlMovie() = default;
 bool nvlInit() { return true; }
 void nvlShutdown() { tlMemFree(nvlAFMVMovie::mAudioData); }
 
-void MacroBlockIdct(short*) {}
-void MacroBlockIdctCopy(short*, unsigned char*, int) {}
-void MacroBlockIdctAdd(int, short*, unsigned char*, int) {}
+static __m64 afmv_idct_table(const std::int16_t* table, unsigned offset) {
+    return afmv_load64(reinterpret_cast<const unsigned char*>(table + offset));
+}
+
+static void afmv_idct_first_pair(__m64& first, __m64& second, const std::int16_t* table,
+                                 __m64 roundRow) {
+    const __m64 evenFirst = _m_pshufw(first, 136);
+    const __m64 evenSecond = _m_pshufw(second, 136);
+    const __m64 oddFirst = _m_pshufw(first, 221);
+    const __m64 oddSecond = _m_pshufw(second, 221);
+    const __m64 v7 = _m_paddd(_m_paddd(_m_pmaddwd(afmv_idct_table(table, 0), evenFirst), roundRow),
+                              _m_pmaddwd(afmv_idct_table(table, 4), evenSecond));
+    const __m64 v8 = _m_paddd(_m_pmaddwd(afmv_idct_table(table, 16), oddFirst),
+                              _m_pmaddwd(afmv_idct_table(table, 20), oddSecond));
+    const __m64 v9 = _m_paddd(_m_paddd(_m_pmaddwd(evenFirst, afmv_idct_table(table, 8)), roundRow),
+                              _m_pmaddwd(evenSecond, afmv_idct_table(table, 12)));
+    const __m64 v10 = _m_paddd(_m_pmaddwd(oddFirst, afmv_idct_table(table, 24)),
+                               _m_pmaddwd(oddSecond, afmv_idct_table(table, 28)));
+    first = _m_packssdw(_m_psradi(_m_paddd(v7, v8), 15), _m_psradi(_m_paddd(v9, v10), 15));
+    second = _m_pshufw(_m_packssdw(_m_psradi(_m_psubd(v9, v10), 15),
+                                   _m_psradi(_m_psubd(v7, v8), 15)), 177);
+}
+
+static void afmv_macro_block_copy(unsigned char* dest, int stride, const __m64* block) {
+    for (unsigned row = 0; row < 8; ++row)
+        afmv_store64(dest + row * stride, _m_packuswb(block[row * 2], block[row * 2 + 1]));
+}
+
+static void afmv_macro_block_add(unsigned char* dest, int stride, const __m64* block) {
+    const __m64 zero = afmv_from_bits(0);
+    for (unsigned row = 0; row < 8; ++row) {
+        const __m64 current = afmv_load64(dest + row * stride);
+        const __m64 low = _m_paddsw(_m_punpcklbw(current, zero), block[row * 2]);
+        const __m64 high = _m_paddsw(_m_punpckhbw(current, zero), block[row * 2 + 1]);
+        afmv_store64(dest + row * stride, _m_packuswb(low, high));
+    }
+}
+
+static void afmv_macro_block_add_dc(unsigned char* dest, int stride, const short* block) {
+    const int dc = (static_cast<int>(block[0]) + 64) >> 7;
+    const __m64 dcWords = afmv_from_bits(static_cast<std::uint32_t>(dc));
+    const __m64 dcWordsLo = _m_punpcklwd(dcWords, dcWords);
+    const __m64 dcWordsAll = _m_punpckldq(dcWordsLo, dcWordsLo);
+    const __m64 negative = _m_psubsw(afmv_from_bits(0), dcWordsAll);
+    const __m64 positiveBytes = _m_packuswb(dcWordsAll, dcWordsAll);
+    const __m64 negativeBytes = _m_packuswb(negative, negative);
+    for (unsigned row = 0; row < 8; ++row) {
+        const __m64 current = afmv_load64(dest + row * stride);
+        afmv_store64(dest + row * stride,
+                     _m_psubusb(_m_paddusb(current, positiveBytes), negativeBytes));
+    }
+}
+
+void MacroBlockIdct(short* mb) {
+    __m64* block = reinterpret_cast<__m64*>(mb);
+    const __m64 roundRow = afmv_idct_table(round_inv_row, 0);
+    const std::int16_t* tables[8] = {
+        tab_i_04, tab_i_17, tab_i_26, tab_i_35,
+        tab_i_04, tab_i_35, tab_i_26, tab_i_17
+    };
+    for (unsigned pair = 0; pair < 8; ++pair)
+        afmv_idct_first_pair(block[pair * 2], block[pair * 2 + 1], tables[pair], roundRow);
+
+    const __m64 one = afmv_idct_table(one_corr, 0);
+    const __m64 tg1 = afmv_idct_table(tg_1_16, 0);
+    const __m64 tg2 = afmv_idct_table(tg_2_16, 0);
+    const __m64 tg3 = afmv_idct_table(tg_3_16, 0);
+    const __m64 cos4 = afmv_idct_table(cos_4_16, 0);
+    const __m64 roundCol = afmv_idct_table(round_inv_col, 0);
+    const __m64 roundCorr = afmv_idct_table(round_inv_corr, 0);
+
+    {
+        const __m64 v95 = block[10];
+        const __m64 v96 = block[6];
+        const __m64 v97 = block[14];
+        const __m64 v98 = _m_psubsw(v95, _m_paddsw(_m_pmulhw(tg3, v96), v96));
+        const __m64 v99 = _m_paddsw(_m_paddsw(_m_pmulhw(v95, tg3), v95), v96);
+        const __m64 v100 = _m_paddsw(_m_pmulhw(v97, tg1), block[2]);
+        const __m64 v101 = _m_paddsw(_m_pmulhw(block[12], tg2), block[4]);
+        const __m64 v102 = _m_psubsw(_m_pmulhw(tg1, block[2]), v97);
+        const __m64 v103 = _m_psubsw(_m_pmulhw(tg2, block[4]), block[12]);
+        const __m64 v104 = _m_paddsw(_m_psubsw(v102, v98), one);
+        const __m64 v105 = _m_paddsw(v102, v98);
+        block[14] = _m_paddsw(_m_paddsw(v99, v100), one);
+        const __m64 v106 = _m_psubsw(v100, v99);
+        const __m64 v107 = _m_paddsw(v106, v104);
+        const __m64 v109 = _m_pmulhw(cos4, v107);
+        block[6] = v105;
+        const __m64 v110 = _m_psubsw(v106, v104);
+        const __m64 v111 = _m_por(_m_paddsw(v107, v109), one);
+        const __m64 v112 = _m_por(_m_paddsw(_m_pmulhw(cos4, v110), v110), one);
+        const __m64 v113 = _m_paddsw(block[8], block[0]);
+        const __m64 v114 = _m_psubsw(block[0], block[8]);
+        const __m64 v115 = _m_paddsw(_m_paddsw(v113, v101), roundCol);
+        const __m64 v116 = _m_paddsw(_m_paddsw(v114, v103), roundCol);
+        const __m64 v117 = _m_psubsw(v114, v103);
+        const __m64 v118 = _m_paddsw(_m_psubsw(v113, v101), roundCorr);
+        const __m64 v120 = _m_paddsw(v117, roundCorr);
+        block[0] = _m_psrawi(_m_paddsw(block[14], v115), 6);
+        block[2] = _m_psrawi(_m_paddsw(v116, v111), 6);
+        const __m64 v121 = _m_paddsw(block[6], v118);
+        const __m64 v122 = _m_psubsw(v118, block[6]);
+        block[4] = _m_psrawi(_m_paddsw(v120, v112), 6);
+        const __m64 v123 = _m_psubsw(v115, block[14]);
+        block[6] = _m_psrawi(v121, 6);
+        block[8] = _m_psrawi(v122, 6);
+        block[10] = _m_psrawi(_m_psubsw(v120, v112), 6);
+        block[12] = _m_psrawi(_m_psubsw(v116, v111), 6);
+        block[14] = _m_psrawi(v123, 6);
+    }
+    {
+        const __m64 v124 = block[11];
+        const __m64 v125 = block[7];
+        const __m64 v126 = block[15];
+        const __m64 v127 = _m_paddsw(_m_paddsw(_m_pmulhw(v124, tg3), v124), v125);
+        const __m64 v128 = _m_psubsw(v124, _m_paddsw(_m_pmulhw(tg3, v125), v125));
+        const __m64 v129 = _m_paddsw(_m_pmulhw(v126, tg1), block[3]);
+        const __m64 v130 = _m_paddsw(_m_pmulhw(block[13], tg2), block[5]);
+        const __m64 v131 = _m_psubsw(_m_pmulhw(tg1, block[3]), v126);
+        const __m64 v132 = _m_psubsw(_m_pmulhw(tg2, block[5]), block[13]);
+        const __m64 v133 = _m_paddsw(_m_psubsw(v131, v128), one);
+        const __m64 v134 = _m_paddsw(v131, v128);
+        block[15] = _m_paddsw(_m_paddsw(v127, v129), one);
+        const __m64 v135 = _m_psubsw(v129, v127);
+        const __m64 v136 = _m_paddsw(v135, v133);
+        const __m64 v138 = _m_pmulhw(cos4, v136);
+        block[7] = v134;
+        const __m64 v139 = _m_psubsw(v135, v133);
+        const __m64 v140 = _m_por(_m_paddsw(v136, v138), one);
+        const __m64 v141 = _m_por(_m_paddsw(_m_pmulhw(cos4, v139), v139), one);
+        const __m64 v142 = _m_paddsw(block[9], block[1]);
+        const __m64 v143 = _m_psubsw(block[1], block[9]);
+        const __m64 v144 = _m_paddsw(_m_paddsw(v142, v130), roundCol);
+        const __m64 v145 = _m_paddsw(_m_paddsw(v143, v132), roundCol);
+        const __m64 v146 = _m_psubsw(v143, v132);
+        const __m64 v147 = _m_paddsw(_m_psubsw(v142, v130), roundCorr);
+        const __m64 v149 = _m_paddsw(v146, roundCorr);
+        block[1] = _m_psrawi(_m_paddsw(block[15], v144), 6);
+        block[3] = _m_psrawi(_m_paddsw(v145, v140), 6);
+        const __m64 v150 = _m_paddsw(block[7], v147);
+        const __m64 v151 = _m_psubsw(v147, block[7]);
+        block[5] = _m_psrawi(_m_paddsw(v149, v141), 6);
+        const __m64 v152 = _m_psubsw(v144, block[15]);
+        block[7] = _m_psrawi(v150, 6);
+        block[9] = _m_psrawi(v151, 6);
+        block[11] = _m_psrawi(_m_psubsw(v149, v141), 6);
+        block[13] = _m_psrawi(_m_psubsw(v145, v140), 6);
+        block[15] = _m_psrawi(v152, 6);
+    }
+}
+
+void MacroBlockIdctCopy(short* mb, unsigned char* dest, int stride) {
+    MacroBlockIdct(mb);
+    afmv_macro_block_copy(dest, stride, reinterpret_cast<const __m64*>(mb));
+    std::memset(mb, 0, sizeof(__m64) * 16);
+}
+
+void MacroBlockIdctAdd(int last, short* mb, unsigned char* dest, int stride) {
+    if (last != 129 || (static_cast<unsigned char>(mb[0]) & 0x70) == 0x40) {
+        MacroBlockIdct(mb);
+        afmv_macro_block_add(dest, stride, reinterpret_cast<const __m64*>(mb));
+    } else {
+        afmv_macro_block_add_dc(dest, stride, mb);
+    }
+    std::memset(mb, 0, sizeof(__m64) * 16);
+}
 void afmvYUV2RGB16(unsigned char**, unsigned char*, int) {}
 void afmvYUV2RGB32(unsigned char**, unsigned char*, int) {}
