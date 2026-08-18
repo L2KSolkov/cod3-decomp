@@ -320,6 +320,37 @@ static void EntityNotify_Push(EntityNotify* notify)
     ++list->m_size;
 }
 
+// ea: 0x004B3760
+void Entity::Notify(HashString h, const unsigned int& e)
+{
+    EntityNotify* notify = (EntityNotify*)EntityNotify::sAllocator->Allocate(
+        0x14, false);
+    WaitTilOutput* param = nullptr;
+    if (notify != nullptr)
+    {
+        WaitTilOutputInst1<unsigned int>* output =
+            (WaitTilOutputInst1<unsigned int>*)WaitTilOutput::sAllocator->Allocate(
+                0x10, false);
+        if (output != nullptr)
+            param = ::new (output) WaitTilOutputInst1<unsigned int>(e);
+        notify = ::new (notify) EntityNotify(h.mHash, mHandle, param);
+    }
+    if (notify != nullptr)
+        EntityNotify_Push(notify);
+
+    ScriptEventParams p;
+    memset(&p, 0, sizeof(p));
+    p.ent1 = e;
+    p.ent2 = 0;
+    p.f1 = (float)NAN;
+    p.f2 = (float)NAN;
+    p.f3 = (float)NAN;
+    p.v1.x = (float)NAN;
+    p.v1.y = (float)NAN;
+    p.v1.z = (float)NAN;
+    ExecScriptHandler(h, &p);
+}
+
 template <typename T>
 void Entity::Notify(HashString hashStr, const T& d)
 {
