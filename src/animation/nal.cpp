@@ -1147,7 +1147,8 @@ public:
     void* MemAlloc(unsigned size, unsigned formal);
     nalObject* Allocate(const nalCachedPoseInfo& cpi, int lod, int count,
                         nalObject** dataPtr);
-    void IncreaseLOD(nalObject*, const nalCachedPoseInfo&, int, int) {}
+    void IncreaseLOD(nalObject* object, const nalCachedPoseInfo& cpi,
+                     int lod, int count);
 
     nalHeap* Heap;
     nalObject* LRUObject;
@@ -1311,6 +1312,59 @@ nalAnimCache::nalObject* nalAnimCache::Allocate(
         previousLOD = lodObject;
     }
     return object;
+}
+
+// ea: 0x00868970
+void nalAnimCache::IncreaseLOD(nalAnimCache::nalObject* object,
+                               const nalCachedPoseInfo& cpi,
+                               int lod, int count)
+{
+    if (lod >= object->LOD
+        && _tlAssert("source/common/nal_cache.cpp", 103,
+                     "lod < object->LOD", "lod must be a lower value"))
+    {
+        __debugbreak();
+    }
+
+    Touch(object);
+
+    int highestLOD = cpi.LODCount - 1;
+    nalAnimCache::nalLOD* previousLOD = nullptr;
+    if (highestLOD > object->LOD)
+    {
+        int remaining = highestLOD - object->LOD;
+        highestLOD = object->LOD;
+        while (true)
+        {
+            previousLOD = previousLOD != nullptr
+                ? previousLOD->NextLOD
+                : object->NextLOD;
+            if (--remaining == 0)
+                break;
+        }
+    }
+
+    for (int currentLOD = highestLOD - 1;
+         currentLOD >= lod; --currentLOD)
+    {
+        const int lodSize = count * cpi.LODInfo[currentLOD].Size + 16;
+        nalAnimCache::nalLOD* lodObject = nullptr;
+        while (lodObject == nullptr)
+        {
+            lodObject = static_cast<nalAnimCache::nalLOD*>(
+                Heap->Allocate(lodSize));
+            if (lodObject == nullptr)
+                Free(LRUObject);
+        }
+
+        lodObject->Size = lodSize;
+        if (object->NextLOD != nullptr)
+            previousLOD->NextLOD = lodObject;
+        else
+            object->NextLOD = lodObject;
+        lodObject->NextLOD = nullptr;
+        previousLOD = lodObject;
+    }
 }
 
 // ============================================================================
