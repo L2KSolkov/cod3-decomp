@@ -310,7 +310,9 @@ int nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram);
 int nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile, unsigned waveBankFileOffset);
 void nslWaveBankFree(nslWaveBankID waveBankID);
 nslWaveID nslWaveLookup(const char* waveName);
-bool nslWaveIsStreaming(nslWaveID waveID);
+int nslWaveIsStreaming(nslWaveID waveID);
+int nslWaveIsLooping(nslWaveID waveID);
+unsigned nslWaveGetLength(nslWaveID waveID);
 const char* nslWaveGetName(nslWaveID waveID);
 const char* nslWaveGetGroupName(nslWaveID waveID);
 void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankLoadFlags,
@@ -685,8 +687,40 @@ unsigned      nslGetMaxNumVoices() { return nslVoiceCount(); }  // ?nslGetMaxNum
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 // ea: 0x00820350
 const char*   nslGetWaveName(nslWaveID waveID) { return nslWaveGetName(waveID); }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
-const char*   nslWaveGetName(nslWaveID) { return ""; }       // ?nslWaveGetName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
-const char*   nslWaveGetGroupName(nslWaveID) { return ""; }  // ?nslWaveGetGroupName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
+// ea: 0x00827040
+const char*   nslWaveGetName(nslWaveID waveID) {
+    const unsigned encoded = static_cast<unsigned>(waveID) | 0xFFFFu;
+    const unsigned aramBase = nsl_initParams.aramBase;
+    if (aramBase == 0)
+        return "?";
+    const unsigned waveIndex = encoded & 0xFFFFu;
+    const unsigned slotIndex = (encoded >> 16) % aramBase;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[slotIndex];
+    if (slot->waveBankID != encoded ||
+        slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED)
+        return "?";
+    nslWaveBank* waveBank = slot->waveBank;
+    if (waveIndex > waveBank->waveCount)
+        return "?";
+    if ((waveBank->waveBankFlags & 2u) != 0)
+        return nullptr;
+    return waveBank->names[waveIndex].name;
+}
+// ea: 0x00827140
+const char*   nslWaveGetGroupName(nslWaveID waveID) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return nullptr;
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    if (metadata == nullptr)
+        return nullptr;
+    const unsigned char* group =
+        *reinterpret_cast<const unsigned char* const*>(metadata + 8u);
+    if (group == nullptr)
+        return nullptr;
+    return reinterpret_cast<const char*>(group + 0x108u);
+}
 // ea: 0x00820340
 const char*   nslGetWaveGroup(nslWaveID waveID) { return nslWaveGetGroupName(waveID); }      // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
@@ -701,6 +735,10 @@ float         nslGetSourceParam(nslSourceID sid, int index, float defaultValue) 
         return defaultValue;
     return source->params[index];
 }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
+// ea: 0x00820320
+int           nslGetWaveLength(nslWaveID waveID) { return static_cast<int>(nslWaveGetLength(waveID)); } // ?nslGetWaveLength@@YAHW4nslWaveID@@@Z
+// ea: 0x00820360
+int           nslIsWaveLooped(nslWaveID waveID) { return nslWaveIsLooping(waveID); }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
 // ea: 0x008203D0
 int           nslIsWaveStreamed(nslWaveID waveID) { return nslWaveIsStreaming(waveID); }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 
@@ -789,7 +827,7 @@ void          nslSetEffect(const void*) {}
 void          nslSetListenerPosition(const float*) {}
 void          nslSetListenerOrientation(const float*, const float*) {}
 unsigned int  nslWaveGetHash(nslWaveID) { return 0; }
-int           nslGetWaveLength(nslWaveID) { return 0; }      // ?nslGetWaveLength@@YAHW4nslWaveID@@@Z
+// nslGetWaveLength is implemented in the compatibility wrapper above.
 // ea: 0x00820DD0
 unsigned      nslGetSourceLength(nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
@@ -798,7 +836,7 @@ unsigned      nslGetSourceLength(nslSourceID sid) {
     return *reinterpret_cast<const unsigned*>(
         reinterpret_cast<const unsigned char*>(source) + 0x12Cu);
 }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
-int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
+// nslIsWaveLooped is implemented in the compatibility wrapper above.
 // ea: 0x00820BC0
 void          nslPauseSource(nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
@@ -887,9 +925,39 @@ unsigned      nslWaveGetSize(nslWaveID) { return 0; }
 unsigned      nslWaveGetFormat(nslWaveID) { return 0; }
 unsigned      nslWaveGetSampleRate(nslWaveID) { return 0; }
 unsigned      nslWaveGetChannels(nslWaveID) { return 0; }
-bool          nslWaveIsStreaming(nslWaveID) { return false; }
 nslWaveID     nslWaveGetFirst() { return NSL_INVALID_WAVE; }
 nslWaveID     nslWaveGetNext(nslWaveID) { return NSL_INVALID_WAVE; }
+// ea: 0x008271F0
+unsigned      nslWaveGetLength(nslWaveID waveID) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return 0;
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(raw);
+    const unsigned sampleCount = *reinterpret_cast<const unsigned*>(raw + 0xCu);
+    const unsigned sampleRate =
+        *reinterpret_cast<const unsigned short*>(metadata);
+    return (sampleCount * 1000u) / sampleRate;
+}
+// ea: 0x00827220
+int           nslWaveIsStreaming(nslWaveID waveID) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return 0;
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    return metadata != nullptr ? (metadata[5] & 1u) : 0;
+}
+// ea: 0x00827250
+int           nslWaveIsLooping(nslWaveID waveID) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return 0;
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    return metadata != nullptr ? ((metadata[5] >> 1) & 1u) : 0;
+}
 
 // ============================================================================
 // nslWaveBank — wave bank (collection of waves)
