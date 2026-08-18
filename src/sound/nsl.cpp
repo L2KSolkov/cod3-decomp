@@ -406,6 +406,7 @@ unsigned     nslGetVersion() { return 4; }
 // ============================================================================
 // nslSource — sound sources / emitters (3D positioned)
 // ============================================================================
+nslWave*      nslWavePtr(nslWaveID);
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
@@ -607,6 +608,41 @@ nslEmitterID  nslGetSourceEmitter(nslSourceID sid) {
     return *reinterpret_cast<const nslEmitterID*>(
         reinterpret_cast<const unsigned char*>(source) + 0x114u);
 }
+// ea: 0x00822800
+void          nslSetSourceEffect(nslSourceID sid, int effectOn) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(source);
+    const nslWaveID waveID = *reinterpret_cast<const nslWaveID*>(raw + 0x110u);
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return;
+    const unsigned char* nameOffset = *reinterpret_cast<const unsigned char* const*>(wave);
+    if (nameOffset == nullptr || (nameOffset[7] & 2u) == 0)
+        return;
+    unsigned char* mutableRaw = reinterpret_cast<unsigned char*>(source);
+    if (effectOn != 0)
+        mutableRaw[0x122] |= 0x10u;
+    else
+        mutableRaw[0x122] &= 0xEFu;
+    mutableRaw[0x123] |= 8u;
+}
+// ea: 0x00822870
+void          nslSetSourceEffectOn(nslSourceID sid) {
+    nslSetSourceEffect(sid, 1);
+}
+// ea: 0x008228E0
+void          nslSetSourceEffectOff(nslSourceID sid) {
+    nslSetSourceEffect(sid, 0);
+}
+// ea: 0x00822950
+int           nslGetSourceEffect(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return 0;
+    return (reinterpret_cast<const unsigned char*>(source)[0x122] & 0x10u) != 0;
+}
 unsigned      nslGetMaxNumVoices() { return 0; }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
@@ -715,8 +751,6 @@ unsigned      nslGetSourceLength(nslSourceID sid) {
         reinterpret_cast<const unsigned char*>(source) + 0x12Cu);
 }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
 int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
-void          nslSetSourceEffectOn(nslSourceID) {}           // ?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z
-void          nslSetSourceEffectOff(nslSourceID) {}          // ?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z
 void          nslPauseSource(nslSourceID) {}                 // ?nslPauseSource@@YAXW4nslSourceID@@@Z
 void          nslUnpauseSource(nslSourceID) {}               // ?nslUnpauseSource@@YAXW4nslSourceID@@@Z
 void          nslPlaySource(nslSourceID) {}                  // ?nslPlaySource@@YAXW4nslSourceID@@@Z
