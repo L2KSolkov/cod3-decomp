@@ -513,9 +513,8 @@ namespace math { struct Quaternion; }
 struct tlFixedString;
 
 // ============================================================================
-// nalObject / nalCachedPoseInfo Ã¢â‚¬â€ animation cache types
+// nalCachedPoseInfo Ã¢â‚¬â€ animation cache metadata
 // ============================================================================
-struct nalObject {};
 struct nalCachedLODInfo;
 struct nalCachedPoseInfo {
     int LODCount;       // +0x00
@@ -1118,12 +1117,33 @@ extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
 
 class nalAnimCache {
 public:
+    struct nalLOD {
+        nalLOD* NextLOD;       // +0x00
+        int Size;              // +0x04
+        unsigned Pad[2];       // +0x08
+    };
+    static_assert(sizeof(nalLOD) == 16,
+                  "nalAnimCache::nalLOD layout mismatch");
+
+    struct nalObject {
+        nalObject** DataPtr;   // +0x00
+        nalObject* Prev;       // +0x04
+        nalObject* Next;       // +0x08
+        int Size;               // +0x0C
+        int LOD;                // +0x10
+        nalLOD* NextLOD;        // +0x14
+        unsigned Frame;         // +0x18
+        unsigned Pad;           // +0x1C
+    };
+    static_assert(sizeof(nalObject) == 32,
+                  "nalAnimCache::nalObject layout mismatch");
+
     nalAnimCache();
     void Init(nalHeap* heap);
     void Release() {}
     void MemFree(void* ptr, unsigned size);
     void Free(nalObject*) {}
-    void Touch(nalObject*) {}
+    void Touch(nalObject* object);
     nalObject* MemAlloc(unsigned, unsigned) { return nullptr; }
     nalObject* Allocate(const nalCachedPoseInfo&, int, int, nalObject**) { return nullptr; }
     void IncreaseLOD(nalObject*, const nalCachedPoseInfo&, int, int) {}
@@ -1156,6 +1176,34 @@ void nalAnimCache::Init(nalHeap* heap)
 void nalAnimCache::MemFree(void* ptr, unsigned size)
 {
     Heap->Free(ptr, static_cast<int>(size));
+}
+
+// ea: 0x008687C0
+void nalAnimCache::Touch(nalAnimCache::nalObject* object)
+{
+    ++Hits;
+    if (object == nullptr || MRUObject == object)
+        return;
+
+    nalAnimCache::nalObject* prev = object->Prev;
+    if (prev != nullptr)
+        prev->Next = object->Next;
+    else
+        MRUObject = object->Next;
+
+    nalAnimCache::nalObject* next = object->Next;
+    if (next != nullptr)
+        next->Prev = object->Prev;
+    else
+        LRUObject = object->Prev;
+
+    object->Prev = nullptr;
+    object->Next = MRUObject;
+    if (MRUObject != nullptr)
+        MRUObject->Prev = object;
+    else
+        LRUObject = object;
+    MRUObject = object;
 }
 
 // ============================================================================
@@ -1530,7 +1578,7 @@ public:
     void* PrivateData;                      // +0x50
     unsigned* TrackBitMask;                 // +0x54
     nalCachedPoseInfo CachedPoseInfo;       // +0x58
-    nalObject** CacheData;                  // +0x60
+    nalAnimCache::nalObject** CacheData;    // +0x60
     int BlockCount;                          // +0x64
     int BlockUnit;                          // +0x68
     void** BlockData;                        // +0x6C
@@ -1559,7 +1607,10 @@ public:
     nalGenericInstance(nalGenericAnim* anim, nalGenericSkeleton* skeleton);
     ~nalGenericInstance();
     void CacheBlock(int blockIdx, int flags);
-    void ConvertPoseData(unsigned char* dst, const nalObject* src, int flags, const unsigned char* compData, const int* offsets, int numBones);
+    void ConvertPoseData(unsigned char* dst,
+                         const nalAnimCache::nalObject* src, int flags,
+                         const unsigned char* compData, const int* offsets,
+                         int numBones);
     void TouchDecompCache(int blockIdx, int flags);
     void TouchDecompCache(float t1, float t2, int flags, unsigned);
     void GetPose(int frame, nalGenericPose& out, const nalGenericPose& base, int flags);
@@ -1623,7 +1674,7 @@ void nalGenericAnim::Process()
     uintptr_t cacheAddress =
         (lodInfoAddress + static_cast<uintptr_t>(skeleton->LODCount) * 4u + 3u)
         & ~uintptr_t(3u);
-    CacheData = reinterpret_cast<nalObject**>(cacheAddress);
+    CacheData = reinterpret_cast<nalAnimCache::nalObject**>(cacheAddress);
 
     uintptr_t blockDataAddress =
         (cacheAddress + static_cast<uintptr_t>(BlockCount) * 4u + 3u)
