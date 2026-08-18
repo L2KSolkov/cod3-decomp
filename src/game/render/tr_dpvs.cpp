@@ -714,6 +714,45 @@ char R_SetupDPVS()
     return static_cast<char>(g_dpvs.fogPlane.side[2]);
 }
 
+// ea: 0x006BF0F0
+int SphereBehindPlane(const math::Vector4* sphere, const dpvs_plane_t* plane)
+{
+    const __m128 product = _mm_mul_ps(plane->data.v, sphere->v);
+    const float dot = product.m128_f32[0]
+                    + _mm_shuffle_ps(product, product, 85).m128_f32[0]
+                    + _mm_shuffle_ps(product, product, 170).m128_f32[0];
+    const float planeW = _mm_shuffle_ps(plane->data.v, plane->data.v, 255)
+                             .m128_f32[0];
+    const float sphereW = _mm_shuffle_ps(sphere->v, sphere->v, 255)
+                              .m128_f32[0];
+    return (planeW - sphereW) > dot;
+}
+
+// ea: 0x006BF180
+int CullSphereDPVS(const dpvs_plane_t* planes, const math::Vector4* sphere,
+                   int nplanes)
+{
+    if (nplanes > 0)
+    {
+        int i = 0;
+        while (!SphereBehindPlane(sphere, planes))
+        {
+            ++i;
+            ++planes;
+            if (i >= nplanes)
+            {
+                return SphereBehindPlane(sphere, g_dpvs.nearPlane)
+                    || (g_dpvs.farPlane != nullptr
+                        && SphereBehindPlane(sphere, g_dpvs.farPlane));
+            }
+        }
+        return 1;
+    }
+    return SphereBehindPlane(sphere, g_dpvs.nearPlane)
+        || (g_dpvs.farPlane != nullptr
+            && SphereBehindPlane(sphere, g_dpvs.farPlane));
+}
+
 // ea: 0x006BF1F0
 int R_CullBoxDPVS(const float* minmax, const dpvs_plane_t* planes,
                   int iPlaneCount)
