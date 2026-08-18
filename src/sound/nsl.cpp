@@ -414,10 +414,6 @@ void          nslExit() {}
 void          nslSetEffect(const void*) {}
 void          nslSetListenerPosition(const float*) {}
 void          nslSetListenerOrientation(const float*, const float*) {}
-void          nslSetBusPitchAddBus(unsigned int) {}
-void          nslSetBusPitchRemoveBus(unsigned int) {}
-void          nslSetBusVolumeAddBus(unsigned int) {}
-void          nslSetBusVolumeRemoveBus(unsigned int) {}
 unsigned int  nslWaveGetHash(nslWaveID) { return 0; }
 int           nslGetWaveLength(nslWaveID) { return 0; }      // ?nslGetWaveLength@@YAHW4nslWaveID@@@Z
 unsigned      nslGetSourceLength(nslSourceID) { return 0; }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
@@ -1015,16 +1011,111 @@ float         nslGroupGetVolume(nslGroupID) { return 1.0f; }
 nslGroup*     nslMasterGetGroup() { return nslGroupGet("NSL_MASTER"); }
 float         nslBusVolume = 1.0f;  // ?nslBusVolume@@3MA @ 0xE4B674
 float         nslBusPitch = 1.0f;   // ?nslBusPitch@@3MA @ 0xE4B678
-void          nslSetBusVolume(unsigned, float) {}
+int           nslTotalPitchBuses = 0;
+int           nslTotalVolumeBuses = 0;
+unsigned      nslBusIdPitch[10] = {};
+unsigned      nslBusIdVolume[10] = {};
+
+// ea: 0x00826590
+bool          nslIsBusVolumeName(unsigned busId) {
+    return busId == nslBusIdVolume[0];
+}
+
+// ea: 0x008265B0
+void          nslSetBusVolume(unsigned busId, float volume) {
+    nslBusIdVolume[0] = busId;
+    nslBusVolume = volume;
+    nslTotalVolumeBuses = 1;
+}
+
+// ea: 0x008265E0
+void          nslSetBusPitch(unsigned busId, float pitch) {
+    nslBusIdPitch[0] = busId;
+    nslBusPitch = pitch;
+    nslTotalPitchBuses = 1;
+}
+
+// ea: 0x00826610
 void          nslSetBusVolume(float volume) { nslBusVolume = volume; }
+// ea: 0x00826630
+void          nslSetBusPitch(float pitch) { nslBusPitch = pitch; }
+
+// ea: 0x00826650
+void          nslSetBusVolumeAddBus(unsigned busId) {
+    const int count = nslTotalVolumeBuses;
+    if (count < 10) {
+        nslBusIdVolume[count] = busId;
+        nslTotalVolumeBuses = count + 1;
+    }
+}
+
+// ea: 0x00826670
+void          nslSetBusPitchAddBus(unsigned busId) {
+    const int count = nslTotalPitchBuses;
+    if (count < 10) {
+        nslBusIdPitch[count] = busId;
+        nslTotalPitchBuses = count + 1;
+    }
+}
+
+// ea: 0x00826690
+int           nslGetBusIdVolumeCount() { return nslTotalVolumeBuses; }
+// ea: 0x008266A0
+int           nslGetBusIdPitchCount() { return nslTotalPitchBuses; }
+
+// ea: 0x008266B0
+void          nslSetBusVolumeRemoveBus(unsigned busId) {
+    const int originalCount = nslTotalVolumeBuses;
+    int removedCount = 0;
+    int index = 0;
+    if (originalCount > 0) {
+        int remainingCount = originalCount;
+        do {
+            if (nslBusIdVolume[index] == busId) {
+                ++removedCount;
+                --remainingCount;
+            }
+            if (index < remainingCount)
+                nslBusIdVolume[index] = nslBusIdVolume[index + removedCount];
+            ++index;
+        } while (index < originalCount);
+    }
+    nslTotalVolumeBuses = originalCount - removedCount;
+}
+
+// ea: 0x00826710
+void          nslSetBusPitchRemoveBus(unsigned busId) {
+    const int originalCount = nslTotalPitchBuses;
+    int removedCount = 0;
+    int index = 0;
+    if (originalCount > 0) {
+        int remainingCount = originalCount;
+        do {
+            if (nslBusIdPitch[index] == busId) {
+                ++removedCount;
+                --remainingCount;
+            }
+            if (index < remainingCount)
+                nslBusIdPitch[index] = nslBusIdPitch[index + removedCount];
+            ++index;
+        } while (index < originalCount);
+    }
+    nslTotalPitchBuses = originalCount - removedCount;
+}
+
+// ea: 0x00826770
+unsigned      nslGetBusIdVolume(int index) { return nslBusIdVolume[index]; }
+// ea: 0x00826780
+unsigned      nslGetBusIdPitch(int index) { return nslBusIdPitch[index]; }
+
+// ea: 0x00826790
 float         nslGetBusVolume() { return nslBusVolume; }
+// ea: 0x008267A0
+float         nslGetBusPitch() { return nslBusPitch; }
+
 float         nslGetBusVolume(unsigned) { return 1.0f; }
-bool          nslIsBusVolumeName(unsigned) { return false; }
 const char*   nslGetBusName(unsigned) { return ""; }
 unsigned      nslGetBusIndex(const char*) { return 0; }
-void          nslSetBusPitch(unsigned, float) {}
-void          nslSetBusPitch(float pitch) { nslBusPitch = pitch; }
-float         nslGetBusPitch() { return nslBusPitch; }
 void          nslSetBusFilter(unsigned, unsigned, float) {}
 void          nslSetBusReverb(unsigned, float) {}
 // ea: 0x00823B60
