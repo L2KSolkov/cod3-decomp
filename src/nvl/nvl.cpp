@@ -261,6 +261,20 @@ static __m64 afmv_psrawi(__m64 a, unsigned count) {
     }
     return afmv_from_bits(result);
 }
+static __m64 afmv_psllwi(__m64 a, unsigned count) {
+    const std::uint64_t av = afmv_to_bits(a);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i)
+        result |= ((((av >> (i * 16)) & 0xFFFFu) << count) & 0xFFFFu) << (i * 16);
+    return afmv_from_bits(result);
+}
+static __m64 afmv_psrlwi(__m64 a, unsigned count) {
+    const std::uint64_t av = afmv_to_bits(a);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 4; ++i)
+        result |= (((av >> (i * 16)) & 0xFFFFu) >> count) << (i * 16);
+    return afmv_from_bits(result);
+}
 static __m64 afmv_pmulhw(__m64 a, __m64 b) {
     const std::uint64_t av = afmv_to_bits(a), bv = afmv_to_bits(b);
     std::uint64_t result = 0;
@@ -378,6 +392,8 @@ static __m64 afmv_packuswb(__m64 a, __m64 b) {
 #define _m_psubd afmv_psubd
 #define _m_psradi afmv_psradi
 #define _m_psrawi afmv_psrawi
+#define _m_psllwi afmv_psllwi
+#define _m_psrlwi afmv_psrlwi
 #define _m_pmulhw afmv_pmulhw
 #define _m_paddsw afmv_paddsw
 #define _m_psubsw afmv_psubsw
@@ -2275,5 +2291,140 @@ void MacroBlockIdctAdd(int last, short* mb, unsigned char* dest, int stride) {
     }
     std::memset(mb, 0, sizeof(__m64) * 16);
 }
-void afmvYUV2RGB16(unsigned char**, unsigned char*, int) {}
-void afmvYUV2RGB32(unsigned char**, unsigned char*, int) {}
+
+static const __m64 q_UVMask = { 0x00ff00ff00ff00ffULL };
+static const __m64 q_UVBias = { 0x0080008000800080ULL };
+static const __m64 q_Y_Bias = { 0x1010101010101010ULL };
+static const __m64 q_Y_Gain = { 0x253f253f253f253fULL };
+static const __m64 q_V_to_R = { 0x3312331233123312ULL };
+static const __m64 q_V_to_G = { 0xe5fce5fce5fce5fcULL };
+static const __m64 q_U_to_G = { 0xf37df37df37df37dULL };
+static const __m64 q_U_to_B = { 0x4093409340934093ULL };
+static const __m64 afmv_zero = { 0 };
+
+static __m64 afmv_load_u32(const unsigned char* p) {
+    std::uint32_t value = 0;
+    std::memcpy(&value, p, sizeof(value));
+    return afmv_from_bits(value);
+}
+
+static void afmv_yuv_to_rgb(const unsigned char* py, const unsigned char* pu,
+                            const unsigned char* pv, __m64& red, __m64& green,
+                            __m64& blue) {
+    __m64 u = _m_punpcklbw(afmv_load_u32(pu), afmv_zero);
+    __m64 v = _m_punpcklbw(afmv_load_u32(pv), afmv_zero);
+    u = _m_psubsw(u, q_UVBias);
+    v = _m_psubsw(v, q_UVBias);
+    u = _m_psllwi(u, 3);
+    v = _m_psllwi(v, 3);
+
+    __m64 greenBase = _m_pmulhw(u, q_U_to_G);
+    const __m64 vGreen = _m_pmulhw(v, q_V_to_G);
+    red = _m_pmulhw(v, q_V_to_R);
+    greenBase = _m_paddsw(greenBase, vGreen);
+    blue = _m_pmulhw(u, q_U_to_B);
+
+    const __m64 y = _m_psubusb(afmv_load64(py), q_Y_Bias);
+    __m64 yEven = _m_pand(y, q_UVMask);
+    __m64 yOdd = _m_psrlwi(y, 8);
+    yEven = _m_psllwi(yEven, 3);
+    yOdd = _m_psllwi(yOdd, 3);
+    yEven = _m_pmulhw(yEven, q_Y_Gain);
+    yOdd = _m_pmulhw(yOdd, q_Y_Gain);
+
+    const __m64 redLow = _m_packuswb(_m_paddsw(red, yEven), _m_paddsw(red, yEven));
+    const __m64 redHigh = _m_packuswb(_m_paddsw(red, yOdd), _m_paddsw(red, yOdd));
+    const __m64 greenLow = _m_packuswb(_m_paddsw(greenBase, yEven), _m_paddsw(greenBase, yEven));
+    const __m64 greenHigh = _m_packuswb(_m_paddsw(greenBase, yOdd), _m_paddsw(greenBase, yOdd));
+    const __m64 blueLow = _m_packuswb(_m_paddsw(blue, yEven), _m_paddsw(blue, yEven));
+    const __m64 blueHigh = _m_packuswb(_m_paddsw(blue, yOdd), _m_paddsw(blue, yOdd));
+    red = _m_punpcklbw(redLow, redHigh);
+    green = _m_punpcklbw(greenLow, greenHigh);
+    blue = _m_punpcklbw(blueLow, blueHigh);
+}
+
+static unsigned afmv_byte(__m64 value, unsigned index) {
+    return static_cast<unsigned>((afmv_to_bits(value) >> (index * 8)) & 0xFFu);
+}
+
+void afmvYUV2RGB16(unsigned char** src_yuv, unsigned char* dest_rgb, int width) {
+    unsigned char* y = src_yuv[0];
+    unsigned char* u = src_yuv[1];
+    unsigned char* v = src_yuv[2];
+    const int chromaWidth = width >> 1;
+    const int blocks = width >> 3;
+    for (int rowPair = 0; rowPair < 8; ++rowPair) {
+        for (int block = 0; block < blocks; ++block) {
+            __m64 red, green, blue;
+            afmv_yuv_to_rgb(y, u, v, red, green, blue);
+            for (unsigned pixel = 0; pixel < 8; ++pixel) {
+                const unsigned r = afmv_byte(red, pixel) & 0xF8u;
+                const unsigned g = afmv_byte(green, pixel) & 0xFCu;
+                const unsigned b = afmv_byte(blue, pixel) & 0xF8u;
+                const std::uint16_t packed = static_cast<std::uint16_t>((b >> 3) | (g << 3) | (r << 8));
+                std::memcpy(dest_rgb + pixel * 2, &packed, sizeof(packed));
+            }
+            y += 8;
+            u += 4;
+            v += 4;
+            dest_rgb += 16;
+        }
+        u -= chromaWidth;
+        v -= chromaWidth;
+        for (int block = 0; block < blocks; ++block) {
+            __m64 red, green, blue;
+            afmv_yuv_to_rgb(y, u, v, red, green, blue);
+            for (unsigned pixel = 0; pixel < 8; ++pixel) {
+                const unsigned r = afmv_byte(red, pixel) & 0xF8u;
+                const unsigned g = afmv_byte(green, pixel) & 0xFCu;
+                const unsigned b = afmv_byte(blue, pixel) & 0xF8u;
+                const std::uint16_t packed = static_cast<std::uint16_t>((b >> 3) | (g << 3) | (r << 8));
+                std::memcpy(dest_rgb + pixel * 2, &packed, sizeof(packed));
+            }
+            y += 8;
+            u += 4;
+            v += 4;
+            dest_rgb += 16;
+        }
+    }
+}
+
+void afmvYUV2RGB32(unsigned char** src_yuv, unsigned char* dest_rgb, int width) {
+    unsigned char* y = src_yuv[0];
+    unsigned char* u = src_yuv[1];
+    unsigned char* v = src_yuv[2];
+    const int chromaWidth = width >> 1;
+    const int blocks = width >> 3;
+    for (int rowPair = 0; rowPair < 8; ++rowPair) {
+        for (int block = 0; block < blocks; ++block) {
+            __m64 red, green, blue;
+            afmv_yuv_to_rgb(y, u, v, red, green, blue);
+            for (unsigned pixel = 0; pixel < 8; ++pixel) {
+                dest_rgb[pixel * 4 + 0] = static_cast<unsigned char>(afmv_byte(blue, pixel));
+                dest_rgb[pixel * 4 + 1] = static_cast<unsigned char>(afmv_byte(green, pixel));
+                dest_rgb[pixel * 4 + 2] = static_cast<unsigned char>(afmv_byte(red, pixel));
+                dest_rgb[pixel * 4 + 3] = 0;
+            }
+            y += 8;
+            u += 4;
+            v += 4;
+            dest_rgb += 32;
+        }
+        u -= chromaWidth;
+        v -= chromaWidth;
+        for (int block = 0; block < blocks; ++block) {
+            __m64 red, green, blue;
+            afmv_yuv_to_rgb(y, u, v, red, green, blue);
+            for (unsigned pixel = 0; pixel < 8; ++pixel) {
+                dest_rgb[pixel * 4 + 0] = static_cast<unsigned char>(afmv_byte(blue, pixel));
+                dest_rgb[pixel * 4 + 1] = static_cast<unsigned char>(afmv_byte(green, pixel));
+                dest_rgb[pixel * 4 + 2] = static_cast<unsigned char>(afmv_byte(red, pixel));
+                dest_rgb[pixel * 4 + 3] = 0;
+            }
+            y += 8;
+            u += 4;
+            v += 4;
+            dest_rgb += 32;
+        }
+    }
+}
