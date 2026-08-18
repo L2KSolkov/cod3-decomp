@@ -722,6 +722,8 @@ public:
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z
+    static void CreateInst();           // ?CreateInst@TestFPS@@SAXXZ
+    static void DeleteInst();           // ?DeleteInst@TestFPS@@SAXXZ
     static TestFPS* Inst();  // ?Inst@TestFPS@@SAPAV1@XZ (g.o 0x4A9060)
     bool IsTesting();        // ?IsTesting@TestFPS@@QAE_NXZ (g.o 0x4A9070)
 };

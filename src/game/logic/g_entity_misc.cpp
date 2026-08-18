@@ -2795,7 +2795,11 @@ void TaskHandler_Update(TaskHandlerImpl* h, float a, void* f)
 {
     (void)h; (void)a; (void)f;
 }
-void TimerRenderBars_Init(void* self) { (void)self; }
+void TimerRenderBars_Init(void* self)
+{
+    (void)self;
+    TimerRenderBars::sInst.Init();
+}
 void trap_R_ClearScene() {}
 void trap_R_DrawStretchPic(float a, float b, float c, float d, float e,
                            float f, float g, float h, void* i, float j)

@@ -12,6 +12,11 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <new>
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+extern void mem_heap_free(void* ptr);
 
 // ============================================================================
 // DebugThread::Render support types (game2.o)
@@ -1985,6 +1990,31 @@ TestFPS::TestFPS()
     mCurrentPositionIndex = 0;
     mPlayerHandle.mVal = 0;
     mFile = nullptr;
+}
+
+// ea: 0x4DD4A0
+void TestFPS::CreateInst()
+{
+    void* memory = mem_heap_malloc_ctx(
+        0xAD90u, 4, "core", "c:\\cod\\code\\game\\TestFPS.h", 22);
+    if (memory == nullptr)
+    {
+        TestFPS::sInst = nullptr;
+        return;
+    }
+    TestFPS::sInst = new (memory) TestFPS();
+}
+
+// ea: 0x4E2870
+void TestFPS::DeleteInst()
+{
+    TestFPS* instance = TestFPS::sInst;
+    if (instance != nullptr)
+    {
+        instance->~TestFPS();
+        mem_heap_free(instance);
+    }
+    TestFPS::sInst = nullptr;
 }
 
 struct PerformanceStats {

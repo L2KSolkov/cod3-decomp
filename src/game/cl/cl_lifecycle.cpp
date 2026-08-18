@@ -28,6 +28,7 @@ extern char* Cmd_Argv(int arg);
 extern int Cmd_Argc();
 extern void Cbuf_AddText(const char* text);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
+extern void Cbuf_Execute();
 extern void XModelEnforceExist(int bEnforce);
 extern void CL_InitRenderer();
 extern char CL_InitUI();
@@ -65,6 +66,7 @@ extern int dword_F0F200[2];
 int dword_F0F204[2];
 extern char byte_F0F208[];
 extern int dword_F170F8;
+extern int scr_initialized;
 extern int dword_F6A28C;
 extern int gSaveGameData_mHorizontalSensitivity[4];
 extern int gSaveGameData_mVerticalSensitivity[4];
@@ -369,6 +371,10 @@ void CL_Init()
     CL_InitGamepadCommands();
     CL_InitKeyCommands();
     CL_InitRef();
+    scr_initialized = 1;
+    Cbuf_Execute();
+    Cvar_Set("cl_running", "1");
+    Com_Printf("----- Client Initialization Complete -----\n");
 }
 
 // ea: 0x532700

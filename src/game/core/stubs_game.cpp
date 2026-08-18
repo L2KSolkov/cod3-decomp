@@ -56,7 +56,6 @@ class BinFileManager { public: static void CreateInst(); static void DeleteInst(
 class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
 class PlayerAnimMgr { public: static void CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
-class TestFPS { public: static void CreateInst(); static void DeleteInst(); };
 
 void LightGridMgr::CreateInst() {}
 void LightGridMgr::DeleteInst() {}
@@ -140,8 +139,6 @@ void PlayerAnimMgr::CreateInst() {}
 void PlayerAnimMgr::DeleteInst() {}
 void DynamicDecalMgr::CreateInst() {}
 void DynamicDecalMgr::DeleteInst() {}
-void TestFPS::CreateInst() {}
-void TestFPS::DeleteInst() {}
 
 // ?AssetBankSet_ctor@@YAXPAX@Z (core.o; stub - void-return variant used by
 // DCGBankManager ctor; the void* variant lives in g_entity_misc.cpp)
