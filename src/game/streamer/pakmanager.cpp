@@ -2335,6 +2335,8 @@ public:
                     TPakId pak_id);
 };
 struct vehicle_node_t;  // full def below (g_local.h view)
+extern int s_numNodes;  // g.o 0xEA5DD0
+extern vehicle_node_t* s_nodes[];  // g.o 0xEAEDF8
 class PathNodeMgr {
 public:
     static PathNodeMgr* sInst;  // defined in sv_globals.cpp
@@ -2406,8 +2408,16 @@ void PathNodeMgr::DecodeZoneBank(const char* name, unsigned char* data,
 { (void)name; (void)data; (void)size; (void)pakId; }
 int PathNodeMgr::GetVehicleNodeIndex(vehicle_node_t* pNode)
 {
-    (void)pNode;
-    return 0;  // stub: path-node index lookup (pathnode.o)
+    // ea: 0x0077F3D0
+    int result = 0;
+    if (s_numNodes <= 0)
+        return -1;
+    while (s_nodes[result] != pNode)
+    {
+        if (++result >= s_numNodes)
+            return -1;
+    }
+    return result;
 }
 void DbTablesetMgr::DecodeBank(const char* name, unsigned char* data,
                                int size, TPakId pakId)
