@@ -304,7 +304,7 @@ ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	PORTED	ngl_scenedum
 
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	PORTED	ngl_morph.cpp: morph dir + blend/unique/process; nglMorph.h (morph types); directory moved from ngl_internal.cpp
 
-nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (IDA-typed 28-byte nalAnimCache plus nested 32-byte nalObject/16-byte nalLOD layouts and exact constructor, Init, MemFree, Touch, Free, MemAlloc, Allocate, and IncreaseLOD; Release remains an explicit stub)
+nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (IDA-typed 28-byte nalAnimCache plus nested 32-byte nalObject/16-byte nalLOD layouts and exact constructor, Init, Release, MemFree, Touch, Free, MemAlloc, Allocate, and IncreaseLOD)
 
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rigid_body.cpp: body setup + forces (7 funcs)
 
