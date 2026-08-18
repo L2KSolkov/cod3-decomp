@@ -13,6 +13,7 @@
 //     explicit template instantiation at the bottom of this file.
 // ============================================================================
 #include "apsCommon.h"
+#include "apsMemory.h"
 #include "apsError.h"
 #include "apsDebug.h"
 #include "apsVertexBuffer.h"
@@ -29,6 +30,44 @@
 
 #include <math.h>
 #include <new>
+
+enum TPakId : int;
+#define PAK_ID_INVALID ((TPakId)-1)
+
+class PakFile {
+public:
+    void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs);
+    bool MemFree(void* ptr, bool search_prereqs);
+};
+
+class PakManager {
+public:
+    static PakManager* sInst;
+    PakFile* GetPakFile(TPakId id);
+};
+
+class TlSystemCallbacks {
+public:
+    static void* MemAlloc(unsigned int size, unsigned int align, unsigned int flags);
+    static void MemFree(void* ptr);
+};
+
+struct mem_heap {
+    unsigned char _pad[0x474];
+    void* start;
+    void* end;
+};
+
+class ae_heap {
+public:
+    void** __vftable;
+    void* Malloc(unsigned int size, unsigned int alignment);
+    void Free(void* ptr);
+    mem_heap* GetHeapPointer();
+};
+
+extern void* gApsHeap;
+extern void mem_break();
 
 // ============================================================================
 // Data statics (apsCommon.o). Initial values verified against IDA:
@@ -56,9 +95,6 @@ apsCommon::PlayerViewPort apsCommon::mViewPort[apsCommon::MAX_NUM_VIEWPORTS];  /
 // / apsInternal.o / tl_system.o). Names/scoping match codmp_xboxr.map mangling;
 // satisfied by /FORCE:UNRESOLVED until the owning objects are ported.
 // ============================================================================
-extern void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags);  // ?apsMemAlloc@@YAPAXIII@Z (render.o)
-extern void  apsMemFree(void* ptr);                                                   // ?apsMemFree@@YAXPAX@Z (render.o)
-
 namespace apsMemory {
     void Report();                                  // ?Report@apsMemory@@YAXXZ (apsMemory.o)
 }
@@ -71,6 +107,60 @@ namespace apsInternal {
 }
 
 extern void tlPrintf(const char* fmt, ...);         // ?tlPrintf@@YAXPBDZZ (tl_system.o)
+
+// ea: 0x006C3090
+void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags)
+{
+    if (apsCommon::PakAllocs() == 0)
+        return TlSystemCallbacks::MemAlloc(size, align, flags);
+
+    void* result = apsMemory::AllocFromPools((int)size, (int)align);
+    if (result == nullptr)
+    {
+        int currentPakId = apsCommon::GetCurrentPakId();
+        if (currentPakId != -1 && currentPakId >= 0 && currentPakId < 0x63)
+        {
+            PakFile* pakFile = PakManager::sInst->GetPakFile((TPakId)currentPakId);
+            if (pakFile != nullptr)
+                result = pakFile->MemAlloc(align, size, true);
+        }
+        if (result == nullptr)
+        {
+            void* heapResult = ((ae_heap*)gApsHeap)->Malloc(size, align);
+            if (heapResult == nullptr && (flags & 2) == 0)
+                mem_break();
+            result = heapResult;
+        }
+    }
+    return result;
+}
+
+// ea: 0x006C3110
+void apsMemFree(void* ptr)
+{
+    if (apsCommon::PakAllocs() != 0)
+    {
+        if (ptr != nullptr && apsMemory::FreeFromPools(ptr) == 0)
+        {
+            int currentPakId = apsCommon::GetCurrentPakId();
+            PakFile* pakFile = nullptr;
+            if (currentPakId != -1)
+                pakFile = PakManager::sInst->GetPakFile((TPakId)currentPakId);
+            if (currentPakId == -1 || pakFile == nullptr
+                || !pakFile->MemFree(ptr, true))
+            {
+                mem_heap* heap = ((ae_heap*)gApsHeap)->GetHeapPointer();
+                if ((unsigned char*)ptr > (unsigned char*)heap->start
+                    && (unsigned char*)ptr < (unsigned char*)heap->end)
+                    ((ae_heap*)gApsHeap)->Free(ptr);
+            }
+        }
+    }
+    else
+    {
+        TlSystemCallbacks::MemFree(ptr);
+    }
+}
 
 // ============================================================================
 // apsAllocator::MemAlign — forward to the raw aps memory allocator.

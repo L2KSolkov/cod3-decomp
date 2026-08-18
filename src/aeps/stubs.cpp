@@ -4,10 +4,6 @@
 
 #include <stdio.h>
 
-extern void* tlMemAlloc(unsigned int size, unsigned int align,
-                        unsigned int flags);
-extern void tlMemFree(void* ptr);
-
 #define COD3_UNIMPLEMENTED(lib) \
     fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
 
@@ -53,11 +49,3 @@ bool apsClient::GetLightInfoAtPosition(const math::Dir3& iPosition,
 // apsEffect / apsCommon free artifacts (render.o; stubs, port later)
 #include "apsEffect.h"
 #include "apsCommon.h"
-void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags)
-{
-    return tlMemAlloc(size, align, flags);
-}
-void apsMemFree(void* ptr)
-{
-    tlMemFree(ptr);
-}
