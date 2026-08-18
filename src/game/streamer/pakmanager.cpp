@@ -7562,14 +7562,17 @@ void FEManager_UpdateButtonFontForLanguage(void* self)
 namespace BrocSys {
 void NotifyPakLoaded(const char* longName);
 void NotifyPakUnloaded(const char* longName);
+void NotifyPakLoadOperation(const char* operation, const char* longName);
 }
+// ea: 0x005C81A0
 void BrocSys::NotifyPakUnloaded(const char* longName)
 {
-    (void)longName;  // stub: cross-object (broc.o)
+    BrocSys::NotifyPakLoadOperation("unloaded_", longName);
 }
+// ea: 0x005C8180
 void BrocSys::NotifyPakLoaded(const char* longName)
 {
-    (void)longName;  // stub: cross-object (broc.o)
+    BrocSys::NotifyPakLoadOperation("loaded_", longName);
 }
 
 // AudioBankMgr minimal view (full class + stubs in g_entity_misc.cpp)

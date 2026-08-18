@@ -11477,6 +11477,25 @@ void* BrocSys::MemAlloc(unsigned int size, unsigned int align)
     return result;
 }
 
+// ea: 0x005C81C0
+void* mem_alloc(unsigned int size, unsigned int align)
+{
+    return BrocSys::MemAlloc(size, align);
+}
+
+// ea: 0x005BDFD0
+void mem_free(void* p)
+{
+    if (gBrocPool->InPool(p))
+    {
+        gBrocPool->Release(p);
+    }
+    else if (!((ae_heap_wrapper*)gBrocHeap)->CheckFree(p))
+    {
+        mem_heap_free(p);
+    }
+}
+
 // ea: 0x005C7D90
 void BrocSys::ThreadGetDebugInfo(Broc::string& fileline,
                                  Broc::string& func,

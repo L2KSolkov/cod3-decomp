@@ -10,6 +10,27 @@
 #include "game/logic/g_local.h"
 #include "core/tlFixedString.h"
 
+#include <stdarg.h>
+#include <stdio.h>
+
+namespace AeAssert {
+enum ECoderId : int;
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Warning(const char* fmt, ...);
+}
+
+extern void tlFinalPrint(const char* text);
+
+// IDA global: g_bAnimCheck (scr.o)
+int g_bAnimCheck = 0;
+
+// IDA global: off_CFBB58 (scr.o)
+static const char off_CFBB58[] = {'\x15', '%', 's', '\0'};
+
 // ??1DObj@@QAE@XZ (render.o)
 DObj::~DObj()
 {
@@ -1680,7 +1701,8 @@ AnimTree* Scr_GetAnimTreeByName(const char* treename)
 int Scr_IsSystemActive(unsigned char sys)
 {
     (void)sys;
-    return 0;
+    // ea: 0x005C1AB0
+    return 1;
 }
 int RE_Text_Width(const char* text, int font, float scaleX, float scaleY,
                   int style)
@@ -2618,7 +2640,16 @@ void list_constraint_solver_process(
 }
 void LiveWrapper_ClearRemotePlayers(void* self) { (void)self; }
 void MemoryUnitManager_Service() {}
-void MemPrint(const char* fmt, ...) { (void)fmt; }
+// ea: 0x005BBC20
+void MemPrint(const char* Format, ...)
+{
+    char Work[512];
+    va_list ap;
+    va_start(ap, Format);
+    vsprintf(Work, Format, ap);
+    va_end(ap);
+    tlFinalPrint(Work);
+}
 void MI_ResetMapList() {}
 void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
 class nglRenderNode;
@@ -2698,16 +2729,39 @@ void RumbleEffect_SetNotes(void* self, int a, void* b)
     (void)self; (void)a; (void)b;
 }
 void SceneManager_UpdateEffects(void* self, float a) { (void)self; (void)a; }
-void Scr_Error(const char* a) { (void)a; }
+// ea: 0x005C1AC0
+void Scr_Error(const char* error)
+{
+    AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+    AeAssert::gCurrentLine = 16;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored() && AeAssert::Warning(off_CFBB58, error))
+        __debugbreak();
+}
 void Scr_FreePrecachedAnimTrees() {}
-void Scr_ParamError(unsigned int a, const char* b) { (void)a; (void)b; }
+// ea: 0x005C1B10
+void Scr_ParamError(unsigned int index, const char* error)
+{
+    (void)index;
+    AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_vm.cpp";
+    AeAssert::gCurrentLine = 23;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored() && AeAssert::Warning(off_CFBB58, error))
+        __debugbreak();
+}
 void Scr_PrecacheAnimTrees(void* (*cb)(int), bool a) { (void)cb; (void)a; }
 void Scr_PrecacheAnimTrees(void* (*cb)(void*, unsigned int), int a)
 {
     (void)cb; (void)a;
 }
 void ScriptEventHandler_dtor(void* self) { (void)self; }
-void SetAnimCheck(int a) { (void)a; }
+// ea: 0x005C1A50
+void SetAnimCheck(int bAnimCheck)
+{
+    g_bAnimCheck = bAnimCheck;
+}
 struct nglShaderParamSet;
 struct Color;
 void setup_color(const Color& c, nglShaderParamSet& p) { (void)c; (void)p; }
@@ -2866,6 +2920,9 @@ nglMeshNode* nglListAddMesh(nglMesh* mesh, const math::Mat43& m,
     return nullptr;
 }
 
+// IDA global: gEntryFp (scr.o)
+void (*gEntryFp)() = nullptr;
+
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
 void Init() {}
@@ -2877,7 +2934,12 @@ void CopyExtendedEntity(const Entity* source, Entity* dest)
 {
     (void)source; (void)dest;
 }
-void UnloadScript() {}
+// ea: 0x005BDFC0
+void UnloadScript()
+{
+    if (::gEntryFp != nullptr)
+        ::gEntryFp();
+}
 void LoadScript() {}
 }
 
