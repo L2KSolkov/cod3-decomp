@@ -535,6 +535,14 @@ extern trGlobals_t tr;          // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
 extern cvar_t* r_zfar;          // ?r_zfar@@3PAUcvar_t@@A @ 0xF741A0
 extern cvar_t* r_lockpvs;       // ?r_lockpvs@@3PAUcvar_t@@A @ 0xF7428C
 
+// refimport_t prefix used by R_CellForCamera (IDA layout: Error at +0x04).
+struct refimport_t {
+    void (*Printf)(int, const char*, ...);
+    void (*Error)(int, const char*, ...);
+};
+extern refimport_t ri;           // ?ri@@3Urefimport_t@@A @ 0xF741E8
+extern int R_CellForPoint(const math::Position3& pos);
+
 // world_t view (bspTree +0x100)
 struct worldFilterView {
     uint8_t _pad[0x100];
@@ -849,7 +857,23 @@ int R_CullBoxDPVS(const float* minmax, const dpvs_plane_t* planes,
     return 0;
 }
 
-static int R_CellForCamera(void* frameBase) { (void)frameBase; return -1; }
+static const char byte_D12F6C[36] = {
+    '\x15', 'R', '_', 'C', 'e', 'l', 'l', 'F', 'o', 'r', 'C', 'a', 'm',
+    'e', 'r', 'a', ':', ' ', 'b', 'a', 'd', ' ', 'm', 'o', 'd', 'e', 'l',
+    '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'
+};
+
+// ea: 0x006D1DF0
+static int R_CellForCamera(void* frameBase)
+{
+    (void)frameBase;
+    math::Position3 position;
+    position.v = g_dpvs.origin.v;
+    position.v.m128_f32[3] = 0.0f;
+    if (tr.world == nullptr)
+        ri.Error(1, byte_D12F6C);
+    return R_CellForPoint(position);
+}
 static void R_FilterModelsIntoCells(void* frameBase, dpvs_plane_t* planes,
                                     int iPlaneCount)
 {
