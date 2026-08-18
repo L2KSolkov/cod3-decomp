@@ -996,6 +996,7 @@ extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
+
 enum nflFileID : unsigned;
 extern void nflCloseFile(nflFileID file);  // filesystem/nfl.cpp
 extern void PoolAllocator_Release(void* allocator, void* ptr);
@@ -1117,6 +1118,8 @@ extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
 
 class nalAnimCache {
 public:
+    nalAnimCache();
+    void Init(nalHeap* heap);
     void Release() {}
     void MemFree(nalObject*, unsigned) {}
     void Free(nalObject*) {}
@@ -1124,7 +1127,30 @@ public:
     nalObject* MemAlloc(unsigned, unsigned) { return nullptr; }
     nalObject* Allocate(const nalCachedPoseInfo&, int, int, nalObject**) { return nullptr; }
     void IncreaseLOD(nalObject*, const nalCachedPoseInfo&, int, int) {}
+
+    nalHeap* Heap;
+    nalObject* LRUObject;
+    nalObject* MRUObject;
+    int Hits;
+    int Misses;
+    int Access;
+    unsigned Frame;
 };
+static_assert(sizeof(nalAnimCache) == 28, "nalAnimCache layout mismatch");
+
+// ea: 0x00854390
+nalAnimCache::nalAnimCache()
+    : Hits(0), Misses(0), Access(0), Frame(static_cast<unsigned>(-1))
+{
+}
+
+// ea: 0x008543B0
+void nalAnimCache::Init(nalHeap* heap)
+{
+    Heap = heap;
+    MRUObject = nullptr;
+    LRUObject = nullptr;
+}
 
 // ============================================================================
 // nalGenericPose Ã¢â‚¬â€ generic (untyped) pose data

@@ -304,7 +304,7 @@ ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	PORTED	ngl_scenedum
 
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	PORTED	ngl_morph.cpp: morph dir + blend/unique/process; nglMorph.h (morph types); directory moved from ngl_internal.cpp
 
-nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (IDA-typed 28-byte nalAnimCache layout plus exact constructor and Init; larger LRU cache operations remain explicit stubs)
 
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rigid_body.cpp: body setup + forces (7 funcs)
 
