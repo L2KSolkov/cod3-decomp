@@ -837,6 +837,80 @@ void          nslSetSourceVelocity(nslSourceID sid, const float* velocity) {
     value[2] = velocity[2];
     source->paramsUpdate |= 0x01C00000u;
 }
+// ea: 0x008211C0
+void          nslSetEmitterPosition(nslEmitterID sid, const float* position) {
+    nslEmitter* emitter = nslEmitterPtr(sid);
+    if (emitter == nullptr)
+        return;
+    if ((__fpclass(static_cast<double>(position[0])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 406,
+               "!(_fpclass(position[0])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(position[1])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 407,
+               "!(_fpclass(position[1])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(position[2])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 408,
+               "!(_fpclass(position[2])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    emitter->params[19] = position[0];
+    emitter->params[20] = position[1];
+    emitter->paramsUpdate |= 0x00380000u;
+    emitter->params[21] = position[2];
+}
+// ea: 0x00821320
+void          nslGetEmitterPosition(nslEmitterID sid, float* position) {
+    nslEmitter* emitter = nslEmitterPtr(sid);
+    if (emitter == nullptr)
+        return;
+    position[0] = emitter->params[19];
+    position[1] = emitter->params[20];
+    position[2] = emitter->params[21];
+}
+// ea: 0x00821480
+void          nslSetEmitterVelocity(nslEmitterID sid, const float* velocity) {
+    nslEmitter* emitter = nslEmitterPtr(sid);
+    if (emitter == nullptr)
+        return;
+    if ((__fpclass(static_cast<double>(velocity[0])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 438,
+               "!(_fpclass(velocity[0])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(velocity[1])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 439,
+               "!(_fpclass(velocity[1])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(velocity[2])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 440,
+               "!(_fpclass(velocity[2])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    emitter->params[22] = velocity[0];
+    emitter->params[23] = velocity[1];
+    emitter->paramsUpdate |= 0x01C00000u;
+    emitter->params[24] = velocity[2];
+}
+// ea: 0x008215E0
+void          nslGetEmitterVelocity(nslEmitterID sid, float* velocity) {
+    nslEmitter* emitter = nslEmitterPtr(sid);
+    if (emitter == nullptr)
+        return;
+    velocity[0] = emitter->params[22];
+    velocity[1] = emitter->params[23];
+    velocity[2] = emitter->params[24];
+}
 // ea: 0x00821830
 nslEmitterID  nslGetSourceEmitter(nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
