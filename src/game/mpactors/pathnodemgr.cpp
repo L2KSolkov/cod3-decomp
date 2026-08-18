@@ -794,6 +794,22 @@ void PathNodeMgr::ValidateAllNodes() const
     }
 }
 
+// ea: 0x0077FBA0
+void PathNodeMgr::CheckpointResetNodes()
+{
+    PathNodes::TOC1* levelTOC = mLevelTOC;
+    if (levelTOC == nullptr)
+        return;
+
+    int nodeCount = levelTOC->mNodeCount;
+    for (int i = 0; i < nodeCount; ++i)
+    {
+        PathNodes::PathNode* node = &levelTOC->mNodes[i];
+        node->mDynamic.mFreeTime = 0;
+        node->mTransient.mSearchFrame = -2;
+    }
+}
+
 // ea: 0x00780E00
 void PathNodeMgr::CheckLinkLeaks() const
 {
