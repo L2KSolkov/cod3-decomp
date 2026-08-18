@@ -507,8 +507,20 @@ nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flag
 nslWaveBankID nslWaveBankLoad(const char*) { return NSL_INVALID_BANK; }
 nslWaveBankID nslWaveBankLoadInPlace(void*) { return NSL_INVALID_BANK; }
 void          nslWaveBankRelease(nslWaveBankID) {}
-nslWaveBank*  nslWaveBankPtr(nslWaveBankID) { return nullptr; }
-nslWaveBankSlot* nslWaveBankGetSlot(nslWaveBankID) { return nullptr; }
+// ea: 0x00826EE0
+nslWaveBankSlot* nslWaveBankGetSlot(nslWaveBankID waveBankID) {
+    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+        return nullptr;
+    const unsigned index = (waveBankID >> 16) % nsl_initParams.aramBase;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
+    return slot->waveBankID == waveBankID ? slot : nullptr;
+}
+// ea: 0x00827420
+nslWaveBank*  nslWaveBankPtr(nslWaveBankID waveBankID) {
+    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
+    return slot != nullptr && slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADED
+        ? slot->waveBank : nullptr;
+}
 unsigned      nslWaveBankCount() { return 0; }
 nslWaveBankID nslWaveBankGetFirst() { return NSL_INVALID_BANK; }
 nslWaveBankID nslWaveBankGetNext(nslWaveBankID) { return NSL_INVALID_BANK; }
@@ -619,10 +631,26 @@ int           nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile,
     return 1;
 }
 void          nslWaveBankSort(nslWaveBank*) {}
+// ea: 0x00827560
+nslWaveID     nslWaveBankGetWave(nslWaveBankID waveBankID, unsigned index) {
+    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
+    if (slot == nullptr || slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED ||
+        slot->waveBank == nullptr || index >= slot->waveBank->waveCount)
+        return NSL_INVALID_WAVE;
+    return static_cast<nslWaveID>(index | (slot->waveBankID & 0xffff0000u));
+}
 nslWaveID     nslWaveBankGetWave(nslWaveBankID, const char*) { return NSL_INVALID_WAVE; }
 nslWaveID     nslWaveBankGetWaveByIndex(nslWaveBankID, unsigned) { return NSL_INVALID_WAVE; }
-unsigned      nslWaveBankGetWaveCount(nslWaveBankID) { return 0; }
-const char*   nslWaveBankGetWaveName(nslWaveBankID, unsigned) { return ""; }
+// ea: 0x008275E0
+int           nslWaveBankGetWaveCount(nslWaveBankID waveBankID) {
+    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
+    return slot != nullptr && slot->waveBank != nullptr
+        ? static_cast<int>(slot->waveBank->waveCount) : -1;
+}
+// ea: 0x008275C0
+const char*   nslWaveBankGetWaveName(nslWaveBankID waveBankID, unsigned index) {
+    return nslWaveGetName(nslWaveBankGetWave(waveBankID, index));
+}
 // ea: 0x00826EA0
 int           nslWaveNameCompareText(const nslWaveName* waveNameA,
                                      const nslWaveName* waveNameB) {
