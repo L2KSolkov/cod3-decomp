@@ -831,6 +831,27 @@ void PathNodeMgr::NodeList()
     }
 }
 
+// ea: 0x00783A00
+void PathNodeMgr::InitPaths()
+{
+    if (mLevelTOC != nullptr)
+    {
+        InitScriptVariables(0);
+        if (mLevelTOC != nullptr)
+            InitScriptFunctions(0);
+    }
+    level.pathsInited = true;
+    level.pathsConnected = true;
+    FindOverlappingNodes();
+
+    PathNodes::TOC1* levelTOC = mLevelTOC;
+    if (levelTOC != nullptr)
+    {
+        for (int i = 0; i < levelTOC->mNodeCount; ++i)
+            ValidateNode(&levelTOC->mNodes[i]);
+    }
+}
+
 // ea: 0x00780E00
 void PathNodeMgr::CheckLinkLeaks() const
 {
