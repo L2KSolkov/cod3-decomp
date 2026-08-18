@@ -947,7 +947,7 @@ int           nslWaveIsStreaming(nslWaveID waveID) {
         return 0;
     const unsigned char* metadata =
         *reinterpret_cast<const unsigned char* const*>(wave);
-    return metadata != nullptr ? (metadata[5] & 1u) : 0;
+    return metadata[5] & 1u;
 }
 // ea: 0x00827250
 int           nslWaveIsLooping(nslWaveID waveID) {
@@ -956,7 +956,7 @@ int           nslWaveIsLooping(nslWaveID waveID) {
         return 0;
     const unsigned char* metadata =
         *reinterpret_cast<const unsigned char* const*>(wave);
-    return metadata != nullptr ? ((metadata[5] >> 1) & 1u) : 0;
+    return (metadata[5] >> 1) & 1u;
 }
 
 // ============================================================================
