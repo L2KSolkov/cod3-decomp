@@ -8,6 +8,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
+#include <cmath>
 #include <intrin.h>
 
 #include "core/tlFixedString.h"
@@ -237,6 +238,12 @@ struct nslGroup {
     char name[32];
 };
 static_assert(sizeof(nslGroup) == 296, "IDA nslGroup layout");
+// IDA type_inspect: nslSpeaker is two four-float vectors (32 bytes).
+struct nslSpeaker {
+    float local[4];
+    float world[4];
+};
+static_assert(sizeof(nslSpeaker) == 32, "IDA nslSpeaker layout");
 
 // IDA's release code advances the allocated records by 0x120 bytes even
 // though the named UDT includes a 32-byte name member (sizeof == 0x128).
@@ -278,6 +285,37 @@ static char nsl_waveObjectDirectory[512] = {};
 static unsigned char nsl_waveBankLoaderBuffer[4096] = {};
 static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
+// Listener-frame globals and initial speaker table from IDA's release data.
+nslSpeaker nsl_speakers[8] = {
+    {{-1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 0.0f, 0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 0.0f, 0.0f,-1.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
+    {{ 0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}}
+};
+float nsl_listenerMatrix[3][3] = {};
+static float dword_10E11CC = 0.0f;
+static float dword_10E11D0 = 0.0f;
+static float v3a = 0.0f;
+static float dword_10E11D8 = 0.0f;
+static float dword_10E11DC = 0.0f;
+static float v3b = 0.0f;
+static float dword_10E11E4 = 0.0f;
+static float dword_10E11E8 = 0.0f;
+static float dword_E4B6CC = 0.0f;
+static float dword_E4B6D0 = 0.0f;
+static float dword_E4B6D8 = 0.0f;
+static float dword_E4B6DC = 0.0f;
+static float dword_E4B6E0 = 0.0f;
+static float dword_E4B6E8 = 1.0f;
+static float dword_E4B6EC = 0.0f;
+static float dword_E4B6F0 = 0.0f;
+static float dword_E4B6F8 = 0.0f;
+static float dword_E4B6FC = 0.0f;
+static float dword_E4B700 = 0.0f;
 static txSlotEntry* nsl_sourceEntries = nullptr;
 static txSlotEntry* nsl_emitterEntries = nullptr;
 static nslSource* nsl_sources = nullptr;
@@ -2155,7 +2193,67 @@ void          nslListenerSetVelocity(unsigned listenerIndex, const float* vel) {
 // ea: 0x00823EE0
 void          nslListenerSetOrientation(unsigned, const float*, const float*) {}
 void          nslListenerSetDopplerFactor(unsigned, float) {}
-void          nslUpdateListener() {}
+
+// ea: 0x008232D0
+static float* txVectorNormalize(float* dst, const float* src) {
+    const long double length = std::sqrt(static_cast<long double>(
+        src[0] * src[0] + src[1] * src[1] + src[2] * src[2]));
+    if (length > 0.00000011920929L) {
+        const float inverse = static_cast<float>(1.0L / length);
+        dst[0] = src[0] * inverse;
+        dst[1] = src[1] * inverse;
+        dst[2] = src[2] * inverse;
+    } else {
+        dst[0] = 0.0f;
+        dst[1] = 0.0f;
+        dst[2] = 0.0f;
+    }
+    return dst;
+}
+
+// ea: 0x00823400
+void          nslUpdateListener() {
+    nslGroup* listenerGroup = nslGetListenerGroup();
+    float* params = listenerGroup->params;
+
+    nsl_listenerMatrix[0][0] =
+        (params[50] * params[48]) - (params[51] * params[47]);
+    dword_10E11CC = (params[51] * params[46]) - (params[48] * params[49]);
+    dword_10E11D0 = (params[49] * params[47]) - (params[50] * params[46]);
+    txVectorNormalize(nsl_listenerMatrix[0], nsl_listenerMatrix[0]);
+
+    v3a = (dword_10E11D0 * params[47]) - (dword_10E11CC * params[48]);
+    dword_10E11D8 = (nsl_listenerMatrix[0][0] * params[48])
+                  - (params[46] * dword_10E11D0);
+    dword_10E11DC = (params[46] * dword_10E11CC)
+                  - (nsl_listenerMatrix[0][0] * params[47]);
+    txVectorNormalize(&v3a, &v3a);
+
+    v3b = (dword_10E11DC * dword_10E11CC)
+        - (dword_10E11D8 * dword_10E11D0);
+    dword_10E11E4 = (v3a * dword_10E11D0)
+                  - (dword_10E11DC * nsl_listenerMatrix[0][0]);
+    dword_10E11E8 = (dword_10E11D8 * nsl_listenerMatrix[0][0])
+                  - (v3a * dword_10E11CC);
+    txVectorNormalize(&v3b, &v3b);
+
+    dword_E4B6D8 = (v3b * dword_E4B6D0) + (v3a * dword_E4B6CC)
+                 + (nsl_listenerMatrix[0][0] * nsl_speakers[0].local[0]);
+    dword_E4B6DC = (dword_10E11E4 * dword_E4B6D0)
+                 + (dword_10E11D8 * dword_E4B6CC)
+                 + (dword_10E11CC * nsl_speakers[0].local[0]);
+    dword_E4B6E0 = (dword_10E11E8 * dword_E4B6D0)
+                 + (dword_10E11DC * dword_E4B6CC)
+                 + (dword_10E11D0 * nsl_speakers[0].local[0]);
+    dword_E4B6F8 = (v3b * dword_E4B6F0) + (v3a * dword_E4B6EC)
+                 + (nsl_listenerMatrix[0][0] * dword_E4B6E8);
+    dword_E4B6FC = (dword_10E11E4 * dword_E4B6F0)
+                 + (dword_10E11D8 * dword_E4B6EC)
+                 + (dword_10E11CC * dword_E4B6E8);
+    dword_E4B700 = (dword_10E11E8 * dword_E4B6F0)
+                 + (dword_10E11DC * dword_E4B6EC)
+                 + (dword_10E11D0 * dword_E4B6E8);
+}
 void          nslUpdate() {}
 
 // ============================================================================
