@@ -344,6 +344,7 @@ void* nslAramAlloc(unsigned size, unsigned flags);
 void nslAramFree(void* ptr);
 void* nslMemoryAlloc(unsigned size);
 void nslMemoryFree(void* ptr);
+nslGroup* nslGroupGet(const char* groupName);
 int nslWaveBankFixup(nslWaveBank* waveBank);
 int nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram);
 int nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile, unsigned waveBankFileOffset);
@@ -1504,7 +1505,64 @@ unsigned      nslWaveBankSlotsGetLoadedCount() {
     }
     return result;
 }
-int           nslWaveBankFixup(nslWaveBank*) { return 0; }
+// ea: 0x00829DD0
+int           nslWaveBankFixup(nslWaveBank* waveBank) {
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 0xC0u) != 0)
+        return 0;
+
+    const uintptr_t base = reinterpret_cast<uintptr_t>(waveBank);
+    waveBank->names = reinterpret_cast<nslWaveName*>(
+        reinterpret_cast<uintptr_t>(waveBank->names) + base);
+    waveBank->waves = reinterpret_cast<nslWave*>(
+        reinterpret_cast<uintptr_t>(waveBank->waves) + base);
+    waveBank->infos = reinterpret_cast<void*>(
+        reinterpret_cast<uintptr_t>(waveBank->infos) + base);
+    waveBank->text = reinterpret_cast<char*>(
+        reinterpret_cast<uintptr_t>(waveBank->text) + base);
+    waveBank->storage.backing.waveBankAram = nullptr;
+    waveBank->storage.backing.waveBankFile = static_cast<nflFileID>(0);
+    waveBank->storage.backing.waveBankFileOffset = 0;
+    waveBank->storage.backing.reserved = 0;
+    std::memset(waveBank->streamMD5, 0, sizeof(waveBank->streamMD5));
+
+    if ((waveBank->waveBankFlags & 2u) == 0) {
+        const unsigned textAddress =
+            static_cast<unsigned>(reinterpret_cast<uintptr_t>(waveBank->text));
+        for (unsigned index = 0; index < waveBank->waveCount; ++index)
+            waveBank->names[index].hash += textAddress;
+    }
+
+    unsigned char* waves = reinterpret_cast<unsigned char*>(waveBank->waves);
+    const uintptr_t infoAddress = reinterpret_cast<uintptr_t>(waveBank->infos);
+    for (unsigned index = 0; index < waveBank->waveCount; ++index) {
+        unsigned char* wave = waves + 16u * index;
+        uintptr_t nameOffset = *reinterpret_cast<uintptr_t*>(wave);
+        nameOffset += infoAddress;
+        *reinterpret_cast<uintptr_t*>(wave) = nameOffset;
+        unsigned char* metadata =
+            *reinterpret_cast<unsigned char**>(wave);
+        if ((metadata[5] & 1u) != 0)
+            *reinterpret_cast<unsigned*>(wave + 4u) += waveBank->streamOffset;
+    }
+
+    unsigned char* infoBytes = reinterpret_cast<unsigned char*>(waveBank->infos);
+    unsigned char* infoEnd = infoBytes + waveBank->infoSize;
+    while (infoBytes < infoEnd) {
+        nslWaveInfo* info = reinterpret_cast<nslWaveInfo*>(infoBytes);
+        if (info->groupName != nullptr) {
+            const uintptr_t groupOffset =
+                reinterpret_cast<uintptr_t>(info->groupName);
+            const char* groupName = waveBank->text + groupOffset;
+            info->groupName = reinterpret_cast<const char*>(nslGroupGet(groupName));
+        }
+        if ((info->soundFlags & 1u) != 0 && info->speakerMap != 0)
+            info->soundFlags &= 0xFEu;
+        infoBytes += (nslWaveInfoSize(info) + 15u) & 0xFFFFFFF0u;
+    }
+
+    waveBank->waveBankFlags |= 0x40u;
+    return 1;
+}
 // ea: 0x00827A00
 nflFileID      nslWaveBankGetFile(const nslWaveBank* waveBank, unsigned* waveBankFileOffset) {
     if (waveBank == nullptr || (waveBank->waveBankFlags & 0x80u) != 0)
