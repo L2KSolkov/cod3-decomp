@@ -13,6 +13,7 @@
 #include <intrin.h>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
+#include "core/tlInstanceBank.h"
 #include "core/ae_fixed_string.h"
 #include "engine/broc_types.h"
 
@@ -1047,6 +1048,47 @@ nalInitList::nalInitList()
 
 // ea: 0x0055E4A0
 nalInitList::~nalInitList()
+{
+}
+
+// nalInitListAnimType - animation-type registration node (nal_init.o).
+// Layout and constructor/Register bodies are taken from IDA at 0x8542E0,
+// 0x854350, and 0x854360.
+class nalInitListAnimType : public nalInitList {
+public:
+    nalInitListAnimType(const tlFixedString* name, void* animVtable,
+                        void* skeletonVtable);
+    virtual void Register();
+    virtual ~nalInitListAnimType();
+
+    tlFixedString name;       // +0x08
+    void* animVtable;         // +0x28
+    void* skeletonVtable;     // +0x2C
+};
+
+static_assert(sizeof(nalInitListAnimType) == 0x30,
+              "nalInitListAnimType layout mismatch");
+
+// ?nalTypeInstanceBank@@3VtlInstanceBank@@A @ 0x10E6CEC
+tlInstanceBank nalTypeInstanceBank;
+
+// ea: 0x008542E0
+nalInitListAnimType::nalInitListAnimType(const tlFixedString* typeName,
+                                         void* animVtable,
+                                         void* skeletonVtable)
+    : nalInitList(), name(*typeName), animVtable(animVtable),
+      skeletonVtable(skeletonVtable)
+{
+}
+
+// ea: 0x00854350
+void nalInitListAnimType::Register()
+{
+    nalTypeInstanceBank.Insert(name, this);
+}
+
+// ea: 0x00854360
+nalInitListAnimType::~nalInitListAnimType()
 {
 }
 
