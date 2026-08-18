@@ -3,10 +3,10 @@
 // Reconstructed from codmp_xboxr.xbe (release build /O2)
 // Source: c:\cod\code\tl\aeps\source\apsSuppliedActions.cpp
 //
-// Port strategy: stubs matching nsl_xboxr / nal_xboxr precedent.
-//   - Class ABI is real: vtable slots, layout, ctor→base delegation.
-//   - Method bodies are stubs pending a live particle-system harness.
-//   - Anonymous-namespace helpers reconstructed inline where trivial.
+// Port strategy: release-optimized IDA reconstruction.
+//   - Class ABI is real: vtable slots, layout, ctor->base delegation.
+//   - Method bodies and helper math follow the connected IDA release XBE.
+//   - Anonymous-namespace helpers are reconstructed inline where applicable.
 //
 // The ctor→apsAction(numParams,numDomains,style,requiredFields) pattern is
 // verbatim from IDA — the (numParams,numDomains,requiredFields) triples are
