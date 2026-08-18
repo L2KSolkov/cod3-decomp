@@ -1833,6 +1833,7 @@ public:
 
     static PakManager* sInst;          // ?sInst@PakManager@@2PAV1@A (sv_globals.cpp)
     static PakManager* Inst();         // ?Inst@PakManager@@SAPAV1@XZ
+    PakFile* GetPakFile(TPakId id);    // ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z
     void ToggleEnabled();              // ?ToggleEnabled@PakManager@@QAEXXZ
     const reserved_dlist<PakFile>& GetActivePaks() const;  // ?GetActivePaks@PakManager@@QBEABV?$reserved_dlist@VPakFile@@@@XZ
     static unsigned int sComputeDistanceKey;  // ?sComputeDistanceKey@PakManager@@0IA
@@ -7404,6 +7405,14 @@ TPakId PakManager::FindPakId(const char* pak_name) const
         if (m_next == nullptr)
             return PAK_ID_INVALID;
     }
+}
+
+// ea: 0x004B45F0
+PakFile* PakManager::GetPakFile(TPakId id)
+{
+    if (id > 0x62)
+        return nullptr;
+    return mSlots[id];
 }
 
 // ea: 0x6666B0
