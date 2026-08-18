@@ -1639,9 +1639,9 @@ nslWaveID     nslWaveLoad(const char*, unsigned) { return NSL_INVALID_WAVE; }
 nslWaveID     nslWaveLoadInPlace(void*, unsigned) { return NSL_INVALID_WAVE; }
 void          nslWaveRelease(nslWaveID) {}
 // ea: 0x0082A020
-const char*   nslWaveGetSourceDirectory() { return nsl_waveSourceDirectory; }
+char*         nslWaveGetSourceDirectory() { return nsl_waveSourceDirectory; }
 // ea: 0x0082A030
-const char*   nslWaveGetObjectDirectory() { return nsl_waveObjectDirectory; }
+char*         nslWaveGetObjectDirectory() { return nsl_waveObjectDirectory; }
 // ea: 0x0082A040
 void          nslWaveSetSourceDirectory(const char* newWaveSourceDirectory) {
     std::strncpy(nsl_waveSourceDirectory, newWaveSourceDirectory, 0x1FFu);
@@ -1659,7 +1659,7 @@ void          nslWaveSetObjectDirectory(const char* newWaveObjectDirectory) {
     txPathFix(nsl_waveObjectDirectory, nsl_waveObjectDirectory, 512);
 }
 // ea: 0x0082A160
-const char*   nslWaveGetSourceFilename(const char* sourceFilename,
+char*         nslWaveGetSourceFilename(const char* sourceFilename,
                                        char* fullSourceFilename,
                                        int fullSourceFilenameSize) {
     _snprintf(fullSourceFilename, fullSourceFilenameSize, "%s/%s",
@@ -1668,7 +1668,7 @@ const char*   nslWaveGetSourceFilename(const char* sourceFilename,
     return fullSourceFilename;
 }
 // ea: 0x0082A1A0
-const char*   nslWaveGetObjectFilename(const char* objectFilename,
+char*         nslWaveGetObjectFilename(const char* objectFilename,
                                        const char* platform,
                                        char* fullObjectFilename,
                                        int fullObjectFilenameSize) {
@@ -1682,23 +1682,32 @@ const char*   nslWaveGetObjectFilename(const char* objectFilename,
 nslWaveInfo*  nslWaveInfoAlloc() {
     return static_cast<nslWaveInfo*>(std::calloc(1u, 0x118u));
 }
+// ea: 0x00829EF0
+static unsigned __int64 txBitCount64A_4(unsigned __int64 value) {
+    value = (value & UINT64_C(0x5555555555555555))
+          + ((value >> 1) & UINT64_C(0x5555555555555555));
+    value = (value & UINT64_C(0x3333333333333333))
+          + ((value >> 2) & UINT64_C(0x3333333333333333));
+    value = (value & UINT64_C(0x0F0F0F0F0F0F0F0F))
+          + ((value >> 4) & UINT64_C(0x0F0F0F0F0F0F0F0F));
+    value += value >> 8;
+    value += value >> 16;
+    value += value >> 32;
+    return value & UINT64_C(0x7F);
+}
 // ea: 0x0082A1F0
 unsigned      nslWaveInfoSize(const nslWaveInfo* waveInfo) {
     if (waveInfo == nullptr)
         return 0;
-    unsigned __int64 map = waveInfo->paramUnpacked.map;
-    unsigned count = 0;
-    while (map != 0) {
-        count += static_cast<unsigned>(map & 1u);
-        map >>= 1;
-    }
-    return 4u * count + 24u;
+    return 4u * static_cast<unsigned>(txBitCount64A_4(
+        waveInfo->paramUnpacked.map)) + 24u;
 }
 // ea: 0x0082A220
 nslWave*     nslWaveAlloc() {
     nslWave* wave = static_cast<nslWave*>(std::calloc(1u, 0x10u));
     if (wave != nullptr)
-        *reinterpret_cast<nslWaveInfo**>(wave) = nslWaveInfoAlloc();
+        *reinterpret_cast<nslWaveInfo**>(wave) =
+            static_cast<nslWaveInfo*>(std::calloc(1u, 0x118u));
     return wave;
 }
 // ea: 0x0082A250
@@ -1781,10 +1790,7 @@ failure:
     return nullptr;
 }
 // ea: 0x0082A440
-nslWave*     nslWaveCopy(const nslWave* src, unsigned __formal, int flags,
-                         int __formal2, const char** const __formal3) {
-    static_cast<void>(__formal2);
-    static_cast<void>(__formal3);
+nslWave*     nslWaveCopy(const nslWave* src, unsigned __formal, int flags) {
     nslWave* copy = static_cast<nslWave*>(std::calloc(1u, 0x10u));
     if (copy == nullptr)
         return nullptr;
