@@ -922,8 +922,17 @@ public:
 
 // nalGenericBoneHandle - bone reference (index + skeleton)
 struct nalGenericBoneHandle {
-    unsigned index;
+    const nalGeneric::nalGenericSkeleton* Skeleton;  // +0x00
+    int BoneIndex;                       // +0x04
+
+    // ea: 0x00518350
+    nalGenericBoneHandle() : Skeleton(nullptr) {}
+
+    // ea: 0x00518360
+    bool IsValid() const { return Skeleton != nullptr; }
 };
+static_assert(sizeof(nalGenericBoneHandle) == 8,
+              "nalGenericBoneHandle layout mismatch");
 
 // BoneName cache (game2.o data, F052F8..; 16 entries of tlFixedString)
 extern tlFixedString boneName[8];   // ?boneName@@3?AV?$tlFixedString@...@@A (game2.o)
@@ -976,6 +985,9 @@ public:
     static void* operator new(unsigned int sz);
     static void* operator new(unsigned int, void* p) { return p; }
     static void operator delete(void* ptr);
+
+    // ea: 0x008549D0
+    nalGenericPose();
 
     // ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z
     nalGenericPose(const nalGenericSkeleton* skel, int flags);
@@ -1579,14 +1591,18 @@ nalComponentInitList::nalComponentInitList(const char* name,
 class nalComponentU8Base            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentSignalCounter     { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentRLE8Int1          { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentFloat1Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
-class nalComponentFloat3Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
+class nalComponentFloat1Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} static unsigned char TypeID; };
+class nalComponentFloat3Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} static unsigned char TypeID; };
 class nalComponentFloat4Base        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentQuatBase          { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} virtual void BlendIntra(int,void*,const void*,const void*,float){} };
-class nalComponentPOBase            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
+class nalComponentPOBase            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} static unsigned char TypeID; };
 class nalComponentIKSpinBase        { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentTrajectoryPO      { public: static void ComponentCycleTrajectory(nalPositionOrientation*,nalPositionOrientation*,int,void*){} };
 class nalComponentEntropyTrajectoryPO{ public: static void ComponentCycleTrajectory(nalPositionOrientation*,nalPositionOrientation*,int,void*){} };
+
+unsigned char nalComponentFloat1Base::TypeID = 0;
+unsigned char nalComponentFloat3Base::TypeID = 0;
+unsigned char nalComponentPOBase::TypeID = 0;
 
 // ============================================================================
 // nalStreamInstance Ã¢â‚¬â€ streaming animation instance
@@ -3870,17 +3886,17 @@ public:
 // ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VDir3@math@@@1@I@Z
 // ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@I@Z
 bool IsType(const nalGenericComponentHandle<math::Dir3>& handle,
-            unsigned int id)
+            unsigned char* id)
 {
-    // nalComponentFloat3Base::TypeID @ 0x10EC610
-    return id == 0x10EC610;
+    // ea: 0x0055E870
+    return id == &nalComponentFloat3Base::TypeID;
 }
 
 bool IsType(const nalGenericComponentHandle<nalPositionOrientation>& handle,
-            unsigned int id)
+            unsigned char* id)
 {
-    // nalComponentPOBase::TypeID @ 0x10EC614
-    return id == 0x10EC614;
+    // ea: 0x0055E890
+    return id == &nalComponentPOBase::TypeID;
 }
 }
 
@@ -4583,6 +4599,14 @@ inline nalGenericPose::nalGenericPose(const nalGenericPose& other,
     (void)other; (void)copyData;
 }
 
+// ea: 0x008549D0
+inline nalGenericPose::nalGenericPose()
+{
+    Skeleton = nullptr;
+    LOD = 0;
+    AllocedData = false;
+}
+
 // nalGenericInstance::GetPose(float,float,nalGenericPose&,const
 // nalGenericPose&,int,unsigned)
 inline void nalGenericInstance::GetPose(float t1, float t2,
@@ -5161,13 +5185,13 @@ void nalGenericSkeleton::GetComponentHandle(
     nalGenericComponentHandle<T>& handle, const tlFixedString& a3,
     const tlFixedString& a4) const
 {
-    unsigned int typeId = 0;
+    const unsigned char* typeId = nullptr;
     if (std::is_same<T, math::Dir3>::value)
-        typeId = 0x10EC610;  // nalComponentFloat3Base::TypeID
+        typeId = &nalComponentFloat3Base::TypeID;
     else if (std::is_same<T, nalPositionOrientation>::value)
-        typeId = 0x10EC614;  // nalComponentPOBase::TypeID
+        typeId = &nalComponentPOBase::TypeID;
     else if (std::is_same<T, float>::value)
-        typeId = 0x10EC613;  // nalComponentFloat1Base::TypeID
+        typeId = &nalComponentFloat1Base::TypeID;
 
     handle.Skeleton = nullptr;
     handle.ComponentInfo = nullptr;
@@ -5219,7 +5243,7 @@ void nalGenericSkeleton::GetComponentHandle(
                                         ((GetTypeIDFn)((void**)*(void**)pComp)[1])(
                                             pComp);
                                     if (!std::is_same<T, void>::value
-                                        && tid != (void*)(uintptr_t)typeId)
+                                        && tid != typeId)
                                         goto LABEL_12;
                                     handle.Skeleton =
                                         (const nalGenericSkeleton*)this;
@@ -5254,9 +5278,9 @@ void nalGenericSkeleton::GetComponentHandle(
     nalGenericConstComponentHandle<T>& handle,
     const tlFixedString& a3, const tlFixedString& a4) const
 {
-    unsigned int typeId = 0;
+    const unsigned char* typeId = nullptr;
     if (std::is_same<T, float>::value)
-        typeId = 0x10EC613;  // nalComponentFloat1Base::TypeID
+        typeId = &nalComponentFloat1Base::TypeID;
 
     handle.Skeleton = nullptr;
     handle.ComponentInfo = nullptr;
@@ -5305,7 +5329,7 @@ void nalGenericSkeleton::GetComponentHandle(
                                     void* tid =
                                         ((GetTypeIDFn)((void**)*(void**)pComp)[1])(
                                             pComp);
-                                    if (tid != (void*)(uintptr_t)typeId)
+                                    if (tid != typeId)
                                         goto LABEL_12;
                                     handle.Skeleton =
                                         (const nalGenericSkeleton*)this;
