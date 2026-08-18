@@ -852,6 +852,43 @@ void PathNodeMgr::InitPaths()
     }
 }
 
+// ea: 0x007832C0
+void PathNodeMgr::ConnectPathsForEntity(Entity* ent)
+{
+    if ((ent->flags & 0x1000) == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1551;
+        AeAssert::gCurrentExpr = "Path_IsDynamicBlockingEntity(ent)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    uint16_t disconnectedLinks = ent->disconnectedLinks;
+    ent->flags |= 0x4000u;
+    if (disconnectedLinks != 0)
+    {
+        ent->disconnectedLinks = 0;
+        PathNodes::PathLinkInfo* linkPool = mLevelTOC->mLinkPool;
+        linkPool[linkPool[disconnectedLinks].prev].next = 0;
+        linkPool[linkPool->prev].next = disconnectedLinks;
+        uint16_t prev = linkPool->prev;
+        linkPool->prev = linkPool[disconnectedLinks].prev;
+        linkPool[disconnectedLinks].prev = prev;
+
+        do
+        {
+            uint16_t index = disconnectedLinks;
+            PathNodes::PathNode* node = GetNode(linkPool[index].from);
+            ConnectPath(node, linkPool[index].to);
+            disconnectedLinks = linkPool[index].next;
+        } while (disconnectedLinks != 0);
+    }
+}
+
 // ea: 0x00780E00
 void PathNodeMgr::CheckLinkLeaks() const
 {
