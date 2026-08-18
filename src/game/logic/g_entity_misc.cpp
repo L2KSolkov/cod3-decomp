@@ -5639,9 +5639,9 @@ extern void nslSetListenerOrientation(const float* a,
                                       const float* b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
 extern void AnglesToAxis(const float* const angles,
                          float (*const axis)[3]);  // core.o
-struct nslInitParams { unsigned maxVoices; unsigned maxSources; int speakerMode; };
+struct nslInitParams { unsigned maxSources; unsigned maxEmitters; unsigned aramBase; unsigned aramSize; };
 extern int nslInit(const nslInitParams* ip);                 // ?nslInit@@YAHPBUnslInitParams@@@Z
-unsigned char nsl_initParams[0x44];                          // ?nsl_initParams (nsl.o @ 0xE4B680)
+extern nslInitParams nsl_initParams;                         // ?nsl_initParams (nsl.o @ 0xE4B680)
 extern void nslStart(void* work);                            // ?nslStart@@YAXPAX@Z
 extern void nslExit();                                       // ?nslExit@@YAXXZ
 extern const char* nslGetWaveGroup(nslWaveID wave);          // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z
@@ -5956,7 +5956,7 @@ SoundDevice::SoundDevice()
     nslSetNumberOfListeners(1);
     *(unsigned int*)&this->mNslParams[4] = 1;
     *(unsigned int*)this->mNslParams = 512;
-    memcpy(this->mNslParams, nsl_initParams, sizeof(this->mNslParams));
+    memcpy(this->mNslParams, &nsl_initParams, sizeof(this->mNslParams));
     void* v5 = mem_heap_malloc(nslInit((const nslInitParams*)this->mNslParams));
     this->mNslBuffer = v5;
     if (v5 == nullptr)
