@@ -514,6 +514,36 @@ unsigned      nslGetSourceOffset(nslSourceID sid) {
     return *reinterpret_cast<const unsigned*>(
         reinterpret_cast<const unsigned char*>(source) + 0x130u);
 }
+// ea: 0x008212D0
+void          nslGetSourcePosition(nslSourceID sid, float* position) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    const float* value = reinterpret_cast<const float*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x5Cu);
+    position[0] = value[0];
+    position[1] = value[1];
+    position[2] = value[2];
+}
+// ea: 0x00821590
+void          nslGetSourceVelocity(nslSourceID sid, float* velocity) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    const float* value = reinterpret_cast<const float*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x68u);
+    velocity[0] = value[0];
+    velocity[1] = value[1];
+    velocity[2] = value[2];
+}
+// ea: 0x00821830
+nslEmitterID  nslGetSourceEmitter(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return NSL_INVALID_EMITTER;
+    return *reinterpret_cast<const nslEmitterID*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x114u);
+}
 unsigned      nslGetMaxNumVoices() { return 0; }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
@@ -532,7 +562,6 @@ float         nslGetSourceParam(nslSourceID sid, int index, float defaultValue) 
     return source->params[index];
 }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
 int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
-void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z (nslSource.o)
 
 // nslCompat.o / nslSource.o family (stubbed; manglings match binary)
 int           nslGetBankState(nslBankID bankID) { return nslWaveBankGetState(static_cast<nslWaveBankID>(bankID)); }
