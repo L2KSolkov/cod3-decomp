@@ -20,6 +20,7 @@ extern const char* gCurrentFile;
 extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
+bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
 }
 
@@ -2930,9 +2931,27 @@ void TakeWeapon(Entity* pSelf, const char* pszWeaponName)
 {
     (void)pSelf; (void)pszWeaponName;
 }
+// ea: 0x005BDF20
 void CopyExtendedEntity(const Entity* source, Entity* dest)
 {
-    (void)source; (void)dest;
+    if (gpBrocAPI != nullptr && source->mBrocExtendedEntity != nullptr)
+    {
+        if (dest->mBrocExtendedEntity != nullptr)
+        {
+            AeAssert::gCurrentAuthor =
+                static_cast<AeAssert::ECoderId>(1);  // ARO
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\BrocSys.cpp";
+            AeAssert::gCurrentLine = 4662;
+            AeAssert::gCurrentExpr = "!dest->mBrocExtendedEntity";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("This should be NULL"))
+                __debugbreak();
+        }
+        dest->mBrocExtendedEntity =
+            gpBrocAPI->mBrocExports.mCopyExtendedEntity(
+                source->mBrocExtendedEntity);
+    }
 }
 // ea: 0x005BDFC0
 void UnloadScript()

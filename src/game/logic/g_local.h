@@ -1623,9 +1623,10 @@ void LoadScript();                          // ?LoadScript@BrocSys@@YAXXZ
 enum TPakInfo : int;  // scr.o (full: { kTPakInfoInvalid = 0 })
 struct BrocExports {
     void* (*mCreateExtendedEntity)(const char**, int);  // +0x000
-    uint8_t _pad004[0x00C - 0x004];  // +0x004
+    void (*mDeleteExtendedEntity)(void*);  // +0x004
     bool (*mMatchExtendedEntityKey)(void*, int, const char*);  // +0x00C
-    uint8_t _pad010[0x028 - 0x010];  // +0x010
+    void* (*mCopyExtendedEntity)(const void*);  // +0x010
+    uint8_t _pad014[0x028 - 0x014];  // +0x014
     int (*mStricmp)(const char *, const char *);  // +0x028
     int (*mStrncmp)(const char *, const char *, unsigned int);  // +0x02C
     char * (*mStrstr)(const char *, const char *);  // +0x030
