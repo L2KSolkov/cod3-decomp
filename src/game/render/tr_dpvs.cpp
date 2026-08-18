@@ -143,18 +143,44 @@ public:
     refEntity_t e;           // +0x08
 };
 
+class StaticModel;
+struct trStaticModelList_t {
+    StaticModel* model;        // +0x00
+    trStaticModelList_t* next; // +0x04
+};
+static_assert(sizeof(trStaticModelList_t) == 0x08,
+              "trStaticModelList_t size mismatch");
+
+// Only fields consumed by R_AddStaticModels are materialized here. The
+// offsets come directly from the IDA local StaticModel type.
+class StaticModel {
+public:
+    uint8_t _pad_a0[0xA0];           // lgrid/transform state
+    math::Position3::Packed absmin;  // +0xA0
+    uint8_t _pad_b8[0x38];
+    float viewCount;                 // +0xE4
+};
+static_assert(offsetof(StaticModel, absmin) == 0xA0,
+              "StaticModel::absmin offset mismatch");
+static_assert(offsetof(StaticModel, viewCount) == 0xE4,
+              "StaticModel::viewCount offset mismatch");
+
 struct DObjSkelMat {
     float axis[3][4];        // +0x00
     float origin[4];         // +0x30
 };
 static_assert(sizeof(DObjSkelMat) == 0x40, "DObjSkelMat size mismatch");
 
-// BspCell view (modelRefs +0x38)
+// BspCell view (IDA size 0x50)
 class BspCell {
 public:
-    uint8_t _pad0[0x38];
-    trModelCellRef_t* modelRefs;  // +0x38
+    uint8_t _pad0[0x30];
+    int viewCount;                    // +0x30
+    trStaticModelList_t* staticModels; // +0x34
+    trModelCellRef_t* modelRefs;      // +0x38
+    uint8_t _pad1[0x50 - 0x3C];
 };
+static_assert(sizeof(BspCell) == 0x50, "BspCell size mismatch");
 
 // core.o / q_math.o helpers
 DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
@@ -474,7 +500,10 @@ struct trRefdefFilterView {
     short num_model_dlights;  // +0x22
 };
 struct trGlobals_t {
-    uint8_t _pad[0x10];
+    int registered;
+    int worldMapLoaded;
+    int frameCount;
+    int viewCount;
     viewParmsDPVSView viewParms;
     trRefdefFilterView refdef;   // +0x26C
     uint8_t _pad2[0x290 - 0x270];
@@ -685,6 +714,45 @@ char R_SetupDPVS()
     return static_cast<char>(g_dpvs.fogPlane.side[2]);
 }
 
+// ea: 0x006BF1F0
+int R_CullBoxDPVS(const float* minmax, const dpvs_plane_t* planes,
+                  int iPlaneCount)
+{
+    for (int i = 0; i < iPlaneCount; ++i)
+    {
+        const dpvs_plane_t& plane = planes[i];
+        const float dot = minmax[plane.side[2]] * plane.data.v.m128_f32[2]
+                        + minmax[plane.side[1]] * plane.data.v.m128_f32[1]
+                        + minmax[plane.side[0]] * plane.data.v.m128_f32[0];
+        if (plane.data.v.m128_f32[3] > dot)
+            return 1;
+    }
+
+    const dpvs_plane_t* nearPlane = g_dpvs.nearPlane;
+    const float nearDot = minmax[nearPlane->side[2]]
+                            * nearPlane->data.v.m128_f32[2]
+                        + minmax[nearPlane->side[1]]
+                            * nearPlane->data.v.m128_f32[1]
+                        + minmax[nearPlane->side[0]]
+                            * nearPlane->data.v.m128_f32[0];
+    if (nearPlane->data.v.m128_f32[3] > nearDot)
+        return 1;
+
+    const dpvs_plane_t* farPlane = g_dpvs.farPlane;
+    if (farPlane != nullptr)
+    {
+        const float farDot = minmax[farPlane->side[2]]
+                               * farPlane->data.v.m128_f32[2]
+                           + minmax[farPlane->side[1]]
+                               * farPlane->data.v.m128_f32[1]
+                           + minmax[farPlane->side[0]]
+                               * farPlane->data.v.m128_f32[0];
+        if (farPlane->data.v.m128_f32[3] > farDot)
+            return 1;
+    }
+    return 0;
+}
+
 static int R_CellForCamera(void* frameBase) { (void)frameBase; return -1; }
 static void R_FilterModelsIntoCells(void* frameBase, dpvs_plane_t* planes,
                                     int iPlaneCount)
@@ -696,10 +764,15 @@ static void R_AddCellSurfaces(void* frameBase, BspCell* cell,
 {
     (void)frameBase; (void)cell; (void)planes; (void)iPlaneCount;
 }
+// R_AddStaticModels 0x006D6FC0 remains deferred with the static-model object:
+// its body calls the separate R_AddStaticModelSurfaces implementation, whose
+// current cross-object helper signatures still need an ABI reconciliation.
 static void R_AddStaticModels(BspCell* cell, int iPlaneCount,
-                              dpvs_plane_t* planes)
+                              const dpvs_plane_t* planes)
 {
-    (void)cell; (void)iPlaneCount; (void)planes;
+    (void)cell;
+    (void)iPlaneCount;
+    (void)planes;
 }
 static void R_RecursivePortalWalk(void* frameBase, BspCell* cell,
                                   dpvs_plane_t* parentPlane,
