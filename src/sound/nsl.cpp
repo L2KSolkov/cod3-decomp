@@ -407,6 +407,8 @@ unsigned     nslGetVersion() { return 4; }
 // nslSource — sound sources / emitters (3D positioned)
 // ============================================================================
 nslWave*      nslWavePtr(nslWaveID);
+nslVoice*      nslVoicePtr(int);
+unsigned      nslVoiceCount();
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
@@ -453,7 +455,10 @@ void          nslSetSourceParam(nslSourceID sid, int index, float value) {
 
 // Voice enumeration (used by EffectEventSys::NumberOfVoicesUsed)
 unsigned      nslGetNumVoices() { return 0; }
-nslVoice*     nslGetVoice(unsigned) { return nullptr; }
+// ea: 0x008203E0
+nslVoice*     nslGetVoice(unsigned voiceIndex) {
+    return nslVoicePtr(static_cast<int>(voiceIndex));
+}
 // ea: 0x00820E10
 nslSourceState nslGetSourceState(nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
@@ -670,7 +675,8 @@ int           nslGetSourceEffect(nslSourceID sid) {
         return 0;
     return (reinterpret_cast<const unsigned char*>(source)[0x122] & 0x10u) != 0;
 }
-unsigned      nslGetMaxNumVoices() { return 0; }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
+// ea: 0x00820400
+unsigned      nslGetMaxNumVoices() { return nslVoiceCount(); }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 const char*   nslWaveGetName(nslWaveID) { return ""; }       // ?nslWaveGetName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
@@ -1625,7 +1631,8 @@ float         nslGetMasterVolume() {
 // ============================================================================
 // nslCompat — backward compatibility
 // ============================================================================
-nslVoice*     nslVoiceGet(int) { return nullptr; }
+// ea: 0x00820290
+nslVoice*     nslVoiceGet(int voiceIndex) { return nslVoicePtr(voiceIndex); }
 nslGroup*     nslGetGroup(const char*) { return nullptr; }
 nslGroup*     nslGetListenerGroup() { return nullptr; }
 void          nslCompatInit() {}
@@ -1702,10 +1709,32 @@ void          nslSourceSetPriorityScale(nslSource*, float) {}
 // ============================================================================
 // nslVoice — voice allocation
 // ============================================================================
-nslVoice*     nslVoicePtr(int) { return nullptr; }
-unsigned      nslVoiceCount() { return 0; }
+// ea: 0x008285E0
+nslVoice*     nslVoicePtr(int voiceIndex) {
+    const unsigned index = static_cast<unsigned>(voiceIndex);
+    if (index > nsl_initParams.aramSize)
+        return nullptr;
+    return reinterpret_cast<nslVoice*>(
+        reinterpret_cast<unsigned char*>(nsl_voices) + 320u * index);
+}
+// ea: 0x00828610
+unsigned      nslVoiceCount() { return nsl_initParams.aramSize; }
 int           nslVoiceAlloc(nslWaveID, nslSourceID, int) { return -1; }
-void          nslVoiceFree(int) {}
+// ea: 0x00828700
+void          nslVoiceFree(int voiceIndex) {
+    const unsigned index = static_cast<unsigned>(voiceIndex);
+    if (index >= nsl_initParams.aramSize)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(nsl_voices) +
+        320u * index;
+    if (raw[0x108] == 0)
+        return;
+    if (raw[0x108] == 1) {
+        raw[0x108] = 0;
+    } else if (raw[0x108] != 7) {
+        raw[0x109] |= 8u;
+    }
+}
 int           nslVoiceGetState(int) { return NSL_VOICE_FREE; }
 void          nslVoiceSetVolume(int, float) {}
 
