@@ -10,18 +10,6 @@
 #include <ctype.h>
 
 #include "core/PoolAllocator.h"
-#include "core/mem_heap.h"
-
-// IDA: 0x004A5390 / 0x004A53A0 (g.o)
-void* operator new(unsigned int size)
-{
-    return mem_heap_malloc(size);
-}
-
-void operator delete(void* block)
-{
-    mem_heap_free(block);
-}
 
 // zlib entry points (zlib_xboxr; modern zlib will provide these)
 extern "C" int compress2(void* dest, int* destLen, void* src, int sourceLen, int level);

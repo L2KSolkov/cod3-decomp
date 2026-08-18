@@ -16,7 +16,7 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Ob0 /Od" CACHE STRING "" FORCE)
     # /GR- disables RTTI (match original); enable if needed for type reconstruction
     # Phase 0: allow unresolved externals for green-link
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE /DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 endif()
 
 # Include directories
