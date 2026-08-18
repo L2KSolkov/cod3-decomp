@@ -2749,7 +2749,7 @@ float nslGroupGetParam(const char* name, int index, float defaultValue) {
 }
 
 // ea: 0x00823B00
-void nslGroupSetVolume(const char* groupName) {
+void nslGroupSetVolume(const char* groupName, float) {
     nslGroupGet(groupName);
 }
 
