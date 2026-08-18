@@ -22,6 +22,7 @@ extern "C" unsigned long long txTime();
 extern "C" int __cdecl __fpclass(float value);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern "C" char* txPathFix(const char* src, char* dir, int dirSize);
+extern const char* const defaultFileName;
 
 // ============================================================================
 // Handle types
@@ -573,6 +574,28 @@ void          nslDriverUpdate();
 void          nslPriorityUpdate();
 int           nslPriorityCanPlay(int priority);
 int           nslSourceGetPriority(nslSource* source);
+void          nslSetSourceEffect(nslSourceID sid, int effectOn);
+
+// ea: 0x00820640
+static void nslParam_UnpackRaw(float* dv, unsigned __int64 sm,
+                               const float* sv) {
+    unsigned low = static_cast<unsigned>(sm);
+    unsigned high = static_cast<unsigned>(sm >> 32);
+    unsigned highBit = 0;
+    unsigned lowBit = 1;
+    if (sm != 0) {
+        do {
+            if ((high & highBit) != 0 || (low & lowBit) != 0) {
+                low &= ~lowBit;
+                high &= ~highBit;
+                *dv = *sv++;
+            }
+            highBit = (highBit << 1) | (lowBit >> 31);
+            lowBit *= 2;
+            ++dv;
+        } while ((high | low) != 0);
+    }
+}
 // ea: 0x00820800
 nslEmitterID  nslNewEmitter(const float* position) {
     const txSlot slot = txSlotNew(&nsl_emitterPool);
@@ -601,7 +624,127 @@ nslEmitterID  nslNewEmitter(const float* position) {
 void          nslFreeEmitter(nslEmitterID eid) {
     txSlotFree(&nsl_emitterPool, static_cast<txSlot>(eid));
 }
-nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
+nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return NSL_SOURCE_ID_INVALID;
+
+    const unsigned char* info =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    const unsigned char waveFlags = info[5];
+    const char* looping = (waveFlags & 2u) != 0 ? "LOOPING" : defaultFileName;
+    const char* streaming = (waveFlags & 1u) != 0 ? "STREAMING" : defaultFileName;
+
+    unsigned char speakerMap = info[6];
+    unsigned char channelCount;
+    if (speakerMap != 0) {
+        const unsigned char folded = static_cast<unsigned char>(
+            (((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) & 0x33u) +
+            (((((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) >> 2) &
+              0x33u)));
+        channelCount = static_cast<unsigned char>((folded >> 4) + (folded & 0xFu));
+    } else {
+        channelCount = 1;
+    }
+    const char* channels = channelCount == 1 ? "MONO" : "STEREO";
+    const char* dimensionality = (info[7] & 1u) != 0 ? "3D" : "2D";
+    txPrintf("NSL", 6, "NewSource: %p: %s: %s %s %s %s\n\n",
+             static_cast<unsigned>(waveID), "nonname", dimensionality,
+             channels, streaming, looping);
+
+    const txSlot slot = txSlotNew(&nsl_sourcePool);
+    const int sourceIndex = nslSlotIndex(&nsl_sourcePool, slot);
+    unsigned char* sourceRaw = sourceIndex == -1
+        ? nullptr
+        : reinterpret_cast<unsigned char*>(nsl_sources) +
+              nslSourceStride * static_cast<unsigned>(sourceIndex);
+    if (sourceIndex == -1 || sourceRaw == nullptr) {
+        txPrintf(
+            "NSL", 0,
+            "Out of sources! Please increase your startup nslInitParams.maxSources, currently it's set to %d\n",
+            nsl_initParams.maxSources);
+        return NSL_SOURCE_ID_INVALID;
+    }
+
+    std::memset(sourceRaw, 0, 0x148u);
+    *reinterpret_cast<nslWaveID*>(sourceRaw + 0x110u) = waveID;
+    *reinterpret_cast<int*>(sourceRaw + 0x118u) = -1;
+    sourceRaw[0x120u] = 1;
+    *reinterpret_cast<nslEmitterID*>(sourceRaw + 0x114u) = NSL_INVALID_EMITTER;
+
+    const unsigned short sampleRate =
+        *reinterpret_cast<const unsigned short*>(info);
+    unsigned long long length = 0;
+    if (sampleRate != 0)
+        length = (1000ull * wave->sampleCount) / sampleRate;
+    *reinterpret_cast<unsigned*>(sourceRaw + 0x12Cu) =
+        static_cast<unsigned>(length);
+
+    const nslSourceID sourceID = static_cast<nslSourceID>(slot);
+    if ((info[7] & 1u) != 0) {
+        *reinterpret_cast<unsigned*>(sourceRaw + 0x8u) |= 0x16000000u;
+        *reinterpret_cast<float*>(sourceRaw + 0x74u) = 10.0f;
+        *reinterpret_cast<float*>(sourceRaw + 0x78u) = 30.0f;
+        *reinterpret_cast<float*>(sourceRaw + 0x80u) = 1.0f;
+        if (mImportance != 0)
+            sourceRaw[0x122u] |= 0x40u;
+    } else {
+        const int voice = nslVoiceAlloc(waveID, sourceID, mImportance);
+        *reinterpret_cast<int*>(sourceRaw + 0x118u) = voice;
+        if (voice == -1 && mImportance == 0) {
+            const int isStreaming = info[5] & 1u;
+            const int isLooping = (info[5] & 2u) != 0;
+            txPrintf(
+                "NSL", 2,
+                "Trying to allocate non-3D source failed, wave=%s, streaming=%d, looping=%d\n",
+                nslWaveGetName(waveID), isStreaming, isLooping);
+            txSlotFree(&nsl_sourcePool, slot);
+            return NSL_SOURCE_ID_INVALID;
+        }
+    }
+
+    const unsigned __int64 paramMap =
+        *reinterpret_cast<const unsigned __int64*>(info + 16u);
+    nslParam_UnpackRaw(reinterpret_cast<float*>(sourceRaw + 0x10u), paramMap,
+                       reinterpret_cast<const float*>(info + 24u));
+    *reinterpret_cast<unsigned*>(sourceRaw + 0x8u) |=
+        static_cast<unsigned>(paramMap);
+    *reinterpret_cast<unsigned*>(sourceRaw + 0xCu) |=
+        static_cast<unsigned>(paramMap >> 32);
+
+    float randomVolume =
+        ((static_cast<float>(std::rand()) *
+          *reinterpret_cast<float*>(sourceRaw + 0x20u) * 2.0f) *
+             0.000030518509f) -
+        *reinterpret_cast<float*>(sourceRaw + 0x20u);
+    randomVolume = randomVolume < 0.0f
+        ? 1.0f / (1.0f - randomVolume)
+        : randomVolume + 1.0f;
+    float randomPitch =
+        ((static_cast<float>(std::rand()) *
+          *reinterpret_cast<float*>(sourceRaw + 0x24u) * 2.0f) *
+             0.000030518509f) -
+        *reinterpret_cast<float*>(sourceRaw + 0x24u);
+    randomPitch = randomPitch < 0.0f
+        ? 1.0f / (1.0f - randomPitch)
+        : randomPitch + 1.0f;
+    if (randomVolume > 1.0f)
+        randomVolume = 1.0f;
+
+    const unsigned paramsUpdate =
+        *reinterpret_cast<const unsigned*>(sourceRaw + 0x8u);
+    const unsigned paramsUsedHigh =
+        *reinterpret_cast<const unsigned*>(sourceRaw + 0xCu);
+    *reinterpret_cast<float*>(sourceRaw + 0x24u) = randomPitch;
+    *reinterpret_cast<float*>(sourceRaw + 0x14u) = 1.0f;
+    *reinterpret_cast<float*>(sourceRaw + 0x10u) = 1.0f;
+    *reinterpret_cast<float*>(sourceRaw + 0x20u) = randomVolume;
+    *reinterpret_cast<float*>(sourceRaw + 0x7Cu) = 1.0f;
+    *reinterpret_cast<unsigned*>(sourceRaw + 0x8u) = paramsUpdate | 0x08000003u;
+    *reinterpret_cast<unsigned*>(sourceRaw + 0xCu) = paramsUsedHigh;
+    nslSetSourceEffect(sourceID, 1);
+    return sourceID;
+}
 nslSourceID   nslNewSource(const char* waveName, int mImportance) {
     return nslNewSource(nslWaveLookup(waveName), mImportance);
 }
