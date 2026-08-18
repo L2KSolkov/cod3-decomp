@@ -1512,12 +1512,55 @@ void ae_vector_push_back_funcptr(
 {
     (void)self; (void)elem;
 }
-// DObj::GetBaseRelMat (render.o; stub)
+// ea: 0x006CE610
 const math::Mat43::Packed& DObj::GetBaseRelMat(int boneIndex)
 {
-    (void)boneIndex;
-    static math::Mat43::Packed zero = {};
-    return zero;
+    int baseBone = 0;
+    int modelIndex = 0;
+    if (this->numModels != 0)
+    {
+        IVPointer<XModel>* models = this->models;
+        while (true)
+        {
+            ValidatePakId((TPakId)models->mPakId);
+            int lodIndex = 0;
+            XModelLod** lod = models->mValue->lod;
+            while (*lod == nullptr)
+            {
+                ++lod;
+                ++lodIndex;
+            }
+            XModelParts* parts = models->mValue->lod[lodIndex]->xmodelParts;
+            unsigned int boneCount = parts->mHierarchy.mSize;
+            if (boneIndex - baseBone < (int)boneCount)
+                return parts->mTransforms.mList[boneIndex - baseBone];
+            baseBone += (int)boneCount;
+            ++models;
+            if (++modelIndex >= this->numModels)
+                break;
+        }
+    }
+
+    AeAssert::gCurrentAuthor = AeAssert::JRS;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+    AeAssert::gCurrentLine = 2054;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Bad bone index in GetBaseRelMat"))
+        __debugbreak();
+
+    ValidatePakId((TPakId)this->models[0].mPakId);
+    XModelParts* parts = this->models[0].mValue->parts;
+    if (parts->mTransforms.mSize == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    return parts->mTransforms.mList[0];
 }
 void CGBankManager_DebugRender_impl(void* self)
 {
