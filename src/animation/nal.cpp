@@ -728,6 +728,13 @@ template <> struct nalInstanceSkeletonRet<nalGeneric::nalGenericPose> {
     typedef const nalGeneric::nalGenericSkeleton* type;
 };
 
+template <typename T> struct nalAnimSkeletonRet {
+    typedef const nalBaseSkeleton* type;
+};
+template <> struct nalAnimSkeletonRet<nalGeneric::nalGenericPose> {
+    typedef const nalGeneric::nalGenericSkeleton* type;
+};
+
 // nalAnimClass<T> - minimal view of the shared nal anim base; only the
 // anim.o inline COMDATs below are defined here (fields raw-offset verified).
 template<typename T> class nalAnimClass {
@@ -831,7 +838,7 @@ public:
     bool IsTrajectoryRelative() const { return (Flags & 2) == 0; }
 
     // ?GetSkeleton@?$nalAnimClass@VnalAnyPose@@@@QBEPBVnalBaseSkeleton@@XZ (0x55E530)
-    const nalBaseSkeleton* GetSkeleton() const;
+    typename nalAnimSkeletonRet<T>::type GetSkeleton() const;
     // ?CreateInstance@?$nalAnimClass@VnalAnyPose@@@@QAEPAVnalInstanceClass@1@PAVnalBaseSkeleton@@@Z (0x55E610)
     nalInstanceClass* CreateInstance(nalBaseSkeleton* skeleton);
     // game2.o virtual (MetaNalBaseAnim overrides)
@@ -846,9 +853,9 @@ static_assert(sizeof(nalAnimClass<nalAnyPose>) == 64,
 
 // ea: 0x0055E530
 template <typename T>
-const nalBaseSkeleton* nalAnimClass<T>::GetSkeleton() const
+typename nalAnimSkeletonRet<T>::type nalAnimClass<T>::GetSkeleton() const
 {
-    return Skeleton;
+    return reinterpret_cast<typename nalAnimSkeletonRet<T>::type>(Skeleton);
 }
 
 // ea: 0x0055E5A0
@@ -3808,6 +3815,11 @@ template class nalPoseBlenderClass<nalGeneric::nalGenericPose>;
 template <typename SKELETON, typename POSE>
 class nalPoseClass {
 public:
+    // ea: 0x00518CE0
+    const SKELETON* GetSkeleton() const
+    {
+        return static_cast<const SKELETON*>(Skeleton);
+    }
     // ?GetBoneMatrixCount@?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QBEIXZ
     unsigned int GetBoneMatrixCount() const;
     // ?GetBoneMatrices@?$nalPoseClass@...@@QBEXPAVnalMatrix4x4@@@Z (0x55EA50)
