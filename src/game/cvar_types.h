@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <stddef.h>
+
 // ============================================================================
 // cvar_t — console variable (44 bytes)
 // Size: 0x2C (44 bytes) — verified against IDA

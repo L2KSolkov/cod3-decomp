@@ -5,6 +5,7 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "game/game_types.h"
 
 #include <string.h>
 #include <intrin.h>
@@ -32,13 +33,23 @@ public:
 
 
 struct netchan_t;
-struct Entity;
-// ?GetPlayer@@YAPAUEntity@@H@Z (cl.o artifact; struct-tag variant)
-Entity* GetPlayer(int idx)
-{
-    (void)idx;
-    return nullptr;
-}
+class EntityManager {
+public:
+    static EntityManager* sInst;
+    Entity* GetPlayer(int idx);
+};
+extern Entity* GetPlayer(int idx);
+void* EntityManager_sInst;  // cl.o artifact required by legacy object bridges
+struct ClientFrameView {
+    unsigned char _pad_ps[0x550];
+    int spectatorClient;  // Client::ps.spectatorClient @ +0x550
+    unsigned char _pad_pers[0x220];
+    int playerState;      // Client::pers.playerState @ +0x774
+};
+static_assert(offsetof(ClientFrameView, spectatorClient) == 0x550,
+              "Client::ps.spectatorClient offset mismatch");
+static_assert(offsetof(ClientFrameView, playerState) == 0x774,
+              "Client::pers.playerState offset mismatch");
 namespace Broc {
 class string;
 }
@@ -182,24 +193,8 @@ controller_view* controller_view::inst()
     static controller_view s = {};
     return &s;
 }
-struct mathPosition3 {
-    float v[4];
-};
-struct entity_r_view {
-    mathPosition3 currentOrigin;
-};
-struct entity_view2 {
-    entity_r_view r;
-    void* client;
-};
-extern entity_view2* EntityManager_GetPlayer(void* inst, int idx);
-entity_view2* EntityManager_GetPlayer(void* inst, int idx)
-{
-    (void)inst; (void)idx;
-    return nullptr;
-}
-void* EntityManager_sInst;  // ?EntityManager_sInst (cl.o artifact PAXA)
 struct trGlobals_t {
+    unsigned char _pad[0x290];
     void* world;
 };
 extern trGlobals_t tr;
@@ -1141,36 +1136,24 @@ void CL_Frame(int msec, float screen_time_inc)
         {
             cdl_proftimer_streaming.start();
             float playerPos[4];
-            extern entity_view2* EntityManager_GetPlayer(void* inst, int idx);
-            extern void* EntityManager_sInst;
-            float* p_currentOrigin =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl)
-                    ->r.currentOrigin.v;
+            Entity* player = EntityManager::sInst->GetPlayer(currCl);
+            const float* p_currentOrigin =
+                player->r.currentOrigin.v.m128_f32;
             float v12[3];
             v12[0] = p_currentOrigin[0];
             v12[1] = p_currentOrigin[1];
             v12[2] = p_currentOrigin[2];
             playerPos[0] = p_currentOrigin[3];
-            if (EntityManager_GetPlayer(EntityManager_sInst, currCl)->client
-                    != nullptr
-                && *(int*)((char*)EntityManager_GetPlayer(EntityManager_sInst,
-                                                          currCl)
-                               ->client
-                           + 0x0) == 1
-                && *(int*)((char*)EntityManager_GetPlayer(EntityManager_sInst,
-                                                          currCl)
-                               ->client
-                           + 0x550) >= 0)
+            ClientFrameView* client =
+                reinterpret_cast<ClientFrameView*>(player->client);
+            if (client != nullptr && client->playerState == 1
+                && reinterpret_cast<ClientFrameView*>(GetPlayer(currCl)->client)
+                           ->spectatorClient
+                       >= 0)
             {
-                int spectatorClient =
-                    *(int*)((char*)EntityManager_GetPlayer(
-                                EntityManager_sInst, currCl)
-                                ->client
-                            + 0x550);
-                extern Entity* GetPlayer(int idx);
-                float* v9 =
-                    ((entity_view2*)GetPlayer(spectatorClient))
-                        ->r.currentOrigin.v;
+                int spectatorClient = client->spectatorClient;
+                const float* v9 =
+                    GetPlayer(spectatorClient)->r.currentOrigin.v.m128_f32;
                 v12[0] = v9[0];
                 v12[1] = v9[1];
                 v12[2] = v9[2];

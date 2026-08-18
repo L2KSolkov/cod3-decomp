@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include "engine/broc_types.h"
+#include "game/cvar_types.h"
 
 // ============================================================================
 // clientStatic_t - client static state (cl.o; cls @ 0x13054D0)
@@ -134,7 +135,6 @@ extern int g_color_table[64][4];
 extern float g_color_table_flat[64 * 4];
 
 // cvars
-struct cvar_t { int integer; float value; };
 extern cvar_t* con_conspeed;
 extern cvar_t* con_debug;
 extern cvar_t* con_gamemessagetime;
