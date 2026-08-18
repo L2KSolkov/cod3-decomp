@@ -2531,6 +2531,7 @@ struct BoundingBox {
         vmin.v = _mm_set1_ps(3.4028235e38f);
         vmax.v = _mm_set1_ps(-3.4028235e38f);
     }
+    bool intersect(const math::Position3& p) const;
     void accumulate(const math::Position3& p);  // ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z
 };
 
@@ -10994,6 +10995,17 @@ StreamZoneManager::StreamZoneManager()
     Cmd_AddCommand("ZoneGraph", ToggleZoneGraph);
 }
 
+// ea: 0x00684670
+bool BoundingBox::intersect(const math::Position3& p) const
+{
+    return p.v.m128_f32[0] >= vmin.v.m128_f32[0]
+        && p.v.m128_f32[1] >= vmin.v.m128_f32[1]
+        && p.v.m128_f32[2] >= vmin.v.m128_f32[2]
+        && vmax.v.m128_f32[0] >= p.v.m128_f32[0]
+        && vmax.v.m128_f32[1] >= p.v.m128_f32[1]
+        && vmax.v.m128_f32[2] >= p.v.m128_f32[2];
+}
+
 // ea: 0x4DCD30 (core.o inline)
 void StreamZoneManager::CreateInst()
 {
@@ -11553,16 +11565,38 @@ const ZdNode* ZoneCellDesc::GetZdNode(const math::Position3& position,
     return nullptr;  // stub: game.o
 }
 
+// ea: 0x00686B20
 bool ZoneOverrideBrushSet::IsInside(const math::Position3& point)
 {
-    (void)point;
-    return false;  // stub: streamer.o 0x686B20
+    InplaceVector<ZoneOverrideBrush>* brushes = &mBrushes;
+    unsigned int index = 0;
+    if (brushes->mSize == 0)
+        return false;
+    while (true)
+    {
+        ZoneOverrideBrush* brush = &brushes->mList[index];
+        if (brush->IsInside(point))
+            break;
+        if (++index >= brushes->mSize)
+            return false;
+    }
+    return true;
 }
 
+// ea: 0x00686AB0
 bool ZoneOverrideBrush::IsInside(const math::Position3& point)
 {
-    (void)point;
-    return false;  // stub: streamer.o
+    const BoundingBox* aabb = reinterpret_cast<const BoundingBox*>(mAabb);
+    if (!aabb->intersect(point))
+        return false;
+    const InplaceVector<math::Vector4>* planes =
+        reinterpret_cast<const InplaceVector<math::Vector4>*>(mPlanes);
+    for (unsigned int index = 0; index < planes->mSize; ++index)
+    {
+        if (!IsInsidePlane(point, planes->mList[index]))
+            return false;
+    }
+    return true;
 }
 
 // disable_default_streaming (StreamZoneManager.cpp static cvar)
