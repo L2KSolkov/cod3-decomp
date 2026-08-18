@@ -695,7 +695,13 @@ void          nslFreeBank(nslBankID bankID) { nslWaveBankFree(static_cast<nslWav
 void          nslFreeSource(nslSourceID);
 // ea: 0x00820B50
 void          nslStopSource(nslSourceID sid) { nslFreeSource(sid); }
-void          nslQueueSource(nslSourceID) {}
+// ea: 0x00820980
+void          nslQueueSource(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    reinterpret_cast<unsigned char*>(source)[0x122] |= 1u;
+}
 void          nslFreeSource(nslSourceID) {}
 void          nslDampen(float) {}
 void          nslUndampen() {}
@@ -778,8 +784,43 @@ unsigned      nslGetSourceLength(nslSourceID sid) {
         reinterpret_cast<const unsigned char*>(source) + 0x12Cu);
 }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
 int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
-void          nslPauseSource(nslSourceID) {}                 // ?nslPauseSource@@YAXW4nslSourceID@@@Z
-void          nslUnpauseSource(nslSourceID) {}               // ?nslUnpauseSource@@YAXW4nslSourceID@@@Z
+// ea: 0x00820BC0
+void          nslPauseSource(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    const int oldPauseCount = *reinterpret_cast<int*>(raw + 0x11Cu);
+    *reinterpret_cast<int*>(raw + 0x11Cu) = oldPauseCount + 1;
+    if (oldPauseCount != 0)
+        return;
+    if (raw[0x120] == 5)
+        raw[0x123] &= 0xFBu;
+    else
+        raw[0x123] |= 2u;
+}
+// ea: 0x00820C30
+void          nslUnpauseSource(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    const nslWaveID waveID =
+        *reinterpret_cast<const nslWaveID*>(raw + 0x110u);
+    if (nslWavePtr(waveID) == nullptr)
+        return;
+    int pauseCount = *reinterpret_cast<int*>(raw + 0x11Cu);
+    if (pauseCount == 0)
+        return;
+    --pauseCount;
+    *reinterpret_cast<int*>(raw + 0x11Cu) = pauseCount;
+    if (pauseCount != 0)
+        return;
+    if (raw[0x120] == 5)
+        raw[0x123] |= 4u;
+    else
+        raw[0x123] &= 0xFDu;
+}
 void          nslPlaySource(nslSourceID) {}                  // ?nslPlaySource@@YAXW4nslSourceID@@@Z
 void          nslDampenGuardSource(nslSourceID) {}           // ?nslDampenGuardSource@@YAXW4nslSourceID@@@Z
 int           nslAreAllBanksLoaded() { return nslWaveBankSlotsGetLoadingCount() == 0; } // ?nslAreAllBanksLoaded@@YAHXZ
