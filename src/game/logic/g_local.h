@@ -3491,12 +3491,11 @@ int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
 const unsigned char DirToByte(const float* const dir);
 void Weapon_MeleeHitShock(Entity* traceEnt);                  // g.o 0x464AC0
 bool Actor_IsMeleeInteractable(const actor_s* pSelf);         // mp_actors.o
-// ?CheckActorInteraction@@YAHAAVEntity@@PBD@Z (anim.o 0x556E50; stub)
-inline int CheckActorInteraction(Entity& ent, const char* interactionName)
-{
-    (void)ent; (void)interactionName;
-    return 1;
-}
+extern int currCl;                                            // ?currCl@@3HA @ 0xF1579C
+int __fastcall Actor_PushState(actor_s* pSelf,
+                               ai_state_e eState);             // ?Actor_PushState@@YIHPAUactor_s@@W4ai_state_e@@@Z (mp_actors.o 0x77C3F0)
+// ea: 0x00556E50
+int CheckActorInteraction(Entity& ent, const char* interactionName);
 int   G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
@@ -4862,8 +4861,23 @@ public:
     int IsInteracting() const;             // ?IsInteracting@InteractionController@@QBEHXZ (g.o 0x4A8260)
     void SetFlag(unsigned int f, int enable);  // ?SetFlag@InteractionController@@QAEXIH@Z (g.o 0x4A8270)
     int IsFlagged(unsigned int f) const;   // ?IsFlagged@InteractionController@@QBEHI@Z (g.o 0x4A82A0)
+    int StartInteraction(Entity* interactable, const char* name,
+                         TPakId curPakId); // ?StartInteraction@InteractionController@@QAEHPAVEntity@@PBDW4TPakId@@@Z (anim.o 0x556920)
     void FreeInteraction();                // ?FreeInteraction@InteractionController@@QAEXXZ (g.o 0x4B00A0)
 };
+
+// ea: 0x00556E50
+inline int CheckActorInteraction(Entity& ent, const char* interactionName)
+{
+    if (InteractionController::Inst(currCl)->mCurState != nullptr)
+        return 1;
+    if (Actor_PushState(ent.actor, AIS_INTERACTION) == 0)
+        return 0;
+    TPakId curPakId = CurPakId();
+    return InteractionController::Inst(currCl)->StartInteraction(
+        &ent, interactionName, curPakId);
+}
+
 float InteractionController_GetRotation(void* self); // cl.o
 void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
 void  InitCvars(int restart);                        // g.o 0x44B950
