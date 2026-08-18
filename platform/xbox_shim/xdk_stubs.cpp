@@ -66,6 +66,12 @@ static unsigned int gNullHeight = 480;
 static void (*gNullVBlankCallback)(_D3DVBLANKDATA*) = NULL;
 static unsigned int gNullFence = 0;
 
+static DWORD nullD3DCompareFunc(unsigned int Value) {
+    // The NGL state path uses the Xbox encoded compare value 0x204 for
+    // greater-than; ordinary D3D compare values pass through unchanged.
+    return Value == 0x204u ? D3DCMP_GREATER : Value;
+}
+
 static unsigned int nullD3DBytesPerPixel(unsigned int Format) {
     return (Format == D3DFMT_LIN_A8R8G8B8 || Format == D3DFMT_A8R8G8B8 ||
             Format == D3DFMT_LIN_X8R8G8B8 || Format == D3DFMT_X8R8G8B8) ? 4 : 4;
@@ -354,11 +360,54 @@ void __stdcall D3DDevice_SetRenderTarget(D3DSurface* RenderTarget, D3DSurface* Z
     }
 }
 void __stdcall D3DDevice_SetShaderConstantMode(unsigned int) {}
-void __stdcall D3DDevice_SetTexture(unsigned int, D3DBaseTexture*) {}
-int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int, _D3DTEXTURESTAGESTATETYPE, unsigned int) { return 0; }
+void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture) {
+    if (gD3D9Device == NULL || Stage >= 4)
+        return;
+    IDirect3DBaseTexture9* NativeTexture = NULL;
+    nullD3DInfo* Info = nullD3DTextureInfo(Texture);
+    if (Info != NULL)
+        NativeTexture = Info->NativeTexture;
+    gD3D9Device->SetTexture(Stage, NativeTexture);
+}
+int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
+                                                        _D3DTEXTURESTAGESTATETYPE Type,
+                                                        unsigned int Value) {
+    if (gD3D9Device == NULL || Stage >= 4)
+        return 0;
+    DWORD Sampler = 0;
+    DWORD NativeValue = Value;
+    bool Supported = true;
+    switch (Type) {
+    case D3DTSS_ADDRESSU: Sampler = D3DSAMP_ADDRESSU; break;
+    case D3DTSS_ADDRESSV: Sampler = D3DSAMP_ADDRESSV; break;
+    case D3DTSS_ADDRESSW: Sampler = D3DSAMP_ADDRESSW; break;
+    case D3DTSS_MAGFILTER: Sampler = D3DSAMP_MAGFILTER; break;
+    case D3DTSS_MINFILTER: Sampler = D3DSAMP_MINFILTER; break;
+    case D3DTSS_MIPFILTER: Sampler = D3DSAMP_MIPFILTER; break;
+    case D3DTSS_MIPMAPLODBIAS: Sampler = D3DSAMP_MIPMAPLODBIAS; break;
+    case D3DTSS_MAXMIPLEVEL: Sampler = D3DSAMP_MAXMIPLEVEL; break;
+    case D3DTSS_MAXANISOTROPY: Sampler = D3DSAMP_MAXANISOTROPY; break;
+    default: Supported = false; break;
+    }
+    if (Supported)
+        gD3D9Device->SetSamplerState(Stage, (D3DSAMPLERSTATETYPE)Sampler, NativeValue);
+    return 0;
+}
 void __stdcall D3DDevice_SetVertexShader(unsigned int) {}
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }
-void __stdcall D3DDevice_SetViewport(const void*) {}
+void __stdcall D3DDevice_SetViewport(const void* ViewportData) {
+    if (gD3D9Device == NULL || ViewportData == NULL)
+        return;
+    const _D3DVIEWPORT8* Viewport = (const _D3DVIEWPORT8*)ViewportData;
+    D3DVIEWPORT9 NativeViewport;
+    NativeViewport.X = Viewport->X;
+    NativeViewport.Y = Viewport->Y;
+    NativeViewport.Width = Viewport->Width;
+    NativeViewport.Height = Viewport->Height;
+    NativeViewport.MinZ = Viewport->MinZ;
+    NativeViewport.MaxZ = Viewport->MaxZ;
+    gD3D9Device->SetViewport(&NativeViewport);
+}
 void __stdcall D3DDevice_Swap(unsigned int) {
     if (gD3D9Device != NULL)
         gD3D9Device->Present(NULL, NULL, NULL, NULL);
@@ -608,7 +657,40 @@ extern "C" {
 void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT*, unsigned int) {}
 void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {}
 void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int) {}
-int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int, unsigned int) { return 0; }
+int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value) {
+    if (gD3D9Device == NULL)
+        return 0;
+
+    COD3_D3D9_RENDERSTATETYPE NativeState;
+    DWORD NativeValue = Value;
+    switch (State) {
+    case D3DRS_ALPHAFUNC:
+        NativeState = COD3_D3D9_RS_ALPHAFUNC;
+        NativeValue = nullD3DCompareFunc(Value);
+        break;
+    case D3DRS_ALPHABLENDENABLE: NativeState = COD3_D3D9_RS_ALPHABLENDENABLE; break;
+    case D3DRS_ALPHATESTENABLE: NativeState = COD3_D3D9_RS_ALPHATESTENABLE; break;
+    case D3DRS_ALPHAREF: NativeState = COD3_D3D9_RS_ALPHAREF; break;
+    case D3DRS_SRCBLEND: NativeState = COD3_D3D9_RS_SRCBLEND; break;
+    case D3DRS_DESTBLEND: NativeState = COD3_D3D9_RS_DESTBLEND; break;
+    case D3DRS_BLENDOP: NativeState = COD3_D3D9_RS_BLENDOP; break;
+    case D3DRS_BLENDCOLOR: NativeState = D3DRS_BLENDFACTOR; break;
+    case D3DRS_ZWRITEENABLE: NativeState = COD3_D3D9_RS_ZWRITEENABLE; break;
+    case D3DRS_COLORWRITEENABLE: NativeState = COD3_D3D9_RS_COLORWRITEENABLE; break;
+    case D3DRS_SPECULARENABLE: NativeState = COD3_D3D9_RS_SPECULARENABLE; break;
+    case D3DRS_CULLMODE: NativeState = COD3_D3D9_RS_CULLMODE; break;
+    case D3DRS_ZENABLE: NativeState = COD3_D3D9_RS_ZENABLE; break;
+    case D3DRS_STENCILENABLE: NativeState = COD3_D3D9_RS_STENCILENABLE; break;
+    case D3DRS_STENCILFUNC: NativeState = COD3_D3D9_RS_STENCILFUNC; break;
+    case D3DRS_STENCILMASK: NativeState = COD3_D3D9_RS_STENCILMASK; break;
+    case D3DRS_STENCILPASS: NativeState = COD3_D3D9_RS_STENCILPASS; break;
+    case D3DRS_MULTISAMPLEANTIALIAS: NativeState = COD3_D3D9_RS_MULTISAMPLEANTIALIAS; break;
+    default:
+        return 0;
+    }
+    gD3D9Device->SetRenderState(NativeState, NativeValue);
+    return 0;
+}
 void __stdcall D3DDevice_SetVertexShaderInputDirect(void*, unsigned int, const _D3DSTREAM_INPUT*) {}
 unsigned int __stdcall D3DResource_Release(D3DResource* Resource) {
     if (Resource == NULL)

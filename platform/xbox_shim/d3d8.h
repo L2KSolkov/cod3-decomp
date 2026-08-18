@@ -31,6 +31,18 @@ struct _D3DLOCKED_RECT {
 static_assert(sizeof(_D3DLOCKED_RECT) == 8, "_D3DLOCKED_RECT size mismatch");
 typedef _D3DLOCKED_RECT D3DLOCKED_RECT;
 
+// ---- Viewport (Xbox D3D8, 24 bytes, verified against IDA) ----------------
+struct _D3DVIEWPORT8 {
+    unsigned int X;       // +0x00
+    unsigned int Y;       // +0x04
+    unsigned int Width;   // +0x08
+    unsigned int Height;  // +0x0C
+    float MinZ;            // +0x10
+    float MaxZ;            // +0x14
+};
+static_assert(sizeof(_D3DVIEWPORT8) == 0x18, "_D3DVIEWPORT8 size mismatch");
+typedef _D3DVIEWPORT8 D3DVIEWPORT8;
+
 // ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
 enum _D3DCUBEMAP_FACES {
     D3DCUBEMAP_FACE_POSITIVE_X = 0,
