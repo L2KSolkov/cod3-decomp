@@ -20,6 +20,11 @@
 // ea: 0x8041c0
 // ============================================================================
 apsError::apsError() {
+    if (apsSingleton<apsError>::sInstancePtr != 0 &&
+        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
+                  "0 == sInstancePtr", "singleton already initialised"))
+        __debugbreak();
+    apsSingleton<apsError>::sInstancePtr = this;
     mNumErrors = 0;
     mErrors = AEPS_VECTOR_NEW<ErrorMessage>(kMaxErrors, 4);
 }
@@ -33,6 +38,14 @@ apsError::~apsError() {
     if (mErrors != 0) {
         AEPS_VECTOR_DELETE<ErrorMessage>(kMaxErrors, mErrors);
         mErrors = 0;
+    }
+    if (apsSingleton<apsError>::sInstancePtr != 0) {
+        apsSingleton<apsError>::sInstancePtr = 0;
+    } else {
+        if (_tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 104,
+                      "sInstancePtr", "singleton not initialised"))
+            __debugbreak();
+        apsSingleton<apsError>::sInstancePtr = 0;
     }
 }
 

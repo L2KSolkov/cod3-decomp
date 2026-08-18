@@ -30,12 +30,11 @@ extern cvar_t* cl_noprint;
 extern void tlPrintf(const char* fmt, ...);
 extern void tlPrint(const char* txt);
 extern void* mem_heap_malloc(unsigned int size);
+extern void* mem_heap_malloc(int alignment, unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_realloc(void* ptr, unsigned int size);
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
-extern void* mem_heap_malloc_align_heap(void* heap, unsigned int alignment,
-                                       unsigned int size);
 enum mem_heap_type {
     MEM_HEAP_MAIN    = 0,
     MEM_HEAP_DEBUG   = 1,
@@ -44,6 +43,8 @@ enum mem_heap_type {
 };
 struct mem_heap;
 extern mem_heap* mem_heap_get(mem_heap_type heap_name);
+extern void* mem_heap_malloc(mem_heap* heap, int alignment,
+                             unsigned int size);
 struct nglTexture;
 struct tlSystemCallbacks;
 extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
@@ -212,16 +213,16 @@ void* TlSystemCallbacks::MemAlloc(unsigned int size, unsigned int align,
     void* result;
     if (flags != 0)
     {
-        void* heap;
+        mem_heap* heap;
         if ((flags & 0x20000) != 0)
             heap = mem_heap_get(MEM_HEAP_COMBINE);
         else
             heap = mem_heap_get(MEM_HEAP_MAIN);
-        result = mem_heap_malloc_align_heap(heap, align, size);
+        result = mem_heap_malloc(heap, align, size);
     }
     else
     {
-        result = mem_heap_malloc_ctx(size, align, nullptr, nullptr, 0);
+        result = mem_heap_malloc(align, size);
     }
     if (result == nullptr)
         __debugbreak();

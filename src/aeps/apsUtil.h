@@ -11,30 +11,14 @@
 // Returns true when the caller should __debugbreak().
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* msg);
 
-// Generic singleton. Inline ctor/dtor (verified against apsError.o disasm):
-//   ctor: assert apsUtil.h:86 "0 == sInstancePtr" / "singleton already initialised"
-//   dtor: assert apsUtil.h:104 "sInstancePtr" / "singleton not initialised"
+// Generic singleton storage/access. The ported concrete constructors perform
+// the IDA-recovered registration checks themselves; keeping this base
+// constructor/destructor inert avoids injecting an extra base call that is not
+// present in those emitted constructors.
 template <class T>
 struct apsSingleton {
-    apsSingleton() {
-        if (sInstancePtr != 0) {
-            if (_tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
-                          "0 == sInstancePtr", "singleton already initialised"))
-                __debugbreak();
-        }
-        sInstancePtr = static_cast<T*>(this);
-    }
-
-    ~apsSingleton() {
-        if (sInstancePtr != 0) {
-            sInstancePtr = 0;
-        } else {
-            if (_tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 104,
-                          "sInstancePtr", "singleton not initialised"))
-                __debugbreak();
-            sInstancePtr = 0;
-        }
-    }
+    apsSingleton() = default;
+    ~apsSingleton() = default;
 
     static T& Instance() {
         if (sInstancePtr == 0 &&

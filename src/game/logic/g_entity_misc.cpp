@@ -2280,22 +2280,10 @@ void* InplaceAssetBankSet_StringTableBank_ctor(void* self)
     (void)self;
     return nullptr;
 }
-void* mem_heap_alloc(void* heap, unsigned int align, unsigned int size)
-{
-    (void)heap; (void)align; (void)size;
-    return nullptr;
-}
-void* mem_heap_malloc_align_heap(void* heap, unsigned int align,
-                                 unsigned int size)
-{
-    (void)heap; (void)align; (void)size;
-    return nullptr;
-}
 void* mem_heap_malloc_sz(unsigned int size)
 {
     return mem_heap_malloc(size);
 }
-void mem_heap_release(void* heap, void* ptr) { (void)heap; (void)ptr; }
 void* MPLiveEngine_GetHandle() { return nullptr; }
 void* ShaderCommon_StartShotPerfTest() { return nullptr; }
 void* COD3_mem_alloc(unsigned int a, unsigned int b)
