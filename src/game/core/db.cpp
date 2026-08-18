@@ -27,8 +27,36 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-// DbFieldSet::Clear
-extern void DbFieldSet_Clear(DbFieldSet* self);
+// ea: 0x004E5AC0
+void DbFieldSet::Clear()
+{
+    unsigned int i = 0;
+    if (mNumParams != 0) {
+        do {
+            mFields[i] = nullptr;
+            ++i;
+        } while (i < mNumParams);
+    }
+    mNumParams = 0;
+    mWeakByIdx.mBits[1] = 0;
+    mWeakByIdx.mBits[0] = 0;
+    mWeakById.mBits[7] = 0;
+    mWeakById.mBits[6] = 0;
+    mWeakById.mBits[5] = 0;
+    mWeakById.mBits[4] = 0;
+    mWeakById.mBits[3] = 0;
+    mWeakById.mBits[2] = 0;
+    mWeakById.mBits[1] = 0;
+    mWeakById.mBits[0] = 0;
+    mSpecifiedById.mBits[7] = 0;
+    mSpecifiedById.mBits[6] = 0;
+    mSpecifiedById.mBits[5] = 0;
+    mSpecifiedById.mBits[4] = 0;
+    mSpecifiedById.mBits[3] = 0;
+    mSpecifiedById.mBits[2] = 0;
+    mSpecifiedById.mBits[1] = 0;
+    mSpecifiedById.mBits[0] = 0;
+}
 
 // ea: 0x004C0A70
 DbRow* DbQueryResults::GetRandomResult()
@@ -70,7 +98,7 @@ DbRow* DbQueryResults::GetResult(unsigned int idx)
 void DbQuery::ResetConstraints()
 {
     mConstraintPos = 0;
-    DbFieldSet_Clear(&mConstraints);
+    mConstraints.Clear();
     mAutomaticFail = false;
 }
 
@@ -111,7 +139,7 @@ void DbQuery::AcceptMatchingLeaf(const DbGraphNode* node,
 void DbQuery::Reset()
 {
     mConstraintPos = 0;
-    DbFieldSet_Clear(&mConstraints);
+    mConstraints.Clear();
     mAutomaticFail = false;
 }
 

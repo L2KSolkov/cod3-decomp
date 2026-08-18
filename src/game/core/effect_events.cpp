@@ -461,14 +461,23 @@ void EffectEventSys_PlayQueuedEffect(void* self, unsigned int handle)
     (void)self; (void)handle;
 }
 
-// Db / nalHeap virtual dtors (core.o; stubs, port later)
-DbFieldSet::~DbFieldSet() {}
-DbQuery::~DbQuery() {}
-nalHeap::~nalHeap() {}
-void DbFieldSet_Clear(DbFieldSet* self)
+// ea: 0x004E7EE0
+DbFieldSet::~DbFieldSet()
 {
-    (void)self;
+    Clear();
 }
+
+// ea: 0x004E7F60
+DbQuery::~DbQuery()
+{
+    mConstraintPos = 0;
+    mConstraints.Clear();
+    mAutomaticFail = false;
+}
+
+// ea: 0x004DD8C0
+nalHeap::~nalHeap() {}
+
 DbField* DbFieldSet_GetFieldById(DbFieldSet* self, int fieldId)
 {
     (void)self; (void)fieldId;
