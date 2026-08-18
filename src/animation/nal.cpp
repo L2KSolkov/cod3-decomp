@@ -1121,7 +1121,7 @@ public:
     nalAnimCache();
     void Init(nalHeap* heap);
     void Release() {}
-    void MemFree(nalObject*, unsigned) {}
+    void MemFree(void* ptr, unsigned size);
     void Free(nalObject*) {}
     void Touch(nalObject*) {}
     nalObject* MemAlloc(unsigned, unsigned) { return nullptr; }
@@ -1150,6 +1150,12 @@ void nalAnimCache::Init(nalHeap* heap)
     Heap = heap;
     MRUObject = nullptr;
     LRUObject = nullptr;
+}
+
+// ea: 0x00868730
+void nalAnimCache::MemFree(void* ptr, unsigned size)
+{
+    Heap->Free(ptr, static_cast<int>(size));
 }
 
 // ============================================================================
