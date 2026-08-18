@@ -5,6 +5,7 @@
 // ============================================================================
 
 #include <string.h>
+#include <stdlib.h>
 #include <new>
 #include <intrin.h>
 #include <float.h>
@@ -19,6 +20,27 @@
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_scene.h"
 #include "xbox_shim.h"
+
+// Install the noninteractive CRT policy before ordinary C++ translation-unit
+// initializers run. Several reconstructed systems construct static tables
+// during CRT startup, so configuring this only from main() is too late for a
+// report raised by an early initializer.
+namespace {
+void __cdecl ConfigureCrtForAutomation()
+{
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+    _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+    SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |
+                 SEM_NOOPENFILEERRORBOX);
+}
+
+typedef void (__cdecl *CrtInitializer)();
+#pragma section(".CRT$XCB", long, read)
+__declspec(allocate(".CRT$XCB")) CrtInitializer gConfigureCrtForAutomation =
+    ConfigureCrtForAutomation;
+}
 
 // ============================================================================
 // AnimHeap / nalHeap - minimal views (full types in core_systems.h, which
