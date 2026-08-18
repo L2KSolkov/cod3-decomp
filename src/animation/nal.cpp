@@ -516,7 +516,12 @@ struct tlFixedString;
 // nalObject / nalCachedPoseInfo Ã¢â‚¬â€ animation cache types
 // ============================================================================
 struct nalObject {};
-struct nalCachedPoseInfo {};
+struct nalCachedPoseInfo {
+    int LODCount;       // +0x00
+    void* LODInfo;      // +0x04 (nalCachedLODInfo*)
+};
+static_assert(sizeof(nalCachedPoseInfo) == 8,
+              "nalCachedPoseInfo layout mismatch");
 
 // ============================================================================
 // nalAnimFile / nalClientSceneAnim / nalHeap Ã¢â‚¬â€ resource types
@@ -844,6 +849,7 @@ template class nalAnimClass<nalGeneric::nalGenericPose>;
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
 extern void tlMemFree(void* ptr);
+extern void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
 extern bool _tlAssert(const char* file, int line, const char* expr,
@@ -910,7 +916,12 @@ template <typename T> class nalGenericConstComponentHandle;
 struct nalComponentInfo;
 class nalGenericPose;
 class nalGenericSkeleton;
+class nalGenericInstance;
 }
+
+enum nalRegisterKey : int {
+    NAL_REGISTER_KEY = 0x11235813,
+};
 
 void Blend(nalGeneric::nalGenericPose& out, float blend,
            const nalGeneric::nalGenericPose& a,
@@ -1213,16 +1224,47 @@ int nalGenericPose::GetPoseAlignment() const
 // ============================================================================
 class nalGenericAnim {
 public:
-    unsigned m_hash;
-    virtual ~nalGenericAnim() {}
+    virtual ~nalGenericAnim();
     virtual void Process() {}
     virtual void Release() {}
+    virtual bool CheckVersion() const;
+    virtual nalAnimClass<nalAnyPose>::nalInstanceClass*
+        VirtualCreateInstance(nalBaseSkeleton* skeleton);
+
+    nalAnimClass<nalGenericPose>* NextAnim; // +0x04
+    tlFixedString Name;                     // +0x08
+    int SkeletonNameIndex;                  // +0x28
+    unsigned Version;                       // +0x2C
+    const nalGenericSkeleton* Skeleton;     // +0x30
+    unsigned Flags;                         // +0x34
+    float Duration;                         // +0x38
+    int InstanceCount;                      // +0x3C
+
+    float SampleRate;                       // +0x40
+    int FrameCount;                         // +0x44
+    int PrivateSize;                        // +0x48
+    int PrivateAlignment;                   // +0x4C
+    void* PrivateData;                      // +0x50
+    unsigned* TrackBitMask;                 // +0x54
+    nalCachedPoseInfo CachedPoseInfo;       // +0x58
+    void* CacheData;                        // +0x60
+    int BlockCount;                          // +0x64
+    int BlockUnit;                          // +0x68
+    void** BlockData;                        // +0x6C
+
+    explicit nalGenericAnim(nalRegisterKey key);
+    int GetFrameCount() const;
+    void* GetBlockPtr(int index);
+    int GetBlockUnit() const;
+    nalGenericInstance* CreateInstance(nalGenericSkeleton* skeleton);
 
     // ??$GetComponentPrivateData@X@nalGenericAnim@nalGeneric@@QBEPBXABV?$nalGenericComponentHandle@X@1@@Z
     template <typename T>
     const void* GetComponentPrivateData(
         const nalGenericComponentHandle<T>& handle) const;
 };
+static_assert(sizeof(nalGenericAnim) == 112,
+              "nalGenericAnim layout mismatch");
 
 // ============================================================================
 // nalGenericInstance Ã¢â‚¬â€ animated skeleton instance (pose cache, decompression)
@@ -1249,6 +1291,72 @@ public:
 // ============================================================================
 // nalGenericPoseBlender Ã¢â‚¬â€ pose blending
 // ============================================================================
+// ea: 0x00854BC0
+nalGenericAnim::nalGenericAnim(nalRegisterKey key)
+    : Name()
+{
+    if (key != NAL_REGISTER_KEY
+        && _tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                     605, "key == NAL_REGISTER_KEY",
+                     "this function is for internal use only"))
+    {
+        __debugbreak();
+    }
+}
+
+// ea: 0x00854430
+nalGenericAnim::~nalGenericAnim() {}
+
+// ea: 0x00854C20
+bool nalGenericAnim::CheckVersion() const
+{
+    return Version == 0x10301u;
+}
+
+// ea: 0x00854C30
+nalAnimClass<nalAnyPose>::nalInstanceClass*
+nalGenericAnim::VirtualCreateInstance(nalBaseSkeleton* skeleton)
+{
+    return reinterpret_cast<nalAnimClass<nalAnyPose>::nalInstanceClass*>(
+        CreateInstance(reinterpret_cast<nalGenericSkeleton*>(skeleton)));
+}
+
+// ea: 0x00868C70
+void* nalGenericAnim::GetBlockPtr(int index)
+{
+    return BlockData[index];
+}
+
+// ea: 0x00868C80
+int nalGenericAnim::GetBlockUnit() const
+{
+    return BlockUnit;
+}
+
+// ea: 0x00518420
+int nalGenericAnim::GetFrameCount() const
+{
+    return FrameCount;
+}
+
+// ea: 0x00518430
+nalGenericInstance* nalGenericAnim::CreateInstance(
+    nalGenericSkeleton* skeleton)
+{
+    nalGenericSkeleton* actualSkeleton = skeleton;
+    if (actualSkeleton == nullptr)
+        actualSkeleton = const_cast<nalGenericSkeleton*>(Skeleton);
+
+    void* memory = tlMemAlloc(0x30u, 8u, 0u);
+    if (memory == nullptr)
+        return nullptr;
+
+    // The full 0x86E9D0 constructor is intentionally still an explicit
+    // cross-TU stub; preserve the IDA-verified allocation/call boundary.
+    return static_cast<nalGenericInstance*>(
+        nalGenericInstance_Ctor(memory, this, actualSkeleton));
+}
+
 class nalGenericPoseBlender {
 public:
     // ??1nalGenericPoseBlender@nalGeneric@@UAE@XZ / ??_G...UAEPAXI@Z
@@ -5327,9 +5435,8 @@ const void* nalGenericAnim::GetComponentPrivateData(
     // Port of game2.o 0x51CB60 (COMDAT; emitted here so anim.o ParseNoteTracks
     // can link).  Walks the skeleton's component groups comparing the handle's
     // ComponentInfo/ComponentIndex against each group + component.
-    const nalGenericSkeleton* skeleton =
-        *(const nalGenericSkeleton**)((char*)this + 0x0C);
-    void* data = *(void**)((char*)this + 0x14);
+    const nalGenericSkeleton* skeleton = Skeleton;
+    void* data = PrivateData;
     int groupCount = *(int*)((char*)skeleton + 0x84);
     char* groups = *(char**)((char*)skeleton + 0x88);
     int groupIdx = 0;
@@ -5360,7 +5467,7 @@ const void* nalGenericAnim::GetComponentPrivateData(
                     __debugbreak();
                 }
                 if (((1u << (track & 0x1F))
-                     & ((unsigned int*)((char*)this + 0x54))[track / 32])
+                     & TrackBitMask[track / 32])
                     != 0)
                 {
                     if ((const void*)(groups + 48 * groupIdx)
@@ -5905,10 +6012,6 @@ struct SkeletonData {};
 struct AnimData {};
 struct SkeletonComponentData {};
 }
-
-enum nalRegisterKey {
-    NAL_REGISTER_KEY = 0x11235813,
-};
 
 // class tag to match binary V-mangled FastCycleTrajectory/nalComponent args
 class nalComponentEnum {
