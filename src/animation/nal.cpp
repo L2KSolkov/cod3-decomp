@@ -1145,7 +1145,8 @@ public:
     void Free(nalObject* object);
     void Touch(nalObject* object);
     void* MemAlloc(unsigned size, unsigned formal);
-    nalObject* Allocate(const nalCachedPoseInfo&, int, int, nalObject**) { return nullptr; }
+    nalObject* Allocate(const nalCachedPoseInfo& cpi, int lod, int count,
+                        nalObject** dataPtr);
     void IncreaseLOD(nalObject*, const nalCachedPoseInfo&, int, int) {}
 
     nalHeap* Heap;
@@ -1253,6 +1254,63 @@ void* nalAnimCache::MemAlloc(unsigned size, unsigned formal)
         Free(LRUObject);
     } while (LRUObject != nullptr);
     return allocation;
+}
+
+// ea: 0x00868870
+nalAnimCache::nalObject* nalAnimCache::Allocate(
+    const nalCachedPoseInfo& cpi, int lod, int count,
+    nalAnimCache::nalObject** dataPtr)
+{
+    ++Misses;
+    const int lastLOD = cpi.LODCount - 1;
+    const int objectSize = count * cpi.LODInfo[lastLOD].Size + 32;
+
+    nalAnimCache::nalObject* object = nullptr;
+    while (object == nullptr)
+    {
+        object = static_cast<nalAnimCache::nalObject*>(
+            Heap->Allocate(objectSize));
+        if (object == nullptr)
+            Free(LRUObject);
+    }
+
+    object->Size = objectSize;
+    object->DataPtr = dataPtr;
+    if (dataPtr != nullptr)
+        *dataPtr = object;
+    object->Prev = nullptr;
+    object->Next = MRUObject;
+    object->LOD = -1;
+    object->NextLOD = nullptr;
+
+    if (MRUObject != nullptr)
+        MRUObject->Prev = object;
+    else
+        LRUObject = object;
+    MRUObject = object;
+
+    nalAnimCache::nalLOD* previousLOD = nullptr;
+    for (int currentLOD = lastLOD - 1; currentLOD >= lod; --currentLOD)
+    {
+        const int lodSize = count * cpi.LODInfo[currentLOD].Size + 16;
+        nalAnimCache::nalLOD* lodObject = nullptr;
+        while (lodObject == nullptr)
+        {
+            lodObject = static_cast<nalAnimCache::nalLOD*>(
+                Heap->Allocate(lodSize));
+            if (lodObject == nullptr)
+                Free(LRUObject);
+        }
+
+        lodObject->Size = lodSize;
+        if (object->NextLOD != nullptr)
+            previousLOD->NextLOD = lodObject;
+        else
+            object->NextLOD = lodObject;
+        lodObject->NextLOD = nullptr;
+        previousLOD = lodObject;
+    }
+    return object;
 }
 
 // ============================================================================
