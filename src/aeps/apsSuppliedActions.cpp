@@ -1599,8 +1599,111 @@ void apsPointAttractorAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 }
 
 apsLineAttractorAction::apsLineAttractorAction()
-    : apsAction(3, 2, eAsync, 0x40u) {}
-void apsLineAttractorAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(9, 0, eAsync, 0x4001u) {}
+// ea: 0x0080EBDC
+void apsLineAttractorAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                 apsGroup* ioGroup, apsEffect*, float,
+                                 float iTimeDelta) {
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float startZ = mParams.mElements[4];
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float startY = mParams.mElements[3];
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    math::Dir3 lineStart(mParams.mElements[2], startY, startZ);
+
+    if (mParams.mSize <= 7 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float endZ = mParams.mElements[7];
+    if (mParams.mSize <= 6 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float endY = mParams.mElements[6];
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    math::Dir3 lineEnd(mParams.mElements[5], endY, endZ);
+
+    if (mParams.mSize <= 8 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float strengthDelta = mParams.mElements[8] * iTimeDelta;
+
+    if ((ioGroup->mFlags & 2u) == 0) {
+        lineStart = apsMath::XForm3d_1(ioGroup->mLocalToWorld, lineStart);
+        lineEnd = apsMath::XForm3d_1(ioGroup->mLocalToWorld, lineEnd);
+    }
+
+    const __m128 lineDelta = _mm_sub_ps(lineEnd.v, lineStart.v);
+    const __m128 lineDeltaSquared = _mm_mul_ps(lineDelta, lineDelta);
+    const float lineLength = sqrt(
+        lineDeltaSquared.m128_f32[0] +
+        (lineDeltaSquared.m128_f32[1] + lineDeltaSquared.m128_f32[2]));
+    const __m128 lineDirection =
+        _mm_div_ps(lineDelta, _mm_set1_ps(lineLength));
+
+    if ((ioGroup->mPFD.mFields & 1u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    float* position = reinterpret_cast<float*>(
+        iBegin + ioGroup->mPFD.mOffsets[0]);
+    const int stride = ioGroup->mPFD.mStride;
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    float* velocity = reinterpret_cast<float*>(
+        iBegin + ioGroup->mPFD.mOffsets[14]);
+
+    while (reinterpret_cast<unsigned char*>(position) < iEnd) {
+        const __m128 particlePosition =
+            _mm_setr_ps(position[0], position[1], position[2], 0.0f);
+        const __m128 fromStart = _mm_sub_ps(particlePosition, lineStart.v);
+        const __m128 projectionProduct =
+            _mm_mul_ps(fromStart, lineDirection);
+        const float projection =
+            projectionProduct.m128_f32[0] +
+            (projectionProduct.m128_f32[1] + projectionProduct.m128_f32[2]);
+        const __m128 closestPoint = _mm_add_ps(
+            lineStart.v,
+            _mm_mul_ps(lineDirection, _mm_set1_ps(projection)));
+        const __m128 toLine = _mm_sub_ps(particlePosition, closestPoint);
+        const __m128 distanceSquaredVector = _mm_mul_ps(toLine, toLine);
+        const float distanceSquared =
+            distanceSquaredVector.m128_f32[0] +
+            (distanceSquaredVector.m128_f32[1] + distanceSquaredVector.m128_f32[2]);
+        const float clampedDistanceSquared =
+            distanceSquared < 0.001f ? 0.001f : distanceSquared;
+        const __m128 oldVelocity = _mm_setr_ps(
+            velocity[0], velocity[1], velocity[2], 0.0f);
+        const __m128 adjustment = _mm_mul_ps(
+            _mm_div_ps(toLine, _mm_set1_ps(sqrt(clampedDistanceSquared))),
+            _mm_set1_ps(strengthDelta / clampedDistanceSquared));
+        const __m128 newVelocity = _mm_sub_ps(oldVelocity, adjustment);
+        velocity[0] = newVelocity.m128_f32[0];
+        velocity[1] = newVelocity.m128_f32[1];
+        velocity[2] = newVelocity.m128_f32[2];
+
+        position = reinterpret_cast<float*>(
+            reinterpret_cast<unsigned char*>(position) + stride);
+        velocity = reinterpret_cast<float*>(
+            reinterpret_cast<unsigned char*>(velocity) + stride);
+    }
+}
 
 apsDecayLineAttractorAction::apsDecayLineAttractorAction()
     : apsAction(4, 2, eAsync, 0x40u) {}
