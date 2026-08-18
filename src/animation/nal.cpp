@@ -591,12 +591,13 @@ const tlFixedString& nalBaseSkeleton::GetName() const
 // nalBasePose (anim.o): LOD + 4
 class nalBasePose {
 public:
-    int LOD;  // +0x04 (after vftable)
-    const nalBaseSkeleton* Skeleton;  // +0x08
+    const nalBaseSkeleton* Skeleton;  // +0x00
+    int LOD;                          // +0x04
 
     // ?GetLOD@nalBasePose@@QBEHXZ (0x55E400)
     int GetLOD() const;
 };
+static_assert(sizeof(nalBasePose) == 8, "nalBasePose layout mismatch");
 
 // ea: 0x0055E400
 int nalBasePose::GetLOD() const
@@ -840,10 +841,12 @@ class nalGenericSkeleton;
 }
 
 namespace nalGeneric {
-class nalGenericPose {
-    unsigned char* m_data;
-    unsigned       m_size;
+class nalGenericPose : public nalBasePose {
 public:
+    void* PoseData;                 // +0x08
+    bool AllocedData;               // +0x0C
+    unsigned char _padding[3];      // +0x0D
+
     // ??2/??3nalGenericPose@nalGeneric@@SAPAXI@Z (anim.o 0x55E730/0x55E750)
     static void* operator new(unsigned int sz);
     static void* operator new(unsigned int, void* p) { return p; }
@@ -856,8 +859,8 @@ public:
     void operator=(const nalGenericPose& other);
     void Copy(const nalGenericPose& other, int flags);
 
-    int GetPoseSize() const { return m_size; }
-    int GetPoseAlignment() const { return 16; }
+    int GetPoseSize() const;
+    int GetPoseAlignment() const;
 
     nalPositionOrientation GetModelPositionOrientation(int boneIdx) const;
     nalPositionOrientation GetModelPositionOrientation(const nalGenericBoneHandle&) const;
@@ -871,8 +874,9 @@ public:
     template <typename T>
     const float& operator[](const nalGenericConstComponentHandle<T>& handle) const;
 
-    void* GetData() { return m_data; }
+    void* GetData() { return PoseData; }
 };
+static_assert(sizeof(nalGenericPose) == 16, "nalGenericPose layout mismatch");
 
 namespace nalGeneric {
 template <typename T> class nalGenericComponentHandle;
@@ -883,6 +887,25 @@ struct nalComponentInfo;
 // ============================================================================
 // nalGenericSkeleton Ã¢â‚¬â€ runtime skeleton (bone matrices, processed pose)
 // ============================================================================
+struct nalLODInfo {
+    unsigned int MatrixCount;
+    int MatrixByteCodeSize;
+    int PoseByteCodeSize;
+    int FirstComponent;
+    int DecodeOffset;
+};
+static_assert(sizeof(nalLODInfo) == 20, "nalLODInfo layout mismatch");
+
+struct nalBoneInfo {
+    tlFixedString Name;
+    unsigned int Flags;
+    int PositionOffset;
+    int OrientationOffset;
+    short ParentIndex;
+    short Index;
+};
+static_assert(sizeof(nalBoneInfo) == 48, "nalBoneInfo layout mismatch");
+
 class nalGenericSkeleton {
 public:
     virtual ~nalGenericSkeleton() {}
@@ -893,6 +916,9 @@ public:
     unsigned int GetLODCount() const;
     // ?GetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@QBEIH@Z (0x55E770)
     unsigned int GetBoneMatrixCount(int lod) const;
+    int GetPoseSize() const;
+    int GetPoseAlignment() const;
+    int GetBoneIndexForMatrixIndex(int boneIndex) const;
 
     void GetTrajectoryUpdate(const nalGenericPose&, nalPositionOrientation&) const;
     void GetBoneMatrices(const nalGenericPose&, nalMatrix4x4*, int) const;
@@ -914,14 +940,37 @@ public:
 
     unsigned char _pad[0x60 - 0x04];
     unsigned int LODCount;  // +0x60
-    struct LODInfoEntry {
-        unsigned int MatrixCount;  // +0x00
-        unsigned char _pad[16];
-    };
-    LODInfoEntry* LODInfo;  // +0x64
-    unsigned char _pad2[0xC8 - 0x68];
+    nalLODInfo* LODInfo;  // +0x64
+    unsigned char* MatrixByteCode; // +0x68
+    unsigned char* PoseByteCode; // +0x6C
+    int BoneCount; // +0x70
+    nalBoneInfo* BoneInfo; // +0x74
+    int TrackCount; // +0x78
+    int PoseTrackCount; // +0x7C
+    void* TrackInfo; // +0x80
+    int PoseComponentCount; // +0x84
+    nalComponentInfo* PoseComponentInfo; // +0x88
+    int PoseSize; // +0x8C
+    int PoseAlignment; // +0x90
+    void* PoseData; // +0x94
+    int PoseExtraSize; // +0x98
+    void* PoseExtraData; // +0x9C
+    int ConstComponentCount; // +0xA0
+    nalComponentInfo* ConstComponentInfo; // +0xA4
+    int ConstSize; // +0xA8
+    int ConstAlignment; // +0xAC
+    void* ConstData; // +0xB0
+    int ConstExtraSize; // +0xB4
+    void* ConstExtraData; // +0xB8
+    int PrivateSize; // +0xBC
+    int PrivateAlignment; // +0xC0
+    void* PrivateData; // +0xC4
     nalGenericPose DefaultPose;  // +0xC8
+    int TrajectoryOffset; // +0xD8
+    int Dummy; // +0xDC
 };
+static_assert(sizeof(nalGenericSkeleton) == 224,
+              "nalGenericSkeleton layout mismatch");
 
 // ea: 0x0055E760
 unsigned int nalGenericSkeleton::GetLODCount() const
@@ -933,6 +982,45 @@ unsigned int nalGenericSkeleton::GetLODCount() const
 unsigned int nalGenericSkeleton::GetBoneMatrixCount(int lod) const
 {
     return LODInfo[lod].MatrixCount;
+}
+
+// ea: 0x00868C20
+int nalGenericSkeleton::GetPoseSize() const
+{
+    return PoseSize;
+}
+
+// ea: 0x00868C30
+int nalGenericSkeleton::GetPoseAlignment() const
+{
+    return PoseAlignment;
+}
+
+// ea: 0x00868C40
+int nalGenericSkeleton::GetBoneIndexForMatrixIndex(int boneIndex) const
+{
+    int result = 0;
+    if (BoneCount <= 0)
+        return -1;
+    for (const nalBoneInfo* info = BoneInfo;
+         boneIndex != info->Index; ++info)
+    {
+        if (++result >= BoneCount)
+            return -1;
+    }
+    return result;
+}
+
+// ea: 0x00868DD0
+int nalGenericPose::GetPoseSize() const
+{
+    return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->GetPoseSize();
+}
+
+// ea: 0x00868DE0
+int nalGenericPose::GetPoseAlignment() const
+{
+    return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->GetPoseAlignment();
 }
 
 // ============================================================================
