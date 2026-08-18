@@ -65,6 +65,8 @@ struct apsBounds {
     apsSphere Sphere() const;
 };
 
+struct apsStats;
+
 class apsGroup {
 public:
     // ---- particle group state ----
@@ -128,6 +130,8 @@ protected:
     void SetLocalSpace(unsigned int bLocalSpace) {
         mFlags = (mFlags & 0xFFFD) | (bLocalSpace ? 2 : 0);
     }
+
+    friend void apsGetStats(apsStats& stats);
 
 private:
     void Remove(unsigned char* iParticle) const;

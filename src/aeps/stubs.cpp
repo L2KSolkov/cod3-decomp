@@ -53,20 +53,6 @@ bool apsClient::GetLightInfoAtPosition(const math::Dir3& iPosition,
 // apsEffect / apsCommon free artifacts (render.o; stubs, port later)
 #include "apsEffect.h"
 #include "apsCommon.h"
-struct apsStats {
-    int numActiveEffects;       // +0x00
-    int maxRequestedBlockSize;  // +0x04
-    int numActiveParticles;     // +0x08
-    int maxActiveParticles;     // +0x0C
-};
-void apsGetStats(apsStats& stats)
-{
-    (void)stats;
-}
-void apsInitParticleMemory(int memSize, bool bBigBuffers)
-{
-    (void)memSize; (void)bBigBuffers;
-}
 void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags)
 {
     return tlMemAlloc(size, align, flags);

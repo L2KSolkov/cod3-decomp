@@ -4,12 +4,15 @@
 // ============================================================================
 
 #include "core/math_types.h"
+#include "aeps/apsEffect.h"
+#include "aeps/apsMemory.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_scene.h"
 #include "ngl/ngl_lighting.h"
 #include "game/nextgen/nextgen.h"
 
 #include <math.h>
+#include <new>
 #include <string.h>
 
 struct nglTexture;
@@ -23,17 +26,27 @@ void nglDestroyTexture(nglTexture* Tex);
 // q_math.o (returns const float per binary mangling ?A?BMQBM0)
 const float VectorDistance(const float* const p1, const float* const p2);
 
-// apsCommon::Report (aepsCommon)
-class apsCommon {
-public:
-    static void Report();  // ?Report@apsCommon@@SAXXZ
-};
-
 // apsMemory (aepsMemory)
 namespace apsMemory {
     void Reset();
     unsigned int AddPool(int numBlocks, int blockSize);
 }
+
+struct apsStats {
+    int numActiveEffects;       // +0x00
+    int maxRequestedBlockSize;  // +0x04
+    int numActiveParticles;     // +0x08
+    int maxActiveParticles;     // +0x0C
+};
+
+struct ae_heap {
+    void** __vftable;  // +0x00
+    ae_heap(unsigned int size);  // ??0ae_heap@@QAE@I@Z
+};
+
+extern void* mem_heap_malloc(unsigned int size);
+extern void* gApsHeap;
+bool gBigBuffers = false;  // ?gBigBuffers@@3_NA
 
 // render.o data (scene counters / proj shadow)
 int r_firstSceneDlight;   // ?r_firstSceneDlight@@3HA @ 0xF74274
@@ -528,6 +541,42 @@ void apsCreateBigBufferPools()
     apsMemory::AddPool(30, 7168);
     apsMemory::AddPool(50, 0x2000);
     apsMemory::AddPool(15, 0x4000);
+}
+
+// ea: 0x006C2E10
+void apsGetStats(apsStats& stats)
+{
+    stats.numActiveEffects = 0;
+    stats.maxRequestedBlockSize = 0;
+    stats.numActiveParticles = 0;
+    stats.maxActiveParticles = 0;
+    stats.numActiveEffects = apsEffect::GetNumActiveEffects();
+    stats.maxRequestedBlockSize = apsMemory::GetMaxRequestedBlockSize();
+    stats.numActiveParticles = apsGroup::sNumActiveParticles;
+    stats.maxActiveParticles = apsGroup::sMaxActiveParticles;
+}
+
+// ea: 0x006C2F80
+void apsInitParticleMemory(int memSize, bool bBigBuffers)
+{
+    gBigBuffers = bBigBuffers;
+    int bufferSize = bBigBuffers ? 0x400000 : memSize;
+    apsMemory::SetBufferSize(bufferSize);
+    apsMemory::SetMaxGroups(500);
+    apsMemory::SetMaxEffects(250);
+    apsMemory::SetMaxModifiers(200);
+    apsMemory::Init();
+    if (bBigBuffers)
+        apsCreateBigBufferPools();
+    apsMemory::AddPool(200, 16);
+    apsMemory::AddPool(200, 32);
+    apsMemory::AddPool(200, 64);
+    apsMemory::AddPool(200, 128);
+    void* block = mem_heap_malloc(0x4A0);
+    if (block != nullptr)
+        gApsHeap = new (block) ae_heap(0x20000);
+    else
+        gApsHeap = nullptr;
 }
 
 // ============================================================================
