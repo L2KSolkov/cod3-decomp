@@ -793,9 +793,11 @@ public:
     ~nvlAFMVMovie() override;
     nvlResult InitMovie() override;
     nvlFrameState DecodeFrame() override;
-    virtual void ProcessAudioChunk();
-    virtual void StartAudioPlayback();
-    virtual void StopAudioPlayback();
+    // The AFMV base vtable points these slots at __purecall.  The concrete
+    // nvlMovie type supplies the platform audio implementation.
+    virtual void ProcessAudioChunk() = 0;
+    virtual void StartAudioPlayback() = 0;
+    virtual void StopAudioPlayback() = 0;
     nvlResult ParseHeader(nflFileID fileID, bool backBuffer, int offset, int formal);
     void PrecalcScaler(int index);
     unsigned GetMBModes();
@@ -2580,9 +2582,6 @@ int nvlAFMVMovie::DecodeSlice() {
     }
 }
 
-void nvlAFMVMovie::ProcessAudioChunk() {}
-void nvlAFMVMovie::StartAudioPlayback() {}
-void nvlAFMVMovie::StopAudioPlayback() {}
 void nvlMovie::ProcessAudioChunk() {}
 void nvlMovie::StartAudioPlayback() {}
 void nvlMovie::StopAudioPlayback() {}

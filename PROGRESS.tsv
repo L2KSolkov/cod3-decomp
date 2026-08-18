@@ -500,7 +500,7 @@ aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRe
 
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	IN_PROGRESS	IDA fixed-point IDCT tables, lane-equivalent transform, copy/add/DC helpers compile; decoder integration remains
+nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	IDA fixed-point IDCT tables, lane-equivalent transform, copy/add/DC helpers integrated into the AFMV decoder
 
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	ngl_dx_scenedump.cpp: nglHostOpen/Printf/Close (host file I/O)
 
@@ -536,7 +536,7 @@ nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (au
 
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	IN_PROGRESS	IDA YUV fixed-point conversion, RGB565/BGRA packing, and two-row traversal compile; decoder integration remains
+nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	PORTED	IDA YUV fixed-point conversion, RGB565/BGRA packing, and two-row traversal integrated into DecodeFrame
 
 ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	PORTED	ngl_dx_quad.h/.cpp (push-buffer quad render + ViewToScreenZ/SetTextureUV inlines)
 
