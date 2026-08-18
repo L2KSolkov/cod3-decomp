@@ -6,6 +6,9 @@
 
 #include <cstdint>
 #include <cstring>
+#include <cstdlib>
+
+#include "core/tlFixedString.h"
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
@@ -631,6 +634,144 @@ int           nslWaveNameCompareHash(const nslWaveName* waveNameA,
     if (waveNameB->hash <= waveNameA->hash)
         return waveNameB->hash < waveNameA->hash;
     return -1;
+}
+
+// ea: 0x00827840
+int           nslWaveBankLookup(const nslWaveBank* waveBank,
+                                const nslWaveName* waveName) {
+    if (waveBank == nullptr || waveName == nullptr)
+        return -1;
+
+    using BsearchCompare = int (__cdecl *)(const void*, const void*);
+    const BsearchCompare compare = (waveBank->waveBankFlags & 2u) != 0
+        ? reinterpret_cast<BsearchCompare>(&nslWaveNameCompareHash)
+        : reinterpret_cast<BsearchCompare>(&nslWaveNameCompareText);
+    const nslWaveName* found = static_cast<const nslWaveName*>(
+        std::bsearch(waveName, waveBank->names, waveBank->waveCount,
+                     sizeof(nslWaveName), compare));
+    if (found == nullptr)
+        return -1;
+
+    const int foundIndex = static_cast<int>(found - waveBank->names);
+    if (foundIndex <= -1)
+        return foundIndex;
+
+    int firstElem = foundIndex;
+    unsigned lastElem = static_cast<unsigned>(foundIndex);
+    if ((waveBank->waveBankFlags & 2u) != 0) {
+        const unsigned hash = found->hash;
+        int index = foundIndex;
+        while (index >= 0 && waveBank->names[index].hash == hash) {
+            --index;
+            --firstElem;
+        }
+        while (lastElem < waveBank->waveCount &&
+               waveBank->names[lastElem].hash == hash) {
+            ++lastElem;
+        }
+    } else {
+        const char* name = found->name;
+        int index = foundIndex;
+        while (index >= 0 && std::strcmp(waveBank->names[index].name, name) == 0) {
+            --index;
+            --firstElem;
+        }
+        while (lastElem < waveBank->waveCount &&
+               std::strcmp(waveBank->names[lastElem].name, found->name) == 0) {
+            ++lastElem;
+        }
+    }
+
+    const float randomOffset = static_cast<float>(std::rand()) *
+        static_cast<float>(lastElem - static_cast<unsigned>(firstElem) - 2u) *
+        -0.000030518509f;
+    return firstElem - static_cast<int>(randomOffset) + 1;
+}
+
+// ea: 0x00827DC0
+int           nslWaveBankLookup(const nslWaveBank* waveBank, const char* waveName) {
+    if (waveBank == nullptr || waveName == nullptr)
+        return -1;
+    nslWaveName key = {};
+    if ((waveBank->waveBankFlags & 2u) != 0) {
+        const tlFixedString fixedString(waveName);
+        key.hash = fixedString.hash;
+    } else {
+        key.name = waveName;
+    }
+    return nslWaveBankLookup(waveBank, &key);
+}
+
+// ea: 0x00827E10
+int           nslWaveBankLookup(const nslWaveBank* waveBank, unsigned waveNameHash) {
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 2u) == 0)
+        return -1;
+    nslWaveName key = {};
+    key.hash = waveNameHash;
+    return nslWaveBankLookup(waveBank, &key);
+}
+
+// ea: 0x00827BD0
+nslWaveID     nslWaveLookup(const nslWaveName* waveName) {
+    if (waveName == nullptr || nsl_initParams.aramBase == 0 ||
+        nsl_waveBankSlots == nullptr)
+        return NSL_INVALID_WAVE;
+    for (unsigned index = 0; index < nsl_initParams.aramBase; ++index) {
+        nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
+        if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADED) {
+            const int waveIndex = nslWaveBankLookup(slot->waveBank, waveName);
+            if (waveIndex != -1)
+                return static_cast<nslWaveID>(waveIndex |
+                    (slot->waveBankID & 0xffff0000u));
+        }
+    }
+    return NSL_INVALID_WAVE;
+}
+
+// ea: 0x00827E40
+nslWaveID     nslWaveLookup(const char* waveName) {
+    if (waveName == nullptr || nsl_initParams.aramBase == 0 ||
+        nsl_waveBankSlots == nullptr)
+        return NSL_INVALID_WAVE;
+    for (unsigned index = 0; index < nsl_initParams.aramBase; ++index) {
+        nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
+        nslWaveBank* waveBank = slot->waveBank;
+        if (slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED || waveBank == nullptr)
+            continue;
+        nslWaveName key = {};
+        if ((waveBank->waveBankFlags & 2u) != 0) {
+            const tlFixedString fixedString(waveName);
+            key.hash = fixedString.hash;
+        } else {
+            key.name = waveName;
+        }
+        const int waveIndex = nslWaveBankLookup(waveBank, &key);
+        if (waveIndex != -1)
+            return static_cast<nslWaveID>(waveIndex |
+                (slot->waveBankID & 0xffff0000u));
+    }
+    return NSL_INVALID_WAVE;
+}
+
+// ea: 0x00827EF0
+nslWaveID     nslWaveLookup(unsigned waveNameHash) {
+    if (waveNameHash == 0 || nsl_initParams.aramBase == 0 ||
+        nsl_waveBankSlots == nullptr)
+        return NSL_INVALID_WAVE;
+    nslWaveName key = {};
+    key.hash = waveNameHash;
+    for (unsigned index = 0; index < nsl_initParams.aramBase; ++index) {
+        nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
+        nslWaveBank* waveBank = slot->waveBank;
+        if (slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED || waveBank == nullptr ||
+            (waveBank->waveBankFlags & 2u) == 0)
+            continue;
+        const int waveIndex = nslWaveBankLookup(waveBank, &key);
+        if (waveIndex != -1)
+            return static_cast<nslWaveID>(waveIndex |
+                (slot->waveBankID & 0xffff0000u));
+    }
+    return NSL_INVALID_WAVE;
 }
 
 // ============================================================================
