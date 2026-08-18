@@ -644,6 +644,46 @@ void          nslSetSourceParam(nslSourceID sid, int index, float value) {
     source->params[index] = value;
 }
 
+// ea: 0x00820F80
+void          nslSetEmitterParam(nslEmitterID eid, unsigned index, float value) {
+    const int emitterIndex = nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(eid));
+    if (emitterIndex == -1)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(nsl_emitters) +
+        nslEmitterStride * static_cast<unsigned>(emitterIndex);
+    if (raw == nullptr || index >= 0x40u)
+        return;
+    const unsigned __int64 mask = UINT64_C(1) << index;
+    *reinterpret_cast<unsigned __int64*>(raw + 0x8u) |= mask;
+    *reinterpret_cast<float*>(raw + 0x10u + 4u * index) = value;
+}
+
+// ea: 0x00821050
+float         nslGetEmitterParam(nslEmitterID eid, unsigned index,
+                                 float defaultValue) {
+    const int emitterIndex = nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(eid));
+    if (emitterIndex == -1)
+        return defaultValue;
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(nsl_emitters) +
+        nslEmitterStride * static_cast<unsigned>(emitterIndex);
+    if (raw == nullptr || index >= 0x40u)
+        return defaultValue;
+    return *reinterpret_cast<const float*>(raw + 0x10u + 4u * index);
+}
+
+// ea: 0x00820D70
+const char*   nslGetSourceGroup(nslSourceID sid) {
+    const int sourceIndex = nslSlotIndex(&nsl_sourcePool, static_cast<txSlot>(sid));
+    nslWaveID waveID = NSL_WAVE_ID_INVALID;
+    if (sourceIndex != -1) {
+        const unsigned char* raw = reinterpret_cast<const unsigned char*>(nsl_sources) +
+            nslSourceStride * static_cast<unsigned>(sourceIndex);
+        if (raw != nullptr)
+            waveID = *reinterpret_cast<const nslWaveID*>(raw + 0x110u);
+    }
+    return nslWaveGetGroupName(waveID);
+}
+
 // Voice enumeration (used by EffectEventSys::NumberOfVoicesUsed)
 // ea: 0x008203F0
 unsigned      nslGetNumVoices() { return nslVoiceCount(); }
@@ -1009,8 +1049,6 @@ void          nslUndampenSource(nslSourceID sid) {
         return;
     *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(source) + 0x50u) = 0;
 }
-void          nslDampen(float) {}
-void          nslUndampen() {}
 // ea: 0x00821890
 void          nslRemoveEmitterSource(nslEmitterID eid, nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
@@ -1157,7 +1195,130 @@ void          nslPlaySource(nslSourceID sid) {
     raw[0x122u] |= 3u;
     *reinterpret_cast<unsigned*>(raw + 0x128u) = 0;
 }
-void          nslDampenGuardSource(nslSourceID) {}           // ?nslDampenGuardSource@@YAXW4nslSourceID@@@Z
+
+using nslSourceForAllCallback = void (__cdecl *)(nslSourceID);
+
+// ea: 0x00820AC0
+unsigned      nslSource_ForAll(nslSourceForAllCallback callback) {
+    unsigned result = 0;
+    txSlot slot = nslSlotFirst(&nsl_sourcePool);
+    if (slot == TX_SLOT_INVALID)
+        return result;
+    do {
+        const txSlot current = slot;
+        slot = nslSlotNext(&nsl_sourcePool, current);
+        const int sourceIndex = nslSlotIndex(&nsl_sourcePool, current);
+        unsigned char* raw = sourceIndex == -1
+            ? nullptr
+            : reinterpret_cast<unsigned char*>(nsl_sources) +
+                  nslSourceStride * static_cast<unsigned>(sourceIndex);
+        if (callback != nullptr)
+            callback(static_cast<nslSourceID>(current));
+        if (result > raw[0x120u])
+            result = raw[0x120u];
+    } while (slot != TX_SLOT_INVALID);
+    return result;
+}
+
+// ea: 0x00820A20
+unsigned      nslEmitter_ForAll(nslEmitterID eid,
+                                nslSourceForAllCallback callback) {
+    unsigned result = 0;
+    txSlot slot = nslSlotFirst(&nsl_sourcePool);
+    if (slot == TX_SLOT_INVALID)
+        return result;
+    do {
+        const txSlot current = slot;
+        slot = nslSlotNext(&nsl_sourcePool, current);
+        const int sourceIndex = nslSlotIndex(&nsl_sourcePool, current);
+        unsigned char* raw = sourceIndex == -1
+            ? nullptr
+            : reinterpret_cast<unsigned char*>(nsl_sources) +
+                  nslSourceStride * static_cast<unsigned>(sourceIndex);
+        if (*reinterpret_cast<const unsigned*>(raw + 0x114u) == eid) {
+            if (callback != nullptr)
+                callback(static_cast<nslSourceID>(current));
+            if (result > raw[0x120u])
+                result = raw[0x120u];
+        }
+    } while (slot != TX_SLOT_INVALID);
+    return result;
+}
+
+// ea: 0x00822720
+void          nslDampenGuardSource(nslSourceID sid) {
+    const int sourceIndex = nslSlotIndex(&nsl_sourcePool, static_cast<txSlot>(sid));
+    if (sourceIndex == -1)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(nsl_sources) +
+        nslSourceStride * static_cast<unsigned>(sourceIndex);
+    if (raw != nullptr && *reinterpret_cast<const int*>(raw + 0x50u) <= 0)
+        *reinterpret_cast<int*>(raw + 0x50u) = -1;
+}
+
+// ea: 0x008225A0
+void          nslPause() { nslSource_ForAll(nslPauseSource); }
+// ea: 0x008225B0
+void          nslStop() { nslSource_ForAll(nslStopSource); }
+// ea: 0x008225C0
+void          nslUnpause() { nslSource_ForAll(nslUnpauseSource); }
+// ea: 0x008225D0
+nslSourceState nslGetState() {
+    return static_cast<nslSourceState>(nslSource_ForAll(nullptr));
+}
+// ea: 0x008225E0
+void          nslQueueEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslQueueSource);
+}
+// ea: 0x00822600
+void          nslPlayEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslPlaySource);
+}
+// ea: 0x00822620
+void          nslPauseEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslPauseSource);
+}
+// ea: 0x00822640
+void          nslStopEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslStopSource);
+}
+// ea: 0x00822660
+void          nslUnpauseEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslUnpauseSource);
+}
+// ea: 0x00822680
+nslSourceState nslGetEmitterState(nslEmitterID eid) {
+    return static_cast<nslSourceState>(nslEmitter_ForAll(eid, nullptr));
+}
+
+// ea: 0x00822770
+void          nslDampenGuardEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslDampenGuardSource);
+}
+// ea: 0x00822790
+void          nslDampenEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslDampenSource);
+}
+// ea: 0x008227B0
+void          nslUndampenEmitter(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslUndampenSource);
+}
+// ea: 0x008227D0
+void          nslDampen(float dampenLevel) {
+    nsl_dampenLevel = dampenLevel;
+    nslSource_ForAll(nslDampenSource);
+}
+// ea: 0x008227F0
+void          nslUndampen() { nslSource_ForAll(nslUndampenSource); }
+
+// ea: 0x00822990
+void          nslSetEmitterEffectOn(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslSetSourceEffectOn);
+}
+// ea: 0x008229B0
+void          nslSetEmitterEffectOff(nslEmitterID eid) {
+    nslEmitter_ForAll(eid, nslSetSourceEffectOff);
+}
 int           nslAreAllBanksLoaded() { return nslWaveBankSlotsGetLoadingCount() == 0; } // ?nslAreAllBanksLoaded@@YAHXZ
 int           nslNumBanksInUse() { return static_cast<int>(nslWaveBankSlotsGetUsedCount()); } // ?nslNumBanksInUse@@YAHXZ
 
@@ -3259,5 +3420,4 @@ void          nslMemoryFree(void* ptr) { tlMemFree(ptr); }
 // ============================================================================
 // Misc
 // ============================================================================
-bool          nslGetState() { return true; }
 const char*   nslGetStateText(int) { return "ready"; }
