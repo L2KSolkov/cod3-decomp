@@ -655,7 +655,31 @@ void apsObjectMoveAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffe
 
 apsPositionMoveAction::apsPositionMoveAction()
     : apsAction(2, 0, eAsync, 0x4001u) {}
-void apsPositionMoveAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080A420
+void apsPositionMoveAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                apsGroup* ioGroup, apsEffect*, float,
+                                float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+
+    unsigned char* velocityField = iBegin + ioGroup->mPFD.mOffsets[14];
+    if (iBegin != iEnd) {
+        while (true) {
+            float* position = reinterpret_cast<float*>(iBegin);
+            float* velocity = reinterpret_cast<float*>(velocityField);
+            position[0] += velocity[0] * iTimeDelta;
+            position[1] += velocity[1] * iTimeDelta;
+            position[2] += velocity[2] * iTimeDelta;
+            iBegin += stride;
+            velocityField += stride;
+            if (iBegin == iEnd)
+                break;
+        }
+    }
+}
 
 apsMoveAtFixedVelocityAction::apsMoveAtFixedVelocityAction()
     : apsAction(6, 0, eAsync, 0x1u) {}
