@@ -337,7 +337,7 @@ void __stdcall LiveEngine_UseVoiceMail(unsigned int a0, unsigned int a1) {}
 void* __stdcall UIXCreateLiveEngine(unsigned int a0, unsigned int a1, unsigned int a2) { return nullptr; }
 void* __stdcall UIXCreateUIPlugin(unsigned int a0, unsigned int a1) { return nullptr; }
 void __cdecl uncompress(void) {}
-unsigned int __stdcall XGetLanguage(void) { return 0; }
+unsigned int __stdcall XGetLanguage(void) { return 1; }
 unsigned int __cdecl XGetVideoFlags(void) { return 0; }
 int __stdcall XGIsSwizzledFormat(unsigned int) { return 0; }
 void __stdcall XGSetPaletteHeader(_D3DPALETTESIZE, D3DPalette* Palette, void* Data) {

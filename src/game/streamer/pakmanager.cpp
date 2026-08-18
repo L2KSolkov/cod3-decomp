@@ -7616,6 +7616,10 @@ void PakManager::DecodeFLI(const char* name, PakInfoBank* data, int size,
         gCE = true;
     if (strstr(sku, "ck") != nullptr || strstr(sku, "uk") != nullptr)
         gUKBuild = true;
+
+    // Win32 policy: the Xbox SKU branch above can select a non-English
+    // language, but this port's game-data/audio set is English-only.
+    gLanguage = kLanguageEnglish;
     FEManager_UpdateButtonFontForLanguage(&g_femanager);
     UpdateInfo();
 }

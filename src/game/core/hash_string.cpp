@@ -20,7 +20,9 @@ LanguageName sLanguageNames[6] = {
     {"Italian", kLanguageItalian}, {"Unlocalized", kLanguageJapanese},
 };
 const char* sLanguageIds[6] = {"en", "de", "fr", "sp", "it", "un"};
-int dword_DD8B74[12] = {};
+// IDA's dword_DD8B74 symbol aliases the enum members in sLanguageNames;
+// SetGameLanguage indexes every other dword (0, 1, 2, 3, 4, 5).
+int dword_DD8B74[12] = {0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0};
 
 // ea: 0x004BD6B0
 unsigned int CalcHash(const char* str)

@@ -743,3 +743,4 @@ game.o		game.o	game	663	PORTED	Current dumpbin audit resolves all 663 game.o inv
 core.o	effect_events.cpp	game	1	PORTED	SoundDevice_FindWave bridge now delegates to the IDA-backed nslGetWave path instead of unconditionally returning NSL_WAVE_ID_INVALID; canonical vcvars32 build clean
 render.o	effect_events.cpp	render	1	PORTED	LightEffect::IsLightFinished ported from IDA 0x006C3500: PakManager slot validity, kill/lifetime sentinel, and active-state gates; canonical vcvars32 build clean
 anim.o		anim.o	game	408	PORTED	Current object-symbol audit has 0 missing across 741 anim.o inventory rows; restored IDA/map-exact duration, generic-skeleton, and IsType decorations; vcvars32 build clean
+core.o	hash_string.cpp	game	1	PORTED	SetGameLanguage now uses the IDA-backed dword_DD8B74 language values; Win32 XGetLanguage returns English ID 1 and PakManager::DecodeFLI forces the shared audio/UI language back to English; canonical vcvars32 build clean
