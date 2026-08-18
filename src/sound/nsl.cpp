@@ -602,6 +602,9 @@ void          nslFreeEmitter(nslEmitterID eid) {
     txSlotFree(&nsl_emitterPool, static_cast<txSlot>(eid));
 }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
+nslSourceID   nslNewSource(const char* waveName, int mImportance) {
+    return nslNewSource(nslWaveLookup(waveName), mImportance);
+}
 void          nslDeleteSource(nslSourceID) {}
 void          nslDeleteEmitter(nslEmitterID) {}
 // ea: 0x008207A0
@@ -946,6 +949,8 @@ void          nslSetSourceEmitter(nslSourceID sid, nslEmitterID eid) {
 void          nslAddEmitterSource(nslEmitterID eid, nslSourceID sid) {
     nslSetSourceEmitter(sid, eid);
 }
+// ea: 0x00821900
+void          nslDebugDraw() {}
 // ea: 0x00822800
 void          nslSetSourceEffect(nslSourceID sid, int effectOn) {
     nslSource* source = nslSourcePtr(sid);
