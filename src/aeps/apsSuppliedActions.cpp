@@ -671,15 +671,91 @@ void apsColorShiftAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffe
 
 apsVelocityDragAction::apsVelocityDragAction()
     : apsAction(3, 0, eAsync, 0x4000u) {}
-void apsVelocityDragAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080DBE0
+void apsVelocityDragAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                apsGroup* ioGroup, apsEffect*, float,
+                                float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float v = -(mParams.mElements[2] * iTimeDelta);
+    const float scale = ((((v * 0.16666667f) + 0.5f) * v + 1.0f) * v) + 1.0f;
+
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int velocityOffset = ioGroup->mPFD.mOffsets[14];
+    float* velocity = reinterpret_cast<float*>(iBegin + velocityOffset);
+    float* endVelocity = reinterpret_cast<float*>(iEnd + velocityOffset);
+    while (velocity != endVelocity) {
+        velocity[0] *= scale;
+        velocity[1] *= scale;
+        velocity[2] *= scale;
+        velocity = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(velocity) + stride);
+    }
+}
 
 apsAngularVelocityDragAction::apsAngularVelocityDragAction()
     : apsAction(3, 0, eAsync, 0x10000u) {}
-void apsAngularVelocityDragAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080DCE0
+void apsAngularVelocityDragAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                       apsGroup* ioGroup, apsEffect*, float,
+                                       float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float v = -(mParams.mElements[2] * iTimeDelta);
+    const float scale = ((((v * 0.16666667f) + 0.5f) * v + 1.0f) * v) + 1.0f;
+
+    if ((ioGroup->mPFD.mFields & 0x10000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int angularVelocityOffset = ioGroup->mPFD.mOffsets[16];
+    float* angularVelocity = reinterpret_cast<float*>(iBegin + angularVelocityOffset);
+    float* endAngularVelocity = reinterpret_cast<float*>(iEnd + angularVelocityOffset);
+    while (angularVelocity != endAngularVelocity) {
+        *angularVelocity *= scale;
+        angularVelocity = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(angularVelocity) + stride);
+    }
+}
 
 apsVectorAngularVelocityDragAction::apsVectorAngularVelocityDragAction()
     : apsAction(3, 0, eAsync, 0x20000u) {}
-void apsVectorAngularVelocityDragAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080DDC0
+void apsVectorAngularVelocityDragAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                              apsGroup* ioGroup, apsEffect*, float,
+                                              float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float v = -(mParams.mElements[2] * iTimeDelta);
+    const float scale = ((((v * 0.16666667f) + 0.5f) * v + 1.0f) * v) + 1.0f;
+
+    if ((ioGroup->mPFD.mFields & 0x20000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int vectorAngularVelocityOffset = ioGroup->mPFD.mOffsets[17];
+    float* vectorAngularVelocity =
+        reinterpret_cast<float*>(iBegin + vectorAngularVelocityOffset);
+    float* endVectorAngularVelocity =
+        reinterpret_cast<float*>(iEnd + vectorAngularVelocityOffset);
+    while (vectorAngularVelocity != endVectorAngularVelocity) {
+        vectorAngularVelocity[0] *= scale;
+        vectorAngularVelocity[1] *= scale;
+        vectorAngularVelocity[2] *= scale;
+        vectorAngularVelocity = reinterpret_cast<float*>(
+            reinterpret_cast<unsigned char*>(vectorAngularVelocity) + stride);
+    }
+}
 
 apsWorldPlaneReflectionAction::apsWorldPlaneReflectionAction()
     : apsAction(2, 1, eAsync, 0x40u) {}
