@@ -9,6 +9,9 @@
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
+extern "C" void txAssertFailed(unsigned char* ignore, const char* message,
+                                const char* function, const char* source, int line);
+extern "C" void txPrintf(const char* channel, int level, const char* fmt, ...);
 
 // ============================================================================
 // Handle types
@@ -400,8 +403,18 @@ int           nslNumBanksInUse() { return static_cast<int>(nslWaveBankSlotsGetUs
 // ============================================================================
 // nslAram â€” audio RAM accounting (nslAram.o)
 // ============================================================================
-unsigned int nsl_aramSize = 0;  // ?nsl_aramSize@@3IA (nslAram.o)
-unsigned int nsl_aramFree = 0;  // ?nsl_aramFree@@3IA (nslAram.o)
+void*         nsl_aramBase = nullptr; // ?nsl_aramBase@@3PAXA (nslAram.o)
+unsigned int nsl_aramSize = 0;        // ?nsl_aramSize@@3IA (nslAram.o)
+unsigned int nsl_aramFree = 0;        // ?nsl_aramFree@@3IA (nslAram.o)
+unsigned int nsl_aramAlignment = 0x480; // ?nsl_aramAlignment@@3IA (nslAram.o)
+int           nsl_aramStackTop = 64;  // ?nsl_aramStackTop@@3HA (nslAram.o)
+int           nsl_aramStackBottom = -1; // ?nsl_aramStackBottom@@3HA (nslAram.o)
+unsigned int  nsl_aramStack[64] = {}; // ?nsl_aramStack@@3PAIA (nslAram.o)
+unsigned char ignoreAssert_4 = 0;
+unsigned char ignoreAssert_5 = 0;
+unsigned char ignoreAssert_6 = 0;
+unsigned char ignoreAssert_7 = 0;
+unsigned char ignoreAssert_8 = 0;
 void          nslSourceSetMode(nslSourceID, unsigned) {}
 void          nslSourceSetLooping(nslSourceID, bool) {}
 void          nslSourceSetPriority(nslSourceID, unsigned) {}
@@ -779,14 +792,165 @@ void          nslDriverSetBufferSize(unsigned) {}
 // ============================================================================
 // nslAram — Xbox audio RAM management
 // ============================================================================
-void*         nslAramGetBase() { return nullptr; }
-unsigned      nslAramGetSize() { return 0; }
-unsigned      nslAramGetFree() { return 0; }
-void*         nslAramAlloc(unsigned, unsigned) { return nullptr; }
-void          nslAramFree(void*) {}
+// ea: 0x00422DC0
+void*         nslAramGetBase() { return nsl_aramBase; }
+// ea: 0x00422DD0
+unsigned      nslAramGetSize() { return nsl_aramSize; }
+// ea: 0x00422DE0
+unsigned      nslAramGetFree() { return nsl_aramFree; }
+// ea: 0x00422DF0
+void          nslAramSetAlignment(unsigned alignment) { nsl_aramAlignment = alignment; }
+// ea: 0x00422E00
+unsigned      nslAramGetAlignment() { return nsl_aramAlignment; }
+// ea: 0x00422E10
+void          nslAramInit(void* base, unsigned size) {
+    if (nsl_aramBase != nullptr || nsl_aramSize != 0 ||
+        nsl_aramStackBottom != -1 || nsl_aramStackTop != 64) {
+        txAssertFailed(&ignoreAssert_4,
+                       "nsl_aramBase==0 && nsl_aramSize==0 && nsl_aramStackBottom==-1 && nsl_aramStackTop==TX_ARRAYSIZE(nsl_aramStack)",
+                       "nslAramInit", "c:/cod/code/tl/nsl2/src/nsl/nslAram.cpp", 38);
+    }
+    nsl_aramStackTop = 64;
+    nsl_aramStackBottom = -1;
+    const uintptr_t baseAddress = reinterpret_cast<uintptr_t>(base);
+    nsl_aramBase = reinterpret_cast<void*>(
+        nsl_aramAlignment * ((baseAddress + nsl_aramAlignment - 1u) / nsl_aramAlignment));
+    nsl_aramSize = nsl_aramAlignment * ((size - nsl_aramAlignment) / nsl_aramAlignment);
+}
+// ea: 0x00422EA0
+unsigned      nslAramGetFreeBlock(unsigned* ptop, unsigned* pbottom) {
+    int stackBottom = nsl_aramStackBottom;
+    unsigned bottom = nsl_aramSize;
+    unsigned top = 0;
+    while (stackBottom >= 0) {
+        if ((nsl_aramStack[stackBottom] & 0x80000000u) == 0)
+            break;
+        nsl_aramStack[stackBottom] = 0;
+        --stackBottom;
+    }
+    nsl_aramStackBottom = stackBottom;
+    for (int i = stackBottom; i >= 0; --i)
+        top += nsl_aramStack[i] & 0x7fffffffu;
+
+    int stackTop = nsl_aramStackTop;
+    while (stackTop < 64) {
+        if ((nsl_aramStack[stackTop] & 0x80000000u) == 0)
+            break;
+        nsl_aramStack[stackTop++] = 0;
+    }
+    nsl_aramStackTop = stackTop;
+    for (int i = stackTop; i < 64; ++i)
+        bottom -= nsl_aramStack[i] & 0x7fffffffu;
+
+    if (top > bottom) {
+        txAssertFailed(&ignoreAssert_5, "top <= bottom", "nslAramGetFreeBlock",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslAram.cpp", 73);
+    }
+    if (ptop != nullptr)
+        *ptop = top;
+    if (pbottom != nullptr)
+        *pbottom = bottom;
+    nsl_aramFree = bottom - top;
+    return nsl_aramFree;
+}
+// ea: 0x00422F90
+void*         nslAramAlloc(unsigned size, unsigned flags) {
+    const unsigned alignedSize = nsl_aramAlignment *
+        ((nsl_aramAlignment + size - 1u) / nsl_aramAlignment);
+    unsigned top = 0;
+    const unsigned freeBlock = nslAramGetFreeBlock(&top, &size);
+    if (freeBlock < alignedSize) {
+        txPrintf("NSL", 0, "Out of memory, %d requested, only %d free", alignedSize, freeBlock);
+        return nullptr;
+    }
+
+    int stackTop = nsl_aramStackTop;
+    if (nsl_aramStackBottom >= nsl_aramStackTop) {
+        txAssertFailed(&ignoreAssert_6, "nsl_aramStackBottom < nsl_aramStackTop",
+                       "nslAramAlloc", "c:/cod/code/tl/nsl2/src/nsl/nslAram.cpp", 93);
+        stackTop = nsl_aramStackTop;
+    }
+    const int stackBottom = nsl_aramStackBottom + 1;
+    if (stackBottom >= stackTop) {
+        txPrintf("NSL", 0, "Out of stack, all %d blocks were used", 64);
+        return nullptr;
+    }
+
+    void* result = nullptr;
+    if ((flags & 1u) != 0) {
+        nsl_aramStackTop = stackTop - 1;
+        nsl_aramStack[nsl_aramStackTop] = alignedSize;
+        auto* base = static_cast<unsigned char*>(nsl_aramBase);
+        result = base + size - alignedSize;
+    } else {
+        ++nsl_aramStackBottom;
+        nsl_aramStack[stackBottom] = alignedSize;
+        result = static_cast<unsigned char*>(nsl_aramBase) + top;
+    }
+    nslAramGetFreeBlock(nullptr, nullptr);
+    return result;
+}
+// ea: 0x004230A0
+void          nslAramFree(void* buffer) {
+    if (buffer == nullptr)
+        return;
+    auto* base = static_cast<unsigned char*>(nsl_aramBase);
+    auto* address = static_cast<unsigned char*>(buffer);
+    const uintptr_t offset = address - base;
+    unsigned size = nsl_aramSize;
+    if (offset < nsl_aramSize) {
+        unsigned top = 0;
+        int index = 0;
+        if (nsl_aramStackBottom >= 0) {
+            while (true) {
+                const unsigned entry = nsl_aramStack[index];
+                if (top == offset) {
+                    if ((entry & 0x80000000u) == 0) {
+                        nsl_aramStack[index] = entry | 0x80000000u;
+                        nslAramGetFreeBlock(nullptr, nullptr);
+                        return;
+                    }
+                    break;
+                }
+                top += entry & 0x7fffffffu;
+                if (top > size) {
+                    txAssertFailed(&ignoreAssert_8, "a <= nsl_aramSize", "nslAramFree",
+                                   "c:/cod/code/tl/nsl2/src/nsl/nslAram.cpp", 138);
+                    size = nsl_aramSize;
+                }
+                if (++index > nsl_aramStackBottom)
+                    break;
+            }
+        }
+
+        index = 63;
+        unsigned bottom = size;
+        if (nsl_aramStackTop <= 63) {
+            while (true) {
+                bottom -= nsl_aramStack[index] & 0x7fffffffu;
+                if (bottom > size) {
+                    txAssertFailed(&ignoreAssert_7, "a <= nsl_aramSize", "nslAramFree",
+                                   "c:/cod/code/tl/nsl2/src/nsl/nslAram.cpp", 144);
+                    size = nsl_aramSize;
+                }
+                if (bottom == offset)
+                    break;
+                if (--index < nsl_aramStackTop)
+                    goto invalid_block;
+            }
+            const unsigned entry = nsl_aramStack[index];
+            if ((entry & 0x80000000u) == 0) {
+                nsl_aramStack[index] = entry | 0x80000000u;
+                nslAramGetFreeBlock(nullptr, nullptr);
+                return;
+            }
+        }
+    }
+invalid_block:
+    txPrintf("NSL", 0, "Invalid or already freed block %p", buffer);
+}
 unsigned      nslAramGetUsed() { return 0; }
 bool          nslAramIsInAram(void*) { return false; }
-unsigned      nslAramGetAlignment() { return 16; }
 void          nslAramCompact() {}
 
 // ============================================================================
