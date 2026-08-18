@@ -47,6 +47,10 @@ namespace View {
 extern int GetNumViewports();  // ?GetNumViewports@View@@YAHXZ
 }
 
+// IDA's FEManager object is the full 0x3F4-byte type.  Defining the global
+// with that type keeps currCl from being placed inside its font fields.
+FEManager g_femanager;
+
 namespace LocalClient {
 extern int FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHXZ
 extern int PortToClient(int port);   // ?PortToClient@LocalClient@@YAHH@Z

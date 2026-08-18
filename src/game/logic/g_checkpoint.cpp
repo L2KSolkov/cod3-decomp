@@ -90,7 +90,7 @@ struct CheckpointStub {
 };
 static_assert(sizeof(CheckpointStub) == 0x170C, "CheckpointStub size mismatch");
 static CheckpointStub* sCheckpointStub = (CheckpointStub*)0xF317B0;
-extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];  // ?gSaveGameData@@3PAUSaveGameData@@A
 
 // Broc runtime API (gpBrocAPI -> BrocAPI struct; mGetEnt at +0x94).
 // g_local.h's minimal BrocAPI lacks mGetEnt, so call the entry via the

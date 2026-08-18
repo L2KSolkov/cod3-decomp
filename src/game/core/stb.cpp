@@ -5,6 +5,13 @@
 #include "game/core/core_systems.h"
 
 #include <string.h>
+#include <new>
+#include "core/mem_heap.h"
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);
 
 // Minimal view of PakManager (full class in game/sv/sv_stubs.h).
 class PakManager {
@@ -28,6 +35,45 @@ extern int PakManager_GetPakFile(void* self, TPakId pakId);
 
 // ?STBManager_sInst@@3PAUSTBManager@@A (core.o)
 STBManager* STBManager_sInst = nullptr;
+
+// ea: 0x4E8800 (core.o inline)
+void STBManager::CreateInst()
+{
+    if (sInst != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\STBManager.h", 46,
+                     "sInst==0", "singleton already created!"))
+        __debugbreak();
+
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "core", "c:\\cod\\code\\game\\STBManager.h", 46);
+    if (memory != nullptr)
+    {
+        sInst = new (memory) STBManager();
+        STBManager_sInst = sInst;
+    }
+    else
+    {
+        sInst = nullptr;
+        STBManager_sInst = nullptr;
+    }
+}
+
+// ea: 0x4DC800 (core.o inline)
+void STBManager::DeleteInst()
+{
+    if (sInst == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\STBManager.h", 46,
+                     "sInst!=0", "singleton not created!"))
+        __debugbreak();
+    if (sInst != nullptr)
+    {
+        sInst->~STBManager();
+        mem_heap_free(sInst);
+    }
+    sInst = nullptr;
+    STBManager_sInst = nullptr;
+}
+
 // streamer.o helpers (stubs, port later)
 unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key)
 {

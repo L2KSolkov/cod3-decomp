@@ -6,6 +6,9 @@
 // ============================================================================
 
 #include <cstring>
+#include <new>
+
+#include "core/mem_heap.h"
 
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN
@@ -153,7 +156,18 @@ controller::controller()
 
 controller::~controller() {}
 
-controller* controller::inst() { return s_instance; }
+controller* controller::inst()
+{
+    if (s_instance == nullptr)
+    {
+        void* memory = mem_heap_malloc(0x24u);
+        if (memory != nullptr)
+            s_instance = new (memory) controller();
+        else
+            s_instance = nullptr;
+    }
+    return s_instance;
+}
 bool controller::get_is_locked() { return is_locked; }
 int  controller::get_locked_port() { return locked_port; }
 

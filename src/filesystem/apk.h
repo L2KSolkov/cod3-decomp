@@ -17,12 +17,12 @@ namespace apk {
 // +0x14 (GetDataSize ea 0x8342B0, apkLoadFileInPlace ea 0x834B40).
 // ============================================================================
 struct apkFileSection {
-    const char* Name;   // +0x00
-    uint32_t    pad0;   // +0x04 (TODO: unknown section fields)
-    uint32_t    pad1;   // +0x08
-    uint32_t    pad2;   // +0x0C
-    uint32_t    Size;   // +0x10
-    void*       Data;   // +0x14
+    tlFixedString* Name; // +0x00
+    uint32_t        Flags; // +0x04
+    uint32_t        Alignment; // +0x08
+    uint32_t        MemFlags; // +0x0C
+    uint32_t        Size; // +0x10
+    void*           Data; // +0x14
 };
 static_assert(sizeof(apkFileSection) == 0x18, "apkFileSection size mismatch");
 
@@ -51,8 +51,8 @@ static_assert(sizeof(apkFileTypeEntry) == 0x14, "apkFileTypeEntry size mismatch"
 // ============================================================================
 class apkFileEntry {
 public:
-    const char* Name;       // +0x00 - fixed-up name
-    uint32_t    Sections[1];// +0x04 - per-section data pointers (NSections dwords)
+    tlFixedString* Name;    // +0x00 - fixed-up name
+    void*       Sections[1];// +0x04 - per-section data pointers (NSections dwords)
 
     void* GetData(apkFile* file, int section, bool assertIfNoData);
     uint32_t GetDataSize(apkFile* file, int section, bool assertIfNoData, void** dataPtr);

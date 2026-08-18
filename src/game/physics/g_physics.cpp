@@ -1520,12 +1520,6 @@ inline void nalGeneric::nalGenericSkeleton::GetBoneMatrices(
 {
     (void)pose; (void)matrices; (void)lod;
 }
-inline nalGeneric::nalGenericInstance* nalGeneric::nalGenericAnim::CreateInstance(
-    nalGenericSkeleton* skeleton)
-{
-    (void)skeleton;
-    return nullptr;
-}
 inline void nalGeneric::nalGenericInstance::GetPose(
     int index, nalGenericPose& pose, const nalGenericPose& defaultPose,
     int lod)
@@ -1690,10 +1684,30 @@ void DObjGetBasePose(DObj* obj)
     (void)obj;
 }
 
-// ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o; stub until ported)
+// ea: 0x00602220
 void Entity::set_bp_info(biped_phys_info* bpInfo)
 {
-    mBPInfo = bpInfo;
+    biped_phys_info* current = mBPInfo;
+    if (current != nullptr)
+    {
+        if (current != bpInfo)
+        {
+            // IDA: Entity.h:467, exact release assert metadata.
+            AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(3);
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.h";
+            AeAssert::gCurrentLine = 467;
+            AeAssert::gCurrentExpr =
+                "mBPInfo == 0 || mBPInfo == bpInfo";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Already have bpinfo"))
+                __debugbreak();
+        }
+        mBPInfo = bpInfo;
+    }
+    else
+    {
+        mBPInfo = bpInfo;
+    }
 }
 
 // ea: 0x6F9070
@@ -9067,7 +9081,7 @@ struct SaveGameData {
     int     mControllerPort;  // +0x3B0 (StubData.mControllerPort)
     uint8_t _rest[7156 - 0x3B4];
 };
-extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A (game.o @ 0xF312F0)
+extern SaveGameData gSaveGameData[4];  // ?gSaveGameData@@3PAUSaveGameData@@A (game.o @ 0xF312F0)
 char rumble_test = -1;  // physics.o data @ 0xF916F8 (byte 0xFF)
 
 // controller (core.o; minimal view - full impl in input/controller.cpp)
@@ -9470,7 +9484,7 @@ void PhysInit()
     pmi.m_num_rbc_custom_orientation = 10;
     pmi.m_num_rbc_custom_path = 10;
     pmi.m_num_rigid_body = 195;
-    pmi.m_contact_point_buffer_size = 0;  // dword_235B0 (.textbss = 0)
+    pmi.m_contact_point_buffer_size = 0x235B0;
     pmi.m_num_rbc_contact = 431;
     pmi.m_num_rbc_point = 12;
     pmi.m_num_rbc_ragdoll = 144;

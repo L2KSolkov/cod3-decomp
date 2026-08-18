@@ -19,6 +19,7 @@ public:
     static SoundDevice* sInst;  // ?sInst@SoundDevice@@2PAV1@A
     void SetListenerVectors(int listener, const math::Position3& position,
                             const math::Dir3& front, const math::Dir3& up);
+    int GetNumberOfListeners();  // ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10)
 };
 
 
@@ -314,7 +315,7 @@ extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
 float move_back_distance;
 extern int curListener;
 struct SaveGameData;
-extern SaveGameData* gSaveGameData;
+extern SaveGameData gSaveGameData[4];
 struct FEManager { public: bool mDontDrawHud; };  // minimal view (+0x3C)
 extern FEManager g_femanager;
 int unk_F6A2AC[4 * 3208];  // cg.o BSS
@@ -344,12 +345,6 @@ extern void CL_SetUserCmdAimValues(float gunPitch, float gunYaw,
                                    float gunZOfs);
 extern void R_ToggleSmpFrame();
 extern void CG_DrawViewportFrames(int numViewports);
-// ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10; stub)
-int SoundDevice_GetNumberOfListeners(void* self)
-{
-    (void)self;
-    return 1;
-}
 class subtitle_manager {
 public:
     static void render();  // ?render@subtitle_manager@@SAXXZ
@@ -1967,6 +1962,6 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
             curListener, *(const math::Position3*)listenerPos,
             *(const math::Dir3*)front, *(const math::Dir3*)up);
         ++curListener;
-        curListener %= SoundDevice_GetNumberOfListeners(SoundDevice::sInst);
+        curListener %= SoundDevice::sInst->GetNumberOfListeners();
     }
 }

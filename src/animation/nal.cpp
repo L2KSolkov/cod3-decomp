@@ -14,6 +14,7 @@
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "core/tlInstanceBank.h"
+#include "core/tlResourceDirectory.h"
 #include "core/ae_fixed_string.h"
 #include "engine/broc_types.h"
 
@@ -763,6 +764,13 @@ template <> struct nalAnimSkeletonRet<nalGeneric::nalGenericPose> {
     typedef const nalGeneric::nalGenericSkeleton* type;
 };
 
+template <typename T> struct nalAnimDurationRet {
+    typedef double type;
+};
+template <> struct nalAnimDurationRet<nalAnyPose> {
+    typedef float type;
+};
+
 // nalAnimClass<T> - minimal view of the shared nal anim base; only the
 // anim.o inline COMDATs below are defined here (fields raw-offset verified).
 template<typename T> class nalAnimClass {
@@ -793,7 +801,10 @@ public:
         // ?GetAnim@nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPAV2@XZ
         nalAnimClass<T>* GetAnim() const { return Anim; }
         // ea: 0x00518310
-        const nalBaseSkeleton* GetSkeleton() const { return Skeleton; }
+        typename nalInstanceSkeletonRet<T>::type GetSkeleton() const
+        {
+            return reinterpret_cast<typename nalInstanceSkeletonRet<T>::type>(Skeleton);
+        }
         // ea: 0x00518320
         double GetInverseDuration() const { return InverseDuration; }
 
@@ -848,11 +859,16 @@ public:
     int InstanceCount;              // +0x3C
 
     // ?GetDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E540)
-    double GetDuration() const { return Duration; }
-    // ?GetInverseDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E550)
-    double GetInverseDuration() const
+    typename nalAnimDurationRet<T>::type GetDuration() const
     {
-        return Duration != 0.0f ? 1.0 / Duration : 0.0;
+        return static_cast<typename nalAnimDurationRet<T>::type>(Duration);
+    }
+    // ?GetInverseDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E550)
+    typename nalAnimDurationRet<T>::type GetInverseDuration() const
+    {
+        if (Duration == 0.0f)
+            return static_cast<typename nalAnimDurationRet<T>::type>(0.0f);
+        return static_cast<typename nalAnimDurationRet<T>::type>(1.0f / Duration);
     }
     // ea: 0x00518280
     const tlFixedString* GetName() const
@@ -943,6 +959,8 @@ template class nalAnimClass<nalGeneric::nalGenericPose>;
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
 extern void tlMemFree(void* ptr);
+extern void tlFatal(const char* fmt, ...);
+extern void tlWarning(const char* fmt, ...);
 
 // ea: 0x00854370
 void nalAnimHeap::Init(int size)
@@ -2164,6 +2182,8 @@ static_assert(sizeof(nalInitListAnimType) == 0x30,
 
 // ?nalTypeInstanceBank@@3VtlInstanceBank@@A @ 0x10E6CEC
 tlInstanceBank nalTypeInstanceBank;
+// ?nalComponentInstanceBank@@3VtlInstanceBank@@A @ 0x10E6CD8
+tlInstanceBank nalComponentInstanceBank;
 
 // ea: 0x008542E0
 nalInitListAnimType::nalInitListAnimType(const tlFixedString* typeName,
@@ -2350,15 +2370,96 @@ void nalDisableScratchPadUse() { nalUseScratchPad = false; }
 void nalEnablePerformanceWarnings() { nalPerformanceWarnings = true; }
 void nalDisablePerformanceWarnings() { nalPerformanceWarnings = false; }
 void nalExit() {}
-void nalInit(class nalHeap*) {}
+
+extern void tlStackRangeInit();
+extern void* tlScratchPadInit();
+extern void nalInitListInit();
+
+// ea: 0x008545E0
+void nalInit(class nalHeap*)
+{
+    tlStackRangeInit();
+    tlScratchPadInit();
+    nalAnimPath[0] = 0;
+    nalSkeletonPath[0] = 0;
+
+    // The release image constructs this registration node during CRT static
+    // initialization.  The reconstructed translation unit has the same
+    // classes, so obtain their compiler-emitted vtables from probes before
+    // running the exact init-list registration pass.
+    static tlFixedString genericName("generic");
+    static nalGenericAnim genericAnimProbe(NAL_REGISTER_KEY);
+    static nalGenericSkeleton genericSkeletonProbe;
+    static nalInitListAnimType genericType(
+        &genericName,
+        *reinterpret_cast<void**>(&genericAnimProbe),
+        *reinterpret_cast<void**>(&genericSkeletonProbe));
+
+    nalTypeInstanceBank.Init();
+    nalComponentInstanceBank.Init();
+    nalInitListInit();
+}
 int nalGetDecompCacheSize() { return 0x4000; }
 
 // ============================================================================
 // nal skeleton resource management
 // ============================================================================
 nalBaseSkeleton* nalGetSkeleton(const tlFixedString&) { return nullptr; }
-nalBaseSkeleton* nalConstructSkeleton(void*) { return nullptr; }
-nalBaseSkeleton* nalLoadSkeletonInPlace(void*) { return nullptr; }
+
+// Resource directories are owned by InstanceBankMgr (streamer.o).  These are
+// the release globals at 0x10EC618 / 0x10E95F8 / 0x10E95FC.
+extern tlResourceDirectory<nalBaseSkeleton>* nalSkeletonDirectory;
+extern tlResourceDirectory<nalAnimFile>* nalAnimFileDirectory;
+extern tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalAnimDirectory;
+
+// ea: 0x008730F0
+nalBaseSkeleton* nalConstructSkeleton(void* data)
+{
+    nalBaseSkeleton* skeleton = static_cast<nalBaseSkeleton*>(data);
+    tlInstanceBank::Instance* instance = nalTypeInstanceBank.Search(
+        skeleton->AnimTypeName);
+    if (instance == nullptr
+        && _tlAssert("source/common/nal_skeleton.cpp", 23, "instance",
+                     "unable to find skeleton type in type instance bank"))
+    {
+        __debugbreak();
+    }
+
+    nalInitListAnimType* type = static_cast<nalInitListAnimType*>(
+        instance->Value);
+    *reinterpret_cast<void**>(skeleton) = type->skeletonVtable;
+    if (!skeleton->CheckVersion())
+        tlFatal("Unsupported skeleton version %x (%s).\n",
+                skeleton->Version, skeleton->Name.str);
+    skeleton->Process();
+
+    // The release constructor clears the in-place file buffer after Process.
+    skeleton->FileBuf.Buf = nullptr;
+    return skeleton;
+}
+
+// ea: 0x00873170
+nalBaseSkeleton* nalLoadSkeletonInPlace(void* data)
+{
+    nalBaseSkeleton* original = static_cast<nalBaseSkeleton*>(data);
+    nalBaseSkeleton* skeleton = nalSkeletonDirectory->Find(original->Name);
+    if (skeleton != nullptr)
+    {
+        if (skeleton != original
+            && _tlAssert("source/common/nal_skeleton.cpp", 45,
+                         "Skeleton == OrigSkeleton",
+                         "skeleton found in directory wasn't the same"))
+        {
+            __debugbreak();
+        }
+        ++skeleton->RefCount;
+        return skeleton;
+    }
+
+    skeleton = nalConstructSkeleton(original);
+    nalSkeletonDirectory->Add(skeleton);
+    return skeleton;
+}
 nalBaseSkeleton* nalLoadSkeleton(const tlFixedString&) { return nullptr; }
 int nalReleaseSkeleton(nalBaseSkeleton*) { return 0; }
 int nalReleaseSkeleton(const tlFixedString&) { return 0; }
@@ -2368,7 +2469,108 @@ void nalReleaseAllSkeletons() {}
 // nal animation file management
 // ============================================================================
 nalAnimFile* nalLoadAnimFile(const tlFixedString&) { return nullptr; }
-nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString&, void*) { return nullptr; }
+
+// ea: 0x00870570
+static bool nalLoadAnimFileInternal(nalAnimFile* animFile)
+{
+    if (animFile->Header.Version != 0x10201u)
+        tlFatal("Unsupported anim file version %x, current version is %x.\n",
+                animFile->Header.Version, 0x10201u);
+
+    nalBaseSkeleton** skeletons = static_cast<nalBaseSkeleton**>(
+        tlMemAlloc(static_cast<unsigned>(4 * animFile->Header.NumStringsInTable),
+                   8u, 0u));
+    const unsigned char* stringTable = reinterpret_cast<const unsigned char*>(
+        animFile) + 0x48;
+    for (int i = 0; i < animFile->Header.NumStringsInTable;
+         ++i, stringTable += 0x20)
+    {
+        const tlFixedString* name = reinterpret_cast<const tlFixedString*>(
+            stringTable);
+        nalBaseSkeleton* skeleton = nalSkeletonDirectory->Find(*name);
+        skeletons[i] = skeleton;
+        if (skeleton == nullptr)
+            tlFatal("Couldn't find skeleton \"%s\" while loading animfile \"%s\".\n",
+                    name->str, animFile->Header.Name.str);
+    }
+
+    const uintptr_t fileBase = reinterpret_cast<uintptr_t>(animFile);
+    const uint32_t firstAnimOffset = *reinterpret_cast<const uint32_t*>(
+        reinterpret_cast<const unsigned char*>(animFile) + 0x34);
+    if (firstAnimOffset != 0)
+    {
+        nalAnimClass<nalAnyPose>* anim =
+            reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                fileBase + firstAnimOffset);
+        animFile->Header.FirstAnim = anim;
+
+        for (; anim != nullptr; )
+        {
+            const uint32_t nextOffset = *reinterpret_cast<const uint32_t*>(
+                reinterpret_cast<const unsigned char*>(anim) + 4);
+            if (nextOffset != 0)
+                anim->NextAnim = reinterpret_cast<nalAnimClass<nalAnyPose>*>(
+                    reinterpret_cast<uintptr_t>(anim) + nextOffset);
+
+            anim->Skeleton = skeletons[anim->SkeletonNameIndex];
+            if (anim->Skeleton == nullptr
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h",
+                    70, "Skeleton",
+                    "Skeleton must be filled out before the animation type can be obtained"))
+            {
+                __debugbreak();
+            }
+
+            tlInstanceBank::Instance* instance = nalTypeInstanceBank.Search(
+                anim->Skeleton->AnimTypeName);
+            if (instance == nullptr
+                && _tlAssert("source/common/nal_anim.cpp", 85, "instance",
+                             "couldn't find animation type instance"))
+            {
+                __debugbreak();
+            }
+
+            nalInitListAnimType* type = static_cast<nalInitListAnimType*>(
+                instance->Value);
+            *reinterpret_cast<void**>(anim) = type->animVtable;
+            if (!anim->CheckVersion())
+                tlFatal("Unsupported anim version %x (%s).\n",
+                        anim->Version, anim->Name.str);
+            anim->InstanceCount = 0;
+            anim->Process();
+            if (nalAnimDirectory->Add(anim) != nullptr)
+                tlWarning("Duplicate anim %s found.\n", anim->Name.str);
+
+            anim = nextOffset != 0 ? anim->NextAnim : nullptr;
+        }
+    }
+
+    tlMemFree(skeletons);
+    animFile->Header.Flags |= 8u;
+    return true;
+}
+
+// ea: 0x00870840
+nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& fileName, void* data)
+{
+    nalAnimFile* animFile = nalAnimFileDirectory->Find(fileName);
+    if (animFile != nullptr)
+    {
+        ++animFile->Header.RefCount;
+        return animFile;
+    }
+
+    animFile = static_cast<nalAnimFile*>(data);
+    animFile->Header.Name = fileName;
+    animFile->Header.Flags |= 4u;
+    animFile->Header.RefCount = 1;
+    if (!nalLoadAnimFileInternal(animFile))
+        return nullptr;
+
+    nalAnimFileDirectory->Add(animFile);
+    return animFile;
+}
 int nalReleaseAnimFile(nalAnimFile*) { return 0; }
 int nalReleaseAnimFile(const tlFixedString&) { return 0; }
 void nalReleaseAllAnimFiles() {}
@@ -4512,17 +4714,21 @@ public:
 // ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VDir3@math@@@1@I@Z
 // ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@I@Z
 bool IsType(const nalGenericComponentHandle<math::Dir3>& handle,
-            unsigned char* id)
+            unsigned int id)
 {
     // ea: 0x0055E870
-    return id == &nalComponentFloat3Base::TypeID;
+    (void)handle;
+    return id == static_cast<unsigned int>(
+                      reinterpret_cast<uintptr_t>(&nalComponentFloat3Base::TypeID));
 }
 
 bool IsType(const nalGenericComponentHandle<nalPositionOrientation>& handle,
-            unsigned char* id)
+            unsigned int id)
 {
     // ea: 0x0055E890
-    return id == &nalComponentPOBase::TypeID;
+    (void)handle;
+    return id == static_cast<unsigned int>(
+                      reinterpret_cast<uintptr_t>(&nalComponentPOBase::TypeID));
 }
 
 // ea: 0x00518640

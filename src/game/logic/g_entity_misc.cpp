@@ -24,6 +24,9 @@ DObj::~DObj()
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
 
 int g_uniqueEntityIndex;  // ?g_uniqueEntityIndex@@3HA (game.o @ 0xF4F444)
 
@@ -92,7 +95,6 @@ extern void DObjCreate(DObjModel* models, unsigned short numModels,
                        unsigned short gameId);  // ?DObjCreate (render.o)
 extern biped_phys_info* create_biped_phys_info(Entity* owner);  // physics.o
 extern void destroy_biped_phys_info(biped_phys_info* bp_info);  // physics.o
-extern void Entity_set_bp_info(Entity* self, biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
 
 void Entity::CreateDObj(DObjModel* dobjModels, unsigned short numModels,
                         XAnimTree* tree, unsigned short gameId)
@@ -111,7 +113,7 @@ void Entity::CreateDObj(DObjModel* dobjModels, unsigned short numModels,
     if (this->client != nullptr && this->mBPInfo == nullptr)
     {
         biped_phys_info* bp = create_biped_phys_info(this);
-        Entity_set_bp_info(this, bp);
+        this->set_bp_info(bp);
     }
 }
 
@@ -1691,15 +1693,8 @@ int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
 // LocalClient namespace (cl.o; stubs, port later)
 extern int LocalClient_PortToValidClient(int port);  // cl.o C bridge
 namespace LocalClient {
-int FirstLocalClientIndex()
-{
-    return 0;
-}
-int ClientToPort(int client)
-{
-    (void)client;
-    return 0;
-}
+int FirstLocalClientIndex();
+int ClientToPort(int client);
 // ?PortToValidClient@LocalClient@@YAHH@Z (cl.o)
 int PortToValidClient(int port)
 {
@@ -2073,15 +2068,6 @@ void verify_is_in_physics_system(rigid_body_constraint_contact* a,
 {
     (void)a; (void)b; (void)c;
 }
-
-struct biped_phys_info;
-biped_phys_info* create_biped_phys_info(Entity* e)
-{
-    (void)e;
-    return nullptr;
-}
-void destroy_biped_phys_info(biped_phys_info* b) { (void)b; }
-void Entity_set_bp_info(Entity* e, biped_phys_info* b) { (void)e; (void)b; }
 
 struct CameraShake;
 struct CameraShakeInstance;
@@ -2709,7 +2695,6 @@ struct Color;
 void setup_color(const Color& c, nglShaderParamSet& p) { (void)c; (void)p; }
 void SetupActorHeap() {}
 void SetupCDHeatHazeShader() {}
-void SetupPoolAllocator() {}
 void SoundDevice_DampenAllSounds(void* self, float a) { (void)self; (void)a; }
 void SoundDevice_PauseAllSounds(void* self) { (void)self; }
 void SoundDevice_ReleaseSound(void* self, void* s) { (void)self; (void)s; }
@@ -2721,7 +2706,6 @@ void SoundMediaMgr_PlayLandingSound(void* self, Entity* e, int a, bool b)
 {
     (void)self; (void)e; (void)a; (void)b;
 }
-void StartupNfl(const char* a) { (void)a; }
 void StatusBar_Init(void* self) { (void)self; }
 void StreamZoneManager_Update(void* self, int a, const float* b, bool c)
 {
@@ -3846,6 +3830,49 @@ void SoundDevice::DebugRender()
 SoundDevice::SoundHandleDb SoundDevice::SoundHandleDb::sInst;  // @ 0xF50D10
 SoundDevice* SoundDevice::sInst = nullptr;                     // @ 0xF4EBDC
 
+void SoundDevice::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\SoundDevice.h";
+        AeAssert::gCurrentLine = 50;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x7AA0u, 4, "fx", "c:\\cod\\code\\game\\SoundDevice.h", 50);
+    if (memory != nullptr)
+        sInst = new (memory) SoundDevice();
+    else
+        sInst = nullptr;
+}
+
+EntityManager* EntityManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\EntityManager.h";
+        AeAssert::gCurrentLine = 9;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x48u, 4, "entity", "c:\\cod\\code\\game\\EntityManager.h", 9);
+    if (memory != nullptr)
+        sInst = new (memory) EntityManager();
+    else
+        sInst = nullptr;
+    return sInst;
+}
+
 template <>
 SoundDevice::Sound*
 DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>::operator*() const
@@ -4318,6 +4345,7 @@ public:
     uint8_t  mAvailableWbks[0x6C0];    // +0x08 (16 * 0x6C stride)
     int      m_size;                   // +0x6C8
     static AudioBankMgr* sInst;        // ?sInst@AudioBankMgr@@2PAV1@A
+    static void CreateInst();          // ?CreateInst@AudioBankMgr@@SAXXZ
     AudioBankMgr();                    // ??0AudioBankMgr@@QAE@XZ (game.o 0x621440)
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
@@ -4339,6 +4367,7 @@ public:
                      ELanguage lang, TPakId pak);  // game.o 0x621470
 };
 AudioBankMgr* AudioBankMgr::sInst = nullptr;
+extern void* AudioBankMgr_sInst;
 
 // ============================================================================
 // AudioBankMgr ctor / RegisterWbk - ea: 0x621440 / 0x621470
@@ -4347,8 +4376,33 @@ enum nflMediaID : unsigned;
 extern nflFileID nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YA?AW4nflFileID@@W4nflMediaID@@PBD@Z
 extern nflMediaID gNflMediaId;                              // nfl_xboxr
 extern void* AssetBankSet_ctor(void* self);                 // streamer.o
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                  const char* ctx, const char* file,
+                                  int line);
 static tlFixedString dflt;          // ?dflt@@3VtlFixedString@@A @ 0xF58C04
 static bool s_dflt_init;            // $S13_7
+
+void AudioBankMgr::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\AudioBankManager.h";
+        AeAssert::gCurrentLine = 12;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x6CCu, 4, "fx", "c:\\cod\\code\\game\\AudioBankManager.h", 12);
+    if (memory != nullptr)
+        sInst = new (memory) AudioBankMgr();
+    else
+        sInst = nullptr;
+    AudioBankMgr_sInst = sInst;
+}
 
 // ea: 0x00621440
 AudioBankMgr::AudioBankMgr()

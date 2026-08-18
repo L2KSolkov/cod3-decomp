@@ -15,7 +15,12 @@
 // ============================================================================
 // TPakId â€” pak archive id enum
 // ============================================================================
-enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+// TPakId (IDA local enum).
+enum TPakId {
+    PAK_ID_INVALID = 0xFFFFFFFFu,
+    PAK_ID_MIN = 0,
+    PAK_ID_MAX = 0x63,
+};
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
 
@@ -26,10 +31,28 @@ class EntityNotifySet;
 class ScriptEventParams;
 struct ScriptEventHandler;
 struct biped_system;
-struct biped_phys_info {
-    uint8_t _pad[0x568];       // +0x00
-    struct biped_system* m_bp_sys;  // +0x568
+// biped_phys_info (IDA local type, size 0x580 / 1408 bytes).
+// The Bitmask member is represented by its 32-bit storage here; the owning
+// physics translation unit provides the inline Bitmask methods.
+class biped_phys_info {
+public:
+    Entity*             m_owner;                   // +0x000
+    uint8_t             _pad04[0x0C];              // +0x004..+0x00F
+    math::Mat43         m_cur_mat[10];             // +0x010
+    math::Mat43         m_last_mat[10];            // +0x290
+    math::Position3     m_cur_angles;              // +0x510
+    math::Position3     m_cur_origin;              // +0x520
+    math::Position3     m_last_angles;             // +0x530
+    math::Position3     m_last_origin;             // +0x540
+    int16_t             m_bone[10];                // +0x550
+    float               m_delta_t;                 // +0x564
+    struct biped_system* m_bp_sys;                 // +0x568
+    int32_t             m_current_debug_joint;     // +0x56C
+    uint32_t            m_render_flags;            // +0x570 (Bitmask<unsigned int>)
 };
+static_assert(sizeof(biped_phys_info) == 0x580, "biped_phys_info size mismatch");
+static_assert(offsetof(biped_phys_info, m_bp_sys) == 0x568,
+              "biped_phys_info::m_bp_sys offset mismatch");
 class Destructible;
 struct Client;
 struct scr_vehicle_t;
@@ -361,6 +384,7 @@ public:
     void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
+    void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
     bool IsEnemy(Entity* ent);                   // ?IsEnemy@Entity@@QAE_NPAV1@@Z (game.o)
     const math::Mat43 CalcRotTranMat43();         // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (game.o)
     void ExecScriptHandler(HashString h, ScriptEventParams* params);  // ?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z (game.o)

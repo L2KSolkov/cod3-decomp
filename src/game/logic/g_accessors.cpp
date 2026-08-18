@@ -17,7 +17,7 @@
 #include <utility>
 
 namespace PlayerStats {
-int TotalScoreForStats(short* stats);
+int TotalScoreForStats(short* const stats);
 }
 
 // ============================================================================

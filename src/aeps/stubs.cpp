@@ -4,6 +4,10 @@
 
 #include <stdio.h>
 
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);
+extern void tlMemFree(void* ptr);
+
 #define COD3_UNIMPLEMENTED(lib) \
     fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
 
@@ -74,10 +78,9 @@ void apsInitParticleMemory(int memSize, bool bBigBuffers)
 }
 void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags)
 {
-    (void)size; (void)align; (void)flags;
-    return nullptr;
+    return tlMemAlloc(size, align, flags);
 }
 void apsMemFree(void* ptr)
 {
-    (void)ptr;
+    tlMemFree(ptr);
 }

@@ -9,6 +9,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Compile flags matching VC7.1 /O2 behavior
 if(MSVC)
     add_compile_options(/fp:precise /GR- /Zi)
+    # The reconstructed Win32 target is built with many Xbox-era stack layouts.
+    # Disable MSVC's Debug-only /RTC instrumentation so a runtime-check dialog
+    # cannot stop startup; source-level assertions remain enabled.
+    set(CMAKE_C_FLAGS_DEBUG "/Zi /Ob0 /Od" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Ob0 /Od" CACHE STRING "" FORCE)
     # /GR- disables RTTI (match original); enable if needed for type reconstruction
     # Phase 0: allow unresolved externals for green-link
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE /DEBUG")
@@ -521,6 +526,7 @@ add_library(cod3_game_nextgen STATIC
 # ============================================================================
 add_library(cod3_xbox_shim STATIC
     platform/xbox_shim/xbox_shim.cpp
+    platform/xbox_shim/xbox_directsound.cpp
     platform/xbox_shim/xdk_stubs.cpp
     platform/xbox_shim/xnet_stubs.cpp
     platform/xbox_shim/xonline_stubs.cpp

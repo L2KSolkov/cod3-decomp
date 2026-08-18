@@ -5,7 +5,7 @@
 #include "game/logic/g_local.h"
 
 level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
-SaveGameData* gSaveGameData;   // ?gSaveGameData@@3PAUSaveGameData@@A @ 0xF312F0
+SaveGameData gSaveGameData[4] = {};   // ?gSaveGameData@@3PAUSaveGameData@@A @ 0xF312F0
 cvar_t* g_gameskill;           // ?g_gameskill@@3PAUcvar_t@@A (g.o)
 cgGlobal_t cgGlobal;           // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
 game_hudelem_s g_hudelems[16];  // ?g_hudelems@@3PAUgame_hudelem_s@@A @ 0xEA5580

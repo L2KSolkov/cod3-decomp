@@ -17,7 +17,7 @@ extern const char* const defaultFileName;  // 0xCD67AE
 extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
-extern SaveGameData* gSaveGameData;    // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];    // ?gSaveGameData@@3PAUSaveGameData@@A
 float g_GammaRamp = 1.0f;              // ?g_GammaRamp@@3MA (render.o)
 extern int g_MPAARTotalTime;           // mp.o
 extern kuju::knet::sTime g_MPAARTimer;  // mp.o
@@ -155,24 +155,6 @@ FESplitScreenMenu::FESplitScreenMenu(FEMenuSystem* pSystem, int num_entries)
     mVersion = pSystem->GetCurrentClient();
 }
 
-// ea: 0x007A71E0 (copy ctor; asserts - never called)
-FESplitScreenMenu::FESplitScreenMenu(const FESplitScreenMenu& s)
-    : FEMenu(s.system, s.num_entries, 320, 240, 8, 0)
-{
-    mMainTextEntries.m_elements = nullptr;
-    mMainTextEntries.m_capacity = 0;
-    mMainTextEntries.m_size = 0;
-    mSplitScreenTextEntries.m_elements = nullptr;
-    mSplitScreenTextEntries.m_capacity = 0;
-    mSplitScreenTextEntries.m_size = 0;
-    AeAssert::gCurrentAuthor = AeAssert::COD3;
-    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FESplitScreenMenu.cpp";
-    AeAssert::gCurrentLine = 44;
-    AeAssert::gCurrentExpr = nullptr;
-    if (AeAssert::Error("This funtion should not be called."))
-        __debugbreak();
-}
-
 // ea: 0x007A7290
 FESplitScreenMenu::~FESplitScreenMenu()
 {
@@ -223,11 +205,6 @@ void FESplitScreenMenu::UpdateSplitScreen()
         if (wasSplitScreen != (mViewport != 0))
             SwapMenus();
     }
-}
-
-// ea: 0x007930C0 (empty base)
-void FESplitScreenMenu::SwapMenus()
-{
 }
 
 // ea: 0x007930D0 (empty base)
@@ -1517,14 +1494,14 @@ void OptionsGameplayMenu::OnDown(int c)
 void OptionsGameplayMenu::SetDefaultOptions()
 {
     int selectedText[4];
-    mGameplayOptions[0] = gSaveGameData->mStubData.mSubtitles;
-    selectedText[0] = !gSaveGameData->mStubData.mSubtitles;
-    mGameplayOptions[1] = gSaveGameData->mStubData.mCrosshair;
-    selectedText[1] = !gSaveGameData->mStubData.mCrosshair + 2;
-    mGameplayOptions[2] = gSaveGameData->mStubData.mFriendlyTags;
-    selectedText[2] = !gSaveGameData->mStubData.mFriendlyTags + 4;
-    mGameplayOptions[3] = gSaveGameData->mStubData.mStickyAim;
-    selectedText[3] = !gSaveGameData->mStubData.mStickyAim + 6;
+    mGameplayOptions[0] = gSaveGameData[0].mStubData.mSubtitles;
+    selectedText[0] = !gSaveGameData[0].mStubData.mSubtitles;
+    mGameplayOptions[1] = gSaveGameData[0].mStubData.mCrosshair;
+    selectedText[1] = !gSaveGameData[0].mStubData.mCrosshair + 2;
+    mGameplayOptions[2] = gSaveGameData[0].mStubData.mFriendlyTags;
+    selectedText[2] = !gSaveGameData[0].mStubData.mFriendlyTags + 4;
+    mGameplayOptions[3] = gSaveGameData[0].mStubData.mStickyAim;
+    selectedText[3] = !gSaveGameData[0].mStubData.mStickyAim + 6;
     for (int i = 0; i < 4; ++i)
         mOnOffText[i]->SetText(kGameplayOptionToggleStrings[selectedText[i]]);
 }
@@ -1564,9 +1541,9 @@ void OptionsGameplayMenu::OnActivate()
     SetHigh(0, false);
     mOnOffMenu->SetHigh(0, false);
     StubData* v2;
-    if (gSaveGameData->mStubData.mProfileName[0] != 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0)
     {
-        v2 = &gSaveGameData->mStubData;
+        v2 = &gSaveGameData[0].mStubData;
     }
     else
     {
@@ -1623,24 +1600,24 @@ void OptionsGameplayMenu::OnTriangle(int c)
 {
     (void)c;
     char v2 = 0;
-    if (gSaveGameData->mStubData.mSubtitles != mGameplayOptions[0])
+    if (gSaveGameData[0].mStubData.mSubtitles != mGameplayOptions[0])
     {
-        gSaveGameData->mStubData.mSubtitles = mGameplayOptions[0];
+        gSaveGameData[0].mStubData.mSubtitles = mGameplayOptions[0];
         v2 = 1;
     }
-    if (gSaveGameData->mStubData.mCrosshair != mGameplayOptions[1])
+    if (gSaveGameData[0].mStubData.mCrosshair != mGameplayOptions[1])
     {
-        gSaveGameData->mStubData.mCrosshair = mGameplayOptions[1];
+        gSaveGameData[0].mStubData.mCrosshair = mGameplayOptions[1];
         v2 = 1;
     }
-    if (gSaveGameData->mStubData.mFriendlyTags != mGameplayOptions[2])
+    if (gSaveGameData[0].mStubData.mFriendlyTags != mGameplayOptions[2])
     {
-        gSaveGameData->mStubData.mFriendlyTags = mGameplayOptions[2];
+        gSaveGameData[0].mStubData.mFriendlyTags = mGameplayOptions[2];
         v2 = 1;
     }
-    if (gSaveGameData->mStubData.mStickyAim != mGameplayOptions[3])
+    if (gSaveGameData[0].mStubData.mStickyAim != mGameplayOptions[3])
     {
-        gSaveGameData->mStubData.mStickyAim = mGameplayOptions[3];
+        gSaveGameData[0].mStubData.mStickyAim = mGameplayOptions[3];
         *((uint8_t*)g_femanager.fems->menus[29] + 0x4C) = 1;
     }
     else if (v2 == 1)
@@ -1925,8 +1902,8 @@ void OptionsControlsMenu::HighlightDefault(int previousMenu)
 // ea: 0x005867A0
 void OptionsControlsMenu::SetDefaultOptions()
 {
-    mStickVal = gSaveGameData->mStubData.mControllerStickConfiguration;
-    switch (gSaveGameData->mStubData.mControllerStickConfiguration)
+    mStickVal = gSaveGameData[0].mStubData.mControllerStickConfiguration;
+    switch (gSaveGameData[0].mStubData.mControllerStickConfiguration)
     {
     case 0:
         mOnOffText[0]->SetText("FEMENU_COP_STICK_DEFAULT");
@@ -1943,32 +1920,32 @@ void OptionsControlsMenu::SetDefaultOptions()
     default:
         break;
     }
-    mButtonVal = gSaveGameData->mStubData.mControllerButtonConfiguration;
+    mButtonVal = gSaveGameData[0].mStubData.mControllerButtonConfiguration;
     mOnOffText[1]->SetText(kButtonLayoutStrings[mButtonVal]);
 
     mHorizontalSensVal =
-        gSaveGameData->mStubData.mHorizontalSensitivity;
+        gSaveGameData[0].mStubData.mHorizontalSensitivity;
     mHorizontalSensGauge->Mask(1.0f, RIGHT_MASK, 1.0f);
     mHorizontalSensGauge->Mask(mHorizontalSensVal * 0.02f,
                                RIGHT_MASK, 1.0f);
     mVerticalSensVal =
-        gSaveGameData->mStubData.mVerticalSensitivity;
+        gSaveGameData[0].mStubData.mVerticalSensitivity;
     mVerticalSensGauge->Mask(1.0f, RIGHT_MASK, 1.0f);
     mVerticalSensGauge->Mask(mVerticalSensVal * 0.02f,
                              RIGHT_MASK, 1.0f);
 
-    mToggleVal[0] = gSaveGameData->mStubData.mInvertAim;
+    mToggleVal[0] = gSaveGameData[0].mStubData.mInvertAim;
     mOnOffText[4]->SetText(
-        kOptionToggleStrings[!gSaveGameData->mStubData.mInvertAim]);
-    mToggleVal[1] = gSaveGameData->mStubData.mAdsToggle;
+        kOptionToggleStrings[!gSaveGameData[0].mStubData.mInvertAim]);
+    mToggleVal[1] = gSaveGameData[0].mStubData.mAdsToggle;
     mOnOffText[5]->SetText(
-        kOptionToggleStrings[!gSaveGameData->mStubData.mAdsToggle]);
-    mToggleVal[2] = gSaveGameData->mStubData.mTankStyle == 1;
+        kOptionToggleStrings[!gSaveGameData[0].mStubData.mAdsToggle]);
+    mToggleVal[2] = gSaveGameData[0].mStubData.mTankStyle == 1;
     mOnOffText[6]->SetText(
-        kOptionToggleStrings[gSaveGameData->mStubData.mTankStyle != 1]);
-    mToggleVal[3] = gSaveGameData->mStubData.mVibration;
+        kOptionToggleStrings[gSaveGameData[0].mStubData.mTankStyle != 1]);
+    mToggleVal[3] = gSaveGameData[0].mStubData.mVibration;
     mOnOffText[7]->SetText(
-        kOptionToggleStrings[!gSaveGameData->mStubData.mVibration]);
+        kOptionToggleStrings[!gSaveGameData[0].mStubData.mVibration]);
 }
 
 // ea: 0x00586980
@@ -2014,9 +1991,9 @@ void OptionsControlsMenu::OnActivate(int previous)
     FEMenu::OnActivate();
     HighlightDefault(previous);
     StubData* v3;
-    if (gSaveGameData->mStubData.mProfileName[0] != 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0)
     {
-        v3 = &gSaveGameData->mStubData;
+        v3 = &gSaveGameData[0].mStubData;
     }
     else
     {
@@ -2082,37 +2059,37 @@ void OptionsControlsMenu::OnTriangle(int c)
     (void)c;
     char v2 = 0;
     if (mHorizontalSensVal
-        != gSaveGameData->mStubData.mHorizontalSensitivity)
+        != gSaveGameData[0].mStubData.mHorizontalSensitivity)
     {
-        gSaveGameData->mStubData.mHorizontalSensitivity =
+        gSaveGameData[0].mStubData.mHorizontalSensitivity =
             mHorizontalSensVal;
         v2 = 1;
     }
     if (mVerticalSensVal
-        != gSaveGameData->mStubData.mVerticalSensitivity)
+        != gSaveGameData[0].mStubData.mVerticalSensitivity)
     {
-        gSaveGameData->mStubData.mVerticalSensitivity = mVerticalSensVal;
+        gSaveGameData[0].mStubData.mVerticalSensitivity = mVerticalSensVal;
         v2 = 1;
     }
-    if (mToggleVal[0] != gSaveGameData->mStubData.mInvertAim)
+    if (mToggleVal[0] != gSaveGameData[0].mStubData.mInvertAim)
     {
-        gSaveGameData->mStubData.mInvertAim = mToggleVal[0];
+        gSaveGameData[0].mStubData.mInvertAim = mToggleVal[0];
         v2 = 1;
     }
-    if (mToggleVal[1] != gSaveGameData->mStubData.mAdsToggle)
+    if (mToggleVal[1] != gSaveGameData[0].mStubData.mAdsToggle)
     {
-        gSaveGameData->mStubData.mAdsToggle = mToggleVal[1];
+        gSaveGameData[0].mStubData.mAdsToggle = mToggleVal[1];
         v2 = 1;
     }
-    if (mToggleVal[2] != (gSaveGameData->mStubData.mTankStyle == 1))
+    if (mToggleVal[2] != (gSaveGameData[0].mStubData.mTankStyle == 1))
     {
-        gSaveGameData->mStubData.mTankStyle =
-            gSaveGameData->mStubData.mTankStyle != 1;
+        gSaveGameData[0].mStubData.mTankStyle =
+            gSaveGameData[0].mStubData.mTankStyle != 1;
         v2 = 1;
     }
-    if (mToggleVal[3] != gSaveGameData->mStubData.mVibration)
+    if (mToggleVal[3] != gSaveGameData[0].mStubData.mVibration)
     {
-        gSaveGameData->mStubData.mVibration = mToggleVal[3];
+        gSaveGameData[0].mStubData.mVibration = mToggleVal[3];
         *((uint8_t*)g_femanager.fems->menus[29] + 0x4C) = 1;
     }
     else if (v2 == 1)
@@ -2319,7 +2296,7 @@ void OptionsSoundMenu::SetDefaultOptions()
 {
     FEText* TextPointer = mPanel->GetTextPointer("slot_01_text_b");
     TextPointer->SetText("FEMENU_COP_SOUND_STEREO");
-    mVolumeVal = gSaveGameData->mStubData.mVolume;
+    mVolumeVal = gSaveGameData[0].mStubData.mVolume;
     mVolumeGauge->Mask(mVolumeVal * 0.02f, RIGHT_MASK, 1.0f);
 }
 
@@ -2365,9 +2342,9 @@ void OptionsSoundMenu::OnActivate()
     SetHigh(0, false);
     mOnOffMenu->SetHigh(0, false);
     StubData* v2;
-    if (gSaveGameData->mStubData.mProfileName[0] != 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0)
     {
-        v2 = &gSaveGameData->mStubData;
+        v2 = &gSaveGameData[0].mStubData;
     }
     else
     {
@@ -2389,7 +2366,7 @@ void OptionsSoundMenu::OnActivate()
     mSoundText[3]->SetText(kSoundInstructionStrings[highlighted]);
     mPanel->GetTextPointer("slot_01_text_b")->SetText(
         "FEMENU_COP_SOUND_STEREO");
-    mVolumeVal = gSaveGameData->mStubData.mVolume;
+    mVolumeVal = gSaveGameData[0].mStubData.mVolume;
     mVolumeGauge->Mask(mVolumeVal * 0.02f, RIGHT_MASK, 1.0f);
     mFlashTimer = 0.0f;
     mOnOffArrows[0]->SetAlpha(0.5f);
@@ -2428,11 +2405,11 @@ void OptionsSoundMenu::AdjustGauge(PanelQuad* pq, int setting)
 void OptionsSoundMenu::OnTriangle(int c)
 {
     (void)c;
-    if (mVolumeVal != gSaveGameData->mStubData.mVolume)
+    if (mVolumeVal != gSaveGameData[0].mStubData.mVolume)
     {
-        gSaveGameData->mStubData.mVolume = mVolumeVal;
-        gSaveGameData->mStubData.mMusicVolume = mVolumeVal;
-        gSaveGameData->mStubData.mEffectVolume = mVolumeVal;
+        gSaveGameData[0].mStubData.mVolume = mVolumeVal;
+        gSaveGameData[0].mStubData.mMusicVolume = mVolumeVal;
+        gSaveGameData[0].mStubData.mEffectVolume = mVolumeVal;
         *((uint8_t*)g_femanager.fems->menus[29] + 0x4C) = 1;
     }
     system->MakeActive(29);

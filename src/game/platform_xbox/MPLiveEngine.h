@@ -320,7 +320,7 @@ public:
         kGameConnectionTypeLocal = 2,
     };
     static bool IsOnlineGame();            // ?IsOnlineGame@MPUIInterface@@SA_NXZ
-    static bool InSession();               // ?InSession@MPUIInterface@@SA?B_NXZ
+    static const bool InSession();         // ?InSession@MPUIInterface@@SA?B_NXZ
     static void ExitGame();                // ?ExitGame@MPUIInterface@@SAXXZ
     static void QueryFromID(XNKID* sessionID);  // ?QueryFromID@MPUIInterface@@SAXPAUXNKID@@@Z
     static void Step();                    // ?Step@MPUIInterface@@SAXXZ

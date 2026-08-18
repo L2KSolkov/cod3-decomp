@@ -4357,7 +4357,7 @@ bool collide_sphere_triangle(const math::Position3& sphere_center,
                              math::Position3* hitp,
                              math::Dir3* hitn);  // game.o 0x65BD30
 void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
-                    math::Position3* hitp, math::Dir3* hitn,
+                    math::Position3* const hitp, math::Dir3* const hitn,
                     int* hitc);  // game.o 0x628EB0
 bool collide_ray(const math::Position3& p0, const math::Dir3& u0,
                  math::Dir3* normal, float* t_);  // game.o 0x628AC0

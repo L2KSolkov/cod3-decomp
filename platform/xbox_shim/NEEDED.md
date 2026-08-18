@@ -93,6 +93,7 @@ Format: `XboxAPI | caller_count | Win32_replacement`
 | Xbox API | Win32 Replacement |
 |---|---|
 | IDirectSound* | XAudio2 via IXAudio2 |
+| NVL `j_DirectSoundCreate` and `j_IDirectSound*` calls | Current Win32 shim preserves the exact ABI and returns `E_NOTIMPL`; map to XAudio2 before enabling movie audio |
 | DSound 3D positioning | X3DAudio |
 | Dolby encoder | Multichannel PCM (no encoding needed) |
 

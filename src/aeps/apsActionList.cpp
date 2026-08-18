@@ -193,13 +193,14 @@ void apsActionList::EnhancePFD(apsPFD& ioPFD) {
 // ============================================================================
 void apsActionList::Fixup(const apsFixupParams& iFixupParams) {
     if (mActions.mElements != 0) {
-        mActions.mElements = (apsAction**)((char*)mActions.mElements + (ptrdiff_t)iFixupParams.basePtr);
+        // Serialized list pointers are offsets from this action-list object.
+        mActions.mElements = (apsAction**)((char*)mActions.mElements + (ptrdiff_t)this);
         for (int i = 0; i < mActions.mSize; ++i) {
             if ((i < 0 || i >= mActions.mSize) &&
                 _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 151,
                           "iIndex >= 0 && iIndex < mSize", "out of bounds"))
                 __debugbreak();
-            mActions.mElements[i] = (apsAction*)((char*)mActions.mElements[i] + (ptrdiff_t)iFixupParams.basePtr);
+            mActions.mElements[i] = (apsAction*)((char*)mActions.mElements[i] + (ptrdiff_t)this);
             if ((i < 0 || i >= mActions.mSize) &&
                 _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 151,
                           "iIndex >= 0 && iIndex < mSize", "out of bounds"))

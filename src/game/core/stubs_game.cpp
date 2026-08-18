@@ -17,7 +17,6 @@ void __cod3_stub_game_core(void) {
 // core.o: ?CreateInst@<Class>@@SAXXZ / ?DeleteInst@<Class>@@SAXXZ). Ported
 // into the owning class files as each singleton is reconstructed.
 class BankManager { public: static void CreateInst(); static void DeleteInst(); };
-class InstanceBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 class LightGridMgr { public: static void CreateInst(); static void DeleteInst(); };
 class XModelManager { public: static void CreateInst(); static void DeleteInst(); };
 class XModelPartsManager { public: static void CreateInst(); static void DeleteInst(); };
@@ -33,7 +32,7 @@ class DbTablesetMgr { public: static void CreateInst(); static void DeleteInst()
 class EffectEventSys { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class DialogueManager { public: static void CreateInst(); static void DeleteInst(); };
-class EntityManager { public: static void CreateInst(); static void DeleteInst(); };
+class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
 class ConfigStringManager { public: static void CreateInst(); static void DeleteInst(); };
 class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -59,10 +58,6 @@ class PlayerAnimMgr { public: static void CreateInst(); static void DeleteInst()
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 class TestFPS { public: static void CreateInst(); static void DeleteInst(); };
 
-void BankManager::CreateInst() {}
-void BankManager::DeleteInst() {}
-void InstanceBankMgr::CreateInst() {}
-void InstanceBankMgr::DeleteInst() {}
 void LightGridMgr::CreateInst() {}
 void LightGridMgr::DeleteInst() {}
 void XModelManager::CreateInst() {}
@@ -75,16 +70,12 @@ void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
 void AITypeManager::CreateInst() {}
 void AITypeManager::DeleteInst() {}
-void SoundDevice::CreateInst() {}
 void SoundDevice::DeleteInst() {}
-void AudioBankMgr::CreateInst() {}
 void AudioBankMgr::DeleteInst() {}
 void SoundMediaMgr::CreateInst() {}
 void SoundMediaMgr::DeleteInst() {}
 void MusicMgr::CreateInst() {}
 void MusicMgr::DeleteInst() {}
-void StreamZoneManager::CreateInst() {}
-void StreamZoneManager::DeleteInst() {}
 void DbTablesetMgr::CreateInst() {}
 void DbTablesetMgr::DeleteInst() {}
 void EffectEventSys::CreateInst() {}
@@ -93,7 +84,6 @@ void GdbFileManager::CreateInst() {}
 void GdbFileManager::DeleteInst() {}
 void DialogueManager::CreateInst() {}
 void DialogueManager::DeleteInst() {}
-void EntityManager::CreateInst() {}
 void EntityManager::DeleteInst() {}
 void SceneManager::CreateInst() {}
 void SceneManager::DeleteInst() {}
@@ -101,8 +91,6 @@ void ConfigStringManager::CreateInst() {}
 void ConfigStringManager::DeleteInst() {}
 void PathNodeMgr::CreateInst() {}
 void PathNodeMgr::DeleteInst() {}
-void STBManager::CreateInst() {}
-void STBManager::DeleteInst() {}
 void CtrlIcon::CreateInst() {}
 void CtrlIcon::DeleteInst() {}
 void MultiplayerMgr::CreateInst() {}

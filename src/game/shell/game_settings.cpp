@@ -7,16 +7,19 @@
 #include "game/platform_xbox/MemoryUnitManager.h"
 #include "core/ae_fixed_string.h"
 
+#include <new>
 #include <string.h>
 #include <stdio.h>
 
 // StubData / SaveGameData come from sv_stubs.h via shell_types.h.
-extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];  // ?gSaveGameData@@3PAUSaveGameData@@A
 extern FEManager g_femanager;        // ?g_femanager@@3UFEManager@@A
 extern int currCl;                   // ?currCl@@3HA @ 0xF1579C
 extern bool g_enableControllerTest;  // ?g_enableControllerTest@@3_NA
 extern bool gCE;                     // ?gCE@@3_NA @ 0xF91714
 extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);                            // core.o
 extern const char* const defaultFileName;  // ?defaultFileName
 
@@ -39,6 +42,7 @@ public:
 class GameSettings : public MemoryUnitManager::Observer {
 public:
     static GameSettings* sInst;                         // ?sInst@GameSettings@@2PAV1@A
+    static GameSettings* CreateInst();                   // ?CreateInst@GameSettings@@SAXXZ
     MemoryUnitManager::Container container;  // +0x04 (648 bytes)
     SaveGameData* m_temp_buffer;             // +0x28C
     bool m_mc_has_save;                      // +0x290
@@ -92,6 +96,28 @@ static_assert(offsetof(GameSettings, m_cur_name) == 0x292,
               "GameSettings::m_cur_name offset mismatch");
 
 GameSettings* GameSettings::sInst = nullptr;
+
+// ea: 0x004DD930
+GameSettings* GameSettings::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\game_data.h";
+        AeAssert::gCurrentLine = 71;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x2A0u, 4, "shell", "c:\\cod\\code\\game\\game_data.h", 71);
+    if (memory != nullptr)
+        sInst = new (memory) GameSettings();
+    else
+        sInst = nullptr;
+    return sInst;
+}
 static_assert(offsetof(GameSettings, m_continued_without_saving) == 0x29E,
               "GameSettings::m_continued_without_saving offset mismatch");
 

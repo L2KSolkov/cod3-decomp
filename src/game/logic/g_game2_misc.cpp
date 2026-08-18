@@ -955,8 +955,19 @@ static_assert(sizeof(KeyInfoEntry) == 8, "KeyInfoEntry size mismatch");
 extern const BaseCmdFuncInfo* GetCmd(const char* cmdName);  // ?GetCmd (core.o)
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 
-// KeyInfo::mKeys - per-client array of 256 KeyInfoEntry
-extern KeyInfoEntry gKeyInfoMKeys[1][256];  // ?mKeys@KeyInfo (game2.o)
+// KeyInfo::mKeys - release uses the sized-array object, not the old null
+// gKeyInfoMKeys placeholder.  The matching definition is in cl_field.cpp.
+struct KeyInfoEntry2 {
+    int mState;
+    char* mBoundCmdName;
+};
+template <typename T, int N>
+struct ae_array_fixed {
+    T m_elements[N];
+};
+struct KeyInfo {
+    static ae_array_fixed<ae_array_fixed<KeyInfoEntry2, 256>, 1> mKeys;
+};
 
 // ea: 0x4F6CC0
 void ButtonEntry::SetCmdBinding()
@@ -964,7 +975,8 @@ void ButtonEntry::SetCmdBinding()
     int mKeyInfoIndex = this->mKeyInfoIndex;
     mBoundCmdPress = nullptr;
     mBoundCmdRelease = nullptr;
-    KeyInfoEntry* v4 = &gKeyInfoMKeys[currCl][mKeyInfoIndex];
+    KeyInfoEntry2* v4 =
+        &KeyInfo::mKeys.m_elements[currCl].m_elements[mKeyInfoIndex];
     char* mBoundCmdName = v4->mBoundCmdName;
     if (mBoundCmdName != nullptr)
     {

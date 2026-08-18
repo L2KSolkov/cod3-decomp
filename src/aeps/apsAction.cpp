@@ -108,13 +108,14 @@ void apsAction::Fixup(const apsFixupParams& iFixupParams) {
 
     SetVtable((unsigned int)vtbl);
 
+    // Serialized action pointers are offsets from the action object itself.
     if (mParams.mElements != 0)
-        mParams.mElements = (float*)((char*)mParams.mElements + (ptrdiff_t)iFixupParams.basePtr);
+        mParams.mElements = (float*)((char*)mParams.mElements + (ptrdiff_t)this);
     if (mDomains.mElements != 0) {
-        mDomains.mElements = (apsDomain**)((char*)mDomains.mElements + (ptrdiff_t)iFixupParams.basePtr);
+        mDomains.mElements = (apsDomain**)((char*)mDomains.mElements + (ptrdiff_t)this);
         for (int i = 0; i < mDomains.mSize; ++i) {
             if (mDomains.mElements[i] != 0) {
-                mDomains.mElements[i] = (apsDomain*)((char*)mDomains.mElements[i] + (ptrdiff_t)iFixupParams.basePtr);
+                mDomains.mElements[i] = (apsDomain*)((char*)mDomains.mElements[i] + (ptrdiff_t)this);
                 mDomains.mElements[i]->Fixup(iFixupParams);
             }
         }

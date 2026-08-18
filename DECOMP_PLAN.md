@@ -16,6 +16,7 @@ Call of Duty 3 multiplayer for the original Xbox (Treyarch, October 2006). We ha
 | IDA database | The one IDA instance running `codmp_xboxr.xbe` | decompilation source of truth |
 | Linker map | `C:\cod\c3_bin\codmp_xboxr.map` (7.2 MB, 68,753 lines) | **symbol → Lib:Object attribution** |
 | PDB | `C:\cod\c3_bin\codmp_xboxr.xbe.pdb` | function names, types, RTTI, source-file paths |
+| Complete ida decompiler dump with C code and types | 'c3_bin\codmp_xboxr.xbe.c| C file code snd type dump generated from IDA. Should be used for types and functions unless it does not make sense.
 |Demonware Source| `D:\cod_code\Demonware` | Demonware source code. Use for reference to decompile game functions only. 
 |NGL Source Code| 'c:\cod_3p' | NGL/NVL/NAL Source Code. Should only be used as a reference to verify against diassembly. 
 Derived analysis (to be generated with `tools/*.py` in Phase 0):
@@ -134,9 +135,9 @@ The map file's last column is `Lib:Object`. Symbols without `:` are game objects
 | Library | Key objects | Funcs (est.) | Win32 replacement |
 |---|---|---|---|
 | `dsoundd` | `dsapi.obj` (256), `dscommon.obj` (87), `mcpbuf.obj` (34), `mcpapu.obj` (32), `mcpvoice.obj` (31), `mcpxcore.obj` (19), `mcpstrm.obj` (27), `ac97.obj` (32), `hrtf.obj` (21), `i3dl2.obj` (15), `wavexmo.obj` (16), `dsmath.obj` (11), `gpdsp.obj` (13), `epdsp.obj` (12), `ac97xmo.obj` (11), `heap.obj` (17), `cipher.obj` (6), `dspdma.obj` (6), `dsperf.obj` (5) | ~650 | XAudio2 |
-| `d3d8d` | `precomp.obj` (480), `stats.obj` (467), `d3dbase.obj` (87), `state.obj` (52), `pusher.obj` (51), `timing.obj` (46), `recorder.obj` (41), `shadersnapshot.obj` (39), `vshader.obj` (36), `pushres.obj` (36), `resource.obj` (18), `pixeljar.obj` (14), `drawprim.obj` (14), `rdi.obj` (13), `texture.obj` (11), `surface.obj` (11), `mphal.obj` (22), `mpcore.obj` (22), `mpintr.obj` (15), `mpmode.obj` (4), `mpdac.obj` (2), `math.obj` (8), `buffer.obj` (8), `block.obj` (10), `lazy.obj` (10), `enum.obj` (10), `memory.obj` (9), `dxgcreate.obj` (8), `present.obj` (4), `cleari.obj` (1), `combiner.obj` (1), `floatmath.obj` (4), `debug.obj` (4), `pshader.obj` (19), `d3ddev.obj` (2) | ~1,500 | D3D11 backend |
+| `d3d8d` | `precomp.obj` (480), `stats.obj` (467), `d3dbase.obj` (87), `state.obj` (52), `pusher.obj` (51), `timing.obj` (46), `recorder.obj` (41), `shadersnapshot.obj` (39), `vshader.obj` (36), `pushres.obj` (36), `resource.obj` (18), `pixeljar.obj` (14), `drawprim.obj` (14), `rdi.obj` (13), `texture.obj` (11), `surface.obj` (11), `mphal.obj` (22), `mpcore.obj` (22), `mpintr.obj` (15), `mpmode.obj` (4), `mpdac.obj` (2), `math.obj` (8), `buffer.obj` (8), `block.obj` (10), `lazy.obj` (10), `enum.obj` (10), `memory.obj` (9), `dxgcreate.obj` (8), `present.obj` (4), `cleari.obj` (1), `combiner.obj` (1), `floatmath.obj` (4), `debug.obj` (4), `pshader.obj` (19), `d3ddev.obj` (2) | ~1,500 | D3D9 backend |
 | `xonlinesd` | `xonline.obj` (165), `ip.obj` (102), `messaging.obj` (89), `logon.obj` (61), `presence.obj` (85), `ipcfg.obj` (36), `base.obj` (58), `sock.obj` (62), `presmsg.obj` (64), `xnet.obj` (84), `kerberos.obj` (41), `msasn1.obj` (158), `storul.obj` (44), `stats.obj` (33), `upnpnat.obj` (19), `socktcp.obj` (47), `localcache.obj` (85), `accounts.obj` (41), `contdl.obj` (40), `stordl.obj` (9), `download.obj` (26), `upload.obj` (27), `titlecache.obj` (15), `match.obj` (21), `ipdns.obj` (16), `ipqos.obj` (33), `nicx.obj` (29), `billing.obj` (28), `users.obj` (13), `contenum.obj` (14), `contutil.obj` (13), `memutil.obj` (13), `baseio.obj` (18), `sockudp.obj` (7), `dvdload.obj` (7), `dirops.obj` (23), `xrlutil.obj` (22), `xcontent.obj` (22), `xrltask.obj` (9), `reboot.obj` (9), `pathname.obj` (9), `enet.obj` (19), `xbosutil.obj` (2), `advnotif.obj` (15), `troubleshoot.obj` (6), `feedback.obj` (6), `string.obj` (12), `livesign.obj` (8), `halx.obj` (8), `xontask.obj` (4), `cfcache.obj` (5), `storutil.obj` (19), `zipcode.obj` (2), `maketbl.obj` (2), `krb5.obj` (2), `ipicmp.obj` (2), `symmdec.obj` (4), `decin.obj` (4), `decxlat.obj` (2), `decuncmp.obj` (2), `dectree.obj` (2), `decout.obj` (1), `decblk.obj` (1), `decalvb.obj` (1), `md5.obj` (3), `xonlzx.obj` (8), `tcpipxsum.obj` (1), `service.obj` (1) | ~1,800 | Stub or Steamworks |
-| `xgraphicsd` | `interp.obj` (190), `api.obj` (109), `instructiongraph.obj` (103), `fsglue.obj` (81), `scale.obj` (63), `fontmath.obj` (41), `sfntaccs.obj` (40), `xfont.obj` (35), `scanlist.obj` (34), `fscaler.obj` (34), `pshdrval.obj` (31), `vshdrval.obj` (25), `swizzler.obj` (13), `sbit.obj` (26), `cd3dxassembler.obj` (18), `pixelshaderverifier.obj` (22), `valbase.obj` (20), `pixelshader.obj` (20), `scendpt.obj` (12), `scentry.obj` (10), `header.obj` (11), `scbitmap.obj` (7), `cd3dxstack.obj` (10), `scmemory.obj` (3), `truetype.obj` (3), `scspline.obj` (4), `scline.obj` (4), `debug.obj` (4), `pixelshaderoptimizer.obj` (2), `bitmap.obj` (2), `surfacetofile.obj` (1), `subpixel.obj` (1), `preprocessor.obj` (1), `pixelshaderopt.obj` (1), `painttext.obj` (1) | ~1,050 | D3D11 texture utils |
+| `xgraphicsd` | `interp.obj` (190), `api.obj` (109), `instructiongraph.obj` (103), `fsglue.obj` (81), `scale.obj` (63), `fontmath.obj` (41), `sfntaccs.obj` (40), `xfont.obj` (35), `scanlist.obj` (34), `fscaler.obj` (34), `pshdrval.obj` (31), `vshdrval.obj` (25), `swizzler.obj` (13), `sbit.obj` (26), `cd3dxassembler.obj` (18), `pixelshaderverifier.obj` (22), `valbase.obj` (20), `pixelshader.obj` (20), `scendpt.obj` (12), `scentry.obj` (10), `header.obj` (11), `scbitmap.obj` (7), `cd3dxstack.obj` (10), `scmemory.obj` (3), `truetype.obj` (3), `scspline.obj` (4), `scline.obj` (4), `debug.obj` (4), `pixelshaderoptimizer.obj` (2), `bitmap.obj` (2), `surfacetofile.obj` (1), `subpixel.obj` (1), `preprocessor.obj` (1), `pixelshaderopt.obj` (1), `painttext.obj` (1) | ~1,050 | D3D9 texture utils |
 | `xvoiced` | `xhvengine.obj` (66), `localtalker.obj` (50), `wmsauxcode.obj` (49), `voicechatmode.obj` (34), `remotetalker.obj` (26), `wmavoicedec.obj` (7), `wms*.obj` (~120), `ps*.obj` (~40), `dec*.obj` (~20), `enc*.obj` (~15), various codec `.obj` files | ~450 | NOP for now |
 | `d3dx8d` | `d3dxmath.obj` (69), `cd3dxcodec.obj` (62), `cd3dxblt.obj` (29), `d3dx8tex.obj` (26), `png.obj` (15), `pngrtran.obj` (21), `pngrutil.obj` (18), `pngread.obj` (12), `pngget.obj` (9), `pngset.obj` (7), `pngrio.obj` (2), `pngtrans.obj` (6), `pngmem.obj` (6), `pngerror.obj` (6), `cd3dxrendertoenvmap.obj` (20), `cd3dxrendertosurface.obj` (10), `cd3dximage.obj` (10), `cd3dxsprite.obj` (11), `cd3dxfile.obj` (4), `d3dx8core.obj` (6), `d3dx8dbg.obj` (4), `s3tc.obj` (7), `s3tchelp.obj` (2), JPEG `.obj` (~30) | ~380 | D3DX11 / stb_image |
 | `xapilibd` | `heap.obj` (36), `tree.obj` (30), `xid.obj` (27), `usbdev.obj` (25), `hub.obj` (25), `disk.obj` (24), `thread.obj` (22), `synch.obj` (22), `contsig.obj` (22), `xapiheap.obj` (20), `ohcd.obj` (17), `filehops.obj` (17), `xcalcsig.obj` (15), `pathmisc.obj` (13), `datetime.obj` (13), `xsaveapi.obj` (11), `mrb.obj` (11), `filemisc.obj` (11), `bootutil.obj` (11), `transfer.obj` (10), `xidinp.obj` (9), `virtual.obj` (9), `isr.obj` (12), `xemodule.obj` (6), `roothub.obj` (6), `physical.obj` (6), `mountmu.obj` (6), `lcompata.obj` (6), `lcompat.obj` (6), `xmem.obj` (3), `xapiterm.obj` (3), `fileopcr.obj` (3), `filefind.obj` (3), `xpp.obj` (5), `usbd.obj` (5), `process.obj` (5), `pool.obj` (1), `widechar.obj` (4), `usbinit.obj` (4), `tls.obj` (4), `powerdwn.obj` (4), `launch.obj` (4), `xapi0dat.obj` (2), `xapi0.obj` (2), `usbmem.obj` (2), `typeinfo.obj` (2), `support.obj` (2), `perfctr.obj` (2), `krnlptch.obj` (2), `handle.obj` (2), `format.obj` (2), `dir.obj` (2), `devsys.obj` (2), `cancelio.obj` (2), `xclndrv.obj` (2), `xapiinit.obj` (7), `schedule.obj` (7), `kthunks.obj` (7), `isoch.obj` (7), `error.obj` (7), `xqueryvalue.obj` (1), `xget*.obj` (~6), `outputdebugstring*.obj` (2), `mu.obj` (8), `muldiv.obj` (1), `delaybnd.obj` (1), `compstr*.obj` (2), `xapidlla.obj` (1), `bitmapa.obj` (1) | ~500 | Win32 equivalents |
@@ -162,7 +163,7 @@ The map file's last column is `Lib:Object`. Symbols without `:` are game objects
 
 Derived from 434 embedded source path strings, PDB module info, and assert-string cross-references:
 
-```
+```yaml
 c:\cod\code\                          <- game + tech library root
 ├── game\                              <- game module (id Tech 3 heritage)
 │   ├── g_active.cpp                   actor processing
@@ -218,7 +219,7 @@ Additional Treyarch library code exists for `ngl_*`, `nal_*`, `nsl_*`, `nfl_*`, 
 
 ## 5. Target repo layout
 
-```
+```css
 cod3_decomp/
   DECOMP_PLAN.md          (this file)
   PROGRESS.tsv            (per-file status tracker — §10)
@@ -242,7 +243,7 @@ cod3_decomp/
     threading/             ~25 funcs — jobqueue_xboxr
     platform_xbox/         ~350 funcs — game_xbox.o + mp_xbox.o + peripherals_xboxr (shim layer)
   platform/
-    win32/                 Win32 entry point, D3D11 backend, XAudio2, WinSock
+    win32/                 Win32 entry point, D3D9 backend, XAudio2, WinSock
     xbox_shim/             Thin wrappers for all XDK API calls
   thirdparty/
     zlib/                  modern zlib (replaces zlib_xboxr)
@@ -282,17 +283,17 @@ The unit of work is **one target cpp file** (one row of WORKLIST.tsv). Never wor
 3. **List the file's functions**: filter MANIFEST rows by `source_cpp`. Sort by `ea`. This ordering approximates original source order — keep it in the cpp.
 4. **For each function** (skip `j_` thunks entirely; inline/COMDAT rows `f i` are ported into *headers* per §7.6, not one-by-one into the cpp):
    a. `decompile(ea)`. Evaluate the output for optimization artifacts:
-      - **Inlined callees**: recognize the pattern; reconstruct as a separate inline helper in the header
-      - **Register reuse**: split when a variable holds two logically distinct values
-      - **Loop transformations**: unrolled loops → reconstruct as `for`, induction-variable changes → restore
-      - **Strength reduction**: reverse `(x * 0xCCCCCCCD) >> 3` → `x / 5`
-      - **Tail-call optimization**: restore as `return sub_call(...)`
+   - **Inlined callees**: recognize the pattern; reconstruct as a separate inline helper in the header
+   - **Register reuse**: split when a variable holds two logically distinct values
+   - **Loop transformations**: unrolled loops → reconstruct as `for`, induction-variable changes → restore
+   - **Strength reduction**: reverse `(x * 0xCCCCCCCD) >> 3` → `x / 5`
+   - **Tail-call optimization**: restore as `return sub_call(...)`
    b. If Hex-Rays output is ambiguous, get `disasm` and cross-check. Disassembly is authoritative.
    c. Reconstruct the **original C++ intent**, not the assembly transcription:
-      - Use IDA's named locals (from PDB symbols) wherever available — they are ground truth
-      - When IDA shows `vNN`, derive a meaningful name from usage context
-      - Keep original parameter names (IDA shows demangled names with param names from PDB)
-      - Re-derive loop structures, if/else chains, and switch statements from the control flow
+   - Use IDA's named locals (from PDB symbols) wherever available — they are ground truth
+   - When IDA shows `vNN`, derive a meaningful name from usage context
+   - Keep original parameter names (IDA shows demangled names with param names from PDB)
+   - Re-derive loop structures, if/else chains, and switch statements from the control flow
    d. Demangle the name for the C++ signature. Statics (`static` column) are file-local — declare `static` in the cpp.
    e. `$E`-named statics (compiler-generated dynamic-initializer/atexit fragments): do NOT port as functions. Reconstruct the file-scope global object + its constructor instead.
 5. **Types**: pull struct/class layouts from IDA local types (the PDB populated them). Define each type once in the correct header. **Never guess a field** — if IDA's type information is incomplete, use `char pad_XX[N]` with a TODO comment.
@@ -331,7 +332,7 @@ Unlike some sibling projects, we are **not preserving an Xbox build path**. Targ
 
 | Island | Xbox API | Win32 replacement |
 |---|---|---|
-| Graphics | Xbox D3D8.1 (push buffers, NV097 GPU registers, XGRPH swizzled textures) | Custom D3D11 backend behind NGL API; initially a **null renderer** so the game loop runs headless |
+| Graphics | Xbox D3D8.1 (push buffers, NV097 GPU registers, XGRPH swizzled textures) | Custom D3D9 backend behind NGL API; initially a **null renderer** so the game loop runs headless |
 | Audio | DSOUND Xbox flavor + Dolby encoder (`DOLBY` segment) | XAudio2; Dolby → multichannel PCM |
 | Files | `D:\` / `T:\` / `U:\` / `Z:\` paths, Nt* kernel file I/O | Path-translation shim to `gamedata/`, Win32 `CreateFileW` |
 | Input | Xbox controller (XInput legacy XDK flavor) + XID drivers | Modern XInput + DirectInput for keyboard/mouse |
@@ -463,9 +464,9 @@ Port smallest-first by code bytes within each game object:
 
 ### Phase 6 — rendering + audio backends
 
-1. NGL D3D11 backend — implement `ngl_*` shim on D3D11
+1. NGL D3D9 backend — implement `ngl_*` shim on D3D9
 2. Shader system — HLSL shaders replacing compiled Xbox shaders (`render_xboxr:cd*Shader.o`)
-3. Font rendering — `ngl_font` on D3D11
+3. Font rendering — `ngl_font` on D3D9
 4. Audio backend — XAudio2 implementing `nsl*` shim
 5. Video playback — Bink SDK (if needed; may be cutscene-only)
 
@@ -479,8 +480,8 @@ Port smallest-first by code bytes within each game object:
 ### Phase 8 — game main + integration
 
 1. `g_main.cpp` — game init, `Com_Init`
-2. `Com_Frame` — main loop wired to D3D11 + XAudio2 + input
-3. **First frame** — null renderer → D3D11 → visible output
+2. `Com_Frame` — main loop wired to D3D9 + XAudio2 + input
+3. **First frame** — null renderer → D3D9 → visible output
 4. **First game** — local listen server, player movement, shooting
 5. **First network** — two-process client/server communication
 
@@ -495,7 +496,7 @@ Port smallest-first by code bytes within each game object:
 
 ## 12. Tooling (to be written in Phase 0)
 
-```
+```graphql
 tools/
 ├── parse_map.py              # Parse codmp_xboxr.map → MANIFEST.tsv
 ├── classify.py               # Classify each function (game/engine/xdk/crt)
@@ -552,7 +553,4 @@ tools/
 
 ## 15. Session bootstrap for the gruntwork AI (paste-ready)
 
-> You are reconstructing Call of Duty 3 (Xbox release build) to Win32 C++. Read `cod3_decomp/DECOMP_PLAN.md` fully and follow §7 exactly. Your work unit: the next `TODO` file in `PROGRESS.tsv` for the current phase. The project has a single IDA instance (release `codmp_xboxr.xbe`) — verify routing per §7 step 2. Reconstruct from Hex-Rays + disassembly; this is a release build — interpret, don't just transcribe. See §7.4 for optimization-artifact handling. Compile-gate, update PROGRESS.tsv, commit, repeat. Escalate per §7.2.
-
-
-When you context window starts to get full, you MUST automatically compact yourself.
+> You are reconstructing Call of Duty 3 (Xbox release build) to Win32 C++. Read `cod3_decomp/DECOMP_PLAN.md` fully and follow §7 exactly. Your work unit: the next `TODO` file in `PROGRESS.tsv` for the current phase. The project has a single IDA instance (release `codmp_xboxr.xbe`) — verify routing per §7 step 2. Reconstruct from Hex-Rays + disassembly; this is a release build — interpret, don't just transcribe. See §7.4 for optimization-artifact handling. Compile-gate, update PROGRESS.tsv, commit, repeat. Escalate per §7.2

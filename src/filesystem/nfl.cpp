@@ -1738,6 +1738,7 @@ nfdError nfd_win32_IoExecute(nfdDriver* driver, void* fileHandle, nflRequestType
 #ifdef _WIN32
     nfd_win32_ioWork.driver = driver;
     nfd_win32_ioWork.overlapped.Offset = offset;
+    nfd_win32_ioWork.overlapped.OffsetHigh = 0;
     const BOOL queued = type == NFL_REQUEST_TYPE_WRITE
         ? WriteFileEx(*(HANDLE*)fileHandle, buffer, size, &nfd_win32_ioWork.overlapped,
                       nfd_win32_IoCompletionRoutine)
@@ -1935,10 +1936,15 @@ nfdError nfd_xbox_MediaBind(nflMediaID media, const char* src, char* dst, int ds
     const char* prefix = nullptr;
     if (std::isalpha(static_cast<unsigned char>(src[0])) && src[1] == ':') {
         prefix = "";
+#ifdef _WIN32
+    } else if (media == NFL_MEDIA_ID_DISC || media == NFL_MEDIA_ID_HOST) {
+        prefix = "GameData\\";
+#else
     } else if (media == NFL_MEDIA_ID_DISC) {
         prefix = "D:\\";
     } else if (media == NFL_MEDIA_ID_HOST) {
         prefix = "E:\\";
+#endif
     } else {
         return NFD_ERROR_INVALID_MEDIA;
     }

@@ -954,7 +954,7 @@ extern ELanguage gLanguage;  // 0x012F03A4 (core.o)
 void ShowNotificationIcon(unsigned int* menuIcon, PanelQuad* inviteQuad,
                           PanelQuad* friendQuad);  // platform_xbox (XboxLiveMenus.cpp)
 namespace PlayerStats {
-int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o)
+int TotalScoreForStats(short* const stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z (mp.o)
 }
 namespace View {
 bool IsSplitScreen();  // ?IsSplitScreen@View@@YA_NXZ (cg.o)
@@ -991,7 +991,7 @@ namespace LocalClient {
 bool QuitClientOutOfGame(int client) { return LocalClient_QuitClientOutOfGame(client); }
 int PortToClient(int port) { return LocalClient_PortToClient(port); }
 int ClientToPort(int client) { return LocalClient_ClientToPort(client); }
-void UpdatePlayerPorts(int fixedPort) { LocalClient_UpdatePlayerPorts(fixedPort); }
+void UpdatePlayerPorts(int fixedPort);
 }
 
 unsigned char CreateSessionMenu::m_FirstTimeAccessedByte;  // ?m_FirstTimeAccessedByte@CreateSessionMenu@@1EA @ 0x1388D54
@@ -8846,16 +8846,12 @@ void AARPauseMenu::Update(float time_inc)
     }
 }
 
-// ============================================================================
-// Batch 20: smallest remaining handlers (16-160 bytes)
-// ============================================================================
+extern void MI_ResetMapList();  // ?MI_ResetMapList@@YAXXZ (g.o)
 
-// ea: 0x007930C0
+// ea: 0x007930C0 (empty base)
 void FESplitScreenMenu::SwapMenus()
 {
 }
-
-extern void MI_ResetMapList();  // ?MI_ResetMapList@@YAXXZ (g.o)
 
 // ea: 0x00792DD0 (thunk)
 void MI_InitMapList()

@@ -11,6 +11,10 @@
 #include <cstdint>
 
 #ifdef _WIN32
+#include <malloc.h>
+#endif
+
+#ifdef _WIN32
   #include <windows.h>
 #else
   #include <cstdio>
@@ -95,10 +99,18 @@ void* tlMemAlloc(unsigned size, unsigned align, unsigned flags) {
     if (tlCurSystemCallbacks.MemAlloc) {
         ptr = tlCurSystemCallbacks.MemAlloc(size, align, flags);
     } else if (flags & 0x30000) {
-        // Physical allocation (Xbox) — use aligned malloc fallback
+        // Physical allocation (Xbox) — use an aligned host allocation.
+#ifdef _WIN32
+        ptr = _aligned_malloc(size, align ? align : 16);
+#else
         ptr = malloc(size + align);
+#endif
     } else {
+#ifdef _WIN32
+        ptr = _aligned_malloc(size, align ? align : 16);
+#else
         ptr = malloc(size);
+#endif
     }
 
     if (!(flags & 2) && !ptr) {
@@ -119,7 +131,11 @@ void tlMemFree(void* ptr) {
     if (tlCurSystemCallbacks.MemFree) {
         tlCurSystemCallbacks.MemFree(ptr);
     } else {
+#ifdef _WIN32
+        _aligned_free(ptr);
+#else
         free(ptr);
+#endif
     }
 }
 
@@ -128,11 +144,17 @@ void tlMemFree(void* ptr) {
 // ea: 0x833730
 // ============================================================================
 void* tlMemRealloc(void* ptr, unsigned newSize, unsigned align, unsigned flags) {
-    // Simplified — real impl dispatches via callbacks/XPhysicalRealloc
+#ifdef _WIN32
+    void* newPtr = align ? _aligned_realloc(ptr, newSize, align)
+                         : realloc(ptr, newSize);
+#else
     void* newPtr = tlMemAlloc(newSize, align, flags);
+#endif
     if (ptr && newPtr) {
+#ifndef _WIN32
         memcpy(newPtr, ptr, newSize);
         tlMemFree(ptr);
+#endif
     }
     return newPtr;
 }

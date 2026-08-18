@@ -11,7 +11,7 @@ void j_nullsub_96() {}
 
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o
-extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];  // ?gSaveGameData@@3PAUSaveGameData@@A
 extern ELanguage gLanguage;          // 0x012F03A4
 extern int currCl;
 extern float sNaN;                   // ?sNaN@@3MA @ 0x10F19D0

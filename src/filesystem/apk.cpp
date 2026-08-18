@@ -156,7 +156,7 @@ void* apkFileEntry::GetData(apkFile* file, int section, bool assertIfNoData) {
                     __debugbreak();
                 return nullptr;
             }
-            return (void*)(uintptr_t)first->Sections[secIndex];
+            return first->Sections[secIndex];
         }
     nextType:
         typeEntry = (apkFileTypeEntry*)((uint8_t*)typeEntry + 4 * file->NSections + 20);
@@ -192,7 +192,7 @@ uint32_t apkFileEntry::GetDataSize(apkFile* file, int section, bool assertIfNoDa
                         if (dataPtr) *dataPtr = nullptr;
                         return 0;
                     }
-                    found = (void*)(uintptr_t)first->Sections[secIndex];
+                    found = first->Sections[secIndex];
                 }
                 first = (apkFileEntry*)((uint8_t*)first + 4 * typeEntry->NSections + 4);
                 if (++i >= nEntries)
@@ -237,13 +237,12 @@ apkFileEntry* apkFile::GetFirstFile(uint32_t type) {
 apkFileEntry* apkFile::GetNextFile(uint32_t type, apkFileEntry* current) {
     apkFileTypeEntry* te = GetFileTypeEntry(type);
     if (!te) return nullptr;
-    uint32_t stride = 4 * NSections + 4;
-    for (uint32_t i = 0; i < (uint32_t)(te->NEntries - 1); ++i) {
-        uint8_t* ptr = (uint8_t*)te->FirstEntry + i * stride;
-        if ((apkFileEntry*)ptr == current)
-            return (apkFileEntry*)(ptr + stride);
-    }
-    return nullptr;
+    uint32_t stride = 4 * te->NSections + 4;
+    apkFileEntry* last = (apkFileEntry*)((uint8_t*)te->FirstEntry
+                                         + stride * (te->NEntries - 1));
+    if (current == last)
+        return nullptr;
+    return (apkFileEntry*)((uint8_t*)current + stride);
 }
 
 // ============================================================================
@@ -253,8 +252,9 @@ apkFileEntry* apkFile::GetNextFile(uint32_t type, apkFileEntry* current) {
 apkFileEntry* apkFile::GetFile(uint32_t idx) {
     apkFileTypeEntry* te = FileTypes;
     while (te->Type) {
-        if (te->NEntries > idx)
-            return (apkFileEntry*)((uint8_t*)te->FirstEntry + idx * (4 * NSections + 4));
+        if (te->NEntries >= idx)
+            return (apkFileEntry*)((uint8_t*)te->FirstEntry
+                                   + idx * (4 * te->NSections + 4));
         idx -= te->NEntries;
         te = (apkFileTypeEntry*)((uint8_t*)te + 4 * NSections + 20);
     }
@@ -270,10 +270,11 @@ apkFileEntry* apkFile::GetFile(uint32_t idx) {
 apkFileEntry* apkFile::GetFile(const tlFixedString& name, uint32_t type) {
     apkFileTypeEntry* te = GetFileTypeEntry(type);
     if (!te) return nullptr;
-    uint32_t stride = 4 * NSections + 4;
+    uint32_t stride = 4 * te->NSections + 4;
     for (uint32_t i = 0; i < te->NEntries; ++i) {
         apkFileEntry* e = (apkFileEntry*)((uint8_t*)te->FirstEntry + i * stride);
-        if (memcmp(e->Name, name.str, 28) == 0) return e;
+        if (memcmp(e->Name, &name, sizeof(tlFixedString)) == 0)
+            return e;
     }
     return nullptr;
 }
@@ -284,7 +285,8 @@ apkFileEntry* apkFile::GetFile(const tlFixedString& name, uint32_t type) {
 // ============================================================================
 int apkFile::GetSectionIndex(const tlFixedString& name) {
     for (uint32_t i = 0; i < NSections; ++i) {
-        if (memcmp(Sections[i].Name, name.str, 28) == 0) return (int)i;
+        if (memcmp(Sections[i].Name, &name, sizeof(tlFixedString)) == 0)
+            return (int)i;
     }
     return -1;
 }
@@ -442,7 +444,7 @@ apkFile* apkLoadFileInPlace(void* data, bool invokeCallbacks) {
         return nullptr;
     }
     uint32_t version = hdr[1];
-    if ((version & 0xFFFF) != 0x104) {
+    if (version != 0x104) {
         tlWarning("APK file version 0x%08x detected. Supported: 0x%08x.\n", hdr[1], 260);
         return nullptr;
     }
@@ -462,7 +464,7 @@ apkFile* apkLoadFileInPlace(void* data, bool invokeCallbacks) {
 
     for (uint32_t i = 0; i < file->NSections; ++i) {
         apkFileSection* s = &file->Sections[i];
-        s->Name = (const char*)((uint8_t*)s + (uintptr_t)s->Name);
+        s->Name = (tlFixedString*)((uint8_t*)s + (uintptr_t)s->Name);
         s->Data = (void*)((uint8_t*)&s->Data + (uintptr_t)s->Data);
     }
 
@@ -476,10 +478,10 @@ apkFile* apkLoadFileInPlace(void* data, bool invokeCallbacks) {
 
         for (uint32_t i = 0; i < te->NEntries; ++i) {
             apkFileEntry* e = (apkFileEntry*)((uint8_t*)te->FirstEntry + i * stride);
-            e->Name = (const char*)((uint8_t*)e + (uintptr_t)e->Name);
+            e->Name = (tlFixedString*)((uint8_t*)e + (uintptr_t)e->Name);
             stringTable = (tlFixedString*)((uint8_t*)e + stride);
 
-            for (uint32_t j = 0; j < te->NSections; ++j) {
+            for (uint32_t j = 0; j < file->NSections; ++j) {
                 uint32_t secWord = ((uint32_t*)((uint8_t*)te + 0x14))[j];
                 uint32_t secIndex = secWord >> 24;
                 if (secIndex != 255) {
@@ -487,13 +489,13 @@ apkFile* apkLoadFileInPlace(void* data, bool invokeCallbacks) {
                     if (align)
                         sectionSizes[secIndex] = ~(align - 1) & (sectionSizes[secIndex] + align - 1);
 
-                    uint32_t size = e->Sections[secIndex];
-                    e->Sections[secIndex] = (uint32_t)(uintptr_t)((uint8_t*)file->Sections[j].Data + sectionSizes[secIndex]);
+                    uint32_t size = (uint32_t)(uintptr_t)e->Sections[secIndex];
+                    e->Sections[secIndex] = (void*)((uint8_t*)file->Sections[j].Data + sectionSizes[secIndex]);
                     sectionSizes[secIndex] = size + sectionSizes[secIndex];
                 }
             }
         }
-        te = (apkFileTypeEntry*)((uint8_t*)te + 4 * te->NSections + 20);
+        te = (apkFileTypeEntry*)((uint8_t*)te + 4 * file->NSections + 20);
     }
 
     // The fixup table sits right after the last section's data, aligned to 4.

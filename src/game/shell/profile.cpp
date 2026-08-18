@@ -17,7 +17,7 @@ extern const char* const defaultFileName;  // ?defaultFileName
 extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
-extern SaveGameData* gSaveGameData;    // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];    // ?gSaveGameData@@3PAUSaveGameData@@A
 extern bool g_enableControllerTest;    // ?g_enableControllerTest@@3_NA
 extern float Sys_Time();               // ?Sys_Time@@YAMXZ
 extern int Sys_Milliseconds();         // ?Sys_Milliseconds@@YAHXZ
@@ -264,8 +264,8 @@ void ProfileManager::SplitTime(int time, int& sec, int& min, int& hour,
 // ea: 0x00575420
 const char* ProfileManager::GetLoadedProfile() const
 {
-    return gSaveGameData->mStubData.mProfileName[0] != 0
-               ? gSaveGameData->mStubData.mProfileName
+    return gSaveGameData[0].mStubData.mProfileName[0] != 0
+               ? gSaveGameData[0].mStubData.mProfileName
                : nullptr;
 }
 
@@ -377,14 +377,14 @@ void ProfileManager::SetProfile(SaveGameData* sv)
 {
     if (sv != nullptr)
     {
-        gSaveGameData->LoadData(sv);
-        gSaveGameData->mStubData.mSaved = true;
-        gSaveGameData->mStubData.ApplyStubOptions();
+        gSaveGameData[0].LoadData(sv);
+        gSaveGameData[0].mStubData.mSaved = true;
+        gSaveGameData[0].mStubData.ApplyStubOptions();
     }
     else
     {
-        gSaveGameData->Init();
-        gSaveGameData->mStubData.Init();
+        gSaveGameData[0].Init();
+        gSaveGameData[0].mStubData.Init();
     }
 }
 
@@ -713,21 +713,21 @@ void ProfileManager::CreateProfile(int slotNum)
                 if (mOverwriteOkCardId == mCardId
                     || !GameSettings::sInst->does_file_exist())
                 {
-                    gSaveGameData->Init();
+                    gSaveGameData[0].Init();
                     StubData newData;
-                    gSaveGameData->Init();
-                    gSaveGameData->mStubData.LoadDataLastMinFix(&newData);
-                    gSaveGameData->mStubData.ApplyStubOptions();
+                    gSaveGameData[0].Init();
+                    gSaveGameData[0].mStubData.LoadDataLastMinFix(&newData);
+                    gSaveGameData[0].mStubData.ApplyStubOptions();
                     int v13 = (int)(ServerTime::sInst.mElapsedTime
                                     - g_femanager.saveTime);
-                    gSaveGameData->mStubData.mSaveGameSlot = slotNum;
+                    gSaveGameData[0].mStubData.mSaveGameSlot = slotNum;
                     g_femanager.saveTime =
                         ServerTime::sInst.mElapsedTime
                         - g_femanager.saveTime;
-                    SplitTime(v13, gSaveGameData->mStubData.mSec,
-                              gSaveGameData->mStubData.mMin,
-                              gSaveGameData->mStubData.mHour,
-                              gSaveGameData->mStubData.mDay);
+                    SplitTime(v13, gSaveGameData[0].mStubData.mSec,
+                              gSaveGameData[0].mStubData.mMin,
+                              gSaveGameData[0].mStubData.mHour,
+                              gSaveGameData[0].mStubData.mDay);
                     mCurrentStatus = 1;
                     mCountdownFinishedTime = Sys_Time() + 1.0f;
                     GameSettings::sInst->save();
@@ -852,7 +852,7 @@ void ProfileManager::Retry()
     {
     case 0:
         DialogDisplaySaving();
-        CreateProfile(gSaveGameData->mStubData.mSaveGameSlot);
+        CreateProfile(gSaveGameData[0].mStubData.mSaveGameSlot);
         break;
     case 1:
         DialogDisplayLoading();
@@ -1450,7 +1450,7 @@ void ProfileMainMenu::UpdateWidescreen(bool widescreen)
 void ProfileMainMenu::OnTriangle(int c)
 {
     (void)c;
-    if (gSaveGameData->mStubData.mProfileName[0] != 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0)
         system->MakeActive(8);
 }
 
@@ -1682,12 +1682,12 @@ bool ProfileMainMenu::DialogResponseDeleteConfirm(int client)
     const char* v2 =
         ((ProfileMainMenu*)g_femanager.fems->menus[27])
             ->mSaveSlots[v1]->mStubData.mProfileName;
-    if (gSaveGameData->mStubData.mProfileName[0] != 0
-        && strcmp(gSaveGameData->mStubData.mProfileName, v2) == 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0
+        && strcmp(gSaveGameData[0].mStubData.mProfileName, v2) == 0)
     {
-        gSaveGameData->Init();
-        gSaveGameData->mStubData.Init();
-        gSaveGameData->mStubData.mProfileName[0] = 0;
+        gSaveGameData[0].Init();
+        gSaveGameData[0].mStubData.Init();
+        gSaveGameData[0].mStubData.mProfileName[0] = 0;
     }
     g_femanager.mProfileManager->DeleteProfile(
         v1, ProfileMainMenu::DeleteDone);
@@ -1699,8 +1699,8 @@ void ProfileMainMenu::LoadSelectedProfile(bool displayDialog)
 {
     if (mMenuStatus[highlighted] != 1)
     {
-        gSaveGameData->Init();
-        gSaveGameData->mStubData.Init();
+        gSaveGameData[0].Init();
+        gSaveGameData[0].mStubData.Init();
     }
     else
     {
@@ -1709,14 +1709,14 @@ void ProfileMainMenu::LoadSelectedProfile(bool displayDialog)
         SaveGameData* v3 = mSaveSlots[highlighted];
         if (v3 != nullptr)
         {
-            gSaveGameData->LoadData(v3);
-            gSaveGameData->mStubData.mSaved = true;
-            gSaveGameData->mStubData.ApplyStubOptions();
+            gSaveGameData[0].LoadData(v3);
+            gSaveGameData[0].mStubData.mSaved = true;
+            gSaveGameData[0].mStubData.ApplyStubOptions();
         }
         else
         {
-            gSaveGameData->Init();
-            gSaveGameData->mStubData.Init();
+            gSaveGameData[0].Init();
+            gSaveGameData[0].mStubData.Init();
         }
     }
 }
@@ -1767,14 +1767,14 @@ void ProfileMainMenu::OnSquare(int c)
         SaveGameData* v4 = mSaveSlots[highlighted];
         if (v4 != nullptr)
         {
-            gSaveGameData->LoadData(v4);
-            gSaveGameData->mStubData.mSaved = true;
-            gSaveGameData->mStubData.ApplyStubOptions();
+            gSaveGameData[0].LoadData(v4);
+            gSaveGameData[0].mStubData.mSaved = true;
+            gSaveGameData[0].mStubData.ApplyStubOptions();
         }
         else
         {
-            gSaveGameData->Init();
-            gSaveGameData->mStubData.Init();
+            gSaveGameData[0].Init();
+            gSaveGameData[0].mStubData.Init();
         }
         DialogDisplayProfileSelected();
     }
@@ -1950,7 +1950,7 @@ void ProfileEditMenu::OnActivate(int previous)
 {
     FEMenu::OnActivate();
     mSaveDialogDisplayed = false;
-    mPreviousSettings = gSaveGameData->mStubData;
+    mPreviousSettings = gSaveGameData[0].mStubData;
     if (previous == 18 || previous == 8)
     {
         mExitToMain = true;
@@ -1961,9 +1961,9 @@ void ProfileEditMenu::OnActivate(int previous)
     }
     HighlightDefault(previous);
     StubData* v3;
-    if (gSaveGameData->mStubData.mProfileName[0] != 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0)
     {
-        v3 = &gSaveGameData->mStubData;
+        v3 = &gSaveGameData[0].mStubData;
     }
     else
     {
@@ -1991,7 +1991,7 @@ void ProfileEditMenu::OnActivate(int previous)
 // ea: 0x00580CD0
 bool ProfileEditMenu::DialogResponseCancel(int client)
 {
-    memcpy(&gSaveGameData->mStubData,
+    memcpy(&gSaveGameData[0].mStubData,
            &((ProfileEditMenu*)g_femanager.fems->menus[29])
                 ->mPreviousSettings,
            sizeof(StubData));
@@ -2087,8 +2087,8 @@ void ProfileEditMenu::OnTriangle(int c)
     if (mNeedWrite)
     {
         memcpy(((ProfileMainMenu*)g_femanager.fems->menus[27])
-                   ->mSaveSlots[gSaveGameData->mStubData.mSaveGameSlot],
-               gSaveGameData, 7156);
+                   ->mSaveSlots[gSaveGameData[0].mStubData.mSaveGameSlot],
+               &gSaveGameData[0], 7156);
         DialogDisplayConfirmSave();
     }
     else if (mExitToMain)
@@ -2179,7 +2179,7 @@ void MemCardCheckMenu::Update(float time_inc)
             0;
     }
     FEMenu::Update(time_inc);
-    if (gSaveGameData->mStubData.mProfileName[0] != 0)
+    if (gSaveGameData[0].mStubData.mProfileName[0] != 0)
         g_femanager.fems->MakeActive(8);
 }
 

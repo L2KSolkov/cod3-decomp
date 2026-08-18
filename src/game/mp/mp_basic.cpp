@@ -705,7 +705,7 @@ MPPeer::MPPeer()
 }
 
 // ea: 0x00764C50
-MPPlayerManager::MPPlayerManager(bdSession* session)
+MPPlayerManager::MPPlayerManager(bdSession* const session)
 {
     for (int i = 0; i < 512; ++i)
         new ((bdReference<bdMessage>*)((char*)this + 0x10 + 4 * i))
@@ -5081,7 +5081,7 @@ int MultiplayerMgr::GetCurrentPlayerCountOnTeam(int team)
 
 // ea: 0x0073B770
 bool MPUtility::ReadCompressedVector(bdReference<bdBitBuffer> buffer,
-                                     float* vec)
+                                     float* const vec)
 {
     bool ok = false;
     bool compressed = false;
@@ -9335,8 +9335,8 @@ void MultiplayerMgr::updateLinkStatus()
 
 // ea: 0x0072C610
 void MultiplayerMgr::MPLogSubscriber::publish(
-    const char* fullChannelName, const char* file, const char* function,
-    unsigned int line, const char* msg)
+    const char* const fullChannelName, const char* const file,
+    const char* const function, unsigned int line, const char* const msg)
 {
     const char* v6 = strrchr(file, '\\');
     int v7 = 0;
@@ -9519,7 +9519,7 @@ void MPUIInterface::PlatformStart()
 // ============================================================================
 // ea: 0x007365F0 (mNetHeading +0xC0, mInterpolatedPitch +0x210,
 // mInterpolatedHeading +0x218, mLastHeadingAngle +0x260)
-void MPPlayer::SetAngles(const float* angles)
+void MPPlayer::SetAngles(const float* const angles)
 {
     float v2 = angles[1];
     *(float*)((char*)this + 0xC0) = v2;
@@ -10018,7 +10018,7 @@ void MPUtility::WritePositionDelta(bdReference<bdBitBuffer> buffer,
 
 // ea: 0x0073AFB0
 void MPUtility::WriteNormal(bdReference<bdBitBuffer> buffer,
-                            const float* normal)
+                            const float* const normal)
 {
     unsigned char v3 = DirToByte(normal);
     buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE);
@@ -10061,7 +10061,7 @@ void MPUtility::WritePlayerTeam(bdReference<bdBitBuffer> buffer, team_t team)
 
 // ea: 0x0073B600
 void MPUtility::WriteCompressedVector(bdReference<bdBitBuffer> buffer,
-                                      const float* vec)
+                                      const float* const vec)
 {
     const float* v2 = vec;
     float normal[3];
@@ -10183,7 +10183,7 @@ int PlayerStats::ScoreForStat(int stat, int value)
 }
 
 // ea: 0x007346D0 (first 24 stats x 5 entries + final 5 x 1)
-int PlayerStats::TotalScoreForStats(short* stats)
+int PlayerStats::TotalScoreForStats(short* const stats)
 {
     float v1 = 0.0f;
     // 24 stat groups: each stat's mContributesToScore lives in a 20-byte
@@ -10854,7 +10854,7 @@ void MPPeer::SwapKit(int playerClass, int netIndex)
 }
 
 // ea: 0x0073B2C0
-bool MPUtility::ReadAngles(bdReference<bdBitBuffer> buffer, float* angles)
+bool MPUtility::ReadAngles(bdReference<bdBitBuffer> buffer, float* const angles)
 {
     short v8 = 0;
     bool ok = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE)
@@ -11167,7 +11167,7 @@ int MPPeer::FindActiveQosProbe(bdReference<bdCommonAddr> address,
 
 // ea: 0x00748A20
 void MPPlayerManager::SendOthers(bdReference<bdMessage> message,
-                                 const MPPlayer* excludePlayer,
+                                 const MPPlayer* const excludePlayer,
                                  bool reliable)
 {
     if (reliable)
@@ -12173,7 +12173,8 @@ void MPProfileEditMenu::Draw()
 
 // ea: 0x007383C0 (mNumPlayers at +0x4110)
 bool MPPlayerManager::onSessionConnectRequest(
-    bdReference<bdBitBuffer> requestUserData, bdBitBuffer* replyUserData)
+    bdReference<bdBitBuffer> requestUserData,
+    bdBitBuffer* const replyUserData)
 {
     (void)replyUserData;
     bool v3 = *(unsigned char*)((char*)this + 0x4110)
@@ -12475,7 +12476,7 @@ void MPUIInterface::ExitFrontend(int returnMenu)
 }
 
 // ea: 0x0072DF50 (mNetPosition +0xA0, mInterpolatedPosition +0x1F0)
-void MPPlayer::SetPosition(const float* position)
+void MPPlayer::SetPosition(const float* const position)
 {
     math::Position3* mNetPosition =
         (math::Position3*)((char*)this + 0xA0);
@@ -12664,6 +12665,12 @@ MPPlayerSet::MPPlayerSet(eDefaultSets e)
     {
         mBitPlayers = 0xFFFF;
     }
+}
+
+// ea: 0x0072AE00 (game_xbox.o inline constructor)
+MPPlayerSet::MPPlayerSet(unsigned int index)
+{
+    set(index);
 }
 
 // ============================================================================
@@ -13163,7 +13170,7 @@ MPLanDiscovery::MPLanDiscovery()
 }
 
 // ea: 0x0073B090
-bool MPUtility::ReadNormal(bdReference<bdBitBuffer> buffer, float* normal)
+bool MPUtility::ReadNormal(bdReference<bdBitBuffer> buffer, float* const normal)
 {
     char temp = 0;
     bool v2 = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_SIGNED_CHAR8_TYPE)
@@ -13667,7 +13674,7 @@ void MPOptionsGameplayMenu::SetOptions()
 }
 
 // ea: 0x0072F1A0 (mNumPlayers +0x4110, mPlayers +0x1010, mTeam +0x25C)
-int MPPlayerManager::PickPlayerTeam(MPPlayer* player)
+int MPPlayerManager::PickPlayerTeam(MPPlayer* const player)
 {
     int v2 = 0;
     int v3 = 0;
@@ -13757,7 +13764,7 @@ const char* MPPlayerSet::debugString() const
 }
 
 // ea: 0x00737830 (mPlayers +0x1010, mClientIndex +0x08, mId +0x00)
-int MPPlayerManager::GetPlayerIndex(const Entity* entity)
+int MPPlayerManager::GetPlayerIndex(const Entity* const entity)
 {
     unsigned int result = 0;
     for (; result < 0x10; ++result)
@@ -13802,7 +13809,7 @@ void MPUtility::WriteSnappedPosition(bdReference<bdBitBuffer> buffer,
 
 // ea: 0x0073AD70
 void MPUtility::WriteSnappedPosition(bdReference<bdBitBuffer> buffer,
-                                     const float* position)
+                                     const float* const position)
 {
     buffer.m_ptr->writeRangedInt32((int)position[0], gMPIntPositionMin,
                                    0x1FFF);
@@ -15040,7 +15047,7 @@ void MPProfileMainMenu::LoadProfilesDone()
 
 // ea: 0x0073AEB0
 bool MPUtility::ReadSnappedPosition(bdReference<bdBitBuffer> buffer,
-                                    float* position)
+                                    float* const position)
 {
     int temp = 0;
     bool ok = buffer.m_ptr->readRangedInt32(temp, gMPIntPositionMin, 0x1FFF);
@@ -16582,7 +16589,7 @@ void MPPlayerManager::HandleGameScore(const bdReceivedMessage& receivedMsg)
 }
 
 // ea: 0x0073B4D0
-bool MPUtility::ReadVector(bdReference<bdBitBuffer> buffer, float* vec)
+bool MPUtility::ReadVector(bdReference<bdBitBuffer> buffer, float* const vec)
 {
     float temp = 0.0f;
     bool ok = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_FLOAT32_TYPE)
@@ -16757,8 +16764,8 @@ int MultiplayerMgr::GetCurrentPlayerCount()
 void MultiplayerMgr::PlayerDead(Entity* player, Entity* inflictor,
                                 Entity* attacker, int damage,
                                 int meansOfDeath, int weapon,
-                                const float* position, const float* dir,
-                                EHitLocation hitLoc)
+                                const float* const position,
+                                const float* const dir, int hitLoc)
 {
     MPPeer* mPeer = this->mPeer;
     if (mPeer != nullptr)
@@ -16769,7 +16776,7 @@ void MultiplayerMgr::PlayerDead(Entity* player, Entity* inflictor,
     else
     {
         ::PlayerDead(player, inflictor, attacker, damage, meansOfDeath,
-                     weapon, position, dir, hitLoc);
+                     weapon, position, dir, (EHitLocation)hitLoc);
         unsigned int mVal = 0;
         if (gpBrocAPI->mBrocExports.mCallbackPlayerKilled != nullptr)
         {
@@ -17291,7 +17298,7 @@ short MPPlayerItems::AddItem(EDroppedItemTypes item, Entity* ent)
 // ============================================================================
 // ea: 0x0073ACA0
 bool MPUtility::ReadPosition(bdReference<bdBitBuffer> buffer,
-                             float* position)
+                             float* const position)
 {
     bool ok = buffer.m_ptr->readRangedFloat32(position[0],
                                               gMPFloatPositionMin,
@@ -17313,7 +17320,7 @@ bool MPUtility::ReadPosition(bdReference<bdBitBuffer> buffer,
 
 // ea: 0x... (writes 3 float32s with type tags)
 void MPUtility::WritePosition(bdReference<bdBitBuffer> buffer,
-                              const float* position)
+                              const float* const position)
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -17332,7 +17339,7 @@ void MPUtility::WritePosition(bdReference<bdBitBuffer> buffer,
 }
 
 void MPUtility::WriteAnglesYawPitch(bdReference<bdBitBuffer> buffer,
-                                    const float* angles)
+                                    const float* const angles)
 {
     buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE);
     short yaw = (short)(angles[1] * 182.04445f);
@@ -17351,7 +17358,7 @@ void MPUtility::WriteAnglesYawPitch(bdReference<bdBitBuffer> buffer,
 }
 
 bool MPUtility::ReadAnglesYawPitch(bdReference<bdBitBuffer> buffer,
-                                   float* angles)
+                                   float* const angles)
 {
     short v8 = 0;
     bool ok = buffer.m_ptr->readDataType(bdBitBuffer::BD_BB_SIGNED_INTEGER16_TYPE)
@@ -17368,7 +17375,7 @@ bool MPUtility::ReadAnglesYawPitch(bdReference<bdBitBuffer> buffer,
 
 // ea: 0x0073B400
 void MPUtility::WriteVector(bdReference<bdBitBuffer> buffer,
-                            const float* vec)
+                            const float* const vec)
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -17382,7 +17389,7 @@ void MPUtility::WriteVector(bdReference<bdBitBuffer> buffer,
 
 // ea: 0x0073B120
 void MPUtility::WriteAngles(bdReference<bdBitBuffer> buffer,
-                            const float* angles)
+                            const float* const angles)
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -18972,7 +18979,7 @@ do_swing:
 }
 
 // ea: 0x0072DAD0
-int MPPlayer::CalcLegsAnim(Entity* ent, float* velocity, float yaw,
+int MPPlayer::CalcLegsAnim(Entity* ent, float* const velocity, float yaw,
                            bool useLastWalking)
 {
     float v22 = velocity[0];
@@ -20220,7 +20227,7 @@ bool MPPeer::CreateLocalGameInfo(bdReference<MPGameInfo>& gameInfo)
 // ============================================================================
 // ea: 0x007499F0
 void MPPlayerManager::WritePlayerData(bdReference<bdBitBuffer> buffer,
-                                      MPPlayer* player)
+                                      MPPlayer* const player)
 {
     MPUtility::PlayerData data;
     data.id = 16;
@@ -22666,7 +22673,7 @@ struct MPPlayerYawEntry {
     float mLift;
 };
 
-void MPPlayer::PlayerSpawn(float* position, float* angles)
+void MPPlayer::PlayerSpawn(float* const position, float* const angles)
 {
     Reset(false);
     this->mNetPosition.v.m128_f32[0] = position[0];
@@ -22764,7 +22771,7 @@ void MPPlayer::PlayerSpawn(float* position, float* angles)
 }
 
 // ea: 0x0075CD10
-void MPPlayer::PlayerRevive(float* position, float* angles)
+void MPPlayer::PlayerRevive(float* const position, float* const angles)
 {
     Reset(false);
     this->mNetPosition.v.m128_f32[0] = position[0];
@@ -27069,8 +27076,9 @@ void MPPlayer::DebugRender()
 }
 
 // ea: 0x00739FA0
-void MPPlayerManager::ClientConnect(MPPlayer* player, const float* position,
-                                    const float* angles)
+void MPPlayerManager::ClientConnect(MPPlayer* const player,
+                                    const float* const position,
+                                    const float* const angles)
 {
     if (com_sv_running->integer == 0)
     {
@@ -27635,7 +27643,7 @@ label52:
 }
 
 // ea: 0x00760710
-void MPPlayerManager::SendDroppedItems(MPPlayer* player)
+void MPPlayerManager::SendDroppedItems(MPPlayer* const player)
 {
     if (player == nullptr || player->mId >= 0x10u
         || player->mConnection.m_ptr == nullptr)

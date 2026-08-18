@@ -97,7 +97,7 @@ namespace apk { struct apkFile; }
 extern apk::apkFile* InitDefaultPak();                    // ?InitDefaultPak@@YAPAVapkFile@apk@@XZ
 extern void InitCDAepsShader();                           // render.o
 extern void apsInitParticleMemory(int memSize, bool bBigBuffers);  // render.o
-extern void StartupNfl(const char* mountPoint);           // streamer.o
+extern void StartupNfl();                                 // streamer.o
 extern void IN_Frame();                                   // game2.o
 extern void SpinnerInit();                                // sys.cpp
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);  // spinner_lens.cpp
@@ -177,7 +177,7 @@ void main()
         gSkipFrontEnd = true;
     }
     mem_heap_set_current(MEM_HEAP_DEFAULT);  // binary: MEM_HEAP_MAIN (=0)
-    StartupNfl(nullptr);
+    StartupNfl();
     Sys_Milliseconds();
     apsCommon::InitShaders();
     InitCDAepsShader();

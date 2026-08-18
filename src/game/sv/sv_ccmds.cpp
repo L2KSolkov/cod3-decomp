@@ -138,7 +138,7 @@ void SplitTime(int time, int& sec, int& min, int& hour, int& day) {
 // UpdatePlayTime — ea: 0x51E510
 // ============================================================================
 void UpdatePlayTime() {
-    StubData& d = gSaveGameData->mStubData;
+    StubData& d = gSaveGameData[0].mStubData;
     float v0 = (float)(d.mSec + 60 * (d.mMin + 60 * (d.mHour + 24 * d.mDay)))
              + (ServerTime::sInst.mElapsedTime - g_femanager.saveTime);
     if (v0 > 86400.0f)
@@ -236,7 +236,7 @@ void SV_QuickStart_f() {
 // SV_InvertAim_f — ea: 0x51E8A0
 // ============================================================================
 void SV_InvertAim_f() {
-    gSaveGameData->mStubData.mInvertAim = true;
+    gSaveGameData[0].mStubData.mInvertAim = true;
 }
 
 // ============================================================================

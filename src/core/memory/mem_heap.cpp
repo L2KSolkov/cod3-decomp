@@ -12,6 +12,10 @@
 #include <cstdint>
 
 #ifdef _WIN32
+  #include <malloc.h>
+#endif
+
+#ifdef _WIN32
   #include <windows.h>
 #else
   #define OutputDebugStringA(s) fprintf(stderr, "%s", s)
@@ -183,7 +187,11 @@ mem_heap* mem_heap_get_current() {
 // ============================================================================
 
 void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
+#ifdef _WIN32
+    void* ptr = _aligned_malloc(size, 16);
+#else
     void* ptr = malloc(size);
+#endif
     if (ptr) {
         if (!heap) heap = s_current_heap;
         heap->total_allocs++;
@@ -195,8 +203,20 @@ void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
 }
 
 void* mem_heap_malloc(mem_heap* heap, int alignment, unsigned size) {
+#ifdef _WIN32
+    void* ptr = _aligned_malloc(size, alignment < 16 ? 16 : alignment);
+#else
     (void)alignment;
-    return mem_heap_malloc(heap, size, 0);
+    void* ptr = malloc(size);
+#endif
+    if (ptr) {
+        if (!heap) heap = s_current_heap;
+        heap->total_allocs++;
+        heap->used_byte += size;
+        if (heap->used_byte > heap->high_used_byte)
+            heap->high_used_byte = heap->used_byte;
+    }
+    return ptr;
 }
 
 void* mem_heap_malloc_flags(unsigned size, int flags) {
@@ -204,11 +224,11 @@ void* mem_heap_malloc_flags(unsigned size, int flags) {
 }
 
 void* mem_heap_malloc(unsigned size) {
-    return mem_heap_malloc(s_current_heap, size, 0);
+    return mem_heap_malloc(s_current_heap, 16, size);
 }
 
 void* mem_heap_malloc(int alignment, unsigned size) {
-    return mem_heap_malloc(s_current_heap, size, 0);
+    return mem_heap_malloc(s_current_heap, alignment, size);
 }
 
 // ============================================================================
@@ -218,13 +238,21 @@ void* mem_heap_malloc(int alignment, unsigned size) {
 
 void mem_heap_free(void* ptr) {
     if (!ptr) return;
+#ifdef _WIN32
+    _aligned_free(ptr);
+#else
     free(ptr);
+#endif
     s_current_heap->total_frees++;
 }
 
 void mem_heap_free(mem_heap* heap, void* ptr) {
     if (!ptr) return;
+#ifdef _WIN32
+    _aligned_free(ptr);
+#else
     free(ptr);
+#endif
     if (heap) heap->total_frees++;
 }
 
@@ -234,7 +262,11 @@ void mem_heap_free(mem_heap* heap, void* ptr) {
 // ============================================================================
 
 void* mem_heap_realloc(void* ptr, unsigned newSize) {
+#ifdef _WIN32
+    void* newPtr = _aligned_realloc(ptr, newSize, 16);
+#else
     void* newPtr = realloc(ptr, newSize);
+#endif
     if (newPtr) {
         s_current_heap->used_byte += newSize; // approximate
     }
@@ -242,7 +274,11 @@ void* mem_heap_realloc(void* ptr, unsigned newSize) {
 }
 
 void* mem_heap_realloc(mem_heap* heap, void* ptr, unsigned newSize) {
+#ifdef _WIN32
+    void* newPtr = _aligned_realloc(ptr, newSize, 16);
+#else
     void* newPtr = realloc(ptr, newSize);
+#endif
     return newPtr;
 }
 
@@ -469,7 +505,10 @@ void mem_heap_free_private(void* ptr) {
 // mem_heap_malloc_ctx — allocate with context tracking
 // ea: 0x7BB990
 void* mem_heap_malloc_ctx(unsigned size, int flags, const char* file, const char* func, int line) {
-    return mem_heap_malloc_flags(size, flags);
+    (void)file;
+    (void)func;
+    (void)line;
+    return mem_heap_malloc(flags, size);
 }
 
 // mem_heap_free_check_reserve — check if freeing from reserve heap

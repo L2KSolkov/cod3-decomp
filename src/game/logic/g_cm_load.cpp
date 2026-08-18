@@ -3270,7 +3270,7 @@ void TestInLeaf(traceWork_t* tw, const CGBank& bank_ref,
 // ============================================================================
 // ea: 0x00628EB0
 void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
-                    math::Position3* hitp, math::Dir3* hitn, int* hitc)
+                    math::Position3* const hitp, math::Dir3* const hitn, int* hitc)
 {
     cmgr_mem_ctx_t ctx;
     math::Position3* cg_verts = alloc_verts();

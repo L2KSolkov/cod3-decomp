@@ -42,6 +42,8 @@ public:
     static PakManager* sInst;
     const PakInfoNode* GetPakInfo(const char* long_name) const;
     void SetUserDistance(const PakInfoNode* cpak, float dist);
+    void SetProgressCallback(void (*cb)(float));
+    TPakId SyncLoadPak(const PakInfoNode* cpak);
     TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);
     static void CreateInst();  // ?CreateInst@PakManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@PakManager@@SAXXZ (core.o)
@@ -54,6 +56,16 @@ public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
     static void CreateInst();  // ?CreateInst@InteractionController@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@InteractionController@@SAXXZ (core.o)
+};
+
+class PadAliasMgr {
+public:
+    static PadAliasMgr* CreateInst();  // ?CreateInst@PadAliasMgr@@SAXXZ
+};
+
+class GameSettings {
+public:
+    static GameSettings* CreateInst();  // ?CreateInst@GameSettings@@SAXXZ
 };
 
 
@@ -471,7 +483,7 @@ class AudioBankMgr { public: static void CreateInst(); static void DeleteInst();
 class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
-class EntityManager { public: static void CreateInst(); static void DeleteInst(); };
+class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
 class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -518,7 +530,7 @@ extern void WheelMarkMgr_Exit();
 extern void DebugRender_Init(void* self);
 extern void StubData_ApplyStubOptions(void* self);
 struct SaveGameData;
-extern SaveGameData* gSaveGameData;
+extern SaveGameData gSaveGameData[4];
 extern void Com_ControllerWarningDialog(bool activate, int client);
 extern void MSG_Init(msg_t* msg, unsigned char* data, int length);
 extern int generateHashValue(const char* fname);
@@ -598,10 +610,24 @@ extern struct ServerTime_s {
     float mElapsedTime;
 } ServerTime_sInst;
 
-// NumBanks (pak loading)
+// NumBanks (pak loading; IDA local type, size 0x20)
 class NumBanks {
 public:
-    float v[2];
+    struct Ps3Banks {
+        float main;  // +0x00
+        float lram;  // +0x04
+    };
+    struct GcBanks {
+        float main;  // +0x00
+        float aram;  // +0x04
+    };
+
+    float    ps2;      // +0x00
+    Ps3Banks ps3;      // +0x04
+    float    xbox;     // +0x0C
+    float    xenon;    // +0x10
+    float    pcx;      // +0x14
+    GcBanks  gc;       // +0x18
 };
 
 namespace AeAssert {
@@ -2329,6 +2355,8 @@ void Com_Init(char* commandLine)
     SEH_UpdateLanguageInfo();
     MI_ResetMapList();
     controller::inst();
+    PadAliasMgr::CreateInst();
+    GameSettings::CreateInst();
     PakManager::CreateInst();
     BankManager::CreateInst();
     InstanceBankMgr::CreateInst();
@@ -2383,11 +2411,12 @@ void Com_Init(char* commandLine)
     DebugRender_AddRenderer(DebugRender_sInst, (void*)fx_debug_render);
     TestFPS::CreateInst();
     CL_PreAllocStrings();
+    PakManager::sInst->SetProgressCallback(GlobalPakLoadCallback);
     if (nflFileExists((nflMediaID)gNflMediaId, "debug.cod"))
     {
         NumBanks v7;
         memset(&v7, 0, sizeof(v7));
-        PakManager::sInst->SyncLoadPak((EPakType)-1, "debug.cod", v7);
+        PakManager::sInst->SyncLoadPak(kPakTypeCount, "debug.cod", v7);
     }
     NumBanks v7;
     memset(&v7, 0, sizeof(v7));
@@ -2405,9 +2434,10 @@ void Com_Init(char* commandLine)
     PakManager::sInst->SetUserDistance((const PakInfoNode*)PakInfo, 0.0f);
     NumBanks zero_banks;
     memset(&zero_banks, 0, sizeof(zero_banks));
-    PakManager::sInst->SyncLoadPak((EPakType)0, nullptr, zero_banks);
+    PakManager::sInst->SyncLoadPak((const PakInfoNode*)PakInfo);
     DebugRender_Init(DebugRender_sInst);
     WheelMarkMgr_Init();
+    PakManager::sInst->SetProgressCallback(nullptr);
     AudioBankMgr_FinishLoading(AudioBankMgr_sInst);
     Com_InitJournaling();
     InspectorManager_Initialise(&g_inspectorManager);

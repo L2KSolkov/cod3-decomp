@@ -132,7 +132,7 @@ const char* DObjGetBoneName(DObj* obj, int boneIndex)
         return nullptr;
     IVPointer<XModel>* models = obj->models;
     XModel* model = nullptr;
-    TPakId pakId = kPakTypeNone;
+    TPakId pakId = PAK_ID_INVALID;
     int v14 = 0;
     for (IVPointer<XModel>* i = models; ; models = i)
     {

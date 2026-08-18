@@ -48,12 +48,18 @@ extern int dword_106000;     // ?dword_106000 (EF_* flags mask, BSS)
 extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
 extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // game.o 0x6072B0
 extern vmCvar_t bg_nofatigue;  // ?bg_nofatigue@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_fallDamageMinHeight;
+extern vmCvar_t bg_fallDamageMaxHeight;
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* msg);
 extern vmCvar_t bg_foliagesnd_minspeed;
 extern vmCvar_t bg_foliagesnd_maxspeed;
 extern vmCvar_t bg_foliagesnd_slowinterval;
 extern vmCvar_t bg_foliagesnd_fastinterval;
 extern vmCvar_t bg_foliagesnd_resetinterval;
 extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
+extern bool gSceneAnimCamera;  // ?gSceneAnimCamera@@3_NA (cg.o)
+static const __m128 Float4_ZAxis_7 = {0.0f, 0.0f, 1.0f, 0.0f};
 weaponFileInfo_t** bg_weaponInfo = nullptr;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
 extern const char** pEventNamesList;      // ?pEventNamesList@@3PAPBDA (game.o)
 extern const char* szWeapTypeNames[9];    // ?szWeapTypeNames@@3PAPBDA (game.o)
@@ -2840,6 +2846,11 @@ extern void PM_Footsteps();                       // game.o 0x63CB60
 void PM_LadderMove(const collision_context_t& context);  // game.o 0x6458E0
 extern void PM_WalkMove(const collision_context_t& context);    // game.o 0x643E40
 extern void PM_AirMove(const collision_context_t& context);     // game.o 0x643C50
+static int PM_CheckJump();                                      // game.o 0x614B60
+static int PM_GroundSurfaceType();                              // game.o 0x605340
+void PM_CrashLand();                                             // game.o 0x605C00
+float PM_CmdScale_Walk(usercmd_s* cmd);                         // game.o 0x6147A0
+void PM_MeleeAssistAccelerate();                                // game.o 0x62DCF0
 extern void PM_GroundTrace();                     // game.o 0x63C340
 extern PlayerState* PM_NoclipMove();              // game.o 0x6055A0
 extern PlayerState* PM_UFOMove();                 // game.o 0x605850
@@ -3181,7 +3192,194 @@ void PM_Footsteps()
     else
         ps->legsAnim = ps->viewHeightTarget == ps->crouchViewHeight;
 }
-void PM_WalkMove(const collision_context_t& context) { (void)context; }
+// ea: 0x00643E40
+void PM_WalkMove(const collision_context_t& context)
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1548;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    math::Position3 oldPos;
+    oldPos.v = ps->origin.v;
+
+    const int pm_flags = ps->pm_flags;
+    if ((pm_flags & 0x2000) != 0)
+    {
+        float jumpScale;
+        if (ps->pm_time > 1800)
+        {
+            ps->pm_flags &= ~0x2000u;
+            ps->fJumpOriginZ = 0.0f;
+            jumpScale = 0.64999998f;
+        }
+        else if (ps->pm_time != 0)
+        {
+            goto after_jump_scale;
+        }
+        else if (ps->fJumpOriginZ + 18.0f <= ps->origin.v.m128_f32[2])
+        {
+            jumpScale = 0.5f;
+            ps->pm_time = 1200;
+        }
+        else
+        {
+            jumpScale = 0.64999998f;
+            ps->pm_time = 1800;
+        }
+
+        ps->velocity.v.m128_f32[0] *= jumpScale;
+        ps->velocity.v.m128_f32[1] *= jumpScale;
+        ps->velocity.v.m128_f32[2] *= jumpScale;
+    }
+
+after_jump_scale:
+    if (PM_CheckJump() != 0)
+    {
+        PM_AirMove(context);
+        pm->ps->jumpTime = pm->cmd.serverTime;
+        return;
+    }
+
+    PM_Friction();
+
+    usercmd_s cmd = pm->cmd;
+    const float walkScale = PM_CmdScale_Walk(&cmd);
+    const float forwardMove = (float)pm->cmd.forwardmove;
+    const float rightMove = (float)pm->cmd.rightmove;
+    const float sprintSpeedScale =
+        ((pm->ps->pm_flags & 0x10000) != 0 && pm->cmd.forwardmove > 0)
+            ? pm->ps->sprintSpeedScale
+            : 1.0f;
+
+    const float forwardDot =
+        (pml.groundTrace.normal.v.m128_f32[1] * pml.forward[1])
+        + (pml.groundTrace.normal.v.m128_f32[0] * pml.forward[0]);
+    const float forwardAdjust =
+        forwardDot >= 0.0f ? forwardDot * 0.99900097f
+                           : forwardDot * 1.001f;
+    pml.forward[0] -= pml.groundTrace.normal.v.m128_f32[0] * forwardAdjust;
+    pml.forward[1] -= pml.groundTrace.normal.v.m128_f32[1] * forwardAdjust;
+    pml.forward[2] = 0.0f
+                     - (pml.groundTrace.normal.v.m128_f32[2]
+                        * forwardAdjust);
+
+    const float rightDot =
+        (pml.groundTrace.normal.v.m128_f32[1] * pml.right[1])
+        + (pml.groundTrace.normal.v.m128_f32[0] * pml.right[0]);
+    const float rightAdjust =
+        rightDot >= 0.0f ? rightDot * 0.99900097f
+                         : rightDot * 1.001f;
+    pml.right[0] -= pml.groundTrace.normal.v.m128_f32[0] * rightAdjust;
+    pml.right[1] -= pml.groundTrace.normal.v.m128_f32[1] * rightAdjust;
+    pml.right[2] = 0.0f
+                   - (pml.groundTrace.normal.v.m128_f32[2] * rightAdjust);
+
+    VectorNormalize(pml.forward);
+    VectorNormalize(pml.right);
+
+    float wishdir[3] = {
+        (pml.forward[0] * sprintSpeedScale * forwardMove)
+            + (pml.right[0] * rightMove),
+        (pml.forward[1] * sprintSpeedScale * forwardMove)
+            + (pml.right[1] * rightMove),
+        (pml.forward[2] * sprintSpeedScale * forwardMove)
+            + (pml.right[2] * rightMove),
+    };
+    const float wishspeed = VectorNormalize(wishdir) * walkScale;
+
+    float accel;
+    const int stance = ps->viewHeightTarget == ps->crouchViewHeight
+                           ? 2
+                           : (ps->viewHeightTarget == ps->proneViewHeight);
+    if ((pml.groundTrace.surfaceFlags & 2) != 0
+        || (ps->pm_flags & 0x200) != 0)
+    {
+        accel = 1.0f;
+    }
+    else if (stance == 1)
+    {
+        accel = 19.0f;  // pm_prone_accelerate @ 0x00D01518
+    }
+    else if (stance == 2)
+    {
+        accel = 12.0f;
+    }
+    else
+    {
+        accel = 9.0f;   // pm_accelerate @ 0x00D01520
+    }
+    if ((ps->pm_flags & 0x100) != 0)
+        accel *= 0.1f;
+
+    PM_Accelerate(wishdir, wishspeed, accel);
+    PM_MeleeAssistAccelerate();
+
+    if ((pml.groundTrace.surfaceFlags & 2) != 0
+        || (pm->ps->pm_flags & 0x200) != 0)
+    {
+        pm->ps->velocity.v.m128_f32[2] -=
+            (float)pm->ps->gravity * pml.frametime;
+    }
+
+    const float originalVelocity[3] = {
+        ps->velocity.v.m128_f32[0],
+        ps->velocity.v.m128_f32[1],
+        ps->velocity.v.m128_f32[2],
+    };
+    const float originalSpeed = sqrtf(
+        originalVelocity[0] * originalVelocity[0]
+        + originalVelocity[1] * originalVelocity[1]
+        + originalVelocity[2] * originalVelocity[2]);
+    const float velocityDot =
+        (originalVelocity[2] * pml.groundTrace.normal.v.m128_f32[2])
+        + (originalVelocity[1] * pml.groundTrace.normal.v.m128_f32[1])
+        + (originalVelocity[0] * pml.groundTrace.normal.v.m128_f32[0]);
+    const float velocityAdjust =
+        velocityDot >= 0.0f ? velocityDot * 0.99900097f
+                            : velocityDot * 1.001f;
+    ps->velocity.v.m128_f32[0] -=
+        pml.groundTrace.normal.v.m128_f32[0] * velocityAdjust;
+    ps->velocity.v.m128_f32[1] -=
+        pml.groundTrace.normal.v.m128_f32[1] * velocityAdjust;
+    ps->velocity.v.m128_f32[2] -=
+        pml.groundTrace.normal.v.m128_f32[2] * velocityAdjust;
+
+    const float projectedAlignment =
+        (ps->velocity.v.m128_f32[2] * originalVelocity[2])
+        + (ps->velocity.v.m128_f32[1] * originalVelocity[1])
+        + (ps->velocity.v.m128_f32[0] * originalVelocity[0]);
+    if (projectedAlignment > 0.0f)
+    {
+        const float projectedSpeed = sqrtf(
+            ps->velocity.v.m128_f32[0] * ps->velocity.v.m128_f32[0]
+            + ps->velocity.v.m128_f32[1] * ps->velocity.v.m128_f32[1]
+            + ps->velocity.v.m128_f32[2] * ps->velocity.v.m128_f32[2]);
+        if (projectedSpeed != 0.0f)
+        {
+            ps->velocity.v =
+                _mm_div_ps(ps->velocity.v, _mm_set1_ps(projectedSpeed));
+        }
+        ps->velocity.v.m128_f32[0] *= originalSpeed;
+        ps->velocity.v.m128_f32[1] *= originalSpeed;
+        ps->velocity.v.m128_f32[2] *= originalSpeed;
+    }
+
+    if (ps->velocity.v.m128_f32[0] != 0.0f
+        || ps->velocity.v.m128_f32[1] != 0.0f)
+    {
+        PM_StepSlideMove(0);
+    }
+    PM_SetMovementDir();
+    resolve_collisions(context, oldPos);
+}
 void PM_AirMove(const collision_context_t& context)
 {
     PlayerState* ps = pm->ps;
@@ -3231,7 +3429,420 @@ void PM_AirMove(const collision_context_t& context)
     PM_SetMovementDir();
     resolve_collisions(context, oldPos);
 }
-void PM_GroundTrace() {}
+// ea: 0x00614E60
+pmove_t* PM_GroundTraceMissed()
+{
+    pmove_t* move = pm;
+    trace_t trace;
+    trace.surfaceFlags = 0;
+    trace.contents = 0;
+
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2104;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        move = pm;
+    }
+
+    const bool hadGroundEntity =
+        move->ps->mGroundEntity.mHandle.mVal != 0;
+    if (hadGroundEntity && move->debugLevel != 0)
+        Com_Printf("%i:lift\n", c_pmove);
+
+    math::Position3 end = move->ps->origin;
+    end.v.m128_f32[2] -= hadGroundEntity ? 64.0f : 1.0f;
+
+    player_collision_context_t context;
+    context.pass_entity1 = move->ps->mClient;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = move->tracemask;
+
+    move->trace(&trace, move->ps->origin, move->mins, move->maxs,
+                end, context);
+
+    if (hadGroundEntity)
+    {
+        if (trace.normal.v.m128_f32[1] == 1.0f
+            || trace.normal.v.m128_f32[1] >= 0.015625f)
+            pml.almostGroundPlane = 0;
+        else
+            pml.almostGroundPlane = 1;
+    }
+    else
+    {
+        pml.almostGroundPlane =
+            trace.normal.v.m128_f32[1] == 1.0f ? 0 : 1;
+    }
+
+    move->ps->mGroundEntity.mHandle.mVal = 0;
+    pml.groundPlane = 0;
+    pml.walking = 0;
+    return move;
+}
+
+// ea: 0x00605C00
+void PM_CrashLand()
+{
+    pmove_t* move = pm;
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1955;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        move = pm;
+    }
+    if (move->waterlevel == 3)
+        return;
+
+    const float gravity = move->ps->gravity;
+    float speedMult = 0.5f;
+    const float a = (0.0f - gravity) * 0.5f;
+    const float v3 = (a * (pml.previous_origin[2]
+                           - move->ps->origin.v.m128_f32[2])) * 4.0f;
+    float fallSpeedSquared =
+        (pml.previous_velocity[2] * pml.previous_velocity[2]) - v3;
+    if (fallSpeedSquared < 0.0f)
+        return;
+
+    const float landingTime =
+        (-pml.previous_velocity[2] - sqrtf(fallSpeedSquared)) / (a + a);
+    const float landingVelocity =
+        ((landingTime * (0.0f - gravity)) + pml.previous_velocity[2])
+        * -1.0f;
+    const float fallHeight =
+        (landingVelocity * landingVelocity) / (gravity * 2.0f);
+    fallSpeedSquared = fallHeight;
+    if (move->debugLevel != 0)
+    {
+        Com_Printf("landing vel: %.1f fall height: %.1f\n",
+                   landingVelocity, fallSpeedSquared);
+        move = pm;
+        speedMult = 0.5f;
+    }
+
+    int fallDamage;
+    if (bg_fallDamageMinHeight.value >= bg_fallDamageMaxHeight.value
+        || bg_fallDamageMinHeight.value < 0.0f)
+    {
+        Com_Printf("bg_fallDamageMaxHeight and bg_fallDamageMinHeight have bad values\n");
+        move = pm;
+        fallSpeedSquared = fallHeight;
+        speedMult = 0.5f;
+        fallDamage = 0;
+    }
+    else if (bg_fallDamageMinHeight.value >= fallHeight
+             || (pml.groundTrace.surfaceFlags & 1) != 0
+             || move->ps->pm_type >= 6)
+    {
+        fallDamage = 0;
+    }
+    else if (fallHeight >= bg_fallDamageMaxHeight.value)
+    {
+        fallDamage = 100;
+    }
+    else
+    {
+        fallDamage = static_cast<int>(
+            ((fallHeight - bg_fallDamageMinHeight.value)
+             / (bg_fallDamageMaxHeight.value - bg_fallDamageMinHeight.value))
+            * 100.0f);
+        if (fallDamage < 0)
+            fallDamage = 0;
+        if (fallDamage > 100)
+            fallDamage = 100;
+    }
+
+    if (move->waterlevel == 2)
+        fallDamage = static_cast<int>(fallDamage * 0.5f);
+
+    int fallEventParm;
+    if (fallHeight > 12.0f)
+    {
+        fallEventParm = static_cast<int>(
+            (((fallHeight - 12.0f) * 0.03846154f) + 1.0f) * 4.0f);
+        if (fallEventParm > 24)
+            fallEventParm = 24;
+    }
+    else
+    {
+        fallEventParm = 0;
+    }
+
+    if (fallDamage != 0)
+    {
+        if (move->debugLevel != 0)
+        {
+            Com_Printf("falling damage: %i\n", fallDamage);
+            move = pm;
+            speedMult = 0.5f;
+        }
+        if (fallDamage >= 100 || (pml.groundTrace.surfaceFlags & 2) != 0)
+        {
+            move->ps->velocity.v.m128_f32[0] *= 0.67000002f;
+            pm->ps->velocity.v.m128_f32[1] *= 0.67000002f;
+            move->ps->velocity.v.m128_f32[2] *= 0.67000002f;
+            BG_AddPredictableEventToPlayerstate(
+                PM_GroundSurfaceType() + 139, fallDamage, pm->ps);
+            return;
+        }
+
+        int stunTime = 35 * fallDamage + 500;
+        if (stunTime > 2000)
+        {
+            stunTime = 2000;
+            speedMult = 0.2f;
+        }
+        else if (stunTime > 500)
+        {
+            if (stunTime >= 1500)
+                speedMult = 0.2f;
+            else
+                speedMult = 0.5f
+                    - (((stunTime - 500) * 0.001f) * 0.30000001f);
+        }
+        if (move->debugLevel > 1)
+            Com_Printf("landing stun time: %i speed mult: %.2f\n",
+                       stunTime, speedMult);
+
+        int shockTime = 2 * stunTime;
+        if (shockTime >= 1000)
+        {
+            if (shockTime > 3000)
+                shockTime = 3000;
+        }
+        else
+        {
+            shockTime = 1000;
+        }
+        Broc::string vel("default");
+        Entity* player = GetPlayer(currCl);
+        gpBrocAPI->mBrocExports.mShellShock(
+            player->mHandle.mHandle.mVal, vel, shockTime * 0.001f);
+        move->ps->pm_time = stunTime;
+        move->ps->pm_flags |= 0x100u;
+        move->ps->velocity.v.m128_f32[0] *= speedMult;
+        move->ps->velocity.v.m128_f32[1] *= speedMult;
+        move->ps->velocity.v.m128_f32[2] *= speedMult;
+        BG_AddPredictableEventToPlayerstate(
+            PM_GroundSurfaceType() + 139, fallDamage, pm->ps);
+        return;
+    }
+
+    if (fallHeight > 4.0f)
+    {
+        if (fallHeight >= 8.0f)
+        {
+            if (fallHeight >= 12.0f)
+            {
+                move->ps->velocity.v.m128_f32[0] *= 0.67000002f;
+                pm->ps->velocity.v.m128_f32[1] *= 0.67000002f;
+                pm->ps->velocity.v.m128_f32[2] *= 0.67000002f;
+                BG_AddPredictableEventToPlayerstate(
+                    PM_GroundSurfaceType() + 116, fallEventParm, pm->ps);
+            }
+            else
+            {
+                const int surfaceType = PM_GroundSurfaceType();
+                if (surfaceType == 0)
+                {
+                    PM_AddEvent(0);
+                    return;
+                }
+                PM_AddEvent(surfaceType + 1);
+            }
+        }
+        else
+        {
+            const int surfaceType = PM_GroundSurfaceType();
+            if (surfaceType == 0)
+            {
+                PM_AddEvent(0);
+                return;
+            }
+            PM_AddEvent(surfaceType + 24);
+        }
+    }
+}
+
+// ea: 0x0063C340
+void PM_GroundTrace()
+{
+    InteractionController* interaction =
+        InteractionController::Inst(currCl);
+    if ((interaction->mCurState != nullptr
+         && (static_cast<unsigned char>(interaction->mFlags) & 0x80) != 0)
+        || gSceneAnimCamera)
+    {
+        pml.groundTrace.normal.v.m128_f32[0] = Float4_ZAxis_7.m128_f32[0];
+        pml.groundPlane = 1;
+        pml.walking = 1;
+        pml.groundTrace.normal.v.m128_f32[1] = Float4_ZAxis_7.m128_f32[1];
+        pml.groundTrace.normal.v.m128_f32[2] = Float4_ZAxis_7.m128_f32[2];
+        return;
+    }
+
+    pmove_t* move = pm;
+    trace_t trace;
+    math::Position3 start = move->ps->origin;
+    math::Position3 end = move->ps->origin;
+    start.v.m128_f32[2] += 1.0f;
+    end.v.m128_f32[2] -= 1.0f;
+
+    player_collision_context_t context;
+    context.pass_entity1.mHandle.mVal = move->ps->mClient.mHandle.mVal;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = move->tracemask;
+
+    const bool crouched = (move->ps->pm_flags & 1) != 0;
+    if ((crouched && move->trace != move->boxtrace)
+        || (!crouched && move->trace != move->capsuletrace))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2192;
+        AeAssert::gCurrentExpr =
+            "((pm->ps->pm_flags & (1<<0)) && (pm->trace == pm->boxtrace)) || (!(pm->ps->pm_flags & (1<<0)) && (pm->trace == pm->capsuletrace))";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        move = pm;
+    }
+
+    PM_trace(&trace, start, move->mins, move->maxs, end, context);
+    pml.groundTrace = trace;
+
+    float radius = 13.0f;
+    if (trace.allsolid != 0)
+    {
+        for (;;)
+        {
+            radius += 2.0f;
+            push_in_world(*pm, radius, context);
+            start = pm->ps->origin;
+            end = pm->ps->origin;
+            start.v.m128_f32[2] += 15.0f;
+            end.v.m128_f32[2] -= 1.0f;
+            PM_trace(&trace, start, pm->mins, pm->maxs, end, context);
+            pml.groundTrace = trace;
+            if (radius > 25.0f)
+                break;
+            if (trace.allsolid == 0)
+                goto ground_trace_after_allsolid;
+        }
+
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2213;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("stuck spot"))
+            __debugbreak();
+        pm->ps->mGroundEntity.mHandle.mVal = 0;
+        pml.groundPlane = 0;
+        pml.walking = 0;
+        pm->ps->pm_flags &= ~0x2000u;
+        pm->ps->fJumpOriginZ = 0.0f;
+    }
+
+ground_trace_after_allsolid:
+    if (trace.startsolid != 0)
+    {
+        start = pm->ps->origin;
+        end = pm->ps->origin;
+        start.v.m128_f32[2] += 2.0f;
+        end.v.m128_f32[2] -= 2.0f;
+        PM_trace(&trace, start, pm->mins, pm->maxs, end, context);
+        if (trace.startsolid != 0)
+        {
+            pm->ps->mGroundEntity.mHandle.mVal = 0;
+            pml.groundPlane = 0;
+            pml.walking = 0;
+            return;
+        }
+        pml.groundTrace = trace;
+    }
+
+    if (trace.fraction == 1.0f)
+    {
+        PM_GroundTraceMissed();
+        return;
+    }
+
+    if (trace.normal.v.m128_f32[0] == 0.0f
+        && trace.normal.v.m128_f32[1] == 0.0f
+        && trace.normal.v.m128_f32[2] == 0.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2251;
+        AeAssert::gCurrentExpr =
+            "trace.normal[0] || trace.normal[1] || trace.normal[2]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    const float velocityDot =
+        (pm->ps->velocity.v.m128_f32[1] * trace.normal.v.m128_f32[1])
+        + (pm->ps->velocity.v.m128_f32[0] * trace.normal.v.m128_f32[0])
+        + (pm->ps->velocity.v.m128_f32[2] * trace.normal.v.m128_f32[2]);
+    if ((pm->ps->pm_flags & 0x10) != 0
+        || pm->ps->velocity.v.m128_f32[2] <= 0.0f
+        || velocityDot <= 10.0f)
+    {
+        if (trace.normal.v.m128_f32[2] >= 0.69999999f)
+        {
+            pml.groundPlane = 1;
+            pml.walking = 1;
+            if (pm->ps->mGroundEntity.mHandle.mVal == 0)
+            {
+                if (pm->debugLevel != 0)
+                    Com_Printf("%i:Land\n", c_pmove);
+                PM_CrashLand();
+            }
+            pm->ps->mGroundEntity.mHandle.mVal =
+                trace.mEntity.mHandle.mVal;
+            PM_AddTouchEnt(trace.mEntity);
+        }
+        else
+        {
+            if (pm->debugLevel != 0)
+                Com_Printf("%i:steep\n", c_pmove);
+            pm->ps->mGroundEntity.mHandle.mVal = 0;
+            pml.walking = 0;
+            pml.groundPlane = 1;
+            pm->ps->pm_flags &= ~0x2000u;
+            pm->ps->fJumpOriginZ = 0.0f;
+        }
+    }
+    else
+    {
+        if (pm->debugLevel != 0)
+            Com_Printf("%i:kickoff\n", c_pmove);
+        pml.almostGroundPlane = 0;
+        pm->ps->mGroundEntity.mHandle.mVal = 0;
+        pml.groundPlane = 0;
+        pml.walking = 0;
+    }
+}
 // ea: 0x6055A0
 PlayerState* PM_NoclipMove()
 {
@@ -3448,7 +4059,303 @@ PlayerState* PM_DeadMove()
     ps->velocity.v.m128_f32[2] *= speed;
     return ps;
 }
-void PM_CheckLadderMove() {}
+// ea: 0x63DDF0
+void PM_CheckLadderMove()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 5472;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PlayerState* ps = pm->ps;
+    if (ps->pm_time != 0 && (ps->pm_flags & 0x300) != 0)
+        return;
+
+    const float tracedist = pml.walking != 0 ? 8.0f : 30.0f;
+    const bool wasOnLadder = (ps->pm_flags & 0x10) != 0;
+    float ladderCheckDir[3];
+    if (!wasOnLadder || ps->mGroundEntity.mHandle.mVal != 0)
+    {
+        ladderCheckDir[0] = pml.forward[0];
+        ladderCheckDir[1] = pml.forward[1];
+        ladderCheckDir[2] = pml.forward[2];
+        VectorNormalize(ladderCheckDir);
+    }
+    else
+    {
+        ladderCheckDir[0] = -ps->vLadderVec[0];
+        ladderCheckDir[1] = -ps->vLadderVec[1];
+        ladderCheckDir[2] = -ps->vLadderVec[2];
+    }
+    ps->pm_flags &= ~0x10u;
+
+    if (ps->pm_type >= 6)
+    {
+        ps->mGroundEntity.mHandle.mVal = 0;
+        pml.groundPlane = 0;
+        pml.walking = 0;
+        return;
+    }
+
+    const int viewHeightTarget = ps->viewHeightTarget;
+    if (!((viewHeightTarget == ps->crouchViewHeight
+           || viewHeightTarget != ps->proneViewHeight)
+          && pm->cmd.serverTime - ps->jumpTime >= 300))
+        return;
+
+    math::Position3 mins = pm->mins;
+    mins.v.m128_f32[0] += 6.0f;
+    mins.v.m128_f32[1] += 6.0f;
+    mins.v.m128_f32[2] = 8.0f;
+
+    math::Position3 maxs = pm->maxs;
+    maxs.v.m128_f32[0] -= 6.0f;
+    maxs.v.m128_f32[1] -= 6.0f;
+    maxs.v.m128_f32[2] -= 6.0f;
+    if (maxs.v.m128_f32[2] < 8.0f)
+        maxs.v.m128_f32[2] = 8.0f;
+
+    if (maxs.v.m128_f32[0] < mins.v.m128_f32[0])
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 5541;
+        AeAssert::gCurrentExpr = "maxs[0] >= mins[0]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (maxs.v.m128_f32[1] < mins.v.m128_f32[1])
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 5542;
+        AeAssert::gCurrentExpr = "maxs[1] >= mins[1]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (maxs.v.m128_f32[2] < mins.v.m128_f32[2])
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 5543;
+        AeAssert::gCurrentExpr = "maxs[2] >= mins[2]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    math::Position3 spot = ps->origin;
+    spot.v.m128_f32[0] += ladderCheckDir[0] * tracedist;
+    spot.v.m128_f32[1] += ladderCheckDir[1] * tracedist;
+    spot.v.m128_f32[2] += ladderCheckDir[2] * tracedist;
+
+    Entity* ent = HandleDbToEnt(ps->mClient);
+    if (ent == nullptr || ent->proximity_data == nullptr)
+        return;
+
+    proximity_data_t* proximity_data = ent->proximity_data;
+    math::Position3 lo;
+    lo.v = _mm_min_ps(ps->origin.v, spot.v);
+    math::Position3 hi;
+    hi.v = _mm_max_ps(ps->origin.v, spot.v);
+
+    math::Position3 halfExtents;
+    halfExtents.v = _mm_sub_ps(
+        maxs.v,
+        _mm_mul_ps(_mm_add_ps(mins.v, maxs.v), _mm_set1_ps(0.5f)));
+    float radius = halfExtents.v.m128_f32[0];
+    if (radius > halfExtents.v.m128_f32[2])
+        radius = halfExtents.v.m128_f32[2];
+
+    // pm_spectatorfriction @ 0xD01534 is an IDA float with value 5.0f.
+    const __m128 ladderRadius =
+        _mm_setr_ps(radius, radius, radius * 5.0f, 0.0f);
+    math::Position3 expandedLo;
+    expandedLo.v = _mm_sub_ps(lo.v, ladderRadius);
+    math::Position3 expandedHi;
+    expandedHi.v = _mm_add_ps(hi.v, ladderRadius);
+
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 proximitySeparation = _mm_max_ps(
+        _mm_sub_ps(proximity_data->lo.v, expandedLo.v),
+        _mm_sub_ps(expandedHi.v, proximity_data->hi.v));
+    bool found = false;
+    if ((_mm_movemask_ps(
+             _mm_cmplt_ps(proximitySeparation, zero))
+         & 7) == 7)
+    {
+        CGBankManager* cgBankManager =
+            (CGBankManager*)CGBankManager::sInst;
+
+        for (int i = 0; i < proximity_data->brushes_count; ++i)
+        {
+            const proxy_obj_t& slot = proximity_data->brushes_slot[i];
+            CGBank* bank = cgBankManager->mBankArray[slot.bi];
+            const unsigned int oi = slot.oi;
+            if (oi >= (unsigned int)bank->objects.m_count)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                AeAssert::gCurrentLine = 233;
+                AeAssert::gCurrentExpr = "index < size()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+                if (oi >= (unsigned int)bank->objects.m_count
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                           89, "index >= 0 && index < size()",
+                           "invalid index"))
+                    __debugbreak();
+            }
+            const cdl_object_t& object =
+                ((cdl_object_t*)bank->objects.m_elements)[oi];
+            if ((object.sflags & 8) == 0)
+                continue;
+
+            const __m128 center = _mm_setr_ps(
+                object.center[0], object.center[1], object.center[2], 0.0f);
+            const __m128 boxRadius = _mm_setr_ps(
+                object.box_radius[0], object.box_radius[1],
+                object.box_radius[2], 0.0f);
+            const __m128 separation = _mm_max_ps(
+                _mm_sub_ps(center, expandedHi.v),
+                _mm_sub_ps(expandedLo.v, center));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(separation, boxRadius)) & 7)
+                == 7)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        for (int i = 0; i < proximity_data->boxes_count; ++i)
+        {
+            const proxy_obj_t& slot = proximity_data->boxes_slot[i];
+            CGBank* bank = cgBankManager->mBankArray[slot.bi];
+            const unsigned int oi = slot.oi;
+            if (oi >= (unsigned int)bank->objects.m_count)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                AeAssert::gCurrentLine = 233;
+                AeAssert::gCurrentExpr = "index < size()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+                if (oi >= (unsigned int)bank->objects.m_count
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                           89, "index >= 0 && index < size()",
+                           "invalid index"))
+                    __debugbreak();
+            }
+            const cdl_object_t& object =
+                ((cdl_object_t*)bank->objects.m_elements)[oi];
+            if ((object.sflags & 8) == 0)
+                continue;
+
+            const __m128 center = _mm_setr_ps(
+                object.center[0], object.center[1], object.center[2], 0.0f);
+            const __m128 boxRadius = _mm_setr_ps(
+                object.box_radius[0], object.box_radius[1],
+                object.box_radius[2], 0.0f);
+            const __m128 separation = _mm_max_ps(
+                _mm_sub_ps(center, expandedHi.v),
+                _mm_sub_ps(expandedLo.v, center));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(separation, boxRadius)) & 7)
+                == 7)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        for (int i = 0; i < proximity_data->polies_count; ++i)
+        {
+            const bounded_proxy_obj_t& slot = proximity_data->polies_slot[i];
+            const __m128 polyMin = _mm_setr_ps(
+                slot.min[0], slot.min[1], slot.min[2], 0.0f);
+            const __m128 polyMax = _mm_setr_ps(
+                slot.max[0], slot.max[1], slot.max[2], 0.0f);
+            const __m128 separation = _mm_max_ps(
+                _mm_sub_ps(polyMin, expandedHi.v),
+                _mm_sub_ps(expandedLo.v, polyMax));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(separation, zero)) & 7) != 7)
+                continue;
+
+            CGBank* bank = cgBankManager->mBankArray[slot.bi];
+            const unsigned int oi = slot.oi;
+            if (oi >= (unsigned int)bank->objects.m_count)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                AeAssert::gCurrentLine = 233;
+                AeAssert::gCurrentExpr = "index < size()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+                if (oi >= (unsigned int)bank->objects.m_count
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                           89, "index >= 0 && index < size()",
+                           "invalid index"))
+                    __debugbreak();
+            }
+            if ((((cdl_object_t*)bank->objects.m_elements)[oi].sflags & 8)
+                != 0)
+            {
+                found = true;
+                break;
+            }
+        }
+    }
+
+    if (!found)
+        return;
+
+    player_collision_context_t context;
+    context.pass_entity1.mHandle.mVal = ps->mClient.mHandle.mVal;
+    memset(&context.pass_entity2, 0, 12);
+    context.contentmask = pm->tracemask;
+
+    trace_t trace;
+    PM_trace(&trace, ps->origin, mins, maxs, spot, context);
+    if (trace.fraction >= 1.0f || (trace.surfaceFlags & 8) == 0
+        || (pml.walking != 0 && pm->cmd.forwardmove <= 0))
+        return;
+
+    ps->vLadderVec[0] = trace.normal.v.m128_f32[0];
+    ps->vLadderVec[1] = trace.normal.v.m128_f32[1];
+    ps->vLadderVec[2] = trace.normal.v.m128_f32[2];
+    if (wasOnLadder)
+    {
+        ps->pm_flags |= 0x10u;
+        return;
+    }
+
+    spot.v.m128_f32[0] = ps->origin.v.m128_f32[0]
+                         - ps->vLadderVec[0] * tracedist;
+    spot.v.m128_f32[1] = ps->origin.v.m128_f32[1]
+                         - ps->vLadderVec[1] * tracedist;
+    spot.v.m128_f32[2] = ps->origin.v.m128_f32[2]
+                         - ps->vLadderVec[2] * tracedist;
+    PM_trace(&trace, ps->origin, mins, maxs, spot, context);
+    if (trace.fraction < 1.0f && (trace.surfaceFlags & 8) != 0)
+        ps->pm_flags |= 0x10u;
+}
 void PM_FoliageSounds()
 {
     if (bg_foliagesnd_minspeed.integer <= pm->xyspeed)

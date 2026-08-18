@@ -56,6 +56,10 @@ int atoi(const char* nptr)
 }
 extern struct cvar_t* com_sv_running;
 extern struct cvar_t* com_cl_running;
+extern struct cvar_t* cl_showSend;
+extern struct cvar_t* cl_avidemo;
+extern struct cvar_t* cl_forceavidemo;
+extern struct cvar_t* cl_capturemovie;
 extern int dword_F0F200[2];
 int dword_F0F204[2];
 extern char byte_F0F208[];
@@ -349,6 +353,10 @@ void CL_Init()
     CL_InitInput();
     cl_noprint = Cvar_Get("cl_noprint", "0", 0);
     cl_shownet = Cvar_Get("cl_shownet", "0", 256);
+    cl_showSend = Cvar_Get("cl_showSend", "0", 256);
+    cl_avidemo = Cvar_Get("cl_avidemo", "0", 0);
+    cl_forceavidemo = Cvar_Get("cl_forceavidemo", "0", 0);
+    cl_capturemovie = Cvar_Get("capture_movie", "", 0);
     cl_yawspeed = Cvar_Get("cl_yawspeed", "140", 1);
     cl_pitchspeed = Cvar_Get("cl_pitchspeed", "140", 1);
     cl_anglespeedkey = Cvar_Get("cl_anglespeedkey", "1.5", 0);

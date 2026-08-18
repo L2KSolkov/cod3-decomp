@@ -15,7 +15,7 @@ extern FEManager g_femanager;          // ?g_femanager@@3UFEManager@@A
 extern int currCl;                     // ?currCl@@3HA @ 0xF1579C
 extern const char* const defaultFileName;  // ?defaultFileName
 extern void* mem_heap_malloc(unsigned int size);  // core.o
-extern SaveGameData* gSaveGameData;    // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];    // ?gSaveGameData@@3PAUSaveGameData@@A
 extern void j_nullsub_96();            // ?nullsub_96
 extern float Sys_Time();               // ?Sys_Time@@YAMXZ
 

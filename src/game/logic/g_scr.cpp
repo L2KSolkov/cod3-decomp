@@ -3971,7 +3971,7 @@ enum {
 namespace PlayerStats {
 bool IsStatSpecificToAPlayerClass(int stat);  // ?IsStatSpecificToAPlayerClass@PlayerStats@@YA_NH@Z
 EPlayerClass GetStatSpecificToAPlayerClass(int stat);  // ?GetStatSpecificToAPlayerClass@PlayerStats@@YA?AW4EPlayerClass@@H@Z
-int TotalScoreForStats(short* stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z
+int TotalScoreForStats(short* const stats);  // ?TotalScoreForStats@PlayerStats@@YAHQAF@Z
 }
 extern void CG_Obituary(Entity* target, Entity* attacker, int parm,
                         bool teamGame);  // ?CG_Obituary@@YAXPAVEntity@@0H_N@Z

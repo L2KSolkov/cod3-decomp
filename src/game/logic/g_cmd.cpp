@@ -6,8 +6,12 @@
 #include "game/logic/g_local.h"
 #include "core/PoolAllocator.h"
 
+#include <new>
 #include <stdio.h>
 #include <string.h>
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 
 // ============================================================================
 // Command globals (game.o data)
@@ -2050,6 +2054,7 @@ public:
     };
     Context mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
     static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
+    static PadAliasMgr* CreateInst();  // ?CreateInst@PadAliasMgr@@SAXXZ
     static PadAliasMgr* Inst();  // ?Inst@PadAliasMgr@@SAPAV1@XZ (g.o 0x4ABF30)
     Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
@@ -2061,6 +2066,28 @@ PadAliasMgr* PadAliasMgr::sInst = nullptr;
 PadAliasMgr* PadAliasMgr::Inst()
 {
     return PadAliasMgr::sInst;
+}
+
+// ea: 0x004DEDF0
+PadAliasMgr* PadAliasMgr::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.h";
+        AeAssert::gCurrentLine = 46;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x3D8u, 4, "core", "c:\\cod\\code\\game\\PadAliasMgr.h", 46);
+    if (memory != nullptr)
+        sInst = new (memory) PadAliasMgr();
+    else
+        sInst = nullptr;
+    return sInst;
 }
 PadAliasMgr::Context& PadAliasMgr::GetCtx(EPadAliasContext ctxIndex)
 {

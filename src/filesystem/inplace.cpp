@@ -24,8 +24,8 @@ namespace AeAssert {
 // ============================================================================
 class PtrFixupTable {
 public:
-    uint32_t* mList;   // +0x00 — pointer to fixup list (offset-fixed at load)
-    uint32_t  mSize;   // +0x04 — number of fixup entries
+    uint32_t  mSize;   // +0x00 — number of fixup entries
+    uint32_t* mList;   // +0x04 — pointer to fixup list (offset-fixed at load)
 
     void Fixup(const void* basePtr);
 };
@@ -57,9 +57,15 @@ void ExtractNode(int packed, uint32_t nextBits, int* outOffset, uint32_t* outNex
 // ea: 0x7E1890
 // ============================================================================
 static void FixupPointerChain(uint32_t nextBits, uint32_t* node) {
+    uint32_t next;
     int offset;
-    ExtractNode(*node, nextBits, &offset, &nextBits);
-    *node = (uint32_t)(uintptr_t)((uint8_t*)node + offset);
+    do {
+        offset = 0;
+        next = 0;
+        ExtractNode(*node, nextBits, &offset, &next);
+        *node = (uint32_t)(uintptr_t)((uint8_t*)node + offset);
+        node = (uint32_t*)((uint8_t*)node + next);
+    } while (next != 0);
 }
 
 // ============================================================================

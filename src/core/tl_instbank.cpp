@@ -24,17 +24,19 @@ tlInstanceBank::tlInstanceBank() : NIL(nullptr), Head(nullptr) {
 // ea: 0x833FC0
 // ============================================================================
 void tlInstanceBank::Init() {
-    if (NIL) Destroy();
+    if (NIL != nullptr)
+        return;
 
-    NIL = NewNodeOfLevel(MAX_LEVEL);
-    memset(NIL, 0, 4 * MAX_LEVEL + 44);
-    Head = NIL;
-    Level = 0;
+    NIL = (Instance*)tlMemAlloc(0x2C, 8, 0);
+    for (int i = 0; i < 8; ++i)
+        ((uint32_t*)&NIL->Key)[i] = 0xFFFFFFFFu;
+
     RandomBits = rand();
     RandomsLeft = 7;
-
-    NIL->Key.hash = 0xFFFFFFFF;
-    NIL->Key.str[0] = 0;
+    Level = 0;
+    Head = (Instance*)tlMemAlloc(0x6C, 8, 0);
+    for (int offset = 0x28; offset < 0x6C; offset += 4)
+        *(Instance**)((uint8_t*)Head + offset) = NIL;
 }
 
 // ============================================================================

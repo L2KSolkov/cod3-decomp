@@ -92,7 +92,6 @@ const char* szXBoxOptionDescriptionReferences[5] = {
 STBManager* STBManager::sInst;
 extern bool g_controllerConnectedErrorShown[];
 extern bool g_IgnoreUIXInput;
-FEManager g_femanager;
 int currCl;
 int cg_widescreen_integer;
 int controller::num_controllers = 4;

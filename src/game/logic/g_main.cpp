@@ -4149,7 +4149,7 @@ skip_fill:
         extern void* AnimBankManager_GetBank(void* self, TPakId pakId);
         g_xanim_num =
             AnimBank_anims_mSize(AnimBankManager_GetBank(
-                AnimBankManager_sInst, (TPakId)kPakTypeLevel));
+                AnimBankManager_sInst, (TPakId)PAK_ID_MIN));
         GScr_LoadScriptsAndAnimsForEntities();
         Scr_PrecacheAnimTrees(Hunk_AllocXAnimCreate, restart != 0);
         AnimTree* generic = Scr_GetAnimTreeByName("generic_human");

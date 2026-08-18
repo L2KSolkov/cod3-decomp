@@ -81,7 +81,7 @@ extern void  mem_heap_free(void* ptr);               // core.o
 extern FEManager g_femanager;                        // ?g_femanager@@3UFEManager@@A
 extern int currCl;                                   // ?currCl@@3HA @ 0xF1579C
 extern ELanguage gLanguage;                          // ?gLanguage@@3W4ELanguage@@A
-extern SaveGameData* gSaveGameData;                  // ?gSaveGameData@@3PAUSaveGameData@@A
+extern SaveGameData gSaveGameData[4];                  // ?gSaveGameData@@3PAUSaveGameData@@A
 extern const char* const defaultFileName;            // ?defaultFileName
 extern float sNaN;                                   // ?sNaN@@3MA
 extern void AeAssert_Assert(const char* fmt, ...);

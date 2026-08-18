@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <intrin.h>
+#include <new>
 #include "core/mem_heap.h"
 #include "core/memory_types.h"
 #include "core/color.h"
@@ -23,6 +24,9 @@
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 #include "engine/broc_types.h"
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 
 // PakFile bank flags (PakFile.cpp; header flags + runtime state)
 #define PAK_BANK_FLAG_APK_HEADER 0x80      // bank is apk-backed (header)
@@ -811,6 +815,8 @@ public:
     TBankAlloc m_last_alloc;      // +0x20
 
     static BankManager* sInst;    // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
+    static void CreateInst();     // ?CreateInst@BankManager@@SAXXZ
+    static void DeleteInst();     // ?DeleteInst@BankManager@@SAXXZ
     BankManager();                // ??0BankManager@@QAE@XZ
     ~BankManager();               // ??1BankManager@@AAE@XZ @ 0x66B1D0
     float GetNumBanks() const;    // ?GetNumBanks@BankManager@@QBEMXZ
@@ -1051,7 +1057,9 @@ class FEManager {
 public:
     void DrawDiscError();  // ?DrawDiscError@FEManager@@QAEXXZ (shell.o; stub)
     void UnloadBank(TPakId pakId);  // ?UnloadBank@FEManager@@QAEXW4TPakId@@@Z (shell.o; stub)
+    void UpdateButtonFontForLanguage();  // ?UpdateButtonFontForLanguage@FEManager@@QAEXXZ
 };
+extern FEManager g_femanager;
 // shell.o owns the real symbol; placeholder until shell.o is ported
 FEManager g_femanager;
 void FEManager::UnloadBank(TPakId pakId)
@@ -1248,7 +1256,6 @@ public:
     bool         mOnlyLoadHeader;       // +0x9D
     ae_sized_array<mem_heap*, 12> mHeapList;  // +0xA0
     ae_sized_array<PakFile*, 4>   mPrereqHeaps;  // +0xD4
-    uint8_t      _padE4[0xE8 - 0xE4];
     unsigned int mCurrentFile;          // +0xE8
     unsigned char* mCurrentFilePtr;     // +0xEC
     void*        mCurrentApk;           // +0xF0
@@ -1375,8 +1382,8 @@ struct PakInfoNode;
 
 struct PakInfoNode {
     EPakType    pakType;        // +0x00
-    void*       longName;       // +0x04
-    void*       path;           // +0x08
+    InplaceString longName;     // +0x04
+    InplaceString path;         // +0x08
     NumBanks    numBanks;       // +0x0C
     struct {
         unsigned int mSize;          // +0x2C
@@ -2134,6 +2141,8 @@ public:
     MipSettingsBank* mMipSettingsBank;  // +0x30
     InstanceBankSet* mEntries[99];  // +0x34
     static InstanceBankMgr* sInst;  // ?sInst@InstanceBankMgr@@2PAV1@A
+    static void CreateInst();  // ?CreateInst@InstanceBankMgr@@SAXXZ
+    static void DeleteInst();  // ?DeleteInst@InstanceBankMgr@@SAXXZ
 
     void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
     void DecodeInstbank(const char* name, unsigned char* data, int size,
@@ -2165,26 +2174,57 @@ public:
 };
 InstanceBankMgr* InstanceBankMgr::sInst = nullptr;
 
+// ea: 0x004DC4B0 (core.o inline)
+void InstanceBankMgr::CreateInst()
+{
+    if (sInst != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\InstanceBankMgr.h", 144,
+                     "sInst==0", "singleton already created!"))
+        __debugbreak();
+
+    void* memory = mem_heap_malloc_ctx(
+        0x1C0u, 4, "pak", "c:\\cod\\code\\game\\InstanceBankMgr.h", 144);
+    if (memory != nullptr)
+        sInst = new (memory) InstanceBankMgr();
+    else
+        sInst = nullptr;
+}
+
+// ea: 0x004E2630 (core.o inline)
+void InstanceBankMgr::DeleteInst()
+{
+    if (sInst == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\InstanceBankMgr.h", 144,
+                     "sInst!=0", "singleton not created!"))
+        __debugbreak();
+    if (sInst != nullptr)
+    {
+        sInst->~InstanceBankMgr();
+        mem_heap_free(sInst);
+    }
+    sInst = nullptr;
+}
+
 // per-instantiation bank type / name offset for cdResourceDirectory
 template <typename T> struct CdResourceTraits;
 template <> struct CdResourceTraits<nalAnimClass<nalAnyPose>> {
-    static const int kBankType = INSTBANK_TYPE_ANIMFILE;
-    static const int kNameOffset = 0x00;  // DataPtr->Name
+    static const int kBankType = 5;  // IDA: cdResourceDirectory::Add pushes 5
+    static const int kNameOffset = 0x08;  // DataPtr->Name (IDA: nalAnimClass::Name)
     static const char* const kDirectoryName;  // "cdAnimDirectory"
 };
 template <> struct CdResourceTraits<nalSceneAnim> {
-    static const int kBankType = INSTBANK_TYPE_ANIM;
+    static const int kBankType = 6;  // IDA: cdResourceDirectory::Add pushes 6
     static const int kNameOffset = 0x10;  // DataPtr->Header.Name
     static const char* const kDirectoryName;  // "cdSceneAnimDirectory"
 };
 template <> struct CdResourceTraits<nalAnimFile> {
-    static const int kBankType = INSTBANK_TYPE_MESH;
+    static const int kBankType = 4;  // IDA: cdResourceDirectory::Add pushes 4
     static const int kNameOffset = 0x10;  // DataPtr->Header.Name
     static const char* const kDirectoryName;  // "cdAnimFileDirectory"
 };
 template <> struct CdResourceTraits<nalBaseSkeleton> {
-    static const int kBankType = INSTBANK_TYPE_ANIMOFFSET;
-    static const int kNameOffset = 0x00;  // DataPtr->Name
+    static const int kBankType = 8;  // IDA: cdResourceDirectory::Add pushes 8
+    static const int kNameOffset = 0x08;  // DataPtr->Name
     static const char* const kDirectoryName;  // "cdSkeletonDirectory"
 };
 const char* const CdResourceTraits<nalAnimClass<nalAnyPose>>::kDirectoryName = "cdAnimDirectory";
@@ -2725,6 +2765,8 @@ public:
     int     mFirstBank;             // +0x1CC
     int     mListSize;              // +0x1D0
 
+    static void CreateInst();
+    static void DeleteInst();
     StreamZoneManager();       // ??0StreamZoneManager@@QAE@XZ @ 0x678250
     ~StreamZoneManager();      // ??1StreamZoneManager@@UAE@XZ @ 0x6782F0
     static void SingletonDebugRender();  // ?SingletonDebugRender@StreamZoneManager@@SAXXZ @ 0x687640
@@ -2942,8 +2984,8 @@ public:
 // PtrFixupTable (inplace.cpp; mList +0, mSize +4)
 class PtrFixupTable {
 public:
-    void*        mList;  // +0x00
-    unsigned int mSize;  // +0x04
+    unsigned int mSize;  // +0x00
+    void*        mList;  // +0x04
 
     void Fixup(const void* basePtr);  // ?Fixup@PtrFixupTable@@QAEXPBX@Z (inplace.cpp 0x7E18D0)
 };
@@ -3141,7 +3183,17 @@ ae_heap* gActorHeap = nullptr;
 // ea: 0x8A39E0 (core.o inline)
 void PakManager::CreateInst()
 {
-    // stub: sInst = new PakManager
+    if (sInst != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\PakManager.h", 76,
+                     "sInst==0", "singleton already created!"))
+        __debugbreak();
+
+    void* memory = mem_heap_malloc_ctx(
+        0x45A4u, 4, "pak", "c:\\cod\\code\\game\\PakManager.h", 76);
+    if (memory != nullptr)
+        sInst = new (memory) PakManager();
+    else
+        sInst = nullptr;
 }
 
 // ea: 0x004A5020 / 0x004A5030 / 0x004A5040 (g.o accessors; defined here
@@ -3166,7 +3218,16 @@ int PakFile::get_dlist_node_offset()
 // ea: 0x8D4D40 (core.o inline)
 void PakManager::DeleteInst()
 {
-    // stub
+    if (sInst == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\PakManager.h", 76,
+                     "sInst!=0", "singleton not created!"))
+        __debugbreak();
+    if (sInst != nullptr)
+    {
+        sInst->~PakManager();
+        mem_heap_free(sInst);
+    }
+    sInst = nullptr;
 }
 
 unsigned int PakManager::sComputeDistanceKey = 1;
@@ -5732,7 +5793,7 @@ void* PakFile::PakReadDataAsync(unsigned char* buffer,
     nflRequestID v8 = nflReadFileAsyncWithCallBack(
         mFileId, isHeader, uncompressedSize, compressedSize, codNflCallback);
     nflSetRequestPriority(v8, (nflPriority)NFL_PRIORITY_LOWEST);
-    *buffer = (unsigned char)v8;
+    *(unsigned int*)buffer = (unsigned int)v8;
     return buffer;
 }
 
@@ -6999,7 +7060,7 @@ struct nflMediaAlignments {
 struct nfdDriver;
 
 enum {
-    NFL_BUFFER_MODE_UNALIGNED = 0,
+    NFL_BUFFER_MODE_UNALIGNED = 2,
     NFL_BUFFER_MODE_ALL = 3,
     NFL_THREAD_MODE_SINGLE = 0,
 };
@@ -7010,7 +7071,7 @@ extern nflMediaAlignments* nflGetMediaAlignments(nflMediaID mediaID,
 extern nflMediaID gNflMediaId;    // ?gNflMediaId@@3W4nflMediaID@@A
 void* gNflMemAlloc = nullptr;     // ?gNflMemAlloc@@3PAXA
 unsigned int gNflAlignment = 0;   // ?gNflAlignment@@3IA
-nflMediaID gNflMediaId = NFL_MEDIA_DEFAULT;
+nflMediaID gNflMediaId = NFL_MEDIA_ID_DISC;
 
 extern void nflShutdown();  // nfl_common.o
 
@@ -7154,7 +7215,7 @@ void PakFile::RenderDebug()
     if (mPakInfo != nullptr)
     {
         Color white = {1.0f, 1.0f, 1.0f, 1.0f};
-        DebugRender::RenderText(((InplaceString*)mPakInfo->longName)->mStr,
+        DebugRender::RenderText(mPakInfo->longName.mStr,
                                 (int)(x1 * ScreenWidth),
                                 (int)(y1 * ScreenHeight - 22.0f), white,
                                 0.0f, 1.0f);
@@ -7414,7 +7475,7 @@ const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
                      ++v10)
                 {
                     const PakInfoNode* v12 = mPakInfoBank->mPtrs.mList[v10];
-                    if (strstr(((InplaceString*)v12->path)->mStr, v4)
+                    if (strstr(v12->path.mStr, v4)
                         != nullptr)
                         return v12;
                 }
@@ -7425,7 +7486,7 @@ const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
                 for (unsigned int v14 = 0; v14 < v13->mPtrs.mSize; ++v14)
                 {
                     const PakInfoNode* v12 = v13->mPtrs.mList[v14];
-                    if (_stricmp(((InplaceString*)v12->path)->mStr, v4) == 0)
+                    if (_stricmp(v12->path.mStr, v4) == 0)
                         return v12;
                 }
             }
@@ -7448,9 +7509,10 @@ void PakInfoBank::Fixup()
             && AeAssert::Assert("Fixup offset is unusually large"))
             __debugbreak();
     }
-    mPtrFixupTable = (char*)this + (uintptr_t)mPtrFixupTable;
-    // PtrFixupTable::Fixup(this, basePtr) - fixup table walk not ported;
-    // the tree/vector pointers are already relative and fixed by Find/At.
+    PtrFixupTable* fixupTable =
+        (PtrFixupTable*)((char*)this + (uintptr_t)mPtrFixupTable);
+    mPtrFixupTable = fixupTable;
+    fixupTable->Fixup(this);
 }
 
 // ELanguage (core_globals.h ABI twin; values verified vs LanguageStr disasm)
@@ -7468,12 +7530,12 @@ bool gUKBuild = false;       // ?gUKBuild@@3_NA @ 0xF91D18
 extern unsigned int XGetLanguage();  // xbox platform
 unsigned int XGetLanguage()
 {
-    return 0;  // stub: returns English locale on Win32
+    return 1;  // Xbox language ID 1 is English; GetXboxLanguage subtracts 1.
 }
 extern void FEManager_UpdateButtonFontForLanguage(void* self);
 void FEManager_UpdateButtonFontForLanguage(void* self)
 {
-    (void)self;
+    static_cast<FEManager*>(self)->UpdateButtonFontForLanguage();
 }
 
 // BrocSys (broc; NotifyPakLoaded/Unloaded)
@@ -7577,7 +7639,7 @@ void PakManager::UpdateInfo()
         for (unsigned int v5 = 0; v5 < mPakInfoBank->mPtrs.mSize; ++v5)
         {
             const PakInfoNode* node = mPakInfoBank->mPtrs.mList[v5];
-            if (strstr(((InplaceString*)node->path)->mStr, path) != nullptr)
+            if (strstr(node->path.mStr, path) != nullptr)
             {
                 if (node->pakId != PAK_ID_INVALID && node->pakId != pakId)
                 {
@@ -7602,7 +7664,7 @@ void PakManager::UpdateInfo()
             {
                 const PakInfoNode* node =
                     mLevelPakInfoBank->mPtrs.mList[v19];
-                if (strstr(((InplaceString*)node->path)->mStr, path)
+                if (strstr(node->path.mStr, path)
                     != nullptr)
                 {
                     if (node->pakId != PAK_ID_INVALID
@@ -7776,16 +7838,18 @@ TPakId PakManager::AsyncLoadPak(EPakType pak_type, const char* path,
     nflMediaID v4 = (nflMediaID)gNflMediaId;
     if (nflFileExists(v4, path) != 0
         || (GetPakInfo(path) != nullptr
-            && (path = ((InplaceString*)GetPakInfo(path)->path)->mStr,
+            && (path = GetPakInfo(path)->path.mStr,
                 nflFileExists(v4, path) != 0)))
     {
         TPakId mPakIdServer = this->mPakIdServer;
+        const TPakId pakId = mPakIdServer;
         PakFile* v8 =
             (PakFile*)PakFile::sAllocator->Allocate(0x114u, false);
         PakFile* v9 = v8;
         if (v9 != nullptr)
             v9->PakFile::PakFile(pak_type, path, mPakIdServer, num_banks);
-        v9->m_dlist_node.m_next = (void*)mActivePaks.m_end;
+        v9->m_dlist_node.m_next =
+            (void*)&mActivePaks.m_end;
         reserved_dlist<PakFile>::dlist_node* m_tail = mActivePaks.m_tail;
         v9->m_dlist_node.m_prev = (void*)m_tail;
         m_tail->m_next =
@@ -7836,21 +7900,21 @@ TPakId PakManager::AsyncLoadPak(EPakType pak_type, const char* path,
                 && AeAssert::Assert("slot already used!"))
                 __debugbreak();
         }
-        mPakIdServer = v14;
+        this->mPakIdServer = v14;
         mState = STATE_LOADING;
-        mCurrentPakId = mPakIdServer;
+        mCurrentPakId = pakId;
         if (pak_type != kPakTypeGlobal)
         {
             switch (pak_type)
             {
             case kPakTypeAnimation:
-                mAnimPakId = mPakIdServer;
+                mAnimPakId = pakId;
                 break;
             case kPakTypeLevel:
-                mLevelPakId = mPakIdServer;
+                mLevelPakId = pakId;
                 break;
             case kPakTypeCount:
-                mDebugPakId = mPakIdServer;
+                mDebugPakId = pakId;
                 break;
             default:
                 break;
@@ -7858,9 +7922,9 @@ TPakId PakManager::AsyncLoadPak(EPakType pak_type, const char* path,
         }
         else
         {
-            mGlobalPakId = mPakIdServer;
+            mGlobalPakId = pakId;
         }
-        return mPakIdServer;
+        return pakId;
     }
     else
     {
@@ -7915,7 +7979,7 @@ TPakId PakManager::SyncLoadPak(const PakInfoNode* cpak)
             SyncLoadPak(i);
         mCurrentPakInfo = const_cast<PakInfoNode*>(cpak);
         TPakId Pak = AsyncLoadPak(cpak->pakType,
-                                  ((InplaceString*)cpak->path)->mStr,
+                                  cpak->path.mStr,
                                   cpak->numBanks);
         const_cast<PakInfoNode*>(cpak)->pakId = Pak;
         if (Pak != PAK_ID_INVALID)
@@ -8043,7 +8107,8 @@ void PakManager::Update(bool calledFromMovie)
     reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
     reserved_dlist<PakFile>::dlist_node* m_next =
         m_head != nullptr ? m_head->m_next : nullptr;
-    if (m_head != mActivePaks.m_end && m_next != nullptr)
+    if (m_head != (reserved_dlist<PakFile>::dlist_node*)&mActivePaks.m_end
+        && m_next != nullptr)
     {
         do
         {
@@ -8096,7 +8161,8 @@ void PakManager::ProgressUpdate()
     reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
     reserved_dlist<PakFile>::dlist_node* m_next =
         m_head != nullptr ? m_head->m_next : nullptr;
-    if (m_head == mActivePaks.m_end)
+    if (m_head
+        == (reserved_dlist<PakFile>::dlist_node*)&mActivePaks.m_end)
     {
         m_next = nullptr;
         m_head = nullptr;
@@ -8302,7 +8368,7 @@ void PakManager::DebugRender()
                     v17 = (const char*)pak + 12;
                 else
                     v17 =
-                        ((InplaceString*)pak->mPakInfo->path)->mStr;
+                        pak->mPakInfo->path.mStr;
             }
 
             ae_fixed_string<256, unsigned short> v77;
@@ -8371,7 +8437,7 @@ void PakManager::DebugRender()
             int oLen = 0;
             AeStringSupport::CStrToAeStr(
                 (char*)v77.mBuff, &oLen, 254,
-                ((InplaceString*)mNextPakInfo->path)->mStr);
+                mNextPakInfo->path.mStr);
             v77.mLength = (unsigned char)oLen;
             ae_fixed_string<256, unsigned short> v75 =
                 v77.get_file_name(true);
@@ -9274,7 +9340,7 @@ void PakManager::UpdateNormal()
         {
             mCurrentPakInfo = hp;
             TPakId Pak = AsyncLoadPak(hp->pakType,
-                                      ((InplaceString*)hp->path)->mStr,
+                                      hp->path.mStr,
                                       hp->numBanks);
             hp->pakId = Pak;
             mCurSection = hp;
@@ -9346,7 +9412,7 @@ void PakFile::UpdateUnloading()
             if (mPakInfo == nullptr)
                 mPakInfo = PakManager::sInst->GetPakInfo(mPakId);
             BrocSys::NotifyPakUnloaded(
-                ((InplaceString*)mPakInfo->longName)->mStr);
+                mPakInfo->longName.mStr);
         }
         break;
     default:
@@ -9397,7 +9463,7 @@ void PakFile::UpdateLoading()
                 {
                     const PakInfoNode* Info = GetInfo();
                     BrocSys::NotifyPakLoaded(
-                        ((InplaceString*)Info->longName)->mStr);
+                        Info->longName.mStr);
                 }
                 G_ParseInteractionInfo(mPakId);
                 unsigned int numSections = mHeader->numSections;
@@ -9991,12 +10057,12 @@ const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
                     PakHeader::Bank& bank = sec.banks[bankIndex];
                     if (bank.compressedSize != 0)
                         id.nflId = (nflRequestID)
-                            *(unsigned char*)pak->PakReadDataAsync(
+                            *(unsigned int*)pak->PakReadDataAsync(
                                 (unsigned char*)&id, v30.data, fileSize,
                                 bank.compressedSize, id.nflId);
                     else
                         id.nflId = (nflRequestID)
-                            *(unsigned char*)pak->PakReadDataAsync(
+                            *(unsigned int*)pak->PakReadDataAsync(
                                 (unsigned char*)&id, v30.data,
                                 (fileSize + 0x7FFF) & 0xFFFF8000, 0,
                                 id.nflId);
@@ -10922,6 +10988,37 @@ StreamZoneManager::StreamZoneManager()
     mDebugRenderMode = 0;
     zoneGraphScale = 0.0f;
     Cmd_AddCommand("ZoneGraph", ToggleZoneGraph);
+}
+
+// ea: 0x4DCD30 (core.o inline)
+void StreamZoneManager::CreateInst()
+{
+    if (sInst != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\StreamZoneManager.h", 31,
+                     "sInst==0", "singleton already created!"))
+        __debugbreak();
+
+    void* memory = mem_heap_malloc_ctx(
+        0x1E0u, 16, "pak", "c:\\cod\\code\\game\\StreamZoneManager.h", 31);
+    if (memory != nullptr)
+        sInst = new (memory) StreamZoneManager();
+    else
+        sInst = nullptr;
+}
+
+// ea: 0x4DCE30 (core.o inline)
+void StreamZoneManager::DeleteInst()
+{
+    if (sInst == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\StreamZoneManager.h", 31,
+                     "sInst!=0", "singleton not created!"))
+        __debugbreak();
+    if (sInst != nullptr)
+    {
+        sInst->~StreamZoneManager();
+        mem_heap_free(sInst);
+    }
+    sInst = nullptr;
 }
 
 // ea: 0x6782F0
@@ -12168,13 +12265,12 @@ void PakFile::DetermineNextFile()
         void* fileTypes = *(void**)((char*)apk + 0x10);
         mCurrentApkFileTypeEntry =
             (void*)((char*)fileTypes + 4 * (nSections + 5) * (offset >> 16));
-        unsigned int firstEntry =
-            *(unsigned int*)((char*)mCurrentApkFileTypeEntry + 0x10);
+        apk::apkFileTypeEntry* typeEntry =
+            (apk::apkFileTypeEntry*)mCurrentApkFileTypeEntry;
+        uint32_t fileIndex = (uint16_t)offset;
         mCurrentApkFileEntry =
-            (void*)((char*)firstEntry
-                    + 4 * offset * (*(int*)((char*)mCurrentApkFileTypeEntry
-                                            + 8)
-                                    + 1));
+            (void*)((char*)typeEntry->FirstEntry
+                    + 4 * fileIndex * (typeEntry->NSections + 1));
     }
 }
 
@@ -12569,6 +12665,37 @@ int BankManager::get_alloc_count(const TBankAlloc& bat) const
 }
 
 BankManager* BankManager::sInst = nullptr;  // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
+
+// ea: 0x004B43C0
+void BankManager::CreateInst()
+{
+    if (sInst != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\BankManager.h", 69,
+                     "sInst==0", "singleton already created!"))
+        __debugbreak();
+
+    void* memory = mem_heap_malloc_ctx(
+        0x30u, 4, "bank", "c:\\cod\\code\\game\\BankManager.h", 69);
+    if (memory != nullptr)
+        sInst = new (memory) BankManager();
+    else
+        sInst = nullptr;
+}
+
+// ea: 0x004E57B0
+void BankManager::DeleteInst()
+{
+    if (sInst == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\BankManager.h", 69,
+                     "sInst!=0", "singleton not created!"))
+        __debugbreak();
+    if (sInst != nullptr)
+    {
+        sInst->~BankManager();
+        mem_heap_free(sInst);
+    }
+    sInst = nullptr;
+}
 
 void* g_bank_space = nullptr;      // ?g_bank_space@@3PAXA @ 0xF592CC
 int   g_bank_space_size = 0;       // ?g_bank_space_size@@3HA @ 0xF592D0
@@ -13045,6 +13172,13 @@ void PakFile::SetupAllocator()
         gPakMemHeapAllocator = nullptr;
 }
 
+// ea: 0x004C8EB0
+// SetupPoolAllocator's PakFile stage is required before Com_Init loads paks.
+void SetupPoolAllocator()
+{
+    PakFile::SetupAllocator();
+}
+
 // ea: 0x66AFF0
 void PakFile::AddHeap(unsigned char* heap_start, unsigned int heap_size)
 {
@@ -13125,7 +13259,7 @@ void PakFile::InitiateHeaderRead()
             __debugbreak();
     }
     PakReadDataAsync(buffer, mHeaderBuffer, sHeaderBufferSize, 0, false);
-    mHeaderRequestId.nflId = (nflRequestID)buffer[0];
+    mHeaderRequestId.nflId = (nflRequestID)(*(unsigned int*)buffer);
     gThroughputMeasurer.mStart = gThroughputMeasurer.safeGetTime();
     gThroughputMeasurer.mBytes = 0;
     if (mHeaderRequestId.nflId == NFL_REQUEST_ID_INVALID)
@@ -13223,7 +13357,8 @@ void PakFile::CancelLoading()
 void PakFile::AsyncLoad(NumBanks numBanks)
 {
     tlPrintf("pak: loading '%s' (%.1f banks)\n", mPath.mBuff, numBanks.xbox);
-    if (numBanks.xbox + 0.5f > 0.0f)
+    const int roundedBankCount = (int)(numBanks.xbox + 0.5f);
+    if ((float)roundedBankCount > 0.0f)
     {
         mBankAlloc = BankManager::sInst->Allocate(numBanks);
         if (mBankAlloc.IsEmpty())
@@ -13597,6 +13732,7 @@ void PakFile::InitiateDataLoad()
         }
         unsigned char* v53 = nullptr;
         unsigned int v52 = 0;
+        bool has_bank_alloc = !mBankAlloc.IsEmpty();
         if (!is_serialized)
         {
             if (count < bank_allocations.m_size)
@@ -13627,19 +13763,25 @@ void PakFile::InitiateDataLoad()
                 }
                 count = count + 1;
             }
+
+            // IDA: when the pak owns a bank allocation, nonserialized banks
+            // retain the BankManager memory and skip the fallback path.
+            if (has_bank_alloc)
+            {
+                v43->requestId = NFL_REQUEST_ID_INVALID;
+                continue;
+            }
         }
-        else if (is_aram)
+
+        if (is_aram)
         {
             v52 = (v43->size + 0x7FFF) & 0xFFFF8000;
             v53 = stream_alloc((int)v52, true);
         }
         else
         {
-            if (v43->size >= BankManager::sInst->mMramBankSize)
-            {
-                tlPrintf("serialized assets too big for bank!");
-            }
-            else
+            if (is_serialized
+                && v43->size < BankManager::sInst->mMramBankSize)
             {
                 NumBanks one;
                 one.ps2 = 1.0f;
@@ -13668,6 +13810,10 @@ void PakFile::InitiateDataLoad()
                     BankManager::sInst->get_alloc(mSerializedAlloc, 0, true);
                 v53 = ser.data;
                 v52 = (unsigned int)ser.size;
+            }
+            else if (is_serialized)
+            {
+                tlPrintf("serialized assets too big for bank!");
             }
             if (v53 == nullptr)
             {
@@ -14117,7 +14263,7 @@ void PakFile::UpdateReads()
                     if (AeAssert::Error(
                             "%s's banks don't match the global pak's banks\n"
                             "Try rebuilding global pak",
-                            ((InplaceString*)mPakInfo->longName)->mStr))
+                            mPakInfo->longName.mStr))
                         __debugbreak();
                 }
                 if (v23 == 0)
@@ -14125,15 +14271,13 @@ void PakFile::UpdateReads()
                 unsigned int compressedSize = bank->compressedSize;
                 if (compressedSize != 0)
                 {
-                    bank->requestId = (unsigned char)*(
-                        unsigned char*)PakReadDataAsync(
+                    bank->requestId = *(unsigned int*)PakReadDataAsync(
                             buffer, bank->memptr, bank->size,
                             compressedSize, bank->fileOffset);
                 }
                 else
                 {
-                    bank->requestId = (unsigned char)*(
-                        unsigned char*)PakReadDataAsync(
+                    bank->requestId = *(unsigned int*)PakReadDataAsync(
                             &buffer[4], bank->memptr, v15, 0,
                             bank->fileOffset);
                 }
@@ -14329,7 +14473,8 @@ void DecodeDialogueBank(const char* name, unsigned char* data, unsigned int size
 void DecodeFLI(const char* name, unsigned char* data, unsigned int size, TPakId pakId,
                PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    (void)pak;
+    PakManager::sInst->DecodeFLI(name, (PakInfoBank*)data, (int)size, pakId);
 }
 void DecodeScene(const char* name, unsigned char* data, unsigned int size,
                  TPakId pakId, PakFile* pak)
@@ -14530,8 +14675,7 @@ void InstanceBankSet::Fixup()
     }
     void* v2 = (char*)this + (uintptr_t)mPtrFixupTable;
     mPtrFixupTable = v2;
-    // PtrFixupTable::Fixup(this: v2, basePtr: this) - table walk not ported;
-    // the tree/vector pointers are already relative and fixed by GetBank/Find.
+    ((PtrFixupTable*)v2)->Fixup(this);
 }
 
 // ea: 0x684B50

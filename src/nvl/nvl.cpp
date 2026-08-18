@@ -4,8 +4,8 @@
 #include <cstring>
 #include <mmintrin.h>
 #include "../ngl/nglTexture.h"
-
-struct IDirectSoundBuffer;
+#include "../../platform/xbox_shim/xbox_shim.h"
+#include "../../platform/xbox_shim/xbox_directsound.h"
 
 enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
 enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = 0xFFFFFFFFu };
@@ -741,9 +741,10 @@ public:
     bool IsBufferFull();
     void RequestCallback(nflRequestState reason, nflRequestID callreqID);
 
-protected:
+private:
     void CheckNextNFLRequest();
 
+protected:
     int mWidth;
     int mHeight;
     int mWorkBufferSize;
@@ -813,14 +814,14 @@ public:
 
 protected:
     void ProcessUserDataChunk(bool firstChunk);
-    void GetIntraCoefB14(const unsigned short* table);
-    void GetIntraCoefB15(const unsigned short* table);
-    int GetNonIntraCoef(const unsigned short* table);
-    void DoMotionFrame(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
-    void DoMotionField(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
-    void DoMotionDualP(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
-    void DoMotionSame(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
-    void DoMotionCopy(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void GetIntraCoefB14(const unsigned short* const table);
+    void GetIntraCoefB15(const unsigned short* const table);
+    int GetNonIntraCoef(const unsigned short* const table);
+    void DoMotionFrame(afmv_motion_t* const motion, void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionField(afmv_motion_t* const motion, void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionDualP(afmv_motion_t* const motion, void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionSame(afmv_motion_t* const motion, void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionCopy(afmv_motion_t* const motion, void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int));
     int DecodeSlice();
 
     bool mAudioIsValid;
@@ -863,10 +864,12 @@ public:
 };
 
 class nvlMovie : public nvlAFMVMovie {
-public:
+private:
     void ProcessAudioChunk() override;
     void StartAudioPlayback() override;
     void StopAudioPlayback() override;
+
+public:
     ~nvlMovie() override;
     static IDirectSoundBuffer* mAudioBuffer;
 };
@@ -889,9 +892,12 @@ int nvlAFMVMovie::mAudioOffset = 0;
 unsigned nvlAFMVMovie::mAudioStartOffset = 0;
 static unsigned char nvlVersionByte = 0;
 
+// ea: 0x00C1D8F0
 char* nvlMovieBase::GetVersion() { return reinterpret_cast<char*>(&nvlVersionByte); }
+// ea: 0x00C1D900
 nflFileID nvlMovieBase::GetFileID() { return mFileID; }
 
+// ea: 0x00C1D910
 nflFileID nvlMovieBase::ReleaseMovie() {
     nglSetEndOfVBlankCallback(nullptr, nullptr);
     if (!mBackBuffer) {
@@ -926,23 +932,34 @@ nflFileID nvlMovieBase::ReleaseMovie() {
     return result;
 }
 
+// ea: 0x00C1D9C0
 nvlMovieState nvlMovieBase::SetMovieState(nvlMovieState newState) { mMovieState = newState; return newState; }
+// ea: 0x00C1D9D0
 nvlMovieState nvlMovieBase::GetMovieState() { return mMovieState; }
+// ea: 0x00C1D9E0
 void nvlMovieBase::SetUserDataCallback(void (*callback)(unsigned char*, unsigned, bool, void*), void* user) {
     mUserDataCallback = callback;
     mUserData = user;
 }
+// ea: 0x00C1DA00
 int nvlMovieBase::GetNumFrames() { return mTotalFrames; }
+// ea: 0x00C1DA10
 int nvlMovieBase::GetFrameNumber() { return mFrameNumber; }
+// ea: 0x00C1DA20
 nglTexture* nvlMovieBase::GetTexture() { return mSwapTexture[0]; }
+// ea: 0x00C1DA30
 nvlFrameState nvlMovieBase::DecodeFrame() { return NVL_FRAME_ERROR; }
+// ea: 0x00C1DA40
 void nvlMovieBase::SetConvertNTSCtoPAL(bool convertPal) { mConvertPal = convertPal; }
+// ea: 0x00C1DA50
 nvlResult nvlMovieBase::SetAudioTrack(int audioTrackID) { mAudiotrackID = audioTrackID; return NVL_RESULT_OK; }
+// ea: 0x00C1DA60
 bool nvlMovieBase::IsBufferLoading() {
     return mRequestID[0] != NFL_REQUEST_ID_INVALID || mRequestID[1] != NFL_REQUEST_ID_INVALID ||
            mRequestID[2] != NFL_REQUEST_ID_INVALID || mRequestID[3] != NFL_REQUEST_ID_INVALID;
 }
 
+// ea: 0x00C1DA90
 void nvlMovieBase::Reset() {
     mFirstBuffer = 15;
     mLastBuffer = 15;
@@ -962,6 +979,7 @@ void nvlMovieBase::Reset() {
     }
 }
 
+// ea: 0x00C1DB10
 void nvlMovieBase::CheckNextNFLRequest() {
     nflRequestParams request = {};
     request.fileID = NFL_FILE_ID_INVALID;
@@ -1003,6 +1021,7 @@ void nvlMovieBase::CheckNextNFLRequest() {
     } while (mReadBuffer != mPlayBuffer);
 }
 
+// ea: 0x00C1DC30
 nvlMovieBase::nvlMovieBase() {
     mDataBuffer = nullptr;
     for (int i = 0; i < 4; ++i) mIntBuffer[i] = nullptr;
@@ -1019,8 +1038,10 @@ nvlMovieBase::nvlMovieBase() {
     mUserData = nullptr;
     Reset();
 }
+// ea: 0x00C1DC80
 nvlMovieBase::~nvlMovieBase() { ReleaseMovie(); }
 
+// ea: 0x00C1DC90
 nvlResult nvlMovieBase::InitMovie() {
     if (mAssetFlags != 0 && _tlAssert("src/nvl_base.cpp", 70, "!mAssetFlags",
                                       "NVL: This movie was already started"))
@@ -1091,6 +1112,7 @@ nvlResult nvlMovieBase::InitMovie() {
     return NVL_RESULT_OK;
 }
 
+// ea: 0x00C1DE70
 bool nvlMovieBase::BufferCheckBytes(int thisDataSize, bool update) {
     const int oldPlayBuffer = mPlayBuffer;
     if (oldPlayBuffer != mPackBuffer) {
@@ -1149,6 +1171,7 @@ bool nvlMovieBase::BufferCheckBytes(int thisDataSize, bool update) {
     return true;
 }
 
+// ea: 0x00C1E080
 bool nvlMovieBase::IsBufferFull() {
     bool allValid = true;
     if (mMovieState != NVL_STATE_ERROR) {
@@ -1165,6 +1188,7 @@ bool nvlMovieBase::IsBufferFull() {
     return true;
 }
 
+// ea: 0x00C1E0F0
 void nvlMovieBase::RequestCallback(nflRequestState reason, nflRequestID callreqID) {
     int index = 0;
     while (index < 4 && mRequestID[index] != callreqID) ++index;
@@ -1187,6 +1211,7 @@ void nvl_RequestCallback(nflRequestState reason, nflRequestID requestID, nvlMovi
     if (reason != NFL_REQUEST_STATE_CANCELED) userData->RequestCallback(reason, requestID);
 }
 
+// ea: 0x00C1E1E0
 nvlAFMVMovie::nvlAFMVMovie() : mDCTblock(nullptr) {
     mDCTblock = static_cast<short*>(tlMemAlloc(0x80, 0x40, 0));
     if (mDCTblock == nullptr && _tlAssert("src/nvl_afmv.cpp", 63, "mDCTblock",
@@ -1199,7 +1224,9 @@ nvlAFMVMovie::nvlAFMVMovie() : mDCTblock(nullptr) {
     mAudioStartOffset = 0;
     mAudioIsValid = false;
 }
+// ea: 0x00C1E260
 nvlAFMVMovie::~nvlAFMVMovie() { tlMemFree(mDCTblock); }
+// ea: 0x00C1E280
 nvlResult nvlAFMVMovie::InitMovie() {
     mUVStride = mWidth >> 1;
     mSliceStride = 16 * mWidth;
@@ -1447,6 +1474,7 @@ void nvlAFMVMovie::NonIntraDCT(int, unsigned char* dst, int stride) {
     MacroBlockIdctAdd(GetNonIntraCoef(mCurrentQuantizer[1]), mDCTblock, dst, stride);
 }
 
+// ea: 0x00C204F0
 nvlFrameState nvlAFMVMovie::DecodeFrame() {
     if (mMoviePhase == NVL_PHASE_FIRST) {
         const bool firstMovieFrame = mMovieFlags == 7;
@@ -1621,6 +1649,7 @@ nvlFrameState nvlAFMVMovie::DecodeFrame() {
             return finish_frame();
     }
 }
+// ea: 0x00C1E2F0
 nvlResult nvlAFMVMovie::ParseHeader(nflFileID fileID, bool backBuffer, int offset, int) {
     mMovieState = NVL_STATE_ERROR;
     unsigned* fileHeader = static_cast<unsigned*>(tlMemAlloc(0x800, 0x40, 0));
@@ -1670,6 +1699,7 @@ nvlResult nvlAFMVMovie::ParseHeader(nflFileID fileID, bool backBuffer, int offse
     Reset();
     return NVL_RESULT_OK;
 }
+// ea: 0x00C1E4A0
 void nvlAFMVMovie::ProcessUserDataChunk(bool headerData) {
     if (mUserDataCallback == nullptr)
         return;
@@ -1680,7 +1710,8 @@ void nvlAFMVMovie::ProcessUserDataChunk(bool headerData) {
         mUserDataCallback(mDecodePnt + 8, *mDecodePnt, false, mUserData);
     }
 }
-void nvlAFMVMovie::GetIntraCoefB14(const unsigned short* quant_matrix) {
+// ea: 0x00C1E510
+void nvlAFMVMovie::GetIntraCoefB14(const unsigned short* const quant_matrix) {
     unsigned int shifter = mShifter;
     int bitCount = mBitCount;
     unsigned char* decodePnt = mDecodePnt;
@@ -1798,7 +1829,8 @@ done:
     mDecodePnt = decodePnt;
 }
 
-void nvlAFMVMovie::GetIntraCoefB15(const unsigned short* quant_matrix) {
+// ea: 0x00C1E7C0
+void nvlAFMVMovie::GetIntraCoefB15(const unsigned short* const quant_matrix) {
     unsigned int shifter = mShifter;
     int bitCount = mBitCount;
     unsigned char* decodePnt = mDecodePnt;
@@ -1907,7 +1939,8 @@ done:
     mDecodePnt = decodePnt;
 }
 
-int nvlAFMVMovie::GetNonIntraCoef(const unsigned short* quant_matrix) {
+// ea: 0x00C1EA40
+int nvlAFMVMovie::GetNonIntraCoef(const unsigned short* const quant_matrix) {
     unsigned int shifter = mShifter;
     int bitCount = mBitCount;
     unsigned char* decodePnt = mDecodePnt;
@@ -2034,8 +2067,10 @@ done:
     mDecodePnt = decodePnt;
     return pos;
 }
+// ea: 0x00C1ED10
 void nvlAFMVMovie::DoMotionFrame(
-    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    afmv_motion_t* const motion,
+    void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int)) {
     int bitCount = mBitCount;
     if (bitCount > 0) {
         const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
@@ -2084,8 +2119,10 @@ void nvlAFMVMovie::DoMotionFrame(
     motionFunc[uvMode + 4](&mDest[2][mHorzOffset >> 1],
                             &motion->ref[0][2][uvOffset], mUVStride, 8);
 }
+// ea: 0x00C1EF20
 void nvlAFMVMovie::DoMotionField(
-    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    afmv_motion_t* const motion,
+    void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int)) {
     int bitCount = mBitCount;
     if (bitCount > 0) {
         const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
@@ -2184,8 +2221,10 @@ void nvlAFMVMovie::DoMotionField(
     motionFunc[uvMode1 + 4](&mDest[2][mUVStride + (mHorzOffset >> 1)],
                             &motion->ref[0][2][uvOffset1], 2 * mUVStride, 4);
 }
+// ea: 0x00C1F370
 void nvlAFMVMovie::DoMotionDualP(
-    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    afmv_motion_t* const motion,
+    void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int)) {
     (void)motionFunc;
     int bitCount = mBitCount;
     if (bitCount > 0) {
@@ -2287,8 +2326,10 @@ void nvlAFMVMovie::DoMotionDualP(
     afmv_mc.avg[averageUvMode + 4](&mDest[2][mUVStride + (mHorzOffset >> 1)],
                                    &motion->ref[0][2][mUVStride + averageUvOffset], 2 * mUVStride, 4);
 }
+// ea: 0x00C1F940
 void nvlAFMVMovie::DoMotionSame(
-    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    afmv_motion_t* const motion,
+    void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int)) {
     const int limitX = mLimitX;
     const int horzOffset = 2 * mHorzOffset;
     const int vertOffset = 2 * mVertOffset;
@@ -2317,8 +2358,10 @@ void nvlAFMVMovie::DoMotionSame(
     motionFunc[uvMode + 4](&mDest[2][mHorzOffset >> 1],
                             &motion->ref[0][2][uvOffset], mUVStride, 8);
 }
+// ea: 0x00C1FA80
 void nvlAFMVMovie::DoMotionCopy(
-    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    afmv_motion_t* const motion,
+    void (*const* const motionFunc)(unsigned char*, const unsigned char*, int, int)) {
     motion->pmv[0][0] = 0;
     motion->pmv[0][1] = 0;
     motion->pmv[1][0] = 0;
@@ -2329,6 +2372,7 @@ void nvlAFMVMovie::DoMotionCopy(
     motionFunc[4](&mDest[1][mHorzOffset >> 1], &motion->ref[0][1][uvOffset], mUVStride, 8);
     motionFunc[4](&mDest[2][mHorzOffset >> 1], &motion->ref[0][2][uvOffset], mUVStride, 8);
 }
+// ea: 0x00C1FB30
 int nvlAFMVMovie::DecodeSlice() {
     auto read_be16 = [](const unsigned char* p) -> unsigned {
         return (static_cast<unsigned>(p[0]) << 8) | p[1];
@@ -2582,12 +2626,112 @@ int nvlAFMVMovie::DecodeSlice() {
     }
 }
 
-void nvlMovie::ProcessAudioChunk() {}
-void nvlMovie::StartAudioPlayback() {}
-void nvlMovie::StopAudioPlayback() {}
-nvlMovie::~nvlMovie() = default;
+// ea: 0x00C1D600
+void nvlMovie::ProcessAudioChunk() {
+    unsigned char* decodePnt = mDecodePnt;
+    if (decodePnt[5] == mAudiotrackID) {
+        const unsigned int audioBytes = decodePnt[0];
+        const void* audioData = decodePnt + 8;
+        mAudioIsValid = true;
 
-bool nvlInit() { return true; }
+        unsigned int playCursor;
+        unsigned int writeCursor;
+        j_IDirectSoundBuffer_GetCurrentPosition(mAudioBuffer, &playCursor, &writeCursor);
+
+        unsigned int dataOnBuffer = static_cast<unsigned int>(mAudioOffset) - playCursor;
+        if (playCursor > static_cast<unsigned int>(mAudioOffset))
+            dataOnBuffer += 0x12000;
+
+        std::memcpy(mAudioData + mAudioOffset, audioData, audioBytes);
+        int nextOffset = mAudioOffset + static_cast<int>(audioBytes);
+        mAudioOffset += static_cast<int>(audioBytes);
+        if (mAudioOffset >= 0x12000) {
+            nextOffset = 0;
+            mAudioOffset = 0;
+        }
+
+        const unsigned int freeOnBuffer = writeCursor <= static_cast<unsigned int>(nextOffset)
+                                              ? static_cast<unsigned int>(nextOffset) - playCursor
+                                              : 0x12000u + static_cast<unsigned int>(nextOffset) - playCursor;
+        if (dataOnBuffer < 0x4800 && mFrameNumber > 0)
+            tlPrintf("NVL Audio: 0x%04X of data on the buffer: It is about to starve.\n",
+                     dataOnBuffer);
+        if (freeOnBuffer < 0x4800)
+            tlPrintf("NVL Audio: 0x%04X free on the buffer: It is about to overflow.\n",
+                     freeOnBuffer);
+    }
+}
+
+// ea: 0x00C1D6E0
+void nvlMovie::StartAudioPlayback() {
+    unsigned int playStatus = 0;
+    if (mAudioIsValid) {
+        j_IDirectSoundBuffer_GetStatus(mAudioBuffer, &playStatus);
+        if ((playStatus & 1u) == 0) {
+            j_IDirectSoundBuffer_SetCurrentPosition(mAudioBuffer, mAudioStartOffset);
+            j_IDirectSoundBuffer_PlayEx(mAudioBuffer, 0, 1u);
+        }
+    }
+}
+
+// ea: 0x00C1D730
+void nvlMovie::StopAudioPlayback() {
+    unsigned int playStatus = 0;
+    if (mAudioIsValid) {
+        j_IDirectSoundBuffer_GetStatus(mAudioBuffer, &playStatus);
+        if ((playStatus & 1u) != 0)
+            j_IDirectSoundBuffer_Stop(mAudioBuffer);
+    }
+}
+
+// ea: 0x00C1D8A0
+nvlMovie::~nvlMovie() {
+    const bool audioIsValid = mAudioIsValid;
+    if (audioIsValid) {
+        unsigned int status;
+        j_IDirectSoundBuffer_GetStatus(mAudioBuffer, &status);
+        if ((status & 1u) != 0)
+            j_IDirectSoundBuffer_Stop(mAudioBuffer);
+    }
+    nvlAFMVMovie::~nvlAFMVMovie();
+}
+
+// ea: 0x00C1D770
+bool nvlInit() {
+    _DSBUFFERDESC dsbdesc = {};
+    xbox_adpcmwaveformat_tag xboxadpcmwf = {};
+    IDirectSound* dsDevice;
+
+    dsbdesc.lpMixBins = nullptr;
+    xboxadpcmwf.wfx.nChannels = 2;
+    xboxadpcmwf.wfx.cbSize = 2;
+    xboxadpcmwf.wfx.wFormatTag = 105;
+    xboxadpcmwf.wSamplesPerBlock = 64;
+    xboxadpcmwf.wfx.wBitsPerSample = 4;
+    xboxadpcmwf.wfx.nSamplesPerSec = 48000;
+    xboxadpcmwf.wfx.nBlockAlign = 72;
+    xboxadpcmwf.wfx.nAvgBytesPerSec = 54000;
+    dsbdesc.dwInputMixBin = 0;
+    dsbdesc.dwSize = 24;
+    dsbdesc.dwFlags = 0;
+    dsbdesc.dwBufferBytes = 0x12000;
+    dsbdesc.lpwfxFormat = &xboxadpcmwf.wfx;
+    if (j_DirectSoundCreate(nullptr, &dsDevice, nullptr) < 0 ||
+        j_IDirectSound_CreateSoundBuffer(dsDevice, &dsbdesc, &nvlMovie::mAudioBuffer, nullptr) < 0)
+        return false;
+
+    nvlAFMVMovie::mAudioData = static_cast<unsigned char*>(tlMemAlloc(0x12000, 0x1000, 0));
+    std::memset(nvlAFMVMovie::mAudioData, 0, 0x12000);
+    j_IDirectSoundBuffer_SetBufferData(nvlMovie::mAudioBuffer,
+                                       nvlAFMVMovie::mAudioData, 0x12000);
+    j_IDirectSoundBuffer_SetPlayRegion(nvlMovie::mAudioBuffer, 0, 0x12000);
+    j_IDirectSoundBuffer_SetLoopRegion(nvlMovie::mAudioBuffer, 0, 0);
+    if (XGetVideoStandard() == 3)
+        nvlMovieBase::SetConvertNTSCtoPAL(true);
+    return true;
+}
+
+// ea: 0x00C1D890
 void nvlShutdown() { tlMemFree(nvlAFMVMovie::mAudioData); }
 
 static __m64 afmv_idct_table(const std::int16_t* table, unsigned offset) {

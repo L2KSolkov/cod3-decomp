@@ -29,7 +29,7 @@ bool MPUIInterface::IsOnlineGame()  // ?IsOnlineGame@MPUIInterface@@SA_NXZ
 }
 
 // ea: 0x0072FF40 (mp.o)
-bool MPUIInterface::InSession()  // ?InSession@MPUIInterface@@SA?B_NXZ
+const bool MPUIInterface::InSession()  // ?InSession@MPUIInterface@@SA?B_NXZ
 {
     if (mGameConnectionType == kGameConnectionTypeOnline)
         return LiveWrapper::theWrapper->sessionState == kInSession;
@@ -173,15 +173,6 @@ MPPlayer* MPPlayerManager::GetPlayer(unsigned char id)
 {
     (void)id;
     return nullptr;
-}
-MPPlayerSet MPPlayerManager::allPlayers()
-{
-    return MPPlayerSet(0);
-}
-void MPPlayerManager::Send(bdReference<bdMessage> message, MPPlayerSet players,
-                           bool reliable)
-{
-    (void)message; (void)players; (void)reliable;
 }
 void MPPlayerManager::SendOthers(bdReference<bdMessage> message, bool reliable)
 {
