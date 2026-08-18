@@ -70,9 +70,48 @@ struct nslInitParams {
 };
 struct nslSource {};
 struct nslEmitter {};
-struct nslWave {};
-struct nslWaveBank {};
 enum nflFileID : unsigned { NFL_FILE_ID_INVALID = (unsigned)-1 };
+struct nslWave {
+    unsigned char opaque[40]; // IDA type_inspect: nslWave size 0x28; fields not needed by this loader step.
+};
+struct nslWaveName {
+    union {
+        const char* name;
+        unsigned hash;
+    };
+};
+struct nslWaveBank {
+    char header[4];
+    unsigned char versionMajor;
+    unsigned char versionMinor;
+    unsigned char waveBankFlags;
+    char waveBankState;
+    unsigned waveBankSize;
+    unsigned reserved;
+    unsigned waveCount;
+    unsigned waveHashTableSize;
+    nslWaveName* names;
+    nslWave* waves;
+    unsigned infoSize;
+    void* infos;
+    unsigned textSize;
+    char* text;
+    unsigned aramSize;
+    unsigned aramOffset;
+    unsigned streamSize;
+    unsigned streamOffset;
+    char name[32];
+    union {
+        unsigned char aramMD5[16];
+        struct {
+            void* waveBankAram;
+            nflFileID waveBankFile;
+            unsigned waveBankFileOffset;
+            unsigned reserved;
+        } backing;
+    } storage;
+    unsigned char streamMD5[16];
+};
 enum nslWaveBankSlotState {
     NSL_WAVE_BANK_SLOT_STATE_NOTUSED = 0,
     NSL_WAVE_BANK_SLOT_STATE_PENDING = 1,
@@ -100,7 +139,6 @@ struct nslWaveBankSlot {
 struct nslGroup {};
 struct nslVoice {};
 struct nslListener {};
-struct nslWaveName {};
 struct nslDriverParams {};
 enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = (unsigned)-1 };
 struct nslWaveBankLoader {
@@ -116,6 +154,9 @@ struct nslWaveBankLoader {
     unsigned aramOffset;
     void* aram;
 };
+static_assert(sizeof(nslWaveBank) == 128, "IDA nslWaveBank layout");
+static_assert(sizeof(nslWaveBankSlot) == 52, "IDA nslWaveBankSlot layout");
+static_assert(sizeof(nslWaveBankLoader) == 44, "IDA nslWaveBankLoader layout");
 
 // Release globals verified from IDA addresses 0xE4B680, 0x10E11AC-0x10E11F0,
 // and 0x10E1220.  These are the state consumed by the bank-slot functions.
@@ -145,8 +186,19 @@ nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flag
 int nslWaveBankGetState(nslWaveBankID waveBankID);
 unsigned nslWaveBankSlotsGetUsedCount();
 unsigned nslWaveBankSlotsGetLoadingCount();
+void* nslAramAlloc(unsigned size, unsigned flags);
+void nslAramFree(void* ptr);
+void* nslMemoryAlloc(unsigned size);
+void nslMemoryFree(void* ptr);
+int nslWaveBankFixup(nslWaveBank* waveBank);
+int nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram);
+int nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile, unsigned waveBankFileOffset);
+void nslWaveBankFree(nslWaveBankID waveBankID);
 void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankLoadFlags,
                            nflFileID file, unsigned fileOffset);
+nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader);
+void nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader);
+void nslWaveBankSort(nslWaveBank* waveBank);
 enum nflRequestState : unsigned {
     NFL_REQUEST_STATE_INVALID = (unsigned)-1,
     NFL_REQUEST_STATE_COMPLETED = 0,
@@ -156,6 +208,9 @@ enum nflRequestState : unsigned {
     NFL_REQUEST_STATE_ACTIVE = 4
 };
 extern void nflCancelRequest(nflRequestID requestID);
+extern nflRequestID nflReadFileAsync(nflFileID fileID, unsigned offset, void* buffer,
+                                     unsigned dataSize);
+extern nflRequestState nflGetRequestState(nflRequestID requestID);
 
 // IDA nslInit_Allocate (0x826800): callers pass size on the stack and 0x100
 // in ECX.  The 32-bit release arithmetic is preserved for the Win32 target.
@@ -261,7 +316,7 @@ void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetS
 
 // nslCompat.o / nslSource.o family (stubbed; manglings match binary)
 int           nslGetBankState(nslBankID bankID) { return nslWaveBankGetState(static_cast<nslWaveBankID>(bankID)); }
-void          nslFreeBank(nslBankID) {}
+void          nslFreeBank(nslBankID bankID) { nslWaveBankFree(static_cast<nslWaveBankID>(bankID)); }
 void          nslStopSource(nslSourceID) {}
 void          nslQueueSource(nslSourceID) {}
 void          nslFreeSource(nslSourceID) {}
@@ -270,7 +325,45 @@ void          nslSetSourcePosition(nslSourceID, const float*) {}
 void          nslSetSourceVelocity(nslSourceID, const float*) {}
 void          nslDampen(float) {}
 void          nslUndampen() {}
-void          nslUpdateBanks() {}
+void          nslUpdateBanks() {
+    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+        return;
+
+    int loadIndex = -1;
+    unsigned loadOrder = static_cast<unsigned>(-1);
+    for (unsigned i = 0; i < nsl_initParams.aramBase; ++i) {
+        nslWaveBankSlot* slot = &nsl_waveBankSlots[i];
+        if (slot->state == NSL_WAVE_BANK_SLOT_STATE_PENDING) {
+            if (loadOrder > slot->loadOrder) {
+                loadOrder = slot->loadOrder;
+                loadIndex = static_cast<int>(i);
+            }
+        } else if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADING) {
+            const nslWaveBankLoaderState state = nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
+            if (state == NSL_WAVE_BANK_LOADER_STATE_COMPLETED) {
+                slot->waveBank = nsl_waveBankLoad.waveBank;
+                slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
+                slot->profile.timeLoaded = nsl_time;
+                slot->profile.frameLoaded = nsl_frame;
+                nslWaveBankSort(slot->waveBank);
+                loadIndex = -1;
+            } else if (state == NSL_WAVE_BANK_LOADER_STATE_CANCELED || state < 0) {
+                slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
+                nslWaveBankFree(slot->waveBankID);
+            }
+            nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
+        }
+    }
+
+    if (loadIndex >= 0 && nsl_waveBankLoad.state == NSL_WAVE_BANK_LOADER_STATE_INITIAL) {
+        nslWaveBankSlot* slot = &nsl_waveBankSlots[loadIndex];
+        slot->profile.timeStarted = nsl_time;
+        slot->profile.frameStarted = nsl_frame;
+        slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADING;
+        nslWaveBankLoaderInit(&nsl_waveBankLoad, slot->flags, slot->file, slot->fileOffset);
+        nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
+    }
+}
 void          nslStart(void* work) {
     if (work == nullptr || nsl_work != nullptr)
         return;
@@ -401,6 +494,24 @@ int           nslWaveBankGetState(nslWaveBankID waveBankID) {
         return -1;
     return 0;
 }
+void          nslWaveBankFree(nslWaveBankID waveBankID) {
+    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+        return;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[(waveBankID >> 16) % nsl_initParams.aramBase];
+    if (slot->waveBankID != waveBankID)
+        return;
+    if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADING) {
+        nslWaveBankLoaderCancel(&nsl_waveBankLoad);
+        return;
+    }
+    if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADED && slot->waveBank != nullptr) {
+        nslAramFree(slot->waveBank->storage.backing.waveBankAram);
+        nslMemoryFree(slot->waveBank);
+        slot->waveBank = nullptr;
+    }
+    slot->waveBankID += nsl_initParams.aramBase << 16;
+    slot->state = NSL_WAVE_BANK_SLOT_STATE_NOTUSED;
+}
 unsigned      nslWaveBankSlotsGetCount() { return nsl_initParams.aramBase; }
 unsigned      nslWaveBankSlotsGetUsedCount() {
     unsigned result = 0;
@@ -432,6 +543,20 @@ unsigned      nslWaveBankSlotsGetLoadedCount() {
     return result;
 }
 int           nslWaveBankFixup(nslWaveBank*) { return 0; }
+int           nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram) {
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 0x40u) == 0)
+        return 0;
+    waveBank->storage.backing.waveBankAram = waveBankAram;
+    return 1;
+}
+int           nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile,
+                                 unsigned waveBankFileOffset) {
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 0x40u) == 0)
+        return 0;
+    waveBank->storage.backing.waveBankFile = waveBankFile;
+    waveBank->storage.backing.waveBankFileOffset = waveBankFileOffset;
+    return 1;
+}
 void          nslWaveBankSort(nslWaveBank*) {}
 nslWaveID     nslWaveBankGetWave(nslWaveBankID, const char*) { return NSL_INVALID_WAVE; }
 nslWaveID     nslWaveBankGetWaveByIndex(nslWaveBankID, unsigned) { return NSL_INVALID_WAVE; }
@@ -461,8 +586,90 @@ void          nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader,
     waveBankLoader->waveBank = reinterpret_cast<nslWaveBank*>(nsl_waveBankLoaderBuffer);
     waveBankLoader->stid = -1;
 }
-nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader*) {
-    return NSL_WAVE_BANK_LOADER_STATE_INITIAL;
+nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader) {
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CANCELING) {
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
+            nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID)
+            waveBankLoader->rid = NFL_REQUEST_ID_INVALID;
+        if (waveBankLoader->rid == NFL_REQUEST_ID_INVALID && waveBankLoader->stid == -1) {
+            waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CANCELED;
+            return NSL_WAVE_BANK_LOADER_STATE_CANCELED;
+        }
+    }
+
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_INITIAL)
+        waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_START_READ_HEADER;
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_HEADER) {
+        waveBankLoader->rid = nflReadFileAsync(waveBankLoader->file, waveBankLoader->fileOffset,
+                                                waveBankLoader->waveBank, 0x1000u);
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_HEADER;
+    }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_HEADER &&
+        waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
+        nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID) {
+        nslWaveBank* waveBank = waveBankLoader->waveBank;
+        waveBankLoader->rid = NFL_REQUEST_ID_INVALID;
+        if (std::memcmp(waveBank->header, "NSLB", 4) != 0 ||
+            waveBank->versionMajor != 1 || waveBank->versionMinor != 0) {
+            waveBankLoader->state = NSL_WAVE_BANK_LOADER_ERROR_INVALIDBANK;
+            return waveBankLoader->state;
+        }
+        waveBankLoader->waveBankSize = waveBank->waveBankSize;
+        waveBankLoader->aramOffset = waveBank->aramOffset;
+        waveBankLoader->aramSize = waveBank->aramSize;
+        waveBankLoader->waveBank = static_cast<nslWaveBank*>(
+            nslMemoryAlloc(waveBankLoader->waveBankSize));
+        if (waveBankLoader->waveBank != nullptr && waveBankLoader->aramSize != 0) {
+            waveBankLoader->aramSize = (waveBankLoader->aramSize + 4095u) & 0xfffff000u;
+            waveBankLoader->aram = nslAramAlloc(waveBankLoader->aramSize, waveBankLoader->flags);
+        }
+        if (waveBankLoader->waveBank == nullptr ||
+            (waveBankLoader->aramSize != 0 && waveBankLoader->aram == nullptr)) {
+            nslAramFree(waveBankLoader->aram);
+            nslMemoryFree(waveBankLoader->waveBank);
+            waveBankLoader->waveBank = nullptr;
+            waveBankLoader->state = NSL_WAVE_BANK_LOADER_ERROR_NOMEMORY;
+            return waveBankLoader->state;
+        }
+        waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_START_READ_DIR_SECTION;
+    }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_DIR_SECTION) {
+        waveBankLoader->rid = nflReadFileAsync(waveBankLoader->file, waveBankLoader->fileOffset,
+                                                waveBankLoader->waveBank,
+                                                waveBankLoader->waveBankSize);
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_DIR_SECTION;
+    }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_DIR_SECTION &&
+        waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
+        nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID) {
+        waveBankLoader->rid = NFL_REQUEST_ID_INVALID;
+        waveBankLoader->state = waveBankLoader->aramSize == 0
+            ? NSL_WAVE_BANK_LOADER_STATE_START_READ_PRIMED_STREAMS
+            : NSL_WAVE_BANK_LOADER_STATE_START_READ_ARAM_SECTION;
+    }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_ARAM_SECTION) {
+        waveBankLoader->rid = nflReadFileAsync(
+            waveBankLoader->file, waveBankLoader->fileOffset + waveBankLoader->aramOffset,
+            waveBankLoader->aram, waveBankLoader->aramSize);
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_ARAM_SECTION;
+    }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_ARAM_SECTION &&
+        waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
+        nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID) {
+        waveBankLoader->rid = NFL_REQUEST_ID_INVALID;
+        waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_START_READ_PRIMED_STREAMS;
+    }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_PRIMED_STREAMS) {
+        waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_COMPLETED;
+        nslWaveBankFixup(waveBankLoader->waveBank);
+        nslWaveBankSetAram(waveBankLoader->waveBank, waveBankLoader->aram);
+        nslWaveBankSetFile(waveBankLoader->waveBank, waveBankLoader->file,
+                           waveBankLoader->fileOffset);
+    }
+    return waveBankLoader->state;
 }
 void          nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader) {
     if (waveBankLoader->state != NSL_WAVE_BANK_LOADER_STATE_CANCELED &&
@@ -575,7 +782,7 @@ void          nslDriverSetBufferSize(unsigned) {}
 void*         nslAramGetBase() { return nullptr; }
 unsigned      nslAramGetSize() { return 0; }
 unsigned      nslAramGetFree() { return 0; }
-void*         nslAramAlloc(unsigned) { return nullptr; }
+void*         nslAramAlloc(unsigned, unsigned) { return nullptr; }
 void          nslAramFree(void*) {}
 unsigned      nslAramGetUsed() { return 0; }
 bool          nslAramIsInAram(void*) { return false; }
