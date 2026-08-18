@@ -441,8 +441,24 @@ void          nslSourceSetMaxDistance(nslSourceID, float) {}
 // Voice enumeration (used by EffectEventSys::NumberOfVoicesUsed)
 unsigned      nslGetNumVoices() { return 0; }
 nslVoice*     nslGetVoice(unsigned) { return nullptr; }
-nslSourceState nslGetSourceState(nslSourceID) {
-    return NSL_SOURCE_STATE_INVALID;
+// ea: 0x00820E10
+nslSourceState nslGetSourceState(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return NSL_SOURCE_STATE_INVALID;
+
+    // These fields are outside IDA's named 0xF8-byte UDT but are read at
+    // fixed offsets by the release source pool stride (0x148).
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(source);
+    const unsigned char state = raw[0x120];
+    if (state == 5 || (raw[0x123] & 2u) != 0)
+        return NSL_SOURCE_STATE_PAUSED;
+    const unsigned char flags = raw[0x122];
+    if ((flags & 2u) != 0)
+        return NSL_SOURCE_STATE_PLAYING;
+    if ((flags & 1u) != 0)
+        return static_cast<nslSourceState>((state == 3) + 2);
+    return static_cast<nslSourceState>(state);
 }
 // ea: 0x00822D60
 bool          nslIsSourceQueued(nslSourceID sid) {
@@ -455,6 +471,39 @@ bool          nslIsSourcePlaying(nslSourceID sid) {
 // ea: 0x00822DA0
 bool          nslIsSourceFinished(nslSourceID sid) {
     return nslGetSourceState(sid) == NSL_SOURCE_STATE_INVALID;
+}
+// ea: 0x00820CB0
+nslWaveID     nslGetSourceWaveID(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return NSL_WAVE_ID_INVALID;
+    return *reinterpret_cast<const nslWaveID*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x110u);
+}
+// ea: 0x00820CF0
+nslWaveID     nslGetSourceWave(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return NSL_WAVE_ID_INVALID;
+    return *reinterpret_cast<const nslWaveID*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x110u);
+}
+// ea: 0x00820E90
+void          nslSetSourceOffset(nslSourceID sid, unsigned offset) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    raw[0x123] |= 1u;
+    *reinterpret_cast<unsigned*>(raw + 0x130u) = offset;
+}
+// ea: 0x00820ED0
+unsigned      nslGetSourceOffset(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return 0;
+    return *reinterpret_cast<const unsigned*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x130u);
 }
 unsigned      nslGetMaxNumVoices() { return 0; }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
@@ -553,7 +602,14 @@ void          nslSetListenerPosition(const float*) {}
 void          nslSetListenerOrientation(const float*, const float*) {}
 unsigned int  nslWaveGetHash(nslWaveID) { return 0; }
 int           nslGetWaveLength(nslWaveID) { return 0; }      // ?nslGetWaveLength@@YAHW4nslWaveID@@@Z
-unsigned      nslGetSourceLength(nslSourceID) { return 0; }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
+// ea: 0x00820DD0
+unsigned      nslGetSourceLength(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return 0;
+    return *reinterpret_cast<const unsigned*>(
+        reinterpret_cast<const unsigned char*>(source) + 0x12Cu);
+}  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
 int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
 void          nslSetSourceEffectOn(nslSourceID) {}           // ?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z
 void          nslSetSourceEffectOff(nslSourceID) {}          // ?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z
