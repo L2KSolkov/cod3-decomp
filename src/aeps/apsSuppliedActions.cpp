@@ -348,7 +348,90 @@ void apsAlphaFadeInOutAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 
 apsRandomAlphaFadeInOutAction::apsRandomAlphaFadeInOutAction()
     : apsAction(4, 0, eAsync, 0x8008610u) {}
-void apsRandomAlphaFadeInOutAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080CC60
+void apsRandomAlphaFadeInOutAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                        apsGroup* ioGroup, apsEffect*, float,
+                                        float iTimeDelta) {
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float endFadeIn = mParams.mElements[2];
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float beginFadeOut = mParams.mElements[3];
+    const float beginScale = 1.0f / endFadeIn;
+    const float endScale = 1.0f / (1.0f - beginFadeOut);
+
+    if ((ioGroup->mPFD.mFields & 0x200u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int ageOffset = ioGroup->mPFD.mOffsets[9];
+
+    if ((ioGroup->mPFD.mFields & 0x10u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int alphaOffset = ioGroup->mPFD.mOffsets[4];
+
+    if ((ioGroup->mPFD.mFields & 0x8000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAlphaOffset = ioGroup->mPFD.mOffsets[15];
+
+    if ((ioGroup->mPFD.mFields & 0x400u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAgeOffset = ioGroup->mPFD.mOffsets[10];
+
+    if ((ioGroup->mPFD.mFields & 0x8000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int flagsOffset = ioGroup->mPFD.mOffsets[27];
+
+    const int stride = ioGroup->mPFD.mStride;
+    for (unsigned char* particle = iBegin; particle != iEnd; particle += stride) {
+        float* alpha = reinterpret_cast<float*>(particle + alphaOffset);
+        const unsigned char flags = *(particle + flagsOffset);
+        const float maxAlpha = *reinterpret_cast<float*>(particle + maxAlphaOffset);
+
+        if ((flags & 4u) != 0) {
+            const float fadedAlpha = *alpha - (maxAlpha * iTimeDelta);
+            if (fadedAlpha >= 0.001f) {
+                *alpha = fadedAlpha;
+            } else {
+                *alpha = 0.0f;
+                ioGroup->MarkParticleForRemoval(particle);
+            }
+            continue;
+        }
+
+        const float maxAge = *reinterpret_cast<float*>(particle + maxAgeOffset);
+        const float age = *reinterpret_cast<float*>(particle + ageOffset);
+        const float agePercent = age / maxAge;
+        float newAlpha;
+        if (endFadeIn <= agePercent) {
+            if (beginFadeOut <= agePercent) {
+                if (maxAge <= age)
+                    newAlpha = 0.0f;
+                else
+                    newAlpha = (1.0f - agePercent) * maxAlpha * endScale;
+            } else {
+                newAlpha = maxAlpha;
+            }
+        } else {
+            newAlpha = agePercent * maxAlpha * beginScale;
+        }
+        *alpha = newAlpha;
+    }
+}
 
 // ============================================================================
 // Scale actions
