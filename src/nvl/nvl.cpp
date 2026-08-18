@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <mmintrin.h>
 #include "../ngl/nglTexture.h"
 
 struct IDirectSoundBuffer;
@@ -125,6 +126,286 @@ static const int afmv_alternate_scale[32] = {
 
 // AFMV VLC data copied from the IDA data segment at 0x00D418D8-0x00D41B6F.
 struct afmv_vlc2 { unsigned char value; unsigned char len; };
+struct afmv_dcttab { unsigned char run; unsigned char level; unsigned char len; };
+
+static const afmv_dcttab afmv_dct_16[32] = {
+    {129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},
+    {129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},{129,0,0},
+    {2,18,0},{2,17,0},{2,16,0},{2,15,0},{7,3,0},{17,2,0},{16,2,0},{15,2,0},
+    {14,2,0},{13,2,0},{12,2,0},{32,1,0},{31,1,0},{30,1,0},{29,1,0},{28,1,0}
+};
+static const afmv_dcttab afmv_dct_15[48] = {
+    {1,40,15},{1,39,15},{1,38,15},{1,37,15},{1,36,15},{1,35,15},{1,34,15},{1,33,15},
+    {1,32,15},{2,14,15},{2,13,15},{2,12,15},{2,11,15},{2,10,15},{2,9,15},{2,8,15},
+    {1,31,14},{1,31,14},{1,30,14},{1,30,14},{1,29,14},{1,29,14},{1,28,14},{1,28,14},
+    {1,27,14},{1,27,14},{1,26,14},{1,26,14},{1,25,14},{1,25,14},{1,24,14},{1,24,14},
+    {1,23,14},{1,23,14},{1,22,14},{1,22,14},{1,21,14},{1,21,14},{1,20,14},{1,20,14},
+    {1,19,14},{1,19,14},{1,18,14},{1,18,14},{1,17,14},{1,17,14},{1,16,14},{1,16,14}
+};
+static const afmv_dcttab afmv_dct_13[48] = {
+    {11,2,13},{10,2,13},{6,3,13},{4,4,13},{3,5,13},{2,7,13},{2,6,13},{1,15,13},
+    {1,14,13},{1,13,13},{1,12,13},{27,1,13},{26,1,13},{25,1,13},{24,1,13},{23,1,13},
+    {1,11,12},{1,11,12},{9,2,12},{9,2,12},{5,3,12},{5,3,12},{1,10,12},{1,10,12},
+    {3,4,12},{3,4,12},{8,2,12},{8,2,12},{22,1,12},{22,1,12},{21,1,12},{21,1,12},
+    {1,9,12},{1,9,12},{20,1,12},{20,1,12},{19,1,12},{19,1,12},{2,5,12},{2,5,12},
+    {4,3,12},{4,3,12},{1,8,12},{1,8,12},{7,2,12},{7,2,12},{18,1,12},{18,1,12}
+};
+static const afmv_dcttab afmv_dct_b14_10[8] = {
+    {17,1,10},{6,2,10},{1,7,10},{3,3,10},{2,4,10},{16,1,10},{15,1,10},{5,2,10}
+};
+static const afmv_dcttab afmv_dct_b14_8[36] = {
+    {65,0,6},{65,0,6},{65,0,6},{65,0,6},{3,2,7},{3,2,7},{10,1,7},{10,1,7},
+    {1,4,7},{1,4,7},{9,1,7},{9,1,7},{8,1,6},{8,1,6},{8,1,6},{8,1,6},
+    {7,1,6},{7,1,6},{7,1,6},{7,1,6},{2,2,6},{2,2,6},{2,2,6},{2,2,6},
+    {6,1,6},{6,1,6},{6,1,6},{6,1,6},{14,1,8},{1,6,8},{13,1,8},{12,1,8},
+    {4,2,8},{2,3,8},{1,5,8},{11,1,8}
+};
+static const afmv_dcttab afmv_dct_b14ac_5[27] = {
+    {1,3,5},{5,1,5},{4,1,5},{1,2,4},{1,2,4},{3,1,4},{3,1,4},{2,1,3},{2,1,3},
+    {2,1,3},{2,1,3},{129,0,2},{129,0,2},{129,0,2},{129,0,2},{129,0,2},{129,0,2},
+    {129,0,2},{129,0,2},{1,1,2},{1,1,2},{1,1,2},{1,1,2},{1,1,2},{1,1,2},{1,1,2}
+};
+static const afmv_dcttab afmv_dct_b14dc_5[27] = {
+    {1,3,5},{5,1,5},{4,1,5},{1,2,4},{1,2,4},{3,1,4},{3,1,4},{2,1,3},{2,1,3},
+    {2,1,3},{2,1,3},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},
+    {1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1}
+};
+static const afmv_dcttab afmv_dct_b15_10[8] = {
+    {6,2,9},{6,2,9},{15,1,9},{15,1,9},{3,4,10},{17,1,10},{16,1,9},{16,1,9}
+};
+static const afmv_dcttab afmv_dct_b15_8[36] = {
+    {65,0,6},{65,0,6},{65,0,6},{65,0,6},{8,1,7},{8,1,7},{9,1,7},{9,1,7},
+    {7,1,7},{7,1,7},{3,2,7},{3,2,7},{1,7,6},{1,7,6},{1,7,6},{1,7,6},
+    {1,6,6},{1,6,6},{1,6,6},{1,6,6},{5,1,6},{5,1,6},{5,1,6},{5,1,6},
+    {6,1,6},{6,1,6},{6,1,6},{6,1,6},{2,5,8},{12,1,8},{1,11,8},{1,10,8},
+    {14,1,8},{13,1,8},{4,2,8},{2,4,8}
+};
+
+struct afmv_mc_t {
+    void (*put[8])(unsigned char*, const unsigned char*, int, int);
+    void (*avg[8])(unsigned char*, const unsigned char*, int, int);
+};
+static const __m64 afmv_last_bit = { 0x0101010101010101ULL };
+
+static __m64 afmv_from_bits(std::uint64_t bits) {
+    __m64 value;
+    std::memcpy(&value, &bits, sizeof(value));
+    return value;
+}
+static std::uint64_t afmv_to_bits(__m64 value) {
+    std::uint64_t bits;
+    std::memcpy(&bits, &value, sizeof(bits));
+    return bits;
+}
+static __m64 afmv_pavgb(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a);
+    const std::uint64_t bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 8; ++i)
+        result |= static_cast<std::uint64_t>((((av >> (i * 8)) & 0xFFu) +
+                                               ((bv >> (i * 8)) & 0xFFu) + 1u) >> 1)
+            << (i * 8);
+    return afmv_from_bits(result);
+}
+static __m64 afmv_psubusb(__m64 a, __m64 b) {
+    const std::uint64_t av = afmv_to_bits(a);
+    const std::uint64_t bv = afmv_to_bits(b);
+    std::uint64_t result = 0;
+    for (unsigned i = 0; i < 8; ++i) {
+        const unsigned aByte = static_cast<unsigned>((av >> (i * 8)) & 0xFFu);
+        const unsigned bByte = static_cast<unsigned>((bv >> (i * 8)) & 0xFFu);
+        result |= static_cast<std::uint64_t>(aByte > bByte ? aByte - bByte : 0u) << (i * 8);
+    }
+    return afmv_from_bits(result);
+}
+static __m64 afmv_pand(__m64 a, __m64 b) { return afmv_from_bits(afmv_to_bits(a) & afmv_to_bits(b)); }
+static __m64 afmv_por(__m64 a, __m64 b) { return afmv_from_bits(afmv_to_bits(a) | afmv_to_bits(b)); }
+static __m64 afmv_pxor(__m64 a, __m64 b) { return afmv_from_bits(afmv_to_bits(a) ^ afmv_to_bits(b)); }
+#define _m_pavgb afmv_pavgb
+#define _m_psubusb afmv_psubusb
+#define _m_pand afmv_pand
+#define _m_por afmv_por
+#define _m_pxor afmv_pxor
+
+static __m64 afmv_load64(const unsigned char* p) {
+    __m64 value;
+    std::memcpy(&value, p, sizeof(value));
+    return value;
+}
+static void afmv_store64(unsigned char* p, __m64 value) {
+    std::memcpy(p, &value, sizeof(value));
+}
+static void afmv_mc_avg_O16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 right = _m_pavgb(afmv_load64(ref + 8), afmv_load64(dest + 8));
+        afmv_store64(dest, _m_pavgb(afmv_load64(ref), afmv_load64(dest)));
+        ref += stride;
+        afmv_store64(dest + 8, right);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_avg_O8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 value = _m_pavgb(afmv_load64(ref), afmv_load64(dest));
+        ref += stride;
+        afmv_store64(dest, value);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_O16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const std::uint64_t right = *reinterpret_cast<const std::uint64_t*>(ref + 8);
+        const std::uint64_t left = *reinterpret_cast<const std::uint64_t*>(ref);
+        *reinterpret_cast<std::uint64_t*>(dest) = left;
+        ref += stride;
+        *reinterpret_cast<std::uint64_t*>(dest + 8) = right;
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_O8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const std::uint64_t value = *reinterpret_cast<const std::uint64_t*>(ref);
+        ref += stride;
+        *reinterpret_cast<std::uint64_t*>(dest) = value;
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_avg_X16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 right = _m_pavgb(_m_pavgb(afmv_load64(ref + 8), afmv_load64(ref + 9)), afmv_load64(dest + 8));
+        afmv_store64(dest, _m_pavgb(_m_pavgb(afmv_load64(ref), afmv_load64(ref + 1)), afmv_load64(dest)));
+        ref += stride;
+        afmv_store64(dest + 8, right);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_avg_X8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 value = _m_pavgb(_m_pavgb(afmv_load64(ref), afmv_load64(ref + 1)), afmv_load64(dest));
+        ref += stride;
+        afmv_store64(dest, value);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_X16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 right = _m_pavgb(afmv_load64(ref + 1), afmv_load64(ref + 9));
+        afmv_store64(dest, _m_pavgb(afmv_load64(ref), afmv_load64(ref + 1)));
+        ref += stride;
+        afmv_store64(dest + 8, right);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_X8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 value = _m_pavgb(afmv_load64(ref), afmv_load64(ref + 1));
+        ref += stride;
+        afmv_store64(dest, value);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_avg_Y16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 right = _m_pavgb(_m_pavgb(afmv_load64(ref + 8), afmv_load64(ref + stride + 8)), afmv_load64(dest + 8));
+        afmv_store64(dest, _m_pavgb(_m_pavgb(afmv_load64(ref), afmv_load64(ref + stride)), afmv_load64(dest)));
+        ref += stride;
+        afmv_store64(dest + 8, right);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_avg_Y8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 value = _m_pavgb(_m_pavgb(afmv_load64(ref), afmv_load64(ref + stride)), afmv_load64(dest));
+        ref += stride;
+        afmv_store64(dest, value);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_Y16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 right = _m_pavgb(afmv_load64(ref + 8), afmv_load64(ref + stride + 8));
+        afmv_store64(dest, _m_pavgb(afmv_load64(ref), afmv_load64(ref + stride)));
+        ref += stride;
+        afmv_store64(dest + 8, right);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_Y8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        const __m64 value = _m_pavgb(afmv_load64(ref), afmv_load64(ref + stride));
+        ref += stride;
+        afmv_store64(dest, value);
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static __m64 afmv_mc_bilinear(__m64 a, __m64 b, __m64 c, __m64 d) {
+    const __m64 ab = _m_pavgb(a, b);
+    const __m64 cd = _m_pavgb(c, d);
+    return _m_psubusb(_m_pavgb(ab, cd),
+        _m_pand(_m_pand(_m_por(_m_pxor(c, d), _m_pxor(a, b)), _m_pxor(ab, cd)), afmv_last_bit));
+}
+static void afmv_mc_avg_XY16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        afmv_store64(dest, _m_pavgb(afmv_mc_bilinear(afmv_load64(ref), afmv_load64(ref + 1),
+                                                       afmv_load64(ref + stride), afmv_load64(ref + stride + 1)),
+                                     afmv_load64(dest)));
+        afmv_store64(dest + 8, _m_pavgb(afmv_mc_bilinear(afmv_load64(ref + 1), afmv_load64(ref + 9),
+                                                          afmv_load64(ref + stride + 8), afmv_load64(ref + stride + 9)),
+                                        afmv_load64(dest + 8)));
+        ref += stride;
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_avg_XY8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        afmv_store64(dest, _m_pavgb(afmv_mc_bilinear(afmv_load64(ref), afmv_load64(ref + 1),
+                                                       afmv_load64(ref + stride), afmv_load64(ref + stride + 1)),
+                                     afmv_load64(dest)));
+        ref += stride;
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_XY16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        afmv_store64(dest, afmv_mc_bilinear(afmv_load64(ref), afmv_load64(ref + 1),
+                                             afmv_load64(ref + stride), afmv_load64(ref + stride + 1)));
+        afmv_store64(dest + 8, afmv_mc_bilinear(afmv_load64(ref + 1), afmv_load64(ref + 9),
+                                                 afmv_load64(ref + stride + 8), afmv_load64(ref + stride + 9)));
+        ref += stride;
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+static void afmv_mc_copy_XY8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
+    do {
+        afmv_store64(dest, afmv_mc_bilinear(afmv_load64(ref), afmv_load64(ref + 1),
+                                             afmv_load64(ref + stride), afmv_load64(ref + stride + 1)));
+        ref += stride;
+        dest += stride;
+        --height;
+    } while (height != 0);
+}
+afmv_mc_t afmv_mc = {
+    {afmv_mc_copy_O16, afmv_mc_copy_X16, afmv_mc_copy_Y16, afmv_mc_copy_XY16,
+     afmv_mc_copy_O8, afmv_mc_copy_X8, afmv_mc_copy_Y8, afmv_mc_copy_XY8},
+    {afmv_mc_avg_O16, afmv_mc_avg_X16, afmv_mc_avg_Y16, afmv_mc_avg_XY16,
+     afmv_mc_avg_O8, afmv_mc_avg_X8, afmv_mc_avg_Y8, afmv_mc_avg_XY8}
+};
+
 static const afmv_vlc2 afmv_mv_4[8] = {
     {3,6},{2,4},{1,3},{1,3},{0,2},{0,2},{0,2},{0,2}
 };
@@ -285,11 +566,11 @@ protected:
     void GetIntraCoefB14(const unsigned short* table);
     void GetIntraCoefB15(const unsigned short* table);
     int GetNonIntraCoef(const unsigned short* table);
-    void DoMotionFrame(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
-    void DoMotionField(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
-    void DoMotionDualP(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
-    void DoMotionSame(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
-    void DoMotionCopy(afmv_motion_t* motion, void (*motionFunc)(char*, const char*, int, int));
+    void DoMotionFrame(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionField(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionDualP(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionSame(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
+    void DoMotionCopy(afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int));
     int DecodeSlice();
 
     bool mAudioIsValid;
@@ -976,14 +1257,655 @@ void nvlAFMVMovie::ProcessUserDataChunk(bool headerData) {
         mUserDataCallback(mDecodePnt + 8, *mDecodePnt, false, mUserData);
     }
 }
-void nvlAFMVMovie::GetIntraCoefB14(const unsigned short*) {}
-void nvlAFMVMovie::GetIntraCoefB15(const unsigned short*) {}
-int nvlAFMVMovie::GetNonIntraCoef(const unsigned short*) { return 0; }
-void nvlAFMVMovie::DoMotionFrame(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
-void nvlAFMVMovie::DoMotionField(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
-void nvlAFMVMovie::DoMotionDualP(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
-void nvlAFMVMovie::DoMotionSame(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
-void nvlAFMVMovie::DoMotionCopy(afmv_motion_t*, void (*)(char*, const char*, int, int)) {}
+void nvlAFMVMovie::GetIntraCoefB14(const unsigned short* quant_matrix) {
+    unsigned int shifter = mShifter;
+    int bitCount = mBitCount;
+    unsigned char* decodePnt = mDecodePnt;
+    unsigned char* bitPtr = decodePnt;
+    short* dctDest = mDCTblock;
+    const unsigned char* scan = mScanMatrix;
+    const afmv_dcttab* tab = nullptr;
+    unsigned short bits = 0;
+    unsigned int shifted = 0;
+    int pos = 0;
+    int mismatch = ~*dctDest;
+    int value = 0;
+
+    if (bitCount > 0) {
+        bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+        decodePnt += 2;
+        bitPtr = decodePnt;
+        shifter |= static_cast<unsigned int>(bits) << bitCount;
+        bitCount -= 16;
+    }
+
+decode_loop:
+    if (shifter >= 0x28000000u) {
+        tab = &afmv_dct_b14ac_5[(shifter >> 27) - 5];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter < 0x04000000u)
+        goto low_tables;
+    tab = &afmv_dct_b14_8[(shifter >> 24) - 4];
+    pos += tab->run;
+    if (pos < 64)
+        goto normal_code;
+    pos = pos + ((shifter >> 20) & 0x3F) - 64;
+    if (pos >= 64)
+        goto done;
+    {
+        int escapeBitCount = bitCount + 12;
+        unsigned int escapeShifter = shifter << 12;
+        if (escapeBitCount > 0) {
+            bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+            bitPtr = decodePnt + 2;
+            escapeShifter |= static_cast<unsigned int>(bits) << escapeBitCount;
+            escapeBitCount -= 16;
+        }
+        value = 16 * ((escapeShifter >> 20) * quant_matrix[scan[pos]] / 16);
+        if (value != value)
+            value = (value >> 27) & 0xFFFFFFF0 ^ 0x7FF0;
+        dctDest[scan[pos]] = static_cast<short>(value);
+        shifter = escapeShifter << 12;
+        mismatch ^= value;
+        bitCount = escapeBitCount + 12;
+    }
+    goto refill;
+
+low_tables:
+    if (shifter >= 0x02000000u) {
+        tab = &afmv_dct_b14_10[(shifter >> 22) - 8];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter >= 0x00800000u) {
+        tab = &afmv_dct_13[(shifter >> 19) - 16];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter >= 0x00200000u) {
+        tab = &afmv_dct_15[(shifter >> 17) - 16];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+    tab = &afmv_dct_16[shifter >> 16];
+    shifter = (static_cast<unsigned int>(bits) << (bitCount + 16)) | (shifter << 16);
+    bitPtr += 2;
+    pos += tab->run;
+    if (pos < 64)
+        goto normal_code;
+    decodePnt = bitPtr;
+    goto done;
+
+normal_code:
+    shifted = shifter << tab->len;
+    bitCount += tab->len + 1;
+    value = static_cast<int>(((shifted >> 27) ^ (tab->level * quant_matrix[scan[pos]])) & 0xFFFFFFF0u)
+        - 16 * static_cast<int>(shifted >> 31);
+    if (value != value)
+        value = (value >> 27) & 0xFFFFFFF0 ^ 0x7FF0;
+    dctDest[scan[pos]] = static_cast<short>(value);
+    mismatch ^= value;
+    shifter = 2 * shifted;
+
+refill:
+    if (bitCount > 0) {
+        bits = static_cast<unsigned short>((bitPtr[0] << 8) | bitPtr[1]);
+        bitPtr += 2;
+        shifter |= static_cast<unsigned int>(bits) << bitCount;
+        bitCount -= 16;
+    }
+    decodePnt = bitPtr;
+    goto decode_loop;
+
+done:
+    dctDest[63] ^= static_cast<short>(mismatch & 0x10);
+    mBitCount = bitCount + 2;
+    mShifter = 4 * shifter;
+    mDecodePnt = decodePnt;
+}
+
+void nvlAFMVMovie::GetIntraCoefB15(const unsigned short* quant_matrix) {
+    unsigned int shifter = mShifter;
+    int bitCount = mBitCount;
+    unsigned char* decodePnt = mDecodePnt;
+    unsigned char* bitPtr = decodePnt;
+    short* dctDest = mDCTblock;
+    const unsigned char* scan = mScanMatrix;
+    const afmv_dcttab* tab = nullptr;
+    unsigned short bits = 0;
+    unsigned int shifted = 0;
+    int pos = 0;
+    int mismatch = ~*dctDest;
+    int value = 0;
+
+    if (bitCount > 0) {
+        bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+        decodePnt += 2;
+        bitPtr = decodePnt;
+        shifter |= static_cast<unsigned int>(bits) << bitCount;
+        bitCount -= 16;
+    }
+
+decode_loop:
+    if (shifter >= 0x04000000u) {
+        tab = &afmv_dct_b15_8[(shifter >> 24) - 4];
+        pos += tab->run;
+        if (pos < 64)
+            goto normal_code;
+        pos = pos + ((shifter >> 20) & 0x3F) - 64;
+        if (pos >= 64)
+            goto done;
+        {
+            int escapeBitCount = bitCount + 12;
+            unsigned int escapeShifter = shifter << 12;
+            if (escapeBitCount > 0) {
+                bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+                bitPtr = decodePnt + 2;
+                escapeShifter |= static_cast<unsigned int>(bits) << escapeBitCount;
+                escapeBitCount -= 16;
+            }
+            value = 16 * ((escapeShifter >> 20) * quant_matrix[scan[pos]] / 16);
+            if (value != value)
+                value = (value >> 27) & 0xFFFFFFF0 ^ 0x7FF0;
+            dctDest[scan[pos]] = static_cast<short>(value);
+            shifter = escapeShifter << 12;
+            mismatch ^= value;
+            bitCount = escapeBitCount + 12;
+        }
+        goto refill;
+    }
+    if (shifter >= 0x02000000u) {
+        tab = &afmv_dct_b15_10[(shifter >> 22) - 8];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter >= 0x00800000u) {
+        tab = &afmv_dct_13[(shifter >> 19) - 16];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter >= 0x00200000u) {
+        tab = &afmv_dct_15[(shifter >> 17) - 16];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+    tab = &afmv_dct_16[shifter >> 16];
+    shifter = (static_cast<unsigned int>(bits) << (bitCount + 16)) | (shifter << 16);
+    bitPtr += 2;
+    pos += tab->run;
+    if (pos < 64)
+        goto normal_code;
+    decodePnt = bitPtr;
+    goto done;
+
+normal_code:
+    shifted = shifter << tab->len;
+    bitCount += tab->len + 1;
+    value = static_cast<int>(((shifted >> 27) ^ (tab->level * quant_matrix[scan[pos]])) & 0xFFFFFFF0u)
+        - 16 * static_cast<int>(shifted >> 31);
+    if (value != value)
+        value = (value >> 27) & 0xFFFFFFF0 ^ 0x7FF0;
+    dctDest[scan[pos]] = static_cast<short>(value);
+    mismatch ^= value;
+    shifter = 2 * shifted;
+
+refill:
+    if (bitCount > 0) {
+        bits = static_cast<unsigned short>((bitPtr[0] << 8) | bitPtr[1]);
+        bitPtr += 2;
+        shifter |= static_cast<unsigned int>(bits) << bitCount;
+        bitCount -= 16;
+    }
+    decodePnt = bitPtr;
+    goto decode_loop;
+
+done:
+    dctDest[63] ^= static_cast<short>(mismatch & 0x10);
+    mBitCount = bitCount + 4;
+    mShifter = 16 * shifter;
+    mDecodePnt = decodePnt;
+}
+
+int nvlAFMVMovie::GetNonIntraCoef(const unsigned short* quant_matrix) {
+    unsigned int shifter = mShifter;
+    int bitCount = mBitCount;
+    unsigned char* decodePnt = mDecodePnt;
+    unsigned char* bitPtr = decodePnt;
+    short* dctDest = mDCTblock;
+    const unsigned char* scan = mScanMatrix;
+    const afmv_dcttab* tab = nullptr;
+    unsigned short bits = 0;
+    unsigned int shifted = 0;
+    int pos = -1;
+    int mismatch = -1;
+    int value = 0;
+    int j = 0;
+
+    if (bitCount > 0) {
+        bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+        decodePnt += 2;
+        bitPtr = decodePnt;
+        shifter |= static_cast<unsigned int>(bits) << bitCount;
+        bitCount -= 16;
+    }
+    if (shifter >= 0x28000000u) {
+        tab = &afmv_dct_b14dc_5[(shifter >> 27) - 5];
+        goto entry_1;
+    }
+
+entry_2:
+    if (shifter < 0x04000000u)
+        goto after_inner;
+    tab = &afmv_dct_b14_8[(shifter >> 24) - 4];
+    pos += tab->run;
+    if (pos < 64)
+        goto normal_code;
+    pos = pos + ((shifter >> 20) & 0x3F) - 64;
+    if (pos >= 64)
+        goto done;
+    {
+        int escapeBitCount = bitCount + 12;
+        unsigned int escapeShifter = shifter << 12;
+        if (escapeBitCount > 0) {
+            bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+            bitPtr = decodePnt + 2;
+            escapeShifter |= static_cast<unsigned int>(bits) << escapeBitCount;
+            escapeBitCount -= 16;
+        }
+        value = 16 * (quant_matrix[scan[pos]] * (2 * ((escapeShifter >> 20) + (escapeShifter >> 31)) + 1) / 32);
+        if (value != value)
+            value = (value >> 27) & 0xFFFFFFF0 ^ 0x7FF0;
+        dctDest[scan[pos]] = static_cast<short>(value);
+        shifter = escapeShifter << 12;
+        mismatch ^= value;
+        bitCount = escapeBitCount + 12;
+    }
+    goto inner_refill;
+
+after_inner:
+    if (shifter >= 0x02000000u) {
+        tab = &afmv_dct_b14_10[(shifter >> 22) - 8];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter >= 0x00800000u) {
+        tab = &afmv_dct_13[(shifter >> 19) - 16];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    if (shifter >= 0x00200000u) {
+        tab = &afmv_dct_15[(shifter >> 17) - 16];
+        pos += tab->run;
+        if (pos >= 64)
+            goto done;
+        goto normal_code;
+    }
+    bits = static_cast<unsigned short>((decodePnt[0] << 8) | decodePnt[1]);
+    tab = &afmv_dct_16[shifter >> 16];
+    shifter = (static_cast<unsigned int>(bits) << (bitCount + 16)) | (shifter << 16);
+    bitPtr += 2;
+    pos += tab->run;
+    if (pos < 64)
+        goto normal_code;
+    decodePnt = bitPtr;
+    goto done;
+
+entry_1:
+    pos += tab->run;
+    if (pos >= 64)
+        goto done;
+    goto normal_code;
+
+normal_code:
+    j = scan[pos];
+    shifted = shifter << tab->len;
+    bitCount += tab->len + 1;
+    value = static_cast<int>(((((shifted >> 26) ^ (quant_matrix[j] * (2 * tab->level + 1))) >> 1) & 0xFFFFFFF0u))
+        - 16 * static_cast<int>(shifted >> 31);
+    if (value != value)
+        value = (value >> 27) & 0xFFFFFFF0 ^ 0x7FF0;
+    dctDest[j] = static_cast<short>(value);
+    mismatch ^= value;
+    shifter = 2 * shifted;
+
+inner_refill:
+    if (bitCount > 0) {
+        bits = static_cast<unsigned short>((bitPtr[0] << 8) | bitPtr[1]);
+        bitPtr += 2;
+        shifter |= static_cast<unsigned int>(bits) << bitCount;
+        bitCount -= 16;
+    }
+    decodePnt = bitPtr;
+    if (shifter >= 0x28000000u) {
+        tab = &afmv_dct_b14ac_5[(shifter >> 27) - 5];
+        goto entry_1;
+    }
+    goto entry_2;
+
+done:
+    dctDest[63] ^= static_cast<short>(mismatch & 0x10);
+    mBitCount = bitCount + 2;
+    mShifter = 4 * shifter;
+    mDecodePnt = decodePnt;
+    return pos;
+}
+void nvlAFMVMovie::DoMotionFrame(
+    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    int bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const int motionX = SignExtendVector(
+        motion->pmv[0][0] + GetMotionDiff(motion->f_code[0]), motion->f_code[0]);
+    motion->pmv[0][0] = motionX;
+    motion->pmv[1][0] = motionX;
+    bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const int motionY = SignExtendVector(
+        motion->pmv[0][1] + GetMotionDiff(motion->f_code[1]), motion->f_code[1]);
+    motion->pmv[0][1] = motionY;
+    motion->pmv[1][1] = motionY;
+    const int baseY = 2 * mVertOffset;
+    const int baseX = 2 * mHorzOffset;
+    int x = motionX + baseX;
+    const int limitX = mLimitX;
+    int adjustedX = motionX;
+    int adjustedY = motionY;
+    int y = baseY + motionY;
+    if (x > limitX) {
+        x = x < 0 ? 0 : limitX;
+        adjustedX = x - baseX;
+    }
+    if (y > mLimitY16) {
+        y = y < 0 ? 0 : mLimitY16;
+        adjustedY = y - baseY;
+    }
+    motionFunc[x & 1 | (2 * (y & 1))](
+        &mDest[0][mHorzOffset], &motion->ref[0][0][(x >> 1) + mStride * (y >> 1)], mStride, 16);
+    const int motionXa = adjustedX / 2;
+    const int uvOffset = ((mHorzOffset + motionXa) >> 1) +
+        mUVStride * ((adjustedY / 2 + mVertOffset) >> 1);
+    const int uvMode = motionXa & 1 | (2 * ((adjustedY / 2) & 1));
+    motionFunc[uvMode + 4](&mDest[1][mHorzOffset >> 1],
+                            &motion->ref[0][1][uvOffset], mUVStride, 8);
+    motionFunc[uvMode + 4](&mDest[2][mHorzOffset >> 1],
+                            &motion->ref[0][2][uvOffset], mUVStride, 8);
+}
+void nvlAFMVMovie::DoMotionField(
+    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    int bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const unsigned field0 = mShifter >> 31;
+    mShifter <<= 1;
+    ++mBitCount;
+    const int motionX0 = SignExtendVector(
+        motion->pmv[0][0] + GetMotionDiff(motion->f_code[0]), motion->f_code[0]);
+    motion->pmv[0][0] = motionX0;
+    bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const int motionY0 = (motion->pmv[0][1] >> 1) + GetMotionDiff(motion->f_code[1]);
+    motion->pmv[0][1] = 2 * motionY0;
+    const int baseX = 2 * mHorzOffset;
+    int x = baseX + motionX0;
+    int adjustedX = motionX0;
+    int y = mVertOffset + motionY0;
+    int adjustedY = motionY0;
+    if (x > mLimitX) {
+        x = x < 0 ? 0 : mLimitX;
+        adjustedX = x - baseX;
+    }
+    if (y > mLimitY) {
+        y = y < 0 ? 0 : mLimitY;
+        adjustedY = y - mVertOffset;
+    }
+    motionFunc[x & 1 | (2 * (y & 1))](
+        &mDest[0][mHorzOffset],
+        &motion->ref[0][0][(x >> 1) + mStride * (field0 + (y & 0xFFFFFFFE))],
+        2 * mStride, 8);
+    const int motionXb = adjustedX / 2;
+    const int motionYb = adjustedY / 2;
+    const int uvMode = motionXb & 1 | (2 * (motionYb & 1));
+    const int uvOffset = ((mHorzOffset + motionXb) >> 1) +
+        mUVStride * (field0 + (mVertOffset >> 1) + (motionYb & 0xFFFFFFFE));
+    motionFunc[uvMode + 4](&mDest[1][mHorzOffset >> 1],
+                            &motion->ref[0][1][uvOffset], 2 * mUVStride, 4);
+    motionFunc[uvMode + 4](&mDest[2][mHorzOffset >> 1],
+                            &motion->ref[0][2][uvOffset], 2 * mUVStride, 4);
+
+    bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const unsigned field1 = mShifter >> 31;
+    mShifter <<= 1;
+    ++mBitCount;
+    const int motionX1 = SignExtendVector(
+        motion->pmv[1][0] + GetMotionDiff(motion->f_code[0]), motion->f_code[0]);
+    motion->pmv[1][0] = motionX1;
+    bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const int motionY1 = (motion->pmv[1][1] >> 1) + GetMotionDiff(motion->f_code[1]);
+    motion->pmv[1][1] = 2 * motionY1;
+    const int baseX1 = 2 * mHorzOffset;
+    int x1 = baseX1 + motionX1;
+    int adjustedX1 = motionX1;
+    int y1 = mVertOffset + motionY1;
+    int adjustedY1 = motionY1;
+    if (x1 > mLimitX) {
+        x1 = x1 < 0 ? 0 : mLimitX;
+        adjustedX1 = x1 - baseX1;
+    }
+    if (y1 > mLimitY) {
+        y1 = y1 < 0 ? 0 : mLimitY;
+        adjustedY1 = y1 - mVertOffset;
+    }
+    motionFunc[x1 & 1 | (2 * (y1 & 1))](
+        &mDest[0][mHorzOffset + mStride],
+        &motion->ref[0][0][(x1 >> 1) + mStride * (field1 + (y1 & 0xFFFFFFFE))],
+        2 * mStride, 8);
+    const int motionXd = adjustedX1 / 2;
+    const int motionYd = adjustedY1 / 2;
+    const int uvMode1 = motionXd & 1 | (2 * (motionYd & 1));
+    const int uvOffset1 = ((mHorzOffset + motionXd) >> 1) +
+        mUVStride * (field1 + (mVertOffset >> 1) + (motionYd & 0xFFFFFFFE));
+    motionFunc[uvMode1 + 4](&mDest[1][mUVStride + (mHorzOffset >> 1)],
+                            &motion->ref[0][1][uvOffset1], 2 * mUVStride, 4);
+    motionFunc[uvMode1 + 4](&mDest[2][mUVStride + (mHorzOffset >> 1)],
+                            &motion->ref[0][2][uvOffset1], 2 * mUVStride, 4);
+}
+void nvlAFMVMovie::DoMotionDualP(
+    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    (void)motionFunc;
+    int bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const int motionX = SignExtendVector(
+        motion->pmv[0][0] + GetMotionDiff(motion->f_code[0]), motion->f_code[0]);
+    motion->pmv[0][0] = motionX;
+    motion->pmv[1][0] = motionX;
+    bitCount = mBitCount;
+    if (bitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= static_cast<unsigned int>(bits) << bitCount;
+        mBitCount = bitCount - 16;
+    }
+    const int dmvX = GetDMV();
+    const int motionY = (motion->pmv[0][1] >> 1) + GetMotionDiff(motion->f_code[1]);
+    motion->pmv[0][1] = 2 * motionY;
+    motion->pmv[1][1] = 2 * motionY;
+    const int dmvY = GetDMV();
+    const int motionXPositive = motionX > 0;
+    const int motionYPositive = motionY > 0;
+    int otherX = dmvX + ((motionX + motionXPositive + 2 * motionX) >> 1);
+    int offset = ((motionY + motionYPositive + 2 * motionY) >> 1) + dmvY - 1;
+    const int baseX = 2 * mHorzOffset;
+    int x = baseX + otherX;
+    int y = offset + mVertOffset;
+    if (x > mLimitX) {
+        x = x < 0 ? 0 : mLimitX;
+        otherX = x - baseX;
+    }
+    if (y > mLimitY) {
+        y = y < 0 ? 0 : mLimitY;
+        offset = y - mVertOffset;
+    }
+    afmv_mc.put[x & 1 | (2 * (y & 1))](
+        &mDest[0][mHorzOffset], &motion->ref[0][0][(x >> 1) + mStride * (y | 1)],
+        2 * mStride, 8);
+    const int uvBase = mUVStride * ((offset / 2 | 1) + (mVertOffset >> 1));
+    const int uvMode = (otherX / 2) & 1 | (2 * ((offset / 2) & 1));
+    const int uvOffset = ((mHorzOffset + otherX / 2) >> 1) + uvBase;
+    afmv_mc.avg[uvMode - 4](&mDest[1][mHorzOffset >> 1],
+                            &motion->ref[0][1][uvOffset], 2 * mUVStride, 4);
+    afmv_mc.avg[uvMode - 4](&mDest[2][mHorzOffset >> 1],
+                            &motion->ref[0][2][uvOffset], 2 * mUVStride, 4);
+
+    const int secondX = dmvX + ((motionXPositive + motionX) >> 1);
+    int secondXAbs = baseX + secondX;
+    int secondY = ((motionY + motionYPositive) >> 1) + dmvY + 1 + mVertOffset;
+    int secondOffset = secondY - mVertOffset;
+    if (secondXAbs > mLimitX) {
+        secondXAbs = secondXAbs < 0 ? 0 : mLimitX;
+        otherX = secondXAbs;
+    }
+    if (secondY > mLimitY) {
+        secondY = secondY < 0 ? 0 : mLimitY;
+        secondOffset = secondY - mVertOffset;
+    }
+    afmv_mc.put[secondXAbs & 1 | (2 * (secondY & 1))](
+        &mDest[0][mHorzOffset + mStride],
+        &motion->ref[0][0][(otherX >> 1) + mStride * (secondY & 0xFFFFFFFE)],
+        2 * mStride, 8);
+    const int secondUvMode = (secondX / 2) & 1 | (2 * ((secondOffset / 2) & 1));
+    const int secondUvOffset = ((mHorzOffset + secondX / 2) >> 1) +
+        mUVStride * ((secondOffset / 2 & 0xFFFFFFFE) + (mVertOffset >> 1));
+    afmv_mc.avg[secondUvMode - 4](
+        &mDest[1][mUVStride + (mHorzOffset >> 1)],
+        &motion->ref[0][1][secondUvOffset], 2 * mUVStride, 4);
+    afmv_mc.avg[secondUvMode - 4](
+        &mDest[2][mUVStride + (mHorzOffset >> 1)],
+        &motion->ref[0][2][secondUvOffset], 2 * mUVStride, 4);
+
+    int averageX = baseX + motionX;
+    int averageY = motionY + mVertOffset;
+    if (averageX > mLimitX)
+        averageX = averageX < 0 ? 0 : mLimitX;
+    if (averageY > mLimitY)
+        averageY = averageY < 0 ? 0 : mLimitY;
+    const int averageMode = averageX & 1 | (2 * (averageY & 1));
+    const int averageOffset = (averageX >> 1) + mStride * (averageY & 0xFFFFFFFE);
+    afmv_mc.avg[averageMode](&mDest[0][mHorzOffset],
+                             &motion->ref[0][0][averageOffset], 2 * mStride, 8);
+    afmv_mc.avg[averageMode](&mDest[0][mStride + mHorzOffset],
+                             &motion->ref[0][0][mStride + averageOffset], 2 * mStride, 8);
+    const int averageXHalf = motionX / 2;
+    const int averageUvOffset = ((mHorzOffset + averageXHalf) >> 1) +
+        mUVStride * ((motionY / 2 & 0xFFFFFFFE) + (mVertOffset >> 1));
+    const int averageUvMode = averageXHalf & 1 | (2 * ((motionY / 2) & 1));
+    afmv_mc.avg[averageUvMode + 4](&mDest[1][mHorzOffset >> 1],
+                                   &motion->ref[0][1][averageUvOffset], 2 * mUVStride, 4);
+    afmv_mc.avg[averageUvMode + 4](&mDest[1][mUVStride + (mHorzOffset >> 1)],
+                                   &motion->ref[0][1][mUVStride + averageUvOffset], 2 * mUVStride, 4);
+    afmv_mc.avg[averageUvMode + 4](&mDest[2][mHorzOffset >> 1],
+                                   &motion->ref[0][2][averageUvOffset], 2 * mUVStride, 4);
+    afmv_mc.avg[averageUvMode + 4](&mDest[2][mUVStride + (mHorzOffset >> 1)],
+                                   &motion->ref[0][2][mUVStride + averageUvOffset], 2 * mUVStride, 4);
+}
+void nvlAFMVMovie::DoMotionSame(
+    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    const int limitX = mLimitX;
+    const int horzOffset = 2 * mHorzOffset;
+    const int vertOffset = 2 * mVertOffset;
+    int motionX = motion->pmv[0][0];
+    int motionY = motion->pmv[0][1];
+    int x = horzOffset + motionX;
+    int y = vertOffset + motionY;
+    if (x > limitX) {
+        x = x < 0 ? 0 : limitX;
+        motionX = x - horzOffset;
+    }
+    if (y > mLimitY16) {
+        y = y < 0 ? 0 : mLimitY16;
+        motionY = y - vertOffset;
+    }
+    motionFunc[motionX & 1 | (2 * (y & 1))](
+        &mDest[0][mHorzOffset],
+        &motion->ref[0][0][(x >> 1) + mStride * (y >> 1)],
+        mStride, 16);
+    motionY /= 2;
+    const int uvMode = (motionX / 2) & 1 | (2 * (motionY & 1));
+    const int uvOffset = ((mHorzOffset + motionX / 2) >> 1) +
+        mUVStride * ((motionY + mVertOffset) >> 1);
+    motionFunc[uvMode + 4](&mDest[1][mHorzOffset >> 1],
+                            &motion->ref[0][1][uvOffset], mUVStride, 8);
+    motionFunc[uvMode + 4](&mDest[2][mHorzOffset >> 1],
+                            &motion->ref[0][2][uvOffset], mUVStride, 8);
+}
+void nvlAFMVMovie::DoMotionCopy(
+    afmv_motion_t* motion, void (*const* motionFunc)(unsigned char*, const unsigned char*, int, int)) {
+    motion->pmv[0][0] = 0;
+    motion->pmv[0][1] = 0;
+    motion->pmv[1][0] = 0;
+    motion->pmv[1][1] = 0;
+    (*motionFunc)(&mDest[0][mHorzOffset],
+                  &motion->ref[0][0][mStride * mVertOffset + mHorzOffset], mStride, 16);
+    const int uvOffset = (mHorzOffset >> 1) + mUVStride * (mVertOffset >> 1);
+    motionFunc[4](&mDest[1][mHorzOffset >> 1], &motion->ref[0][1][uvOffset], mUVStride, 8);
+    motionFunc[4](&mDest[2][mHorzOffset >> 1], &motion->ref[0][2][uvOffset], mUVStride, 8);
+}
 int nvlAFMVMovie::DecodeSlice() { return 0; }
 
 void nvlMovie::ProcessAudioChunk() {}

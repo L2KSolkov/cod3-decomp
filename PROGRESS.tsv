@@ -106,7 +106,7 @@ render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	PORTED	ShaderC
 
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	IN_PROGRESS	NVL base layout and NFL streaming lifecycle ported from IDA; AFMV integration remains
+nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	IN_PROGRESS	NVL base layout and NFL streaming lifecycle ported from IDA; AFMV decoder integration remains
 
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
 
@@ -146,7 +146,7 @@ nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	PORTED	Phase 3: nsl.cpp (audio
 
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (IDA-typed transaction slot pools; free-list direction matched to IDA assembly)
 
-nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	IN_PROGRESS	AFMV layout/header and bitstream helpers in progress; VLC/decoder routines remain
+nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	IN_PROGRESS	IDA-grounded AFMV VLC/DC, coefficient, motion-compensation, and MC table ports compile; DecodeSlice/DecodeFrame remain
 
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	PORTED	[bdConnection] bdConnection.cpp: connection base (15 funcs)
 
