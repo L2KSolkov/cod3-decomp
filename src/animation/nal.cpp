@@ -949,6 +949,41 @@ static nalPositionOrientation nalMakeIdentityPositionOrientation()
 nalPositionOrientation nalPositionOrientation::Identity =
     nalMakeIdentityPositionOrientation();
 
+struct nalIKSpin {
+    math::Quaternion UpperLocalOrientation;   // +0x00
+    math::Quaternion TargetLocalOrientation;  // +0x10
+    math::Quaternion TargetModelOrientation;   // +0x20
+    math::Dir3 TargetModelPosition;            // +0x30
+    float Blend;                               // +0x40
+    short JointAngle;                          // +0x44
+    short Spin;                                // +0x46
+    unsigned int Pad[3];                       // +0x48
+
+    nalIKSpin();
+    nalIKSpin(const math::Quaternion& upperLocalOrientation,
+              const math::Quaternion& targetLocalOrientation,
+              short jointAngle);
+};
+static_assert(sizeof(nalIKSpin) == 96, "nalIKSpin layout mismatch");
+
+// ea: 0x00868B50
+nalIKSpin::nalIKSpin()
+{
+}
+
+// ea: 0x00868B60
+nalIKSpin::nalIKSpin(const math::Quaternion& upperLocalOrientation,
+                     const math::Quaternion& targetLocalOrientation,
+                     short jointAngle)
+{
+    std::memcpy(&UpperLocalOrientation, &upperLocalOrientation,
+                sizeof(UpperLocalOrientation));
+    std::memcpy(&TargetLocalOrientation, &targetLocalOrientation,
+                sizeof(TargetLocalOrientation));
+    Blend = 0.0f;
+    JointAngle = jointAngle;
+}
+
 class nalMatrix4x4 : public math::Mat44 {
 public:
     nalMatrix4x4() {}
@@ -959,9 +994,23 @@ public:
     // ?Inverse@nalMatrix4x4@@QBE?AV1@XZ (game2.o 0x51B830)
     nalMatrix4x4 Inverse() const;
 
+    // ea: 0x00868AC0
+    void Scale(const math::Dir3& scale);
+
     // ?Identity@nalMatrix4x4@@2V1@A
     static nalMatrix4x4 Identity;
 };
+
+// ea: 0x00868AC0
+void nalMatrix4x4::Scale(const math::Dir3& scale)
+{
+    const __m128 x = _mm_shuffle_ps(scale.v, scale.v, _MM_SHUFFLE(0, 0, 0, 0));
+    const __m128 y = _mm_shuffle_ps(scale.v, scale.v, _MM_SHUFFLE(1, 1, 1, 1));
+    const __m128 z = _mm_shuffle_ps(scale.v, scale.v, _MM_SHUFFLE(2, 2, 2, 2));
+    this->x.v = _mm_mul_ps(this->x.v, x);
+    this->y.v = _mm_mul_ps(this->y.v, y);
+    this->z.v = _mm_mul_ps(this->z.v, z);
+}
 
 // nalGenericBoneHandle - bone reference (index + skeleton)
 namespace nalGeneric {
