@@ -18,6 +18,7 @@ extern void  tlMemFree(void* ptr);
 extern "C" void txAssertFailed(unsigned char* ignore, const char* message,
                                 const char* function, const char* source, int line);
 extern "C" void txPrintf(const char* channel, int level, const char* fmt, ...);
+extern "C" unsigned long long txTime();
 extern "C" int __cdecl __fpclass(float value);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern "C" char* txPathFix(const char* src, char* dir, int dirSize);
@@ -353,12 +354,21 @@ static float dword_E4B6F0 = 0.0f;
 static float dword_E4B6F8 = 0.0f;
 static float dword_E4B6FC = 0.0f;
 static float dword_E4B700 = 0.0f;
+static unsigned char byte_E4B6A4 = 0;
 float nsl_dampenLevel = 1.0f;
 static unsigned char ignoreAssert = 0;
 static unsigned char ignoreAssert_0 = 0;
 static unsigned char ignoreAssert_1 = 0;
 static unsigned char ignoreAssert_2 = 0;
 static unsigned char ignoreAssert_3 = 0;
+int nsl_random_play = 0;
+nslWave* wave = nullptr;
+const char* waveName = nullptr;
+nslWaveID waveID = NSL_INVALID_WAVE;
+int i = 0;
+unsigned bankIndex = 0;
+char prevbuf[300] = {};
+nslSourceID sourceID = NSL_INVALID_SOURCE;
 static txSlotEntry* nsl_sourceEntries = nullptr;
 static txSlotEntry* nsl_emitterEntries = nullptr;
 static nslSource* nsl_sources = nullptr;
@@ -558,6 +568,8 @@ nslVoice*      nslVoicePtr(int);
 unsigned      nslVoiceCount();
 int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
 void          nslVoiceFree(int);
+void          nslDriverUpdate();
+void          nslPriorityUpdate();
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
@@ -2297,12 +2309,9 @@ void          nslUpdateSources() {
                 nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(emitterID));
             unsigned char* emitterRaw = reinterpret_cast<unsigned char*>(nsl_emitters) +
                 nslEmitterStride * static_cast<unsigned>(emitterIndex);
-            const unsigned __int64 emitterUsed =
-                *reinterpret_cast<const unsigned __int64*>(emitterRaw + 0x0u);
             const unsigned __int64 emitterUpdate =
                 *reinterpret_cast<const unsigned __int64*>(emitterRaw + 0x8u);
-            sourceParamsUpdate |= emitterUsed;
-            sourceParamsUsed |= emitterUpdate;
+            sourceParamsUpdate |= emitterUpdate;
             float* sourceParams = reinterpret_cast<float*>(sourceRaw + 0x10u);
             const float* emitterParams = reinterpret_cast<const float*>(emitterRaw + 0x10u);
             for (unsigned index = 0; index < 64u; ++index) {
@@ -2395,8 +2404,7 @@ void          nslUpdateSources() {
                          slot, nslWaveGetName(waveID), distance,
                          sourceParams[29], maxDistance);
             }
-            sourceParamsUsed |= *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u);
-            sourceParamsUpdate |= *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u);
+            sourceParamsUpdate |= *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u);
             *reinterpret_cast<unsigned*>(sourceRaw + 0x124u) = 0;
         }
 
@@ -2508,14 +2516,12 @@ void          nslUpdateSources() {
                 unsigned char* allocatedVoice = reinterpret_cast<unsigned char*>(nsl_voices) +
                     320u * static_cast<unsigned>(voice);
                 if (allocatedVoice != nullptr) {
-                    reinterpret_cast<float*>(allocatedVoice + 8u)[70] = volume;
-                    reinterpret_cast<float*>(allocatedVoice + 8u)[71] = pitch;
+                    reinterpret_cast<float*>(allocatedVoice)[78] = volume;
+                    reinterpret_cast<float*>(allocatedVoice)[79] = pitch;
                 }
             }
-            *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u) |=
+            *reinterpret_cast<unsigned __int64*>(voiceRaw + 0x0u) |=
                 sourceParamsUpdate | UINT64_C(0x8000003);
-            *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u) |=
-                sourceParamsUsed;
         } else if ((waveInfo[5] & 2u) != 0u) {
             const int staleVoice = *reinterpret_cast<const int*>(sourceRaw + 0x118u);
             if (staleVoice != -1)
@@ -2649,7 +2655,71 @@ void          nslUpdateListener() {
                  + (dword_10E11DC * dword_E4B6EC)
                  + (dword_10E11D0 * dword_E4B6E8);
 }
-void          nslUpdate() {}
+// ea: 0x00823700
+void          nslUpdate() {
+    if (nsl_frame != 0)
+        nsl_timeDelta = nsl_time - nsl_timePrev;
+    else
+        nsl_timeDelta = 0;
+    nsl_timePrev = nsl_time;
+    nsl_time = static_cast<unsigned>(txTime());
+    ++nsl_frame;
+
+    nslUpdateBanks();
+    nslPriorityUpdate();
+    nslUpdateSources();
+    nslUpdateEmitters();
+    nslUpdateListener();
+
+    const unsigned aramSize = nsl_initParams.aramSize;
+    for (unsigned voiceIndex = 0; voiceIndex < aramSize; ++voiceIndex) {
+        unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(nsl_voices) +
+            320u * voiceIndex;
+        if (voiceRaw[0x108u] != 0u &&
+            nslWavePtr(*reinterpret_cast<const nslWaveID*>(voiceRaw + 0x110u)) == nullptr) {
+            nslFreeSource(*reinterpret_cast<const nslSourceID*>(voiceRaw + 0x114u));
+            nslVoiceFree(static_cast<int>(voiceIndex));
+        }
+    }
+
+    if ((byte_E4B6A4 & 1u) == 0u)
+        nslDriverUpdate();
+
+    char voiceStateBuffer[300] = {};
+    static const char voiceStateChars[] = "_IQqPpFf";
+    unsigned stateCount = 0;
+    while (stateCount < aramSize) {
+        const unsigned char* voiceRaw = reinterpret_cast<const unsigned char*>(nsl_voices) +
+            320u * stateCount;
+        voiceStateBuffer[stateCount] = voiceStateChars[voiceRaw[0x108u]];
+        ++stateCount;
+    }
+    voiceStateBuffer[aramSize] = 0;
+    if (std::strcmp(prevbuf, voiceStateBuffer) != 0)
+        txPrintf("NSL", 9, "%s\n", voiceStateBuffer);
+    std::memcpy(prevbuf, voiceStateBuffer, stateCount + 1u);
+
+    if (nsl_random_play != 0 && nsl_initParams.aramBase != 0) {
+        bankIndex = bankIndex % nsl_initParams.aramBase + 1u;
+        const nslWaveBankID waveBankID = nsl_waveBankSlots[bankIndex].waveBankID;
+        nslWaveBank* waveBank = nslWaveBankPtr(waveBankID);
+        if (waveBank != nullptr && waveBank->waveCount != 0 &&
+            nslGetSourceState(sourceID) == NSL_SOURCE_STATE_INVALID) {
+            i = i % static_cast<int>(waveBank->waveCount) + 1;
+            waveID = nslWaveBankGetWave(waveBankID, static_cast<unsigned>(i));
+            waveName = nslWaveGetName(waveID);
+            wave = nslWavePtr(waveID);
+            if (wave != nullptr) {
+                const unsigned char* waveInfo =
+                    *reinterpret_cast<const unsigned char* const*>(wave);
+                if ((waveInfo[5] & 2u) == 0u) {
+                    sourceID = nslNewSource(waveID, 1);
+                    nslPlaySource(sourceID);
+                }
+            }
+        }
+    }
+}
 
 // ============================================================================
 // nslPriority — voice priority / attenuation
