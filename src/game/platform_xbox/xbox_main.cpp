@@ -7,6 +7,8 @@
 #include <string.h>
 #include <new>
 #include <intrin.h>
+#include <float.h>
+#include <crtdbg.h>
 
 #include "game/cvar_types.h"
 #include "game/platform_xbox/MPLiveEngine.h"
@@ -162,6 +164,12 @@ int Sys_Milliseconds()
 // ea: 0x726F10
 void main()
 {
+    // Keep CRT diagnostics on the debugger stream.  The Xbox runtime has no
+    // Win32 assertion dialog, and a modal CRT report would otherwise stop
+    // automated startup under CDB.
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+
     // j_nullsub_62();  (linker thunk to a nullsub - no-op)
     MPLiveEngine liveWrapper;
     char cmdLineText[256];
@@ -207,6 +215,12 @@ void main()
         Cvar_SetValue("cg_widescreen", 0.0f);
     }
     nglInit();
+    // nglInit preserves the Xbox rounding setup (MXCSR bits 13-14 = 0x6000),
+    // but UCRT strtod/atof requires the Win32 default round-to-nearest mode.
+    // Restore only the platform FP boundary before Com_Init starts parsing
+    // cvars; game-side arithmetic remains otherwise unchanged.
+    _controlfp(_RC_NEAR, _MCW_RC);
+    _mm_setcsr(_mm_getcsr() & ~0x6000u);
     InitDefaultPak();
     SpinnerInit();
     SpinnerDrawFrameWithLoading(true);

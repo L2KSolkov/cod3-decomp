@@ -74,10 +74,63 @@ static unsigned int gNullHeight = 480;
 static void (*gNullVBlankCallback)(_D3DVBLANKDATA*) = NULL;
 static unsigned int gNullFence = 0;
 
+// NGL's Xbox render-state method cells are owned by the Win32 shim.  The
+// source-side state code already identifies the slots that are used by the
+// D3D9 path; bind those slots to their native render-state selectors once the
+// device is created.
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_40344;
+extern unsigned int dword_40348;
+extern unsigned int dword_4034C;
+extern unsigned int dword_40350;
+extern unsigned int dword_40354;
+extern unsigned int dword_40358;
+extern unsigned int dword_4035C;
+
+static void nullD3DInitStateAliases() {
+    dword_40300 = COD3_D3D9_RS_ALPHATESTENABLE;
+    dword_40304 = COD3_D3D9_RS_ALPHABLENDENABLE;
+    dword_4033C = COD3_D3D9_RS_ALPHAFUNC;
+    dword_40340 = COD3_D3D9_RS_ALPHAREF;
+    dword_40344 = COD3_D3D9_RS_SRCBLEND;
+    dword_40348 = COD3_D3D9_RS_DESTBLEND;
+    dword_4034C = D3DRS_BLENDFACTOR;
+    dword_40350 = COD3_D3D9_RS_BLENDOP;
+    dword_40354 = 23u; // D3DRS_ZFUNC in the native D3D9 enum.
+    dword_40358 = COD3_D3D9_RS_COLORWRITEENABLE;
+    dword_4035C = COD3_D3D9_RS_ZWRITEENABLE;
+}
+
 static DWORD nullD3DCompareFunc(unsigned int Value) {
-    // The NGL state path uses the Xbox encoded compare value 0x204 for
-    // greater-than; ordinary D3D compare values pass through unchanged.
-    return Value == 0x204u ? D3DCMP_GREATER : Value;
+    // Xbox D3D encodes compare functions as 0x200 + the eight D3D compare
+    // values.  NGL emits these values directly in its render-state path.
+    switch (Value) {
+    case 0x200u: return D3DCMP_NEVER;
+    case 0x201u: return D3DCMP_LESS;
+    case 0x202u: return D3DCMP_EQUAL;
+    case 0x203u: return D3DCMP_LESSEQUAL;
+    case 0x204u: return D3DCMP_GREATER;
+    case 0x205u: return D3DCMP_NOTEQUAL;
+    case 0x206u: return D3DCMP_GREATEREQUAL;
+    case 0x207u: return D3DCMP_ALWAYS;
+    default: return Value;
+    }
+}
+
+static DWORD nullD3DCullMode(unsigned int Value) {
+    // The NGL paths use 0 for no culling and 0x900 for the Xbox back-face
+    // selector.  Accept the native D3D8 numeric selectors as well.
+    switch (Value) {
+    case 0u: return D3DCULL_NONE;
+    case 0x900u: return D3DCULL_CCW;
+    case 1u: return D3DCULL_CW;
+    case 2u:
+    case 3u: return D3DCULL_CCW;
+    default: return D3DCULL_NONE;
+    }
 }
 
 static unsigned int nullD3DBytesPerPixel(unsigned int Format) {
@@ -363,8 +416,46 @@ static nullD3DBuffer* nullD3DCreateBuffer(unsigned int Bytes, bool IndexBuffer) 
 
 extern "C" {
 
-void __fastcall D3DDevice_SetRenderState_Simple(unsigned int, unsigned int) {}
-void __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int, const void*) {}
+void __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned int Value) {
+    if (gD3D9Device == NULL)
+        return;
+
+    COD3_D3D9_RENDERSTATETYPE NativeState;
+    DWORD NativeValue = Value;
+    if (Method == dword_40300) {
+        NativeState = COD3_D3D9_RS_ALPHATESTENABLE;
+    } else if (Method == dword_40304) {
+        NativeState = COD3_D3D9_RS_ALPHABLENDENABLE;
+    } else if (Method == dword_4033C) {
+        NativeState = COD3_D3D9_RS_ALPHAFUNC;
+        NativeValue = nullD3DCompareFunc(Value);
+    } else if (Method == dword_40340) {
+        NativeState = COD3_D3D9_RS_ALPHAREF;
+    } else if (Method == dword_40344) {
+        NativeState = COD3_D3D9_RS_SRCBLEND;
+    } else if (Method == dword_40348) {
+        NativeState = COD3_D3D9_RS_DESTBLEND;
+    } else if (Method == dword_4034C) {
+        NativeState = D3DRS_BLENDFACTOR;
+    } else if (Method == dword_40350) {
+        NativeState = COD3_D3D9_RS_BLENDOP;
+    } else if (Method == dword_40354) {
+        NativeState = (COD3_D3D9_RENDERSTATETYPE)23;
+        NativeValue = nullD3DCompareFunc(Value);
+    } else if (Method == dword_40358) {
+        NativeState = COD3_D3D9_RS_COLORWRITEENABLE;
+    } else if (Method == dword_4035C) {
+        NativeState = COD3_D3D9_RS_ZWRITEENABLE;
+    } else {
+        return;
+    }
+    gD3D9Device->SetRenderState(NativeState, NativeValue);
+}
+void __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int Register,
+                                                       const void* Data) {
+    if (gD3D9Device != NULL && Data != NULL && Register < 256)
+        gD3D9Device->SetVertexShaderConstantF(Register, (const float*)Data, 1);
+}
 void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int, const void*, unsigned int) {}
 void __cdecl compress2(void) {}
 unsigned int __stdcall D3DBaseTexture_GetLevelCount(D3DBaseTexture* Texture) {
@@ -749,6 +840,7 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
         gD3D9Device->GetRenderTarget(0, &gD3D9RenderTarget);
         gD3D9Device->GetDepthStencilSurface(&gD3D9DepthStencil);
     }
+    nullD3DInitStateAliases();
     if (Device != NULL) *Device = (void*)1;
     return 0;
 }
@@ -840,7 +932,11 @@ void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* For
         gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
 }
 void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {}
-void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int) {}
+void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetRenderState(COD3_D3D9_RS_CULLMODE,
+                                     nullD3DCullMode(Value));
+}
 int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value) {
     if (gD3D9Device == NULL)
         return 0;
@@ -862,7 +958,10 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
     case D3DRS_ZWRITEENABLE: NativeState = COD3_D3D9_RS_ZWRITEENABLE; break;
     case D3DRS_COLORWRITEENABLE: NativeState = COD3_D3D9_RS_COLORWRITEENABLE; break;
     case D3DRS_SPECULARENABLE: NativeState = COD3_D3D9_RS_SPECULARENABLE; break;
-    case D3DRS_CULLMODE: NativeState = COD3_D3D9_RS_CULLMODE; break;
+    case D3DRS_CULLMODE:
+        NativeState = COD3_D3D9_RS_CULLMODE;
+        NativeValue = nullD3DCullMode(Value);
+        break;
     case D3DRS_ZENABLE: NativeState = COD3_D3D9_RS_ZENABLE; break;
     case D3DRS_STENCILENABLE: NativeState = COD3_D3D9_RS_STENCILENABLE; break;
     case D3DRS_STENCILFUNC: NativeState = COD3_D3D9_RS_STENCILFUNC; break;
