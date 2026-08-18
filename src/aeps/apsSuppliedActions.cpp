@@ -702,7 +702,88 @@ void apsMoveAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 
 apsObjectMoveAction::apsObjectMoveAction()
     : apsAction(2, 0, eAsync, 0x24021u) {}
-void apsObjectMoveAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+
+// ea: 0x0080A0E0
+void apsObjectMoveAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                              apsGroup* ioGroup, apsEffect*, float,
+                              float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if ((ioGroup->mPFD.mFields & (1u << apsPFDField_Velocity)) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* velocity =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Velocity);
+
+    if ((ioGroup->mPFD.mFields & (1u << apsPFDField_Orientation)) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* orientation =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Orientation);
+
+    if ((ioGroup->mPFD.mFields & (1u << apsPFDField_VectorAngularVelocity)) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    unsigned char* angularVelocity =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_VectorAngularVelocity);
+
+    if (iBegin == iEnd)
+        return;
+
+    const float halfTimeDelta = iTimeDelta * 0.5f;
+    while (iBegin != iEnd) {
+        float* position = reinterpret_cast<float*>(iBegin);
+        const float* velocityValue = reinterpret_cast<const float*>(velocity);
+        position[0] += velocityValue[0] * iTimeDelta;
+        position[1] += velocityValue[1] * iTimeDelta;
+        position[2] += velocityValue[2] * iTimeDelta;
+
+        apsQuaternion* particleOrientation =
+            reinterpret_cast<apsQuaternion*>(orientation);
+        math::Dir3 currentAngularVelocity;
+        const float* angularVelocityValue =
+            reinterpret_cast<const float*>(angularVelocity);
+        currentAngularVelocity.v = _mm_setr_ps(
+            angularVelocityValue[0], angularVelocityValue[1],
+            angularVelocityValue[2], 0.0f);
+        particleOrientation->RotatePoint(currentAngularVelocity);
+
+        const float qx = particleOrientation->x;
+        const float qy = particleOrientation->y;
+        const float qz = particleOrientation->z;
+        const float qw = particleOrientation->w;
+        const float wx = currentAngularVelocity.v.m128_f32[0];
+        const float wy = currentAngularVelocity.v.m128_f32[1];
+        const float wz = currentAngularVelocity.v.m128_f32[2];
+
+        const float nextX = qx +
+            ((((qw * wx) + (qz * wy)) + (qx * 0.0f)) - (qy * wz)) *
+                halfTimeDelta;
+        const float nextY = qy +
+            (((((qy * 0.0f) - (qz * wx)) + (qx * wz)) + (qw * wy))) *
+                halfTimeDelta;
+        const float nextZ = qz +
+            (((((qy * wx) + (qz * 0.0f)) - (qx * wy)) + (qw * wz))) *
+                halfTimeDelta;
+        const float nextW = qw +
+            (((((qw * 0.0f) - (qx * wx)) - (qy * wy)) - (qz * wz))) *
+                halfTimeDelta;
+
+        const float inverseLength = 1.0f / std::sqrt(
+            nextW * nextW + nextY * nextY + nextZ * nextZ + nextX * nextX);
+        particleOrientation->x = nextX * inverseLength;
+        particleOrientation->y = nextY * inverseLength;
+        particleOrientation->z = nextZ * inverseLength;
+        particleOrientation->w = nextW * inverseLength;
+
+        iBegin += stride;
+        velocity += stride;
+        orientation += stride;
+        angularVelocity += stride;
+    }
+}
 
 apsPositionMoveAction::apsPositionMoveAction()
     : apsAction(2, 0, eAsync, 0x4001u) {}
