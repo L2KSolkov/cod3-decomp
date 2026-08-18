@@ -15,8 +15,7 @@
 #include <stdio.h>
 
 // ============================================================================
-// apsError::apsError — the apsSingleton<apsError> base ctor runs first
-// (assert apsUtil.h:86 + sInstancePtr = this); body allocates the error array.
+// apsError::apsError — singleton registration plus error-array allocation.
 // ea: 0x8041c0
 // ============================================================================
 apsError::apsError() {
@@ -30,8 +29,7 @@ apsError::apsError() {
 }
 
 // ============================================================================
-// apsError::~apsError — free the error array; the apsSingleton<apsError> base
-// dtor then clears sInstancePtr (assert apsUtil.h:104).
+// apsError::~apsError — free the error array and clear the singleton pointer.
 // ea: 0x804290
 // ============================================================================
 apsError::~apsError() {
