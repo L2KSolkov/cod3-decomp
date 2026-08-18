@@ -430,7 +430,84 @@ bool apkFile::InvokeFileLoadCallback(apkFileTypeEntry* typeEntry, apkFileEntry* 
 // ea: 0x834990
 // ============================================================================
 void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
-    // Stub — deferred to full reconstruction
+    void* pools[4] = {};
+    uint32_t poolSizes[4] = {};
+    for (int i = 0; i < 4; ++i)
+        poolSizes[i] = entry->GetDataSize(this, i, false, &pools[i]);
+
+    apkFileTypeEntry* fileTypes = FileTypes;
+    uint8_t* stringTable = nullptr;
+    while (fileTypes->Type != 0) {
+        apkFileEntry* firstEntry = fileTypes->FirstEntry;
+        uint32_t entryStride = fileTypes->NSections + 1;
+        stringTable = reinterpret_cast<uint8_t*>(firstEntry)
+                    + 4u * fileTypes->NEntries * entryStride;
+        fileTypes = reinterpret_cast<apkFileTypeEntry*>(
+            reinterpret_cast<uint8_t*>(fileTypes) + 4u * NSections + 20u);
+    }
+
+    apkFileSection* lastSection = &Sections[NSections - 1];
+    uint32_t* referenceData = reinterpret_cast<uint32_t*>(
+        (reinterpret_cast<uintptr_t>(lastSection->Data) + lastSection->Size + 3u) & ~uintptr_t(3u));
+    if (*referenceData != 0xFFFFFFFFu) {
+        do {
+            ++referenceData;
+        } while (*referenceData != 0xFFFFFFFFu);
+    }
+
+    uint32_t reference = referenceData[1];
+    uint32_t* cursor = referenceData + 1;
+    if (reference == 0xFFFFFFFFu)
+        return;
+
+    while (true) {
+        uint32_t sectionIndex = reference >> 26;
+        uint32_t sectionOffset = reference & 0x03FFFFFFu;
+        tlFixedString* target = reinterpret_cast<tlFixedString*>(
+            reinterpret_cast<uint8_t*>(Sections[sectionIndex].Data) + 4u * sectionOffset);
+        uint32_t type = *cursor++;
+        tlFixedString* name = reinterpret_cast<tlFixedString*>(stringTable + *cursor++);
+        uint32_t nextReference = *cursor++;
+
+        uint32_t owningSection = 0xFFFFFFFFu;
+        for (uint32_t i = 0; i < NSections; ++i) {
+            uintptr_t sectionStart = reinterpret_cast<uintptr_t>(Sections[i].Data);
+            uintptr_t targetAddress = reinterpret_cast<uintptr_t>(target);
+            if (sectionStart < targetAddress
+                && targetAddress < sectionStart + Sections[i].Size) {
+                owningSection = i;
+                break;
+            }
+        }
+
+        if (owningSection == 0xFFFFFFFFu
+            && _tlAssert("source/apk.cpp", 402,
+                         "SectionIndex != (u32)-1",
+                         "Offset is not in any section?"))
+            __debugbreak();
+        if (owningSection >= 4
+            && _tlAssert("source/apk.cpp", 403,
+                         "SectionIndex < MAX_SECTIONS",
+                         "Need to increase MAX_SECTIONS"))
+            __debugbreak();
+
+        void* pool = pools[owningSection];
+        uintptr_t poolStart = reinterpret_cast<uintptr_t>(pool);
+        uintptr_t targetAddress = reinterpret_cast<uintptr_t>(target);
+        if (pool != nullptr
+            && targetAddress > poolStart
+            && targetAddress < poolStart + poolSizes[owningSection]) {
+            if (apkResourceLocatorCallback)
+                target->hash = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(
+                    apkResourceLocatorCallback(*name, type)));
+            else
+                target->hash = 0;
+        }
+
+        reference = nextReference;
+        if (reference == 0xFFFFFFFFu)
+            break;
+    }
 }
 
 // ============================================================================
