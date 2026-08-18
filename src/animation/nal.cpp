@@ -1003,6 +1003,7 @@ class nalInitList {
 public:
     nalInitList();
     virtual ~nalInitList();
+    virtual void Register() = 0;
 
     nalInitList* next;  // +0x04
     static nalInitList* head;  // ?head@nalInitList@@0PAV1@A @ 0x10E9604
@@ -1212,7 +1213,11 @@ nalStreamInstance* nalStreamAnimQueueInstance(unsigned a1, int a2, int a3, int a
 // ============================================================================
 // nalInitList
 // ============================================================================
-void nalInitListInit() {}
+void nalInitListInit()
+{
+    for (nalInitList* entry = nalInitList::head; entry != nullptr; entry = entry->next)
+        entry->Register();
+}
 
 // ============================================================================
 // xanim.cpp raw accessors (anim.o) - ported from disasm
