@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 #include <intrin.h>
 
 #include "core/tlFixedString.h"
@@ -18,6 +19,7 @@ extern "C" void txAssertFailed(unsigned char* ignore, const char* message,
 extern "C" void txPrintf(const char* channel, int level, const char* fmt, ...);
 extern "C" int __cdecl __fpclass(float value);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
+extern "C" char* txPathFix(const char* src, char* dir, int dirSize);
 
 // ============================================================================
 // Handle types
@@ -133,8 +135,9 @@ static_assert(sizeof(txSlotEntry) == 12, "IDA txSlotEntry layout");
 static_assert(sizeof(txSlotPool) == 40, "IDA txSlotPool layout");
 static constexpr txSlot TX_SLOT_INVALID = static_cast<txSlot>(-1);
 enum nflFileID : unsigned { NFL_FILE_ID_INVALID = (unsigned)-1 };
+struct nslGroup;
 struct nslWave {
-    unsigned char opaque[40]; // IDA type_inspect: nslWave size 0x28; fields not needed by this loader step.
+    unsigned char opaque[40]; // IDA type_inspect: nslWave size 0x28; bank records stay opaque.
 };
 // IDA type_inspect: nslParam is an 8-byte map followed by a flexible float array.
 struct nslParam {
@@ -142,6 +145,30 @@ struct nslParam {
     float values[0];
 };
 static_assert(sizeof(nslParam) == 8, "IDA nslParam layout");
+struct nslParamUnpacked {
+    unsigned __int64 map;
+    float values[64];
+};
+struct nslWaveInfo {
+    unsigned short sampleRate;
+    unsigned short sampleRateOriginal;
+    unsigned char waveFormat;
+    unsigned char waveFormatFlags;
+    unsigned char speakerMap;
+    unsigned char soundFlags;
+    union {
+        const char* groupName;
+        const nslGroup* group;
+    };
+    union {
+        const char* levelName;
+        void* level;
+        char* encodingStamp;
+    };
+    nslParamUnpacked paramUnpacked;
+};
+static_assert(sizeof(nslParamUnpacked) == 264, "IDA nslParamUnpacked layout");
+static_assert(sizeof(nslWaveInfo) == 280, "IDA nslWaveInfo layout");
 struct nslWaveName {
     union {
         const char* name;
@@ -246,6 +273,8 @@ static unsigned nsl_frame = 0;
 static unsigned nsl_waveBankLoadOrder = 0;
 nslSpeakerMode nsl_speakerMode = static_cast<nslSpeakerMode>(-2);
 nslWaveBankSlot* nsl_waveBankSlots = nullptr;
+static char nsl_waveSourceDirectory[512] = {};
+static char nsl_waveObjectDirectory[512] = {};
 static unsigned char nsl_waveBankLoaderBuffer[4096] = {};
 static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
@@ -993,10 +1022,183 @@ void          nslSourceSetOcclusion(nslSourceID, float) {}
 nslWaveID     nslWaveLoad(const char*, unsigned) { return NSL_INVALID_WAVE; }
 nslWaveID     nslWaveLoadInPlace(void*, unsigned) { return NSL_INVALID_WAVE; }
 void          nslWaveRelease(nslWaveID) {}
-void          nslWaveSetSourceDirectory(const char*) {}
-const char*   nslWaveGetSourceDirectory() { return ""; }
-void          nslWaveSetObjectDirectory(const char*) {}
-const char*   nslWaveGetObjectDirectory() { return ""; }
+// ea: 0x0082A020
+const char*   nslWaveGetSourceDirectory() { return nsl_waveSourceDirectory; }
+// ea: 0x0082A030
+const char*   nslWaveGetObjectDirectory() { return nsl_waveObjectDirectory; }
+// ea: 0x0082A040
+void          nslWaveSetSourceDirectory(const char* newWaveSourceDirectory) {
+    std::strncpy(nsl_waveSourceDirectory, newWaveSourceDirectory, 0x1FFu);
+    txPathFix(nsl_waveSourceDirectory, nsl_waveSourceDirectory, 512);
+    const char* suffix = nsl_waveSourceDirectory[0] == 0 ? "./" : "/";
+    std::strcat(nsl_waveSourceDirectory, suffix);
+    txPathFix(nsl_waveSourceDirectory, nsl_waveSourceDirectory, 512);
+}
+// ea: 0x0082A0D0
+void          nslWaveSetObjectDirectory(const char* newWaveObjectDirectory) {
+    std::strncpy(nsl_waveObjectDirectory, newWaveObjectDirectory, 0x1FFu);
+    txPathFix(nsl_waveObjectDirectory, nsl_waveObjectDirectory, 512);
+    const char* suffix = nsl_waveObjectDirectory[0] == 0 ? "./" : "/";
+    std::strcat(nsl_waveObjectDirectory, suffix);
+    txPathFix(nsl_waveObjectDirectory, nsl_waveObjectDirectory, 512);
+}
+// ea: 0x0082A160
+const char*   nslWaveGetSourceFilename(const char* sourceFilename,
+                                       char* fullSourceFilename,
+                                       int fullSourceFilenameSize) {
+    _snprintf(fullSourceFilename, fullSourceFilenameSize, "%s/%s",
+              nsl_waveSourceDirectory, sourceFilename);
+    txPathFix(fullSourceFilename, fullSourceFilename, fullSourceFilenameSize);
+    return fullSourceFilename;
+}
+// ea: 0x0082A1A0
+const char*   nslWaveGetObjectFilename(const char* objectFilename,
+                                       const char* platform,
+                                       char* fullObjectFilename,
+                                       int fullObjectFilenameSize) {
+    static_cast<void>(platform);
+    _snprintf(fullObjectFilename, fullObjectFilenameSize, "%s/%s",
+              nsl_waveObjectDirectory, objectFilename);
+    txPathFix(fullObjectFilename, fullObjectFilename, fullObjectFilenameSize);
+    return fullObjectFilename;
+}
+// ea: 0x0082A1E0
+nslWaveInfo*  nslWaveInfoAlloc() {
+    return static_cast<nslWaveInfo*>(std::calloc(1u, 0x118u));
+}
+// ea: 0x0082A1F0
+unsigned      nslWaveInfoSize(const nslWaveInfo* waveInfo) {
+    if (waveInfo == nullptr)
+        return 0;
+    unsigned __int64 map = waveInfo->paramUnpacked.map;
+    unsigned count = 0;
+    while (map != 0) {
+        count += static_cast<unsigned>(map & 1u);
+        map >>= 1;
+    }
+    return 4u * count + 24u;
+}
+// ea: 0x0082A220
+nslWave*     nslWaveAlloc() {
+    nslWave* wave = static_cast<nslWave*>(std::calloc(1u, 0x10u));
+    if (wave != nullptr)
+        *reinterpret_cast<nslWaveInfo**>(wave) = nslWaveInfoAlloc();
+    return wave;
+}
+// ea: 0x0082A250
+void          nslWaveInfoFree(nslWaveInfo* waveInfo) {
+    if (waveInfo == nullptr)
+        return;
+    std::free(const_cast<char*>(waveInfo->groupName));
+    std::free(const_cast<char*>(waveInfo->levelName));
+    std::free(waveInfo);
+}
+// ea: 0x0082A280
+void          nslWaveFree(nslWave* wave) {
+    if (wave == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(wave);
+    nslWaveInfo* waveInfo = *reinterpret_cast<nslWaveInfo**>(raw);
+    if (waveInfo != nullptr) {
+        std::free(const_cast<char*>(waveInfo->groupName));
+        std::free(const_cast<char*>(waveInfo->levelName));
+        std::free(waveInfo);
+    }
+    void* data = *reinterpret_cast<void**>(raw + 4u);
+    if (data != nullptr) {
+        const unsigned dataSize = *reinterpret_cast<const unsigned*>(raw + 8u);
+        std::memset(data, 0xBF, dataSize);
+        std::free(data);
+    }
+    std::memset(raw, 0xBF, 0x10u);
+    std::free(wave);
+}
+// ea: 0x0082A300
+void          nslWaveSetSoundInfo(nslWave* wave,
+                                  const nslWaveInfo* waveInfo) {
+    if (wave == nullptr || waveInfo == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(wave);
+    nslWaveInfo* current = *reinterpret_cast<nslWaveInfo**>(raw);
+    std::free(const_cast<char*>(current->groupName));
+    std::free(const_cast<char*>(current->levelName));
+    current->soundFlags = waveInfo->soundFlags;
+    current->groupName = waveInfo->groupName == nullptr
+        ? nullptr : _strdup(waveInfo->groupName);
+    current->levelName = waveInfo->levelName == nullptr
+        ? nullptr : _strdup(waveInfo->levelName);
+    std::memcpy(reinterpret_cast<unsigned char*>(current) + 0x10u,
+                reinterpret_cast<const unsigned char*>(waveInfo) + 0x10u,
+                0x108u);
+}
+// ea: 0x0082A380
+const nslWaveInfo* nslWaveGetInfo(const nslWave* wave) {
+    if (wave == nullptr)
+        return nullptr;
+    return *reinterpret_cast<const nslWaveInfo* const*>(wave);
+}
+// ea: 0x0082A3A0
+nslWaveInfo*  nslWaveInfoCopy(const nslWaveInfo* sourceWaveInfo) {
+    if (sourceWaveInfo == nullptr)
+        return nullptr;
+    nslWaveInfo* copy = static_cast<nslWaveInfo*>(std::calloc(1u, 0x118u));
+    if (copy == nullptr)
+        return nullptr;
+    std::memcpy(copy, sourceWaveInfo, 0x118u);
+    copy->groupName = nullptr;
+    copy->levelName = nullptr;
+    if (sourceWaveInfo->groupName != nullptr) {
+        copy->groupName = _strdup(sourceWaveInfo->groupName);
+        if (copy->groupName == nullptr)
+            goto failure;
+    }
+    if (sourceWaveInfo->levelName != nullptr) {
+        copy->levelName = _strdup(sourceWaveInfo->levelName);
+        if (copy->levelName == nullptr)
+            goto failure;
+    }
+    return copy;
+failure:
+    std::free(const_cast<char*>(copy->groupName));
+    std::free(const_cast<char*>(copy->levelName));
+    std::free(copy);
+    return nullptr;
+}
+// ea: 0x0082A440
+nslWave*     nslWaveCopy(const nslWave* src, unsigned __formal, int flags,
+                         int __formal2, const char** const __formal3) {
+    static_cast<void>(__formal2);
+    static_cast<void>(__formal3);
+    nslWave* copy = static_cast<nslWave*>(std::calloc(1u, 0x10u));
+    if (copy == nullptr)
+        return nullptr;
+    unsigned char* copyRaw = reinterpret_cast<unsigned char*>(copy);
+    *reinterpret_cast<nslWaveInfo**>(copyRaw) = nslWaveInfoAlloc();
+    const unsigned char* sourceRaw = reinterpret_cast<const unsigned char*>(src);
+    nslWaveInfo* infoCopy = nslWaveInfoCopy(
+        *reinterpret_cast<const nslWaveInfo* const*>(sourceRaw));
+    *reinterpret_cast<nslWaveInfo**>(copyRaw) = infoCopy;
+    if (infoCopy == nullptr) {
+        nslWaveFree(copy);
+        return nullptr;
+    }
+    *reinterpret_cast<unsigned*>(copyRaw + 0x0Cu) =
+        *reinterpret_cast<const unsigned*>(sourceRaw + 0x0Cu);
+    const unsigned dataSize =
+        *reinterpret_cast<const unsigned*>(sourceRaw + 8u);
+    *reinterpret_cast<unsigned*>(copyRaw + 8u) = dataSize;
+    if ((flags & 0x10000000) == 0) {
+        void* data = std::calloc(1u, 0x10000u + dataSize);
+        *reinterpret_cast<void**>(copyRaw + 4u) = data;
+        if (data == nullptr) {
+            nslWaveFree(copy);
+            return nullptr;
+        }
+        std::memcpy(data, *reinterpret_cast<void* const*>(sourceRaw + 4u),
+                    dataSize);
+    }
+    return copy;
+}
 nslWave*      nslWavePtr(nslWaveID) { return nullptr; }
 unsigned      nslWaveCount() { return 0; }
 unsigned      nslWaveGetSize(nslWaveID) { return 0; }
