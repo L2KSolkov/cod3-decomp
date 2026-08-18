@@ -722,7 +722,48 @@ void apsPositionMoveAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 
 apsMoveAtFixedVelocityAction::apsMoveAtFixedVelocityAction()
     : apsAction(6, 0, eAsync, 0x1u) {}
-void apsMoveAtFixedVelocityAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D380
+void apsMoveAtFixedVelocityAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                       apsGroup* ioGroup, apsEffect*, float,
+                                       float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+
+    __m128 displacement = _mm_set_ps(0.0f, mParams.mElements[4],
+                                     mParams.mElements[3], mParams.mElements[2]);
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mElements[5] != 0.0f) {
+        const math::Mat43& transform = ioGroup->mLocalToWorld;
+        displacement = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(displacement, displacement, 0), transform.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(displacement, displacement, 85), transform.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(displacement, displacement, 170), transform.z.v));
+    }
+    displacement = _mm_mul_ps(displacement, _mm_set1_ps(iTimeDelta));
+
+    while (iBegin != iEnd) {
+        float* position = reinterpret_cast<float*>(iBegin);
+        position[0] += displacement.m128_f32[0];
+        position[1] += displacement.m128_f32[1];
+        position[2] += displacement.m128_f32[2];
+        iBegin += stride;
+    }
+}
 
 apsForceAction::apsForceAction()
     : apsAction(6, 0, eAsync, 0x4000u) {}
