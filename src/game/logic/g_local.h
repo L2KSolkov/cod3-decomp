@@ -1616,12 +1616,8 @@ namespace BrocSys {
 void Init();                                 // ?Init@BrocSys@@YAXXZ (scr.o)
 void TakeWeapon(Entity* pSelf, const char* pszWeaponName);  // ?TakeWeapon@BrocSys (scr.o)
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
-// ?RegisterHashString@BrocSys@@YAHPBD@Z (scr.o 0x5DFD30; sHashStrings map not ported)
-inline int RegisterHashString(const char* txt)
-{
-    (void)txt;
-    return 0;
-}
+void RegisterHashString(int hash, const char* txt); // ?RegisterHashString@BrocSys@@YAXHPBD@Z (scr.o 0x5DFD00)
+unsigned int RegisterHashString(const char* txt);  // ?RegisterHashString@BrocSys@@YAHPBD@Z (scr.o 0x5DFD30)
 void UnloadScript();                        // ?UnloadScript@BrocSys@@YAXXZ
 void LoadScript();                          // ?LoadScript@BrocSys@@YAXXZ
 }

@@ -21771,6 +21771,17 @@ public:
 // Binary: ?sHashStrings@BrocSys@@3V?$hash_map@...@@A @ 0xF3B478
 BrocSysHashStrings sHashStrings;
 
+// ea: 0x005DFD30
+unsigned int BrocSys::RegisterHashString(const char* txt)
+{
+    if (txt == nullptr)
+        return 0;
+    tlFixedString string(txt);
+    unsigned int hash = string.hash;
+    BrocSys::RegisterHashString((int)hash, txt);
+    return hash;
+}
+
 // ea: 0x005DFD00
 void BrocSys::RegisterHashString(int hash, const char* txt)
 {
