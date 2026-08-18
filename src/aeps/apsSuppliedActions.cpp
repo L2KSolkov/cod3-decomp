@@ -647,7 +647,46 @@ void apsExponentialScaleHeightAction::Act(unsigned char* iBegin, unsigned char* 
 // ============================================================================
 apsMoveAction::apsMoveAction()
     : apsAction(2, 0, eAsync, 0x14040u) {}
-void apsMoveAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x00809EF0
+void apsMoveAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                        apsGroup* ioGroup, apsEffect*, float,
+                        float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int velocityOffset = ioGroup->mPFD.mOffsets[14];
+
+    if ((ioGroup->mPFD.mFields & 0x40u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int angleOffset = ioGroup->mPFD.mOffsets[6];
+
+    if ((ioGroup->mPFD.mFields & 0x10000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int angularVelocityOffset = ioGroup->mPFD.mOffsets[16];
+
+    unsigned char* velocityField = iBegin + velocityOffset;
+    unsigned char* angleField = iBegin + angleOffset;
+    unsigned char* angularVelocityField = iBegin + angularVelocityOffset;
+    while (iBegin < iEnd) {
+        float* position = reinterpret_cast<float*>(iBegin);
+        const float* velocity = reinterpret_cast<const float*>(velocityField);
+        position[0] += velocity[0] * iTimeDelta;
+        position[1] += velocity[1] * iTimeDelta;
+        position[2] += velocity[2] * iTimeDelta;
+        *reinterpret_cast<float*>(angleField) +=
+            *reinterpret_cast<const float*>(angularVelocityField) * iTimeDelta;
+        iBegin += stride;
+        velocityField += stride;
+        angleField += stride;
+        angularVelocityField += stride;
+    }
+}
 
 apsObjectMoveAction::apsObjectMoveAction()
     : apsAction(2, 0, eAsync, 0x24021u) {}
