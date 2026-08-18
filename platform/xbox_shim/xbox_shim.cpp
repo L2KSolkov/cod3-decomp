@@ -22,7 +22,7 @@ unsigned int XGetTickCount(void) { return GetTickCount(); }
 // D3D state globals (d3d8d:globals.obj) - the Win32 shim owns these.
 unsigned int D3D__DirtyFlags = 0;       // _D3D__DirtyFlags
 unsigned int D3D__TextureState[4][32];  // _D3D__TextureState
-unsigned int D3D__RenderState[4];       // _D3D__RenderState
+unsigned int D3D__RenderState[166];     // _D3D__RenderState (IDA: BC2C10)
 unsigned int DTE[4];                    // _DTE (0xCD6DE4 pushbuffer encodes)
 // D3D render-state register IDs / cache slots (XDK .rdata/.data, shim data)
 unsigned int dword_40260 = 0;

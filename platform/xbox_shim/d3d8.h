@@ -546,7 +546,7 @@ void         __stdcall D3DDevice_EndPush(unsigned int* p);
 // Referenced directly by ngl_dx_texture.o's state-cache bypass.
 extern unsigned int D3D__DirtyFlags;               // 0xBC2A08
 extern unsigned int D3D__TextureState[4][32];      // 0xBC2A10 (base)
-extern unsigned int D3D__RenderState[4];           // 0xBC2C10 (render-state cache)
+extern unsigned int D3D__RenderState[166];         // 0xBC2C10 (IDA XDK cache)
 extern unsigned int DTE[4];                        // 0xCD6DE4 (pushbuffer encodes)
 extern unsigned int dword_BC2E0C;                  // 0xBC2E0C (presentation-interval cache)
 extern unsigned int dword_BC2D10;                  // 0xBC2D10 (ZWRITEENABLE cache)
