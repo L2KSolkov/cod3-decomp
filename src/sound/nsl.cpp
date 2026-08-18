@@ -31,7 +31,13 @@ typedef unsigned nslVoiceID;
 // ============================================================================
 // Enums
 // ============================================================================
-enum nslSpeakerMode        { NSL_SPEAKER_STEREO=0, NSL_SPEAKER_5_1=1, NSL_SPEAKER_MONO=2 };
+enum nslSpeakerMode : int {
+    NSL_SPEAKER_MODE_INVALID = 0,
+    NSL_SPEAKER_MODE_MONO = 1,
+    NSL_SPEAKER_MODE_STEREO = 2,
+    NSL_SPEAKER_MODE_SURROUND = 3,
+    NSL_SPEAKER_MODE_HEADPHONES = 4
+};
 enum nslWaveBankLoaderState {
     NSL_WAVE_BANK_LOADER_ERROR_INVALIDBANK = -5,
     NSL_WAVE_BANK_LOADER_ERROR_NOMEMORY = -4,
@@ -170,6 +176,7 @@ static unsigned nsl_workLimit = 0;
 static unsigned nsl_time = 0;
 static unsigned nsl_frame = 0;
 static unsigned nsl_waveBankLoadOrder = 0;
+nslSpeakerMode nsl_speakerMode = static_cast<nslSpeakerMode>(-2);
 nslWaveBankSlot* nsl_waveBankSlots = nullptr;
 static unsigned char nsl_waveBankLoaderBuffer[4096] = {};
 static nslWaveBankLoader nsl_waveBankLoad = {};
@@ -268,12 +275,22 @@ int          nslInit(const nslInitParams* ip) {
     return nsl_work != nullptr ? -1 : static_cast<int>(nsl_workUsed);
 }
 void         nslShutdown() {}
-nslSpeakerMode nslGetSpeakerMode() { return NSL_SPEAKER_STEREO; }
-void         nslSetSpeakerMode(nslSpeakerMode) {}
+// ea: 0x004267B0
+nslSpeakerMode nslGetSpeakerMode() {
+    const int value = static_cast<int>(nsl_speakerMode);
+    return static_cast<nslSpeakerMode>(value < 0 ? -value : value);
+}
+// ea: 0x004267C0
+void         nslSetSpeakerMode(nslSpeakerMode speakerMode) {
+    const int value = static_cast<int>(speakerMode);
+    nsl_speakerMode = static_cast<nslSpeakerMode>(-(value < 0 ? -value : value));
+}
 void         nslGetInitParams(nslInitParams*) {}
 void         nslInitDefaults() {}
 void         nslFinalInit() {}
 bool         nslIsInitDone() { return true; }
+// ea: 0x00426C50
+unsigned     nslGetVersion() { return 4; }
 
 // ============================================================================
 // nslSource — sound sources / emitters (3D positioned)
