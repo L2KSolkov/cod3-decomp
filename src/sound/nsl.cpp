@@ -285,7 +285,21 @@ static_assert(sizeof(nslSpeaker) == 32, "IDA nslSpeaker layout");
 // IDA's release code advances the allocated records by 0x120 bytes even
 // though the named UDT includes a 32-byte name member (sizeof == 0x128).
 static constexpr unsigned nslGroupStride = 0x120u;
-struct nslVoice {};
+struct nslVoice {
+    unsigned __int64 paramsUpdate;
+    float params[46];
+    unsigned char state;
+    unsigned char command;
+    unsigned char type;
+    unsigned char waveFlags;
+    unsigned char waveSpeakerMap;
+    nslWaveID waveId;
+    nslSourceID sourceId;
+    float doppler;
+    float angle;
+    float volumes[2];
+};
+static_assert(sizeof(nslVoice) == 224, "IDA nslVoice layout");
 struct nslListener {};
 struct nslDriverParams {};
 enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = (unsigned)-1 };
@@ -399,6 +413,8 @@ static nslEmitter* nsl_emitters = nullptr;
 static nslGroup* nsl_groups = nullptr;
 static void* nsl_voices = nullptr;
 static void* nsl_driverVoices = nullptr;
+// IDA global @ 0x010E1230: per-driver-voice round-robin cursors.
+static unsigned short lastPos[256] = {};
 static txSlotPool nsl_sourcePool = {};
 static txSlotPool nsl_emitterPool = {};
 // IDA globals referenced by nslPriority.o (0x00F4240 and 0x010E1430).
@@ -496,6 +512,7 @@ void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankL
 nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader);
 void nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader);
 void nslWaveBankSort(nslWaveBank* waveBank);
+int nslDriverGetVoiceType(const nslWave* wave);
 enum nflRequestState : unsigned {
     NFL_REQUEST_STATE_INVALID = (unsigned)-1,
     NFL_REQUEST_STATE_COMPLETED = 0,
@@ -602,10 +619,10 @@ unsigned     nslGetVersion() { return 4; }
 // nslSource — sound sources / emitters (3D positioned)
 // ============================================================================
 nslWave*      nslWavePtr(nslWaveID);
-nslVoice*      nslVoicePtr(int);
+nslVoice*      nslVoicePtr(unsigned);
 unsigned      nslVoiceCount();
 int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
-void          nslVoiceFree(int);
+void          nslVoiceFree(unsigned);
 void          nslDriverUpdate();
 void          nslPriorityUpdate();
 int           nslPriorityCanPlay(int priority);
@@ -3417,6 +3434,34 @@ static float* txVectorNormalize(float* dst, const float* src) {
     return dst;
 }
 
+// ea: 0x00828500
+static float txAtan(float a1, float a2) {
+    if (a2 == 0.0f && a1 == 0.0f)
+        return 0.0f * 0.78539819f;
+    if (a1 <= 0.0f) {
+        if (a2 < 0.0f) {
+            if ((0.0f - a2) > (0.0f - a1))
+                return ((a1 / a2) - 4.0f) * 0.78539819f;
+            return (-2.0f - (a2 / a1)) * 0.78539819f;
+        }
+        if ((0.0f - a1) <= a2) {
+            if (a2 != 0.0f)
+                return (a1 / a2) * 0.78539819f;
+        } else if (a1 != 0.0f) {
+            return (-2.0f - (a2 / a1)) * 0.78539819f;
+        }
+        return 0.0f * 0.78539819f;
+    }
+    if (a2 > 0.0f) {
+        if (a2 <= a1)
+            return (2.0f - (a2 / a1)) * 0.78539819f;
+        return (a1 / a2) * 0.78539819f;
+    }
+    if (a1 > (0.0f - a2))
+        return (2.0f - (a2 / a1)) * 0.78539819f;
+    return ((a1 / a2) + 4.0f) * 0.78539819f;
+}
+
 // ea: 0x00823400
 void          nslUpdateListener() {
     nslGroup* listenerGroup = nslGetListenerGroup();
@@ -3793,8 +3838,8 @@ void          nslSourceSetPriorityScale(nslSource*, float) {}
 // nslVoice — voice allocation
 // ============================================================================
 // ea: 0x008285E0
-nslVoice*     nslVoicePtr(int voiceIndex) {
-    const unsigned index = static_cast<unsigned>(voiceIndex);
+nslVoice*      nslVoicePtr(unsigned voiceIndex) {
+    const unsigned index = voiceIndex;
     if (index > nsl_initParams.aramSize)
         return nullptr;
     return reinterpret_cast<nslVoice*>(
@@ -3802,10 +3847,48 @@ nslVoice*     nslVoicePtr(int voiceIndex) {
 }
 // ea: 0x00828610
 unsigned      nslVoiceCount() { return nsl_initParams.aramSize; }
-int           nslVoiceAlloc(nslWaveID, nslSourceID, int) { return -1; }
+// ea: 0x00828620
+int           nslVoiceAlloc(nslWaveID waveID, nslSourceID sourceID, int) {
+    const nslWave* sourceWave = nslWavePtr(waveID);
+    const unsigned char voiceType =
+        static_cast<unsigned char>(nslDriverGetVoiceType(sourceWave));
+    unsigned available = nsl_initParams.aramSize;
+    unsigned voiceIndex = lastPos[voiceType];
+    if (nsl_initParams.aramSize == 0)
+        return -1;
+
+    unsigned char* voiceRaw = nullptr;
+    for (;;) {
+        if (voiceIndex >= available)
+            voiceIndex = 0;
+        voiceRaw = reinterpret_cast<unsigned char*>(nsl_voices) +
+            320u * voiceIndex;
+        if (voiceRaw[0x10Au] == voiceType && voiceRaw[0x108u] == 0)
+            break;
+        --available;
+        ++voiceIndex;
+        if (available == 0)
+            return -1;
+    }
+
+    std::memset(voiceRaw, 0, 0x140u);
+    voiceRaw[0x109u] = 0;
+    voiceRaw[0x10Au] = voiceType;
+    *reinterpret_cast<nslWaveID*>(voiceRaw + 0x110u) = waveID;
+    voiceRaw[0x108u] = 1;
+    *reinterpret_cast<nslSourceID*>(voiceRaw + 0x114u) = sourceID;
+
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(sourceWave);
+    voiceRaw[0x10Bu] = metadata[5];
+    voiceRaw[0x10Du] = metadata[6];
+    voiceRaw[0x10Cu] = metadata[7];
+    lastPos[voiceType] = static_cast<unsigned short>(voiceIndex + 1);
+    return static_cast<int>(voiceIndex);
+}
 // ea: 0x00828700
-void          nslVoiceFree(int voiceIndex) {
-    const unsigned index = static_cast<unsigned>(voiceIndex);
+void          nslVoiceFree(unsigned voiceIndex) {
+    const unsigned index = voiceIndex;
     if (index >= nsl_initParams.aramSize)
         return;
     unsigned char* raw = reinterpret_cast<unsigned char*>(nsl_voices) +
@@ -3816,6 +3899,91 @@ void          nslVoiceFree(int voiceIndex) {
         raw[0x108] = 0;
     } else if (raw[0x108] != 7) {
         raw[0x109] |= 8u;
+    }
+}
+// ea: 0x00828750
+void          nslVoiceRender(nslVoice* voice) {
+    nslGroup* listenerGroup = nslGetListenerGroup();
+    unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(voice);
+    const float* voiceParams = reinterpret_cast<const float*>(voiceRaw + 8u);
+    const float* listenerParams = listenerGroup->params;
+
+    float vNormPos[3] = {
+        voiceParams[19] - listenerParams[19],
+        voiceParams[20] - listenerParams[20],
+        voiceParams[21] - listenerParams[21]
+    };
+    float vPos2D[3] = {vNormPos[0], vNormPos[1], 0.0f};
+    txVectorNormalize(vNormPos, vNormPos);
+    txVectorNormalize(vPos2D, vPos2D);
+
+    const float v6 = vPos2D[0];
+    vPos2D[0] = (v3b * vPos2D[2]) + (v3a * vPos2D[1]) +
+                (nsl_listenerMatrix[0][0] * vPos2D[0]);
+    vPos2D[1] = (dword_10E11E4 * vPos2D[2]) +
+                (dword_10E11D8 * vPos2D[1]) +
+                (dword_10E11CC * v6);
+    vPos2D[2] = 0.0f;
+    txVectorNormalize(vPos2D, vPos2D);
+    *reinterpret_cast<float*>(voiceRaw + 0x11Cu) =
+        txAtan(vPos2D[0], 0.0f - vPos2D[1]);
+
+    const float distVol = nslVoiceGetAttenuation(voice);
+    float directional =
+        (((voiceParams[24] - listenerParams[24]) * vNormPos[2]) +
+         ((voiceParams[23] - listenerParams[23]) * vNormPos[1]) +
+         ((voiceParams[22] - listenerParams[22]) * vNormPos[0])) *
+        voiceParams[27];
+    if (directional >= 342.0f)
+        directional = 342.0f;
+    else if (directional <= -342.0f)
+        directional = -342.0f;
+
+    *reinterpret_cast<float*>(voiceRaw + 0x118u) =
+        1.0f - (directional * 0.0029239766f);
+    float* speakerVolumes = reinterpret_cast<float*>(voiceRaw + 0x120u);
+    for (unsigned speaker = 0; speaker < 2u; ++speaker) {
+        const float speakerX = speaker == 0 ? dword_E4B6D8 : dword_E4B6F8;
+        const float speakerY = speaker == 0 ? dword_E4B6DC : dword_E4B6FC;
+        const float speakerZ = speaker == 0 ? dword_E4B6E0 : dword_E4B700;
+        vPos2D[0] = vNormPos[0] - speakerX;
+        vPos2D[1] = vNormPos[1] - speakerY;
+        vPos2D[2] = vNormPos[2] - speakerZ;
+        const float distance = std::sqrt(
+            (vPos2D[2] * vPos2D[2]) +
+            (vPos2D[1] * vPos2D[1]) +
+            (vPos2D[0] * vPos2D[0]));
+
+        float nx;
+        float ny;
+        float nz;
+        if (distance > 0.00000011920929f) {
+            const float inverse = 1.0f / distance;
+            nx = inverse * vPos2D[0];
+            ny = vPos2D[1] * inverse;
+            nz = vPos2D[2] * inverse;
+        } else {
+            nx = 0.0f;
+            ny = 0.0f;
+            nz = 0.0f;
+        }
+
+        float volume = distVol /
+            (((nz * nz) + (ny * ny)) + (nx * nx) + 0.01f);
+        *speakerVolumes = volume;
+        if (volume > 1.0f) {
+            *speakerVolumes = 1.0f;
+            volume = (*speakerVolumes + 1.0f) * 0.5f;
+        } else if (volume < 0.0f) {
+            *speakerVolumes = 0.0f;
+            volume = 0.0f;
+        } else if (volume >= 0.5f) {
+            volume = (*speakerVolumes + 1.0f) * 0.5f;
+        } else {
+            volume = *speakerVolumes * 1.5f;
+        }
+        *speakerVolumes = volume;
+        ++speakerVolumes;
     }
 }
 int           nslVoiceGetState(int) { return NSL_VOICE_FREE; }
