@@ -2935,6 +2935,17 @@ struct PakManagerView {
 static_assert(offsetof(PakManagerView, mSlots) == 0x40,
               "PakManager::mSlots offset mismatch");
 
+// IDA ae_heap layout: ae_heap_base at +0x00 and mem_heap storage at +0x04,
+// total size 0x4A0.  The constructor itself is defined by the streamer/core
+// object; this view supplies the verified storage size for placement new.
+class ae_heap {
+    void** mVtable;
+    uint8_t mHeap[0x49C];
+public:
+    explicit ae_heap(unsigned int size);
+};
+static_assert(sizeof(ae_heap) == 0x4A0, "ae_heap size mismatch");
+
 extern BrocExports gBrocExports;  // scr.o @ 0xF3A7B0
 
 namespace BrocHelper {
@@ -2951,6 +2962,7 @@ InitScriptFn InitScript(BrocAPI** gamesAPIptr,
 namespace BrocSys {
 void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);
 void InitAPI();
+void BrocDebugRender();
 }
 
 // IDA's global BrocExports is 456 bytes with mRegisterDebugStrings at +0x74,
@@ -2966,7 +2978,46 @@ void (*gEntryFp)() = nullptr;
 
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
-void Init() {}
+// ea: 0x005CA8B0
+void Init()
+{
+    ae_sized_array<PoolAllocator::PoolConfig, 16> cfgList;
+    memset(&cfgList, 0, sizeof(cfgList));
+    cfgList.m_size = 0;
+
+    PoolAllocator::PoolConfig elt;
+    elt.blockSize = 0x20;
+    elt.blockAlign = 4;
+    elt.numBlocks = 0x2328;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    elt.blockSize = 0x40;
+    elt.blockAlign = 4;
+    elt.numBlocks = 0x2EE;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    elt.blockSize = 0x80;
+    elt.blockAlign = 4;
+    elt.numBlocks = 0x1F4;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    void* block = mem_heap_malloc(0x3C);
+    if (block != nullptr)
+        gBrocPool = new (block) PoolAllocator(cfgList, 1u);
+    else
+        gBrocPool = nullptr;
+
+    block = mem_heap_malloc(0x4A0);
+    if (block != nullptr)
+        gBrocHeap = new (block) ae_heap(0x10000u);
+    else
+        gBrocHeap = nullptr;
+
+    DebugRender::sInst.AddRenderer(BrocSys::BrocDebugRender);
+}
 bool IsValidClientType(Entity* pEnt);
 void TakeWeapon(Entity* pSelf, const char* pszWeaponName)
 {

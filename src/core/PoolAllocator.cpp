@@ -45,7 +45,7 @@ PoolAllocator::BlockPool::BlockPool(
     unsigned int capacity,
     unsigned int id,
     unsigned int alignment,
-    char* preallocatedBlock)
+    void* preallocatedBlock)
     : mAlignment(alignment)
     , mId(id)
     , mEntrySize(entrySize)
@@ -74,7 +74,7 @@ PoolAllocator::BlockPool::BlockPool(
         if (overhead <= 1) overhead = 1;
         mCapacity -= overhead;
         mNumRemaining = mCapacity;
-        mBlockPtr = preallocatedBlock;
+        mBlockPtr = (char*)preallocatedBlock;
         mPreallocatedBlock = 1;
     } else {
         mBlockPtr = (char*)mem_heap_malloc(capacity * entrySize);

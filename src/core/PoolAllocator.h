@@ -9,6 +9,7 @@
 
 #include "ae_array.h"
 #include "ae_fixed_string.h"
+#include <stddef.h>
 #include <stdint.h>
 #include <new>
 
@@ -31,11 +32,16 @@ public:
 
     // Configuration for one pool level
     struct PoolConfig {
-        unsigned short  blockSize;    // entry size in bytes
-        unsigned short  numBlocks;    // number of blocks
-        unsigned short  blockAlign;   // alignment requirement
-        char*           block;        // preallocated block (or nullptr)
+        unsigned int    blockSize;    // +0x00, entry size in bytes
+        unsigned int    blockAlign;   // +0x04, alignment requirement
+        unsigned int    numBlocks;    // +0x08, number of blocks
+        void*           block;        // +0x0C, preallocated block (or nullptr)
     };
+    static_assert(sizeof(PoolConfig) == 0x10, "PoolConfig size mismatch");
+    static_assert(offsetof(PoolConfig, blockAlign) == 0x04,
+                  "PoolConfig::blockAlign offset mismatch");
+    static_assert(offsetof(PoolConfig, numBlocks) == 0x08,
+                  "PoolConfig::numBlocks offset mismatch");
 
     // Internal per-pool free list manager
     struct BlockPool {
@@ -73,7 +79,7 @@ public:
             unsigned int capacity,
             unsigned int id,
             unsigned int alignment,
-            char* preallocatedBlock);
+            void* preallocatedBlock);
 
         ~BlockPool();
 
