@@ -309,6 +309,10 @@ int nslWaveBankFixup(nslWaveBank* waveBank);
 int nslWaveBankSetAram(nslWaveBank* waveBank, void* waveBankAram);
 int nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile, unsigned waveBankFileOffset);
 void nslWaveBankFree(nslWaveBankID waveBankID);
+nslWaveID nslWaveLookup(const char* waveName);
+bool nslWaveIsStreaming(nslWaveID waveID);
+const char* nslWaveGetName(nslWaveID waveID);
+const char* nslWaveGetGroupName(nslWaveID waveID);
 void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankLoadFlags,
                            nflFileID file, unsigned fileOffset);
 nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader);
@@ -679,13 +683,16 @@ int           nslGetSourceEffect(nslSourceID sid) {
 // ea: 0x00820400
 unsigned      nslGetMaxNumVoices() { return nslVoiceCount(); }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
-const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
+// ea: 0x00820350
+const char*   nslGetWaveName(nslWaveID waveID) { return nslWaveGetName(waveID); }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 const char*   nslWaveGetName(nslWaveID) { return ""; }       // ?nslWaveGetName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
 const char*   nslWaveGetGroupName(nslWaveID) { return ""; }  // ?nslWaveGetGroupName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
-const char*   nslGetWaveGroup(nslWaveID) { return ""; }      // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
+// ea: 0x00820340
+const char*   nslGetWaveGroup(nslWaveID waveID) { return nslWaveGetGroupName(waveID); }      // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
 nslBankID      nslLoadBank(unsigned int flags, unsigned int file, unsigned int fileOffset) { return static_cast<nslBankID>(nslWaveBankLoad(static_cast<nflFileID>(file), fileOffset, flags)); }  // ?nslLoadBank@@YA?AW4nslBankID@@III@Z
-nslWaveID      nslGetWave(const char*) { return NSL_WAVE_ID_INVALID; }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
+// ea: 0x00820310
+nslWaveID      nslGetWave(const char* name) { return nslWaveLookup(name); }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
 float          nslGetWaveParam(nslWaveID, int, float defaultValue) { return defaultValue; }  // ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z
 // ea: 0x00820FF0
 float         nslGetSourceParam(nslSourceID sid, int index, float defaultValue) {
@@ -694,7 +701,8 @@ float         nslGetSourceParam(nslSourceID sid, int index, float defaultValue) 
         return defaultValue;
     return source->params[index];
 }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
-int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
+// ea: 0x008203D0
+int           nslIsWaveStreamed(nslWaveID waveID) { return nslWaveIsStreaming(waveID); }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 
 // nslCompat.o / nslSource.o family (stubbed; manglings match binary)
 int           nslGetBankState(nslBankID bankID) { return nslWaveBankGetState(static_cast<nslWaveBankID>(bankID)); }
@@ -1632,10 +1640,15 @@ float         nslGetMasterVolume() {
 // ============================================================================
 // nslCompat — backward compatibility
 // ============================================================================
+nslGroup*     nslListenerGetGroup(unsigned listenerIndex);
 // ea: 0x00820290
 nslVoice*     nslVoiceGet(int voiceIndex) { return nslVoicePtr(voiceIndex); }
-nslGroup*     nslGetGroup(const char*) { return nullptr; }
-nslGroup*     nslGetListenerGroup() { return nullptr; }
+// ea: 0x008202A0
+nslGroup*     nslGetGroup(const char* groupName) { return nslGroupGet(groupName); }
+// ea: 0x008202B0
+nslGroup*     nslGetListenerGroup() { return nslListenerGetGroup(0); }
+// ea: 0x008202C0
+nslGroup*     nslGetMasterGroup() { return nslMasterGetGroup(); }
 void          nslCompatInit() {}
 void          nslCompatUpdate() {}
 unsigned      nslCompatGetVoiceCount() { return 0; }
