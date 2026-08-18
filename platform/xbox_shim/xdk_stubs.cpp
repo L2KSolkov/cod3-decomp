@@ -456,7 +456,20 @@ void __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int Register,
     if (gD3D9Device != NULL && Data != NULL && Register < 256)
         gD3D9Device->SetVertexShaderConstantF(Register, (const float*)Data, 1);
 }
-void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int, const void*, unsigned int) {}
+void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
+                                                               const void* Data,
+                                                               unsigned int DwordCount) {
+    // The XDK entry point receives a DWORD count.  The IDA call sites pass
+    // four DWORDs per float4 constant, so convert to D3D9's vector count.
+    if (gD3D9Device == NULL || Data == NULL || Register < 0 || Register >= 256 ||
+        DwordCount == 0 || (DwordCount & 3u) != 0)
+        return;
+    unsigned int VectorCount = DwordCount / 4u;
+    if (VectorCount > 256u - (unsigned int)Register)
+        VectorCount = 256u - (unsigned int)Register;
+    if (VectorCount != 0)
+        gD3D9Device->SetVertexShaderConstantF(Register, (const float*)Data, VectorCount);
+}
 void __cdecl compress2(void) {}
 unsigned int __stdcall D3DBaseTexture_GetLevelCount(D3DBaseTexture* Texture) {
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
@@ -594,11 +607,20 @@ void __stdcall D3DDevice_SetIndices(D3DIndexBuffer* IndexBuffer, unsigned int) {
     gD3D9Device->SetIndices(gD3D9IndexBuffer);
 }
 void __stdcall D3DDevice_SetPalette(unsigned int, D3DPalette*) {}
-void __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int) {}
+void __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int Value) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetRenderState(COD3_D3D9_RS_MULTISAMPLEANTIALIAS, Value != 0);
+}
 void __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int) {}
-void __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int) {}
+void __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int Value) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetRenderState(COD3_D3D9_RS_STENCILENABLE, Value != 0);
+}
 void __stdcall D3DDevice_SetRenderState_YuvEnable(unsigned int) {}
-void __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int) {}
+void __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetRenderState(COD3_D3D9_RS_ZENABLE, Value);
+}
 void __stdcall D3DDevice_SetRenderTarget(D3DSurface* RenderTarget, D3DSurface* ZBuffer) {
     IDirect3DSurface9* NativeRenderTarget = NULL;
     IDirect3DSurface9* NativeZBuffer = NULL;
