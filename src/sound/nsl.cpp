@@ -1378,7 +1378,29 @@ void          nslExit() {}
 void          nslSetEffect(const void*) {}
 void          nslSetListenerPosition(const float*) {}
 void          nslSetListenerOrientation(const float*, const float*) {}
-unsigned int  nslWaveGetHash(nslWaveID) { return 0; }
+// ea: 0x008270B0
+unsigned int  nslWaveGetHash(nslWaveID waveID) {
+    const unsigned encodedWaveID = static_cast<unsigned>(waveID) | 0xFFFFu;
+    if (nsl_initParams.aramBase == 0)
+        return 0;
+
+    const unsigned slotIndex = (encodedWaveID >> 16) % nsl_initParams.aramBase;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[slotIndex];
+    if (slot->waveBankID != encodedWaveID ||
+        slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED)
+        return 0;
+
+    nslWaveBank* waveBank = slot->waveBank;
+    const unsigned waveIndex = static_cast<unsigned>(waveID) & 0xFFFFu;
+    if (waveIndex > waveBank->waveCount)
+        return 0;
+
+    if ((waveBank->waveBankFlags & 2u) != 0)
+        return waveBank->names[waveIndex].hash;
+
+    const tlFixedString fixedString(waveBank->names[waveIndex].name);
+    return fixedString.hash;
+}
 // nslGetWaveLength is implemented in the compatibility wrapper above.
 // ea: 0x00820DD0
 unsigned      nslGetSourceLength(nslSourceID sid) {
