@@ -613,6 +613,7 @@ void apsEffect::Render(nglLightContext* iLightContext, const VFC::FrustumInfo& f
     }
 }
 
+// ea: 0x007EE300
 void apsEffect::GetBounds(apsBounds& iBounds) {
     apsBounds v9;
     v9.Init();
@@ -821,6 +822,7 @@ void apsEffect::Update(float iCurTime) {
     }
 }
 
+// ea: 0x007EF460
 unsigned int apsEffect::IsDone() {
     if (mStopEmitting != 0) {
         int total = 0;

@@ -1834,8 +1834,6 @@ bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
 // ============================================================================
 // SmokeGrenadeMgr::Update - ea: 0x4F9CC0
 // ============================================================================
-extern unsigned int apsEffect_IsDone(apsEffect* self);  // ?IsDone@apsEffect
-extern void apsEffect_GetBounds(apsEffect* self, apsBounds& iBounds);
 extern void ae_vector_erase(void* self, int idx);  // ?erase@?$ae_vector@USmokeGrenadeInfo
 void ae_vector_erase(void* self, int idx)
 {
@@ -1854,7 +1852,7 @@ void SmokeGrenadeMgr::Update(float deltaT)
             SmokeGrenadeInfo& info = mSmokeGrenadeInfoList.mElements[i];
             apsEffect* mEffect = (apsEffect*)info.mEffect;
             apsBounds bounds;
-            apsEffect_GetBounds(mEffect, bounds);
+            mEffect->GetBounds(bounds);
             apsSphere sph = bounds.Sphere();
             float color[4] = { 0.6f, 0.5f, 0.5f, 1.0f };
             math::Position3 center;
@@ -1873,9 +1871,7 @@ void SmokeGrenadeMgr::Update(float deltaT)
         {
             mSmokeGrenadeInfoList.mElements[v18].mTime =
                 mSmokeGrenadeInfoList.mElements[v18].mTime + deltaT;
-            if (apsEffect_IsDone(
-                    (apsEffect*)mSmokeGrenadeInfoList.mElements[v18].mEffect)
-                != 0)
+            if (((apsEffect*)mSmokeGrenadeInfoList.mElements[v18].mEffect)->IsDone() != 0)
             {
                 ae_vector_erase(&mSmokeGrenadeInfoList, v17--);
                 --v18;

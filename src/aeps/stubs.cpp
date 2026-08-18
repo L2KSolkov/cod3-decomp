@@ -59,15 +59,6 @@ struct apsStats {
     int numActiveParticles;     // +0x08
     int maxActiveParticles;     // +0x0C
 };
-unsigned int apsEffect_IsDone(apsEffect* self)
-{
-    (void)self;
-    return 1;
-}
-void apsEffect_GetBounds(apsEffect* self, apsBounds& iBounds)
-{
-    (void)self; (void)iBounds;
-}
 void apsGetStats(apsStats& stats)
 {
     (void)stats;
