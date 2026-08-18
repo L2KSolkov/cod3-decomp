@@ -569,13 +569,40 @@ class nalSceneAnimInstance;
 class nalStreamInstance;
 class nalStaticInstance;
 
+class nalBasePose;
+class nalMatrix4x4;
+class nalPositionOrientation;
+
 // ============================================================================
 // nalAnimCache Ã¢â‚¬â€ animation data cache (LRU decompression cache)
 // ============================================================================
 
 class nalBaseSkeleton {
 public:
+    nalBaseSkeleton();
     virtual ~nalBaseSkeleton() {}
+    virtual void Process() = 0;
+    virtual void Release() = 0;
+    virtual bool CheckVersion() = 0;
+    virtual unsigned int VirtualGetLODCount() = 0;
+    virtual unsigned int VirtualGetBoneMatrixCount(int lod) = 0;
+    virtual void VirtualGetBoneMatrices(const nalBasePose& pose,
+                                        nalMatrix4x4* matrices, int lod) = 0;
+    virtual void VirtualGetTrajectoryUpdate(const nalBasePose& pose,
+                                            nalPositionOrientation* po) = 0;
+    virtual void VirtualGetPose(nalBasePose& pose,
+                                const nalMatrix4x4* matrices,
+                                nalMatrix4x4* workMatrices,
+                                const nalBasePose& defaultPose,
+                                int lod) = 0;
+    virtual const nalBasePose* VirtualGetDefaultPose() = 0;
+    virtual nalBasePose* VirtualCreatePose() = 0;
+    virtual void VirtualDestroyPose(nalBasePose* pose) = 0;
+    virtual void VirtualCopyPose(nalBasePose* dst,
+                                 const nalBasePose& src) = 0;
+    virtual void VirtualBlend(nalBasePose* dst, float blend,
+                              const nalBasePose& src0,
+                              const nalBasePose& src1) = 0;
     unsigned Version;            // +0x04
     tlFixedString Name;          // +0x08
     tlFixedString AnimTypeName;  // +0x28
@@ -586,14 +613,43 @@ public:
 
     // ?GetName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ (0x55E3F0)
     const tlFixedString& GetName() const;
+    // ?GetAnimTypeName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ (0x870470)
+    const tlFixedString& GetAnimTypeName() const;
+    // ?GetVersion@nalBaseSkeleton@@QBEIXZ (0x8730C0)
+    unsigned int GetVersion() const;
+    // ?GetDefaultPose@nalBaseSkeleton@@QBEABVnalBasePose@@XZ (0x518220)
+    const nalBasePose* GetDefaultPose() const;
 };
 static_assert(sizeof(nalBaseSkeleton) == 96,
               "nalBaseSkeleton layout mismatch");
+
+// ea: 0x00854930
+nalBaseSkeleton::nalBaseSkeleton()
+{
+}
 
 // ea: 0x0055E3F0
 const tlFixedString& nalBaseSkeleton::GetName() const
 {
     return Name;
+}
+
+// ea: 0x00870470
+const tlFixedString& nalBaseSkeleton::GetAnimTypeName() const
+{
+    return AnimTypeName;
+}
+
+// ea: 0x008730C0
+unsigned int nalBaseSkeleton::GetVersion() const
+{
+    return Version;
+}
+
+// ea: 0x00518220
+const nalBasePose* nalBaseSkeleton::GetDefaultPose() const
+{
+    return const_cast<nalBaseSkeleton*>(this)->VirtualGetDefaultPose();
 }
 
 // nalBasePose (anim.o): LOD + 4
@@ -604,6 +660,8 @@ public:
 
     // ?GetLOD@nalBasePose@@QBEHXZ (0x55E400)
     int GetLOD() const;
+    // ?GetSkeleton@nalBasePose@@QBEPBVnalBaseSkeleton@@XZ (0x518240)
+    const nalBaseSkeleton* GetSkeleton() const;
 };
 static_assert(sizeof(nalBasePose) == 8, "nalBasePose layout mismatch");
 
@@ -611,6 +669,12 @@ static_assert(sizeof(nalBasePose) == 8, "nalBasePose layout mismatch");
 int nalBasePose::GetLOD() const
 {
     return LOD;
+}
+
+// ea: 0x00518240
+const nalBaseSkeleton* nalBasePose::GetSkeleton() const
+{
+    return Skeleton;
 }
 
 // ea: 0x0055E4E0
