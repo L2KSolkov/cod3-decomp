@@ -767,7 +767,55 @@ void apsMoveAtFixedVelocityAction::Act(unsigned char* iBegin, unsigned char* iEn
 
 apsForceAction::apsForceAction()
     : apsAction(6, 0, eAsync, 0x4000u) {}
-void apsForceAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D5B0
+void apsForceAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                         apsGroup* ioGroup, apsEffect*, float,
+                         float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+
+    __m128 force = _mm_set_ps(0.0f, mParams.mElements[4],
+                              mParams.mElements[3], mParams.mElements[2]);
+    force = _mm_mul_ps(force, _mm_set1_ps(iTimeDelta));
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mElements[5] != 0.0f) {
+        const math::Mat43& transform = ioGroup->mLocalToWorld;
+        force = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(force, force, 0), transform.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(force, force, 85), transform.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(force, force, 170), transform.z.v));
+    }
+
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int velocityOffset = ioGroup->mPFD.mOffsets[14];
+    unsigned char* velocityField = iBegin + velocityOffset;
+    const unsigned char* endVelocityField = iEnd + velocityOffset;
+    while (velocityField != endVelocityField) {
+        float* velocity = reinterpret_cast<float*>(velocityField);
+        velocity[0] += force.m128_f32[0];
+        velocity[1] += force.m128_f32[1];
+        velocity[2] += force.m128_f32[2];
+        velocityField += stride;
+    }
+}
 
 apsColorShiftAction::apsColorShiftAction()
     : apsAction(10, 0, eAsync, 0x608u) {}
