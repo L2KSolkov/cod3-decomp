@@ -4863,9 +4863,34 @@ inline nalGenericPose::~nalGenericPose()
     }
 }
 
-inline void nalGenericPose::operator=(const nalGenericPose& other)
+// ea: 0x00868DF0
+void nalGenericPose::operator=(const nalGenericPose& other)
 {
-    (void)other;
+    if (Skeleton != other.Skeleton
+        && _tlAssert("source/common/nal_generic.cpp", 230,
+                     "GetSkeleton() == pose.GetSkeleton()",
+                     "attempting to copy a pose into a pose type that doesn't match"))
+        __debugbreak();
+
+    LOD = other.LOD;
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(other.Skeleton);
+    std::memcpy(PoseData, other.PoseData, skeleton->PoseSize);
+}
+
+// ea: 0x00868E50
+void nalGenericPose::Copy(const nalGenericPose& pose, int lod)
+{
+    if (Skeleton != pose.Skeleton
+        && _tlAssert("source/common/nal_generic.cpp", 251,
+                     "GetSkeleton() == pose.GetSkeleton()",
+                     "attempting to copy a pose into a pose type that doesn't match"))
+        __debugbreak();
+
+    LOD = lod;
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(pose.Skeleton);
+    std::memcpy(PoseData, pose.PoseData, skeleton->PoseSize);
 }
 
 inline void nalGenericSkeleton::GetBoneMatrices(const nalGenericPose& pose,
