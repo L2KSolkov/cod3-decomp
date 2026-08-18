@@ -693,7 +693,15 @@ int           nslGetSourceEffect(nslSourceID sid) {
 }
 // ea: 0x00820400
 unsigned      nslGetMaxNumVoices() { return nslVoiceCount(); }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
-const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
+// ea: 0x00820D30
+const char*   nslGetSourceName(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return nullptr;
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(source);
+    const nslWaveID waveID = *reinterpret_cast<const nslWaveID*>(raw + 0x110u);
+    return nslWaveGetName(waveID);
+}
 // ea: 0x00820350
 const char*   nslGetWaveName(nslWaveID waveID) { return nslWaveGetName(waveID); }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 // ea: 0x00827040
@@ -794,6 +802,36 @@ void          nslQueueSource(nslSourceID sid) {
     if (source == nullptr)
         return;
     reinterpret_cast<unsigned char*>(source)[0x122] |= 1u;
+}
+// ea: 0x00820B60
+void          nslSetSourceCallback(nslSourceID sid, unsigned flags,
+                                   nslSourceCallback callback,
+                                   void* userObject, void* userData) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    raw[0x122] |= static_cast<unsigned char>(flags) | 4u;
+    *reinterpret_cast<nslSourceCallback*>(raw + 0x134u) = callback;
+    *reinterpret_cast<void**>(raw + 0x138u) = userObject;
+    *reinterpret_cast<void**>(raw + 0x13Cu) = userData;
+}
+// ea: 0x008226A0
+void          nslDampenSource(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    int dampenCount = *reinterpret_cast<int*>(raw + 0x50u);
+    if (dampenCount < 1)
+        *reinterpret_cast<int*>(raw + 0x50u) = dampenCount + 1;
+}
+// ea: 0x008226E0
+void          nslUndampenSource(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(source) + 0x50u) = 0;
 }
 void          nslDampen(float) {}
 void          nslUndampen() {}
