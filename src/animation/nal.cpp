@@ -865,11 +865,23 @@ bool subtitle_manager_play_subtitle(const char* tag, const char* prefix);
 // class tag to match binary V-mangled template args
 class nalPositionOrientation {
 public:
-    math::Position3 pos;
     math::Quaternion orient;
+    math::Position3 pos;
+
+    static nalPositionOrientation Identity;
 
     void operator*=(const nalPositionOrientation& rhs);  // ??XnalPositionOrientation@@QAEXABV0@@Z (0x560010)
 };
+
+static nalPositionOrientation nalMakeIdentityPositionOrientation()
+{
+    nalPositionOrientation result = {};
+    result.orient.w = 1.0f;
+    return result;
+}
+
+nalPositionOrientation nalPositionOrientation::Identity =
+    nalMakeIdentityPositionOrientation();
 
 class nalMatrix4x4 : public math::Mat44 {
 public:
@@ -930,6 +942,9 @@ void Blend(nalGeneric::nalGenericPose& out, float blend,
 namespace nalGeneric {
 class nalGenericPose : public nalBasePose {
 public:
+    static unsigned char PoseStack[10240]; // ?PoseStack @ 0x10E6D40
+    static unsigned PoseSP;                // ?PoseSP @ 0x10E9544
+
     void* PoseData;                 // +0x08
     bool AllocedData;               // +0x0C
     unsigned char _padding[3];      // +0x0D
@@ -945,6 +960,8 @@ public:
     ~nalGenericPose();
     void operator=(const nalGenericPose& other);
     void Copy(const nalGenericPose& other, int flags);
+    void Construct(const nalBaseSkeleton* skeleton, void* poseData);
+    void* GetPoseData() const;
 
     int GetPoseSize() const;
     int GetPoseAlignment() const;
@@ -964,6 +981,15 @@ public:
     void* GetData() { return PoseData; }
 };
 static_assert(sizeof(nalGenericPose) == 16, "nalGenericPose layout mismatch");
+
+struct nalOffsetMap {
+    int ReferenceCount;                    // +0x00
+    nalOffsetMap* Next;                    // +0x04
+    const nalGenericSkeleton* From;        // +0x08
+    const nalGenericSkeleton* To;          // +0x0C
+    int* Offsets;                          // +0x10
+};
+static_assert(sizeof(nalOffsetMap) == 20, "nalOffsetMap layout mismatch");
 
 // ============================================================================
 // nalGenericSkeleton Ã¢â‚¬â€ runtime skeleton (bone matrices, processed pose)
@@ -1210,13 +1236,13 @@ void nalGenericSkeleton::VirtualBlend(
 // ea: 0x00868DD0
 int nalGenericPose::GetPoseSize() const
 {
-    return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->GetPoseSize();
+    return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->PoseSize;
 }
 
 // ea: 0x00868DE0
 int nalGenericPose::GetPoseAlignment() const
 {
-    return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->GetPoseAlignment();
+    return reinterpret_cast<const nalGenericSkeleton*>(Skeleton)->PoseAlignment;
 }
 
 // ============================================================================
@@ -1271,6 +1297,8 @@ static_assert(sizeof(nalGenericAnim) == 112,
 // ============================================================================
 class nalGenericInstance {
 public:
+    static nalOffsetMap* OffsetMapTable[0x43]; // ?OffsetMapTable @ 0x10E9540
+
     nalGenericInstance(nalGenericAnim* anim, nalGenericSkeleton* skeleton);
     ~nalGenericInstance();
     void CacheBlock(int blockIdx, int flags);
@@ -1291,6 +1319,34 @@ public:
 // ============================================================================
 // nalGenericPoseBlender Ã¢â‚¬â€ pose blending
 // ============================================================================
+unsigned char nalGenericPose::PoseStack[10240] = {};
+unsigned nalGenericPose::PoseSP = 0;
+nalOffsetMap* nalGenericInstance::OffsetMapTable[0x43] = {};
+
+// ea: 0x00868BF0
+void nalGenericPose::Construct(const nalBaseSkeleton* skeleton,
+                               void* poseData)
+{
+    Skeleton = skeleton;
+    PoseData = poseData;
+}
+
+// ea: 0x00868C10
+void* nalGenericPose::GetPoseData() const
+{
+    return PoseData;
+}
+
+// ea: 0x00868D50
+unsigned nalGenericInstance::GetHash(const nalGenericSkeleton* from,
+                                     const nalGenericSkeleton* to)
+{
+    const uintptr_t fromValue = reinterpret_cast<uintptr_t>(from);
+    const uintptr_t toValue = reinterpret_cast<uintptr_t>(to);
+    return static_cast<unsigned>(((fromValue ^ (toValue >> 3)) >> 3)
+                                 % 0x43u);
+}
+
 // ea: 0x00854BC0
 nalGenericAnim::nalGenericAnim(nalRegisterKey key)
     : Name()
@@ -4535,7 +4591,28 @@ inline nalGenericPose::nalGenericPose(const nalGenericSkeleton* skel, int flags)
     (void)skel; (void)flags;
 }
 
-inline nalGenericPose::~nalGenericPose() {}
+// ea: 0x00868D80
+inline nalGenericPose::~nalGenericPose()
+{
+    if (Skeleton == nullptr)
+        return;
+
+    if (AllocedData)
+    {
+        tlMemFree(PoseData);
+        return;
+    }
+
+    const unsigned char* poseData =
+        static_cast<const unsigned char*>(PoseData);
+    if (poseData >= PoseStack
+        && poseData < reinterpret_cast<const unsigned char*>(
+                            nalGenericInstance::OffsetMapTable)
+        && PoseSP > 0)
+    {
+        PoseSP = reinterpret_cast<const unsigned*>(PoseStack)[PoseSP - 1];
+    }
+}
 
 inline void nalGenericPose::operator=(const nalGenericPose& other)
 {
@@ -7012,13 +7089,17 @@ void DObjGetTrajectory(nalPositionOrientation& po, DObj* obj)
     }
 }
 
-// Stub bodies for the remaining complex xanim cluster (ported next pass with
-// correct mangled signatures).
+// ea: 0x00868D10
 void nalGenericSkeleton::GetTrajectoryUpdate(const nalGenericPose& pose,
                                              nalPositionOrientation& po) const
 {
-    (void)pose;
-    memset(&po, 0, sizeof(po));
+    const int trajectoryOffset = TrajectoryOffset;
+    if (trajectoryOffset < 0)
+        po = nalPositionOrientation::Identity;
+    else
+        po = *reinterpret_cast<const nalPositionOrientation*>(
+            static_cast<const unsigned char*>(pose.PoseData)
+            + trajectoryOffset);
 }
 namespace {
 // ea: 0x00549CA0
