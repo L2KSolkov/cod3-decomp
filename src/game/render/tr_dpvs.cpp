@@ -410,7 +410,63 @@ struct trRefEntityFilterView {
     unsigned char mOccupiedCells[4];  // +0xF6
 };
 
-// trGlobals view (refdef +0x26C, world +0x290)
+// viewParms_t / cplane_s views used by the DPVS plane builders. These layouts
+// are taken from the IDA local types; the frustum is four 20-byte cplanes at
+// viewParms +0x184.
+struct orientationDPVSView {
+    float origin[3];
+    float axis[3][3];
+    float viewOrigin[3];
+    float modelMatrix[16];
+};
+static_assert(sizeof(orientationDPVSView) == 0x7C,
+              "orientationDPVSView size mismatch");
+
+struct cplaneDPVSView {
+    float normal[3];
+    float dist;
+    uint8_t type;
+    uint8_t signbits;
+    uint8_t pad[2];
+};
+static_assert(sizeof(cplaneDPVSView) == 0x14,
+              "cplaneDPVSView size mismatch");
+
+struct viewParmsDPVSView {
+    orientationDPVSView or;
+    orientationDPVSView world;
+    float pvsOrigin[3];
+    int isPortal;
+    int isMirror;
+    int frameCount;
+    dpvs_plane_t portalPlane;
+    float fovX;
+    float fovY;
+    float lodBias;
+    float lodScale;
+    float projectionMatrix[16];
+    float zFar;
+    cplaneDPVSView frustum[4];
+};
+static_assert(sizeof(viewParmsDPVSView) == 0x1E0,
+              "viewParmsDPVSView size mismatch");
+
+// cvar_t fields consumed by R_SetupDPVS (IDA: value +0x1C, integer +0x20).
+struct cvar_t {
+    const char* name;
+    const char* string;
+    const char* resetString;
+    const char* latchedString;
+    int flags;
+    int modified;
+    int modificationCount;
+    float value;
+    int integer;
+    cvar_t* next;
+    cvar_t* hashNext;
+};
+
+// trGlobals view (viewParms +0x10, refdef +0x26C, world +0x290)
 struct trRefdefFilterView {
     uint8_t _pad[0x1C];
     int rdflags;              // +0x1C
@@ -418,12 +474,15 @@ struct trRefdefFilterView {
     short num_model_dlights;  // +0x22
 };
 struct trGlobals_t {
-    uint8_t _pad[0x26C];
+    uint8_t _pad[0x10];
+    viewParmsDPVSView viewParms;
     trRefdefFilterView refdef;   // +0x26C
     uint8_t _pad2[0x290 - 0x270];
     void* world;                 // +0x290
 };
 extern trGlobals_t tr;          // ?tr@@3UtrGlobals_t@@A @ 0xF74DD0
+extern cvar_t* r_zfar;          // ?r_zfar@@3PAUcvar_t@@A @ 0xF741A0
+extern cvar_t* r_lockpvs;       // ?r_lockpvs@@3PAUcvar_t@@A @ 0xF7428C
 
 // world_t view (bspTree +0x100)
 struct worldFilterView {
@@ -537,19 +596,95 @@ void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
 // ============================================================================
 // R_AddWorldSurfacesDPVS - ea: 0x006D9E00
 // ============================================================================
-// cvar_t view (integer +0x20)
-struct cvar_t {
-    uint8_t _pad[0x20];
-    int integer;  // +0x20
-};
-
 extern cvar_t* r_drawworld;       // ?r_drawworld@@3PAUcvar_t@@A @ 0xF741D8
 extern cvar_t* r_outsideMapEnts;  // ?r_outsideMapEnts@@3PAUcvar_t@@A @ 0xF742E0
 extern cvar_t* r_singlecell;      // ?r_singlecell@@3PAUcvar_t@@A @ 0xF74294
 extern int g_camera_cell;         // ?g_camera_cell@@3HA @ 0x11E993C
 
-// untracked render.o DPVS helpers (internal in binary; stubs until ported)
-static void R_SetupDPVS() {}
+// DPVS plane side encoding uses the signed integer bits of each float, as in
+// the release instructions (`test`/`setle` on the loaded dword).
+static unsigned char DPVSSide(const float value, unsigned char positiveSide)
+{
+    uint32_t bits;
+    memcpy(&bits, &value, sizeof(bits));
+    return (static_cast<int32_t>(bits) <= 0) ? positiveSide
+                                            : static_cast<unsigned char>(positiveSide + 12);
+}
+
+// ea: 0x006BF3B0
+float* R_FrustumClipPlanes()
+{
+    float* out = &g_dpvs.frustumPlanes[0].data.v.m128_f32[0];
+    const cplaneDPVSView* in = &tr.viewParms.frustum[0];
+    for (int i = 0; i < 4; ++i)
+    {
+        out[0] = in[i].normal[0];
+        out[1] = in[i].normal[1];
+        out[2] = in[i].normal[2];
+        out[3] = in[i].dist - 0.0049999999f;
+        g_dpvs.frustumPlanes[i].side[0] = DPVSSide(out[0], 0);
+        g_dpvs.frustumPlanes[i].side[1] = DPVSSide(out[1], 4);
+        g_dpvs.frustumPlanes[i].side[2] = DPVSSide(out[2], 8);
+        out += 8;
+    }
+    return out;
+}
+
+static int bFirstTime = 1; // render.o data @ 0x00E01CBC
+
+// ea: 0x006BF8C0
+char R_SetupDPVS()
+{
+    if (!bFirstTime && r_lockpvs->integer != 0)
+        return static_cast<char>(reinterpret_cast<uintptr_t>(r_lockpvs));
+
+    bFirstTime = 0;
+    R_FrustumClipPlanes();
+
+    g_dpvs.origin.v.m128_f32[0] = tr.viewParms.or.origin[0];
+    g_dpvs.origin.v.m128_f32[1] = tr.viewParms.or.origin[1];
+    g_dpvs.origin.v.m128_f32[2] = tr.viewParms.or.origin[2];
+
+    const float* axis = tr.viewParms.or.axis[0];
+    const float dot = axis[0] * g_dpvs.origin.v.m128_f32[0]
+                    + axis[1] * g_dpvs.origin.v.m128_f32[1]
+                    + axis[2] * g_dpvs.origin.v.m128_f32[2];
+    g_dpvs.viewPlane.data.v.m128_f32[0] = axis[0];
+    g_dpvs.viewPlane.data.v.m128_f32[1] = axis[1];
+    g_dpvs.viewPlane.data.v.m128_f32[2] = axis[2];
+    g_dpvs.viewPlane.data.v.m128_f32[3] = dot - 0.105f;
+    g_dpvs.viewPlane.side[0] = DPVSSide(g_dpvs.viewPlane.data.v.m128_f32[0], 0);
+    g_dpvs.viewPlane.side[1] = DPVSSide(g_dpvs.viewPlane.data.v.m128_f32[1], 4);
+    g_dpvs.viewPlane.side[2] = DPVSSide(g_dpvs.viewPlane.data.v.m128_f32[2], 8);
+    g_dpvs.nearPlane = &tr.viewParms.portalPlane;
+    const char result = static_cast<char>(tr.viewParms.isMirror);
+    if (tr.viewParms.isMirror == 0)
+        g_dpvs.nearPlane = &g_dpvs.viewPlane;
+
+    float farDistance = r_zfar->value;
+    if (g_dpvs.cullDist > farDistance)
+        farDistance = g_dpvs.cullDist;
+    if (farDistance <= 0.0f)
+    {
+        g_dpvs.farPlane = nullptr;
+        return result;
+    }
+
+    const float negAxis[3] = {-axis[0], -axis[1], -axis[2]};
+    const float farDot = negAxis[0] * g_dpvs.origin.v.m128_f32[0]
+                       + negAxis[1] * g_dpvs.origin.v.m128_f32[1]
+                       + negAxis[2] * g_dpvs.origin.v.m128_f32[2];
+    g_dpvs.fogPlane.data.v.m128_f32[0] = negAxis[0];
+    g_dpvs.fogPlane.data.v.m128_f32[1] = negAxis[1];
+    g_dpvs.fogPlane.data.v.m128_f32[2] = negAxis[2];
+    g_dpvs.fogPlane.data.v.m128_f32[3] = farDot - farDistance - 0.0049999999f;
+    g_dpvs.fogPlane.side[0] = DPVSSide(g_dpvs.fogPlane.data.v.m128_f32[0], 0);
+    g_dpvs.fogPlane.side[1] = DPVSSide(g_dpvs.fogPlane.data.v.m128_f32[1], 4);
+    g_dpvs.fogPlane.side[2] = DPVSSide(g_dpvs.fogPlane.data.v.m128_f32[2], 8);
+    g_dpvs.farPlane = &g_dpvs.fogPlane;
+    return static_cast<char>(g_dpvs.fogPlane.side[2]);
+}
+
 static int R_CellForCamera(void* frameBase) { (void)frameBase; return -1; }
 static void R_FilterModelsIntoCells(void* frameBase, dpvs_plane_t* planes,
                                     int iPlaneCount)
