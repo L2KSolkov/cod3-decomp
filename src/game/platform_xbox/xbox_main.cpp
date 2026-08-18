@@ -10,6 +10,7 @@
 #include <intrin.h>
 #include <float.h>
 #include <crtdbg.h>
+#include <eh.h>
 
 #include "game/cvar_types.h"
 #include "game/platform_xbox/MPLiveEngine.h"
@@ -26,11 +27,51 @@
 // during CRT startup, so configuring this only from main() is too late for a
 // report raised by an early initializer.
 namespace {
+int __cdecl CrtReportHook(int reportType, char* message, int* returnValue)
+{
+    (void)reportType;
+    if (message != nullptr)
+        OutputDebugStringA(message);
+    if (returnValue != nullptr)
+        *returnValue = 0;
+    return 1;
+}
+
+void __cdecl InvalidParameterHandler(const wchar_t* expression,
+                                     const wchar_t* function,
+                                     const wchar_t* file,
+                                     unsigned int line,
+                                     uintptr_t reserved)
+{
+    (void)reserved;
+    wchar_t message[1024];
+    _snwprintf_s(message, _countof(message), _TRUNCATE,
+                 L"CRT invalid parameter: %s in %s (%s:%u)\n",
+                 expression != nullptr ? expression : L"<null>",
+                 function != nullptr ? function : L"<null>",
+                 file != nullptr ? file : L"<null>", line);
+    OutputDebugStringW(message);
+}
+
+void __cdecl PurecallHandler()
+{
+    OutputDebugStringA("CRT pure virtual call\n");
+}
+
 void __cdecl ConfigureCrtForAutomation()
 {
-    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
-    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+    // The report hook handles reports even if a library later changes the
+    // per-category mode back to the default window reporter.  Keep stderr as
+    // the fallback for reports that bypass the hook.
+    _CrtSetReportHook(CrtReportHook);
+    _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+    _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _set_invalid_parameter_handler(InvalidParameterHandler);
+    _set_purecall_handler(PurecallHandler);
     _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |
                  SEM_NOOPENFILEERRORBOX);
@@ -189,8 +230,7 @@ void main()
     // Keep CRT diagnostics on the debugger stream.  The Xbox runtime has no
     // Win32 assertion dialog, and a modal CRT report would otherwise stop
     // automated startup under CDB.
-    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
-    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+    ConfigureCrtForAutomation();
 
     // j_nullsub_62();  (linker thunk to a nullsub - no-op)
     MPLiveEngine liveWrapper;

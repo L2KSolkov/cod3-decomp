@@ -57,6 +57,18 @@ static tlSystemCallbacks tlCurSystemCallbacks = {};
 static int    tlMemAllocCounter = 0;
 static char   tlHostPrefix[256] = "";
 
+#ifdef _WIN32
+static void tlStopAfterFatal()
+{
+    // Preserve the original debugger break for interactive diagnosis, but do
+    // not leave an unattended Win32 process behind a modal breakpoint box.
+    if (IsDebuggerPresent())
+        DebugBreak();
+    else
+        ExitProcess(3);
+}
+#endif
+
 // ============================================================================
 // tlSetSystemCallbacks — install platform callbacks
 // ea: 0x8333A0
@@ -276,7 +288,11 @@ void tlFatal(const char* fmt, ...) {
         OutputDebugStringA("TL Fatal Error: ");
         OutputDebugStringA(buf);
         OutputDebugStringA("\n");
+#ifdef _WIN32
+        tlStopAfterFatal();
+#else
         DebugBreak();
+#endif
     }
 }
 
@@ -288,7 +304,11 @@ bool tlFatalHandler(const char* text) {
     OutputDebugStringA("TL Fatal Error: ");
     OutputDebugStringA(text);
     OutputDebugStringA("\n");
+#ifdef _WIN32
+    tlStopAfterFatal();
+#else
     DebugBreak();
+#endif
     return true;
 }
 
