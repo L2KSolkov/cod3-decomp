@@ -444,6 +444,18 @@ nslVoice*     nslGetVoice(unsigned) { return nullptr; }
 nslSourceState nslGetSourceState(nslSourceID) {
     return NSL_SOURCE_STATE_INVALID;
 }
+// ea: 0x00822D60
+bool          nslIsSourceQueued(nslSourceID sid) {
+    return nslGetSourceState(sid) == NSL_SOURCE_STATE_QUEUED;
+}
+// ea: 0x00822D80
+bool          nslIsSourcePlaying(nslSourceID sid) {
+    return nslGetSourceState(sid) == NSL_SOURCE_STATE_PLAYING;
+}
+// ea: 0x00822DA0
+bool          nslIsSourceFinished(nslSourceID sid) {
+    return nslGetSourceState(sid) == NSL_SOURCE_STATE_INVALID;
+}
 unsigned      nslGetMaxNumVoices() { return 0; }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
@@ -461,7 +473,9 @@ void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetS
 // nslCompat.o / nslSource.o family (stubbed; manglings match binary)
 int           nslGetBankState(nslBankID bankID) { return nslWaveBankGetState(static_cast<nslWaveBankID>(bankID)); }
 void          nslFreeBank(nslBankID bankID) { nslWaveBankFree(static_cast<nslWaveBankID>(bankID)); }
-void          nslStopSource(nslSourceID) {}
+void          nslFreeSource(nslSourceID);
+// ea: 0x00820B50
+void          nslStopSource(nslSourceID sid) { nslFreeSource(sid); }
 void          nslQueueSource(nslSourceID) {}
 void          nslFreeSource(nslSourceID) {}
 void          nslSetSourceParam(nslSourceID, int, float) {}
@@ -469,6 +483,14 @@ void          nslSetSourcePosition(nslSourceID, const float*) {}
 void          nslSetSourceVelocity(nslSourceID, const float*) {}
 void          nslDampen(float) {}
 void          nslUndampen() {}
+// ea: 0x00821890
+void          nslRemoveEmitterSource(nslEmitterID eid, nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    nslEmitter* emitter = nslEmitterPtr(eid);
+    if (source == nullptr || emitter == nullptr)
+        return;
+    *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(source) + 0x114u) = -1;
+}
 void          nslUpdateBanks() {
     if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
         return;
