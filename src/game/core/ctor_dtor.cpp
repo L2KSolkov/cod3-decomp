@@ -351,6 +351,38 @@ void Entity::Notify(HashString h, const unsigned int& e)
     ExecScriptHandler(h, &p);
 }
 
+// ea: 0x004B39E0
+void Entity::Notify(HashString h, const int& d, const Broc::entity& e,
+                    const int& mod, const int& hitloc)
+{
+    EntityNotify* notify = (EntityNotify*)EntityNotify::sAllocator->Allocate(
+        0x14, false);
+    WaitTilOutput* param = nullptr;
+    if (notify != nullptr)
+    {
+        WaitTilOutputInst2<int, Broc::entity>* output =
+            (WaitTilOutputInst2<int, Broc::entity>*)WaitTilOutput::sAllocator->Allocate(
+                0x14, false);
+        if (output != nullptr)
+            param = ::new (output) WaitTilOutputInst2<int, Broc::entity>(d, e);
+        notify = ::new (notify) EntityNotify(h.mHash, mHandle, param);
+    }
+    if (notify != nullptr)
+        EntityNotify_Push(notify);
+
+    ScriptEventParams p;
+    memset(&p, 0, sizeof(p));
+    p.ent1 = e.GetHandle();
+    p.ent2 = 0;
+    p.f1 = (float)d;
+    p.f2 = (float)mod;
+    p.f3 = (float)hitloc;
+    p.v1.x = (float)NAN;
+    p.v1.y = (float)NAN;
+    p.v1.z = (float)NAN;
+    ExecScriptHandler(h, &p);
+}
+
 template <typename T>
 void Entity::Notify(HashString hashStr, const T& d)
 {

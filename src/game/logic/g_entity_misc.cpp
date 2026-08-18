@@ -1492,11 +1492,6 @@ void Entity::Notify(HashString h, unsigned int* e)
 {
     (void)h; (void)e;
 }
-void Entity::Notify(HashString h, const int& d, const Broc::entity& e,
-                    const int& mod, const int& hitloc)
-{
-    (void)h; (void)d; (void)e; (void)mod; (void)hitloc;
-}
 void Entity::SetLerpOrigin(EntityState* s, const math::Position3* origin)
 {
     (void)s; (void)origin;
