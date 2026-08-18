@@ -123,6 +123,70 @@ static const int afmv_alternate_scale[32] = {
     24,28,32,36,40,44,48,52,56,64,72,80,88,96,104,112
 };
 
+// AFMV VLC data copied from the IDA data segment at 0x00D418D8-0x00D41B6F.
+struct afmv_vlc2 { unsigned char value; unsigned char len; };
+static const afmv_vlc2 afmv_mv_4[8] = {
+    {3,6},{2,4},{1,3},{1,3},{0,2},{0,2},{0,2},{0,2}
+};
+static const afmv_vlc2 afmv_mv_10[48] = {
+    {0,10},{0,10},{0,10},{0,10},{0,10},{0,10},{0,10},{0,10},
+    {0,10},{0,10},{0,10},{0,10},{15,10},{14,10},{13,10},{12,10},
+    {11,10},{10,10},{9,9},{9,9},{8,9},{8,9},{7,9},{7,9},
+    {6,7},{6,7},{6,7},{6,7},{6,7},{6,7},{6,7},{6,7},
+    {5,7},{5,7},{5,7},{5,7},{5,7},{5,7},{5,7},{5,7},
+    {4,7},{4,7},{4,7},{4,7},{4,7},{4,7},{4,7},{4,7}
+};
+static const afmv_vlc2 afmv_dc_lum[31] = {
+    {1,2},{1,2},{1,2},{1,2},{1,2},{1,2},{1,2},{1,2},
+    {2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},
+    {0,3},{0,3},{0,3},{0,3},{3,3},{3,3},{3,3},{3,3},
+    {4,3},{4,3},{4,3},{4,3},{5,4},{5,4},{6,5}
+};
+static const afmv_vlc2 afmv_dc_chroma[31] = {
+    {0,2},{0,2},{0,2},{0,2},{0,2},{0,2},{0,2},{0,2},
+    {1,2},{1,2},{1,2},{1,2},{1,2},{1,2},{1,2},{1,2},
+    {2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},{2,2},
+    {3,3},{3,3},{3,3},{3,3},{4,4},{4,4},{5,5}
+};
+static const afmv_vlc2 afmv_dc_lum_escape[16] = {
+    {7,6},{7,6},{7,6},{7,6},{7,6},{7,6},{7,6},{7,6},
+    {8,7},{8,7},{8,7},{8,7},{9,8},{9,8},{10,9},{11,9}
+};
+static const afmv_vlc2 afmv_dc_chroma_escape[32] = {
+    {6,5},{6,5},{6,5},{6,5},{6,5},{6,5},{6,5},{6,5},
+    {6,5},{6,5},{6,5},{6,5},{6,5},{6,5},{6,5},{6,5},
+    {7,6},{7,6},{7,6},{7,6},{7,6},{7,6},{7,6},{7,6},
+    {8,7},{8,7},{8,7},{8,7},{9,8},{9,8},{10,9},{11,9}
+};
+static const unsigned char afmv_cbp_large[256] = {
+    0x05,0x07,0x05,0x07,0x05,0x07,0x05,0x07,0x04,0x07,0x04,0x07,0x04,0x07,0x04,0x07,
+    0x04,0x07,0x04,0x07,0x04,0x07,0x04,0x07,0x00,0x01,0x00,0x01,0x01,0x02,0xFF,0x02,
+    0x11,0x07,0x12,0x07,0x14,0x07,0x18,0x07,0x21,0x07,0x22,0x07,0x24,0x07,0x28,0x07,
+    0x3F,0x06,0x3F,0x06,0x30,0x06,0x30,0x06,0x09,0x06,0x09,0x06,0x06,0x06,0x06,0x06,
+    0x1F,0x05,0x1F,0x05,0x1F,0x05,0x1F,0x05,0x10,0x05,0x10,0x05,0x10,0x05,0x10,0x05,
+    0x2F,0x05,0x2F,0x05,0x2F,0x05,0x2F,0x05,0x20,0x05,0x20,0x05,0x20,0x05,0x20,0x05,
+    0x07,0x05,0x07,0x05,0x07,0x05,0x07,0x05,0x0B,0x05,0x0B,0x05,0x0B,0x05,0x0B,0x05,
+    0x0D,0x05,0x0D,0x05,0x0D,0x05,0x0D,0x05,0x0E,0x05,0x0E,0x05,0x0E,0x05,0x0E,0x05,
+    0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x0A,0x05,0x0A,0x05,0x0A,0x05,0x0A,0x05,
+    0x03,0x05,0x03,0x05,0x03,0x05,0x03,0x05,0x0C,0x05,0x0C,0x05,0x0C,0x05,0x0C,0x05,
+    0x01,0x04,0x01,0x04,0x01,0x04,0x01,0x04,0x01,0x04,0x01,0x04,0x01,0x04,0x01,0x04,
+    0x02,0x04,0x02,0x04,0x02,0x04,0x02,0x04,0x02,0x04,0x02,0x04,0x02,0x04,0x02,0x04,
+    0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,
+    0x08,0x04,0x08,0x04,0x08,0x04,0x08,0x04,0x08,0x04,0x08,0x04,0x08,0x04,0x08,0x04,
+    0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,
+    0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03,0x0F,0x03
+};
+static const unsigned char afmv_cbp_small[128] = {
+    0x00,0x00,0x00,0x09,0x39,0x09,0x36,0x09,0x37,0x09,0x3B,0x09,0x3D,0x09,0x3E,0x09,
+    0x17,0x08,0x17,0x08,0x1B,0x08,0x1B,0x08,0x1D,0x08,0x1D,0x08,0x1E,0x08,0x1E,0x08,
+    0x27,0x08,0x27,0x08,0x2B,0x08,0x2B,0x08,0x2D,0x08,0x2D,0x08,0x2E,0x08,0x2E,0x08,
+    0x19,0x08,0x19,0x08,0x16,0x08,0x16,0x08,0x29,0x08,0x29,0x08,0x26,0x08,0x26,0x08,
+    0x35,0x08,0x35,0x08,0x3A,0x08,0x3A,0x08,0x33,0x08,0x33,0x08,0x3C,0x08,0x3C,0x08,
+    0x15,0x08,0x15,0x08,0x1A,0x08,0x1A,0x08,0x13,0x08,0x13,0x08,0x1C,0x08,0x1C,0x08,
+    0x25,0x08,0x25,0x08,0x2A,0x08,0x2A,0x08,0x23,0x08,0x23,0x08,0x2C,0x08,0x2C,0x08,
+    0x31,0x08,0x31,0x08,0x32,0x08,0x32,0x08,0x34,0x08,0x34,0x08,0x38,0x08,0x38,0x08
+};
+
 class nvlMovieBase;
 class nvlMovie;
 void nvl_RequestCallback(nflRequestState reason, nflRequestID requestID, nvlMovieBase* userData);
@@ -707,18 +771,130 @@ int nvlAFMVMovie::GetDMV() {
     return tab.dmv;
 }
 
-int nvlAFMVMovie::GetMotionDiff(int) {
-    // The VLC tables for this helper are still being transcribed from the IDA data segment.
-    return 0;
+int nvlAFMVMovie::GetMotionDiff(int fCode) {
+    const unsigned shifter = mShifter;
+    if ((shifter & 0x80000000u) != 0) {
+        mShifter = shifter << 1;
+        ++mBitCount;
+        return 0;
+    }
+
+    const int oldBitCount = mBitCount;
+    if (shifter < 0x0C000000u) {
+        const afmv_vlc2& tab = afmv_mv_10[shifter >> 22];
+        int value = (static_cast<int>(tab.value) << fCode) + 1;
+        mBitCount = oldBitCount + tab.len + 1;
+        const uint64_t shifted = 2ull * (static_cast<uint64_t>(shifter << tab.len));
+        const unsigned sign = static_cast<unsigned>(shifted >> 32);
+        mShifter = static_cast<unsigned>(shifted);
+        if (fCode != 0) {
+            if (mBitCount > 0) {
+                const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+                mDecodePnt += 2;
+                mShifter |= bits << mBitCount;
+                mBitCount -= 16;
+            }
+            const unsigned beforeSign = mShifter;
+            value += beforeSign >> (32 - fCode);
+            mBitCount += fCode;
+            mShifter = beforeSign << fCode;
+        }
+        return (value ^ static_cast<int>(sign)) - static_cast<int>(sign);
+    }
+
+    const afmv_vlc2& tab = afmv_mv_4[shifter >> 28];
+    int value = (static_cast<int>(tab.value) << fCode) + 1;
+    mBitCount = oldBitCount + tab.len + fCode + 1;
+    const unsigned shifted = shifter << tab.len;
+    const unsigned doubled = shifted << 1;
+    mShifter = doubled;
+    if (fCode != 0)
+        value += doubled >> (32 - fCode);
+    mShifter = doubled << fCode;
+    const int sign = static_cast<int>(shifted >> 31);
+    return (value ^ sign) - sign;
 }
 
 int nvlAFMVMovie::GetCBP() {
-    // The CBP VLC table is a data-segment object in the XBE and is not yet represented in the Win32 type set.
-    return 0;
+    if (mBitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= bits << mBitCount;
+        mBitCount -= 16;
+    }
+    const unsigned index = mShifter < 0x20000000u ? (mShifter >> 23) : (mShifter >> 25);
+    const unsigned char* table = mShifter < 0x20000000u ? afmv_cbp_small : afmv_cbp_large;
+    const unsigned offset = index << 1;
+    mShifter <<= table[offset + 1];
+    mBitCount += table[offset + 1];
+    return table[offset];
 }
 
-unsigned nvlAFMVMovie::GetLuminanceDiff() { return 0; }
-unsigned nvlAFMVMovie::GetChromaDiff() { return 0; }
+unsigned nvlAFMVMovie::GetLuminanceDiff() {
+    const unsigned shifter = mShifter;
+    if (shifter < 0xF8000000u) {
+        const afmv_vlc2& tab = afmv_dc_lum[shifter >> 27];
+        if (tab.value != 0) {
+            mBitCount += tab.value + tab.len;
+            const unsigned shifted = shifter << tab.len;
+            const unsigned sign = static_cast<unsigned>(static_cast<int32_t>(~shifted) >> 31) >> (32 - tab.value);
+            const unsigned result = ((shifted >> (32 - tab.value)) - sign) << mIntraDcPrecision;
+            mShifter = shifted << tab.value;
+            return result;
+        }
+        mBitCount += 3;
+        mShifter = shifter << 3;
+        return 0;
+    }
+
+    const afmv_vlc2& tab = afmv_dc_lum_escape[(shifter >> 23) - 0x1F0];
+    mShifter = shifter << tab.len;
+    mBitCount += tab.len;
+    if (mBitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= bits << mBitCount;
+        mBitCount -= 16;
+    }
+    const unsigned sign = static_cast<unsigned>(static_cast<int32_t>(~mShifter) >> 31) >> (32 - tab.value);
+    const unsigned result = ((mShifter >> (32 - tab.value)) - sign) << mIntraDcPrecision;
+    mShifter <<= tab.value;
+    mBitCount += tab.value;
+    return result;
+}
+
+unsigned nvlAFMVMovie::GetChromaDiff() {
+    const unsigned shifter = mShifter;
+    if (shifter < 0xF8000000u) {
+        const afmv_vlc2& tab = afmv_dc_chroma[shifter >> 27];
+        if (tab.value != 0) {
+            mBitCount += tab.value + tab.len;
+            const unsigned shifted = shifter << tab.len;
+            const unsigned sign = static_cast<unsigned>(static_cast<int32_t>(~shifted) >> 31) >> (32 - tab.value);
+            const unsigned result = ((shifted >> (32 - tab.value)) - sign) << mIntraDcPrecision;
+            mShifter = shifted << tab.value;
+            return result;
+        }
+        mBitCount += 2;
+        mShifter = shifter << 2;
+        return 0;
+    }
+
+    const afmv_vlc2& tab = afmv_dc_chroma_escape[(shifter >> 22) - 0x3E0];
+    mShifter = shifter << tab.len;
+    mBitCount += tab.len;
+    if (mBitCount > 0) {
+        const unsigned short bits = static_cast<unsigned short>((mDecodePnt[0] << 8) | mDecodePnt[1]);
+        mDecodePnt += 2;
+        mShifter |= bits << mBitCount;
+        mBitCount -= 16;
+    }
+    const unsigned sign = static_cast<unsigned>(static_cast<int32_t>(~mShifter) >> 31) >> (32 - tab.value);
+    const unsigned result = ((mShifter >> (32 - tab.value)) - sign) << mIntraDcPrecision;
+    mShifter <<= tab.value;
+    mBitCount += tab.value;
+    return result;
+}
 
 void nvlAFMVMovie::IntraDCT(int cc, unsigned char* dst, int stride) {
     if (mBitCount > 0) {
