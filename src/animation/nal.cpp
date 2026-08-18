@@ -1057,6 +1057,7 @@ public:
     void SetPosition(const nalGenericBoneHandle&, const math::Dir3&);
     void SetOrientation(const nalGenericBoneHandle&, const math::Quaternion&);
     void SetPoseBoneOrientation(const nalGenericBoneHandle&, const math::Quaternion&);
+    math::Quaternion GetPoseBoneOrientationInternal(int boneIdx) const;
     math::Quaternion GetPoseBoneOrientation(const nalGenericBoneHandle&) const;
     math::Quaternion GetBoneModelOrientation(const nalGenericBoneHandle&) const;
 
@@ -1535,6 +1536,31 @@ void nalGenericPose::SetPoseBoneOrientation(
     const math::Quaternion& orientation)
 {
     SetOrientation(handle, orientation);
+}
+
+// ea: 0x008691F0
+math::Quaternion nalGenericPose::GetPoseBoneOrientationInternal(int boneIdx) const
+{
+    const nalGenericSkeleton* skeleton =
+        reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton);
+    const nalBoneInfo& bone = skeleton->BoneInfo[boneIdx];
+    const unsigned char* orientationData;
+    if ((bone.Flags & 2u) != 0)
+        orientationData = this->Skeleton->FileBuf.Buf + bone.OrientationOffset;
+    else
+        orientationData = static_cast<const unsigned char*>(PoseData)
+                          + bone.OrientationOffset;
+
+    math::Quaternion result;
+    std::memcpy(&result, orientationData, sizeof(result));
+    return result;
+}
+
+// ea: 0x00869260
+math::Quaternion nalGenericPose::GetPoseBoneOrientation(
+    const nalGenericBoneHandle& handle) const
+{
+    return GetPoseBoneOrientationInternal(handle.BoneIndex);
 }
 
 // ea: 0x00868D50
