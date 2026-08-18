@@ -152,11 +152,25 @@ extern void Scr_Notify(Entity* ent, HashString hashValue,
 extern int g_debug_sync_queries;  // 0x00F00E78
 extern TPakId CurPakId();
 extern unsigned int AeHash(const char* str);
-// ?FX_RegisterEffect@@YAHPBD@Z (render.o; cdGetEffectTemplate not ported yet)
+extern apsEffectTemplate* cdGetEffectTemplate(
+    TPakId pakId, const tlFixedString& name);  // streamer.o 0x677AC0
+extern void Com_Printf(const char* fmt, ...);
+int moaned_too_much;  // 0x00F784A4
+
+// ea: 0x006C3370
 int FX_RegisterEffect(const char* name)
 {
-    (void)name;
-    return 0;
+    (void)CurPakId();
+    tlFixedString effectName(name);
+    TPakId pakId = CurPakId();
+    apsEffectTemplate* effectTemplate =
+        cdGetEffectTemplate(pakId, effectName);
+    if (effectTemplate == nullptr && moaned_too_much < 100)
+    {
+        Com_Printf("FX_RegisterEffect:-- %s FAILED\n", name);
+        ++moaned_too_much;
+    }
+    return static_cast<int>(reinterpret_cast<uintptr_t>(effectTemplate));
 }
 extern bool IsInSceneAnim();
 // ?FX_GetBoneIndex@@YAHPBVDObj@@I@Z (render.o; DObj bone lookup not ported)
