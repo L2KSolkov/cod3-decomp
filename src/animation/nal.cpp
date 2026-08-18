@@ -734,10 +734,22 @@ template<typename T> class nalAnimClass {
 public:
     class nalInstanceClass {
     public:
-        nalAnimClass<T>* Anim;             // +0x04
-        float Duration;                    // +0x08
-        float InverseDuration;             // +0x0C
-        const nalBaseSkeleton* Skeleton;   // +0x10
+        float Duration;                    // +0x04
+        float InverseDuration;             // +0x08
+        const nalBaseSkeleton* Skeleton;   // +0x0C
+        nalAnimClass<T>* Anim;             // +0x10
+
+        // ea: 0x005182D0 / 0x005182E0
+        static void* operator new(unsigned int sz)
+        {
+            return tlMemAlloc(sz, 8, 0);
+        }
+        // ea: 0x005182F0
+        static void operator delete(void* ptr)
+        {
+            tlMemFree(ptr);
+        }
+        static void* operator new(unsigned int, void* p) { return p; }
 
         // ??0nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QAE@PAV1@PBVnalBaseSkeleton@@@Z
         nalInstanceClass(nalAnimClass<T>* a, const nalBaseSkeleton* s);
@@ -745,11 +757,10 @@ public:
         virtual ~nalInstanceClass();
         // ?GetAnim@nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPAV2@XZ
         nalAnimClass<T>* GetAnim() const { return Anim; }
-        // per-T return type (binary manglings verified)
-        typename nalInstanceSkeletonRet<T>::type GetSkeleton() const
-        {
-            return (typename nalInstanceSkeletonRet<T>::type)Skeleton;
-        }
+        // ea: 0x00518310
+        const nalBaseSkeleton* GetSkeleton() const { return Skeleton; }
+        // ea: 0x00518320
+        double GetInverseDuration() const { return InverseDuration; }
 
         // ?VirtualGetPose@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@MAEXMMAAVnalBasePose@@ABV3@H@Z
         virtual void VirtualGetPose(float t, float t_prev,
@@ -771,6 +782,16 @@ public:
         }
     };
 
+    // nalAnimClass<nalAnyPose> vtable: Dummy, destructor, Process, Release,
+    // CheckVersion, VirtualCreateInstance (IDA type dump 4724).
+    virtual void Dummy() {}
+    virtual ~nalAnimClass() {}
+    virtual void Process() {}
+    // ea: 0x005182A0
+    virtual void Release() {}
+    // ea: 0x005182C0
+    virtual bool CheckVersion() { return false; }
+
     // ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z (0x55E500)
     static void* operator new(unsigned int sz)
     {
@@ -782,18 +803,32 @@ public:
         tlMemFree(ptr);
     }
 
-    float Duration;          // +0x38
-    float InverseDuration;   // +0x3C
+    nalAnimClass<T>* NextAnim;       // +0x04
+    tlFixedString Name;             // +0x08
+    int SkeletonNameIndex;          // +0x28
+    unsigned int Version;           // +0x2C
+    const nalBaseSkeleton* Skeleton; // +0x30
+    unsigned int Flags;             // +0x34
+    float Duration;                 // +0x38
+    int InstanceCount;              // +0x3C
 
     // ?GetDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E540)
-    float GetDuration() const { return Duration; }
+    double GetDuration() const { return Duration; }
     // ?GetInverseDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E550)
-    float GetInverseDuration() const { return InverseDuration; }
-    // ?IsTrajectoryRelative@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ (0x55E590)
-    bool IsTrajectoryRelative() const
+    double GetInverseDuration() const
     {
-        return (*(unsigned int*)((char*)this + 0x34) & 2) == 0;
+        return Duration != 0.0f ? 1.0 / Duration : 0.0;
     }
+    // ea: 0x00518280
+    const tlFixedString* GetName() const
+    {
+        return reinterpret_cast<const tlFixedString*>(
+            reinterpret_cast<const char*>(this) + 0x08);
+    }
+    // ea: 0x005182B0
+    unsigned int IsLooping() const { return Flags & 1; }
+    // ?IsTrajectoryRelative@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ (0x55E590)
+    bool IsTrajectoryRelative() const { return (Flags & 2) == 0; }
 
     // ?GetSkeleton@?$nalAnimClass@VnalAnyPose@@@@QBEPBVnalBaseSkeleton@@XZ (0x55E530)
     const nalBaseSkeleton* GetSkeleton() const;
@@ -803,10 +838,11 @@ public:
     virtual nalInstanceClass* VirtualCreateInstance(nalAnimClass<T>* a,
                                                     nalBaseSkeleton* skeleton);
 
-    const nalBaseSkeleton* Skeleton;  // +0x30
-    unsigned int mFlags;              // +0x34
-    int InstanceCount;                // +0x40
 };
+static_assert(sizeof(nalAnimClass<nalAnyPose>::nalInstanceClass) == 20,
+              "nalAnimClass instance layout mismatch");
+static_assert(sizeof(nalAnimClass<nalAnyPose>) == 64,
+              "nalAnimClass layout mismatch");
 
 // ea: 0x0055E530
 template <typename T>
@@ -819,17 +855,17 @@ const nalBaseSkeleton* nalAnimClass<T>::GetSkeleton() const
 template <typename T>
 nalAnimClass<T>::nalInstanceClass::nalInstanceClass(nalAnimClass<T>* a,
                                                     const nalBaseSkeleton* s)
-    : Anim(a)
 {
     float v3 = 0.0f;
     Duration = a->Duration;
     if (Duration != 0.0f)
         v3 = 1.0f / Duration;
-    const nalBaseSkeleton* Skeleton = s;
+    const nalBaseSkeleton* skeleton = s;
     InverseDuration = v3;
     if (s == nullptr)
-        Skeleton = a->Skeleton;
-    this->Skeleton = Skeleton;
+        skeleton = a->Skeleton;
+    this->Skeleton = skeleton;
+    this->Anim = a;
     ++a->InstanceCount;
 }
 
@@ -1083,6 +1119,8 @@ public:
     int GetPoseSize() const;
     int GetPoseAlignment() const;
     int GetBoneIndexForMatrixIndex(int boneIndex) const;
+    // ea: 0x00518340
+    const nalGenericPose* GetDefaultPose() const;
 
     void GetTrajectoryUpdate(const nalGenericPose&, nalPositionOrientation&) const;
     void GetBoneMatrices(const nalGenericPose&, nalMatrix4x4*, int) const;
@@ -1230,6 +1268,12 @@ void nalGenericSkeleton::VirtualGetPose(
 
 // ea: 0x00854AE0
 const nalBasePose* nalGenericSkeleton::VirtualGetDefaultPose() const
+{
+    return &DefaultPose;
+}
+
+// ea: 0x00518340
+const nalGenericPose* nalGenericSkeleton::GetDefaultPose() const
 {
     return &DefaultPose;
 }
@@ -3897,6 +3941,12 @@ bool IsType(const nalGenericComponentHandle<nalPositionOrientation>& handle,
 {
     // ea: 0x0055E890
     return id == &nalComponentPOBase::TypeID;
+}
+
+// ea: 0x00518640
+char IsType()
+{
+    return 1;
 }
 }
 
@@ -8041,7 +8091,7 @@ void SceneAnimClient::Advance(
         return;
 
     camera_pose:
-        if ((animInst->Anim->mFlags & 2) == 0)
+        if ((animInst->Anim->Flags & 2) == 0)
         {
             XANIM_ASSERT(
                 "!animInst->GetAnim()->IsTrajectoryRelative()",
@@ -8250,7 +8300,7 @@ void SceneAnimClient::Advance(
         poseSkel->GetTrajectoryUpdate(pose, po);
         float angles3[3];
         float matBuf[4][4];
-        if ((animInst->Anim->mFlags & 2) != 0)
+        if ((animInst->Anim->Flags & 2) != 0)
         {
             nalMatrix4x4 m4(po);
             memcpy(matBuf, &m4, 64);
@@ -8380,7 +8430,7 @@ void SceneAnimClient::Advance(
             G_SetAngle(v19, angles3);
         }
         g_LinkEntity(v19);
-        if ((animInst->Anim->mFlags & 2) == 0)
+        if ((animInst->Anim->Flags & 2) == 0)
         {
             Entity* tagChildren = v19->tagChildren;
             while (tagChildren != nullptr)
