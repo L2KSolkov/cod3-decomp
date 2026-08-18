@@ -4849,6 +4849,8 @@ public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z (g.o)
     unsigned int mFlags;   // +0x00
     void* mCurState;       // +0x04
+    int Press(int buttonIndex);          // ?Press@InteractionController@@QAEHH@Z (anim.o 0x53C080)
+    int Release(int buttonIndex);        // ?Release@InteractionController@@QAEHH@Z (anim.o 0x53C0A0)
     int IsInteracting() const;             // ?IsInteracting@InteractionController@@QBEHXZ (g.o 0x4A8260)
     void SetFlag(unsigned int f, int enable);  // ?SetFlag@InteractionController@@QAEXIH@Z (g.o 0x4A8270)
     int IsFlagged(unsigned int f) const;   // ?IsFlagged@InteractionController@@QBEHI@Z (g.o 0x4A82A0)
