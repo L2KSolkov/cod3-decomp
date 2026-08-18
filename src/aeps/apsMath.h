@@ -51,6 +51,9 @@ static_assert(sizeof(apsQuaternion) == 16, "apsQuaternion size mismatch");
 
 namespace apsMath {
 
+// apsSuppliedActions.o: bit-preserving float-to-unsigned conversion.
+unsigned int FloatAsInt(float f);
+
 // apsMath.o (non-inline): 8 AABB corner points. Defined there, unresolved here.
 void GetBoxPoints(const apsBounds& iBox, math::Dir3* oPoints);
 

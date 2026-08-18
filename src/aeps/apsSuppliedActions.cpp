@@ -16,6 +16,7 @@
 #include "apsSuppliedActions.h"
 #include "apsGroup.h"
 #include "apsEffect.h"
+#include "apsInternal.h"
 
 #include <cmath>
 #include <cstring>
@@ -79,6 +80,13 @@ apsQuaternion& apsQuaternion::operator+=(const apsQuaternion& iRHS) {
     z += iRHS.z;
     w += iRHS.w;
     return *this;
+}
+
+// ea: 0x008092F0
+unsigned int apsMath::FloatAsInt(float f) {
+    unsigned int result;
+    std::memcpy(&result, &f, sizeof(result));
+    return result;
 }
 
 // ============================================================================
@@ -1248,13 +1256,219 @@ void apsKappaTauAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect
 // ============================================================================
 // Spawn (nested effects)
 // ============================================================================
+namespace {
+
+// ea: 0x0080AC00
+void CalculateOrientation(math::Mat43* out, const math::Dir3& forward) {
+    __m128 up = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    const __m128 forwardProduct = _mm_mul_ps(up, forward.v);
+    const float forwardUpDot = forwardProduct.m128_f32[0] +
+                               (forwardProduct.m128_f32[1] + forwardProduct.m128_f32[2]);
+    const __m128 absMask = _mm_castsi128_ps(_mm_set1_epi32(0x7fffffff));
+    const float forwardUpAbs = _mm_and_ps(_mm_set_ss(forwardUpDot), absMask).m128_f32[0];
+    if (1.0f - forwardUpAbs < 0.001f)
+        up = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+
+    const __m128 forwardZXY = _mm_shuffle_ps(forward.v, forward.v, 18);
+    const __m128 forwardYZX = _mm_shuffle_ps(forward.v, forward.v, 9);
+    const __m128 upZXY = _mm_shuffle_ps(up, up, 18);
+    const __m128 upYZX = _mm_shuffle_ps(up, up, 9);
+
+    const __m128 sideUnnormalized = _mm_sub_ps(
+        _mm_mul_ps(forwardYZX, upZXY),
+        _mm_mul_ps(forwardZXY, upYZX));
+    const __m128 sideSquared = _mm_mul_ps(sideUnnormalized, sideUnnormalized);
+    const float sideLength = std::sqrt(
+        sideSquared.m128_f32[0] +
+        (sideSquared.m128_f32[1] + sideSquared.m128_f32[2]));
+    const __m128 side = _mm_div_ps(sideUnnormalized, _mm_set1_ps(sideLength));
+
+    const __m128 forwardSideZXY = _mm_shuffle_ps(forward.v, forward.v, 18);
+    const __m128 forwardSideYZX = _mm_shuffle_ps(forward.v, forward.v, 9);
+    const __m128 sideZXY = _mm_shuffle_ps(side, side, 18);
+    const __m128 sideYZX = _mm_shuffle_ps(side, side, 9);
+    const __m128 rightUnnormalized = _mm_sub_ps(
+        _mm_mul_ps(sideYZX, forwardSideZXY),
+        _mm_mul_ps(sideZXY, forwardSideYZX));
+    const __m128 rightSquared = _mm_mul_ps(rightUnnormalized, rightUnnormalized);
+    const float rightLength = std::sqrt(
+        rightSquared.m128_f32[0] +
+        (rightSquared.m128_f32[1] + rightSquared.m128_f32[2]));
+
+    out->y.v = side;
+    out->x.v = _mm_div_ps(rightUnnormalized, _mm_set1_ps(rightLength));
+    out->z.v = forward.v;
+}
+
+// ea: 0x0080ADA0
+void OrientIdentity(math::Mat43* out, const math::Dir3::Packed*,
+                    const math::Dir3::Packed*) {
+    apsMath::SetIdentityMatrix(*out);
+}
+
+// ea: 0x0080ADC0
+void OrientParentVelocity(math::Mat43* out,
+                          const math::Dir3::Packed* parentVelocity,
+                          const math::Dir3::Packed*) {
+    if (parentVelocity == nullptr &&
+        _tlAssert("source/apsSuppliedActions.cpp", 2578, "parentVelocity",
+                  "MUST HAVE A PARENT VELOCITY POINTER"))
+        __debugbreak();
+
+    math::Dir3 direction;
+    direction.v = _mm_setr_ps(parentVelocity->x, parentVelocity->y,
+                              parentVelocity->z, 0.0f);
+    const __m128 squared = _mm_mul_ps(direction.v, direction.v);
+    const float length = std::sqrt(
+        squared.m128_f32[0] +
+        (squared.m128_f32[1] + squared.m128_f32[2]));
+    direction.v = _mm_div_ps(direction.v, _mm_set1_ps(length));
+    CalculateOrientation(out, direction);
+}
+
+// ea: 0x0080AE80
+void OrientCollisionReflect(math::Mat43* out,
+                            const math::Dir3::Packed* parentVelocity,
+                            const math::Dir3::Packed* collisionNormal) {
+    if (parentVelocity == nullptr &&
+        _tlAssert("source/apsSuppliedActions.cpp", 2586, "parentVelocity",
+                  "MUST HAVE A PARENT VELOCITY POINTER"))
+        __debugbreak();
+    if (collisionNormal == nullptr &&
+        _tlAssert("source/apsSuppliedActions.cpp", 2587, "collisionNormal",
+                  "MUST HAVE A COLLISION NORMAL POINTER"))
+        __debugbreak();
+
+    math::Dir3 direction;
+    direction.v = _mm_setr_ps(parentVelocity->x, parentVelocity->y,
+                              parentVelocity->z, 0.0f);
+    const __m128 squared = _mm_mul_ps(direction.v, direction.v);
+    const float length = std::sqrt(
+        squared.m128_f32[0] +
+        (squared.m128_f32[1] + squared.m128_f32[2]));
+    const __m128 normalizedVelocity =
+        _mm_div_ps(direction.v, _mm_set1_ps(length));
+
+    const __m128 normal = _mm_setr_ps(collisionNormal->x, collisionNormal->y,
+                                      collisionNormal->z, 0.0f);
+    const __m128 product = _mm_mul_ps(normalizedVelocity, normal);
+    const float dot = product.m128_f32[0] +
+                      (product.m128_f32[1] + product.m128_f32[2]);
+    direction.v = _mm_sub_ps(
+        normalizedVelocity,
+        _mm_mul_ps(normal, _mm_set1_ps(2.0f * dot)));
+    CalculateOrientation(out, direction);
+}
+
+// ea: 0x0080AFD0
+void OrientRandom(math::Mat43* out, const math::Dir3::Packed*,
+                  const math::Dir3::Packed*) {
+    math::Dir3 direction;
+    direction.v = _mm_setr_ps(
+        apsMath::gDefaultRandomNumberGenerator.GetFloat(-1.0f, 1.0f),
+        apsMath::gDefaultRandomNumberGenerator.GetFloat(-1.0f, 1.0f),
+        apsMath::gDefaultRandomNumberGenerator.GetFloat(-1.0f, 1.0f),
+        0.0f);
+    const __m128 squared = _mm_mul_ps(direction.v, direction.v);
+    const float length = std::sqrt(
+        squared.m128_f32[0] +
+        (squared.m128_f32[1] + squared.m128_f32[2]));
+    direction.v = _mm_div_ps(direction.v, _mm_set1_ps(length));
+    CalculateOrientation(out, direction);
+}
+
+} // namespace
+
 apsSpawnAction::apsSpawnAction()
     : apsAction(3, 0, eAsync, 0x14040u) {}
 void apsSpawnAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
 
 apsSpawnOnDeathAction::apsSpawnOnDeathAction()
-    : apsAction(2, 0, eAsync, 0x14040u) {}
-void apsSpawnOnDeathAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(4, 0, eAsync, 0x8000001u) {}
+
+// ea: 0x0080FEB0
+void apsSpawnOnDeathAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                 apsGroup* ioGroup, apsEffect* iEffect,
+                                 float, float) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+
+    const apsEffectTemplate* effectTemplate =
+        reinterpret_cast<const apsEffectTemplate*>(
+            static_cast<uintptr_t>(apsMath::FloatAsInt(mParams.mElements[2])));
+    if (effectTemplate == nullptr)
+        return;
+
+    unsigned char* orientation = nullptr;
+    if ((ioGroup->mPFD.mFields & 0x20u) != 0)
+        orientation = iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Orientation);
+
+    unsigned char* velocity = nullptr;
+    if ((ioGroup->mPFD.mFields & 0x4000u) != 0)
+        velocity = iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Velocity);
+
+    unsigned char* collisionNormal = nullptr;
+    if ((ioGroup->mPFD.mFields & 0x20000000u) != 0)
+        collisionNormal = iBegin +
+                          ioGroup->mPFD.GetOffset(apsPFDField_LastCollisionNormal);
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const int orientationMode = static_cast<int>(mParams.mElements[3]);
+
+    typedef void (*OrientationFunction)(math::Mat43*,
+                                        const math::Dir3::Packed*,
+                                        const math::Dir3::Packed*);
+    OrientationFunction orientFunction = &OrientIdentity;
+    if (orientationMode == 1) {
+        orientFunction = (velocity != nullptr) ? &OrientParentVelocity : &OrientIdentity;
+    } else if (orientationMode == 2) {
+        orientFunction = &OrientRandom;
+    } else if (orientationMode == 3) {
+        orientFunction = (velocity != nullptr && collisionNormal != nullptr)
+                             ? &OrientCollisionReflect
+                             : &OrientRandom;
+    }
+
+    const int flagsOffset = ioGroup->mPFD.GetOffset(apsPFDField_Flags);
+    unsigned char* particle = iBegin;
+    unsigned char* flags = iBegin + flagsOffset;
+    while (particle != iEnd) {
+        if ((*flags & 1u) != 0) {
+            math::Dir3 position;
+            position.v = _mm_setr_ps(
+                reinterpret_cast<float*>(particle)[0],
+                reinterpret_cast<float*>(particle)[1],
+                reinterpret_cast<float*>(particle)[2], 0.0f);
+
+            math::Mat43 orientationMatrix;
+            orientFunction(
+                &orientationMatrix,
+                velocity ? reinterpret_cast<const math::Dir3::Packed*>(velocity) : nullptr,
+                collisionNormal
+                    ? reinterpret_cast<const math::Dir3::Packed*>(collisionNormal)
+                    : nullptr);
+            const apsQuaternion quaternion =
+                apsMath::QuaternionFromMatrix(orientationMatrix);
+            apsInternal::QueueSpawnedEffect(iEffect->mId, effectTemplate,
+                                            g_effectTime, quaternion, position, -1.0f);
+        }
+
+        particle += stride;
+        flags += stride;
+        if (orientation != nullptr)
+            orientation += stride;
+        if (velocity != nullptr)
+            velocity += stride;
+        if (collisionNormal != nullptr)
+            collisionNormal += stride;
+    }
+}
 
 // ============================================================================
 // Trajectory (spline)
