@@ -1800,7 +1800,26 @@ nslWave*     nslWaveCopy(const nslWave* src, unsigned __formal, int flags,
     }
     return copy;
 }
-nslWave*      nslWavePtr(nslWaveID) { return nullptr; }
+// ea: 0x00826F70
+nslWave*      nslWavePtr(nslWaveID waveID) {
+    const unsigned encodedWaveID = static_cast<unsigned>(waveID) | 0xFFFFu;
+    if (nsl_initParams.aramBase == 0)
+        return nullptr;
+
+    const unsigned slotIndex = (encodedWaveID >> 16) % nsl_initParams.aramBase;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[slotIndex];
+    if (slot->waveBankID != encodedWaveID ||
+        slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED)
+        return nullptr;
+
+    nslWaveBank* waveBank = slot->waveBank;
+    const unsigned waveIndex = static_cast<unsigned>(waveID) & 0xFFFFu;
+    if (waveIndex > waveBank->waveCount)
+        return nullptr;
+
+    return reinterpret_cast<nslWave*>(
+        reinterpret_cast<unsigned char*>(waveBank->waves) + 0x10u * waveIndex);
+}
 unsigned      nslWaveCount() { return 0; }
 unsigned      nslWaveGetSize(nslWaveID) { return 0; }
 unsigned      nslWaveGetFormat(nslWaveID) { return 0; }
@@ -1928,7 +1947,7 @@ nslWaveBankID nslWaveBankLoadInPlace(void*) { return NSL_INVALID_BANK; }
 void          nslWaveBankRelease(nslWaveBankID) {}
 // ea: 0x00826EE0
 nslWaveBankSlot* nslWaveBankGetSlot(nslWaveBankID waveBankID) {
-    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+    if (nsl_initParams.aramBase == 0)
         return nullptr;
     const unsigned index = (waveBankID >> 16) % nsl_initParams.aramBase;
     nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
@@ -1971,8 +1990,12 @@ static nslWaveBank* nslWaveBankData(nslWaveBankID waveBankID) {
 
 // ea: 0x00826F20
 void*          nslWaveBankGetAram(nslWaveBankID waveBankID) {
-    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
-    if (slot == nullptr || slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED ||
+    if (nsl_initParams.aramBase == 0)
+        return nullptr;
+    const unsigned index = (waveBankID >> 16) % nsl_initParams.aramBase;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
+    if (slot->waveBankID != waveBankID ||
+        slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED ||
         slot->waveBank == nullptr)
         return nullptr;
     return slot->waveBank->storage.backing.waveBankAram;
@@ -2045,15 +2068,15 @@ void*          nslWaveBankGetAram(const nslWaveBank* waveBank) {
 nslWaveBankID nslWaveGetBank(nslWaveID waveID) {
     const nslWaveBankID waveBankID =
         static_cast<nslWaveBankID>(static_cast<unsigned>(waveID) | 0xffffu);
-    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+    if (nsl_initParams.aramBase == 0)
         return NSL_INVALID_BANK;
 
     nslWaveBankSlot* slot = &nsl_waveBankSlots[
         (waveBankID >> 16) % nsl_initParams.aramBase];
+    const unsigned waveIndex = static_cast<unsigned>(waveID) & 0xFFFFu;
     if (slot->waveBankID != waveBankID ||
         slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED ||
-        slot->waveBank == nullptr ||
-        static_cast<unsigned>(waveID) > slot->waveBank->waveCount)
+        waveIndex > slot->waveBank->waveCount)
         return NSL_INVALID_BANK;
     return waveBankID;
 }
