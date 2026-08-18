@@ -454,7 +454,8 @@ void          nslSetSourceParam(nslSourceID sid, int index, float value) {
 }
 
 // Voice enumeration (used by EffectEventSys::NumberOfVoicesUsed)
-unsigned      nslGetNumVoices() { return 0; }
+// ea: 0x008203F0
+unsigned      nslGetNumVoices() { return nslVoiceCount(); }
 // ea: 0x008203E0
 nslVoice*     nslGetVoice(unsigned voiceIndex) {
     return nslVoicePtr(static_cast<int>(voiceIndex));
@@ -1741,8 +1742,19 @@ void          nslVoiceSetVolume(int, float) {}
 // ============================================================================
 // nslDriverXBOXDSOUND — Xbox DirectSound driver (XAudio2 replacement)
 // ============================================================================
-unsigned      nslDriverVoiceSize() { return 0; }
-float         nslDriverClamp(float v, float lo, float hi) { return v<lo?lo:(v>hi?hi:v); }
+// ea: 0x00824590
+unsigned      nslDriverVoiceSize() { return 172u; }
+// ea: 0x00824680
+float         nslDriverClamp(float value, float min, float max) {
+    float clamped = value;
+    if (value > max) {
+        clamped = max;
+        value = max;
+    }
+    if (min > clamped)
+        return min;
+    return value;
+}
 void          nslDriverCalculateRolloff(float* out, float dist, const nslWave*) {}
 void          nslDriverInit() {}
 void          nslDriverShutdown() {}
