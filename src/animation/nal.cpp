@@ -516,12 +516,19 @@ struct tlFixedString;
 // nalObject / nalCachedPoseInfo Ã¢â‚¬â€ animation cache types
 // ============================================================================
 struct nalObject {};
+struct nalCachedLODInfo;
 struct nalCachedPoseInfo {
     int LODCount;       // +0x00
-    void* LODInfo;      // +0x04 (nalCachedLODInfo*)
+    nalCachedLODInfo* LODInfo;  // +0x04
 };
 static_assert(sizeof(nalCachedPoseInfo) == 8,
               "nalCachedPoseInfo layout mismatch");
+
+struct nalCachedLODInfo {
+    int Size;           // +0x00
+};
+static_assert(sizeof(nalCachedLODInfo) == 4,
+              "nalCachedLODInfo layout mismatch");
 
 // ============================================================================
 // nalAnimFile / nalClientSceneAnim / nalHeap Ã¢â‚¬â€ resource types
@@ -1395,7 +1402,7 @@ int nalGenericPose::GetPoseAlignment() const
 class nalGenericAnim {
 public:
     virtual ~nalGenericAnim();
-    virtual void Process() {}
+    virtual void Process();
     virtual void Release() {}
     virtual bool CheckVersion() const;
     virtual nalAnimClass<nalAnyPose>::nalInstanceClass*
@@ -1417,7 +1424,7 @@ public:
     void* PrivateData;                      // +0x50
     unsigned* TrackBitMask;                 // +0x54
     nalCachedPoseInfo CachedPoseInfo;       // +0x58
-    void* CacheData;                        // +0x60
+    nalObject** CacheData;                  // +0x60
     int BlockCount;                          // +0x64
     int BlockUnit;                          // +0x68
     void** BlockData;                        // +0x6C
@@ -1479,6 +1486,51 @@ void nalGenericPose::Construct(const nalBaseSkeleton* skeleton,
 void* nalGenericPose::GetPoseData() const
 {
     return PoseData;
+}
+
+// ea: 0x0086D970
+void nalGenericAnim::Process()
+{
+    const int privateAlignment = PrivateAlignment;
+    const nalGenericSkeleton* skeleton = Skeleton;
+    const uintptr_t trackMaskAddress =
+        (reinterpret_cast<uintptr_t>(this) + 0x73u) & ~uintptr_t(3u);
+    TrackBitMask = reinterpret_cast<unsigned*>(trackMaskAddress);
+
+    const int roundedTrackCount = skeleton->PoseTrackCount + 31;
+    const int trackCountSign = roundedTrackCount >> 31;
+    const int trackWordCount =
+        (roundedTrackCount + (trackCountSign & 31)) >> 5;
+    uintptr_t privateAddress =
+        trackMaskAddress + static_cast<uintptr_t>(trackWordCount) * 4u;
+    privateAddress = (privateAddress
+                      + static_cast<uintptr_t>(privateAlignment - 1))
+                     & ~static_cast<uintptr_t>(privateAlignment - 1);
+    PrivateData = reinterpret_cast<void*>(privateAddress);
+
+    uintptr_t lodInfoAddress =
+        (privateAddress + static_cast<uintptr_t>(PrivateSize) + 3u)
+        & ~uintptr_t(3u);
+    CachedPoseInfo.LODInfo =
+        reinterpret_cast<nalCachedLODInfo*>(lodInfoAddress);
+
+    uintptr_t cacheAddress =
+        (lodInfoAddress + static_cast<uintptr_t>(skeleton->LODCount) * 4u + 3u)
+        & ~uintptr_t(3u);
+    CacheData = reinterpret_cast<nalObject**>(cacheAddress);
+
+    uintptr_t blockDataAddress =
+        (cacheAddress + static_cast<uintptr_t>(BlockCount) * 4u + 3u)
+        & ~uintptr_t(3u);
+    BlockData = reinterpret_cast<void**>(blockDataAddress);
+
+    const uintptr_t blockDataEnd =
+        blockDataAddress + static_cast<uintptr_t>(BlockCount) * 4u;
+    for (int i = 0; i < BlockCount; ++i)
+    {
+        BlockData[i] = reinterpret_cast<void*>(
+            reinterpret_cast<uintptr_t>(BlockData[i]) + blockDataEnd);
+    }
 }
 
 // ea: 0x00868FD0
