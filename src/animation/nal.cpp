@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include <cstdint>
+#include <cstring>
 #include <new>
 #include <type_traits>
 #include <stdio.h>
@@ -1157,18 +1158,35 @@ void nalIKSolve2D(const nalMatrix4x4& m1, const math::Dir3& d1, const math::Dir3
 // ============================================================================
 // nalInit / nalExit
 // ============================================================================
-void nalSetAnimPath(const char*) {}
-const char* nalGetAnimPath() { return ""; }
-void nalSetSkeletonPath(const char*) {}
-const char* nalGetSkeletonPath() { return ""; }
-unsigned nalGetVersion() { return 0x100; }
-void nalEnableScratchPadUse() {}
-void nalDisableScratchPadUse() {}
-void nalEnablePerformanceWarnings() {}
-void nalDisablePerformanceWarnings() {}
+static char nalAnimPath[256] = {};
+static char nalSkeletonPath[256] = {};
+static char nalAnimPathDirty = 0;
+static char nalSkeletonPathDirty = 0;
+static bool nalUseScratchPad = true;
+static bool nalPerformanceWarnings = true;
+// IDA exposes the version object only as an untyped byte at 0x10100.
+static unsigned char nalVersionStorage = 0;
+
+void nalSetAnimPath(const char* path)
+{
+    std::strncpy(nalAnimPath, path, sizeof(nalAnimPath));
+    nalAnimPathDirty = 0;
+}
+const char* nalGetAnimPath() { return nalAnimPath; }
+void nalSetSkeletonPath(const char* path)
+{
+    std::strncpy(nalSkeletonPath, path, sizeof(nalSkeletonPath));
+    nalSkeletonPathDirty = 0;
+}
+const char* nalGetSkeletonPath() { return nalSkeletonPath; }
+void* nalGetVersion() { return &nalVersionStorage; }
+void nalEnableScratchPadUse() { nalUseScratchPad = true; }
+void nalDisableScratchPadUse() { nalUseScratchPad = false; }
+void nalEnablePerformanceWarnings() { nalPerformanceWarnings = true; }
+void nalDisablePerformanceWarnings() { nalPerformanceWarnings = false; }
 void nalExit() {}
 void nalInit(class nalHeap*) {}
-int  nalGetDecompCacheSize() { return 0; }
+int nalGetDecompCacheSize() { return 0x4000; }
 
 // ============================================================================
 // nal skeleton resource management
