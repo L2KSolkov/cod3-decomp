@@ -443,6 +443,7 @@ static txSlot nslSlotNext(const txSlotPool* pool, txSlot slot) {
     return TX_SLOT_INVALID;
 }
 extern "C" void txSlotFree(txSlotPool* pool, txSlot slot);
+extern "C" txSlot txSlotNew(txSlotPool* pool);
 
 // Forward declarations for the IDA-backed bank layer below.
 unsigned nslDriverVoiceSize();
@@ -570,7 +571,36 @@ int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
 void          nslVoiceFree(int);
 void          nslDriverUpdate();
 void          nslPriorityUpdate();
-nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
+int           nslPriorityCanPlay(int priority);
+int           nslSourceGetPriority(nslSource* source);
+// ea: 0x00820800
+nslEmitterID  nslNewEmitter(const float* position) {
+    const txSlot slot = txSlotNew(&nsl_emitterPool);
+    const int index = nslSlotIndex(&nsl_emitterPool, slot);
+    if (index != -1) {
+        unsigned char* emitterRaw = reinterpret_cast<unsigned char*>(nsl_emitters) +
+            nslEmitterStride * static_cast<unsigned>(index);
+        if (emitterRaw != nullptr) {
+            std::memset(emitterRaw, 0, 0x110u);
+            if (position != nullptr) {
+                float* params = reinterpret_cast<float*>(emitterRaw + 0x10u);
+                params[19] = position[0];
+                params[20] = position[1];
+                params[21] = position[2];
+                *reinterpret_cast<unsigned*>(emitterRaw + 0x8u) |= 0x380000u;
+            }
+            return slot;
+        }
+    }
+    txPrintf("NSL", 0,
+             "Out of emitters! Please increase your startup nslInitParams.maxEmitters, currently it's set to %d\n",
+             nsl_initParams.maxEmitters);
+    return NSL_INVALID_EMITTER;
+}
+// ea: 0x008208A0
+void          nslFreeEmitter(nslEmitterID eid) {
+    txSlotFree(&nsl_emitterPool, static_cast<txSlot>(eid));
+}
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
 void          nslDeleteEmitter(nslEmitterID) {}
@@ -1113,7 +1143,20 @@ void          nslUnpauseSource(nslSourceID sid) {
     else
         raw[0x123] &= 0xFDu;
 }
-void          nslPlaySource(nslSourceID) {}                  // ?nslPlaySource@@YAXW4nslSourceID@@@Z
+// ea: 0x008209C0
+void          nslPlaySource(nslSourceID sid) {
+    const int index = nslSlotIndex(&nsl_sourcePool, static_cast<txSlot>(sid));
+    if (index == -1)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(nsl_sources) +
+        nslSourceStride * static_cast<unsigned>(index);
+    if (raw == nullptr)
+        return;
+    if (nslPriorityCanPlay(nslSourceGetPriority(reinterpret_cast<nslSource*>(raw))) == 0)
+        return;
+    raw[0x122u] |= 3u;
+    *reinterpret_cast<unsigned*>(raw + 0x128u) = 0;
+}
 void          nslDampenGuardSource(nslSourceID) {}           // ?nslDampenGuardSource@@YAXW4nslSourceID@@@Z
 int           nslAreAllBanksLoaded() { return nslWaveBankSlotsGetLoadingCount() == 0; } // ?nslAreAllBanksLoaded@@YAHXZ
 int           nslNumBanksInUse() { return static_cast<int>(nslWaveBankSlotsGetUsedCount()); } // ?nslNumBanksInUse@@YAHXZ
