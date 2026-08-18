@@ -25,6 +25,7 @@ struct nullD3DInfo {
     unsigned int Format;
     unsigned int Usage;
     unsigned int Persistent;
+    unsigned int SizeBytes;
     unsigned char* Bits;
     IDirect3DResource9* NativeResource;
     IDirect3DTexture9* NativeTexture;
@@ -60,6 +61,13 @@ static IDirect3D9* gD3D9 = NULL;
 static IDirect3DDevice9* gD3D9Device = NULL;
 static IDirect3DSurface9* gD3D9RenderTarget = NULL;
 static IDirect3DSurface9* gD3D9DepthStencil = NULL;
+static IDirect3DVertexDeclaration9* gD3D9VertexDeclaration = NULL;
+static IDirect3DIndexBuffer9* gD3D9IndexBuffer = NULL;
+static nullD3DInfo* gD3D9IndexInfo = NULL;
+static IDirect3DVertexBuffer9* gD3D9VertexBuffers[4] = {};
+static nullD3DInfo* gD3D9VertexInfos[4] = {};
+static unsigned int gD3D9VertexOffsets[4] = {};
+static unsigned int gD3D9VertexStrides[4] = {};
 static HWND gD3D9Window = NULL;
 static unsigned int gNullWidth = 640;
 static unsigned int gNullHeight = 480;
@@ -75,6 +83,87 @@ static DWORD nullD3DCompareFunc(unsigned int Value) {
 static unsigned int nullD3DBytesPerPixel(unsigned int Format) {
     return (Format == D3DFMT_LIN_A8R8G8B8 || Format == D3DFMT_A8R8G8B8 ||
             Format == D3DFMT_LIN_X8R8G8B8 || Format == D3DFMT_X8R8G8B8) ? 4 : 4;
+}
+
+static COD3_D3D9_PRIMITIVETYPE nullD3DPrimitiveType(_D3DPRIMITIVETYPE Type) {
+    switch (Type) {
+    case D3DPT_POINTLIST: return COD3_D3D9_PT_POINTLIST;
+    case D3DPT_LINELIST: return COD3_D3D9_PT_LINELIST;
+    case D3DPT_LINESTRIP: return COD3_D3D9_PT_LINESTRIP;
+    case D3DPT_TRIANGLELIST: return COD3_D3D9_PT_TRIANGLELIST;
+    case D3DPT_TRIANGLESTRIP: return COD3_D3D9_PT_TRIANGLESTRIP;
+    case D3DPT_TRIANGLEFAN: return COD3_D3D9_PT_TRIANGLEFAN;
+    default: return COD3_D3D9_PT_FORCE_DWORD;
+    }
+}
+
+static unsigned int nullD3DPrimitiveCount(_D3DPRIMITIVETYPE Type, unsigned int VertexCount) {
+    switch (Type) {
+    case D3DPT_POINTLIST: return VertexCount;
+    case D3DPT_LINELIST: return VertexCount / 2;
+    case D3DPT_LINESTRIP: return VertexCount > 1 ? VertexCount - 1 : 0;
+    case D3DPT_TRIANGLELIST: return VertexCount / 3;
+    case D3DPT_TRIANGLESTRIP:
+    case D3DPT_TRIANGLEFAN: return VertexCount > 2 ? VertexCount - 2 : 0;
+    default: return 0;
+    }
+}
+
+static bool nullD3DBuildVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Format) {
+    if (gD3D9Device == NULL || Format == NULL)
+        return false;
+    D3DVERTEXELEMENT9 Elements[17] = {};
+    unsigned int Count = 0;
+    for (unsigned int i = 0; i < 16 && Format->Input[i].Format != 2; ++i) {
+        const _D3DVERTEXSHADERINPUT& Input = Format->Input[i];
+        D3DVERTEXELEMENT9& Element = Elements[Count];
+        Element.Stream = 0;
+        Element.Offset = (WORD)Input.Offset;
+        Element.Method = D3DDECLMETHOD_DEFAULT;
+        Element.UsageIndex = (BYTE)(Input.StreamIndex);
+        if (Input.Format == 50) {
+            Element.Type = D3DDECLTYPE_FLOAT3;
+            Element.Usage = D3DDECLUSAGE_POSITION;
+        } else if (Input.Format == 64) {
+            Element.Type = D3DDECLTYPE_D3DCOLOR;
+            Element.Usage = D3DDECLUSAGE_COLOR;
+            Element.UsageIndex = 0;
+        } else if (Input.Format == 34) {
+            Element.Type = D3DDECLTYPE_FLOAT2;
+            Element.Usage = D3DDECLUSAGE_TEXCOORD;
+        } else {
+            return false;
+        }
+        ++Count;
+    }
+    Elements[Count] = D3DDECL_END();
+    IDirect3DVertexDeclaration9* Declaration = NULL;
+    if (FAILED(gD3D9Device->CreateVertexDeclaration(Elements, &Declaration)))
+        return false;
+    if (gD3D9VertexDeclaration != NULL)
+        gD3D9VertexDeclaration->Release();
+    gD3D9VertexDeclaration = Declaration;
+    return true;
+}
+
+static void nullD3DSyncVertexBuffer(IDirect3DVertexBuffer9* Native, nullD3DInfo* Info) {
+    if (Native == NULL || Info == NULL || Info->Bits == NULL || Info->SizeBytes == 0)
+        return;
+    void* Destination = NULL;
+    if (SUCCEEDED(Native->Lock(0, Info->SizeBytes, &Destination, 0))) {
+        memcpy(Destination, Info->Bits, Info->SizeBytes);
+        Native->Unlock();
+    }
+}
+
+static void nullD3DSyncIndexBuffer(IDirect3DIndexBuffer9* Native, nullD3DInfo* Info) {
+    if (Native == NULL || Info == NULL || Info->Bits == NULL || Info->SizeBytes == 0)
+        return;
+    void* Destination = NULL;
+    if (SUCCEEDED(Native->Lock(0, Info->SizeBytes, &Destination, 0))) {
+        memcpy(Destination, Info->Bits, Info->SizeBytes);
+        Native->Unlock();
+    }
 }
 
 static COD3_D3D9_FORMAT nullD3DNativeFormat(unsigned int Format) {
@@ -157,6 +246,7 @@ static nullD3DTexture* nullD3DCreateTexture(unsigned int Width, unsigned int Hei
     Texture->Info.Format = Format;
     Texture->Info.Usage = Usage;
     Texture->Info.Persistent = Persistent;
+    Texture->Info.SizeBytes = (unsigned int)Bytes;
     Texture->Info.Bits = (unsigned char*)(uintptr_t)Texture->Object.Data;
     Texture->Info.NativeResource = NULL;
     Texture->Info.NativeTexture = NULL;
@@ -194,6 +284,7 @@ static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Hei
     Surface->Info.Format = Format;
     Surface->Info.Usage = Usage;
     Surface->Info.Persistent = Persistent;
+    Surface->Info.SizeBytes = (unsigned int)Bytes;
     Surface->Info.Bits = (unsigned char*)calloc(1, Bytes);
     Surface->Info.NativeResource = NULL;
     Surface->Info.NativeTexture = NULL;
@@ -244,6 +335,32 @@ static void nullD3DInitDeviceResources(void) {
                                              D3DFMT_D24S8, 1);
 }
 
+static nullD3DBuffer* nullD3DCreateBuffer(unsigned int Bytes, bool IndexBuffer) {
+    nullD3DBuffer* Buffer = (nullD3DBuffer*)calloc(1, sizeof(nullD3DBuffer));
+    if (Buffer == NULL)
+        return NULL;
+    if (Bytes == 0)
+        Bytes = 1;
+    Buffer->Info.Magic = NULL_D3D_MAGIC;
+    Buffer->Info.Kind = NULL_D3D_BUFFER;
+    Buffer->Info.SizeBytes = Bytes;
+    Buffer->Info.Bits = (unsigned char*)calloc(1, Bytes);
+    Buffer->Object.Data = (unsigned int)(uintptr_t)Buffer->Info.Bits;
+    if (gD3D9Device != NULL) {
+        if (IndexBuffer) {
+            gD3D9Device->CreateIndexBuffer(Bytes, 0, COD3_D3D9_FMT_INDEX16,
+                                            D3DPOOL_MANAGED,
+                                            (IDirect3DIndexBuffer9**)&Buffer->Info.NativeResource,
+                                            NULL);
+        } else {
+            gD3D9Device->CreateVertexBuffer(Bytes, 0, 0, D3DPOOL_MANAGED,
+                                             (IDirect3DVertexBuffer9**)&Buffer->Info.NativeResource,
+                                             NULL);
+        }
+    }
+    return Buffer;
+}
+
 extern "C" {
 
 void __fastcall D3DDevice_SetRenderState_Simple(unsigned int, unsigned int) {}
@@ -279,13 +396,7 @@ void __stdcall D3DDevice_Clear(unsigned int Count, unsigned int ClearFlags,
         gD3D9Device->Clear(Count, NULL, Flags, Color, Z, Stencil);
 }
 D3DIndexBuffer* __stdcall D3DDevice_CreateIndexBuffer2(unsigned int Bytes) {
-    nullD3DBuffer* Buffer = (nullD3DBuffer*)calloc(1, sizeof(nullD3DBuffer));
-    if (Buffer == NULL) return NULL;
-    Buffer->Info.Magic = NULL_D3D_MAGIC;
-    Buffer->Info.Kind = NULL_D3D_BUFFER;
-    Buffer->Info.Bits = (unsigned char*)calloc(1, Bytes == 0 ? 1 : Bytes);
-    Buffer->Object.Data = (unsigned int)(uintptr_t)Buffer->Info.Bits;
-    return (D3DIndexBuffer*)Buffer;
+    return (D3DIndexBuffer*)nullD3DCreateBuffer(Bytes, true);
 }
 D3DSurface* __stdcall D3DDevice_CreateSurface2(unsigned int Width, unsigned int Height,
                                                 unsigned int Usage, unsigned int Format) {
@@ -298,10 +409,54 @@ void* __stdcall D3DDevice_CreateTexture2(unsigned int Width, unsigned int Height
     return nullD3DCreateTexture(Width, Height, Depth, Levels, Usage, Format, Type, 0);
 }
 D3DVertexBuffer* __stdcall D3DDevice_CreateVertexBuffer2(unsigned int Bytes) {
-    return (D3DVertexBuffer*)D3DDevice_CreateIndexBuffer2(Bytes);
+    return (D3DVertexBuffer*)nullD3DCreateBuffer(Bytes, false);
 }
-void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE, unsigned int, const unsigned short*) {}
-void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE, unsigned int, const void*, unsigned int) {}
+void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
+                                              unsigned int VertexCount,
+                                              const unsigned short* IndexData) {
+    if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL ||
+        gD3D9IndexBuffer == NULL || IndexData == NULL)
+        return;
+    COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
+    unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
+    if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
+        return;
+    nullD3DInfo* Info = gD3D9IndexInfo;
+    uintptr_t IndexAddress = (uintptr_t)IndexData;
+    IDirect3DIndexBuffer9* NativeIndex = gD3D9IndexBuffer;
+    unsigned int StartIndex = 0;
+    if (Info != NULL && Info->Bits != NULL &&
+        IndexAddress >= (uintptr_t)Info->Bits &&
+        IndexAddress < (uintptr_t)Info->Bits + Info->SizeBytes)
+        StartIndex = (unsigned int)((IndexAddress - (uintptr_t)Info->Bits) / sizeof(unsigned short));
+    nullD3DSyncIndexBuffer(NativeIndex, Info);
+    for (unsigned int i = 0; i < 4; ++i)
+        nullD3DSyncVertexBuffer(gD3D9VertexBuffers[i], gD3D9VertexInfos[i]);
+    gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
+    gD3D9Device->SetIndices(NativeIndex);
+    unsigned int NumVertices = 0;
+    if (gD3D9VertexInfos[0] != NULL && gD3D9VertexStrides[0] != 0 &&
+        gD3D9VertexInfos[0]->SizeBytes > gD3D9VertexOffsets[0]) {
+        NumVertices = (gD3D9VertexInfos[0]->SizeBytes - gD3D9VertexOffsets[0]) /
+                      gD3D9VertexStrides[0];
+    }
+    if (NumVertices != 0)
+        gD3D9Device->DrawIndexedPrimitive(NativePrimitive, 0, 0, NumVertices,
+                                          StartIndex, PrimitiveCount);
+}
+void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
+                                         unsigned int VertexCount,
+                                         const void* VertexData,
+                                         unsigned int VertexStride) {
+    if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL || VertexData == NULL)
+        return;
+    COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
+    unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
+    if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
+        return;
+    gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
+    gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount, VertexData, VertexStride);
+}
 void __stdcall D3DDevice_EndPush(unsigned int*) {}
 D3DBaseTexture* __stdcall D3DDevice_GetBackBuffer2(int BackBuffer) {
     nullD3DInitDeviceResources();
@@ -335,7 +490,18 @@ int __stdcall D3DDevice_Reset(_D3DPRESENT_PARAMETERS_* Params) {
     return 0;
 }
 void __stdcall D3DDevice_SetGammaRamp(unsigned int, const _D3DGAMMARAMP*) {}
-void __stdcall D3DDevice_SetIndices(D3DIndexBuffer*, unsigned int) {}
+void __stdcall D3DDevice_SetIndices(D3DIndexBuffer* IndexBuffer, unsigned int) {
+    gD3D9IndexBuffer = NULL;
+    gD3D9IndexInfo = NULL;
+    if (gD3D9Device == NULL || IndexBuffer == NULL)
+        return;
+    nullD3DInfo* Info = nullD3DFindInfo(IndexBuffer);
+    if (Info != NULL) {
+        gD3D9IndexInfo = Info;
+        gD3D9IndexBuffer = (IDirect3DIndexBuffer9*)Info->NativeResource;
+    }
+    gD3D9Device->SetIndices(gD3D9IndexBuffer);
+}
 void __stdcall D3DDevice_SetPalette(unsigned int, D3DPalette*) {}
 void __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int) {}
 void __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int) {}
@@ -654,7 +820,14 @@ void __stdcall XOnlineTaskContinue(unsigned int a0) {}
 
 // LNK2001-only imports surfaced after the first pass
 extern "C" {
-void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT*, unsigned int) {}
+void __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* Format,
+                                                   unsigned int) {
+    if (gD3D9Device == NULL || Format == NULL)
+        return;
+    nullD3DBuildVertexDeclaration(Format);
+    if (gD3D9VertexDeclaration != NULL)
+        gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
+}
 void __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*) {}
 void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int) {}
 int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value) {
@@ -691,7 +864,37 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
     gD3D9Device->SetRenderState(NativeState, NativeValue);
     return 0;
 }
-void __stdcall D3DDevice_SetVertexShaderInputDirect(void*, unsigned int, const _D3DSTREAM_INPUT*) {}
+void __stdcall D3DDevice_SetVertexShaderInputDirect(void* VertexFormat,
+                                                     unsigned int StreamCount,
+                                                     const _D3DSTREAM_INPUT* StreamInputs) {
+    if (gD3D9Device == NULL)
+        return;
+    if (VertexFormat != NULL)
+        nullD3DBuildVertexDeclaration((_D3DVERTEXATTRIBUTEFORMAT*)VertexFormat);
+    for (unsigned int i = 0; i < 4; ++i) {
+        if (i >= StreamCount || StreamInputs == NULL) {
+            gD3D9VertexBuffers[i] = NULL;
+            gD3D9VertexInfos[i] = NULL;
+            gD3D9VertexOffsets[i] = 0;
+            gD3D9VertexStrides[i] = 0;
+            gD3D9Device->SetStreamSource(i, NULL, 0, 0);
+            continue;
+        }
+        nullD3DInfo* Info = nullD3DFindInfo(StreamInputs[i].VertexBuffer);
+        IDirect3DVertexBuffer9* NativeBuffer =
+            Info == NULL ? NULL : (IDirect3DVertexBuffer9*)Info->NativeResource;
+        gD3D9VertexBuffers[i] = NativeBuffer;
+        gD3D9VertexInfos[i] = Info;
+        gD3D9VertexOffsets[i] = StreamInputs[i].Offset;
+        gD3D9VertexStrides[i] = StreamInputs[i].Stride;
+        gD3D9Device->SetStreamSource(i, NativeBuffer, StreamInputs[i].Offset,
+                                      StreamInputs[i].Stride);
+    }
+    if (VertexFormat != NULL && gD3D9VertexDeclaration != NULL)
+        gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
+    else if (VertexFormat == NULL && StreamCount == 0)
+        gD3D9Device->SetVertexDeclaration(NULL);
+}
 unsigned int __stdcall D3DResource_Release(D3DResource* Resource) {
     if (Resource == NULL)
         return 0;
