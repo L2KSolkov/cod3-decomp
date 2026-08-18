@@ -148,7 +148,16 @@ struct nslWaveBankSlot {
     nslWaveBank* waveBank;
     nslWaveBankSlotProfile profile;
 };
-struct nslGroup {};
+struct nslGroup {
+    unsigned __int64 paramsUpdate;
+    float params[64];
+    char name[32];
+};
+static_assert(sizeof(nslGroup) == 296, "IDA nslGroup layout");
+
+// IDA's release code advances the allocated records by 0x120 bytes even
+// though the named UDT includes a 32-byte name member (sizeof == 0x128).
+static constexpr unsigned nslGroupStride = 0x120u;
 struct nslVoice {};
 struct nslListener {};
 struct nslDriverParams {};
@@ -189,7 +198,7 @@ static void* nsl_emitterEntries = nullptr;
 static void* nsl_sources = nullptr;
 static void* nsl_sourcesSorted = nullptr;
 static void* nsl_emitters = nullptr;
-static void* nsl_groups = nullptr;
+static nslGroup* nsl_groups = nullptr;
 static void* nsl_voices = nullptr;
 static void* nsl_driverVoices = nullptr;
 
@@ -256,7 +265,9 @@ int          nslInit(const nslInitParams* ip) {
                 if (nsl_sourcesSorted != nullptr) {
                     nsl_emitters = nslInit_Allocate(272u * nsl_initParams.maxEmitters, 0x100u);
                     if (nsl_emitters != nullptr) {
-                        nsl_groups = nslInit_Allocate(288u * static_cast<unsigned>(dword_E4B690), 0x100u);
+                        nsl_groups = static_cast<nslGroup*>(
+                            nslInit_Allocate(nslGroupStride * static_cast<unsigned>(dword_E4B690),
+                                             0x100u));
                         if (nsl_groups != nullptr) {
                             nsl_voices = nslInit_Allocate(320u * nsl_initParams.aramSize, 0x100u);
                             if (nsl_voices != nullptr) {
@@ -922,8 +933,76 @@ void          nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader) {
 // ============================================================================
 nslGroupID    nslGroupCreate(const char*) { return 0; }
 void          nslGroupDestroy(nslGroupID) {}
-nslGroup*     nslGroupGet(unsigned) { return nullptr; }
-nslGroup*     nslGroupGet(const char*) { return nullptr; }
+
+static nslGroup* nslGroupAt(unsigned index) {
+    const uintptr_t base = reinterpret_cast<uintptr_t>(nsl_groups);
+    return reinterpret_cast<nslGroup*>(base +
+                                       static_cast<uintptr_t>(nslGroupStride) * index);
+}
+
+// ea: 0x00823950
+nslGroup* nslGroupGet(unsigned index) {
+    if (index >= static_cast<unsigned>(dword_E4B690))
+        return nullptr;
+
+    nslGroup* result = nslGroupAt(index);
+    return result->name[0] == 0 ? nullptr : result;
+}
+
+// ea: 0x00823980
+nslGroup* nslGroupGet(const char* groupName) {
+    if (groupName == nullptr || *groupName == 0)
+        return nullptr;
+
+    const unsigned groupCount = static_cast<unsigned>(dword_E4B690);
+    unsigned index = 0;
+    for (; index < groupCount; ++index) {
+        nslGroup* group = nslGroupAt(index);
+        if (group->name[0] == 0)
+            break;
+        if (_strnicmp(groupName, group->name, 0x18u) == 0)
+            return group;
+    }
+
+    if (index == groupCount) {
+        txPrintf("NSL", 0, "Out of sound groups. Maximum allowed is %d\n", 0);
+        return nullptr;
+    }
+
+    nslGroup* group = nslGroupAt(index);
+    group->paramsUpdate = UINT64_C(0xFFFFFFFFFFFFFFFF);
+    group->params[0] = 1.0f;
+    group->params[1] = 1.0f;
+    std::strncpy(group->name, groupName, 0x18u);
+    return group;
+}
+
+// ea: 0x00823A70
+void nslGroupSetParam(const char* name, int index, float value) {
+    nslGroup* group = nslGroupGet(name);
+    if (group != nullptr) {
+        group->paramsUpdate |= UINT64_C(1) << index;
+        group->params[index] = value;
+    }
+}
+
+// ea: 0x00823AC0
+float nslGroupGetParam(const char* name, int index, float defaultValue) {
+    nslGroup* group = nslGroupGet(name);
+    return group != nullptr ? group->params[index] : defaultValue;
+}
+
+// ea: 0x00823B00
+void nslGroupSetVolume(const char* groupName) {
+    nslGroupGet(groupName);
+}
+
+// ea: 0x00823B20
+float nslGroupGetVolume(const char* groupName, float defaultVolume) {
+    nslGroup* group = nslGroupGet(groupName);
+    return group != nullptr ? group->params[0] : defaultVolume;
+}
+
 void          nslGroupSetParam(const char*, unsigned, float) {}
 void          nslGroupSetVolume(nslGroupID, float) {}
 void          nslGroupSetPitch(nslGroupID, float) {}
@@ -932,7 +1011,8 @@ float         nslGroupGetVolume(nslGroupID) { return 1.0f; }
 // ============================================================================
 // nslMaster — master bus
 // ============================================================================
-nslGroup*     nslMasterGetGroup() { return nullptr; }
+// ea: 0x00826580
+nslGroup*     nslMasterGetGroup() { return nslGroupGet("NSL_MASTER"); }
 float         nslBusVolume = 1.0f;  // ?nslBusVolume@@3MA @ 0xE4B674
 float         nslBusPitch = 1.0f;   // ?nslBusPitch@@3MA @ 0xE4B678
 void          nslSetBusVolume(unsigned, float) {}
@@ -947,8 +1027,22 @@ void          nslSetBusPitch(float pitch) { nslBusPitch = pitch; }
 float         nslGetBusPitch() { return nslBusPitch; }
 void          nslSetBusFilter(unsigned, unsigned, float) {}
 void          nslSetBusReverb(unsigned, float) {}
-void          nslSetMasterVolume(float) {}
-float         nslGetMasterVolume() { return 1.0f; }
+// ea: 0x00823B60
+void          nslSetMasterVolume(float newVolume) {
+    nslGroup* group = nslGroupGet("NSL_MASTER");
+    if (group != nullptr) {
+        group->paramsUpdate |= 1u;
+        group->params[0] = newVolume;
+    }
+    const nslSpeakerMode speakerMode = nslGetSpeakerMode();
+    nslSetSpeakerMode(speakerMode);
+}
+
+// ea: 0x00823BA0
+float         nslGetMasterVolume() {
+    nslGroup* group = nslGroupGet("NSL_MASTER");
+    return group != nullptr ? group->params[0] : 0.0f;
+}
 
 // ============================================================================
 // nslCompat — backward compatibility
