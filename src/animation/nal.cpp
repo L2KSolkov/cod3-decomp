@@ -576,11 +576,19 @@ class nalStaticInstance;
 class nalBaseSkeleton {
 public:
     virtual ~nalBaseSkeleton() {}
-    tlFixedString Name;  // +0x04 (binary: ?GetName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ)
+    unsigned Version;            // +0x04
+    tlFixedString Name;          // +0x08
+    tlFixedString AnimTypeName;  // +0x28
+    int RefCount;                // +0x48
+    unsigned Flags;              // +0x4C
+    nalFileBuf FileBuf;          // +0x50
+    unsigned CRC32;              // +0x5C
 
     // ?GetName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ (0x55E3F0)
     const tlFixedString& GetName() const;
 };
+static_assert(sizeof(nalBaseSkeleton) == 96,
+              "nalBaseSkeleton layout mismatch");
 
 // ea: 0x0055E3F0
 const tlFixedString& nalBaseSkeleton::GetName() const
@@ -840,6 +848,10 @@ class nalGenericPose;
 class nalGenericSkeleton;
 }
 
+void Blend(nalGeneric::nalGenericPose& out, float blend,
+           const nalGeneric::nalGenericPose& a,
+           const nalGeneric::nalGenericPose& b);
+
 namespace nalGeneric {
 class nalGenericPose : public nalBasePose {
 public:
@@ -878,12 +890,6 @@ public:
 };
 static_assert(sizeof(nalGenericPose) == 16, "nalGenericPose layout mismatch");
 
-namespace nalGeneric {
-template <typename T> class nalGenericComponentHandle;
-template <typename T> class nalGenericConstComponentHandle;
-struct nalComponentInfo;
-}
-
 // ============================================================================
 // nalGenericSkeleton Ã¢â‚¬â€ runtime skeleton (bone matrices, processed pose)
 // ============================================================================
@@ -909,13 +915,35 @@ static_assert(sizeof(nalBoneInfo) == 48, "nalBoneInfo layout mismatch");
 class nalGenericSkeleton {
 public:
     virtual ~nalGenericSkeleton() {}
-    virtual void Release() {}
     virtual void Process() {}
+    virtual void Release() {}
+    virtual bool CheckVersion() const;
+    virtual unsigned int VirtualGetLODCount() const;
+    virtual unsigned int VirtualGetBoneMatrixCount(int lod) const;
+    virtual void VirtualGetBoneMatrices(const nalBasePose& pose,
+                                        nalMatrix4x4* matrices, int lod) const;
+    virtual void VirtualGetTrajectoryUpdate(const nalBasePose& pose,
+                                            nalPositionOrientation* po) const;
+    virtual void VirtualGetPose(nalBasePose& pose,
+                                const nalMatrix4x4* matrices,
+                                nalMatrix4x4* workMatrices,
+                                const nalBasePose& defaultPose,
+                                int lod) const;
+    virtual const nalBasePose* VirtualGetDefaultPose() const;
+    virtual nalBasePose* VirtualCreatePose();
+    virtual void VirtualDestroyPose(nalBasePose* pose);
+    virtual void VirtualCopyPose(nalBasePose* dst,
+                                 const nalBasePose* src);
+    virtual void VirtualBlend(nalBasePose* dst, float blend,
+                              const nalBasePose* src0,
+                              const nalBasePose* src1);
 
     // ?GetLODCount@nalGenericSkeleton@nalGeneric@@QBEIXZ (0x55E760)
     unsigned int GetLODCount() const;
     // ?GetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@QBEIH@Z (0x55E770)
     unsigned int GetBoneMatrixCount(int lod) const;
+    // ?CreatePose@nalGenericSkeleton@nalGeneric@@QBEPAVnalGenericPose@2@XZ
+    nalGenericPose* CreatePose() const;
     int GetPoseSize() const;
     int GetPoseAlignment() const;
     int GetBoneIndexForMatrixIndex(int boneIndex) const;
@@ -984,6 +1012,15 @@ unsigned int nalGenericSkeleton::GetBoneMatrixCount(int lod) const
     return LODInfo[lod].MatrixCount;
 }
 
+// ea: 0x00854B00
+nalGenericPose* nalGenericSkeleton::CreatePose() const
+{
+    void* memory = tlMemAlloc(0x10u, 8u, 0u);
+    if (memory != nullptr)
+        return new (memory) nalGenericPose(this, 0);
+    return nullptr;
+}
+
 // ea: 0x00868C20
 int nalGenericSkeleton::GetPoseSize() const
 {
@@ -1009,6 +1046,90 @@ int nalGenericSkeleton::GetBoneIndexForMatrixIndex(int boneIndex) const
             return -1;
     }
     return result;
+}
+
+// ea: 0x00854A70
+bool nalGenericSkeleton::CheckVersion() const
+{
+    return *reinterpret_cast<const unsigned*>(
+               reinterpret_cast<const char*>(this) + 4) == 0x10302u;
+}
+
+// ea: 0x00854A80
+unsigned int nalGenericSkeleton::VirtualGetLODCount() const
+{
+    return GetLODCount();
+}
+
+// ea: 0x00854A90
+unsigned int nalGenericSkeleton::VirtualGetBoneMatrixCount(int lod) const
+{
+    return GetBoneMatrixCount(lod);
+}
+
+// ea: 0x00854AB0
+void nalGenericSkeleton::VirtualGetBoneMatrices(
+    const nalBasePose& pose, nalMatrix4x4* matrices, int lod) const
+{
+    GetBoneMatrices(reinterpret_cast<const nalGenericPose&>(pose), matrices,
+                    lod);
+}
+
+// ea: 0x00854AC0
+void nalGenericSkeleton::VirtualGetTrajectoryUpdate(
+    const nalBasePose& pose, nalPositionOrientation* po) const
+{
+    GetTrajectoryUpdate(reinterpret_cast<const nalGenericPose&>(pose), *po);
+}
+
+// ea: 0x00854AD0
+void nalGenericSkeleton::VirtualGetPose(
+    nalBasePose& pose, const nalMatrix4x4* matrices,
+    nalMatrix4x4* workMatrices, const nalBasePose& defaultPose,
+    int lod) const
+{
+    GetPose(reinterpret_cast<nalGenericPose&>(pose), matrices, workMatrices,
+            reinterpret_cast<const nalGenericPose&>(defaultPose), lod);
+}
+
+// ea: 0x00854AE0
+const nalBasePose* nalGenericSkeleton::VirtualGetDefaultPose() const
+{
+    return &DefaultPose;
+}
+
+// ea: 0x00854AF0
+nalBasePose* nalGenericSkeleton::VirtualCreatePose()
+{
+    return CreatePose();
+}
+
+// ea: 0x00854B70
+void nalGenericSkeleton::VirtualDestroyPose(nalBasePose* pose)
+{
+    if (pose != nullptr)
+    {
+        reinterpret_cast<nalGenericPose*>(pose)->~nalGenericPose();
+        tlMemFree(pose);
+    }
+}
+
+// ea: 0x00854B30
+void nalGenericSkeleton::VirtualCopyPose(nalBasePose* dst,
+                                         const nalBasePose* src)
+{
+    *reinterpret_cast<nalGenericPose*>(dst) =
+        *reinterpret_cast<const nalGenericPose*>(src);
+}
+
+// ea: 0x00854B50
+void nalGenericSkeleton::VirtualBlend(
+    nalBasePose* dst, float blend, const nalBasePose* src0,
+    const nalBasePose* src1)
+{
+    Blend(*reinterpret_cast<nalGenericPose*>(dst), blend,
+          *reinterpret_cast<const nalGenericPose*>(src0),
+          *reinterpret_cast<const nalGenericPose*>(src1));
 }
 
 // ea: 0x00868DD0
@@ -4254,6 +4375,18 @@ inline void nalGenericSkeleton::GetBoneMatrices(const nalGenericPose& pose,
                                                 int lod) const
 {
     (void)pose; (void)matrices; (void)lod;
+}
+
+inline void nalGenericSkeleton::GetPose(
+    nalGenericPose& pose, const nalMatrix4x4* matrices,
+    nalMatrix4x4* workMatrices, const nalGenericPose& defaultPose,
+    int lod) const
+{
+    (void)pose;
+    (void)matrices;
+    (void)workMatrices;
+    (void)defaultPose;
+    (void)lod;
 }
 
 // ea: 0x0053EC70
