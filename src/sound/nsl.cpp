@@ -1858,6 +1858,33 @@ int           nslWaveIsLooping(nslWaveID waveID) {
         *reinterpret_cast<const unsigned char* const*>(wave);
     return (metadata[5] >> 1) & 1u;
 }
+// ea: 0x00827280
+int           nslWaveGetChannelCount(nslWaveID waveID) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return 0;
+
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    const unsigned char speakerMap = metadata[6];
+    if (speakerMap == 0)
+        return 1;
+
+    const unsigned char pairBits = static_cast<unsigned char>(
+        (speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u));
+    const unsigned char nibbleBits = static_cast<unsigned char>(
+        (pairBits & 0x33u) + ((pairBits >> 2) & 0x33u));
+    return (nibbleBits >> 4) + (nibbleBits & 0x0Fu);
+}
+// ea: 0x008272D0
+int           nslWaveIsImportant(nslWaveID waveID) {
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave == nullptr)
+        return 0;
+    const unsigned char* metadata =
+        *reinterpret_cast<const unsigned char* const*>(wave);
+    return (metadata[7] >> 2) & 1u;
+}
 // ea: 0x00826D90
 static int nslParam_Index_1(const nslParam* params, unsigned __int64 param) {
     const unsigned low = static_cast<unsigned>(param);

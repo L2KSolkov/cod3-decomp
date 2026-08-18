@@ -57,7 +57,7 @@ nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp 
 
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
 
-nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nslWaveGetHash plus packed nslWavePtr/bank accessors @ 0x00826EE0-0x008270B0 ported from IDA; remaining wave-bank functions are in nsl.cpp
+nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: packed wave accessors plus nslWaveGetChannelCount @ 0x00827280 and nslWaveIsImportant @ 0x008272D0 ported from IDA; remaining wave-bank functions are in nsl.cpp
 
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	PORTED	XBoxStorage filesystem-backed save/load; async Service loop; CRC trailer
 
