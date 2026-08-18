@@ -1251,12 +1251,7 @@ void CL_AddDebugLine(const float* start, const float* end, const float* color,
 // ============================================================================
 AnimTree* XAnimGetAnims(XAnimTree* tree);
 AnimTree* Scr_GetAnims(int index);
-// ?Scr_GetAnimsIndex@@YAHPAVAnimTree@@@Z (scr.o 0x9B6B10; stub)
-inline int Scr_GetAnimsIndex(AnimTree* anims)
-{
-    (void)anims;
-    return 0;
-}
+int       Scr_GetAnimsIndex(AnimTree* anims); // ?Scr_GetAnimsIndex@@YAHPAVAnimTree@@@Z (scr.o 0x5C7610)
 void      XAnimClearTreeGoalWeights(XAnimTree* tree, unsigned int animIndex, float blendTime);
 void      XAnimClearGoalWeight(XAnimTree* tree, unsigned int animIndex, float blendTime);
 void      XAnimClearTreeGoalWeightsStrict(XAnimTree* tree, unsigned int animIndex, float blendTime);

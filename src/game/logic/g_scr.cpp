@@ -983,6 +983,23 @@ public:
 };
 AnimBankManager* AnimBankManager::sInst;  // ?sInst@AnimBankManager@@2PAV1@A (anim.o @ 0x1314F34)
 
+// ea: 0x005C7610
+int Scr_GetAnimsIndex(AnimTree* anims)
+{
+    AnimBank* bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    int index = (int)(anims - &bank->anims[0]);
+    if (index < 1 || (unsigned int)index >= bank->anims.mSize)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scr_animtree.cpp";
+        AeAssert::gCurrentLine = 180;
+        AeAssert::gCurrentExpr = "ind >= 1 && ind < bank->anims.size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return index;
+}
+
 // ============================================================================
 // saveField_t - script save fields (8 bytes) - verified against IDA
 // ============================================================================
