@@ -24,6 +24,8 @@
 
 extern void tlWarning(const char* Format, ...);
 extern void tlPrintf(const char* Format, ...);
+extern int gCheckSplineData;
+void CheckSplineData(float* pData);
 
 // IDA global @ 0x00D3C190 (Float4_NegZAxis_123).
 const __m128 Float4_NegZAxis_123 = {0.0f, 0.0f, -1.0f, 0.0f};
@@ -2316,7 +2318,145 @@ void apsSpawnOnDeathAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 // ============================================================================
 apsTrajectoryAction::apsTrajectoryAction()
     : apsAction(4, 0, eAsync, 0xF000041u) {}
-void         apsTrajectoryAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x008100E0
+void apsTrajectoryAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                              apsGroup* ioGroup, apsEffect*, float,
+                              float iTimeDelta) {
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const unsigned int groupName = *reinterpret_cast<const unsigned int*>(
+        &mParams.mElements[2]);
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float trajectorySpeed = mParams.mElements[3];
+    const float xFlip = apsCommon::mCamera.mXFlip;
+
+    const int stride = ioGroup->mPFD.mStride;
+    if ((ioGroup->mPFD.mFields & 0x40u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int angleOffset = ioGroup->mPFD.mOffsets[6];
+
+    if ((ioGroup->mPFD.mFields & 0x01000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int trajectoryPointerOffset = ioGroup->mPFD.mOffsets[24];
+
+    if ((ioGroup->mPFD.mFields & 0x02000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int trajectorySpeedOffset = ioGroup->mPFD.mOffsets[25];
+
+    if ((ioGroup->mPFD.mFields & 0x04000000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int trajectoryDistanceOffset = ioGroup->mPFD.mOffsets[26];
+
+    float* (*splineCallback)(unsigned int) = apsCommon::GetSplineCallback();
+    for (unsigned char* particle = iBegin; particle != iEnd;
+         particle += stride) {
+        float*& splineData = *reinterpret_cast<float**>(
+            particle + trajectoryPointerOffset);
+        if (splineData == 0 && splineCallback != 0) {
+            splineData = splineCallback(groupName);
+            if (gCheckSplineData != 0) {
+                CheckSplineData(splineData);
+                gCheckSplineData = 0;
+            }
+            *reinterpret_cast<float*>(particle + trajectorySpeedOffset) =
+                trajectorySpeed;
+            if (splineData == 0)
+                continue;
+        }
+
+        if (splineData == 0)
+            continue;
+
+        float distance =
+            *reinterpret_cast<float*>(particle + trajectorySpeedOffset) *
+                iTimeDelta +
+            *reinterpret_cast<float*>(particle + trajectoryDistanceOffset);
+        float sectionLength = 0.0f;
+        math::Dir3 currentNode;
+        math::Dir3 nextNode;
+        if (GetSplineInfo(splineData, distance, sectionLength, currentNode,
+                          nextNode) != 0) {
+            *reinterpret_cast<float*>(particle + trajectoryDistanceOffset) =
+                distance;
+
+            const __m128 segment = _mm_sub_ps(nextNode.v, currentNode.v);
+            const __m128 position = _mm_add_ps(
+                currentNode.v,
+                _mm_mul_ps(segment,
+                            _mm_set1_ps(distance / sectionLength)));
+
+            // The release code projects the segment onto X/Y before its
+            // normalized angle calculation; Z and W are explicitly zero.
+            const __m128 planarSegment = _mm_setr_ps(
+                segment.m128_f32[0], segment.m128_f32[1], 0.0f, 0.0f);
+            const __m128 planarSquared =
+                _mm_mul_ps(planarSegment, planarSegment);
+            const float planarLength = std::sqrt(
+                planarSquared.m128_f32[0] +
+                (planarSquared.m128_f32[1] + planarSquared.m128_f32[2]));
+            const __m128 normalized =
+                _mm_div_ps(planarSegment, _mm_set1_ps(planarLength));
+            const float speedParam = normalized.m128_f32[0];
+            const float absoluteSpeed = fabsf(speedParam);
+
+            float angle;
+            if (absoluteSpeed >= 0.5f) {
+                const float root = std::sqrt(
+                    fabsf((1.0f - absoluteSpeed) * 0.5f));
+                const float rootSquared = root * root;
+                const float rootCubed = rootSquared * root;
+                const float rootFifth = rootCubed * rootSquared;
+                const float rootSeventh = rootFifth * rootSquared;
+                angle = rootSeventh * -0.1079625f -
+                        rootFifth * 0.15000001f -
+                        rootCubed * 0.33333331f - root * 2.0f +
+                        1.570796f;
+            } else {
+                const float speedSquared = absoluteSpeed * absoluteSpeed;
+                const float speedCubed = speedSquared * absoluteSpeed;
+                const float speedFifth = speedCubed * speedSquared;
+                const float speedSeventh = speedFifth * speedSquared;
+                angle = speedSeventh * 0.053981241f +
+                        speedFifth * 0.075000003f +
+                        speedCubed * 0.1666667f + absoluteSpeed;
+            }
+
+            if (speedParam < 0.0f)
+                angle = 0.0f - angle;
+            float yaw = 1.5707964f - angle;
+            if (normalized.m128_f32[1] < 0.0f)
+                yaw = 6.2831855f - yaw;
+            yaw *= xFlip;
+            if (yaw < 0.0f)
+                yaw += 6.2831855f;
+
+            *reinterpret_cast<float*>(particle + angleOffset) = yaw;
+            float* particlePosition = reinterpret_cast<float*>(particle);
+            particlePosition[0] = position.m128_f32[0];
+            particlePosition[1] = position.m128_f32[1];
+            particlePosition[2] = position.m128_f32[2];
+        } else {
+            splineData = 0;
+            *reinterpret_cast<float*>(particle + trajectoryDistanceOffset) =
+                0.0f;
+            ioGroup->MarkParticleForRemoval(particle);
+        }
+    }
+}
 
 // ea: 0x0080B140
 void CheckSplineData(float* pData) {
