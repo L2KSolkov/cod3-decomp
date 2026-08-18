@@ -1242,12 +1242,52 @@ void          nslCompatVoiceSetPan(int, float) {}
 // ============================================================================
 // nslListener — audio listener (3D ears)
 // ============================================================================
-int           nslGetNumberOfListeners() { return 1; }
-void          nslSetNumberOfListeners(int) {}
-nslGroup*     nslListenerGetGroup(unsigned) { return nullptr; }
-void          nslListenerSetPosition(unsigned, const float*) {}
+static int    s_NumberOfListeners = 1;
+
+// ea: 0x00823D50
+int           nslGetNumberOfListeners() { return s_NumberOfListeners; }
+
+// ea: 0x00823D60
+void          nslSetNumberOfListeners(int listeners) {
+    s_NumberOfListeners = listeners;
+}
+
+// ea: 0x00823D70
+nslGroup*     nslListenerGetGroup(unsigned listenerIndex) {
+    char listenerGroupName[16] = "NSL_LISTENER_0";
+    if (listenerIndex >= 4)
+        return nullptr;
+    listenerGroupName[13] = static_cast<char>(listenerGroupName[13] + listenerIndex);
+    return nslGroupGet(listenerGroupName);
+}
+
+// ea: 0x00823DD0
+void          nslListenerSetMatrix(unsigned, const float (*)[4]) {}
+
+// ea: 0x00823E60
+void          nslListenerSetPosition(unsigned listenerIndex, const float* pos) {
+    nslGroup* group = nslListenerGetGroup(listenerIndex);
+    if (group != nullptr) {
+        group->params[19] = pos[0];
+        group->params[20] = pos[1];
+        group->params[21] = pos[2];
+        group->paramsUpdate |= UINT64_C(0x380000);
+    }
+}
+
+// ea: 0x00823EA0
+void          nslListenerSetVelocity(unsigned listenerIndex, const float* vel) {
+    nslGroup* group = nslListenerGetGroup(listenerIndex);
+    if (group != nullptr) {
+        group->params[22] = vel[0];
+        group->params[23] = vel[1];
+        group->params[24] = vel[2];
+        group->paramsUpdate |= UINT64_C(0x1C00000);
+    }
+}
+
+// ea: 0x00823EE0
 void          nslListenerSetOrientation(unsigned, const float*, const float*) {}
-void          nslListenerSetVelocity(unsigned, const float*) {}
 void          nslListenerSetDopplerFactor(unsigned, float) {}
 void          nslUpdateListener() {}
 void          nslUpdate() {}
