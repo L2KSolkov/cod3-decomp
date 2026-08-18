@@ -202,7 +202,26 @@ apsLinearScaleAction::apsLinearScaleAction(int iNumParams, int iNumDomains,
                                            unsigned int iRequiredParticleFields)
     : apsAction(iNumParams, iNumDomains, eAsync,
                 iRequiredParticleFields | 2u) {}
-void  apsLinearScaleAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x00809D90
+void apsLinearScaleAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                               apsGroup* ioGroup, apsEffect* iEffect,
+                               float, float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    const float scaleAmount = GetScaleAmountForFrame(*iEffect, iTimeDelta);
+
+    if ((ioGroup->mPFD.mFields & 2u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int radiusOffset = ioGroup->mPFD.mOffsets[1];
+
+    float* radius = reinterpret_cast<float*>(iBegin + radiusOffset);
+    float* endRadius = reinterpret_cast<float*>(iEnd + radiusOffset);
+    while (radius != endRadius) {
+        *radius += scaleAmount;
+        radius = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(radius) + stride);
+    }
+}
 // ea: 0x0080CEE0
 float apsLinearScaleAction::GetScaleAmountForFrame(apsEffect&, float iTimeDelta) const {
     if (mParams.mSize <= 2 &&
