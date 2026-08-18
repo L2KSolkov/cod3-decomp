@@ -137,9 +137,44 @@ static_assert(sizeof(txSlotPool) == 40, "IDA txSlotPool layout");
 static constexpr txSlot TX_SLOT_INVALID = static_cast<txSlot>(-1);
 enum nflFileID : unsigned { NFL_FILE_ID_INVALID = (unsigned)-1 };
 struct nslGroup;
+struct nslParam;
 struct nslWave {
-    unsigned char opaque[40]; // IDA type_inspect: nslWave size 0x28; bank records stay opaque.
+    union {
+        unsigned nameOffset;
+        char* name;
+        unsigned id;
+    } name;
+    unsigned char format;
+    unsigned char flags;
+    unsigned char speakerMap;
+    unsigned char priority;
+    unsigned dataSize;
+    unsigned sampleCount;
+    union {
+        unsigned groupOffset;
+        char* groupName;
+        nslGroup* group;
+    } group;
+    union {
+        unsigned paramOffset;
+        nslParam* param;
+    } params;
+    union {
+        unsigned miscOffset;
+        unsigned char* misc;
+    } misc;
+    union {
+        unsigned aramAddr;
+        unsigned fileOffset;
+    } storage;
+    unsigned short sampleRate;
+    unsigned short miscSize;
+    union {
+        void* data;
+        unsigned file;
+    } source;
 };
+static_assert(sizeof(nslWave) == 40, "IDA nslWave layout");
 // IDA type_inspect: nslParam is an 8-byte map followed by a flexible float array.
 struct nslParam {
     unsigned __int64 map;
@@ -276,6 +311,8 @@ static void* nsl_work = nullptr;
 static unsigned nsl_workUsed = 0;
 static unsigned nsl_workLimit = 0;
 static unsigned nsl_time = 0;
+static unsigned nsl_timeDelta = 0;
+static unsigned nsl_timePrev = 0;
 static unsigned nsl_frame = 0;
 static unsigned nsl_waveBankLoadOrder = 0;
 nslSpeakerMode nsl_speakerMode = static_cast<nslSpeakerMode>(-2);
@@ -316,6 +353,12 @@ static float dword_E4B6F0 = 0.0f;
 static float dword_E4B6F8 = 0.0f;
 static float dword_E4B6FC = 0.0f;
 static float dword_E4B700 = 0.0f;
+float nsl_dampenLevel = 1.0f;
+static unsigned char ignoreAssert = 0;
+static unsigned char ignoreAssert_0 = 0;
+static unsigned char ignoreAssert_1 = 0;
+static unsigned char ignoreAssert_2 = 0;
+static unsigned char ignoreAssert_3 = 0;
 static txSlotEntry* nsl_sourceEntries = nullptr;
 static txSlotEntry* nsl_emitterEntries = nullptr;
 static nslSource* nsl_sources = nullptr;
@@ -513,6 +556,7 @@ unsigned     nslGetVersion() { return 4; }
 nslWave*      nslWavePtr(nslWaveID);
 nslVoice*      nslVoicePtr(int);
 unsigned      nslVoiceCount();
+int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
 void          nslVoiceFree(int);
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
@@ -1334,6 +1378,15 @@ static int nslParam_Index_1(const nslParam* params, unsigned __int64 param) {
         value >>= 1;
     }
     return bitCount - 1;
+}
+
+// ea: 0x00820610
+static float nslParam_Get(const nslParam* params, unsigned __int64 param,
+                          float defaultValue) {
+    if (params == nullptr)
+        return defaultValue;
+    const int index = nslParam_Index_1(params, param);
+    return index == -1 ? defaultValue : params->values[index];
 }
 // ea: 0x00827170
 float         nslWaveGetParam(nslWaveID waveID, unsigned paramIndex,
@@ -2160,6 +2213,7 @@ float         nslGetMasterVolume() {
 // nslCompat — backward compatibility
 // ============================================================================
 nslGroup*     nslListenerGetGroup(unsigned listenerIndex);
+int           nslGetNumberOfListeners();
 // ea: 0x00820290
 nslVoice*     nslVoiceGet(int voiceIndex) { return nslVoicePtr(voiceIndex); }
 // ea: 0x008202A0
@@ -2177,6 +2231,312 @@ void          nslCompatVoiceStop(int) {}
 void          nslCompatVoiceSetVolume(int, float) {}
 void          nslCompatVoiceSetPitch(int, float) {}
 void          nslCompatVoiceSetPan(int, float) {}
+
+// ea: 0x00821910
+void          nslUpdateSources() {
+    unsigned sourceStateHistogram[6] = {};
+    const nslGroup* masterGroup = nslGetMasterGroup();
+
+    for (txSlot slot = nslSlotFirst(&nsl_sourcePool);
+         slot != TX_SLOT_INVALID;) {
+        const txSlot nextSlot = nslSlotNext(&nsl_sourcePool, slot);
+        const int sourceIndex = nslSlotIndex(&nsl_sourcePool, slot);
+        unsigned char* sourceRaw = sourceIndex == -1
+            ? nullptr
+            : reinterpret_cast<unsigned char*>(nsl_sources) +
+                  nslSourceStride * static_cast<unsigned>(sourceIndex);
+        ++sourceStateHistogram[sourceRaw[0x120u]];
+
+        const nslWaveID waveID =
+            *reinterpret_cast<const nslWaveID*>(sourceRaw + 0x110u);
+        nslWave* wave = nslWavePtr(waveID);
+        if (wave == nullptr) {
+            if (sourceIndex != -1 && sourceRaw != nullptr) {
+                const int voice = *reinterpret_cast<const int*>(sourceRaw + 0x118u);
+                if (voice != -1)
+                    nslVoiceFree(voice);
+                txSlotFree(&nsl_sourcePool, slot);
+            }
+            slot = nextSlot;
+            continue;
+        }
+
+        unsigned char* sourceState = sourceRaw + 0x120u;
+        unsigned char* sourceFlags = sourceRaw + 0x122u;
+        unsigned char* sourceUpdate = sourceRaw + 0x123u;
+        unsigned __int64 sourceParamsUsed =
+            *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u);
+        unsigned __int64 sourceParamsUpdate =
+            *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u);
+
+        if (*sourceState == 1u) {
+            if ((*sourceFlags & 1u) == 0u) {
+                slot = nextSlot;
+                continue;
+            }
+            *sourceState = 2u;
+        }
+
+        const unsigned emitterID =
+            *reinterpret_cast<const unsigned*>(sourceRaw + 0x114u);
+        ++*reinterpret_cast<unsigned*>(sourceRaw + 0x124u);
+        if (nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(emitterID)) == -1) {
+            if (emitterID != NSL_INVALID_EMITTER) {
+                *reinterpret_cast<unsigned*>(sourceRaw + 0x114u) = NSL_INVALID_EMITTER;
+                if ((*sourceFlags & 8u) != 0u) {
+                    txPrintf("NSL", 3,
+                             "Freeing %p (flagged to die with the emitter)\n",
+                             slot);
+                    nslFreeSource(static_cast<nslSourceID>(slot));
+                    slot = nextSlot;
+                    continue;
+                }
+            }
+        } else {
+            const int emitterIndex =
+                nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(emitterID));
+            unsigned char* emitterRaw = reinterpret_cast<unsigned char*>(nsl_emitters) +
+                nslEmitterStride * static_cast<unsigned>(emitterIndex);
+            const unsigned __int64 emitterUsed =
+                *reinterpret_cast<const unsigned __int64*>(emitterRaw + 0x0u);
+            const unsigned __int64 emitterUpdate =
+                *reinterpret_cast<const unsigned __int64*>(emitterRaw + 0x8u);
+            sourceParamsUpdate |= emitterUsed;
+            sourceParamsUsed |= emitterUpdate;
+            float* sourceParams = reinterpret_cast<float*>(sourceRaw + 0x10u);
+            const float* emitterParams = reinterpret_cast<const float*>(emitterRaw + 0x10u);
+            for (unsigned index = 0; index < 64u; ++index) {
+                if ((emitterUpdate & (UINT64_C(1) << index)) != 0u)
+                    sourceParams[index] = emitterParams[index];
+            }
+        }
+
+        *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u) =
+            sourceParamsUsed | sourceParamsUpdate;
+        *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u) = 0;
+
+        float* sourceParams = reinterpret_cast<float*>(sourceRaw + 0x10u);
+        const float maxDistance = sourceParams[26] * sourceParams[26];
+        float distance = 100000000.0f;
+        for (int listenerIndex = 0;
+             listenerIndex < nslGetNumberOfListeners(); ++listenerIndex) {
+            nslGroup* listener = nslListenerGetGroup(
+                static_cast<unsigned>(listenerIndex));
+            const float dx = sourceParams[20] - listener->params[20];
+            const float dy = sourceParams[19] - listener->params[19];
+            const float dz = sourceParams[21] - listener->params[21];
+            const float listenerDistance = dx * dx + dy * dy + dz * dz;
+            if (distance > listenerDistance)
+                distance = listenerDistance;
+        }
+
+        const unsigned char* waveInfo =
+            *reinterpret_cast<const unsigned char* const*>(wave);
+        const bool isLoopingStream = (waveInfo[7] & 1u) != 0u &&
+                                     (waveInfo[5] & 2u) != 0u;
+        float distanceForAllocation = distance;
+        float maxDistanceForAllocation = maxDistance;
+        if (isLoopingStream && distance >= maxDistance) {
+            const int voice = *reinterpret_cast<const int*>(sourceRaw + 0x118u);
+            if (voice != -1 && distance >= maxDistance * 1.1f) {
+                txPrintf("NSL", 5,
+                         "Suspending loopsnd %p: %s: dist=%f range=[%f, %f]\n",
+                         slot, nslWaveGetName(waveID), distance,
+                         sourceParams[29], maxDistance);
+                *sourceFlags |= 0x20u;
+                nslFreeSourceVoice(static_cast<nslSourceID>(slot));
+                slot = nextSlot;
+                continue;
+            }
+        }
+
+        int voice = *reinterpret_cast<const int*>(sourceRaw + 0x118u);
+        if (voice == -1) {
+            if (isLoopingStream && distanceForAllocation >= maxDistanceForAllocation) {
+                slot = nextSlot;
+                continue;
+            }
+            voice = nslVoiceAlloc(waveID, static_cast<nslSourceID>(slot),
+                                  *sourceFlags & 0x40u);
+            *reinterpret_cast<int*>(sourceRaw + 0x118u) = voice;
+            if (voice == -1) {
+                unsigned& allocationFailures =
+                    *reinterpret_cast<unsigned*>(sourceRaw + 0x124u);
+                ++allocationFailures;
+                if (allocationFailures <= 10u || (waveInfo[5] & 2u) != 0u) {
+                    slot = nextSlot;
+                    continue;
+                }
+                const unsigned char* group =
+                    *reinterpret_cast<const unsigned char* const*>(waveInfo + 8u);
+                txPrintf("NSL", 5,
+                         "%s: Forcing source to be freed: %p %s:%s \n",
+                         "nslUpdateSources", slot,
+                         group == nullptr ? "" : reinterpret_cast<const char*>(group + 264u),
+                         nslWaveGetName(waveID));
+                const int freeIndex = nslSlotIndex(&nsl_sourcePool, slot);
+                if (freeIndex != -1) {
+                    unsigned char* freeRaw = reinterpret_cast<unsigned char*>(nsl_sources) +
+                        nslSourceStride * static_cast<unsigned>(freeIndex);
+                    const int freeVoice =
+                        *reinterpret_cast<const int*>(freeRaw + 0x118u);
+                    if (freeVoice != -1)
+                        nslVoiceFree(freeVoice);
+                    txSlotFree(&nsl_sourcePool, slot);
+                }
+                slot = nextSlot;
+                continue;
+            }
+            if ((*sourceFlags & 0x20u) != 0u) {
+                *sourceFlags &= static_cast<unsigned char>(~0x20u);
+                *sourceState = 1u;
+                txPrintf("NSL", 5,
+                         "Restoring loopsnd %p: %s: dist=%f range=[%f, %f]\n",
+                         slot, nslWaveGetName(waveID), distance,
+                         sourceParams[29], maxDistance);
+            }
+            sourceParamsUsed |= *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u);
+            sourceParamsUpdate |= *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u);
+            *reinterpret_cast<unsigned*>(sourceRaw + 0x124u) = 0;
+        }
+
+        if (static_cast<unsigned>(voice) >= nsl_initParams.aramSize) {
+            txAssertFailed(&ignoreAssert_3,
+                           "(unsigned)s->voice<(unsigned)nsl_initParams.maxVoices",
+                           "nslUpdateSources",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 882);
+        }
+        unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(nsl_voices) +
+            320u * static_cast<unsigned>(voice);
+        if (voiceRaw[0x108u] != 6u) {
+            if ((*sourceUpdate & 2u) != 0u) {
+                if (*sourceState == 5u)
+                    txAssertFailed(&ignoreAssert_2, "s->state != NSL_SOURCE_STATE_PAUSED",
+                                   "nslUpdateSources",
+                                   "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 899);
+                if ((*sourceUpdate & 4u) != 0u)
+                    txAssertFailed(&ignoreAssert_1,
+                                   "!(s->update&NSL_SOURCE_UPDATE_UNPAUSE)",
+                                   "nslUpdateSources",
+                                   "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 900);
+                const unsigned char previousState = *sourceState;
+                *sourceUpdate &= static_cast<unsigned char>(~2u);
+                if (previousState == 4u)
+                    voiceRaw[0x109u] |= 2u;
+                *reinterpret_cast<unsigned char*>(sourceRaw + 0x121u) = previousState;
+                *sourceState = 5u;
+            }
+            if ((*sourceUpdate & 4u) != 0u) {
+                if (*sourceState != 5u)
+                    txAssertFailed(&ignoreAssert_0, "s->state == NSL_SOURCE_STATE_PAUSED",
+                                   "nslUpdateSources",
+                                   "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 910);
+                if ((*sourceUpdate & 2u) != 0u)
+                    txAssertFailed(&ignoreAssert, "!(s->update&NSL_SOURCE_UPDATE_PAUSE)",
+                                   "nslUpdateSources",
+                                   "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 911);
+                *sourceUpdate &= static_cast<unsigned char>(~4u);
+                const unsigned char previousState =
+                    *reinterpret_cast<const unsigned char*>(sourceRaw + 0x121u);
+                *sourceState = previousState;
+                if (previousState == 4u)
+                    voiceRaw[0x109u] |= 4u;
+            }
+            if (*sourceState == 2u && voiceRaw[0x108u] == 3u)
+                *sourceState = 3u;
+            if (*sourceState == 3u && (*sourceFlags & 2u) != 0u) {
+                *sourceState = 4u;
+                voiceRaw[0x109u] |= 1u;
+            }
+            if ((*sourceUpdate & 8u) != 0u) {
+                *sourceUpdate &= static_cast<unsigned char>(~8u);
+                voiceRaw[0x109u] |= (*sourceFlags & 0x10u) != 0u ? 0x20u : 0x40u;
+            }
+
+            float* voiceParams = reinterpret_cast<float*>(voiceRaw + 8u);
+            const float volumeBase = sourceParams[2];
+            const float pitchBase = sourceParams[3];
+            float volume = sourceParams[8] *
+                (nslParam_Get(reinterpret_cast<const nslParam*>(waveInfo + 16u),
+                              1u, 1.0f) * volumeBase);
+            float pitch = sourceParams[9] *
+                (nslParam_Get(reinterpret_cast<const nslParam*>(waveInfo + 16u),
+                              2u, 1.0f) * pitchBase);
+            float dopplerFactor = sourceParams[31] *
+                nslParam_Get(reinterpret_cast<const nslParam*>(waveInfo + 16u),
+                             UINT64_C(0x08000000), 1.0f);
+            const nslGroup* waveGroup =
+                *reinterpret_cast<const nslGroup* const*>(waveInfo + 8u);
+            if (waveGroup != nullptr) {
+                volume *= waveGroup->params[0];
+                pitch *= waveGroup->params[1];
+            }
+
+            bool busFound = false;
+            const unsigned busId = *reinterpret_cast<const unsigned*>(waveInfo + 12u);
+            for (int index = 0; index < nslGetBusIdPitchCount(); ++index) {
+                if (nslGetBusIdPitch(index) == busId)
+                    busFound = true;
+            }
+            if (nslGetBusIdPitchCount() != 0 && !busFound)
+                pitch *= nslGetBusPitch();
+            busFound = false;
+            for (int index = 0; index < nslGetBusIdVolumeCount(); ++index) {
+                if (nslGetBusIdVolume(index) == busId)
+                    busFound = true;
+            }
+            if (nslGetBusIdVolumeCount() != 0 && !busFound)
+                volume *= nslGetBusVolume();
+
+            volume *= masterGroup->params[0];
+            pitch *= masterGroup->params[1];
+            if (*reinterpret_cast<const int*>(sourceRaw + 0x50u) > 0)
+                volume *= nsl_dampenLevel;
+            if (volume < 0.0f)
+                volume = 0.0f;
+            else if (volume > 1.0f)
+                volume = 1.0f;
+            if (pitch < 0.0f)
+                pitch = 0.0f;
+            else if (pitch > 2.0f)
+                pitch = 2.0f;
+
+            voiceParams[0] = volume;
+            voiceParams[1] = pitch;
+            voiceParams[29] = dopplerFactor;
+            if (voice != -1) {
+                unsigned char* allocatedVoice = reinterpret_cast<unsigned char*>(nsl_voices) +
+                    320u * static_cast<unsigned>(voice);
+                if (allocatedVoice != nullptr) {
+                    reinterpret_cast<float*>(allocatedVoice + 8u)[70] = volume;
+                    reinterpret_cast<float*>(allocatedVoice + 8u)[71] = pitch;
+                }
+            }
+            *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x0u) |=
+                sourceParamsUpdate | UINT64_C(0x8000003);
+            *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u) |=
+                sourceParamsUsed;
+        } else if ((waveInfo[5] & 2u) != 0u) {
+            const int staleVoice = *reinterpret_cast<const int*>(sourceRaw + 0x118u);
+            if (staleVoice != -1)
+                nslVoiceFree(staleVoice);
+            *reinterpret_cast<int*>(sourceRaw + 0x118u) = -1;
+            *reinterpret_cast<unsigned*>(sourceRaw + 0x124u) = 0;
+            *sourceState = 1u;
+        } else {
+            const int freeIndex = nslSlotIndex(&nsl_sourcePool, slot);
+            if (freeIndex != -1) {
+                unsigned char* freeRaw = reinterpret_cast<unsigned char*>(nsl_sources) +
+                    nslSourceStride * static_cast<unsigned>(freeIndex);
+                const int freeVoice = *reinterpret_cast<const int*>(freeRaw + 0x118u);
+                if (freeVoice != -1)
+                    nslVoiceFree(freeVoice);
+                txSlotFree(&nsl_sourcePool, slot);
+            }
+        }
+        slot = nextSlot;
+    }
+}
 
 // ============================================================================
 // nslListener — audio listener (3D ears)
