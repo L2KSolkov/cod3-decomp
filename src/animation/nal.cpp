@@ -520,7 +520,33 @@ struct nalCachedPoseInfo {};
 // ============================================================================
 // nalAnimFile / nalClientSceneAnim / nalHeap Ã¢â‚¬â€ resource types
 // ============================================================================
-struct nalAnimFile {};
+class nalAnyPose;
+template <typename T> class nalAnimClass;
+
+struct nalFileBuf {
+    unsigned char* Buf;
+    unsigned Size;
+    unsigned UserData;
+};
+static_assert(sizeof(nalFileBuf) == 12, "NAL file buffer layout mismatch");
+
+struct nalAnimFileHeader {
+    unsigned Version;
+    unsigned Flags;
+    int SizeStringTable;
+    int NumStringsInTable;
+    tlFixedString Name;
+    int NumAnims;
+    nalAnimClass<nalAnyPose>* FirstAnim;
+    nalFileBuf FileBuf;
+    int RefCount;
+};
+static_assert(sizeof(nalAnimFileHeader) == 72, "NAL animation file header mismatch");
+
+struct nalAnimFile {
+    nalAnimFileHeader Header;
+};
+static_assert(sizeof(nalAnimFile) == 72, "NAL animation file layout mismatch");
 class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
 public:
     nalClientSceneAnim();  // ??0nalClientSceneAnim@@QAE@XZ (0x55EA20)
@@ -1208,9 +1234,18 @@ int nalReleaseAnimFile(nalAnimFile*) { return 0; }
 int nalReleaseAnimFile(const tlFixedString&) { return 0; }
 void nalReleaseAllAnimFiles() {}
 nalAnimClass<nalAnyPose>* nalGetAnim(const tlFixedString&) { return nullptr; }
-nalAnimClass<nalAnyPose>* nalGetFirstAnimInFile(nalAnimFile*) { return nullptr; }
+nalAnimClass<nalAnyPose>* nalGetFirstAnimInFile(nalAnimFile* animFile)
+{
+    return animFile != nullptr ? animFile->Header.FirstAnim : nullptr;
+}
 nalAnimClass<nalAnyPose>* nalGetFirstAnimInFile(const tlFixedString&) { return nullptr; }
-nalAnimClass<nalAnyPose>* nalGetNextAnimInFile(nalAnimClass<nalAnyPose>*) { return nullptr; }
+nalAnimClass<nalAnyPose>* nalGetNextAnimInFile(nalAnimClass<nalAnyPose>* anim)
+{
+    if (anim == nullptr)
+        return nullptr;
+    return *reinterpret_cast<nalAnimClass<nalAnyPose>**>(
+        reinterpret_cast<unsigned char*>(anim) + 4);
+}
 
 // ============================================================================
 // nal scene animation resource management

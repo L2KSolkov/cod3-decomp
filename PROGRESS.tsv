@@ -86,7 +86,7 @@ ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	PORTED	ngl_dx_core.cpp
 
 bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	bdInetAddr.cpp: internet address (25 funcs) from IDA + Demonware 2.0
 
-nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	PORTED	Phase 2: IDA-typed nalAnimFile layout and direct first/next animation accessors ported
 
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 
