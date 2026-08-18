@@ -551,6 +551,61 @@ unsigned       nslWaveBankGetFileOffset(nslWaveBankID waveBankID) {
     }
     return 0;
 }
+
+static nslWaveBank* nslWaveBankData(nslWaveBankID waveBankID) {
+    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
+    return slot != nullptr ? slot->waveBank : nullptr;
+}
+
+// ea: 0x00826F20
+void*          nslWaveBankGetAram(nslWaveBankID waveBankID) {
+    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
+    if (slot == nullptr || slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED ||
+        slot->waveBank == nullptr)
+        return nullptr;
+    return slot->waveBank->storage.backing.waveBankAram;
+}
+
+// ea: 0x00827470
+const char*    nslWaveBankGetName(nslWaveBankID waveBankID) {
+    nslWaveBank* waveBank = nslWaveBankData(waveBankID);
+    return waveBank != nullptr ? waveBank->name : nullptr;
+}
+
+// ea: 0x00827630
+int            nslWaveBankGetAramSize(nslWaveBankID waveBankID) {
+    nslWaveBank* waveBank = nslWaveBankData(waveBankID);
+    return waveBank != nullptr ? static_cast<int>(waveBank->aramSize) : -1;
+}
+
+// ea: 0x00827680
+int            nslWaveBankGetTextSize(nslWaveBankID waveBankID) {
+    nslWaveBank* waveBank = nslWaveBankData(waveBankID);
+    return waveBank != nullptr ? static_cast<int>(waveBank->textSize) : -1;
+}
+
+// ea: 0x008276D0
+int            nslWaveBankGetInfoSize(nslWaveBankID waveBankID) {
+    nslWaveBank* waveBank = nslWaveBankData(waveBankID);
+    return waveBank != nullptr ? static_cast<int>(waveBank->infoSize) : -1;
+}
+
+// ea: 0x00827720
+int            nslWaveBankGetStreamSize(nslWaveBankID waveBankID) {
+    nslWaveBank* waveBank = nslWaveBankData(waveBankID);
+    return waveBank != nullptr ? static_cast<int>(waveBank->streamSize) : -1;
+}
+
+// ea: 0x00827770
+nslWaveBankID nslWaveBankGet(unsigned index) {
+    if (index < nsl_initParams.aramBase) {
+        nslWaveBankSlot* slot = &nsl_waveBankSlots[index];
+        if (slot->state != NSL_WAVE_BANK_SLOT_STATE_NOTUSED)
+            return slot->waveBankID;
+    }
+    return NSL_INVALID_BANK;
+}
+
 int           nslWaveBankGetState(nslWaveBankID waveBankID) {
     if (nsl_initParams.aramBase == 0)
         return -1;
@@ -565,6 +620,39 @@ int           nslWaveBankGetState(nslWaveBankID waveBankID) {
     if (slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED)
         return -1;
     return 0;
+}
+
+// ea: 0x00827B00
+void*          nslWaveBankGetAram(const nslWaveBank* waveBank) {
+    if (waveBank != nullptr && (waveBank->waveBankFlags & 0x80u) == 0)
+        return waveBank->storage.backing.waveBankAram;
+    return nullptr;
+}
+
+// ea: 0x00826FE0
+nslWaveBankID nslWaveGetBank(nslWaveID waveID) {
+    const nslWaveBankID waveBankID =
+        static_cast<nslWaveBankID>(static_cast<unsigned>(waveID) | 0xffffu);
+    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+        return NSL_INVALID_BANK;
+
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[
+        (waveBankID >> 16) % nsl_initParams.aramBase];
+    if (slot->waveBankID != waveBankID ||
+        slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADED ||
+        slot->waveBank == nullptr ||
+        static_cast<unsigned>(waveID) > slot->waveBank->waveCount)
+        return NSL_INVALID_BANK;
+    return waveBankID;
+}
+
+// ea: 0x00827C40
+nflFileID      nslWaveGetFile(nslWaveID waveID) {
+    const nslWaveBankID waveBankID = nslWaveGetBank(waveID);
+    nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
+    if (slot != nullptr && slot->waveBank != nullptr)
+        return slot->file;
+    return NFL_FILE_ID_INVALID;
 }
 void          nslWaveBankFree(nslWaveBankID waveBankID) {
     if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
