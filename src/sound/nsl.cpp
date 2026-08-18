@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
+#include <intrin.h>
 
 #include "core/tlFixedString.h"
 
@@ -15,6 +16,8 @@ extern void  tlMemFree(void* ptr);
 extern "C" void txAssertFailed(unsigned char* ignore, const char* message,
                                 const char* function, const char* source, int line);
 extern "C" void txPrintf(const char* channel, int level, const char* fmt, ...);
+extern "C" int __cdecl __fpclass(float value);
+extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
 // ============================================================================
 // Handle types
@@ -536,6 +539,66 @@ void          nslGetSourceVelocity(nslSourceID sid, float* velocity) {
     velocity[1] = value[1];
     velocity[2] = value[2];
 }
+// ea: 0x008210B0
+void          nslSetSourcePosition(nslSourceID sid, const float* position) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    if ((__fpclass(static_cast<double>(position[0])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 396,
+               "!(_fpclass(position[0])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(position[1])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 397,
+               "!(_fpclass(position[1])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(position[2])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 398,
+               "!(_fpclass(position[2])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    float* value = reinterpret_cast<float*>(raw + 0x5Cu);
+    value[0] = position[0];
+    value[1] = position[1];
+    value[2] = position[2];
+    source->paramsUpdate |= 0x00380000u;
+}
+// ea: 0x00821370
+void          nslSetSourceVelocity(nslSourceID sid, const float* velocity) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    if ((__fpclass(static_cast<double>(velocity[0])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 428,
+               "!(_fpclass(velocity[0])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(velocity[1])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 429,
+               "!(_fpclass(velocity[1])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    if ((__fpclass(static_cast<double>(velocity[2])) & 0x297) != 0
+        && _tlAssert(
+               "c:/cod/code/tl/nsl2/src/nsl/nslSource.cpp", 430,
+               "!(_fpclass(velocity[2])&(_FPCLASS_SNAN|_FPCLASS_QNAN|_FPCLASS_NINF|_FPCLASS_PINF|_FPCLASS_ND|_FPCLASS_PD))",
+               "invalid floating point number"))
+        __debugbreak();
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    float* value = reinterpret_cast<float*>(raw + 0x68u);
+    value[0] = velocity[0];
+    value[1] = velocity[1];
+    value[2] = velocity[2];
+    source->paramsUpdate |= 0x01C00000u;
+}
 // ea: 0x00821830
 nslEmitterID  nslGetSourceEmitter(nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
@@ -571,8 +634,6 @@ void          nslFreeSource(nslSourceID);
 void          nslStopSource(nslSourceID sid) { nslFreeSource(sid); }
 void          nslQueueSource(nslSourceID) {}
 void          nslFreeSource(nslSourceID) {}
-void          nslSetSourcePosition(nslSourceID, const float*) {}
-void          nslSetSourceVelocity(nslSourceID, const float*) {}
 void          nslDampen(float) {}
 void          nslUndampen() {}
 // ea: 0x00821890
