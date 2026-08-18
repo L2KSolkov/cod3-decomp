@@ -17,6 +17,8 @@
 #include "apsGroup.h"
 #include "apsEffect.h"
 
+#include <cmath>
+
 namespace {
 
 // ea: 0x00809AB0 - release helper used by source and burst emission counts.
@@ -499,23 +501,146 @@ float apsLinearScaleSyncAction::GetScaleAmountForFrame(apsEffect& iEffect,
 
 apsExponentialScaleAction::apsExponentialScaleAction()
     : apsAction(3, 0, eAsync, 2u) {}
-void apsExponentialScaleAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080CFF0
+void apsExponentialScaleAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                    apsGroup* ioGroup, apsEffect*, float,
+                                    float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const long double logAmount =
+        std::log(static_cast<long double>(mParams.mElements[2])) *
+        static_cast<long double>(iTimeDelta);
+    const float scaleAmount = static_cast<float>(
+        (0.5L * logAmount + 1.0L) * logAmount + 1.0L);
+
+    if ((ioGroup->mPFD.mFields & 2u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int radiusOffset = ioGroup->mPFD.mOffsets[1];
+    float* radius = reinterpret_cast<float*>(iBegin + radiusOffset);
+    float* endRadius = reinterpret_cast<float*>(iEnd + radiusOffset);
+    while (radius != endRadius) {
+        *radius *= scaleAmount;
+        radius = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(radius) + stride);
+    }
+}
 
 apsLinearScaleWidthAction::apsLinearScaleWidthAction()
     : apsAction(3, 0, eAsync, 4u) {}
-void apsLinearScaleWidthAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D0B0
+void apsLinearScaleWidthAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                    apsGroup* ioGroup, apsEffect*, float,
+                                    float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float scaleAmount = mParams.mElements[2] * iTimeDelta;
+
+    if ((ioGroup->mPFD.mFields & 4u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int widthOffset = ioGroup->mPFD.mOffsets[2];
+    float* width = reinterpret_cast<float*>(iBegin + widthOffset);
+    float* endWidth = reinterpret_cast<float*>(iEnd + widthOffset);
+    while (width != endWidth) {
+        *width += scaleAmount;
+        width = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(width) + stride);
+    }
+}
 
 apsExponentialScaleWidthAction::apsExponentialScaleWidthAction()
     : apsAction(3, 0, eAsync, 4u) {}
-void apsExponentialScaleWidthAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D150
+void apsExponentialScaleWidthAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                         apsGroup* ioGroup, apsEffect*, float,
+                                         float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const long double logAmount =
+        std::log(static_cast<long double>(mParams.mElements[2])) *
+        static_cast<long double>(iTimeDelta);
+    const float scaleAmount = static_cast<float>(
+        (0.5L * logAmount + 1.0L) * logAmount + 1.0L);
+
+    if ((ioGroup->mPFD.mFields & 4u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int widthOffset = ioGroup->mPFD.mOffsets[2];
+    float* width = reinterpret_cast<float*>(iBegin + widthOffset);
+    float* endWidth = reinterpret_cast<float*>(iEnd + widthOffset);
+    while (width != endWidth) {
+        *width *= scaleAmount;
+        width = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(width) + stride);
+    }
+}
 
 apsLinearScaleHeightAction::apsLinearScaleHeightAction()
     : apsAction(3, 0, eAsync, 0x80u) {}
-void apsLinearScaleHeightAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D210
+void apsLinearScaleHeightAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                     apsGroup* ioGroup, apsEffect*, float,
+                                     float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float scaleAmount = mParams.mElements[2] * iTimeDelta;
+
+    if ((ioGroup->mPFD.mFields & 0x80u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int heightOffset = ioGroup->mPFD.mOffsets[7];
+    float* height = reinterpret_cast<float*>(iBegin + heightOffset);
+    float* endHeight = reinterpret_cast<float*>(iEnd + heightOffset);
+    while (height != endHeight) {
+        *height += scaleAmount;
+        height = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(height) + stride);
+    }
+}
 
 apsExponentialScaleHeightAction::apsExponentialScaleHeightAction()
     : apsAction(3, 0, eAsync, 0x80u) {}
-void apsExponentialScaleHeightAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D2C0
+void apsExponentialScaleHeightAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                          apsGroup* ioGroup, apsEffect*, float,
+                                          float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const long double logAmount =
+        std::log(static_cast<long double>(mParams.mElements[2])) *
+        static_cast<long double>(iTimeDelta);
+    const float scaleAmount = static_cast<float>(
+        (0.5L * logAmount + 1.0L) * logAmount + 1.0L);
+
+    if ((ioGroup->mPFD.mFields & 0x80u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int heightOffset = ioGroup->mPFD.mOffsets[7];
+    float* height = reinterpret_cast<float*>(iBegin + heightOffset);
+    float* endHeight = reinterpret_cast<float*>(iEnd + heightOffset);
+    while (height != endHeight) {
+        *height *= scaleAmount;
+        height = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(height) + stride);
+    }
+}
 
 // ============================================================================
 // Move / force / velocity actions
