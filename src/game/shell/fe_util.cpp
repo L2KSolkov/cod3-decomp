@@ -23,7 +23,7 @@ extern void Cbuf_AddText(const char* text); // cl.o
 extern void Cbuf_Execute();                 // cl.o
 
 struct nglTexture;
-void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
+void* cdGetResource(const tlFixedString* FileName, unsigned int FourCC,
                     bool ExtraSafety);  // streamer.o 0x678D40
 
 // TheStringPackage (stringed_hooks.cpp)
@@ -597,12 +597,12 @@ nglTexture* LocalizedGetTexture(const char* name)
     char localized_name[256];
     sprintf(localized_name, "%s%s", v1, name);
     tlFixedString FileName(localized_name);
-    nglTexture* result = (nglTexture*)cdGetResource(FileName, 0x584554,
+    nglTexture* result = (nglTexture*)cdGetResource(&FileName, 0x584554,
                                                     false);
     if (result == nullptr)
     {
         tlFixedString FileName2(name);
-        return (nglTexture*)cdGetResource(FileName2, 0x584554, false);
+        return (nglTexture*)cdGetResource(&FileName2, 0x584554, false);
     }
     return result;
 }

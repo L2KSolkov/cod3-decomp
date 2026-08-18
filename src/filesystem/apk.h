@@ -126,7 +126,7 @@ void apkRegisterSectionType(const tlFixedString& Name,
     void (*load)(apkFile*, apkFileSection*, void*),
     void (*del)(apkFile*, apkFileSection*, void*), void* userData);
 void apkUnregisterSectionType(const tlFixedString& Name);
-void apkSetResourceCallback(void* (*cb)(const tlFixedString&, uint32_t));
+void apkSetResourceCallback(void* (*cb)(const tlFixedString*, uint32_t));
 void apkSetRootDirectory(const char* path);
 apkFile* apkLoadFileInPlace(void* data, bool invokeCallbacks);
 apkFile* apkLoadFile(const char* filename);

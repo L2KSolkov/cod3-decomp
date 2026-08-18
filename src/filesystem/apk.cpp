@@ -15,7 +15,7 @@ namespace apk {
 apkFileCallbackListEntry*    apkFileCallbackList = nullptr;
 apkSectionCallbackListEntry* apkSectionCallbackList = nullptr;
 char apkRootDirectory[256] = "";
-void* (*apkResourceLocatorCallback)(const tlFixedString&, uint32_t) = nullptr;
+void* (*apkResourceLocatorCallback)(const tlFixedString*, uint32_t) = nullptr;
 
 // External stubs
 extern void  tlWarning(const char* fmt, ...);
@@ -118,7 +118,7 @@ void apkUnregisterSectionType(const tlFixedString& Name) {
 // apkSetResourceCallback
 // ea: 0x834200
 // ============================================================================
-void apkSetResourceCallback(void* (*cb)(const tlFixedString&, uint32_t)) {
+void apkSetResourceCallback(void* (*cb)(const tlFixedString*, uint32_t)) {
     apkResourceLocatorCallback = cb;
 }
 
@@ -332,7 +332,7 @@ void apkFile::ApplyReferences(uint32_t** refData, tlFixedString* stringTable) {
 
         const tlFixedString* name = (const tlFixedString*)((uint8_t*)stringTable + stringIndex);
         if (apkResourceLocatorCallback)
-            *ptr = (uint32_t)(uintptr_t)apkResourceLocatorCallback(*name, 0);
+            *ptr = (uint32_t)(uintptr_t)apkResourceLocatorCallback(name, 0);
         else
             *ptr = 0;
     }
@@ -436,12 +436,13 @@ void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
         poolSizes[i] = entry->GetDataSize(this, i, false, &pools[i]);
 
     apkFileTypeEntry* fileTypes = FileTypes;
-    uint8_t* stringTable = nullptr;
+    tlFixedString* stringTable = nullptr;
     while (fileTypes->Type != 0) {
         apkFileEntry* firstEntry = fileTypes->FirstEntry;
         uint32_t entryStride = fileTypes->NSections + 1;
-        stringTable = reinterpret_cast<uint8_t*>(firstEntry)
-                    + 4u * fileTypes->NEntries * entryStride;
+        stringTable = reinterpret_cast<tlFixedString*>(
+            reinterpret_cast<uint8_t*>(firstEntry)
+            + 4u * fileTypes->NEntries * entryStride);
         fileTypes = reinterpret_cast<apkFileTypeEntry*>(
             reinterpret_cast<uint8_t*>(fileTypes) + 4u * NSections + 20u);
     }
@@ -450,13 +451,15 @@ void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
     uint32_t* referenceData = reinterpret_cast<uint32_t*>(
         (reinterpret_cast<uintptr_t>(lastSection->Data) + lastSection->Size + 3u) & ~uintptr_t(3u));
     if (*referenceData != 0xFFFFFFFFu) {
+        uint32_t nextReference;
         do {
+            nextReference = referenceData[1];
             ++referenceData;
-        } while (*referenceData != 0xFFFFFFFFu);
+        } while (nextReference != 0xFFFFFFFFu);
     }
 
     uint32_t reference = referenceData[1];
-    uint32_t* cursor = referenceData + 1;
+    uint32_t* cursor = referenceData + 2;
     if (reference == 0xFFFFFFFFu)
         return;
 
@@ -466,7 +469,7 @@ void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
         tlFixedString* target = reinterpret_cast<tlFixedString*>(
             reinterpret_cast<uint8_t*>(Sections[sectionIndex].Data) + 4u * sectionOffset);
         uint32_t type = *cursor++;
-        tlFixedString* name = reinterpret_cast<tlFixedString*>(stringTable + *cursor++);
+        tlFixedString* name = stringTable + *cursor++;
         uint32_t nextReference = *cursor++;
 
         uint32_t owningSection = 0xFFFFFFFFu;
@@ -499,7 +502,7 @@ void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
             && targetAddress < poolStart + poolSizes[owningSection]) {
             if (apkResourceLocatorCallback)
                 target->hash = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(
-                    apkResourceLocatorCallback(*name, type)));
+                    apkResourceLocatorCallback(name, type)));
             else
                 target->hash = 0;
         }

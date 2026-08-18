@@ -104,7 +104,7 @@ math::Position3 nglProjectPoint(const math::Position3& In, nglScene* Scene);
 
 extern char* va(const char* fmt, ...);  // core.o
 extern void* mem_heap_malloc(unsigned int size);  // core.o
-extern void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
+extern void* cdGetResource(const tlFixedString* FileName, unsigned int FourCC,
                            bool ExtraSafety);  // streamer.o
 extern void tlPrint(const char* lpOutputString);  // tl lib
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
@@ -391,11 +391,11 @@ void DebugRender::Init()
     mDebugShaderMaterial =
         v2 != nullptr ? new (v2) cdDebugShaderMat() : nullptr;
     tlFixedString v9("dbgsphr");
-    mDebugSphereMesh = (nglMesh*)cdGetResource(v9, 0x4853454Du, true);
+    mDebugSphereMesh = (nglMesh*)cdGetResource(&v9, 0x4853454Du, true);
     tlFixedString v8("dbgcyl");
-    mDebugCylinderMesh = (nglMesh*)cdGetResource(v8, 0x4853454Du, true);
+    mDebugCylinderMesh = (nglMesh*)cdGetResource(&v8, 0x4853454Du, true);
     tlFixedString v7("dbghemi");
-    mDebugHemisphereMesh = (nglMesh*)cdGetResource(v7, 0x4853454Du, true);
+    mDebugHemisphereMesh = (nglMesh*)cdGetResource(&v7, 0x4853454Du, true);
     if (mDebugSphereMesh == nullptr)
         tlPrint("unable to find debug sphere mesh!");
     if (mDebugCylinderMesh == nullptr)
