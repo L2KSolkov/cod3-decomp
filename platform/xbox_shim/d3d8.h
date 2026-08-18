@@ -3,7 +3,7 @@
 // Source: Xbox XDK Dec 2003 d3d8.h
 //
 // Opaque types + the handful of D3D8 entry points the ported game/engine
-// objects call. Implementations land in the future D3D11 backend
+// objects call. Implementations land in the Win32 D3D9 backend
 // (Phase 6); until then the linker satisfies them via /FORCE:UNRESOLVED.
 // ============================================================================
 #pragma once

@@ -6,14 +6,15 @@
 // ============================================================================
 
 #include "d3d8.h"
+#include "d3d9_compat.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
-// The first graphics backend is deliberately headless.  These records keep
-// the D3D8-shaped ABI used by the ported NGL code while owning ordinary
-// Win32 memory for textures, surfaces, and scratch buffers.
+// These records keep the D3D8-shaped ABI used by the ported NGL code while
+// owning CPU fallback storage and native D3D9 resources for graphics calls.
 struct nullD3DInfo {
     unsigned int Magic;
     unsigned int Kind;
@@ -25,6 +26,9 @@ struct nullD3DInfo {
     unsigned int Usage;
     unsigned int Persistent;
     unsigned char* Bits;
+    IDirect3DResource9* NativeResource;
+    IDirect3DTexture9* NativeTexture;
+    IDirect3DSurface9* NativeSurface;
 };
 
 static const unsigned int NULL_D3D_MAGIC = 0x4E474C44;
@@ -52,6 +56,11 @@ struct nullD3DBuffer {
 static nullD3DTexture* gNullFrontBuffer = NULL;
 static nullD3DTexture* gNullBackBuffer = NULL;
 static nullD3DSurface* gNullDepthBuffer = NULL;
+static IDirect3D9* gD3D9 = NULL;
+static IDirect3DDevice9* gD3D9Device = NULL;
+static IDirect3DSurface9* gD3D9RenderTarget = NULL;
+static IDirect3DSurface9* gD3D9DepthStencil = NULL;
+static HWND gD3D9Window = NULL;
 static unsigned int gNullWidth = 640;
 static unsigned int gNullHeight = 480;
 static void (*gNullVBlankCallback)(_D3DVBLANKDATA*) = NULL;
@@ -60,6 +69,51 @@ static unsigned int gNullFence = 0;
 static unsigned int nullD3DBytesPerPixel(unsigned int Format) {
     return (Format == D3DFMT_LIN_A8R8G8B8 || Format == D3DFMT_A8R8G8B8 ||
             Format == D3DFMT_LIN_X8R8G8B8 || Format == D3DFMT_X8R8G8B8) ? 4 : 4;
+}
+
+static COD3_D3D9_FORMAT nullD3DNativeFormat(unsigned int Format) {
+    switch (Format) {
+    case D3DFMT_DXT1: return COD3_D3D9_FMT_DXT1;
+    case D3DFMT_DXT3: return COD3_D3D9_FMT_DXT3;
+    case D3DFMT_DXT5: return COD3_D3D9_FMT_DXT5;
+    case D3DFMT_D16:
+    case D3DFMT_LIN_D16:
+    case D3DFMT_F16:
+    case D3DFMT_LIN_F16: return COD3_D3D9_FMT_D16;
+    case D3DFMT_D24S8:
+    case D3DFMT_LIN_D24S8:
+    case D3DFMT_F24S8:
+    case D3DFMT_LIN_F24S8: return COD3_D3D9_FMT_D24S8;
+    case D3DFMT_R5G6B5:
+    case D3DFMT_LIN_R5G6B5: return COD3_D3D9_FMT_R5G6B5;
+    case D3DFMT_A1R5G5B5:
+    case D3DFMT_LIN_A1R5G5B5: return COD3_D3D9_FMT_A1R5G5B5;
+    case D3DFMT_A4R4G4B4:
+    case D3DFMT_LIN_A4R4G4B4: return COD3_D3D9_FMT_A4R4G4B4;
+    case D3DFMT_L8:
+    case D3DFMT_LIN_L8: return COD3_D3D9_FMT_L8;
+    case D3DFMT_A8: return COD3_D3D9_FMT_A8;
+    case D3DFMT_A8L8:
+    case D3DFMT_LIN_A8L8: return COD3_D3D9_FMT_A8L8;
+    case D3DFMT_YUY2: return COD3_D3D9_FMT_YUY2;
+    case D3DFMT_UYVY: return COD3_D3D9_FMT_UYVY;
+    default: return COD3_D3D9_FMT_A8R8G8B8;
+    }
+}
+
+static nullD3DInfo* nullD3DFindInfo(void* Resource) {
+    if (Resource == NULL)
+        return NULL;
+    nullD3DInfo* Candidate = (nullD3DInfo*)((unsigned char*)Resource + sizeof(D3DResource));
+    if (Candidate->Magic == NULL_D3D_MAGIC)
+        return Candidate;
+    Candidate = (nullD3DInfo*)((unsigned char*)Resource + sizeof(D3DBaseTexture));
+    if (Candidate->Magic == NULL_D3D_MAGIC)
+        return Candidate;
+    Candidate = (nullD3DInfo*)((unsigned char*)Resource + sizeof(D3DSurface));
+    if (Candidate->Magic == NULL_D3D_MAGIC)
+        return Candidate;
+    return NULL;
 }
 
 static nullD3DInfo* nullD3DTextureInfo(D3DBaseTexture* Texture) {
@@ -98,6 +152,20 @@ static nullD3DTexture* nullD3DCreateTexture(unsigned int Width, unsigned int Hei
     Texture->Info.Usage = Usage;
     Texture->Info.Persistent = Persistent;
     Texture->Info.Bits = (unsigned char*)(uintptr_t)Texture->Object.Data;
+    Texture->Info.NativeResource = NULL;
+    Texture->Info.NativeTexture = NULL;
+    Texture->Info.NativeSurface = NULL;
+    if (gD3D9Device != NULL && Type != NULL_D3DRTYPE_CUBETEXTURE && Depth == 1) {
+        DWORD NativeUsage = (Usage & 1u) != 0 ? D3DUSAGE_RENDERTARGET : 0;
+        D3DPOOL Pool = NativeUsage != 0 ? D3DPOOL_DEFAULT : D3DPOOL_MANAGED;
+        if (SUCCEEDED(gD3D9Device->CreateTexture(Width, Height, Levels, NativeUsage,
+                                                 nullD3DNativeFormat(Format), Pool,
+                                                 &Texture->Info.NativeTexture, NULL))) {
+            Texture->Info.NativeResource = Texture->Info.NativeTexture;
+            if (NativeUsage != 0)
+                Texture->Info.NativeTexture->GetSurfaceLevel(0, &Texture->Info.NativeSurface);
+        }
+    }
     return Texture;
 }
 
@@ -121,16 +189,49 @@ static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Hei
     Surface->Info.Usage = Usage;
     Surface->Info.Persistent = Persistent;
     Surface->Info.Bits = (unsigned char*)calloc(1, Bytes);
+    Surface->Info.NativeResource = NULL;
+    Surface->Info.NativeTexture = NULL;
+    Surface->Info.NativeSurface = NULL;
+    if (gD3D9Device != NULL) {
+        COD3_D3D9_FORMAT NativeFormat = nullD3DNativeFormat(Format);
+        HRESULT Result;
+        if ((Usage & 2u) != 0 || NativeFormat == COD3_D3D9_FMT_D16 ||
+            NativeFormat == COD3_D3D9_FMT_D24S8) {
+            Result = gD3D9Device->CreateDepthStencilSurface(Width, Height, NativeFormat,
+                                                             D3DMULTISAMPLE_NONE, 0, FALSE,
+                                                             &Surface->Info.NativeSurface, NULL);
+        } else {
+            Result = gD3D9Device->CreateRenderTarget(Width, Height, NativeFormat,
+                                                      D3DMULTISAMPLE_NONE, 0, FALSE,
+                                                      &Surface->Info.NativeSurface, NULL);
+        }
+        if (SUCCEEDED(Result))
+            Surface->Info.NativeResource = Surface->Info.NativeSurface;
+    }
     return Surface;
+}
+
+static HWND nullD3DCreateWindow(void) {
+    if (gD3D9Window != NULL)
+        return gD3D9Window;
+    static const char* ClassName = "COD3D3D9Window";
+    WNDCLASSA Class = {};
+    Class.lpfnWndProc = DefWindowProcA;
+    Class.hInstance = GetModuleHandleA(NULL);
+    Class.lpszClassName = ClassName;
+    RegisterClassA(&Class);
+    gD3D9Window = CreateWindowExA(0, ClassName, "cod3", WS_OVERLAPPED,
+                                  0, 0, 1, 1, NULL, NULL, Class.hInstance, NULL);
+    return gD3D9Window;
 }
 
 static void nullD3DInitDeviceResources(void) {
     if (gNullFrontBuffer != NULL)
         return;
-    gNullFrontBuffer = nullD3DCreateTexture(gNullWidth, gNullHeight, 1, 1, 0,
+    gNullFrontBuffer = nullD3DCreateTexture(gNullWidth, gNullHeight, 1, 1, 1,
                                             D3DFMT_LIN_A8R8G8B8,
                                             NULL_D3DRTYPE_TEXTURE, 1);
-    gNullBackBuffer = nullD3DCreateTexture(gNullWidth, gNullHeight, 1, 1, 0,
+    gNullBackBuffer = nullD3DCreateTexture(gNullWidth, gNullHeight, 1, 1, 1,
                                            D3DFMT_LIN_A8R8G8B8,
                                            NULL_D3DRTYPE_TEXTURE, 1);
     gNullDepthBuffer = nullD3DCreateSurface(gNullWidth, gNullHeight, 2,
@@ -156,7 +257,21 @@ D3DSurface* __stdcall D3DCubeTexture_GetCubeMapSurface2(D3DBaseTexture* Texture,
 unsigned int* __stdcall D3DDevice_BeginPush(unsigned int) { return NULL; }
 void __stdcall D3DDevice_BlockOnFence(unsigned int) {}
 void __stdcall D3DDevice_BlockUntilIdle(void) {}
-void __stdcall D3DDevice_Clear(unsigned int, unsigned int, unsigned int, unsigned int, float, unsigned int) {}
+void __stdcall D3DDevice_Clear(unsigned int Count, unsigned int ClearFlags,
+                               unsigned int Color, unsigned int Stencil, float Z,
+                               unsigned int) {
+    if (gD3D9Device == NULL)
+        return;
+    DWORD Flags = 0;
+    if ((ClearFlags & 1u) != 0 && gD3D9RenderTarget != NULL)
+        Flags |= D3DCLEAR_TARGET;
+    if ((ClearFlags & 2u) != 0 && gD3D9DepthStencil != NULL)
+        Flags |= D3DCLEAR_ZBUFFER;
+    if ((ClearFlags & 4u) != 0 && gD3D9DepthStencil != NULL)
+        Flags |= D3DCLEAR_STENCIL;
+    if (Flags != 0)
+        gD3D9Device->Clear(Count, NULL, Flags, Color, Z, Stencil);
+}
 D3DIndexBuffer* __stdcall D3DDevice_CreateIndexBuffer2(unsigned int Bytes) {
     nullD3DBuffer* Buffer = (nullD3DBuffer*)calloc(1, sizeof(nullD3DBuffer));
     if (Buffer == NULL) return NULL;
@@ -221,7 +336,23 @@ void __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int) {}
 void __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int) {}
 void __stdcall D3DDevice_SetRenderState_YuvEnable(unsigned int) {}
 void __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int) {}
-void __stdcall D3DDevice_SetRenderTarget(D3DSurface*, D3DSurface*) {}
+void __stdcall D3DDevice_SetRenderTarget(D3DSurface* RenderTarget, D3DSurface* ZBuffer) {
+    IDirect3DSurface9* NativeRenderTarget = NULL;
+    IDirect3DSurface9* NativeZBuffer = NULL;
+    nullD3DInfo* RenderInfo = nullD3DFindInfo(RenderTarget);
+    nullD3DInfo* ZInfo = nullD3DFindInfo(ZBuffer);
+    if (RenderInfo != NULL)
+        NativeRenderTarget = RenderInfo->NativeSurface;
+    if (ZInfo != NULL)
+        NativeZBuffer = ZInfo->NativeSurface;
+    if (gD3D9Device != NULL &&
+        (NativeRenderTarget != gD3D9RenderTarget || NativeZBuffer != gD3D9DepthStencil)) {
+        gD3D9Device->SetRenderTarget(0, NativeRenderTarget);
+        gD3D9Device->SetDepthStencilSurface(NativeZBuffer);
+        gD3D9RenderTarget = NativeRenderTarget;
+        gD3D9DepthStencil = NativeZBuffer;
+    }
+}
 void __stdcall D3DDevice_SetShaderConstantMode(unsigned int) {}
 void __stdcall D3DDevice_SetTexture(unsigned int, D3DBaseTexture*) {}
 int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int, _D3DTEXTURESTAGESTATETYPE, unsigned int) { return 0; }
@@ -229,6 +360,8 @@ void __stdcall D3DDevice_SetVertexShader(unsigned int) {}
 void __stdcall D3DDevice_SetVerticalBlankCallback(void (*Callback)(_D3DVBLANKDATA*)) { gNullVBlankCallback = Callback; }
 void __stdcall D3DDevice_SetViewport(const void*) {}
 void __stdcall D3DDevice_Swap(unsigned int) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->Present(NULL, NULL, NULL, NULL);
     if (gNullVBlankCallback != NULL) {
         _D3DVBLANKDATA Data = { 0, 0, 0 };
         gNullVBlankCallback(&Data);
@@ -241,6 +374,17 @@ void __stdcall D3DResource_Register(D3DResource*, void*) {}
 int __stdcall D3DSurface_GetDesc(D3DSurface* Surface, _D3DSURFACE_DESC* Desc) {
     nullD3DInfo* Info = nullD3DSurfaceInfo(Surface);
     if (Info == NULL || Desc == NULL) return 0x80004005;
+    if (Info->NativeSurface != NULL) {
+        COD3_D3D9_SURFACE_DESC NativeDesc = {};
+        if (SUCCEEDED(Info->NativeSurface->GetDesc(&NativeDesc))) {
+            memset(Desc, 0, sizeof(*Desc));
+            Desc->Format = (_D3DFORMAT)Info->Format;
+            Desc->Usage = Info->Usage;
+            Desc->Width = NativeDesc.Width;
+            Desc->Height = NativeDesc.Height;
+            return 0;
+        }
+    }
     memset(Desc, 0, sizeof(*Desc));
     Desc->Format = (_D3DFORMAT)Info->Format;
     Desc->Usage = Info->Usage;
@@ -252,6 +396,14 @@ void* __stdcall D3DSurface_LockRect(D3DSurface* Surface, D3DLOCKED_RECT* LockedR
                                      const void*, unsigned int) {
     nullD3DInfo* Info = nullD3DSurfaceInfo(Surface);
     if (Info == NULL || LockedRect == NULL) return NULL;
+    if (Info->NativeSurface != NULL) {
+        COD3_D3D9_LOCKED_RECT NativeRect = {};
+        if (SUCCEEDED(Info->NativeSurface->LockRect(&NativeRect, NULL, 0))) {
+            LockedRect->Pitch = NativeRect.Pitch;
+            LockedRect->pBits = NativeRect.pBits;
+            return NativeRect.pBits;
+        }
+    }
     LockedRect->Pitch = (int)(Info->Width * nullD3DBytesPerPixel(Info->Format));
     LockedRect->pBits = Info->Bits;
     return Info->Bits;
@@ -260,6 +412,17 @@ int __stdcall D3DTexture_GetLevelDesc(D3DBaseTexture* Texture, unsigned int,
                                       _D3DSURFACE_DESC* Desc) {
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
     if (Info == NULL || Desc == NULL) return 0x80004005;
+    if (Info->NativeTexture != NULL) {
+        COD3_D3D9_SURFACE_DESC NativeDesc = {};
+        if (SUCCEEDED(Info->NativeTexture->GetLevelDesc(0, &NativeDesc))) {
+            memset(Desc, 0, sizeof(*Desc));
+            Desc->Format = (_D3DFORMAT)Info->Format;
+            Desc->Usage = Info->Usage;
+            Desc->Width = NativeDesc.Width;
+            Desc->Height = NativeDesc.Height;
+            return 0;
+        }
+    }
     memset(Desc, 0, sizeof(*Desc));
     Desc->Format = (_D3DFORMAT)Info->Format;
     Desc->Width = Info->Width;
@@ -269,13 +432,32 @@ int __stdcall D3DTexture_GetLevelDesc(D3DBaseTexture* Texture, unsigned int,
 }
 D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* Texture, unsigned int) {
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
-    return Info == NULL ? NULL : (D3DSurface*)nullD3DCreateSurface(Info->Width, Info->Height,
-                                                                    Info->Usage, Info->Format, 0);
+    if (Info == NULL)
+        return NULL;
+    nullD3DSurface* Surface = nullD3DCreateSurface(Info->Width, Info->Height,
+                                                    Info->Usage, Info->Format, 0);
+    if (Surface != NULL && Info->NativeTexture != NULL) {
+        if (Surface->Info.NativeSurface != NULL) {
+            Surface->Info.NativeSurface->Release();
+            Surface->Info.NativeSurface = NULL;
+        }
+        if (SUCCEEDED(Info->NativeTexture->GetSurfaceLevel(0, &Surface->Info.NativeSurface)))
+            Surface->Info.NativeResource = Surface->Info.NativeSurface;
+    }
+    return (D3DSurface*)Surface;
 }
 void* __stdcall D3DTexture_LockRect(D3DTexture* Texture, unsigned int, D3DLOCKED_RECT* LockedRect,
                                     const void*, unsigned int) {
     nullD3DInfo* Info = nullD3DTextureInfo((D3DBaseTexture*)Texture);
     if (Info == NULL || LockedRect == NULL) return NULL;
+    if (Info->NativeTexture != NULL) {
+        COD3_D3D9_LOCKED_RECT NativeRect = {};
+        if (SUCCEEDED(Info->NativeTexture->LockRect(0, &NativeRect, NULL, 0))) {
+            LockedRect->Pitch = NativeRect.Pitch;
+            LockedRect->pBits = NativeRect.pBits;
+            return NativeRect.pBits;
+        }
+    }
     LockedRect->Pitch = (int)(Info->Width * nullD3DBytesPerPixel(Info->Format));
     LockedRect->pBits = Info->Bits;
     return Info->Bits;
@@ -312,7 +494,35 @@ unsigned int __stdcall Direct3D_CreateDevice(unsigned int, _D3DDEVTYPE,
         gNullWidth = Params->BackBufferWidth;
         gNullHeight = Params->BackBufferHeight;
     }
+    if (gD3D9Device == NULL) {
+        gD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
+        if (gD3D9 != NULL) {
+        COD3_D3D9_PRESENT_PARAMETERS NativeParams = {};
+            NativeParams.BackBufferWidth = gNullWidth;
+            NativeParams.BackBufferHeight = gNullHeight;
+            NativeParams.BackBufferFormat = COD3_D3D9_FMT_X8R8G8B8;
+            NativeParams.BackBufferCount = 1;
+            NativeParams.SwapEffect = COD3_D3D9_SWP_DISCARD;
+            NativeParams.hDeviceWindow = nullD3DCreateWindow();
+            NativeParams.Windowed = TRUE;
+            NativeParams.EnableAutoDepthStencil = TRUE;
+            NativeParams.AutoDepthStencilFormat = COD3_D3D9_FMT_D24S8;
+            NativeParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+            HRESULT Result = gD3D9->CreateDevice(D3DADAPTER_DEFAULT, COD3_D3D9_DEVTYPE_HAL,
+                                                  NativeParams.hDeviceWindow,
+                                                  D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                                  &NativeParams, &gD3D9Device);
+            if (FAILED(Result)) {
+                gD3D9->Release();
+                gD3D9 = NULL;
+            }
+        }
+    }
     nullD3DInitDeviceResources();
+    if (gD3D9Device != NULL) {
+        gD3D9Device->GetRenderTarget(0, &gD3D9RenderTarget);
+        gD3D9Device->GetDepthStencilSurface(&gD3D9DepthStencil);
+    }
     if (Device != NULL) *Device = (void*)1;
     return 0;
 }
@@ -418,6 +628,15 @@ unsigned int __stdcall D3DResource_Release(D3DResource* Resource) {
     if (Info == NULL && Candidate->Magic == NULL_D3D_MAGIC)
         Info = Candidate;
     if (Info != NULL) {
+        if (Info->NativeSurface != NULL) {
+            Info->NativeSurface->Release();
+            Info->NativeSurface = NULL;
+        }
+        if (Info->NativeTexture != NULL) {
+            Info->NativeTexture->Release();
+            Info->NativeTexture = NULL;
+        }
+        Info->NativeResource = NULL;
         free(Info->Bits);
         free(Resource);
     }

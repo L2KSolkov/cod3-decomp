@@ -79,14 +79,14 @@ Format: `XboxAPI | caller_count | Win32_replacement`
 
 | Xbox API | Win32 Replacement |
 |---|---|
-| D3DDevice_* | D3D11 equivalent via NGL backend |
-| D3DDevice_SetRenderTarget | D3D11 OMSetRenderTargets (called from ngl_dx_draw.o) |
-| D3DTexture_GetSurfaceLevel2 | D3D11 texture-to-RTV/SRV surface (ngl_dx_draw.o) |
-| D3DCubeTexture_GetCubeMapSurface2 | D3D11 cube face subresource (ngl_dx_draw.o) |
-| D3DResource_Release | Release (ngl_dx_draw.o) |
-| XGRPH swizzled textures | D3D11 texture creation |
+| D3DDevice_* | D3D9 equivalent via NGL backend |
+| D3DDevice_SetRenderTarget | D3D9 SetRenderTarget/SetDepthStencilSurface (called from ngl_dx_draw.o) |
+| D3DTexture_GetSurfaceLevel2 | D3D9 texture surface level (ngl_dx_draw.o) |
+| D3DCubeTexture_GetCubeMapSurface2 | D3D9 cube face surface level (ngl_dx_draw.o) |
+| D3DResource_Release | D3D9 resource Release (ngl_dx_draw.o) |
+| XGRPH swizzled textures | D3D9 texture creation |
 | D3DX math (Vec3, Matrix, Quat) | DirectXMath library |
-| Xbox push buffers | NOP (D3D11 manages GPU ring buffer) |
+| Xbox push buffers | NOP (D3D9 manages command submission) |
 
 ## Sound (dsoundd, dmusicd)
 
