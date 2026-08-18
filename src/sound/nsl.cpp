@@ -25,6 +25,7 @@ enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
 typedef unsigned nslWaveBankID;
 typedef unsigned nslGroupID;
 typedef unsigned nslVoiceID;
+typedef unsigned txSlot;
 
 #define NSL_INVALID_SOURCE   ((nslSourceID)-1)
 #define NSL_INVALID_EMITTER  ((nslEmitterID)-1)
@@ -80,8 +81,54 @@ struct nslInitParams {
     unsigned aramBase;
     unsigned aramSize;
 };
-struct nslSource {};
-struct nslEmitter {};
+using nslSourceCallback = void (__cdecl *)(void*, void*, nslSourceID, unsigned, void*, int);
+struct nslSource {
+    unsigned __int64 paramsUsed;
+    unsigned __int64 paramsUpdate;
+    float params[46];
+    nslWaveID waveId;
+    nslEmitterID emitterId;
+    short voice;
+    short pauseCount;
+    unsigned char state;
+    unsigned char beforePauseState;
+    unsigned char flags;
+    unsigned char update;
+    unsigned voiceAllocCount;
+    unsigned position;
+    unsigned length;
+    unsigned offset;
+    nslSourceCallback callback;
+    void* callbackObject;
+    void* callbackData;
+    int dampenCount;
+};
+struct nslEmitter {
+    unsigned __int64 paramsUsed;
+    unsigned __int64 paramsUpdate;
+    float params[46];
+};
+static_assert(sizeof(nslSource) == 248, "IDA nslSource layout");
+static_assert(sizeof(nslEmitter) == 200, "IDA nslEmitter layout");
+static constexpr unsigned nslSourceStride = 328u;
+static constexpr unsigned nslEmitterStride = 272u;
+
+struct txSlotEntry {
+    txSlotEntry* next;
+    txSlotEntry* prev;
+    txSlot slot;
+};
+struct txSlotPool {
+    txSlotEntry* slots;
+    txSlotEntry freeSlots;
+    txSlotEntry usedSlots;
+    int stride;
+    int count;
+    int mask;
+};
+static_assert(sizeof(txSlotEntry) == 12, "IDA txSlotEntry layout");
+static_assert(sizeof(txSlotPool) == 40, "IDA txSlotPool layout");
+static constexpr txSlot TX_SLOT_INVALID = static_cast<txSlot>(-1);
 enum nflFileID : unsigned { NFL_FILE_ID_INVALID = (unsigned)-1 };
 struct nslWave {
     unsigned char opaque[40]; // IDA type_inspect: nslWave size 0x28; fields not needed by this loader step.
@@ -193,14 +240,57 @@ nslWaveBankSlot* nsl_waveBankSlots = nullptr;
 static unsigned char nsl_waveBankLoaderBuffer[4096] = {};
 static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
-static void* nsl_sourceEntries = nullptr;
-static void* nsl_emitterEntries = nullptr;
-static void* nsl_sources = nullptr;
+static txSlotEntry* nsl_sourceEntries = nullptr;
+static txSlotEntry* nsl_emitterEntries = nullptr;
+static nslSource* nsl_sources = nullptr;
 static void* nsl_sourcesSorted = nullptr;
-static void* nsl_emitters = nullptr;
+static nslEmitter* nsl_emitters = nullptr;
 static nslGroup* nsl_groups = nullptr;
 static void* nsl_voices = nullptr;
 static void* nsl_driverVoices = nullptr;
+static txSlotPool nsl_sourcePool = {};
+static txSlotPool nsl_emitterPool = {};
+
+static bool nslSlotPoolInit(txSlotPool* pool, txSlotEntry* slots, int count,
+                            unsigned stride) {
+    if (count < 0 || count > 0xFFFFFu || stride < sizeof(txSlotEntry))
+        return false;
+
+    int bits = 0;
+    for (int value = count; value != 0; ++bits)
+        value >>= 1;
+
+    pool->slots = slots;
+    pool->stride = static_cast<int>(stride);
+    pool->count = count;
+    pool->mask = (1 << bits) - 1;
+    pool->freeSlots.slot = TX_SLOT_INVALID;
+    pool->freeSlots.next = &pool->freeSlots;
+    pool->freeSlots.prev = &pool->freeSlots;
+    pool->usedSlots.slot = TX_SLOT_INVALID;
+    pool->usedSlots.next = &pool->usedSlots;
+    pool->usedSlots.prev = &pool->usedSlots;
+
+    for (int index = 0; index < count; ++index) {
+        txSlotEntry* entry = reinterpret_cast<txSlotEntry*>(
+            reinterpret_cast<unsigned char*>(slots) + stride * index);
+        entry->slot = static_cast<txSlot>(index) | 0x80000000u;
+        entry->next = &pool->freeSlots;
+        entry->prev = pool->freeSlots.prev;
+        pool->freeSlots.prev->next = entry;
+        pool->freeSlots.prev = entry;
+    }
+    return true;
+}
+
+static int nslSlotIndex(const txSlotPool* pool, txSlot slot) {
+    const unsigned result = slot & (static_cast<unsigned>(pool->mask) | 0x80000000u);
+    if (result >= static_cast<unsigned>(pool->count))
+        return -1;
+    const txSlotEntry* entry = reinterpret_cast<const txSlotEntry*>(
+        reinterpret_cast<const unsigned char*>(pool->slots) + pool->stride * result);
+    return entry->slot == slot ? static_cast<int>(result) : -1;
+}
 
 // Forward declarations for the IDA-backed bank layer below.
 unsigned nslDriverVoiceSize();
@@ -255,15 +345,19 @@ int          nslInit(const nslInitParams* ip) {
     if (ip != nullptr)
         nsl_initParams = *ip;
 
-    nsl_sourceEntries = nslInit_Allocate(12u * nsl_initParams.maxSources, 0x100u);
+    nsl_sourceEntries = static_cast<txSlotEntry*>(
+        nslInit_Allocate(12u * nsl_initParams.maxSources, 0x100u));
     if (nsl_sourceEntries != nullptr) {
-        nsl_emitterEntries = nslInit_Allocate(12u * nsl_initParams.maxEmitters, 0x100u);
+        nsl_emitterEntries = static_cast<txSlotEntry*>(
+            nslInit_Allocate(12u * nsl_initParams.maxEmitters, 0x100u));
         if (nsl_emitterEntries != nullptr) {
-            nsl_sources = nslInit_Allocate(328u * nsl_initParams.maxSources, 0x100u);
+            nsl_sources = static_cast<nslSource*>(
+                nslInit_Allocate(nslSourceStride * nsl_initParams.maxSources, 0x100u));
             if (nsl_sources != nullptr) {
                 nsl_sourcesSorted = nslInit_Allocate(4u * nsl_initParams.maxSources, 0x100u);
                 if (nsl_sourcesSorted != nullptr) {
-                    nsl_emitters = nslInit_Allocate(272u * nsl_initParams.maxEmitters, 0x100u);
+                    nsl_emitters = static_cast<nslEmitter*>(
+                        nslInit_Allocate(nslEmitterStride * nsl_initParams.maxEmitters, 0x100u));
                     if (nsl_emitters != nullptr) {
                         nsl_groups = static_cast<nslGroup*>(
                             nslInit_Allocate(nslGroupStride * static_cast<unsigned>(dword_E4B690),
@@ -313,8 +407,24 @@ nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
 void          nslDeleteEmitter(nslEmitterID) {}
-nslSource*    nslSourcePtr(nslSourceID) { return nullptr; }
-nslEmitter*   nslEmitterPtr(nslEmitterID) { return nullptr; }
+// ea: 0x008207A0
+nslSource*    nslSourcePtr(nslSourceID sourceID) {
+    const int index = nslSlotIndex(&nsl_sourcePool, static_cast<txSlot>(sourceID));
+    if (index == -1)
+        return nullptr;
+    return reinterpret_cast<nslSource*>(
+        reinterpret_cast<unsigned char*>(nsl_sources) +
+        nslSourceStride * static_cast<unsigned>(index));
+}
+// ea: 0x008207D0
+nslEmitter*   nslEmitterPtr(nslEmitterID emitterID) {
+    const int index = nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(emitterID));
+    if (index == -1)
+        return nullptr;
+    return reinterpret_cast<nslEmitter*>(
+        reinterpret_cast<unsigned char*>(nsl_emitters) +
+        nslEmitterStride * static_cast<unsigned>(index));
+}
 void          nslSourcePlay(nslSourceID) {}
 void          nslSourceStop(nslSourceID) {}
 void          nslSourcePause(nslSourceID, bool) {}
@@ -398,6 +508,7 @@ void          nslUpdateBanks() {
         nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
     }
 }
+// ea: 0x00826A00
 void          nslStart(void* work) {
     if (work == nullptr || nsl_work != nullptr)
         return;
@@ -409,6 +520,10 @@ void          nslStart(void* work) {
     std::memset(nsl_work, 0, nsl_workUsed);
     if (nsl_initParams.aramBase != 0 && nsl_waveBankSlots != nullptr)
         nsl_waveBankSlots->waveBankID = nsl_initParams.aramBase;
+    nslSlotPoolInit(&nsl_sourcePool, nsl_sourceEntries,
+                    static_cast<int>(nsl_initParams.maxSources), 12u);
+    nslSlotPoolInit(&nsl_emitterPool, nsl_emitterEntries,
+                    static_cast<int>(nsl_initParams.maxEmitters), 12u);
 }
 void          nslExit() {}
 void          nslSetEffect(const void*) {}
