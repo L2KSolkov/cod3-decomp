@@ -575,8 +575,19 @@ void __stdcall D3DDevice_SetViewport(const void* ViewportData) {
     gD3D9Device->SetViewport(&NativeViewport);
 }
 void __stdcall D3DDevice_Swap(unsigned int) {
-    if (gD3D9Device != NULL)
+    if (gD3D9Device != NULL) {
+        IDirect3DSurface9* SwapchainBackBuffer = NULL;
+        if (SUCCEEDED(gD3D9Device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO,
+                                                  &SwapchainBackBuffer))) {
+            if (gD3D9RenderTarget != NULL &&
+                gD3D9RenderTarget != SwapchainBackBuffer) {
+                gD3D9Device->StretchRect(gD3D9RenderTarget, NULL,
+                                         SwapchainBackBuffer, NULL, D3DTEXF_NONE);
+            }
+            SwapchainBackBuffer->Release();
+        }
         gD3D9Device->Present(NULL, NULL, NULL, NULL);
+    }
     if (gNullVBlankCallback != NULL) {
         _D3DVBLANKDATA Data = { 0, 0, 0 };
         gNullVBlankCallback(&Data);
