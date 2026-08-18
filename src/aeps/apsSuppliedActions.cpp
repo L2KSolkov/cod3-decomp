@@ -774,15 +774,93 @@ void apsAngleTrackVelocityAction::Act(unsigned char*, unsigned char*, apsGroup*,
 
 apsAngleTrackElementXAction::apsAngleTrackElementXAction()
     : apsAction(0, 0, eAsync, 0x1000u) {}
-void apsAngleTrackElementXAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080E520
+void apsAngleTrackElementXAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                      apsGroup* ioGroup, apsEffect*, float, float) {
+    if ((ioGroup->mPFD.mFields & 0x40u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+
+    const apsCommon::CameraSettings& camera = apsCommon::mCamera;
+    const math::Dir3& axis = ioGroup->mLocalToWorld.x;
+    const __m128 upProduct = _mm_mul_ps(axis.v, camera.mUp.v);
+    const float upDot = upProduct.m128_f32[0] +
+                        (upProduct.m128_f32[1] + upProduct.m128_f32[2]);
+    const __m128 leftProduct = _mm_mul_ps(axis.v, camera.mLeft.v);
+    const float leftDot = leftProduct.m128_f32[0] +
+                          (leftProduct.m128_f32[1] + leftProduct.m128_f32[2]);
+    if (upDot != 0.0f || leftDot != 0.0f) {
+        const double angle = apsMath::ATan(upDot, leftDot) +
+                             static_cast<double>(camera.mRoll - 1.5707964f);
+        const float angleValue = static_cast<float>(angle * camera.mXFlip);
+        unsigned char* angleField = iBegin + ioGroup->mPFD.mOffsets[6];
+        while (angleField < iEnd) {
+            *reinterpret_cast<float*>(angleField) = angleValue;
+            angleField += ioGroup->mPFD.mStride;
+        }
+    }
+}
 
 apsAngleTrackElementYAction::apsAngleTrackElementYAction()
     : apsAction(0, 0, eAsync, 0x1000u) {}
-void apsAngleTrackElementYAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080E660
+void apsAngleTrackElementYAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                      apsGroup* ioGroup, apsEffect*, float, float) {
+    if ((ioGroup->mPFD.mFields & 0x40u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+
+    const apsCommon::CameraSettings& camera = apsCommon::mCamera;
+    const math::Dir3& axis = ioGroup->mLocalToWorld.y;
+    const __m128 upProduct = _mm_mul_ps(axis.v, camera.mUp.v);
+    const float upDot = upProduct.m128_f32[0] +
+                        (upProduct.m128_f32[1] + upProduct.m128_f32[2]);
+    const __m128 leftProduct = _mm_mul_ps(axis.v, camera.mLeft.v);
+    const float leftDot = leftProduct.m128_f32[0] +
+                          (leftProduct.m128_f32[1] + leftProduct.m128_f32[2]);
+    if (upDot != 0.0f || leftDot != 0.0f) {
+        const double angle = apsMath::ATan(upDot, leftDot) +
+                             static_cast<double>(camera.mRoll - 1.5707964f);
+        const float angleValue = static_cast<float>(angle * camera.mXFlip);
+        unsigned char* angleField = iBegin + ioGroup->mPFD.mOffsets[6];
+        while (angleField < iEnd) {
+            *reinterpret_cast<float*>(angleField) = angleValue;
+            angleField += ioGroup->mPFD.mStride;
+        }
+    }
+}
 
 apsAngleTrackElementZAction::apsAngleTrackElementZAction()
     : apsAction(0, 0, eAsync, 0x1000u) {}
-void apsAngleTrackElementZAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080E7A0
+void apsAngleTrackElementZAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                                      apsGroup* ioGroup, apsEffect*, float, float) {
+    if ((ioGroup->mPFD.mFields & 0x40u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+
+    const apsCommon::CameraSettings& camera = apsCommon::mCamera;
+    const math::Dir3& axis = ioGroup->mLocalToWorld.z;
+    const __m128 upProduct = _mm_mul_ps(axis.v, camera.mUp.v);
+    const float upDot = upProduct.m128_f32[0] +
+                        (upProduct.m128_f32[1] + upProduct.m128_f32[2]);
+    const __m128 leftProduct = _mm_mul_ps(axis.v, camera.mLeft.v);
+    const float leftDot = leftProduct.m128_f32[0] +
+                          (leftProduct.m128_f32[1] + leftProduct.m128_f32[2]);
+    if (upDot != 0.0f || leftDot != 0.0f) {
+        const double angle = apsMath::ATan(upDot, leftDot) +
+                             static_cast<double>(camera.mRoll - 1.5707964f);
+        const float angleValue = static_cast<float>(angle * camera.mXFlip);
+        unsigned char* angleField = iBegin + ioGroup->mPFD.mOffsets[6];
+        while (angleField < iEnd) {
+            *reinterpret_cast<float*>(angleField) = angleValue;
+            angleField += ioGroup->mPFD.mStride;
+        }
+    }
+}
 
 // ============================================================================
 // Attractor actions

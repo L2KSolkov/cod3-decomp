@@ -19,6 +19,10 @@
 
 struct apsBounds;  // defined in apsGroup.h
 
+namespace math {
+float ATan(float y, float x);
+}
+
 // ============================================================================
 // apsQuaternion — 4-float quaternion (x,y,z,w).
 // Struct (U mangling) per the map (?AU0@ / ABU0@ / AAU0@).
@@ -128,6 +132,11 @@ inline T Limit(const T& iValue, const S& iMin, const S& iMax) {
     if (v < iMin) v = iMin;
     if (v > iMax) v = iMax;
     return v;
+}
+
+// ea: 0x00809560
+inline double ATan(float y, float x) {
+    return static_cast<double>(math::ATan(y, x));
 }
 
 // matrix * vector (no translation w for result w)
