@@ -12,7 +12,7 @@
 
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1, MJK = 4 };
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, MJK = 4, JSV = 10 };
 extern ECoderId gCurrentAuthor;        // ?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A
 extern const char* gCurrentFile;       // ?gCurrentFile@AeAssert@@3PBDB
 extern int gCurrentLine;               // ?gCurrentLine@AeAssert@@3HA
@@ -141,7 +141,23 @@ class trRefEntity {
 public:
     uint8_t _pad0[0x08];
     refEntity_t e;           // +0x08
+    uint8_t _pad68[0xE8 - 0x68];
+    int mLastCellNum;        // +0xE8
+    float mScale;             // +0xEC
+    float mAlpha;             // +0xF0
+    short mWaterHeightOffset; // +0xF4
+    unsigned char mOccupiedCells[4]; // +0xF6
+    unsigned char cull;       // +0xFA
+    unsigned char visibilityFlags; // +0xFB (iAmVisible/noShadow bitfields)
+    unsigned char iflIndex;   // +0xFC
+    uint8_t _padfd[3];
+    int mSnapshotId;          // +0x100
 };
+static_assert(offsetof(trRefEntity, mLastCellNum) == 0xE8,
+              "trRefEntity::mLastCellNum offset mismatch");
+static_assert(offsetof(trRefEntity, cull) == 0xFA,
+              "trRefEntity::cull offset mismatch");
+static_assert(sizeof(trRefEntity) == 0x104, "trRefEntity size mismatch");
 
 class StaticModel;
 struct trStaticModelList_t {
@@ -178,7 +194,13 @@ public:
     int viewCount;                    // +0x30
     trStaticModelList_t* staticModels; // +0x34
     trModelCellRef_t* modelRefs;      // +0x38
-    uint8_t _pad1[0x50 - 0x3C];
+    void* mMeshFile;                   // +0x3C
+    struct {
+        unsigned int mSize;            // +0x40
+        nglMesh** mList;               // +0x44
+    } mMeshes;
+    void* mLgridToc;                   // +0x48
+    void* mCapturedScene;              // +0x4C
 };
 static_assert(sizeof(BspCell) == 0x50, "BspCell size mismatch");
 
@@ -526,6 +548,40 @@ struct BspTreeFilterView {
     BspCell* mCellsList;       // +0x1C
 };
 
+int CullSphereDPVS(const dpvs_plane_t* planes, const math::Vector4* sphere,
+                   int nplanes);
+
+// ea: 0x006C5700
+void R_CullModels(BspCell* cell, const dpvs_plane_t* planes, int iPlaneCount)
+{
+    for (trModelCellRef_t* modelRef = cell->modelRefs;
+         modelRef != nullptr; modelRef = modelRef->next)
+    {
+        if (modelRef->re->cull == 1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+            AeAssert::gCurrentLine = 763;
+            AeAssert::gCurrentExpr = "modelRef->re->cull != 1";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Frustum culled xmodels should NOT be added to the cell."))
+                __debugbreak();
+        }
+
+        trRefEntity* re = modelRef->re;
+        if (re->cull != 0
+            && !CullSphereDPVS(planes, &modelRef->sphere, iPlaneCount))
+        {
+            re->cull = 0;
+            worldFilterView* world = (worldFilterView*)tr.world;
+            BspTreeFilterView* bspTree =
+                (BspTreeFilterView*)world->bspTree;
+            re->mLastCellNum = static_cast<int>(cell - bspTree->mCellsList);
+        }
+    }
+}
+
 // BspCell view (modelRefs +0x38) + R_AddModelToCell(cell, re, sphere)
 void R_AddModelToCell(BspCell* cell, trRefEntity* re,
                       const math::Vector4& sphere);  // tr_dpvs.cpp (0x6BF830)
@@ -628,6 +684,7 @@ void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
 extern cvar_t* r_drawworld;       // ?r_drawworld@@3PAUcvar_t@@A @ 0xF741D8
 extern cvar_t* r_outsideMapEnts;  // ?r_outsideMapEnts@@3PAUcvar_t@@A @ 0xF742E0
 extern cvar_t* r_singlecell;      // ?r_singlecell@@3PAUcvar_t@@A @ 0xF74294
+extern cvar_t* r_drawentities;    // ?r_drawentities@@3PAUcvar_t@@A @ 0xF74190
 extern int g_camera_cell;         // ?g_camera_cell@@3HA @ 0x11E993C
 
 // DPVS plane side encoding uses the signed integer bits of each float, as in
@@ -798,10 +855,29 @@ static void R_FilterModelsIntoCells(void* frameBase, dpvs_plane_t* planes,
 {
     (void)frameBase; (void)planes; (void)iPlaneCount;
 }
+// ea: 0x006C5A60
 static void R_AddCellSurfaces(void* frameBase, BspCell* cell,
                               dpvs_plane_t* planes, int iPlaneCount)
 {
-    (void)frameBase; (void)cell; (void)planes; (void)iPlaneCount;
+    (void)frameBase;
+    if (cell->viewCount != tr.viewCount)
+    {
+        math::Mat43 localToWorld;
+        localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        localToWorld.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        localToWorld.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        localToWorld.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+
+        cell->viewCount = tr.viewCount;
+        for (unsigned int i = 0; i < cell->mMeshes.mSize; ++i)
+        {
+            nglMesh* mesh = cell->mMeshes.mList[i];
+            if (mesh != nullptr)
+                _codListAddMesh(mesh, localToWorld, nullptr, nullptr, nullptr);
+        }
+    }
+    if (r_drawentities->integer != 0)
+        R_CullModels(cell, planes, iPlaneCount);
 }
 // R_AddStaticModels 0x006D6FC0 remains deferred with the static-model object:
 // its body calls the separate R_AddStaticModelSurfaces implementation, whose
