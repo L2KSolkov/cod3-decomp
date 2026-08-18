@@ -155,6 +155,18 @@ inline math::Dir3 XForm3d_1(const math::Mat43& iMatrix, const math::Dir3& iSourc
     return result;
 }
 
+// ea: 0x00809500
+inline math::Dir3 XForm3d_0(const math::Mat43& iMatrix,
+                            const math::Dir3& iSourceVec) {
+    math::Dir3 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(iSourceVec.v, iSourceVec.v, 0), iMatrix.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(iSourceVec.v, iSourceVec.v, 85), iMatrix.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(iSourceVec.v, iSourceVec.v, 170), iMatrix.z.v));
+    return result;
+}
+
 inline void SetIdentityMatrix(math::Mat43& mat) {
     mat.x.v = _mm_setr_ps(1.f, 0.f, 0.f, 0.f);
     mat.y.v = _mm_setr_ps(0.f, 1.f, 0.f, 0.f);

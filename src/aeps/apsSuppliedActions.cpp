@@ -95,6 +95,13 @@ unsigned int apsMath::FloatAsInt(float f) {
     return result;
 }
 
+// ea: 0x00809320
+void apsStore3(const math::Dir3* v, float* out) {
+    out[0] = v->v.m128_f32[0];
+    out[1] = v->v.m128_f32[1];
+    out[2] = v->v.m128_f32[2];
+}
+
 // ============================================================================
 // Source actions
 // (numParams, numDomains, requiredFields) triples from IDA disasm.
@@ -105,7 +112,261 @@ apsSourceAction::apsSourceAction(int iNumParams, int iNumDomains,
                                  unsigned int iRequiredParticleFields)
     : apsAction(iNumParams, iNumDomains, eSource,
                 iRequiredParticleFields | 0x200u) {}
-void apsSourceAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080B710
+void apsSourceAction::Act(unsigned char*, unsigned char*, apsGroup* ioGroup,
+                          apsEffect* iEffect, float, float iTimeDelta) {
+    int numToEmit = GetEmissionCount(*ioGroup, iTimeDelta);
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float minDistance = mParams.mElements[3];
+
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float maxDistance = mParams.mElements[4];
+    const float rootDistance = ioGroup->mRootDistanceFromCamera;
+    if (!((minDistance < 0.0f || maxDistance < 0.0f ||
+           (minDistance <= rootDistance && rootDistance <= maxDistance)) &&
+          numToEmit > 0))
+        return;
+
+    const int numParticles = ioGroup->mNumParticles;
+    const int maxParticles = ioGroup->mMaxNumParticles;
+    if (numParticles + numToEmit >= maxParticles)
+        numToEmit = maxParticles - numParticles;
+    if (numToEmit <= 0)
+        return;
+
+    apsDomain* positionDomain = mDomains[0];
+    apsDomain* radiusDomain = mDomains[1];
+    apsDomain* widthDomain = mDomains[2];
+    apsDomain* colorDomain = mDomains[3];
+    apsDomain* alphaDomain = mDomains[4];
+    apsDomain* orientationDomain = mDomains[5];
+    apsDomain* angleDomain = mDomains[6];
+    apsDomain* heightDomain = mDomains[7];
+    apsDomain* uvaFrameDomain = mDomains[8];
+    apsDomain* maxAgeDomain = mDomains[9];
+    apsDomain* maxAlphaDomain = mDomains[10];
+    apsDomain* velocityDomain = mDomains[11];
+    apsDomain* angularVelocityDomain = mDomains[12];
+    apsDomain* vectorAngularVelocityDomain = mDomains[13];
+    apsDomain* curvatureDomain = mDomains[14];
+    apsDomain* torsionDomain = mDomains[15];
+
+    const int stride = ioGroup->mPFD.mStride;
+    if (stride >= 0x100 &&
+        _tlAssert("source/apsSuppliedActions.cpp", 157, "stride < cBufSize",
+                  "Need a bigger buffer here"))
+        __debugbreak();
+
+    alignas(16) unsigned char newParticle[0x100];
+    std::memset(newParticle, 0, stride);
+
+    math::Mat43 particleTransform = ioGroup->mLocalToWorld;
+    math::Dir3 emitterPosition;
+    emitterPosition.v = particleTransform.w.v;
+    math::Dir3 positionStep;
+    math::Dir3 currentPosition;
+    if (numToEmit <= 1) {
+        positionStep.v = _mm_setzero_ps();
+        currentPosition = emitterPosition;
+    } else {
+        positionStep.v = _mm_mul_ps(
+            _mm_sub_ps(emitterPosition.v, ioGroup->mLastPos.v),
+            _mm_set1_ps(1.0f / static_cast<float>(numToEmit)));
+        currentPosition = ioGroup->mLastPos;
+    }
+
+    for (int emitted = 0; emitted < numToEmit; ++emitted) {
+        particleTransform.w.v = currentPosition.v;
+
+        math::Dir3 position;
+        if (positionDomain != 0)
+            positionDomain->GetValue(3, reinterpret_cast<float*>(&position));
+        else
+            position.v = _mm_setzero_ps();
+        if ((ioGroup->mFlags & 2u) == 0)
+            position = apsMath::XForm3d_1(particleTransform, position);
+        apsStore3(&position, reinterpret_cast<float*>(newParticle));
+
+        float value;
+        value = radiusDomain != 0 ? radiusDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 2u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[1]) = value;
+
+        value = widthDomain != 0 ? widthDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 4u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[2]) = value;
+
+        math::Dir3 color;
+        if (colorDomain != 0)
+            colorDomain->GetValue(3, reinterpret_cast<float*>(&color));
+        else
+            color.v = _mm_set1_ps(1.0f);
+        if ((ioGroup->mPFD.mFields & 8u) != 0)
+            apsStore3(&color,
+                      reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[3]));
+
+        value = alphaDomain != 0 ? alphaDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 0x10u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[4]) = value;
+
+        apsQuaternion orientation;
+        if (orientationDomain != 0) {
+            float euler[4];
+            orientationDomain->GetValue(3, euler);
+            orientation = apsMath::QuaternionFromEuler(euler[0], euler[1], euler[2]);
+        } else {
+            orientation.Set(0.0f, 0.0f, 0.0f, 1.0f);
+        }
+        if ((ioGroup->mPFD.mFields & 0x20u) != 0)
+            *reinterpret_cast<apsQuaternion*>(newParticle + ioGroup->mPFD.mOffsets[5]) = orientation;
+
+        value = angleDomain != 0 ? angleDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 0x40u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[6]) = value;
+
+        value = heightDomain != 0 ? heightDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 0x80u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[7]) = value;
+
+        value = uvaFrameDomain != 0 ? uvaFrameDomain->GetValue() : 0.0f;
+        if ((ioGroup->mPFD.mFields & 0x100u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[8]) = value;
+
+        if ((ioGroup->mPFD.mFields & 0x200u) == 0 &&
+            _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                      "mFields & (1 << iField)", "Can't get offset for missing field"))
+            __debugbreak();
+        *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[9]) = 0.0f;
+
+        value = maxAgeDomain != 0 ? maxAgeDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 0x400u) == 0 &&
+            _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                      "mFields & (1 << iField)", "Can't get offset for missing field"))
+            __debugbreak();
+        *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[10]) = value;
+
+        value = maxAlphaDomain != 0 ? maxAlphaDomain->GetValue() : 1.0f;
+        if ((ioGroup->mPFD.mFields & 0x8000u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[15]) = value;
+
+        math::Dir3 velocity;
+        if (velocityDomain != 0)
+            velocityDomain->GetValue(3, reinterpret_cast<float*>(&velocity));
+        else
+            velocity.v = _mm_setzero_ps();
+        if ((ioGroup->mFlags & 2u) == 0)
+            velocity = apsMath::XForm3d_0(particleTransform, velocity);
+        if ((ioGroup->mPFD.mFields & 0x4000u) != 0)
+            apsStore3(&velocity,
+                      reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[14]));
+
+        if ((ioGroup->mPFD.mFields & 0x40000u) != 0) {
+            if ((ioGroup->mPFD.mFields & 0x80000u) == 0 ||
+                (ioGroup->mPFD.mFields & 0x100000u) == 0) {
+                if (_tlAssert("source/apsSuppliedActions.cpp", 284,
+                              "pfd.HasField(apsPFDField_Normal) && pfd.HasField(apsPFDField_Binormal)",
+                              "Expected all three of tangent, normal, binormal to be present together"))
+                    __debugbreak();
+            }
+
+            const __m128 velocitySquared = _mm_mul_ps(velocity.v, velocity.v);
+            const float velocityLength = std::sqrt(
+                velocitySquared.m128_f32[0] +
+                (velocitySquared.m128_f32[1] + velocitySquared.m128_f32[2]));
+            const __m128 normalizedVelocity =
+                _mm_div_ps(velocity.v, _mm_set1_ps(velocityLength));
+            math::Dir3 tangent;
+            tangent.v = normalizedVelocity;
+
+            math::Dir3 normal;
+            if (normalizedVelocity.m128_f32[2] == 0.0f) {
+                normal.v = _mm_setr_ps(normalizedVelocity.m128_f32[1],
+                                       normalizedVelocity.m128_f32[0],
+                                       -normalizedVelocity.m128_f32[0], 0.0f);
+            } else {
+                normal.v = _mm_setr_ps(normalizedVelocity.m128_f32[2], 0.0f,
+                                       -normalizedVelocity.m128_f32[0], 0.0f);
+            }
+            const __m128 normalSquared = _mm_mul_ps(normal.v, normal.v);
+            const float normalLength = std::sqrt(
+                normalSquared.m128_f32[0] +
+                (normalSquared.m128_f32[1] + normalSquared.m128_f32[2]));
+            normal.v = _mm_div_ps(normal.v, _mm_set1_ps(normalLength));
+
+            math::Dir3 binormal;
+            binormal.v = _mm_sub_ps(
+                _mm_mul_ps(_mm_shuffle_ps(tangent.v, tangent.v, 9),
+                            _mm_shuffle_ps(normal.v, normal.v, 18)),
+                _mm_mul_ps(_mm_shuffle_ps(tangent.v, tangent.v, 18),
+                            _mm_shuffle_ps(normal.v, normal.v, 9)));
+            apsStore3(&tangent,
+                      reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[18]));
+            apsStore3(&normal,
+                      reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[19]));
+            apsStore3(&binormal,
+                      reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[20]));
+        }
+
+        if ((ioGroup->mPFD.mFields & 0x20000u) != 0) {
+            math::Dir3 vectorAngularVelocity;
+            if (vectorAngularVelocityDomain != 0)
+                vectorAngularVelocityDomain->GetValue(
+                    3, reinterpret_cast<float*>(&vectorAngularVelocity));
+            else
+                vectorAngularVelocity.v = _mm_setzero_ps();
+            if ((ioGroup->mFlags & 2u) == 0)
+                vectorAngularVelocity =
+                    apsMath::XForm3d_0(particleTransform, vectorAngularVelocity);
+            apsStore3(&vectorAngularVelocity,
+                      reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[17]));
+        }
+
+        value = angularVelocityDomain != 0 ? angularVelocityDomain->GetValue() : 0.0f;
+        if ((ioGroup->mPFD.mFields & 0x10000u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[16]) = value;
+
+        value = curvatureDomain != 0 ? curvatureDomain->GetValue() : 0.0f;
+        if ((ioGroup->mPFD.mFields & 0x200000u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[21]) = value;
+
+        value = torsionDomain != 0 ? torsionDomain->GetValue() : 0.0f;
+        if ((ioGroup->mPFD.mFields & 0x400000u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[22]) = value;
+
+        if ((ioGroup->mPFD.mFields & 0x1000000u) != 0)
+            *reinterpret_cast<float**>(newParticle + ioGroup->mPFD.mOffsets[24]) = 0;
+        if ((ioGroup->mPFD.mFields & 0x4000000u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[26]) = 0.0f;
+        if ((ioGroup->mPFD.mFields & 0x800000u) != 0)
+            *reinterpret_cast<float*>(newParticle + ioGroup->mPFD.mOffsets[23]) = 0.0f;
+
+        if ((ioGroup->mPFD.mFields & 0x8000000u) != 0) {
+            unsigned int flags = 0;
+            if ((ioGroup->mPFD.mFields & 0x10000000u) != 0)
+                flags = 2;
+            *reinterpret_cast<unsigned int*>(newParticle + ioGroup->mPFD.mOffsets[27]) = flags;
+        }
+        if ((ioGroup->mPFD.mFields & 0x40000000u) != 0)
+            *reinterpret_cast<unsigned int*>(newParticle + ioGroup->mPFD.mOffsets[30]) =
+                0xFFFFFFFFu;
+        if ((ioGroup->mPFD.mFields & 0x80000000u) != 0) {
+            *reinterpret_cast<unsigned int*>(newParticle +
+                                             ioGroup->mPFD.GetOffset(apsPFDField_RaycastCountdown)) =
+                iEffect->mRaycastCountdown;
+            iEffect->IncrementRaycastCountdown();
+        }
+
+        ioGroup->Add(newParticle);
+        currentPosition.v = _mm_add_ps(currentPosition.v, positionStep.v);
+    }
+}
 // ea: 0x0080C5C0
 int apsSourceAction::GetEmissionCount(apsGroup& ioGroup, float iTimeDelta) {
     if (mParams.mSize <= 2 &&
