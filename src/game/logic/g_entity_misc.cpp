@@ -22,6 +22,7 @@ extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
+bool Error(const char* fmt, ...);
 }
 
 extern void tlFinalPrint(const char* text);
@@ -2921,6 +2922,45 @@ nglMeshNode* nglListAddMesh(nglMesh* mesh, const math::Mat43& m,
     return nullptr;
 }
 
+// PakFile/PakManager minimal views (streamer.o; mPath at +0x0C and mSlots
+// at +0x40 are verified by IDA's PakManager type and LoadScript disassembly).
+struct PakFileView {
+    uint8_t _pad[0x0C];
+    char    mPath[0x100];  // +0x0C (ae_fixed_string bytes)
+};
+struct PakManagerView {
+    uint8_t      _pad[0x40];
+    PakFileView* mSlots[0x63];  // +0x40 (99 entries)
+};
+static_assert(offsetof(PakManagerView, mSlots) == 0x40,
+              "PakManager::mSlots offset mismatch");
+
+extern BrocExports gBrocExports;  // scr.o @ 0xF3A7B0
+
+namespace BrocHelper {
+void Init();
+void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));
+}
+
+namespace mp_level {
+typedef void (__cdecl* InitScriptFn)();
+InitScriptFn InitScript(BrocAPI** gamesAPIptr,
+                        BrocExports& exports);
+}
+
+namespace BrocSys {
+void ValidateApiSize(int sizeofBrocAPI, int sizeofBrocExports);
+void InitAPI();
+}
+
+// IDA's global BrocExports is 456 bytes with mRegisterDebugStrings at +0x74,
+// mInit at +0x1BC, and mRegisterFunction at +0x1C0.  The game header's
+// reduced global view predates those fields, so LoadScript uses the complete
+// IDA-derived engine view without changing the existing callers yet.
+using BrocExportsLoadScriptView = Broc::BrocExports;
+static_assert(sizeof(BrocExportsLoadScriptView) == 0x1C8,
+              "BrocExports IDA layout mismatch");
+
 // IDA global: gEntryFp (scr.o)
 void (*gEntryFp)() = nullptr;
 
@@ -2959,7 +2999,62 @@ void UnloadScript()
     if (::gEntryFp != nullptr)
         ::gEntryFp();
 }
-void LoadScript() {}
+
+// ea: 0x005E0160
+void LoadScript()
+{
+    struct AeThreadManagerLoadScriptView {
+        unsigned int sNumThreads;  // IDA AeThreadManager +0x00
+    };
+
+    if (((AeThreadManagerLoadScriptView*)&AeThreadManager::sInst)
+            ->sNumThreads != 0)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 4939;
+        AeAssert::gCurrentExpr =
+            "AeThreadManager::Inst()->sNumThreads == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("need to clean up threads!"))
+            __debugbreak();
+    }
+
+    TPakId pakId = CurPakId();
+    if (pakId < 0 || pakId >= 0x63)
+        return;
+    if (((PakManagerView*)PakManager::sInst)->mSlots[pakId] == nullptr)
+        return;
+
+    if (_stricmp("mp_level", "mp_level") == 0
+        && mp_level::InitScript != nullptr)
+    {
+        BrocExportsLoadScriptView* exports =
+            reinterpret_cast<BrocExportsLoadScriptView*>(&gBrocExports);
+        exports->mInit = BrocHelper::Init;
+        exports->mRegisterFunction =
+            reinterpret_cast<decltype(exports->mRegisterFunction)>(
+                BrocHelper::RegisterBroFunc);
+        exports->mValidateApiSize = BrocSys::ValidateApiSize;
+        ::gEntryFp = mp_level::InitScript(&gpBrocAPI, gBrocExports);
+        BrocSys::InitAPI();
+        ::gEntryFp();
+        exports->mRegisterDebugStrings();
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(1);
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\BrocSys.cpp";
+        AeAssert::gCurrentLine = 5234;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error(
+                "The broc library for '%s' isn't linked in!", "mp_level"))
+            __debugbreak();
+        tlPrintf("The broc library for '%s' isn't linked in!", "mp_level");
+    }
+}
 }
 
 // refEntity_t - leading member of trRefEntity (+0x00) - matches cg_local.h
@@ -4662,16 +4757,6 @@ enum {
     kLanguageUnlocalized = 5,
 };
 
-// PakFile/PakManager minimal views (streamer.o; mPath string at +0x0C verified
-// vs LoadWbk disasm, mSlots at +0x40 with 0x63 capacity).
-struct PakFileView {
-    uint8_t _pad[0x0C];
-    char    mPath[0x100];  // +0x0C (ae_fixed_string; string bytes at +0x0C)
-};
-struct PakManagerView {
-    uint8_t      _pad[0x40];
-    PakFileView* mSlots[0x63];  // +0x40 (100 slots)
-};
 ELanguage gLanguage;                      // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
 
 // ea: 0x00639630
