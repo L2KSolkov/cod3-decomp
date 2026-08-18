@@ -19,6 +19,8 @@ extern const char* const defaultFileName;  // 0xCD67AE
 int SEH_GetCurrentLanguage();  // game.o stub
 extern unsigned int XGetLanguage();     // platform shim
 extern char* va(const char* fmt, ...);  // core.o
+extern void Cbuf_AddText(const char* text); // cl.o
+extern void Cbuf_Execute();                 // cl.o
 
 struct nglTexture;
 void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
@@ -26,6 +28,53 @@ void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
 
 // TheStringPackage (stringed_hooks.cpp)
 extern CStringEdPackage TheStringPackage;
+
+// ea: 0x00564BB0
+void ApplyControllerButtonConfig(int buttonConfig)
+{
+    const char* config;
+    switch (buttonConfig)
+    {
+    case 1:
+        config = va("exec %s_b.cfg\n", "xbox");
+        break;
+    case 2:
+        config = va("exec %s_c.cfg\n", "xbox");
+        break;
+    case 3:
+        config = va("exec %s_d.cfg\n", "xbox");
+        break;
+    default:
+        config = va("exec %s_a.cfg\n", "xbox");
+        break;
+    }
+    Cbuf_AddText(config);
+
+    if (buttonConfig == 1)
+        config = va("exec mp_%s_b.cfg\n", "xbox");
+    else if (buttonConfig == 2)
+        config = va("exec mp_%s_c.cfg\n", "xbox");
+    else if (buttonConfig == 3)
+        config = va("exec mp_%s_d.cfg\n", "xbox");
+    else
+        config = va("exec mp_%s_a.cfg\n", "xbox");
+    Cbuf_AddText(config);
+    Cbuf_Execute();
+}
+
+// ea: 0x00564F10
+void ApplyControllerStickConfig(int stickConfig)
+{
+    if (stickConfig == 1)
+        Cbuf_AddText("exec ts_sp.cfg\n");
+    else if (stickConfig == 2)
+        Cbuf_AddText("exec ts_leg.cfg\n");
+    else if (stickConfig == 3)
+        Cbuf_AddText("exec ts_legsp.cfg\n");
+    else
+        Cbuf_AddText("exec ts_def.cfg\n");
+    Cbuf_Execute();
+}
 
 // ============================================================================
 // screensafe

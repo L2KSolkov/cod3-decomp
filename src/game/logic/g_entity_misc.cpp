@@ -2279,8 +2279,6 @@ void AnimNoteHandler_ParseNoteTracks(void* self, void* a)
 }
 void AnimQueue_ClearMatrixQueue() {}
 void AnimQueue_ExecuteMatrixQueue() {}
-void ApplyControllerButtonConfig(int a) { (void)a; }
-void ApplyControllerStickConfig(int a) { (void)a; }
 void ApplyPhysics(Entity* e, const math::Position3* a, const math::Dir3* b,
                   float c, bool d, EHitLocation e2)
 {
