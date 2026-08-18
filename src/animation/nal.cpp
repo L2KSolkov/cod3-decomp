@@ -964,8 +964,9 @@ public:
 };
 
 // nalGenericBoneHandle - bone reference (index + skeleton)
+namespace nalGeneric {
 struct nalGenericBoneHandle {
-    const nalGeneric::nalGenericSkeleton* Skeleton;  // +0x00
+    const nalGenericSkeleton* Skeleton;  // +0x00
     int BoneIndex;                       // +0x04
 
     // ea: 0x00518350
@@ -973,7 +974,13 @@ struct nalGenericBoneHandle {
 
     // ea: 0x00518360
     bool IsValid() const { return Skeleton != nullptr; }
+
+    // ea: 0x00518370
+    nalGenericBoneHandle(const nalGenericSkeleton* skeleton, int boneIndex)
+        : Skeleton(skeleton), BoneIndex(boneIndex) {}
 };
+} // namespace nalGeneric
+using nalGeneric::nalGenericBoneHandle;
 static_assert(sizeof(nalGenericBoneHandle) == 8,
               "nalGenericBoneHandle layout mismatch");
 
@@ -1049,6 +1056,7 @@ public:
     void SetPositionOrientation(const nalGenericBoneHandle&, const nalPositionOrientation&);
     void SetPosition(const nalGenericBoneHandle&, const math::Dir3&);
     void SetOrientation(const nalGenericBoneHandle&, const math::Quaternion&);
+    void SetPoseBoneOrientation(const nalGenericBoneHandle&, const math::Quaternion&);
     math::Quaternion GetPoseBoneOrientation(const nalGenericBoneHandle&) const;
     math::Quaternion GetBoneModelOrientation(const nalGenericBoneHandle&) const;
 
@@ -1421,6 +1429,112 @@ void nalGenericPose::Construct(const nalBaseSkeleton* skeleton,
 void* nalGenericPose::GetPoseData() const
 {
     return PoseData;
+}
+
+// ea: 0x00868FD0
+void nalGenericPose::SetPositionOrientation(
+    const nalGenericBoneHandle& handle,
+    const nalPositionOrientation& po)
+{
+    const nalGenericSkeleton* skeleton = handle.Skeleton;
+    if (handle.Skeleton == nullptr)
+    {
+        if (_tlAssert("source/common/nal_generic.cpp", 324,
+                      "handle.Skeleton",
+                      "attempting to de-reference an invalid handle"))
+            __debugbreak();
+        skeleton = handle.Skeleton;
+    }
+
+    if (handle.Skeleton != nullptr)
+    {
+        if (skeleton != reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton)
+            && _tlAssert("source/common/nal_generic.cpp", 329,
+                         "handle.Skeleton == skeleton",
+                         "handle and pose skeletons don't match"))
+            __debugbreak();
+
+        nalBoneInfo* boneInfo = handle.Skeleton->BoneInfo;
+        nalBoneInfo* bone = &boneInfo[handle.BoneIndex];
+        if ((bone->Flags & 1u) == 0)
+            std::memcpy(static_cast<unsigned char*>(PoseData)
+                            + bone->PositionOffset,
+                        &po.pos, sizeof(po.pos));
+        if ((bone->Flags & 2u) == 0)
+            std::memcpy(static_cast<unsigned char*>(PoseData)
+                            + bone->OrientationOffset,
+                        &po.orient, sizeof(po.orient));
+    }
+}
+
+// ea: 0x008690A0
+void nalGenericPose::SetPosition(const nalGenericBoneHandle& handle,
+                                 const math::Dir3& position)
+{
+    const nalGenericSkeleton* skeleton = handle.Skeleton;
+    if (handle.Skeleton == nullptr)
+    {
+        if (_tlAssert("source/common/nal_generic.cpp", 337,
+                      "handle.Skeleton",
+                      "attempting to de-reference an invalid handle"))
+            __debugbreak();
+        skeleton = handle.Skeleton;
+    }
+
+    if (handle.Skeleton != nullptr)
+    {
+        if (skeleton != reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton)
+            && _tlAssert("source/common/nal_generic.cpp", 342,
+                         "handle.Skeleton == skeleton",
+                         "handle and pose skeletons don't match"))
+            __debugbreak();
+
+        nalBoneInfo* boneInfo = handle.Skeleton->BoneInfo;
+        nalBoneInfo* bone = &boneInfo[handle.BoneIndex];
+        if ((bone->Flags & 1u) == 0)
+            std::memcpy(static_cast<unsigned char*>(PoseData)
+                            + bone->PositionOffset,
+                        &position, sizeof(position));
+    }
+}
+
+// ea: 0x00869140
+void nalGenericPose::SetOrientation(const nalGenericBoneHandle& handle,
+                                    const math::Quaternion& orientation)
+{
+    const nalGenericSkeleton* skeleton = handle.Skeleton;
+    if (handle.Skeleton == nullptr)
+    {
+        if (_tlAssert("source/common/nal_generic.cpp", 349,
+                      "handle.Skeleton",
+                      "attempting to de-reference an invalid handle"))
+            __debugbreak();
+        skeleton = handle.Skeleton;
+    }
+
+    if (handle.Skeleton != nullptr)
+    {
+        if (skeleton != reinterpret_cast<const nalGenericSkeleton*>(this->Skeleton)
+            && _tlAssert("source/common/nal_generic.cpp", 354,
+                         "handle.Skeleton == skeleton",
+                         "handle and pose skeletons don't match"))
+            __debugbreak();
+
+        nalBoneInfo* boneInfo = handle.Skeleton->BoneInfo;
+        nalBoneInfo* bone = &boneInfo[handle.BoneIndex];
+        if ((bone->Flags & 2u) == 0)
+            std::memcpy(static_cast<unsigned char*>(PoseData)
+                            + bone->OrientationOffset,
+                        &orientation, sizeof(orientation));
+    }
+}
+
+// ea: 0x008691E0
+void nalGenericPose::SetPoseBoneOrientation(
+    const nalGenericBoneHandle& handle,
+    const math::Quaternion& orientation)
+{
+    SetOrientation(handle, orientation);
 }
 
 // ea: 0x00868D50
