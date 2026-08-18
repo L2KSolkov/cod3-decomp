@@ -576,6 +576,11 @@ int           nslPriorityCanPlay(int priority);
 int           nslSourceGetPriority(nslSource* source);
 void          nslSetSourceEffect(nslSourceID sid, int effectOn);
 
+// ea: 0x00820410
+static bool tlIsPow2(unsigned x) {
+    return x != 0 && ((x - 1u) & x) == 0;
+}
+
 // ea: 0x00820640
 static void nslParam_UnpackRaw(float* dv, unsigned __int64 sm,
                                const float* sv) {
@@ -1798,8 +1803,8 @@ int           nslWaveIsLooping(nslWaveID waveID) {
 static int nslParam_Index_1(const nslParam* params, unsigned __int64 param) {
     const unsigned low = static_cast<unsigned>(param);
     const unsigned high = static_cast<unsigned>(param >> 32);
-    const bool lowIsPow2 = low != 0 && ((low - 1u) & low) == 0;
-    const bool highIsPow2 = high != 0 && ((high - 1u) & high) == 0;
+    const bool lowIsPow2 = tlIsPow2(low);
+    const bool highIsPow2 = tlIsPow2(high);
     if (static_cast<unsigned>(lowIsPow2) + static_cast<unsigned>(highIsPow2) != 1u &&
         _tlAssert("c:/cod/code/tl/nsl2/include\\nsl/param.h", 199,
                   "tlIsPow2((unsigned)param)+tlIsPow2((unsigned)(param>>32))==1",
