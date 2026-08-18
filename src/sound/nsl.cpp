@@ -3837,7 +3837,78 @@ float         nslDriverClamp(float value, float min, float max) {
         return min;
     return value;
 }
-void          nslDriverCalculateRolloff(float* out, float dist, const nslWave*) {}
+// ea: 0x008246B0
+void          nslDriverCalculateRolloff(float* dest, float value,
+                                        const nslWave* wave) {
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
+    const unsigned char* nameOffset =
+        *reinterpret_cast<const unsigned char* const*>(raw);
+    const nslParam* params = nameOffset == nullptr
+        ? nullptr : reinterpret_cast<const nslParam*>(nameOffset + 0x10u);
+
+    float minDist = 1.0f;
+    if (params != nullptr) {
+        const int index = nslParam_Index_1(params, UINT64_C(0x02000000));
+        if (index != -1 && params->values[index] > 0.0f)
+            minDist = params->values[index];
+    }
+
+    float vol = 1.0f;
+    if (params != nullptr) {
+        const int index = nslParam_Index_1(params, UINT64_C(0x04000000));
+        if (index != -1)
+            vol = params->values[index];
+    }
+
+    float minVol = 0.0f;
+    if (params != nullptr) {
+        const int index = nslParam_Index_1(params, UINT64_C(0x40));
+        if (index != -1)
+            minVol = params->values[index];
+    }
+
+    float maxVol = 1.0f;
+    if (params != nullptr) {
+        const int index = nslParam_Index_1(params, UINT64_C(1));
+        if (index != -1)
+            maxVol = params->values[index];
+    }
+
+    const float distance = ((vol - minDist) * value) + minDist;
+    float result = minVol;
+    if (distance < vol) {
+        if (minDist < distance) {
+            if (vol <= minDist) {
+                result = vol;
+            } else {
+                const float slope = (maxVol - minVol) /
+                    (((minDist * minDist) - ((vol * minDist) * 2.0f)) +
+                     (vol * vol));
+                result = ((((slope * vol) * -2.0f) + (slope * distance)) *
+                          distance) + (((slope * vol) * vol) + minVol);
+                if (result > 1.0f)
+                    result = 1.0f;
+                else if (result < 0.0f)
+                    result = 0.0f;
+            }
+        } else {
+            result = maxVol;
+        }
+    }
+    if (dest != nullptr)
+        *dest = result;
+}
+// ea: 0x00824EF0
+int           nslDriverGetVoiceType(const nslWave* wave) {
+    const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
+    const unsigned char* nameOffset =
+        *reinterpret_cast<const unsigned char* const*>(raw);
+    if ((nameOffset[5] & 1u) == 0u)
+        return (nameOffset[7] & 1u) != 0u ? 2 : 4;
+    int result = (~(2 * static_cast<int>(nameOffset[7]))) & 2;
+    result = (result & ~0xFF) | ((result | 1) & 0xFF);
+    return result;
+}
 int           nslDriverInit(nslInitParams*) { return 0; }
 int           nslDriverStart() { return 0; }
 void          nslDriverShutdown() {}
