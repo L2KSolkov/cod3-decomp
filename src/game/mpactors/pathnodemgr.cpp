@@ -38,11 +38,19 @@ extern const float VectorDistanceSquared2D(const float* const p1,
                                            const float* const p2);  // core.o
 extern void YawVectors(float yaw, float* const forward,
                        float* const right);  // core.o
+extern int g_SightTraceToEntity(const math::Position3& start,
+                                const math::Position3& mins,
+                                const math::Position3& maxs,
+                                const math::Position3& end,
+                                DbLinkedHandle<EntityHandleDb, Entity> entity,
+                                const collision_context_t& context); // g.o
 extern void G_Printf(const char* fmt, ...);  // g.o
 extern char* vtos(const float* v);           // g.o
 extern const math::Position3 actorMaxs;      // 0xF99330
 extern const math::Position3 actorMins;      // 0xF99510
 extern const char* nodeStringTable[PathNodes::NODE_NUMTYPES]; // 0xE37A20
+math::Position3 gDisconnectMins(-15.0f, -15.0f, 18.0f); // 0xF99310
+math::Position3 gDisconnectMaxs(15.0f, 15.0f, 72.0f);   // 0xF99500
 vmCvar_t g_ignorePathErrors = {};            // ?g_ignorePathErrors@@3UvmCvar_t@@A @ 0xEAC5E8
 
 // ea: 0x0077F1A0 (static helper, pathnodemgr.cpp)
@@ -886,6 +894,61 @@ void PathNodeMgr::ConnectPathsForEntity(Entity* ent)
             ConnectPath(node, linkPool[index].to);
             disconnectedLinks = linkPool[index].next;
         } while (disconnectedLinks != 0);
+    }
+}
+
+// ea: 0x007833C0
+void PathNodeMgr::DisconnectPathsForEntity(Entity* ent)
+{
+    PathNodes::TOC1* levelTOC = mLevelTOC;
+    if (levelTOC == nullptr)
+        return;
+
+    if ((ent->flags & 0x1000) == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 1623;
+        AeAssert::gCurrentExpr = "Path_IsDynamicBlockingEntity(ent)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    ConnectPathsForEntity(ent);
+    math::Position3 origin = (ent->r.absmin + ent->r.absmax) * 0.5f;
+    ent->flags &= ~0x4000u;
+    ent->iDisconnectTime = level.time;
+
+    PathNodes::PathSort nodes[128];
+    int nodeCount = NodesInCylinder(origin.v.m128_f32, 306.0f, 256.0f,
+                                    nodes, 128, -1);
+    collision_context_t context(0x02820011);
+
+    for (int i = 0; i < nodeCount; ++i)
+    {
+        PathNodes::PathNode* node = nodes[i].pNode;
+        int linkCount = node->mDynamic.mLinkCount;
+        for (int linkIndex = linkCount - 1; linkIndex >= 0; --linkIndex)
+        {
+            PathNodes::PathLink* link =
+                &node->mConstant.mLinks[linkIndex];
+            PathNodes::PathNode* toNode = GetNode(link->mNodeHandle);
+            if (toNode == nullptr)
+                continue;
+
+            math::Position3 start(node->mConstant.mOrigin[0],
+                                  node->mConstant.mOrigin[1],
+                                  node->mConstant.mOrigin[2]);
+            math::Position3 end(toNode->mConstant.mOrigin[0],
+                                toNode->mConstant.mOrigin[1],
+                                toNode->mConstant.mOrigin[2]);
+            if (g_SightTraceToEntity(start, gDisconnectMins,
+                                     gDisconnectMaxs, end,
+                                     ent->mHandle, context) != 0)
+                DisconnectPath(ent, node, link);
+        }
     }
 }
 
