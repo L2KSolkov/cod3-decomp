@@ -912,7 +912,95 @@ void apsForceAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 
 apsColorShiftAction::apsColorShiftAction()
     : apsAction(10, 0, eAsync, 0x608u) {}
-void apsColorShiftAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x0080D820
+void apsColorShiftAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                              apsGroup* ioGroup, apsEffect*, float, float) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float beginTime = mParams.mElements[2];
+    if (mParams.mSize <= 6 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float endTime = mParams.mElements[6];
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const math::Dir3 beginColor(mParams.mElements[3], mParams.mElements[4],
+                                mParams.mElements[5]);
+
+    if (mParams.mSize <= 7 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 8 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    if (mParams.mSize <= 9 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const math::Dir3 endColor(mParams.mElements[7], mParams.mElements[8],
+                              mParams.mElements[9]);
+    const __m128 colorDelta = _mm_sub_ps(endColor.v, beginColor.v);
+
+    if ((ioGroup->mPFD.mFields & 0x200u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int ageOffset = ioGroup->mPFD.mOffsets[9];
+    if ((ioGroup->mPFD.mFields & 0x400u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAgeOffset = ioGroup->mPFD.mOffsets[10];
+    if ((ioGroup->mPFD.mFields & 8u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int colorOffset = ioGroup->mPFD.mOffsets[3];
+
+    unsigned char* particle = iBegin;
+    float* maxAge = reinterpret_cast<float*>(iBegin + maxAgeOffset);
+    float* color = reinterpret_cast<float*>(iBegin + colorOffset + 8);
+    const __m128 minColor = _mm_setzero_ps();
+    const __m128 maxColor = _mm_setr_ps(1.0f, 1.0f, 1.0f, 0.0f);
+    const float invTimeRange = 1.0f / (endTime - beginTime);
+    while (particle != iEnd) {
+        const float particleMaxAge = *maxAge;
+        const float age = *reinterpret_cast<float*>(
+            reinterpret_cast<unsigned char*>(maxAge) + ageOffset - maxAgeOffset);
+        const float startAge = particleMaxAge * beginTime;
+        if (age >= startAge && particleMaxAge * endTime >= age) {
+            const float t = ((age - startAge) / particleMaxAge) * invTimeRange;
+            const __m128 shiftedColor = _mm_min_ps(
+                _mm_max_ps(_mm_add_ps(beginColor.v,
+                                      _mm_mul_ps(colorDelta, _mm_set1_ps(t))),
+                           minColor),
+                maxColor);
+            color[-2] = shiftedColor.m128_f32[0];
+            color[-1] = _mm_shuffle_ps(shiftedColor, shiftedColor, 0x55).m128_f32[0];
+            color[0] = _mm_shuffle_ps(shiftedColor, shiftedColor, 0xAA).m128_f32[0];
+        }
+        particle += stride;
+        maxAge = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(maxAge) + stride);
+        color = reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(color) + stride);
+    }
+}
 
 apsVelocityDragAction::apsVelocityDragAction()
     : apsAction(3, 0, eAsync, 0x4000u) {}
