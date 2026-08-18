@@ -1160,7 +1160,7 @@ class nalGenericSkeleton {
 public:
     virtual ~nalGenericSkeleton() {}
     virtual void Process() {}
-    virtual void Release() {}
+    virtual void Release();
     virtual bool CheckVersion() const;
     virtual unsigned int VirtualGetLODCount() const;
     virtual unsigned int VirtualGetBoneMatrixCount(int lod) const;
@@ -1245,6 +1245,11 @@ public:
 };
 static_assert(sizeof(nalGenericSkeleton) == 224,
               "nalGenericSkeleton layout mismatch");
+
+// ea: 0x00868CC0
+void nalGenericSkeleton::Release()
+{
+}
 
 // ea: 0x0055E760
 unsigned int nalGenericSkeleton::GetLODCount() const
