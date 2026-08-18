@@ -663,17 +663,40 @@ public:
     const nalBaseSkeleton* Skeleton;  // +0x00
     int LOD;                          // +0x04
 
+    nalBasePose();
+    nalBasePose(const nalBaseSkeleton* skel, int lod);
+
     // ?GetLOD@nalBasePose@@QBEHXZ (0x55E400)
     int GetLOD() const;
+    // ?SetLOD@nalBasePose@@QAEXH@Z (0x868BC0)
+    void SetLOD(int lod);
     // ?GetSkeleton@nalBasePose@@QBEPBVnalBaseSkeleton@@XZ (0x518240)
     const nalBaseSkeleton* GetSkeleton() const;
 };
 static_assert(sizeof(nalBasePose) == 8, "nalBasePose layout mismatch");
 
+// ea: 0x008542D0
+nalBasePose::nalBasePose()
+    : Skeleton(nullptr), LOD(0)
+{
+}
+
+// ea: 0x00868BD0
+nalBasePose::nalBasePose(const nalBaseSkeleton* skel, int lod)
+    : Skeleton(skel), LOD(lod)
+{
+}
+
 // ea: 0x0055E400
 int nalBasePose::GetLOD() const
 {
     return LOD;
+}
+
+// ea: 0x00868BC0
+void nalBasePose::SetLOD(int lod)
+{
+    LOD = lod;
 }
 
 // ea: 0x00518240
