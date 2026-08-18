@@ -1091,8 +1091,116 @@ void apsVectorAngularVelocityDragAction::Act(unsigned char* iBegin, unsigned cha
 }
 
 apsWorldPlaneReflectionAction::apsWorldPlaneReflectionAction()
-    : apsAction(2, 1, eAsync, 0x40u) {}
-void apsWorldPlaneReflectionAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(9, 0, eAsync, 0x4001u) {}
+// ea: 0x0080DEC0
+void apsWorldPlaneReflectionAction::Act(unsigned char* iBegin,
+                                        unsigned char* iEnd,
+                                        apsGroup* ioGroup, apsEffect*, float,
+                                        float) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 4 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float planePointZ = mParams.mElements[4];
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float planePointY = mParams.mElements[3];
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const math::Dir3 planeNormal(mParams.mElements[2], planePointY,
+                                 planePointZ);
+
+    const __m128 normalSquared = _mm_mul_ps(planeNormal.v, planeNormal.v);
+    const float normalLength = sqrt(
+        normalSquared.m128_f32[0] +
+        (normalSquared.m128_f32[1] + normalSquared.m128_f32[2]));
+    const __m128 normalizedNormal =
+        _mm_div_ps(planeNormal.v, _mm_set1_ps(normalLength));
+
+    if (mParams.mSize <= 7 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float planeZ = mParams.mElements[7];
+    if (mParams.mSize <= 6 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float planeY = mParams.mElements[6];
+    if (mParams.mSize <= 5 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const math::Dir3 planePosition(mParams.mElements[5], planeY, planeZ);
+    if (mParams.mSize <= 8 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float elasticity = mParams.mElements[8];
+
+    const __m128 signMask =
+        _mm_setr_ps(-0.0f, -0.0f, -0.0f, -0.0f);
+    const __m128 negativeNormal = _mm_xor_ps(signMask, normalizedNormal);
+    const __m128 planeOffsetVector =
+        _mm_mul_ps(negativeNormal, planePosition.v);
+    const float planeOffset =
+        planeOffsetVector.m128_f32[0] +
+        (planeOffsetVector.m128_f32[1] + planeOffsetVector.m128_f32[2]);
+
+    if ((ioGroup->mPFD.mFields & 0x4000u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int velocityOffset = ioGroup->mPFD.mOffsets[14];
+    unsigned char* velocityField = iBegin + velocityOffset;
+    const unsigned char* endVelocityField = iEnd + velocityOffset;
+    if ((ioGroup->mPFD.mFields & 1u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int positionOffset = ioGroup->mPFD.mOffsets[0];
+    unsigned char* positionField = iBegin + positionOffset;
+
+    while (velocityField != endVelocityField) {
+        math::Dir3 position;
+        const float* positionFloats = reinterpret_cast<const float*>(positionField);
+        position.v = _mm_setr_ps(positionFloats[0], positionFloats[1],
+                                 positionFloats[2], 0.0f);
+        const __m128 positionProduct =
+            _mm_mul_ps(position.v, normalizedNormal);
+        const float positionDot =
+            positionProduct.m128_f32[0] +
+            (positionProduct.m128_f32[1] + positionProduct.m128_f32[2]);
+        if (positionDot + planeOffset < 0.0f) {
+            math::Dir3 velocity;
+            const float* velocityFloats = reinterpret_cast<const float*>(velocityField);
+            velocity.v = _mm_setr_ps(velocityFloats[0], velocityFloats[1],
+                                     velocityFloats[2], 0.0f);
+            const __m128 velocityProduct =
+                _mm_mul_ps(velocity.v, normalizedNormal);
+            const float velocityDot =
+                velocityProduct.m128_f32[0] +
+                (velocityProduct.m128_f32[1] + velocityProduct.m128_f32[2]);
+            if (velocityDot < 0.0f) {
+                velocity.v = _mm_sub_ps(
+                    velocity.v,
+                    _mm_mul_ps(normalizedNormal,
+                                _mm_set1_ps((elasticity + 1.0f) * velocityDot)));
+                float* velocityOutput = reinterpret_cast<float*>(velocityField);
+                velocityOutput[0] = velocity.v.m128_f32[0];
+                velocityOutput[1] = velocity.v.m128_f32[1];
+                velocityOutput[2] = velocity.v.m128_f32[2];
+            }
+        }
+        velocityField += stride;
+        positionField += stride;
+    }
+}
 
 apsUVAFrameAnimAction::apsUVAFrameAnimAction()
     : apsAction(6, 0, eAsync, 0x100u) {}
