@@ -7,6 +7,9 @@
 #include <cstdint>
 #include <cstring>
 
+extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
+extern void  tlMemFree(void* ptr);
+
 // ============================================================================
 // Handle types
 // ============================================================================
@@ -517,8 +520,8 @@ void          nslAramCompact() {}
 // ============================================================================
 // nslMemory — audio heap wrappers
 // ============================================================================
-void*         nslMemoryAlloc(unsigned sz) { return nullptr; }
-void          nslMemoryFree(void* p) {}
+void*         nslMemoryAlloc(unsigned size) { return tlMemAlloc(size, 0x40u, 0u); }
+void          nslMemoryFree(void* ptr) { tlMemFree(ptr); }
 
 // ============================================================================
 // Misc
