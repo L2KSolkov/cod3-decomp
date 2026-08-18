@@ -35,8 +35,8 @@ SpriteVertex* Swap();                                          // @0x802E50
 
 // ---- static data (apsVertexBuffer.o) ----
 extern gpuVertexFormat    apsVertexFormat;       // @0x14CEE94
-extern SpriteVertex**     sBufferPointers;       // @0x14CEEA0
-extern D3DVertexBuffer**  sVertexBuffers;        // @0x14CEEA8
+extern SpriteVertex*      sBufferPointers[2];    // @0x14CEEA0
+extern D3DVertexBuffer*    sVertexBuffers[2];    // @0x14CEEA8
 extern D3DIndexBuffer*    sIndexBuffer;          // @0x14CEEB0
 extern unsigned int       sCurVertexBuffer;      // @0x14CEEB4
 extern unsigned int       sCurNumParticles;      // @0x14CEEB8

@@ -37,8 +37,10 @@ apsUVARenderer::apsUVARenderer(const apsUVARenderer::cArgs* args)
 // ea: 0x805A50
 // ============================================================================
 void apsUVARenderer::Init() {
-    nglDxRegisterVShader(apsUVARender::VS, apsUVARender::VShaderTable[0]);
-    nglDxRegisterPShader(apsUVARenderPixel::PS, apsUVARenderPixel::PShaderTable[0]);
+    if (apsUVARender::VShaderTable != NULL)
+        nglDxRegisterVShader(apsUVARender::VS, apsUVARender::VShaderTable[0]);
+    if (apsUVARenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(apsUVARenderPixel::PS, apsUVARenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

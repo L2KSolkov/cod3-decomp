@@ -32,8 +32,10 @@ apsUVARectangleRenderer::apsUVARectangleRenderer(const apsUVARectangleRenderer::
 // ea: 0x804FA0
 // ============================================================================
 void apsUVARectangleRenderer::Init() {
-    nglDxRegisterVShader(apsUVARectangleRender::VS, apsUVARectangleRender::VShaderTable[0]);
-    nglDxRegisterPShader(apsUVARectangleRenderPixel::PS, apsUVARectangleRenderPixel::PShaderTable[0]);
+    if (apsUVARectangleRender::VShaderTable != NULL)
+        nglDxRegisterVShader(apsUVARectangleRender::VS, apsUVARectangleRender::VShaderTable[0]);
+    if (apsUVARectangleRenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(apsUVARectangleRenderPixel::PS, apsUVARectangleRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

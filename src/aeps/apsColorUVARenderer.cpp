@@ -29,8 +29,10 @@ apsColorUVARenderer::apsColorUVARenderer(const apsColorUVARenderer::cArgs* args)
 // ea: 0x8054C0
 // ============================================================================
 void apsColorUVARenderer::Init() {
-    nglDxRegisterVShader(apsColorUVARender::VS, apsColorUVARender::VShaderTable[0]);
-    nglDxRegisterPShader(apsColorUVARenderPixel::PS, apsColorUVARenderPixel::PShaderTable[0]);
+    if (apsColorUVARender::VShaderTable != NULL)
+        nglDxRegisterVShader(apsColorUVARender::VS, apsColorUVARender::VShaderTable[0]);
+    if (apsColorUVARenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(apsColorUVARenderPixel::PS, apsColorUVARenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

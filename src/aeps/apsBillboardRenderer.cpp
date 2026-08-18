@@ -46,8 +46,10 @@ bool apsBillboardRenderer::UsesDiffuseLighting() const {
 // ea: 0x805D50
 // ============================================================================
 void apsBillboardRenderer::Init() {
-    nglDxRegisterVShader(apsBillboardRender::VS, apsBillboardRender::VShaderTable[0]);
-    nglDxRegisterPShader(apsBillboardRenderPixel::PS, apsBillboardRenderPixel::PShaderTable[0]);
+    if (apsBillboardRender::VShaderTable != NULL)
+        nglDxRegisterVShader(apsBillboardRender::VS, apsBillboardRender::VShaderTable[0]);
+    if (apsBillboardRenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(apsBillboardRenderPixel::PS, apsBillboardRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

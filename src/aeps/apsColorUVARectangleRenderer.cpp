@@ -29,8 +29,10 @@ apsColorUVARectangleRenderer::apsColorUVARectangleRenderer(const apsColorUVARect
 // ea: 0x804CD0
 // ============================================================================
 void apsColorUVARectangleRenderer::Init() {
-    nglDxRegisterVShader(apsColorUVARectangleRender::VS, apsColorUVARectangleRender::VShaderTable[0]);
-    nglDxRegisterPShader(apsColorUVARectangleRenderPixel::PS, apsColorUVARectangleRenderPixel::PShaderTable[0]);
+    if (apsColorUVARectangleRender::VShaderTable != NULL)
+        nglDxRegisterVShader(apsColorUVARectangleRender::VS, apsColorUVARectangleRender::VShaderTable[0]);
+    if (apsColorUVARectangleRenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(apsColorUVARectangleRenderPixel::PS, apsColorUVARectangleRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

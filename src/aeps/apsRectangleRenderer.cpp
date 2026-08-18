@@ -32,8 +32,10 @@ apsRectangleRenderer::apsRectangleRenderer(const apsRectangleRenderer::cArgs* ar
 // ea: 0x805230
 // ============================================================================
 void apsRectangleRenderer::Init() {
-    nglDxRegisterVShader(apsRectangleRender::VS, apsRectangleRender::VShaderTable[0]);
-    nglDxRegisterPShader(apsRectangleRenderPixel::PS, apsRectangleRenderPixel::PShaderTable[0]);
+    if (apsRectangleRender::VShaderTable != NULL)
+        nglDxRegisterVShader(apsRectangleRender::VS, apsRectangleRender::VShaderTable[0]);
+    if (apsRectangleRenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(apsRectangleRenderPixel::PS, apsRectangleRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

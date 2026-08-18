@@ -528,7 +528,7 @@ apk::apkFile* InitDefaultPak()
     memcpy(v0, default_apk, default_apk_size);
     default_pak_buf = v0;
     apk::apkFile* result = apk::apkLoadFileInPlace(v0, true);
-    __wbinvd();
+    MemoryBarrier();
     return result;
 }
 

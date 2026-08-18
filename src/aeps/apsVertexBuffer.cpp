@@ -15,8 +15,8 @@ namespace apsVertexBuffer {
 // Data globals owned by apsVertexBuffer.o
 // ============================================================================
 gpuVertexFormat   apsVertexFormat;
-SpriteVertex**    sBufferPointers = 0;
-D3DVertexBuffer** sVertexBuffers = 0;
+SpriteVertex*     sBufferPointers[2] = { 0, 0 };
+D3DVertexBuffer*  sVertexBuffers[2] = { 0, 0 };
 D3DIndexBuffer*   sIndexBuffer = 0;
 unsigned int      sCurVertexBuffer = 0;
 unsigned int      sCurNumParticles = 0;
