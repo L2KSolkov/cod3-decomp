@@ -259,6 +259,9 @@ static void* nsl_voices = nullptr;
 static void* nsl_driverVoices = nullptr;
 static txSlotPool nsl_sourcePool = {};
 static txSlotPool nsl_emitterPool = {};
+// IDA globals referenced by nslPriority.o (0x00F4240 and 0x010E1430).
+static int dword_F4240 = 0;
+static int s_LastVoiceCount = 0;
 
 static bool nslSlotPoolInit(txSlotPool* pool, txSlotEntry* slots, int count,
                             unsigned stride) {
@@ -978,8 +981,6 @@ float         nslSourceGetVolume(nslSourceID) { return 1.0f; }
 unsigned      nslSourceCount() { return 0; }
 nslSourceID   nslSourceGetFirst() { return NSL_INVALID_SOURCE; }
 nslSourceID   nslSourceGetNext(nslSourceID) { return NSL_INVALID_SOURCE; }
-bool          nslSourceIs3D(nslSource*) { return false; }
-float         nslSourceGetAttenuation(nslSource*) { return 1.0f; }
 void          nslSourceSetDopplerFactor(nslSourceID, float) {}
 void          nslSourceSetReverbSend(nslSourceID, float) {}
 void          nslSourceSetBusSend(nslSourceID, unsigned, float) {}
@@ -1900,8 +1901,263 @@ void          nslUpdate() {}
 // ============================================================================
 // nslPriority — voice priority / attenuation
 // ============================================================================
-float         nslVoiceGetAttenuation(nslVoice*) { return 1.0f; }
-unsigned      nslVoiceGetPriority(nslVoice*) { return 0; }
+// ea: 0x00828B30
+static int nslParam_Index_2(const nslParam* params, unsigned __int64 param) {
+    return nslParam_Index_1(params, param);
+}
+
+// ea: 0x00828C30
+static float nslDistanceAttenuationValue(const nslWave* wave, float dist) {
+    const uintptr_t metadata = reinterpret_cast<uintptr_t>(
+        *reinterpret_cast<const unsigned char* const*>(wave));
+    const uintptr_t paramAddress = metadata + 0x10u;
+    const nslParam* params = reinterpret_cast<const nslParam*>(paramAddress);
+
+    float minDistance = 1.0f;
+    if (paramAddress != 0) {
+        const int index = nslParam_Index_2(params, UINT64_C(0x02000000));
+        if (index != -1) {
+            minDistance = params->values[index];
+            if (minDistance <= 0.0f)
+                minDistance = 1.0f;
+        }
+    }
+
+    float maxDistance = 1.0f;
+    if (paramAddress != 0) {
+        const int index = nslParam_Index_2(params, UINT64_C(0x04000000));
+        if (index != -1)
+            maxDistance = params->values[index];
+    }
+
+    if (dist >= maxDistance)
+        return 0.0f;
+    if (minDistance >= dist)
+        return 1.0f;
+    if (maxDistance <= minDistance)
+        return dist;
+
+    const float inverse = 1.0f /
+        ((minDistance * minDistance) -
+         ((maxDistance * minDistance) * 2.0f) +
+         (maxDistance * maxDistance));
+    float result = ((((inverse * maxDistance) * -2.0f) +
+                     (inverse * dist)) * dist) +
+                   ((inverse * maxDistance) * maxDistance);
+    if (result > 1.0f)
+        return 1.0f;
+    if (result < 0.0f)
+        return 0.0f;
+    return result;
+}
+
+// ea: 0x00828D50
+float         nslVoiceGetAttenuation(nslVoice* voice) {
+    nslGroup* listenerGroup = nslGetListenerGroup();
+    const unsigned char* voiceRaw = reinterpret_cast<const unsigned char*>(voice);
+    const float* voiceParams = reinterpret_cast<const float*>(voiceRaw + 8u);
+    const float* listenerPosition = listenerGroup->params + 19;
+    const float dx = voiceParams[19] - listenerPosition[0];
+    const float dy = voiceParams[20] - listenerPosition[1];
+    const float dz = voiceParams[21] - listenerPosition[2];
+    const float distance = sqrtf(dx * dx + dy * dy + dz * dz);
+    const nslWaveID waveID =
+        *reinterpret_cast<const nslWaveID*>(voiceRaw + 0x110u);
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave != nullptr)
+        return nslDistanceAttenuationValue(wave, distance);
+    return 1.0f;
+}
+
+// ea: 0x00828DD0
+float         nslSourceGetAttenuation(nslSource* source) {
+    nslGroup* listenerGroup = nslGetListenerGroup();
+    const unsigned char* sourceRaw = reinterpret_cast<const unsigned char*>(source);
+    const float* sourceParams = reinterpret_cast<const float*>(sourceRaw + 0x10u);
+    const float* listenerPosition = listenerGroup->params + 19;
+    const float dx = sourceParams[19] - listenerPosition[0];
+    const float dy = sourceParams[20] - listenerPosition[1];
+    const float dz = sourceParams[21] - listenerPosition[2];
+    const float distance = sqrtf(dx * dx + dy * dy + dz * dz);
+    const nslWaveID waveID =
+        *reinterpret_cast<const nslWaveID*>(sourceRaw + 0x110u);
+    return nslDistanceAttenuationValue(nslWavePtr(waveID), distance);
+}
+
+// ea: 0x00828E70
+int           nslSourceIs3D(nslSource* source) {
+    if (source == nullptr)
+        return 0;
+    const unsigned char* sourceRaw = reinterpret_cast<const unsigned char*>(source);
+    const nslWaveID waveID =
+        *reinterpret_cast<const nslWaveID*>(sourceRaw + 0x110u);
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave != nullptr) {
+        const unsigned char* metadata =
+            *reinterpret_cast<const unsigned char* const*>(wave);
+        if (metadata != nullptr)
+            return metadata[7] & 1u;
+    }
+    return 1;
+}
+
+// ea: 0x00828EF0
+int           nslPriorityCanPlay(int priority) {
+    static_cast<void>(nslVoicePtr(0));
+    if (priority <= 0)
+        return 0;
+    if (s_LastVoiceCount >= 59)
+        return priority > 50;
+    return 1;
+}
+
+// ea: 0x00828F30
+int           nslSourceGetPriority(nslSource* source) {
+    if (source == nullptr)
+        return 100;
+
+    const unsigned char* sourceRaw = reinterpret_cast<const unsigned char*>(source);
+    const nslWaveID waveID =
+        *reinterpret_cast<const nslWaveID*>(sourceRaw + 0x110u);
+    nslWave* wave = nslWavePtr(waveID);
+    if (wave != nullptr) {
+        const unsigned char* metadata =
+            *reinterpret_cast<const unsigned char* const*>(wave);
+        if (metadata != nullptr && (metadata[7] & 1u) == 0)
+            return 100;
+    }
+
+    const float attenuation = nslSourceGetAttenuation(source);
+    const float maxAttenuation = source->params[10];
+    float clampedAttenuation = attenuation;
+    const float minAttenuation = source->params[9];
+    if (clampedAttenuation > maxAttenuation)
+        clampedAttenuation = maxAttenuation;
+    if (minAttenuation > clampedAttenuation)
+        clampedAttenuation = minAttenuation;
+    return static_cast<int>(
+        (((clampedAttenuation - minAttenuation) /
+          (maxAttenuation - minAttenuation)) *
+         (source->params[8] - source->params[7])) + source->params[7]);
+}
+
+// ea: 0x00828FC0
+int           nslVoiceGetPriority(nslVoice& voice) {
+    const unsigned char* voiceRaw = reinterpret_cast<const unsigned char*>(&voice);
+    const nslSourceID sourceID =
+        *reinterpret_cast<const nslSourceID*>(voiceRaw + 0x114u);
+    return nslSourceGetPriority(nslSourcePtr(sourceID));
+}
+
+// ea: 0x00828FE0
+void          nslPriorityUpdate() {
+    struct PriorityEntry {
+        int priority;
+        int voiceIndex;
+        int sourcePriority;
+    };
+
+    nslVoice* firstVoice = nslVoicePtr(0);
+    PriorityEntry entries[5] = {
+        {101, 0, 0}, {101, 0, 0}, {101, 0, 0},
+        {101, 0, 0}, {101, 0, 0}
+    };
+    int voiceCount = 0;
+
+    if (firstVoice != nullptr) {
+        const unsigned voiceTotal = nslVoiceCount();
+        for (unsigned voiceIndex = 0; voiceIndex < voiceTotal; ++voiceIndex) {
+            unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(firstVoice) +
+                320u * voiceIndex;
+            const nslSourceID sourceID =
+                *reinterpret_cast<const nslSourceID*>(voiceRaw + 0x114u);
+            if (nslGetSourceState(sourceID) == NSL_SOURCE_STATE_INVALID)
+                continue;
+
+            const nslWaveID voiceWaveID =
+                *reinterpret_cast<const nslWaveID*>(voiceRaw + 0x110u);
+            nslWave* voiceWave = nslWavePtr(voiceWaveID);
+            if (voiceWave != nullptr) {
+                const unsigned char* metadata =
+                    *reinterpret_cast<const unsigned char* const*>(voiceWave);
+                if (metadata != nullptr && (metadata[7] & 1u) != 0)
+                    continue;
+            }
+
+            nslSource* source = nslSourcePtr(sourceID);
+            int priority;
+            if (source == nullptr) {
+                priority = 100;
+            } else {
+                const unsigned char* sourceRaw =
+                    reinterpret_cast<const unsigned char*>(source);
+                const nslWaveID sourceWaveID =
+                    *reinterpret_cast<const nslWaveID*>(sourceRaw + 0x110u);
+                nslWave* sourceWave = nslWavePtr(sourceWaveID);
+                const unsigned char* metadata = sourceWave == nullptr
+                    ? nullptr
+                    : *reinterpret_cast<const unsigned char* const*>(sourceWave);
+                if (sourceWave != nullptr && metadata != nullptr &&
+                    (metadata[7] & 1u) == 0) {
+                    priority = 100;
+                } else {
+                    const float attenuation = nslSourceGetAttenuation(source);
+                    const float maxAttenuation = source->params[10];
+                    float clampedAttenuation = attenuation;
+                    const float minAttenuation = source->params[9];
+                    if (clampedAttenuation > maxAttenuation)
+                        clampedAttenuation = maxAttenuation;
+                    if (minAttenuation > clampedAttenuation)
+                        clampedAttenuation = minAttenuation;
+                    priority = static_cast<int>(
+                        (((clampedAttenuation - minAttenuation) /
+                          (maxAttenuation - minAttenuation)) *
+                         (source->params[8] - source->params[7])) +
+                        source->params[7]);
+                }
+            }
+
+            const int sourcePriority = source == nullptr
+                ? dword_F4240
+                : *reinterpret_cast<const int*>(
+                    reinterpret_cast<const unsigned char*>(source) + 0x128u);
+            ++voiceCount;
+
+            int insertIndex = 0;
+            while (insertIndex < 5) {
+                const PriorityEntry& entry = entries[insertIndex];
+                if (priority <= entry.priority &&
+                    (priority != entry.priority ||
+                     sourcePriority >= entry.sourcePriority))
+                    break;
+                ++insertIndex;
+            }
+            if (insertIndex <= 3) {
+                for (int index = 4; index > insertIndex; --index)
+                    entries[index] = entries[index - 1];
+            }
+            if (insertIndex < 5) {
+                entries[insertIndex].priority = priority;
+                entries[insertIndex].voiceIndex = static_cast<int>(voiceIndex);
+                if (source != nullptr)
+                    entries[insertIndex].sourcePriority = sourcePriority;
+            }
+        }
+    }
+
+    s_LastVoiceCount = voiceCount;
+    const int voicesToStop = voiceCount - 59;
+    for (int index = 0; index < voicesToStop; ++index) {
+        if (index >= 5)
+            break;
+        unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(firstVoice) +
+            320u * static_cast<unsigned>(entries[index].voiceIndex);
+        const nslSourceID sourceID =
+            *reinterpret_cast<const nslSourceID*>(voiceRaw + 0x114u);
+        nslStopSource(sourceID);
+    }
+}
+
 void          nslVoiceSetPriority(nslVoice*, unsigned) {}
 void          nslSourceSetPriorityScale(nslSource*, float) {}
 
