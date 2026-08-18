@@ -27,8 +27,17 @@ class XModel;
 struct XModelLod;
 class XModelParts;
 class LightGridMgr;
-struct LightGridData;
 struct nglMesh;
+
+namespace LightGrid {
+struct TOC;
+}
+
+enum TPakId {
+    PAK_ID_INVALID = 0xFFFFFFFFu,
+    PAK_ID_MIN = 0,
+    PAK_ID_MAX = 0x63,
+};
 
 // trStaticModelList_t (8 bytes)
 struct trStaticModelList_t {
@@ -63,11 +72,13 @@ struct world_t {
 };
 
 PoolAllocator* trStaticModelList_t::sAllocator;
+int g_staticCount;                            // ?g_staticCount@@3HA @ 0xEAECD0
 
 // ============================================================================
 // Static model / XModel views (IDA layouts)
 // ============================================================================
-struct LightGridData {
+class LightGridData {
+public:
     math::Position3::Packed m_ambientColor;   // +0x00
     math::Vector4::Packed m_directionalColor[3];  // +0x0C
     math::Dir3::Packed m_directionalDir[3];       // +0x24
@@ -112,24 +123,25 @@ public:
 };
 
 template <class T>
-class IVPointerStatic {
+class IVPointer {
 public:
     T* mValue;                               // +0x00
-    int mPakId;                              // +0x04
+    TPakId mPakId;                            // +0x04
 };
 
-struct DObjSkelMatStatic {
+struct DObjSkelMat {
     float axis[3][4];                        // +0x00
     float origin[4];                         // +0x30
 };
-static DObjSkelMatStatic boneMtxList_0[40];
+static_assert(sizeof(DObjSkelMat) == 0x40, "DObjSkelMat size mismatch");
+static DObjSkelMat boneMtxList_0[40];
 static nglMeshParams scale_params;
 
-extern void ValidatePakId(int pakId);        // ?ValidatePakId@@YAXW4TPakId@@@Z
-extern int CurPakId();                       // ?CurPakId@@YA?AW4TPakId@@XZ
-extern void XModelGetBasePose(IVPointerStatic<XModel> model,
-                              DObjSkelMatStatic* out,
-                              DObjSkelMatStatic* out2);  // ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z
+extern void ValidatePakId(TPakId pakId);     // ?ValidatePakId@@YAXW4TPakId@@@Z
+extern TPakId CurPakId();                    // ?CurPakId@@YA?AW4TPakId@@XZ
+extern void XModelGetBasePose(IVPointer<XModel> model,
+                              DObjSkelMat* out,
+                              DObjSkelMat* out2);  // ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z
 extern void R_UseCachedLightSample(const LightGridData& data);  // ?R_UseCachedLightSample@@YAXABVLightGridData@@@Z
 extern void auxSetScale(nglMeshParams* params, float x, float y, float z);  // ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z
 extern nglMeshNode* _codListAddMesh(nglMesh* mesh, const math::Mat43& localToWorld,
@@ -142,12 +154,14 @@ extern unsigned int cdFlagRandomSeedID;       // ?cdFlagRandomSeedID@@3IA
 extern unsigned int isRotatingTextureParamID; // ?isRotatingTextureParamID@@3IA
 extern void* nglListAlloc(unsigned int size, unsigned int align);  // ?nglListAlloc@@YAPAXII@Z
 extern void CG_DebugBox(const float* p1, const float* p2, const float* color,
-                        int a4, int a5, int a6);  // ?CG_DebugBox@@YAXPBM00HH@Z
-struct LightGridMgr {
+                        int a4, int a5);           // ?CG_DebugBox@@YAXQBM00HH@Z
+class LightGridMgr {
+public:
     static LightGridMgr* sInst;              // ?sInst@LightGridMgr@@2V1@A
-    void* GetLightGrid(const math::Position3& pos, int* cell);  // ?GetLightGrid@LightGridMgr@@QAEPBUTOC@1@ABVPosition3@math@@PAH@Z
-    void SampleLightGrid(void* toc, int cell, const math::Position3& pos,
-                         LightGridData* out);  // ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@1@HABVPosition3@math@@PAVLightGridData@@@Z
+    LightGrid::TOC* GetLightGrid(const math::Position3& pos, int* cell);  // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@ABVPosition3@math@@PAH@Z
+    void SampleLightGrid(const LightGrid::TOC& toc, int cell,
+                         const math::Position3& pos,
+                         LightGridData* out);  // ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVLightGridData@@@Z
 };
 struct vmCvar_t {
     uint8_t _pad[0x1C];
@@ -155,14 +169,14 @@ struct vmCvar_t {
     int integer;                             // +0x20
 };
 extern vmCvar_t g_drawEntBBoxes;             // ?g_drawEntBBoxes@@3UvmCvar_t@@A
-extern float colorWhite[4];
+extern const float colorWhite[4];
 
 // ============================================================================
 // R_AddStaticModelSurfaces - ea: 0x006D2D70
 // ============================================================================
 void R_AddStaticModelSurfaces(StaticModel* ent)
 {
-    IVPointerStatic<XModel> ctx;
+    IVPointer<XModel> ctx;
     ctx.mValue = ent->xmodel;
     ctx.mPakId = CurPakId();
     ValidatePakId(ctx.mPakId);
@@ -249,7 +263,7 @@ void R_AddStaticModelSurfaces(StaticModel* ent)
     }
     ent->lgridDataInitialized = 1;
     int cell = -1;
-    void* grid = LightGridMgr::sInst->GetLightGrid(pos, &cell);
+    LightGrid::TOC* grid = LightGridMgr::sInst->GetLightGrid(pos, &cell);
     if (grid == nullptr)
     {
         math::Position3 probe = pos;
@@ -266,7 +280,7 @@ void R_AddStaticModelSurfaces(StaticModel* ent)
     {
         if (cell >= 0)
         {
-            LightGridMgr::sInst->SampleLightGrid(grid, cell, pos,
+            LightGridMgr::sInst->SampleLightGrid(*grid, cell, pos,
                                                  &ent->lgridData);
             ent->lgridDataInitialized = 2;
             goto lit;
@@ -384,7 +398,7 @@ lit:
             ctx.mValue->maxs.v.m128_f32[1] + ent->origin[1],
             ctx.mValue->maxs.v.m128_f32[2] + ent->origin[2],
         };
-        CG_DebugBox(mins, maxs, colorWhite, 1, 0, 0);
+        CG_DebugBox(mins, maxs, colorWhite, 1, 0);
     }
 skip:
     ;

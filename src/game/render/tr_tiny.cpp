@@ -2580,7 +2580,6 @@ public:
                               const char* file, int line);  // ??2trStaticModelList_t@@SAPAXI_NPBDH@Z @ 0x6E5E80
     static void operator delete(void* ptr);                 // ??3trStaticModelList_t@@SAXPAX@Z @ 0x6E5EA0
 };
-PoolAllocator* trStaticModelList_t::sAllocator = nullptr;
 void* trStaticModelList_t::operator new(unsigned int size, bool forceHeapAlloc,
                                         const char*, int)
 {

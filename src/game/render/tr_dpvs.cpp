@@ -180,6 +180,8 @@ static_assert(offsetof(StaticModel, absmin) == 0xA0,
               "StaticModel::absmin offset mismatch");
 static_assert(offsetof(StaticModel, viewCount) == 0xE4,
               "StaticModel::viewCount offset mismatch");
+extern void R_AddStaticModelSurfaces(StaticModel* ent);
+extern int g_staticCount;          // ?g_staticCount@@3HA @ 0xEAECD0
 
 struct DObjSkelMat {
     float axis[3][4];        // +0x00
@@ -825,19 +827,32 @@ int R_CullBoxDPVS(const float* minmax, const dpvs_plane_t* planes,
     for (int i = 0; i < iPlaneCount; ++i)
     {
         const dpvs_plane_t& plane = planes[i];
-        const float dot = minmax[plane.side[2]] * plane.data.v.m128_f32[2]
-                        + minmax[plane.side[1]] * plane.data.v.m128_f32[1]
-                        + minmax[plane.side[0]] * plane.data.v.m128_f32[0];
+        const unsigned char* minmaxBytes =
+            reinterpret_cast<const unsigned char*>(minmax);
+        const float dot = *reinterpret_cast<const float*>(
+                              minmaxBytes + plane.side[2])
+                        * plane.data.v.m128_f32[2]
+                        + *reinterpret_cast<const float*>(
+                              minmaxBytes + plane.side[1])
+                            * plane.data.v.m128_f32[1]
+                        + *reinterpret_cast<const float*>(
+                              minmaxBytes + plane.side[0])
+                            * plane.data.v.m128_f32[0];
         if (plane.data.v.m128_f32[3] > dot)
             return 1;
     }
 
     const dpvs_plane_t* nearPlane = g_dpvs.nearPlane;
-    const float nearDot = minmax[nearPlane->side[2]]
+    const unsigned char* minmaxBytes =
+        reinterpret_cast<const unsigned char*>(minmax);
+    const float nearDot = *reinterpret_cast<const float*>(
+                              minmaxBytes + nearPlane->side[2])
                             * nearPlane->data.v.m128_f32[2]
-                        + minmax[nearPlane->side[1]]
+                        + *reinterpret_cast<const float*>(
+                              minmaxBytes + nearPlane->side[1])
                             * nearPlane->data.v.m128_f32[1]
-                        + minmax[nearPlane->side[0]]
+                        + *reinterpret_cast<const float*>(
+                              minmaxBytes + nearPlane->side[0])
                             * nearPlane->data.v.m128_f32[0];
     if (nearPlane->data.v.m128_f32[3] > nearDot)
         return 1;
@@ -845,11 +860,14 @@ int R_CullBoxDPVS(const float* minmax, const dpvs_plane_t* planes,
     const dpvs_plane_t* farPlane = g_dpvs.farPlane;
     if (farPlane != nullptr)
     {
-        const float farDot = minmax[farPlane->side[2]]
+        const float farDot = *reinterpret_cast<const float*>(
+                                 minmaxBytes + farPlane->side[2])
                                * farPlane->data.v.m128_f32[2]
-                           + minmax[farPlane->side[1]]
+                           + *reinterpret_cast<const float*>(
+                                 minmaxBytes + farPlane->side[1])
                                * farPlane->data.v.m128_f32[1]
-                           + minmax[farPlane->side[0]]
+                           + *reinterpret_cast<const float*>(
+                                 minmaxBytes + farPlane->side[0])
                                * farPlane->data.v.m128_f32[0];
         if (farPlane->data.v.m128_f32[3] > farDot)
             return 1;
@@ -903,15 +921,24 @@ static void R_AddCellSurfaces(void* frameBase, BspCell* cell,
     if (r_drawentities->integer != 0)
         R_CullModels(cell, planes, iPlaneCount);
 }
-// R_AddStaticModels 0x006D6FC0 remains deferred with the static-model object:
-// its body calls the separate R_AddStaticModelSurfaces implementation, whose
-// current cross-object helper signatures still need an ABI reconciliation.
+// ea: 0x006D6FC0
 static void R_AddStaticModels(BspCell* cell, int iPlaneCount,
                               const dpvs_plane_t* planes)
 {
-    (void)cell;
-    (void)iPlaneCount;
-    (void)planes;
+    trStaticModelList_t* staticModels = cell->staticModels;
+    while (staticModels != nullptr)
+    {
+        StaticModel* model = staticModels->model;
+        const float viewCount = static_cast<float>(tr.viewCount);
+        if (model->viewCount != viewCount
+            && !R_CullBoxDPVS(&model->absmin.x, planes, iPlaneCount))
+        {
+            model->viewCount = viewCount;
+            R_AddStaticModelSurfaces(model);
+            ++g_staticCount;
+        }
+        staticModels = staticModels->next;
+    }
 }
 static void R_RecursivePortalWalk(void* frameBase, BspCell* cell,
                                   dpvs_plane_t* parentPlane,
