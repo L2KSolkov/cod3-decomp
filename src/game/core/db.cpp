@@ -27,6 +27,8 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
+bool BitSet255_Test(const void* self, int v);
+
 // ea: 0x004E5AC0
 void DbFieldSet::Clear()
 {
@@ -56,6 +58,51 @@ void DbFieldSet::Clear()
     mSpecifiedById.mBits[2] = 0;
     mSpecifiedById.mBits[1] = 0;
     mSpecifiedById.mBits[0] = 0;
+}
+
+// ea: 0x004B4D80
+const DbField* DbFieldSet::GetFieldByIdx(unsigned int idx) const
+{
+    if (idx >= mNumParams) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 94;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < mNumParams";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Index out of bounds"))
+            __debugbreak();
+    }
+    return mFields[idx];
+}
+
+// ea: 0x004E5B80
+const DbField* DbFieldSet::GetFieldById(unsigned int field_id) const
+{
+    if (!BitSet255_Test(mSpecifiedById.mBits, field_id)) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 100;
+        AeAssert::gCurrentExpr = "mSpecifiedById.Test( field_id )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid field requested"))
+            __debugbreak();
+    }
+    const DbField* field = GetFieldByIdx(mIdToIdxMap[field_id]);
+    if (field->m_column_type > 0xCu) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 105;
+        AeAssert::gCurrentExpr = "( field->GetColumnType() >= kDbColumnTypeMin && field->GetColumnType() <= kDbColumnTypeMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if (field->m_match_type > 9u) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.h";
+        AeAssert::gCurrentLine = 106;
+        AeAssert::gCurrentExpr = "( field->GetMatchType() >= kDbMatchTypeMin && field->GetMatchType() <= kDbMatchTypeMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return field;
 }
 
 // ea: 0x004C0A70
@@ -144,7 +191,6 @@ void DbQuery::Reset()
 }
 
 // DbFieldSet lookup + BitSet test helpers
-extern DbField* DbFieldSet_GetFieldById(DbFieldSet* self, int field_id);
 extern bool BitSet64_Test(const void* self, int v);
 extern int BitSet255_TestWeak(const void* self, int v);
 
@@ -163,7 +209,7 @@ int DbQuery::CompareField(int colId, const void* db_value)
         ASSERT("mConstraints.IsFieldSpecified( colId )",
                "c:\\cod\\code\\game\\DbQuery.cpp", 81);
     }
-    DbField* FieldById = DbFieldSet_GetFieldById(&mConstraints, colId);
+    const DbField* FieldById = mConstraints.GetFieldById(colId);
     if (FieldById == nullptr)
     {
         ASSERT("constraint_field != 0", "c:\\cod\\code\\game\\DbQuery.cpp", 84);
@@ -189,7 +235,7 @@ int DbQuery::CompareField(int colId, const void* db_value)
     case 8u:
     case 9u:
     {
-        int v9 = *(int*)((char*)FieldById + 4);
+        int v9 = *(const int*)((const char*)FieldById + 4);
         if (*(const int*)db_value < v9)
             return -1;
         return *(const int*)db_value > v9;
@@ -197,7 +243,7 @@ int DbQuery::CompareField(int colId, const void* db_value)
     case 2u:
     case 0xBu:
     {
-        float v7 = *(float*)((char*)FieldById + 4);
+        float v7 = *(const float*)((const char*)FieldById + 4);
         if (v7 > *(const float*)db_value)
             return -1;
         if (*(const float*)db_value <= v7)
@@ -206,8 +252,8 @@ int DbQuery::CompareField(int colId, const void* db_value)
     }
     case 4u:
         if (m_match_type == 9)
-            return -_stricmp((char*)FieldById + 4, (const char*)db_value);
-        return strcmp((char*)FieldById + 4, (const char*)db_value);
+            return -_stricmp((const char*)FieldById + 4, (const char*)db_value);
+        return strcmp((const char*)FieldById + 4, (const char*)db_value);
     default:
         return 0;
     }
@@ -221,7 +267,7 @@ bool DbQuery::TestField(int colId, const void* db_value)
         ASSERT("mConstraints.IsFieldSpecified( colId )",
                "c:\\cod\\code\\game\\DbQuery.cpp", 143);
     }
-    DbField* FieldById = DbFieldSet_GetFieldById(&mConstraints, colId);
+    const DbField* FieldById = mConstraints.GetFieldById(colId);
     if (FieldById == nullptr)
     {
         ASSERT("constraint_field != 0", "c:\\cod\\code\\game\\DbQuery.cpp", 146);

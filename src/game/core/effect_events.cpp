@@ -478,12 +478,6 @@ DbQuery::~DbQuery()
 // ea: 0x004DD8C0
 nalHeap::~nalHeap() {}
 
-DbField* DbFieldSet_GetFieldById(DbFieldSet* self, int fieldId)
-{
-    (void)self; (void)fieldId;
-    return nullptr;
-}
-
 // LightEffect (core.o; SetScale is a member)
 void LightEffect::SetScale(float s)
 {

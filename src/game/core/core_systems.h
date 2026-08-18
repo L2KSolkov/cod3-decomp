@@ -824,6 +824,8 @@ static_assert(sizeof(DbGraphNode) == 0x10, "DbGraphNode size mismatch");
 struct DbFieldSet {
     virtual ~DbFieldSet();
     void Clear();
+    const DbField* GetFieldByIdx(unsigned int idx) const;
+    const DbField* GetFieldById(unsigned int field_id) const;
     unsigned int mNumParams;      // +0x04
     DbField*     mFields[64];     // +0x08
     unsigned char mIdToIdxMap[255];  // +0x108
