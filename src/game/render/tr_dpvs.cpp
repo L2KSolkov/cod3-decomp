@@ -192,7 +192,10 @@ static_assert(sizeof(DObjSkelMat) == 0x40, "DObjSkelMat size mismatch");
 // BspCell view (IDA size 0x50)
 class BspCell {
 public:
-    uint8_t _pad0[0x30];
+    uint8_t _pad0[0x20];
+    class BspPortal* firstCellPortal; // +0x20
+    int numCellPortals;               // +0x24
+    uint8_t _pad28[0x08];
     int viewCount;                    // +0x30
     trStaticModelList_t* staticModels; // +0x34
     trModelCellRef_t* modelRefs;      // +0x38
@@ -205,6 +208,38 @@ public:
     void* mCapturedScene;              // +0x4C
 };
 static_assert(sizeof(BspCell) == 0x50, "BspCell size mismatch");
+
+class BspPortal {
+public:
+    dpvs_plane_t plane;                 // +0x00
+    BspCell* cell;                      // +0x20
+    math::Position3* firstPortalVert;  // +0x24
+    int numPortalVerts;                 // +0x28
+    int active;                         // +0x2C
+};
+static_assert(sizeof(BspPortal) == 0x30, "BspPortal size mismatch");
+
+template <typename T, int CAP>
+class phys_static_array {
+public:
+    char m_buffer[CAP * sizeof(T)];
+    T* const m_slot_array;
+    int m_alloc_count;
+
+    T* add()
+    {
+        if (m_alloc_count >= CAP)
+            return nullptr;
+        return &m_slot_array[m_alloc_count++];
+    }
+};
+extern phys_static_array<phys_static_array<math::Vector4, 20>, 64> portals;
+
+extern dpvs_plane_t* R_PortalClipPlanes(BspPortal* portal,
+                                         const dpvs_plane_t* parentPlane,
+                                         const dpvs_plane_t* planes,
+                                         int iPlaneCount,
+                                         int* piNumPoints);
 
 // core.o / q_math.o helpers
 DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
@@ -940,13 +975,108 @@ static void R_AddStaticModels(BspCell* cell, int iPlaneCount,
         staticModels = staticModels->next;
     }
 }
+
+// ea: 0x006BF470
+static int R_PortalBehindAnyPlane(const BspPortal* portal, int iPlaneCount,
+                                  const math::Vector4* planes)
+{
+    for (int i = 0; i < iPlaneCount; ++i)
+    {
+        const math::Vector4& plane = planes[i];
+        for (int j = 0; j < portal->numPortalVerts; ++j)
+        {
+            const __m128 product = _mm_mul_ps(
+                portal->firstPortalVert[j].v, plane.v);
+            const float dot = product.m128_f32[0]
+                            + product.m128_f32[1]
+                            + product.m128_f32[2];
+            if (dot > plane.v.m128_f32[3])
+                break;
+            if (j + 1 == portal->numPortalVerts)
+                return 1;
+        }
+    }
+    return 0;
+}
+
+// ea: 0x006D9B90
 static void R_RecursivePortalWalk(void* frameBase, BspCell* cell,
-                                  dpvs_plane_t* parentPlane,
-                                  dpvs_plane_t* planes, int iPlaneCount,
+                                  const dpvs_plane_t* parentPlane,
+                                  const dpvs_plane_t* planes, int iPlaneCount,
                                   int dlightBits, bool root_level)
 {
-    (void)frameBase; (void)cell; (void)parentPlane; (void)planes;
-    (void)iPlaneCount; (void)dlightBits; (void)root_level;
+    (void)frameBase;
+    if (root_level)
+        portals.m_alloc_count = 0;
+
+    R_AddCellSurfaces(frameBase, cell,
+                      const_cast<dpvs_plane_t*>(planes), iPlaneCount);
+    R_AddStaticModels(cell, iPlaneCount, planes);
+
+    for (int pi = 0; pi < cell->numCellPortals; ++pi)
+    {
+        BspPortal* portal = &cell->firstCellPortal[pi];
+        if (portal->active != 0)
+            continue;
+
+        const __m128 product = _mm_mul_ps(g_dpvs.origin.v,
+                                          portal->plane.data.v);
+        const float originDistance = product.m128_f32[0]
+                                   + product.m128_f32[1]
+                                   + product.m128_f32[2];
+        if (originDistance > portal->plane.data.v.m128_f32[3]
+            || R_PortalBehindAnyPlane(portal, iPlaneCount,
+                                      &planes[0].data) != 0)
+            continue;
+
+        int numPortalPlanes = 0;
+        dpvs_plane_t* portalPlanes = R_PortalClipPlanes(
+            portal, parentPlane, planes, iPlaneCount, &numPortalPlanes);
+        if (root_level && numPortalPlanes > 0)
+        {
+            phys_static_array<math::Vector4, 20>* savedPortalPlanes =
+                portals.add();
+            if (savedPortalPlanes == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+                AeAssert::gCurrentLine = 1250;
+                AeAssert::gCurrentExpr = "portal_planes";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("too many portals at root level"))
+                    __debugbreak();
+            }
+            if (savedPortalPlanes != nullptr)
+            {
+                for (int i = 0; i < numPortalPlanes; ++i)
+                {
+                    math::Vector4* savedPlane = savedPortalPlanes->add();
+                    if (savedPlane == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::JSV;
+                        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\tr_dpvs.cpp";
+                        AeAssert::gCurrentLine = 1254;
+                        AeAssert::gCurrentExpr = "plane";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("too manu portal planes"))
+                            __debugbreak();
+                        break;
+                    }
+                    *savedPlane = portalPlanes[i].data;
+                }
+            }
+        }
+
+        if (numPortalPlanes != 0)
+        {
+            portal->active = 1;
+            R_RecursivePortalWalk(frameBase, portal->cell, &portal->plane,
+                                  portalPlanes, numPortalPlanes, dlightBits,
+                                  false);
+            dpvs_plane_t::sAllocator->Release(portalPlanes);
+            portal->active = 0;
+        }
+    }
 }
 
 void R_AddWorldSurfacesDPVS()
