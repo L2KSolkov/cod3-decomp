@@ -422,6 +422,7 @@ unsigned     nslGetVersion() { return 4; }
 nslWave*      nslWavePtr(nslWaveID);
 nslVoice*      nslVoicePtr(int);
 unsigned      nslVoiceCount();
+void          nslVoiceFree(int);
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
 nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
@@ -758,6 +759,19 @@ void          nslFreeBank(nslBankID bankID) { nslWaveBankFree(static_cast<nslWav
 void          nslFreeSource(nslSourceID);
 // ea: 0x00820B50
 void          nslStopSource(nslSourceID sid) { nslFreeSource(sid); }
+// ea: 0x008208C0
+void          nslFreeSourceVoice(nslSourceID sid) {
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* raw = reinterpret_cast<unsigned char*>(source);
+    const int voice = *reinterpret_cast<const int*>(raw + 0x118u);
+    if (voice == -1)
+        return;
+    nslVoiceFree(voice);
+    *reinterpret_cast<int*>(raw + 0x118u) = -1;
+    *reinterpret_cast<int*>(raw + 0x124u) = 0;
+}
 // ea: 0x00820980
 void          nslQueueSource(nslSourceID sid) {
     nslSource* source = nslSourcePtr(sid);
