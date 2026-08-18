@@ -23,6 +23,7 @@
 #include <cstring>
 
 extern void tlWarning(const char* Format, ...);
+extern void tlPrintf(const char* Format, ...);
 
 // IDA global @ 0x00D3C190 (Float4_NegZAxis_123).
 const __m128 Float4_NegZAxis_123 = {0.0f, 0.0f, -1.0f, 0.0f};
@@ -2314,10 +2315,71 @@ void apsSpawnOnDeathAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 // Trajectory (spline)
 // ============================================================================
 apsTrajectoryAction::apsTrajectoryAction()
-    : apsAction(4, 0, eAsync, 0x14040u) {}
+    : apsAction(4, 0, eAsync, 0xF000041u) {}
 void         apsTrajectoryAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
-unsigned int apsTrajectoryAction::GetSplineInfo(float*&, float&, float&,
-                                                math::Dir3&, math::Dir3&) { return 0; }
+
+// ea: 0x0080B140
+void CheckSplineData(float* pData) {
+    int index = 0;
+    tlPrintf("---------------------------------------\n");
+
+    unsigned int firstWord = *reinterpret_cast<unsigned int*>(pData);
+    while (static_cast<int>(firstWord) != -1) {
+        const unsigned int secondWord = *reinterpret_cast<unsigned int*>(pData + 1);
+        if (static_cast<int>(secondWord) == -1)
+            break;
+        const unsigned int thirdWord = *reinterpret_cast<unsigned int*>(pData + 2);
+        if (static_cast<int>(thirdWord) == -1)
+            break;
+
+        tlPrintf("%03d : %f, %f, %f [%08X %08X %08X]\n", index,
+                 pData[0], pData[1], pData[2], firstWord, secondWord,
+                 thirdWord);
+        firstWord = *reinterpret_cast<unsigned int*>(pData + 3);
+        pData += 3;
+        ++index;
+    }
+    tlPrintf("---------------------------------------\n");
+}
+
+unsigned int apsTrajectoryAction::GetSplineInfo(float*& oPoints, float& oT,
+                                                float& oScale,
+                                                math::Dir3& oAxis,
+                                                math::Dir3& oAxisRate) {
+    float* points = oPoints;
+    float remainingDistance = oT;
+    const float originalDistance = oT;
+
+    if (static_cast<int>(*reinterpret_cast<unsigned int*>(points)) != -1) {
+        while (static_cast<int>(
+                   *reinterpret_cast<unsigned int*>(points + 3)) != -1) {
+            const math::Dir3 current(points[0], points[1], points[2]);
+            const math::Dir3 next(points[3], points[4], points[5]);
+            const __m128 delta = _mm_sub_ps(next.v, current.v);
+            const __m128 deltaSquared = _mm_mul_ps(delta, delta);
+            const float sectionLength = std::sqrt(
+                deltaSquared.m128_f32[0] +
+                (deltaSquared.m128_f32[1] + deltaSquared.m128_f32[2]));
+
+            if (sectionLength > remainingDistance) {
+                oPoints = points;
+                oScale = sectionLength;
+                oT = originalDistance;
+                oAxis = current;
+                oAxisRate = next;
+                return 1;
+            }
+
+            const int nextNodeMarker =
+                *reinterpret_cast<int*>(points + 3);
+            remainingDistance -= sectionLength;
+            points += 3;
+            if (nextNodeMarker == -1)
+                return 0;
+        }
+    }
+    return 0;
+}
 
 // ============================================================================
 // Env-collide (world raycast)
