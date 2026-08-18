@@ -1460,8 +1460,84 @@ void OrientRandom(math::Mat43* out, const math::Dir3::Packed*,
 } // namespace
 
 apsSpawnAction::apsSpawnAction()
-    : apsAction(3, 0, eAsync, 0x14040u) {}
-void apsSpawnAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+    : apsAction(5, 0, eAsync, 0x800001u) {}
+
+// ea: 0x0080FC50
+void apsSpawnAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                         apsGroup* ioGroup, apsEffect* iEffect, float,
+                         float iTimeDelta) {
+    const int stride = ioGroup->mPFD.mStride;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const float densityInterval = mParams.mElements[2];
+
+    if (mParams.mSize <= 3 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+    const apsEffectTemplate* effectTemplate =
+        reinterpret_cast<const apsEffectTemplate*>(
+            static_cast<uintptr_t>(apsMath::FloatAsInt(mParams.mElements[3])));
+    if (effectTemplate == nullptr)
+        return;
+
+    unsigned char* densityTime =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_DensityTime);
+    unsigned char* age = iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Age);
+    unsigned char* maxAge =
+        iBegin + ioGroup->mPFD.GetOffset(apsPFDField_MaxAge);
+    unsigned char* orientationField = nullptr;
+    if ((ioGroup->mPFD.mFields & (1u << apsPFDField_Orientation)) != 0)
+        orientationField =
+            iBegin + ioGroup->mPFD.GetOffset(apsPFDField_Orientation);
+
+    if (iBegin == iEnd)
+        return;
+
+    while (iBegin != iEnd) {
+        float* density = reinterpret_cast<float*>(densityTime);
+        if (*density == 0.0f) {
+            if (mParams.mSize <= 4 &&
+                _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                          "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+                __debugbreak();
+            *density += mParams.mElements[4];
+        }
+
+        *density -= iTimeDelta;
+        if (*density <= 0.0f) {
+            *density += densityInterval;
+            if (*density <= 0.0f)
+                *density = densityInterval;
+
+            const float parentAgePercent =
+                *reinterpret_cast<float*>(age) /
+                *reinterpret_cast<float*>(maxAge);
+            math::Dir3 position;
+            position.v = _mm_setr_ps(
+                reinterpret_cast<float*>(iBegin)[0],
+                reinterpret_cast<float*>(iBegin)[1],
+                reinterpret_cast<float*>(iBegin)[2], 0.0f);
+
+            apsQuaternion orientation(0.0f, 0.0f, 0.0f, 1.0f);
+            if (orientationField != nullptr)
+                orientation = *reinterpret_cast<const apsQuaternion*>(orientationField);
+
+            apsInternal::QueueSpawnedEffect(iEffect->mId, effectTemplate,
+                                            g_effectTime, orientation, position,
+                                            parentAgePercent);
+        }
+
+        densityTime += stride;
+        iBegin += stride;
+        if (orientationField != nullptr)
+            orientationField += stride;
+        age += stride;
+        maxAge += stride;
+    }
+}
 
 apsSpawnOnDeathAction::apsSpawnOnDeathAction()
     : apsAction(4, 0, eAsync, 0x8000001u) {}
