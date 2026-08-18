@@ -14,6 +14,28 @@
 // so every ctor reproduces its exact numbers.
 // ============================================================================
 #include "apsSuppliedActions.h"
+#include "apsGroup.h"
+
+namespace {
+
+// ea: 0x00809AB0 - release helper used by source and burst emission counts.
+// The RNG step and threshold comparison follow the IDA C dump/disassembly.
+double ModifyEmitCountByChance(float chanceToRemoveModifier, float originalCount) {
+    const float chance = apsCommon::GetChanceToRemove() * chanceToRemoveModifier;
+    if (chance <= 0.0f)
+        return originalCount;
+
+    const float randomValue = apsMath::gDefaultRandomNumberGenerator.GetFloat();
+    if (chance <= randomValue)
+        return originalCount;
+
+    float clampedChance = 1.0f;
+    if (chance <= 1.0f)
+        clampedChance = chance;
+    return (1.0f - clampedChance) * originalCount;
+}
+
+} // namespace
 
 // ============================================================================
 // apsAction base — real implementation now lives in apsAction.cpp (apsAction.o).
@@ -51,15 +73,62 @@ apsSourceAction::apsSourceAction(int iNumParams, int iNumDomains,
     : apsAction(iNumParams, iNumDomains, eSource,
                 iRequiredParticleFields | 0x200u) {}
 void apsSourceAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
-int  apsSourceAction::GetEmissionCount(apsGroup&, float) { return 0; }
+// ea: 0x0080C5C0
+int apsSourceAction::GetEmissionCount(apsGroup& ioGroup, float iTimeDelta) {
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+
+    const float originalCount = (mParams.mElements[2] * iTimeDelta) +
+                                 ioGroup.mEmissionSpillover;
+    const float modifiedCount = static_cast<float>(
+        ModifyEmitCountByChance(ioGroup.mRenderer->GetChanceToRemove(), originalCount));
+    const int count = static_cast<int>(modifiedCount);
+    ioGroup.mEmissionSpillover = modifiedCount - static_cast<float>(count);
+    return count;
+}
 
 apsBurstAction::apsBurstAction()
     : apsSourceAction(5, 16, 0x200u) {}
-int  apsBurstAction::GetEmissionCount(apsGroup&, float) { return 0; }
+// ea: 0x0080C640
+int apsBurstAction::GetEmissionCount(apsGroup& ioGroup, float) {
+    if (ioGroup.mEmissionSpillover < 0.0f)
+        return 0;
+
+    ioGroup.mEmissionSpillover = -1.0f;
+    if (mParams.mSize <= 2 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 145,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+
+    const float modifiedCount = static_cast<float>(
+        ModifyEmitCountByChance(ioGroup.mRenderer->GetChanceToRemove(), mParams.mElements[2]));
+    return static_cast<int>(modifiedCount);
+}
 
 apsRandomSpawnAction::apsRandomSpawnAction()
     : apsSourceAction(5, 17, 0x200u) {}
-int  apsRandomSpawnAction::GetEmissionCount(apsGroup&, float) { return 0; }
+// ea: 0x0080C6C0
+int apsRandomSpawnAction::GetEmissionCount(apsGroup& ioGroup, float iTimeDelta) {
+    const float emissionSpillover = ioGroup.mEmissionSpillover;
+    int count = 0;
+
+    if (mDomains.mSize <= 16 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 151,
+                  "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+        __debugbreak();
+
+    float delay = emissionSpillover - iTimeDelta;
+    apsDomain* domain = mDomains.mElements[4];
+    while (delay <= 0.0f) {
+        ++count;
+        domain->GetValue(1, &iTimeDelta);
+        delay = iTimeDelta + delay;
+    }
+    ioGroup.mEmissionSpillover = delay;
+    return count;
+}
 
 // ============================================================================
 // Lifetime — kills particles whose age > maxage.
@@ -67,7 +136,34 @@ int  apsRandomSpawnAction::GetEmissionCount(apsGroup&, float) { return 0; }
 // ============================================================================
 apsLifetimeAction::apsLifetimeAction()
     : apsAction(2, 0, eAsync, 0x8000600u) {}
-void apsLifetimeAction::Act(unsigned char*, unsigned char*, apsGroup*, apsEffect*, float, float) {}
+// ea: 0x00809BF0
+void apsLifetimeAction::Act(unsigned char* iBegin, unsigned char* iEnd,
+                            apsGroup* ioGroup, apsEffect*, float, float) {
+    if ((ioGroup->mPFD.mFields & 0x200u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int ageOffset = ioGroup->mPFD.mOffsets[9];
+
+    if ((ioGroup->mPFD.mFields & 0x400u) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsPFD.h", 117,
+                  "mFields & (1 << iField)", "Can't get offset for missing field"))
+        __debugbreak();
+    const int maxAgeOffset = ioGroup->mPFD.mOffsets[10];
+    const int stride = ioGroup->mPFD.mStride;
+
+    unsigned char* particle = iBegin;
+    if (particle == iEnd)
+        return;
+
+    do {
+        const float age = *reinterpret_cast<float*>(particle + ageOffset);
+        const float maxAge = *reinterpret_cast<float*>(particle + maxAgeOffset);
+        if (age > maxAge)
+            ioGroup->MarkParticleForRemoval(particle);
+        particle += stride;
+    } while (particle != iEnd);
+}
 
 // ============================================================================
 // Alpha fade family

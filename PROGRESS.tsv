@@ -43,7 +43,7 @@ sv.o		sv.o	game	118	PORTED	[game:sv.o] COMPLETE 118/118: sv_world collision suit
 
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
 
-aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (particle action stubs, ABI-correct ctors from IDA)
+aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (ABI-correct ctors; IDA-backed source/burst/random emission counts and lifetime action; remaining particle action bodies are still platform/data dependent)
 
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	PORTED	physics_system.cpp/h: phys_sys API (create/destroy/slots/init/frame/update_constraint_infos/get_user_rigid_body); phys_heap_memory_pool<T> + phys_inplace_avl_tree templates (add/find/remove/rotate/avl_max) in pulse_sum.h; real 0x360 physics_system layout; constraint ctors; rbint/rbcint + list functors; create<T> free template incl. contact tree-insert
 
