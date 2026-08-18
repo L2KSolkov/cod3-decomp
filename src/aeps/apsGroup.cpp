@@ -21,6 +21,7 @@ struct nglFrustum;
 #include <string.h>
 
 #include <cfloat>
+#include <cmath>
 
 namespace apsMemory {
     void SetBlockAllocator();
@@ -41,6 +42,20 @@ unsigned char* apsGroup::sGlobalRemovalList[200];
 
 int g_hackCallCount = 0;
 int g_hackCurrentPakId = 0;
+
+// ea: 0x0051AAD0
+apsSphere apsBounds::Sphere() const
+{
+    __m128 delta = _mm_sub_ps(mMax.v, mMin.v);
+    __m128 squared = _mm_mul_ps(delta, delta);
+    float radius = std::sqrt(squared.m128_f32[0] + squared.m128_f32[1]
+                              + squared.m128_f32[2]) * 0.5f;
+    apsSphere result;
+    result.mSphere.v = _mm_mul_ps(_mm_add_ps(mMax.v, mMin.v),
+                                  _mm_set1_ps(0.5f));
+    result.mSphere.v.m128_f32[3] = radius;
+    return result;
+}
 
 // ============================================================================
 // HackTurnOffAepsMemory / HackTurnOnAepsMemory — switch aps memory to/from

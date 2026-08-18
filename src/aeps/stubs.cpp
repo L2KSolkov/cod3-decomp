@@ -33,11 +33,6 @@ float apsSimpleMeshRenderer::GetChanceToRemove() const
 {
     return 0.0f;
 }
-apsSphere apsBounds::Sphere() const
-{
-    apsSphere s = {};
-    return s;
-}
 apsClient::~apsClient() {}
 bool apsClient::GetLightInfoAtPosition(const math::Dir3& iPosition,
                                        apsLight::LightInfo& oInfo)
