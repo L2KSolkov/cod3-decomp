@@ -2152,7 +2152,6 @@ vm_s* VM_Create(const char* name, int (*entry)(int*))
     (void)name; (void)entry;
     return nullptr;
 }
-void VM_Init() {}
 unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
 {
     (void)self; (void)a;

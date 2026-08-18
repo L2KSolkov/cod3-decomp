@@ -23,6 +23,7 @@
 
 extern PoolAllocator* gCommonPoolAllocator;  // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A (core.o)
 extern void* mem_heap_malloc(unsigned int size);  // ?mem_heap_malloc@@YAPAXI@Z
+extern void Com_Memset(void* dest, int val, unsigned int count); // core.o
 extern bool g_indoor;                              // ?g_indoor@@3_NA (core.o)
 extern float CG_GetNorthDirection();               // ?CG_GetNorthDirection@@YAMXZ (cg.o)
 extern void G_FlushCorpses();                      // ?G_FlushCorpses@@YAXXZ (mp_actors.o)
@@ -8630,6 +8631,12 @@ void VM_Clear()
 {
     memset(vmTable, 0, sizeof(vmTable));
     currentVM = nullptr;
+}
+
+// ea: 0x005C1B60
+void VM_Init()
+{
+    Com_Memset(vmTable, 0, 0x1A4u);
 }
 
 // ea: 0x005C20D0
