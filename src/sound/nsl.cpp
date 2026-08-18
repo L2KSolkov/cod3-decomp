@@ -2244,7 +2244,6 @@ int           nslWaveBankSetFile(nslWaveBank* waveBank, nflFileID waveBankFile,
     waveBank->storage.backing.waveBankFileOffset = waveBankFileOffset;
     return 1;
 }
-void          nslWaveBankSort(nslWaveBank*) {}
 // ea: 0x00827560
 nslWaveID     nslWaveBankGetWave(nslWaveBankID waveBankID, unsigned index) {
     nslWaveBankSlot* slot = nslWaveBankGetSlot(waveBankID);
@@ -2419,8 +2418,162 @@ nslWaveID     nslWaveLookup(unsigned waveNameHash) {
 // ============================================================================
 // nslWaveBankSort
 // ============================================================================
-void          nslWaveBankSortSwap(nslWaveName*, nslWave*, unsigned, unsigned) {}
-void          nslWaveBankSortRecursive(nslWaveBank*, int, int, int (*cmp)(const nslWaveName*, const nslWaveName*)) {}
+// ea: 0x00829770
+void nslWaveBankSortSwap(nslWaveName* names, nslWave* waves,
+                         unsigned index1, unsigned index2) {
+    const nslWaveName name = names[index2];
+    names[index2] = names[index1];
+    names[index1] = name;
+
+    // IDA's release code addresses the packed 0x10-byte wave records directly.
+    unsigned char* rawWaves = reinterpret_cast<unsigned char*>(waves);
+    unsigned* wave2 = reinterpret_cast<unsigned*>(rawWaves + 0x10u * index2);
+    unsigned* wave1 = reinterpret_cast<unsigned*>(rawWaves + 0x10u * index1);
+    const unsigned word0 = wave2[0];
+    const unsigned word1 = wave2[1];
+    const unsigned word2 = wave2[2];
+    const unsigned word3 = wave2[3];
+    wave2[0] = wave1[0];
+    wave2[1] = wave1[1];
+    wave2[2] = wave1[2];
+    wave2[3] = wave1[3];
+    wave1[0] = word0;
+    wave1[1] = word1;
+    wave1[2] = word2;
+    wave1[3] = word3;
+}
+
+// ea: 0x008297E0
+void nslWaveBankSortRecursive(
+    nslWaveBank* waveBank, int lo, int hi,
+    int (*comp)(const nslWaveName*, const nslWaveName*)) {
+    nslWaveName* names = waveBank->names;
+    nslWave* waves = waveBank->waves;
+    int lostk[32];
+    int histk[32];
+    int stkptr = 0;
+
+    for (;;) {
+        for (;;) {
+            const int count = hi - lo + 1;
+            if (count <= 8) {
+                if (hi > lo) {
+                    // The release uses a selection-sort pass for small ranges,
+                    // moving the greatest remaining element to the high end.
+                    for (unsigned high = static_cast<unsigned>(hi);
+                         high > static_cast<unsigned>(lo); --high) {
+                        int best = lo;
+                        for (int candidate = lo + 1; candidate <= static_cast<int>(high);
+                             ++candidate) {
+                            if (comp(&names[candidate], &names[best]) > 0)
+                                best = candidate;
+                        }
+                        nslWaveBankSortSwap(names, waves, high,
+                                            static_cast<unsigned>(best));
+                    }
+                }
+                break;
+            }
+
+            // Median-of-three ordering is the release partition's pivot setup.
+            const int pivotIndex = lo + count / 2;
+            if (comp(&names[lo], &names[pivotIndex]) > 0)
+                nslWaveBankSortSwap(names, waves, static_cast<unsigned>(lo),
+                                    static_cast<unsigned>(pivotIndex));
+            if (comp(&names[lo], &names[hi]) > 0)
+                nslWaveBankSortSwap(names, waves, static_cast<unsigned>(lo),
+                                    static_cast<unsigned>(hi));
+            if (comp(&names[pivotIndex], &names[hi]) > 0)
+                nslWaveBankSortSwap(names, waves, static_cast<unsigned>(pivotIndex),
+                                    static_cast<unsigned>(hi));
+
+            int left = lo;
+            int right = hi;
+            int pivot = pivotIndex;
+            for (;;) {
+                // Scan upward for an element greater than the pivot.  The
+                // release skips the pivot slot itself while crossing it.
+                do {
+                    ++left;
+                } while (left <= hi &&
+                         (left == pivot || comp(&names[left], &names[pivot]) <= 0));
+
+                // Scan downward for an element no greater than the pivot.
+                do {
+                    --right;
+                } while (right > pivot && comp(&names[right], &names[pivot]) > 0);
+
+                if (right < left)
+                    break;
+
+                nslWaveBankSortSwap(names, waves, static_cast<unsigned>(right),
+                                    static_cast<unsigned>(left));
+                if (pivot == right)
+                    pivot = left;
+            }
+
+            // Extend the left partition boundary across elements equal to the
+            // pivot, matching the duplicate-key handling in the release code.
+            int leftEnd = right + 1;
+            if (pivot < leftEnd) {
+                while (--leftEnd > pivot &&
+                       comp(&names[leftEnd - 1], &names[pivot]) == 0) {
+                }
+            }
+            for (;;) {
+                const int candidate = leftEnd - 1;
+                if (candidate <= lo) {
+                    leftEnd = candidate;
+                    break;
+                }
+                if (comp(&names[candidate], &names[pivot]) != 0) {
+                    leftEnd = candidate;
+                    break;
+                }
+                leftEnd = candidate;
+            }
+
+            // Keep the larger partition on the explicit stack and continue
+            // with the smaller one, as in the release implementation.
+            if (leftEnd - lo < hi - left) {
+                if (left < hi) {
+                    lostk[stkptr] = left;
+                    histk[stkptr] = hi;
+                    ++stkptr;
+                }
+                if (leftEnd <= lo)
+                    break;
+                hi = leftEnd;
+            } else {
+                if (lo < leftEnd) {
+                    lostk[stkptr] = lo;
+                    histk[stkptr] = leftEnd;
+                    ++stkptr;
+                }
+                if (left >= hi)
+                    break;
+                lo = left;
+            }
+        }
+
+        if (stkptr == 0)
+            break;
+        --stkptr;
+        lo = lostk[stkptr];
+        hi = histk[stkptr];
+    }
+}
+
+// ea: 0x00829C90
+void nslWaveBankSort(nslWaveBank* waveBank) {
+    int (*compare)(const nslWaveName*, const nslWaveName*) =
+        &nslWaveNameCompareHash;
+    if ((waveBank->waveBankFlags & 2u) == 0)
+        compare = &nslWaveNameCompareText;
+    nslWaveBankSortRecursive(waveBank, 0,
+                             static_cast<int>(waveBank->waveCount) - 1,
+                             compare);
+}
 
 // ============================================================================
 // nslWaveBankLoader — async wave bank loading
