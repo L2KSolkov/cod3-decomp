@@ -608,6 +608,33 @@ nslEmitterID  nslGetSourceEmitter(nslSourceID sid) {
     return *reinterpret_cast<const nslEmitterID*>(
         reinterpret_cast<const unsigned char*>(source) + 0x114u);
 }
+// ea: 0x00821630
+void          nslSetSourceEmitter(nslSourceID sid, nslEmitterID eid) {
+    nslEmitter* emitter = nslEmitterPtr(eid);
+    nslSource* source = nslSourcePtr(sid);
+    if (source == nullptr)
+        return;
+    unsigned char* sourceRaw = reinterpret_cast<unsigned char*>(source);
+    if (emitter == nullptr) {
+        *reinterpret_cast<nslEmitterID*>(sourceRaw + 0x114u) = NSL_INVALID_EMITTER;
+        return;
+    }
+
+    const unsigned __int64 mask = emitter->paramsUsed | emitter->paramsUpdate;
+    *reinterpret_cast<nslEmitterID*>(sourceRaw + 0x114u) = eid;
+    *reinterpret_cast<unsigned __int64*>(sourceRaw + 0x8u) |= mask;
+    const unsigned char* emitterRaw = reinterpret_cast<const unsigned char*>(emitter);
+    for (unsigned index = 0; index < 64u; ++index) {
+        if ((mask & (1ull << index)) == 0)
+            continue;
+        *reinterpret_cast<unsigned*>(sourceRaw + 0x10u + 4u * index) =
+            *reinterpret_cast<const unsigned*>(emitterRaw + 0x10u + 4u * index);
+    }
+}
+// ea: 0x00821870
+void          nslAddEmitterSource(nslEmitterID eid, nslSourceID sid) {
+    nslSetSourceEmitter(sid, eid);
+}
 // ea: 0x00822800
 void          nslSetSourceEffect(nslSourceID sid, int effectOn) {
     nslSource* source = nslSourcePtr(sid);
