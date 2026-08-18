@@ -24,7 +24,7 @@ extern char* Cmd_Argv(int arg);
 extern int FS_FOpenFileWrite(const char* filename);
 extern int FS_Write(const void* buffer, int len, int h);
 extern void FS_FCloseFile(int f);
-extern void Con_OneTimeInit();
+extern int Con_OneTimeInit();
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern char* va(const char* fmt, ...);
@@ -57,6 +57,9 @@ extern void SCR_DrawSmallChar(int x, int y, int ch);
 extern void CL_LookupColor(unsigned char c, float* color);
 extern void Field_Draw(field_t* edit, int x, int y, int showCursor);
 int dword_F13324;  // ?dword_F13324@@3HA (cl.o)
+int dword_F13328;
+int dword_F1332C;
+int dword_F13330;
 extern int dword_CE8814[64];
 extern int dword_CE8818[64];
 extern int dword_CE881C[64];
@@ -145,6 +148,8 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 console_t con;
 msgwnd_t msgwnd;
+int endtimes[8];
+int lines[8];
 field_t g_consoleField;
 field_t historyEditLines[32];
 int g_console_char_width;
@@ -408,8 +413,8 @@ void Con_UpdateNotifyLine(print_msg_type_t type, int bLineFeed,
     {
         if (type >= PMSG_CONSOLE && type <= PMSG_GAME)
         {
-            // console + game share the gamemsg window (msgwnd at +0x32?)
-            Con_UpdateMessageWindowLine(&msgwnd, bLineFeed, duration, flags);
+            Con_UpdateMessageWindowLine(&con.windows.gamemsg, bLineFeed,
+                                        duration, flags);
             return;
         }
         if (type == PMSG_BOLDGAME)
@@ -491,6 +496,62 @@ void Con_Init()
     Cmd_AddCommand("condump", (void(__cdecl*)())Con_Dump_f);
 }
 
+// ea: 0x529B50
+static void Con_InitMessageWindow(messagewindow_t* window, int count,
+                                  int* starttimes, int* endtimes,
+                                  int* messageLines, int padding,
+                                  int scrolltime, int fadein, int fadeout)
+{
+    if (window == nullptr)
+        ASSERT("msgwnd", "c:\\cod\\code\\game\\cl_console.cpp", 970);
+    if (starttimes == nullptr)
+        ASSERT("starttimes", "c:\\cod\\code\\game\\cl_console.cpp", 971);
+    if (endtimes == nullptr)
+        ASSERT("endtimes", "c:\\cod\\code\\game\\cl_console.cpp", 972);
+    if (messageLines == nullptr)
+        ASSERT("lines", "c:\\cod\\code\\game\\cl_console.cpp", 973);
+    if (count > 0 && count < padding)
+        ASSERT("count <= 0 || count >= padding",
+               "c:\\cod\\code\\game\\cl_console.cpp", 974);
+    window->starttimes = starttimes;
+    window->endtimes = endtimes;
+    window->padding = padding;
+    window->lines = messageLines;
+    window->scrolltime = scrolltime;
+    window->fadeout = fadeout;
+    window->current_line = 0;
+    window->count = count;
+    window->fadein = fadein;
+    window->typingLineIndex = -1;
+    int* displayLength = window->displayLength;
+    for (int i = 11; i != 0; --i)
+    {
+        *(displayLength - 11) = 0;
+        *displayLength++ = 0;
+    }
+}
+
+// ea: 0x529D00
+int Con_OneTimeInit()
+{
+    con_gamemessagetime = Cvar_Get("con_gamemessagetime", "5", 0);
+    con_boldgamemessagetime = Cvar_Get("con_boldgamemessagetime", "8", 0);
+    Con_InitMessageWindow(&con.windows.gamemsg, 8, con.gamemsg_starttimes,
+                          con.gamemsg_endtimes, con.gamemsg_lines, 3, 250,
+                          250, 500);
+    Con_InitMessageWindow(&msgwnd, 8,
+                          con.windows.boldgamemsg.boldgamemsg_starttimes,
+                          endtimes, lines, 3, 250, 250, 500);
+    dword_F13330 = 1065353216;
+    dword_F1332C = 1065353216;
+    dword_F13328 = 1065353216;
+    dword_F13324 = 1065353216;
+    con.linewidth = -1;
+    int result = Con_CheckResize();
+    con.initialized = 1;
+    return result;
+}
+
 // ============================================================================
 // Console / HUD drawing (cl.o cl_console.cpp)
 // ============================================================================
@@ -536,8 +597,7 @@ void Con_DrawBoldMessages(int iXPos, int iYPos, float fAlpha,
 // ea: 0x533450
 void Con_DrawNotify(int iXPos, int iYPos, float fAlpha, msgwnd_mode_t eMode)
 {
-    Con_DrawMessageWindow((msgwnd_t*)&con.gamemsg_starttimes, iXPos, iYPos,
-                          fAlpha, eMode);
+    Con_DrawMessageWindow(&con.windows.gamemsg, iXPos, iYPos, fAlpha, eMode);
 }
 
 // ea: 0x5333E0

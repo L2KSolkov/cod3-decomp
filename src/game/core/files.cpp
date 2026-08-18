@@ -185,11 +185,14 @@ long FS_HashFileName(const char* fname, int hashSize)
 // ea: 0x004B57C0
 FILE* FS_FileForHandle(int f)
 {
-    ASSERT("f > 0 && f < (1 + 2 + 0)", "c:\\cod\\code\\game\\com_files.cpp",
-           450);
-    ASSERT("!fsh[f].zipFile", "c:\\cod\\code\\game\\com_files.cpp", 451);
-    ASSERT("fsh[f].handleFiles.file.o", "c:\\cod\\code\\game\\com_files.cpp",
-           452);
+    if (f <= 0 || f >= 3)
+        ASSERT("f > 0 && f < (1 + 2 + 0)",
+               "c:\\cod\\code\\game\\com_files.cpp", 450);
+    if (fsh[f].zipFile != 0)
+        ASSERT("!fsh[f].zipFile", "c:\\cod\\code\\game\\com_files.cpp", 451);
+    if (fsh[f].handleFiles.file.file == nullptr)
+        ASSERT("fsh[f].handleFiles.file.o",
+               "c:\\cod\\code\\game\\com_files.cpp", 452);
     return (FILE*)fsh[f].handleFiles.file.file;
 }
 
@@ -203,7 +206,8 @@ void FS_ForceFlush(int f)
 // ea: 0x004B58E0
 int FS_filelength(int f)
 {
-    ASSERT("f", "c:\\cod\\code\\game\\com_files.cpp", 478);
+    if (f == 0)
+        ASSERT("f", "c:\\cod\\code\\game\\com_files.cpp", 478);
     FS_CheckFileSystemStarted();
     if (fsh[f].zipFile != 0)
         return fsh[f].fileSize;
@@ -495,7 +499,7 @@ void FS_Flush(int f)
 // ============================================================================
 
 static int FS_HandleForFile(int streamThread);
-static void FS_BuildOSPath_Internal(const char* base, const char* game,
+static void FS_BuildOSPath_Internal(const char* base, char* game,
                                     const char* qpath, char* ospath,
                                     int streamThread);
 static int FS_FOpenFileRead_Internal(const char* filename, int* file,
@@ -509,13 +513,16 @@ static int FS_AddFileToList(char* name, char* list[], int nfiles);
 static int FS_ReturnPath(const char* zname, char* zpath, int* depth);
 
 // ea: 0x004C66A0
-static void FS_BuildOSPath_Internal(const char* base, const char* game,
+static void FS_BuildOSPath_Internal(const char* base, char* game,
                                     const char* qpath, char* ospath,
                                     int streamThread)
 {
-    ASSERT("base", "c:\\cod\\code\\game\\com_files.cpp", 532);
-    ASSERT("qpath", "c:\\cod\\code\\game\\com_files.cpp", 533);
-    ASSERT("ospath", "c:\\cod\\code\\game\\com_files.cpp", 534);
+    if (base == nullptr)
+        ASSERT("base", "c:\\cod\\code\\game\\com_files.cpp", 532);
+    if (qpath == nullptr)
+        ASSERT("qpath", "c:\\cod\\code\\game\\com_files.cpp", 533);
+    if (ospath == nullptr)
+        ASSERT("ospath", "c:\\cod\\code\\game\\com_files.cpp", 534);
     const char* v5 = game;
     if (game == nullptr || *game == 0)
     {
@@ -523,6 +530,7 @@ static void FS_BuildOSPath_Internal(const char* base, const char* game,
         v5 = fs_gamedir;
     }
     unsigned int v6 = (unsigned int)strlen(base);
+    unsigned int lenBase = v6;
     unsigned int v7 = (unsigned int)strlen(v5);
     unsigned int lenQpath = (unsigned int)strlen(qpath);
     if (v7 + lenQpath + v6 + 2 >= 128)
@@ -533,6 +541,7 @@ static void FS_BuildOSPath_Internal(const char* base, const char* game,
             return;
         }
         Com_Error((errorParm_t)0, "FS_BuildOSPath: os path length exceeded MAX_OSPATH");
+        v6 = lenBase;
     }
     memcpy(ospath, base, v6);
     char* v8 = &ospath[v6];
@@ -558,7 +567,7 @@ static void FS_BuildOSPath_Internal(const char* base, const char* game,
 }
 
 // ea: 0x004C6890
-void FS_BuildOSPath(const char* base, const char* game, const char* qpath,
+void FS_BuildOSPath(const char* base, char* game, const char* qpath,
                     char* ospath)
 {
     FS_BuildOSPath_Internal(base, game, qpath, ospath, 0);
@@ -568,7 +577,8 @@ void FS_BuildOSPath(const char* base, const char* game, const char* qpath,
 static int FS_FOpenFileRead_Internal(const char* filename, int* file,
                                      int uniqueFILE, int streamThread)
 {
-    ASSERT("filename", "c:\\cod\\code\\game\\com_files.cpp", 1060);
+    if (filename == nullptr)
+        ASSERT("filename", "c:\\cod\\code\\game\\com_files.cpp", 1060);
     FS_CheckFileSystemStarted();
     if (file != nullptr)
     {
@@ -618,7 +628,7 @@ static int FS_FOpenFileRead_Internal(const char* filename, int* file,
                             || v16->bLocalized != 0
                             || FS_PureIgnoresExtension(ExtensionSubString) != 0)
                         {
-                            const char* path = v16->dir->path;
+                            char* path = v16->dir->path;
                             char netpath[128];
                             FS_BuildOSPath_Internal(path, path + 128, filename,
                                                     netpath, streamThread);
@@ -691,7 +701,7 @@ static int FS_FOpenFileRead_Internal(const char* filename, int* file,
                 return 1;
             }
         }
-        const char* v9 = v5->dir->path;
+        char* v9 = v5->dir->path;
         if (v9 != nullptr)
         {
             char netpath[128];
@@ -784,7 +794,7 @@ const char* FS_ShortOSFilePath(const char* filename)
             || (fs_ignoreLozalized->integer == 0
                 && v1->language == SEH_GetCurrentLanguage()))
         {
-            const char* path = v1->dir->path;
+            char* path = v1->dir->path;
             if (path != nullptr)
             {
                 char netpath[128];
@@ -1230,10 +1240,12 @@ void FS_Shutdown(int closemfp)
     }
     if (closemfp != 0)
     {
-        ASSERT("fs_memorysearchpaths == fs_searchpaths",
-               "c:\\cod\\code\\game\\com_files.cpp", 2623);
-        ASSERT("fs_memorynonpackfilelist == fs_nonpackfilelist",
-               "c:\\cod\\code\\game\\com_files.cpp", 2624);
+        if (fs_memorysearchpaths != fs_searchpaths)
+            ASSERT("fs_memorysearchpaths == fs_searchpaths",
+                   "c:\\cod\\code\\game\\com_files.cpp", 2623);
+        if (fs_memorynonpackfilelist != fs_nonpackfilelist)
+            ASSERT("fs_memorynonpackfilelist == fs_nonpackfilelist",
+                   "c:\\cod\\code\\game\\com_files.cpp", 2624);
         FS_ShutdownSearchPaths(fs_searchpaths);
         filelist_s* v3 = fs_nonpackfilelist;
         filelist_s* next = nullptr;

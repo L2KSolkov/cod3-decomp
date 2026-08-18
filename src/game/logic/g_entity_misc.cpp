@@ -2351,14 +2351,14 @@ void Com_Crash_f() {}
 void Com_Error_f() {}
 void Com_Freeze_f() {}
 void CompleteCommand() {}
-struct msgwnd_t;
+struct messagewindow_t;
 enum msgwnd_mode_t;
-void Con_DrawMessageWindow(msgwnd_t* w, int a, int b, float c, msgwnd_mode_t m)
+void Con_DrawMessageWindow(messagewindow_t* w, int a, int b, float c,
+                           msgwnd_mode_t m)
 {
     (void)w; (void)a; (void)b; (void)c; (void)m;
 }
-void Con_OneTimeInit() {}
-void Con_UpdateMessageWindowLine(msgwnd_t* w, int a, int b, int c)
+void Con_UpdateMessageWindowLine(messagewindow_t* w, int a, int b, int c)
 {
     (void)w; (void)a; (void)b; (void)c;
 }

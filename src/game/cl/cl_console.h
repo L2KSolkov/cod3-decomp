@@ -52,6 +52,27 @@ struct field_t {
 static_assert(sizeof(field_t) == 0x11C, "field_t size mismatch");
 
 // ============================================================================
+// messagewindow_t - message window (cl.o; verified against IDA)
+// ============================================================================
+struct messagewindow_t {
+    int* starttimes;
+    int* endtimes;
+    int* lines;
+    int current_line;
+    int count;
+    int padding;
+    int scrolltime;
+    int fadein;
+    int fadeout;
+    int lineflags[11];
+    int displayLength[11];
+    int typingLineIndex;
+};
+static_assert(sizeof(messagewindow_t) == 0x80,
+              "messagewindow_t size mismatch");
+typedef messagewindow_t msgwnd_t;
+
+// ============================================================================
 // console_t - console state (0x1144, verified)
 // ============================================================================
 struct console_t {
@@ -71,21 +92,18 @@ struct console_t {
     int gamemsg_starttimes[8];  // +0x102C
     int gamemsg_endtimes[8];    // +0x104C
     int gamemsg_lines[8];       // +0x106C
-    unsigned char _tail[0x1144 - 0x108C];
+    union {
+        struct messagewindow_t gamemsg;
+        struct {
+            unsigned char gap0[36];
+            int boldgamemsg_starttimes[8];
+            int boldgamemsg_endtimes[8];
+            int boldgamemsg_lines[8];
+        } boldgamemsg;
+    } windows;
+    unsigned char _tail[52];
 };
 static_assert(sizeof(console_t) == 0x1144, "console_t size mismatch");
-
-// ============================================================================
-// msgwnd_t - message window (used for PMSG_BOLDGAME)
-// ============================================================================
-struct msgwnd_t {
-    int starttimes[8];       // +0x00
-    int endtimes[8];         // +0x20
-    int current_line;        // +0x40
-    int typingLineIndex;     // +0x44
-    int count;               // +0x48
-};
-static_assert(sizeof(msgwnd_t) == 0x4C, "msgwnd_t size mismatch");
 
 // ============================================================================
 // Globals (cl.o data)
@@ -108,6 +126,10 @@ extern int dword_F170FC;   // frametime (ms)
 extern int dword_F1719C;   // screen width
 extern int dword_F171A0;   // screen height
 extern int dword_F171BC;   // console background material
+extern int dword_F13324;
+extern int dword_F13328;
+extern int dword_F1332C;
+extern int dword_F13330;
 extern int g_color_table[64][4];
 extern float g_color_table_flat[64 * 4];
 
@@ -122,6 +144,8 @@ extern cvar_t* cl_noprint;
 extern cvar_t* cl_languagewarnings;
 extern cvar_t* cl_languagewarningsaserrors;
 extern cvar_t* com_cl_running;
+extern int endtimes[8];
+extern int lines[8];
 extern cvar_t* cl_shownet;
 extern cvar_t* cl_yawspeed;
 extern cvar_t* cl_pitchspeed;

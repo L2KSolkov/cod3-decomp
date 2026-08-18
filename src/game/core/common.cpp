@@ -278,7 +278,7 @@ Broc::string gFootSplashEffect;             // ?gFootSplashEffect@@3Vstring@Broc
 RumbleManager::InstanceHolder RumbleManagerStatics::sInstHolder;  // ?sInstHolder@RumbleManagerStatics@@2UInstanceHolder@RumbleManager@@A (core.o @ 0x12F042C)
 AnimHeap* AnimHeapStatics::sInst = nullptr;           // ?sInst@AnimHeapStatics@@2PAVAnimHeap@@A (core.o @ 0x12F0398)
 DialogueManager* DialogueManagerStatics::sInst = nullptr;  // ?sInst@DialogueManagerStatics@@2PAVDialogueManager@@A (core.o @ 0x12F0374)
-fileHandleData_t* fsh = nullptr;                 // ?fsh@@3PAUfileHandleData_t@@A (core.o @ 0x12EFFB8)
+fileHandleData_t fsh[3];                         // ?fsh@@3PAUfileHandleData_t@@A (core.o @ 0x12EFFB8)
 searchpath_s* fs_searchpaths = nullptr;          // ?fs_searchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F0334)
 filelist_s* fs_nonpackfilelist = nullptr;        // ?fs_nonpackfilelist@@3PAUfilelist_s@@A (core.o @ 0x12F0338)
 searchpath_s* fs_memorysearchpaths = nullptr;    // ?fs_memorysearchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F033C)
@@ -306,10 +306,10 @@ int printedWarning;          // ?printedWarning@@3HA (core.o)
 int lastErrorTime;           // ?lastErrorTime@@3HA (core.o)
 int rd_buffersize;           // ?rd_buffersize@@3HA (core.o)
 int cmd_argc;                // ?cmd_argc@@3HA (core.o)
-char* fs_gamedir;            // ?fs_gamedir@@3PADA (core.o @ 0x12E5ED0)
-char* fs_bsp_gamedir;        // ?fs_bsp_gamedir@@3PADA (core.o @ 0x12E64A0)
-char* lastValidBase;         // ?lastValidBase@@3PADA (core.o @ 0x12E6600)
-char* lastValidGame;         // ?lastValidGame@@3PADA (core.o @ 0x12EFF30)
+char fs_gamedir[128];         // ?fs_gamedir@@3PADA (core.o @ 0x12E5ED0)
+char fs_bsp_gamedir[128];    // ?fs_bsp_gamedir@@3PADA (core.o @ 0x12E64A0)
+char lastValidBase[128];     // ?lastValidBase@@3PADA (core.o @ 0x12E6600)
+char lastValidGame[128];     // ?lastValidGame@@3PADA (core.o @ 0x12EFF30)
 extern cvar_t* com_fixedtime;
 extern cvar_t* com_viewlog;
 extern cvar_t* com_speeds;
@@ -322,7 +322,7 @@ extern const float vec3_origin[3] = { 0.0f, 0.0f, 0.0f };
 extern cvar_t* cl_frameadvance;
 extern cvar_t* cl_capturemovie;
 extern cvar_t* com_journal;
-char* com_consoleLines[128];  // ?com_consoleLines@@3PAPAD (core.o @ 0x12E5F98)
+char* com_consoleLines[32];   // ?com_consoleLines@@3PAPAD (core.o @ 0x12E5F98)
 extern int com_numConsoleLines;
 extern int com_argc;
 extern char** com_argv;
@@ -524,7 +524,7 @@ extern void MSG_Init(msg_t* msg, unsigned char* data, int length);
 extern int generateHashValue(const char* fname);
 extern void Cvar_AddCommands();
 extern void FS_ShutdownSearchPaths(searchpath_s* p);
-char* com_errorMessage;  // ?com_errorMessage@@3PADA (core.o)
+char com_errorMessage[4096]; // ?com_errorMessage@@3PADA (core.o)
 extern int com_errorEntered;
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
 extern int timeBeforeEvents;

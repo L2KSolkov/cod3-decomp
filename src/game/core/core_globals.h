@@ -46,7 +46,7 @@ extern mat3_t mat3_default;                   // 0x011C8024
 extern cvar_t* fs_copyfiles;              // 0x012E5AB0
 extern cvar_t* fs_cdpath;                 // 0x012E5AB4
 extern cvar_t* fs_basegame;               // 0x012E5EC4
-extern char*   fs_gamedir;                // 0x012E5ED0
+extern char    fs_gamedir[128];           // 0x012E5ED0
 extern cvar_t* fs_restrict;               // 0x012E5F68
 extern int     fs_numServerPaks;          // 0x012E5F6C
 extern int     fs_checksumFeed;           // 0x012E5F7C
@@ -54,16 +54,16 @@ extern cvar_t* fs_ignoreLozalized;        // 0x012E8EAC
 extern cvar_t* fs_gamedirvar;             // 0x012E8EB0
 extern int     fs_loadStack;              // 0x012E8EB4
 extern cvar_t* fs_homepath;               // 0x012EFFB0
-extern fileHandleData_t* fsh;             // 0x012EFFB8
-extern char*   fs_bsp_gamedir;            // 0x012E64A0
+extern fileHandleData_t fsh[3];           // 0x012EFFB8
+extern char    fs_bsp_gamedir[128];       // 0x012E64A0
 extern cvar_t* fs_debug;                  // 0x012E6524
 extern cvar_t* fs_basepath;               // 0x012E768C
 extern searchpath_s* fs_searchpaths;      // 0x012F0334
 extern filelist_s*   fs_nonpackfilelist;  // 0x012F0338
 extern searchpath_s* fs_memorysearchpaths;// 0x012F033C
 extern filelist_s*   fs_memorynonpackfilelist;  // 0x012F0340
-extern char*   lastValidBase;             // 0x012E6600
-extern char*   lastValidGame;             // 0x012EFF30
+extern char    lastValidBase[128];        // 0x012E6600
+extern char    lastValidGame[128];        // 0x012EFF30
 
 // ============================================================================
 // Common (common.cpp) cvars/state
@@ -81,12 +81,12 @@ extern cvar_t* com_timescale;         // 0x012E5F84
 extern int     time_backend;          // 0x012E5F88
 extern cvar_t* com_sv_running;        // 0x012E5F90
 extern bool    gIsWorkspaceMap;       // 0x012E5F94
-extern char*   com_consoleLines[128]; // 0x012E5F98
+extern char*   com_consoleLines[32];  // 0x012E5F98
 extern bool    gDoNotPlayCampaignMovies;  // 0x012E6418
 extern _iobuf* debuglogfile;          // 0x012E641C
 extern int     com_fileAccessed;      // 0x012E6520
 extern char**  com_argv;              // 0x012E6528
-extern char*   com_errorMessage;      // 0x012E6688
+extern char    com_errorMessage[4096]; // 0x012E6688
 extern int     com_numConsoleLines;   // 0x012E7688
 extern cvar_t* com_speeds;            // 0x012E7690
 extern int     time_game;             // 0x012E7698

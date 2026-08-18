@@ -80,7 +80,7 @@ extern void CL_ConfigstringModified();
 extern void CL_InitCGame();
 extern void Con_Init();
 extern void Con_Close();
-extern void Con_OneTimeInit();
+extern int Con_OneTimeInit();
 extern int CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
                                    int linewidth, int color, int flags);
 // CL_RestoreMessageType artifact (cl.o; stub)
