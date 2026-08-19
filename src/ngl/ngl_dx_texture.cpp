@@ -301,5 +301,10 @@ void nglDxTexCacheClass::SetFilter(unsigned int Stage, unsigned int FilterFlags,
         }
         nglDxState.SetMaxAnisotropy((int)Stage, (int)MaxAnisotropy);
         break;
+    default:
+        if (_tlAssert("c:\\cod\\code\\tl\\ngl\\include\\dx/ngl_dx_texture.h", 132,
+                      "false", "Unknown filter type."))
+            __debugbreak();
+        break;
     }
 }
