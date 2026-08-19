@@ -897,7 +897,7 @@ private:
 // XBoneHierarchy / XModelParts partial views (render.o types; XModelParts
 // mTransforms is InplaceVector<Mat43::Packed> at +0x00, mHierarchy at +0x10).
 struct XBoneHierarchyLocal {
-    uint8_t      _pad0[4];
+    const char*  mName;           // +0x00 (InplaceString::mStr)
     unsigned int mNameHash;  // +0x04
     int          mParentIndex;  // +0x08
 };
@@ -994,6 +994,21 @@ static inline unsigned int xmodel_parts_get_bone_index(
             return -1;
     }
     return v3;
+}
+
+// XModelParts::GetBoneIndex(char const*) (render.o inline COMDAT 0x6EB640)
+static inline int xmodel_parts_get_bone_index_name(
+    XModelPartsLocal* this_, const char* name)
+{
+    if (name == nullptr || this_->mHierarchySize == 0)
+        return -1;
+    for (unsigned int i = 0; i < this_->mHierarchySize; ++i)
+    {
+        const char* boneName = this_->mHierarchy[i].mName;
+        if (boneName != nullptr && _stricmp(boneName, name) == 0)
+            return (int)i;
+    }
+    return -1;
 }
 
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
@@ -1431,8 +1446,95 @@ const math::Mat43& DObj::GetMat(int boneIndex)
 }
 int DObj::GetBoneIndex(const char* name) const
 {
-    (void)name;
-    return -1;
+    int boneIndex = 0;
+    int modelIndex = 0;
+    if (numModels == 0)
+        return -1;
+
+    void* const* modelSlot = models;
+    for (;;)
+    {
+        XModelLocal* model = (XModelLocal*)modelSlot[0];
+        TPakId pakId = (TPakId)(uintptr_t)modelSlot[1];
+        ValidatePakId(pakId);
+
+        int lodIndex = 0;
+        if (model->lod[0] == nullptr)
+        {
+            do
+            {
+                ++lodIndex;
+            } while (model->lod[lodIndex] == nullptr);
+        }
+        XModelPartsLocal* parts =
+            (XModelPartsLocal*)model->lod[lodIndex]->xmodelParts;
+        int localBoneIndex = xmodel_parts_get_bone_index_name(parts, name);
+        if (localBoneIndex >= 0)
+            return boneIndex + localBoneIndex;
+
+        ValidatePakId(pakId);
+        int countLod = 0;
+        if (model->lod[0] == nullptr)
+        {
+            do
+            {
+                ++countLod;
+            } while (model->lod[countLod] == nullptr);
+        }
+        if (model->lod[countLod]->xmodelParts != nullptr)
+        {
+            XModelPartsLocal* countParts =
+                (XModelPartsLocal*)model->lod[countLod]->xmodelParts;
+            if ((countParts->mHierarchySize & 0x80000000u) != 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+                AeAssert::gCurrentLine = 2009;
+                AeAssert::gCurrentExpr = "model->GetNumBones() >= 0";
+                if (!AeAssert::IsIgnored())
+                {
+                    ValidatePakId(pakId);
+                    int assertLod = 0;
+                    if (model->lod[0] == nullptr)
+                    {
+                        do
+                        {
+                            ++assertLod;
+                        } while (model->lod[assertLod] == nullptr);
+                    }
+                    unsigned int assertSize =
+                        model->lod[assertLod]->xmodelParts != nullptr
+                            ? ((XModelPartsLocal*)model->lod[assertLod]
+                                   ->xmodelParts)
+                                  ->mHierarchySize
+                            : 0;
+                    if (AeAssert::Assert("%i", assertSize))
+                        __debugbreak();
+                }
+            }
+        }
+
+        ValidatePakId(pakId);
+        int nextLod = 0;
+        if (model->lod[0] == nullptr)
+        {
+            do
+            {
+                ++nextLod;
+            } while (model->lod[nextLod] == nullptr);
+        }
+        unsigned int modelBoneCount =
+            model->lod[nextLod]->xmodelParts != nullptr
+                ? ((XModelPartsLocal*)model->lod[nextLod]->xmodelParts)
+                      ->mHierarchySize
+                : 0;
+
+        modelSlot += 2;
+        ++modelIndex;
+        boneIndex += (int)modelBoneCount;
+        if (modelIndex >= numModels)
+            return -1;
+    }
 }
 int DObj::GetBoneIndexInternal(unsigned int nameHash) const
 {
