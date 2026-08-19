@@ -9,6 +9,7 @@
 //   nglFSAAParams  @0x14D5E80 (data, math::Vector4)
 // ============================================================================
 #include "ngl_dx_fsaa.h"
+#include "ngl_dx_gpu.h"
 
 #include <xmmintrin.h>
 
@@ -44,8 +45,10 @@ math::Vector4 nglFSAAParams;
 // ea: 0x850240
 // ============================================================================
 bool nglDxSetFSAA(nglFSAAMode mode) {
+    nglGpuAcquireDevice();
     if (nglDisplayMode.Width == 1920 && mode != NGLFSAA_NONE) {
         tlWarning("None of the multi/super sampling modes can be used with 1920x1080i !\n");
+        nglGpuReleaseDevice();
         return false;
     }
 
@@ -82,5 +85,6 @@ bool nglDxSetFSAA(nglFSAAMode mode) {
     nglFSAA = mode;
     nglPresentParams.MultiSampleType = (unsigned int)mode;
     nglDxResetDevice();
+    nglGpuReleaseDevice();
     return result;
 }
