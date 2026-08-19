@@ -3339,7 +3339,7 @@ nslGroup*     nslListenerGetGroup(unsigned listenerIndex) {
 }
 
 // ea: 0x00823DD0
-void          nslListenerSetMatrix(unsigned listenerIndex, const float (*m)[4]) {
+void          nslListenerSetMatrix(unsigned listenerIndex, const float (* const m)[4]) {
     nslGroup* group = nslListenerGetGroup(listenerIndex);
     if (group == nullptr)
         return;
@@ -3359,7 +3359,7 @@ void          nslListenerSetMatrix(unsigned listenerIndex, const float (*m)[4]) 
 }
 
 // ea: 0x00823E60
-void          nslListenerSetPosition(unsigned listenerIndex, const float* pos) {
+void          nslListenerSetPosition(unsigned listenerIndex, const float* const pos) {
     nslGroup* group = nslListenerGetGroup(listenerIndex);
     if (group != nullptr) {
         group->params[19] = pos[0];
@@ -3370,7 +3370,7 @@ void          nslListenerSetPosition(unsigned listenerIndex, const float* pos) {
 }
 
 // ea: 0x00823EA0
-void          nslListenerSetVelocity(unsigned listenerIndex, const float* vel) {
+void          nslListenerSetVelocity(unsigned listenerIndex, const float* const vel) {
     nslGroup* group = nslListenerGetGroup(listenerIndex);
     if (group != nullptr) {
         group->params[22] = vel[0];
@@ -3381,8 +3381,8 @@ void          nslListenerSetVelocity(unsigned listenerIndex, const float* vel) {
 }
 
 // ea: 0x00823EE0
-void          nslListenerSetOrientation(unsigned listenerIndex, const float* frt,
-                                         const float* top) {
+void          nslListenerSetOrientation(unsigned listenerIndex, const float* const frt,
+                                         const float* const top) {
     nslGroup* group = nslListenerGetGroup(listenerIndex);
     if (group == nullptr)
         return;

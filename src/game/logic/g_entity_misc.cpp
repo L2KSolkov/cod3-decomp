@@ -5254,10 +5254,10 @@ nslWaveID SoundDevice::FindWave(const char* name)
 // ============================================================================
 extern "C" int __fpclass(float);
 extern void nslListenerSetPosition(unsigned int listenerIndex,
-                                   const float* pos);  // nsl_xboxr
+                                   const float* const pos);  // nsl_xboxr
 extern void nslListenerSetOrientation(unsigned int listenerIndex,
-                                      const float* frt,
-                                      const float* top);  // nsl_xboxr
+                                      const float* const frt,
+                                      const float* const top);  // nsl_xboxr
 extern void tlWarning(const char* Format, ...);  // tl_xboxr
 
 // ea: 0x00612A70
