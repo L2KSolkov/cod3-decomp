@@ -619,10 +619,10 @@ unsigned     nslGetVersion() { return 4; }
 // nslSource — sound sources / emitters (3D positioned)
 // ============================================================================
 nslWave*      nslWavePtr(nslWaveID);
-nslVoice*      nslVoicePtr(unsigned);
+nslVoice*      nslVoicePtr(int);
 unsigned      nslVoiceCount();
 int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
-void          nslVoiceFree(unsigned);
+void          nslVoiceFree(int);
 void          nslDriverUpdate();
 void          nslPriorityUpdate();
 int           nslPriorityCanPlay(int priority);
@@ -3838,8 +3838,8 @@ void          nslSourceSetPriorityScale(nslSource*, float) {}
 // nslVoice — voice allocation
 // ============================================================================
 // ea: 0x008285E0
-nslVoice*      nslVoicePtr(unsigned voiceIndex) {
-    const unsigned index = voiceIndex;
+nslVoice*      nslVoicePtr(int voiceIndex) {
+    const unsigned index = static_cast<unsigned>(voiceIndex);
     if (index > nsl_initParams.aramSize)
         return nullptr;
     return reinterpret_cast<nslVoice*>(
@@ -3887,8 +3887,8 @@ int           nslVoiceAlloc(nslWaveID waveID, nslSourceID sourceID, int) {
     return static_cast<int>(voiceIndex);
 }
 // ea: 0x00828700
-void          nslVoiceFree(unsigned voiceIndex) {
-    const unsigned index = voiceIndex;
+void          nslVoiceFree(int voiceIndex) {
+    const unsigned index = static_cast<unsigned>(voiceIndex);
     if (index >= nsl_initParams.aramSize)
         return;
     unsigned char* raw = reinterpret_cast<unsigned char*>(nsl_voices) +

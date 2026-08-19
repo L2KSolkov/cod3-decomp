@@ -396,7 +396,7 @@ aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	PORTED	apsAction.cpp (aps
 
 cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	compute_det, gjk, collide_partial, collide_full, and collide ported from IDA; build-verified
 
-nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (voice pointer/count/allocation/free/render ported from IDA; DirectSound driver remains shim-owned)
+nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	VERIFIED	Phase 3: nsl.cpp (voice pointer/count/allocation/free/render ported from IDA; DirectSound driver remains shim-owned); nslVoicePtr/nslVoiceFree int ABI aligned to IDA and canonical build passed
 
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
