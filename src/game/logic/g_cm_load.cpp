@@ -9,6 +9,7 @@
 #include <intrin.h>
 #include <malloc.h>
 #include <math.h>
+#include <new>
 #include <stdio.h>
 #include <string.h>
 #include <utility>
@@ -8463,6 +8464,7 @@ class DCGBank;
 class DCGBankManager {
 public:
     static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
+    static void CreateInst();       // ?CreateInst@DCGBankManager@@SAXXZ
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
     void*   mBankArray[99];         // +0x04 (0x18C bytes; DCGBank* per pak)
     struct TempDCGSet {
@@ -8640,6 +8642,34 @@ DCGBankManager::DCGBankManager()
     for (int i = 0; i < 99; ++i)
         this->mBankArray[i] = nullptr;
     gBoxDCGSet = (DCGSet*)&this->mBoxDCGSet;
+}
+
+// ea: 0x004B4040
+void DCGBankManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 386;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    DCGBankManager* result = static_cast<DCGBankManager*>(
+        mem_heap_malloc_ctx(0x200u, 16, "core",
+                            "c:\\cod\\code\\game\\cgbank.h", 386));
+    if (result != nullptr)
+    {
+        result = new (result) DCGBankManager();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
 }
 
 // ea: 0x00629D90

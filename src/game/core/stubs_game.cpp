@@ -43,7 +43,7 @@ class CheckpointMgr { public: static void CreateInst(); static void DeleteInst()
 class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SmokeGrenadeMgr { public: static void CreateInst(); };
 class CGBankManager { public: static void DeleteInst(); };
-class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class DCGBankManager { public: static void DeleteInst(); };
 struct AnimBank;
 class AnimBankManager {
 public:
@@ -94,7 +94,6 @@ void SplineMgr::CreateInst() {}
 void SplineMgr::DeleteInst() {}
 void SmokeGrenadeMgr::CreateInst() {}
 void CGBankManager::DeleteInst() {}
-void DCGBankManager::CreateInst() {}
 void DCGBankManager::DeleteInst() {}
 void AnimBankManager::CreateInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
