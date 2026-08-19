@@ -218,6 +218,24 @@ void apsInternal::GetLocalLights(nglLightContext* ioLightContext, const apsSpher
     }
 }
 
+// ea: 0x8136B0
+unsigned int apsInternal::ClampToColor32(const math::Vector4& iBlendColor,
+                                          const math::Vector4& iParticleColor) {
+    const __m128 particle = _mm_mul_ps(iParticleColor.v, _mm_set1_ps(255.0f));
+    const __m128 blend = iBlendColor.v;
+    const __m128 blendWithAlpha = _mm_shuffle_ps(_mm_set1_ps(1.0f), blend, 0xA0);
+    const __m128 factors = _mm_shuffle_ps(blend, blendWithAlpha, 0x34);
+    const __m128 clamped = _mm_min_ps(
+        _mm_max_ps(_mm_mul_ps(particle, factors), _mm_setzero_ps()),
+        _mm_set1_ps(255.0f));
+
+    const unsigned int r = static_cast<unsigned int>(clamped.m128_f32[0]);
+    const unsigned int g = static_cast<unsigned int>(clamped.m128_f32[1]);
+    const unsigned int b = static_cast<unsigned int>(clamped.m128_f32[2]);
+    const unsigned int a = static_cast<unsigned int>(clamped.m128_f32[3]);
+    return b | (g << 8) | (r << 16) | (a << 24);
+}
+
 // ea: 0x8036D0
 void apsInternal::SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlendMode,
                                        bool bFogEnable, int alphaCutOff) {
