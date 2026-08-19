@@ -1413,11 +1413,12 @@ void          nslUpdateBanks() {
                 slot->profile.frameLoaded = nsl_frame;
                 nslWaveBankSort(slot->waveBank);
                 loadIndex = -1;
+                nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
             } else if (state == NSL_WAVE_BANK_LOADER_STATE_CANCELED || state < 0) {
                 slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
                 nslWaveBankFree(slot->waveBankID);
+                nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
             }
-            nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
         }
     }
 

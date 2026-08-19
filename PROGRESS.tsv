@@ -536,7 +536,7 @@ aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	PORTED	apsDebug.h/.cpp (Pri
 
 cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	cdl_init and cdl_profile_reset ported and build-verified
 
-nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nslUpdate and nslUpdateListener ported from IDA release body
+nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nslUpdate and nslUpdateListener ported from IDA release body; corrected nslUpdateBanks loader-state reset to preserve pending async reads per IDA, verified by CDB reaching the original global.wbb NSL ARAM exhaustion warning
 
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
