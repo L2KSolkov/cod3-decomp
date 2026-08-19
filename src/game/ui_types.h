@@ -746,7 +746,7 @@ public:
             flags = (int16_t)(flags & ~f);
     }
 
-    FEText() {}  // inline default (FE subclass ctors)
+    FEText();  // shell.o 0x5AD690
     FEText(font_index f, const char* s, float x, float y, int z,
            panel_layer layer, float scale, int hJustify, int vJustify,
            color32 col);                    // shell.o 0x56BA80

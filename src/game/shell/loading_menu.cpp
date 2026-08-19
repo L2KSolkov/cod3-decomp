@@ -74,26 +74,26 @@ char MI_GetMapIndexbyID(char ID);       // ?MI_GetMapIndexbyID@@YADD@Z (mp_shell
 // LoadingMenu data (shell.o InGameMenus.cpp data; VAs from IDA)
 // ============================================================================
 const char* szLoadingScreenBackgroundArt[9] = {
-    "ls_bkg", "ls_bkg_line_01", "ls_bkg_detail_01", "ls_bkg_detail_03",
-    "ls_bkg_detail_05", "LS_text_tip_title", "LS_text_map_01",
-    "i_MP_LS_image_03.tga", "i_MP_LS_image_08.tga",
+    "ls_bkg", "ls_image_01", "ls_bkg_line_01", "ls_bkg_image_outline",
+    "ls_bkg_detail_01", "ls_bkg_detail_02", "ls_bkg_detail_03",
+    "ls_bkg_detail_04", "ls_bkg_detail_05",
 };
 const char* szLoadingScreenTitleText[2] = {
-    "LS_text_screen_title", "LS_text_tip_description",
+    "LS_text_screen_title", "LS_text_tip_title",
 };
 const char* szLoadingScreenText[1] = {
     "LS_text_tip_description",
 };
 const char* szLoadingScreenMapText[2] = {
-    "LS_text_map_01", "i_MP_LS_image_03.tga",
+    "LS_text_map_01", "LS_text_map_02",
 };
 
 const char* LoadingMenu::szMapImageFiles[] = {
-    "i_MP_LS_image_03.tga", "i_MP_LS_image_08.tga", "i_MP_LS_image_06.tga",
-    "i_MP_LS_image_04.tga", "i_MP_LS_image_08.tga", "i_MP_LS_image_08.tga",
-    "i_MP_LS_image_generic_01a.tga", "english", "french", "german", "italian",
-    "spanish", "british", "russian", "polish", "korean", "taiwanese",
-    "japanese", "chinese", "thai", "leet",
+    "i_MP_LS_image_03.tga", "i_MP_LS_image_01.tga", "i_MP_LS_image_08.tga",
+    "i_MP_LS_image_09.tga", "i_MP_LS_image_06.tga", "i_MP_LS_image_02.tga",
+    "i_MP_LS_image_04.tga", "i_MP_LS_image_07.tga", "i_MP_LS_image_08.tga",
+    "i_MP_LS_image_08.tga", "i_MP_LS_image_08.tga", "i_MP_LS_image_08.tga",
+    "i_MP_LS_image_generic_01a.tga", "i_MP_LS_image_generic_02a.tga",
 };
 
 // Tip hash tables. The release build computes these in static initializers via

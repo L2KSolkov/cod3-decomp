@@ -135,6 +135,13 @@ static MPLiveEngineVftableInit s_mpLiveEngineVftableInit;
 
 MultiplayerMgr* MultiplayerMgr::sInst;
 
+// MPLiveEngine's local MultiplayerMgr view has its own static slot. Mirror
+// the singleton created by mp.o into that slot for the existing Xbox callers.
+extern "C" void MultiplayerMgr_SetCompatInstance(void* instance)
+{
+    MultiplayerMgr::sInst = static_cast<MultiplayerMgr*>(instance);
+}
+
 // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z (mp.o; stub)
 int MultiplayerMgr::GetDroppedItemType(int itemType)
 {

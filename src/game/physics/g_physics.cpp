@@ -369,7 +369,6 @@ void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
 {
     (void)vehicle; (void)mat; (void)velocity;
 }
-MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
 class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)

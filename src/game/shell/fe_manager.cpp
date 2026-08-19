@@ -51,6 +51,21 @@ extern int GetNumViewports();  // ?GetNumViewports@View@@YAHXZ
 // with that type keeps currCl from being placed inside its font fields.
 FEManager g_femanager;
 
+void FEManager_InitDialogMenuSystem(void* self)
+{
+    static_cast<FEManager*>(self)->InitDialogMenuSystem();
+}
+
+void FEManager_InitIGO(void* self)
+{
+    static_cast<FEManager*>(self)->InitIGO();
+}
+
+void FEManager_LoadInGameMenus(void* self)
+{
+    static_cast<FEManager*>(self)->LoadInGameMenus();
+}
+
 namespace LocalClient {
 extern int FirstLocalClientIndex();  // ?FirstLocalClientIndex@LocalClient@@YAHXZ
 extern int PortToClient(int port);   // ?PortToClient@LocalClient@@YAHH@Z
@@ -155,12 +170,7 @@ FEManager::FEManager()
         (ControllerDisconnectedMenu*)mem_heap_malloc(16, 0x50u);
     if (v4 != nullptr)
     {
-        memset(v4, 0, 0x50);
-        v4->highlighted = -1;
-        v4->highlightedDefault = -1;
-        v4->max_vis_entries = 1;
-        v4->mReturnMenu = -1;
-        ControllerDisconnected = v4;
+        ControllerDisconnected = new (v4) ControllerDisconnectedMenu();
     }
     else
     {

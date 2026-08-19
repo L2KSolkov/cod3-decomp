@@ -92,7 +92,6 @@ void PathNodeMgr::CreateInst() {}
 void PathNodeMgr::DeleteInst() {}
 void CtrlIcon::CreateInst() {}
 void CtrlIcon::DeleteInst() {}
-void MultiplayerMgr::CreateInst() {}
 void MultiplayerMgr::DeleteInst() {}
 void CheckpointMgr::CreateInst() {}
 void CheckpointMgr::DeleteInst() {}

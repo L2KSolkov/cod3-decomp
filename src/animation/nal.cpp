@@ -1749,6 +1749,9 @@ int nalGenericPose::GetPoseAlignment() const
 // ============================================================================
 class nalGenericAnim {
 public:
+    // IDA type 4732: the generic animation vtable begins with Dummy before
+    // the destructor and the shared nalAnimClass operations.
+    virtual void Dummy() {}
     virtual ~nalGenericAnim();
     virtual void Process();
     virtual void Release() {}

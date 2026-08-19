@@ -18,6 +18,7 @@
 #include <new>
 
 extern void* mem_heap_malloc(unsigned int size);
+extern void mem_heap_free(void* ptr);
 
 #define ASSERT(expr, file, line)                                          \
     do {                                                                  \
@@ -508,9 +509,6 @@ AARXBoxLiveIngameOptions::AARXBoxLiveIngameOptions(FEMenuSystem* s)
 // ============================================================================
 // mp_shell.o data
 // ============================================================================
-int g_NumBaseMaps = 0;       // ?g_NumBaseMaps@@3HA @ 0xF99860
-int g_NumTotalMaps = 0;      // ?g_NumTotalMaps@@3HA @ 0xF99864
-char byte_E386C9[] = {'\0'};   // map-ID conversion table @ 0xE386C9
 const char* const szClassReference[7] = {
     "MPGAME_RIFLEMAN_ALLCAPS", "MPGAME_INFANTRY_ALLCAPS",
     "MPGAME_ASSAULT_ALLCAPS", "MPGAME_MEDIC_ALLCAPS",
@@ -882,6 +880,9 @@ Mapinfo_t g_TheMapInfo[64] = {
   { 0, 0, "", "", "", "" },
   { 0, 0, "", "", "", "" },
 };  // ?g_TheMapInfo@@3PAUMapinfo_t@@A @ 0x1227BC8
+int g_NumBaseMaps = 0;       // ?g_NumBaseMaps@@3HA @ 0xF99860
+int g_NumTotalMaps = 0;      // ?g_NumTotalMaps@@3HA @ 0xF99864
+char* byte_E386C9 = &g_TheMapInfo[0].map_id_number;
 char aMpfrontendMerv[20] = "MPFRONTEND_MERVILLE";
 char aMploadingMervi[23] = "MPLOADING_MERVILLE_LOC";
 char aMploadingMervi_0[25] = "MPLOADING_MERVILLE_TITLE";
@@ -1359,7 +1360,10 @@ void CreateSessionMenu::UpdatePrivateSlots()
     {
         m_LastPlayerCount = v6;
         if (m_PrivateSlotsCombo != nullptr)
-            delete m_PrivateSlotsCombo;
+        {
+            m_PrivateSlotsCombo->~FEComboBox();
+            mem_heap_free(m_PrivateSlotsCombo);
+        }
         FEText* TextPointer =
             panel->GetTextPointer("cg_slot_04_text_spec");
         PanelQuad* leftArrow =
@@ -5160,7 +5164,7 @@ char* MI_GetMapDisplayName(char id)
             return "NULL";
         i += 114;
     }
-    return &aMpfrontendMerv[114 * v1];
+    return g_TheMapInfo[v1].map_name_string;
 }
 
 // ea: 0x00792EC0
@@ -5176,7 +5180,7 @@ char* MI_GetMapLocation(char id)
             return "NULL";
         i += 114;
     }
-    return &aMploadingMervi[114 * v1];
+    return g_TheMapInfo[v1].map_location_string;
 }
 
 // ea: 0x00792F00
@@ -5192,7 +5196,7 @@ char* MI_GetMapTitle(char id)
             return "NULL";
         i += 114;
     }
-    return &aMploadingMervi_0[114 * v1];
+    return g_TheMapInfo[v1].map_title_string;
 }
 
 // ea: 0x00792F40
@@ -5224,7 +5228,7 @@ char* MI_GetMapShortname(char id)
             return "NULL";
         i += 114;
     }
-    return &aMpMerv[114 * v1];
+    return g_TheMapInfo[v1].short_name;
 }
 
 // ea: 0x00793460
@@ -8312,7 +8316,18 @@ CreateSessionAdvancedMenu::CreateSessionAdvancedMenu(FEMenuSystem* s)
     m_TeamDamageCombo = nullptr;
     m_VotingCombo = nullptr;
     m_PenaltyVoteCombo = nullptr;
+    panel = nullptr;
     default_color_scheme = 5;
+    for (int i = 0; i < 4; ++i)
+        m_pBackgroundArt[i] = nullptr;
+    for (int i = 0; i < 6; ++i)
+        m_pBackgroundRow[i] = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pBackgroundLine[i] = nullptr;
+    for (int i = 0; i < 4; ++i)
+        m_pText[i] = nullptr;
+    memset(&m_pSlotText, 0, sizeof(m_pSlotText));
+    memset(&m_pSlotArrow, 0, sizeof(m_pSlotArrow));
     memset(m_szSessionName, 0, sizeof(m_szSessionName));
 }
 
@@ -8331,7 +8346,10 @@ void InitialLoadingMenu::SetPanelFile(PanelFile* pf)
             && AeAssert::Assert("Invalid panel file pointer"))
             __debugbreak();
     }
-    panel->GetTextPointer("text_title")->SetText("MPFRONTEND_LOADING");
+    AddEntry(0, panel->GetTextPointer("warning"), false);
+    AddEntry(1, panel->GetTextPointer("text"), false);
+    entries[0]->SetText("MPFRONTEND_WARNING");
+    entries[1]->SetText("MPFRONTEND_GAME_EXPERIENCE");
 }
 
 // ea: 0x0078E230
@@ -8753,6 +8771,25 @@ WeaponSelectMenu::WeaponSelectMenu(FEMenuSystem* pauseMenuSystem)
     m_playerclass = 0;
     m_pClassOptionHeader = nullptr;
     m_sLocalPlayerTeam = 0;
+    default_color_scheme = 10;
+    m_pTextKitLine[0] = nullptr;
+    m_pTextKitLine[1] = nullptr;
+    m_pTextKitLine[2] = nullptr;
+    m_pTextKitLine[3] = nullptr;
+    m_pSlotTextLine[0] = nullptr;
+    m_pSlotTextLine[1] = nullptr;
+    m_pSlotTextLine[2] = nullptr;
+    m_pSlotTextLine[3] = nullptr;
+    m_pSlotTextLine[4] = nullptr;
+    m_pSlotTextLine[5] = nullptr;
+    m_pClassIcons[0] = nullptr;
+    m_pClassIcons[1] = nullptr;
+    m_pClassIcons[2] = nullptr;
+    m_pClassIcons[3] = nullptr;
+    m_pClassIcons[4] = nullptr;
+    m_pClassIcons[5] = nullptr;
+    m_pClassIcons[6] = nullptr;
+    memset(m_pSlotGauge, 0, sizeof(m_pSlotGauge));
 }
 
 // ea: 0x007AC190
@@ -15051,7 +15088,8 @@ void AARMapVote::SetPanelFile(PanelFile* pPanelFile)
             {
                 m_ListBox.SetText(0, 0, "MPGAME_RANDOM");
             }
-            FEText* v22 = panel->GetTextPointer(szAARMapVotes[v12]);
+            FEText* v22 = panel->GetTextPointer(
+                v12 >= 12 ? "slot_12_text_mapvote" : szAARMapVotes[v12]);
             m_ListBox.SetItem(v12, 1, v22, 0);
             m_ListBox.SetText(v12++, 1, "0");
         } while (v12 < g_NumBaseMaps + 1);

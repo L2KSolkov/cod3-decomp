@@ -36,7 +36,7 @@ void FEMenuEntry::CommonConstructor(FEText* t, FEMenu* m)
     right = -1;
     if (t != nullptr)
         t->AddedToMenu(true);
-    AdjustColor();
+    FEMenuEntry::AdjustColor();
 }
 
 // ea: 0x005B1C90 (inline COMDAT)

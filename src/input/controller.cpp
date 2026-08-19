@@ -94,6 +94,15 @@ public:
     void rumble(int index, RumbleIndex motor, float speed);
     void stop_all_rumble();
 
+    // These callback slots are part of the IDA controller layout.  The Xbox
+    // constructor leaves them unused, but they precede the state fields in
+    // the 0x24-byte object and therefore must remain in the Win32 object too.
+    void (*button_value_fn)(int*);
+    void (*button_released_fn)(int*);
+    void (*button_released_clear_fn)(int*);
+    void (*button_pressed_fn)(int*);
+    void (*button_pressed_clear_fn)(int*);
+    void (*stick_value_fn)(int*, int*);
     int  locked_port;
     bool is_locked;
     bool accepting_input_from_controller[MAX_CONTROLLERS];

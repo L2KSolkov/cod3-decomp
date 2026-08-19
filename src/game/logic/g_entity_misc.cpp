@@ -8,6 +8,7 @@
 #endif
 
 #include "game/logic/g_local.h"
+#include "core/mem_heap.h"
 #include "core/tlFixedString.h"
 
 #include <stdarg.h>
@@ -2312,10 +2313,9 @@ void* MPLiveEngine_GetHandle() { return nullptr; }
 void* ShaderCommon_StartShotPerfTest() { return nullptr; }
 void* COD3_mem_alloc(unsigned int a, unsigned int b)
 {
-    (void)a; (void)b;
-    return nullptr;
+    return mem_heap_malloc(static_cast<int>(b), a);
 }
-void COD3_mem_free(void* p) { (void)p; }
+void COD3_mem_free(void* p) { mem_heap_free(p); }
 void AdvanceSceneAnims(float a) { (void)a; }
 void AnimNoteHandler_Advance(void* self, float a) { (void)self; (void)a; }
 void AnimNoteHandler_ParseNoteTracks(void* self, void* a)
@@ -2535,9 +2535,6 @@ void* FEManager_GetIGMS(void* self, int client)
 }
 void FEManager_DrawControllerError(void* self) { (void)self; }
 void FEManager_DrawIGO(void* self, int a) { (void)self; (void)a; }
-void FEManager_InitDialogMenuSystem(void* self) { (void)self; }
-void FEManager_InitIGO(void* self) { (void)self; }
-void FEManager_LoadInGameMenus(void* self) { (void)self; }
 void FEManager_PlayFadeInOranScreen() {}
 void FEManager_UpdateLoadingMenu(void* self, float a) { (void)self; (void)a; }
 void FEManager_UpdateSplitScreen(void* self) { (void)self; }
@@ -2636,7 +2633,32 @@ void MemPrint(const char* Format, ...)
     va_end(ap);
     tlFinalPrint(Work);
 }
-void MI_ResetMapList() {}
+struct Mapinfo_t {
+    char map_pack;
+    char map_id_number;
+    char map_name_string[32];
+    char map_title_string[32];
+    char short_name[16];
+    char map_location_string[32];
+};
+extern Mapinfo_t g_TheMapInfo[64];
+extern int g_NumBaseMaps;
+extern int g_NumTotalMaps;
+
+// Rebuild the map-index counts from the IDA map record table before menus
+// consume the map conversion table.
+void MI_ResetMapList()
+{
+    g_NumBaseMaps = 0;
+    g_NumTotalMaps = 0;
+    for (int i = 0; i < 64; ++i)
+    {
+        if ((unsigned char)g_TheMapInfo[i].map_id_number == 0xFF)
+            break;
+        ++g_NumTotalMaps;
+    }
+    g_NumBaseMaps = g_NumTotalMaps;
+}
 void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
 class nglRenderNode;
 void nglAdvanceRenderNode() {}

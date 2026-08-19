@@ -48,6 +48,31 @@ public:
 // FEText (112 bytes - ui_types.h verified)
 // ============================================================================
 
+// ea: 0x005AD690
+FEText::FEText()
+    : PanelAnimObject(), flash_info(nullptr), text(), name()
+{
+    PanelAnimObject::flags = 4;
+    visibility = 1.0f;
+    xy_initial.x = sNaN;
+    xy_initial.y = sNaN;
+    xy_initial.z = sNaN;
+    xy.x = sNaN;
+    xy.y = sNaN;
+    xy.z = sNaN;
+    scale.x = sNaN;
+    scale.y = sNaN;
+    scale.z = sNaN;
+    scale_init.x = sNaN;
+    scale_init.y = sNaN;
+    scale_init.z = sNaN;
+    scale_unselected.x = sNaN;
+    scale_unselected.y = sNaN;
+    scale_unselected.z = sNaN;
+    color1.i = 0;
+    color_unselected.i = 0;
+}
+
 // ea: 0x0056BA80
 FEText::FEText(font_index f, const char* t, float x1, float y1, int z1,
                panel_layer layer, float s, int horizJust, int vertJust,
@@ -2388,7 +2413,10 @@ int FEMultiLineText::MakeBox(const char* buffer, int buffer_size, int w,
             }
             int v13 = (int)v12 + v9;
             char v40 = buffer[v13];
-            char word[2];
+            // IDA represented this as a two-byte local because the original
+            // stack frame overlays the token with adjacent scratch locals;
+            // strncpy writes up to the asserted 255-byte token limit.
+            char word[256];
             strncpy(word, &buffer[v9], v12);
             word[v12] = 0;
             int buffer_index;

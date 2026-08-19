@@ -363,7 +363,7 @@ string::Block* string::AllocBlock(const char* txt, unsigned int txtLen,
 
     string::Block* blk = (string::Block*)r.first;
     if (blk) {
-        new (blk) Block((unsigned short)r.second, (unsigned short)txtLen, sizeHint);
+        new (blk) Block((unsigned short)r.second, (unsigned short)txtLen, txt);
     }
     return blk;
 }
@@ -616,7 +616,7 @@ void string::Append(const char* txt, unsigned int len) {
         char* oldBuf = mBlock->mBuff;
         Block* oldBlock = mBlock;
 
-        mBlock = AllocBlock(NULL, newLen, (const char*)(uintptr_t)newLen, newLen);
+        mBlock = AllocBlock(oldBuf, oldLen, (const char*)(uintptr_t)newLen, newLen);
         if (mBlock) {
             if (oldLen > 0)
                 memcpy(mBlock->mBuff, oldBuf, oldLen);
@@ -634,7 +634,8 @@ void string::Append(const char* txt, unsigned int len) {
         } else {
             unsigned int newLen = oldLen + len;
             Block* oldBlock = mBlock;
-            mBlock = AllocBlock(NULL, newLen, (const char*)(uintptr_t)newLen, newLen);
+            mBlock = AllocBlock(oldBlock->mBuff, oldLen,
+                                (const char*)(uintptr_t)newLen, newLen);
             if (mBlock) {
                 memcpy(mBlock->mBuff, oldBlock->mBuff, oldLen);
                 memcpy(mBlock->mBuff + oldLen, txt, len);

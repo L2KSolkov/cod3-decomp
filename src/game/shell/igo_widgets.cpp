@@ -3266,11 +3266,12 @@ void IGOItemIcons::UpdateSplitScreen(int viewport, int old_viewport)
 // ============================================================================
 
 const char* sVoipIconNames[4] = {
-    "voip_line_01_icon", "voip_line_03_icon", "voip_line_01_text",
-    "voip_line_03_text",
+    "voip_line_01_icon", "voip_line_02_icon", "voip_line_03_icon",
+    "voip_line_04_icon",
 };
 const char* sVoipTextNames[4] = {
-    "voip_line_01_text", "voip_line_03_text", nullptr, nullptr,
+    "voip_line_01_text", "voip_line_02_text", "voip_line_03_text",
+    "voip_line_04_text",
 };
 
 // Minimal MPPlayer view for the mTeam/mName fields (full layout in mp.o).

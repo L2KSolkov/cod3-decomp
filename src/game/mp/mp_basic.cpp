@@ -39,6 +39,7 @@ int XNetCleanup()
 }
 
 extern void nslUpdate();   // nsl_xboxr (nsl.cpp)
+extern "C" void MultiplayerMgr_SetCompatInstance(void* instance);
 char byte_1869F;           // unnamed byte global referenced by GetQosPing
 extern bool gSkipMovies;   // GameXbox.cpp (?gSkipMovies@@3_NA)
 
@@ -133,6 +134,28 @@ extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
 extern int dword_F6A290[4 * 802];   // ?dword_F6A290@@3PAHA @ 0xF6A290
 extern int gDelayRenderForNFrames;  // render.o @ 0xD638E8
 extern void* mem_heap_malloc(unsigned int size);  // core.o
+MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
+
+// ea: 0x004DEA30
+void MultiplayerMgr::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "./mp\\MultiplayerMgr.h";
+        AeAssert::gCurrentLine = 78;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc(0x50u);
+    if (memory != nullptr)
+        sInst = new (memory) MultiplayerMgr();
+    else
+        sInst = nullptr;
+    MultiplayerMgr_SetCompatInstance(sInst);
+}
 extern void SV_SwapClients(int client1, int client2);  // sv.o (?SV_SwapClients@@YAXHH@Z)
 extern void SV_PostConnect();  // sv.o (?SV_PostConnect@@YAXXZ @ 0x914CE0)
 extern void SV_ClientEnterWorld(client_s* client);  // sv.o (?SV_ClientEnterWorld@@YAXPAUclient_s@@@Z @ 0x90F2C0)
@@ -1525,7 +1548,7 @@ void MPOptionsSoundMenu::SetPanelFile(PanelFile* pf)
         if (v15 != nullptr)
             v15->SetNumLines(5);
     }
-    FESlider* v19 = ((FEMenuAddSlider)(*(void***)this)[11])(
+    FESlider* v19 = ((FEMenuAddSlider)(*(void***)this)[12])(
         this, 0,
         this->panel->GetPointer("slot_02_gauge_fill"),
         this->panel->GetTextPointer("slot_02_text_a"));
@@ -1603,20 +1626,20 @@ void MPOptionsControlsMenu::SetPanelFile(PanelFile* pf)
     for (int i = 0; i < 8; ++i)
         this->panel->GetTextPointer(kControlsOptionGeoms[i])
             ->SetText(kControlsOptionStrings[i]);
-    ((FEMenuAddDoubleEntry)(*(void***)this)[12])(
+    ((FEMenuAddDoubleEntry)(*(void***)this)[14])(
         this, 0,
         this->panel->GetTextPointer("slot_01_text_b"),
         this->panel->GetTextPointer("slot_01_text_a"));
-    ((FEMenuAddDoubleEntry)(*(void***)this)[12])(
+    ((FEMenuAddDoubleEntry)(*(void***)this)[14])(
         this, 1,
         this->panel->GetTextPointer("slot_02_text_b"),
         this->panel->GetTextPointer("slot_02_text_a"));
-    FESlider* v33 = ((FEMenuAddSlider)(*(void***)this)[11])(
+    FESlider* v33 = ((FEMenuAddSlider)(*(void***)this)[12])(
         this, 2, this->panel->GetPointer("slot_03_gauge_fill"),
         this->panel->GetTextPointer("slot_03_text_a"));
     v33->SetRange(0, 37);
     v33->mEnableSound = false;
-    FESlider* v38 = ((FEMenuAddSlider)(*(void***)this)[11])(
+    FESlider* v38 = ((FEMenuAddSlider)(*(void***)this)[12])(
         this, 3, this->panel->GetPointer("slot_04_gauge_fill"),
         this->panel->GetTextPointer("slot_04_text_a"));
     v38->SetRange(0, 50);
@@ -2040,7 +2063,7 @@ void MPProfileMainMenu::SetPanelFile(PanelFile* pf)
     {
         FEText* v25 =
             this->mPanel->GetTextPointer(kProfileTextGeoms[i]);
-        ((FEMenuGap10)(*(void***)this)[4])(this, i, v25, 0);
+        ((FEMenuGap10)(*(void***)this)[5])(this, i, v25, 0);
     }
 }
 
@@ -2113,7 +2136,7 @@ void MPOptionsScreenMenu::SetPanelFile(PanelFile* pf)
     typedef void*(__thiscall* Gap28)(MPOptionsScreenMenu*, int, int,
                                      FEText*, FEText*, PanelQuad*,
                                      void*);
-    FEComboBox* v27 = (FEComboBox*)(((Gap28)(*(void***)this)[40])(
+    FEComboBox* v27 = (FEComboBox*)(((Gap28)(*(void***)this)[10])(
         this, 0, 2, textB, textA, arrowL, arrowR));
     Broc::string s1("FEMENU_COP_SIZE_NORMAL");
     v27->AddOption(s1);
@@ -2125,7 +2148,7 @@ void MPOptionsScreenMenu::SetPanelFile(PanelFile* pf)
         this->panel->GetPointer("slot_02_arrow_left");
     FEText* textA2 = this->panel->GetTextPointer("slot_02_text_a");
     FEText* textB2 = this->panel->GetTextPointer("slot_02_text_b");
-    FEComboBox* v35 = (FEComboBox*)(((Gap28)(*(void***)this)[40])(
+    FEComboBox* v35 = (FEComboBox*)(((Gap28)(*(void***)this)[10])(
         this, 1, 2, textB2, textA2, arrowL2, arrowR2));
     Broc::string s3("FEMENU_COP_RES_NORMAL");
     v35->AddOption(s3);
@@ -4783,7 +4806,7 @@ bool MPUIInterface::mKicked;
 bool MPUIInterface::mHostMigrated;
 bool MPUIInterface::mHostDisconnected;
 unsigned long MPUIInterface::mGameListingNumGames;
-int MPUIInterface::mMaxScoreLimitCount;  // ?mMaxScoreLimitCount@MPUIInterface@@1HA @ 0xE36E8C
+int MPUIInterface::mMaxScoreLimitCount = 6;  // ?mMaxScoreLimitCount@MPUIInterface@@1HA @ 0xE36E8C
 
 const int MPUIInterface::GetTimeLimitCount()
 {
@@ -13235,7 +13258,8 @@ MPPlayerItems::MPPlayerItems()
 
 // ea: 0x007656C0
 MPProfileEditMenu::MPProfileEditMenu(FEMenuSystem* s)
-    : FEMenu(s, 0, 320, 240, 8, 0)
+    : FEMenu(s, 0, 320, 240, 8, 0),
+      mListBox(5, 1, 5, true)
 {
     mNeedWrite = false;
     mWidescreen = false;

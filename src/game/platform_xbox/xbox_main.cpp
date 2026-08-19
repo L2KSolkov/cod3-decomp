@@ -183,10 +183,18 @@ enum mem_heap_type {
 struct mem_heap;
 extern mem_heap* mem_heap_set_current(mem_heap_type type);
 
-// controller - minimal view (input/controller.cpp owns inst(); locked_port
-// matches the ported layout used by XboxLiveMenus.cpp).
+// controller - minimal view (input/controller.cpp owns inst()).  Keep the
+// IDA field order: the callback slots precede the per-controller state.
 class controller { public:
+    void (*button_value_fn)(int*);
+    void (*button_released_fn)(int*);
+    void (*button_released_clear_fn)(int*);
+    void (*button_pressed_fn)(int*);
+    void (*button_pressed_clear_fn)(int*);
+    void (*stick_value_fn)(int*, int*);
     int locked_port;
+    bool is_locked;
+    bool accepting_input_from_controller[4];
     static controller* inst();
 };
 

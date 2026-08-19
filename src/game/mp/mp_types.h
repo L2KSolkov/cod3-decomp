@@ -666,6 +666,12 @@ enum EDroppedItemTypes : int;
 // MP options menus (shell FE menu subclasses; mp.o vtable overrides)
 // ============================================================================
 // Minimal front-end views (mp.o overrides; full types live in ui_types.h).
+class PauseMenu {
+public:
+    void UnPause();  // ?UnPause@PauseMenu@@QAEXXZ (shell.o)
+};
+
+#ifndef COD3_FULL_FE_TYPES
 #ifndef COD3_COLOR32_DEFINED
 #define COD3_COLOR32_DEFINED
 class color32 {
@@ -683,34 +689,226 @@ enum panel_layer {
 };
 #endif
 
-class PauseMenu {
+class PanelAnimObject {
 public:
-    void UnPause();  // ?UnPause@PauseMenu@@QAEXXZ (shell.o)
+    virtual ~PanelAnimObject();
+    virtual void Draw();
+    virtual void Update(float);
+    virtual void CopyFrom(const PanelAnimObject*);
+    virtual void StartAnim(bool);
+    virtual void ResetXform();
+    virtual void Animate(math::Mat43*, float);
+    virtual void SetWidescreenAlign(short);
+    virtual void SetZvalue(float, panel_layer);
+    virtual void StartFade(bool, bool, float);
+    virtual void SetZvalueAbs(float);
+    virtual float GetZvalue();
+    virtual float GetY();
+    virtual bool IsFading();
+    virtual bool IsShown();
+    virtual void SetShown(bool);
+    virtual void SetColor(color32);
+    virtual color32 GetColor();
 };
 
-class FEText {
+#if 0
+class FEText_UNUSED : public PanelAnimObject {
 public:
-    virtual ~FEText();                      // ??1FEText@@UAE@XZ (shell.o)
-    virtual void SetText(const char* s);    // ?SetText@FEText@@UAEXPBD@Z (shell.o 0x560870)
-    virtual void SetShown(bool shown);      // ?SetShown@FEText@@UAEX_N@Z (shell.o 0x5B1AF0)
-    virtual float GetX();                   // ?GetX@FEText@@UAEMXZ (shell.o)
-    virtual float GetY();                   // ?GetY@FEText@@UAEMXZ (shell.o)
-    virtual float GetScaleX() const;        // ?GetScaleX@FEText@@UBEMXZ (shell.o)
-    virtual color32 GetColor();             // ?GetColor@FEText@@UAE?AVcolor32@@XZ (shell.o)
-    virtual font_index GetFont();           // ?GetFont@FEText@@UAE?AW4font_index@@XZ (shell.o)
+    virtual void Draw(); virtual void Update(float); virtual void CopyFrom(const PanelAnimObject*);
+    virtual void StartAnim(bool); virtual void ResetXform(); virtual void Animate(math::Mat43*, float);
+    virtual void SetWidescreenAlign(short); virtual void SetZvalue(float, panel_layer);
+    virtual void StartFade(bool, bool, float); virtual void SetZvalueAbs(float);
+    virtual float GetZvalue(); virtual float GetY(); virtual bool IsFading(); virtual bool IsShown();
+    virtual void SetShown(bool); virtual void SetColor(color32); virtual color32 GetColor();
+    virtual void SetTextNoLocalize(const char*); virtual void SetPos(float, float);
+    virtual void SetY(float); virtual void SetAlpha(float); virtual void SetColorMenuItem(color32, color32);
+    virtual float GetScaleX() const; virtual color32 GetUnselectedColor(); virtual float GetX();
+    virtual bool GetFlag(int); virtual bool IsOnMenu(); virtual void AddedToMenu(bool);
+    virtual bool IsMultiLineObject(); virtual Broc::string GetName(); virtual void SetName(const char*);
+    virtual Broc::string GetText(); virtual void SetPanelTextIndex(int); virtual void SetFont(font_index);
+    virtual void SetEvenNumberSpacing(bool); virtual void SetScale(float, float); virtual void SetScale(float);
+    virtual void SetScaleInit(float, float); virtual void Shift(float, float); virtual void ShiftXYInitial(void*);
+    virtual void SetX(float); virtual void SetScaleMenuItem(float, float); virtual void SetLineSpacing(int);
+    virtual void UpdateInScene(bool); virtual void SetLocation3D(Broc::vector); virtual void SetBehaviorNF(float, float);
+    virtual void SetBehavior(bool); virtual int GetLineNum(); virtual void AddFont(int, font_index);
+    virtual float GetScaleY() const; virtual float GetScaleInitX() const; virtual float GetScaleInitY() const;
+    virtual bool GetEvenNumberSpacing() const; virtual int GetFlags(); virtual int GetHJustify();
+    virtual int GetVJustify(); virtual Broc::vector GetLocation3D(); virtual void SetFlag(int, bool);
+    virtual FEText* Clone(); virtual void CopyFrom(FEText*); virtual void UpdateForWidescreen(bool, int);
+    virtual void UpdateForWidescreen(bool); virtual void MoveForSplitScreen(int, int);
+    virtual void UpdateForHUDSplitScreen(int, int, int, float, float);
+    virtual void UpdateForSplitScreen(int, int); virtual void SetHJustify(int); virtual void SetVJustify(int);
+    virtual void SetText(unsigned int); virtual void SetText(const char*);
+    virtual void SetNoFlash(color32); virtual void SetFlash(color32, color32, float); virtual void SetNoColor();
+    virtual float GetWidth(const float*); virtual float GetHeight(const float*);
+    virtual void AdjustForJustification(float&, float&, float);
+    font_index GetFont();
+};
+#endif
+
+class FEText : public PanelAnimObject {
+public:
+    virtual void Draw();
+    virtual void SetColor(color32);
+    virtual void SetTextNoLocalize(const char*);
+    virtual void SetPos(float, float);
+    virtual void SetY(float);
+    virtual void SetAlpha(float);
+    virtual void SetColorMenuItem(color32, color32);
+    virtual float GetScaleX() const;
+    virtual color32 GetColor();
+    virtual color32 GetUnselectedColor();
+    virtual float GetX();
+    virtual float GetY();
+    virtual bool GetFlag(int);
+    virtual bool IsOnMenu();
+    virtual void AddedToMenu(bool);
+    virtual bool IsMultiLineObject();
+    virtual Broc::string GetName();
+    virtual void SetName(const char*);
+    virtual Broc::string GetText();
+    virtual void SetPanelTextIndex(int);
+    virtual void SetFont(font_index);
+    virtual void SetEvenNumberSpacing(bool);
+    virtual void SetScale(float);
+    virtual void SetScale(float, float);
+    virtual void SetScaleInit(float, float);
+    virtual void Shift(float, float);
+    virtual void ShiftXYInitial(Broc::vector);
+    virtual void SetX(float);
+    virtual void SetScaleMenuItem(float, float);
+    virtual void SetLineSpacing(int);
+    virtual void UpdateInScene(bool);
+    virtual void SetLocation3D(Broc::vector);
+    virtual void SetBehaviorNF(float, float);
+    virtual void SetBehavior(bool);
+    virtual int GetLineNum();
+    virtual void AddFont(int, font_index);
+    virtual float GetScaleY() const;
+    virtual float GetScaleInitX() const;
+    virtual float GetScaleInitY() const;
+    virtual bool GetEvenNumberSpacing() const;
+    virtual int GetFlags();
+    virtual int GetHJustify();
+    virtual int GetVJustify();
+    virtual Broc::vector GetLocation3D();
+    virtual void SetFlag(int, bool);
+    virtual ~FEText();
+    virtual FEText* Clone();
+    virtual void CopyFrom(FEText*);
+    virtual void Update(float);
+    virtual void UpdateForWidescreen(bool);
+    virtual void UpdateForWidescreen(bool, int);
+    virtual void MoveForSplitScreen(int, int);
+    virtual void UpdateForHUDSplitScreen(int, int, int, float, float);
+    virtual void UpdateForSplitScreen(int, int);
+    virtual void SetHJustify(int);
+    virtual void SetVJustify(int);
+    virtual void SetText(const char*);
+    virtual void SetText(unsigned int);
+    virtual void SetNoFlash(color32);
+    virtual void SetFlash(color32, color32, float);
+    virtual void SetNoColor();
+    virtual void Draw(bool);
+    virtual float GetWidth(const float*);
+    virtual float GetHeight(const float*);
+    virtual void Animate(math::Mat43*, float);
+    virtual void AdjustForJustification(float&, float&, float);
+    font_index GetFont();
 };
 
-class FEMultiLineText {
+#if 0
+class FEMultiLineText_UNUSED {
 public:
     FEMultiLineText(font_index f, float x1, float y1, int z1,
                     panel_layer layer, float s, int horizJust,
-                    int vertJust, color32 col);  // ??0FEMultiLineText@@QAE@W4font_index@@MMHW4panel_layer@@MHHVcolor32@@@Z (shell.o)
-    virtual ~FEMultiLineText();      // ??1FEMultiLineText@@UAE@XZ (shell.o)
-    virtual void UpdateForWidescreen(bool widescreen);  // ?UpdateForWidescreen@FEMultiLineText@@UAEX_N@Z (shell.o)
-    virtual void SetTextBoxNoLocalize(Broc::string text, int width,
-                                      float height);  // ?SetTextBoxNoLocalize@FEMultiLineText@@UAEXVstring@Broc@@HM@Z (shell.o 0x1857C0)
-    virtual void SetNumLines(int n);  // ?SetNumLines@FEMultiLineText@@UAEXH@Z (shell.o)
-    virtual void SetText(const char* s);  // ?SetText@FEMultiLineText@@UAEXPBD@Z (shell.o)
+                    int vertJust, color32 col);
+    virtual ~FEMultiLineText();
+    virtual void Draw(); virtual void Update(float);
+    virtual void CopyFrom(const void*); virtual void StartAnim(bool);
+    virtual void ResetXform(); virtual void Animate(void*, float);
+    virtual void SetWidescreenAlign(short); virtual void SetZvalue(float, int);
+    virtual void StartFade(bool, bool, float); virtual void SetZvalueAbs(float);
+    virtual float GetZvalue(); virtual float GetY();
+    virtual bool IsFading(); virtual bool IsShown();
+    virtual void SetShown(bool); virtual void SetColor(color32);
+    virtual color32 GetColor(); virtual void CopyFrom(FEText*);
+    virtual void AddedToMenu(bool); virtual bool IsOnMenu();
+    virtual bool IsMultiLineObject(); virtual void SetHJustify(int);
+    virtual void SetVJustify(int); virtual void SetFont(font_index);
+    virtual void SetEvenNumberSpacing(bool); virtual void SetScale(float);
+    virtual void SetScaleMenuItem(float, float); virtual void SetScaleInit(float, float);
+    virtual void SetName(const char*); virtual void Unknown80();
+    virtual void SetText(const char* s);
+    virtual void Shift(float, float); virtual void ShiftXYInitial(void*);
+    virtual void SetTextNoLocalize(const char*); virtual void SetPos(float, float);
+    virtual void SetX(float); virtual void SetY(float); virtual void SetAlpha(float);
+    virtual void SetPanelTextIndex(int); virtual void SetNoFlash(color32);
+    virtual void SetFlash(color32, color32, float); virtual void SetColorMenuItem(color32, color32);
+    virtual void SetNoColor(); virtual void GetName(); virtual void GetText();
+    virtual float GetScaleX() const; virtual float GetScaleInitX(); virtual float GetScaleInitY();
+    virtual float GetScaleY(); virtual bool GetEvenNumberSpacing(); virtual font_index GetFont();
+    virtual color32 GetUnselectedColor(); virtual int GetFlags(); virtual int GetHJustify();
+    virtual int GetVJustify(); virtual int GetLineNum(); virtual float GetX();
+    virtual float GetWidth(const void*); virtual float GetHeight(const void*);
+    virtual bool GetFlag(int); virtual void SetFlag(int, bool); virtual void UpdateInScene(bool);
+    virtual void SetLineSpacing(int); virtual void ResetLineSpacing(); virtual void SetLocation3D(void*);
+    virtual void SetBehaviorNF(float, float); virtual void SetBehavior(bool); virtual void GetLocation3D(void*);
+    virtual void UpdateForHUDSplitScreen(int, int, int, float, float);
+    virtual void UpdateForSplitScreen(int, int); virtual void MoveForSplitScreen(int, int);
+    virtual void Unknown128();
+    virtual void UpdateForWidescreen(bool widescreen);
+    virtual void Clone(); virtual void AdjustForJustification(void*, void*, float);
+    virtual void Unknown138a(); virtual void Unknown138b(); virtual void Unknown138c();
+    virtual int GetLineAvailNum(); virtual int GetBoxWidth();
+    virtual float GetWidth2(); virtual float GetHeight2();
+    virtual void SetScaleAdjustButtons(float, float); virtual void SetButtonScale(float);
+    virtual void SetButtonColor(color32); virtual void AddFont(int, font_index);
+    virtual void SetBoxWidth(int); virtual void GetPos(float*, float*);
+    virtual void Scroll(float); virtual void SetScrollable(int, bool);
+    virtual float GetPercentage(); virtual void SetCutOffIfTooLong(bool);
+    virtual const char* ConvertActionToButton(const char*); virtual const char* TranslateAction(const char*);
+    virtual void SetTextBox(const char*, int, float);
+    virtual void SetTextBoxNoLocalize(Broc::string text, int width, float height);
+    virtual void SetTextAllocNoLocalize(const char*, int);
+    virtual void SetTextBoxAllocNoLocalize(Broc::string, int, float);
+    virtual void SetNumLines(int n);
+};
+
+#endif
+class FEMultiLineText : public FEText {
+public:
+    FEMultiLineText(font_index, float, float, int, panel_layer, float, int, int, color32);
+    virtual ~FEMultiLineText();
+    virtual void Animate(math::Mat43*, float);
+    virtual void Draw(bool);
+    virtual void SetTextNoLocalize(const char*);
+    virtual void SetPos(float, float);
+    virtual void SetFont(font_index);
+    virtual void Shift(float, float);
+    virtual void SetLineSpacing(int);
+    virtual void AddFont(int, font_index);
+    virtual FEText* Clone();
+    virtual void UpdateForWidescreen(bool);
+    virtual void SetText(unsigned int);
+    virtual void SetText(const char*);
+    virtual void Draw(int, int);
+    virtual void SetTextBox(const char*, int, float);
+    virtual void SetNumLines(int);
+    virtual float GetWidth();
+    virtual float GetHeight();
+    virtual void Scroll(float);
+    virtual void SetScrollable(int, bool);
+    virtual float GetPercentage();
+    virtual const char* ConvertActionToButton(const char*);
+    virtual const char* TranslateAction(const char*);
+    virtual void SetScaleAdjustButtons(float, float);
+    virtual void SetTextAllocNoLocalize(const char*, int);
+    virtual void SetTextBoxNoLocalize(Broc::string, int, float);
+    virtual void SetTextBoxAllocNoLocalize(Broc::string, int, float);
+    virtual void SetBoxWidth(int);
+    virtual int GetBoxWidth();
+    virtual void SetCutOffIfTooLong(bool);
 };
 
 class UIListBox {
@@ -719,6 +917,8 @@ public:
     int     mTopLine;    // +0x60
     int     mSelectedLine;  // +0x64
     uint8_t _pad2[172 - 0x68];
+    UIListBox(int visibleRows, int visibleColumns, int maxDataRows,
+              bool bIsWrapping);
     virtual ~UIListBox();                // slot 0 ??1UIListBox@@UAE@Z (shell.o)
     virtual void Clear();                // slot 1 ?Clear@UIListBox@@UAEXXZ
     virtual void ClearRow(int row);      // slot 2 ?ClearRow@UIListBox@@UAEXH@Z
@@ -923,6 +1123,7 @@ public:
     void AddOption(Broc::string optionString);  // ?AddOption@FEComboBox@@QAEXVstring@Broc@@@Z (shell.o)
     void AddOptionNoLocalize(Broc::string optionString);  // ?AddOptionNoLocalize@FEComboBox@@QAEXVstring@Broc@@@Z (shell.o)
 };
+#endif
 
 // ProfileManager / ProfileEditMenu (shell.o) - methods used by mp.o
 class ProfileManager {

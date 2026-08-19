@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 extern void* mem_heap_malloc(unsigned int size);  // core.o
+extern void mem_heap_free(void* ptr);             // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
 
 // Minimal STBManager view (full definition in game/core/core_systems.h,
@@ -116,7 +117,10 @@ void ControllerDisconnectedMenu::Draw()
 void ControllerDisconnectedMenu::SetPanelFile(PanelFile* pf)
 {
     if (text != nullptr)
-        delete text;
+    {
+        text->~FEMultiLineText();
+        mem_heap_free(text);
+    }
     panel = pf;
 
     FEText* TextPointer = panel->GetTextPointer("Resume");

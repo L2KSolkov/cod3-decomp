@@ -582,61 +582,47 @@ bool InGameOptionsMenu::ResponseNoJustGoBackToPauseMenu(int client)
 // ea: 0x0057D300
 void InGameOptionsMenu::AddOptionsToCombos()
 {
-    const char* const* v2 = pszStickLayout;
-    do
+    for (int i = 0; i < 4; ++i)
     {
-        Broc::string v16(*v2);
+        Broc::string v16(pszStickLayout[i]);
         ((FEComboBox*)entries[0])->AddOption(v16);
-        ++v2;
-    } while (v2 < pszButtonLayout);
+    }
 
-    const char* const* v4 = pszButtonLayout;
-    do
+    for (int i = 0; i < 4; ++i)
     {
-        Broc::string v16(*v4);
+        Broc::string v16(pszButtonLayout[i]);
         ((FEComboBox*)entries[1])->AddOption(v16);
-        ++v4;
-    } while (v4 < pszInvertAim);
+    }
 
-    const char* const* v6 = pszInvertAim;
-    do
+    for (int i = 0; i < 2; ++i)
     {
-        Broc::string v16(*v6);
+        Broc::string v16(pszInvertAim[i]);
         ((FEComboBox*)entries[4])->AddOption(v16);
-        ++v6;
-    } while (v6 < pszToggleADS);
+    }
 
-    const char* const* v8 = pszToggleADS;
-    do
+    for (int i = 0; i < 2; ++i)
     {
-        Broc::string v16(*v8);
+        Broc::string v16(pszToggleADS[i]);
         ((FEComboBox*)entries[5])->AddOption(v16);
-        ++v8;
-    } while (v8 < pszStickyAim);
+    }
 
-    const char* const* v10 = pszStickyAim;
-    do
+    for (int i = 0; i < 2; ++i)
     {
-        Broc::string v16(*v10);
+        Broc::string v16(pszStickyAim[i]);
         ((FEComboBox*)entries[6])->AddOption(v16);
-        ++v10;
-    } while (v10 < pszAlternateTankControls);
+    }
 
-    const char* const* v12 = pszAlternateTankControls;
-    do
+    for (int i = 0; i < 2; ++i)
     {
-        Broc::string v16(*v12);
+        Broc::string v16(pszAlternateTankControls[i]);
         ((FEComboBox*)entries[7])->AddOption(v16);
-        ++v12;
-    } while (v12 < pszVibration);
+    }
 
-    const char* const* v14 = pszVibration;
-    do
+    for (int i = 0; i < 2; ++i)
     {
-        Broc::string v16(*v14);
+        Broc::string v16(pszVibration[i]);
         ((FEComboBox*)entries[8])->AddOption(v16);
-        ++v14;
-    } while (v14 < g_XBoxBadDiskWarnings);
+    }
 }
 
 // ea: 0x0057D450

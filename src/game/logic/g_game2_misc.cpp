@@ -1227,6 +1227,12 @@ public:
     bool button_released(int index, ButtonIndex btn);
     void stick_value(int index, StickIndex stick, int& outX, int& outY);
 
+    void (*button_value_fn)(int*);
+    void (*button_released_fn)(int*);
+    void (*button_released_clear_fn)(int*);
+    void (*button_pressed_fn)(int*);
+    void (*button_pressed_clear_fn)(int*);
+    void (*stick_value_fn)(int*, int*);
     int  locked_port;
     bool is_locked;
 };

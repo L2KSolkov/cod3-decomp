@@ -676,7 +676,7 @@ void DecodeAnim(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak);
 void DecodeLightGrid(const char* name, unsigned char* data,
                      unsigned int size, TPakId pakId, PakFile* pak);
-void DecodePanel(const char* name, unsigned char* data, unsigned int size,
+void DecodePanel(const char* name, unsigned char* data, int size,
                  TPakId pakId, PakFile* pak);
 void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak);
@@ -9825,7 +9825,8 @@ PakDecoder GetDecoder(const char* ext)
     case 0x1F0F7F7F: return DecodeAnim;
     case 0x8B3348B: return DecodeTexture;            // "xbtex"
     case 0x7DCC452: return DecodeLightGrid;          // "lgrid"
-    case 0x821CA90: return DecodePanel;              // "panel"
+    case 0x821CA90:
+        return reinterpret_cast<PakDecoder>(DecodePanel); // "panel"
     case 0x1F195109: return DecodeSkeleton;
     case 0x8DB2340D: return DecodeCharSkel;          // "charskel"
     case 0xEE5EED49: return DecodeConfigStrings;     // "cfgstr"
@@ -14606,11 +14607,6 @@ void DecodeAnim(const char* name, unsigned char* data, unsigned int size,
         if (ContextStack.m_size != 0)
             ContextStack.m_size = ContextStack.m_size - 1;
     }
-}
-void DecodePanel(const char* name, unsigned char* data, unsigned int size,
-                 TPakId pakId, PakFile* pak)
-{
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
 // ea: 0x66F4C0
 void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,

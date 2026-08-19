@@ -1530,7 +1530,10 @@ void PanelFile::LoadPanelObject(unsigned char* buffer, int& index,
         PanelQuad* v17 = v16 != nullptr ? new (v16) PanelQuad() : nullptr;
         v17->name = name;
         v17->SetWidescreenAlign(widescreen_align);
-        v17->Load(v12, buffer, index, parent_matrix);
+        v17->Load(v12 != nullptr
+                      ? (PanelMaterial*)((char*)v12 + 4)
+                      : nullptr,
+                  buffer, index, parent_matrix);
         VectorPushBack(pquads, v17);
     }
     if (v12 != nullptr)
@@ -1942,7 +1945,7 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
     math::Mat43 matcopy = *parent_matrix;
     Broc::vector tmp_initial[4];
     Broc::vector tmp_wed[4];
-    int ind[4];
+    int wedge_indices[4];
     Broc::vector uv_out[4];
     float v93 = 0.0f;
     int num_tri = v37 / 3;
@@ -1956,7 +1959,7 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
             if (v97 >= num_tri)
                 goto LABEL_39;
             if (CountSharedVertices(didxs, tri1, v97,
-                                    (int*)&tmp_wed[3].x) != 2)
+                                    wedge_indices) != 2)
                 goto LABEL_39;
             ++tri1;
             ++v97;
@@ -1965,7 +1968,7 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
             color32 mat[4];
             for (int v51 = 0; v51 < 4; ++v51)
             {
-                int idx = *((int*)&tmp_wed[3].x + v51);
+                int idx = wedge_indices[v51];
                 Broc::vector vert = verts[idx];
                 tmp_initial[v51 + 3].x =
                     matcopy.x.v.m128_f32[0] * vert.x
@@ -2005,10 +2008,10 @@ void PanelQuad::Load(PanelMaterial* mats, unsigned char* buffer, int& index,
                 goto LABEL_47;
             continue;
         LABEL_39:
-            *((int*)&tmp_wed[3].x) = ((short*)z)[0];
-            *((int*)&tmp_wed[3].y) = ((short*)z)[1];
-            *((int*)&tmp_wed[3].z) = ((short*)z)[2];
-            ind[0] = ((short*)z)[2];
+            wedge_indices[0] = ((short*)z)[0];
+            wedge_indices[1] = ((short*)z)[1];
+            wedge_indices[2] = ((short*)z)[2];
+            wedge_indices[3] = wedge_indices[2];
             goto LABEL_40;
         }
     }
