@@ -152,7 +152,7 @@ void nglDxRenderState::Init() {
 // ============================================================================
 // nglDxRenderState::SetBlendColor - ea: 0x850000
 // ============================================================================
-void nglDxRenderState::SetBlendColor(int v) {
+void nglDxRenderState::SetBlendColor(unsigned int v) {
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_BLENDCOLOR, v) == 0) {
         D3DDevice_SetRenderState_Simple(dword_4034C, v);
         dword_BC2D3C = v;

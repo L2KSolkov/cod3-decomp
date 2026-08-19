@@ -16,7 +16,7 @@ struct nglDxRenderState {
     void SetBlendMode(unsigned int BM); // ea: 0x84FCC0
     void FSAAFixup();                   // ea: 0x84FED0
     void Init();                        // ea: 0x84FEE0
-    void SetBlendColor(int v);          // ea: 0x850000
+    void SetBlendColor(unsigned int v); // ea: 0x850000; map/stack ABI is unsigned 32-bit
     int SetMaxAnisotropy(unsigned int stage, unsigned int v);  // ea: 0x841E70
 };
 static_assert(sizeof(nglDxRenderState) == 4, "nglDxRenderState size mismatch");
