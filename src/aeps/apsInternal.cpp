@@ -364,4 +364,53 @@ void apsInternal::SetupAlphaFade(int fadeConst, float fadeNear, float fadeFar) {
 void apsInternal::GetLightMatrices(math::Mat43& oLightDirMatrix, math::Mat43& oLightColorMatrix,
                                    const math::Mat43& iWToL, nglLightContext* ioLightContext,
                                    const apsSphere& iSphere) {
+    GetLocalLights(ioLightContext, iSphere);
+
+    math::Position3 spherePosition;
+    spherePosition.v = iSphere.mSphere.v;
+    nglLightNode* light = ioLightContext->Head.LocalNext;
+    const nglLightNode* sentinel = reinterpret_cast<const nglLightNode*>(ioLightContext);
+    const __m128 signMask = _mm_set1_ps(-0.0f);
+    unsigned int lightCount = 0;
+
+    while (light != sentinel && lightCount < 4u) {
+        nglDirLightInfo lightInfo;
+        nglDirLightInfo* asDirLight = nglGetLightAsDirLight(
+            &lightInfo, light, spherePosition);
+        if (asDirLight != nullptr) {
+            const __m128 dir = asDirLight->Dir.v;
+            __m128 transformed = _mm_mul_ps(
+                _mm_shuffle_ps(dir, dir, 0), iWToL.x.v);
+            transformed = _mm_add_ps(transformed, _mm_mul_ps(
+                _mm_shuffle_ps(dir, dir, 0x55), iWToL.y.v));
+            transformed = _mm_add_ps(transformed, _mm_mul_ps(
+                _mm_shuffle_ps(dir, dir, 0xAA), iWToL.z.v));
+
+            __m128 zero = _mm_setzero_ps();
+            __m128 packed = _mm_shuffle_ps(
+                transformed, _mm_shuffle_ps(zero, transformed, 0xA0), 0x34);
+            math::Vector4* dirRows = reinterpret_cast<math::Vector4*>(&oLightDirMatrix.x);
+            dirRows[lightCount].v = _mm_xor_ps(signMask, packed);
+
+            oLightColorMatrix.x.v.m128_f32[lightCount] =
+                asDirLight->Color.v.m128_f32[0];
+            oLightColorMatrix.y.v.m128_f32[lightCount] =
+                asDirLight->Color.v.m128_f32[1];
+            oLightColorMatrix.z.v.m128_f32[lightCount] =
+                asDirLight->Color.v.m128_f32[2];
+            ++lightCount;
+        }
+
+        light = light->LocalNext;
+    }
+
+    for (unsigned int index = lightCount; index < 4u; ++index) {
+        math::Vector4* dirRows = reinterpret_cast<math::Vector4*>(&oLightDirMatrix.x);
+        dirRows[index].v = _mm_setzero_ps();
+        oLightColorMatrix.x.v.m128_f32[index] = 0.0f;
+        oLightColorMatrix.y.v.m128_f32[index] = 0.0f;
+        oLightColorMatrix.z.v.m128_f32[index] = 0.0f;
+    }
+
+    oLightColorMatrix.w = ioLightContext->Ambient;
 }
