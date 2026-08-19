@@ -8,6 +8,23 @@ extern "C" HRESULT __stdcall j_DirectSoundCreate(LPCGUID, LPDIRECTSOUND*, LPUNKN
     return E_NOTIMPL;
 }
 
+extern "C" HRESULT __stdcall j_IDirectSound_DownloadEffectsImage(
+    IDirectSound*, const void*, unsigned int, const _DSEFFECTIMAGELOC*, _DSEFFECTIMAGEDESC**) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSound_SetDistanceFactor(IDirectSound*, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSound_EnableHeadphones(IDirectSound*, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_DirectSoundUseLightHRTF(void) {
+    return 0;
+}
+
 extern "C" HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(
     IDirectSound*, const _DSBUFFERDESC*, IDirectSoundBuffer**, IUnknown*) {
     return E_NOTIMPL;

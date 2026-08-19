@@ -8,6 +8,28 @@ struct IDirectSound;
 struct IDirectSoundBuffer;
 struct _DSMIXBINS;
 
+struct _DSEFFECTMAP {
+    void* lpvCodeSegment;
+    unsigned int dwCodeSize;
+    void* lpvStateSegment;
+    unsigned int dwStateSize;
+    void* lpvYMemorySegment;
+    unsigned int dwYMemorySize;
+    void* lpvScratchSegment;
+    unsigned int dwScratchSize;
+};
+
+struct _DSEFFECTIMAGELOC {
+    unsigned int dwI3DL2ReverbIndex;
+    unsigned int dwCrosstalkIndex;
+};
+
+struct _DSEFFECTIMAGEDESC {
+    unsigned int dwEffectCount;
+    unsigned int dwTotalScratchSize;
+    _DSEFFECTMAP aEffectMaps[1];
+};
+
 typedef IDirectSound* LPDIRECTSOUND;
 
 struct xbox_adpcmwaveformat_tag {
@@ -27,11 +49,26 @@ struct _DSBUFFERDESC {
 static_assert(sizeof(xbox_adpcmwaveformat_tag) == 20,
               "Xbox ADPCM format layout mismatch");
 static_assert(sizeof(_DSBUFFERDESC) == 24, "Xbox DSBUFFERDESC layout mismatch");
+static_assert(sizeof(_DSEFFECTMAP) == 32, "Xbox DSEFFECTMAP layout mismatch");
+static_assert(sizeof(_DSEFFECTIMAGELOC) == 8, "Xbox DSEFFECTIMAGELOC layout mismatch");
+static_assert(sizeof(_DSEFFECTIMAGEDESC) == 40, "Xbox DSEFFECTIMAGEDESC layout mismatch");
 
 extern "C" {
 HRESULT __stdcall j_DirectSoundCreate(LPCGUID pcGuidDevice,
                                       LPDIRECTSOUND* ppDS,
                                       LPUNKNOWN pUnkOuter);
+HRESULT __stdcall j_IDirectSound_DownloadEffectsImage(
+    IDirectSound* pDirectSound,
+    const void* pvImageBuffer,
+    unsigned int dwImageSize,
+    const _DSEFFECTIMAGELOC* pImageLoc,
+    _DSEFFECTIMAGEDESC** ppImageDesc);
+int __stdcall j_IDirectSound_SetDistanceFactor(IDirectSound* pDirectSound,
+                                                float flDistanceFactor,
+                                                int dwApply);
+HRESULT __stdcall j_IDirectSound_EnableHeadphones(IDirectSound* pDirectSound,
+                                                   int fEnabled);
+int __stdcall j_DirectSoundUseLightHRTF(void);
 HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(IDirectSound* pDirectSound,
                                                     const _DSBUFFERDESC* pdsbd,
                                                     IDirectSoundBuffer** ppBuffer,

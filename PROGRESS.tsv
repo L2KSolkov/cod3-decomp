@@ -168,7 +168,7 @@ bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: ne
 
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 
-nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp; IDA-backed nslDriverVoice/PACKET_CONTEXT/XMEDIAPACKET views, FindFreePacket, and ProcessSource (HRESULT ABI) plus GetVoiceType/Exit now match (4 of 13); remaining three DirectSound lifecycle/voice calls remain explicit Win32 shim boundaries
+nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: IDA-backed nslDriverCheck and nslDriverInit now match the release path, including DirectSound call order, exact error table, DSP image bytes, 0x100 ARAM default, 0x7E0000 driver allocation, 0x1000 alignment, and 0x10000 flags; nslDriverVoice/PACKET_CONTEXT/XMEDIAPACKET views, FindFreePacket, ProcessSource, GetVoiceType, and Exit remain ported; remaining driver lifecycle/voice calls stay explicit Win32 shim boundaries
 
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	PORTED	[ngl_xboxr] ngl_gpu.cpp: full 13 funcs - pack/unpack vertex buffer (14 format cases each), SetBonesWorld/Local; gpuVertexElementUsage enum added; fixed dx_shader bone-matrix order (InvRest*Rel) + identity rows
 
@@ -300,7 +300,7 @@ aeps_xboxr:apsActionList.o	aeps_xboxr	apsActionList.o	engine	7	PORTED	apsActionL
 
 nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	VERIFIED	Phase 3: all nslListener.o functions ported from IDA, including listener group lookup, matrix/orientation normalization, position/velocity updates, and release frame-delta globals; pointer constness aligned to IDA listener symbols and canonical build passed
 
-nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: speaker mode, 0x44-byte init-parameter copy, work allocation, nslStart group/ARAM setup, nslExit cleanup, and IDA-matched driver ABI stubs ported; DirectSound backend remains a separate shim
+nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: speaker mode, 0x44-byte init-parameter copy, work allocation, nslStart group/ARAM setup, nslExit cleanup, and IDA-matched driver initialization; DirectSound calls remain in the Win32 shim boundary
 
 nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 

@@ -160,6 +160,7 @@ add_library(cod3_animation STATIC
 )
 add_library(cod3_sound STATIC
     src/sound/nsl.cpp
+    src/sound/nsl_driver_dsp_image.cpp
     src/sound/stubs.cpp
 )
 add_library(cod3_filesystem STATIC

@@ -8,6 +8,7 @@
 
 #include "xlive.h"
 #include "bd/bdGameInfo.h"
+#include "../../platform/xbox_shim/xbox_directsound.h"
 
 // ============================================================================
 // CBlob - 8 bytes (verified against IDA)
@@ -132,7 +133,7 @@ extern LiveFeature g_VoiceMailPseudoFeature;
 extern bool g_IgnoreUIXInput;
 extern int nIgnoreInputFrames;
 extern bool bUIXInputDelay;
-extern void* nsl_fxDesc;          // _DSEFFECTIMAGEDESC* (sound lib)
+extern _DSEFFECTIMAGEDESC* nsl_fxDesc;
 extern void* g_voicemailMode;     // _XHV_PROCESSING_MODE*
 extern void* g_voicechatMode;     // _XHV_PROCESSING_MODE*
 

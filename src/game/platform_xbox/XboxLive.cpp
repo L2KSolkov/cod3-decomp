@@ -422,7 +422,7 @@ LiveFeature g_LogonFeature;
 LiveFeature g_FriendsFeature;
 LiveFeature g_PlayersFeature;
 LiveFeature g_VoiceMailPseudoFeature;
-void* nsl_fxDesc;
+_DSEFFECTIMAGEDESC* nsl_fxDesc;
 void* g_voicemailMode;
 void* g_voicechatMode;
 int nIgnoreInputFrames;   // game_xbox.o (LiveWrapper.cpp)

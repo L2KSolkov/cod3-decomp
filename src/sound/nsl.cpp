@@ -12,6 +12,7 @@
 #include <intrin.h>
 
 #include "core/tlFixedString.h"
+#include "../../platform/xbox_shim/xbox_directsound.h"
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
@@ -24,6 +25,9 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 extern "C" char* txPathFix(const char* src, char* dir, int dirSize);
 extern const char defaultFileName[];
 extern void nflUpdate();
+extern const char nsl_driverDSPImage[];
+extern const unsigned int nsl_driverDSPImageSize;
+extern _DSEFFECTIMAGEDESC* nsl_fxDesc;
 
 // ============================================================================
 // Handle types
@@ -392,6 +396,8 @@ static nslWaveBankLoader nsl_waveBankLoad = {};
 static int dword_E4B690 = 16;
 static void* base = nullptr;
 static unsigned dword_E4B69C = 0;
+_DSEFFECTIMAGELOC nsl_fxImage = {4u, 5u};
+IDirectSound* nsl_driverDevice = nullptr;
 // Listener-frame globals and initial speaker table from IDA's release data.
 nslSpeaker nsl_speakers[8] = {
     {{-1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
@@ -4316,6 +4322,42 @@ long          nslDriverVoice::ProcessSource(int packetIndex) {
     }
     return 0;
 }
+// ea: 0x008245A0
+HRESULT nslDriverCheck(HRESULT code, const char* funcName,
+                       const char* fileName, int lineNumber) {
+    if (code == 0 || code == static_cast<HRESULT>(0x8000000Au))
+        return code;
+
+    struct nslDriverError {
+        HRESULT code;
+        const char* text;
+    };
+    static const nslDriverError errors[7] = {
+        {static_cast<HRESULT>(0x8007000Eu), "Out of memory"},
+        {static_cast<HRESULT>(0x80004001u), "Unsupported"},
+        {static_cast<HRESULT>(0x80004005u), "Generic"},
+        {static_cast<HRESULT>(0x80040110u), "No aggregation"},
+        {static_cast<HRESULT>(0x8878001Eu), "Control unavailable"},
+        {static_cast<HRESULT>(0x88780032u), "Invalid call"},
+        {static_cast<HRESULT>(0x88780078u), "No driver"}
+    };
+
+    for (const nslDriverError& error : errors) {
+        if (code == error.code) {
+            txPrintf("NSL", 0, "DSNDERR %p: %s in %s at %s:%d\n",
+                     reinterpret_cast<void*>(static_cast<uintptr_t>(
+                         static_cast<unsigned int>(code))),
+                     error.text, funcName, fileName, lineNumber);
+            return code;
+        }
+    }
+
+    txPrintf("NSL", 0, "DSNDERR %p in %s %s:%d\n\n",
+             reinterpret_cast<void*>(static_cast<uintptr_t>(
+                 static_cast<unsigned int>(code))),
+             funcName, fileName, lineNumber);
+    return code;
+}
 // ea: 0x00824EF0
 unsigned char nslDriverGetVoiceType(const nslWave* wave) {
     const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
@@ -4327,7 +4369,39 @@ unsigned char nslDriverGetVoiceType(const nslWave* wave) {
     result = (result & ~0xFF) | ((result | 1) & 0xFF);
     return result;
 }
-int           nslDriverInit(nslInitParams*) { return 0; }
+// ea: 0x00824F20
+int nslDriverInit(nslInitParams* ip) {
+    HRESULT code = j_DirectSoundCreate(nullptr, &nsl_driverDevice, nullptr);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 804);
+
+    code = j_IDirectSound_DownloadEffectsImage(
+        nsl_driverDevice, nsl_driverDSPImage, nsl_driverDSPImageSize,
+        &nsl_fxImage, &nsl_fxDesc);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 805);
+
+    code = static_cast<HRESULT>(j_IDirectSound_SetDistanceFactor(
+        nsl_driverDevice, 1.0f, 1));
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 806);
+
+    code = j_IDirectSound_EnableHeadphones(nsl_driverDevice, 0);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 807);
+    j_DirectSoundUseLightHRTF();
+
+    if (ip->aramSize == 0)
+        ip->aramSize = 0x100u;
+
+    // IDA's ip[1].aramBase/ip[1].aramSize are the adjacent release globals
+    // `base` and `dword_E4B69C`; the local nslInitParams type is only 16 bytes.
+    if (dword_E4B69C == 0u)
+        dword_E4B69C = 0x7E0000u;
+    if (base == nullptr)
+        base = tlMemAlloc(dword_E4B69C, 0x1000u, 0x10000u);
+    return 1;
+}
 int           nslDriverStart() { return 0; }
 void          nslDriverShutdown() {}
 void          nslDriverUpdate() {}
