@@ -11,28 +11,11 @@
 #include "render/cdDebugVertexDef.h"
 #include "core/tlFixedString.h"
 #include "ngl/nglScene.h"
+#include "ngl/nglRenderNode.h"
 
 #include <intrin.h>
 
-class nglRenderNode;
 class apsRenderNode;
-
-// ============================================================================
-// nglRenderNode — base render-list node (12 bytes, from IDA local type):
-//   vtable @0x00 (implicit), Next @0x04, SortDist/SortHash union @0x08
-// ============================================================================
-class nglRenderNode {
-public:
-    virtual ~nglRenderNode() {}
-    virtual void Render() = 0;
-    virtual void GetSortInfo(nglSortInfo& Info) { (void)Info; }
-    nglRenderNode* Next;
-    union {
-        float SortDist;
-        int   SortHash;
-    };
-};
-static_assert(sizeof(nglRenderNode) == 0x0C, "nglRenderNode size mismatch");
 
 // ============================================================================
 // apsSphere — 16 bytes: center (xyz) + radius (w).

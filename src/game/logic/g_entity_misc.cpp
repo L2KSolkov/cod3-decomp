@@ -2644,8 +2644,6 @@ void MI_ResetMapList()
 }
 void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
 class nglRenderNode;
-void nglAdvanceRenderNode() {}
-void nglBeginRenderNode(nglRenderNode* n) { (void)n; }
 void nglDxUnbindVertexBuffer() {}
 void ngliExitList() {}
 struct nglMeshSection;

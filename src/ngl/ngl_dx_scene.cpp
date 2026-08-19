@@ -5,7 +5,8 @@
 
 #include "ngl/ngl_scene.h"
 #include "ngl/ngl_dx_gpu.h"
-#include "ngl/ngl_dx_quad.h"
+#include "ngl/nglRenderNode.h"
+#include "ngl/ngl_dx_state.h"
 #include "ngl/ngl_dx_fsaa.h"
 #include "ngl/ngl_dx_filters.h"
 #include "ngl/nglDebug.h"
@@ -38,19 +39,74 @@ extern void nglDepthOfFieldCallBack(void* Data);        // ngl_dx_filters.o
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void tlPrintf(const char* fmt, ...);
 
-// Render-list iteration (uses the apsRenderNode.h nglRenderNode from
-// ngl_dx_quad.h; the binary dispatches Render via vtable slot 1).
-class nglRenderNode;
-extern void nglBeginRenderNode(nglRenderNode* Head);
-extern void nglAdvanceRenderNode();
+// Render-list iteration (nglRenderNode layout and vtable are IDA-verified).
+class nglDummyRenderNode final : public nglRenderNode {
+public:
+    void Render() override {}
+};
+static nglDummyRenderNode nglRenderListEndNodeInstance;
+nglRenderNode* nglRenderListEndNode = &nglRenderListEndNodeInstance;
 nglRenderNode* nglCurRenderNode = nullptr;      // ?nglCurRenderNode@@3PAVnglRenderNode@@A (ngl.o)
-nglRenderNode* nglRenderListEndNode = nullptr;  // ?nglRenderListEndNode@@3PAVnglRenderNode@@A (ngl.o)
+nglRenderNode* nglPrevRenderNode = nullptr;     // ?nglPrevRenderNode@@3PAVnglRenderNode@@A (ngl.o)
+unsigned int nglTestNodeStart = 0;              // ?nglTestNodeStart@@3IA (ngl.o)
+unsigned int nglTestNodeEnd = 100000;           // ?nglTestNodeEnd@@3IA (ngl.o)
 extern int nglSceneRecursion;
 
-// vtable slot 1 = Render (slot 0 = dtor).
+// ea: 0x8527B0
+void nglBeginRenderNode(nglRenderNode* Head) {
+    nglRenderNode* Next = Head;
+    unsigned int NodeCount = nglPerfInfo.NodeCount;
+    nglPrevRenderNode = nullptr;
+    for (nglCurRenderNode = Head;
+         Next != nglRenderListEndNode;
+         nglPerfInfo.NodeCount = NodeCount) {
+        if (NodeCount >= nglTestNodeStart)
+            break;
+        Next = Next->Next;
+        ++NodeCount;
+        nglCurRenderNode = Next;
+    }
+    if (NodeCount > nglTestNodeEnd)
+        nglCurRenderNode = nglRenderListEndNode;
+}
+
+// ea: 0x852810
+nglRenderNode* nglAdvanceRenderNode() {
+    nglRenderNode* Result = nglCurRenderNode;
+    if (nglCurRenderNode == nullptr) {
+        if (_tlAssert("c:\\cod\\code\\tl\\ngl\\include\\ngl_scene.h", 320,
+                      "nglCurRenderNode",
+                      "nglAdvanceRenderNode may not be called after nglCurRenderNode becomes NULL."))
+            __debugbreak();
+        Result = nglCurRenderNode;
+    }
+    nglRenderNode* End = nglRenderListEndNode;
+    if (Result == nglRenderListEndNode) {
+        bool Asserted = _tlAssert("c:\\cod\\code\\tl\\ngl\\include\\ngl_scene.h", 321,
+                                  "nglCurRenderNode != nglRenderListEndNode",
+                                  "nglAdvanceRenderNode may not be called after nglCurRenderNode reaches the end of the list.");
+        End = nglRenderListEndNode;
+        Result = nglCurRenderNode;
+        if (Asserted)
+            __debugbreak();
+    }
+    unsigned int NodeCount = nglPerfInfo.NodeCount;
+    nglPrevRenderNode = Result;
+    do {
+        Result = Result->Next;
+        ++NodeCount;
+        nglCurRenderNode = Result;
+        nglPerfInfo.NodeCount = NodeCount;
+    } while (Result != End && NodeCount < nglTestNodeStart);
+    if (NodeCount > nglTestNodeEnd)
+        nglCurRenderNode = End;
+    return Result;
+}
+
+// vtable slot +8 is Render (the +4 Dummy slot is inherited from nglRenderNode_Vtbl).
 typedef void (*RenderFn)(void* self);
 static void RenderNode_Render(nglRenderNode* node) {
-    RenderFn fn = *(RenderFn*)((char*)*(void**)node + 4);
+    RenderFn fn = *(RenderFn*)((char*)*(void**)node + 8);
     fn(node);
 }
 
