@@ -112,7 +112,7 @@ extern void D3DDevice_SetVertexShaderConstant1Fast(int Register,
                                                    void* pConstantData);
 extern void D3DDevice_SetShaderConstantMode(int Mode);
 extern void nglDxUnbindTexStages();
-extern int nglDxCheckErrorD3D(int dwErrCode, const char* a2,
+extern long nglDxCheckErrorD3D(long dwErrCode, const char* a2,
                               unsigned int a3);
 struct nglDxRenderState {
     void Init();

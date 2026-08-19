@@ -226,7 +226,7 @@ unsigned int nglLastFlipCycle = 0;
 // ============================================================================
 // nglDxCheckErrorD3D - ea: 0x83FF80
 // ============================================================================
-int nglDxCheckErrorD3D(int Status, const char* FileName, unsigned int Line) {
+long nglDxCheckErrorD3D(long Status, const char* FileName, unsigned int Line) {
     char Message[512];
     if (Status != 0) {
         D3DXGetErrorStringA(Status, Message, 0x200u);
@@ -359,11 +359,11 @@ void nglDxInitPresentParams() {
 // ============================================================================
 // nglRenderStartCallback / nglRenderFinishCallback - ea: 0x8402F0 / 0x840320
 // ============================================================================
-void nglRenderStartCallback(unsigned int Param) {
+void nglRenderStartCallback(unsigned long Param) {
     nglPerfInfo.RenderStart = __rdtsc();
 }
 
-void nglRenderFinishCallback(unsigned int Param) {
+void nglRenderFinishCallback(unsigned long Param) {
     nglPerfInfo.RenderFinish = __rdtsc() - nglPerfInfo.RenderStart;
 }
 
@@ -597,7 +597,9 @@ void nglListSendBatch(jqBatch* Batch) {
     nglPerfInfo.ListSubmitCycles = __rdtsc() - nglPerfInfo.ListSubmitCycles;
     nglPerfInfo.ListSubmitMS = (float)(nglPerfInfo.ListSubmitCycles * 0.0000013636364);
     nglPerfInfo.ListSendCycles = __rdtsc();
-    D3DDevice_InsertCallback(D3DCALLBACK_WRITE, nglRenderStartCallback, 0);
+    D3DDevice_InsertCallback(
+        D3DCALLBACK_WRITE,
+        reinterpret_cast<void (*)(unsigned int)>(nglRenderStartCallback), 0);
     nglRenderScene();
     nglPostProcessFiltersTex();
     gpuHashVertexBuffer = 0;
@@ -615,7 +617,9 @@ void nglListSendBatch(jqBatch* Batch) {
     nglPerfInfo.ListSendMS = (float)(nglPerfInfo.ListSendCycles * 0.0000013636364);
     if (nglEndOfFrameCallback != NULL)
         nglEndOfFrameCallback(nglEndOfFrameData);
-    D3DDevice_InsertCallback(D3DCALLBACK_WRITE, nglRenderFinishCallback, 0);
+    D3DDevice_InsertCallback(
+        D3DCALLBACK_WRITE,
+        reinterpret_cast<void (*)(unsigned int)>(nglRenderFinishCallback), 0);
     if (nglFenceEndOfRendering != -1)
         D3DDevice_BlockOnFence(nglFenceEndOfRendering);
     nglFenceEndOfRendering = D3DDevice_InsertFence();

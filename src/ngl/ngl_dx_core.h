@@ -40,7 +40,7 @@ extern unsigned int nglFlipCycle;
 extern unsigned int nglLastFlipCycle;
 
 // ngl_dx_core.o (functions, defined in ngl_dx_core.cpp)
-int nglDxCheckErrorD3D(int Status, const char* FileName, unsigned int Line);
+long nglDxCheckErrorD3D(long Status, const char* FileName, unsigned int Line);
 void nglFlip();
 void nglSetDisplayMode(unsigned int* Modes, unsigned int ModeCount);
 void nglXbSetGammaRamp(unsigned char* Ramp);
@@ -48,8 +48,8 @@ void nglDxInitOcclusionQuery();
 void nglXbInitPushBufferSize();
 void nglDxInitDisplayMode();
 void nglDxInitPresentParams();
-void nglRenderStartCallback(unsigned int Param);
-void nglRenderFinishCallback(unsigned int Param);
+void nglRenderStartCallback(unsigned long Param);
+void nglRenderFinishCallback(unsigned long Param);
 void nglVBlankCallback(_D3DVBLANKDATA* VBlankData);
 void ngliLoadPhysicalSection(apk::apkFile* File, apk::apkFileSection* Section, void* UserData);
 void ngliUnloadPhysicalSection(apk::apkFile* File, apk::apkFileSection* Section, void* UserData);
