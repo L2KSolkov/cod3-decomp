@@ -42,7 +42,6 @@ public:
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
 class InteractionController { public: static void CreateInst(); static void DeleteInst(); };
 class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
-class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 
 void DestructibleBankManager::CreateInst() {}
@@ -79,8 +78,6 @@ void InteractionController::CreateInst() {}
 void InteractionController::DeleteInst() {}
 void BinFileManager::CreateInst() {}
 void BinFileManager::DeleteInst() {}
-void CurveManager::CreateInst() {}
-void CurveManager::DeleteInst() {}
 void DynamicDecalMgr::CreateInst() {}
 void DynamicDecalMgr::DeleteInst() {}
 

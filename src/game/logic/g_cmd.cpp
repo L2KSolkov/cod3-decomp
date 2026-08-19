@@ -96,6 +96,8 @@ private:
     CurveManager();            // ??0CurveManager@@QAE@XZ (game.o 0x638160)
     ~CurveManager();           // ??1CurveManager@@AAE@XZ (game.o 0x61F780)
 public:
+    static CurveManager* CreateInst();
+    static void DeleteInst();
     RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
     struct CurveDList {
         int  m_size;  // +0x00
@@ -136,7 +138,62 @@ public:
     void ClearEntities();  // ?ClearEntities@CurveManager@@QAEXXZ (game.o 0x6466A0)
     void Update(float tickDelta);  // ?Update@CurveManager@@QAEXM@Z (game.o 0x6421D0)
 };
+static_assert(sizeof(CurveManager) == 0x28C, "CurveManager size mismatch");
 CurveManager* CurveManager::sInst = nullptr;
+extern void mem_heap_free(void* ptr);
+extern void* CurveManager_sInst;  // core.o artifact mirror
+
+// ea: 0x004DD640
+CurveManager* CurveManager::CreateInst()
+{
+    if (CurveManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\CurveManager.h";
+        AeAssert::gCurrentLine = 109;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x28Cu, 4, "fx", "c:\\cod\\code\\game\\CurveManager.h", 109);
+    if (memory != nullptr)
+    {
+        CurveManager* result = new (memory) CurveManager();
+        CurveManager::sInst = result;
+        CurveManager_sInst = result;
+        return result;
+    }
+    CurveManager::sInst = nullptr;
+    CurveManager_sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004E29C0
+void CurveManager::DeleteInst()
+{
+    CurveManager* instance = CurveManager::sInst;
+    if (CurveManager::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\CurveManager.h";
+        AeAssert::gCurrentLine = 109;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~CurveManager();
+        mem_heap_free(instance);
+    }
+    CurveManager::sInst = nullptr;
+    CurveManager_sInst = nullptr;
+}
 
 // CurveManager.cpp file statics (verified against IDA)
 static unsigned int fsSound;            // @ 0xF59200 AeHash("AbstractEffectSound")
