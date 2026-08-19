@@ -8,6 +8,12 @@
 #include "core/PoolAllocator.h"
 #include "aeps/apsEffect.h"
 
+#include <new>
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+extern void mem_heap_free(void* ptr);
+
 // Minimal view of PakManager (full class in game/sv/sv_stubs.h).
 class PakManager {
 public:
@@ -72,6 +78,58 @@ EffectEventSys* sInst = nullptr;  // 0x012F0380
 }
 
 PoolAllocator* ActiveEffectSet_sAllocator = nullptr;
+
+// ea: 0x004E9B20
+EffectEventSys* EffectEventSys::CreateInst()
+{
+    if (EffectEventSys::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\EffectEventSys.h";
+        AeAssert::gCurrentLine = 231;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0xA380u, 16, "fx", "c:\\cod\\code\\game\\EffectEventSys.h", 231);
+    if (memory != nullptr)
+    {
+        EffectEventSys* result = new (memory) EffectEventSys();
+        EffectEventSys::sInst = result;
+        EffectEventSysStatics::sInst = result;
+        return result;
+    }
+    EffectEventSys::sInst = nullptr;
+    EffectEventSysStatics::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004EA010
+void EffectEventSys::DeleteInst()
+{
+    EffectEventSys* instance = EffectEventSys::sInst;
+    if (EffectEventSys::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\EffectEventSys.h";
+        AeAssert::gCurrentLine = 231;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~EffectEventSys();
+        mem_heap_free(instance);
+    }
+    EffectEventSys::sInst = nullptr;
+    EffectEventSysStatics::sInst = nullptr;
+}
 
 // ============================================================================
 // Entity lookup (HandleDb<Entity,1344,SizedHandle<12,20>>; elements at +0xA8)

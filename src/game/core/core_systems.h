@@ -547,8 +547,10 @@ static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");
 // EffectEventSys - effect event system singleton (41856 bytes)
 // Size: 0xA380 - verified against IDA
 // ============================================================================
-struct EffectEventSys {
-    static void CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
+class EffectEventSys {
+public:
+    static EffectEventSys* sInst;       // ?sInst@EffectEventSys@@2PAV1@A @ 0x00F00E80
+    static EffectEventSys* CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@EffectEventSys@@SAXXZ (core.o)
     struct CachedQuery {
         BitSet<49>    mSpecifiedFields;  // +0x000
