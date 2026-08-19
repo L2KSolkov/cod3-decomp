@@ -81,13 +81,82 @@ void _nglGpuPackTriangleList(D3DIndexBuffer* idx, unsigned short* buf,
 }
 
 // ============================================================================
+// _nglGpuUnpackTriangleStrip / Fan - ea: 0x84DCD0-0x84DE60
+// The four instantiations below are emitted by ngl_gpu.o and are selected by
+// nglGpuUnpackIndexBuffer according to the source index width.
+// ============================================================================
+template <typename T>
+unsigned int _nglGpuUnpackTriangleStrip(D3DIndexBuffer* idx, T* buf,
+                                         unsigned int nindices) {
+    T* Data = (T*)(size_t)idx->Data;
+    unsigned int result = 0;
+    unsigned int ntris = 0;
+    if (nindices != 0) {
+        T* v6 = (T*)((unsigned char*)Data - sizeof(T) * 2);
+        do {
+            if (result >= 2) {
+                T v7 = v6[2];
+                T v8 = v6[1];
+                if (v7 != v8 && v7 != *v6 && v8 != *v6) {
+                    if ((result & 1) != 0) {
+                        *buf = v7;
+                        buf[1] = v6[1];
+                        buf[2] = *v6;
+                    } else {
+                        buf[2] = v7;
+                        buf[1] = v6[1];
+                        *buf = *v6;
+                    }
+                    buf += 3;
+                    ++ntris;
+                }
+            }
+            ++result;
+            ++v6;
+        } while (result < nindices);
+        return ntris;
+    }
+    return result;
+}
+
+template <typename T>
+unsigned int _nglGpuUnpackTriangleFan(D3DIndexBuffer* idx, T* buf,
+                                      unsigned int nindices) {
+    T* Data = (T*)(size_t)idx->Data;
+    unsigned int result = 0;
+    T* indices = Data;
+    unsigned int ntris = 0;
+    if (nindices == 0)
+        return 0;
+    T* v6 = (T*)((unsigned char*)Data - sizeof(T));
+    do {
+        if (result >= 2) {
+            T v7 = v6[1];
+            if (v7 != *v6) {
+                T v8 = *(v6 - 1);
+                if (v7 != v8 && *v6 != v8) {
+                    buf[2] = v7;
+                    buf[1] = *v6;
+                    *buf = *indices;
+                    buf += 3;
+                    ++ntris;
+                }
+            }
+        }
+        ++result;
+        ++v6;
+    } while (result < nindices);
+    return ntris;
+}
+
+// ============================================================================
 // nglGpuPackIndexBuffer â€” ea: 0x84C670
 // ============================================================================
 void nglGpuPackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
-                           gpuIndexType idxformat, unsigned short* buf,
+                           gpuIndexType idxformat, unsigned int* buf,
                            unsigned int nindices) {
     if (primtype == GPU_PRIM_TRIANGLELIST && idxformat == GPU_INDEX_16) {
-        _nglGpuPackTriangleList(idx, buf, nindices);
+        _nglGpuPackTriangleList(idx, (unsigned short*)buf, nindices);
     } else if (_tlAssert("src/gpu/ngl_gpu.cpp", 1037, "false",
                          "nglGpuPackIndexBuffer() : unsupported mode")) {
         __debugbreak();
@@ -98,14 +167,22 @@ void nglGpuPackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
 // nglGpuUnpackIndexBuffer â€” ea: 0x84D2A0
 // ============================================================================
 unsigned int nglGpuUnpackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
-                                     gpuIndexType idxformat, unsigned short* buf,
+                                     gpuIndexType idxformat, unsigned int* buf,
                                      unsigned int nindices) {
     switch (primtype) {
     case GPU_PRIM_TRIANGLELIST:
         if (idxformat == GPU_INDEX_16)
-            return _nglGpuUnpackTriangleList(idx, buf, nindices);
+            return _nglGpuUnpackTriangleList(idx, (unsigned short*)buf, nindices);
         memcpy(buf, (const void*)(size_t)idx->Data, 4 * nindices);
         return nindices / 3;
+    case GPU_PRIM_TRIANGLESTRIP:
+        if (idxformat == GPU_INDEX_16)
+            return _nglGpuUnpackTriangleStrip<unsigned short>(idx, (unsigned short*)buf, nindices);
+        return _nglGpuUnpackTriangleStrip<unsigned int>(idx, buf, nindices);
+    case GPU_PRIM_TRIANGLEFAN:
+        if (idxformat == GPU_INDEX_16)
+            return _nglGpuUnpackTriangleFan<unsigned short>(idx, (unsigned short*)buf, nindices);
+        return _nglGpuUnpackTriangleFan<unsigned int>(idx, buf, nindices);
     default:
         if (_tlAssert("src/gpu/ngl_gpu.cpp", 1020, "false", "Invalid primitive type."))
             __debugbreak();

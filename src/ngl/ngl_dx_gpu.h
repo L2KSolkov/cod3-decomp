@@ -607,10 +607,10 @@ extern unsigned int _nglGpuUnpackTriangleList(D3DIndexBuffer* idx, unsigned shor
 extern void _nglGpuPackTriangleList(D3DIndexBuffer* idx, unsigned short* buf,
                                     unsigned int nindices);
 extern void nglGpuPackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
-                                  gpuIndexType idxformat, unsigned short* buf,
+                                  gpuIndexType idxformat, unsigned int* buf,
                                   unsigned int nindices);
 extern unsigned int nglGpuUnpackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
-                                            gpuIndexType idxformat, unsigned short* buf,
+                                            gpuIndexType idxformat, unsigned int* buf,
                                             unsigned int nindices);
 extern void nglGpuDrawSection(nglMeshSection* Section);
 extern void ngliListSend(void);
