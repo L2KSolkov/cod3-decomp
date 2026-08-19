@@ -496,7 +496,7 @@ class AnimBankManager { public: static void CreateInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
 class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
-class PlayerAnimMgr { public: static void CreateInst(); static void DeleteInst(); };
+class PlayerAnimMgr { public: static PlayerAnimMgr* CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 class TestFPS { public: static void CreateInst(); static void DeleteInst(); };
 extern void InitLights();

@@ -1418,7 +1418,6 @@ InplaceVector<unsigned char>* SceneManager::GetPersistantStorage()
 {
     return mPersistantStorage;
 }
-PlayerAnimMgr* PlayerAnimMgr::sInst;
 PlayerAnimMgr* PlayerAnimMgr::Inst()
 {
     return PlayerAnimMgr::sInst;

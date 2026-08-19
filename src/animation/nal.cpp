@@ -5227,6 +5227,9 @@ const char* GetButtonTextName(int index)
 
 class PlayerAnimMgr {
 public:
+    static PlayerAnimMgr* sInst;       // ?sInst@PlayerAnimMgr@@2PAV1@A @ 0xF25A28
+    static PlayerAnimMgr* CreateInst(); // core.o 0x004DE860
+    static void DeleteInst();           // core.o 0x004E2E30
     PlayerAnimMgr();   // ??0PlayerAnimMgr@@QAE@XZ (0x53DF90)
     ~PlayerAnimMgr();  // ??1PlayerAnimMgr@@QAE@XZ (0x53DFB0)
     void Update(float deltaT);  // ?Update@PlayerAnimMgr@@QAEXM@Z (0x53DFC0)
@@ -5247,6 +5250,65 @@ public:
     void* mCurPrimary;   // +0x14
     void* mCurModifier;  // +0x18
 };
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+extern void mem_heap_free(void* ptr);
+extern void* PlayerAnimMgr_sInst;  // cg.o artifact mirror
+
+PlayerAnimMgr* PlayerAnimMgr::sInst = nullptr;
+
+// ea: 0x004DE860
+PlayerAnimMgr* PlayerAnimMgr::CreateInst()
+{
+    if (PlayerAnimMgr::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\PlayerAnimMgr.h";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x1Cu, 4, "core", "c:\\cod\\code\\game\\PlayerAnimMgr.h", 23);
+    if (memory != nullptr)
+    {
+        PlayerAnimMgr* result = new (memory) PlayerAnimMgr();
+        PlayerAnimMgr::sInst = result;
+        PlayerAnimMgr_sInst = result;
+        return result;
+    }
+    PlayerAnimMgr::sInst = nullptr;
+    PlayerAnimMgr_sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004E2E30
+void PlayerAnimMgr::DeleteInst()
+{
+    PlayerAnimMgr* instance = PlayerAnimMgr::sInst;
+    if (PlayerAnimMgr::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\PlayerAnimMgr.h";
+        AeAssert::gCurrentLine = 23;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~PlayerAnimMgr();
+        mem_heap_free(instance);
+    }
+    PlayerAnimMgr::sInst = nullptr;
+    PlayerAnimMgr_sInst = nullptr;
+}
 
 // ea: 0x0053DF90
 PlayerAnimMgr::PlayerAnimMgr()

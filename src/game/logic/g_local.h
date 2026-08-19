@@ -2839,6 +2839,8 @@ public:
 class PlayerAnimMgr {
 public:
     static PlayerAnimMgr* sInst;  // ?sInst@PlayerAnimMgr@@2PAV1@A @ 0xF25A28
+    static PlayerAnimMgr* CreateInst();
+    static void DeleteInst();
     static PlayerAnimMgr* Inst();  // ?Inst@PlayerAnimMgr@@SAPAV1@XZ (g.o 0x4A9E60)
 };
 
