@@ -14,6 +14,9 @@ struct nglDxRenderState {
 
     void Reset();                       // ea: 0x84FC90
     void SetBlendMode(unsigned int BM); // ea: 0x84FCC0
+    void SetSrcBlend(unsigned int v);   // ea: 0x7C8C90
+    void SetDestBlend(unsigned int v);  // ea: 0x7C8CC0
+    void SetBlendOp(unsigned int v);    // ea: 0x7C8CF0
     void FSAAFixup();                   // ea: 0x84FED0
     void Init();                        // ea: 0x84FEE0
     void SetBlendColor(unsigned int v); // ea: 0x850000; map/stack ABI is unsigned 32-bit

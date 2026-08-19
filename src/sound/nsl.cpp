@@ -1645,6 +1645,9 @@ void          nslSetEffect(const nslEffect* fx) {
         }
     }
 
+    if (nsl_driverDevice == nullptr)
+        return;
+
     const HRESULT code = j_IDirectSound_SetI3DL2Listener(
         nsl_driverDevice, &nsl_driverI3DL2Setting, 0);
     nslDriverCheck(code, "NSL",
@@ -4829,6 +4832,12 @@ HRESULT nslDriverCheck(HRESULT code, const char* funcName,
     if (code == 0 || code == static_cast<HRESULT>(0x8000000Au))
         return code;
 
+    // The Win32 build intentionally has no Xbox DirectSound device yet. Keep
+    // the release return value for callers that branch on failure, but do not
+    // report the shim's expected E_NOTIMPL result as a runtime NSL error.
+    if (code == E_NOTIMPL)
+        return code;
+
     struct nslDriverError {
         HRESULT code;
         const char* text;
@@ -5088,6 +5097,9 @@ int initVoices(int max3DStreaming, int max3DBuffers,
 }
 // ea: 0x008257A0
 int nslDriverStart() {
+    if (nsl_driverDevice == nullptr)
+        return 1;
+
     const unsigned inited = initVoices(8, 56, 4, 128);
     if (inited < nsl_initParams.aramSize)
         nsl_initParams.aramSize = inited;
@@ -5101,6 +5113,9 @@ int nslDriverStart() {
 void          nslDriverShutdown() {}
 // ea: 0x00825A10
 void          nslDriverUpdate() {
+    if (nsl_driverDevice == nullptr)
+        return;
+
     constexpr const char* driverFile =
         "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp";
     int synchPlaybackCount = 0;

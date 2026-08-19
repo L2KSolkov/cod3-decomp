@@ -105,6 +105,29 @@ void nglDxRenderState::SetBlendMode(unsigned int BM) {
     }
 }
 
+// The APS particle path uses these direct state setters instead of the packed
+// blend-mode helper. Their bodies match the release ngl_dx_state COMDATs.
+void nglDxRenderState::SetSrcBlend(unsigned int v) {
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SRCBLEND, v) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40344, v);
+        dword_BC2D08 = v;
+    }
+}
+
+void nglDxRenderState::SetDestBlend(unsigned int v) {
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_DESTBLEND, v) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40348, v);
+        dword_BC2D0C = v;
+    }
+}
+
+void nglDxRenderState::SetBlendOp(unsigned int v) {
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_BLENDOP, v) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40350, v);
+        dword_BC2D38 = v;
+    }
+}
+
 // ============================================================================
 // nglDxRenderState::FSAAFixup - ea: 0x84FED0
 // ============================================================================

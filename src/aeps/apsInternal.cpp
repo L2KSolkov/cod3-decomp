@@ -6,21 +6,40 @@
 // Port strategy:
 //   - 7 clean functions ported in full (Init, Get*CoordinateSystem, and the
 //     spawned-effect queue API).
-//   - The larger D3D render-state/light helpers (GetLocalLights,
-//     SetupBlendAndTexture, GetLightMatrices) remain exact-signature stubs
-//     until their full driver/light layouts are reconstructed. SetupFog and
-//     SetupAlphaFade are self-contained constant uploads and are ported below.
+//   - SetupBlendAndTexture, SetupFog, and SetupAlphaFade are ported from the
+//     release D3D state paths. The light-context helpers remain deferred until
+//     their full driver/light layouts are reconstructed.
 //   - Inline COMDATs (SpawnedEffectQueue methods, apsQuaternion default ctor,
 //     SetLightDir/SetLightColor, GetBlendColor) are in apsInternal.h.
 // ============================================================================
 #include "apsInternal.h"
 #include "d3d8.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_state.h"
+
+// D3D method selectors and XDK state-cache cells are owned by the Win32 shim.
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_40344;
+extern unsigned int dword_40348;
+extern unsigned int dword_40350;
+extern unsigned int dword_BC2CF8;
+extern unsigned int dword_BC2CFC;
+extern unsigned int dword_BC2D00;
+extern unsigned int dword_BC2D04;
+extern unsigned int dword_BC2D08;
+extern unsigned int dword_BC2D0C;
+extern unsigned int dword_BC2D38;
+extern unsigned int dword_BC2D80;
 
 // ============================================================================
 // Data statics (apsInternal.o).
 // ============================================================================
 int apsInternal::sMeshLightCat = 0x02000000;   // @0xE49910 (observed init value)
 apsInternal::SpawnedEffectQueue apsInternal::g_spawnedEffectQueue;   // @0x10DF9F0
+int Opaque = 0;                                 // @0x10DF9D8 (IDA global)
 
 // ============================================================================
 // apsQuaternion::apsQuaternion — default ctor (empty body). apsInternal.o
@@ -153,10 +172,7 @@ void apsInternal::SubmitSpawnedEffectQueue() {
 }
 
 // ============================================================================
-// ---- D3D render-state helpers (stubs — bodies deferred) ---------------------
-// The real bodies poke d3d8d driver internals and ngl light structures that
-// belong to the (unported) render-state layer. Kept as exact-signature stubs
-// so the 12 apsInternal.o symbols exist and the deferred node Renders can link.
+// ---- D3D render-state helpers -----------------------------------------------
 // ============================================================================
 
 // ea: 0x8035C0
@@ -166,6 +182,96 @@ void apsInternal::GetLocalLights(nglLightContext* ioLightContext, const apsSpher
 // ea: 0x8036D0
 void apsInternal::SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlendMode,
                                        bool bFogEnable, int alphaCutOff) {
+    nglDxSetTexture(0, iTexture, 1u, 3u);
+
+    if (nglDxTexCache.Prev[0].WrapU != 3u) {
+        nglDxTexCache.Prev[0].WrapU = 3u;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 3u) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSU] = 3u;
+        }
+    }
+    if (nglDxTexCache.Prev[0].WrapV != 3u) {
+        nglDxTexCache.Prev[0].WrapV = 3u;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 3u) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSV] = 3u;
+        }
+    }
+
+    if (Opaque != 0) {
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 0) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40304, 0);
+            dword_BC2CFC = 0;
+        }
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 0) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40300, 0);
+            dword_BC2D00 = 0;
+        }
+    } else {
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 1u) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40304, 1u);
+            dword_BC2CFC = 1;
+        }
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 1u) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40300, 1u);
+            dword_BC2D00 = 1;
+        }
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAFUNC, 0x204u) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_4033C, 0x204u);
+            dword_BC2CF8 = 0x204u;
+        }
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAREF,
+                                                     static_cast<unsigned int>(alphaCutOff)) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40340, static_cast<unsigned int>(alphaCutOff));
+            dword_BC2D04 = static_cast<unsigned int>(alphaCutOff);
+        }
+    }
+
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, 0) == 0)
+        D3DDevice_SetRenderState_CullMode(0);
+
+    nglDxState.PrevBM = static_cast<unsigned int>(-1);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX,
+                                                 static_cast<unsigned int>(bFogEnable)) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = static_cast<unsigned int>(bFogEnable);
+    }
+
+    switch (iBlendMode) {
+    case apsEBlendMode_Blend:
+    case apsEBlendMode_BlendWithLighting:
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_BLENDOP, 0x8006u) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40350, 0x8006u);
+            dword_BC2D38 = 0x8006u;
+        }
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SRCBLEND, 0x302u) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40344, 0x302u);
+            dword_BC2D08 = 0x302u;
+        }
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_DESTBLEND, 0x303u) == 0) {
+            D3DDevice_SetRenderState_Simple(dword_40348, 0x303u);
+            dword_BC2D0C = 0x303u;
+        }
+        break;
+    case apsEBlendMode_Add:
+        nglDxState.SetBlendOp(0x8006u);
+        nglDxState.SetSrcBlend(0x302u);
+        nglDxState.SetDestBlend(1u);
+        break;
+    case apsEBlendMode_Subtract:
+        nglDxState.SetBlendOp(0x800Bu);
+        nglDxState.SetSrcBlend(0x302u);
+        nglDxState.SetDestBlend(1u);
+        break;
+    case apsEBlendMode_NumBlendModes:
+        nglDxState.SetBlendOp(0x8006u);
+        nglDxState.SetSrcBlend(1u);
+        nglDxState.SetDestBlend(0x301u);
+        break;
+    default:
+        return;
+    }
 }
 
 // ea: 0x803990
