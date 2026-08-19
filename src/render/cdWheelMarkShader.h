@@ -28,12 +28,22 @@ public:
 };
 static_assert(sizeof(cdWheelMarkShaderMat) == 0x14, "cdWheelMarkShaderMat size mismatch");
 
+// IDA codmp_xboxr.xbe.h: cdWheelMarkShaderStruct (10397).
+struct cdWheelMarkShaderStruct {
+    unsigned int FirstVertex;
+    unsigned int VertexCount;
+};
+static_assert(sizeof(cdWheelMarkShaderStruct) == 0x08,
+              "cdWheelMarkShaderStruct size mismatch");
+
 // ============================================================================
 // cdWheelMarkShaderNode — wheel mark shader render node (28 bytes)
 // ============================================================================
 struct cdWheelMarkShaderNode : nglShaderNode {
     cdWheelMarkShaderMat* mMaterial;  // +0x14
     int                   Clip;       // +0x18
+
+    virtual void Render();  // @0x7C9480
 };
 static_assert(sizeof(cdWheelMarkShaderNode) == 0x1C, "cdWheelMarkShaderNode size mismatch");
 
