@@ -1653,7 +1653,7 @@ void DebugRender_Init(void* self)
 namespace PathNodes {
 const PathNode* NodeHandle::operator*() const
 {
-    return nullptr;
+    return PathNodeMgr::sInst->GetNode(*this);
 }
 }
 PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h)
