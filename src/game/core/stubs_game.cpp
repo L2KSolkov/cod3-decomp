@@ -42,7 +42,7 @@ class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SmokeGrenadeMgr { public: static void CreateInst(); };
-class CGBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class CGBankManager { public: static void DeleteInst(); };
 class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 struct AnimBank;
 class AnimBankManager {
@@ -93,7 +93,6 @@ void CheckpointMgr::DeleteInst() {}
 void SplineMgr::CreateInst() {}
 void SplineMgr::DeleteInst() {}
 void SmokeGrenadeMgr::CreateInst() {}
-void CGBankManager::CreateInst() {}
 void CGBankManager::DeleteInst() {}
 void DCGBankManager::CreateInst() {}
 void DCGBankManager::DeleteInst() {}

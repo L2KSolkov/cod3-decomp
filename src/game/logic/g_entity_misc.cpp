@@ -4226,6 +4226,34 @@ CGBankManager::CGBankManager()
     Cmd_AddCommand("teleport", Teleport);
 }
 
+// ea: 0x004B41D0
+void CGBankManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 435;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    CGBankManager* result = static_cast<CGBankManager*>(
+        mem_heap_malloc_ctx(0x328u, 4, "core",
+                            "c:\\cod\\code\\game\\cgbank.h", 435));
+    if (result != nullptr)
+    {
+        result = new (result) CGBankManager();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
+}
+
 // ea: 0x00611B70
 CGBankManager::~CGBankManager()
 {
