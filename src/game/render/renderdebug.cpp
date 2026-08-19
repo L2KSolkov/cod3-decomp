@@ -416,7 +416,7 @@ void LightGridMgr::CreateInst()
 {
     if (sInst != nullptr)
     {
-        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\LightGridMgr.h";
         AeAssert::gCurrentLine = 27;
         AeAssert::gCurrentExpr = "sInst==0";
