@@ -5,10 +5,13 @@
 #include "game/mpactors/aitype.h"
 #include "game/logic/g_local.h"
 
+#include <new>
 #include <stdlib.h>
 #include <string.h>
 
 extern char* va(const char* fmt, ...);  // core.o
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 
 // ============================================================================
 // AIType
@@ -242,6 +245,34 @@ void AIType::InitActor(actor_s* actor)
 // ea: 0x00783A70
 AITypeManager::AITypeManager()
 {
+}
+
+// ea: 0x004DCEC0
+void AITypeManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AITypeManager.h";
+        AeAssert::gCurrentLine = 32;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    AITypeManager* result = static_cast<AITypeManager*>(
+        mem_heap_malloc_ctx(0x190u, 4, "core",
+                            "c:\\cod\\code\\game\\AITypeManager.h", 32));
+    if (result != nullptr)
+    {
+        result = new (result) AITypeManager();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
 }
 
 // ea: 0x00780FC0

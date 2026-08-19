@@ -22,7 +22,7 @@ class XModelManager { public: static void DeleteInst(); };
 class XModelPartsManager { public: static void CreateInst(); static void DeleteInst(); };
 class DestructibleBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
-class AITypeManager { public: static void CreateInst(); static void DeleteInst(); };
+class AITypeManager { public: static void DeleteInst(); };
 class SoundDevice { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -65,7 +65,6 @@ void DestructibleBankManager::CreateInst() {}
 void DestructibleBankManager::DeleteInst() {}
 void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
-void AITypeManager::CreateInst() {}
 void AITypeManager::DeleteInst() {}
 void SoundDevice::DeleteInst() {}
 void AudioBankMgr::DeleteInst() {}

@@ -62,6 +62,7 @@ private:
     virtual ~AITypeManager();    // ??1AITypeManager@@EAE@XZ
 public:
     static AITypeManager* sInst;  // ?sInst@AITypeManager@@2PAV1@A (defined in pakmanager.cpp)
+    static void CreateInst();      // ?CreateInst@AITypeManager@@SAXXZ
     IVPointer<AIType> GetAIType(TPakId pak_id, const char* name,
                                 int nameOffset);  // ?GetAIType@AITypeManager@@QAE?AV?$IVPointer@VAIType@@@@W4TPakId@@PBDH@Z
     void*   mBankArray[99];      // +0x04 (ae_array<AITypeBank*,99>)
