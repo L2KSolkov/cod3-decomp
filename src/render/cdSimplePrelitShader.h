@@ -30,6 +30,8 @@ static_assert(sizeof(cdSimplePrelitShaderMat) == 0x18, "cdSimplePrelitShaderMat 
 // ============================================================================
 struct cdSimplePrelitShaderNode : nglShaderNode {
     cdSimplePrelitShaderMat* mMaterial;  // +0x14
+
+    void Render() override;  // @0x7D5A80
 };
 static_assert(sizeof(cdSimplePrelitShaderNode) == 0x18, "cdSimplePrelitShaderNode size mismatch");
 
