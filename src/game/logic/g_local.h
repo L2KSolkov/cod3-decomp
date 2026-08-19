@@ -4241,6 +4241,7 @@ class CGBankManager : public AssetBankSet {
 public:
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
     static void CreateInst();
+    static void DeleteInst();
     static CGBankManager* Inst();  // ?Inst@CGBankManager@@SAPAV1@XZ
     unsigned int mDebugRenderMode;  // +0x04 (bitmask; verified vs DebugRender)
     float        scale;             // +0x08 (perf graph zoom; verified vs ZoomIn)

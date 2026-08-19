@@ -4254,6 +4254,25 @@ void CGBankManager::CreateInst()
     }
 }
 
+// ea: 0x004B42D0
+void CGBankManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 435;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete static_cast<CGBankManager*>(sInst);
+    sInst = nullptr;
+}
+
 // ea: 0x00611B70
 CGBankManager::~CGBankManager()
 {

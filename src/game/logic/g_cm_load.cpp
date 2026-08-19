@@ -8465,6 +8465,7 @@ class DCGBankManager {
 public:
     static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
     static void CreateInst();       // ?CreateInst@DCGBankManager@@SAXXZ
+    static void DeleteInst();       // ?DeleteInst@DCGBankManager@@SAXXZ
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
     void*   mBankArray[99];         // +0x04 (0x18C bytes; DCGBank* per pak)
     struct TempDCGSet {
@@ -8670,6 +8671,25 @@ void DCGBankManager::CreateInst()
     {
         sInst = nullptr;
     }
+}
+
+// ea: 0x004B4140
+void DCGBankManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 386;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
 }
 
 // ea: 0x00629D90
