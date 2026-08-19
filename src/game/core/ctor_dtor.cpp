@@ -8,6 +8,7 @@
 #include "aeps/apsEffect.h"
 
 #include <string.h>
+#include <new>
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
@@ -46,6 +47,9 @@ bool Assert(const char* fmt, ...);
 extern "C" unsigned int AeHash(const char* str);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
 struct mem_heap;
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);
@@ -583,6 +587,31 @@ DialogueManager::~DialogueManager()
 ConfigStringManager::ConfigStringManager()
 {
     InplaceAssetBankSet_ConfigStringBank_ctor(this);
+}
+
+// ea: 0x004E8A20
+void ConfigStringManager::CreateInst()
+{
+    if (ConfigStringManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ConfigStringManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "core", "c:\\cod\\code\\game\\ConfigStringManager.h", 19);
+    if (memory != nullptr)
+    {
+        ConfigStringManager::sInst = new (memory) ConfigStringManager();
+    }
+    else
+    {
+        ConfigStringManager::sInst = nullptr;
+    }
 }
 
 // ea: 0x004C1440

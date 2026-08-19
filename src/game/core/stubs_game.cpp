@@ -67,7 +67,6 @@ void GdbFileManager::DeleteInst() {}
 void DialogueManager::CreateInst() {}
 void DialogueManager::DeleteInst() {}
 void EntityManager::DeleteInst() {}
-void ConfigStringManager::CreateInst() {}
 void CtrlIcon::CreateInst() {}
 void CtrlIcon::DeleteInst() {}
 void MultiplayerMgr::DeleteInst() {}
