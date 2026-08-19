@@ -26,7 +26,7 @@ extern int currCl;                       // ?currCl
 extern cgGlobal_t cgGlobal;              // ?cgGlobal@@3UcgGlobal_t@@A (cg.o)
 NoiseManager g_noise;                    // ?g_noise@@3VNoiseManager@@A (game2.o)
 struct nglScene;
-extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
+extern const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* Scene);
 extern nglScene* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
                                   float timeOverride, float nextDelay);
@@ -346,7 +346,7 @@ void CameraShakeInstance::SetFalloff(math::Position3* worldPos, float falloff)
     if (worldPos != nullptr)
     {
         __m128 v5 = _mm_sub_ps(
-            nglGetMatrix_ViewToWorld(nglBuildScene)->w.v, worldPos->v);
+            nglGetMatrix_ViewToWorld(nglBuildScene).w.v, worldPos->v);
         __m128 v6 = _mm_mul_ps(v5, v5);
         float dist = sqrtf(v6.m128_f32[0]
                            + (v6.m128_f32[1] + v6.m128_f32[2])) * falloff;

@@ -113,7 +113,7 @@ extern void tlMemFree(void* Ptr);             // core.o
 extern void profile_reset();  // ?profile_reset@@YAXXZ (cdDebugRender.cpp)
 extern int g_lightGridBlueErrors;   // ?g_lightGridBlueErrors@@3HA (g.o)
 extern int g_bOptimize;             // ?g_bOptimize@@3HA (render.o @ 0xF743D0)
-extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);  // ngl_scene.cpp
+extern const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* Scene);  // ngl_scene.cpp
 extern void* nglListAlloc(unsigned int size, unsigned int align);     // ngl.o
 extern nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                                    nglMeshParams* MeshParams,
@@ -774,7 +774,7 @@ void LightGridMgr::RenderLightGridDebugSphere(const math::Position3& pos)
 void LightGridMgr::RenderLightGridDebugSpheres()
 {
     math::Position3 cameraPos;
-    cameraPos.v = nglGetMatrix_ViewToWorld(nglBuildScene)->w.v;
+    cameraPos.v = nglGetMatrix_ViewToWorld(nglBuildScene).w.v;
     int cellNum;
     LightGrid::TOC* LightGrid = GetLightGrid(cameraPos, &cellNum);
     if (cellNum < 0)
@@ -824,7 +824,7 @@ void LightGridMgr::RenderLightGridDebugSpheres()
 void LightGridMgr::RenderLightGridDebugLines()
 {
     math::Position3 cameraPos;
-    cameraPos.v = nglGetMatrix_ViewToWorld(nglBuildScene)->w.v;
+    cameraPos.v = nglGetMatrix_ViewToWorld(nglBuildScene).w.v;
     int cellNum;
     LightGrid::TOC* LightGrid = GetLightGrid(cameraPos, &cellNum);
     if (LightGrid == nullptr || cellNum < 0)
@@ -1317,7 +1317,7 @@ void DebugRender::Render()
 void LightGridMgr::RenderDebugText()  // ?RenderDebugText@LightGridMgr@@QAEXXZ @ 0x6DB240
 {
     Color col(1.0f, 1.0f, 1.0f, 1.0f);
-    math::Position3 cameraPos = nglGetMatrix_ViewToWorld(nglBuildScene)->w;
+    math::Position3 cameraPos = nglGetMatrix_ViewToWorld(nglBuildScene).w;
     int cellIndex = 0;
     LightGrid::TOC* toc = GetLightGrid(cameraPos, &cellIndex);
     if (toc == nullptr)

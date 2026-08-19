@@ -359,7 +359,7 @@ extern int currCl;                                // g.o
 extern int LocalClient_FirstLocalClientIndex();   // ?FirstLocalClientIndex@LocalClient@@SAHXZ
 extern cdl_proftimer cdl_proftimer_fx_update;     // ?cdl_proftimer_fx_update@@3Ucdl_proftimer@@A
 cdAepsShader* gCDAepsShader = nullptr;             // ?gCDAepsShader@@3PAVcdAepsShader@@A
-const math::Mat43* nglGetMatrix_WorldToView(nglScene* scene);  // ?nglGetMatrix_WorldToView@@YAPBVMat43@math@@PAUnglScene@@@Z
+const math::Mat43& nglGetMatrix_WorldToView(nglScene* scene);  // ?nglGetMatrix_WorldToView@@YAABVMat43@math@@PAUnglScene@@@Z
 
 // ea: 0x006DBC20
 void FX_UpdateFX(bool firstClient)
@@ -397,7 +397,7 @@ void FX_UpdateFX(bool firstClient)
     gFXTime = gFXTime + mTickDelta;
     if (currCl != LocalClient_FirstLocalClientIndex())
         gFXTime = gFXTime - dt;
-    const math::Mat43* worldToView = nglGetMatrix_WorldToView(nglBuildScene);
+    const math::Mat43* worldToView = &nglGetMatrix_WorldToView(nglBuildScene);
     apsCommon::SetupFrame(*worldToView, -1.0f);
     apsCommon::GetPlayerViewPort(0)->mActive = false;  // dword_F6A290[0] == 2 placeholder
     RemoveDeadEffects();

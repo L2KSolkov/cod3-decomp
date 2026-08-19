@@ -93,7 +93,7 @@ public:
 };
 static_assert(sizeof(nglParamSet) == 4, "nglParamSet size mismatch");
 
-class nglSceneParamSet : public nglParamSet {
+struct nglSceneParamSet : nglParamSet {
 public:
     static unsigned int NumParams;  // ngl_params.o
 };
@@ -228,12 +228,12 @@ void nglEnableDepthOfField(bool Enable);
 void nglSetFocusDepth(float Depth);
 void nglSetAnimTime(float Time);
 nglSceneParamSet* nglGetSceneParams(nglScene* Scene);
-math::Mat44* Perspective(math::Mat44* result, float hs, float vs, float zn, float zf);
-math::Mat44* Ortho(math::Mat44* result, float ax, float ay, float zn, float zf);
-math::Mat44* Viewport(math::Mat44* result, float x1, float y1, float x2, float y2);
-math::Mat44* InvScissor(math::Mat44* result, float sx1, float sy1, float sx2, float sy2);
-math::Mat44* ViewportToWorld(math::Mat44* result, nglScene* Scene);
-math::Mat44* UI(math::Mat44* result, nglScene* Scene);
+math::Mat44 Perspective(float hs, float vs, float zn, float zf);
+math::Mat44 Ortho(float ax, float ay, float zn, float zf);
+math::Mat44 Viewport(float x1, float y1, float x2, float y2);
+math::Mat44 InvScissor(float sx1, float sy1, float sx2, float sy2);
+math::Mat44 ViewportToWorld(nglScene* Scene);
+math::Mat44 UI(nglScene* Scene);
 void nglSetView(float x1, float y1, float x2, float y2);
 void nglSetAspectRatio(float a);
 void nglSetPerspectiveMatrix(float fov, float nearz, float farz);
@@ -259,14 +259,19 @@ void nglSetScissorWH(float x1, float y1, float x2, float y2, float w, float h);
 void nglSetScissor(float x1, float y1, float x2, float y2);
 void nglSetViewport(float x1, float y1, float x2, float y2);
 math::Mat44* nglGetMatrix(math::Mat44* result, nglMatrixType ID, nglScene* Scene);
-const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
-const math::Mat43* nglGetMatrix_WorldToView(nglScene* Scene);
-const math::Mat44* nglGetMatrix_ViewToScreen(nglScene* Scene);
-const math::Mat44* nglGetMatrix_WorldToScreen(nglScene* Scene);
+math::Mat44 nglGetMatrix(nglMatrixType ID, nglScene* Scene);
+void nglGetMatrix(math::Mat44& result, nglMatrixType ID, nglScene* Scene);
+const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* Scene);
+const math::Mat43& nglGetMatrix_WorldToView(nglScene* Scene);
+const math::Mat44& nglGetMatrix_ViewToScreen(nglScene* Scene);
+const math::Mat44& nglGetMatrix_WorldToScreen(nglScene* Scene);
 math::Position3* nglProjectPoint(math::Position3* result, const math::Position3* In,
                                  nglScene* Scene);
+void nglProjectPoint(math::Position3& result, const math::Position3& In,
+                     nglScene* Scene);
 math::Position3* nglUnprojectPoint(math::Position3* result, const math::Position3* In,
                                    nglScene* Scene);
+math::Position3 nglUnprojectPoint(const math::Position3& In, nglScene* Scene);
 void nglSetDefaultSceneParams();
 void nglSetupBeginScene(nglScene* Scene, nglSceneParamType ParamSource);
 nglScene* nglListBeginScene(nglSceneParamType ParamSource);

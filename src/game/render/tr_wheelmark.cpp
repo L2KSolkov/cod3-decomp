@@ -596,7 +596,7 @@ DynamicDecalSet::~DynamicDecalSet()
 // ============================================================================
 struct nglScene;
 extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
-const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
+const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* Scene);
 nglMesh* auxCreateScratchMesh(int flags, int num);         // ?auxCreateScratchMesh@@YAPAUnglMesh@@HH@Z
 nglMesh* auxCloseScratchMesh(nglMesh* m);                  // ?auxCloseScratchMesh@@YAPAUnglMesh@@PAU1@@Z
 nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
@@ -628,7 +628,7 @@ static float FastCosAng(float radians)
 void DynamicDecalSet::Render()
 {
     const math::Mat43* Matrix_ViewToWorld =
-        nglGetMatrix_ViewToWorld(nglBuildScene);
+        &nglGetMatrix_ViewToWorld(nglBuildScene);
     mViewToWorldMtx->x = Matrix_ViewToWorld->x;
     mViewToWorldMtx->y = Matrix_ViewToWorld->y;
     mViewToWorldMtx->z = Matrix_ViewToWorld->z;

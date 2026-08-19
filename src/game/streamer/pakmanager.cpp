@@ -5936,7 +5936,7 @@ void AddGlowBeam(float* pos, float* dir, float rad, unsigned int col)
 void RenderGlowSprite(const math::Position3& center, float radius,
                       unsigned int clr)
 {
-    const math::Mat43* mtx = nglGetMatrix_ViewToWorld(nglBuildScene);
+    const math::Mat43* mtx = &nglGetMatrix_ViewToWorld(nglBuildScene);
     __m128 xcol = _mm_mul_ps(mtx->x.v, _mm_set1_ps(radius));
     __m128 ycol = mtx->y.v;
 
@@ -6011,7 +6011,7 @@ void RenderGlowBeam(const math::Position3& center,
                     unsigned int clr)
 {
     (void)clr;  // beam colors are hardcoded in the binary
-    const math::Mat43* mtx = nglGetMatrix_ViewToWorld(nglBuildScene);
+    const math::Mat43* mtx = &nglGetMatrix_ViewToWorld(nglBuildScene);
     __m128 xcol = _mm_mul_ps(mtx->x.v, _mm_set1_ps(radius));
     __m128 ycol = mtx->y.v;
 
@@ -6139,7 +6139,7 @@ void SceneManager::RenderLightGlows()
                            != nullptr)
                 {
                     const math::Mat43* mtx =
-                        nglGetMatrix_ViewToWorld(nglBuildScene);
+                        &nglGetMatrix_ViewToWorld(nglBuildScene);
                     __m128 xrow = mtx->x.v;
                     __m128 yrow = mtx->y.v;
                     float radius = light->mGlowRadius;
@@ -6243,7 +6243,7 @@ void SceneManager::RenderLightGlows()
                 math::Position3 projected;
                 nglProjectPoint(&projected, &light->mPosition, nglBuildScene);
                 const math::Mat43* mtx =
-                    nglGetMatrix_ViewToWorld(nglBuildScene);
+                    &nglGetMatrix_ViewToWorld(nglBuildScene);
                 __m128 zrow = mtx->z.v;
                 __m128 wrow = _mm_loadu_ps((const float*)((const char*)mtx + 0x30));
 

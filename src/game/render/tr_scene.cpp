@@ -363,7 +363,7 @@ void cdProjShadow_Begin()
                                           (int)gProjShadowTexSize, 0, 1);
     }
 
-    const math::Mat43* vw = nglGetMatrix_ViewToWorld(nglBuildScene);
+    const math::Mat43* vw = &nglGetMatrix_ViewToWorld(nglBuildScene);
     // v19: 4x3 view-to-world matrix (x,y,z rows + w row)
     math::Mat43 m;
     m.x.v = vw->x.v;
@@ -1026,7 +1026,7 @@ void R_RenderView(viewParms_t* parms)
     if (r_testlight->integer != 0)
     {
         const math::Mat43* Matrix_ViewToWorld =
-            nglGetMatrix_ViewToWorld(nglBuildScene);
+            &nglGetMatrix_ViewToWorld(nglBuildScene);
         math::Mat43 mtx = *Matrix_ViewToWorld;
         float sunPos[16];
         memset(&sunPos[4], 0, 32);

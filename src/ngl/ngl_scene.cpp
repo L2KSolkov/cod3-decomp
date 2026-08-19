@@ -196,7 +196,7 @@ nglSceneParamSet* nglGetSceneParams(nglScene* Scene) {
 // ============================================================================
 // Matrix helpers
 // ============================================================================
-math::Mat44* Perspective(math::Mat44* result, float hs, float vs, float zn, float zf) {
+static math::Mat44* PerspectiveImpl(math::Mat44* result, float hs, float vs, float zn, float zf) {
     float zc = zf / (zf - zn);
     float c = -zc * zn;
     result->x.v = _mm_setr_ps(hs, 0.0f, 0.0f, 0.0f);
@@ -206,7 +206,7 @@ math::Mat44* Perspective(math::Mat44* result, float hs, float vs, float zn, floa
     return result;
 }
 
-math::Mat44* Ortho(math::Mat44* result, float ax, float ay, float zn, float zf) {
+static math::Mat44* OrthoImpl(math::Mat44* result, float ax, float ay, float zn, float zf) {
     float zc = 1.0f / (zf - zn);
     float c = -zc * zn;
     result->x.v = _mm_setr_ps(ax, 0.0f, 0.0f, 0.0f);
@@ -216,7 +216,7 @@ math::Mat44* Ortho(math::Mat44* result, float ax, float ay, float zn, float zf) 
     return result;
 }
 
-math::Mat44* Viewport(math::Mat44* result, float x1, float y1, float x2, float y2) {
+static math::Mat44* ViewportImpl(math::Mat44* result, float x1, float y1, float x2, float y2) {
     result->x.v = _mm_setr_ps((x2 - x1) * 0.5f, 0.0f, 0.0f, 0.0f);
     result->y.v = _mm_setr_ps(0.0f, (y1 - y2) * 0.5f, 0.0f, 0.0f);
     result->z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
@@ -224,7 +224,7 @@ math::Mat44* Viewport(math::Mat44* result, float x1, float y1, float x2, float y
     return result;
 }
 
-math::Mat44* InvScissor(math::Mat44* result, float sx1, float sy1, float sx2, float sy2) {
+static math::Mat44* InvScissorImpl(math::Mat44* result, float sx1, float sy1, float sx2, float sy2) {
     result->x.v = _mm_setr_ps(2.0f / (sx2 - sx1), 0.0f, 0.0f, 0.0f);
     result->y.v = _mm_setr_ps(0.0f, 2.0f / (sy2 - sy1), 0.0f, 0.0f);
     result->z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
@@ -234,14 +234,16 @@ math::Mat44* InvScissor(math::Mat44* result, float sx1, float sy1, float sx2, fl
 }
 
 static math::Mat44* ViewportToWorldImpl(math::Mat44* result, nglScene* Scene);
-math::Mat44* ViewportToWorld(math::Mat44* result, nglScene* Scene) {
-    return ViewportToWorldImpl(result, Scene);
+math::Mat44 ViewportToWorld(nglScene* Scene) {
+    math::Mat44 result;
+    ViewportToWorldImpl(&result, Scene);
+    return result;
 }
 
 // ============================================================================
 // UI - ea: 0x83AC40
 // ============================================================================
-math::Mat44* UI(math::Mat44* result, nglScene* Scene) {
+static math::Mat44* UIImpl(math::Mat44* result, nglScene* Scene) {
     float v3, v4;
     nglTexture* RenderTarget = Scene->RenderTarget;
     if (RenderTarget == NULL) {
@@ -263,6 +265,36 @@ math::Mat44* UI(math::Mat44* result, nglScene* Scene) {
     result->y.v = _mm_setr_ps(0.0f, 1.0f / v4, 0.0f, 0.0f);
     result->z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
     result->w.v = _mm_setr_ps(-1.0f, -1.0f, 0.0f, 1.0f);
+    return result;
+}
+
+math::Mat44 Perspective(float hs, float vs, float zn, float zf) {
+    math::Mat44 result;
+    PerspectiveImpl(&result, hs, vs, zn, zf);
+    return result;
+}
+
+math::Mat44 Ortho(float ax, float ay, float zn, float zf) {
+    math::Mat44 result;
+    OrthoImpl(&result, ax, ay, zn, zf);
+    return result;
+}
+
+math::Mat44 Viewport(float x1, float y1, float x2, float y2) {
+    math::Mat44 result;
+    ViewportImpl(&result, x1, y1, x2, y2);
+    return result;
+}
+
+math::Mat44 InvScissor(float sx1, float sy1, float sx2, float sy2) {
+    math::Mat44 result;
+    InvScissorImpl(&result, sx1, sy1, sx2, sy2);
+    return result;
+}
+
+math::Mat44 UI(nglScene* Scene) {
+    math::Mat44 result;
+    UIImpl(&result, Scene);
     return result;
 }
 
@@ -589,7 +621,7 @@ math::Mat44* nglGetMatrix(math::Mat44* result, nglMatrixType ID, nglScene* Scene
         return result;
     }
     case NGLMTX_UI:
-        UI(result, Scene);
+        *result = UI(Scene);
         return result;
     default:
         _tlAssert("src/ngl_scene.cpp", 754, "false", "Invalid matrix ID.");
@@ -601,33 +633,43 @@ math::Mat44* nglGetMatrix(math::Mat44* result, nglMatrixType ID, nglScene* Scene
     }
 }
 
-const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene) {
-    if (Scene->MatricesDirty) {
-        Scene->MatricesDirty = false;
-        nglCalculateMatrices(Scene);
-    }
-    return &Scene->ViewToWorld;
+math::Mat44 nglGetMatrix(nglMatrixType ID, nglScene* Scene) {
+    math::Mat44 result;
+    nglGetMatrix(&result, ID, Scene);
+    return result;
 }
-const math::Mat43* nglGetMatrix_WorldToView(nglScene* Scene) {
-    if (Scene->MatricesDirty) {
-        Scene->MatricesDirty = false;
-        nglCalculateMatrices(Scene);
-    }
-    return &Scene->WorldToView;
+
+void nglGetMatrix(math::Mat44& result, nglMatrixType ID, nglScene* Scene) {
+    nglGetMatrix(&result, ID, Scene);
 }
-const math::Mat44* nglGetMatrix_ViewToScreen(nglScene* Scene) {
+
+const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* Scene) {
     if (Scene->MatricesDirty) {
         Scene->MatricesDirty = false;
         nglCalculateMatrices(Scene);
     }
-    return &Scene->ViewToScreen;
+    return Scene->ViewToWorld;
 }
-const math::Mat44* nglGetMatrix_WorldToScreen(nglScene* Scene) {
+const math::Mat43& nglGetMatrix_WorldToView(nglScene* Scene) {
     if (Scene->MatricesDirty) {
         Scene->MatricesDirty = false;
         nglCalculateMatrices(Scene);
     }
-    return &Scene->WorldToScreen;
+    return Scene->WorldToView;
+}
+const math::Mat44& nglGetMatrix_ViewToScreen(nglScene* Scene) {
+    if (Scene->MatricesDirty) {
+        Scene->MatricesDirty = false;
+        nglCalculateMatrices(Scene);
+    }
+    return Scene->ViewToScreen;
+}
+const math::Mat44& nglGetMatrix_WorldToScreen(nglScene* Scene) {
+    if (Scene->MatricesDirty) {
+        Scene->MatricesDirty = false;
+        nglCalculateMatrices(Scene);
+    }
+    return Scene->WorldToScreen;
 }
 
 math::Position3* nglProjectPoint(math::Position3* result, const math::Position3* In,
@@ -676,6 +718,11 @@ math::Position3 nglProjectPoint(const math::Position3& In, nglScene* Scene) {
     return result;
 }
 
+void nglProjectPoint(math::Position3& result, const math::Position3& In,
+                     nglScene* Scene) {
+    nglProjectPoint(&result, &In, Scene);
+}
+
 math::Position3* nglUnprojectPoint(math::Position3* result, const math::Position3* In,
                                    nglScene* Scene) {
     if (Scene->MatricesDirty) {
@@ -713,6 +760,12 @@ math::Position3* nglUnprojectPoint(math::Position3* result, const math::Position
                    _mm_mul_ps(_mm_shuffle_ps(v11, v11, 85), Scene->ViewportToWorld.y.v)),
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v11, v11, 170), Scene->ViewportToWorld.z.v),
                    _mm_mul_ps(_mm_shuffle_ps(v11, v11, 255), Scene->ViewportToWorld.w.v)));
+    return result;
+}
+
+math::Position3 nglUnprojectPoint(const math::Position3& In, nglScene* Scene) {
+    math::Position3 result;
+    nglUnprojectPoint(&result, &In, Scene);
     return result;
 }
 
@@ -987,7 +1040,7 @@ void nglCalculateMatrices(nglScene* Scene) {
         Scene->h2 = ax2 * h2;
         Scene->v2 = ay2 * v2v;
         math::Mat44 P;
-        Perspective(&P, 1.0f / (ax2 * h2), 1.0f / (ay2 * v2v), Scene->NearZ, Scene->FarZ);
+        P = Perspective(1.0f / (ax2 * h2), 1.0f / (ay2 * v2v), Scene->NearZ, Scene->FarZ);
         Scene->Projection = P;
         // Build clip planes (near/far + 4 side planes from the frustum).
         math::Vector4 planes[6];
@@ -1009,11 +1062,11 @@ void nglCalculateMatrices(nglScene* Scene) {
             Scene->ClipPlanes[i] = planes[i];
         // View matrix from the adjusted viewport + scissor.
         math::Mat44 V;
-        Viewport(&V, vx1p, vy1p, vx2p, vy2p);
+        V = Viewport(vx1p, vy1p, vx2p, vy2p);
         Scene->View = V;
     } else {
         math::Mat44 P;
-        Ortho(&P, 1.0f / Scene->AspectRatio, 1.0f, Scene->NearZ, Scene->FarZ);
+        P = Ortho(1.0f / Scene->AspectRatio, 1.0f, Scene->NearZ, Scene->FarZ);
         Scene->Projection = P;
         math::Vector4 planes[6];
         planes[4].v = _mm_setr_ps(0.0f, 0.0f, 1.0f, Scene->NearZ);
@@ -1025,7 +1078,7 @@ void nglCalculateMatrices(nglScene* Scene) {
         for (int i = 0; i < 6; ++i)
             Scene->ClipPlanes[i] = planes[i];
         math::Mat44 V;
-        Viewport(&V, Scene->sx1p, Scene->sy1p, Scene->sx2p, Scene->sy2p);
+        V = Viewport(Scene->sx1p, Scene->sy1p, Scene->sx2p, Scene->sy2p);
         Scene->View = V;
     }
     Scene->Device = ngliGetDeviceMatrix(Scene->RenderTarget);
@@ -1099,7 +1152,7 @@ void nglCalculateMatrices(nglScene* Scene) {
     Scene->ViewPos.v = Scene->ViewToWorld.w.v;
     Scene->ViewDir.v = Scene->ViewToWorld.z.v;
     math::Mat44 ui;
-    UI(&ui, Scene);
+    ui = UI(Scene);
     for (int r = 0; r < 4; ++r) {
         __m128 row = r == 0 ? ui.x.v : r == 1 ? ui.y.v : r == 2 ? ui.z.v : ui.w.v;
         __m128 out = _mm_add_ps(

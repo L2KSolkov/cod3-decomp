@@ -40,7 +40,7 @@ struct nglScene;
 extern math::Position3* nglProjectPoint(math::Position3* result,
                                         const math::Position3* in,
                                         nglScene* scene);
-extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* scene);
+extern const math::Mat43& nglGetMatrix_ViewToWorld(nglScene* scene);
 extern nglScene* nglBuildScene;
 void* gpBrocAPI;  // ?gpBrocAPI (scr.o artifact PAXA)
 extern unsigned int BrocAPI_GetEnt(void* api, void* nameStr, unsigned int hash,
@@ -279,7 +279,7 @@ void LensFlareDraw()
         v2 = 1;
     }
     const math::Mat43* Matrix_ViewToWorld =
-        nglGetMatrix_ViewToWorld(nglBuildScene);
+        &nglGetMatrix_ViewToWorld(nglBuildScene);
     math::Mat43 cameraMtx;
     memset(&cameraMtx, 0, sizeof(cameraMtx));
     cameraMtx.y.v.m128_f32[1] = Matrix_ViewToWorld->z.v.m128_f32[0];
