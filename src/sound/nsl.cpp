@@ -516,6 +516,7 @@ static unsigned char ignoreAssert_9 = 0;
 static unsigned char ignoreAssert_10 = 0;
 static unsigned char ignoreAssert_11 = 0;
 static unsigned char ignoreAssert_12 = 0;
+static unsigned char ignoreAssert_13 = 0;
 static unsigned char ignoreAssert_14 = 0;
 int nsl_random_play = 0;
 nslWave* wave = nullptr;
@@ -747,7 +748,7 @@ nslVoice*      nslVoicePtr(int);
 unsigned      nslVoiceCount();
 int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
 void          nslVoiceFree(int);
-void          nslDriverUpdate();
+int           nslDriverUpdate();
 void          nslPriorityUpdate();
 int           nslPriorityCanPlay(int priority);
 int           nslSourceGetPriority(nslSource* source);
@@ -4306,6 +4307,17 @@ void          nslVoiceSetVolume(int, float) {}
 // ============================================================================
 // nslDriverXBOXDSOUND — Xbox DirectSound driver (XAudio2 replacement)
 // ============================================================================
+// ea: 0x00824640
+static unsigned __int64 linear2mb(float linear) {
+    const float minimum = 0.000099999997f;
+    float clamped = linear;
+    if (clamped < minimum)
+        clamped = minimum;
+    else if (clamped > 1.0f)
+        clamped = 1.0f;
+    return static_cast<unsigned __int64>(
+        std::log10(static_cast<double>(clamped)) * 2000.0);
+}
 // ea: 0x00824590
 unsigned      nslDriverVoiceSize() { return 172u; }
 // ea: 0x00824680
@@ -5087,7 +5099,367 @@ int nslDriverStart() {
     return 1;
 }
 void          nslDriverShutdown() {}
-void          nslDriverUpdate() {}
+// ea: 0x00825A10
+int           nslDriverUpdate() {
+    constexpr const char* driverFile =
+        "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp";
+    int synchPlaybackCount = 0;
+    _DS3DBUFFER d{};
+
+    if (nsl_speakerMode < NSL_SPEAKER_MODE_INVALID) {
+        const nslSpeakerMode speakerMode = static_cast<nslSpeakerMode>(
+            -static_cast<int>(nsl_speakerMode));
+        nsl_speakerMode = speakerMode;
+        if (speakerMode > NSL_SPEAKER_MODE_INVALID) {
+            if (speakerMode <= NSL_SPEAKER_MODE_SURROUND) {
+                j_IDirectSound_EnableHeadphones(nsl_driverDevice, 0);
+            } else if (speakerMode == NSL_SPEAKER_MODE_HEADPHONES) {
+                j_IDirectSound_EnableHeadphones(nsl_driverDevice, 1);
+            } else {
+                txPrintf("NSL", 2, "Invalid speaker mode set\n");
+            }
+        } else {
+            txPrintf("NSL", 2, "Invalid speaker mode set\n");
+        }
+    }
+
+    if (nsl_initParams.aramSize != 0u) {
+        for (unsigned voiceIndex = 0; voiceIndex < nsl_initParams.aramSize;
+             ++voiceIndex) {
+            unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(nsl_voices) +
+                320u * voiceIndex;
+            if (voiceRaw[0x108u] == 0u)
+                continue;
+
+            const nslWave* wave = nslWavePtr(
+                *reinterpret_cast<const nslWaveID*>(voiceRaw + 0x110u));
+            nslDriverVoice* driverVoice = reinterpret_cast<nslDriverVoice*>(
+                reinterpret_cast<unsigned char*>(nsl_driverVoices) +
+                172u * voiceIndex);
+            const bool streaming = (voiceRaw[0x10Bu] & 1u) != 0u;
+            IDirectSoundStream* stream = streaming ? driverVoice->stream : nullptr;
+            IDirectSoundBuffer* buffer = streaming ? nullptr : driverVoice->buffer;
+
+            if (voiceRaw[0x108u] == 1u) {
+                if (wave == nullptr) {
+                    txAssertFailed(&ignoreAssert_13, "w", "nslDriverUpdate",
+                                   driverFile, 548);
+                    voiceRaw[0x108u] = 6u;
+                    continue;
+                }
+                voiceInit(driverVoice, reinterpret_cast<nslVoice*>(voiceRaw), wave);
+            }
+
+            if (voiceRaw[0x108u] != 7u && (voiceRaw[0x109u] & 8u) != 0u) {
+                voiceRaw[0x109u] &= 0xF7u;
+                voiceRaw[0x108u] = 7u;
+                HRESULT code;
+                int lineNumber;
+                if (stream != nullptr) {
+                    code = j_IDirectSoundStream_FlushEx(stream, 0, 1u);
+                    lineNumber = 561;
+                } else {
+                    code = j_IDirectSoundBuffer_StopEx(buffer, 0, 2u);
+                    lineNumber = 562;
+                }
+                nslDriverCheck(code, "NSL", driverFile, lineNumber);
+            }
+
+            if (voiceRaw[0x108u] != 7u) {
+                if (voiceRaw[0x108u] == 2u)
+                    (void)driverVoice->Process();
+
+                if (voiceRaw[0x108u] == 3u && (voiceRaw[0x109u] & 1u) != 0u) {
+                    if (synchPlaybackCount++ >= 16) {
+                        const HRESULT code = j_IDirectSound_SynchPlayback(
+                            nsl_driverDevice);
+                        nslDriverCheck(code, "NSL", driverFile, 586);
+                        synchPlaybackCount = 0;
+                    }
+                    if (buffer != nullptr) {
+                        const HRESULT code = j_IDirectSoundBuffer_Play(
+                            buffer, 0, 0,
+                            (static_cast<unsigned>(voiceRaw[0x10Bu] & 2u) +
+                             0xCu) >> 1);
+                        nslDriverCheck(code, "NSL", driverFile, 592);
+                    }
+                    if ((voiceRaw[0x10Cu] & 1u) != 0u) {
+                        for (int point = 0; point < 16; ++point) {
+                            nslDriverCalculateRolloff(
+                                driverVoice->rolloffCurve + point,
+                                static_cast<float>(point) * 0.0625f, wave);
+                        }
+                        const unsigned char* waveInfo =
+                            wave == nullptr ? nullptr
+                            : *reinterpret_cast<const unsigned char* const*>(wave);
+                        const nslParam* waveParams = waveInfo == nullptr
+                            ? nullptr
+                            : reinterpret_cast<const nslParam*>(waveInfo + 16u);
+                        const float minDistance = nslParam_Get(
+                            waveParams, UINT64_C(0x02000000), 50.0f);
+                        const float maxDistance = nslParam_Get(
+                            waveParams, UINT64_C(0x04000000), 1500.0f);
+                        if (stream != nullptr) {
+                            HRESULT code = static_cast<HRESULT>(
+                                j_IDirectSoundStream_SetMinDistance(
+                                    stream, minDistance, 0));
+                            nslDriverCheck(code, "NSL", driverFile, 610);
+                            code = static_cast<HRESULT>(
+                                j_IDirectSoundStream_SetMaxDistance(
+                                    stream, maxDistance, 0));
+                            nslDriverCheck(code, "NSL", driverFile, 611);
+                            code = j_IDirectSoundStream_SetRolloffCurve(
+                                stream, driverVoice->rolloffCurve, 0x10u, 0);
+                            nslDriverCheck(code, "NSL", driverFile, 612);
+                        } else if (buffer != nullptr) {
+                            HRESULT code = static_cast<HRESULT>(
+                                j_IDirectSoundBuffer_SetMinDistance(
+                                    buffer, minDistance, 0));
+                            nslDriverCheck(code, "NSL", driverFile, 616);
+                            code = static_cast<HRESULT>(
+                                j_IDirectSoundBuffer_SetMaxDistance(
+                                    buffer, maxDistance, 0));
+                            nslDriverCheck(code, "NSL", driverFile, 617);
+                            code = j_IDirectSoundBuffer_SetRolloffCurve(
+                                buffer, driverVoice->rolloffCurve, 0x10u, 0);
+                            nslDriverCheck(code, "NSL", driverFile, 618);
+                        }
+                    }
+                    voiceRaw[0x109u] &= 0xFEu;
+                    voiceRaw[0x108u] = 4u;
+                }
+
+                if (voiceRaw[0x108u] == 5u &&
+                    (voiceRaw[0x109u] & 4u) != 0u) {
+                    if (synchPlaybackCount++ >= 16) {
+                        const HRESULT code = j_IDirectSound_SynchPlayback(
+                            nsl_driverDevice);
+                        nslDriverCheck(code, "NSL", driverFile, 635);
+                        synchPlaybackCount = 0;
+                    }
+                    HRESULT code;
+                    int lineNumber;
+                    if (stream != nullptr) {
+                        code = j_IDirectSoundStream_Pause(stream, 2u);
+                        lineNumber = 638;
+                    } else {
+                        code = j_IDirectSoundBuffer_Pause(buffer, 2u);
+                        lineNumber = 639;
+                    }
+                    nslDriverCheck(code, "NSL", driverFile, lineNumber);
+                    voiceRaw[0x109u] &= 0xFBu;
+                    voiceRaw[0x108u] = 4u;
+                }
+
+                if (voiceRaw[0x108u] == 4u) {
+                    if ((voiceRaw[0x109u] & 2u) != 0u) {
+                        HRESULT code;
+                        int lineNumber;
+                        if (stream != nullptr) {
+                            code = j_IDirectSoundStream_Pause(stream, 1u);
+                            lineNumber = 646;
+                        } else {
+                            code = j_IDirectSoundBuffer_Pause(buffer, 1u);
+                            lineNumber = 647;
+                        }
+                        nslDriverCheck(code, "NSL", driverFile, lineNumber);
+                        voiceRaw[0x109u] &= 0xFDu;
+                        voiceRaw[0x108u] = 5u;
+                    }
+
+                    if (voiceRaw[0x108u] == 4u) {
+                        unsigned int status = 0;
+                        if (stream != nullptr) {
+                            const HRESULT code = stream->__vftable->GetStatus(
+                                stream, &status);
+                            nslDriverCheck(code, "NSL", driverFile, 655);
+                            (void)driverVoice->Process();
+                        } else {
+                            const HRESULT code = j_IDirectSoundBuffer_GetStatus(
+                                buffer, &status);
+                            nslDriverCheck(code, "NSL", driverFile, 656);
+                            if ((status & 3u) == 0u)
+                                voiceRaw[0x108u] = 6u;
+                        }
+
+                        if ((voiceRaw[0x109u] & 0x20u) != 0u)
+                            nslDriverSetMixBins(driverVoice, 1);
+                        if ((voiceRaw[0x109u] & 0x40u) != 0u)
+                            nslDriverSetMixBins(driverVoice, 0);
+
+                        const unsigned paramsUpdateLow =
+                            *reinterpret_cast<const unsigned*>(voiceRaw);
+                        const unsigned waveFlags = voiceRaw[0x10Cu];
+                        voiceRaw[0x109u] &= 0x9Fu;
+                        *reinterpret_cast<unsigned*>(voiceRaw) = 0;
+                        *reinterpret_cast<unsigned*>(voiceRaw + 4u) = 0;
+
+                        if ((waveFlags & 1u) != 0u &&
+                            (paramsUpdateLow & 0x1FF80000u) != 0u) {
+                            float doppler = *reinterpret_cast<float*>(voiceRaw + 0x74u);
+                            float rolloff = *reinterpret_cast<float*>(voiceRaw + 0x78u);
+                            if (doppler < 0.0f)
+                                doppler = 0.0f;
+                            else if (doppler > 10.0f)
+                                doppler = 10.0f;
+                            if (rolloff < 0.0f)
+                                rolloff = 0.0f;
+                            else if (rolloff > 1000.0f)
+                                rolloff = 1000.0f;
+
+                            _DS3DBUFFER parameters{};
+                            parameters.vPosition.x =
+                                *reinterpret_cast<float*>(voiceRaw + 0x54u);
+                            parameters.vPosition.y =
+                                *reinterpret_cast<float*>(voiceRaw + 0x58u);
+                            parameters.vPosition.z =
+                                *reinterpret_cast<float*>(voiceRaw + 0x5Cu);
+                            parameters.vVelocity.x =
+                                *reinterpret_cast<float*>(voiceRaw + 0x60u);
+                            parameters.vVelocity.y =
+                                *reinterpret_cast<float*>(voiceRaw + 0x64u);
+                            parameters.vVelocity.z =
+                                *reinterpret_cast<float*>(voiceRaw + 0x68u);
+                            parameters.dwSize = 76u;
+                            parameters.vConeOrientation.y = 1.0f;
+                            parameters.flMinDistance =
+                                *reinterpret_cast<float*>(voiceRaw + 0x6Cu);
+                            parameters.flMaxDistance =
+                                *reinterpret_cast<float*>(voiceRaw + 0x70u);
+                            if (parameters.flMinDistance < 0.1f)
+                                parameters.flMinDistance = 0.1f;
+                            if (parameters.flMinDistance + 0.1f >
+                                parameters.flMaxDistance) {
+                                parameters.flMaxDistance =
+                                    parameters.flMinDistance + 0.1f;
+                            }
+                            parameters.dwMode = 0;
+                            parameters.flDistanceFactor = 1.0f;
+                            parameters.flRolloffFactor = rolloff;
+                            parameters.flDopplerFactor = doppler;
+                            if (stream != nullptr) {
+                                const HRESULT code =
+                                    j_IDirectSoundStream_SetAllParameters(
+                                        stream, &parameters, 1u);
+                                nslDriverCheck(code, "NSL", driverFile, 719);
+                            }
+                            if (buffer != nullptr) {
+                                const HRESULT code =
+                                    j_IDirectSoundBuffer_SetAllParameters(
+                                        buffer, &parameters, 1u);
+                                nslDriverCheck(code, "NSL", driverFile, 720);
+                            }
+                            d = parameters;
+                        }
+
+                        if ((paramsUpdateLow & 1u) != 0u) {
+                            const int volume = linear2mb(
+                                *reinterpret_cast<float*>(voiceRaw + 8u));
+                            HRESULT code;
+                            int lineNumber;
+                            if (stream != nullptr) {
+                                code = j_IDirectSoundStream_SetVolume(stream, volume);
+                                lineNumber = 773;
+                            } else {
+                                code = j_IDirectSoundBuffer_SetVolume(buffer, volume);
+                                lineNumber = 774;
+                            }
+                            nslDriverCheck(code, "NSL", driverFile, lineNumber);
+                        }
+
+                        if ((paramsUpdateLow & 2u) != 0u && wave != nullptr) {
+                            const unsigned char* waveInfo =
+                                *reinterpret_cast<const unsigned char* const*>(wave);
+                            unsigned frequency = *reinterpret_cast<const unsigned short*>(
+                                waveInfo);
+                            frequency = static_cast<unsigned>(
+                                static_cast<float>(frequency) *
+                                *reinterpret_cast<float*>(voiceRaw + 0xCu));
+                            if (frequency < 0xBCu)
+                                frequency = 0xBCu;
+                            else if (frequency > 0x2EDEFu)
+                                frequency = 0x2EDEFu;
+                            HRESULT code;
+                            int lineNumber;
+                            if (stream != nullptr) {
+                                code = j_IDirectSoundStream_SetFrequency(
+                                    stream, frequency);
+                                lineNumber = 782;
+                            } else {
+                                code = j_IDirectSoundBuffer_SetFrequency(
+                                    buffer, frequency);
+                                lineNumber = 783;
+                            }
+                            nslDriverCheck(code, "NSL", driverFile, lineNumber);
+                        }
+                    }
+                }
+                continue;
+            }
+
+            unsigned int status = 0;
+            if (stream != nullptr) {
+                const HRESULT code = stream->__vftable->GetStatus(stream, &status);
+                nslDriverCheck(code, "NSL", driverFile, 567);
+                if ((status & 0x30000u) != 0u)
+                    continue;
+            } else {
+                const HRESULT code = j_IDirectSoundBuffer_GetStatus(
+                    buffer, &status);
+                nslDriverCheck(code, "NSL", driverFile, 568);
+            }
+            if (buffer == nullptr || (status & 3u) != 0u)
+                continue;
+            voiceRaw[0x109u] &= 0xEFu;
+            voiceRaw[0x108u] = (voiceRaw[0x109u] & 0x10u) != 0u ? 1u : 0u;
+        }
+    }
+
+    nslGroup* listenerGroup = nslGetListenerGroup();
+    float* params = listenerGroup->params;
+    nslDriverCheck(static_cast<HRESULT>(j_IDirectSound_SetPosition(
+                         nsl_driverDevice, params[19], params[20], params[21], 1)),
+                   "NSL", driverFile, 791);
+    nslDriverCheck(static_cast<HRESULT>(j_IDirectSound_SetVelocity(
+                         nsl_driverDevice, params[22], params[23], params[24], 1)),
+                   "NSL", driverFile, 792);
+    nslDriverCheck(static_cast<HRESULT>(j_IDirectSound_SetOrientation(
+                         nsl_driverDevice, params[46], params[47], params[48],
+                         params[49], params[50], params[51], 1)),
+                   "NSL", driverFile, 793);
+    nslDriverCheck(j_IDirectSound_CommitDeferredSettings(nsl_driverDevice),
+                   "NSL", driverFile, 794);
+    nslDriverCheck(j_IDirectSound_SynchPlayback(nsl_driverDevice),
+                   "NSL", driverFile, 795);
+
+    // IDA passes the float fields to the weak DirectSoundDoWork import as
+    // their raw DWORD values (LODWORD in the decompiler).
+    auto floatBits = [](float value) {
+        unsigned bits;
+        std::memcpy(&bits, &value, sizeof(bits));
+        return bits;
+    };
+    return j_DirectSoundDoWork(
+        d.dwSize,
+        floatBits(d.vPosition.x),
+        floatBits(d.vPosition.y),
+        floatBits(d.vPosition.z),
+        floatBits(d.vVelocity.x),
+        floatBits(d.vVelocity.y),
+        floatBits(d.vVelocity.z),
+        d.dwInsideConeAngle,
+        d.dwOutsideConeAngle,
+        floatBits(d.vConeOrientation.x),
+        floatBits(d.vConeOrientation.y),
+        floatBits(d.vConeOrientation.z),
+        static_cast<unsigned>(d.lConeOutsideVolume),
+        floatBits(d.flMinDistance),
+        floatBits(d.flMaxDistance),
+        d.dwMode,
+        floatBits(d.flDistanceFactor),
+        floatBits(d.flRolloffFactor),
+        floatBits(d.flDopplerFactor));
+}
 void          nslDriverSet3DEnabled(bool) {}
 void          nslDriverSetSurroundEnabled(bool) {}
 void          nslDriverSetReverbEnabled(bool) {}

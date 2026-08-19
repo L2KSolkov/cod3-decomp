@@ -64,6 +64,31 @@ struct XFileMediaObject {
     XFileMediaObject_vtbl* __vftable;
 };
 
+// IDA type_inspect: D3DXVECTOR3 is a 12-byte _D3DVECTOR of three floats.
+struct _D3DVECTOR {
+    float x;
+    float y;
+    float z;
+};
+using D3DXVECTOR3 = _D3DVECTOR;
+
+// IDA type_inspect: Xbox _DS3DBUFFER is 0x4c bytes with these fields.
+struct _DS3DBUFFER {
+    unsigned int dwSize;
+    D3DXVECTOR3 vPosition;
+    D3DXVECTOR3 vVelocity;
+    unsigned int dwInsideConeAngle;
+    unsigned int dwOutsideConeAngle;
+    D3DXVECTOR3 vConeOrientation;
+    int lConeOutsideVolume;
+    float flMinDistance;
+    float flMaxDistance;
+    unsigned int dwMode;
+    float flDistanceFactor;
+    float flRolloffFactor;
+    float flDopplerFactor;
+};
+
 // IDA's Xbox WAVEFORMATEXTENSIBLE uses the Windows tWAVEFORMATEX layout;
 // keep a distinct name because the Win32 multimedia headers do not expose
 // the Xbox typedef under WAVEFORMATEXTENSIBLE in every translation unit.
@@ -156,6 +181,9 @@ static_assert(sizeof(XFileMediaObject) == 4,
               "Xbox XFileMediaObject layout mismatch");
 static_assert(sizeof(IDirectSoundStream) == 4,
               "Xbox IDirectSoundStream layout mismatch");
+static_assert(sizeof(_D3DVECTOR) == 12, "Xbox D3DVECTOR layout mismatch");
+static_assert(sizeof(D3DXVECTOR3) == 12, "Xbox D3DXVECTOR3 layout mismatch");
+static_assert(sizeof(_DS3DBUFFER) == 76, "Xbox DS3DBUFFER layout mismatch");
 static_assert(sizeof(tWAVEFORMATEX) == 18, "Xbox WAVEFORMATEX layout mismatch");
 static_assert(sizeof(xbox_WAVEFORMATEXTENSIBLE) == 40,
               "Xbox WAVEFORMATEXTENSIBLE layout mismatch");
@@ -223,6 +251,70 @@ HRESULT __stdcall j_IDirectSoundBuffer_SetMixBins(
     IDirectSoundBuffer* pBuffer, const _DSMIXBINS* pMixBins);
 HRESULT __stdcall j_IDirectSoundBuffer_SetVolume(IDirectSoundBuffer* pBuffer,
                                                  int lVolume);
+HRESULT __stdcall j_IDirectSoundStream_FlushEx(IDirectSoundStream* pStream,
+                                               __int64 rtTimeStamp,
+                                               unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundBuffer_StopEx(IDirectSoundBuffer* pBuffer,
+                                              __int64 rtTimeStamp,
+                                              unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundBuffer_Play(IDirectSoundBuffer* pBuffer,
+                                            unsigned int dwReserved1,
+                                            unsigned int dwReserved2,
+                                            unsigned int dwFlags);
+int __stdcall j_IDirectSoundStream_SetMinDistance(IDirectSoundStream* pStream,
+                                                   float flMinDistance,
+                                                   int dwApply);
+int __stdcall j_IDirectSoundStream_SetMaxDistance(IDirectSoundStream* pStream,
+                                                   float flMaxDistance,
+                                                   int dwApply);
+HRESULT __stdcall j_IDirectSoundStream_SetRolloffCurve(
+    IDirectSoundStream* pStream, const float* pflPoints,
+    unsigned int dwPointCount, unsigned int dwFlags);
+int __stdcall j_IDirectSoundBuffer_SetMinDistance(IDirectSoundBuffer* pBuffer,
+                                                   float flMinDistance,
+                                                   int dwApply);
+int __stdcall j_IDirectSoundBuffer_SetMaxDistance(IDirectSoundBuffer* pBuffer,
+                                                   float flMaxDistance,
+                                                   int dwApply);
+HRESULT __stdcall j_IDirectSoundBuffer_SetRolloffCurve(
+    IDirectSoundBuffer* pBuffer, const float* pflPoints,
+    unsigned int dwPointCount, unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundStream_Pause(IDirectSoundStream* pStream,
+                                             unsigned int dwPause);
+HRESULT __stdcall j_IDirectSoundBuffer_Pause(IDirectSoundBuffer* pBuffer,
+                                             unsigned int dwPause);
+HRESULT __stdcall j_IDirectSoundStream_SetAllParameters(
+    IDirectSoundStream* pStream, const _DS3DBUFFER* pds3db,
+    unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundBuffer_SetAllParameters(
+    IDirectSoundBuffer* pBuffer, const _DS3DBUFFER* pds3db,
+    unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundStream_SetVolume(IDirectSoundStream* pStream,
+                                                 int lVolume);
+HRESULT __stdcall j_IDirectSoundStream_SetFrequency(IDirectSoundStream* pStream,
+                                                     unsigned int dwFrequency);
+HRESULT __stdcall j_IDirectSoundBuffer_SetFrequency(IDirectSoundBuffer* pBuffer,
+                                                     unsigned int dwFrequency);
+int __stdcall j_IDirectSound_SetPosition(IDirectSound* pDirectSound,
+                                          float x, float y, float z,
+                                          int dwApply);
+int __stdcall j_IDirectSound_SetVelocity(IDirectSound* pDirectSound,
+                                          float x, float y, float z,
+                                          int dwApply);
+int __stdcall j_IDirectSound_SetOrientation(IDirectSound* pDirectSound,
+                                             float xFront, float yFront,
+                                             float zFront, float xTop,
+                                             float yTop, float zTop,
+                                             int dwApply);
+HRESULT __stdcall j_IDirectSound_CommitDeferredSettings(
+    IDirectSound* pDirectSound);
+HRESULT __stdcall j_IDirectSound_SynchPlayback(IDirectSound* pDirectSound);
+int __cdecl j_DirectSoundDoWork(
+    unsigned int a1, unsigned int a2, unsigned int a3, unsigned int a4,
+    unsigned int a5, unsigned int a6, unsigned int a7, unsigned int a8,
+    unsigned int a9, unsigned int a10, unsigned int a11, unsigned int a12,
+    unsigned int a13, unsigned int a14, unsigned int a15, unsigned int a16,
+    unsigned int a17, unsigned int a18, unsigned int a19);
 extern unsigned int g_dwDirectSoundDebugBreakLevel;
 HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(IDirectSound* pDirectSound,
                                                     const _DSBUFFERDESC* pdsbd,

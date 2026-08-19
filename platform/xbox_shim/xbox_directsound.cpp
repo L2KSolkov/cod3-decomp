@@ -108,6 +108,119 @@ extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetVolume(
     return E_NOTIMPL;
 }
 
+extern "C" HRESULT __stdcall j_IDirectSoundStream_FlushEx(
+    IDirectSoundStream*, __int64, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_StopEx(
+    IDirectSoundBuffer*, __int64, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_Play(
+    IDirectSoundBuffer*, unsigned int, unsigned int, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSoundStream_SetMinDistance(
+    IDirectSoundStream*, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSoundStream_SetMaxDistance(
+    IDirectSoundStream*, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetRolloffCurve(
+    IDirectSoundStream*, const float*, unsigned int, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSoundBuffer_SetMinDistance(
+    IDirectSoundBuffer*, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSoundBuffer_SetMaxDistance(
+    IDirectSoundBuffer*, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetRolloffCurve(
+    IDirectSoundBuffer*, const float*, unsigned int, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_Pause(
+    IDirectSoundStream*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_Pause(
+    IDirectSoundBuffer*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetAllParameters(
+    IDirectSoundStream*, const _DS3DBUFFER*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetAllParameters(
+    IDirectSoundBuffer*, const _DS3DBUFFER*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetVolume(
+    IDirectSoundStream*, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetFrequency(
+    IDirectSoundStream*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetFrequency(
+    IDirectSoundBuffer*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSound_SetPosition(
+    IDirectSound*, float, float, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSound_SetVelocity(
+    IDirectSound*, float, float, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __stdcall j_IDirectSound_SetOrientation(
+    IDirectSound*, float, float, float, float, float, float, int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSound_CommitDeferredSettings(
+    IDirectSound*) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSound_SynchPlayback(IDirectSound*) {
+    return E_NOTIMPL;
+}
+
+extern "C" int __cdecl j_DirectSoundDoWork(
+    unsigned int, unsigned int, unsigned int, unsigned int,
+    unsigned int, unsigned int, unsigned int, unsigned int,
+    unsigned int, unsigned int, unsigned int, unsigned int,
+    unsigned int, unsigned int, unsigned int, unsigned int,
+    unsigned int, unsigned int, unsigned int) {
+    return E_NOTIMPL;
+}
+
 extern "C" HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(
     IDirectSound*, const _DSBUFFERDESC*, IDirectSoundBuffer**, IUnknown*) {
     return E_NOTIMPL;
