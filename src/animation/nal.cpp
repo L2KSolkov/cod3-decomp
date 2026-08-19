@@ -2371,7 +2371,11 @@ void nalSetSkeletonPath(const char* path)
     nalSkeletonPathDirty = 0;
 }
 const char* nalGetSkeletonPath() { return nalSkeletonPath; }
-void* nalGetVersion() { return &nalVersionStorage; }
+// IDA's release decoration is YAIXZ; the returned integer is the original
+// 32-bit address of the opaque version byte at 0x10100.
+unsigned int nalGetVersion() {
+    return (unsigned int)(uintptr_t)&nalVersionStorage;
+}
 void nalEnableScratchPadUse() { nalUseScratchPad = true; }
 void nalDisableScratchPadUse() { nalUseScratchPad = false; }
 void nalEnablePerformanceWarnings() { nalPerformanceWarnings = true; }
