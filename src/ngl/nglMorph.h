@@ -40,6 +40,7 @@ class nglMorphFrame : public nglMorph {
 public:
     class nglMorphSetFrame* Frame;   // +0x04
 
+protected:
     virtual void Apply(nglMeshSection* Section, int SectionIdx, float Weight,
                        unsigned int Flags) const;  // ea: 0x853420 (empty)
 };
@@ -53,6 +54,8 @@ public:
     nglMesh* Mesh;   // +0x04
 
     virtual bool IsMeshMorph() const { return true; }
+
+protected:
     virtual void Apply(nglMeshSection* Section, int SectionIdx, float Weight,
                        unsigned int Flags) const;  // ea: 0x853430 (empty)
 };
