@@ -669,6 +669,12 @@ struct DObjSkelMat {
     float axis[3][4];  // +0x00
     float origin[4];   // +0x30
 };
+struct DSkelLocal {
+    int animPartBits[4];       // +0x00
+    int controlPartBits[4];    // +0x10
+    int skelPartBits[4];       // +0x20
+    DObjSkelMat mat[1];        // +0x30
+};
 DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);  // ?SV_DObjGetMatrixArray@@YAPAUDObjSkelMat@@PAVEntity@@@Z (sv.o)
 DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);  // ?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z (render.o)
 void DObjMatriceModelToLocal(Entity* owner);  // ?DObjMatriceModelToLocal@@YAXPAVEntity@@@Z
@@ -1440,9 +1446,19 @@ public:
 };
 const math::Mat43& DObj::GetMat(int boneIndex)
 {
-    (void)boneIndex;
-    static math::Mat43 zero = {};
-    return zero;
+    if (boneIndex < 0 || boneIndex >= numBones)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 2017;
+        AeAssert::gCurrentExpr =
+            "boneIndex >= 0 && boneIndex < numBones";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad bone index."))
+            __debugbreak();
+    }
+    DSkelLocal* skel = (DSkelLocal*)this->skel;
+    return *(const math::Mat43*)&skel->mat[boneIndex];
 }
 int DObj::GetBoneIndex(const char* name) const
 {
