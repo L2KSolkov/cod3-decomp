@@ -101,20 +101,26 @@ void nglStringNode::Render() {
                 v9[0] = (PBArraySize << 18) + 1073747992;
                 ++v9;
                 if (v10->Length != 0) {
-                    float XY = Position;
-                    float sizeX = 0, sizeY = 0, UV = 0, UV2 = 0, uvsizeX = 0, uvsizeY = 0;
+                    // SetMeasures writes both components of each output pair.
+                    // Keep those pairs explicit; the release passes adjacent
+                    // stack slots as the four float* arguments.
+                    float offs[2] = {};
+                    float size[2] = {};
+                    float uvpos[2] = {};
+                    float uvsize[2] = {};
                     float posY = y;
                     for (unsigned int i = v10->Length; i != 0; --i) {
                         unsigned char c = *this->Section->Text;
-                        this->Font->SetMeasures(c, &XY, &sizeX, &UV, &uvsizeX, Scale, ScaleY);
-                        float x1 = XY + Position;
-                        float y1 = sizeY + posY;
-                        float u1 = UV + ShiftU;
-                        float v1 = uvsizeY + ShiftV;
-                        float x2 = sizeX + x1;
-                        float y2 = uvsizeX + y1;
-                        float u2 = uvsizeX + u1;
-                        float v2f = v1;
+                        this->Font->SetMeasures(c, offs, size, uvpos, uvsize,
+                                                Scale, ScaleY);
+                        float x1 = offs[0] + Position;
+                        float y1 = offs[1] + posY;
+                        float u1 = uvpos[0] + ShiftU;
+                        float v1 = uvpos[1] + ShiftV;
+                        float x2 = size[0] + x1;
+                        float y2 = size[1] + y1;
+                        float u2 = uvsize[0] + u1;
+                        float v2f = uvsize[1] + v1;
                         v9[0] = x1;
                         v9[1] = y1;
                         v9[2] = Z;
@@ -140,7 +146,7 @@ void nglStringNode::Render() {
                         v9[22] = u1;
                         v9[23] = y2;
                         v9 += 24;
-                        XY = (float)this->Font->GetCellWidth(c) * Scale + Position;
+                        Position = (float)this->Font->GetCellWidth(c) * Scale + Position;
                         ++this->Section->Text;
                     }
                 }
