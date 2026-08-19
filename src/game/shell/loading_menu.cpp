@@ -541,9 +541,17 @@ void LoadingMenu::SetPanelFile(PanelFile* pf)
     {
         FEText* tipBase = mText.m_elements[0];
         color32 col = tipBase->GetColor();
+        // IDA's COERCE_FLOAT(16) is the raw DWORD 0x10 pushed by the release
+        // call site, not the numeric float value 16.0f.
+        union {
+            unsigned int bits;
+            float value;
+        } tipScale;
+        tipScale.bits = 16u;
         new (mTipEntry) FEMultiLineText(
             tipBase->GetFont(), tipBase->GetY(), 0.0f, 0,
-            (panel_layer)tipBase->GetScaleX(), 16.0f, 64, (int)col.i, col);
+            (panel_layer)tipBase->GetScaleX(), tipScale.value, 64,
+            (int)col.i, col);
     }
     mTipEntry->SetNumLines(10);
     PanelQuad* Pointer = panel->GetPointer("loading_bar_use");
