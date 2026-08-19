@@ -37,8 +37,11 @@ extern void tlMemFree(void* ptr);
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file,
                                  int line);
-int default_apk_size;    // ?default_apk_size (game2.o)
-unsigned char default_apk[0x40000];  // ?default_apk (game2.o)
+int default_apk_size = 0x11028;    // ?default_apk_size (game2.o)
+// Release XBE bytes at ?default_apk@@3PAEA (IDA 0xDD94C0, 0x11028 bytes).
+unsigned char default_apk[0x11028] = {
+#include "game/logic/default_apk.inc"
+};
 unsigned char* default_pak_buf = nullptr;  // ?default_pak_buf (game2.o)
 bool gMissionDataInitialized;    // ?gMissionDataInitialized (game2.o)
 extern void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
