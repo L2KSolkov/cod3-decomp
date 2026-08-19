@@ -24,7 +24,7 @@ namespace cdHeatHazePixel {
 // ============================================================================
 // File-local state (cdHeatHazeShader.o)
 // ============================================================================
-static bool gEnabled;  // @0xE3CA30
+static bool gEnabled = true;  // @0xE3CA30 (release default)
 
 // ============================================================================
 // ToggleCDHeatHazeShader — flip the heat-haze enabled flag.
