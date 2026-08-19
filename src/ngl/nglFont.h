@@ -98,7 +98,7 @@ public:
         offs[1] = (float)ginfo.GlyphOrigin[1] * ScaleY;
         size[0] = (float)ginfo.GlyphSize[0] * ScaleX;
         size[1] = (float)ginfo.GlyphSize[1] * ScaleY;
-        int v14 = 4 * ((int)c - Header.FirstGlyph);
+        int v14 = 4 * ((int)c - (Header.FirstGlyph & 0xFF));
         uvpos[0] = TexCoords[v14];
         uvpos[1] = TexCoords[v14 + 1];
         uvsize[0] = TexCoords[v14 + 2] - TexCoords[v14];
