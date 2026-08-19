@@ -1096,6 +1096,22 @@ void __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
         gD3D9Device->DrawIndexedPrimitive(NativePrimitive, 0, 0, NumVertices,
                                           StartIndex, PrimitiveCount);
 }
+void __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
+                                       unsigned int StartVertex,
+                                       unsigned int VertexCount) {
+    if (gD3D9Device == NULL || gD3D9VertexDeclaration == NULL ||
+        gD3D9VertexBuffers[0] == NULL || gD3D9VertexInfos[0] == NULL)
+        return;
+    COD3_D3D9_PRIMITIVETYPE NativePrimitive = nullD3DPrimitiveType(PrimitiveType);
+    unsigned int PrimitiveCount = nullD3DPrimitiveCount(PrimitiveType, VertexCount);
+    if (NativePrimitive == COD3_D3D9_PT_FORCE_DWORD || PrimitiveCount == 0)
+        return;
+    nullD3DSyncVertexBuffer(gD3D9VertexBuffers[0], gD3D9VertexInfos[0]);
+    gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
+    gD3D9Device->SetStreamSource(0, gD3D9VertexBuffers[0],
+                                 gD3D9VertexOffsets[0], gD3D9VertexStrides[0]);
+    gD3D9Device->DrawPrimitive(NativePrimitive, StartVertex, PrimitiveCount);
+}
 void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
                                          unsigned int VertexCount,
                                          const void* VertexData,

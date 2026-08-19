@@ -205,10 +205,9 @@ void nglGpuDrawSection(nglMeshSection* Section) {
     } else {
         gpuSetVertexBuffer((D3DVertexBuffer*)Section->VertexBuffer, Section->VertexFormat,
                            0, 0);
-        D3DDevice_DrawVerticesUP((_D3DPRIMITIVETYPE)Section->PrimitiveType,
-                                 Section->NVertices,
-                                 (unsigned char*)Section->VertexBuffer + Section->VertexOffset,
-                                 Section->VertexFormat->VertexSize);
+        D3DDevice_DrawVertices((_D3DPRIMITIVETYPE)Section->PrimitiveType,
+                               Section->VertexOffset / Section->VertexFormat->VertexSize,
+                               Section->NVertices);
     }
 }
 

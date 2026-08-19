@@ -505,6 +505,9 @@ void*        __stdcall D3DVertexBuffer_Lock2(D3DVertexBuffer* pBuffer, unsigned 
 void         __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
                                                      unsigned int VertexCount,
                                                      const unsigned short* pIndexData);
+void         __stdcall D3DDevice_DrawVertices(_D3DPRIMITIVETYPE PrimitiveType,
+                                               unsigned int StartVertex,
+                                               unsigned int VertexCount);
 void         __stdcall D3DDevice_SetVertexShaderInputDirect(void* pVAF, unsigned int StreamCount,
                                                             const _D3DSTREAM_INPUT* pStreamInputs);
 void         __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
