@@ -32,6 +32,8 @@ extern void InplaceAssetBankSet_Find_DbTableset(void* self, void* result,
                                                 void* formal, void* foundPakId);
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 extern int PakManager_GetPakFile(void* self, TPakId pakId);
+extern void GetPakPrerequisites(TPakId pakId,
+                                ae_sized_array<TPakId, 32>* ret);
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1 };
@@ -45,6 +47,11 @@ bool Assert(const char* fmt, ...);
 
 struct U32TreeElement {
     unsigned int mKey;
+    unsigned int mValue;
+};
+
+struct StringTreeElement {
+    char* mKey;
     unsigned int mValue;
 };
 
@@ -106,6 +113,59 @@ static unsigned int* U32TreeFind(GenericAssetBankLayout* tree,
             return nullptr;
     }
 }
+
+static bool StringTreeIsUsed(GenericAssetBankLayout* tree,
+                              StringTreeElement* elements,
+                              unsigned int index)
+{
+    if (index >= tree->mTreeSize) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+        AeAssert::gCurrentLine = 211;
+        AeAssert::gCurrentExpr = "index >= 0 && index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    static const unsigned char nullElement[sizeof(StringTreeElement)] = {};
+    return memcmp(&elements[index], nullElement,
+                  sizeof(StringTreeElement)) != 0;
+}
+
+static unsigned int* StringTreeFind(GenericAssetBankLayout* tree,
+                                    const char* key)
+{
+    StringTreeElement* elements =
+        reinterpret_cast<StringTreeElement*>(tree->mTreeArray);
+    unsigned int index = 0;
+    if (tree->mTreeSize == 0)
+        return nullptr;
+    for (;;) {
+        if (!StringTreeIsUsed(tree, elements, index)) {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 101;
+            AeAssert::gCurrentExpr = "IsUsed(index)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index must be used"))
+                __debugbreak();
+        }
+        int comparison = _stricmp(elements[index].mKey, key);
+        if (comparison == 0)
+            return &elements[index].mValue;
+        index = comparison >= 0 ? (2 * index + 1) : (2 * index + 2);
+        if (index >= tree->mTreeSize
+            || !StringTreeIsUsed(tree, elements, index)
+            || index >= tree->mTreeSize)
+            return nullptr;
+    }
+}
+
+struct DbTablesetManagerLayout {
+    void* mVtable;
+    void* mBankArray[99];
+};
+static_assert(sizeof(DbTablesetManagerLayout) == 0x190,
+              "DbTablesetMgr layout mismatch");
 
 // ?STBManager_sInst@@3PAUSTBManager@@A (core.o)
 STBManager* STBManager_sInst = nullptr;
@@ -175,14 +235,75 @@ void PtrFixupTable_Fixup(void* self, void* basePtr)
 }
 void InplaceAssetBankSet_AddBank_DbTableset(void* self, TPakId pak, void* bank)
 {
-    (void)self; (void)pak; (void)bank;
+    DbTablesetManagerLayout* manager =
+        reinterpret_cast<DbTablesetManagerLayout*>(self);
+    void*& slot = manager->mBankArray[(int)pak];
+    if (slot != nullptr) {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 109;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("We already have a bank for this pak id!"))
+            __debugbreak();
+    }
+    slot = bank;
 }
 void InplaceAssetBankSet_Find_DbTableset(void* self, void* result,
                                         TPakId pakId, const char* key,
                                         void* formal, void* foundPakId)
 {
-    (void)self; (void)result; (void)pakId; (void)key;
-    (void)formal; (void)foundPakId;
+    (void)formal;
+    DbTablesetManagerLayout* manager =
+        reinterpret_cast<DbTablesetManagerLayout*>(self);
+    IVPointer<DbTableSet>* output =
+        reinterpret_cast<IVPointer<DbTableSet>*>(result);
+    ae_sized_array<TPakId, 32> prereqs;
+    prereqs.m_size = 0;
+    if (pakId == PAK_ID_INVALID) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 121;
+        AeAssert::gCurrentExpr = "pakId != PAK_ID_INVALID";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bad pak id"))
+            __debugbreak();
+        output->mValue = nullptr;
+        output->mPakId = PAK_ID_INVALID;
+        return;
+    }
+    GetPakPrerequisites(pakId, &prereqs);
+    for (unsigned int i = 0; i < (unsigned int)prereqs.m_size; ++i) {
+        if (i >= 0x20) {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        TPakId candidate = prereqs.m_elements[i];
+        if (candidate == PAK_ID_INVALID)
+            continue;
+        GenericAssetBankLayout* bank =
+            reinterpret_cast<GenericAssetBankLayout*>(
+                manager->mBankArray[(int)candidate]);
+        if (bank == nullptr)
+            continue;
+        unsigned int* index = StringTreeFind(bank, key);
+        if (index != nullptr) {
+            if (foundPakId != nullptr)
+                *reinterpret_cast<TPakId*>(foundPakId) = candidate;
+            output->mPakId = candidate;
+            output->mValue = const_cast<DbTableSet*>(
+                reinterpret_cast<const DbTableSet*>(
+                    bank->mPtrsList[*index]));
+            return;
+        }
+    }
+    output->mValue = nullptr;
+    output->mPakId = PAK_ID_INVALID;
 }
 
 // ea: 0x004C5D00
