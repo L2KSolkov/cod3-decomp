@@ -13,6 +13,7 @@
 #include "core/tlFixedString.h"
 
 #include <intrin.h>
+#include <algorithm>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -82,12 +83,12 @@ extern void ngliSetDefaultSceneParams();
 extern math::Mat44 ngliGetDeviceMatrix(nglTexture* RenderTarget);
 extern void ngliRenderSceneNode(void* Data);
 extern void nglSceneDumpCamera(const math::Mat43& WorldToView);
+extern nglRenderNode* nglRenderListEndNode;
 
 
 // ngl_sort helpers (ngl_scene.o inline COMDATs).
 struct nglOpaqueCompare { int dummy; };
 struct nglTransCompare { int dummy; };
-extern void nglSortList_Impl(nglRenderNode** List, int Count);
 
 // ============================================================================
 // Data (ngl_scene.o)
@@ -911,11 +912,56 @@ nglScene* nglListBeginSceneNode(nglSceneParamType ParamSource, nglSortInfo* Sort
     return v2;
 }
 
+// ea: 0x83F580 / 0x83F630
+static void nglSortRenderList(nglRenderNode** List, int Count, bool Translucent) {
+    unsigned char* Marker = nglListWorkPos;
+    typedef std::pair<nglRenderNode*, unsigned int> SortEntry;
+    SortEntry* Table = static_cast<SortEntry*>(nglListAlloc(8 * Count, 0x10));
+    nglRenderNode* Node = *List;
+    SortEntry* Entry = Table;
+    if (Node != NULL) {
+        do {
+            Entry->first = Node;
+            Entry->second = Node->SortHash;
+            Node = Node->Next;
+            ++Entry;
+        } while (Node != NULL);
+    }
+    SortEntry* End = &Table[Count];
+    if (Translucent) {
+        std::sort(Table, End, [](const SortEntry& A, const SortEntry& B) {
+            if (A.second > B.second)
+                return true;
+            if (B.second <= A.second)
+                return reinterpret_cast<uintptr_t>(A.first) < reinterpret_cast<uintptr_t>(B.first);
+            return false;
+        });
+    } else {
+        std::sort(Table, End, [](const SortEntry& A, const SortEntry& B) {
+            return A.second < B.second;
+        });
+    }
+    nglRenderNode* Next = nglRenderListEndNode;
+    SortEntry* Current = &End[-1];
+    if (Count != 0) {
+        do {
+            Current->first->Next = Next;
+            Next = Current->first;
+            Current -= 1;
+            --Count;
+        } while (Count != 0);
+        *List = Next;
+    } else {
+        *List = nglRenderListEndNode;
+    }
+    nglListWorkPos = Marker;
+}
+
 void nglSortScene(nglScene* Scene) {
     for (nglScene* i = Scene->FirstChild; i != NULL; i = i->NextSibling)
         nglSortScene(i);
-    nglSortList_Impl(&Scene->OpaqueRenderList, (int)Scene->OpaqueListCount);
-    nglSortList_Impl(&Scene->TransRenderList, (int)Scene->TransListCount);
+    nglSortRenderList(&Scene->OpaqueRenderList, (int)Scene->OpaqueListCount, false);
+    nglSortRenderList(&Scene->TransRenderList, (int)Scene->TransListCount, true);
 }
 
 void nglPresent() {

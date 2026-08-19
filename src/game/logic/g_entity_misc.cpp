@@ -2648,7 +2648,6 @@ void nglDxUnbindVertexBuffer() {}
 void ngliExitList() {}
 struct nglMeshSection;
 void ngliUnloadSection(nglMeshSection* s) { (void)s; }
-void nglSortList_Impl(nglRenderNode** a, int b) { (void)a; (void)b; }
 void nullsub_16(const char* a, const char* b) { (void)a; (void)b; }
 void nullsub_34(const char* a, const char* b) { (void)a; (void)b; }
 void nullsub_35() {}
