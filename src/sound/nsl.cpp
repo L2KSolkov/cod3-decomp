@@ -4204,6 +4204,8 @@ void          nslDriverCalculateRolloff(float* dest, float value,
     if (dest != nullptr)
         *dest = result;
 }
+// ea: 0x00825010
+void          nslDriverExit() {}
 // ea: 0x00824EF0
 unsigned char nslDriverGetVoiceType(const nslWave* wave) {
     const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
