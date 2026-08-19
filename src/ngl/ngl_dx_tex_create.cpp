@@ -247,9 +247,10 @@ void nglCreateNormalCubeMap(unsigned int Width) {
         __debugbreak();
 
     nglTexture* Tex = nglCreateTexture(0x100u, 6u, (int)Width, (int)Width, 0, 1);
-    // Name the cube-map texture (static tlFixedString "nglNormalCubeMapTex").
-    static tlFixedString NormalCubeMapName("nglNormalCubeMapTex");
-    Tex->FileName = &NormalCubeMapName;
+    // IDA shows the name copied into the tlFixedString object supplied by
+    // nglCreateTexture, rather than replacing the FileName pointer.
+    tlFixedString NormalCubeMapName("nglNormalCubeMapTex");
+    *Tex->FileName = NormalCubeMapName;
 
     unsigned int* pBits = (unsigned int*)tlMemAlloc(4 * Width * Width, 8u, 0x1000000);
     for (unsigned int Face = 0; Face < 6; ++Face) {
@@ -265,7 +266,12 @@ void nglCreateNormalCubeMap(unsigned int Width) {
                 case 2: nx = x; ny = 1.0f; nz = y; break;     // +Y
                 case 3: nx = x; ny = -1.0f; nz = -y; break;   // -Y
                 case 4: nx = x; ny = -y; nz = 1.0f; break;    // +Z
-                default: nx = -x; ny = -y; nz = -1.0f; break; // -Z
+                case 5: nx = -x; ny = -y; nz = -1.0f; break;   // -Z
+                default:
+                    if (_tlAssert("src/dx/ngl_dx_tex_create.cpp", 386,
+                                  "false", "Assert in nglCreateNormalCubeMap !"))
+                        __debugbreak();
+                    break;
                 }
                 float len = sqrtf(nx*nx + ny*ny + nz*nz);
                 nx /= len; ny /= len; nz /= len;
