@@ -1713,9 +1713,9 @@ nslWaveID     nslWaveLoad(const char*, unsigned) { return NSL_INVALID_WAVE; }
 nslWaveID     nslWaveLoadInPlace(void*, unsigned) { return NSL_INVALID_WAVE; }
 void          nslWaveRelease(nslWaveID) {}
 // ea: 0x0082A020
-char*         nslWaveGetSourceDirectory() { return nsl_waveSourceDirectory; }
+const char*   nslWaveGetSourceDirectory() { return nsl_waveSourceDirectory; }
 // ea: 0x0082A030
-char*         nslWaveGetObjectDirectory() { return nsl_waveObjectDirectory; }
+const char*   nslWaveGetObjectDirectory() { return nsl_waveObjectDirectory; }
 // ea: 0x0082A040
 void          nslWaveSetSourceDirectory(const char* newWaveSourceDirectory) {
     std::strncpy(nsl_waveSourceDirectory, newWaveSourceDirectory, 0x1FFu);
@@ -1733,7 +1733,7 @@ void          nslWaveSetObjectDirectory(const char* newWaveObjectDirectory) {
     txPathFix(nsl_waveObjectDirectory, nsl_waveObjectDirectory, 512);
 }
 // ea: 0x0082A160
-char*         nslWaveGetSourceFilename(const char* sourceFilename,
+const char*   nslWaveGetSourceFilename(const char* sourceFilename,
                                        char* fullSourceFilename,
                                        int fullSourceFilenameSize) {
     _snprintf(fullSourceFilename, fullSourceFilenameSize, "%s/%s",
@@ -1742,7 +1742,7 @@ char*         nslWaveGetSourceFilename(const char* sourceFilename,
     return fullSourceFilename;
 }
 // ea: 0x0082A1A0
-char*         nslWaveGetObjectFilename(const char* objectFilename,
+const char*   nslWaveGetObjectFilename(const char* objectFilename,
                                        const char* platform,
                                        char* fullObjectFilename,
                                        int fullObjectFilenameSize) {
