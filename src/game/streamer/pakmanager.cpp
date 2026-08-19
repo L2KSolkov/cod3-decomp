@@ -8821,8 +8821,8 @@ void cdDeleteParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
 void cdInitApk()
 {
     extern void nglSetResourceCallback(
-        void* (*Callback)(const tlFixedString*, unsigned int));
-    extern void* apkGetResource(const tlFixedString* FileName,
+        void* (*Callback)(const tlFixedString&, unsigned int));
+    extern void* apkGetResource(const tlFixedString& FileName,
                                 unsigned int FourCC);
     nglSetResourceCallback(apkGetResource);
     apk::apkSetResourceCallback(apkGetResource);
@@ -9054,10 +9054,10 @@ nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name)
 }
 
 // ea: 0x678D40
-void* cdGetResource(const tlFixedString* FileName, unsigned int FourCC,
+void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
                     bool ExtraSafety)
 {
-    if (FileName->hash == 0)
+    if (FileName.hash == 0)
         return FourCC != 0x584554u ? nullptr : nglDefaultTex;
     ae_sized_array<TPakId, 128>& ContextStack =
         (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
@@ -9067,38 +9067,38 @@ void* cdGetResource(const tlFixedString* FileName, unsigned int FourCC,
     if (FourCC > 0x4C454B53u)
     {
         if (FourCC == 0x53504541u)
-            return cdGetEffectTemplate(v6, *FileName);
+            return cdGetEffectTemplate(v6, FileName);
         if (FourCC != 0x544E4F46u)
             return nullptr;
-        void* result = cdGetFont(v6, *FileName);
+        void* result = cdGetFont(v6, FileName);
         if (result == nullptr)
-            return nglGetFont(*FileName);
+            return nglGetFont(FileName);
         return result;
     }
     if (FourCC == 0x4C454B53u)
         return gCharSkel;
     if (FourCC == 0x54414Du)
-        return nglGetMaterial(*FileName, true);
+        return nglGetMaterial(FileName, true);
     if (FourCC != 0x584554u)
     {
         if (FourCC == 0x4853454Du)
-            return cdGetMesh(v6, *FileName);
+            return cdGetMesh(v6, FileName);
         return nullptr;
     }
-    if (*FileName == none_tfs || *FileName == null_tfs)
+    if (FileName == none_tfs || FileName == null_tfs)
         return nglDefaultTex;
-    void* result = cdGetTexture(v6, *FileName);
+    void* result = cdGetTexture(v6, FileName);
     if (result == nullptr && ExtraSafety)
     {
         tlPrintf("Unable to locate texture resource %s - assigning default texture.\n",
-                 FileName->str);
+                 FileName.str);
         return nglDefaultTex;
     }
     return result;
 }
 
 // ea: 0x678ED0
-void* apkGetResource(const tlFixedString* FileName, unsigned int FourCC)
+void* apkGetResource(const tlFixedString& FileName, unsigned int FourCC)
 {
     return cdGetResource(FileName, FourCC, true);
 }

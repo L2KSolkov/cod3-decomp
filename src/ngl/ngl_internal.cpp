@@ -15,6 +15,7 @@
 #include <float.h>
 #include <intrin.h>
 #include <stdio.h>
+#include <stdint.h>
 
 // ============================================================================
 // Cross-object externs
@@ -44,7 +45,7 @@ bool nglInitialized = false;
 unsigned int nglVBlankCount = 0;
 unsigned int nglFrameVBlankCount = 0;
 int nglFrame = 0;
-void* (*nglResourceCallbackFunction)(const tlFixedString*, unsigned int) = NULL;
+void* (*nglResourceCallbackFunction)(const tlFixedString&, unsigned int) = NULL;
 
 nglDisplayModeType nglDisplayMode = { 0 };
 unsigned int nglDisplayMode_Set = 0;
@@ -100,8 +101,8 @@ bool nglIsDisplayWidescreen() {
 // ============================================================================
 // nglGetVersion - ea: 0x840F60
 // ============================================================================
-const char* nglGetVersion() {
-    return nglVersionString;
+unsigned int nglGetVersion() {
+    return (unsigned int)(uintptr_t)nglVersionString;
 }
 
 // ============================================================================
@@ -146,7 +147,7 @@ int nglGetScreenHeight() {
 // ============================================================================
 // nglSetResourceCallback - ea: 0x840FE0
 // ============================================================================
-void nglSetResourceCallback(void* (*Callback)(const tlFixedString*, unsigned int)) {
+void nglSetResourceCallback(void* (*Callback)(const tlFixedString&, unsigned int)) {
     nglResourceCallbackFunction = Callback;
 }
 
@@ -167,28 +168,28 @@ bool nglIsInitialized() {
 // ============================================================================
 // nglGetResource - ea: 0x841020
 // ============================================================================
-void* nglGetResource(const tlFixedString* FileName, unsigned int FourCC) {
+void* nglGetResource(const tlFixedString& FileName, unsigned int FourCC) {
     if (nglResourceCallbackFunction != NULL)
         return nglResourceCallbackFunction(FileName, FourCC);
 
     if (FourCC > 0x48524F4D) {  // 'MORH'
         if (FourCC == 0x4D485345)  // 'MESH'
-            return nglMeshDirectory.Find(*FileName);
+            return nglMeshDirectory.Find(FileName);
         if (FourCC == 0x544E4F46)  // 'FONT'
-            return nglFontDirectory.Find(*FileName);
+            return nglFontDirectory.Find(FileName);
         return NULL;
     }
     if (FourCC == 0x48524F4D)  // 'MORH'
-        return nglMorphDirectory.Find(*FileName);
+        return nglMorphDirectory.Find(FileName);
     if (FourCC == 0x54414D)  // 'MAT '
-        return nglMaterialDirectory.Find(*FileName);
+        return nglMaterialDirectory.Find(FileName);
     if (FourCC != 0x584554)  // 'TEX '
         return NULL;
 
-    nglTexture* tex = nglTextureDirectory.Find(*FileName);
+    nglTexture* tex = nglTextureDirectory.Find(FileName);
     if (tex == NULL) {
         tlWarning("NGL: Unable to locate texture resource %s - assigning default texture.\n",
-                  FileName->str);
+                 FileName.str);
         return nglDefaultTex;
     }
     return tex;

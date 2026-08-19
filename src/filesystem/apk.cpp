@@ -15,7 +15,7 @@ namespace apk {
 apkFileCallbackListEntry*    apkFileCallbackList = nullptr;
 apkSectionCallbackListEntry* apkSectionCallbackList = nullptr;
 char apkRootDirectory[256] = "";
-void* (*apkResourceLocatorCallback)(const tlFixedString*, uint32_t) = nullptr;
+void* (*apkResourceLocatorCallback)(const tlFixedString&, uint32_t) = nullptr;
 
 // External stubs
 extern void  tlWarning(const char* fmt, ...);
@@ -118,7 +118,7 @@ void apkUnregisterSectionType(const tlFixedString& Name) {
 // apkSetResourceCallback
 // ea: 0x834200
 // ============================================================================
-void apkSetResourceCallback(void* (*cb)(const tlFixedString*, uint32_t)) {
+void apkSetResourceCallback(void* (*cb)(const tlFixedString&, uint32_t)) {
     apkResourceLocatorCallback = cb;
 }
 
@@ -332,7 +332,7 @@ void apkFile::ApplyReferences(uint32_t** refData, tlFixedString* stringTable) {
 
         const tlFixedString* name = (const tlFixedString*)((uint8_t*)stringTable + stringIndex);
         if (apkResourceLocatorCallback)
-            *ptr = (uint32_t)(uintptr_t)apkResourceLocatorCallback(name, 0);
+            *ptr = (uint32_t)(uintptr_t)apkResourceLocatorCallback(*name, 0);
         else
             *ptr = 0;
     }
@@ -502,7 +502,7 @@ void apkFile::ApplyReferencesForEntry(apkFileEntry* entry) {
             && targetAddress < poolStart + poolSizes[owningSection]) {
             if (apkResourceLocatorCallback)
                 target->hash = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(
-                    apkResourceLocatorCallback(name, type)));
+                    apkResourceLocatorCallback(*name, type)));
             else
                 target->hash = 0;
         }

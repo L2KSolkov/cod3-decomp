@@ -22,7 +22,7 @@
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-extern void* nglGetResource(const tlFixedString* FileName, unsigned int FourCC);
+extern void* nglGetResource(const tlFixedString& FileName, unsigned int FourCC);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);
 extern void nglListAddNode_Translucent(class nglRenderNode* Node);
@@ -45,7 +45,7 @@ const tlFixedString* GetKey(const nglFont* f) {
 // nglGetFont - ea: 0x842400
 // ============================================================================
 nglFont* nglGetFont(const tlFixedString& FileName) {
-    return (nglFont*)nglGetResource(&FileName, 0x544E4F46);  // 'FONT'
+    return (nglFont*)nglGetResource(FileName, 0x544E4F46);  // 'FONT'
 }
 
 // ============================================================================

@@ -12,7 +12,7 @@
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-extern void* nglGetResource(const tlFixedString* FileName, unsigned int FourCC);
+extern void* nglGetResource(const tlFixedString& FileName, unsigned int FourCC);
 extern void tlWarning(const char* fmt, ...);
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);
 extern unsigned char* nglListWorkPos;
@@ -34,7 +34,7 @@ const tlFixedString* GetKey(const nglMorphSet* m) {
 // nglGetMorph - ea: 0x8533E0
 // ============================================================================
 nglMorphSet* nglGetMorph(const tlFixedString& Name, bool Warn) {
-    void* Resource = nglGetResource(&Name, 0x48524F4D);  // 'MORH'
+    void* Resource = nglGetResource(Name, 0x48524F4D);  // 'MORH'
     if (Resource == NULL && Warn)
         tlWarning("nglGetMorph: Unable to find morph %s.\n", Name.str);
     return (nglMorphSet*)Resource;

@@ -17,7 +17,7 @@
 // Cross-object externs
 // ============================================================================
 extern void tlWarning(const char* fmt, ...);
-extern void* nglGetResource(const tlFixedString* FileName, unsigned int FourCC);
+extern void* nglGetResource(const tlFixedString& FileName, unsigned int FourCC);
 extern int nglFrame;
 extern void ngliProcessTexture(apk::apkFile* File, apk::apkFileEntry* Entry);
 
@@ -57,7 +57,7 @@ void nglScreenShot(const char* FileName) {
 // nglGetTexture - ea: 0x842240
 // ============================================================================
 nglTexture* nglGetTexture(const tlFixedString& FileName) {
-    return (nglTexture*)nglGetResource(&FileName, 0x584554);  // 'TEX '
+    return (nglTexture*)nglGetResource(FileName, 0x584554);  // 'TEX '
 }
 
 // ============================================================================
