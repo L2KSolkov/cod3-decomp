@@ -66,7 +66,7 @@ struct BspTree {
 extern BspTree* g_bspTree;           // ?g_bspTree@@3PAUBspTree@@A
 extern void ModelLightingHack();     // ?ModelLightingHack@@YAXXZ
 extern nglLightContext* nglCreateLightContext();  // ?nglCreateLightContext@@YAPAUnglLightContext@@XZ
-extern void nglListAddLight(int type, void* data, int unknown);  // ?nglListAddLight@@YAXW4nglLightType@@PAXH@Z
+extern void nglListAddLight(int type, void* data, unsigned int unknown);  // ?nglListAddLight@@YAXW4nglLightType@@PAXI@Z
 extern unsigned int nglLightContextParamID;   // ngl_lighting.cpp
 extern unsigned int cdSimpleAlphaAlphaParamID;  // tr_tiny.cpp
 

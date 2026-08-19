@@ -1598,8 +1598,8 @@ public:
     PakFile* mSlots[99];       // +0x40
 };
 extern void nglListAddPointLight(unsigned int LightCat,
-                                 const math::Position3* Pos, float Near,
-                                 float Far, const math::Vector4* Color,
+                                 const math::Position3& Pos, float Near,
+                                 float Far, const math::Vector4& Color,
                                  bool isVertexPointLight);  // ngl_lighting.cpp
 
 void UpdateLights(float timeDeltaMS)
@@ -1628,16 +1628,16 @@ void UpdateLights(float timeDeltaMS)
             color.v.m128_f32[3] = v3->mColor[3] * v3->mScale;
             if (v3->mType == LightEffect::VERTEX_LIGHT)
             {
-                nglListAddPointLight(0x40000000u, &pos, v3->mInnerRadius,
-                                     v3->mOuterRadius, &color, true);
+                nglListAddPointLight(0x40000000u, pos, v3->mInnerRadius,
+                                     v3->mOuterRadius, color, true);
             }
             else
             {
                 color.v.m128_f32[0] = 1.0f;
                 color.v.m128_f32[1] = 0.8f;
                 color.v.m128_f32[2] = 0.2f;
-                nglListAddPointLight(0x40000000u, &pos, v3->mInnerRadius,
-                                     220.0f, &color, false);
+                nglListAddPointLight(0x40000000u, pos, v3->mInnerRadius,
+                                     220.0f, color, false);
             }
             if (v3->mMSecLifetime != -1000.0f)
             {

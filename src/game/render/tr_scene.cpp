@@ -339,8 +339,8 @@ void cdProjShadow_CleanUp()
 // ============================================================================
 extern nglScene* nglBuildScene;
 void nglListAddDirProjectorLight(unsigned int LightCat,
-                                 const math::Mat43* PO,
-                                 const math::Position3* Scale,
+                                 const math::Mat43& PO,
+                                 const math::Position3& Scale,
                                  unsigned int BlendMode,
                                  nglTexture* Tex);
 
@@ -441,7 +441,7 @@ void cdProjShadow_Begin()
     math::Position3 scale;
     scale.v = _mm_setr_ps(gProjShadowSize, -gProjShadowSize,
                           1140457472.0f, 0.0f);
-    nglListAddDirProjectorLight(0xFFFFFFFFu, &gProjShadowMat, &scale,
+    nglListAddDirProjectorLight(0xFFFFFFFFu, gProjShadowMat, scale,
                                 0x64CF8600u, gProjShadowTex);
 }
 
@@ -701,8 +701,8 @@ extern void nglSetAspectRatio(float a);
 extern void nglSetPerspectiveMatrix(float fov, float nearz, float farz);
 extern void nglSetWorldToViewMatrix(const math::Mat43* WorldToView);
 extern void nglListAddPointLight(unsigned int LightCat,
-                                 const math::Position3* Pos, float Near,
-                                 float Far, const math::Vector4* Color,
+                                 const math::Position3& Pos, float Near,
+                                 float Far, const math::Vector4& Color,
                                  bool isVertexPointLight);
 extern math::Position3 nglProjectPoint(const math::Position3& In,
                                        nglScene* Scene);
@@ -1031,8 +1031,8 @@ void R_RenderView(viewParms_t* parms)
         float sunPos[16];
         memset(&sunPos[4], 0, 32);
         nglListAddPointLight(0x40000000u,
-                             (const math::Position3*)&mtx.w.v, 0.0f, 150.0f,
-                             (const math::Vector4*)&sunPos[20], false);
+                             *(const math::Position3*)&mtx.w.v, 0.0f, 150.0f,
+                             *(const math::Vector4*)&sunPos[20], false);
         sunPos[4] = 0.0f;
         sunPos[8] = 0.0f;
         sunPos[16] = 0.0f;
@@ -1042,8 +1042,8 @@ void R_RenderView(viewParms_t* parms)
             mtx.w.v, _mm_mul_ps(mtx.z.v, _mm_set1_ps(300.0f)));
         memcpy(&sunPos[4], &pos2, 16);
         nglListAddPointLight(0x40000000u,
-                             (const math::Position3*)&sunPos[4], 0.0f,
-                             150.0f, (const math::Vector4*)&sunPos[20],
+                             *(const math::Position3*)&sunPos[4], 0.0f,
+                             150.0f, *(const math::Vector4*)&sunPos[20],
                              false);
     }
     if (g_showLightGridDebugText != 0)

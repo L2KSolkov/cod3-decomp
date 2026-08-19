@@ -72,7 +72,7 @@ void nglSetAmbientLight(float r, float g, float b) {
 // ============================================================================
 // nglDetermineGunLights - ea: 0x845A10
 // ============================================================================
-void nglDetermineGunLights(const math::Position3* WorldPos) {
+void nglDetermineGunLights(const math::Position3& WorldPos) {
     nglSendLightContext = nglBuildScene->LightContext;
     nglSendLightContext->Head.LocalNext = &nglSendLightContext->Head;
     for (nglLightNode* i = nglSendLightContext->Head.Next[6];
@@ -81,7 +81,7 @@ void nglDetermineGunLights(const math::Position3* WorldPos) {
         switch (i->Type) {
         case NGLLIGHT_POINT: {
             __m128* NodeData = (__m128*)i->NodeData;
-            __m128 v4 = _mm_sub_ps(NodeData[0], WorldPos->v);
+            __m128 v4 = _mm_sub_ps(NodeData[0], WorldPos.v);
             __m128 v5 = _mm_mul_ps(v4, v4);
             float Far = NodeData[2].m128_f32[1] + 500.0f;
             if (Far * Far >= v5.m128_f32[0] + (v5.m128_f32[1] + v5.m128_f32[2]))
@@ -109,8 +109,8 @@ void nglDetermineGunLights(const math::Position3* WorldPos) {
 // nglGetFakePointLight - ea: 0x845B10
 // ============================================================================
 bool nglGetFakePointLight(nglDirLightInfo* DirLight, nglPointLightInfo* Light,
-                          const math::Position3* Pos) {
-    __m128 v3 = _mm_sub_ps(Pos->v, Light->Pos.v);
+                          const math::Position3& Pos) {
+    __m128 v3 = _mm_sub_ps(Pos.v, Light->Pos.v);
     __m128 v4 = _mm_mul_ps(v3, v3);
     float dist2 = v4.m128_f32[0] + (v4.m128_f32[1] + v4.m128_f32[2]);
     if (dist2 >= 0.000001f) {
@@ -138,7 +138,7 @@ bool nglGetFakePointLight(nglDirLightInfo* DirLight, nglPointLightInfo* Light,
 // nglGetLightAsPointLight - ea: 0x845C40
 // ============================================================================
 nglPointLightInfo* nglGetLightAsPointLight(nglPointLightInfo* Out, nglLightNode* Node,
-                                           const math::Position3* Pos) {
+                                           const math::Position3& Pos) {
     switch (Node->Type) {
     case NGLLIGHT_POINT:
     case NGLLIGHT_POINTGUN:
@@ -147,7 +147,7 @@ nglPointLightInfo* nglGetLightAsPointLight(nglPointLightInfo* Out, nglLightNode*
         return (nglPointLightInfo*)Node->NodeData;
     case NGLLIGHT_DIRECTIONAL: {
         __m128* NodeData = (__m128*)Node->NodeData;
-        Out->Pos.v = _mm_sub_ps(Pos->v, _mm_mul_ps(NodeData[0], _mm_set1_ps(1.0e12f)));
+        Out->Pos.v = _mm_sub_ps(Pos.v, _mm_mul_ps(NodeData[0], _mm_set1_ps(1.0e12f)));
         Out->Far = 1.0e24f;
         Out->Near = 1.0e24f;
         Out->Color.v = NodeData[1];
@@ -166,7 +166,7 @@ nglPointLightInfo* nglGetLightAsPointLight(nglPointLightInfo* Out, nglLightNode*
 // nglGetLightAsDirLight - ea: 0x845D20
 // ============================================================================
 nglDirLightInfo* nglGetLightAsDirLight(nglDirLightInfo* Out, nglLightNode* Node,
-                                       const math::Position3* Pos) {
+                                       const math::Position3& Pos) {
     switch (Node->Type) {
     case NGLLIGHT_POINT:
     case NGLLIGHT_POINTGUN:
@@ -188,7 +188,7 @@ nglDirLightInfo* nglGetLightAsDirLight(nglDirLightInfo* Out, nglLightNode* Node,
 // ============================================================================
 // nglGetSinglePointLight - ea: 0x845DA0
 // ============================================================================
-nglPointLightInfo* nglGetSinglePointLight(nglPointLightInfo* Out, const math::Position3* Pos) {
+nglPointLightInfo* nglGetSinglePointLight(nglPointLightInfo* Out, const math::Position3& Pos) {
     nglLightNode* LocalNext = nglSendLightContext->Head.LocalNext;
     if (LocalNext != (nglLightNode*)nglSendLightContext)
         return nglGetLightAsPointLight(Out, LocalNext, Pos);
@@ -202,7 +202,7 @@ nglPointLightInfo* nglGetSinglePointLight(nglPointLightInfo* Out, const math::Po
 // ============================================================================
 // nglGetSingleDirLight - ea: 0x845E20
 // ============================================================================
-nglDirLightInfo* nglGetSingleDirLight(nglDirLightInfo* Out, const math::Position3* Pos) {
+nglDirLightInfo* nglGetSingleDirLight(nglDirLightInfo* Out, const math::Position3& Pos) {
     nglLightNode* LocalNext = nglSendLightContext->Head.LocalNext;
     if (LocalNext == (nglLightNode*)nglSendLightContext) {
         Out->Color.v = _mm_setzero_ps();
@@ -280,7 +280,7 @@ void nglGetDirLightMatrix(nglMeshNode* MeshNode, math::Mat44* Dir, math::Mat44* 
         while (LightNode != (nglLightNode*)nglSendLightContext) {
             nglDirLightInfo Local;
             nglDirLightInfo* LightAsDirLight = nglGetLightAsDirLight(&Local, LightNode,
-                                                                     &Center);
+                                                                     Center);
             if (LightAsDirLight != NULL) {
                 __m128 Storage = _mm_xor_ps(_mm_castsi128_ps(_mm_set1_epi32(0x80000000)),
                                             LightAsDirLight->Dir.v);
@@ -342,13 +342,13 @@ nglLightContext* nglCreateLightContext() {
 // ============================================================================
 // nglListAddLight - ea: 0x846160
 // ============================================================================
-void nglListAddLight(nglLightType Type, void* NodeData, int LightCat) {
+void nglListAddLight(nglLightType Type, void* NodeData, unsigned int LightCat) {
     nglLightNode* v3 = (nglLightNode*)nglListAlloc(0x30, 0x10);
     if (v3 != NULL) {
         v3->Type = Type;
         v3->NodeData = NodeData;
         v3->LightCat = LightCat;
-        unsigned int Cat = (unsigned int)LightCat;
+        unsigned int Cat = LightCat;
         for (int i = 0; i < 8; ++i) {
             unsigned int Bit = 0x1000000u << i;
             if ((Cat & Bit) != 0) {
@@ -362,13 +362,13 @@ void nglListAddLight(nglLightType Type, void* NodeData, int LightCat) {
 // ============================================================================
 // nglListAddProjLightNode - ea: 0x846A10
 // ============================================================================
-void nglListAddProjLightNode(nglLightType Type, void* NodeData, int LightCat) {
+void nglListAddProjLightNode(nglLightType Type, void* NodeData, unsigned int LightCat) {
     nglLightNode* v3 = (nglLightNode*)nglListAlloc(0x30, 0x10);
     if (v3 != NULL) {
         v3->Type = Type;
         v3->NodeData = NodeData;
         v3->LightCat = LightCat;
-        unsigned int Cat = (unsigned int)LightCat;
+        unsigned int Cat = LightCat;
         for (int i = 0; i < 8; ++i) {
             unsigned int Bit = 0x1000000u << i;
             if ((Cat & Bit) != 0) {
@@ -387,7 +387,7 @@ void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math
     if (v3 != NULL) {
         v3->Dir = Dir;
         v3->Color.v = _mm_shuffle_ps(Color.v, _mm_shuffle_ps(_mm_set1_ps(1.0f), Color.v, 160), 52);
-        nglListAddLight(NGLLIGHT_DIRECTIONAL, v3, (int)LightCat);
+        nglListAddLight(NGLLIGHT_DIRECTIONAL, v3, LightCat);
         if (nglSyncDebug.DumpSceneFile != 0)
             nglSceneDumpDirLight(LightCat, Dir, Color);
     }
@@ -397,36 +397,35 @@ void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math
 // nglListAddPointLight / nglListAddPointLightGun
 // ============================================================================
 static void nglListAddPointLightCommon(nglLightType Type, unsigned int LightCat,
-                                       const math::Position3* Pos, float Near, float Far,
-                                       const math::Vector4* Color, bool isVertexPointLight) {
+                                       const math::Position3& Pos, float Near, float Far,
+                                       const math::Vector4& Color, bool isVertexPointLight) {
     if (nglIsSphereVisible((const nglFrustum*)&nglBuildScene->ClipPlanes,
-                           (const math::Vector4*)Pos, Far)) {
+                           (const math::Vector4*)&Pos, Far)) {
         __m128* v6 = (__m128*)nglListAlloc(0x30, 0x10);
         if (v6 != NULL) {
-            v6[0] = Pos->v;
-            v6[1] = _mm_shuffle_ps(Color->v, _mm_shuffle_ps(_mm_set1_ps(1.0f), Color->v, 160), 52);
+            v6[0] = Pos.v;
+            v6[1] = _mm_shuffle_ps(Color.v, _mm_shuffle_ps(_mm_set1_ps(1.0f), Color.v, 160), 52);
             v6[2].m128_f32[0] = Near;
             v6[2].m128_f32[1] = Far;
             v6[2].m128_f32[2] = isVertexPointLight ? 1.0f : 0.0f;
-            nglListAddLight(Type, v6, (int)LightCat);
+            nglListAddLight(Type, v6, LightCat);
             if (nglSyncDebug.DumpSceneFile != 0)
-                nglSceneDumpPointLight(Type, LightCat, *Pos, Near, Far,
-                                       *Color);
+                nglSceneDumpPointLight(Type, LightCat, Pos, Near, Far, Color);
         }
     }
 }
 
 // ea: 0x846310
-void nglListAddPointLight(unsigned int LightCat, const math::Position3* Pos,
-                          float Near, float Far, const math::Vector4* Color,
+void nglListAddPointLight(unsigned int LightCat, const math::Position3& Pos,
+                          float Near, float Far, const math::Vector4& Color,
                           bool isVertexPointLight) {
     nglListAddPointLightCommon(NGLLIGHT_POINT, LightCat, Pos, Near, Far, Color,
                                isVertexPointLight);
 }
 
 // ea: 0x8463F0
-void nglListAddPointLightGun(unsigned int LightCat, const math::Position3* Pos,
-                             float Near, float Far, const math::Vector4* Color,
+void nglListAddPointLightGun(unsigned int LightCat, const math::Position3& Pos,
+                             float Near, float Far, const math::Vector4& Color,
                              bool isVertexPointLight) {
     nglListAddPointLightCommon(NGLLIGHT_POINTGUN, LightCat, Pos, Near, Far, Color,
                                isVertexPointLight);
@@ -582,14 +581,14 @@ void nglDetermineLights(nglMeshNode* MeshNode) {
 // nglListAddProjectorLight - ea: 0x846B20
 // ============================================================================
 void nglListAddProjectorLight(void* NodeData, unsigned int LightCat) {
-    nglListAddProjLightNode(NGLLIGHT_PROJECTED_SPOT, NodeData, (int)LightCat);
+    nglListAddProjLightNode(NGLLIGHT_PROJECTED_SPOT, NodeData, LightCat);
 }
 
 // ============================================================================
 // nglListAddDirProjectorLight - ea: 0x846B40
 // ============================================================================
-void nglListAddDirProjectorLight(unsigned int LightCat, const math::Mat43* PO,
-                                 const math::Position3* _Scale, unsigned int BlendMode,
+void nglListAddDirProjectorLight(unsigned int LightCat, const math::Mat43& PO,
+                                 const math::Position3& _Scale, unsigned int BlendMode,
                                  nglTexture* Tex) {
     struct DirProjNode {
         math::Mat43   m;          // +0x00 (BuildFrustum input)
@@ -610,13 +609,13 @@ void nglListAddDirProjectorLight(unsigned int LightCat, const math::Mat43* PO,
             node->Tex = Tex;
         math::Dir3 xaxis;
         math::Dir3 yaxis;
-        xaxis.v = PO->y.v;
-        yaxis.v = PO->w.v;
+        xaxis.v = PO.y.v;
+        yaxis.v = PO.w.v;
         math::Dir3 zaxis;
-        zaxis.v = _Scale->v;
-        __m128 scale_4 = _mm_setr_ps(PO->x.v.m128_f32[0], PO->x.v.m128_f32[1],
-                                     PO->x.v.m128_f32[2], PO->x.v.m128_f32[3]);
-        __m128 UVTranslationMtx_4 = PO->z.v;
+        zaxis.v = _Scale.v;
+        __m128 scale_4 = _mm_setr_ps(PO.x.v.m128_f32[0], PO.x.v.m128_f32[1],
+                                     PO.x.v.m128_f32[2], PO.x.v.m128_f32[3]);
+        __m128 UVTranslationMtx_4 = PO.z.v;
         // Scale matrix (m3): x = scale, y = PO->w, z = PO->x, w = PO->y.
         node->m3.x.v = zaxis.v;
         node->m3.y.v = yaxis.v;
@@ -675,7 +674,7 @@ void nglListAddDirProjectorLight(unsigned int LightCat, const math::Mat43* PO,
                        _mm_mul_ps(_mm_shuffle_ps(v25, v25, 85), YAxis)),
             _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v25, v25, 170), ZAxis), yaxis.v));
         nglBuildFrustum(&node->Frustum, &node->m);
-        nglListAddProjLightNode(NGLLIGHT_PROJECTED_DIRECTIONAL, v5, (int)LightCat);
+        nglListAddProjLightNode(NGLLIGHT_PROJECTED_DIRECTIONAL, v5, LightCat);
     }
 }
 
@@ -686,7 +685,7 @@ void nglListAddDicLight(unsigned int LightCat, nglDicLightInfo* dic) {
     nglDicLightInfo* v2 = (nglDicLightInfo*)nglListAlloc(0xB0, 0x10);
     if (v2 != NULL) {
         memcpy(v2, dic, sizeof(nglDicLightInfo));
-        nglListAddLight(NGLLIGHT_USER_FIRST, v2, (int)LightCat);
+        nglListAddLight(NGLLIGHT_USER_FIRST, v2, LightCat);
     }
 }
 

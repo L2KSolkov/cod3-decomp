@@ -118,32 +118,32 @@ extern unsigned int nglLightContextParamID;       // 0x10E3060
 void nglSetLightContext(nglLightContext* Context, nglScene* Scene);
 nglLightContext* nglSelectBuildLightContext(nglLightContext* Context);
 void nglSetAmbientLight(float r, float g, float b);
-void nglDetermineGunLights(const math::Position3* WorldPos);
+void nglDetermineGunLights(const math::Position3& WorldPos);
 bool nglGetFakePointLight(nglDirLightInfo* DirLight, nglPointLightInfo* Light,
-                          const math::Position3* Pos);
+                          const math::Position3& Pos);
 nglPointLightInfo* nglGetLightAsPointLight(nglPointLightInfo* Out, nglLightNode* Node,
-                                           const math::Position3* Pos);
+                                           const math::Position3& Pos);
 nglDirLightInfo* nglGetLightAsDirLight(nglDirLightInfo* Out, nglLightNode* Node,
-                                       const math::Position3* Pos);
-nglPointLightInfo* nglGetSinglePointLight(nglPointLightInfo* Out, const math::Position3* Pos);
-nglDirLightInfo* nglGetSingleDirLight(nglDirLightInfo* Out, const math::Position3* Pos);
+                                       const math::Position3& Pos);
+nglPointLightInfo* nglGetSinglePointLight(nglPointLightInfo* Out, const math::Position3& Pos);
+nglDirLightInfo* nglGetSingleDirLight(nglDirLightInfo* Out, const math::Position3& Pos);
 void nglGetDirLightMatrix(nglMeshNode* MeshNode, math::Mat44* Dir, math::Mat44* Color);
 nglLightContext* nglCreateLightContext();
-void nglListAddLight(nglLightType Type, void* NodeData, int LightCat);
+void nglListAddLight(nglLightType Type, void* NodeData, unsigned int LightCat);
 void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math::Vector4& Color);
-void nglListAddPointLight(unsigned int LightCat, const math::Position3* Pos,
-                          float Near, float Far, const math::Vector4* Color,
+void nglListAddPointLight(unsigned int LightCat, const math::Position3& Pos,
+                          float Near, float Far, const math::Vector4& Color,
                           bool isVertexPointLight);
-void nglListAddPointLightGun(unsigned int LightCat, const math::Position3* Pos,
-                             float Near, float Far, const math::Vector4* Color,
+void nglListAddPointLightGun(unsigned int LightCat, const math::Position3& Pos,
+                             float Near, float Far, const math::Vector4& Color,
                              bool isVertexPointLight);
 void nglDetermineProjLights(nglMeshNode* MeshNode);
 unsigned int nglCheckAvailableLights(nglMeshNode* MeshNode);
 void nglDetermineLights(nglMeshNode* MeshNode);
-void nglListAddProjLightNode(nglLightType Type, void* NodeData, int LightCat);
+void nglListAddProjLightNode(nglLightType Type, void* NodeData, unsigned int LightCat);
 void nglListAddProjectorLight(void* NodeData, unsigned int LightCat);
-void nglListAddDirProjectorLight(unsigned int LightCat, const math::Mat43* PO,
-                                 const math::Position3* _Scale, unsigned int BlendMode,
+void nglListAddDirProjectorLight(unsigned int LightCat, const math::Mat43& PO,
+                                 const math::Position3& _Scale, unsigned int BlendMode,
                                  nglTexture* Tex);
 void nglListAddDicLight(unsigned int LightCat, nglDicLightInfo* dic);
 
