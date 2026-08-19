@@ -6,6 +6,7 @@
 #define COD3_AEPS_APSPARTICLETYPES_H
 
 #include "core/math_types.h"
+#include "apsMath.h"
 
 struct ShrimpParticle {
     math::Dir3::Packed mPos; // +0x00
@@ -16,6 +17,13 @@ struct ShrimpParticle {
     float mFrame;             // +0x1C
 };
 static_assert(sizeof(ShrimpParticle) == 0x20, "ShrimpParticle size mismatch");
+
+struct MeshParticle {
+    math::Dir3::Packed mPos; // +0x00
+    float mAlpha;             // +0x0C
+    apsQuaternion mOrientation; // +0x10
+};
+static_assert(sizeof(MeshParticle) == 0x20, "MeshParticle size mismatch");
 
 struct BillboardParticle {};
 struct RectangleParticle {};
