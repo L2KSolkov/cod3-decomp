@@ -3598,12 +3598,13 @@ public:
         ~nalPlayMethod();  // ??1nalPlayMethod@AnimationPlayer@@QAE@XZ (game2.o)
         void SetNoteHandlerEntityHandle(
             DbLinkedHandle<EntityHandleDb, Entity> handle);  // 0x4F5D10
+        void** __vftable;       // +0x00
+        void* mNoteHandler;     // +0x04
     };
 
     // nalAnimCallback - vftable + curAnim (anim.o 0x539EB0/0x539ED0/0x539EE0)
     class nalAnimCallback {
     public:
-        void** __vftable;          // +0x00
         nalGenericAnim* curAnim;   // +0x04
 
         nalAnimCallback();         // ea: 0x00539EB0
@@ -3731,8 +3732,6 @@ public:
 // ea: 0x00539EB0
 AnimationPlayer::nalAnimCallback::nalAnimCallback()
 {
-    static void* sVftable[3];  // Invoke/Reference/Release slots
-    __vftable = sVftable;
     curAnim = nullptr;
 }
 
@@ -4398,8 +4397,13 @@ void AnimationPlayer::PlayModifier(nalGenericAnim* anim,
 }
 
 
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+
 class InteractionController {
 public:
+    static InteractionController* CreateInst(); // core.o 0x004DE720
+    static void DeleteInst();                   // core.o 0x004E2DA0
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
 
     // ??0InteractionController@@QAE@H@Z (0x545D80) / ??1...@@QAE@XZ (0x5570B0)
@@ -4429,6 +4433,7 @@ public:
     void* mCurState;            // +0x04
     void* mInitialState;        // +0x08
     struct { unsigned int mVal; } mInteractableH;  // +0x0C
+    void* mDObj;                // +0x10
     int mSelectedInteractWeaponIndex;  // +0x14
     int mPendingWeaponIndex;    // +0x18
     int mRestoreWeaponIndex;    // +0x1C
@@ -4447,10 +4452,10 @@ public:
     float mArmsOffsetLerpTime;  // +0x70
     float mInitialFOV;          // +0x74
     float mMetaAnimScore;       // +0x78
-    void* mPlayerCallback[3];   // +0x7C (nalAnimCallback*)
-    void* mOtherCallback[3];    // +0x94
-    void* mPlayerPlayMethod[3]; // +0xAC
-    void* mOtherPlayMethod[3];  // +0xC4
+    AnimationPlayer::nalAnimCallback mPlayerCallback[3];   // +0x7C
+    AnimationPlayer::nalAnimCallback mOtherCallback[3];    // +0x94
+    AnimationPlayer::nalPlayMethod mPlayerPlayMethod[3];   // +0xAC
+    AnimationPlayer::nalPlayMethod mOtherPlayMethod[3];    // +0xC4
     int mNextPlayerCallbackIndex;    // +0xDC
     int mNextOtherCallbackIndex;     // +0xE0
     int mNextPlayerPlayMethodIndex;  // +0xE4
@@ -4469,6 +4474,7 @@ public:
     int mRenderTextPosX[5];     // +0x1CC
     Lerper mTimeScaleMgr;       // +0x1E0
     struct { void* mElements; int mCapacity; int mSize; } mStates;  // +0x1F8
+    unsigned char _tail[0x210 - 0x204];  // IDA type has 0x0C trailing bytes
 
     // ea: 0x0053A3B0
     DbLinkedHandle<EntityHandleDb, Entity> GetInteractableH() const;  // 0x53A3B0
@@ -4537,6 +4543,60 @@ private:
     void SendResultNotify();           // 0x54C990
     InteractState* StartNextQueuedInteraction();  // 0x556D00
 };
+
+static_assert(sizeof(InteractionController) == 0x210,
+              "InteractionController size mismatch");
+
+// ea: 0x004DE720
+InteractionController* InteractionController::CreateInst()
+{
+    if (InteractionController::sInstHolder.sInst[0] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InteractionController.h";
+        AeAssert::gCurrentLine = 26;
+        AeAssert::gCurrentExpr = "sInstHolder.sInst[0]==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("multiton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x210u, 16, "core", "c:\\cod\\code\\game\\InteractionController.h", 26);
+    if (memory != nullptr)
+    {
+        InteractionController* result =
+            new (memory) InteractionController(0);
+        InteractionController::sInstHolder.sInst[0] = result;
+        return result;
+    }
+    InteractionController::sInstHolder.sInst[0] = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004E2DA0
+void InteractionController::DeleteInst()
+{
+    if (InteractionController::sInstHolder.sInst[0] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InteractionController.h";
+        AeAssert::gCurrentLine = 26;
+        AeAssert::gCurrentExpr = "sInstHolder.sInst[0]!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("multiton not created!"))
+            __debugbreak();
+    }
+    InteractionController* instance =
+        InteractionController::sInstHolder.sInst[0];
+    if (instance != nullptr)
+    {
+        instance->~InteractionController();
+        mem_heap_free(instance);
+    }
+    InteractionController::sInstHolder.sInst[0] = nullptr;
+}
 
 // Stub bodies for the xanim goal-weight internals (ported with the
 // remaining xanim cluster; correct mangled signatures).
@@ -10468,10 +10528,8 @@ InteractionController::~InteractionController()
     }
     for (int i = 0; i < 3; ++i)
     {
-        ((AnimationPlayer::nalPlayMethod*)mOtherPlayMethod[i])
-            ->~nalPlayMethod();
-        ((AnimationPlayer::nalPlayMethod*)mPlayerPlayMethod[i])
-            ->~nalPlayMethod();
+        mOtherPlayMethod[i].~nalPlayMethod();
+        mPlayerPlayMethod[i].~nalPlayMethod();
     }
 }
 
@@ -12363,7 +12421,7 @@ AnimationPlayer::nalAnimCallback*
 InteractionController::GetNextPlayerCallback()
 {
     int idx = mNextPlayerCallbackIndex;
-    void* result = mPlayerCallback[idx++];
+    void* result = &mPlayerCallback[idx++];
     mNextPlayerCallbackIndex = idx;
     if (idx == 3)
         mNextPlayerCallbackIndex = 0;
@@ -12374,7 +12432,7 @@ AnimationPlayer::nalAnimCallback*
 InteractionController::GetNextOtherCallback()
 {
     int idx = mNextOtherCallbackIndex;
-    void* result = mOtherCallback[idx++];
+    void* result = &mOtherCallback[idx++];
     mNextOtherCallbackIndex = idx;
     if (idx == 3)
         mNextOtherCallbackIndex = 0;
@@ -12385,7 +12443,7 @@ AnimationPlayer::nalPlayMethod*
 InteractionController::GetNextPlayerPlayMethod()
 {
     int idx = mNextPlayerPlayMethodIndex;
-    void* result = mPlayerPlayMethod[idx++];
+    void* result = &mPlayerPlayMethod[idx++];
     mNextPlayerPlayMethodIndex = idx;
     if (idx == 3)
         mNextPlayerPlayMethodIndex = 0;
@@ -12396,7 +12454,7 @@ AnimationPlayer::nalPlayMethod*
 InteractionController::GetNextOtherPlayMethod()
 {
     int idx = mNextOtherPlayMethodIndex;
-    void* result = mOtherPlayMethod[idx++];
+    void* result = &mOtherPlayMethod[idx++];
     mNextOtherPlayMethodIndex = idx;
     if (idx == 3)
         mNextOtherPlayMethodIndex = 0;
@@ -12831,7 +12889,7 @@ void InteractState::PlayPlayerAnim(nalAnimClass<nalAnyPose>* anim,
             {
                 mPlayerAnim = anim;
                 int idx = mController->mNextPlayerPlayMethodIndex;
-                void* v10 = mController->mPlayerPlayMethod[idx];
+                void* v10 = &mController->mPlayerPlayMethod[idx];
                 mController->mNextPlayerPlayMethodIndex = idx + 1;
                 if (idx + 1 == 3)
                     mController->mNextPlayerPlayMethodIndex = 0;
@@ -12842,7 +12900,7 @@ void InteractState::PlayPlayerAnim(nalAnimClass<nalAnyPose>* anim,
                 }
                 InteractionController* v12 = this->mController;
                 int cidx = v12->mNextPlayerCallbackIndex;
-                void* v14 = v12->mPlayerCallback[cidx];
+                void* v14 = &v12->mPlayerCallback[cidx];
                 v12->mNextPlayerCallbackIndex = cidx + 1;
                 if (cidx + 1 == 3)
                     v12->mNextPlayerCallbackIndex = 0;
@@ -13269,7 +13327,7 @@ void RowboatMgr::PlayLeaderAnim(int index)
             {
                 InteractionController* v7 = InteractionController::Inst(currCl);
                 int idx = v7->mNextOtherCallbackIndex;
-                void* v9 = v7->mOtherCallback[idx++];
+                void* v9 = &v7->mOtherCallback[idx++];
                 v7->mNextOtherCallbackIndex = idx;
                 if (idx == 3)
                     v7->mNextOtherCallbackIndex = 0;
@@ -15136,7 +15194,7 @@ void InteractStateRowboat::PlayRowingMetaAnim(int index)
             InteractionController* v7 = this->mController;
             int idx = v7->mNextPlayerCallbackIndex;
             DObj* dobj = (DObj*)dword_F6A2A0[802 * v7->mClient];
-            void* v10 = v7->mPlayerCallback[idx++];
+            void* v10 = &v7->mPlayerCallback[idx++];
             v7->mNextPlayerCallbackIndex = idx;
             if (idx == 3)
                 v7->mNextPlayerCallbackIndex = 0;

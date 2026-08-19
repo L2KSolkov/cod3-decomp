@@ -54,7 +54,7 @@ public:
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
-    static void CreateInst();  // ?CreateInst@InteractionController@@SAXXZ (core.o)
+    static InteractionController* CreateInst();  // ?CreateInst@InteractionController@@SAPAV1@XZ (core.o)
     static void DeleteInst();  // ?DeleteInst@InteractionController@@SAXXZ (core.o)
 };
 

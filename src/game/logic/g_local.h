@@ -4853,6 +4853,8 @@ public:
         InteractionController* sInst[1];  // +0x00
     };
     static InstanceHolder sInstHolder;  // ?sInstHolder@InteractionController@@2UInstanceHolder@1@A (g.o)
+    static InteractionController* CreateInst();  // ?CreateInst@InteractionController@@SAPAV1@XZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@InteractionController@@SAXXZ (core.o)
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z (g.o)
     unsigned int mFlags;   // +0x00
     void* mCurState;       // +0x04
