@@ -4513,6 +4513,103 @@ HRESULT       nslDriverVoice::Init(const nslVoice* lv, const nslWave* w) {
     return 0;
 }
 
+// ea: 0x00825580. The release caller carries the driver voice in ECX while
+// passing only lv and w on the stack; make that optimized hidden receiver
+// explicit for the portable C++ call surface.
+static void voiceInit(nslDriverVoice* dv, nslVoice* lv, const nslWave* w) {
+    dv->lv = lv;
+    unsigned char* lvRaw = reinterpret_cast<unsigned char*>(lv);
+    if ((lvRaw[0x10Bu] & 1u) != 0u) {
+        dv->Init(lv, w);
+        lvRaw[0x108u] = 2u;
+        return;
+    }
+
+    xbox_WAVEFORMATEXTENSIBLE* pFormat = &dv->format;
+    IDirectSoundBuffer* buffer = dv->buffer;
+    const unsigned char* nameOffset = w == nullptr
+        ? nullptr
+        : *reinterpret_cast<const unsigned char* const*>(w);
+    unsigned short channelCount;
+    if (w != nullptr && nameOffset != nullptr) {
+        const unsigned char speakerMap = nameOffset[6];
+        if (speakerMap != 0u) {
+            const unsigned char folded = static_cast<unsigned char>(
+                (((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) & 0x33u) +
+                (((((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) >> 2) &
+                  0x33u)));
+            channelCount = static_cast<unsigned short>(
+                (folded >> 4) + (folded & 0x0Fu));
+        } else {
+            channelCount = 1u;
+        }
+    } else {
+        channelCount = 0u;
+    }
+
+    pFormat->Format.nChannels = channelCount;
+    pFormat->Format.nSamplesPerSec =
+        *reinterpret_cast<const unsigned short*>(nameOffset);
+    const unsigned char waveFormatCode = nameOffset[4];
+    unsigned blockAlign;
+    if (waveFormatCode == 17u) {
+        pFormat->Format.wFormatTag = 1u;
+        const bool bitsPerSample = nameOffset[4] == 16u;
+        pFormat->Format.wBitsPerSample = bitsPerSample;
+        blockAlign = channelCount * static_cast<unsigned>(bitsPerSample) / 8u;
+        pFormat->Format.nAvgBytesPerSec =
+            pFormat->Format.nSamplesPerSec * blockAlign;
+    } else {
+        if (waveFormatCode != 32u) {
+            txPrintf("NSL", 0, "Invalid non-streaming format 0x%8.8X\n",
+                     waveFormatCode);
+            lvRaw[0x108u] = 6u;
+            return;
+        }
+        blockAlign = static_cast<unsigned short>(36u * channelCount);
+        pFormat->Format.wFormatTag = 105u;
+        pFormat->Samples = 64u;
+        pFormat->Format.cbSize = 2u;
+        pFormat->Format.wBitsPerSample = 4u;
+        pFormat->Format.nAvgBytesPerSec =
+            blockAlign * (pFormat->Format.nSamplesPerSec >> 6);
+    }
+    pFormat->Format.nBlockAlign = static_cast<unsigned short>(blockAlign);
+
+    HRESULT code = j_IDirectSoundBuffer_SetFormat(buffer, &pFormat->Format);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 485);
+    if (pFormat->Format.nChannels == 1u) {
+        const _DSMIXBINS* mixBins = nsl_driverMixBin3D;
+        if ((lvRaw[0x10Cu] & 1u) == 0u)
+            mixBins = nsl_driverMixBinMono;
+        code = j_IDirectSoundBuffer_SetMixBins(buffer, mixBins);
+        nslDriverCheck(code, "NSL",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 489);
+    } else if (pFormat->Format.nChannels == 2u) {
+        code = j_IDirectSoundBuffer_SetMixBins(buffer, nsl_driverMixBin2D);
+        nslDriverCheck(code, "NSL",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 488);
+    }
+
+    const unsigned playLength = pFormat->Format.nBlockAlign * (w->sampleCount >> 6);
+    const uintptr_t aramBase = reinterpret_cast<uintptr_t>(nslAramGetBase());
+    const unsigned storageAddress = *reinterpret_cast<const unsigned*>(
+        reinterpret_cast<const unsigned char*>(w) + 4u);
+    code = j_IDirectSoundBuffer_SetPlayRegion(
+        buffer, storageAddress - static_cast<unsigned>(aramBase), playLength);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 491);
+    code = j_IDirectSoundBuffer_SetLoopRegion(
+        buffer, 0u, pFormat->Format.nBlockAlign * (w->sampleCount >> 6));
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 492);
+    code = j_IDirectSoundBuffer_SetVolume(buffer, 0);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 493);
+    lvRaw[0x108u] = 3u;
+}
+
 // ea: 0x00825210
 int           nslDriverVoice::FindFreePacket(int* packetIndexPtr) {
     const int lastPacketIndex = m_nLastPacketIndex;

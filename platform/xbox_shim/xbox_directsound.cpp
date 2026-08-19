@@ -93,6 +93,21 @@ extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetEG(
     return E_NOTIMPL;
 }
 
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetFormat(
+    IDirectSoundBuffer*, const tWAVEFORMATEX*) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetMixBins(
+    IDirectSoundBuffer*, const _DSMIXBINS*) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetVolume(
+    IDirectSoundBuffer*, int) {
+    return E_NOTIMPL;
+}
+
 extern "C" HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(
     IDirectSound*, const _DSBUFFERDESC*, IDirectSoundBuffer**, IUnknown*) {
     return E_NOTIMPL;

@@ -93,7 +93,7 @@ Format: `XboxAPI | caller_count | Win32_replacement`
 | Xbox API | Win32 Replacement |
 |---|---|
 | IDirectSound* | XAudio2 via IXAudio2 |
-| NSL `j_DirectSoundCreate(Stream/Buffer)`, `j_IDirectSound*`, `j_XAudioCreate*`, and `j_XFileCreateMediaObjectAsync` calls | Current Win32 shim preserves the exact ABI and returns `E_NOTIMPL` (format helpers are no-ops); map to XAudio2/Win32 file media before enabling game audio |
+| NSL `j_DirectSoundCreate(Stream/Buffer)`, `j_IDirectSound*`, `j_IDirectSoundBuffer_SetFormat/SetMixBins/SetVolume`, `j_XAudioCreate*`, and `j_XFileCreateMediaObjectAsync` calls | Current Win32 shim preserves the exact ABI and returns `E_NOTIMPL` (format helpers are no-ops); map to XAudio2/Win32 file media before enabling game audio |
 | DSound 3D positioning | X3DAudio |
 | Dolby encoder | Multichannel PCM (no encoding needed) |
 

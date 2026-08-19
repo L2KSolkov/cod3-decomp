@@ -197,6 +197,12 @@ HRESULT __stdcall j_IDirectSoundBuffer_SetMode(IDirectSoundBuffer* pBuffer,
                                                 unsigned int dwFlags);
 HRESULT __stdcall j_IDirectSoundBuffer_SetEG(
     IDirectSoundBuffer* pBuffer, const _DSENVELOPEDESC* pEnvelopeDesc);
+HRESULT __stdcall j_IDirectSoundBuffer_SetFormat(
+    IDirectSoundBuffer* pBuffer, const tWAVEFORMATEX* pwfxFormat);
+HRESULT __stdcall j_IDirectSoundBuffer_SetMixBins(
+    IDirectSoundBuffer* pBuffer, const _DSMIXBINS* pMixBins);
+HRESULT __stdcall j_IDirectSoundBuffer_SetVolume(IDirectSoundBuffer* pBuffer,
+                                                 int lVolume);
 extern unsigned int g_dwDirectSoundDebugBreakLevel;
 HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(IDirectSound* pDirectSound,
                                                     const _DSBUFFERDESC* pdsbd,
