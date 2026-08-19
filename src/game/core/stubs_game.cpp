@@ -33,7 +33,7 @@ class EffectEventSys { public: static void CreateInst(); static void DeleteInst(
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class DialogueManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
-class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
+class SceneManager { public: static void DeleteInst(); };
 class ConfigStringManager { public: static void CreateInst(); static void DeleteInst(); };
 class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
 class STBManager { public: static void CreateInst(); static void DeleteInst(); };
@@ -81,7 +81,6 @@ void GdbFileManager::DeleteInst() {}
 void DialogueManager::CreateInst() {}
 void DialogueManager::DeleteInst() {}
 void EntityManager::DeleteInst() {}
-void SceneManager::CreateInst() {}
 void SceneManager::DeleteInst() {}
 void ConfigStringManager::CreateInst() {}
 void ConfigStringManager::DeleteInst() {}

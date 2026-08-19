@@ -3087,6 +3087,7 @@ public:
     void ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx);  // ?ProcessVehicleNode@SceneManager@@AAEXW4TPakId@@H@Z @ 0x66DCA0
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
     ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
+    static void CreateInst();  // ?CreateInst@SceneManager@@SAXXZ
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
     void DebugRender();        // ?DebugRender@SceneManager@@QAEXXZ @ 0x675E20 (stub)
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
@@ -5489,6 +5490,34 @@ SceneManager::SceneManager()
     mPlayerFootstepNumMatches = 1;
     for (unsigned int i = 0; i < 99; ++i)
         mBankArray.m_elements[i] = nullptr;
+}
+
+// ea: 0x004DD0F0
+void SceneManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SceneManager.h";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    SceneManager* result = static_cast<SceneManager*>(
+        mem_heap_malloc_ctx(0x1B8u, 4, "pak",
+                            "c:\\cod\\code\\game\\SceneManager.h", 16));
+    if (result != nullptr)
+    {
+        result = new (result) SceneManager();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
 }
 
 // ea: 0x675E10
