@@ -1864,7 +1864,8 @@ failure:
     return nullptr;
 }
 // ea: 0x0082A440
-nslWave*     nslWaveCopy(const nslWave* src, unsigned __formal, int flags) {
+nslWave*     nslWaveCopy(const nslWave* src, unsigned __formal, int flags,
+                         int __formal2, const char** const __formal3) {
     nslWave* copy = static_cast<nslWave*>(std::calloc(1u, 0x10u));
     if (copy == nullptr)
         return nullptr;
