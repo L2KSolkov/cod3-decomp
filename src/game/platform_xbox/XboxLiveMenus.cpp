@@ -453,8 +453,14 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
         float v30 = v49->GetX();
         font_index v15 = v49->GetFont();
         color32 col;
+        union {
+            unsigned int bits;
+            float value;
+        } instructionsScale;
+        instructionsScale.bits = 32u;
         v50 = new (v50) FEMultiLineText(v15, x1a, 0.0f, 1, (panel_layer)layera,
-                                        32.0f, 64, (int)v36, col);
+                                        instructionsScale.value, 64,
+                                        (int)v36, col);
     }
     mInstructionsText = v50;
     mInstructionsText->SetNumLines(5);
