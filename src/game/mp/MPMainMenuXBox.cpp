@@ -646,9 +646,17 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
         float x1a = v35->GetY();
         float v21 = v35->GetX();
         font_index v16 = v35->GetFont();
+        // IDA's COERCE_FLOAT(16) is the raw DWORD 0x10 pushed by the release
+        // call site, not the numeric float value 16.0f.
+        union {
+            unsigned int bits;
+            float value;
+        } optionDescriptionScale;
+        optionDescriptionScale.bits = 16u;
         v36 = new (v36) FEMultiLineText(v16, x1a, 0.0f, 1,
                                         (panel_layer)layera,
-                                        16.0f, 64, (int)v37.i, v37);
+                                        optionDescriptionScale.value, 64,
+                                        (int)v37.i, v37);
     }
     mOptionDescription = v36;
     mOptionDescription->SetNumLines(5);
