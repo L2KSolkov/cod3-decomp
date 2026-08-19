@@ -80,7 +80,7 @@ extern const _D3DVERTEXSHADERINPUT gGlowVertexElements[];  // @0xE3BB78
 // ============================================================================
 extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format, int Width, int Height,
+extern nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format, int Width, int Height,
                                     int Depth, int Levels);  // ngl_gpu_texture.o
 
 extern cdGlowShader* gCDGlowShader;  // @0x10DDF2C

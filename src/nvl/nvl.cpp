@@ -84,7 +84,7 @@ extern void tlFatal(const char* format, ...);
 extern void tlPrintf(const char* format, ...);
 extern nflRequestID nflAddRequest(const nflRequestParams* params);
 extern unsigned nflReadFile(nflFileID fileID, unsigned fileOffset, void* buffer, unsigned dataSize);
-extern nglTexture* nglCreateTexture(unsigned flags, unsigned format, int width, int height,
+extern nglTexture* nglCreateTexture(unsigned flags, _D3DFORMAT format, int width, int height,
                                     int depth, int levels);
 extern void nglDestroyTexture(nglTexture* texture);
 extern nglTexture* nglGetBackBufferTex();
@@ -1066,7 +1066,8 @@ nvlResult nvlMovieBase::InitMovie() {
         mAssetFlags *= 2;
         if (mSwapTexture[0] == nullptr) {
             for (int i = 0; i < 2; ++i)
-                mSwapTexture[i] = nglCreateTexture(0, 0x12, mWidth, mHeight, 0, 1);
+                mSwapTexture[i] = nglCreateTexture(0, (_D3DFORMAT)0x12,
+                                                    mWidth, mHeight, 0, 1);
             mAssetFlags |= 1;
         }
     }

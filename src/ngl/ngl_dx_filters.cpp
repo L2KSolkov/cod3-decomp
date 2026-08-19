@@ -31,7 +31,7 @@ extern void nglDxSetTexture(unsigned int Stage, nglTexture* Tex,
                             unsigned int FilterFlags, unsigned int MaxAnisotropy); // ngl_dx_texture.o
 extern void nglDxInitShaders(bool RegisterShaders);   // ngl_dx_shader.o
 extern void nglDxRenderState_SetBlendMode(unsigned int BM);  // (inline alias)
-extern nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format, int Width,
+extern nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format, int Width,
                                     int Height, int Depth, int Levels);  // ngl_gpu_texture.o
 extern void nglDestroyTexture(nglTexture* Tex);       // ngl_dx_tex_create.o
 extern gpuVertexFormat nglGpuPUVVertexFmt;            // ngl_gpu.o
@@ -177,9 +177,9 @@ void nglCreateFilterTextures(unsigned int FilterTexWidth, unsigned int FilterTex
         && _tlAssert("src/dx/ngl_dx_filters.cpp", 855, "FilterTexHeight >= 1",
                      "FilterTexHeight has to be >= 1 !"))
         __debugbreak();
-    nglDxFilters::ZBufferLUT = nglCreateTexture(0, 0, 256, 256, 0, 1);
+    nglDxFilters::ZBufferLUT = nglCreateTexture(0, (_D3DFORMAT)0, 256, 256, 0, 1);
     for (int i = 0; i < 2; ++i)
-        nglDxFilters::WorkTex[i] = nglCreateTexture(0x11, 0x12, (int)FilterTexWidth,
+        nglDxFilters::WorkTex[i] = nglCreateTexture(0x11, (_D3DFORMAT)0x12, (int)FilterTexWidth,
                                                     (int)FilterTexHeight, 0, 1);
     XGSetTextureHeader(nglDisplayMode.Width, nglDisplayMode.Height, 1, 0,
                        D3DFMT_LIN_A8R8G8B8, 0, &nglDxFilters::D3DZTex,

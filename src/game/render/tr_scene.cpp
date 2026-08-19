@@ -18,7 +18,7 @@
 struct nglTexture;
 
 // ngl.o helpers
-nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format, int Width,
+nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format, int Width,
                              int Height, int Depth, int Levels);
 void nglWaitForRendering();
 void nglDestroyTexture(nglTexture* Tex);
@@ -314,7 +314,7 @@ nglTexture* cdProjShadow_Init()
     nglTexture* result = gProjShadowTex;
     if (gProjShadowTex == nullptr)
     {
-        result = nglCreateTexture(0x4010u, 6u, (int)gProjShadowTexSize,
+        result = nglCreateTexture(0x4010u, (_D3DFORMAT)6u, (int)gProjShadowTexSize,
                                   (int)gProjShadowTexSize, 0, 1);
         gProjShadowTex = result;
     }
@@ -358,7 +358,7 @@ void cdProjShadow_Begin()
 {
     if (gProjShadowTex == nullptr)
     {
-        gProjShadowTex = nglCreateTexture(0x4010u, 6u,
+        gProjShadowTex = nglCreateTexture(0x4010u, (_D3DFORMAT)6u,
                                           (int)gProjShadowTexSize,
                                           (int)gProjShadowTexSize, 0, 1);
     }

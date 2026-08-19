@@ -102,8 +102,8 @@ void InitCDGlowShader() {
 void SetupCDGlowShader() {
     gpuVertexFormat v1;
     gGlowVertexFormat = *gpuCreateVertexFormat(&v1, 0x2C, gGlowVertexElements);
-    GlowTargets[0] = nglCreateTexture(0x11, 6, 256, 256, 1, 1);
-    GlowTargets[1] = nglCreateTexture(0x11, 6, 256, 256, 1, 1);
+    GlowTargets[0] = nglCreateTexture(0x11, (_D3DFORMAT)6, 256, 256, 1, 1);
+    GlowTargets[1] = nglCreateTexture(0x11, (_D3DFORMAT)6, 256, 256, 1, 1);
 }
 
 // ============================================================================

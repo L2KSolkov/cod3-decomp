@@ -19,7 +19,7 @@
 // Cross-object externs
 // ============================================================================
 extern void nglDestroyTexture(nglTexture* Tex);                 // ngl_dx_tex_create.o
-extern nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format, int Width,
+extern nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format, int Width,
                                     int Height, int Depth, int Levels);  // ngl_gpu_texture.o
 extern void nglDxUnbindPalettes(void);                          // ngl_xb_palette.o (ported)
 extern void nglDxSetRenderTarget(const nglTexture* RenderTarget, const nglTexture* DepthTarget,
@@ -224,7 +224,7 @@ void ngliGenMipmaps(nglTexture* Tex) {
 // ngliInitWhiteTexture - ea: 0x841DA0
 // ============================================================================
 void ngliInitWhiteTexture() {
-    nglWhiteTex = nglCreateTexture(0, 6u, 1, 1, 0, 1);
+    nglWhiteTex = nglCreateTexture(0, (_D3DFORMAT)6u, 1, 1, 0, 1);
     D3DLOCKED_RECT Rect;
     D3DTexture_LockRect((D3DTexture*)nglWhiteTex->Texture, 0, &Rect, NULL, 0);
     *(unsigned int*)Rect.pBits = 0xFFFFFFFF;

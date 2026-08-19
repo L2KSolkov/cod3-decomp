@@ -29,7 +29,7 @@ static unsigned char nglCreatedTexture_InitGuard;
 //   NGL_TEX_YUY2 etc set by format handling.
 // ea: 0x84AB00
 // ============================================================================
-nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format,
+nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format,
                              int Width, int Height, int Depth, int Levels) {
     nglTexture* tex = (nglTexture*)tlMemAlloc(0x2C, 8, 0x1000000);
     memset(tex, 0, 0x2C);
@@ -51,17 +51,21 @@ nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format,
 
     if ((Flags & 0x20) != 0) {
         D3DSurface* Surface;
+        nglGpuAcquireDevice();
         if ((Flags & 0x10) != 0)
             Surface = D3DDevice_CreateSurface2(Width, Height, 1, Format);
         else
             Surface = D3DDevice_CreateSurface2(Width, Height, 2, Format);
+        nglGpuReleaseDevice();
         tex->RenderTarget = Surface;
     }
 
     if ((Flags & 0x20) == 0) {
         if ((Flags & 0x100) != 0) {
+            nglGpuAcquireDevice();
             tex->Texture = (D3DBaseTexture*)D3DDevice_CreateTexture2(Width, Width, 1, Levels, 0x200, Format,
                                                     D3DRTYPE_CUBETEXTURE);
+            nglGpuReleaseDevice();
         } else if ((Flags & 0x200) != 0) {
             tex->Texture = gpuCreateVolumeTexture(Width, Height, Depth, Levels,
                                                   (gpuTextureFormat)Format, false,
@@ -73,7 +77,8 @@ nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format,
     }
 
     if ((Flags & 0x40) != 0)
-        tex->ZTexture = nglCreateTexture((Flags & 0xff) | 0x20, 0x2E, Width, Height, 0, 1);
+        tex->ZTexture = nglCreateTexture((Flags & 0xff) | 0x20,
+                                         (_D3DFORMAT)0x2E, Width, Height, 0, 1);
 
     tex->LastFrameRef = -1;
     return tex;

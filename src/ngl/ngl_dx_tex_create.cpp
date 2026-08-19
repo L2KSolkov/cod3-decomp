@@ -18,7 +18,7 @@
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-extern nglTexture* nglCreateTexture(unsigned int Flags, unsigned int Format, int Width,
+extern nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format, int Width,
                                     int Height, int Depth, int Levels);  // ngl_gpu_texture.o
 extern bool nglCanReleaseTexture(nglTexture* Tex);                       // ngl_texture.o (ported)
 extern void ngliWaitForResource(void);                                   // ngl_dx_core.o
@@ -246,7 +246,8 @@ void nglCreateNormalCubeMap(unsigned int Width) {
                                 "NormalCubeMap width has to be >= 1 !"))
         __debugbreak();
 
-    nglTexture* Tex = nglCreateTexture(0x100u, 6u, (int)Width, (int)Width, 0, 1);
+    nglTexture* Tex = nglCreateTexture(0x100u, (_D3DFORMAT)6u,
+                                       (int)Width, (int)Width, 0, 1);
     // IDA shows the name copied into the tlFixedString object supplied by
     // nglCreateTexture, rather than replacing the FileName pointer.
     tlFixedString NormalCubeMapName("nglNormalCubeMapTex");
