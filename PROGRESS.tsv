@@ -502,7 +502,7 @@ aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	PORTED
 
 aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRenderer.cpp/.h (renderer base + fixup, 3 funcs)
 
-nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nslWaveBankSortSwap, nslWaveBankSortRecursive, and nslWaveBankSort ported from IDA; paired names and packed 0x10-byte wave records preserved
+nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	VERIFIED	Phase 3: nslWaveBankSortSwap, nslWaveBankSortRecursive, and nslWaveBankSort ported from IDA; nslWaveName corrected to the IDA union type and all three release symbols match; canonical build passed
 
 nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	IDA fixed-point IDCT tables, lane-equivalent transform, copy/add/DC helpers integrated into the AFMV decoder
 

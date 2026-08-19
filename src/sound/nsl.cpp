@@ -207,11 +207,9 @@ struct nslWaveInfo {
 };
 static_assert(sizeof(nslParamUnpacked) == 264, "IDA nslParamUnpacked layout");
 static_assert(sizeof(nslWaveInfo) == 280, "IDA nslWaveInfo layout");
-struct nslWaveName {
-    union {
-        const char* name;
-        unsigned hash;
-    };
+union nslWaveName {
+    const char* name;
+    unsigned hash;
 };
 struct nslWaveBank {
     char header[4];
