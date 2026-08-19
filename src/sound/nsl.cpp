@@ -190,6 +190,37 @@ struct nslWave {
     } source;
 };
 static_assert(sizeof(nslWave) == 40, "IDA nslWave layout");
+// IDA type_query: PACKET_CONTEXT is 12 bytes; nslDriverVoice is 172 bytes.
+enum PACKET_OWNER : int {
+    PACKET_OWNER_SOURCE = 0,
+    PACKET_OWNER_DEST = 1
+};
+struct PACKET_CONTEXT {
+    unsigned dwPacketStatus;
+    PACKET_OWNER poPacketOwner;
+    unsigned dwPacketSize;
+};
+struct nslVoice;
+struct nslDriverVoice {
+    void* buffer;
+    unsigned char format[40];
+    void* m_pSourceXMO;
+    void* stream;
+    void* m_pvSourceBuffer;
+    volatile PACKET_CONTEXT m_aContexts[2];
+    unsigned m_dwFileLength;
+    unsigned m_dwStartOffset;
+    unsigned m_dwStreamBytesRemaining;
+    int m_nLastPacketIndex;
+    unsigned bufferSize;
+    int fileOffset;
+    nslVoice* lv;
+    float rolloffCurve[16];
+
+    int FindFreePacket(int* packetIndexPtr);
+};
+static_assert(sizeof(PACKET_CONTEXT) == 12, "IDA PACKET_CONTEXT layout");
+static_assert(sizeof(nslDriverVoice) == 172, "IDA nslDriverVoice layout");
 // IDA type_inspect: nslParam is an 8-byte map followed by a flexible float array.
 struct nslParam {
     unsigned __int64 map;
@@ -4206,6 +4237,28 @@ void          nslDriverCalculateRolloff(float* dest, float value,
 }
 // ea: 0x00825010
 void          nslDriverExit() {}
+// ea: 0x00825210
+int           nslDriverVoice::FindFreePacket(int* packetIndexPtr) {
+    const int lastPacketIndex = m_nLastPacketIndex;
+    constexpr unsigned kPacketPending = 0x8000000Au;
+    if (lastPacketIndex == -1 ||
+        m_aContexts[lastPacketIndex].dwPacketStatus == kPacketPending ||
+        m_aContexts[lastPacketIndex].poPacketOwner != PACKET_OWNER_DEST) {
+        int packetIndex = 0;
+        volatile PACKET_CONTEXT* context = m_aContexts;
+        while (context->dwPacketStatus == kPacketPending) {
+            ++packetIndex;
+            if (packetIndex >= 2)
+                return 0;
+            ++context;
+        }
+        *packetIndexPtr = packetIndex;
+        return 1;
+    }
+
+    *packetIndexPtr = lastPacketIndex;
+    return 1;
+}
 // ea: 0x00824EF0
 unsigned char nslDriverGetVoiceType(const nslWave* wave) {
     const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
