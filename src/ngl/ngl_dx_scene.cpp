@@ -300,7 +300,6 @@ void nglDxSetupScene(nglScene* Scene) {
     int CubeMapFace = Scene->CubeMapFace;
     nglTexture* ZTarget = Scene->ZTarget;
     nglTexture* v18 = Scene->RenderTarget;
-    float ClearZ = *(float*)&ZTarget;
     nglDxSetRenderTarget(v18, ZTarget, 0, CubeMapFace);
     _D3DSURFACE_DESC desc;
     float Width = 1.0f;
@@ -309,15 +308,12 @@ void nglDxSetupScene(nglScene* Scene) {
         D3DTexture_GetLevelDesc(v18->Texture, 0, &desc);
         Width = (float)desc.Width;
         Height = (float)desc.Height;
-    } else if (ClearZ == 0.0f || *(D3DBaseTexture**)((char*)&ClearZ + 20) == NULL) {
-        Width = 1.0f;
-        Height = 1.0f;
     } else {
-        D3DTexture_GetLevelDesc(*(D3DBaseTexture**)((char*)&ClearZ + 20), 0, &desc);
-        Width = (float)desc.Width;
-        Height = (float)desc.Height;
-        if (Height < 0.0f)
-            Height += 4294967300.0f;
+        if (ZTarget != NULL && ZTarget->Texture != NULL) {
+            D3DTexture_GetLevelDesc(ZTarget->Texture, 0, &desc);
+            Width = (float)desc.Width;
+            Height = (float)desc.Height;
+        }
     }
     int v19 = (int)(((Scene->sx1 + 1.0f) * 0.5f * Width + 0.5f));
     int v17 = (int)(((Scene->sy1 + 1.0f) * 0.5f * Height + 0.5f));
