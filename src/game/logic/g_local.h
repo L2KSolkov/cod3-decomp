@@ -5214,12 +5214,26 @@ public:
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
 
+struct TaskSysPostQueue {
+    int m_size;       // reserved_dlist<Task>::m_size (+0x00)
+    void* m_head;     // reserved_dlist<Task>::m_head (+0x04)
+    void* m_end;      // reserved_dlist<Task>::m_end (+0x08)
+    void* m_tail;     // reserved_dlist<Task>::m_tail (+0x0C)
+};
+static_assert(sizeof(TaskSysPostQueue) == 0x10,
+              "TaskSys reserved list layout mismatch");
+
 class TaskSys {
 public:
+    uint8_t mHandleDb[0x108];                 // HandleDb<Task,32,...>
+    TaskSysPostQueue mPostQueue;              // +0x108
+    void* mTaskHandlers[32];                  // ae_sized_array data (+0x118)
+    int mTaskHandlersSize;                    // ae_sized_array size (+0x198)
     static TaskSys sInst;   // ?sInst@TaskSys@@0V1@A @ 0x012F4120 (object, per binary mangle)
     static TaskSys* Inst(); // ?Inst@TaskSys@@SAPAV1@XZ (g.o 0x4A7550)
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o
 };
+static_assert(sizeof(TaskSys) == 0x19C, "TaskSys size mismatch");
 
 struct EntityDeathTask : Task {
     EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // ??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z

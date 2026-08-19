@@ -2173,7 +2173,43 @@ void Client_Clear(void* c, bool clearPersistentAlso, bool clearWeapons)
 }
 
 struct Task;
-void TaskSys::PostTask(Task* t) { (void)t; }
+void TaskSys::PostTask(Task* t)
+{
+    if (t == nullptr)
+        return;
+
+    struct TaskHandlerPostView {
+        unsigned char m_dlist_node[8];
+        unsigned int mTaskId;
+        unsigned int mFlags;
+    };
+
+    for (int i = 0; i < this->mTaskHandlersSize; ++i)
+    {
+        TaskHandlerPostView* handler =
+            static_cast<TaskHandlerPostView*>(this->mTaskHandlers[i]);
+        if (handler != nullptr && handler->mTaskId == t->mTaskId)
+        {
+            if ((handler->mFlags & 8u) != 0)
+                t->mFlags |= 4u;
+            break;
+        }
+    }
+
+    struct TaskDListNode {
+        TaskDListNode* m_next;
+        TaskDListNode* m_prev;
+    };
+    TaskDListNode* node =
+        reinterpret_cast<TaskDListNode*>(t->_dlist);
+    TaskDListNode* tail =
+        static_cast<TaskDListNode*>(this->mPostQueue.m_tail);
+    node->m_next = static_cast<TaskDListNode*>(this->mPostQueue.m_end);
+    node->m_prev = tail;
+    tail->m_next = node;
+    this->mPostQueue.m_tail = node;
+    ++this->mPostQueue.m_size;
+}
 void TaskSys_PostTask_glue(Task* t) { (void)t; }
 void TaskSys_DeliverTasks_glue() {}
 
