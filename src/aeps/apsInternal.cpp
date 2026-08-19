@@ -6,16 +6,15 @@
 // Port strategy:
 //   - 7 clean functions ported in full (Init, Get*CoordinateSystem, and the
 //     spawned-effect queue API).
-//   - 5 D3D render-state/light helpers (GetLocalLights, SetupBlendAndTexture,
-//     SetupFog, SetupAlphaFade, GetLightMatrices) are emitted as exact-signature
-//     stubs. Their real bodies poke d3d8d driver internals (D3D__DirtyFlags,
-//     D3D__TextureState, the NV097 dword_403xx method table) and walk full
-//     nglLightContext/nglLightNode layouts — deferred with the render-state
-//     layer (same category as the apsSimpleMeshNode/apsShrimpNode Renders).
+//   - The larger D3D render-state/light helpers (GetLocalLights,
+//     SetupBlendAndTexture, GetLightMatrices) remain exact-signature stubs
+//     until their full driver/light layouts are reconstructed. SetupFog and
+//     SetupAlphaFade are self-contained constant uploads and are ported below.
 //   - Inline COMDATs (SpawnedEffectQueue methods, apsQuaternion default ctor,
 //     SetLightDir/SetLightColor, GetBlendColor) are in apsInternal.h.
 // ============================================================================
 #include "apsInternal.h"
+#include "d3d8.h"
 
 // ============================================================================
 // Data statics (apsInternal.o).
@@ -172,10 +171,48 @@ void apsInternal::SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlen
 // ea: 0x803990
 void apsInternal::SetupFog(int fogConst, float fogNear, float fogFar,
                            float fogMin, float fogMax, bool fogEnable) {
+    (void)fogEnable;
+    float Range = fogFar - fogNear;
+    if (Range == 0.0f)
+        Range = 1.0f;
+
+    float Intercept = 1.0f - fogMin;
+    float Slope = ((1.0f - fogMax) - Intercept) / Range;
+    Intercept -= Slope * fogNear;
+
+    __m128 Zero = _mm_setzero_ps();
+    __m128 InterceptVector = _mm_set_ss(Intercept);
+    __m128 SlopeVector = _mm_set_ss(Slope);
+    __m128 Packed = _mm_shuffle_ps(
+        _mm_shuffle_ps(InterceptVector, SlopeVector, 0), SlopeVector, 0xE2);
+    __m128 ZeroMix = _mm_shuffle_ps(Zero, Packed, 0xF0);
+    Packed = _mm_shuffle_ps(Packed, ZeroMix, 0xC4);
+    ZeroMix = _mm_shuffle_ps(Zero, Packed, 0xA0);
+    Packed = _mm_shuffle_ps(Packed, ZeroMix, 0x34);
+    D3DDevice_SetVertexShaderConstant1Fast((unsigned int)(fogConst + 96), &Packed);
 }
 
 // ea: 0x803A40
 void apsInternal::SetupAlphaFade(int fadeConst, float fadeNear, float fadeFar) {
+    float Range = fadeFar - fadeNear;
+    __m128 Zero = _mm_setzero_ps();
+    __m128 Packed;
+    if (Range == 0.0f) {
+        Packed = _mm_shuffle_ps(_mm_shuffle_ps(_mm_set1_ps(1.0f), Zero, 0),
+                                Zero, 0xE2);
+    } else {
+        float InverseRange = 1.0f / Range;
+        float Offset = -InverseRange * fadeNear;
+        __m128 OffsetVector = _mm_set_ss(Offset);
+        __m128 InverseVector = _mm_set_ss(InverseRange);
+        Packed = _mm_shuffle_ps(
+            _mm_shuffle_ps(OffsetVector, InverseVector, 0), InverseVector, 0xE2);
+    }
+    __m128 ZeroMix = _mm_shuffle_ps(Zero, Packed, 0xF0);
+    Packed = _mm_shuffle_ps(Packed, ZeroMix, 0xC4);
+    ZeroMix = _mm_shuffle_ps(Zero, Packed, 0xA0);
+    Packed = _mm_shuffle_ps(Packed, ZeroMix, 0x34);
+    D3DDevice_SetVertexShaderConstant1Fast((unsigned int)(fadeConst + 96), &Packed);
 }
 
 // ea: 0x803B60
