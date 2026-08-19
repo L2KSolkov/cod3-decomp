@@ -180,7 +180,7 @@ render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOce
 
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
-aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
+aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; ClampToColor32 @0x8136B0 ported; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
 
 nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (IDA-backed NFL diagnostics)
 
@@ -260,7 +260,7 @@ bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	PORTED	[bdNet] 
 
 nextgen.o		nextgen.o	game	8	PORTED	[game:nextgen.o] nextgen.cpp: CG_MotionBlur + CG_SceneBlur post callbacks (8 funcs)
 
-aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math helpers: quaternion ops, ortho basis, AABB, Shepperd, fast SinCos; apsQuaternion fixed to struct/operator+=
+aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math helpers: ACos @0x8135B0, quaternion ops, ortho basis, AABB, Shepperd, fast SinCos; apsQuaternion fixed to struct/operator+=
 
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nslGroupGet x2, parameter/volume queries, and master-volume functions matched to IDA; nslGroupSetVolume unused float ABI parameter restored
 
@@ -436,7 +436,7 @@ render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	PORTED	cdSkyShade
 
 aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs)
 
-aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + 12 data globals)
+aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + verified SpriteVertex::Set + 12 data globals)
 
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	PORTED	apsPFD.cpp (field descriptor: sizes/offsets/stride + sElementSizes data)
 
@@ -576,7 +576,7 @@ zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	PORTED	Replaced by upstream
 
 aeps_xboxr:apsSimpleMeshNode.o	aeps_xboxr	apsSimpleMeshNode.o	engine	1	PORTED	apsSimpleMeshNode.cpp (Render stub - GPU mesh draw deferred; requires unported Xbox D3D8/ngl pipeline)
 
-aeps_xboxr:apsShrimpNode.o	aeps_xboxr	apsShrimpNode.o	engine	1	PORTED	apsShrimpNode.cpp (Render stub - GPU sprite draw deferred; requires unported Xbox D3D8/ngl pipeline)
+aeps_xboxr:apsShrimpNode.o	aeps_xboxr	apsShrimpNode.o	engine	1	PORTED	apsShrimpNode.cpp Render @0x812D90 ported from IDA: blend/texture state, WorldToScreen constants, shader selection, camera-facing basis, atlas UVs, four SpriteVertex emission, and ReleaseAndDraw
 
 aeps_xboxr:apsBillboardNode.o	aeps_xboxr	apsBillboardNode.o	engine	1	PORTED	apsBillboardNode.cpp (Render forwarder to cNodeRenderer<,apsBillboardNode>::Render)
 
