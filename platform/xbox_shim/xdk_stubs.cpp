@@ -1173,6 +1173,16 @@ static bool nullD3DNormalizeTexelCoordinates(unsigned int* Vertices,
     return true;
 }
 
+static void nullD3DSetFixedFunctionFVF(DWORD FVF) {
+    // Push-buffer font/filter packets are translated through D3D9's fixed
+    // function path. Clear the programmable declaration first; D3D9 rejects
+    // DrawPrimitiveUP when the previous declaration and FVF state disagree.
+    gD3D9Device->SetVertexShader(NULL);
+    gD3D9Device->SetPixelShader(NULL);
+    gD3D9Device->SetVertexDeclaration(NULL);
+    gD3D9Device->SetFVF(FVF);
+}
+
 static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End) {
     if (gD3D9Device == NULL || Begin == NULL || End == NULL || End <= Begin + 2)
         return;
@@ -1190,7 +1200,7 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
             unsigned int NormalizedVertices[24];
             memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 6, 4);
-            gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+            nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
             gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
                                          NormalizedVertices, 24);
         }
@@ -1205,7 +1215,7 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
             unsigned int NormalizedVertices[20];
             memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
             nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 5, 3);
-            gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+            nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_TEX1);
             gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
                                          NormalizedVertices, 20);
         }
@@ -1216,7 +1226,7 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
     // sequence of PCUV glyph quads.  The count encoded by each command is
     // the number of DWORDs in its following vertex array.
     Cursor += 2;
-    gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    nullD3DSetFixedFunctionFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
     while (Cursor + 1 < End) {
         unsigned int Command = *Cursor++;
         if (Command == 0 && *Cursor == 0)
