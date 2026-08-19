@@ -97,6 +97,7 @@ extern void PathNodeMgr_InitPaths(void* self);
 extern void CGBankManager_UnloadAll(void* self);
 extern void AnimBankManager_UnloadAll(void* self);
 extern void AudioBankMgr_FinishLoading(void* self);
+extern void* AudioBankMgr_sInst;
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 extern void FEManager_UpdateLoadingMenu(void* self, float percentDone);
 
@@ -294,7 +295,7 @@ LABEL_30:
     CM_LoadMap(server, 0, &sv.checksum);
     PakManager::sInst->FillBanks();
     nglSetFrameLock(v9);
-    AudioBankMgr_FinishLoading((void*)0);
+    AudioBankMgr_FinishLoading(AudioBankMgr_sInst);
     if (FLI != nullptr) {
         PakManager::sInst->PushContext((TPakId)FLI->pakId);
         PakManager::sInst->PopContext();

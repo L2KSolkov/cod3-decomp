@@ -2333,8 +2333,6 @@ void ApplyPhysics(Entity* e, const math::Position3* a, const math::Dir3* b,
 {
     (void)e; (void)a; (void)b; (void)c; (void)d; (void)e2;
 }
-void AudioBankMgr_FinishLoading(void* self) { (void)self; }
-void AudioBankMgr_Update(void* self) { (void)self; }
 void Axis_Bind_f() {}
 void Axis_Unbindall_f() {}
 void BrocAddEntityThread(Entity* e, unsigned int a, void* b)
@@ -5290,6 +5288,18 @@ void AudioBankMgr::FinishLoading()
         if (v3)
             break;
     } while (1);
+}
+
+// Cross-module bridges used by common.o/cl.o/sv.o.  The release call sites
+// dispatch to AudioBankMgr::Update/FinishLoading on the singleton instance.
+void AudioBankMgr_Update(void* self)
+{
+    static_cast<AudioBankMgr*>(self)->Update();
+}
+
+void AudioBankMgr_FinishLoading(void* self)
+{
+    static_cast<AudioBankMgr*>(self)->FinishLoading();
 }
 
 // ea: 0x0062BD50
