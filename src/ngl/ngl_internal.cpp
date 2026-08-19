@@ -209,11 +209,10 @@ void nglInitDefaultResources() {
 // nglInit - ea: 0x841100
 // ============================================================================
 void nglInit() {
-    if (nglInitialized) {
-        _tlAssert("src/ngl_internal.cpp", 215, "nglInitialized == false",
-                  "NGL is already initialized.");
+    if (nglInitialized
+        && _tlAssert("src/ngl_internal.cpp", 215, "nglInitialized == false",
+                     "NGL is already initialized."))
         __debugbreak();
-    }
     _controlfp(0x300u, 0x300u);
     _mm_setcsr(_mm_getcsr() | 0x6000);
     tlPrintf("\n");
