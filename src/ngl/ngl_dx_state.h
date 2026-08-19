@@ -17,6 +17,12 @@ struct nglDxRenderState {
     void FSAAFixup();                   // ea: 0x84FED0
     void Init();                        // ea: 0x84FEE0
     void SetBlendColor(unsigned int v); // ea: 0x850000; map/stack ABI is unsigned 32-bit
+    // ea: 0x8504F0 (inline COMDAT)
+    void SetMultiSampleAntiAlias(bool v) {
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_MULTISAMPLEANTIALIAS,
+                                                     static_cast<unsigned int>(v)) == 0)
+            D3DDevice_SetRenderState_MultiSampleAntiAlias(static_cast<unsigned int>(v));
+    }
     int SetMaxAnisotropy(unsigned int stage, unsigned int v);  // ea: 0x841E70
 };
 static_assert(sizeof(nglDxRenderState) == 4, "nglDxRenderState size mismatch");
