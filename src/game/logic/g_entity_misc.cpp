@@ -2370,7 +2370,6 @@ void Client_ClaimNode(Entity* e) { (void)e; }
 void ClientImpacts(Entity* e, struct pmove_t* pm) { (void)e; (void)pm; }
 class BaseCmdFuncInfo;
 void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* c) { (void)c; }
-void codNflUpdate() {}
 void Com_CleanupSkeletons() {}
 void Com_Crash_f() {}
 void Com_Error_f() {}
@@ -4968,7 +4967,8 @@ bool AudioBankMgr::IsFinished() const
 // ============================================================================
 // AudioBankMgr load/notify/update - ea: 0x62B9C0..0x62C010
 // ============================================================================
-extern void codNflUpdate();                    // nfl_xboxr
+enum nflState : unsigned;
+extern nflState codNflUpdate();                // nfl_xboxr
 extern void nslUpdateBanks();                  // nsl_xboxr
 extern int  nslGetBankState(nslBankID bankID); // nsl_xboxr
 extern nslBankID nslLoadBank(unsigned int flags, unsigned int file,

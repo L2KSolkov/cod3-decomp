@@ -178,7 +178,8 @@ extern void tlFatal(const char* fmt, ...);
 extern void SoundDevice_StopAllSounds(void* self);
 extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
-extern void codNflUpdate();
+enum nflState : unsigned;
+extern nflState codNflUpdate();
 extern void SyncFrameBuffers();
 struct FEManager; extern FEManager g_femanager;
 bool gUseNfl;                       // ?gUseNfl@@3_NA (core.o)

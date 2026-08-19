@@ -109,7 +109,8 @@ extern nflMediaID gNflMediaId;  // ?gNflMediaId@@3W4nflMediaID@@A @ 0xE36B50
 extern nflFileID nflOpenFileEx(nflMediaID media, const char* name,
                                unsigned int* fileSize);  // ?nflOpenFileEx@@YA?AW4nflFileID@@W4nflMediaID@@PBDPAI@Z
 extern void nflCloseFile(nflFileID file);            // ?nflCloseFile@@YAXW4nflFileID@@@Z
-extern void codNflUpdate();                           // ?codNflUpdate@@YAXXZ
+enum nflState : unsigned;
+extern nflState codNflUpdate();                       // ?codNflUpdate@@YA?AW4nflState@@XZ
 
 // world_t minimal view (baseName +0x80; full in streamer/pakmanager.cpp)
 struct world_t {

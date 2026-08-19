@@ -21,7 +21,8 @@ extern void mem_heap_free(void* ptr);  // core.o
 extern ELanguage gLanguage;            // ?gLanguage@@3W4ELanguage@@A
 extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
 bool onlyOnce = false;                 // ?onlyOnce @ 0xF3A4C8
-extern void codNflUpdate();            // g_entity_misc.cpp
+enum nflState : unsigned;
+extern nflState codNflUpdate();        // pakmanager.cpp
 extern const char* GetLanguageId(ELanguage l);  // ?GetLanguageId@@YAPBDW4ELanguage@@@Z
 extern void GetXboxLanguage();         // fe_util.cpp
 extern nglTexture* nglGetTexture(const tlFixedString& FileName);  // ngl_texture.cpp
