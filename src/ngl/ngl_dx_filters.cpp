@@ -349,8 +349,8 @@ void nglDxFilters::CopyImage(nglTexture* SrcTex, nglTexture* DstTex) {
 // FilterCopy - ea: 0x8481D0
 // ============================================================================
 void nglDxFilters::FilterCopy(nglTexture* SrcTex, nglTexture* DstTex,
-                              unsigned int dwNumSamples, const FilterSample* rSample,
-                              unsigned int dwSuperSampleX, unsigned int dwSuperSampleY) {
+                              unsigned long dwNumSamples, FilterSample* const rSample,
+                              unsigned long dwSuperSampleX, unsigned long dwSuperSampleY) {
     nglTexture* DepthTarget = nglBuildScene->ZTarget;
     nglTexture* RenderTarget = nglBuildScene->RenderTarget;
     nglDxSetRenderTarget(DstTex, NULL, 0, 0);

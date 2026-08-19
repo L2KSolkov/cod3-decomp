@@ -44,9 +44,9 @@ extern D3DBaseTexture D3DZTex;
 
 // ngl_dx_filters.o (functions, defined in ngl_dx_filters.cpp)
 void CopyImage(nglTexture* SrcTex, nglTexture* DstTex);
-void FilterCopy(nglTexture* SrcTex, nglTexture* DstTex, unsigned int dwNumSamples,
-                const FilterSample* rSample, unsigned int dwSuperSampleX,
-                unsigned int dwSuperSampleY);
+void FilterCopy(nglTexture* SrcTex, nglTexture* DstTex, unsigned long dwNumSamples,
+                FilterSample* const rSample, unsigned long dwSuperSampleX,
+                unsigned long dwSuperSampleY);
 void RenderGlow(float GlowIntensity);
 void FillDepthPalette();
 void FillFogPalette();
