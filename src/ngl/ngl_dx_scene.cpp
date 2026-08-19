@@ -34,7 +34,7 @@ extern void nglDxSetRenderTarget(const nglTexture* RenderTarget,
                                  unsigned int MipLevel, int CubeMapFace);  // ngl_dx_draw.o
 extern void nglValidateMatrices(nglScene* Scene);       // ngl_scene.o
 extern void ngliGenMipmaps(nglTexture* Tex);            // ngl_dx_texture.o
-extern void nglDepthOfFieldCallBack();                  // ngl_dx_filters.o
+extern void nglDepthOfFieldCallBack(void* Data);        // ngl_dx_filters.o
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void tlPrintf(const char* fmt, ...);
 
@@ -479,7 +479,7 @@ void ngliEnableFog(bool Enable) {
 void ngliEnableDepthOfField(bool Enable) {
     if (Enable)
         nglSetSceneCallBack(NGLSCENE_POST,
-                            (void (*)(void*))nglDepthOfFieldCallBack, NULL);
+                            nglDepthOfFieldCallBack, NULL);
     else
         nglSetSceneCallBack(NGLSCENE_POST, NULL, NULL);
 }

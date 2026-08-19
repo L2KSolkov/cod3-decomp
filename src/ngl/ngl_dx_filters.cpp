@@ -149,7 +149,9 @@ void nglDxFilters::FreeFiltersTex() {
 // ============================================================================
 // nglSetFiltersTexSizes - ea: 0x8492A0
 // ============================================================================
-void nglSetFiltersTexSizes() {
+void nglSetFiltersTexSizes(unsigned int FilterTexWidth, unsigned int FilterTexHeight) {
+    (void)FilterTexWidth;
+    (void)FilterTexHeight;
 }
 
 // ============================================================================
@@ -227,7 +229,7 @@ void nglDxFilters::FillDepthPalette() {
 // ============================================================================
 // FillFogPalette - ea: 0x849140
 // ============================================================================
-nglDxFilters::t_ZBufferLUT nglDxFilters::FillFogPalette() {
+void nglDxFilters::FillFogPalette() {
     if (PrevVals_0[0] == nglBuildScene->FogNear) {
         if (PrevVals_0[1] == nglBuildScene->FogFar) {
             if (PrevVals_0[2] == nglBuildScene->FogMin) {
@@ -260,7 +262,6 @@ nglDxFilters::t_ZBufferLUT nglDxFilters::FillFogPalette() {
         PrevVals_0[0] = nglBuildScene->FogNear;
         CurZBufferLUT = ZLUT_ZFOG;
     }
-    return CurZBufferLUT;
 }
 
 // ============================================================================
@@ -348,7 +349,7 @@ void nglDxFilters::CopyImage(nglTexture* SrcTex, nglTexture* DstTex) {
 // FilterCopy - ea: 0x8481D0
 // ============================================================================
 void nglDxFilters::FilterCopy(nglTexture* SrcTex, nglTexture* DstTex,
-                              unsigned int dwNumSamples, FilterSample* rSample,
+                              unsigned int dwNumSamples, const FilterSample* rSample,
                               unsigned int dwSuperSampleX, unsigned int dwSuperSampleY) {
     nglTexture* DepthTarget = nglBuildScene->ZTarget;
     nglTexture* RenderTarget = nglBuildScene->RenderTarget;
@@ -959,10 +960,10 @@ void nglEdgeDetectionCallBack(void* Data) {
 void nglFogCallBack(void* Data) {
 }
 
-void nglGlowCallBack(float* Data) {
+void nglGlowCallBack(void* Data) {
     float GlowIntensity = 1.0f;
     if (Data != NULL)
-        GlowIntensity = *Data;
+        GlowIntensity = *(const float*)Data;
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ZENABLE, 0) == 0)
         D3DDevice_SetRenderState_ZEnable(0);
     unsigned char v1 = (unsigned char)dword_BC2D10;
@@ -984,7 +985,8 @@ void nglBlurCallBack(void* Data) {
     nglDxFilters::RenderBlur(nglBuildScene->RenderTarget, nglBuildScene->RenderTarget);
 }
 
-void nglDepthOfFieldCallBack() {
+void nglDepthOfFieldCallBack(void* Data) {
+    (void)Data;
     nglDxFilters::FillDepthPalette();
     nglDxFilters::RenderBlur(nglBuildScene->RenderTarget, nglDxFilters::WorkTex[0]);
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ZENABLE, 0) == 0)

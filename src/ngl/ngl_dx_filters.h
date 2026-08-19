@@ -45,11 +45,11 @@ extern D3DBaseTexture D3DZTex;
 // ngl_dx_filters.o (functions, defined in ngl_dx_filters.cpp)
 void CopyImage(nglTexture* SrcTex, nglTexture* DstTex);
 void FilterCopy(nglTexture* SrcTex, nglTexture* DstTex, unsigned int dwNumSamples,
-                FilterSample* rSample, unsigned int dwSuperSampleX,
+                const FilterSample* rSample, unsigned int dwSuperSampleX,
                 unsigned int dwSuperSampleY);
 void RenderGlow(float GlowIntensity);
 void FillDepthPalette();
-t_ZBufferLUT FillFogPalette();
+void FillFogPalette();
 void RenderBlur(nglTexture* SrcTex, nglTexture* DstTex);
 void AllocFiltersTex();
 void FreeFiltersTex();
@@ -59,13 +59,13 @@ void nglDestroyFilterTextures();
 } // namespace nglDxFilters
 
 // Free functions (ngl_dx_filters.o).
-void nglSetFiltersTexSizes();
+void nglSetFiltersTexSizes(unsigned int FilterTexWidth, unsigned int FilterTexHeight);
 void nglCreateFilterTextures(unsigned int FilterTexWidth, unsigned int FilterTexHeight);
 void nglEdgeDetectionCallBack(void* Data);
 void nglFogCallBack(void* Data);
-void nglGlowCallBack(float* Data);
+void nglGlowCallBack(void* Data);
 void nglPostProcessFiltersTex();
 void nglBlurCallBack(void* Data);
-void nglDepthOfFieldCallBack();
+void nglDepthOfFieldCallBack(void* Data);
 
 #endif // COD3_NGL_NGL_DX_FILTERS_H
