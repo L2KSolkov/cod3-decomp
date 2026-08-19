@@ -2672,6 +2672,83 @@ void nslWaveBankSort(nslWaveBank* waveBank) {
 }
 
 // ============================================================================
+// nslWaveBankLoader — restore names from the packed text table
+// ============================================================================
+// ea: 0x00829610
+int nslWaveBankRestoreNames_HNCompare(const void* a, const void* b) {
+    const unsigned hashA = *static_cast<const unsigned*>(a);
+    const unsigned hashB = *static_cast<const unsigned*>(b);
+    if (hashB <= hashA)
+        return hashB < hashA;
+    return -1;
+}
+
+// ea: 0x00829630
+void nslWaveBankRestoreNames(nslWaveBank* waveBank) {
+    if (waveBank == nullptr || (waveBank->waveBankFlags & 2u) == 0)
+        return;
+
+    const char* text = waveBank->text;
+    if (text == nullptr)
+        return;
+
+    const unsigned textSize = waveBank->textSize;
+    const uintptr_t bankEnd = reinterpret_cast<uintptr_t>(waveBank) +
+                              waveBank->waveBankSize;
+    const uintptr_t textEnd = reinterpret_cast<uintptr_t>(text) + textSize;
+    if (bankEnd < textEnd)
+        return;
+
+    int hashNameCount = 0;
+    const char* cursor = text;
+    while (static_cast<unsigned>(cursor - text) < textSize) {
+        cursor += std::strlen(cursor) + 1;
+        ++hashNameCount;
+    }
+
+    uint32_t* hashNames = static_cast<uint32_t*>(
+        nslMemoryAlloc(8u * static_cast<unsigned>(hashNameCount)));
+    const char* nameText = text;
+    for (int i = 0; i < hashNameCount; ++i) {
+        if (static_cast<unsigned>(nameText - text) >= textSize)
+            break;
+        const tlFixedString fixedString(nameText);
+        hashNames[2 * i] = fixedString.hash;
+        hashNames[2 * i + 1] = static_cast<uint32_t>(
+            reinterpret_cast<uintptr_t>(nameText));
+        nameText += std::strlen(nameText) + 1;
+    }
+
+    std::qsort(hashNames, static_cast<size_t>(hashNameCount), 8u,
+               nslWaveBankRestoreNames_HNCompare);
+
+    int recordIndex = 0;
+    unsigned waveIndex = 0;
+    while (recordIndex < hashNameCount) {
+        if (waveIndex >= waveBank->waveCount)
+            break;
+
+        nslWaveName* waveName = &waveBank->names[waveIndex];
+        const unsigned hash = hashNames[2 * recordIndex];
+        if (hash == waveName->hash) {
+            waveName->name = reinterpret_cast<const char*>(
+                static_cast<uintptr_t>(hashNames[2 * recordIndex + 1]));
+            ++waveIndex;
+        } else if (hash >= waveName->hash) {
+            waveName->name = "<hash-error>";
+            ++waveIndex;
+        } else {
+            ++recordIndex;
+        }
+        if (recordIndex >= hashNameCount)
+            break;
+    }
+
+    nslMemoryFree(hashNames);
+    waveBank->waveBankFlags &= static_cast<unsigned char>(~2u);
+}
+
+// ============================================================================
 // nslWaveBankLoader — async wave bank loading
 // ============================================================================
 void          nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader,

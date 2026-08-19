@@ -398,7 +398,7 @@ cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	compute_det, gjk, collid
 
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	VERIFIED	Phase 3: nsl.cpp (voice pointer/count/allocation/free/render ported from IDA; DirectSound driver remains shim-owned); nslVoicePtr/nslVoiceFree int ABI aligned to IDA and canonical build passed
 
-nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	VERIFIED	Phase 3: nsl.cpp wave-bank loader; restore-name comparator and text-table restoration ported directly from IDA, all 5 release symbols match, and canonical build passed
 
 nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (transaction matching/slot helpers)
 
