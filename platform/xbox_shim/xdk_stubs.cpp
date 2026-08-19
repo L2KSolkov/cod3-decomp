@@ -1190,6 +1190,15 @@ void __stdcall D3DDevice_Swap(unsigned int) {
         }
         gD3D9Device->Present(NULL, NULL, NULL, NULL);
     }
+    // The Xbox title receives its input/window servicing from the platform
+    // shell.  The Win32 presentation boundary must drain the host queue so
+    // the visible D3D9 window remains responsive while the game frame loop
+    // continues through the same Swap entry point.
+    MSG Message;
+    while (PeekMessageA(&Message, NULL, 0, 0, PM_REMOVE) != FALSE) {
+        TranslateMessage(&Message);
+        DispatchMessageA(&Message);
+    }
     if (gNullVBlankCallback != NULL) {
         _D3DVBLANKDATA Data = { 0, 0, 0 };
         gNullVBlankCallback(&Data);
