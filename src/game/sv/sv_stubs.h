@@ -1349,11 +1349,13 @@ enum EGamePhase {
 struct BadPlaceArc;             // defined in game/actor_types.h
 enum team_t : int32_t;          // defined in game/actor_types.h
 
-class PathNodeMgr {
+class PathNodeMgr : public AssetBankSet {
 public:
     PathNodes::TOC1* mLevelTOC;      // +0x04
     PathNodes::TOC2* mLevelTOC2;     // +0x08
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
+    static PathNodeMgr* CreateInst();     // ?CreateInst@PathNodeMgr@@SAPAV1@XZ
+    static void DeleteInst();             // ?DeleteInst@PathNodeMgr@@SAXXZ
     static PathNodeMgr* Inst();          // ?Inst@PathNodeMgr@@SAPAV1@XZ (g.o 0x4A97D0)
     int GetTotalNodeCount() const;       // ?GetTotalNodeCount@PathNodeMgr@@QBEHXZ (g.o 0x4A97E0)
     PathNodeMgr();                               // ??0PathNodeMgr@@QAE@XZ

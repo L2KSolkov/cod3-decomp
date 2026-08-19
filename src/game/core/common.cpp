@@ -485,7 +485,7 @@ struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
-class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
+class PathNodeMgr { public: static PathNodeMgr* CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };

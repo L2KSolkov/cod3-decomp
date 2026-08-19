@@ -30,7 +30,6 @@ class GdbFileManager { public: static void CreateInst(); static void DeleteInst(
 class DialogueManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class ConfigStringManager { public: static void CreateInst(); };
-class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CtrlIcon { public: static void CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -69,8 +68,6 @@ void DialogueManager::CreateInst() {}
 void DialogueManager::DeleteInst() {}
 void EntityManager::DeleteInst() {}
 void ConfigStringManager::CreateInst() {}
-void PathNodeMgr::CreateInst() {}
-void PathNodeMgr::DeleteInst() {}
 void CtrlIcon::CreateInst() {}
 void CtrlIcon::DeleteInst() {}
 void MultiplayerMgr::DeleteInst() {}

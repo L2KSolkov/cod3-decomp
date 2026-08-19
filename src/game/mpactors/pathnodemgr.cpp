@@ -8,6 +8,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <new>
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
 
 extern level_locals_t level;           // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 extern char* va(const char* fmt, ...); // core.o
@@ -89,12 +94,61 @@ static void Path_UpdateBadPlaceCountForLink(PathNodes::PathLink* pLink,
 
 // ea: 0x0077F340
 PathNodeMgr::PathNodeMgr()
+    : AssetBankSet()
 {
     mLevelTOC = nullptr;
     mLevelTOC2 = nullptr;
     level.pathsInited = false;
     level.pathsConnected = false;
     level.pathsInvalid = true;
+}
+
+// ea: 0x004DD320
+PathNodeMgr* PathNodeMgr::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PathNodeMgr.h";
+        AeAssert::gCurrentLine = 40;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    PathNodeMgr* result = static_cast<PathNodeMgr*>(
+        mem_heap_malloc_ctx(0x0Cu, 4, "core",
+                            "c:\\cod\\code\\game\\PathNodeMgr.h", 40));
+    if (result != nullptr)
+    {
+        result = new (result) PathNodeMgr();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
+    return result;
+}
+
+// ea: 0x004DD410
+void PathNodeMgr::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PathNodeMgr.h";
+        AeAssert::gCurrentLine = 40;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
 }
 
 // ea: 0x0077F370
