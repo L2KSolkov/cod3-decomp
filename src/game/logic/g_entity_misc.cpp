@@ -2093,9 +2093,84 @@ GdbFile GdbFileManager::GetGdbFile(TPakId pak_id, const char* name,
     GdbFile r = {};
     return r;
 }
-void Client::Clear(bool a, bool b) { (void)a; (void)b; }
-void Client_Clear(Client* c, bool a, bool b) { (void)c; (void)a; (void)b; }
-void Client_Clear(void* c, bool a, bool b) { (void)c; (void)a; (void)b; }
+void Client::Clear(bool clearPersistentAlso, bool clearWeapons)
+{
+    this->ps.Clear(clearWeapons);
+    if (clearPersistentAlso)
+        this->pers.Clear();
+
+    this->oldOrigin = math::Position3_Zero();
+    this->noclip = 0;
+    this->ufo = 0;
+    this->bFrozen = 0;
+    this->lastCmdTime = 0;
+    this->buttons = 0;
+    this->oldbuttons = 0;
+    this->latched_buttons = 0;
+    this->fGunPitch = 0.0f;
+    this->fGunYaw = 0.0f;
+    this->fGunXOfs = 0.0f;
+    this->fGunYOfs = 0.0f;
+    this->fGunZOfs = 0.0f;
+    this->damage_blood = 0;
+    this->damage_from[0] = 0.0f;
+    this->damage_from[1] = 0.0f;
+    this->damage_from[2] = 0.0f;
+    this->damage_fromWorld = 0;
+    this->respawnTime = 0;
+    this->currentAimSpreadScale = 0.0f;
+    this->pHitHitEnt = nullptr;
+    this->pLookatEnt = nullptr;
+    this->iLastFriendlyUseTime = 0;
+    this->fLastTraceDist = 0.0f;
+    this->hLastCompassFriendlyInfoEnt.mHandle.mVal = 0;
+    this->hLastCompassTankInfoEnt.mHandle.mVal = 0;
+    this->prevLinkAngles[0] = 0.0f;
+    this->prevLinkAngles[1] = 0.0f;
+    this->prevLinkAngles[2] = 0.0f;
+    this->linkAnglesFrac[0] = 0.0f;
+    this->linkAnglesFrac[1] = 0.0f;
+    this->linkAnglesFrac[2] = 0.0f;
+    this->inControlTime = 0;
+    this->lastTouchTime = 0;
+    this->mUseHoldEntity.mHandle.mVal = 0;
+    this->mProneBlockedTime = -1;
+    this->mMedicNobodyToReviveTime = -1;
+    this->mTankExitBlockedByMantleTime = -1;
+    this->mVehicleAnimStageChangeTime = -1;
+    this->mNoDrawTime = -1;
+    this->mUseHoldTime = 0;
+    this->bDisableAutoPickup = 0;
+    this->pain_debounce_time = 0;
+    this->mInvalidatedNodeNum = 0;
+    this->iLookatEntLastTime = 0;
+    this->mVehicleAnimRoute = 0;
+    this->mVehicleAnimMoving = false;
+    this->mVehicleAnimPauseRemoteAngles = false;
+    this->mVehicleAnimAngleOffset[0] = 0.0f;
+    this->mVehicleAnimAngleOffset[1] = 0.0f;
+    this->mVehicleAnimAngleOffset[2] = 0.0f;
+    this->mLeftFootLift = 0.0f;
+    this->mVehicleNoWeaponTime = 0;
+    this->mLadderData.lastLadderTime = 0;
+    this->mVehicleAnimFirstPersonCam = false;
+
+    for (int i = 0; i < 15; ++i)
+    {
+        this->AnimIKFireEvents[i].fireTime = 0;
+        this->AnimIKFireEvents[i].fireWeapon = 0;
+        this->AnimIKPainEvents[i].time = 0;
+    }
+}
+void Client_Clear(Client* c, bool clearPersistentAlso, bool clearWeapons)
+{
+    if (c != nullptr)
+        c->Clear(clearPersistentAlso, clearWeapons);
+}
+void Client_Clear(void* c, bool clearPersistentAlso, bool clearWeapons)
+{
+    Client_Clear(static_cast<Client*>(c), clearPersistentAlso, clearWeapons);
+}
 
 struct Task;
 void TaskSys::PostTask(Task* t) { (void)t; }
