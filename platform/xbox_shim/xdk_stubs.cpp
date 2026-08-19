@@ -1168,7 +1168,18 @@ void* __stdcall UIXCreateUIPlugin(unsigned int a0, unsigned int a1) { return nul
 void __cdecl uncompress(void) {}
 unsigned int __stdcall XGetLanguage(void) { return 1; }
 unsigned int __cdecl XGetVideoFlags(void) { return 0; }
-int __stdcall XGIsSwizzledFormat(unsigned int) { return 0; }
+int __stdcall XGIsSwizzledFormat(unsigned int Format) {
+    // Exact XGRPH format ranges from _XGIsSwizzledFormat@4 in the release
+    // XBE.  Linear formats and the reserved gaps return false; the Xbox
+    // swizzled/compressed ranges return true.
+    if (Format <= 7u || Format == 0xBu ||
+        (Format >= 0x19u && Format <= 0x1Au) ||
+        (Format >= 0x27u && Format <= 0x2Du) ||
+        (Format >= 0x32u && Format <= 0x33u) ||
+        (Format >= 0x38u && Format <= 0x3Cu))
+        return 1;
+    return 0;
+}
 void __stdcall XGSetPaletteHeader(_D3DPALETTESIZE, D3DPalette* Palette, void* Data) {
     if (Palette != NULL) Palette->Data = (unsigned int)(uintptr_t)Data;
 }
