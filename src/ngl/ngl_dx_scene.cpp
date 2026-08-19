@@ -293,7 +293,7 @@ void nglDxSetGarbageStates() {
     }
     nglDxState.PrevBM = -1;
     ++nglDxSetGarbageStates_i;
-    if ((nglDxSetGarbageStates_i & 0x7F) == 0) {
+    if ((nglDxSetGarbageStates_i & 0x7F) != 0) {
         nglDxSetGarbageStates_i = (unsigned int)rand();
     }
 }
