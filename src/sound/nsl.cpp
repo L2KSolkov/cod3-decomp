@@ -1,7 +1,7 @@
 // ============================================================================
 // NSL — NGL Sound Library (237 funcs, 17 objects)
 // ea: 0x8E0000-0x8XXXXX (sound subsystem)
-// Xbox DirectSound wrapper — stubbed for Win32/XAudio2.
+// Xbox DirectSound ABI routed to the Win32 audio backend.
 // ============================================================================
 
 #include <cstdint>
@@ -4832,9 +4832,9 @@ HRESULT nslDriverCheck(HRESULT code, const char* funcName,
     if (code == 0 || code == static_cast<HRESULT>(0x8000000Au))
         return code;
 
-    // The Win32 build intentionally has no Xbox DirectSound device yet. Keep
-    // the release return value for callers that branch on failure, but do not
-    // report the shim's expected E_NOTIMPL result as a runtime NSL error.
+    // Preserve the release return value for callers that branch on failure.
+    // Host-only optional controls may still report E_NOTIMPL, but those are
+    // not the stream/buffer submission path.
     if (code == E_NOTIMPL)
         return code;
 

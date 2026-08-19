@@ -179,10 +179,16 @@ struct HostStream : IDirectSoundStream {
     tWAVEFORMATEX format{};
     HostWaveOut output;
     bool paused = false;
-    static unsigned __stdcall AddRef(IDirectSoundStream*) { return 1; }
+    unsigned references = 1;
+    static unsigned __stdcall AddRef(IDirectSoundStream* value) {
+        return ++reinterpret_cast<HostStream*>(value)->references;
+    }
     static unsigned __stdcall Release(IDirectSoundStream* value) {
-        delete reinterpret_cast<HostStream*>(value);
-        return 0;
+        auto* self = reinterpret_cast<HostStream*>(value);
+        const unsigned references = --self->references;
+        if (references == 0)
+            delete self;
+        return references;
     }
     static HRESULT __stdcall GetInfo(IDirectSoundStream*, _XMEDIAINFO*) { return S_OK; }
     static HRESULT __stdcall GetStatus(IDirectSoundStream* value, unsigned* status) {

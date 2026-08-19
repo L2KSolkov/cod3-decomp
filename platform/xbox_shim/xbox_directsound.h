@@ -9,8 +9,9 @@ struct IDirectSoundBuffer;
 struct _DSMIXBINS;
 
 // IDA's XMediaObject/XFileMediaObject interfaces are four-byte vtable
-// objects. Keep the exact Xbox ABI here; the Win32 implementation remains a
-// shim boundary until the audio backend is ported.
+// objects. Keep the exact Xbox ABI here; the Win32 implementation translates
+// these packets to the host audio device while preserving the release call
+// surface.
 struct _XMEDIAINFO;
 struct _XMEDIAPACKET {
     void* pvBuffer;
