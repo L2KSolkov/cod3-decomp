@@ -32,6 +32,8 @@ static_assert(sizeof(cdScratchMaterial) == 0x20, "cdScratchMaterial size mismatc
 // ============================================================================
 struct cdScratchShaderNode : nglShaderNode {
     cdScratchMaterial* Material;  // +0x14
+
+    void Render() override;        // @0x7C57F0
 };
 static_assert(sizeof(cdScratchShaderNode) == 0x18, "cdScratchShaderNode size mismatch");
 

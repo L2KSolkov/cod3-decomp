@@ -981,6 +981,10 @@ void __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value) {
     if (gD3D9Device != NULL)
         gD3D9Device->SetRenderState(COD3_D3D9_RS_FOGCOLOR, Value);
 }
+void __stdcall D3DDevice_SetRenderState_ZBias(unsigned int Value) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetRenderState(D3DRS_DEPTHBIAS, Value);
+}
 int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value) {
     if (gD3D9Device == NULL)
         return 0;
@@ -1008,6 +1012,7 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
         NativeValue = nullD3DCullMode(Value);
         break;
     case D3DRS_ZENABLE: NativeState = COD3_D3D9_RS_ZENABLE; break;
+    case D3DRS_ZBIAS: NativeState = D3DRS_DEPTHBIAS; break;
     case D3DRS_STENCILENABLE: NativeState = COD3_D3D9_RS_STENCILENABLE; break;
     case D3DRS_STENCILFUNC: NativeState = COD3_D3D9_RS_STENCILFUNC; break;
     case D3DRS_STENCILMASK: NativeState = COD3_D3D9_RS_STENCILMASK; break;

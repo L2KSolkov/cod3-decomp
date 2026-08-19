@@ -27,6 +27,7 @@ extern bool _tlAssert(const char* file, int line, const char* expr,
 // Param-ID globals (assigned at register time; -1 = unassigned sentinel).
 unsigned int nglTintParamID = 0xFFFFFFFF;          // ?nglTintParamID@@3IA @ 0x10E305C
 unsigned int nglTextureFrameParamID = 0xFFFFFFFF;  // ?nglTextureFrameParamID@@3IA @ 0x10E3040
+unsigned int nglZBiasParamID = 0xFFFFFFFF;         // ?nglZBiasParamID@@3IA @ 0x10E3054
 unsigned int TextureMatrixParamID = 0xFFFFFFFF;    // ?TextureMatrixParamID@@3IA @ 0x10DE048
 unsigned int isRotatingTextureParamID = 0xFFFFFFFF; // ?isRotatingTextureParamID@@3IA @ 0x10DE04C
 unsigned int cdSimpleAlphaAlphaParamID = 0xFFFFFFFF; // ?cdSimpleAlphaAlphaParamID@@3IA @ 0x10DE05C

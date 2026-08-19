@@ -10,10 +10,25 @@
 // ============================================================================
 #include "cdScratchShader.h"
 
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+
+#include <cstdint>
 #include <intrin.h>
 
 // Shader global pointer definitions
 cdScratchShader* gCDScratchShader = nullptr;  // ?gCDScratchShader@@3PAVcdScratchShader@@A
+
+extern unsigned int nglTextureFrameParamID;
+extern unsigned int nglZBiasParamID;
+extern int nglTextureAnimFrame;
+extern unsigned int dword_BC2D80;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 
 // Shader static data definitions (render_xboxr cd*Shader.o)
 namespace cdScratchShaderVertex {
@@ -104,4 +119,78 @@ void cdScratchShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
             ++nglBuildScene->TransListCount;
         }
     }
+}
+
+// ============================================================================
+// cdScratchShaderNode::Render — ea: 0x7C57F0
+// ============================================================================
+void cdScratchShaderNode::Render() {
+    const unsigned int* array = this->MeshNode->ShaderParams.Array;
+    const unsigned int textureFrameId = nglTextureFrameParamID;
+    if ((1u << (textureFrameId & 0x1Fu)) & array[textureFrameId >> 5]) {
+        // IDA type: nglTextureFrameParamType::Value is int.
+        nglTextureAnimFrame =
+            *reinterpret_cast<const int*>(array + textureFrameId + 2);
+    } else {
+        nglTextureAnimFrame = nglBuildScene->IFLFrame;
+    }
+
+    const unsigned int zBiasId = nglZBiasParamID;
+    if ((1u << (zBiasId & 0x1Fu)) & array[zBiasId >> 5]) {
+        // IDA type: nglZBiasParamType::Value is float; the original converts
+        // it through _ftol2 before sending the integer render-state value.
+        const float zBias = *reinterpret_cast<const float*>(array + zBiasId + 2);
+        const unsigned int value =
+            static_cast<unsigned int>(static_cast<int>(zBias));
+        if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ZBIAS, value) == 0)
+            D3DDevice_SetRenderState_ZBias(value);
+    }
+
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, 0) == 0)
+        D3DDevice_SetRenderState_CullMode(0);
+    nglDxState.SetBlendMode(this->Material->BlendMode);
+    D3DDevice_SetVertexShaderConstantNotInlineFast(
+        6, &this->MeshNode->LocalToScreen, 0x10u);
+    nglDxInitShaders(false);
+
+    const unsigned int vertexShader = static_cast<unsigned int>(
+        reinterpret_cast<uintptr_t>(cdScratchShaderVertex::VS));
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(static_cast<uintptr_t>(vertexShader)), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+
+    nglDxSetTexture(0, this->Material->Texture, this->Material->MapFlags, 3u);
+    nglDxSetTextureU(0, (this->Material->MapFlags & 0x40) != 0 ? 3u : 1u);
+    nglDxSetTextureV(0, (this->Material->MapFlags & 0x80) != 0 ? 3u : 1u);
+
+    const unsigned int pixelShader = static_cast<unsigned int>(
+        reinterpret_cast<uintptr_t>(cdScratchShaderPixel::PS[0]));
+    if (pixelShader != gpuHashPixelShader) {
+        gpuHashPixelShader = pixelShader;
+        D3DDevice_SetPixelShaderProgram(
+            reinterpret_cast<const _D3DPixelShaderDef*>(static_cast<uintptr_t>(pixelShader)));
+    }
+
+    nglDxSetupVShaderFog(-86, this->MeshNode, nglBuildScene->FogNear,
+                         nglBuildScene->FogFar, nglBuildScene->FogMin,
+                         nglBuildScene->FogMax);
+    const __m128 fogScaled =
+        _mm_mul_ps(nglBuildScene->FogColor.v, _mm_set1_ps(127.0f));
+    const unsigned int c0 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[0]));
+    const unsigned int c1 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[1]));
+    const unsigned int c2 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[2]));
+    const unsigned int c3 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[3]));
+    const unsigned int fogColor = c2 | (c1 << 8) | (c0 << 16) | (c3 << 24);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR, fogColor) == 0)
+        D3DDevice_SetRenderState_FogColor(fogColor);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 1;
+    }
+    nglGpuDrawSection(this->Section);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ZBIAS, 0) == 0)
+        D3DDevice_SetRenderState_ZBias(0);
 }

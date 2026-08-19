@@ -314,6 +314,7 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_SPECULARENABLE = 103,    // 0x67
     D3DRS_CULLMODE = 147,          // 0x93
     D3DRS_ZENABLE = 143,           // 0x8F
+    D3DRS_ZBIAS = 149,              // 0x95
     D3DRS_STENCILENABLE = 144,     // 0x90
     D3DRS_ROPZCMPALWAYSREAD = 163, // 0xA3
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
@@ -511,6 +512,7 @@ void         __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*
 void         __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_ZBias(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int Value);
 void         __stdcall D3DDevice_SetViewport(const void* pViewport);
