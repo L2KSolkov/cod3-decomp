@@ -815,18 +815,10 @@ void nglDxFilters::RenderBlur(nglTexture* SrcTex, nglTexture* DstTex) {
     float v10 = (float)WorkTex[0]->Width;
     float Quad4[4][11];
     memset(Quad4, 0, sizeof(Quad4));
-    for (int i = 0; i < 4; ++i) {
-        Quad4[i][0] = (i & 1) ? v10 : 0.0f;
-        Quad4[i][1] = (i & 2) ? v9 : 0.0f;
-        Quad4[i][2] = 0.0f;
-        Quad4[i][3] = (i & 1) ? v10 : 0.0f;
-        Quad4[i][4] = (i & 2) ? v9 : 0.0f;
-        Quad4[i][5] = v10;
-        Quad4[i][6] = v9;
-        Quad4[i][7] = 0.0f;
-        Quad4[i][8] = 0.0f;
-        Quad4[i][9] = 0.0f;
-    }
+    Quad4[1][0] = v10;
+    Quad4[2][1] = v9;
+    Quad4[3][0] = v10;
+    Quad4[3][1] = v9;
     nglTexture* LastRenderTarget = NULL;
     int Pass = 0;
     if (NPasses_0 > 0) {
@@ -840,17 +832,19 @@ void nglDxFilters::RenderBlur(nglTexture* SrcTex, nglTexture* DstTex) {
                 float v16 = (float)WorkTex[0]->Height;
                 float v17 = OffsetX[v13];
                 float v18 = OffsetY[v13];
-                float v19 = v18 * v16;
-                float v20 = (v17 + 1.0f) * v15;
-                float v21 = (OffsetY[v13] + 1.0f) * v16;
-                Quad4[v13][0] = v17 * v15;
-                Quad4[v13][1] = v19;
-                Quad4[v13][2] = 0.0f;
-                Quad4[v13][3] = v20;
-                Quad4[v13][4] = v19;
-                Quad4[v13][5] = v21;
-                Quad4[v13][6] = v20;
-                Quad4[v13][7] = v21;
+                float u0 = v17 * v15;
+                float v0 = v18 * v16;
+                float u1 = (v17 + 1.0f) * v15;
+                float v1 = (v18 + 1.0f) * v16;
+                const unsigned int UV = 3 + 2 * v13;
+                Quad4[0][UV] = u0;
+                Quad4[0][UV + 1] = v0;
+                Quad4[1][UV] = u1;
+                Quad4[1][UV + 1] = v0;
+                Quad4[2][UV] = u0;
+                Quad4[2][UV + 1] = v1;
+                Quad4[3][UV] = u1;
+                Quad4[3][UV + 1] = v1;
             }
             gpuHashVertexBuffer = 0;
             gpuHashVertexFormat = 0;
