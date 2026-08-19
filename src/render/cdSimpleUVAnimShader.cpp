@@ -7,10 +7,13 @@
 //   ToggleCDSimpleUVAnimShader @0x7C6E50
 //   cdSimpleUVAnimShader::Register @0x7C6E70
 //   cdSimpleUVAnimShader::AddNode @0x7C6ED0
+//   cdSimpleUVAnimShaderNode::SetTextureMatrix @0x7C6F40
 // ============================================================================
 #include "cdSimpleUVAnimShader.h"
 
 #include <intrin.h>
+
+extern unsigned int TextureMatrixParamID;  // ?TextureMatrixParamID@@3IA
 
 // Shader global pointer definitions
 cdSimpleUVAnimShader* gCDSimpleUVAnimShader = nullptr;  // ?gCDSimpleUVAnimShader@@3PAVcdSimpleUVAnimShader@@A
@@ -131,5 +134,44 @@ void cdSimpleUVAnimShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         node->Next = nglBuildScene->OpaqueRenderList;
         nglBuildScene->OpaqueRenderList = node;
         ++nglBuildScene->OpaqueListCount;
+    }
+}
+
+// ============================================================================
+// cdSimpleUVAnimShaderNode::SetTextureMatrix — fetch and transpose the
+// texture-matrix parameter, or use the identity matrix when it is unset.
+// ea: 0x7C6F40
+// ============================================================================
+void cdSimpleUVAnimShaderNode::SetTextureMatrix(math::Mat44& matOut) {
+    const unsigned int id = TextureMatrixParamID;
+    const unsigned int* array = this->MeshNode->ShaderParams.Array;
+    const math::Mat44* source = nullptr;
+
+    if ((1u << (id & 0x1Fu)) & array[id >> 5]) {
+        // nglParamSet::Get<TextureMatrixParamType>() returns Array[id + 2]
+        // on the 32-bit target; the outer bit test is the original IsSet()
+        // guard, and the getter's null result is handled below.
+        source = reinterpret_cast<const math::Mat44*>(
+            static_cast<uintptr_t>(array[id + 2]));
+    }
+
+    if (source != nullptr) {
+        const __m128 v0 = source->x.v;
+        const __m128 v1 = source->y.v;
+        const __m128 v2 = source->z.v;
+        const __m128 v3 = source->w.v;
+        const __m128 v4 = _mm_shuffle_ps(v0, v1, 68);
+        const __m128 v5 = _mm_shuffle_ps(v0, v1, 238);
+        const __m128 v6 = _mm_shuffle_ps(v2, v3, 68);
+        matOut.x.v = _mm_shuffle_ps(v4, v6, 136);
+        matOut.y.v = _mm_shuffle_ps(v4, v6, 221);
+        const __m128 v7 = _mm_shuffle_ps(v2, v3, 238);
+        matOut.z.v = _mm_shuffle_ps(v5, v7, 136);
+        matOut.w.v = _mm_shuffle_ps(v5, v7, 221);
+    } else {
+        matOut.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        matOut.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        matOut.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        matOut.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
     }
 }

@@ -35,6 +35,8 @@ struct cdSimpleUVAnimShaderNode : nglShaderNode {
     cdSimpleUVAnimShaderMat* mMaterial;     // +0x14
     // +0x18: padding to 0x20
     math::Mat44 mTextureMatrix;             // +0x20
+
+    void SetTextureMatrix(math::Mat44& matOut);  // @0x7C6F40
 };
 static_assert(sizeof(cdSimpleUVAnimShaderNode) == 0x60, "cdSimpleUVAnimShaderNode size mismatch");
 
