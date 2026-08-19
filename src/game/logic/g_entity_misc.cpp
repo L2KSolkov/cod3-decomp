@@ -3561,7 +3561,13 @@ void MusicMgr::DeleteInst()
 // ============================================================================
 // SoundMediaMgr - ea: 0x603EF0..0x603F20 (SoundMediaMgr.cpp)
 // ============================================================================
-struct SoundMediaMgr {
+enum nslWaveID : int;
+class SoundMediaMgr {
+public:
+    static SoundMediaMgr* sInst;        // ?sInst@SoundMediaMgr@@2PAV1@A
+    static SoundMediaMgr* CreateInst();  // core.o 0x004DCAD0
+    static void DeleteInst();            // core.o 0x004E2750
+    nslWaveID mFoliageRustleSound;       // +0x00, IDA type size 0x04
     SoundMediaMgr();              // ??0SoundMediaMgr@@QAE@XZ (game.o 0x603EF0)
     ~SoundMediaMgr();             // ??1SoundMediaMgr@@QAE@XZ (game.o 0x603F00)
     void RegisterSounds();        // ?RegisterSounds@SoundMediaMgr@@QAEXXZ (game.o 0x603F10)
@@ -3576,6 +3582,57 @@ extern struct CollisionDesc {
 };
 extern Handle PostEffectEventLanding(const Entity* ent,
                                      const CollisionDesc& col_desc);
+
+SoundMediaMgr* SoundMediaMgr::sInst = nullptr;
+
+// ea: 0x004DCAD0
+SoundMediaMgr* SoundMediaMgr::CreateInst()
+{
+    if (SoundMediaMgr::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\SoundMediaMgr.h";
+        AeAssert::gCurrentLine = 21;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        4u, 4, "fx", "c:\\cod\\code\\game\\SoundMediaMgr.h", 21);
+    if (memory != nullptr)
+    {
+        SoundMediaMgr* result = new (memory) SoundMediaMgr();
+        SoundMediaMgr::sInst = result;
+        return result;
+    }
+    SoundMediaMgr::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004E2750
+void SoundMediaMgr::DeleteInst()
+{
+    SoundMediaMgr* instance = SoundMediaMgr::sInst;
+    if (SoundMediaMgr::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\SoundMediaMgr.h";
+        AeAssert::gCurrentLine = 21;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~SoundMediaMgr();
+        mem_heap_free(instance);
+    }
+    SoundMediaMgr::sInst = nullptr;
+}
 
 // ea: 0x00603EF0
 SoundMediaMgr::SoundMediaMgr()

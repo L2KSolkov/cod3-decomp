@@ -21,7 +21,6 @@ class DestructibleBankManager { public: static void CreateInst(); static void De
 class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class SoundDevice { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
-class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
 class DbTablesetMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -52,8 +51,6 @@ void DestructibleBankManager::CreateInst() {}
 void DestructibleBankManager::DeleteInst() {}
 void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
-void SoundMediaMgr::CreateInst() {}
-void SoundMediaMgr::DeleteInst() {}
 void DbTablesetMgr::CreateInst() {}
 void DbTablesetMgr::DeleteInst() {}
 void EffectEventSys::CreateInst() {}

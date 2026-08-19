@@ -480,7 +480,7 @@ class DestructibleBankManager { public: static void CreateInst(); static void De
 class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class AITypeManager { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
-class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
+class SoundMediaMgr { public: static SoundMediaMgr* CreateInst(); static void DeleteInst(); };
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
