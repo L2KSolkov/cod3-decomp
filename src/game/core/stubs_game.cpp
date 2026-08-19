@@ -19,7 +19,7 @@ void __cod3_stub_game_core(void) {
 class BankManager { public: static void CreateInst(); static void DeleteInst(); };
 class LightGridMgr { public: static void DeleteInst(); };
 class XModelManager { public: static void DeleteInst(); };
-class XModelPartsManager { public: static void CreateInst(); static void DeleteInst(); };
+class XModelPartsManager { public: static void DeleteInst(); };
 class DestructibleBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class AITypeManager { public: static void DeleteInst(); };
@@ -59,7 +59,6 @@ class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst
 
 void LightGridMgr::DeleteInst() {}
 void XModelManager::DeleteInst() {}
-void XModelPartsManager::CreateInst() {}
 void XModelPartsManager::DeleteInst() {}
 void DestructibleBankManager::CreateInst() {}
 void DestructibleBankManager::DeleteInst() {}

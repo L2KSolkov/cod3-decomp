@@ -460,6 +460,7 @@ private:
     virtual ~XModelPartsManager();  // ??1XModelPartsManager@@EAE@XZ
 public:
     static XModelPartsManager* sInst;  // ?sInst@XModelPartsManager@@2PAV1@A (sv_globals.cpp)
+    static void CreateInst();           // ?CreateInst@XModelPartsManager@@SAXXZ
     IVPointer<XModelParts> GetXModelParts(TPakId pak_id,
                                           const char* name);  // ?GetXModelParts@XModelPartsManager@@QAE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBD@Z
     void AssignHashName(XModelParts* xmp);  // ?AssignHashName@XModelPartsManager@@QAEXPAVXModelParts@@@Z
@@ -507,6 +508,34 @@ XModelPartsManager::XModelPartsManager()
 
 XModelPartsManager::~XModelPartsManager()
 {
+}
+
+// ea: 0x004B4FD0
+void XModelPartsManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.h";
+        AeAssert::gCurrentLine = 59;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    XModelPartsManager* result = static_cast<XModelPartsManager*>(
+        mem_heap_malloc_ctx(0x190u, 4, "core",
+                            "c:\\cod\\code\\game\\XModelManager.h", 59));
+    if (result != nullptr)
+    {
+        result = new (result) XModelPartsManager();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
 }
 
 // ea: 0x006D5FD0
