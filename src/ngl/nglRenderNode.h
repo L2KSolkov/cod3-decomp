@@ -66,25 +66,9 @@ void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);
 // ============================================================================
 // List insertion - ea: 0x7C5B40 / 0x7C5B70 / 0x7C5BA0 / 0x7C5BE0
 // ============================================================================
-inline void nglListAddNode_Opaque(nglRenderNode* Node) {
-    Node->Next = nglBuildScene->OpaqueRenderList;
-    nglBuildScene->OpaqueRenderList = Node;
-    ++nglBuildScene->OpaqueListCount;
-}
-
-inline void nglListAddNode_Translucent(nglRenderNode* Node) {
-    Node->Next = nglBuildScene->TransRenderList;
-    nglBuildScene->TransRenderList = Node;
-    ++nglBuildScene->TransListCount;
-}
-
-inline void nglListAddNode_Opaque(nglRenderNode* Node, unsigned int Hash) {
-    Node->SortHash = Hash;
-    Node->Next = nglBuildScene->OpaqueRenderList;
-    nglBuildScene->OpaqueRenderList = Node;
-    ++nglBuildScene->OpaqueListCount;
-}
-
-void nglListAddNode_Translucent(nglRenderNode* Node, float Dist);  // ngl_scene.cpp
+void nglListAddNode_Opaque(nglRenderNode* Node);
+void nglListAddNode_Translucent(nglRenderNode* Node);
+void nglListAddNode_Opaque(nglRenderNode* Node, unsigned int Hash);
+void nglListAddNode_Translucent(nglRenderNode* Node, float Dist);
 
 #endif // COD3_NGL_NGL_RENDER_NODE_H
