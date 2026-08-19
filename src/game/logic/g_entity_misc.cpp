@@ -4667,6 +4667,7 @@ public:
     int      m_size;                   // +0x6C8
     static AudioBankMgr* sInst;        // ?sInst@AudioBankMgr@@2PAV1@A
     static void CreateInst();          // ?CreateInst@AudioBankMgr@@SAXXZ
+    static void DeleteInst();          // ?DeleteInst@AudioBankMgr@@SAXXZ
     AudioBankMgr();                    // ??0AudioBankMgr@@QAE@XZ (game.o 0x621440)
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
@@ -4723,6 +4724,26 @@ void AudioBankMgr::CreateInst()
     else
         sInst = nullptr;
     AudioBankMgr_sInst = sInst;
+}
+
+// ea: 0x004DC9A0
+void AudioBankMgr::DeleteInst()
+{
+    AudioBankMgr* instance = AudioBankMgr::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\AudioBankManager.h";
+        AeAssert::gCurrentLine = 12;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+        delete instance;
+    AudioBankMgr::sInst = nullptr;
 }
 
 // ea: 0x00621440
