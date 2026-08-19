@@ -10,12 +10,23 @@
 // ============================================================================
 #include "cdDebugShader.h"
 
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+#include "render/ShaderCommon.h"
+
 #include <intrin.h>
 
 // Shader global pointer definitions
 cdDebugShader* gCDDebugShader = nullptr;  // ?gCDDebugShader@@3PAVcdDebugShader@@A
 
 extern unsigned int nglTintParamID;
+extern unsigned int dword_BC2D80;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 
 // Shader static data definitions (render_xboxr cd*Shader.o)
 namespace cdDebugShaderRender {
@@ -138,4 +149,68 @@ void cdDebugShaderNode::GetSortInfo(nglSortInfo& si) {
         si.Type = nglSortInfo::NGLSORT_TRANSLUCENT;
         si.Dist = this->GetDist(nglBuildScene->WorldToView);
     }
+}
+
+// ============================================================================
+// cdDebugShaderNode::Render — ea: 0x7C65C0
+// ============================================================================
+void cdDebugShaderNode::Render() {
+    const unsigned int paramId = nglTintParamID;
+    const unsigned int* array = this->MeshNode->ShaderParams.Array;
+    math::Vector4 tint;
+    if ((1u << (paramId & 0x1Fu)) & array[paramId >> 5]) {
+        // nglParamSet::Get<nglTintParamType>() returns Array[id + 2].
+        tint.v = reinterpret_cast<const math::Vector4*>(array + paramId + 2)->v;
+    } else {
+        tint.v = _mm_setr_ps(1.0f, 1.0f, 1.0f, 0.5f);
+    }
+
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, 0) == 0)
+        D3DDevice_SetRenderState_CullMode(0);
+    nglDxState.SetBlendMode(0x64CF8600u);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 0) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 0;
+    }
+
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6,
+                                                    &this->MeshNode->LocalToScreen,
+                                                    0x10u);
+    D3DDevice_SetVertexShaderConstant1Fast(12, &tint);
+    nglDxInitShaders(false);
+
+    const unsigned int vertexShader = static_cast<unsigned int>(
+        reinterpret_cast<uintptr_t>(cdDebugShaderRender::VS));
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(static_cast<uintptr_t>(vertexShader)), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+
+    const unsigned int pixelShader = static_cast<unsigned int>(
+        reinterpret_cast<uintptr_t>(cdDebugPixel::PS[0]));
+    if (pixelShader != gpuHashPixelShader) {
+        gpuHashPixelShader = pixelShader;
+        D3DDevice_SetPixelShaderProgram(
+            reinterpret_cast<const _D3DPixelShaderDef*>(static_cast<uintptr_t>(pixelShader)));
+    }
+
+    nglDxSetupVShaderFog(-86, this->MeshNode, nglBuildScene->FogNear,
+                         nglBuildScene->FogFar, nglBuildScene->FogMin,
+                         nglBuildScene->FogMax);
+    const __m128 fogScaled =
+        _mm_mul_ps(nglBuildScene->FogColor.v, _mm_set1_ps(127.0f));
+    const unsigned int c0 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[0]));
+    const unsigned int c1 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[1]));
+    const unsigned int c2 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[2]));
+    const unsigned int c3 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[3]));
+    const unsigned int fogColor = c2 | (c1 << 8) | (c0 << 16) | (c3 << 24);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR, fogColor) == 0)
+        D3DDevice_SetRenderState_FogColor(fogColor);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 1;
+    }
+    nglGpuDrawSection(this->Section);
 }

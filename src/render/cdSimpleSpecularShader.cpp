@@ -289,7 +289,7 @@ void cdSimpleSpecularShaderNode::Render() {
     const unsigned int c1 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[1]));
     const unsigned int c2 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[2]));
     const unsigned int c3 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[3]));
-    const unsigned int fogColor = c3 | (c2 << 8) | (c1 << 16) | (c0 << 24);
+    const unsigned int fogColor = c2 | (c1 << 8) | (c0 << 16) | (c3 << 24);
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR, fogColor) == 0)
         D3DDevice_SetRenderState_FogColor(fogColor);
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1) == 0) {
