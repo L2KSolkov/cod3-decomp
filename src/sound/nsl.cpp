@@ -209,14 +209,7 @@ struct PACKET_CONTEXT {
     PACKET_OWNER poPacketOwner;
     unsigned dwPacketSize;
 };
-struct XMEDIAPACKET {
-    void* pvBuffer;
-    unsigned dwMaxSize;
-    unsigned* pdwCompletedSize;
-    unsigned* pdwStatus;
-    unsigned reserved;
-    std::int64_t* prtTimestamp;
-};
+using XMEDIAPACKET = _XMEDIAPACKET;
 static_assert(sizeof(XMEDIAPACKET) == 24, "IDA XMEDIAPACKET layout");
 struct nslVoice;
 struct nslDriverVoice {
@@ -236,6 +229,7 @@ struct nslDriverVoice {
     float rolloffCurve[16];
 
     HRESULT Init(const nslVoice* lv, const nslWave* w);
+    HRESULT Process();
     int FindFreePacket(int* packetIndexPtr);
     HRESULT ProcessSource(int packetIndex);
 };
@@ -520,6 +514,8 @@ static unsigned char ignoreAssert_2 = 0;
 static unsigned char ignoreAssert_3 = 0;
 static unsigned char ignoreAssert_9 = 0;
 static unsigned char ignoreAssert_10 = 0;
+static unsigned char ignoreAssert_11 = 0;
+static unsigned char ignoreAssert_12 = 0;
 static unsigned char ignoreAssert_14 = 0;
 int nsl_random_play = 0;
 nslWave* wave = nullptr;
@@ -4677,6 +4673,99 @@ HRESULT       nslDriverVoice::ProcessSource(int packetIndex) {
     }
     return 0;
 }
+// ea: 0x00825800
+HRESULT       nslDriverVoice::Process() {
+    unsigned int dwStatus = 0;
+    m_pSourceXMO->__vftable->DoWork(m_pSourceXMO);
+    const HRESULT code = m_pSourceXMO->__vftable->GetStatus(
+        m_pSourceXMO, &dwStatus);
+    HRESULT result;
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 954);
+    int packetIndex;
+    if ((dwStatus & 2u) == 0u || FindFreePacket(&packetIndex) == 0)
+        return 0;
+
+    unsigned int status = 0;
+    unsigned char* lvRaw = reinterpret_cast<unsigned char*>(lv);
+    while (true) {
+        const int currentPacketIndex = packetIndex;
+        volatile PACKET_CONTEXT* context = &m_aContexts[packetIndex];
+        PACKET_OWNER* packetOwner =
+            const_cast<PACKET_OWNER*>(&context->poPacketOwner);
+        if (*packetOwner != PACKET_OWNER_DEST) {
+            const unsigned char state = lvRaw[0x108u];
+            if (state == 2u) {
+                lvRaw[0x108u] = 3u;
+                return 0;
+            }
+            if (state != 4u)
+                return 0;
+
+            XMEDIAPACKET packet{};
+            packet.pvBuffer = static_cast<unsigned char*>(m_pvSourceBuffer) +
+                static_cast<unsigned>(packetIndex) * bufferSize;
+            packet.dwMaxSize = context->dwPacketSize;
+            packet.pdwStatus =
+                const_cast<unsigned*>(&context->dwPacketStatus);
+            if (packet.dwMaxSize == 0u) {
+                txAssertFailed(&ignoreAssert_12, "xmp.dwMaxSize > 0",
+                               "nslDriverVoice::Process",
+                               "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp",
+                               998);
+            }
+            *packetOwner = PACKET_OWNER_DEST;
+            status = static_cast<unsigned>(stream->__vftable->Process(
+                stream, &packet, nullptr));
+            if (status != 0u) {
+                txAssertFailed(&ignoreAssert_11, "hr==S_OK",
+                               "nslDriverVoice::Process",
+                               "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp",
+                               1001);
+            }
+            context->dwPacketSize = bufferSize;
+            if (m_nLastPacketIndex == currentPacketIndex) {
+                if ((lvRaw[0x10Bu] & 2u) != 0u) {
+                    m_pSourceXMO->__vftable->Seek(
+                        m_pSourceXMO, fileOffset, 0u, nullptr);
+                    m_dwStreamBytesRemaining = m_dwFileLength;
+                    m_nLastPacketIndex = -1;
+                } else {
+                    stream->__vftable->Discontinuity(stream);
+                }
+            }
+            result = static_cast<HRESULT>(status);
+        } else {
+            if (m_nLastPacketIndex != -1 && lvRaw[0x108u] == 4u) {
+                const int lastPacketIndex = m_nLastPacketIndex;
+                if (packetIndex == lastPacketIndex &&
+                    context->dwPacketStatus != 0x8000000Au) {
+                    stream->__vftable->GetStatus(stream, &status);
+                    if ((status & 0x10000u) == 0u) {
+                        lvRaw[0x108u] = 6u;
+                        return 0;
+                    }
+                }
+                return 0;
+            }
+            if (m_dwStreamBytesRemaining != 0u) {
+                result = ProcessSource(packetIndex);
+                goto process_again;
+            }
+            if (lvRaw[0x108u] != 2u)
+                return 0;
+            lvRaw[0x108u] = 3u;
+            return 0;
+        }
+
+process_again:
+        if (result < 0)
+            return result;
+        if (FindFreePacket(&packetIndex) == 0)
+            return result;
+    }
+}
+
 // ea: 0x008245A0
 HRESULT nslDriverCheck(HRESULT code, const char* funcName,
                        const char* fileName, int lineNumber) {

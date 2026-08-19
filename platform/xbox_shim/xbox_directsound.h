@@ -6,16 +6,20 @@
 
 struct IDirectSound;
 struct IDirectSoundBuffer;
-struct IDirectSoundStream {
-    void* vtbl;
-};
 struct _DSMIXBINS;
 
 // IDA's XMediaObject/XFileMediaObject interfaces are four-byte vtable
 // objects. Keep the exact Xbox ABI here; the Win32 implementation remains a
 // shim boundary until the audio backend is ported.
 struct _XMEDIAINFO;
-struct _XMEDIAPACKET;
+struct _XMEDIAPACKET {
+    void* pvBuffer;
+    unsigned int dwMaxSize;
+    unsigned int* pdwCompletedSize;
+    unsigned int* pdwStatus;
+    unsigned int reserved;
+    __int64* prtTimestamp;
+};
 struct XMediaObject;
 struct XFileMediaObject;
 struct XMediaObject_vtbl {
@@ -29,6 +33,20 @@ struct XMediaObject_vtbl {
 };
 struct XMediaObject {
     XMediaObject_vtbl* __vftable;
+};
+struct IDirectSoundStream;
+struct IDirectSoundStream_vtbl {
+    unsigned int (__stdcall *AddRef)(IDirectSoundStream*);
+    unsigned int (__stdcall *Release)(IDirectSoundStream*);
+    HRESULT (__stdcall *GetInfo)(IDirectSoundStream*, _XMEDIAINFO*);
+    HRESULT (__stdcall *GetStatus)(IDirectSoundStream*, unsigned int*);
+    HRESULT (__stdcall *Process)(IDirectSoundStream*, const _XMEDIAPACKET*,
+                                 const _XMEDIAPACKET*);
+    HRESULT (__stdcall *Discontinuity)(IDirectSoundStream*);
+    HRESULT (__stdcall *Flush)(IDirectSoundStream*);
+};
+struct IDirectSoundStream {
+    IDirectSoundStream_vtbl* __vftable;
 };
 struct XFileMediaObject_vtbl {
     unsigned int (__stdcall *AddRef)(XFileMediaObject*);
@@ -136,6 +154,8 @@ static_assert(sizeof(xbox_adpcmwaveformat_tag) == 20,
 static_assert(sizeof(XMediaObject) == 4, "Xbox XMediaObject layout mismatch");
 static_assert(sizeof(XFileMediaObject) == 4,
               "Xbox XFileMediaObject layout mismatch");
+static_assert(sizeof(IDirectSoundStream) == 4,
+              "Xbox IDirectSoundStream layout mismatch");
 static_assert(sizeof(tWAVEFORMATEX) == 18, "Xbox WAVEFORMATEX layout mismatch");
 static_assert(sizeof(xbox_WAVEFORMATEXTENSIBLE) == 40,
               "Xbox WAVEFORMATEXTENSIBLE layout mismatch");
