@@ -136,6 +136,15 @@ void RE_Text_PaintWithCursor(float x, float y, int font, float scale,
                              const float* const color, const char* text, int cursorPos,
                              char cursor, float depth, int limit,
                              int style);   // tr_text.cpp
+
+// RE_Text_Paint - ea: 0x006D1FE0
+void RE_Text_Paint(float x, float y, int font, float scale,
+                   const float* color, const char* text, float charWidth,
+                   int limit, int style)
+{
+    RE_Text_PaintWithCursor(x, y, font, scale, color, text, -1, 0,
+                            charWidth, limit, style);
+}
 // IDA labels these three renderer slots as nullsub forwarding thunks.
 void j_nullsub_110() {}
 void j_nullsub_111() {}
@@ -233,6 +242,14 @@ void trap_R_Text_PaintWithCursor(float x, float y, int font, float scale,
 {
     re.Text_PaintWithCursor(x, y, font, scale, color, text, cursorPos,
                             cursor, 0.0f, limit, style);
+}
+
+// trap_R_Text_Paint - ea: 0x006C2D10
+void trap_R_Text_Paint(float x, float y, int font, float scale,
+                       const float* color, const char* text,
+                       float charWidth, int limit, int style)
+{
+    re.Text_Paint(x, y, font, scale, color, text, charWidth, limit, style);
 }
 
 // ============================================================================

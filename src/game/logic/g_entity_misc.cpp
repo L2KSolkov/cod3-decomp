@@ -2896,12 +2896,6 @@ void trap_R_DrawStretchPic(float a, float b, float c, float d, float e,
 }
 void trap_R_RenderScene(const void* a) { (void)a; }
 void trap_R_SetColor(const float* a) { (void)a; }
-void trap_R_Text_Paint(float a, float b, int c, float d, const float* e,
-                       const char* f, float g, int h, int i)
-{
-    (void)a; (void)b; (void)c; (void)d; (void)e;
-    (void)f; (void)g; (void)h; (void)i;
-}
 void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
                       const math::Dir3& d)
 {
