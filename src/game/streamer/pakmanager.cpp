@@ -3102,6 +3102,7 @@ public:
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
     ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
     static void CreateInst();  // ?CreateInst@SceneManager@@SAXXZ
+    static void DeleteInst();  // ?DeleteInst@SceneManager@@SAXXZ
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
     void DebugRender();        // ?DebugRender@SceneManager@@QAEXXZ @ 0x675E20 (stub)
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
@@ -5532,6 +5533,25 @@ void SceneManager::CreateInst()
     {
         sInst = nullptr;
     }
+}
+
+// ea: 0x004DD1F0
+void SceneManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SceneManager.h";
+        AeAssert::gCurrentLine = 16;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
 }
 
 // ea: 0x675E10
