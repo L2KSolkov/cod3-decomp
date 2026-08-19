@@ -323,22 +323,21 @@ void nglDxSetupScene(nglScene* Scene) {
     int v17 = (int)(((Scene->sy1 + 1.0f) * 0.5f * Height + 0.5f));
     int v7 = (int)(((Scene->sx2 + 1.0f) * 0.5f * Width + 0.5f));
     int v8 = (int)(((Scene->sy2 + 1.0f) * 0.5f * Height + 0.5f));
-    int vp[10];
+    _D3DVIEWPORT8 vp;
     if (v18 != NULL && (v18->Flags & 0x4000) != 0) {
-        vp[1] = 0;
-        vp[0] = 0;
-        vp[2] = (int)Width;
-        v8 = (int)Height;
+        vp.X = 0;
+        vp.Y = 0;
+        vp.Width = (unsigned int)Width;
+        vp.Height = (unsigned int)Height;
     } else {
-        vp[0] = v19;
-        vp[1] = v17;
-        vp[2] = v7 - v19;
-        v8 = v8 - v17;
+        vp.X = (unsigned int)v19;
+        vp.Y = (unsigned int)v17;
+        vp.Width = (unsigned int)(v7 - v19);
+        vp.Height = (unsigned int)(v8 - v17);
     }
-    vp[3] = 0;
-    vp[4] = v8;
-    vp[5] = 1;
-    D3DDevice_SetViewport(vp);
+    vp.MinZ = 0.0f;
+    vp.MaxZ = 1.0f;
+    D3DDevice_SetViewport(&vp);
     void (*Fn)(void*) = Scene->SetupScene.Fn;
     float v10 = Scene->ClearZ;
     bool HasClear = Scene->ClearFlags != 0;
