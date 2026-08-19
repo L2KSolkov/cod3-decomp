@@ -305,6 +305,16 @@ static_assert(sizeof(CurveEffectListElem) == 0x1C,
               "CurveEffectListElem size mismatch");
 PoolAllocator* CurveEffectListElem::sAllocator = nullptr;
 
+// ea: 0x004DD610 (CurveManager.cpp)
+// SetupPoolAllocator assigns the common allocator to the curve families
+// before CurveManager::CreateInst registers its built-in evaluators.
+void CurveManager_SetupAllocator(PoolAllocator* allocator)
+{
+    CurveEvalFunc::sAllocator = allocator;
+    Curve::sAllocator = allocator;
+    CurveEffectListElem::sAllocator = allocator;
+}
+
 // ea: 0x00629780
 void CurveManager::AttachCurve(Curve* curve)
 {

@@ -29,6 +29,8 @@
 
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
+extern PoolAllocator* gCommonPoolAllocator;
+extern void CurveManager_SetupAllocator(PoolAllocator* allocator);
 
 // PakFile bank flags (PakFile.cpp; header flags + runtime state)
 #define PAK_BANK_FLAG_APK_HEADER 0x80      // bank is apk-backed (header)
@@ -13384,9 +13386,52 @@ void PakFile::SetupAllocator()
 }
 
 // ea: 0x004C8EB0
-// SetupPoolAllocator's PakFile stage is required before Com_Init loads paks.
+// SetupPoolAllocator's common pool stage is required before Com_Init creates
+// CurveManager and the other pool-backed systems.
 void SetupPoolAllocator()
 {
+    ae_sized_array<PoolAllocator::PoolConfig, 16> cfgList;
+    memset(&cfgList, 0, sizeof(cfgList));
+    cfgList.m_size = 0;
+
+    PoolAllocator::PoolConfig elt;
+    elt.blockSize = 20;
+    elt.blockAlign = 4;
+    elt.numBlocks = 4096;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    elt.blockSize = 32;
+    elt.blockAlign = 16;
+    elt.numBlocks = 2048;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    elt.blockSize = 80;
+    elt.blockAlign = 16;
+    elt.numBlocks = 2048;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    elt.blockSize = 128;
+    elt.blockAlign = 16;
+    elt.numBlocks = 1024;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    elt.blockSize = 256;
+    elt.blockAlign = 16;
+    elt.numBlocks = 450;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+
+    void* block = mem_heap_malloc(0x3Cu);
+    PoolAllocator* common = nullptr;
+    if (block != nullptr)
+        common = new (block) PoolAllocator(cfgList, 2u);
+
+    gCommonPoolAllocator = common;
+    CurveManager_SetupAllocator(common);
     PakFile::SetupAllocator();
 }
 

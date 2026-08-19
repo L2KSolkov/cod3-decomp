@@ -1180,9 +1180,11 @@ void MultiLineString::ParseForButtons(float scale, float button_scale)
                                      FONT_GEMFONTONE) + cur_width;
                 button_array[2 * i + 1].text_start_index = (short)v5;
                 button_array[2 * i + 1].x_offset = (short)cur_width;
+                v21 = i;
             }
             else
             {
+                v21 = i;
                 button_array_size = v38;
             }
             if (v21 == button_array_size / 2 - 1
@@ -1234,7 +1236,12 @@ void MultiLineString::Set(const char* d, font_index f, float scale,
         int button_array_size = this->button_array_size;
         if (button_array_size <= 0)
         {
-            total_width = GetWidth(data.c_str(), scale, font);
+            // IDA 0x0058D3B0 uses the string block payload directly and
+            // falls back to defaultFileName when the block is absent.
+            const char* text = defaultFileName;
+            if (data.mBlock != nullptr)
+                text = reinterpret_cast<const char*>(&data.mBlock[1]);
+            total_width = GetWidth(text, scale, font);
         }
         else
         {

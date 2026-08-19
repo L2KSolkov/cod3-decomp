@@ -25,7 +25,7 @@ namespace AeAssert {
 class PtrFixupTable {
 public:
     uint32_t  mSize;   // +0x00 — number of fixup entries
-    uint32_t* mList;   // +0x04 — pointer to fixup list (offset-fixed at load)
+    uint32_t* mList;   // +0x04 — fixup-list pointer, adjusted by byte offset
 
     void Fixup(const void* basePtr);
 };
@@ -73,7 +73,8 @@ static void FixupPointerChain(uint32_t nextBits, uint32_t* node) {
 // ea: 0x7E18D0
 // ============================================================================
 void PtrFixupTable::Fixup(const void* basePtr) {
-    mList = (uint32_t*)((uint8_t*)mList + (uintptr_t)basePtr);
+    mList = reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(mList) +
+                                        (uintptr_t)basePtr);
 
     if (mSize >= 10000000) {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;

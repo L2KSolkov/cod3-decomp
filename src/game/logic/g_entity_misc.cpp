@@ -2302,8 +2302,12 @@ void* InplaceAssetBankSet_GdbFileBank_ctor(void* self)
 }
 void* InplaceAssetBankSet_StringTableBank_ctor(void* self)
 {
-    (void)self;
-    return nullptr;
+    // IDA 0x4E40C0: initialize the fixed 99-entry bank array.
+    void** elements = reinterpret_cast<void**>(
+        reinterpret_cast<unsigned char*>(self) + 4);
+    for (unsigned int i = 0; i < 99; ++i)
+        elements[i] = nullptr;
+    return self;
 }
 void* mem_heap_malloc_sz(unsigned int size)
 {

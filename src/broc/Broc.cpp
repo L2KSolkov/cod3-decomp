@@ -13,16 +13,13 @@
 #include <new>
 
 // ============================================================================
-// External dependencies (stubs)
+// External dependencies
 // ============================================================================
-static void* mem_alloc(unsigned int size, unsigned int) {
-    extern void* COD3_mem_alloc(unsigned int, unsigned int);
-    return COD3_mem_alloc(size, 4);
-}
-static void mem_free(void* ptr) {
-    extern void COD3_mem_free(void*);
-    COD3_mem_free(ptr);
-}
+// IDA's Broc string routines call the global BrocSys allocator.  Keep these
+// declarations bound to that existing implementation so pool-owned blocks
+// are released through the matching ownership check.
+extern void* mem_alloc(unsigned int size, unsigned int align);
+extern void mem_free(void* ptr);
 
 extern int gNumStringsAlloc;
 extern int gNumStringsFreed;
@@ -334,32 +331,28 @@ void string::Block::Append(const char* txt, unsigned short strLen) {
 
 // ea: 0x004926DA0 (inline)
 int string::GetBlockSize(int hint) {
-    int size = hint + 13;
-    return (size + 3) & ~3;
+    return (hint + 32) & ~31;
 }
 
 // ea: 0x004926D20
-static void string_AllocBlock_internal(ae_pair<void*, int>* result, int hint) {
-    int finalSize = result->second + 12;
-    finalSize = string::GetBlockSize(finalSize);
+static void string_AllocBlock_internal(ae_pair<void*, int>* result, int size) {
+    int finalSize = string::GetBlockSize(size + 12);
     ++gNumStringsAlloc;
-    int usableSize = finalSize - 12;
     void* mem = mem_alloc(finalSize, 4);
     result->first = mem;
-    result->second = usableSize;
+    result->second = finalSize - 12;
 }
 
 // ea: 0x004926DC0
 string::Block* string::AllocBlock(const char* txt, unsigned int txtLen,
-                                   const char* sizeHint, unsigned int sizeHintLen) {
-    if (!sizeHint)
+                                   unsigned int sizeHint) {
+    if (!txt)
         return NULL;
 
-    int s = sizeHintLen ? (int)(sizeHintLen + 1) : (int)(txtLen + 1);
+    int s = sizeHint ? (int)(sizeHint + 1) : (int)(txtLen + 1);
 
     ae_pair<void*, int> r;
-    r.second = s;
-    string_AllocBlock_internal(&r, (int)txtLen);
+    string_AllocBlock_internal(&r, s);
 
     string::Block* blk = (string::Block*)r.first;
     if (blk) {
@@ -386,12 +379,12 @@ string::string(Block* b) {
 
 string::string(const char* txt) {
     unsigned int len = Broc::length(txt);
-    mBlock = AllocBlock(txt, len, txt, len);
+    mBlock = AllocBlock(txt, len, 0);
 }
 
 string::string(const char* txt, int) {
     unsigned int len = Broc::length(txt);
-    mBlock = AllocBlock(txt, len, txt, len);
+    mBlock = AllocBlock(txt, len, 0);
 }
 
 string::string(const string& rhs) {
@@ -413,48 +406,48 @@ string::string(unsigned int val) {
     char buf[16];
     sprintf(buf, "%u", val);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
 }
 
 string::string(int val) {
     char buf[16];
     sprintf(buf, "%d", val);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
 }
 
 string::string(float val) {
     char buf[32];
     sprintf(buf, "%g", val);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
 }
 
 string::string(const bint& val) {
     char buf[16];
     sprintf(buf, "%d", val.mVal);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
 }
 
 string::string(const bfloat& val) {
     char buf[32];
     sprintf(buf, "%g", val.mVal);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
 }
 
 string::string(const bunsigned& val) {
     char buf[16];
     sprintf(buf, "%u", val.mVal);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
 }
 
 string::string(const bbool& val) {
     const char* s = val.mVal ? "true" : "false";
     unsigned int len = Broc::length(s);
-    mBlock = AllocBlock(s, len, s, len);
+    mBlock = AllocBlock(s, len, 0);
 }
 
 string::~string() {
@@ -502,7 +495,7 @@ string& string::operator=(const char* txt) {
     Block* oldBlock = mBlock;
     if (txt) {
         unsigned int len = Broc::length(txt);
-        mBlock = AllocBlock(txt, len, txt, len);
+        mBlock = AllocBlock(txt, len, 0);
     } else {
         mBlock = NULL;
     }
@@ -514,7 +507,7 @@ string& string::operator=(const char* txt) {
 string& string::operator=(char c) {
     Block* oldBlock = mBlock;
     char buf[2] = { c, '\0' };
-    mBlock = AllocBlock(buf, 1, buf, 1);
+    mBlock = AllocBlock(buf, 1, 0);
     if (oldBlock)
         oldBlock->DecrementCount();
     return *this;
@@ -525,7 +518,7 @@ string& string::operator=(int val) {
     char buf[16];
     sprintf(buf, "%d", val);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
     if (oldBlock)
         oldBlock->DecrementCount();
     return *this;
@@ -536,7 +529,7 @@ string& string::operator=(float val) {
     char buf[32];
     sprintf(buf, "%g", val);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
     if (oldBlock)
         oldBlock->DecrementCount();
     return *this;
@@ -547,7 +540,7 @@ string& string::operator=(const vector& v) {
     char buf[64];
     sprintf(buf, "(%g %g %g)", v.x, v.y, v.z);
     unsigned int len = Broc::length(buf);
-    mBlock = AllocBlock(buf, len, buf, len);
+    mBlock = AllocBlock(buf, len, 0);
     if (oldBlock)
         oldBlock->DecrementCount();
     return *this;
@@ -608,7 +601,7 @@ void string::Append(const char* txt, unsigned int len) {
         txt = "(null)";
 
     if (!mBlock) {
-        mBlock = AllocBlock(txt, len, txt, len);
+        mBlock = AllocBlock(txt, len, 0);
     } else if (mBlock->mRefCount > 1) {
         // Copy-on-write
         unsigned int oldLen = mBlock->mLength;
@@ -616,7 +609,7 @@ void string::Append(const char* txt, unsigned int len) {
         char* oldBuf = mBlock->mBuff;
         Block* oldBlock = mBlock;
 
-        mBlock = AllocBlock(oldBuf, oldLen, (const char*)(uintptr_t)newLen, newLen);
+        mBlock = AllocBlock(oldBuf, oldLen, newLen);
         if (mBlock) {
             if (oldLen > 0)
                 memcpy(mBlock->mBuff, oldBuf, oldLen);
@@ -634,8 +627,7 @@ void string::Append(const char* txt, unsigned int len) {
         } else {
             unsigned int newLen = oldLen + len;
             Block* oldBlock = mBlock;
-            mBlock = AllocBlock(oldBlock->mBuff, oldLen,
-                                (const char*)(uintptr_t)newLen, newLen);
+            mBlock = AllocBlock(oldBlock->mBuff, oldLen, newLen);
             if (mBlock) {
                 memcpy(mBlock->mBuff, oldBlock->mBuff, oldLen);
                 memcpy(mBlock->mBuff + oldLen, txt, len);
@@ -715,7 +707,7 @@ string& string::remove_leading(const char* chars) {
     if (mBlock->mRefCount > 1) {
         Block* old = mBlock;
         unsigned int len = mBlock->mLength;
-        mBlock = AllocBlock(mBlock->mBuff, len, mBlock->mBuff, len);
+        mBlock = AllocBlock(mBlock->mBuff, len, 0);
         old->DecrementCount();
     }
 
@@ -745,7 +737,7 @@ string& string::remove_trailing(const char* chars) {
     if (mBlock->mRefCount > 1) {
         Block* old = mBlock;
         unsigned int len = mBlock->mLength;
-        mBlock = AllocBlock(mBlock->mBuff, len, mBlock->mBuff, len);
+        mBlock = AllocBlock(mBlock->mBuff, len, 0);
         old->DecrementCount();
     }
 
@@ -774,7 +766,7 @@ void string::set_char(unsigned int idx, char c) {
     if (mBlock->mRefCount > 1) {
         Block* old = mBlock;
         unsigned int len = mBlock->mLength;
-        mBlock = AllocBlock(mBlock->mBuff, len, mBlock->mBuff, len);
+        mBlock = AllocBlock(mBlock->mBuff, len, 0);
         old->DecrementCount();
     }
     mBlock->mBuff[idx] = c;
@@ -782,17 +774,18 @@ void string::set_char(unsigned int idx, char c) {
 
 string string::substr(unsigned int start, unsigned int count) const {
     string result(UNDEFINED);
-    if (!mBlock || start >= mBlock->mLength)
+    if (!mBlock || start >= mBlock->mLength || count == 0)
         return result;
 
-    unsigned int maxLen = mBlock->mLength - start;
-    if (count > maxLen)
-        count = maxLen;
+    if (count + start > mBlock->mLength)
+        count = mBlock->mLength - start;
 
-    if (count > 0) {
-        char* sub = mBlock->mBuff + start;
-        result.mBlock = AllocBlock(sub, count, sub, count);
-    }
+    const unsigned int end = start + count;
+    char* buffer = Block::GetBuff(mBlock);
+    const char saved = buffer[end];
+    buffer[end] = '\0';
+    result.mBlock = AllocBlock(&buffer[start], count, 0);
+    buffer[end] = saved;
     return result;
 }
 

@@ -373,7 +373,7 @@ int dword_F6A290[4 * 0x322];
 int g_debug_sync_queries = 0;
 PoolAllocator* gCommonPoolAllocator = nullptr;
 float sNaN = 0.0f;
-Broc::string gNULLString("");
+Broc::string gNULLString;
 unsigned int s_ImpactMessage = 0;
 
 // snd_wait (Entity +0x3C8): two HashStrings

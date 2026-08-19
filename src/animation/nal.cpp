@@ -10438,6 +10438,7 @@ struct FEMultiLineText {
     FEMultiLineText(font_index f, float x1, float y1, int z1,
                     panel_layer layer, float s, int horizJust, int vertJust,
                     color32 col);  // real in XboxLiveMenus.cpp
+    virtual void SetNumLines(int n);  // shell.o 0x56D6D0; IDA FEMultiLineText_vtbl +0x17C
 };
 
 struct vmCvar_t;
@@ -10499,8 +10500,7 @@ InteractionController::InteractionController(int client)
             text = new (mem) FEMultiLineText(
                 FONT_BUTTON, -1.0f, -1.0f, 0.0f, PANEL_LAYER_BACKGROUND,
                 0.7f, 0, 0, color32(0xDCDCDCDC));
-            ((void (__thiscall*)(void*, int))(
-                (void**)*(void**)text)[0x17C / 4])(text, 1);
+            text->FEMultiLineText::SetNumLines(1);
         }
         mRenderText[i] = text;
         mRenderTextPosX[i] = -1;

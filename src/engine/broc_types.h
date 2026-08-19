@@ -282,7 +282,7 @@ public:
 
     // --- static ---
     static Block* AllocBlock(const char* txt, unsigned int txtLen,
-                             const char* sizeHint, unsigned int sizeHintLen);
+                             unsigned int sizeHint);
     static int GetBlockSize(int hint);
 
 private:
