@@ -1813,6 +1813,55 @@ void DObj::operator delete(void* p)
     mem_heap_free(p);
 }
 
+// DObj::GetBoneParent - ea: 0x006CE560
+int DObj::GetBoneParent(int boneIndex)
+{
+    int baseBoneIndex = 0;
+    int modelIndex = 0;
+    if (this->numModels == 0)
+        return -1;
+
+    IVPointer<XModel>* model = this->models;
+    XModelParts* xmodelParts = nullptr;
+    for (;; ++model)
+    {
+        ValidatePakId((TPakId)model->mPakId);
+        XModelLod** lod = model->mValue->lod;
+        int lodIndex = 0;
+        while (*lod == nullptr)
+        {
+            ++lodIndex;
+            ++lod;
+        }
+
+        xmodelParts = model->mValue->lod[lodIndex]->xmodelParts;
+        int boneCount = xmodelParts->mHierarchy.mSize;
+        if (boneIndex - baseBoneIndex < boneCount)
+            break;
+
+        baseBoneIndex += boneCount;
+        ++modelIndex;
+        if (modelIndex >= this->numModels)
+            return -1;
+    }
+
+    if (modelIndex > 0 && boneIndex == baseBoneIndex)
+        return this->modelParents[modelIndex];
+
+    unsigned int localBoneIndex = (unsigned int)(boneIndex - baseBoneIndex);
+    if (localBoneIndex >= xmodelParts->mHierarchy.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelParts.h";
+        AeAssert::gCurrentLine = 217;
+        AeAssert::gCurrentExpr = "i >= 0 && i < mHierarchy.size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad Bone Index"))
+            __debugbreak();
+    }
+    return xmodelParts->mHierarchy.mList[localBoneIndex].mParentIndex;
+}
+
 // XModel::GetNumBones (render.o; stub)
 int XModel::GetNumBones(XModel* model, int lodIndex)
 {

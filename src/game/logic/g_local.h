@@ -5337,12 +5337,8 @@ public:
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
     DObj(TPakId pakId);            // ??0DObj@@QAE@W4TPakId@@@Z (render.o 0x6D9920)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
-    // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
-    int GetBoneParent(int boneIndex)
-    {
-        (void)boneIndex;
-        return -1;
-    }
+    // ?GetBoneParent@DObj@@QAEHH@Z (render.o 0x6CE560)
+    int GetBoneParent(int boneIndex);
     void SetLOD(int startLod);  // ?SetLOD@DObj@@QAEXH@Z (render.o 0x6EE150)
     void SetLODOverride(int startLod);  // ?SetLODOverride@DObj@@QAEXH@Z (cg_weapon.cpp)
     const math::Mat43::Packed& GetBaseRelMat(int boneIndex);  // ?GetBaseRelMat@DObj@@QAEABUPacked@Mat43@math@@H@Z (render.o)
