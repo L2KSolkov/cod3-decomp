@@ -54,6 +54,19 @@ struct nullD3DBuffer {
     nullD3DInfo Info;
 };
 
+// APK textures retain their Xbox D3D object in the serialized image section.
+// Keep host state beside those objects instead of changing the 20-byte XDK
+// resource layout.  The table is deliberately bounded like the fixed-size
+// resource tables used by the original frontend path.
+struct nullD3DExternalTexture {
+    D3DBaseTexture* Object;
+    unsigned int PackedFormat;
+    unsigned int PackedSize;
+    nullD3DInfo Info;
+};
+
+static nullD3DExternalTexture gNullExternalTextures[256] = {};
+
 static nullD3DTexture* gNullFrontBuffer = NULL;
 static nullD3DTexture* gNullBackBuffer = NULL;
 static nullD3DSurface* gNullDepthBuffer = NULL;
@@ -268,7 +281,101 @@ static nullD3DInfo* nullD3DFindInfo(void* Resource) {
 }
 
 static nullD3DInfo* nullD3DTextureInfo(D3DBaseTexture* Texture) {
-    return Texture == NULL ? NULL : &((nullD3DTexture*)Texture)->Info;
+    if (Texture == NULL)
+        return NULL;
+    for (unsigned int i = 0; i < sizeof(gNullExternalTextures) / sizeof(gNullExternalTextures[0]); ++i) {
+        if (gNullExternalTextures[i].Object == Texture)
+            return &gNullExternalTextures[i].Info;
+    }
+    return &((nullD3DTexture*)Texture)->Info;
+}
+
+static nullD3DExternalTexture* nullD3DFindExternalTexture(D3DBaseTexture* Texture) {
+    if (Texture == NULL)
+        return NULL;
+    for (unsigned int i = 0; i < sizeof(gNullExternalTextures) / sizeof(gNullExternalTextures[0]); ++i) {
+        if (gNullExternalTextures[i].Object == Texture)
+            return &gNullExternalTextures[i];
+    }
+    return NULL;
+}
+
+static unsigned int nullD3DExternalTextureWidth(unsigned int Format, unsigned int Size) {
+    if (Size != 0)
+        return (Size & 0xFFFu) + 1;
+    unsigned int LogWidth = (Format >> 20) & 0xFu;
+    return 1u << LogWidth;
+}
+
+static unsigned int nullD3DExternalTextureHeight(unsigned int Format, unsigned int Size) {
+    if (Size != 0)
+        return ((Size >> 12) & 0xFFFu) + 1;
+    unsigned int LogHeight = (Format >> 24) & 0xFu;
+    return 1u << LogHeight;
+}
+
+static unsigned int nullD3DExternalTextureLevels(unsigned int Format) {
+    unsigned int Levels = (Format >> 16) & 0xFu;
+    return Levels == 0 ? 1 : Levels;
+}
+
+static unsigned int nullD3DLinearBytesPerPixel(unsigned int Format) {
+    switch (Format) {
+    case D3DFMT_LIN_L8:
+    case D3DFMT_LIN_A8:
+        return 1;
+    case D3DFMT_LIN_A8L8:
+    case D3DFMT_LIN_R5G6B5:
+    case D3DFMT_LIN_A1R5G5B5:
+    case D3DFMT_LIN_X1R5G5B5:
+    case D3DFMT_LIN_A4R4G4B4:
+        return 2;
+    case D3DFMT_LIN_A8R8G8B8:
+    case D3DFMT_LIN_X8R8G8B8:
+    case D3DFMT_LIN_A8B8G8R8:
+    case D3DFMT_LIN_B8G8R8A8:
+    case D3DFMT_LIN_R8G8B8A8:
+        return 4;
+    default:
+        return 0;
+    }
+}
+
+static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size) {
+    if (Info == NULL || Info->NativeTexture == NULL || Info->Bits == NULL)
+        return;
+    unsigned int BytesPerPixel = nullD3DLinearBytesPerPixel(Info->Format);
+    if (BytesPerPixel == 0)
+        return;
+    unsigned int SourcePitch = Info->Width * BytesPerPixel;
+    if (Size != 0)
+        SourcePitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
+    COD3_D3D9_LOCKED_RECT Locked = {};
+    if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
+        return;
+    unsigned int RowBytes = Info->Width * BytesPerPixel;
+    unsigned int Rows = Info->Height;
+    const unsigned char* Source = Info->Bits;
+    unsigned char* Destination = (unsigned char*)Locked.pBits;
+    for (unsigned int y = 0; y < Rows; ++y)
+        memcpy(Destination + y * Locked.Pitch, Source + y * SourcePitch, RowBytes);
+    Info->NativeTexture->UnlockRect(0);
+}
+
+static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
+                                        unsigned int PackedFormat) {
+    if (Info == NULL || Info->NativeTexture != NULL || gD3D9Device == NULL)
+        return;
+    if ((PackedFormat & 0x40u) != 0)
+        return;
+    if (nullD3DLinearBytesPerPixel(Info->Format) == 0)
+        return;
+    if (FAILED(gD3D9Device->CreateTexture(Info->Width, Info->Height, Info->Levels, 0,
+                                          nullD3DNativeFormat(Info->Format), D3DPOOL_MANAGED,
+                                          &Info->NativeTexture, NULL)))
+        return;
+    Info->NativeResource = Info->NativeTexture;
+    nullD3DUploadExternalTexture(Info, Size);
 }
 
 static nullD3DInfo* nullD3DSurfaceInfo(D3DSurface* Surface) {
@@ -749,6 +856,10 @@ void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture)
         return;
     IDirect3DBaseTexture9* NativeTexture = NULL;
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
+    nullD3DExternalTexture* External = nullD3DFindExternalTexture(Texture);
+    if (External != NULL)
+        nullD3DCreateExternalNative(&External->Info, External->PackedSize,
+                                    External->PackedFormat);
     if (Info != NULL)
         NativeTexture = Info->NativeTexture;
     gD3D9Device->SetTexture(Stage, NativeTexture);
@@ -826,7 +937,58 @@ void __stdcall D3DDevice_Swap(unsigned int) {
 void __stdcall D3DDevice_SwitchTexture(unsigned int, unsigned int, unsigned int) {}
 unsigned int __stdcall D3DPalette_Lock2(D3DPalette*, unsigned int) { return 0; }
 void __stdcall D3DResource_BlockUntilNotBusy(D3DResource*) {}
-void __stdcall D3DResource_Register(D3DResource*, void*) {}
+void __stdcall D3DResource_Register(D3DResource* Resource, void* Base) {
+    if (Resource == NULL || Base == NULL)
+        return;
+
+    nullD3DExternalTexture* Existing =
+        nullD3DFindExternalTexture((D3DBaseTexture*)Resource);
+    if (Existing != NULL && Existing->Info.Magic == NULL_D3D_MAGIC) {
+        nullD3DCreateExternalNative(&Existing->Info, Existing->PackedSize,
+                                    Existing->PackedFormat);
+        return;
+    }
+
+    // This is the host equivalent of the Xbox Register contract: the
+    // serialized resource stores an offset into the physical section, while
+    // callers subsequently expect Data to be an address.
+    unsigned int DataOffset = Resource->Data;
+    Resource->Data = (unsigned int)(uintptr_t)((unsigned char*)Base + DataOffset);
+
+    if ((Resource->Common & 0x70000u) != 0x40000u)
+        return;
+
+    D3DBaseTexture* Texture = (D3DBaseTexture*)Resource;
+    nullD3DExternalTexture* Slot = NULL;
+    for (unsigned int i = 0; i < sizeof(gNullExternalTextures) / sizeof(gNullExternalTextures[0]); ++i) {
+        if (gNullExternalTextures[i].Object == Texture) {
+            Slot = &gNullExternalTextures[i];
+            break;
+        }
+        if (Slot == NULL && gNullExternalTextures[i].Object == NULL)
+            Slot = &gNullExternalTextures[i];
+    }
+    if (Slot == NULL)
+        return;
+
+    Slot->Object = Texture;
+    Slot->PackedFormat = Texture->Format;
+    Slot->PackedSize = Texture->Size;
+    nullD3DInfo* Info = &Slot->Info;
+    if (Info->Magic != NULL_D3D_MAGIC) {
+        memset(Info, 0, sizeof(*Info));
+        Info->Magic = NULL_D3D_MAGIC;
+        Info->Kind = NULL_D3D_TEXTURE;
+    }
+    Info->Width = nullD3DExternalTextureWidth(Texture->Format, Texture->Size);
+    Info->Height = nullD3DExternalTextureHeight(Texture->Format, Texture->Size);
+    Info->Depth = 1;
+    Info->Levels = nullD3DExternalTextureLevels(Texture->Format);
+    Info->Format = (Texture->Format >> 8) & 0xFFu;
+    Info->SizeBytes = 0;
+    Info->Bits = (unsigned char*)(uintptr_t)Resource->Data;
+    nullD3DCreateExternalNative(Info, Texture->Size, Slot->PackedFormat);
+}
 int __stdcall D3DSurface_GetDesc(D3DSurface* Surface, _D3DSURFACE_DESC* Desc) {
     nullD3DInfo* Info = nullD3DSurfaceInfo(Surface);
     if (Info == NULL || Desc == NULL) return 0x80004005;
