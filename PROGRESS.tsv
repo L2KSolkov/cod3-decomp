@@ -136,7 +136,7 @@ ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	PORTED	[ngl_xboxr] ngl_quad.
 
 ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	PORTED	ngl_mesh.cpp: process/load/unload mesh+material, LOD selection, mesh list-add + scaled matrix; owns mesh/material directories (moved from ngl_internal) + 3 instance banks + GetMesh/GetMaterialFunc; nglShader canonical vtable + nglMeshNode added; tlInstanceBank.h extracted; fixed real nglMeshSection/nglMesh/nglMeshLOD layouts + ngl_gpu_meshedit offsets
 
-ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	PORTED	ngl_dx_scene.cpp: render/z-target + cube-map setters, FSAA device matrix, garbage states, scene setup (Z/stencil/viewport/clear), render scene recursion + render-node dispatch, scene-node callback, begin-scene defaults, fog/DOF enable; ngliScene base (ClearStencil/CubeMapFace) added; RopZCmpAlwaysRead/SetViewport/Clear shims
+ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	PORTED	ngl_dx_scene.cpp: render/z-target + cube-map setters with release assert flow, FSAA device matrix, garbage states, scene setup (Z/stencil/viewport/clear), render scene recursion + render-node dispatch, scene-node callback, begin-scene defaults, fog/DOF enable; ngliScene base (ClearStencil/CubeMapFace) added; RopZCmpAlwaysRead/SetViewport/Clear shims
 
 nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
