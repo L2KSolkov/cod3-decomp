@@ -33,6 +33,7 @@ extern unsigned int dword_BC2D08;
 extern unsigned int dword_BC2D0C;
 extern unsigned int dword_BC2D38;
 extern unsigned int dword_BC2D80;
+extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
 // ============================================================================
 // Data statics (apsInternal.o).
@@ -177,6 +178,44 @@ void apsInternal::SubmitSpawnedEffectQueue() {
 
 // ea: 0x8035C0
 void apsInternal::GetLocalLights(nglLightContext* ioLightContext, const apsSphere& iSphere) {
+    const int lightCategory = static_cast<int>(static_cast<signed char>(
+        (static_cast<unsigned int>(sMeshLightCat) >> 24) & 0xFFu));
+    const int listIndex = lightCategory - 1;
+    nglLightNode* const head = &ioLightContext->Head;
+
+    head->LocalNext = head;
+    nglLightNode* light = head->Next[listIndex];
+    const math::Vector4& sphere = iSphere.mSphere;
+    const nglLightNode* sentinel = reinterpret_cast<const nglLightNode*>(ioLightContext);
+
+    while (light != sentinel) {
+        switch (light->Type) {
+        case NGLLIGHT_POINT: {
+            const __m128* nodeData = static_cast<const __m128*>(light->NodeData);
+            const __m128 delta = _mm_sub_ps(nodeData[0], sphere.v);
+            const __m128 squared = _mm_mul_ps(delta, delta);
+            const float distanceSquared = squared.m128_f32[0] +
+                squared.m128_f32[1] + squared.m128_f32[2];
+            const float radius = nodeData[2].m128_f32[1] + sphere.v.m128_f32[3];
+            if (radius * radius < distanceSquared) {
+                light = light->Next[listIndex];
+                continue;
+            }
+            break;
+        }
+        case NGLLIGHT_DIRECTIONAL:
+            break;
+        default:
+            if (_tlAssert("source/apsInternal.cpp", 127, "0", "Invalid light type."))
+                __debugbreak();
+            light = light->Next[listIndex];
+            continue;
+        }
+
+        light->LocalNext = head->LocalNext;
+        head->LocalNext = light;
+        light = light->Next[listIndex];
+    }
 }
 
 // ea: 0x8036D0

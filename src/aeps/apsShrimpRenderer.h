@@ -15,19 +15,12 @@
 #include "apsRenderNode.h"
 #include "apsCommon.h"
 #include "ngl/nglScene.h"
+#include "ngl/ngl_lighting.h"
 #include <intrin.h>
 
-struct nglLightContext;
-
 // ============================================================================
-// nglLightContext — light context (112 bytes; only Ambient used here).
+// nglLightContext — 112-byte IDA-verified light context.
 // ============================================================================
-struct nglLightContext {
-    uint8_t           _pad0[0x60];     // +0x00 (Head/ProjHead)
-    math::Vector4     Ambient;         // +0x60
-};
-static_assert(sizeof(nglLightContext) == 0x70, "nglLightContext size mismatch");
-
 // ============================================================================
 // apsEBlendMode — particle blend modes (values from IDA)
 // ============================================================================
