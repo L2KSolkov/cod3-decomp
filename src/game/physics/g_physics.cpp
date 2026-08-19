@@ -11861,6 +11861,45 @@ void Destructible::AddPiece(Entity* ent, const char* exploderType)
 // inplace.o/streamer.o; local C-name helpers stand in until those templates
 // are ported (same pattern as ConfigStringManager::DecodeBank).
 // ============================================================================
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+extern void mem_heap_free(void* ptr);
+
+class AssetBankSet {
+public:
+    AssetBankSet();
+    virtual ~AssetBankSet();
+    virtual void UnloadBank(TPakId pak_id);
+};
+
+template <typename BankT>
+class InplaceAssetBankSet : public AssetBankSet {
+public:
+    BankT* mBankArray[99];
+
+    InplaceAssetBankSet() : AssetBankSet()
+    {
+        memset(mBankArray, 0, sizeof(mBankArray));
+    }
+
+    virtual ~InplaceAssetBankSet() {}
+
+    virtual void UnloadBank(TPakId pak_id)
+    {
+        int index = (int)pak_id;
+        if (index >= 0 && index < 99 && mBankArray[index] != nullptr)
+        {
+            OnBankUnloaded(mBankArray[index]);
+            mBankArray[index] = nullptr;
+        }
+    }
+
+    virtual void OnBankUnloaded(BankT* bank)
+    {
+        (void)bank;
+    }
+};
+
 class PhysDataBank;
 class DestructibleBank;
 class DestructibleLocal;
@@ -11872,14 +11911,84 @@ public:
     IVPointer<PhysData> GetPhysData(
         TPakId pak_id, const char* name);  // ?GetPhysData@PhysDataBankManager@@QAE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PBD@Z
 };
-class DestructibleBankManager {
+class DestructibleBankManager : public InplaceAssetBankSet<DestructibleBank> {
 public:
     static DestructibleBankManager* sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A (g_globals.cpp)
+    static DestructibleBankManager* CreateInst();
+    static void DeleteInst();
+    DestructibleBankManager();
+    virtual ~DestructibleBankManager();
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);  // ?DecodeBank@DestructibleBankManager@@QAEXPBDPAEHW4TPakId@@@Z
     IVPointer<Destructible> GetDestructible(
         TPakId pak_id, const char* name);  // ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z
 };
+
+static_assert(sizeof(InplaceAssetBankSet<DestructibleBank>) == 0x190,
+              "InplaceAssetBankSet<DestructibleBank> size mismatch");
+static_assert(sizeof(DestructibleBankManager) == 0x190,
+              "DestructibleBankManager size mismatch");
+
+// ea: 0x004E5CF0
+DestructibleBankManager::DestructibleBankManager()
+    : InplaceAssetBankSet<DestructibleBank>()
+{
+}
+
+// ea: 0x004E5D40
+DestructibleBankManager::~DestructibleBankManager()
+{
+}
+
+// ea: 0x004E7FE0
+DestructibleBankManager* DestructibleBankManager::CreateInst()
+{
+    if (DestructibleBankManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\Destructible.h";
+        AeAssert::gCurrentLine = 268;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "core", "c:\\cod\\code\\game\\Destructible.h", 268);
+    if (memory != nullptr)
+    {
+        DestructibleBankManager* result =
+            new (memory) DestructibleBankManager();
+        DestructibleBankManager::sInst = result;
+        return result;
+    }
+    DestructibleBankManager::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004B5590
+void DestructibleBankManager::DeleteInst()
+{
+    DestructibleBankManager* instance = DestructibleBankManager::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\Destructible.h";
+        AeAssert::gCurrentLine = 268;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~DestructibleBankManager();
+        mem_heap_free(instance);
+    }
+    DestructibleBankManager::sInst = nullptr;
+}
 
 // InplaceAssetBank<PhysData,InplaceTree<InplaceString,unsigned int>>::Fixup
 // @ 0x410B14 / InplaceAssetBankSet<PhysDataBank>::AddBank @ 0x42E4F2 (stubs)
