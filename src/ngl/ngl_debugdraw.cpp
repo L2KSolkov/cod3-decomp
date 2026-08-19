@@ -24,8 +24,6 @@ extern bool nglIsInitialized();                         // ngl_internal.o
 extern unsigned int nglGetDisplayMode();                // ngl_internal.o
 extern void nglSetDisplayMode(unsigned int* Modes, unsigned int ModeCount);  // ngl_dx_core.o
 extern void ngliWaitForResource();                      // ngl_dx_core.o
-extern void nglGpuAcquireDevice();                      // ngl_gpu.o
-extern void nglGpuReleaseDevice();                      // ngl_gpu.o
 extern void nglFontParseToken(unsigned char** Text, unsigned int* Token);
 extern void nglFontParseToken(unsigned char** Text, float* Token);
 extern void nglFontParseToken(unsigned char** Text, float* TokenA, float* TokenB);
@@ -95,7 +93,7 @@ static void Plot32_5_6_5_11_5_0_(int X, int Y, unsigned int Color, unsigned int 
 // ============================================================================
 // nglDebugDrawBegin - ea: 0x850790
 // ============================================================================
-void* nglDebugDrawBegin() {
+void nglDebugDrawBegin() {
     if (nglDebugDrawActive
         && _tlAssert("src/ngl_debugdraw.cpp", 191, "nglDebugDrawActive == false",
                      "Already in debug draw."))
@@ -103,7 +101,6 @@ void* nglDebugDrawBegin() {
     nglDebugDrawActive = true;
     if (!nglIsInitialized())
         nglInit();
-    nglGpuAcquireDevice();
     if (nglGetDisplayMode() == 0) {
         unsigned int Modes[5] = { 1, 2, 3, 4, 5 };
         nglSetDisplayMode(Modes, 5);
@@ -120,7 +117,6 @@ void* nglDebugDrawBegin() {
     Screen = Rect.pBits;
     Pitch = Rect.Pitch;
     Format = Desc.Format;
-    return Rect.pBits;
 }
 
 // ============================================================================
@@ -137,7 +133,6 @@ void nglDebugDrawEnd() {
     Screen = NULL;
     Pitch = 0;
     Format = 0;
-    nglGpuReleaseDevice();
 }
 
 // ============================================================================
@@ -162,22 +157,22 @@ int nglDebugDrawGetHeight() {
 // ============================================================================
 // nglDebugDrawPlot - ea: 0x850A70
 // ============================================================================
-void nglDebugDrawPlot(unsigned int X, unsigned int Y, unsigned int Color,
+void nglDebugDrawPlot(int X, int Y, unsigned int Color,
                       unsigned int Size) {
     if (!nglDebugDrawActive
         && _tlAssert("src/ngl_debugdraw.cpp", 145, "nglDebugDrawActive == true",
                      "nglDebugDrawBegin was not called."))
         __debugbreak();
-    if (X < (unsigned int)Width && Y < (unsigned int)Height
+    if (X >= 0 && Y >= 0 && X < Width && Y < Height
         && ((Color >> 24) == 0xFF || ((Y ^ X) & 1) == 0)) {
         switch (Format) {
         case 0x11:
         case 0x1C:
-            Plot32_5_6_5_11_5_0_((int)X, (int)Y, Color, Size);
+            Plot32_5_6_5_11_5_0_(X, Y, Color, Size);
             break;
         case 0x12:
         case 0x1E:
-            Plot32_8_8_8_16_8_0_((int)X, (int)Y, Color, Size);
+            Plot32_8_8_8_16_8_0_(X, Y, Color, Size);
             break;
         default:
             _tlAssert("src/ngl_debugdraw.cpp", 182, "false", "Unknown frontbuffer format.");
