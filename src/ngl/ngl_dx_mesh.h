@@ -15,7 +15,7 @@ namespace apk { class apkFileEntry; }
 _D3DVERTEXATTRIBUTEFORMAT* nglGetVertexDeclaration(_D3DVERTEXATTRIBUTEFORMAT* Src);
 void ngliProcessSection(nglMesh* Mesh, nglMeshSection* Section, apk::apkFileEntry* Entry);
 void ngliReleaseSection(nglMeshSection* Section);
-int ngliListAddMesh_GetClipResult(const math::Position3* Center, float Radius,
-                                  unsigned char ParamFlags);
+int ngliListAddMesh_GetClipResult(const math::Position3& Center, float Radius,
+                                  int ParamFlags);
 
 #endif // COD3_NGL_NGL_DX_MESH_H

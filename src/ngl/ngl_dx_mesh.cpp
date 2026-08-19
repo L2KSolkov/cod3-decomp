@@ -16,8 +16,8 @@
 // Cross-object externs
 // ============================================================================
 extern nglScene* nglBuildScene;                        // ngl_scene.o
-extern bool nglIsSphereVisible(const nglFrustum* Frustum, const math::Vector4* Center,
-                              float Radius);          // ngl_lighting.o
+extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                               const math::Vector4* Clip); // render.o inline
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);
 
 // ============================================================================
@@ -98,11 +98,10 @@ void ngliReleaseSection(nglMeshSection* Section) {
 // ============================================================================
 // ngliListAddMesh_GetClipResult - ea: 0x854060
 // ============================================================================
-int ngliListAddMesh_GetClipResult(const math::Position3* Center, float Radius,
-                                  unsigned char ParamFlags) {
+int ngliListAddMesh_GetClipResult(const math::Position3& Center, float Radius,
+                                  int ParamFlags) {
     if ((ParamFlags & 0x40) != 0
-        || nglIsSphereVisible((const nglFrustum*)&nglBuildScene->ClipPlanes,
-                              (const math::Vector4*)Center, Radius))
+        || nglIsSphereVisible(Center, Radius, nglBuildScene->ClipPlanes))
         return 0;
     return -1;
 }

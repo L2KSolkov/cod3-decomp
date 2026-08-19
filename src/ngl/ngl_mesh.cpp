@@ -27,9 +27,9 @@ extern bool nglProfileEvalShader(nglShader* Shader);  // ngl_debug.o
 extern void nglValidateMatrices(nglScene* Scene);     // ngl_scene.o
 extern void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
                              const nglMeshParams* Params);  // ngl_scenedump.o
-extern int ngliListAddMesh_GetClipResult(const math::Position3* Center,
+extern int ngliListAddMesh_GetClipResult(const math::Position3& Center,
                                          float Radius,
-                                         unsigned char ParamFlags);  // ngl_dx_mesh.o
+                                         int ParamFlags);  // ngl_dx_mesh.o
 extern void ngliWaitForResource(void);            // ngl_dx_core.o
 extern void nglMorphInit();                        // ngl_morph.o
 extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);  // nglRenderNode.h
@@ -290,8 +290,8 @@ nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld
                            _mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 85), ScaledMatrix->y.v)),
                 _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 170), ScaledMatrix->z.v),
                            ScaledMatrix->w.v));
-            if (ngliListAddMesh_GetClipResult(&Center, v52,
-                                              (unsigned char)ParamFlags) != -1) {
+            if (ngliListAddMesh_GetClipResult(Center, v52,
+                                              (int)ParamFlags) != -1) {
                 if (Mesh->NLODs != 0)
                     Mesh = nglListAddMesh_GetLOD(Mesh, (char)ParamFlags, MeshParams, &Center);
                 nglMeshNode* node = (nglMeshNode*)nglListAlloc(0x90, 0x40);
