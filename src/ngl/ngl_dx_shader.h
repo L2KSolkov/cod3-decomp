@@ -15,7 +15,7 @@ void nglDxSetBonesWorld(int p, nglMeshNode* MeshNode, nglMeshSection* Section);
 void nglDxSetupVShaderFog(int VSReg, nglMeshNode* MeshNode, float FogNear, float FogFar,
                           float FogMin, float FogMax);
 void nglDxSetupVShaderLights(int VSReg, nglMeshNode* MeshNode);
-void nglDxRegisterInternalShaders();
+const unsigned int* nglDxRegisterInternalShaders();
 void nglDxInitShaders(bool RegisterShaders);
 void nglDxSetupVShaderBones(int VSReg, nglMeshNode* MeshNode, nglMeshSection* Section);
 void nglDxSetBonesLocal(int p, nglMeshNode* MeshNode, nglMeshSection* Section);
