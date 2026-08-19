@@ -346,7 +346,7 @@ render_xboxr:cdWaterShader.o	render_xboxr	cdWaterShader.o	engine	6	PORTED	cdWate
 
 render_xboxr:cdWorldVertexLitShader.o	render_xboxr	cdWorldVertexLitShader.o	engine	6	PORTED	cdWorldVertexLitShader.h/.cpp (world vertex lit: mat ctor/Init/Toggle/Register/AddNode/Render)
 
-render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	PORTED	cdBackgroundShader.h/.cpp (background shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	PORTED	cdBackgroundShader.h/.cpp (background shader: mat ctor/Init/Toggle/Register/AddNode/Render)
 
 aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	PORTED	apsRegister.cpp (registry: GetNewSimpleMesh/ShrimpRenderer, apsGetRenderer/apsGetDomain/apsGetAction dispatch + fixup-table build, apsLoadEffectInplace; apsParam ops, GetEnum, Create*Domain, GetNew*Renderer, template domains, RetrieveVtable COMDATs)
 

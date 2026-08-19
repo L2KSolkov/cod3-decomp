@@ -29,6 +29,8 @@ static_assert(sizeof(cdBackgroundShaderMat) == 0x14, "cdBackgroundShaderMat size
 // ============================================================================
 struct cdBackgroundShaderNode : nglShaderNode {
     cdBackgroundShaderMat* mMaterial;  // +0x14
+
+    void Render() override;              // @0x7E06F0
 };
 static_assert(sizeof(cdBackgroundShaderNode) == 0x18, "cdBackgroundShaderNode size mismatch");
 
