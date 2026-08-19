@@ -25,10 +25,10 @@ static const unsigned char s_infiniteSphereRadius[4] = { 0xAE, 0xC5, 0x9D, 0x74 
 // ============================================================================
 // nglSetMeshSphere - ea: 0x844780
 // ============================================================================
-void nglSetMeshSphere(nglMesh* Mesh, const math::Position3* Center, float Radius) {
-    Mesh->Sphere[0] = Center->v.m128_f32[0];
-    Mesh->Sphere[1] = Center->v.m128_f32[1];
-    Mesh->Sphere[2] = Center->v.m128_f32[2];
+void nglSetMeshSphere(nglMesh* Mesh, const math::Position3& Center, float Radius) {
+    Mesh->Sphere[0] = Center.v.m128_f32[0];
+    Mesh->Sphere[1] = Center.v.m128_f32[1];
+    Mesh->Sphere[2] = Center.v.m128_f32[2];
     Mesh->Sphere[3] = Radius;
 }
 

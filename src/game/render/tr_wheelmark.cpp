@@ -602,7 +602,7 @@ nglMesh* auxCloseScratchMesh(nglMesh* m);                  // ?auxCloseScratchMe
 nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
                                         gpuVertexFormat* VertexFormat);
 void nglUnlockSectionIndices(void);
-void nglSetMeshSphere(nglMesh* Mesh, const math::Position3* Center, float Radius);
+void nglSetMeshSphere(nglMesh* Mesh, const math::Position3& Center, float Radius);
 extern gpuVertexFormat cdDynamicDecalVertexFormat;  // cdDynamicDecalVertexDef.cpp
 nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams,
@@ -827,7 +827,7 @@ void DynamicDecalSet::Render()
             float dy = maxY - minY;
             float dz = maxZ - minZ;
             float radius = sqrtf(dx * dx + dy * dy + dz * dz);
-            nglSetMeshSphere(mesh, &center, radius);
+            nglSetMeshSphere(mesh, center, radius);
 
             math::Mat43 identity;
             identity.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
