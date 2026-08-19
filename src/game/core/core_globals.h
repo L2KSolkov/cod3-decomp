@@ -172,6 +172,3 @@ extern void* sInst;                    // 0x012F03A8 (CtrlIcon*)
 namespace AnimHeapStatics {
 extern AnimHeap* sInst;                // 0x012F0398
 }
-namespace RumbleManagerStatics {
-extern RumbleManager::InstanceHolder sInstHolder;  // 0x012F042C
-}

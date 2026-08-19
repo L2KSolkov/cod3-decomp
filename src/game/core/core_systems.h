@@ -732,9 +732,10 @@ static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 
 class RumbleManager {
 public:
-    static void CreateInst();  // ?CreateInst@RumbleManager@@SAXXZ (core.o)
+    static RumbleManager* CreateInst();  // ?CreateInst@RumbleManager@@SAPAV1@XZ (core.o)
     static void DeleteInst();  // ?DeleteInst@RumbleManager@@SAXXZ (core.o)
     struct InstanceHolder;
+    static InstanceHolder sInstHolder;  // ?sInstHolder@RumbleManager@@2UInstanceHolder@1@A
     static RumbleManager* Inst(int instance);  // ea: 0x004A9DA0
     RumbleEffectInstanceHandle mNextHandle;            // +0x00
     reserved_dlist<RumbleEffectInstance> mRumbleLists[2];  // +0x04

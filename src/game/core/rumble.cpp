@@ -7,6 +7,7 @@
 #include "game/core/core_globals.h"
 
 #include <string.h>
+#include <new>
 
 // Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
 class controller { public:
@@ -40,6 +41,77 @@ bool Warning(const char* fmt, ...);
 extern float ComputeIntensity(float min_distance, float max_distance,
                               float distance);
 extern void controller_stop_all_rumble(void* self);
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
+extern void mem_heap_free(void* ptr);
+
+// ea: 0x004E8B70
+RumbleManager* RumbleManager::CreateInst()
+{
+    RumbleManager* result = nullptr;
+    if (RumbleManager::sInstHolder.sInst[0] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleManager.h";
+        AeAssert::gCurrentLine = 24;
+        AeAssert::gCurrentExpr = "sInstHolder.sInst[0]==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("multiton already created!"))
+            __debugbreak();
+    }
+    result = static_cast<RumbleManager*>(
+        mem_heap_malloc_ctx(0x30u, 4, "core",
+                            "c:\\cod\\code\\game\\RumbleManager.h", 24));
+    if (result != nullptr)
+    {
+        result->mNextHandle.mVal = 1;
+        reserved_dlist<RumbleEffectInstance>* lists = result->mRumbleLists;
+        lists[0].m_size = 0;
+        lists[0].m_tail = reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+            &lists[0].m_head);
+        lists[0].m_end = nullptr;
+        lists[0].m_head = reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+            &lists[0].m_end);
+        lists[1].m_tail = reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+            &lists[1].m_head);
+        lists[1].m_size = 0;
+        lists[1].m_head = reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+            &lists[1].m_end);
+        lists[1].m_end = nullptr;
+        result->mClient = 0;
+        result->mLastTimeNotRumbling = 0;
+        result->mDontRumbleAgainUntil = 0;
+        RumbleManager::sInstHolder.sInst[0] = result;
+    }
+    else
+    {
+        RumbleManager::sInstHolder.sInst[0] = nullptr;
+    }
+    return result;
+}
+
+// ea: 0x004E9C50
+void RumbleManager::DeleteInst()
+{
+    if (RumbleManager::sInstHolder.sInst[0] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleManager.h";
+        AeAssert::gCurrentLine = 24;
+        AeAssert::gCurrentExpr = "sInstHolder.sInst[0]!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("multiton not created!"))
+            __debugbreak();
+    }
+    RumbleManager* instance = RumbleManager::sInstHolder.sInst[0];
+    if (instance != nullptr)
+    {
+        instance->~RumbleManager();
+        mem_heap_free(instance);
+    }
+    RumbleManager::sInstHolder.sInst[0] = nullptr;
+}
 
 // ea: 0x004DE110 (core.o)
 bool RumbleEffect::GetEnabled(ERumbleMotorID rumbleID) const
@@ -231,7 +303,7 @@ RumbleManager* RumbleManager::Inst(int instance)
         ASSERT("instance >= 0 && instance < 1",
                "c:\\cod\\code\\game\\RumbleManager.h", 24);
     }
-    return RumbleManagerStatics::sInstHolder.sInst[instance];
+    return RumbleManager::sInstHolder.sInst[instance];
 }
 
 // ea: 0x004BD130

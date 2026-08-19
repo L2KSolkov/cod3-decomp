@@ -41,7 +41,7 @@ public:
     static void CreateInst();
     AnimBank* GetBank(TPakId pak_id);  // ?GetBank@AnimBankManager@@QAEPAUAnimBank@@W4TPakId@@@Z
 };
-class RumbleManager { public: static void CreateInst(); static void DeleteInst(); };
+class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
 class InteractionController { public: static void CreateInst(); static void DeleteInst(); };
 class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
@@ -95,8 +95,6 @@ void AnimBankManager_UnloadAll()
 {
     // stub
 }
-void RumbleManager::CreateInst() {}
-void RumbleManager::DeleteInst() {}
 void InteractionController::CreateInst() {}
 void InteractionController::DeleteInst() {}
 void BinFileManager::CreateInst() {}
