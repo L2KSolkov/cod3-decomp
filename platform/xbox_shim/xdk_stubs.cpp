@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <objbase.h>
+#include <wincodec.h>
 #include <windows.h>
 
 // These records keep the D3D8-shaped ABI used by the ported NGL code while
@@ -731,6 +733,108 @@ static nullD3DTexture* nullD3DCreateTexture(unsigned int Width, unsigned int Hei
         }
     }
     return Texture;
+}
+
+struct nullD3DImageInfo {
+    unsigned int Width;
+    unsigned int Height;
+    unsigned int Depth;
+    unsigned int MipLevels;
+    _D3DFORMAT Format;
+};
+
+static bool nullD3DDecodeImage(const void* Source, unsigned int Size,
+                               unsigned int Usage, D3DTexture** Texture,
+                               void* SourceInfo) {
+    if (Source == NULL || Size == 0 || Texture == NULL)
+        return false;
+
+    HRESULT CoResult = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    bool CoInitialized = SUCCEEDED(CoResult);
+    IWICImagingFactory* Factory = NULL;
+    IWICStream* Stream = NULL;
+    IWICBitmapDecoder* Decoder = NULL;
+    IWICBitmapFrameDecode* Frame = NULL;
+    IWICFormatConverter* Converter = NULL;
+    unsigned char* Pixels = NULL;
+    nullD3DTexture* HostTexture = NULL;
+    unsigned int Width = 0;
+    unsigned int Height = 0;
+    bool Success = false;
+
+    do {
+        if (FAILED(CoResult) && CoResult != RPC_E_CHANGED_MODE)
+            break;
+        if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, NULL,
+                                    CLSCTX_INPROC_SERVER,
+                                    IID_IWICImagingFactory,
+                                    (void**)&Factory)))
+            break;
+        if (FAILED(Factory->CreateStream(&Stream)) ||
+            FAILED(Stream->InitializeFromMemory((BYTE*)Source, Size)) ||
+            FAILED(Factory->CreateDecoderFromStream(Stream, NULL, WICDecodeMetadataCacheOnLoad,
+                                                     &Decoder)) ||
+            FAILED(Decoder->GetFrame(0, &Frame)) ||
+            FAILED(Frame->GetSize(&Width, &Height)) ||
+            FAILED(Factory->CreateFormatConverter(&Converter)) ||
+            FAILED(Converter->Initialize(Frame, GUID_WICPixelFormat32bppBGRA,
+                                         WICBitmapDitherTypeNone, NULL, 0.0,
+                                         WICBitmapPaletteTypeCustom)))
+            break;
+        if (Width == 0 || Height == 0 || Width > 0x3FFFFFFFu ||
+            Height > 0x3FFFFFFFu || (size_t)Width * Height > SIZE_MAX / 4u)
+            break;
+
+        size_t PixelBytes = (size_t)Width * Height * 4u;
+        Pixels = (unsigned char*)malloc(PixelBytes);
+        if (Pixels == NULL || FAILED(Converter->CopyPixels(NULL, Width * 4u,
+                                                            (UINT)PixelBytes, Pixels)))
+            break;
+
+        HostTexture = nullD3DCreateTexture(Width, Height, 1, 1, Usage,
+                                            D3DFMT_LIN_A8R8G8B8,
+                                            NULL_D3DRTYPE_TEXTURE, 0);
+        if (HostTexture == NULL)
+            break;
+        memcpy(HostTexture->Info.Bits, Pixels, PixelBytes);
+        if (HostTexture->Info.NativeTexture != NULL) {
+            COD3_D3D9_LOCKED_RECT Locked = {};
+            if (SUCCEEDED(HostTexture->Info.NativeTexture->LockRect(0, &Locked, NULL, 0))) {
+                for (unsigned int y = 0; y < Height; ++y)
+                    memcpy((unsigned char*)Locked.pBits + y * Locked.Pitch,
+                           Pixels + (size_t)y * Width * 4u, Width * 4u);
+                HostTexture->Info.NativeTexture->UnlockRect(0);
+            }
+        }
+        *Texture = (D3DTexture*)HostTexture;
+        if (SourceInfo != NULL) {
+            nullD3DImageInfo* Info = (nullD3DImageInfo*)SourceInfo;
+            Info->Width = Width;
+            Info->Height = Height;
+            Info->Depth = 1;
+            Info->MipLevels = 1;
+            Info->Format = D3DFMT_LIN_A8R8G8B8;
+        }
+        HostTexture = NULL;
+        Success = true;
+    } while (false);
+
+    if (HostTexture != NULL) {
+        if (HostTexture->Info.NativeSurface != NULL)
+            HostTexture->Info.NativeSurface->Release();
+        if (HostTexture->Info.NativeTexture != NULL)
+            HostTexture->Info.NativeTexture->Release();
+        free(HostTexture->Info.Bits);
+        free(HostTexture);
+    }
+    free(Pixels);
+    if (Converter != NULL) Converter->Release();
+    if (Frame != NULL) Frame->Release();
+    if (Decoder != NULL) Decoder->Release();
+    if (Stream != NULL) Stream->Release();
+    if (Factory != NULL) Factory->Release();
+    if (CoInitialized) CoUninitialize();
+    return Success;
 }
 
 static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Height,
@@ -1458,12 +1562,17 @@ void* __stdcall D3DTexture_LockRect(D3DTexture* Texture, unsigned int, D3DLOCKED
 void* __stdcall D3DVertexBuffer_Lock2(D3DVertexBuffer* Buffer, unsigned int) {
     return Buffer == NULL ? NULL : (void*)(uintptr_t)Buffer->Data;
 }
-int __stdcall D3DXCreateTextureFromFileInMemoryEx(void*, const void*, unsigned int,
+int __stdcall D3DXCreateTextureFromFileInMemoryEx(void*, const void* Source, unsigned int Size,
                                                   unsigned int Width, unsigned int Height,
                                                   unsigned int Levels, unsigned int Usage,
                                                   _D3DFORMAT Format, unsigned int, unsigned int,
-                                                  unsigned int, unsigned int, void*, void*,
+                                                  unsigned int, unsigned int, void* SourceInfo,
+                                                  void*,
                                                   D3DTexture** Texture) {
+    if (Texture != NULL)
+        *Texture = NULL;
+    if (nullD3DDecodeImage(Source, Size, Usage, Texture, SourceInfo))
+        return 0;
     if (Width == 0xFFFFFFFF) Width = 1;
     if (Height == 0xFFFFFFFF) Height = 1;
     if (Levels == 0xFFFFFFFF) Levels = 1;

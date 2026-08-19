@@ -574,5 +574,7 @@ target_link_libraries(cod3mp PRIVATE
     cod3_game_nextgen
     cod3_xbox_shim
     d3d9
+    windowscodecs
+    ole32
 )
 target_compile_definitions(cod3mp PRIVATE COD3_WIN32=1)
