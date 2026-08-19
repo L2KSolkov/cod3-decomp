@@ -224,12 +224,14 @@ void ngliGenMipmaps(nglTexture* Tex) {
 // ngliInitWhiteTexture - ea: 0x841DA0
 // ============================================================================
 void ngliInitWhiteTexture() {
+    nglGpuAcquireDevice();
     nglWhiteTex = nglCreateTexture(0, (_D3DFORMAT)6u, 1, 1, 0, 1);
     D3DLOCKED_RECT Rect;
     D3DTexture_LockRect((D3DTexture*)nglWhiteTex->Texture, 0, &Rect, NULL, 0);
     *(unsigned int*)Rect.pBits = 0xFFFFFFFF;
     nglWhiteTex->FileName = &nglWhiteTex_FileName;
     nglTextureDirectory.Add(nglWhiteTex);
+    nglGpuReleaseDevice();
 }
 
 // ============================================================================
