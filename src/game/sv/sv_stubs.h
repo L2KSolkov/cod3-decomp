@@ -512,6 +512,7 @@ public:
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
     static MultiplayerMgr* Inst();  // ?Inst@MultiplayerMgr@@SAPAV1@XZ (g.o 0x4A9780)
     static void CreateInst();       // ?CreateInst@MultiplayerMgr@@SAXXZ
+    static void DeleteInst();       // ?DeleteInst@MultiplayerMgr@@SAXXZ (core.o 0x4E2EC0)
     MultiplayerMgr();               // ??0MultiplayerMgr@@QAE@XZ (mp.o 0x7610F0)
     int GetCurrentPlayerCountOnTeam(int team);  // ?GetCurrentPlayerCountOnTeam@MultiplayerMgr@@QAEHH@Z (mp.o 0x740060)
     MPPeer* GetPeer();              // ?GetPeer@MultiplayerMgr@@QAEPAVMPPeer@@XZ (g.o 0x4A9790)

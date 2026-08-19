@@ -156,6 +156,29 @@ void MultiplayerMgr::CreateInst()
         sInst = nullptr;
     MultiplayerMgr_SetCompatInstance(sInst);
 }
+
+// ea: 0x004E2EC0
+void MultiplayerMgr::DeleteInst()
+{
+    MultiplayerMgr* instance = MultiplayerMgr::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "./mp\\MultiplayerMgr.h";
+        AeAssert::gCurrentLine = 78;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~MultiplayerMgr();
+        mem_heap_free(instance);
+    }
+    MultiplayerMgr::sInst = nullptr;
+}
+
 extern void SV_SwapClients(int client1, int client2);  // sv.o (?SV_SwapClients@@YAXHH@Z)
 extern void SV_PostConnect();  // sv.o (?SV_PostConnect@@YAXXZ @ 0x914CE0)
 extern void SV_ClientEnterWorld(client_s* client);  // sv.o (?SV_ClientEnterWorld@@YAXPAUclient_s@@@Z @ 0x90F2C0)
