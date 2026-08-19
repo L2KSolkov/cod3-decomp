@@ -1400,9 +1400,8 @@ void rb_collision_capsule::xform(const math::Mat43& mat)
 }
 
 
-// DObj (render.o; local stub view). copy_skeleton disasm reads numBones at
-// +0xCF; GetMat/GetBoneIndex are render.o symbols (?GetMat@DObj@@QAEABVMat43@
-// math@@H@Z / ?GetBoneIndex@DObj@@QBEHPBD@Z) - stub until render.o is ported.
+// DObj (render.o; local view). copy_skeleton disasm reads numBones at +0xCF;
+// the model slots are IVPointer<XModel> pairs at +0x80.
 class DObj {
 public:
     uint8_t _pad0[0x60];
@@ -1437,8 +1436,98 @@ int DObj::GetBoneIndex(const char* name) const
 }
 int DObj::GetBoneIndexInternal(unsigned int nameHash) const
 {
-    (void)nameHash;
-    return -1;
+    int boneIndex = 0;
+    int modelIndex = 0;
+    if (numModels == 0)
+        return -1;
+
+    // The local view keeps the same 8-byte IVPointer layout as the IDA type,
+    // but exposes the slots as raw pointers so this translation unit can
+    // share the physics-side layout declarations.
+    void* const* modelSlot = models;
+    for (;;)
+    {
+        XModelLocal* model = (XModelLocal*)modelSlot[0];
+        TPakId pakId = (TPakId)(uintptr_t)modelSlot[1];
+        ValidatePakId(pakId);
+
+        int lodIndex = 0;
+        if (model->lod[0] == nullptr)
+        {
+            do
+            {
+                ++lodIndex;
+            } while (model->lod[lodIndex] == nullptr);
+        }
+        XModelPartsLocal* parts =
+            (XModelPartsLocal*)model->lod[lodIndex]->xmodelParts;
+        int localBoneIndex = xmodel_parts_get_bone_index(parts, nameHash);
+        if (localBoneIndex >= 0)
+            return boneIndex + localBoneIndex;
+
+        ValidatePakId(pakId);
+        int countLod = 0;
+        if (model->lod[0] == nullptr)
+        {
+            do
+            {
+                ++countLod;
+            } while (model->lod[countLod] == nullptr);
+        }
+        if (model->lod[countLod]->xmodelParts != nullptr)
+        {
+            XModelPartsLocal* countParts =
+                (XModelPartsLocal*)model->lod[countLod]->xmodelParts;
+            if ((countParts->mHierarchySize & 0x80000000u) != 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+                AeAssert::gCurrentLine = 1987;
+                AeAssert::gCurrentExpr = "model->GetNumBones() >= 0";
+                if (!AeAssert::IsIgnored())
+                {
+                    ValidatePakId(pakId);
+                    int assertLod = 0;
+                    if (model->lod[0] == nullptr)
+                    {
+                        do
+                        {
+                            ++assertLod;
+                        } while (model->lod[assertLod] == nullptr);
+                    }
+                    unsigned int assertSize =
+                        model->lod[assertLod]->xmodelParts != nullptr
+                            ? ((XModelPartsLocal*)model->lod[assertLod]
+                                   ->xmodelParts)
+                                  ->mHierarchySize
+                            : 0;
+                    if (AeAssert::Assert("%i", assertSize))
+                        __debugbreak();
+                }
+            }
+        }
+
+        ValidatePakId(pakId);
+        int nextLod = 0;
+        if (model->lod[0] == nullptr)
+        {
+            do
+            {
+                ++nextLod;
+            } while (model->lod[nextLod] == nullptr);
+        }
+        unsigned int modelBoneCount =
+            model->lod[nextLod]->xmodelParts != nullptr
+                ? ((XModelPartsLocal*)model->lod[nextLod]->xmodelParts)
+                      ->mHierarchySize
+                : 0;
+
+        modelSlot += 2;
+        ++modelIndex;
+        boneIndex += (int)modelBoneCount;
+        if (modelIndex >= numModels)
+            return -1;
+    }
 }
 
 // nalGeneric (nal_generic.o / nal_init.o; minimal views for setup_physics).
