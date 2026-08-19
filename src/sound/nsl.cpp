@@ -215,10 +215,10 @@ struct XMEDIAPACKET {
 static_assert(sizeof(XMEDIAPACKET) == 24, "IDA XMEDIAPACKET layout");
 struct nslVoice;
 struct nslDriverVoice {
-    void* buffer;
-    unsigned char format[40];
+    IDirectSoundBuffer* buffer;
+    xbox_WAVEFORMATEXTENSIBLE format;
     void* m_pSourceXMO;
-    void* stream;
+    IDirectSoundStream* stream;
     void* m_pvSourceBuffer;
     volatile PACKET_CONTEXT m_aContexts[2];
     unsigned m_dwFileLength;
@@ -398,6 +398,10 @@ static void* base = nullptr;
 static unsigned dword_E4B69C = 0;
 _DSEFFECTIMAGELOC nsl_fxImage = {4u, 5u};
 IDirectSound* nsl_driverDevice = nullptr;
+_DSI3DL2LISTENER nsl_driverI3DL2Setting = {
+    -1000, -6000, 0.0f, 0.17f, 0.1f, -1204,
+    0.001f, 207, 0.0020000001f, 100.0f, 100.0f, 5000.0f
+};
 // Listener-frame globals and initial speaker table from IDA's release data.
 nslSpeaker nsl_speakers[8] = {
     {{-1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
@@ -545,6 +549,8 @@ extern "C" txSlot txSlotNew(txSlotPool* pool);
 
 // Forward declarations for the IDA-backed bank layer below.
 unsigned nslDriverVoiceSize();
+void* nslAramGetBase();
+unsigned nslAramGetSize();
 nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flags);
 nslWaveBankState nslWaveBankGetState(nslWaveBankID waveBankID);
 unsigned nslWaveBankSlotsGetUsedCount();
@@ -4402,7 +4408,201 @@ int nslDriverInit(nslInitParams* ip) {
         base = tlMemAlloc(dword_E4B69C, 0x1000u, 0x10000u);
     return 1;
 }
-int           nslDriverStart() { return 0; }
+// ea: 0x00824980
+int initVoices(int max3DStreaming, int max3DBuffers,
+               int max2DStreaming, int max2DBuffers) {
+    // These are immediate offsets in the release image, despite IDA's
+    // dword_* labels. They are the exact stream/ARAM sizes used by NSL.
+    constexpr unsigned dword_15888 = 0x15888u;
+    constexpr unsigned dword_2B110 = 0x2B110u;
+    constexpr unsigned dword_12000 = 0x12000u;
+    constexpr unsigned dword_24000 = 0x24000u;
+    constexpr unsigned dword_48000 = 0x48000u;
+
+    _DSENVELOPEDESC dsed{};
+    _DSBUFFERDESC bufferDesc{};
+    _DSSTREAMDESC streamDesc{};
+    xbox_WAVEFORMATEXTENSIBLE wfx2D{};
+    xbox_WAVEFORMATEXTENSIBLE wfx3D{};
+
+    wfx2D.Format.wFormatTag = 1;
+    wfx2D.Format.nChannels = 2;
+    wfx2D.Format.nSamplesPerSec = 44100;
+    wfx2D.Format.nAvgBytesPerSec = dword_2B110;
+    wfx2D.Format.nBlockAlign = 4;
+    wfx2D.Format.wBitsPerSample = 16;
+
+    wfx3D.Format.wFormatTag = 1;
+    wfx3D.Format.nChannels = 1;
+    wfx3D.Format.nSamplesPerSec = 44100;
+    wfx3D.Format.nAvgBytesPerSec = dword_15888;
+    wfx3D.Format.nBlockAlign = 2;
+    wfx3D.Format.wBitsPerSample = 16;
+
+    dsed.dwEG = 1;
+    dsed.dwMode = 2;
+    dsed.dwAttack = 9;
+    dsed.dwRelease = 9;
+    dsed.dwSustain = 255;
+
+    const unsigned maxVoices = nsl_initParams.aramSize;
+    int i = 0;
+    unsigned voiceOffset = 0;
+    unsigned driverVoiceOffset = 0;
+    if (maxVoices == 0)
+        return 0;
+
+    while (true) {
+        unsigned char* voiceRaw = reinterpret_cast<unsigned char*>(nsl_voices) +
+            voiceOffset;
+        nslDriverVoice* driverVoice =
+            reinterpret_cast<nslDriverVoice*>(
+                reinterpret_cast<unsigned char*>(nsl_driverVoices) +
+                driverVoiceOffset);
+        nslVoice* lv = reinterpret_cast<nslVoice*>(voiceRaw);
+        bool voiceReady = false;
+
+        if (max3DStreaming > 0) {
+            --max3DStreaming;
+            driverVoice->format.Format = wfx3D.Format;
+            streamDesc = {};
+            streamDesc.lpwfxFormat = &driverVoice->format.Format;
+            streamDesc.dwFlags = 16;
+            streamDesc.dwMaxAttachedPackets = 5;
+            HRESULT code = j_DirectSoundCreateStream(&streamDesc,
+                                                       &driverVoice->stream);
+            if (code == 0) {
+                voiceRaw[266] = 1;
+                driverVoice->bufferSize = dword_12000;
+                driverVoice->m_pvSourceBuffer = nslAramAlloc(dword_24000, 0);
+                nslDriverCheck(
+                    j_IDirectSoundStream_SetHeadroom(driverVoice->stream, 0),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 375);
+                nslDriverCheck(
+                    j_IDirectSoundStream_SetMode(driverVoice->stream, 0, 1u),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 376);
+                nslDriverCheck(
+                    j_IDirectSoundStream_SetEG(driverVoice->stream, &dsed),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 377);
+                voiceReady = true;
+            } else {
+                nslDriverCheck(
+                    code, "NSL",
+                    "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 370);
+                max3DStreaming = 0;
+            }
+        }
+
+        if (!voiceReady && max2DStreaming > 0) {
+            driverVoice->format.Format = wfx2D.Format;
+            streamDesc = {};
+            streamDesc.dwFlags = 0;
+            streamDesc.lpwfxFormat = &driverVoice->format.Format;
+            --max2DStreaming;
+            streamDesc.dwMaxAttachedPackets = 5;
+            HRESULT code = j_DirectSoundCreateStream(&streamDesc,
+                                                       &driverVoice->stream);
+            if (nslDriverCheck(
+                    code, "NSL",
+                    "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 391) == 0) {
+                reinterpret_cast<unsigned char*>(lv)[266] = 3;
+                driverVoice->bufferSize = dword_24000;
+                driverVoice->m_pvSourceBuffer = nslAramAlloc(dword_48000, 0);
+                nslDriverCheck(
+                    j_IDirectSoundStream_SetHeadroom(driverVoice->stream, 0),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 396);
+                nslDriverCheck(
+                    j_IDirectSoundStream_SetEG(driverVoice->stream, &dsed),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 397);
+                voiceReady = true;
+            } else {
+                max2DStreaming = 0;
+            }
+        }
+
+        if (!voiceReady && max3DBuffers > 0) {
+            driverVoice->format.Format = wfx3D.Format;
+            bufferDesc = {};
+            bufferDesc.dwBufferBytes = 0;
+            bufferDesc.lpwfxFormat = &driverVoice->format.Format;
+            --max3DBuffers;
+            bufferDesc.dwSize = 24;
+            bufferDesc.dwFlags = 16;
+            HRESULT code = j_DirectSoundCreateBuffer(&bufferDesc,
+                                                       &driverVoice->buffer);
+            if (nslDriverCheck(
+                    code, "NSL",
+                    "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 411) == 0) {
+                reinterpret_cast<unsigned char*>(lv)[266] = 2;
+                nslDriverCheck(
+                    j_IDirectSoundBuffer_SetHeadroom(driverVoice->buffer, 0),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 414);
+                nslDriverCheck(
+                    j_IDirectSoundBuffer_SetBufferData(
+                        driverVoice->buffer, nslAramGetBase(), nslAramGetSize()),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 415);
+                nslDriverCheck(
+                    j_IDirectSoundBuffer_SetMode(driverVoice->buffer, 0, 1u),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 416);
+                nslDriverCheck(
+                    j_IDirectSoundBuffer_SetEG(driverVoice->buffer, &dsed),
+                    "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 417);
+                voiceReady = true;
+            } else {
+                max3DBuffers = 0;
+            }
+        }
+
+        if (!voiceReady) {
+            if (max2DBuffers <= 0)
+                return i;
+
+            driverVoice->format.Format = wfx2D.Format;
+            bufferDesc = {};
+            bufferDesc.dwFlags = 0;
+            bufferDesc.dwBufferBytes = 0;
+            bufferDesc.lpwfxFormat = &driverVoice->format.Format;
+            --max2DBuffers;
+            bufferDesc.dwSize = 24;
+            HRESULT code = j_DirectSoundCreateBuffer(&bufferDesc,
+                                                       &driverVoice->buffer);
+            if (nslDriverCheck(
+                    code, "NSL",
+                    "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 431) != 0)
+                return i;
+
+            reinterpret_cast<unsigned char*>(lv)[266] = 4;
+            nslDriverCheck(
+                j_IDirectSoundBuffer_SetHeadroom(driverVoice->buffer, 0),
+                "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 434);
+            nslDriverCheck(
+                j_IDirectSoundBuffer_SetBufferData(
+                    driverVoice->buffer, nslAramGetBase(), nslAramGetSize()),
+                "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 435);
+            nslDriverCheck(
+                j_IDirectSoundBuffer_SetEG(driverVoice->buffer, &dsed),
+                "NSL", "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 436);
+        }
+
+        ++i;
+        voiceOffset += 320;
+        driverVoiceOffset += 172;
+        if (static_cast<unsigned>(i) >= maxVoices)
+            return i;
+    }
+}
+// ea: 0x008257A0
+int nslDriverStart() {
+    const unsigned inited = initVoices(8, 56, 4, 128);
+    if (inited < nsl_initParams.aramSize)
+        nsl_initParams.aramSize = inited;
+    g_dwDirectSoundDebugBreakLevel = 0;
+    const HRESULT code = j_IDirectSound_SetI3DL2Listener(
+        nsl_driverDevice, &nsl_driverI3DL2Setting, 0);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 1117);
+    return 1;
+}
 void          nslDriverShutdown() {}
 void          nslDriverUpdate() {}
 void          nslDriverSet3DEnabled(bool) {}

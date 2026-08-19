@@ -6,7 +6,57 @@
 
 struct IDirectSound;
 struct IDirectSoundBuffer;
+struct IDirectSoundStream {
+    void* vtbl;
+};
 struct _DSMIXBINS;
+
+// IDA's Xbox WAVEFORMATEXTENSIBLE uses the Windows tWAVEFORMATEX layout;
+// keep a distinct name because the Win32 multimedia headers do not expose
+// the Xbox typedef under WAVEFORMATEXTENSIBLE in every translation unit.
+struct xbox_WAVEFORMATEXTENSIBLE {
+    tWAVEFORMATEX Format;
+    unsigned short Samples;
+    unsigned int dwChannelMask;
+    GUID SubFormat;
+};
+
+struct _DSENVELOPEDESC {
+    unsigned int dwEG;
+    unsigned int dwMode;
+    unsigned int dwDelay;
+    unsigned int dwAttack;
+    unsigned int dwHold;
+    unsigned int dwDecay;
+    unsigned int dwRelease;
+    unsigned int dwSustain;
+    int lPitchScale;
+    int lFilterCutOff;
+};
+
+struct _DSSTREAMDESC {
+    unsigned int dwFlags;
+    unsigned int dwMaxAttachedPackets;
+    tWAVEFORMATEX* lpwfxFormat;
+    void (__stdcall *lpfnCallback)(void*, void*, unsigned int);
+    void* lpvContext;
+    const _DSMIXBINS* lpMixBins;
+};
+
+struct _DSI3DL2LISTENER {
+    int lRoom;
+    int lRoomHF;
+    float flRoomRolloffFactor;
+    float flDecayTime;
+    float flDecayHFRatio;
+    int lReflections;
+    float flReflectionsDelay;
+    int lReverb;
+    float flReverbDelay;
+    float flDiffusion;
+    float flDensity;
+    float flHFReference;
+};
 
 struct _DSEFFECTMAP {
     void* lpvCodeSegment;
@@ -48,6 +98,13 @@ struct _DSBUFFERDESC {
 
 static_assert(sizeof(xbox_adpcmwaveformat_tag) == 20,
               "Xbox ADPCM format layout mismatch");
+static_assert(sizeof(tWAVEFORMATEX) == 18, "Xbox WAVEFORMATEX layout mismatch");
+static_assert(sizeof(xbox_WAVEFORMATEXTENSIBLE) == 40,
+              "Xbox WAVEFORMATEXTENSIBLE layout mismatch");
+static_assert(sizeof(_DSENVELOPEDESC) == 40, "Xbox DSENVELOPEDESC layout mismatch");
+static_assert(sizeof(_DSSTREAMDESC) == 24, "Xbox DSSTREAMDESC layout mismatch");
+static_assert(sizeof(_DSI3DL2LISTENER) == 48,
+              "Xbox DSI3DL2LISTENER layout mismatch");
 static_assert(sizeof(_DSBUFFERDESC) == 24, "Xbox DSBUFFERDESC layout mismatch");
 static_assert(sizeof(_DSEFFECTMAP) == 32, "Xbox DSEFFECTMAP layout mismatch");
 static_assert(sizeof(_DSEFFECTIMAGELOC) == 8, "Xbox DSEFFECTIMAGELOC layout mismatch");
@@ -69,6 +126,27 @@ int __stdcall j_IDirectSound_SetDistanceFactor(IDirectSound* pDirectSound,
 HRESULT __stdcall j_IDirectSound_EnableHeadphones(IDirectSound* pDirectSound,
                                                    int fEnabled);
 int __stdcall j_DirectSoundUseLightHRTF(void);
+HRESULT __stdcall j_DirectSoundCreateStream(const _DSSTREAMDESC* pdssd,
+                                             IDirectSoundStream** ppStream);
+HRESULT __stdcall j_DirectSoundCreateBuffer(const _DSBUFFERDESC* pdsbd,
+                                             IDirectSoundBuffer** ppBuffer);
+HRESULT __stdcall j_IDirectSound_SetI3DL2Listener(
+    IDirectSound* pDirectSound, const _DSI3DL2LISTENER* pds3dl, unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundStream_SetHeadroom(IDirectSoundStream* pStream,
+                                                    unsigned int dwHeadroom);
+HRESULT __stdcall j_IDirectSoundStream_SetMode(IDirectSoundStream* pStream,
+                                                unsigned int dwMode,
+                                                unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundStream_SetEG(
+    IDirectSoundStream* pStream, const _DSENVELOPEDESC* pEnvelopeDesc);
+HRESULT __stdcall j_IDirectSoundBuffer_SetHeadroom(IDirectSoundBuffer* pBuffer,
+                                                    unsigned int dwHeadroom);
+HRESULT __stdcall j_IDirectSoundBuffer_SetMode(IDirectSoundBuffer* pBuffer,
+                                                unsigned int dwMode,
+                                                unsigned int dwFlags);
+HRESULT __stdcall j_IDirectSoundBuffer_SetEG(
+    IDirectSoundBuffer* pBuffer, const _DSENVELOPEDESC* pEnvelopeDesc);
+extern unsigned int g_dwDirectSoundDebugBreakLevel;
 HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(IDirectSound* pDirectSound,
                                                     const _DSBUFFERDESC* pdsbd,
                                                     IDirectSoundBuffer** ppBuffer,

@@ -4,6 +4,8 @@
 
 #include "xbox_directsound.h"
 
+unsigned int g_dwDirectSoundDebugBreakLevel = 0;
+
 extern "C" HRESULT __stdcall j_DirectSoundCreate(LPCGUID, LPDIRECTSOUND*, LPUNKNOWN) {
     return E_NOTIMPL;
 }
@@ -23,6 +25,51 @@ extern "C" HRESULT __stdcall j_IDirectSound_EnableHeadphones(IDirectSound*, int)
 
 extern "C" int __stdcall j_DirectSoundUseLightHRTF(void) {
     return 0;
+}
+
+extern "C" HRESULT __stdcall j_DirectSoundCreateStream(
+    const _DSSTREAMDESC*, IDirectSoundStream**) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_DirectSoundCreateBuffer(
+    const _DSBUFFERDESC*, IDirectSoundBuffer**) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSound_SetI3DL2Listener(
+    IDirectSound*, const _DSI3DL2LISTENER*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetHeadroom(
+    IDirectSoundStream*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetMode(
+    IDirectSoundStream*, unsigned int, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetEG(
+    IDirectSoundStream*, const _DSENVELOPEDESC*) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetHeadroom(
+    IDirectSoundBuffer*, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetMode(
+    IDirectSoundBuffer*, unsigned int, unsigned int) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetEG(
+    IDirectSoundBuffer*, const _DSENVELOPEDESC*) {
+    return E_NOTIMPL;
 }
 
 extern "C" HRESULT __stdcall j_IDirectSound_CreateSoundBuffer(
