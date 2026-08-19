@@ -492,7 +492,7 @@ class SplineMgr { public: static SplineMgr* CreateInst(); static void DeleteInst
 class SmokeGrenadeMgr { public: static SmokeGrenadeMgr* CreateInst(); };
 class CGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
-class AnimBankManager { public: static void CreateInst(); };
+class AnimBankManager { public: static AnimBankManager* CreateInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
 class BinFileManager { public: static BinFileManager* CreateInst(); static void DeleteInst(); };
 class CurveManager { public: static CurveManager* CreateInst(); static void DeleteInst(); };

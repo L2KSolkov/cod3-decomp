@@ -19808,6 +19808,8 @@ public:
 
 class AnimBankManager : public AssetBankSet {
 public:
+    static AnimBankManager* sInst;  // ?sInst@AnimBankManager@@2PAV1@A
+    static AnimBankManager* CreateInst();  // core.o 0x004DC310
     AnimBankManager();   // ??0AnimBankManager@@QAE@XZ (0x545650)
     virtual ~AnimBankManager();  // ??1AnimBankManager@@UAE@XZ (0x53EA80)
 
@@ -19822,6 +19824,36 @@ public:
     void DecodeAnimBank(const char* name, unsigned char* data, int size,
                         TPakId pakId);   // ?DecodeAnimBank@...@@QAEXPBD0H W4TPakId@@@Z (0x54B980)
 };
+static_assert(sizeof(AnimBankManager) == 0x190,
+              "AnimBankManager size mismatch");
+
+// ea: 0x004DC310
+AnimBankManager* AnimBankManager::CreateInst()
+{
+    if (AnimBankManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\xanim_common.h";
+        AeAssert::gCurrentLine = 165;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "anim", "c:\\cod\\code\\game\\xanim_common.h", 165);
+    if (memory != nullptr)
+    {
+        AnimBankManager* result = new (memory) AnimBankManager();
+        AnimBankManager::sInst = result;
+        AnimBankManager_sInst = result;
+        return result;
+    }
+    AnimBankManager::sInst = nullptr;
+    AnimBankManager_sInst = nullptr;
+    return nullptr;
+}
 
 // ea: 0x00545650
 AnimBankManager::AnimBankManager()

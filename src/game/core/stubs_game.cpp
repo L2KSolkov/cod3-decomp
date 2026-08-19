@@ -36,8 +36,9 @@ class SmokeGrenadeMgr { public: static void CreateInst(); };
 struct AnimBank;
 class AnimBankManager {
 public:
-    static void CreateInst();
-    AnimBank* GetBank(TPakId pak_id);  // ?GetBank@AnimBankManager@@QAEPAUAnimBank@@W4TPakId@@@Z
+    static AnimBankManager* CreateInst();
+    AnimBank* GetBank(TPakId pak_id);
+    void UnloadAll();
 };
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -48,21 +49,19 @@ void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
 void DbTablesetMgr::CreateInst() {}
 void DbTablesetMgr::DeleteInst() {}
-void AnimBankManager::CreateInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
 {
     (void)pak_id;
     return nullptr;
 }
+extern void* AnimBankManager_sInst;
 void* AnimBankManager_GetBank(void* self, TPakId pak_id)
 {
-    (void)self; (void)pak_id;
-    return nullptr;
+    return ((AnimBankManager*)self)->GetBank(pak_id);
 }
 void* AnimBankManager_GetBank(void* self, int pak_id)
 {
-    (void)self; (void)pak_id;
-    return nullptr;
+    return ((AnimBankManager*)self)->GetBank((TPakId)pak_id);
 }
 void AnimBankManager_UnloadAll(void* self)
 {
@@ -70,7 +69,7 @@ void AnimBankManager_UnloadAll(void* self)
 }
 void AnimBankManager_UnloadAll()
 {
-    // stub
+    (void)AnimBankManager_sInst;
 }
 void DynamicDecalMgr::CreateInst() {}
 void DynamicDecalMgr::DeleteInst() {}
