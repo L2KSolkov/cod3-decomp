@@ -632,18 +632,10 @@ void nglDxFilters::RenderGlow(float GlowIntensity) {
     OffsetY[0] = Inc; OffsetY[1] = Inc; OffsetY[2] = -Inc; OffsetY[3] = -Inc;
     float Quad4[4][11];
     memset(Quad4, 0, sizeof(Quad4));
-    for (int i = 0; i < 4; ++i) {
-        Quad4[i][0] = (i & 1) ? GlowTexSize : 0.0f;
-        Quad4[i][1] = (i & 2) ? GlowTexSize : 0.0f;
-        Quad4[i][2] = 0.0f;
-        Quad4[i][3] = (i & 1) ? GlowTexSize : 0.0f;
-        Quad4[i][4] = (i & 2) ? GlowTexSize : 0.0f;
-        Quad4[i][5] = GlowTexSize;
-        Quad4[i][6] = GlowTexSize;
-        Quad4[i][7] = 0.0f;
-        Quad4[i][8] = Width;
-        Quad4[i][9] = Height;
-    }
+    Quad4[1][0] = GlowTexSize;
+    Quad4[2][1] = GlowTexSize;
+    Quad4[3][0] = GlowTexSize;
+    Quad4[3][1] = GlowTexSize;
     int v9 = 0;
     if (NPasses > 0) {
         do {
@@ -657,17 +649,19 @@ void nglDxFilters::RenderGlow(float GlowIntensity) {
                     v14 = GlowTexSize;
                 float v15 = OffsetX[v10];
                 float v16 = OffsetY[v10];
-                float v17 = v16 * v14;
-                float v18 = (v15 + 1.0f) * v14;
-                float v19 = (OffsetY[v10] + 1.0f) * v14;
-                Quad4[v10][0] = v15 * v14;
-                Quad4[v10][1] = v17;
-                Quad4[v10][2] = 0.0f;
-                Quad4[v10][3] = v18;
-                Quad4[v10][4] = v17;
-                Quad4[v10][5] = v19;
-                Quad4[v10][6] = v18;
-                Quad4[v10][7] = v19;
+                float u0 = v15 * v14;
+                float v0 = v16 * v14;
+                float u1 = (v15 + 1.0f) * v14;
+                float v1 = (v16 + 1.0f) * v14;
+                const unsigned int UV = 3 + 2 * v10;
+                Quad4[0][UV] = u0;
+                Quad4[0][UV + 1] = v0;
+                Quad4[1][UV] = u1;
+                Quad4[1][UV + 1] = v0;
+                Quad4[2][UV] = u0;
+                Quad4[2][UV + 1] = v1;
+                Quad4[3][UV] = u1;
+                Quad4[3][UV + 1] = v1;
             }
             gpuHashVertexBuffer = 0;
             gpuHashVertexFormat = 0;
