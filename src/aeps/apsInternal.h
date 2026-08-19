@@ -192,6 +192,9 @@ void GetViewCoordinateSystem(math::Dir3& oForward, math::Dir3& oLeft, math::Dir3
 void GetUserCoordinateSystem(const math::Dir3& userDir, math::Dir3& oForward,
                              math::Dir3& oLeft, math::Dir3& oUp);   // ?GetUserCoordinateSystem@apsInternal@@YAXABVDir3@math@@AAV23@11@Z
 
+unsigned int ClampToColor32(const math::Vector4& iBlendColor,
+                            const math::Vector4& iParticleColor);  // @0x8136B0
+
 // ---- D3D render-state and light-context helpers ---------------------------
 void GetLocalLights(nglLightContext* ioLightContext, const apsSphere& iSphere);  // ?GetLocalLights@apsInternal@@YAXPAUnglLightContext@@ABUapsSphere@@@Z
 void SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlendMode,
