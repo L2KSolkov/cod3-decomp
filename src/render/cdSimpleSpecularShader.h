@@ -34,8 +34,21 @@ static_assert(sizeof(cdSimpleSpecularShaderMat) == 0x24, "cdSimpleSpecularShader
 // ============================================================================
 struct cdSimpleSpecularShaderNode : nglShaderNode {
     cdSimpleSpecularShaderMat* mMaterial;  // +0x14
+
+    void Render() override;  // @0x7D5060
 };
 static_assert(sizeof(cdSimpleSpecularShaderNode) == 0x18, "cdSimpleSpecularShaderNode size mismatch");
+
+// IDA local type from cdSimpleSpecularShaderNode::Render (0x7D5060).
+struct SimpleSpecularContext {
+    math::Mat44   mLToS;             // +0x00
+    math::Mat44   mLightMatrices[2]; // +0x40
+    math::Vector4 fog1;              // +0xC0
+    math::Vector4 fog2;              // +0xD0
+    math::Vector4 params;            // +0xE0
+    math::Vector4 eyePos;            // +0xF0
+};
+static_assert(sizeof(SimpleSpecularContext) == 0x100, "SimpleSpecularContext size mismatch");
 
 // ============================================================================
 // cdSimpleSpecularShader — simple specular shader (16 bytes)
@@ -55,6 +68,8 @@ static_assert(sizeof(cdSimpleSpecularShader) == 0x10, "cdSimpleSpecularShader si
 namespace cdSimpleSpecularRender {
     extern unsigned long VS[2];                   // ?VS@cdSimpleSpecularRender@@3PAKA
     extern unsigned int const* VShaderTable[2];    // ?VShaderTable@cdSimpleSpecularRender@@3PAPBIA
+
+    void RegisterVShader();                         // @0x7D54B0
 }
 namespace cdSimpleSpecularPixel {
     extern unsigned long* PS[2];                   // ?PS@cdSimpleSpecularPixel@@3PAPAKA

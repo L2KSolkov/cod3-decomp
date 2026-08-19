@@ -11,6 +11,15 @@
 // ============================================================================
 #include "cdSimpleSpecularShader.h"
 
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+#include "ngl/ngl_lighting.h"
+#include "render/ShaderCommon.h"
+
+#include <cstdint>
+#include <cstring>
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -29,6 +38,21 @@ namespace cdSimpleSpecularFullbrightPixel {
     unsigned long* PS[2] = {};
     unsigned int const* PShaderTable[2] = {};
 }
+
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_BC2CFC;
+extern unsigned int dword_BC2CF8;
+extern unsigned int dword_BC2D00;
+extern unsigned int dword_BC2D04;
+extern unsigned int dword_BC2D80;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int D3D__TextureState[4][32];
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
 
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
@@ -106,11 +130,11 @@ void ToggleCDSimpleSpecularShader() {
 // ============================================================================
 void cdSimpleSpecularShader::Register() {
     nglShader::Register();
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShaderSafe((unsigned int*)&cdSimpleSpecularRender::VS[v0], cdSimpleSpecularRender::VShaderTable, v0);
-    }
-    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleSpecularPixel::PS, cdSimpleSpecularPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleSpecularFullbrightPixel::PS, cdSimpleSpecularFullbrightPixel::PShaderTable, 0);
+    cdSimpleSpecularRender::RegisterVShader();
+    nglDxRegisterPShader(reinterpret_cast<unsigned int**>(cdSimpleSpecularPixel::PS),
+                         cdSimpleSpecularPixel::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned int**>(cdSimpleSpecularFullbrightPixel::PS),
+                         cdSimpleSpecularFullbrightPixel::PShaderTable[0]);
 }
 
 // ============================================================================
@@ -170,4 +194,112 @@ void cdSimpleSpecularShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSe
         nglBuildScene->OpaqueRenderList = node;
         ++nglBuildScene->OpaqueListCount;
     }
+}
+
+// ============================================================================
+// cdSimpleSpecularShaderNode::Render — ea: 0x7D5060
+// ============================================================================
+void cdSimpleSpecularShaderNode::Render() {
+    const unsigned int cullMode = this->mMaterial->mCullMode == 2 ? 0u : 0x900u;
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, cullMode) == 0)
+        D3DDevice_SetRenderState_CullMode(cullMode);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40304, 0);
+        dword_BC2CFC = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 1) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40300, 1);
+        dword_BC2D00 = 1;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAFUNC, 0x204) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_4033C, 0x204);
+        dword_BC2CF8 = 0x204;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAREF, 0x80) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40340, 0x80);
+        dword_BC2D04 = 0x80;
+    }
+
+    nglDxState.PrevBM = (unsigned int)-1;
+
+    // The original stack places the constant upload pointer 12 bytes before
+    // the typed context. Keep that contiguous layout while retaining 16-byte
+    // alignment for the matrix/vector fields used by the lighting helpers.
+    alignas(16) unsigned char upload[0x110] = {};
+    SimpleSpecularContext* context =
+        reinterpret_cast<SimpleSpecularContext*>(upload + 0x10);
+    unsigned char* constantData = upload + 4;
+
+    context->params.v = _mm_setr_ps(this->mMaterial->mSpecularPower,
+                                    this->mMaterial->mSpecularLevel,
+                                    0.0f, 0.0f);
+    nglDetermineLights(this->MeshNode);
+    nglGetDirLightMatrix(this->MeshNode, &context->mLightMatrices[0],
+                         &context->mLightMatrices[1]);
+    GetEyePos(this->MeshNode, context->eyePos);
+    context->mLToS = this->MeshNode->LocalToScreen;
+    std::memcpy(constantData, &context->mLToS, 12);
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, constantData, 0x40u);
+
+    nglDxSetTexture(0, this->mMaterial->mDiffuseTexture, 1u, 3u);
+    if (nglDxTexCache.Prev[0].WrapU != 1) {
+        nglDxTexCache.Prev[0].WrapU = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 1) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSU] = 1;
+        }
+    }
+    if (nglDxTexCache.Prev[0].WrapV != 1) {
+        nglDxTexCache.Prev[0].WrapV = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 1) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSV] = 1;
+        }
+    }
+
+    nglDxInitShaders(false);
+    // IDA's dword_10DE7B8 is the overlapping second element of VS[2].
+    const unsigned int vertexShader =
+        static_cast<unsigned int>(cdSimpleSpecularRender::VS[1]);
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(static_cast<uintptr_t>(vertexShader)), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+
+    const _D3DPixelShaderDef* pixelShader =
+        reinterpret_cast<const _D3DPixelShaderDef*>(
+            reinterpret_cast<uintptr_t>(cdSimpleSpecularFullbrightPixel::PS[0]));
+    if (ShaderCommon::GetDebugRenderMode() != ShaderCommon::kDebugRenderModeFullbright)
+        pixelShader = reinterpret_cast<const _D3DPixelShaderDef*>(
+            reinterpret_cast<uintptr_t>(cdSimpleSpecularPixel::PS[0]));
+    if (pixelShader != reinterpret_cast<const _D3DPixelShaderDef*>(
+                         static_cast<uintptr_t>(gpuHashPixelShader))) {
+        gpuHashPixelShader = static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
+        D3DDevice_SetPixelShaderProgram(pixelShader);
+    }
+
+    nglDxSetupVShaderFog(-78, this->MeshNode, nglBuildScene->FogNear,
+                         nglBuildScene->FogFar, nglBuildScene->FogMin,
+                         nglBuildScene->FogMax);
+    const __m128 fogScaled =
+        _mm_mul_ps(nglBuildScene->FogColor.v, _mm_set1_ps(127.0f));
+    const unsigned int c0 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[0]));
+    const unsigned int c1 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[1]));
+    const unsigned int c2 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[2]));
+    const unsigned int c3 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[3]));
+    const unsigned int fogColor = c3 | (c2 << 8) | (c1 << 16) | (c0 << 24);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR, fogColor) == 0)
+        D3DDevice_SetRenderState_FogColor(fogColor);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 1;
+    }
+    nglGpuDrawSection(this->Section);
+}
+
+void cdSimpleSpecularRender::RegisterVShader() {
+    for (int i = 0; i != 2; ++i)
+        nglDxRegisterVShader(reinterpret_cast<unsigned int*>(&VS[i]), VShaderTable[i]);
 }
