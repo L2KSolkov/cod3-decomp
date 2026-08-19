@@ -918,6 +918,7 @@ public:
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     static SoundDevice* Inst();     // ?Inst@SoundDevice@@SAPAV1@XZ (g.o 0x4A8520)
     static void CreateInst();       // ?CreateInst@SoundDevice@@SAXXZ (core.o 0x4DC5F0)
+    static void DeleteInst();       // ?DeleteInst@SoundDevice@@SAXXZ (core.o 0x4E26C0)
     SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)
     ~SoundDevice();                 // ??1SoundDevice@@QAE@XZ (game.o 0x646610)
     nslWaveID FindWave(const char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)

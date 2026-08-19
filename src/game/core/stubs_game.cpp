@@ -52,7 +52,6 @@ void DestructibleBankManager::CreateInst() {}
 void DestructibleBankManager::DeleteInst() {}
 void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
-void SoundDevice::DeleteInst() {}
 void SoundMediaMgr::CreateInst() {}
 void SoundMediaMgr::DeleteInst() {}
 void MusicMgr::CreateInst() {}

@@ -6332,6 +6332,28 @@ SoundDevice::~SoundDevice()
         this->mSounds[i].~Sound();
 }
 
+// ea: 0x004E26C0
+void SoundDevice::DeleteInst()
+{
+    SoundDevice* instance = SoundDevice::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.h";
+        AeAssert::gCurrentLine = 50;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~SoundDevice();
+        mem_heap_free(instance);
+    }
+    SoundDevice::sInst = nullptr;
+}
+
 // ea: 0x006629D0 (static)
 void SoundDevice::SingletonDebugRender()
 {
