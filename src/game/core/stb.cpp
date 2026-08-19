@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/core/core_systems.h"
+#include "game/core/core_globals.h"
 
 #include <string.h>
 #include <new>
@@ -13,11 +14,100 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
 
+// IDA-backed views used by STBManager::DecodeBank.  The complete definitions
+// live in streamer/pakmanager.cpp; these declarations preserve the same
+// offsets without coupling core.o to that translation unit's implementation.
+struct PakHeader {
+    struct File;
+    struct Bank;
+    struct Section {
+        char name[8];
+        int sectionId;
+        unsigned short numBanks;
+        unsigned short numFiles;
+        Bank* banks;
+        File* files;
+    };
+    struct File {
+        const char* shortName;
+        const char* longName;
+        unsigned int fileSize;
+        unsigned int bankIndex;
+        unsigned int bankOffset;
+    };
+    struct Bank {
+        unsigned int fileOffset;
+        unsigned int size;
+        unsigned int capacity;
+        unsigned int flags;
+        unsigned int compressedSize;
+        int requestId;
+        unsigned char* memptr;
+        unsigned int memsize;
+    };
+    unsigned int id;
+    float version;
+    Section* sections;
+    unsigned int numSections;
+    unsigned int persistentSize;
+    unsigned int headerShortSize;
+    unsigned int headerLongSize;
+    char packedBy[16];
+    unsigned int packedInfo;
+};
+static_assert(sizeof(PakHeader::Section) == 0x18, "PakHeader::Section layout mismatch");
+static_assert(sizeof(PakHeader::File) == 0x14, "PakHeader::File layout mismatch");
+static_assert(sizeof(PakHeader::Bank) == 0x20, "PakHeader::Bank layout mismatch");
+static_assert(sizeof(PakHeader) == 0x30, "PakHeader layout mismatch");
+
+class NumBanks {
+public:
+    float ps2;
+    float ps3_main;
+    float ps3_lram;
+    float xbox;
+    float xenon;
+    float pcx;
+    float gc_main;
+    float gc_aram;
+};
+static_assert(sizeof(NumBanks) == 0x20, "NumBanks layout mismatch");
+
+struct mem_info {
+    unsigned char* data;
+    int size;
+};
+static_assert(sizeof(mem_info) == 0x8, "mem_info layout mismatch");
+
+class BankManager {
+public:
+    static BankManager* sInst;
+    TBankAlloc mFreeBanks;
+    float mNumMramBanks;
+    unsigned int mMramBankSize;
+    unsigned char* mMramArena;
+    float mLowestFreeAmount;
+    TBankAlloc mLastAlloc;
+
+    TBankAlloc Allocate(NumBanks numBanks);
+    mem_info get_alloc(const TBankAlloc& alloc, int which,
+                       bool mram) const;
+    void release(TBankAlloc& alloc);
+};
+static_assert(sizeof(BankManager) == 0x30, "BankManager layout mismatch");
+
 // Minimal view of PakManager (full class in game/sv/sv_stubs.h).
 class PakManager {
 public:
+    unsigned char mPrefix[0x40];
+    PakFile* mSlots[99];
     static PakManager* sInst;
-};  // ?sInst@PakManager@@2PAV1@A
+};
+static_assert(offsetof(PakManager, mSlots) == 0x40,
+              "PakManager::mSlots offset mismatch");
+
+extern unsigned int codNflReadFile(nflFileID fileID, unsigned int fileOffset,
+                                   void* buffer, unsigned int dataSize);
 
 extern "C" unsigned int AeHash(const char* str);
 extern unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key);
@@ -454,16 +544,130 @@ unsigned int STBManager::GetSTBFlags(TPakId pakId, unsigned int hash)
 void STBManager::DecodeBank(const char* name, unsigned char* data, int size,
                             TPakId pak_id)
 {
-    // In-place bank decode: IDA's DecodeBank disassembly reads the fixup-table
-    // offset from the bank header at +0x18 (0x004C6130).
-    if (*(unsigned int*)(data + 0x18) >= 0x10000000u)
+    (void)name;
+    (void)size;
+    TPakId v5 = pak_id;
+    int sectionIndex = 0;
+    PakFile* pakFile = nullptr;
+    if (pak_id > 0x62)
+        pakFile = nullptr;
+    else
+        pakFile = PakManager::sInst->mSlots[pak_id];
+
+    PakHeader* header = pakFile->mHeader;
+    unsigned int fileIndex = 0;
+    unsigned char* bankData = data;
+    if (header->numSections != 0)
     {
-        // assertion: fixup offset unusually large
+        PakHeader::Section* section = nullptr;
+        while (true)
+        {
+            section = &header->sections[sectionIndex];
+            if (strncmp(section->name, "STRING", 6) == 0)
+                break;
+            ++sectionIndex;
+            if (++fileIndex >= header->numSections)
+                goto fixup_bank;
+        }
+
+        if (section->numBanks != 1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\STBManager.cpp";
+            AeAssert::gCurrentLine = 299;
+            AeAssert::gCurrentExpr = "sect.numBanks == 1";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("check"))
+                __debugbreak();
+        }
+
+        int selectedFile = 0;
+        fileIndex = 0;
+        if (section->numFiles != 0)
+        {
+            PakHeader::File* file = nullptr;
+            while (true)
+            {
+                file = &section->files[selectedFile];
+                const char* shortName = file->shortName;
+                bool selected =
+                    (gLanguage == kLanguageEnglish
+                     && strstr(shortName, ".en.") != nullptr)
+                    || (gLanguage == kLanguageGerman
+                        && strstr(shortName, ".de.") != nullptr)
+                    || (gLanguage == kLanguageFrench
+                        && strstr(shortName, ".fr.") != nullptr)
+                    || (gLanguage == kLanguageSpanish
+                        && strstr(shortName, ".es.") != nullptr)
+                    || (gLanguage == kLanguageItalian
+                        && strstr(shortName, ".it.") != nullptr);
+                if (selected)
+                    break;
+                ++selectedFile;
+                if (++fileIndex >= section->numFiles)
+                    goto fixup_bank;
+            }
+
+            unsigned int offset =
+                file->bankOffset + section->banks[file->bankIndex].fileOffset;
+            NumBanks banks;
+            banks.ps2 = 1.0f;
+            banks.ps3_main = 1.0f;
+            banks.ps3_lram = 0.0f;
+            banks.xbox = 1.0f;
+            banks.xenon = 1.0f;
+            banks.pcx = 1.0f;
+            banks.gc_main = 1.0f;
+            banks.gc_aram = 0.0f;
+            TBankAlloc allocation = BankManager::sInst->Allocate(banks);
+            mem_info memory =
+                BankManager::sInst->get_alloc(allocation, 0, true);
+            codNflReadFile(
+                pakFile->mFileId, offset, memory.data,
+                (file->fileSize + 0x7FFFu) & 0xFFFF8000u);
+            memcpy(data, memory.data, file->fileSize);
+            bankData = data;
+            BankManager::sInst->release(allocation);
+        }
     }
-    void* v13 = &data[*(unsigned int*)(data + 0x18)];
-    *(unsigned int*)(data + 0x18) = (unsigned int)v13;
-    PtrFixupTable_Fixup(v13, data);
-    mBankArray[pak_id] = data;
+
+fixup_bank:
+    if (*(unsigned int*)(bankData + 0x18) >= 0x10000000u)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr = "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    void* v13 = &bankData[*(unsigned int*)(bankData + 0x18)];
+    *(unsigned int*)(bankData + 0x18) = (unsigned int)v13;
+    PtrFixupTable_Fixup(v13, bankData);
+
+    if (v5 < 0 || v5 > 0x62)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 31;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    if (v5 >= 0 && v5 <= 0x62 && mBankArray[v5] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 109;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("We already have a bank for this pak id!"))
+            __debugbreak();
+    }
+    if (v5 >= 0 && v5 <= 0x62)
+        mBankArray[v5] = bankData;
 }
 
 // ea: 0x004C5CB0

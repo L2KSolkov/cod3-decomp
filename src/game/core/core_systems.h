@@ -1286,7 +1286,7 @@ enum EPakType {
     kPakTypeMax = 9,
     kPakTypeInvalid = 0xFFFFFFFFu,
 };
-typedef int nflFileID;    // TODO: enum/type from IDA
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = 0xFFFFFFFFu };
 typedef int TRequestId;   // TODO: type from IDA
 struct PakInfoNode;
 struct PakHeader;
