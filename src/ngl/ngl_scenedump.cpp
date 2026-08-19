@@ -146,7 +146,7 @@ void nglSceneDumpQuad(nglQuad* Quad) {
 // ============================================================================
 // nglSceneDumpDirLight - ea: 0x852E80
 // ============================================================================
-void nglSceneDumpDirLight(char LightCat, const math::Dir3& Dir, const math::Vector4& Color) {
+void nglSceneDumpDirLight(unsigned int LightCat, const math::Dir3& Dir, const math::Vector4& Color) {
     nglHostPrintf(nglSceneDumpFile, "\n");
     nglHostPrintf(nglSceneDumpFile, "DIRLIGHT\n");
     nglHostPrintf(nglSceneDumpFile, "  LIGHTCAT 0x%8X\n", LightCat);
@@ -161,7 +161,7 @@ void nglSceneDumpDirLight(char LightCat, const math::Dir3& Dir, const math::Vect
 // ============================================================================
 // nglSceneDumpPointLight - ea: 0x852F30
 // ============================================================================
-void nglSceneDumpPointLight(nglLightType LightType, char LightCat,
+void nglSceneDumpPointLight(nglLightType LightType, unsigned int LightCat,
                             const math::Position3& Pos, float Near, float Far,
                             const math::Vector4& Color) {
     (void)LightType;
