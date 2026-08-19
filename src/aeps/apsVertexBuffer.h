@@ -25,6 +25,8 @@ struct SpriteVertex {
     unsigned int diffuse;  // +0x0C
     float      tu;      // +0x10
     float      tv;      // +0x14
+
+    void Set(const math::Dir3& pos, unsigned int rgba, float u, float v);
 };
 static_assert(sizeof(SpriteVertex) == 0x18, "SpriteVertex size mismatch");
 
