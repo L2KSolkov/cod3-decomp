@@ -156,23 +156,24 @@ void ngliSetZTarget(nglTexture* Tex) {
 // ============================================================================
 // nglGetFSAAParams - ea: 0x851BD0
 // ============================================================================
-math::Vector4* nglGetFSAAParams(math::Vector4* result, nglTexture* RenderTarget) {
+math::Vector4 nglGetFSAAParams(nglTexture* RenderTarget) {
     if ((nglGetFSAAParams_InitFlag & 1) == 0) {
         FSAAParams4RegularTex.v = _mm_setr_ps(1.0f, 1.0f, 0.53125f, 0.0f);
         nglGetFSAAParams_InitFlag |= 1u;
     }
+    math::Vector4 result;
     if ((RenderTarget->Flags & 0x2000) != 0)
-        *result = nglFSAAParams;
+        result = nglFSAAParams;
     else
-        *result = FSAAParams4RegularTex;
+        result = FSAAParams4RegularTex;
     return result;
 }
 
 // ============================================================================
 // DeviceXBox - ea: 0x851CA0
 // ============================================================================
-math::Mat44* DeviceXBox(math::Mat44* result, nglTexture* Target,
-                        const math::Vector4* FSAAParams) {
+math::Mat44 DeviceXBox(nglTexture* Target, const math::Vector4& FSAAParams) {
+    math::Mat44 result;
     float ScreenWidth, ScreenHeight;
     if ((Target->Flags & 0x2000) != 0) {
         ScreenWidth = (float)nglGetScreenWidth();
@@ -181,23 +182,21 @@ math::Mat44* DeviceXBox(math::Mat44* result, nglTexture* Target,
         ScreenWidth = (float)Target->Width;
         ScreenHeight = (float)Target->Height;
     }
-    float v5 = (FSAAParams->v.m128_f32[1] * ScreenHeight) * 0.5f;
-    result->x.v = _mm_setr_ps((FSAAParams->v.m128_f32[0] * ScreenWidth) * 0.5f, 0.0f, 0.0f, 0.0f);
-    result->y.v = _mm_setr_ps(0.0f, v5, 0.0f, 0.0f);
-    result->z.v = _mm_setr_ps(0.0f, 0.0f, 0.998046875f, 0.0f);
-    result->w.v = _mm_setr_ps(FSAAParams->v.m128_f32[2] + (FSAAParams->v.m128_f32[0] * ScreenWidth) * 0.5f,
-                              FSAAParams->v.m128_f32[2] + v5, 0.0f, 1.0f);
+    float v5 = (FSAAParams.v.m128_f32[1] * ScreenHeight) * 0.5f;
+    result.x.v = _mm_setr_ps((FSAAParams.v.m128_f32[0] * ScreenWidth) * 0.5f, 0.0f, 0.0f, 0.0f);
+    result.y.v = _mm_setr_ps(0.0f, v5, 0.0f, 0.0f);
+    result.z.v = _mm_setr_ps(0.0f, 0.0f, 0.998046875f, 0.0f);
+    result.w.v = _mm_setr_ps(FSAAParams.v.m128_f32[2] + (FSAAParams.v.m128_f32[0] * ScreenWidth) * 0.5f,
+                             FSAAParams.v.m128_f32[2] + v5, 0.0f, 1.0f);
     return result;
 }
 
 // ============================================================================
 // ngliGetDeviceMatrix - ea: 0x851E10
 // ============================================================================
-math::Mat44* ngliGetDeviceMatrix(math::Mat44* result, nglTexture* RenderTarget) {
-    math::Vector4 Params;
-    nglGetFSAAParams(&Params, RenderTarget);
-    DeviceXBox(result, RenderTarget, &Params);
-    return result;
+math::Mat44 ngliGetDeviceMatrix(nglTexture* RenderTarget) {
+    math::Vector4 Params = nglGetFSAAParams(RenderTarget);
+    return DeviceXBox(RenderTarget, Params);
 }
 
 // ============================================================================
@@ -216,7 +215,7 @@ void ngliSetClearStencil(unsigned int Stencil) {
 // ============================================================================
 // nglDxSetGarbageStates - ea: 0x851E70
 // ============================================================================
-unsigned int nglDxSetGarbageStates() {
+void nglDxSetGarbageStates() {
     unsigned int v0 = CullMode[nglDxSetGarbageStates_i & 1];
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, v0) == 0)
         D3DDevice_SetRenderState_CullMode(v0);
@@ -241,14 +240,11 @@ unsigned int nglDxSetGarbageStates() {
         D3DDevice_SetRenderState_Simple(dword_40348, 0);
         dword_BC2D0C = 0;
     }
-    unsigned int result = nglDxSetGarbageStates_i + 1;
     nglDxState.PrevBM = -1;
     ++nglDxSetGarbageStates_i;
-    if (((result) & 0x7F) == 0) {
-        result = rand();
-        nglDxSetGarbageStates_i = result;
+    if ((nglDxSetGarbageStates_i & 0x7F) == 0) {
+        nglDxSetGarbageStates_i = (unsigned int)rand();
     }
-    return result;
 }
 
 // ============================================================================

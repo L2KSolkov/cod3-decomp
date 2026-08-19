@@ -79,8 +79,7 @@ extern void ngliSetupBeginScene(nglScene* Scene);
 extern void ngliListInit();
 extern void ngliListSend();
 extern void ngliSetDefaultSceneParams();
-extern math::Mat44* ngliGetDeviceMatrix(math::Mat44* result,
-                                        nglTexture* RenderTarget);
+extern math::Mat44 ngliGetDeviceMatrix(nglTexture* RenderTarget);
 extern void ngliRenderSceneNode(void* Data);
 extern void nglSceneDumpCamera(const math::Mat43& WorldToView);
 
@@ -1028,9 +1027,7 @@ void nglCalculateMatrices(nglScene* Scene) {
         Viewport(&V, Scene->sx1p, Scene->sy1p, Scene->sx2p, Scene->sy2p);
         Scene->View = V;
     }
-    math::Mat44 D;
-    ngliGetDeviceMatrix(&D, Scene->RenderTarget);
-    Scene->Device = D;
+    Scene->Device = ngliGetDeviceMatrix(Scene->RenderTarget);
     // ViewToScreen = Device * View * Projection (row-vector).
     math::Mat44 VP;
     for (int r = 0; r < 4; ++r) {
