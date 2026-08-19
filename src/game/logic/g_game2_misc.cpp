@@ -1604,9 +1604,8 @@ struct HashGroupFileLocal {
     InplaceVector<InplaceVector<unsigned char>*> mPtrs; // +0x04
 };
 
-class SplineMgr {
+class SplineMgr : public AssetBankSet {
 public:
-    unsigned char m_assetBase[4];      // +0x00 AssetBankSet
     SplineEntry mList[32];             // +0x04
 
     SplineEntry* GetUnusedEntry();     // ea: 0x4F9700
@@ -1618,13 +1617,33 @@ public:
     void GetSpline(unsigned int name, SplinePath* splinePath);         // ea: 0x4FF6F0
     void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
     SplineMgr();                                                       // ea: 0x504580
+    virtual ~SplineMgr();                                             // ea: 0x51D670
     void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
     void ReverseEndianSplineGroupFile(HashGroupFileLocal* splineGroupFile);  // ea: 0x5046C0
     static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A
+    static void DeleteInst();  // ?DeleteInst@SplineMgr@@SAXXZ
 };
 
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
 SplineMgr* SplineMgr::sInst;  // ?sInst@SplineMgr@@2PAV1@A (game2.o @ 0x12F3EA0)
+
+// ea: 0x004DDFF0
+void SplineMgr::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SplineMgr.h";
+        AeAssert::gCurrentLine = 39;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
+}
 
 // ea: 0x504560
 void DecodeSplineGroup(const char* name, unsigned char* data, int size,
@@ -2145,8 +2164,8 @@ float* (*GetSplineGroup)(unsigned int) = nullptr;  // ?GetSplineGroup (game2.o)
 #include "aeps/apsCommon.h"
 
 SplineMgr::SplineMgr()
+    : AssetBankSet()
 {
-    m_assetBase[0] = 0;  // AssetBankSet base
     for (int i = 0; i < 32; ++i)
     {
         mList[i].pakId = -1;
@@ -2154,6 +2173,9 @@ SplineMgr::SplineMgr()
     }
     apsCommon::SetSplineCallback(GetSplineGroup);
 }
+
+// ea: 0x0051D670
+SplineMgr::~SplineMgr() = default;
 
 // ============================================================================
 // SplineMgr::ReverseEndianSplinePath - ea: 0x5045F0
