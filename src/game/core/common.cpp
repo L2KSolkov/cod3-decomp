@@ -497,7 +497,7 @@ class StreamZoneManager { public: static void CreateInst(); static void DeleteIn
 class BinFileManager { public: static BinFileManager* CreateInst(); static void DeleteInst(); };
 class CurveManager { public: static CurveManager* CreateInst(); static void DeleteInst(); };
 class PlayerAnimMgr { public: static PlayerAnimMgr* CreateInst(); static void DeleteInst(); };
-class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
+class DynamicDecalMgr { public: static DynamicDecalMgr* CreateInst(); static void DeleteInst(); };
 class TestFPS { public: static void CreateInst(); static void DeleteInst(); };
 extern void InitLights();
 extern void TimerRenderBars_Init(void* self);

@@ -38,7 +38,6 @@ public:
     void UnloadAll();
 };
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
-class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
 {
@@ -62,8 +61,6 @@ void AnimBankManager_UnloadAll()
 {
     (void)AnimBankManager_sInst;
 }
-void DynamicDecalMgr::CreateInst() {}
-void DynamicDecalMgr::DeleteInst() {}
 
 // j_nullsub_N no-op stubs. IDA-invented names for linker thunks that jump to
 // nullsubs (do-nothing functions); binary semantics are exactly no-ops.

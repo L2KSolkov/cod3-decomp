@@ -14,6 +14,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
+
 // AeAssert (game.o defines the real symbols; local decls only)
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -849,14 +852,16 @@ void DynamicDecalSet::Render()
 // ============================================================================
 class DynamicDecalMgr {
 public:
+    static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A
     struct DecalSet {
         nglTexture* mTexture;    // +0x00
         DynamicDecalSet* mDecalSet;  // +0x04
     };
     struct VectorView {
-        DecalSet* _Myfirst;  // +0x00
-        DecalSet* _Mylast;   // +0x04
-        DecalSet* _Myend;    // +0x08
+        uint8_t _allocator[4];  // std::vector allocator base
+        DecalSet* _Myfirst;  // +0x04
+        DecalSet* _Mylast;   // +0x08
+        DecalSet* _Myend;    // +0x0C
 
         void resize(int iNewSize, int value)
         {
@@ -879,6 +884,8 @@ public:
     };
     VectorView mDecalSets;   // +0x00
 
+    static DynamicDecalMgr* CreateInst();
+    static void DeleteInst();
     DynamicDecalMgr();       // ??0DynamicDecalMgr@@QAE@XZ
     ~DynamicDecalMgr();      // ??1DynamicDecalMgr@@QAE@XZ
     void Render();           // ?Render@DynamicDecalMgr@@QAEXXZ
@@ -889,6 +896,60 @@ public:
              float radius, float angle, const Color& color,
              bool isHighPriority);  // ?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@_N@Z
 };
+static_assert(sizeof(DynamicDecalMgr::DecalSet) == 0x8,
+              "DynamicDecalMgr::DecalSet size mismatch");
+static_assert(sizeof(DynamicDecalMgr) == 0x10,
+              "DynamicDecalMgr size mismatch");
+
+// ea: 0x004DECB0
+DynamicDecalMgr* DynamicDecalMgr::CreateInst()
+{
+    if (DynamicDecalMgr::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DynamicDecalMgr.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x10u, 4, "core", "c:\\cod\\code\\game\\DynamicDecalMgr.h", 19);
+    if (memory != nullptr)
+    {
+        DynamicDecalMgr* result = new (memory) DynamicDecalMgr();
+        DynamicDecalMgr::sInst = result;
+        return result;
+    }
+    DynamicDecalMgr::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004E2FE0
+void DynamicDecalMgr::DeleteInst()
+{
+    DynamicDecalMgr* instance =
+        (DynamicDecalMgr*)DynamicDecalMgr::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DynamicDecalMgr.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~DynamicDecalMgr();
+        mem_heap_free(instance);
+    }
+    DynamicDecalMgr::sInst = nullptr;
+}
 
 // ea: 0x006DCF30
 DynamicDecalMgr::DynamicDecalMgr()
