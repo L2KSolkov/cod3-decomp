@@ -11,6 +11,7 @@ extern const char defaultFileName[];
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file,
                                  int line);
+extern void mem_heap_free(void* ptr);
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -39,6 +40,25 @@ CtrlIcon* CtrlIcon::CreateInst()
         mem_heap_malloc_ctx(0x800u, 1, "ui",
                             "c:\\cod\\code\\game\\ctrlicon.h", 42));
     return CtrlIcon::sInst;
+}
+
+// ea: 0x004E5FE0
+void CtrlIcon::DeleteInst()
+{
+    CtrlIcon* instance = CtrlIcon::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ctrlicon.h";
+        AeAssert::gCurrentLine = 42;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+        mem_heap_free(instance);
+    CtrlIcon::sInst = nullptr;
 }
 
 char* g_ctrlIconInfo[20][2] = {
