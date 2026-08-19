@@ -1221,9 +1221,12 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
         unsigned int Command = *Cursor++;
         if (Command == 0 && *Cursor == 0)
             break;
-        if ((Command & 0x3FFFFu) != 0x18u || Command < 0x4000018u)
+        // NGL emits 0x40001818 as the inline-array command base and stores
+        // the vertex DWORD count in bits 18+.  Keep the full command base
+        // here so multi-glyph strings are accepted and decoded correctly.
+        if ((Command & 0x3FFFFu) != 0x1818u || Command < 0x40001818u)
             return;
-        unsigned int DwordCount = (Command - 0x4000018u) >> 18;
+        unsigned int DwordCount = (Command - 0x40001818u) >> 18;
         if (DwordCount == 0 || (DwordCount % 24u) != 0 || Cursor + DwordCount > End)
             return;
         for (unsigned int Offset = 0; Offset < DwordCount; Offset += 24)
