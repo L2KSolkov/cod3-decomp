@@ -25,7 +25,7 @@ extern nglDebugStruct nglSyncDebug;               // ngl_debug.o
 extern nglPerfInfoStruct nglPerfInfo;             // ngl_debug.o
 extern bool nglProfileEvalShader(nglShader* Shader);  // ngl_debug.o
 extern void nglValidateMatrices(nglScene* Scene);     // ngl_scene.o
-extern void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+extern void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                              const nglMeshParams* Params);  // ngl_scenedump.o
 extern int ngliListAddMesh_GetClipResult(const math::Position3& Center,
                                          float Radius,
@@ -275,7 +275,7 @@ nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld
             __debugbreak();
         if (nglSyncDebug.DisableScratch == 0 || (Mesh->Flags & 0x20000) == 0) {
             if (nglSyncDebug.DumpSceneFile != 0)
-                nglSceneDumpMesh(Mesh, &LocalToWorld, MeshParams);
+                nglSceneDumpMesh(Mesh, LocalToWorld, MeshParams);
             nglValidateMatrices(nglBuildScene);
             unsigned int ParamFlags = MeshParams != NULL ? MeshParams->Flags : 0;
             float v52 = Mesh->Sphere.v.m128_f32[3];

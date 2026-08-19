@@ -54,27 +54,27 @@ void nglSceneDumpEnd() {
 // ============================================================================
 // nglSceneDumpCamera - ea: 0x852A30
 // ============================================================================
-void nglSceneDumpCamera(const math::Mat43* WorldToView) {
+void nglSceneDumpCamera(const math::Mat43& WorldToView) {
     nglHostPrintf(nglSceneDumpFile, "CAMERA\n");
     nglHostPrintf(nglSceneDumpFile, "  ROW1 %f %f %f %f\n",
-                  WorldToView->x.v.m128_f32[0], WorldToView->x.v.m128_f32[1],
-                  WorldToView->x.v.m128_f32[2], WorldToView->x.v.m128_f32[3]);
+                  WorldToView.x.v.m128_f32[0], WorldToView.x.v.m128_f32[1],
+                  WorldToView.x.v.m128_f32[2], WorldToView.x.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "  ROW2 %f %f %f %f\n",
-                  WorldToView->y.v.m128_f32[0], WorldToView->y.v.m128_f32[1],
-                  WorldToView->y.v.m128_f32[2], WorldToView->y.v.m128_f32[3]);
+                  WorldToView.y.v.m128_f32[0], WorldToView.y.v.m128_f32[1],
+                  WorldToView.y.v.m128_f32[2], WorldToView.y.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "  ROW3 %f %f %f %f\n",
-                  WorldToView->z.v.m128_f32[0], WorldToView->z.v.m128_f32[1],
-                  WorldToView->z.v.m128_f32[2], WorldToView->z.v.m128_f32[3]);
+                  WorldToView.z.v.m128_f32[0], WorldToView.z.v.m128_f32[1],
+                  WorldToView.z.v.m128_f32[2], WorldToView.z.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "  ROW4 %f %f %f %f\n",
-                  WorldToView->w.v.m128_f32[0], WorldToView->w.v.m128_f32[1],
-                  WorldToView->w.v.m128_f32[2], WorldToView->w.v.m128_f32[3]);
+                  WorldToView.w.v.m128_f32[0], WorldToView.w.v.m128_f32[1],
+                  WorldToView.w.v.m128_f32[2], WorldToView.w.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "ENDCAMERA\n");
 }
 
 // ============================================================================
 // nglSceneDumpMesh - ea: 0x852B30
 // ============================================================================
-void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                       const nglMeshParams* Params) {
     if ((Mesh->Flags & 0x20000) != 0)
         return;
@@ -87,17 +87,17 @@ void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
                       Params->Scale.v.m128_f32[2]);
     }
     nglHostPrintf(nglSceneDumpFile, "  ROW1 %f %f %f %f\n",
-                  LocalToWorld->x.v.m128_f32[0], LocalToWorld->x.v.m128_f32[1],
-                  LocalToWorld->x.v.m128_f32[2], LocalToWorld->x.v.m128_f32[3]);
+                  LocalToWorld.x.v.m128_f32[0], LocalToWorld.x.v.m128_f32[1],
+                  LocalToWorld.x.v.m128_f32[2], LocalToWorld.x.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "  ROW2 %f %f %f %f\n",
-                  LocalToWorld->y.v.m128_f32[0], LocalToWorld->y.v.m128_f32[1],
-                  LocalToWorld->y.v.m128_f32[2], LocalToWorld->y.v.m128_f32[3]);
+                  LocalToWorld.y.v.m128_f32[0], LocalToWorld.y.v.m128_f32[1],
+                  LocalToWorld.y.v.m128_f32[2], LocalToWorld.y.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "  ROW3 %f %f %f %f\n",
-                  LocalToWorld->z.v.m128_f32[0], LocalToWorld->z.v.m128_f32[1],
-                  LocalToWorld->z.v.m128_f32[2], LocalToWorld->z.v.m128_f32[3]);
+                  LocalToWorld.z.v.m128_f32[0], LocalToWorld.z.v.m128_f32[1],
+                  LocalToWorld.z.v.m128_f32[2], LocalToWorld.z.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "  ROW4 %f %f %f %f\n",
-                  LocalToWorld->w.v.m128_f32[0], LocalToWorld->w.v.m128_f32[1],
-                  LocalToWorld->w.v.m128_f32[2], LocalToWorld->w.v.m128_f32[3]);
+                  LocalToWorld.w.v.m128_f32[0], LocalToWorld.w.v.m128_f32[1],
+                  LocalToWorld.w.v.m128_f32[2], LocalToWorld.w.v.m128_f32[3]);
     if (Params != NULL && (Params->Flags & 0x3C) != 0) {
         nglHostPrintf(nglSceneDumpFile, "  NBONES %d\n", Params->NBones);
         unsigned int v4 = 0;
@@ -146,15 +146,15 @@ void nglSceneDumpQuad(nglQuad* Quad) {
 // ============================================================================
 // nglSceneDumpDirLight - ea: 0x852E80
 // ============================================================================
-void nglSceneDumpDirLight(char LightCat, const math::Dir3* Dir, const math::Vector4* Color) {
+void nglSceneDumpDirLight(char LightCat, const math::Dir3& Dir, const math::Vector4& Color) {
     nglHostPrintf(nglSceneDumpFile, "\n");
     nglHostPrintf(nglSceneDumpFile, "DIRLIGHT\n");
     nglHostPrintf(nglSceneDumpFile, "  LIGHTCAT 0x%8X\n", LightCat);
     nglHostPrintf(nglSceneDumpFile, "  DIR %f %f %f\n",
-                  Dir->v.m128_f32[0], Dir->v.m128_f32[1], Dir->v.m128_f32[2]);
+                  Dir.v.m128_f32[0], Dir.v.m128_f32[1], Dir.v.m128_f32[2]);
     nglHostPrintf(nglSceneDumpFile, "  COLOR %f %f %f %f\n",
-                  Color->v.m128_f32[0], Color->v.m128_f32[1],
-                  Color->v.m128_f32[2], Color->v.m128_f32[3]);
+                  Color.v.m128_f32[0], Color.v.m128_f32[1],
+                  Color.v.m128_f32[2], Color.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "ENDLIGHT\n");
 }
 
@@ -162,17 +162,17 @@ void nglSceneDumpDirLight(char LightCat, const math::Dir3* Dir, const math::Vect
 // nglSceneDumpPointLight - ea: 0x852F30
 // ============================================================================
 void nglSceneDumpPointLight(nglLightType LightType, char LightCat,
-                            const math::Position3* Pos, float Near, float Far,
-                            const math::Vector4* Color) {
+                            const math::Position3& Pos, float Near, float Far,
+                            const math::Vector4& Color) {
     (void)LightType;
     nglHostPrintf(nglSceneDumpFile, "\n");
     nglHostPrintf(nglSceneDumpFile, "POINTLIGHT\n");
     nglHostPrintf(nglSceneDumpFile, "  LIGHTCAT 0x%8X\n", LightCat);
     nglHostPrintf(nglSceneDumpFile, "  POS %f %f %f\n",
-                  Pos->v.m128_f32[0], Pos->v.m128_f32[1], Pos->v.m128_f32[2]);
+                  Pos.v.m128_f32[0], Pos.v.m128_f32[1], Pos.v.m128_f32[2]);
     nglHostPrintf(nglSceneDumpFile, "  RANGE %f %f\n", Near, Far);
     nglHostPrintf(nglSceneDumpFile, "  COLOR %f %f %f %f\n",
-                  Color->v.m128_f32[0], Color->v.m128_f32[1],
-                  Color->v.m128_f32[2], Color->v.m128_f32[3]);
+                  Color.v.m128_f32[0], Color.v.m128_f32[1],
+                  Color.v.m128_f32[2], Color.v.m128_f32[3]);
     nglHostPrintf(nglSceneDumpFile, "ENDLIGHT\n");
 }

@@ -82,7 +82,7 @@ extern void ngliSetDefaultSceneParams();
 extern math::Mat44* ngliGetDeviceMatrix(math::Mat44* result,
                                         nglTexture* RenderTarget);
 extern void ngliRenderSceneNode(void* Data);
-extern void nglSceneDumpCamera(const math::Mat43* WorldToView);
+extern void nglSceneDumpCamera(const math::Mat43& WorldToView);
 
 
 // ngl_sort helpers (ngl_scene.o inline COMDATs).
@@ -315,7 +315,7 @@ void nglSetWorldToViewMatrix(const math::Mat43* WorldToView) {
     nglBuildScene->WorldToView = *WorldToView;
     nglBuildScene->MatricesDirty = true;
     if (nglSyncDebug.DumpSceneFile != 0)
-        nglSceneDumpCamera(WorldToView);
+        nglSceneDumpCamera(*WorldToView);
 }
 void nglSetCameraMatrix(const math::Mat43* CameraToWorld) {
     // WorldToView = transpose(CameraToWorld) with negated translation.

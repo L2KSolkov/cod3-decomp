@@ -21,12 +21,12 @@
 extern nglScene* nglBuildScene;                       // ngl_scene.o
 extern nglDebugStruct nglSyncDebug;                   // ngl_debug.o
 extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);  // nglRenderNode.h
-extern void nglSceneDumpDirLight(char LightCat, const math::Dir3* Dir,
-                                 const math::Vector4* Color);  // ngl_scenedump.o
+extern void nglSceneDumpDirLight(char LightCat, const math::Dir3& Dir,
+                                 const math::Vector4& Color);  // ngl_scenedump.o
 extern void nglSceneDumpPointLight(nglLightType Type, char LightCat,
-                                   const math::Position3* Pos, float Near,
+                                   const math::Position3& Pos, float Near,
                                    float Far,
-                                   const math::Vector4* Color);  // ngl_scenedump.o
+                                   const math::Vector4& Color);  // ngl_scenedump.o
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
 // ============================================================================
@@ -389,7 +389,7 @@ void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math
         v3->Color.v = _mm_shuffle_ps(Color.v, _mm_shuffle_ps(_mm_set1_ps(1.0f), Color.v, 160), 52);
         nglListAddLight(NGLLIGHT_DIRECTIONAL, v3, (int)LightCat);
         if (nglSyncDebug.DumpSceneFile != 0)
-            nglSceneDumpDirLight((char)LightCat, &Dir, &Color);
+            nglSceneDumpDirLight((char)LightCat, Dir, Color);
     }
 }
 
@@ -410,8 +410,8 @@ static void nglListAddPointLightCommon(nglLightType Type, unsigned int LightCat,
             v6[2].m128_f32[2] = isVertexPointLight ? 1.0f : 0.0f;
             nglListAddLight(Type, v6, (int)LightCat);
             if (nglSyncDebug.DumpSceneFile != 0)
-                nglSceneDumpPointLight(Type, (char)LightCat, Pos, Near, Far,
-                                       Color);
+                nglSceneDumpPointLight(Type, (char)LightCat, *Pos, Near, Far,
+                                       *Color);
         }
     }
 }
