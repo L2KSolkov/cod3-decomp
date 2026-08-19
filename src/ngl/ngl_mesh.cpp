@@ -474,34 +474,34 @@ void nglMeshInit() {
 // ============================================================================
 // nglGetMesh / nglGetMaterial
 // ============================================================================
-nglMesh* nglGetMesh(const tlFixedString* Name, bool Warn) {
+nglMesh* nglGetMesh(const tlFixedString& Name, bool Warn) {
     if (nglGetMeshFunc == NULL) {
-        nglMesh* v3 = nglMeshDirectory.Find(*Name);
+        nglMesh* v3 = nglMeshDirectory.Find(Name);
         if (v3 == NULL && Warn)
-            tlWarning("nglGetMesh: Unable to find mesh %s.\n", Name->str);
+            tlWarning("nglGetMesh: Unable to find mesh %s.\n", Name.str);
         return v3;
     }
-    nglMesh* result = (nglMesh*)nglGetMeshFunc(*Name, 0x4853454Du);
+    nglMesh* result = (nglMesh*)nglGetMeshFunc(Name, 0x4853454Du);
     if (result != NULL)
         return result;
-    nglMesh* v3 = nglMeshDirectory.Find(*Name);
+    nglMesh* v3 = nglMeshDirectory.Find(Name);
     if (v3 == NULL && Warn)
-        tlWarning("nglGetMesh: Unable to find mesh %s.\n", Name->str);
+        tlWarning("nglGetMesh: Unable to find mesh %s.\n", Name.str);
     return v3;
 }
 
-nglMaterial* nglGetMaterial(const tlFixedString* Name, bool Warn) {
+nglMaterial* nglGetMaterial(const tlFixedString& Name, bool Warn) {
     if (nglGetMaterialFunc == NULL) {
-        nglMaterial* v3 = nglMaterialDirectory.Find(*Name);
+        nglMaterial* v3 = nglMaterialDirectory.Find(Name);
         if (v3 == NULL && Warn)
-            tlWarning("nglGetMaterial: Unable to find material %s.\n", Name->str);
+            tlWarning("nglGetMaterial: Unable to find material %s.\n", Name.str);
         return v3;
     }
-    nglMaterial* result = (nglMaterial*)nglGetMaterialFunc(*Name, 0x4853454Du);
+    nglMaterial* result = (nglMaterial*)nglGetMaterialFunc(Name, 0x4853454Du);
     if (result != NULL)
         return result;
-    nglMaterial* v3 = nglMaterialDirectory.Find(*Name);
+    nglMaterial* v3 = nglMaterialDirectory.Find(Name);
     if (v3 == NULL && Warn)
-        tlWarning("nglGetMaterial: Unable to find material %s.\n", Name->str);
+        tlWarning("nglGetMaterial: Unable to find material %s.\n", Name.str);
     return v3;
 }

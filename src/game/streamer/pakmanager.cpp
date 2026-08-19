@@ -8855,7 +8855,7 @@ apsEffectTemplate* sMissingParticleEffect =
 static tlFixedString none_tfs("None");
 static tlFixedString null_tfs("(null)");
 struct nglMaterial;
-extern nglMaterial* nglGetMaterial(const tlFixedString* Name, bool Warn);
+extern nglMaterial* nglGetMaterial(const tlFixedString& Name, bool Warn);
 
 // ea: 0x677850
 unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
@@ -9078,7 +9078,7 @@ void* cdGetResource(const tlFixedString* FileName, unsigned int FourCC,
     if (FourCC == 0x4C454B53u)
         return gCharSkel;
     if (FourCC == 0x54414Du)
-        return nglGetMaterial(FileName, true);
+        return nglGetMaterial(*FileName, true);
     if (FourCC != 0x584554u)
     {
         if (FourCC == 0x4853454Du)

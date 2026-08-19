@@ -51,7 +51,7 @@ void nglAPKMeshDeleteCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void
 void nglAPKMaterialLoadCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* UserData);
 void nglAPKMaterialDeleteCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* UserData);
 void nglMeshInit();
-nglMesh* nglGetMesh(const tlFixedString* Name, bool Warn);
-nglMaterial* nglGetMaterial(const tlFixedString* Name, bool Warn);
+nglMesh* nglGetMesh(const tlFixedString& Name, bool Warn);
+nglMaterial* nglGetMaterial(const tlFixedString& Name, bool Warn);
 
 #endif // COD3_NGL_NGL_MESH_H
