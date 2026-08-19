@@ -133,8 +133,8 @@ extern int nglSceneRecursion;
 // ============================================================================
 struct nglMesh;
 struct nglMeshLOD {
-    float    Range;   // +0x00
-    nglMesh* Mesh;    // +0x04
+    nglMesh* Mesh;    // +0x00
+    float    Range;   // +0x04
 };
 static_assert(sizeof(nglMeshLOD) == 8, "nglMeshLOD size mismatch");
 
