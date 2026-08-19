@@ -66,7 +66,6 @@ void GdbFileManager::CreateInst() {}
 void GdbFileManager::DeleteInst() {}
 void DialogueManager::CreateInst() {}
 void DialogueManager::DeleteInst() {}
-void EntityManager::DeleteInst() {}
 void MultiplayerMgr::DeleteInst() {}
 void AnimBankManager::CreateInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)

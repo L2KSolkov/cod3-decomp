@@ -1222,6 +1222,7 @@ class EntityManager : public AssetBankSet {
 public:
     static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
     static EntityManager* CreateInst();     // ?CreateInst@EntityManager@@SAXXZ (core.o 0x4DB890)
+    static void DeleteInst();               // ?DeleteInst@EntityManager@@SAXXZ (core.o 0x4DB980)
     EntityManager();                        // ??0EntityManager@@QAE@XZ (game.o 0x612420)
     virtual ~EntityManager();               // ??1EntityManager@@UAE@XZ (game.o 0x612470)
     static EntityManager* Inst();           // ?Inst@EntityManager@@SAPAV1@XZ (g.o inline)

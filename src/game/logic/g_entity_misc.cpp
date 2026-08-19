@@ -4128,6 +4128,25 @@ EntityManager* EntityManager::CreateInst()
     return sInst;
 }
 
+// ea: 0x004DB980
+void EntityManager::DeleteInst()
+{
+    EntityManager* instance = EntityManager::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityManager.h";
+        AeAssert::gCurrentLine = 9;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+        delete instance;
+    EntityManager::sInst = nullptr;
+}
+
 template <>
 SoundDevice::Sound*
 DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>::operator*() const
