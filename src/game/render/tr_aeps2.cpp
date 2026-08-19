@@ -450,6 +450,7 @@ private:
 public:
     static XModelManager* sInst;  // ?sInst@XModelManager@@2PAV1@A (sv_globals.cpp)
     static void CreateInst();      // ?CreateInst@XModelManager@@SAXXZ
+    static void DeleteInst();      // ?DeleteInst@XModelManager@@SAXXZ
     IVPointer<XModel> GetXModel(TPakId pak_id,
                                 const char* name);  // ?GetXModel@XModelManager@@QAE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBD@Z
 };
@@ -461,6 +462,7 @@ private:
 public:
     static XModelPartsManager* sInst;  // ?sInst@XModelPartsManager@@2PAV1@A (sv_globals.cpp)
     static void CreateInst();           // ?CreateInst@XModelPartsManager@@SAXXZ
+    static void DeleteInst();           // ?DeleteInst@XModelPartsManager@@SAXXZ
     IVPointer<XModelParts> GetXModelParts(TPakId pak_id,
                                           const char* name);  // ?GetXModelParts@XModelPartsManager@@QAE?AV?$IVPointer@VXModelParts@@@@W4TPakId@@PBD@Z
     void AssignHashName(XModelParts* xmp);  // ?AssignHashName@XModelPartsManager@@QAEXPAVXModelParts@@@Z
@@ -502,6 +504,25 @@ void XModelManager::CreateInst()
     }
 }
 
+// ea: 0x004B4F40
+void XModelManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
+}
+
 XModelPartsManager::XModelPartsManager()
 {
 }
@@ -536,6 +557,25 @@ void XModelPartsManager::CreateInst()
     {
         sInst = nullptr;
     }
+}
+
+// ea: 0x004B50D0
+void XModelPartsManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.h";
+        AeAssert::gCurrentLine = 59;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
 }
 
 // ea: 0x006D5FD0
