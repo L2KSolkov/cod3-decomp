@@ -318,6 +318,7 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_ROPZCMPALWAYSREAD = 163, // 0xA3
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
     D3DRS_SIMPLE_MAX = 92,         // 0x5C
+    D3DRS_FOGCOLOR = 0x8A,          // 0x8A
     D3DRS_PRESENTATIONINTERVAL = 127,  // 0x7F
     D3DRS_YUVENABLE = 160,         // 0xA0
 };
@@ -508,6 +509,7 @@ void         __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFOR
                                                           unsigned int Address);
 void         __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* pPSDef);
 void         __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int Value);

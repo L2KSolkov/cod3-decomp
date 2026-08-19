@@ -977,6 +977,10 @@ void __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value) {
         gD3D9Device->SetRenderState(COD3_D3D9_RS_CULLMODE,
                                      nullD3DCullMode(Value));
 }
+void __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value) {
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetRenderState(COD3_D3D9_RS_FOGCOLOR, Value);
+}
 int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value) {
     if (gD3D9Device == NULL)
         return 0;
@@ -995,6 +999,7 @@ int __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsign
     case D3DRS_DESTBLEND: NativeState = COD3_D3D9_RS_DESTBLEND; break;
     case D3DRS_BLENDOP: NativeState = COD3_D3D9_RS_BLENDOP; break;
     case D3DRS_BLENDCOLOR: NativeState = D3DRS_BLENDFACTOR; break;
+    case D3DRS_FOGCOLOR: NativeState = COD3_D3D9_RS_FOGCOLOR; break;
     case D3DRS_ZWRITEENABLE: NativeState = COD3_D3D9_RS_ZWRITEENABLE; break;
     case D3DRS_COLORWRITEENABLE: NativeState = COD3_D3D9_RS_COLORWRITEENABLE; break;
     case D3DRS_SPECULARENABLE: NativeState = COD3_D3D9_RS_SPECULARENABLE; break;

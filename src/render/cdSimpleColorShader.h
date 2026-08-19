@@ -15,6 +15,7 @@
 #include "ngl/nglScene.h"
 #include "aeps/apsRenderNode.h"  // nglRenderNode
 #include "core/tlFixedString.h"
+#include "render/ShaderCommon.h"
 
 // ============================================================================
 // Forward declarations
@@ -72,7 +73,16 @@ static_assert(sizeof(nglMaterial) == 0x10, "nglMaterial size mismatch");
 struct cdSimpleShaderNode : nglShaderNode {
     cdSimpleShaderMat* mMaterial;     // +0x14
     bool               hasColorVerts; // +0x18
+
+    void Render() override;           // @0x7D6540
 };
+static_assert(sizeof(cdSimpleShaderNode) == 0x1C, "cdSimpleShaderNode size mismatch");
+
+// IDA local type 7959 (render_xboxr:cdSimpleShader.o).
+struct SimpleContext {
+    math::Mat44 mLToS;
+};
+static_assert(sizeof(SimpleContext) == 0x40, "SimpleContext size mismatch");
 
 // ============================================================================
 // cdSimpleShaderMat — simple shader material (fwd)
@@ -87,19 +97,6 @@ struct nglShader : tlInitList {
 
     virtual void Register();  // base Register @0x6E7D80 (inline COMDAT, render.o)
 };
-
-// ============================================================================
-// ShaderCommon::ShaderSwitching — 4-byte union of per-shader toggle flags
-// ============================================================================
-namespace ShaderCommon {
-union ShaderSwitching_t {
-    struct {
-        unsigned char __s0[4];
-    };
-    unsigned int as_u32;  // +0x00
-};
-extern ShaderSwitching_t ShaderSwitching;  // @0x10DDB10
-}
 
 // ============================================================================
 // cdSimpleColorShader — solid-color shader (16 bytes)

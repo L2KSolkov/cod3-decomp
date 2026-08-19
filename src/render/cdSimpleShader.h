@@ -1,5 +1,5 @@
 // ============================================================================
-// cdSimpleShader.h — simple shader (6 non-inline funcs).
+// cdSimpleShader.h — simple shader (12 non-inline funcs).
 // Source: source/cdSimpleShader.cpp (render_xboxr)
 // Verified against IDA (render_xboxr:cdSimpleShader.o):
 //   cdSimpleShaderMat::ctor @0x7D6390
@@ -8,6 +8,12 @@
 //   cdSimpleShader::Register @0x7D6490
 //   cdSimpleShader::AddNode @0x7D64C0
 //   cdSimpleShaderNode::Render @0x7D6540
+//   cdSimpleRender::RegisterVShader @0x7D6910
+//   cdSimpleRender::GetVShader @0x7D6940
+//   cdSimplePixel::RegisterPShader @0x7D6950
+//   cdSimplePixel::GetPShader @0x7D6970
+//   cdSimpleFullbrightPixel::RegisterPShader @0x7D6980
+//   cdSimpleFullbrightPixel::GetPShader @0x7D69A0
 // ============================================================================
 #ifndef COD3_RENDER_CDSIMPLESHADER_H
 #define COD3_RENDER_CDSIMPLESHADER_H
@@ -40,6 +46,30 @@ public:
     virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdSimpleShader) == 0x10, "cdSimpleShader size mismatch");
+
+// Shader data tables are the exact IDA-declared objects.  Their Xbox
+// microcode payloads remain null until the Phase 6 shader translation pass.
+namespace cdSimpleRender {
+    extern unsigned int VS[2];
+    extern const unsigned int* VShaderTable[2];
+    void RegisterVShader();  // @0x7D6910
+    unsigned int GetVShader(unsigned int index);  // @0x7D6940
+}
+namespace cdSimplePixel {
+    extern unsigned int* PS[1];
+    extern const unsigned int* PShaderTable[1];
+    void RegisterPShader();  // @0x7D6950
+    unsigned int* GetPShader();  // @0x7D6970
+}
+namespace cdSimpleFullbrightPixel {
+    extern unsigned int* PS[1];
+    extern const unsigned int* PShaderTable[1];
+    void RegisterPShader();  // @0x7D6980
+    unsigned int* GetPShader();  // @0x7D69A0
+}
+
+extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);
+extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
 
 // ============================================================================
 // Externs
