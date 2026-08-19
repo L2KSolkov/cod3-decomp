@@ -748,7 +748,7 @@ nslVoice*      nslVoicePtr(int);
 unsigned      nslVoiceCount();
 int           nslVoiceAlloc(nslWaveID, nslSourceID, int);
 void          nslVoiceFree(int);
-int           nslDriverUpdate();
+void          nslDriverUpdate();
 void          nslPriorityUpdate();
 int           nslPriorityCanPlay(int priority);
 int           nslSourceGetPriority(nslSource* source);
@@ -5100,7 +5100,7 @@ int nslDriverStart() {
 }
 void          nslDriverShutdown() {}
 // ea: 0x00825A10
-int           nslDriverUpdate() {
+void          nslDriverUpdate() {
     constexpr const char* driverFile =
         "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp";
     int synchPlaybackCount = 0;
@@ -5439,7 +5439,7 @@ int           nslDriverUpdate() {
         std::memcpy(&bits, &value, sizeof(bits));
         return bits;
     };
-    return j_DirectSoundDoWork(
+    (void)j_DirectSoundDoWork(
         d.dwSize,
         floatBits(d.vPosition.x),
         floatBits(d.vPosition.y),
