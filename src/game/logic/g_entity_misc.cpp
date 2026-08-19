@@ -5879,9 +5879,9 @@ extern void nslDampen(float dampenLevel);                    // nsl
 extern void nslUndampen();                                   // nsl
 extern void nslSetSpeakerMode(nslSpeakerMode speakerMode);   // nsl
 extern nslSpeakerMode nslGetSpeakerMode();                   // nsl
-extern void nslSetListenerPosition(const float* pos);        // ?nslSetListenerPosition@@YAXQBM@Z
-extern void nslSetListenerOrientation(const float* a,
-                                      const float* b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
+extern void nslSetListenerPosition(const float* const pos);        // ?nslSetListenerPosition@@YAXQBM@Z
+extern void nslSetListenerOrientation(const float* const a,
+                                      const float* const b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
 extern void AnglesToAxis(const float* const angles,
                          float (*const axis)[3]);  // core.o
 struct nslInitParams { unsigned maxSources; unsigned maxEmitters; unsigned aramBase; unsigned aramSize; };

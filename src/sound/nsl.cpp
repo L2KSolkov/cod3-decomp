@@ -1467,8 +1467,8 @@ void          nslExit() {
     nsl_workLimit = 0;
 }
 void          nslSetEffect(const void*) {}
-void          nslSetListenerPosition(const float*) {}
-void          nslSetListenerOrientation(const float*, const float*) {}
+void          nslSetListenerPosition(const float* const) {}
+void          nslSetListenerOrientation(const float* const, const float* const) {}
 // ea: 0x008270B0
 unsigned int  nslWaveGetHash(nslWaveID waveID) {
     const unsigned encodedWaveID = static_cast<unsigned>(waveID) | 0xFFFFu;
