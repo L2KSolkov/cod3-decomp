@@ -2574,21 +2574,7 @@ void InGameMenuSystem_ActivatePauseMenu(void* self) { (void)self; }
 void InitCDAepsShader() {}
 void InitLights() {}
 void InplaceAssetBank_Fixup(void* self) { (void)self; }
-struct ConfigStringBank;
-void InplaceAssetBank_Fixup_ConfigString(void* b) { (void)b; }
 void InplaceAssetBank_GdbFileSet_Fixup(void* self) { (void)self; }
-void InplaceAssetBankSet_AddBank_ConfigString(void* self, TPakId pak,
-                                              void* bank)
-{
-    (void)self; (void)pak; (void)bank;
-}
-struct ConfigStringPtr;
-void InplaceAssetBankSet_Find_ConfigString(void* self, ConfigStringPtr* out,
-                                           TPakId pak, const char* name,
-                                           void* a, void* b)
-{
-    (void)self; (void)out; (void)pak; (void)name; (void)a; (void)b;
-}
 void InplaceAssetBankSet_Find_GdbFileBank(void* self, void* out,
                                           const char* a, const char* b, int c,
                                           void* d)
@@ -2598,13 +2584,6 @@ void InplaceAssetBankSet_Find_GdbFileBank(void* self, void* out,
 void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pak, void* b)
 {
     (void)self; (void)pak; (void)b;
-}
-void InplaceAssetBankSet_PredicateSearch_ConfigString(void* self,
-                                                      ConfigStringPtr* out,
-                                                      TPakId pak, void* a,
-                                                      void* b)
-{
-    (void)self; (void)out; (void)pak; (void)a; (void)b;
 }
 class InspectorManager;
 void InspectorManager_Initialise(InspectorManager* self) { (void)self; }
