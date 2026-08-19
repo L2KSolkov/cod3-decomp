@@ -608,7 +608,7 @@ ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	PORTED	Phase 6: ngl_dx_
 
 ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	PORTED	Phase 6: ngl_dx_draw.cpp (render-target switch + nglCurSurface/nglCurDepthBuffer data)
 
-ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	PORTED	ngl_dx_font.cpp: nglStringNode::Render push-buffer font quad stream; nglFont::SetMeasures inline; apsRenderNode gains virtual Render
+ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	PORTED	ngl_dx_font.cpp: nglStringNode::Render push-buffer font quad stream with release inline-array assert flow; nglFont::SetMeasures inline; apsRenderNode gains virtual Render
 
 ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	PORTED	ngl_xb_internal.cpp/.h (CreateVertexDeclaration + nglXbPushQuad data)
 
