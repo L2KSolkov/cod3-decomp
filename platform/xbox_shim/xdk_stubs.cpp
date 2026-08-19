@@ -130,6 +130,10 @@ static void nullD3DInitStateAliases() {
     dword_40354 = 23u; // D3DRS_ZFUNC in the native D3D9 enum.
     dword_40358 = COD3_D3D9_RS_COLORWRITEENABLE;
     dword_4035C = COD3_D3D9_RS_ZWRITEENABLE;
+    // D3DDevice_SwitchTexture validates these Xbox texture-stage method
+    // cells as (8300 + stage) << 6 before emitting its three DWORD packet.
+    for (unsigned int Stage = 0; Stage < 4; ++Stage)
+        DTE[Stage] = (8300u + Stage) << 6;
 }
 
 static DWORD nullD3DCompareFunc(unsigned int Value) {
@@ -308,6 +312,18 @@ static nullD3DExternalTexture* nullD3DFindExternalTexture(D3DBaseTexture* Textur
     for (unsigned int i = 0; i < sizeof(gNullExternalTextures) / sizeof(gNullExternalTextures[0]); ++i) {
         if (gNullExternalTextures[i].Object == Texture)
             return &gNullExternalTextures[i];
+    }
+    return NULL;
+}
+
+static D3DBaseTexture* nullD3DFindTextureByData(unsigned int Data,
+                                                 unsigned int Format) {
+    for (unsigned int i = 0; i < sizeof(gNullExternalTextures) / sizeof(gNullExternalTextures[0]); ++i) {
+        nullD3DExternalTexture* External = &gNullExternalTextures[i];
+        if (External->Object != NULL &&
+            External->Info.Bits == (unsigned char*)(uintptr_t)Data &&
+            External->PackedFormat == Format)
+            return External->Object;
     }
     return NULL;
 }
@@ -1277,7 +1293,15 @@ void __stdcall D3DDevice_Swap(unsigned int) {
         gNullVBlankCallback(&Data);
     }
 }
-void __stdcall D3DDevice_SwitchTexture(unsigned int, unsigned int, unsigned int) {}
+void __stdcall D3DDevice_SwitchTexture(unsigned int Method, unsigned int Data,
+                                       unsigned int Format) {
+    unsigned int Stage = (Method - (8300u << 6)) >> 6;
+    if (Stage >= 4 || DTE[Stage] != Method)
+        return;
+    D3DBaseTexture* Texture = nullD3DFindTextureByData(Data, Format);
+    if (Texture != NULL)
+        D3DDevice_SetTexture(Stage, Texture);
+}
 unsigned int __stdcall D3DPalette_Lock2(D3DPalette* Palette, unsigned int) {
     return Palette == NULL ? 0 : Palette->Data;
 }
