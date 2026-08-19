@@ -163,6 +163,12 @@ struct D3DCubeTexture : D3DBaseTexture {
 };
 struct D3DVolumeTexture : D3DBaseTexture {};
 struct D3DSurface {
+    unsigned int Common;  // +0x00
+    unsigned int Data;    // +0x04
+    unsigned int Lock;    // +0x08
+    unsigned int Format;  // +0x0C
+    unsigned int Size;    // +0x10
+    D3DBaseTexture* Parent;// +0x14
     int GetDesc(_D3DSURFACE_DESC* pDesc) {
         D3DSurface_GetDesc(this, pDesc);
         return 0;
@@ -174,6 +180,7 @@ struct D3DSurface {
         return 0;
     }
 };
+static_assert(sizeof(D3DSurface) == 0x18, "D3DSurface size mismatch");
 
 // ---- Palette (Xbox D3D8, 12 bytes, verified against IDA) -----------------
 struct D3DPalette {

@@ -754,6 +754,12 @@ static nullD3DSurface* nullD3DCreateSurface(unsigned int Width, unsigned int Hei
     Surface->Info.Persistent = Persistent;
     Surface->Info.SizeBytes = (unsigned int)Bytes;
     Surface->Info.Bits = (unsigned char*)calloc(1, Bytes);
+    Surface->Object.Common = 0;
+    Surface->Object.Data = (unsigned int)(uintptr_t)Surface->Info.Bits;
+    Surface->Object.Lock = 0;
+    Surface->Object.Format = Format;
+    Surface->Object.Size = (unsigned int)Bytes;
+    Surface->Object.Parent = NULL;
     Surface->Info.NativeResource = NULL;
     Surface->Info.NativeTexture = NULL;
     Surface->Info.NativeSurface = NULL;
