@@ -942,7 +942,7 @@ static_assert(sizeof(STBManager) == 0x190, "STBManager size mismatch");
 // ============================================================================
 class DbTablesetMgr {
 public:
-    static void CreateInst();  // ?CreateInst@DbTablesetMgr@@SAXXZ (core.o)
+    static DbTablesetMgr* CreateInst();  // ?CreateInst@DbTablesetMgr@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@DbTablesetMgr@@SAXXZ (core.o)
     IVPointer<DbTableSet> GetTableSet(TPakId pakId,
                                       const char* id) const;  // ea: 0x004CA630

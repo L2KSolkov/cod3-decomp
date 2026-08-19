@@ -21,7 +21,6 @@ class SoundDevice { public: static void CreateInst(); static void DeleteInst(); 
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
-class DbTablesetMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class DialogueManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
@@ -41,8 +40,6 @@ public:
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 
-void DbTablesetMgr::CreateInst() {}
-void DbTablesetMgr::DeleteInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
 {
     (void)pak_id;

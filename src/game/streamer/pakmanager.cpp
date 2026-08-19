@@ -2318,9 +2318,43 @@ public:
     void DecodeZoneBank(const char* name, unsigned char* data, int size,
                         TPakId pakId);
 };
-class DbTablesetMgr {
+class DbTablesetBank;
+
+template <typename BankT>
+class InplaceAssetBankSet : public AssetBankSet {
+public:
+    BankT* mBankArray[99];
+
+    InplaceAssetBankSet() : AssetBankSet()
+    {
+        memset(mBankArray, 0, sizeof(mBankArray));
+    }
+
+    virtual ~InplaceAssetBankSet() {}
+
+    virtual void UnloadBank(TPakId pakId)
+    {
+        int index = (int)pakId;
+        if (index >= 0 && index < 99 && mBankArray[index] != nullptr)
+        {
+            OnBankUnloaded(mBankArray[index]);
+            mBankArray[index] = nullptr;
+        }
+    }
+
+    virtual void OnBankUnloaded(BankT* bank)
+    {
+        (void)bank;
+    }
+};
+
+class DbTablesetMgr : public InplaceAssetBankSet<DbTablesetBank> {
 public:
     static DbTablesetMgr* sInst;
+    static DbTablesetMgr* CreateInst();
+    static void DeleteInst();
+    DbTablesetMgr();
+    virtual ~DbTablesetMgr();
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);
 };
@@ -2359,6 +2393,71 @@ public:
 XModelPartsManager* XModelPartsManager::sInst = nullptr;
 AITypeManager* AITypeManager::sInst = nullptr;
 DbTablesetMgr* DbTablesetMgr::sInst = nullptr;
+
+static_assert(sizeof(InplaceAssetBankSet<DbTablesetBank>) == 0x190,
+              "InplaceAssetBankSet<DbTablesetBank> size mismatch");
+static_assert(sizeof(DbTablesetMgr) == 0x190,
+              "DbTablesetMgr size mismatch");
+
+// ea: 0x004E5F80
+DbTablesetMgr::DbTablesetMgr()
+    : InplaceAssetBankSet<DbTablesetBank>()
+{
+}
+
+// ea: 0x004E5FD0
+DbTablesetMgr::~DbTablesetMgr()
+{
+}
+
+// ea: 0x004E8910
+DbTablesetMgr* DbTablesetMgr::CreateInst()
+{
+    if (DbTablesetMgr::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DbTablesetMgr.h";
+        AeAssert::gCurrentLine = 13;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "core", "c:\\cod\\code\\game\\DbTablesetMgr.h", 13);
+    if (memory != nullptr)
+    {
+        DbTablesetMgr* result = new (memory) DbTablesetMgr();
+        DbTablesetMgr::sInst = result;
+        return result;
+    }
+    DbTablesetMgr::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004DD060
+void DbTablesetMgr::DeleteInst()
+{
+    DbTablesetMgr* instance = DbTablesetMgr::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DbTablesetMgr.h";
+        AeAssert::gCurrentLine = 13;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~DbTablesetMgr();
+        mem_heap_free(instance);
+    }
+    DbTablesetMgr::sInst = nullptr;
+}
 LightGridMgr* LightGridMgr::sInst = nullptr;
 
 void XModelManager::DecodeBank(const char* name, unsigned char* data,
@@ -2440,19 +2539,6 @@ public:
     const ZdNode* GetZdNode(int cellId,
                             const math::Position3* position);  // ?GetZdNode@ZoneBoundaryBank@@QAEPBVZdNode@@HABVPosition3@math@@@Z
 };
-
-// InplaceAssetBankSet<T> (ae/inplace/InplaceAssetBankSet.h; streamer.o
-// COMDAT 0x687800 is an empty OnBankUnloaded override)
-template <typename T>
-class InplaceAssetBankSet {
-public:
-    virtual void OnBankUnloaded(T& bank);  // ?OnBankUnloaded@?$InplaceAssetBankSet@...@@MAEXAAV...@@@Z
-};
-template <typename T>
-void InplaceAssetBankSet<T>::OnBankUnloaded(T& bank)
-{
-    (void)bank;
-}
 
 // ZoneOverrideBrush (streamer.o; mAabb +0x00, mPlanes +0x20, size 0x40)
 struct ZoneOverrideBrush {
