@@ -73,9 +73,8 @@ static unsigned int gNullWidth = 640;
 static unsigned int gNullHeight = 480;
 static void (*gNullVBlankCallback)(_D3DVBLANKDATA*) = NULL;
 static unsigned int gNullFence = 0;
-// Xbox push buffers are intentionally discarded by the D3D9 backend.  NGL's
-// ported quad/filter/font paths still write the requested DWORD count before
-// EndPush, so provide writable host storage instead of returning NULL.
+// NGL's ported quad/filter/font paths still write Xbox push packets before
+// EndPush, so provide writable host storage for the D3D9 translation path.
 static unsigned int* gNullPushBuffer = NULL;
 
 // NGL's Xbox render-state method cells are owned by the Win32 shim.  The
@@ -374,8 +373,20 @@ static HWND nullD3DCreateWindow(void) {
     Class.hInstance = GetModuleHandleA(NULL);
     Class.lpszClassName = ClassName;
     RegisterClassA(&Class);
-    gD3D9Window = CreateWindowExA(0, ClassName, "cod3", WS_OVERLAPPED,
-                                  0, 0, 1, 1, NULL, NULL, Class.hInstance, NULL);
+    // The Xbox presentation target has no host HWND.  Give the D3D9 shim a
+    // real client area using the mode selected by NGL so Present() has a
+    // visible frontend target on Win32.
+    DWORD Style = WS_OVERLAPPEDWINDOW;
+    RECT ClientRect = { 0, 0, (LONG)(gNullWidth != 0 ? gNullWidth : 640),
+                        (LONG)(gNullHeight != 0 ? gNullHeight : 480) };
+    AdjustWindowRect(&ClientRect, Style, FALSE);
+    gD3D9Window = CreateWindowExA(0, ClassName, "Call of Duty 3",
+                                  Style | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT,
+                                  ClientRect.right - ClientRect.left,
+                                  ClientRect.bottom - ClientRect.top,
+                                  NULL, NULL, Class.hInstance, NULL);
+    if (gD3D9Window != NULL)
+        UpdateWindow(gD3D9Window);
     return gD3D9Window;
 }
 
@@ -576,7 +587,83 @@ void __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
     gD3D9Device->SetVertexDeclaration(gD3D9VertexDeclaration);
     gD3D9Device->DrawPrimitiveUP(NativePrimitive, PrimitiveCount, VertexData, VertexStride);
 }
-void __stdcall D3DDevice_EndPush(unsigned int*) {
+static void nullD3DSetScreenSpaceTransform() {
+    if (gD3D9Device == NULL || gNullWidth == 0 || gNullHeight == 0)
+        return;
+    D3DMATRIX Identity = {};
+    Identity._11 = 1.0f;
+    Identity._22 = 1.0f;
+    Identity._33 = 1.0f;
+    Identity._44 = 1.0f;
+    D3DMATRIX Projection = {};
+    Projection._11 = 2.0f / (float)gNullWidth;
+    Projection._22 = -2.0f / (float)gNullHeight;
+    Projection._33 = 1.0f;
+    Projection._41 = -1.0f;
+    Projection._42 = 1.0f;
+    Projection._44 = 1.0f;
+    gD3D9Device->SetTransform(D3DTS_WORLD, &Identity);
+    gD3D9Device->SetTransform(D3DTS_VIEW, &Identity);
+    gD3D9Device->SetTransform(D3DTS_PROJECTION, &Projection);
+}
+
+static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End) {
+    if (gD3D9Device == NULL || Begin == NULL || End == NULL || End <= Begin + 2)
+        return;
+
+    // nglRenderQuad emits one 4-vertex PCUV packet.  The packet layout is
+    // the same layout used by nglStringNode::Render for each font glyph.
+    const unsigned int* Cursor = Begin;
+    if (Cursor[1] != 8)
+        return;
+    nullD3DSetScreenSpaceTransform();
+
+    if (Cursor + 3 < End && Cursor[2] == 0x40601818u) {
+        const unsigned int* Vertices = Cursor + 3;
+        if (Vertices + 24 <= End) {
+            gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
+                                         Vertices, 24);
+        }
+        return;
+    }
+
+    // Filter copies emit a 4-vertex PUV packet.  They use the same command
+    // header with a five-DWORD vertex (XYZ + UV) instead of PCUV.
+    if (Cursor + 3 < End && Cursor[2] == 0x40501818u) {
+        const unsigned int* Vertices = Cursor + 3;
+        if (Vertices + 20 <= End) {
+            gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
+                                         Vertices, 20);
+        }
+        return;
+    }
+
+    // Font strings start with the shared inline-array command and contain a
+    // sequence of PCUV glyph quads.  The count encoded by each command is
+    // the number of DWORDs in its following vertex array.
+    Cursor += 2;
+    gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    while (Cursor + 1 < End) {
+        unsigned int Command = *Cursor++;
+        if (Command == 0 && *Cursor == 0)
+            break;
+        if ((Command & 0x3FFFFu) != 0x18u || Command < 0x4000018u)
+            return;
+        unsigned int DwordCount = (Command - 0x4000018u) >> 18;
+        if (DwordCount == 0 || (DwordCount % 24u) != 0 || Cursor + DwordCount > End)
+            return;
+        for (unsigned int Offset = 0; Offset < DwordCount; Offset += 24)
+            gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
+                                         Cursor + Offset, 24);
+        Cursor += DwordCount;
+    }
+}
+
+void __stdcall D3DDevice_EndPush(unsigned int* End) {
+    if (gNullPushBuffer != NULL && End != NULL)
+        nullD3DSubmitPush(gNullPushBuffer, End);
     free(gNullPushBuffer);
     gNullPushBuffer = NULL;
 }
