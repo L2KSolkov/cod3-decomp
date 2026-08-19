@@ -415,6 +415,10 @@ void nglDxFilters::FilterCopy(nglTexture* SrcTex, nglTexture* DstTex,
             D3D__DirtyFlags |= 1 << Stage;
             D3D__TextureState[Stage][D3DTSS_COLORSIGN] = 0;
         }
+        if (D3DDevice_SetTextureState_ParameterCheck(Stage, D3DTSS_COLORKEYOP, 0) == 0) {
+            D3D__DirtyFlags |= 1 << Stage;
+            D3D__TextureState[Stage][D3DTSS_COLORKEYOP] = 0;
+        }
     }
     nglDxInitShaders(false);
     if (nglGpuQuadPUV4VertexShader::Shader != gpuHashVertexShader) {
