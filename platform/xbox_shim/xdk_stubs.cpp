@@ -425,6 +425,24 @@ static void nullD3DUnswizzleBytes(const unsigned char* Source, unsigned char* De
     }
 }
 
+static void nullD3DSwizzleBytes(const unsigned char* Source, unsigned int SourcePitch,
+                                unsigned char* Dest, unsigned int Width,
+                                unsigned int Height, unsigned int BytesPerPixel) {
+    unsigned int MaskU = 0;
+    unsigned int MaskV = 0;
+    nullD3DGetSwizzleMasks(Width, Height, &MaskU, &MaskV);
+    for (unsigned int y = 0; y < Height; ++y) {
+        unsigned int V = nullD3DSwizzleCoordinate(MaskV, y);
+        for (unsigned int x = 0; x < Width; ++x) {
+            unsigned int U = nullD3DSwizzleCoordinate(MaskU, x);
+            size_t SourceOffset = (size_t)y * SourcePitch +
+                                  (size_t)x * BytesPerPixel;
+            size_t DestinationOffset = (size_t)(U | V) * BytesPerPixel;
+            memcpy(Dest + DestinationOffset, Source + SourceOffset, BytesPerPixel);
+        }
+    }
+}
+
 static void nullD3DUnswizzle32(const unsigned char* Source, unsigned int* Dest,
                                unsigned int Width, unsigned int Height) {
     unsigned int MaskU = 0;
@@ -1412,12 +1430,23 @@ void __stdcall XGSetTextureHeader(unsigned int Width, unsigned int Height, unsig
         nullD3DAdoptExternalTexture(Texture);
     }
 }
-void __stdcall XGSwizzleRect(const void* Source, unsigned int Pitch, const void*, void* Dest,
-                             unsigned int Width, unsigned int Height, const void*, unsigned int BytesPerPixel) {
-    if (Source == NULL || Dest == NULL) return;
+void __stdcall XGSwizzleRect(const void* Source, unsigned int Pitch, const void* Rect,
+                             void* Dest, unsigned int Width, unsigned int Height,
+                             const void* Point, unsigned int BytesPerPixel) {
+    if (Source == NULL || Dest == NULL || BytesPerPixel == 0)
+        return;
     unsigned int RowBytes = Width * BytesPerPixel;
+    if (Pitch == 0)
+        Pitch = RowBytes;
+    if (Rect == NULL && Point == NULL && Width != 0 && Height != 0 &&
+        (Width & (Width - 1u)) == 0 && (Height & (Height - 1u)) == 0) {
+        nullD3DSwizzleBytes((const unsigned char*)Source, Pitch,
+                            (unsigned char*)Dest, Width, Height, BytesPerPixel);
+        return;
+    }
     for (unsigned int y = 0; y < Height; ++y)
-        memcpy((unsigned char*)Dest + y * RowBytes, (const unsigned char*)Source + y * Pitch, RowBytes);
+        memcpy((unsigned char*)Dest + y * RowBytes,
+               (const unsigned char*)Source + y * Pitch, RowBytes);
 }
 void __stdcall XGWriteSurfaceToFile(D3DSurface*, const char*) {}
 void __stdcall XHVEngine_DoWork(unsigned int a0) {}
