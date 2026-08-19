@@ -22,7 +22,7 @@ extern "C" unsigned long long txTime();
 extern "C" int __cdecl __fpclass(float value);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern "C" char* txPathFix(const char* src, char* dir, int dirSize);
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 // ============================================================================
 // Handle types

@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern const char* const defaultFileName;  // 0xCD67AE
+extern const char defaultFileName[];  // 0xCD67AE
 extern void mem_heap_free(void* ptr);      // core.o
 
 // File-scope scratch buffers (shell.o data; shared with stringed_hooks.cpp)

@@ -100,7 +100,7 @@ extern void tlPrintf(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void Cvar_SetValue(const char* var_name, float value);
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 extern bool gSkipFrontEnd;
 extern bool gSkipMovies;
 extern void D3DDevice_SetVertexShader(unsigned int Handle);

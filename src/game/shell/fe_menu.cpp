@@ -9,7 +9,7 @@
 #include <string.h>
 
 extern float sNaN;                       // ?sNaN@@3MA @ 0x10F19D0
-extern const char* const defaultFileName;  // 0xCD67AE
+extern const char defaultFileName[];  // 0xCD67AE
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);            // core.o
 

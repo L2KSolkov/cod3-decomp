@@ -449,7 +449,7 @@ extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
 extern int mem_heap_destroy(mem_heap* heap);     // mem_heap.cpp
 extern bool mem_heap_free_check_reserve(mem_heap* heap, void* ptr);  // mem_heap.cpp
-extern const char* const defaultFileName;  // g_globals.cpp
+extern const char defaultFileName[];  // g_globals.cpp
 namespace AeStringSupport {
 void CStrToAeStr(char* dst, int* dstLen, int capacity, const char* src);
 void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,

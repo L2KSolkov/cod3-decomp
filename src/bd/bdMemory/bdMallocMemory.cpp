@@ -9,7 +9,7 @@
 #include <windows.h>
 #endif
 
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 void* bdAlignedOffsetMalloc(unsigned int size, unsigned int align,
                             unsigned int offset);

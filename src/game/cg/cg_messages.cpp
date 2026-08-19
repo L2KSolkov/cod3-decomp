@@ -36,7 +36,7 @@ extern bool Entity_IsLocalPlayer(const Entity* ent);
 const char* MultiplayerMgr_GetPlayerName(void* mgr, const Entity* player)
 {
     (void)mgr; (void)player;
-    extern const char* const defaultFileName;
+    extern const char defaultFileName[];
     return defaultFileName;
 }
 extern void* MultiplayerMgr_sInst;

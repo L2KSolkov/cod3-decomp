@@ -7,7 +7,7 @@
 #include "bd_types.h"
 #include "bd/bdUtilities/bdBitOperations.h"
 
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 // bdLogSubscriber — base logging callbacks (bdCore @ 0x89D240).
 bdLogSubscriber::bdLogSubscriber() = default;

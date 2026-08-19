@@ -430,7 +430,7 @@ void CG_SoundBlend(Entity* entity)
 extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
                                                    const char* pszSystem);
 extern const char* CG_ConfigString(unsigned int index);
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 struct game_hudelem_s {
     struct {

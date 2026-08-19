@@ -112,7 +112,7 @@ extern const PakInfoNode* sLoadingScreenInfo;
 extern int  dword_F6A290[4 * 802];
 bool gReturnToMenu;
 extern int  sv_restartedServerId;
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 class MPUIInterface {
 public:
     static bool BlockUntilNetReady();  // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 char* g_ctrlIconInfo[20][2] = {
     {"BUTTON_1", "XBOX_B01"},

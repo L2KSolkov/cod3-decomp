@@ -12,7 +12,7 @@
 extern float sNaN;                       // ?sNaN@@3MA @ 0x10F19D0
 extern int cg_widescreen_integer;        // cg.o
 float widescreen_scale_0 = 0.75f;        // shell.o data @ 0xF30D00-ish
-extern const char* const defaultFileName;  // 0xCD67AE
+extern const char defaultFileName[];  // 0xCD67AE
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);            // core.o
 extern bool CompareButton(const char* text, const char* button,

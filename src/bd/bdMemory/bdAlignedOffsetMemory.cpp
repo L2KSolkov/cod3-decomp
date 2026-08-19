@@ -11,7 +11,7 @@
 
 typedef unsigned int bdUWord;
 
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 void* bdAlignedOffsetMalloc(bdUWord size, bdUWord align, bdUWord offset) {
     const bdUWord mask = align - 1;

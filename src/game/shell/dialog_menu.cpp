@@ -9,7 +9,7 @@
 
 extern FEManager g_femanager;          // ?g_femanager@@3UFEManager@@A
 extern int currCl;                     // ?currCl@@3HA @ 0xF1579C
-extern const char* const defaultFileName;  // ?defaultFileName
+extern const char defaultFileName[];  // ?defaultFileName
 extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
 extern float unk_F6A284[];             // @ 0xF6A284

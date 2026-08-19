@@ -25,7 +25,7 @@ extern int com_fileAccessed;
 extern int fs_numServerPaks;
 extern int com_journalDataFile;
 extern int fs_checksumFeed;
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 extern cvar_t* fs_debug;
 extern cvar_t* fs_copyfiles;
 extern cvar_t* fs_cdpath;

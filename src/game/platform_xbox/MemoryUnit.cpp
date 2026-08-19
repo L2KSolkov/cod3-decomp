@@ -13,7 +13,7 @@
 #include <string.h>
 
 // rdata 0xCD67AE - shared empty default file name (defined in GameXbox.cpp).
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 static void DbgPrintf(const char* format, ...)
 {

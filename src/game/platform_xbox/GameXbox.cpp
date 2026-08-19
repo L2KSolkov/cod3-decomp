@@ -12,7 +12,7 @@
 
 // rdata 0xCD67AE - shared default file name ("or"; defined in g_globals.cpp,
 // also used by MemoryUnit.o and sv.o; declared extern in game/sv/sv_stubs.h).
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)

@@ -25,7 +25,7 @@ extern char** FS_ListFiles(const char* path, const char* extension,
                            int* numfiles);  // core.o
 extern void FS_FreeFileList(char** list);   // core.o
 extern int SEH_GetCurrentLanguage();                       // this file
-extern const char* const defaultFileName;  // 0xCD67AE
+extern const char defaultFileName[];  // 0xCD67AE
 
 namespace AeAssert {
 extern ECoderId gCurrentAuthor;

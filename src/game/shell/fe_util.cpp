@@ -14,7 +14,7 @@ extern float sNaN;  // ?sNaN@@3MA @ 0x10F19D0
 extern int cg_widescreen_integer;  // ?cg_widescreen@@3Ucvar_t@@A (cg.o)
 extern ELanguage gLanguage;        // 0x012F03A4
 extern int g_currentAsian;         // shell.o data
-extern const char* const defaultFileName;  // 0xCD67AE
+extern const char defaultFileName[];  // 0xCD67AE
 
 int SEH_GetCurrentLanguage();  // game.o stub
 extern unsigned int XGetLanguage();     // platform shim

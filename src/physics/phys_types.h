@@ -12,7 +12,7 @@
 
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void tlFatal(const char* Format, ...);
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 // ============================================================================
 // outer_time — time wrapper used in rigid_body (4 bytes)

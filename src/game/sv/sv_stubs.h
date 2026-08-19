@@ -1756,7 +1756,7 @@ extern bool          gNoClipEnabled;  // ?gNoClipEnabled@@3_NA
 extern bool          gIsWorkspaceMap; // ?gIsWorkspaceMap@@3_NA
 extern bool          gDoNotPlayCampaignMovies; // ?gDoNotPlayCampaignMovies@@3_NA
 extern int           g_networkOwner;  // ?g_networkOwner@@3W4EThreadOwner@@A
-extern const char* const defaultFileName;  // ?defaultFileName
+extern const char defaultFileName[];  // ?defaultFileName
 extern void          mem_heap_free(void* ptr);
 extern int           dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 

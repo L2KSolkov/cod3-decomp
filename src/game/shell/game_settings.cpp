@@ -21,7 +21,7 @@ extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);                            // core.o
-extern const char* const defaultFileName;  // ?defaultFileName
+extern const char defaultFileName[];  // ?defaultFileName
 
 namespace LocalClient {
 extern int ClientToPort(int client);  // ?ClientToPort@LocalClient@@YAHH@Z

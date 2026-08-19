@@ -67,7 +67,7 @@ extern void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int)
 extern void Cvar_Set(const char* var_name, const char* value);
 extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 extern int com_frameTime;
 int old_com_frameTime = 0;  // ?old_com_frameTime@@3HA (cl.o @ 0xF0D1B4)
 extern int dword_F6A290[4 * 802];  // defined in effect_events.cpp (core.o)

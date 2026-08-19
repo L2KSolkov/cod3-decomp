@@ -70,7 +70,7 @@ extern unsigned int s_wheelTagHashes[6];  // g.o @ 0xEE62CC
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 namespace AeAssert {
 // Binary enum (IDA: ARO=0, CD=1, JRS=2, MJK=3, MJU=4, MM=5, TPB=6, SLB=7,

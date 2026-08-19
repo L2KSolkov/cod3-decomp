@@ -9,7 +9,7 @@
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
 extern FEManager g_femanager;
-extern const char* const defaultFileName;
+extern const char defaultFileName[];
 
 class PakFile;
 

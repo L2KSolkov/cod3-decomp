@@ -23,7 +23,7 @@
 
 #include "game/platform_xbox/MemoryUnitManager.h"
 
-extern const char* const defaultFileName;  // 0xCD67AE
+extern const char defaultFileName[];  // 0xCD67AE
 
 struct nglTexture;
 class nglFont;
