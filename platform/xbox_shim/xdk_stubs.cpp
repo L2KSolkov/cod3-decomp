@@ -90,6 +90,8 @@ static unsigned int gNullFence = 0;
 // EndPush, so provide writable host storage for the D3D9 translation path.
 static unsigned int* gNullPushBuffer = NULL;
 
+static nullD3DInfo* nullD3DAdoptExternalTexture(D3DBaseTexture* Texture);
+
 // NGL's Xbox render-state method cells are owned by the Win32 shim.  The
 // source-side state code already identifies the slots that are used by the
 // D3D9 path; bind those slots to their native render-state selectors once the
@@ -376,6 +378,42 @@ static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
         return;
     Info->NativeResource = Info->NativeTexture;
     nullD3DUploadExternalTexture(Info, Size);
+}
+
+static nullD3DInfo* nullD3DAdoptExternalTexture(D3DBaseTexture* Texture) {
+    if (Texture == NULL || (Texture->Common & 0x70000u) != 0x40000u)
+        return NULL;
+
+    nullD3DExternalTexture* Slot = NULL;
+    for (unsigned int i = 0; i < sizeof(gNullExternalTextures) / sizeof(gNullExternalTextures[0]); ++i) {
+        if (gNullExternalTextures[i].Object == Texture) {
+            Slot = &gNullExternalTextures[i];
+            break;
+        }
+        if (Slot == NULL && gNullExternalTextures[i].Object == NULL)
+            Slot = &gNullExternalTextures[i];
+    }
+    if (Slot == NULL)
+        return NULL;
+
+    Slot->Object = Texture;
+    Slot->PackedFormat = Texture->Format;
+    Slot->PackedSize = Texture->Size;
+    nullD3DInfo* Info = &Slot->Info;
+    if (Info->Magic != NULL_D3D_MAGIC) {
+        memset(Info, 0, sizeof(*Info));
+        Info->Magic = NULL_D3D_MAGIC;
+        Info->Kind = NULL_D3D_TEXTURE;
+    }
+    Info->Width = nullD3DExternalTextureWidth(Texture->Format, Texture->Size);
+    Info->Height = nullD3DExternalTextureHeight(Texture->Format, Texture->Size);
+    Info->Depth = 1;
+    Info->Levels = nullD3DExternalTextureLevels(Texture->Format);
+    Info->Format = (Texture->Format >> 8) & 0xFFu;
+    Info->SizeBytes = 0;
+    Info->Bits = (unsigned char*)(uintptr_t)Texture->Data;
+    nullD3DCreateExternalNative(Info, Slot->PackedSize, Slot->PackedFormat);
+    return Info;
 }
 
 static nullD3DInfo* nullD3DSurfaceInfo(D3DSurface* Surface) {
@@ -1185,14 +1223,27 @@ void __stdcall XGSetPaletteHeader(_D3DPALETTESIZE, D3DPalette* Palette, void* Da
 }
 void __stdcall XGSetTextureHeader(unsigned int Width, unsigned int Height, unsigned int Levels,
                                   unsigned int Usage, unsigned int Format, unsigned int,
-                                  D3DBaseTexture* Texture, void* Data, unsigned int) {
+                                  D3DBaseTexture* Texture, void* Data, unsigned int Pitch) {
     if (Texture != NULL) {
-        Texture->Format = Format;
-        Texture->Size = Width * Height;
+        // XGRAPHICS::EncodeTexture's non-swizzled branch (the branch used by
+        // nglDxFilters for LIN_A8R8G8B8) stores the format, mip count, and
+        // linear surface dimensions in the Xbox packed fields.
+        unsigned int MipLevels = Levels == 0 ? 1 : Levels;
+        unsigned int EncodedFormat = 9u | (16u * (2u | (16u *
+            (Format | (MipLevels << 8)))));
+        unsigned int LinearPitch = Pitch;
+        if (LinearPitch == 0)
+            LinearPitch = Width * nullD3DLinearBytesPerPixel(Format);
+        Texture->Format = EncodedFormat;
+        if ((Usage & 0x10000u) != 0)
+            Texture->Format &= ~8u;
+        Texture->Size = (Width - 1u) | ((Height - 1u) << 12) |
+                        ((((LinearPitch >> 6) - 1u) & 0xFFu) << 24);
+        Texture->Common = 0x40001u;
+        Texture->Lock = 0;
         Texture->Data = (unsigned int)(uintptr_t)Data;
+        nullD3DAdoptExternalTexture(Texture);
     }
-    (void)Levels;
-    (void)Usage;
 }
 void __stdcall XGSwizzleRect(const void* Source, unsigned int Pitch, const void*, void* Dest,
                              unsigned int Width, unsigned int Height, const void*, unsigned int BytesPerPixel) {
