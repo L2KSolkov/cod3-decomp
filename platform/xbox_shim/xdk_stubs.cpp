@@ -81,6 +81,8 @@ static IDirect3DVertexBuffer9* gD3D9VertexBuffers[4] = {};
 static nullD3DInfo* gD3D9VertexInfos[4] = {};
 static unsigned int gD3D9VertexOffsets[4] = {};
 static unsigned int gD3D9VertexStrides[4] = {};
+static unsigned int gNullTextureWidths[4] = {};
+static unsigned int gNullTextureHeights[4] = {};
 static HWND gD3D9Window = NULL;
 static unsigned int gNullWidth = 640;
 static unsigned int gNullHeight = 480;
@@ -937,6 +939,34 @@ static void nullD3DSetScreenSpaceTransform() {
     gD3D9Device->SetTransform(D3DTS_PROJECTION, &Projection);
 }
 
+static bool nullD3DNormalizeTexelCoordinates(unsigned int* Vertices,
+                                             unsigned int VertexCount,
+                                             unsigned int StrideDwords,
+                                             unsigned int UIndex) {
+    unsigned int Width = gNullTextureWidths[0];
+    unsigned int Height = gNullTextureHeights[0];
+    if (Width <= 1 || Height <= 1)
+        return false;
+    bool TexelCoordinates = false;
+    for (unsigned int i = 0; i < VertexCount; ++i) {
+        const float U = *(const float*)&Vertices[i * StrideDwords + UIndex];
+        const float V = *(const float*)&Vertices[i * StrideDwords + UIndex + 1];
+        if (U < -1.0f || U > 1.0f || V < -1.0f || V > 1.0f) {
+            TexelCoordinates = true;
+            break;
+        }
+    }
+    if (!TexelCoordinates)
+        return false;
+    for (unsigned int i = 0; i < VertexCount; ++i) {
+        float* U = (float*)&Vertices[i * StrideDwords + UIndex];
+        float* V = (float*)&Vertices[i * StrideDwords + UIndex + 1];
+        *U /= (float)Width;
+        *V /= (float)Height;
+    }
+    return true;
+}
+
 static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End) {
     if (gD3D9Device == NULL || Begin == NULL || End == NULL || End <= Begin + 2)
         return;
@@ -951,9 +981,12 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
     if (Cursor + 3 < End && Cursor[2] == 0x40601818u) {
         const unsigned int* Vertices = Cursor + 3;
         if (Vertices + 24 <= End) {
+            unsigned int NormalizedVertices[24];
+            memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
+            nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 6, 4);
             gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
             gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
-                                         Vertices, 24);
+                                         NormalizedVertices, 24);
         }
         return;
     }
@@ -963,9 +996,12 @@ static void nullD3DSubmitPush(const unsigned int* Begin, const unsigned int* End
     if (Cursor + 3 < End && Cursor[2] == 0x40501818u) {
         const unsigned int* Vertices = Cursor + 3;
         if (Vertices + 20 <= End) {
+            unsigned int NormalizedVertices[20];
+            memcpy(NormalizedVertices, Vertices, sizeof(NormalizedVertices));
+            nullD3DNormalizeTexelCoordinates(NormalizedVertices, 4, 5, 3);
             gD3D9Device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
             gD3D9Device->DrawPrimitiveUP(COD3_D3D9_PT_TRIANGLESTRIP, 2,
-                                         Vertices, 20);
+                                         NormalizedVertices, 20);
         }
         return;
     }
@@ -1085,6 +1121,8 @@ void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture)
                                     External->PackedFormat);
     if (Info != NULL)
         NativeTexture = Info->NativeTexture;
+    gNullTextureWidths[Stage] = Info != NULL ? Info->Width : 0;
+    gNullTextureHeights[Stage] = Info != NULL ? Info->Height : 0;
     gD3D9Device->SetTexture(Stage, NativeTexture);
 }
 int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
