@@ -11,6 +11,15 @@
 
 namespace apsVertexBuffer {
 
+void SpriteVertex::Set(const math::Dir3& pos, unsigned int rgba, float u, float v) {
+    x = pos.v.m128_f32[0];
+    y = _mm_shuffle_ps(pos.v, pos.v, 85).m128_f32[0];
+    z = _mm_shuffle_ps(pos.v, pos.v, 170).m128_f32[0];
+    tu = u;
+    diffuse = rgba;
+    tv = v;
+}
+
 // ============================================================================
 // Data globals owned by apsVertexBuffer.o
 // ============================================================================
