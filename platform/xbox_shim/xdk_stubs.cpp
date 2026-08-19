@@ -760,7 +760,7 @@ int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
         return 0;
     DWORD Sampler = 0;
     DWORD NativeValue = Value;
-    bool Supported = true;
+    bool SamplerState = true;
     switch (Type) {
     case D3DTSS_ADDRESSU: Sampler = D3DSAMP_ADDRESSU; break;
     case D3DTSS_ADDRESSV: Sampler = D3DSAMP_ADDRESSV; break;
@@ -771,10 +771,22 @@ int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
     case D3DTSS_MIPMAPLODBIAS: Sampler = D3DSAMP_MIPMAPLODBIAS; break;
     case D3DTSS_MAXMIPLEVEL: Sampler = D3DSAMP_MAXMIPLEVEL; break;
     case D3DTSS_MAXANISOTROPY: Sampler = D3DSAMP_MAXANISOTROPY; break;
-    default: Supported = false; break;
+    case D3DTSS_COLOROP:
+    case D3DTSS_COLORARG1:
+    case D3DTSS_COLORARG2:
+    case D3DTSS_ALPHAOP:
+    case D3DTSS_ALPHAARG1:
+    case D3DTSS_ALPHAARG2:
+        SamplerState = false;
+        break;
+    default:
+        return 0;
     }
-    if (Supported)
+    if (SamplerState)
         gD3D9Device->SetSamplerState(Stage, (D3DSAMPLERSTATETYPE)Sampler, NativeValue);
+    else
+        gD3D9Device->SetTextureStageState(Stage, (COD3_D3D9_TEXTURESTAGESTATETYPE)Type,
+                                          NativeValue);
     return 0;
 }
 void __stdcall D3DDevice_SetVertexShader(unsigned int) {}
