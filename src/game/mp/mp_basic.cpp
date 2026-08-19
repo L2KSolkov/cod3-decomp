@@ -22,6 +22,16 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
+static float mpCoerceFloat(unsigned int bits)
+{
+    union {
+        unsigned int bits;
+        float value;
+    } coerced;
+    coerced.bits = bits;
+    return coerced.value;
+}
+
 MultiplayerMgr::MPLogSubscriber::~MPLogSubscriber() = default;  // 0x00774FF0
 
 EGameConnectionType MPUIInterface::mGameConnectionType =
@@ -1566,7 +1576,7 @@ void MPOptionsSoundMenu::SetPanelFile(PanelFile* pf)
         if (v15 != nullptr)
             v15 = new (v15)
                 FEMultiLineText(v13->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v46.i, v46);
+                                mpCoerceFloat(32u), 64, (int)v46.i, v46);
         this->mInstructionsText = v15;
         if (v15 != nullptr)
             v15->SetNumLines(5);
@@ -1641,7 +1651,7 @@ void MPOptionsControlsMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v15->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v81.i, v81);
+                                mpCoerceFloat(32u), 64, (int)v81.i, v81);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
@@ -1742,7 +1752,7 @@ void MPOptionsGameplayMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v15->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)col2.i, col2);
+                                mpCoerceFloat(32u), 64, (int)col2.i, col2);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
@@ -1824,7 +1834,7 @@ void MPOptionsPreferencesMenu::SetPanelFile(PanelFile* pf)
         if (v17 != nullptr)
             v17 = new (v17)
                 FEMultiLineText(v15->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v86.i, v86);
+                                mpCoerceFloat(32u), 64, (int)v86.i, v86);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
             v17->SetNumLines(5);
@@ -2025,7 +2035,7 @@ void MPProfileEditMenu::SetPanelFile(PanelFile* pf)
         if (v14 != nullptr)
             v14 = new (v14)
                 FEMultiLineText(v12->GetFont(), x1a, 0.0f, 0, layera,
-                                32.0f, 64, (int)v28.i, v28);
+                                mpCoerceFloat(32u), 64, (int)v28.i, v28);
         this->mInstructionsText = v14;
         if (v14 != nullptr)
             v14->SetNumLines(5);
@@ -2140,7 +2150,7 @@ void MPOptionsScreenMenu::SetPanelFile(PanelFile* pf)
             (FEMultiLineText*)mem_heap_malloc(0xA8);
         if (v17 != nullptr)
             v17 = new (v17)
-                FEMultiLineText(v16, x1a, 0.0f, 0, layera, 32.0f, 64,
+                FEMultiLineText(v16, x1a, 0.0f, 0, layera, mpCoerceFloat(32u), 64,
                                 (int)v50.i, v50);
         this->mInstructionsText = v17;
         if (v17 != nullptr)
