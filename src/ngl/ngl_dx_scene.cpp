@@ -178,8 +178,9 @@ void nglSetCubeMapRenderTarget(nglTexture* Tex, int CubeMapFace) {
         nglBuildScene->RenderTarget = Tex;
         nglBuildScene->CubeMapFace = CubeMapFace;
     } else {
-        _tlAssert("src/dx/ngl_dx_scene.cpp", 113, "Tex->Flags & NGLTEX_CUBE",
-                  "Texture missing NGLTEX_CUBE flag.");
+        if (_tlAssert("src/dx/ngl_dx_scene.cpp", 113, "Tex->Flags & NGLTEX_CUBE",
+                      "Texture missing NGLTEX_CUBE flag."))
+            __debugbreak();
         nglBuildScene->RenderTarget = Tex;
         nglBuildScene->CubeMapFace = CubeMapFace;
     }
