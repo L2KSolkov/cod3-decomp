@@ -61,6 +61,7 @@ public:
     LightGridMgr();                              // ??0LightGridMgr@@QAE@XZ
     static LightGridMgr* sInst;                  // ?sInst@LightGridMgr@@2PAV1@A
     static void CreateInst();                     // ?CreateInst@LightGridMgr@@SAXXZ
+    static void DeleteInst();                     // ?DeleteInst@LightGridMgr@@SAXXZ
     void SetLightGridFailedColor();  // ?SetLightGridFailedColor@LightGridMgr@@QAEXXZ
     LightGrid::TOC* GetLightGrid(TPakId iPakId); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@W4TPakId@@@Z
     LightGrid::TOC* GetLightGrid(int cellNum);   // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@H@Z
@@ -437,6 +438,25 @@ void LightGridMgr::CreateInst()
     {
         sInst = nullptr;
     }
+}
+
+// ea: 0x004B5280
+void LightGridMgr::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\LightGridMgr.h";
+        AeAssert::gCurrentLine = 27;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
 }
 
 // ea: 0x006BC870
