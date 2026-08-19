@@ -25,6 +25,7 @@ class nglRenderNode {
 public:
     virtual ~nglRenderNode() {}
     virtual void Render() = 0;
+    virtual void GetSortInfo(nglSortInfo& Info) { (void)Info; }
     nglRenderNode* Next;
     union {
         float SortDist;

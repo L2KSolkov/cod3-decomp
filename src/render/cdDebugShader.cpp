@@ -15,6 +15,8 @@
 // Shader global pointer definitions
 cdDebugShader* gCDDebugShader = nullptr;  // ?gCDDebugShader@@3PAVcdDebugShader@@A
 
+extern unsigned int nglTintParamID;
+
 // Shader static data definitions (render_xboxr cd*Shader.o)
 namespace cdDebugShaderRender {
     unsigned long* VS = nullptr;
@@ -114,5 +116,26 @@ void cdDebugShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         } else {
             nglListAddNode(NULL);
         }
+    }
+}
+
+// ============================================================================
+// cdDebugShaderNode::GetSortInfo — ea: 0x7C6470
+// ============================================================================
+void cdDebugShaderNode::GetSortInfo(nglSortInfo& si) {
+    math::Vector4 color(1.0f);
+    const unsigned int paramId = nglTintParamID;
+    const unsigned int* array = this->MeshNode->ShaderParams.Array;
+    if ((1u << (paramId & 0x1Fu)) & array[paramId >> 5]) {
+        const unsigned char* values = reinterpret_cast<const unsigned char*>(array);
+        color.v = _mm_loadu_ps(reinterpret_cast<const float*>(values + 8u + 4u * paramId));
+    }
+
+    if (_mm_shuffle_ps(color.v, color.v, _MM_SHUFFLE(3, 3, 3, 3)).m128_f32[0] == 1.0f) {
+        si.Type = nglSortInfo::NGLSORT_OPAQUE;
+        si.Hash = gCDDebugShader->ID;
+    } else {
+        si.Type = nglSortInfo::NGLSORT_TRANSLUCENT;
+        si.Dist = this->GetDist(nglBuildScene->WorldToView);
     }
 }
