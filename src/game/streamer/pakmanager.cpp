@@ -2865,16 +2865,6 @@ struct cdSimpleInstance {
              int cellNum);  // render.o 0x7C4D20; stub
     void Finalize(ae_sized_array<int*, 384>& flags);  // render.o 0x7C4FD0; stub
 };
-void cdSimpleInstance::Add(const math::Mat43& mat, float scale,
-                           const math::Mat44& dir, const math::Mat44& color,
-                           ae_sized_array<int*, 384>& flags, int cellNum)
-{
-    (void)mat; (void)scale; (void)dir; (void)color; (void)flags; (void)cellNum;
-}
-void cdSimpleInstance::Finalize(ae_sized_array<int*, 384>& flags)
-{
-    (void)flags;
-}
 struct InstanceListNode {
     cdSimpleInstance instance;          // +0x00 (0x20 bytes)
     uint8_t _pad20[0x24 - 0x20];
@@ -2893,10 +2883,6 @@ struct InstanceData {
     float pad;          // +0x24
 };
 
-// ea: 0x7C50F0 (render.o; stub until cdSimpleInstance::Render is ported)
-void cdSimpleInstance::Render()
-{
-}
 struct SceneEffectGroup;
 
 // SceneEffect (scenemanager.cpp; state machine fields verified IDA)

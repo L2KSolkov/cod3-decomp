@@ -15,6 +15,7 @@
 
 #include "cdSimpleColorShader.h"
 #include "core/math_types.h"
+#include "core/ae_array.h"
 
 // ============================================================================
 // cdSimpleInstance::XForm — per-instance transform (144 bytes)
@@ -46,6 +47,11 @@ struct cdSimpleInstance {
 
     void Create(nglMesh* mesh, nglMeshSection* section, int numInstances);  // @0x7C4CB0
     void Destroy();                                                          // @0x7C4D00
+    void Add(const math::Mat43& mat, float scale, const math::Mat44& dir,
+             const math::Mat44& color, ae_sized_array<int*, 384>& flags,
+             int cellNum);                                                   // @0x7C4D20
+    void Finalize(ae_sized_array<int*, 384>& flags);                         // @0x7C4FD0
+    void Render();                                                           // @0x7C50F0
 };
 static_assert(sizeof(cdSimpleInstance) == 0x20, "cdSimpleInstance size mismatch");
 
