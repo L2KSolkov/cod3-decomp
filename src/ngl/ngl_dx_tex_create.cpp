@@ -33,6 +33,15 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 extern class gpuD3DDevice* nglDev;
 extern _D3DPRESENT_PARAMETERS_ nglPresentParams;
 
+// IDA type layout for the D3DX image-info out parameter.
+struct _D3DXIMAGE_INFO {
+    unsigned int Width;
+    unsigned int Height;
+    unsigned int Depth;
+    unsigned int MipLevels;
+    _D3DFORMAT Format;
+};
+
 // ============================================================================
 // Globals (data)
 // ============================================================================
@@ -86,9 +95,11 @@ void nglSaveTexture(nglTexture* Tex, const char* FileName) {
 nglTexture* nglCreateTextureFromFile(void* Data, int Size) {
     nglTexture* v2 = (nglTexture*)tlMemAlloc(0x2Cu, 8u, 0x1000000);
     memset(v2, 0, 0x2Cu);
+    _D3DXIMAGE_INFO Info;
     D3DXCreateTextureFromFileInMemoryEx(nglDev, Data, Size, 0xFFFFFFFF, 0xFFFFFFFF,
                                         0xFFFFFFFF, 0, D3DFMT_UNKNOWN, 0, 0xFFFFFFFF,
-                                        0xFFFFFFFF, 0, NULL, NULL, (D3DTexture**)&v2->Texture);
+                                        0xFFFFFFFF, 0, &Info, NULL,
+                                        (D3DTexture**)&v2->Texture);
     v2->FileName = &nglCreatedTexture_FileName_0;
     v2->LastFrameRef = -1;
     return v2;
