@@ -24,6 +24,8 @@ const _D3DVERTEXSHADERINPUT gGlowVertexElements[6] = {
 // Shader global pointer definitions
 cdGlowShader* gCDGlowShader = nullptr;  // ?gCDGlowShader@@3PAVcdGlowShader@@A
 
+tlFixedString cdGlowShader::GetName() { return tlFixedString("Glow"); }
+
 // Shader static data definitions (render_xboxr cd*Shader.o)
 namespace cdGlowRender1 {
     unsigned long* VS = nullptr;
@@ -74,6 +76,7 @@ void ToggleCDGlowShader() {
 void InitCDGlowShader() {
     cdGlowShader* v0 = (cdGlowShader*)mem_heap_malloc(0x10);
     if (v0 != NULL) {
+        ::new (v0) cdGlowShader;
         v0->next = tlInitList::head;
         tlInitList::head = v0;
         v0->Disabled = false;

@@ -55,10 +55,9 @@ static_assert(sizeof(SimpleSpecularContext) == 0x100, "SimpleSpecularContext siz
 // ============================================================================
 class cdSimpleSpecularShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D5490
     virtual void Register();  // @0x7D4ED0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D4FF0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdSimpleSpecularShader) == 0x10, "cdSimpleSpecularShader size mismatch");
 

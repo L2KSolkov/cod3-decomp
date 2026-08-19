@@ -86,6 +86,7 @@ cdSimplePrelitShaderMat::cdSimplePrelitShaderMat(nglTexture* iTexture) {
 void InitCDSimplePrelitShader() {
     cdSimplePrelitShader* result = (cdSimplePrelitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimplePrelitShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -114,6 +115,8 @@ void ToggleCDSimplePrelitShader() {
 // cdSimplePrelitShader::Register — register the prelit vertex/pixel shaders.
 // ea: 0x7D59E0
 // ============================================================================
+tlFixedString cdSimplePrelitShader::GetName() { return tlFixedString("cdSimplePrelit"); }
+
 void cdSimplePrelitShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdSimplePrelitRender::VS, cdSimplePrelitRender::VShaderTable, 0);

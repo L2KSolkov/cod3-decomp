@@ -24,6 +24,8 @@ extern nglMeshNode* nglListAddMesh_Sections(nglMesh* Mesh, nglMeshNode* MeshNode
 
 cdSimpleInstanceShader* gCDSimpleInstanceShader = nullptr;  // ?gCDSimpleInstanceShader (render_xboxr @ 0x10DE008)
 
+tlFixedString cdSimpleInstanceShader::GetName() { return tlFixedString("cdSimpleInstance"); }
+
 #include <intrin.h>
 
 // ============================================================================
@@ -33,6 +35,7 @@ cdSimpleInstanceShader* gCDSimpleInstanceShader = nullptr;  // ?gCDSimpleInstanc
 void InitCDSimpleInstanceShader() {
     cdSimpleInstanceShader* result = (cdSimpleInstanceShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimpleInstanceShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;

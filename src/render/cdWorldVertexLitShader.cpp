@@ -178,6 +178,7 @@ cdWorldVertexLitShaderMat::cdWorldVertexLitShaderMat(nglTexture* iTexture) {
 void InitCDWorldVertexLitShader() {
     cdWorldVertexLitShader* result = (cdWorldVertexLitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWorldVertexLitShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -203,6 +204,8 @@ void ToggleCDWorldVertexLitShader() {
 // cdWorldVertexLitShader::Register — register the shaders.
 // ea: 0x7DE870
 // ============================================================================
+tlFixedString cdWorldVertexLitShader::GetName() { return tlFixedString("cdWorldVertexLit"); }
+
 void cdWorldVertexLitShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdWorldVertexLitRender::VS, cdWorldVertexLitRender::VShaderTable, 0);

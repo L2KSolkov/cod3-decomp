@@ -37,10 +37,9 @@ static_assert(sizeof(cdCharSpecularShaderNode) == 0x18, "cdCharSpecularShaderNod
 // ============================================================================
 class cdCharSpecularShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D26D0
     virtual void Register();  // @0x7D21A0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D21F0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdCharSpecularShader) == 0x10, "cdCharSpecularShader size mismatch");
 

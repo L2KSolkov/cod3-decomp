@@ -17,6 +17,8 @@ cdSimpleColorShader* gCDSimpleColorShader = nullptr;  // ?gCDSimpleColorShader@@
 // ============================================================================
 // cdSimpleColorShader::Register — ea: 0x7D5F80 (empty)
 // ============================================================================
+tlFixedString cdSimpleColorShader::GetName() { return tlFixedString("cdSimpleColor"); }
+
 void cdSimpleColorShader::Register() {
 }
 
@@ -27,6 +29,7 @@ void cdSimpleColorShader::Register() {
 void InitCDSimpleColorShader() {
     cdSimpleColorShader* result = (cdSimpleColorShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimpleColorShader;
         // vftable = tlInitList, link into init list
         result->next = tlInitList::head;
         tlInitList::head = result;

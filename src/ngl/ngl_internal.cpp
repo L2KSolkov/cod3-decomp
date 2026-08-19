@@ -10,6 +10,8 @@
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/nglDebug.h"
 #include "ngl/nglTexture.h"
+#include "ngl/nglShader.h"
+#include "ngl/ngl_mesh.h"
 #include "filesystem/apk.h"
 
 #include <float.h>
@@ -26,6 +28,14 @@ extern void tlPrintf(const char* fmt, ...);
 extern void tlMemFree(void* Ptr);
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);
 extern void tlInitListInit(void);
+extern int nglShaderNextID(void);
+
+void nglShader::Register() {
+    ID = nglShaderNextID();
+    tlFixedString name = GetName();
+    tlPrintf("Registering shader %s, ID: %d\n", name.c_str(), ID);
+    nglShaderBank.Insert(name, this);
+}
 
 // ngl_dx_core.o / ngl_dx_draw.o externs
 extern void nglDebugInit(void);

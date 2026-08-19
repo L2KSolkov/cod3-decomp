@@ -37,10 +37,9 @@ static_assert(sizeof(cdWorldPointLitShaderNode) == 0x1C, "cdWorldPointLitShaderN
 // ============================================================================
 class cdWorldPointLitShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7DCED0
     virtual void Register();  // @0x7DBB70
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7DBBB0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWorldPointLitShader) == 0x10, "cdWorldPointLitShader size mismatch");
 

@@ -73,6 +73,7 @@ cdGunShaderMat::cdGunShaderMat(nglTexture* iTexture) {
 void InitCDGunShader() {
     cdGunShader* result = (cdGunShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdGunShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -101,6 +102,8 @@ void ToggleCDGunShader() {
 // cdGunShader::Register — register the gun vertex/pixel shaders.
 // ea: 0x7CEB70
 // ============================================================================
+tlFixedString cdGunShader::GetName() { return tlFixedString("cdGun"); }
+
 void cdGunShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdGunRender::VS, cdGunRender::VShaderTable, 0);

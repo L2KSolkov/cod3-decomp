@@ -45,6 +45,7 @@ namespace cdWorldPointLitSolidColorPixel {
 void InitCDWorldPointLitShader() {
     cdWorldPointLitShader* result = (cdWorldPointLitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWorldPointLitShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -70,6 +71,8 @@ void ToggleCDWorldPointLitShader() {
 // cdWorldPointLitShader::Register — register the point-lit shaders.
 // ea: 0x7DBB70
 // ============================================================================
+tlFixedString cdWorldPointLitShader::GetName() { return tlFixedString("cdWorldPointLit"); }
+
 void cdWorldPointLitShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

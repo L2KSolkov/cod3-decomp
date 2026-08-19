@@ -40,10 +40,9 @@ static_assert(sizeof(cdDynamicDecalShaderNode) == 0x1C, "cdDynamicDecalShaderNod
 // ============================================================================
 class cdDynamicDecalShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7CD290
     virtual void Register();  // @0x7CBE80
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CBE90
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdDynamicDecalShader) == 0x10, "cdDynamicDecalShader size mismatch");
 

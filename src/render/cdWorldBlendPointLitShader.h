@@ -37,10 +37,9 @@ static_assert(sizeof(cdWorldBlendPointLitShaderNode) == 0x18, "cdWorldBlendPoint
 // ============================================================================
 class cdWorldBlendPointLitShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7DB730
     virtual void Register();  // @0x7DA2D0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7DA310
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWorldBlendPointLitShader) == 0x10, "cdWorldBlendPointLitShader size mismatch");
 

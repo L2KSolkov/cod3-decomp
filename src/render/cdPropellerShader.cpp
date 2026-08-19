@@ -70,6 +70,7 @@ cdPropellerShaderMat::cdPropellerShaderMat(nglTexture* iTexture) {
 void InitCDPropellerShader() {
     cdPropellerShader* result = (cdPropellerShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdPropellerShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -95,6 +96,8 @@ void ToggleCDPropellerShader() {
 // cdPropellerShader::Register — register the propeller vertex/pixel shaders.
 // ea: 0x7D0E50
 // ============================================================================
+tlFixedString cdPropellerShader::GetName() { return tlFixedString("cdPropeller"); }
+
 void cdPropellerShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdPropellerRender::VS, cdPropellerRender::VShaderTable, 0);

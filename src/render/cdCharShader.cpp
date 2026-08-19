@@ -38,6 +38,7 @@ namespace cdCharFullbrightPixel {
 void InitCDCharShader() {
     cdCharShader* result = (cdCharShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdCharShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -66,6 +67,8 @@ void ToggleCDCharShader() {
 // cdCharShader::Register — register the character vertex/pixel shaders.
 // ea: 0x7D2BE0
 // ============================================================================
+tlFixedString cdCharShader::GetName() { return tlFixedString("cdChar"); }
+
 void cdCharShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdCharShaderRender::VS, cdCharShaderRender::VShaderTable, 0);

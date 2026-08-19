@@ -10,6 +10,8 @@
 #include "apsSimpleMeshRenderer.h"
 #include "ngl/ngl_dx_gpu.h"
 
+#include <new>
+
 // APS shader static data definitions (aeps_xboxr)
 unsigned int* apsSimpleMeshRender::VS = nullptr;
 const unsigned int** apsSimpleMeshRender::VShaderTable = nullptr;
@@ -40,11 +42,7 @@ void apsSimpleMeshRenderer::InitShader() {
     apsAllocator* Allocator = apsCommon::GetAllocator();
     void* result = Allocator->MemAlign(16, 4);
     if (result != 0) {
-        // vftable slot 0 = tlInitList vftable
-        apsSimpleMeshShader* shader = (apsSimpleMeshShader*)result;
-        shader->next = tlInitList::head;
-        tlInitList::head = shader;
-        shader->Disabled = false;
+        new (result) apsSimpleMeshShader();
     }
 }
 

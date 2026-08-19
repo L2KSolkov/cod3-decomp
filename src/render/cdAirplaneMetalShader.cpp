@@ -35,6 +35,7 @@ namespace cdAirplaneMetalSolidColorPixel {
 void InitCDAirplaneMetalShader() {
     cdAirplaneMetalShader* result = (cdAirplaneMetalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdAirplaneMetalShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -60,6 +61,8 @@ void ToggleCDAirplaneMetalShader() {
 // cdAirplaneMetalShader::Register — register the airplane-metal shaders.
 // ea: 0x7D41A0
 // ============================================================================
+tlFixedString cdAirplaneMetalShader::GetName() { return tlFixedString("cdAirplaneMetal"); }
+
 void cdAirplaneMetalShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdAirplaneMetalRender::VS, cdAirplaneMetalRender::VShaderTable, 0);

@@ -67,6 +67,8 @@ void ToggleCDScratchShader() {
 // cdScratchShader::Register — register the scratch vertex/pixel shaders.
 // ea: 0x7C56B0
 // ============================================================================
+tlFixedString cdScratchShader::GetName() { return tlFixedString("PCUV"); }
+
 void cdScratchShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdScratchShaderVertex::VS, cdScratchShaderVertex::VShaderTable, 0);
@@ -80,6 +82,7 @@ void cdScratchShader::Register() {
 void InitCDScratchShader() {
     cdScratchShader* result = (cdScratchShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdScratchShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;

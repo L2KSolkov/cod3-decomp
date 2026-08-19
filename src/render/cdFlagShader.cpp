@@ -75,6 +75,7 @@ cdFlagShaderMat::cdFlagShaderMat(nglTexture* iTexture) {
 void InitCDFlagShader() {
     cdFlagShader* v0 = (cdFlagShader*)mem_heap_malloc(0x10);
     if (v0 != NULL) {
+        ::new (v0) cdFlagShader;
         v0->next = tlInitList::head;
         tlInitList::head = v0;
         v0->Disabled = false;
@@ -115,6 +116,8 @@ void ToggleCDFlagShader() {
 // cdFlagShader::Register — register the flag vertex/pixel shaders.
 // ea: 0x7CA3C0
 // ============================================================================
+tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
+
 void cdFlagShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdFlagVertex::VS, cdFlagVertex::VShaderTable, 0);

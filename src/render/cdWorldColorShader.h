@@ -32,10 +32,9 @@ static_assert(sizeof(cdWorldShaderNode) == 0x20, "cdWorldShaderNode size mismatc
 // ============================================================================
 class cdWorldColorShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D9DA0
     virtual void Register();  // @0x7D9E30
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D9E40
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWorldColorShader) == 0x10, "cdWorldColorShader size mismatch");
 

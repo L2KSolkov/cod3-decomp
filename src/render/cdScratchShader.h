@@ -42,10 +42,9 @@ static_assert(sizeof(cdScratchShaderNode) == 0x18, "cdScratchShaderNode size mis
 // ============================================================================
 class cdScratchShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7C5E40
     virtual void Register();  // @0x7C56B0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C5720
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdScratchShader) == 0x10, "cdScratchShader size mismatch");
 

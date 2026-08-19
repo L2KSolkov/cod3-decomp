@@ -39,10 +39,9 @@ static_assert(sizeof(cdPropellerShaderNode) == 0x18, "cdPropellerShaderNode size
 // ============================================================================
 class cdPropellerShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D12E0
     virtual void Register();  // @0x7D0E50
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D0E90
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdPropellerShader) == 0x10, "cdPropellerShader size mismatch");
 

@@ -78,6 +78,7 @@ cdOceanShaderMat::cdOceanShaderMat(nglTexture* iTexture) {
 void InitCDOceanShader() {
     cdOceanShader* v1 = (cdOceanShader*)mem_heap_malloc(0x10);
     if (v1 != NULL) {
+        ::new (v1) cdOceanShader;
         v1->next = tlInitList::head;
         tlInitList::head = v1;
         v1->Disabled = false;
@@ -144,6 +145,8 @@ int cdOceanShaderNode::GetVShaderParamsStartAddress() {
 // cdOceanShader::Register — register the ocean vertex/pixel shaders.
 // ea: 0x7D7EB0
 // ============================================================================
+tlFixedString cdOceanShader::GetName() { return tlFixedString("cdOcean"); }
+
 void cdOceanShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdOceanRender::VS, cdOceanRender::VShaderTable, 0);

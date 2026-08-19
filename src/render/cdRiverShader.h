@@ -44,6 +44,7 @@ static_assert(sizeof(cdRiverShaderNode) == 0x18, "cdRiverShaderNode size mismatc
 // ============================================================================
 class cdRiverShader : public cdOceanShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D6AA0
     virtual void Register();  // @0x7D6C50
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D6D00
 };

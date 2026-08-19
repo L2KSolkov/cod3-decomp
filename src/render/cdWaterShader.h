@@ -41,10 +41,9 @@ static_assert(sizeof(cdWaterShaderNode) == 0x18, "cdWaterShaderNode size mismatc
 // ============================================================================
 class cdWaterShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D9C10
     virtual void Register();  // @0x7D96E0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D9720
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWaterShader) == 0x10, "cdWaterShader size mismatch");
 

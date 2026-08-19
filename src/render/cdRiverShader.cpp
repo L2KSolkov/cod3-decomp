@@ -51,6 +51,7 @@ cdRiverShaderMat::cdRiverShaderMat(nglTexture* iTexture)
 void InitCDRiverShader() {
     cdRiverShader* result = (cdRiverShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdRiverShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         // vftable = cdOceanShader
@@ -118,6 +119,8 @@ int cdRiverShaderNode::GetVShaderFogConstantOffset() {
 // cdRiverShader::Register — register the river vertex/pixel shaders.
 // ea: 0x7D6C50
 // ============================================================================
+tlFixedString cdRiverShader::GetName() { return tlFixedString("cdRiver"); }
+
 void cdRiverShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdRiverRender::VS, cdRiverRender::VShaderTable, 0);

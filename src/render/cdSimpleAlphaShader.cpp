@@ -70,6 +70,7 @@ cdSimpleAlphaShaderMat::cdSimpleAlphaShaderMat(nglTexture* iTexture) {
 void InitCDSimpleAlphaShader() {
     cdSimpleAlphaShader* result = (cdSimpleAlphaShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimpleAlphaShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -96,6 +97,8 @@ void ToggleCDSimpleAlphaShader() {
 // cdSimpleAlphaShader::Register — register the alpha vertex/pixel shaders.
 // ea: 0x7C7F10
 // ============================================================================
+tlFixedString cdSimpleAlphaShader::GetName() { return tlFixedString("cdSimpleAlpha"); }
+
 void cdSimpleAlphaShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

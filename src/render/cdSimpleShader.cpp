@@ -66,6 +66,10 @@ cdSimpleShaderMat::cdSimpleShaderMat(nglTexture* iTexture) {
 // ============================================================================
 // cdSimpleShader::Register — ea: 0x7D6490
 // ============================================================================
+tlFixedString cdSimpleShader::GetName() {
+    return tlFixedString("cdSimple");
+}
+
 void cdSimpleShader::Register() {
     nglShader::Register();
     cdSimpleRender::RegisterVShader();
@@ -81,6 +85,7 @@ void cdSimpleShader::Register() {
 void InitCDSimpleShader() {
     cdSimpleShader* result = (cdSimpleShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimpleShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;

@@ -10,6 +10,7 @@
 #define COD3_RENDER_CDDEBUGVERTEXDEF_H
 
 #include <intrin.h>
+#include <new>
 
 #include "d3d8.h"
 #include "ngl/ngl_dx_gpu.h"
@@ -98,10 +99,12 @@ public:
 
     tlInitList() : next(0) {}
     virtual ~tlInitList() {}
+    virtual void Register() = 0;
 
 private:
     static tlInitList* head;  // ?head@tlInitList@@0PAV1@A (tl_initlist.o)
 
+    friend void tlInitListInit();
     friend class tlInitListFunction;
     friend class apsSimpleMeshShader;
     friend class apsSimpleMeshRenderer;

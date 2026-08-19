@@ -71,6 +71,7 @@ cdWaterShaderMat::cdWaterShaderMat(nglTexture* iTexture) {
 void InitCDWaterShader() {
     cdWaterShader* result = (cdWaterShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWaterShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -96,6 +97,8 @@ void ToggleCDWaterShader() {
 // cdWaterShader::Register — register the water vertex/pixel shaders.
 // ea: 0x7D96E0
 // ============================================================================
+tlFixedString cdWaterShader::GetName() { return tlFixedString("cdWater"); }
+
 void cdWaterShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdWaterRender::VS, cdWaterRender::VShaderTable, 0);

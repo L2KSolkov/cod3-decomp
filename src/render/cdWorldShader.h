@@ -18,10 +18,9 @@
 // ============================================================================
 class cdWorldShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7E01C0
     virtual void Register();  // @0x7DF140
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7DF180
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWorldShader) == 0x10, "cdWorldShader size mismatch");
 

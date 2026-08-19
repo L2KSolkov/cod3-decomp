@@ -85,6 +85,7 @@ inline void cdWorldProjectedPixel_RegisterShader() {
 void InitCDWorldShader() {
     cdWorldShader* result = (cdWorldShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWorldShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -113,6 +114,8 @@ void ToggleCDWorldShader() {
 // cdWorldShader::Register — register all world vertex/pixel shaders.
 // ea: 0x7DF140
 // ============================================================================
+tlFixedString cdWorldShader::GetName() { return tlFixedString("cdWorld"); }
+
 void cdWorldShader::Register() {
     nglShader::Register();
     cdWorldRender_RegisterShader();

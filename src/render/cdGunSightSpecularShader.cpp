@@ -75,6 +75,7 @@ cdGunSightSpecularShaderMat::cdGunSightSpecularShaderMat(nglTexture* iDiffuseTex
 void InitCDGunSightSpecularShader() {
     cdGunSightSpecularShader* result = (cdGunSightSpecularShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdGunSightSpecularShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -100,6 +101,8 @@ void ToggleCDGunSightSpecularShader() {
 // cdGunSightSpecularShader::Register — register the shaders.
 // ea: 0x7CD870
 // ============================================================================
+tlFixedString cdGunSightSpecularShader::GetName() { return tlFixedString("cdGunSightSpecular"); }
+
 void cdGunSightSpecularShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

@@ -38,10 +38,9 @@ static_assert(sizeof(cdGunShaderNode) == 0x18, "cdGunShaderNode size mismatch");
 // ============================================================================
 class cdGunShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7CEFC0
     virtual void Register();  // @0x7CEB70
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CEBD0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdGunShader) == 0x10, "cdGunShader size mismatch");
 

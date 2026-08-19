@@ -100,6 +100,7 @@ cdSimpleSpecularShaderMat::cdSimpleSpecularShaderMat(nglTexture* iDiffuseTexture
 void InitCDSimpleSpecularShader() {
     cdSimpleSpecularShader* result = (cdSimpleSpecularShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimpleSpecularShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -128,6 +129,8 @@ void ToggleCDSimpleSpecularShader() {
 // cdSimpleSpecularShader::Register — register the specular shaders.
 // ea: 0x7D4ED0
 // ============================================================================
+tlFixedString cdSimpleSpecularShader::GetName() { return tlFixedString("cdSimpleSpecular"); }
+
 void cdSimpleSpecularShader::Register() {
     nglShader::Register();
     cdSimpleSpecularRender::RegisterVShader();

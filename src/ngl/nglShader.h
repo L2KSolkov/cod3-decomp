@@ -25,7 +25,7 @@ public:
     int  ID;        // +0x0C
 
     virtual ~nglShader() {}                                  // slot 0
-    virtual void Register() {}                               // slot 1
+    virtual void Register();                                 // slot 1
     virtual tlFixedString GetName() { return tlFixedString(); }  // slot 2
     virtual void AddNode(nglMeshNode* MeshNode, nglMeshSection* Section,
                          nglMaterial* Material) {}           // slot 3

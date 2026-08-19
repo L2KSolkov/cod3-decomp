@@ -35,10 +35,9 @@ static_assert(sizeof(cdPrelitShaderNode) == 0x18, "cdPrelitShaderNode size misma
 // ============================================================================
 class cdPrelitShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D3D90
     virtual void Register();  // @0x7D3600
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D3B70
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdPrelitShader) == 0x10, "cdPrelitShader size mismatch");
 

@@ -181,6 +181,7 @@ cdBackgroundShaderMat::cdBackgroundShaderMat(nglTexture* iTexture) {
 void InitCDBackgroundShader() {
     cdBackgroundShader* result = (cdBackgroundShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdBackgroundShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -209,6 +210,8 @@ void ToggleCDBackgroundShader() {
 // cdBackgroundShader::Register — register the background shaders.
 // ea: 0x7E0620
 // ============================================================================
+tlFixedString cdBackgroundShader::GetName() { return tlFixedString("cdBackground"); }
+
 void cdBackgroundShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdBackgroundRender::VS, cdBackgroundRender::VShaderTable, 0);

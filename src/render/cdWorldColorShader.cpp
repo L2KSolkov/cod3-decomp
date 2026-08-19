@@ -18,6 +18,8 @@ cdWorldColorShader* gCDWorldColorShader = nullptr;  // ?gCDWorldColorShader@@3PA
 // ============================================================================
 // cdWorldColorShader::Register — ea: 0x7D9E30 (empty)
 // ============================================================================
+tlFixedString cdWorldColorShader::GetName() { return tlFixedString("cdWorldColor"); }
+
 void cdWorldColorShader::Register() {
 }
 
@@ -28,6 +30,7 @@ void cdWorldColorShader::Register() {
 void InitCDWorldColorShader() {
     cdWorldColorShader* result = (cdWorldColorShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWorldColorShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;

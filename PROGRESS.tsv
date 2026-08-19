@@ -598,7 +598,7 @@ nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 
 
 nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (IDA media binding compatibility and DISC|HOST registry)
 
-tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
+tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	VERIFIED	Phase 2: tl_system.cpp + tl_instbank.cpp; tlInitListInit/Register contract verified against IDA
 
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	PORTED	ngl_xb_tex_load.cpp (image/physical section fixup + D3DResource_Register); apk.h class mangling fix
 
@@ -891,3 +891,4 @@ g.o	g_entity_misc.cpp	mp_actors/pathnode.cpp	g.o	1	PORTED	PathNodes::NodeHandle:
 game2.o	g_local.h/g_entity_misc.cpp	game2	1	PORTED	TaskSys::PostTask 0x004FFA80 ported from the IDA decompile and exact TaskSys/Task/TaskHandler layouts: stopped-handler flag propagation and reserved_dlist post-queue append; canonical vcvars32 build passed
 render.o	tr_ui.cpp/g_debugthread.cpp/g_entity_misc.cpp	render	2	PORTED	RE_Text_Paint 0x006D1FE0 now forwards the release defaults into RE_Text_PaintWithCursor, and trap_R_Text_Paint 0x006C2D10 forwards through refexport_t; removed inert duplicate bridges; canonical vcvars32 build passed
 render.o	g_local.h/g_entity_misc.cpp	render	2	PORTED	DObj::GetBoneParent 0x006CE560 now walks the IDA-typed model LOD hierarchy, handles cross-model root parents, and preserves the release Bad Bone Index assert metadata; canonical vcvars32 build passed
+render_xboxr/ngl_xboxr/aeps_xboxr	shader headers, nglShader, tl_system, apsSimpleMeshRenderer	render	2	VERIFIED	Aligned all concrete shader GetName return-by-value overrides to IDA, restored the ten-slot nglShader vtable by removing duplicate local base types, and matched tlInitList/Register plus apsSimpleMeshShader initialization; canonical Debug vcvars32 build passed and hidden CDB loaded debug.cod/mp\\global.cod/mp\\anim.cod/mp\\loadscr.cod/mp\\fend.cod to FEManager::DrawFrontEnd with no access violation

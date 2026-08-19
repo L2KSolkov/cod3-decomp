@@ -39,10 +39,9 @@ static_assert(sizeof(cdDecalShaderNode) == 0x18, "cdDecalShaderNode size mismatc
 // ============================================================================
 class cdDecalShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D1CF0
     virtual void Register();  // @0x7D1820
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D1860
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdDecalShader) == 0x10, "cdDecalShader size mismatch");
 

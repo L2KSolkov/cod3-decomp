@@ -40,9 +40,8 @@ static_assert(sizeof(cdDebugShaderNode) == 0x18, "cdDebugShaderNode size mismatc
 class cdDebugShader : public nglShader {
 public:
     virtual void Register();  // @0x7C6440
+    virtual tlFixedString GetName();  // @0x7C68C0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C6570
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdDebugShader) == 0x10, "cdDebugShader size mismatch");
 

@@ -93,6 +93,7 @@ cdGunSightShaderMat::cdGunSightShaderMat(nglTexture* iTexture) {
 void InitCDGunSightShader() {
     cdGunSightShader* result = (cdGunSightShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdGunSightShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -118,6 +119,8 @@ void ToggleCDGunSightShader() {
 // cdGunSightShader::Register — register the gun-sight vertex/pixel shaders.
 // ea: 0x7CE200
 // ============================================================================
+tlFixedString cdGunSightShader::GetName() { return tlFixedString("cdGunSight"); }
+
 void cdGunSightShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdGunSightRender::VS, cdGunSightRender::VShaderTable, 0);

@@ -10,6 +10,8 @@
 #include <cstdlib>
 #include <cstdint>
 
+#include "render/cdDebugVertexDef.h"
+
 #ifdef _WIN32
 #include <malloc.h>
 #endif
@@ -341,4 +343,7 @@ void tlSetCurrentThreadName(const char*) {}
 void tlStackRangeInit() {}
 void* tlScratchPadInit() { static char pad[0x10000]; return pad; }
 void tlScratchPadReset() {}
-void tlInitListInit() {}
+void tlInitListInit() {
+    for (tlInitList* i = tlInitList::head; i; i = i->next)
+        i->Register();
+}

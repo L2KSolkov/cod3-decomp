@@ -32,6 +32,7 @@ namespace cdSkyShaderPixel {
 void InitCDSkyShader() {
     cdSkyShader* result = (cdSkyShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSkyShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -57,10 +58,30 @@ void ToggleCDSkyShader() {
 // cdSkyShader::Register — register the sky vertex/pixel shaders.
 // ea: 0x7E0F10
 // ============================================================================
+tlFixedString cdSkyShader::GetName() { return tlFixedString("cdSky"); }
+
 void cdSkyShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdSkyShaderRender::VS, cdSkyShaderRender::VShaderTable, 0);
     cdSkyShaderRender::Shader = cdSkyShaderRender::VS != nullptr ? cdSkyShaderRender::VS[0] : 0;
     nglDxRegisterPShaderSafe((unsigned int**)cdSkyShaderPixel::PS, cdSkyShaderPixel::PShaderTable, 0);
     cdSkyShaderPixel::Shader = cdSkyShaderPixel::PS != nullptr ? cdSkyShaderPixel::PS[0] : 0;
+}
+
+void cdSkyShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
+                          nglMaterial* iMat) {
+    if ((ShaderCommon::ShaderSwitching.__s0[2] & 0x10) == 0) {
+        cdSkyShaderNode* node = (cdSkyShaderNode*)nglListAlloc(0x18, 0x10);
+        if (node != NULL) {
+            node->MeshNode = iMeshNode;
+            node->Section = iSection;
+            node->mMaterial = (cdSkyShaderMat*)iMat;
+        } else {
+            node = NULL;
+        }
+        node->SortDist = 1000.0f - (float)((cdSkyShaderMat*)iMat)->mDrawOrder;
+        node->Next = nglBuildScene->TransRenderList;
+        nglBuildScene->TransRenderList = node;
+        ++nglBuildScene->TransListCount;
+    }
 }

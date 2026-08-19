@@ -39,10 +39,9 @@ static_assert(sizeof(cdBackgroundShaderNode) == 0x18, "cdBackgroundShaderNode si
 // ============================================================================
 class cdBackgroundShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7E0A00
     virtual void Register();  // @0x7E0620
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7E0680
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdBackgroundShader) == 0x10, "cdBackgroundShader size mismatch");
 

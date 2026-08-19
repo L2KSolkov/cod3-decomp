@@ -71,6 +71,7 @@ cdDecalShaderMat::cdDecalShaderMat(nglTexture* iTexture) {
 void InitCDDecalShader() {
     cdDecalShader* result = (cdDecalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdDecalShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -99,6 +100,8 @@ void ToggleCDDecalShader() {
 // cdDecalShader::Register — register the decal vertex/pixel shaders.
 // ea: 0x7D1820
 // ============================================================================
+tlFixedString cdDecalShader::GetName() { return tlFixedString("cdDecal"); }
+
 void cdDecalShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdDecalRender::VS, cdDecalRender::VShaderTable, 0);

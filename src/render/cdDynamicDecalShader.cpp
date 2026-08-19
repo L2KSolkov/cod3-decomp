@@ -71,6 +71,7 @@ cdDynamicDecalShaderMat::cdDynamicDecalShaderMat() {
 void InitCDDynamicDecalShader() {
     cdDynamicDecalShader* result = (cdDynamicDecalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdDynamicDecalShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -96,6 +97,8 @@ void ToggleCDDynamicDecalShader() {
 // cdDynamicDecalShader::Register — register the dynamic-decal shaders.
 // ea: 0x7CBE80
 // ============================================================================
+tlFixedString cdDynamicDecalShader::GetName() { return tlFixedString("cdDynamicDecal"); }
+
 void cdDynamicDecalShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

@@ -45,6 +45,7 @@ namespace cdWorldBlendPointLitSolidColorPixel {
 void InitCDWorldBlendPointLitShader() {
     cdWorldBlendPointLitShader* result = (cdWorldBlendPointLitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWorldBlendPointLitShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -70,6 +71,8 @@ void ToggleCDWorldBlendPointLitShader() {
 // cdWorldBlendPointLitShader::Register — register the shaders.
 // ea: 0x7DA2D0
 // ============================================================================
+tlFixedString cdWorldBlendPointLitShader::GetName() { return tlFixedString("cdWorldBlendPointLit"); }
+
 void cdWorldBlendPointLitShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

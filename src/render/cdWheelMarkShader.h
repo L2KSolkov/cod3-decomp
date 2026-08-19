@@ -42,10 +42,9 @@ static_assert(sizeof(cdWheelMarkShaderNode) == 0x1C, "cdWheelMarkShaderNode size
 // ============================================================================
 class cdWheelMarkShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7C9AF0
     virtual void Register();  // @0x7C93D0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C9410
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWheelMarkShader) == 0x10, "cdWheelMarkShader size mismatch");
 

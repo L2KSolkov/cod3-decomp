@@ -14,6 +14,7 @@
 #include "apsParam.h"
 #include "apsCommon.h"
 #include "ngl/nglScene.h"
+#include "ngl/nglShader.h"
 #include <intrin.h>
 struct nglMesh;
 struct nglLightContext;
@@ -22,13 +23,6 @@ struct nglMeshSection;
 struct nglMaterial;
 // Forward declaration (apsSimpleMeshNode references the renderer)
 class apsSimpleMeshRenderer;
-// ============================================================================
-// nglShader — base shader (16 bytes, verified against IDA: tlInitList + fields)
-// ============================================================================
-struct nglShader : tlInitList {
-    bool Disabled;  // +0x08
-    int  ID;        // +0x0C
-};
 // ============================================================================
 // apsSimpleMeshShader — simple-mesh shader (16 bytes, nglShader-derived)
 // ============================================================================

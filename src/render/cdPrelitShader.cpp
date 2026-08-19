@@ -39,6 +39,7 @@ namespace cdPrelitSolidColorPixel {
 void InitCDPrelitShader() {
     cdPrelitShader* result = (cdPrelitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdPrelitShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -67,6 +68,8 @@ void ToggleCDPrelitShader() {
 // cdPrelitShader::Register — register the prelit vertex/pixel shaders.
 // ea: 0x7D3600
 // ============================================================================
+tlFixedString cdPrelitShader::GetName() { return tlFixedString("cdPrelit"); }
+
 void cdPrelitShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdPrelitRender::VS, cdPrelitRender::VShaderTable, 0);

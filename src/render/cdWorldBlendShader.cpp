@@ -45,6 +45,7 @@ namespace cdWorldBlendSolidColorPixel {
 void InitCDWorldBlendShader() {
     cdWorldBlendShader* result = (cdWorldBlendShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdWorldBlendShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -70,6 +71,8 @@ void ToggleCDWorldBlendShader() {
 // cdWorldBlendShader::Register — register the world-blend shaders.
 // ea: 0x7DD310
 // ============================================================================
+tlFixedString cdWorldBlendShader::GetName() { return tlFixedString("cdWorldBlend"); }
+
 void cdWorldBlendShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

@@ -37,6 +37,7 @@ namespace cdGlassSolidColorPixel {
 void InitCDGlassShader() {
     cdGlassShader* result = (cdGlassShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdGlassShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -62,6 +63,8 @@ void ToggleCDGlassShader() {
 // cdGlassShader::Register — register the glass vertex/pixel shaders.
 // ea: 0x7D0000
 // ============================================================================
+tlFixedString cdGlassShader::GetName() { return tlFixedString("cdGlass"); }
+
 void cdGlassShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {

@@ -41,9 +41,8 @@ static_assert(sizeof(cdSimpleShaderMat) == 0x18, "cdSimpleShaderMat size mismatc
 class cdSimpleShader : public nglShader {
 public:
     virtual void Register();  // @0x7D6490
+    virtual tlFixedString GetName();  // @0x7D68F0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D64C0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdSimpleShader) == 0x10, "cdSimpleShader size mismatch");
 

@@ -11,6 +11,7 @@
 #define COD3_RENDER_CDSIMPLECOLORSHADER_H
 
 #include "cdDebugVertexDef.h"  // tlInitList, gpuVertexFormat
+#include "ngl/nglShader.h"
 #include "d3d8.h"
 #include "ngl/nglScene.h"
 #include "aeps/apsRenderNode.h"  // nglRenderNode
@@ -57,17 +58,6 @@ struct nglShaderNode : nglRenderNode {
 static_assert(sizeof(nglShaderNode) == 0x14, "nglShaderNode size mismatch");
 
 // ============================================================================
-// nglMaterial — material base (16 bytes, verified against IDA)
-// ============================================================================
-struct nglMaterial {
-    tlFixedString* Name;          // +0x00
-    nglShader*     Shader;        // +0x04
-    int            BinaryVersion; // +0x08
-    void*          RuntimeData;   // +0x0C
-};
-static_assert(sizeof(nglMaterial) == 0x10, "nglMaterial size mismatch");
-
-// ============================================================================
 // cdSimpleShaderNode — simple shader render node (28 bytes)
 // ============================================================================
 struct cdSimpleShaderNode : nglShaderNode {
@@ -89,24 +79,13 @@ static_assert(sizeof(SimpleContext) == 0x40, "SimpleContext size mismatch");
 // ============================================================================
 
 // ============================================================================
-// nglShader — base shader (16 bytes: tlInitList + Disabled + ID)
-// ============================================================================
-struct nglShader : tlInitList {
-    bool Disabled;  // +0x08
-    int  ID;        // +0x0C
-
-    virtual void Register();  // base Register @0x6E7D80 (inline COMDAT, render.o)
-};
-
-// ============================================================================
 // cdSimpleColorShader — solid-color shader (16 bytes)
 // ============================================================================
 class cdSimpleColorShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D5EF0
     virtual void Register();  // @0x7D5F80
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D5F90
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdSimpleColorShader) == 0x10, "cdSimpleColorShader size mismatch");
 

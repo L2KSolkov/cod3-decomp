@@ -38,10 +38,9 @@ static_assert(sizeof(cdAirplaneMetalShaderNode) == 0x18, "cdAirplaneMetalShaderN
 // ============================================================================
 class cdAirplaneMetalShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D4A20
     virtual void Register();  // @0x7D41A0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D41E0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdAirplaneMetalShader) == 0x10, "cdAirplaneMetalShader size mismatch");
 

@@ -46,10 +46,9 @@ static_assert(sizeof(cdSimpleUVAnimShaderNode) == 0x60, "cdSimpleUVAnimShaderNod
 // ============================================================================
 class cdSimpleUVAnimShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7C7850
     virtual void Register();  // @0x7C6E70
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C6ED0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdSimpleUVAnimShader) == 0x10, "cdSimpleUVAnimShader size mismatch");
 

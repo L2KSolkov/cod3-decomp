@@ -57,10 +57,9 @@ static_assert(sizeof(cdOceanShaderNode) == 0x18, "cdOceanShaderNode size mismatc
 // ============================================================================
 class cdOceanShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7D6A30
     virtual void Register();  // @0x7D7EB0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D7F00
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdOceanShader) == 0x10, "cdOceanShader size mismatch");
 

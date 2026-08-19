@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdDebugShader.h"
 
+#include <new>
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -76,6 +78,7 @@ cdDebugShaderMat::cdDebugShaderMat() {
 void InitCDDebugShader() {
     cdDebugShader* result = (cdDebugShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        new (result) cdDebugShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -104,6 +107,10 @@ void ToggleCDDebugShader() {
 // cdDebugShader::Register — register the debug vertex/pixel shaders.
 // ea: 0x7C6440
 // ============================================================================
+tlFixedString cdDebugShader::GetName() {
+    return tlFixedString("cdDebug");
+}
+
 void cdDebugShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdDebugShaderRender::VS, cdDebugShaderRender::VShaderTable, 0);

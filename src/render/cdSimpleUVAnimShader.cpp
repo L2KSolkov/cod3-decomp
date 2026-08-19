@@ -101,6 +101,7 @@ cdSimpleUVAnimShaderMat::cdSimpleUVAnimShaderMat(nglTexture* iTexture) {
 void InitCDSimpleUVAnimShader() {
     cdSimpleUVAnimShader* result = (cdSimpleUVAnimShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
+        ::new (result) cdSimpleUVAnimShader;
         result->next = tlInitList::head;
         tlInitList::head = result;
         result->Disabled = false;
@@ -129,6 +130,8 @@ void ToggleCDSimpleUVAnimShader() {
 // cdSimpleUVAnimShader::Register — register the UV-anim shaders.
 // ea: 0x7C6E70
 // ============================================================================
+tlFixedString cdSimpleUVAnimShader::GetName() { return tlFixedString("cdSimpleUVAnim"); }
+
 void cdSimpleUVAnimShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable, 0);

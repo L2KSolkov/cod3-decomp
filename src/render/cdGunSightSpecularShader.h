@@ -41,10 +41,9 @@ static_assert(sizeof(cdGunSightSpecularShaderNode) == 0x18, "cdGunSightSpecularS
 // ============================================================================
 class cdGunSightSpecularShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7CDCB0
     virtual void Register();  // @0x7CD870
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CD8A0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdGunSightSpecularShader) == 0x10, "cdGunSightSpecularShader size mismatch");
 

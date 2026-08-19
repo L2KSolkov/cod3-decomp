@@ -29,8 +29,7 @@ static_assert(sizeof(FilterTaps) == 0x20, "FilterTaps size mismatch");
 // ============================================================================
 class cdGlowShader : public nglShader {
 public:
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
+    virtual tlFixedString GetName(); // @0x7C2A30
 };
 static_assert(sizeof(cdGlowShader) == 0x10, "cdGlowShader size mismatch");
 

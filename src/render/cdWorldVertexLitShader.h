@@ -45,10 +45,9 @@ static_assert(sizeof(BackgroundContext) == 0x40, "BackgroundContext size mismatc
 // ============================================================================
 class cdWorldVertexLitShader : public nglShader {
 public:
+    virtual tlFixedString GetName(); // @0x7DEC30
     virtual void Register();  // @0x7DE870
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7DE8D0
-    virtual void GetName(tlFixedString& name);
-    virtual void AddNodeFlags(unsigned int flags);
 };
 static_assert(sizeof(cdWorldVertexLitShader) == 0x10, "cdWorldVertexLitShader size mismatch");
 
