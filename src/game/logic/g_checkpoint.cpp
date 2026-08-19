@@ -11,6 +11,7 @@
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
+extern void  mem_heap_free(void* ptr);
 
 // PathNode / checkpoint support externs (mp_actors.o / streamer.o)
 extern void Path_RelinquishNodePermanently(
@@ -659,6 +660,28 @@ CheckpointMgr::~CheckpointMgr()
     this->mEvent.~string();
     for (int i = 0; i < 6; ++i)
         this->mWeapons[i].~string();
+}
+
+// ea: 0x004E2AD0
+void CheckpointMgr::DeleteInst()
+{
+    CheckpointMgr* instance = CheckpointMgr::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CheckpointMgr.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~CheckpointMgr();
+        mem_heap_free(instance);
+    }
+    CheckpointMgr::sInst = nullptr;
 }
 
 // ea: 0x00631490

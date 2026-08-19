@@ -1038,6 +1038,8 @@ public:
     ExplodedArray mCheckpointScriptExploded;        // +0x910
     int          mCheckpointIndex;        // +0xB14
     static CheckpointMgr* sInst;          // ?sInst@CheckpointMgr@@2PAV1@A
+    static void CreateInst();             // ?CreateInst@CheckpointMgr@@SAXXZ
+    static void DeleteInst();             // ?DeleteInst@CheckpointMgr@@SAXXZ
     CheckpointMgr();                      // ??0CheckpointMgr@@QAE@XZ (game.o 0x6220C0)
     ~CheckpointMgr();                     // ??1CheckpointMgr@@QAE@XZ (game.o 0x6221F0)
     void ClearSavedCheckpointData();       // ?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ (game.o 0x640E60)
