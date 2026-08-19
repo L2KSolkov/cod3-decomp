@@ -422,7 +422,7 @@ void cdProjShadow_Begin()
     nglSetClearFlags(0);
     nglSetFBWriteMask(0x1000000u);
     nglSetAspectRatio(1.0f);
-    nglSetCameraMatrix(&gProjShadowMat);
+    nglSetCameraMatrix(gProjShadowMat);
     nglSetOrthoMatrix(0.1f, gProjShadowZBottom);
     float half2 = (1.0f / gProjShadowSize) * 2.0f;
     float neg2 = (1.0f / gProjShadowSize) * -2.0f;
@@ -699,7 +699,7 @@ extern void nglSetFogRange(float Near, float Far, float Min, float Max);
 extern void nglSetFogColor(float r, float g, float b);
 extern void nglSetAspectRatio(float a);
 extern void nglSetPerspectiveMatrix(float fov, float nearz, float farz);
-extern void nglSetWorldToViewMatrix(const math::Mat43* WorldToView);
+extern void nglSetWorldToViewMatrix(const math::Mat43& WorldToView);
 extern void nglListAddPointLight(unsigned int LightCat,
                                  const math::Position3& Pos, float Near,
                                  float Far, const math::Vector4& Color,
@@ -996,7 +996,7 @@ void R_RenderView(viewParms_t* parms)
     }
     float worldToView[16];
     memcpy(worldToView, tr.viewParms.world.modelMatrix, 64);
-    nglSetWorldToViewMatrix((const math::Mat43*)worldToView);
+    nglSetWorldToViewMatrix(*(const math::Mat43*)worldToView);
     if (((world_t*)tr.world)->mSky != nullptr && gRenderSky != 0)
         R_RenderSky();
     tempScene = nglBuildScene;

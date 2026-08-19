@@ -189,6 +189,10 @@ void nglEnableDepthOfField(bool Enable) {
 void nglSetFocusDepth(float Depth) { nglBuildScene->FocusDepth = Depth; }
 void nglSetAnimTime(float Time) { nglBuildScene->AnimTime = Time; }
 
+nglSceneParamSet* nglGetSceneParams(nglScene* Scene) {
+    return &Scene->SceneParams;
+}
+
 // ============================================================================
 // Matrix helpers
 // ============================================================================
@@ -298,12 +302,12 @@ void nglSetOrthoMatrix(float nearz, float farz) {
     nglBuildScene->FarZ = farz;
     nglBuildScene->MatricesDirty = true;
 }
-void nglSetWorldToViewMatrix(const math::Mat43* WorldToView) {
-    __m128 v2 = _mm_mul_ps(WorldToView->x.v, WorldToView->x.v);
+void nglSetWorldToViewMatrix(const math::Mat43& WorldToView) {
+    __m128 v2 = _mm_mul_ps(WorldToView.x.v, WorldToView.x.v);
     float v5 = v2.m128_f32[0] + (v2.m128_f32[1] + v2.m128_f32[2]);
-    __m128 v3 = _mm_mul_ps(WorldToView->y.v, WorldToView->y.v);
+    __m128 v3 = _mm_mul_ps(WorldToView.y.v, WorldToView.y.v);
     float v6 = v3.m128_f32[0] + (v3.m128_f32[1] + v3.m128_f32[2]);
-    __m128 v4 = _mm_mul_ps(WorldToView->z.v, WorldToView->z.v);
+    __m128 v4 = _mm_mul_ps(WorldToView.z.v, WorldToView.z.v);
     if (fabsf((v4.m128_f32[0] + (v4.m128_f32[1] + v4.m128_f32[2])) - 1.0f)
             + fabsf(v6 - 1.0f) + fabsf(v5 - 1.0f) >= 0.0099999998f
         && _tlAssert(
@@ -311,18 +315,18 @@ void nglSetWorldToViewMatrix(const math::Mat43* WorldToView) {
             "fabsf(AbsSquared(WorldToView.GetX())-1.0f) + fabsf(AbsSquared(WorldToView.GetY())-1.0f) + fabsf(AbsSquared(WorldToView.GetZ())-1.0f) < 0.01f",
             "Invalid scale detected in camera transform.\n"))
         __debugbreak();
-    nglBuildScene->WorldToView = *WorldToView;
+    nglBuildScene->WorldToView = WorldToView;
     nglBuildScene->MatricesDirty = true;
     if (nglSyncDebug.DumpSceneFile != 0)
-        nglSceneDumpCamera(*WorldToView);
+        nglSceneDumpCamera(WorldToView);
 }
-void nglSetCameraMatrix(const math::Mat43* CameraToWorld) {
+void nglSetCameraMatrix(const math::Mat43& CameraToWorld) {
     // WorldToView = transpose(CameraToWorld) with negated translation.
     math::Mat43 v9;
-    __m128 y = CameraToWorld->y.v;
-    __m128 z = CameraToWorld->z.v;
-    __m128 x = CameraToWorld->x.v;
-    __m128 w = CameraToWorld->w.v;
+    __m128 y = CameraToWorld.y.v;
+    __m128 z = CameraToWorld.z.v;
+    __m128 x = CameraToWorld.x.v;
+    __m128 w = CameraToWorld.w.v;
     __m128 v5 = _mm_shuffle_ps(x, y, 0x44);
     v9.x.v = _mm_shuffle_ps(v5, z, 0x88);
     v9.y.v = _mm_shuffle_ps(v5, z, 0xDD);
@@ -333,7 +337,7 @@ void nglSetCameraMatrix(const math::Mat43* CameraToWorld) {
             _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(w, w, 0), v9.x.v),
                        _mm_mul_ps(_mm_shuffle_ps(w, w, 85), v9.y.v)),
             _mm_mul_ps(_mm_shuffle_ps(w, w, 170), v9.z.v)));
-    nglSetWorldToViewMatrix(&v9);
+    nglSetWorldToViewMatrix(v9);
 }
 
 // ============================================================================
@@ -378,12 +382,10 @@ float nglGetRemainingFrameTime() {
     return NextFlip - (float)__rdtsc() * 0.0000013636364f;
 }
 
-nglScene* nglListEndScene() {
-    nglScene* result = nglBuildScene;
+void nglListEndScene() {
     if (nglBuildScene == nglRootBuildScene)
         tlFatal("Scene stack underflow (too many nglListEndScene calls!).\n");
     nglBuildScene = nglBuildScene->Parent;
-    return result;
 }
 
 nglScene* nglListSelectScene(nglScene* scene) {
@@ -398,7 +400,7 @@ bool nglHiresScreenShotInProgress() {
 unsigned int nglHiresScreenShotNumColumns() { return nglHiresScreenShot::NColumns; }
 unsigned int nglHiresScreenShotNumRows() { return nglHiresScreenShot::NRows; }
 
-void nglBeginHiresScreenShot(unsigned int Width, unsigned int Height) {
+void nglBeginHiresScreenShot(int Width, int Height) {
     nglHiresScreenShot::ScreenshotInProgress = true;
     nglHiresScreenShot::CurTilesCount = 0;
     unsigned int ScreenWidth = nglGetScreenWidth();
@@ -443,13 +445,12 @@ bool nglSaveHiresScreenshot() {
     return true;
 }
 
-nglScene* nglAdjustViewForHiresScreenshot() {
+void nglAdjustViewForHiresScreenshot() {
     nglBuildScene->vx1 = nglHiresScreenShot::xx1[nglHiresScreenShot::CurTilesCount];
     nglBuildScene->vy1 = nglHiresScreenShot::yy1[nglHiresScreenShot::CurTilesCount];
     nglBuildScene->vx2 = nglHiresScreenShot::xx2[nglHiresScreenShot::CurTilesCount];
     nglBuildScene->vy2 = nglHiresScreenShot::yy2[nglHiresScreenShot::CurTilesCount];
     nglBuildScene->MatricesDirty = true;
-    return nglBuildScene;
 }
 
 void nglSyncFrameBuffers() {
@@ -728,7 +729,7 @@ void nglSetDefaultSceneParams() {
     v11.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
     v11.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
     v11.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
-    nglSetCameraMatrix(&v11);
+    nglSetCameraMatrix(v11);
     nglBuildScene->ClearFlags = 3;
     nglBuildScene->ClearColor.v = _mm_setzero_ps();
     nglBuildScene->ClearZ = 1.0f;

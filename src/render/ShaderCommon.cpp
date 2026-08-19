@@ -463,7 +463,8 @@ nglScene* GlowRender() {
     nglSetZTestEnable(false);
     nglSetZWriteEnable(false);
     nglListAddCustomNode(GlowCallback, NULL, &SortInfo);
-    return nglListEndScene();
+    nglListEndScene();
+    return nullptr;
 }
 
 void HeatHazeInit() {

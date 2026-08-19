@@ -311,7 +311,7 @@ struct nglScene;
 enum nglSceneParamType : int { NGLSCENE_DEFAULTS = 0 };
 extern nglScene* nglListBeginScene(nglSceneParamType ParamSource);  // ngl/ngl_scene.h
 extern void nglSetClearFlags(unsigned int ClearFlags);
-extern nglScene* nglListEndScene();
+extern void nglListEndScene();
 namespace View {
 void SetViewportClipping(int clientIndex);  // cg.o
 }

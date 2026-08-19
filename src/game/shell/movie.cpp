@@ -449,7 +449,7 @@ void movie_manager::continue_playing_wait_for_keypress()
         do
         {
             nglSetPerspectiveMatrix(90.0f, 1.0f, 100.0f);
-            nglSetWorldToViewMatrix(&v4);
+            nglSetWorldToViewMatrix(v4);
             nvlFrameState v3 = NVL_FRAME_NONE;
             bool last = false;
             if (!g_femanager.skipFE && theMovie != nullptr)
@@ -498,7 +498,7 @@ void movie_manager::load_and_play_movie(const char* movie_name,
             do
             {
                 nglSetPerspectiveMatrix(90.0f, 1.0f, 100.0f);
-                nglSetWorldToViewMatrix(&v8);
+                nglSetWorldToViewMatrix(v8);
                 nvlFrameState v7 = NVL_FRAME_NONE;
                 bool last = false;
                 if (!g_femanager.skipFE && theMovie != nullptr)
