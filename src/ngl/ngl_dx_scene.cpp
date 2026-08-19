@@ -103,13 +103,6 @@ nglRenderNode* nglAdvanceRenderNode() {
     return Result;
 }
 
-// vtable slot +8 is Render (the +4 Dummy slot is inherited from nglRenderNode_Vtbl).
-typedef void (*RenderFn)(void* self);
-static void RenderNode_Render(nglRenderNode* node) {
-    RenderFn fn = *(RenderFn*)((char*)*(void**)node + 8);
-    fn(node);
-}
-
 // ngl pushbuffer method-encode table.
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
@@ -451,7 +444,7 @@ int nglRenderScene_impl() {
         }
         nglBeginRenderNode(v0->OpaqueRenderList);
         while (nglCurRenderNode != nglRenderListEndNode) {
-            RenderNode_Render(nglCurRenderNode);
+            nglCurRenderNode->Render();
             nglAdvanceRenderNode();
         }
         if (v0->Mid.Fn != NULL)
@@ -463,7 +456,7 @@ int nglRenderScene_impl() {
             }
             nglBeginRenderNode(v0->TransRenderList);
             while (nglCurRenderNode != nglRenderListEndNode) {
-                RenderNode_Render(nglCurRenderNode);
+                nglCurRenderNode->Render();
                 nglAdvanceRenderNode();
             }
         }

@@ -7,6 +7,7 @@
 #include "ngl_dx_quad.h"
 
 #include <math.h>
+#include <new>
 #include <string.h>
 
 // ============================================================================
@@ -205,6 +206,7 @@ void nglListAddQuad(nglQuad* Quad) {
     if (Quad != NULL) {
         nglQuadNode* v1 = (nglQuadNode*)nglListAlloc(0x6Cu, 0x10u);
         if (v1 != NULL) {
+            new (v1) nglQuadNode();
             nglValidateMatrices(nglBuildScene);
             memcpy(&v1->Quad, Quad, 0x60u);
             if ((Quad->BlendMode & 0x20000) != 0) {
