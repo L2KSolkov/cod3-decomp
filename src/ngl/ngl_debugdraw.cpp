@@ -24,9 +24,9 @@ extern bool nglIsInitialized();                         // ngl_internal.o
 extern unsigned int nglGetDisplayMode();                // ngl_internal.o
 extern void nglSetDisplayMode(unsigned int* Modes, unsigned int ModeCount);  // ngl_dx_core.o
 extern void ngliWaitForResource();                      // ngl_dx_core.o
-extern void nglFontParseToken(unsigned char** Text, unsigned int* Token);
-extern void nglFontParseToken(unsigned char** Text, float* Token);
-extern void nglFontParseToken(unsigned char** Text, float* TokenA, float* TokenB);
+extern void nglFontParseToken(unsigned char*& Text, unsigned int* Token);
+extern void nglFontParseToken(unsigned char*& Text, float* Token);
+extern void nglFontParseToken(unsigned char*& Text, float* TokenA, float* TokenB);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
 // ============================================================================
@@ -247,13 +247,13 @@ void nglDebugDrawTextInternal(int X, int Y, unsigned int Color, const char* Text
         unsigned int Token = -1;
         switch (ch) {
         case 1:  // color
-            nglFontParseToken(&Ptr, &Color);
+            nglFontParseToken(Ptr, &Color);
             Color = (Color >> 8) | (Color << 24);
             break;
         case 2:  // scale
             {
                 float s;
-                nglFontParseToken(&Ptr, &s);
+                nglFontParseToken(Ptr, &s);
                 Scale = (int)s;
             }
             if (Scale < 1)
@@ -264,7 +264,7 @@ void nglDebugDrawTextInternal(int X, int Y, unsigned int Color, const char* Text
         case 3:  // scale xy
             {
                 float sx, sy;
-                nglFontParseToken(&Ptr, &sx, &sy);
+                nglFontParseToken(Ptr, &sx, &sy);
                 Scale = (int)sx;
             }
             if (Scale < 1)
@@ -273,7 +273,7 @@ void nglDebugDrawTextInternal(int X, int Y, unsigned int Color, const char* Text
                 Scale = 10;
             break;
         case 4:  // button
-            nglFontParseToken(&Ptr, &Button);
+            nglFontParseToken(Ptr, &Button);
             Token = Button;
             ch = 32;
             // fallthrough

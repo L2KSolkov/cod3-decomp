@@ -51,75 +51,75 @@ nglFont* nglGetFont(const tlFixedString& FileName) {
 // ============================================================================
 // nglFontParseToken (uint) - ea: 0x842420
 // ============================================================================
-void nglFontParseToken(unsigned char** Text, unsigned int* Token) {
-    if (**Text != '[' && _tlAssert("src/ngl_font.cpp", 31, "*Text == '['",
+void nglFontParseToken(unsigned char*& Text, unsigned int* Token) {
+    if (*Text != '[' && _tlAssert("src/ngl_font.cpp", 31, "*Text == '['",
                                    "Invalid character found in Token.  Should be '['.\n"))
         __debugbreak();
-    unsigned char* v4 = *Text + 1;
-    *Text = v4;
-    *Token = (unsigned int)strtoul((const char*)v4, (char**)Text, 16);
-    if (**Text == ']') {
-        *Text += 1;
+    unsigned char* v4 = Text + 1;
+    Text = v4;
+    *Token = (unsigned int)strtoul((const char*)v4, (char**)&Text, 16);
+    if (*Text == ']') {
+        Text += 1;
     } else {
         if (_tlAssert("src/ngl_font.cpp", 33, "*Text == ']'",
                       "Invalid character found in Token.  Should be ']'.\n")) {
             __debugbreak();
-            *Text += 1;
+            Text += 1;
             return;
         }
-        *Text += 1;
+        Text += 1;
     }
 }
 
 // ============================================================================
 // nglFontParseToken (float) - ea: 0x8424A0
 // ============================================================================
-void nglFontParseToken(unsigned char** Text, float* Token) {
-    if (**Text != '[' && _tlAssert("src/ngl_font.cpp", 39, "*Text == '['",
+void nglFontParseToken(unsigned char*& Text, float* Token) {
+    if (*Text != '[' && _tlAssert("src/ngl_font.cpp", 39, "*Text == '['",
                                    "Invalid character found in Token.  Should be '['.\n"))
         __debugbreak();
-    unsigned char* v4 = *Text + 1;
-    *Text = v4;
-    *Token = (float)strtod((const char*)v4, (char**)Text);
-    if (**Text == ']') {
-        *Text += 1;
+    unsigned char* v4 = Text + 1;
+    Text = v4;
+    *Token = (float)strtod((const char*)v4, (char**)&Text);
+    if (*Text == ']') {
+        Text += 1;
     } else {
         if (_tlAssert("src/ngl_font.cpp", 41, "*Text == ']'",
                       "Invalid character found in Token.  Should be ']'.\n")) {
             __debugbreak();
-            *Text += 1;
+            Text += 1;
             return;
         }
-        *Text += 1;
+        Text += 1;
     }
 }
 
 // ============================================================================
 // nglFontParseToken (float, float) - ea: 0x842520
 // ============================================================================
-void nglFontParseToken(unsigned char** Text, float* TokenA, float* TokenB) {
-    if (**Text != '[' && _tlAssert("src/ngl_font.cpp", 47, "*Text == '['",
+void nglFontParseToken(unsigned char*& Text, float* TokenA, float* TokenB) {
+    if (*Text != '[' && _tlAssert("src/ngl_font.cpp", 47, "*Text == '['",
                                    "Invalid character found in Token.  Should be '['.\n"))
         __debugbreak();
-    unsigned char* v5 = *Text + 1;
-    *Text = v5;
-    *TokenA = (float)strtod((const char*)v5, (char**)Text);
-    if (**Text != ',' && _tlAssert("src/ngl_font.cpp", 49, "*Text == ','",
+    unsigned char* v5 = Text + 1;
+    Text = v5;
+    *TokenA = (float)strtod((const char*)v5, (char**)&Text);
+    if (*Text != ',' && _tlAssert("src/ngl_font.cpp", 49, "*Text == ','",
                                    "Invalid character found in Token.  Should be ','.\n"))
         __debugbreak();
-    unsigned char* v6 = *Text + 1;
-    *Text = v6;
-    *TokenB = (float)strtod((const char*)v6, (char**)Text);
-    if (**Text == ']') {
-        *Text += 1;
+    unsigned char* v6 = Text + 1;
+    Text = v6;
+    *TokenB = (float)strtod((const char*)v6, (char**)&Text);
+    if (*Text == ']') {
+        Text += 1;
     } else {
         if (_tlAssert("src/ngl_font.cpp", 51, "*Text == ']'",
                       "Invalid character found in Token.  Should be ']'.\n")) {
             __debugbreak();
-            *Text += 1;
+            Text += 1;
             return;
         }
-        *Text += 1;
+        Text += 1;
     }
 }
 
@@ -176,18 +176,18 @@ process_char:
         while (1) {
             switch (v11) {
             case 0:  // [color]
-                nglFontParseToken(&Text, &Color);
+                nglFontParseToken(Text, &Color);
                 v10 = (Color >> 8) | (Color << 24);
                 Color = v10;
                 break;
             case 1:  // [scale]
-                nglFontParseToken(&Text, &ScaleX);
+                nglFontParseToken(Text, &ScaleX);
                 ScaleY = ScaleX;
                 if (ScaleX > MaxScaleY)
                     MaxScaleY = ScaleX;
                 break;
             case 2:  // [scaleX,scaleY]
-                nglFontParseToken(&Text, &ScaleX, &ScaleY);
+                nglFontParseToken(Text, &ScaleX, &ScaleY);
                 if (ScaleY > MaxScaleY)
                     MaxScaleY = ScaleY;
                 break;
@@ -306,16 +306,16 @@ void nglGetStringDimensions(nglFont* Font, const char* _Text, unsigned int* Widt
             Text = Text + 1;
             switch (v9) {
             case 1:
-                nglFontParseToken(&Text, &Color);
+                nglFontParseToken(Text, &Color);
                 break;
             case 2:
-                nglFontParseToken(&Text, &ScaleX);
+                nglFontParseToken(Text, &ScaleX);
                 ScaleY = ScaleX;
                 if (ScaleX > MaxScaleY)
                     MaxScaleY = ScaleX;
                 break;
             case 3:
-                nglFontParseToken(&Text, &ScaleX, &ScaleY);
+                nglFontParseToken(Text, &ScaleX, &ScaleY);
                 if (ScaleY > MaxScaleY)
                     MaxScaleY = ScaleY;
                 break;

@@ -120,9 +120,9 @@ struct nglStringSection;
 
 // ngl_font.o (functions, defined in ngl_font.cpp)
 nglFont* nglGetFont(const tlFixedString& FileName);
-void nglFontParseToken(unsigned char** Text, unsigned int* Token);
-void nglFontParseToken(unsigned char** Text, float* Token);
-void nglFontParseToken(unsigned char** Text, float* TokenA, float* TokenB);
+void nglFontParseToken(unsigned char*& Text, unsigned int* Token);
+void nglFontParseToken(unsigned char*& Text, float* Token);
+void nglFontParseToken(unsigned char*& Text, float* TokenA, float* TokenB);
 void nglSetFontBlend(nglFont* Font, unsigned int BlendMode);
 void nglSetFontMapFlags(nglFont* Font, unsigned int MapFlags);
 unsigned int nglGetFontMapFlags(nglFont* Font);
