@@ -91,6 +91,7 @@ static unsigned int gNullFence = 0;
 static unsigned int* gNullPushBuffer = NULL;
 
 static nullD3DInfo* nullD3DAdoptExternalTexture(D3DBaseTexture* Texture);
+int __stdcall XGIsSwizzledFormat(unsigned int Format);
 
 // NGL's Xbox render-state method cells are owned by the Win32 shim.  The
 // source-side state code already identifies the slots that are used by the
@@ -343,12 +344,143 @@ static unsigned int nullD3DLinearBytesPerPixel(unsigned int Format) {
     }
 }
 
+static unsigned int nullD3DFormatBytesPerPixel(unsigned int Format) {
+    unsigned int BytesPerPixel = nullD3DLinearBytesPerPixel(Format);
+    if (BytesPerPixel != 0)
+        return BytesPerPixel;
+    switch (Format) {
+    case D3DFMT_A8R8G8B8:
+    case D3DFMT_X8R8G8B8:
+    case D3DFMT_A8B8G8R8:
+    case D3DFMT_B8G8R8A8:
+    case D3DFMT_R8G8B8A8:
+        return 4;
+    case D3DFMT_R5G6B5:
+    case D3DFMT_A1R5G5B5:
+    case D3DFMT_X1R5G5B5:
+    case D3DFMT_A4R4G4B4:
+    case D3DFMT_A8L8:
+        return 2;
+    case D3DFMT_L8:
+    case D3DFMT_A8:
+    case D3DFMT_P8:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+static unsigned int nullD3DLog2(unsigned int Value) {
+    unsigned int Result = 0;
+    while (Value > 1) {
+        Value >>= 1;
+        ++Result;
+    }
+    return Result;
+}
+
+static void nullD3DGetSwizzleMasks(unsigned int Width, unsigned int Height,
+                                   unsigned int* MaskU, unsigned int* MaskV) {
+    // XGRAPHICS::GetMasks2, translated from the release XBE decompile.
+    unsigned int LogWidth = nullD3DLog2(Width);
+    unsigned int LogHeight = nullD3DLog2(Height);
+    unsigned int MinLog = LogWidth < LogHeight ? LogWidth : LogHeight;
+    unsigned int LowMask = (1u << (2 * MinLog)) - 1u;
+    unsigned int HighMask = ~LowMask;
+    unsigned int U = LogWidth <= LogHeight ? (LowMask & 0x55555555u)
+                                           : (HighMask | 0x55555555u);
+    unsigned int V = LogWidth >= LogHeight ? (LowMask & 0xAAAAAAAAu)
+                                           : (HighMask | 0xAAAAAAAAu);
+    unsigned int CombinedMask = (1u << (LogHeight + LogWidth)) - 1u;
+    *MaskU = U & CombinedMask;
+    *MaskV = V & CombinedMask;
+}
+
+static void nullD3DUnswizzle32(const unsigned char* Source, unsigned int* Dest,
+                               unsigned int Width, unsigned int Height) {
+    unsigned int MaskU = 0;
+    unsigned int MaskV = 0;
+    nullD3DGetSwizzleMasks(Width, Height, &MaskU, &MaskV);
+    unsigned int AddValU = MaskU & 0xFFFFFFC0u;
+    unsigned int AddValV = MaskV & 0xFFFFFFE0u;
+    const unsigned int* SourcePixels = (const unsigned int*)Source;
+    for (unsigned int DestinationY = 0, V = 0;; DestinationY += 4) {
+        for (unsigned int DestinationX = 0, U = 0;; DestinationX += 8) {
+            const unsigned int* Block = SourcePixels + (V | U);
+            unsigned int* Row0 = Dest + DestinationY * Width + DestinationX;
+            unsigned int* Row1 = Row0 + Width;
+            unsigned int* Row2 = Row1 + Width;
+            unsigned int* Row3 = Row2 + Width;
+
+            // The release XBE's unswiz2d_32bit writes this 8x4 block in
+            // the following order after its movelh/movehl operations.
+            Row0[0] = Block[0];
+            Row0[1] = Block[1];
+            Row0[2] = Block[4];
+            Row0[3] = Block[5];
+            Row0[4] = Block[16];
+            Row0[5] = Block[17];
+            Row0[6] = Block[20];
+            Row0[7] = Block[21];
+            Row1[0] = Block[6];
+            Row1[1] = Block[7];
+            Row1[2] = Block[2];
+            Row1[3] = Block[3];
+            Row1[4] = Block[22];
+            Row1[5] = Block[23];
+            Row1[6] = Block[18];
+            Row1[7] = Block[19];
+            Row2[0] = Block[8];
+            Row2[1] = Block[9];
+            Row2[2] = Block[12];
+            Row2[3] = Block[13];
+            Row2[4] = Block[24];
+            Row2[5] = Block[25];
+            Row2[6] = Block[28];
+            Row2[7] = Block[29];
+            Row3[0] = Block[14];
+            Row3[1] = Block[15];
+            Row3[2] = Block[10];
+            Row3[3] = Block[11];
+            Row3[4] = Block[30];
+            Row3[5] = Block[31];
+            Row3[6] = Block[26];
+            Row3[7] = Block[27];
+
+            U = MaskU & (U - AddValU);
+            if (U == 0)
+                break;
+        }
+        V = MaskV & (V - AddValV);
+        if (V == 0)
+            break;
+    }
+}
+
 static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size) {
     if (Info == NULL || Info->NativeTexture == NULL || Info->Bits == NULL)
         return;
-    unsigned int BytesPerPixel = nullD3DLinearBytesPerPixel(Info->Format);
+    unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Info->Format);
     if (BytesPerPixel == 0)
         return;
+    if (XGIsSwizzledFormat(Info->Format)) {
+        if (BytesPerPixel != 4 || Info->Width < 8 || Info->Height < 8)
+            return;
+        COD3_D3D9_LOCKED_RECT Locked = {};
+        if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
+            return;
+        unsigned int* Linear = (unsigned int*)calloc((size_t)Info->Width * Info->Height,
+                                                      sizeof(unsigned int));
+        if (Linear != NULL) {
+            nullD3DUnswizzle32(Info->Bits, Linear, Info->Width, Info->Height);
+            for (unsigned int y = 0; y < Info->Height; ++y)
+                memcpy((unsigned char*)Locked.pBits + y * Locked.Pitch,
+                       Linear + y * Info->Width, Info->Width * sizeof(unsigned int));
+            free(Linear);
+        }
+        Info->NativeTexture->UnlockRect(0);
+        return;
+    }
     unsigned int SourcePitch = Info->Width * BytesPerPixel;
     if (Size != 0)
         SourcePitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
@@ -370,7 +502,7 @@ static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
         return;
     if ((PackedFormat & 0x40u) != 0)
         return;
-    if (nullD3DLinearBytesPerPixel(Info->Format) == 0)
+    if (nullD3DFormatBytesPerPixel(Info->Format) == 0)
         return;
     if (FAILED(gD3D9Device->CreateTexture(Info->Width, Info->Height, Info->Levels, 0,
                                           nullD3DNativeFormat(Info->Format), D3DPOOL_MANAGED,
