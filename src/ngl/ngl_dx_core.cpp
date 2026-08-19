@@ -264,19 +264,19 @@ void nglSetDisplayMode(unsigned int* Modes, unsigned int ModeCount) {
     unsigned int i = 0;
     if (ModeCount != 0) {
         for (;;) {
-            if ((Modes[i] & 0xFF) >= 6
+            if (Modes[i] >= 6
                 && _tlAssert("src/dx/ngl_dx_core.cpp", 377,
                              "NGLFB_GET_FRONT(Modes[i]) < NGLFB_MAX",
                              "Invalid display mode enum."))
                 __debugbreak();
-            if ((VideoFlags & nglXbDisplayModeFlag[Modes[i] & 0xFF]) != 0)
+            if ((VideoFlags & nglXbDisplayModeFlag[Modes[i]]) != 0)
                 break;
             if (++i >= ModeCount) {
                 nglDisplayMode.Widescreen = VideoFlags & 1;
                 return;
             }
         }
-        unsigned int Front = Modes[i] & 0xFF;
+        unsigned int Front = Modes[i];
         nglDisplayMode.Width = nglDisplayModes[Front].Width;
         nglDisplayMode.Height = nglDisplayModes[Front].Height;
         nglDisplayMode.Progressive = nglDisplayModes[Front].Progressive;
