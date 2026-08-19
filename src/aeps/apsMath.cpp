@@ -21,7 +21,8 @@
 namespace apsMath {
 
 float ACos(float x) {
-    const float ax = std::fabs(x);
+    const __m128 absMask = _mm_castsi128_ps(_mm_set1_epi32(0x7FFFFFFF));
+    const float ax = _mm_and_ps(_mm_set_ss(x), absMask).m128_f32[0];
     float value;
 
     if (ax < 0.5f) {
@@ -32,7 +33,7 @@ float ACos(float x) {
         value = x7 * 0.053981241f + x5 * 0.075000003f
               + x3 * 0.1666667f + ax;
     } else {
-        const float root = std::sqrt(std::fabs((1.0f - ax) * 0.5f));
+        const float root = std::sqrt((1.0f - ax) * 0.5f);
         const float root2 = root * root;
         const float root3 = root2 * root;
         const float root5 = root3 * root2;
