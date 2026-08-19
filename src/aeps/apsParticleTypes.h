@@ -8,6 +8,14 @@
 #include "core/math_types.h"
 #include "apsMath.h"
 
+struct MeshParticleContext {
+    math::Mat43 mLToS;          // +0x00
+    math::Mat43 mLightDir;      // +0x40
+    math::Mat43 mLightColor;    // +0x80
+    math::Vector4 mAlpha;       // +0xC0
+};
+static_assert(sizeof(MeshParticleContext) == 0xD0, "MeshParticleContext size mismatch");
+
 struct ShrimpParticle {
     math::Dir3::Packed mPos; // +0x00
     float mWidth;             // +0x0C
