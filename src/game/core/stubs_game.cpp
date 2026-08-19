@@ -19,7 +19,6 @@ void __cod3_stub_game_core(void) {
 class BankManager { public: static void CreateInst(); static void DeleteInst(); };
 class DestructibleBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
-class AITypeManager { public: static void DeleteInst(); };
 class SoundDevice { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -58,7 +57,6 @@ void DestructibleBankManager::CreateInst() {}
 void DestructibleBankManager::DeleteInst() {}
 void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
-void AITypeManager::DeleteInst() {}
 void SoundDevice::DeleteInst() {}
 void AudioBankMgr::DeleteInst() {}
 void SoundMediaMgr::CreateInst() {}

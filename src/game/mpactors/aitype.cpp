@@ -275,6 +275,25 @@ void AITypeManager::CreateInst()
     }
 }
 
+// ea: 0x004DCFC0
+void AITypeManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AITypeManager.h";
+        AeAssert::gCurrentLine = 32;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
+}
+
 // ea: 0x00780FC0
 AITypeManager::~AITypeManager()
 {
