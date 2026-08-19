@@ -30,7 +30,7 @@ static_assert(sizeof(SpriteVertex) == 0x18, "SpriteVertex size mismatch");
 
 void  Init(unsigned int iMaxParticles);                        // @0x802CD0
 SpriteVertex* GetBufferPtr(unsigned int iNumParticles);        // @0x802D90
-void  ReleaseAndDraw();                                        // @0x802DD0
+SpriteVertex* ReleaseAndDraw();                                // @0x802DD0
 SpriteVertex* Swap();                                          // @0x802E50
 
 // ---- static data (apsVertexBuffer.o) ----

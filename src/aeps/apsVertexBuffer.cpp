@@ -117,7 +117,7 @@ SpriteVertex* GetBufferPtr(unsigned int iNumParticles) {
 // advance the cursor.
 // ea: 0x802DD0
 // ============================================================================
-void ReleaseAndDraw() {
+SpriteVertex* ReleaseAndDraw() {
     D3DIndexBuffer* v0 = sIndexBuffer;
     unsigned int v1 = 2 * sCurIndex;
     unsigned int v2 = 6 * sCurNumParticles;
@@ -130,6 +130,7 @@ void ReleaseAndDraw() {
     SpriteVertex* result = &sCurVertexPointer[4 * sCurNumParticles];
     sCurIndex += 6 * sCurNumParticles;
     sCurVertexPointer = result;
+    return result;
 }
 
 // ============================================================================
