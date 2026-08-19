@@ -454,14 +454,14 @@ unsigned int STBManager::GetSTBFlags(TPakId pakId, unsigned int hash)
 void STBManager::DecodeBank(const char* name, unsigned char* data, int size,
                             TPakId pak_id)
 {
-    // In-place bank decode: the asset-bank header stores the fixup-table
-    // offset at +6 (STBManager::DecodeBank, IDA 0x4C6130).
-    if (*(unsigned int*)(data + 6) >= 0x10000000u)
+    // In-place bank decode: IDA's DecodeBank disassembly reads the fixup-table
+    // offset from the bank header at +0x18 (0x004C6130).
+    if (*(unsigned int*)(data + 0x18) >= 0x10000000u)
     {
         // assertion: fixup offset unusually large
     }
-    void* v13 = &data[*(unsigned int*)(data + 6)];
-    *(unsigned int*)(data + 6) = (unsigned int)v13;
+    void* v13 = &data[*(unsigned int*)(data + 0x18)];
+    *(unsigned int*)(data + 0x18) = (unsigned int)v13;
     PtrFixupTable_Fixup(v13, data);
     mBankArray[pak_id] = data;
 }
