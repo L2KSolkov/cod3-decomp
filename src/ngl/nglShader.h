@@ -19,7 +19,8 @@ struct nglMaterial;
 // ============================================================================
 // nglShader - base shader (16 bytes: tlInitList vptr+next, Disabled, ID).
 // ============================================================================
-struct nglShader : tlInitList {
+class nglShader : public tlInitList {
+public:
     bool Disabled;  // +0x08
     int  ID;        // +0x0C
 

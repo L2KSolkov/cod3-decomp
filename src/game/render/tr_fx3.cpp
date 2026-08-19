@@ -347,7 +347,8 @@ struct nglSceneView {
 struct nglScene;
 extern nglScene* nglBuildScene;        // ?nglBuildScene@@3PAUnglScene@@A
 extern void nglValidateMatrices(nglScene* scene);  // ngl.o
-extern bool nglProfileEvalShader(struct nglShader* shader);    // ?nglProfileEvalShader@@YA_NPAUnglShader@@@Z
+class nglShader;
+extern bool nglProfileEvalShader(nglShader* shader);    // ?nglProfileEvalShader@@YA_NPAVnglShader@@@Z
 extern void UpdateLights(float mTickMSec);        // ?UpdateLights@@YAXM@Z
 extern void RemoveDeadEffects();                  // ?RemoveDeadEffects@@YAXXZ
 extern void FX_UpdateRainDrops(float dt);         // ?FX_UpdateRainDrops@@YAXM@Z

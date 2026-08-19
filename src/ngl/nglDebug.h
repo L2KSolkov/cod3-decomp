@@ -78,12 +78,14 @@ extern int nglPerfBarNumVB;
 // ============================================================================
 unsigned char* nglGetDebugFlagPtr(const char* Flag);
 void nglSetDebugFlag(const char* Flag, unsigned char Set);
+void nglSetDebugFlag(const char* Flag, int Set);
 int nglGetDebugFlag(const char* Flag);
 void nglDebugInit();
 void nglAveragePerfInfo(unsigned int Frames);
 void nglProfileShaders();
 void nglDestroyProfiler();
-bool nglProfileEvalShader(struct nglShader* Shader);
+class nglShader;
+bool nglProfileEvalShader(nglShader* Shader);
 void nglRenderPerfBar();
 void nglFlushLinesBatch();
 void nglInitShaderProfiling();
@@ -91,36 +93,67 @@ void nglInitShaderProfiling();
 // Debug shape drawing (ngl_debug.o).
 void nglDebugAddLine(const math::Position3* pt1, const math::Position3* pt2,
                      unsigned int color);
+void nglDebugAddLine(const math::Position3& pt1, const math::Position3& pt2,
+                     unsigned int color);
 void nglDebugAddRay(const math::Position3* pt1, const math::Position3* pt2,
+                    unsigned int Color);
+void nglDebugAddRay(const math::Position3& pt1, const math::Position3& pt2,
                     unsigned int Color);
 void nglDebugAddAxes(const math::Mat43* LToW, unsigned int Length,
                      unsigned int ColX, unsigned int ColY, unsigned int ColZ);
+void nglDebugAddAxes(const math::Mat43& LToW, float Length,
+                     unsigned int ColX, unsigned int ColY, unsigned int ColZ);
 void nglDebugAddBox(const math::Mat43* mat, const math::DiagMat33* size,
+                    unsigned int color);
+void nglDebugAddBox(const math::Mat43& mat, const math::DiagMat33& size,
                     unsigned int color);
 void nglDebugAddBoxSolid(const math::Mat43* LToW, const math::DiagMat33* size,
                          unsigned int Color);
+void nglDebugAddBoxSolid(const math::Mat43& LToW, const math::DiagMat33& size,
+                         unsigned int Color);
 void nglDebugAddGrid(const math::Mat43* mat, int w, int h, float xstep,
+                     float zstep, unsigned int color);
+void nglDebugAddGrid(const math::Mat43& mat, int w, int h, float xstep,
                      float zstep, unsigned int color);
 void nglDebugAddEllipse(const math::Mat43* LToW, float RadiusX, float RadiusZ,
                         unsigned int Color);
+void nglDebugAddEllipse(const math::Mat43& LToW, float RadiusX, float RadiusZ,
+                        unsigned int Color);
 void nglDebugAddCircle(const math::Mat43* LToW, float Radius, unsigned int Color);
+void nglDebugAddCircle(const math::Mat43& LToW, float Radius, unsigned int Color);
 void nglDebugAddCylinder(const math::Mat43* LToW, float Radius, float Height,
+                         unsigned int Color);
+void nglDebugAddCylinder(const math::Mat43& LToW, float Radius, float Height,
                          unsigned int Color);
 void nglDebugAddCylinderSolid(const math::Mat43* LToW, float Radius, float Height,
                               unsigned int Color);
+void nglDebugAddCylinderSolid(const math::Mat43& LToW, float Radius, float Height,
+                              unsigned int Color);
 void nglDebugAddEllipsoid(const math::Mat43* LToW, const math::Dir3* Radius,
+                          unsigned int Color);
+void nglDebugAddEllipsoid(const math::Mat43& LToW, const math::Dir3& Radius,
                           unsigned int Color);
 void nglDebugAddEllipsoidSolid(const math::Mat43* LToW, const math::Dir3* Radius,
                                unsigned int Color);
+void nglDebugAddEllipsoidSolid(const math::Mat43& LToW, const math::Dir3& Radius,
+                               unsigned int Color);
 void nglDebugAddSphere(const math::Position3* Pos, float Radius,
+                       unsigned int Color);
+void nglDebugAddSphere(const math::Position3& Pos, float Radius,
                        unsigned int Color);
 void nglDebugAddSphereSolid(const math::Position3* Pos, float Radius,
                             unsigned int Color);
+void nglDebugAddSphereSolid(const math::Position3& Pos, float Radius,
+                            unsigned int Color);
 void nglDebugAddPyramid(const math::Mat43* LToW, const math::Dir3* Size,
+                        unsigned int Color);
+void nglDebugAddPyramid(const math::Mat43& LToW, const math::Dir3& Size,
                         unsigned int Color);
 void nglDebugAddPyramidSolid(const math::Mat43* LToW, const math::Dir3* Size,
                              unsigned int Color);
-void nglDebugAddLabel(const math::Position3* Pos, unsigned int Color,
+void nglDebugAddPyramidSolid(const math::Mat43& LToW, const math::Dir3& Size,
+                             unsigned int Color);
+void nglDebugAddLabel(const math::Position3& Pos, unsigned int Color,
                       const char* Label, ...);
 void nglDebugAddTriData(unsigned int NTris, const math::Position3* Points,
                         const unsigned char* Indices, unsigned int Color,
@@ -134,8 +167,13 @@ void nglDebugAddTriStrip(unsigned int NTris, const math::Position3* Points,
                          const unsigned char* Indices, unsigned int Color);
 void nglDebugAddTri(const math::Position3* pt1, const math::Position3* pt2,
                     const math::Position3* pt3, unsigned int Color);
+void nglDebugAddTri(const math::Position3& pt1, const math::Position3& pt2,
+                    const math::Position3& pt3, unsigned int Color);
 void nglDebugAddQuad(const math::Position3* pt1, const math::Position3* pt2,
                      const math::Position3* pt3, const math::Position3* pt4,
+                     unsigned int Color);
+void nglDebugAddQuad(const math::Position3& pt1, const math::Position3& pt2,
+                     const math::Position3& pt3, const math::Position3& pt4,
                      unsigned int Color);
 
 // ngl_dx_scenedump.o (host file I/O, ported in ngl_dx_scenedump.cpp)
