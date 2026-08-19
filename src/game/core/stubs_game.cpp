@@ -71,7 +71,6 @@ void ConfigStringManager::CreateInst() {}
 void CtrlIcon::CreateInst() {}
 void CtrlIcon::DeleteInst() {}
 void MultiplayerMgr::DeleteInst() {}
-void CheckpointMgr::CreateInst() {}
 void AnimBankManager::CreateInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
 {

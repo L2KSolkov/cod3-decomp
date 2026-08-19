@@ -11,6 +11,9 @@
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
 extern void  mem_heap_free(void* ptr);
 
 // PathNode / checkpoint support externs (mp_actors.o / streamer.o)
@@ -660,6 +663,35 @@ CheckpointMgr::~CheckpointMgr()
     this->mEvent.~string();
     for (int i = 0; i < 6; ++i)
         this->mWeapons[i].~string();
+}
+
+// ea: 0x004DDDB0
+CheckpointMgr* CheckpointMgr::CreateInst()
+{
+    CheckpointMgr* result = nullptr;
+    if (CheckpointMgr::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CheckpointMgr.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    result = static_cast<CheckpointMgr*>(
+        mem_heap_malloc_ctx(0xB18u, 4, "core",
+                            "c:\\cod\\code\\game\\CheckpointMgr.h", 36));
+    if (result != nullptr)
+    {
+        result = new (result) CheckpointMgr();
+        CheckpointMgr::sInst = result;
+    }
+    else
+    {
+        CheckpointMgr::sInst = nullptr;
+    }
+    return result;
 }
 
 // ea: 0x004E2AD0
