@@ -34,6 +34,9 @@ class nalGenericPose;
 // Cross-object externs
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void tlMemFree(void* ptr);
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
 int default_apk_size;    // ?default_apk_size (game2.o)
 unsigned char default_apk[0x40000];  // ?default_apk (game2.o)
 unsigned char* default_pak_buf = nullptr;  // ?default_pak_buf (game2.o)
@@ -1719,6 +1722,38 @@ void SplineMgr::UnloadBank(int pakId)
     }
     mList[v4].pakId = -1;
     mList[v4].file = nullptr;
+}
+
+// ea: 0x004E9410
+SmokeGrenadeMgr* SmokeGrenadeMgr::CreateInst()
+{
+    SmokeGrenadeMgr* result = nullptr;
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SmokeGrenadeMgr.h";
+        AeAssert::gCurrentLine = 31;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    result = static_cast<SmokeGrenadeMgr*>(
+        mem_heap_malloc_ctx(0x0Cu, 4, "core",
+                            "c:\\cod\\code\\game\\SmokeGrenadeMgr.h", 31));
+    if (result != nullptr)
+    {
+        result->mSmokeGrenadeInfoList.mElements = nullptr;
+        result->mSmokeGrenadeInfoList.mCapacity = 0;
+        result->mSmokeGrenadeInfoList.mSize = 0;
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
+    return result;
 }
 
 // ============================================================================

@@ -712,14 +712,15 @@ class SceneBank;    // streamer.o (IDA map mangling uses class key)
 // ae_vector<SmokeGrenadeInfo> - 12 bytes
 struct SmokeGrenadeInfoList {
     SmokeGrenadeInfo* mElements;  // +0x00
-    int mSize;                    // +0x04
-    int mCapacity;                // +0x08
+    int mCapacity;                // +0x04
+    int mSize;                    // +0x08
 };
 
 class SmokeGrenadeMgr {
 public:
     SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
-    static void* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+    static SmokeGrenadeMgr* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+    static SmokeGrenadeMgr* CreateInst();  // ?CreateInst@SmokeGrenadeMgr@@SAPAV1@XZ
     static SmokeGrenadeMgr* Inst();  // ?Inst@SmokeGrenadeMgr@@SAPAV1@XZ (g.o 0x4A83B0)
     float CalcOpacity(const SmokeGrenadeInfo& smokeGrenInfo) const;  // ?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z (game2.o 0x4FA0E0)
     bool PointCanSeePoint(const float* startPoint, const float* endPoint,

@@ -75,7 +75,6 @@ void CheckpointMgr::CreateInst() {}
 void CheckpointMgr::DeleteInst() {}
 void SplineMgr::CreateInst() {}
 void SplineMgr::DeleteInst() {}
-void SmokeGrenadeMgr::CreateInst() {}
 void AnimBankManager::CreateInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
 {
