@@ -2059,7 +2059,7 @@ KeyInfoEntry (*gKeyInfoMKeys)[256] = nullptr;  // ?gKeyInfoMKeys@@3PAY0BAA@UKeyI
 struct KeyInfoEntry3;
 KeyInfoEntry3 (*KeyInfo_mKeys)[256] = nullptr;  // ?KeyInfo_mKeys@@3PAY0BAA@UKeyInfoEntry3@@A
 struct PakInfoNode;
-extern struct PakInfoNode const* sLoadingScreenInfo = nullptr;
+extern struct PakInfoNode const* sLoadingScreenInfo;
 unsigned int (*_D3D__TextureState)[1] = nullptr;  // ?_D3D__TextureState@@3PAY00IA
 void (__cdecl* gpBrocAPI_mCallbackQuitGame)() = nullptr;
 void (__cdecl* rd_flush)(char*) = nullptr;

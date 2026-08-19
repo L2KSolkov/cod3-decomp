@@ -41,7 +41,7 @@ extern void PakManager_ClearUserDistance(void* self, const void* cpak);
 extern void PakManager_SyncUnloadPak(void* self, int id);
 struct PakInfoNode;
 struct PakInfoNode;
-PakInfoNode* const sLoadingScreenInfo = nullptr;  // ?sLoadingScreenInfo@@3PBUPakInfoNode@@B (cl.o @ 0x1304CAC)
+const PakInfoNode* sLoadingScreenInfo = nullptr;  // ?sLoadingScreenInfo@@3PBUPakInfoNode@@B (cl.o @ 0x1304CAC)
 extern void GamePause_SetAllPaused(bool paused);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 

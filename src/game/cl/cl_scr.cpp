@@ -5,6 +5,7 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "game/game_types.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -67,6 +68,7 @@ extern int dword_F170EC;
 extern int time_frontend;
 extern int time_backend;
 bool gDisableRendering;
+extern bool gSkipFrontEnd;
 extern float Com_GetScreenTimeDelta();
 extern void nullsub_35();
 int scr_initialized;
@@ -79,7 +81,7 @@ struct glconfig_t;
 extern void CL_GetGlconfig(glconfig_t* glconfig);
 
 namespace AeAssert {
-enum ECoderId { COD3 = 0 };
+enum ECoderId { COD3 = 0, ARO = 1 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -99,9 +101,15 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-// FEManager front-end view (shell.o owns the real class)
+// FEManager front-end view (shell.o owns the real class).  The fields below
+// match the IDA layout used by CL_InitUI: fems +0x1C, skipFE +0x33, inGame
+// +0x36.
 struct fe_menusys_view {
-    bool IsSystemActive();
+    uint8_t _pad[0x2A];
+    bool is_active;
+    uint8_t _pad2B;
+
+    bool IsSystemActive() const { return is_active; }
 };
 
 class InGameMenuSystem {
@@ -114,10 +122,38 @@ public:
 };
 class FEManager {
 public:
+    uint8_t _pad00[0x1C];
+    fe_menusys_view* fems;
+    uint8_t _pad20[0x13];
+    bool skipFE;
+    bool enablePause;
+    bool IGO_active;
+    bool inGame;
+
+    void LoadFrontEnd();
     InGameMenuSystem* GetIGMS(int client);
     DialogMenuSystem* GetDMS(int client);
 };
 extern FEManager g_femanager;
+
+struct PakInfoNode {
+    uint8_t _pad00[0xB4];
+    TPakId pakId;
+};
+
+class PakManager {
+public:
+    static PakManager* sInst;
+    uint8_t _pad00[0x2C];
+    void* mProgressCallback;
+    const PakInfoNode* GetPakInfo(const char* long_name) const;
+    bool IsLoaded(TPakId id) const;
+    void SetUserDistance(const PakInfoNode* cpak, float dist);
+    TPakId SyncLoadPak(const PakInfoNode* cpak);
+};
+
+const PakInfoNode* sFrontEndInfo = nullptr;
+extern const PakInfoNode* sLoadingScreenInfo;
 class GamePause {
 public:
     static void SetGamePaused(int client, bool paused);
@@ -128,11 +164,6 @@ protected:
     friend class PauseMenu;
 };
 
-// ?IsSystemActive@InGameMenuSystem@@QAE_NXZ family (shell.o; stub)
-bool fe_menusys_view::IsSystemActive()
-{
-    return false;
-}
 struct fe_manager_view {
     void* IGO;
     fe_menusys_view* fems;
@@ -734,5 +765,51 @@ void CL_ShutdownUI()
 // ea: 0x52E500
 char CL_InitUI()
 {
-    return 0;
+    char result = 0;
+    if (g_femanager.fems == nullptr || !g_femanager.fems->IsSystemActive())
+    {
+        if (g_femanager.inGame)
+            return 1;
+
+        g_femanager.LoadFrontEnd();
+        if (g_femanager.fems != nullptr)
+            g_femanager.fems->is_active = true;
+        g_femanager.skipFE = false;
+        PakManager::sInst->mProgressCallback = nullptr;
+
+        sFrontEndInfo = PakManager::sInst->GetPakInfo("mp_FrontEnd");
+        const PakInfoNode* loadingInfo =
+            PakManager::sInst->GetPakInfo("mp_loadingscreen");
+        sLoadingScreenInfo = loadingInfo;
+        if (loadingInfo != nullptr
+            && !PakManager::sInst->IsLoaded(loadingInfo->pakId))
+        {
+            PakManager::sInst->SetUserDistance(loadingInfo, 0.0f);
+            PakManager::sInst->SyncLoadPak(loadingInfo);
+        }
+
+        if (sFrontEndInfo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_ui.cpp";
+            AeAssert::gCurrentLine = 245;
+            AeAssert::gCurrentExpr = "sFrontEndInfo!=0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Can't find FrontEnd pak"))
+                __debugbreak();
+        }
+        if (sFrontEndInfo != nullptr
+            && !PakManager::sInst->IsLoaded(sFrontEndInfo->pakId)
+            && !gSkipFrontEnd)
+        {
+            PakManager::sInst->SetUserDistance(sFrontEndInfo, 0.0f);
+            PakManager::sInst->SyncLoadPak(sFrontEndInfo);
+        }
+        result = sFrontEndInfo != nullptr ? 1 : 0;
+    }
+    else
+    {
+        result = 1;
+    }
+    return result;
 }

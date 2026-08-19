@@ -30,6 +30,8 @@ static_assert(sizeof(cdGunSightShaderMat) == 0x18, "cdGunSightShaderMat size mis
 // ============================================================================
 struct cdGunSightShaderNode : nglShaderNode {
     cdGunSightShaderMat* mMaterial;  // +0x14
+
+    void Render() override;           // @0x7CE2B0
 };
 static_assert(sizeof(cdGunSightShaderNode) == 0x18, "cdGunSightShaderNode size mismatch");
 
@@ -49,16 +51,16 @@ static_assert(sizeof(cdGunSightShader) == 0x10, "cdGunSightShader size mismatch"
 // Shader data externs (defined in render_xboxr:cdGunSightShaderVertex.o)
 // ============================================================================
 namespace cdGunSightRender {
-    extern unsigned long* VS;                // ?VS@cdGunSightRender@@3PAKA
-    extern unsigned int const** VShaderTable; // ?VShaderTable@cdGunSightRender@@3PAPBIA
+    extern unsigned int VS[1];               // ?VS@cdGunSightRender@@3PAKA
+    extern unsigned int const* VShaderTable[1]; // ?VShaderTable@cdGunSightRender@@3PAPBIA
 }
 namespace cdGunSightPixel {
-    extern unsigned long** PS;               // ?PS@cdGunSightPixel@@3PAPAKA
-    extern unsigned int const** PShaderTable; // ?PShaderTable@cdGunSightPixel@@3PAPBIA
+    extern unsigned int* PS[1];              // ?PS@cdGunSightPixel@@3PAPAKA
+    extern unsigned int const* PShaderTable[1]; // ?PShaderTable@cdGunSightPixel@@3PAPBIA
 }
 namespace cdGunSightFullbrightPixel {
-    extern unsigned long** PS;               // ?PS@cdGunSightFullbrightPixel@@3PAPAKA
-    extern unsigned int const** PShaderTable; // ?PShaderTable@cdGunSightFullbrightPixel@@3PAPBIA
+    extern unsigned int* PS[1];              // ?PS@cdGunSightFullbrightPixel@@3PAPAKA
+    extern unsigned int const* PShaderTable[1]; // ?PShaderTable@cdGunSightFullbrightPixel@@3PAPBIA
 }
 
 // ============================================================================
