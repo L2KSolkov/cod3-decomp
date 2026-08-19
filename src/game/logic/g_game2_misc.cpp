@@ -1621,11 +1621,41 @@ public:
     void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
     void ReverseEndianSplineGroupFile(HashGroupFileLocal* splineGroupFile);  // ea: 0x5046C0
     static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A
+    static SplineMgr* CreateInst();  // ?CreateInst@SplineMgr@@SAPAV1@XZ
     static void DeleteInst();  // ?DeleteInst@SplineMgr@@SAXXZ
 };
 
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
 SplineMgr* SplineMgr::sInst;  // ?sInst@SplineMgr@@2PAV1@A (game2.o @ 0x12F3EA0)
+
+// ea: 0x004DDEF0
+SplineMgr* SplineMgr::CreateInst()
+{
+    SplineMgr* result = nullptr;
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SplineMgr.h";
+        AeAssert::gCurrentLine = 39;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    result = static_cast<SplineMgr*>(
+        mem_heap_malloc_ctx(0x184u, 4, "core",
+                            "c:\\cod\\code\\game\\SplineMgr.h", 39));
+    if (result != nullptr)
+    {
+        result = new (result) SplineMgr();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
+    return result;
+}
 
 // ea: 0x004DDFF0
 void SplineMgr::DeleteInst()
