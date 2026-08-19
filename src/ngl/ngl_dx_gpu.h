@@ -93,9 +93,9 @@ extern nglMeshSection* nglCreateSection(int Prim, int NIndices, int NVertices,
                                         gpuVertexFormat* VertexFormat);
 extern void  nglDestroySection(nglMeshSection* Section);
 extern void* nglLockSectionIndices(nglMeshSection* Section);
-extern void  nglUnlockSectionIndices(void);
+extern void  nglUnlockSectionIndices(nglMeshSection* Section);
 extern void* nglLockSectionVertices(nglMeshSection* Section);
-extern void  nglUnlockSectionVertices(void);
+extern void  nglUnlockSectionVertices(nglMeshSection* Section);
 extern nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
                                                gpuVertexFormat* VertexFormat);
 extern void  nglCopySection(nglMeshSection* Dst, nglMeshSection* Src);

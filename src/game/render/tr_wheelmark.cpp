@@ -601,7 +601,7 @@ nglMesh* auxCreateScratchMesh(int flags, int num);         // ?auxCreateScratchM
 nglMesh* auxCloseScratchMesh(nglMesh* m);                  // ?auxCloseScratchMesh@@YAPAUnglMesh@@PAU1@@Z
 nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
                                         gpuVertexFormat* VertexFormat);
-void nglUnlockSectionIndices(void);
+void nglUnlockSectionIndices(nglMeshSection* Section);
 void nglSetMeshSphere(nglMesh* Mesh, const math::Position3& Center, float Radius);
 extern gpuVertexFormat cdDynamicDecalVertexFormat;  // cdDynamicDecalVertexDef.cpp
 nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
@@ -816,8 +816,8 @@ void DynamicDecalSet::Render()
 
         if (anyWritten)
         {
-            nglUnlockSectionIndices();
-            nglUnlockSectionVertices();
+            nglUnlockSectionIndices(section);
+            nglUnlockSectionVertices(section);
 
             math::Position3 center;
             center.v.m128_f32[0] = (minX + maxX) * 0.5f;
@@ -1122,7 +1122,7 @@ void WheelMark::Assign(Entity* owner, wheel_e wheel)
 // WheelMark::AddPoint - ea: 0x006C8FB0
 // ============================================================================
 void* nglLockSectionVertices(nglMeshSection* Section);    // ngl_dx_gpu.o
-void nglUnlockSectionVertices();                           // ngl_dx_gpu.o
+void nglUnlockSectionVertices(nglMeshSection* Section);     // ngl_dx_gpu.o
 
 void WheelMark::AddPoint(const math::Position3& Pos,
                          const math::Dir3& Normal,
@@ -1241,7 +1241,7 @@ void WheelMark::AddPoint(const math::Position3& Pos,
         if (v30 >= 0x3F8)
             v30 = 1016;
         NumVerts = v30;
-        nglUnlockSectionVertices();
+        nglUnlockSectionVertices(Section);
     }
 }
 

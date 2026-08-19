@@ -308,8 +308,8 @@ const nglMeshIterator<V, I>& nglMeshIterator<V, I>::operator++()
 template <typename V, typename I>
 void nglMeshIterator<V, I>::WriteFlush()
 {
-    nglUnlockSectionIndices();
-    nglUnlockSectionVertices();
+    nglUnlockSectionIndices(this->section);
+    nglUnlockSectionVertices(this->section);
 }
 
 // ea: 0x6843A0
@@ -5995,8 +5995,8 @@ void RenderGlowSprite(const math::Position3& center, float radius,
     verts[4] = 0x3F800000;  // v = 1.0
     idx[3] = 3;
 
-    nglUnlockSectionIndices();
-    nglUnlockSectionVertices();
+    nglUnlockSectionIndices(ScratchSection);
+    nglUnlockSectionVertices(ScratchSection);
 
     math::Mat43 localToWorld;
     localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
@@ -6070,8 +6070,8 @@ void RenderGlowBeam(const math::Position3& center,
     verts[4] = 0x3F000000;  // v = 0.5
     idx[3] = 3;
 
-    nglUnlockSectionIndices();
-    nglUnlockSectionVertices();
+    nglUnlockSectionIndices(ScratchSection);
+    nglUnlockSectionVertices(ScratchSection);
 
     math::Mat43 localToWorld;
     localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
@@ -6213,8 +6213,8 @@ void SceneManager::RenderLightGlows()
                     verts[4] = 0x3F000000;  // v = 0.5
                     idx[3] = 3;
 
-                    nglUnlockSectionIndices();
-                    nglUnlockSectionVertices();
+                    nglUnlockSectionIndices(ScratchSection);
+                    nglUnlockSectionVertices(ScratchSection);
 
                     math::Mat43 localToWorld;
                     localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);

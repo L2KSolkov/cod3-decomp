@@ -101,7 +101,7 @@ void* nglLockSectionIndices(nglMeshSection* Section) {
 // ============================================================================
 // nglUnlockSectionIndices â€” ea: 0x843300
 // ============================================================================
-void nglUnlockSectionIndices() {
+void nglUnlockSectionIndices(nglMeshSection* Section) {
 }
 
 // ============================================================================
@@ -115,7 +115,7 @@ void* nglLockSectionVertices(nglMeshSection* Section) {
 // ============================================================================
 // nglUnlockSectionVertices â€” ea: 0x843330
 // ============================================================================
-void nglUnlockSectionVertices() {
+void nglUnlockSectionVertices(nglMeshSection* Section) {
 }
 
 // ============================================================================
