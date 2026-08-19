@@ -6,6 +6,7 @@
 //   InitCDSimpleSpecularShader  @0x7D4E60
 //   ToggleCDSimpleSpecularShader @0x7D4EB0
 //   cdSimpleSpecularShader::Register @0x7D4ED0
+//   GetEyePos @0x7D4F00
 //   cdSimpleSpecularShader::AddNode @0x7D4FF0
 // ============================================================================
 #include "cdSimpleSpecularShader.h"
@@ -110,6 +111,42 @@ void cdSimpleSpecularShader::Register() {
     }
     nglDxRegisterPShaderSafe((unsigned int**)cdSimpleSpecularPixel::PS, cdSimpleSpecularPixel::PShaderTable, 0);
     nglDxRegisterPShaderSafe((unsigned int**)cdSimpleSpecularFullbrightPixel::PS, cdSimpleSpecularFullbrightPixel::PShaderTable, 0);
+}
+
+// ============================================================================
+// GetEyePos — transform the build-scene eye position into mesh-local space.
+// ea: 0x7D4F00
+// ============================================================================
+void GetEyePos(nglMeshNode* meshNode, math::Vector4& eyePos) {
+    const __m128 localToWorldW = meshNode->LocalToWorld.w.v;
+    const __m128 localToWorldY = meshNode->LocalToWorld.y.v;
+    const __m128 positionWithW = _mm_shuffle_ps(
+        localToWorldW,
+        _mm_shuffle_ps(_mm_set1_ps(1.0f), localToWorldW, 0xA0), 0x34);
+    const __m128 relativeEye = _mm_setr_ps(
+        nglBuildScene->ViewPos.v.m128_f32[0] - positionWithW.m128_f32[0],
+        nglBuildScene->ViewPos.v.m128_f32[1] - positionWithW.m128_f32[1],
+        nglBuildScene->ViewPos.v.m128_f32[2] - positionWithW.m128_f32[2],
+        1.0f);
+
+    const __m128 localToWorldZ = meshNode->LocalToWorld.z.v;
+    const __m128 zWHigh = _mm_shuffle_ps(localToWorldZ, localToWorldW, 0xEE);
+    const __m128 zWLow = _mm_shuffle_ps(localToWorldZ, localToWorldW, 0x44);
+    const __m128 xyLow = _mm_shuffle_ps(meshNode->LocalToWorld.x.v, localToWorldY, 0x44);
+    const __m128 basisX = _mm_shuffle_ps(xyLow, zWLow, 0x88);
+    const __m128 basisY = _mm_shuffle_ps(xyLow, zWLow, 0xDD);
+    const __m128 basisZ = _mm_shuffle_ps(
+        _mm_shuffle_ps(meshNode->LocalToWorld.x.v, localToWorldY, 0xEE),
+        zWHigh, 0x88);
+
+    eyePos.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(relativeEye, relativeEye, 0x00), basisX),
+            _mm_mul_ps(_mm_shuffle_ps(relativeEye, relativeEye, 0x55), basisY)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(relativeEye, relativeEye, 0xAA), basisZ),
+            _mm_mul_ps(_mm_shuffle_ps(relativeEye, relativeEye, 0xFF),
+                       _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f))));
 }
 
 // ============================================================================
