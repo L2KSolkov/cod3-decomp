@@ -83,7 +83,7 @@ void nglSaveTexture(nglTexture* Tex, const char* FileName) {
 // ============================================================================
 // nglCreateTextureFromFile - ea: 0x84ADB0
 // ============================================================================
-nglTexture* nglCreateTextureFromFile(void* Data, unsigned int Size) {
+nglTexture* nglCreateTextureFromFile(void* Data, int Size) {
     nglTexture* v2 = (nglTexture*)tlMemAlloc(0x2Cu, 8u, 0x1000000);
     memset(v2, 0, 0x2Cu);
     D3DXCreateTextureFromFileInMemoryEx(nglDev, Data, Size, 0xFFFFFFFF, 0xFFFFFFFF,
