@@ -424,7 +424,7 @@ bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine
 
 bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	PORTED	[bdConnection] bdConnectionListener.cpp: connection listener (5 funcs) from Demonware 2.0 + IDA
 
-render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: Toggle/Init; Setup+Render deferred)
+render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: release-enabled default preserved; Setup+Render remain deferred pending verified shader microcode)
 
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	PORTED	cdGlassShader.h/.cpp (glass shader: Init/Toggle/Register/AddNode; Render deferred)
 
