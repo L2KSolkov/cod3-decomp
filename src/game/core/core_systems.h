@@ -1228,9 +1228,11 @@ struct AssetBankSet {
 };
 static_assert(sizeof(AssetBankSet) == 0x4, "AssetBankSet size mismatch");
 
-struct CtrlIcon {
-    static void CreateInst();  // ?CreateInst@CtrlIcon@@SAXXZ (core.o)
+class CtrlIcon {
+public:
+    static CtrlIcon* CreateInst();  // ?CreateInst@CtrlIcon@@SAPAV1@XZ (core.o)
     static void DeleteInst();  // ?DeleteInst@CtrlIcon@@SAXXZ (core.o)
+    static CtrlIcon* sInst;  // ?sInst@CtrlIcon@@2PAV1@A
     char mScratchBuffer[2048];  // +0x00
     bool ContainsIconTag(const char* text);
     const char* TranslateIconTag(const char* text);  // ea: 0x004BD730

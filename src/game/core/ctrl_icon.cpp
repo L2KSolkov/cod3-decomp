@@ -8,6 +8,38 @@
 #include <string.h>
 
 extern const char defaultFileName[];
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file,
+                                 int line);
+
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+// ea: 0x004E2900
+CtrlIcon* CtrlIcon::CreateInst()
+{
+    if (CtrlIcon::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ctrlicon.h";
+        AeAssert::gCurrentLine = 42;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    CtrlIcon::sInst = static_cast<CtrlIcon*>(
+        mem_heap_malloc_ctx(0x800u, 1, "ui",
+                            "c:\\cod\\code\\game\\ctrlicon.h", 42));
+    return CtrlIcon::sInst;
+}
 
 char* g_ctrlIconInfo[20][2] = {
     {"BUTTON_1", "XBOX_B01"},

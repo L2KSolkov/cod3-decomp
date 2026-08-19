@@ -166,9 +166,6 @@ extern ConfigStringManager* sInst;     // 0x012F039C
 namespace STBManagerStatics {
 extern void* sInst;                    // 0x012F03A0 (STBManager*)
 }
-namespace CtrlIconStatics {
-extern void* sInst;                    // 0x012F03A8 (CtrlIcon*)
-}
 namespace AnimHeapStatics {
 extern AnimHeap* sInst;                // 0x012F0398
 }
