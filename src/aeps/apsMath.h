@@ -51,6 +51,9 @@ static_assert(sizeof(apsQuaternion) == 16, "apsQuaternion size mismatch");
 
 namespace apsMath {
 
+// apsMath.o @ 0x8135B0 (?ACos@apsMath@@YAMM@Z)
+float ACos(float x);
+
 // apsSuppliedActions.o: bit-preserving float-to-unsigned conversion.
 unsigned int FloatAsInt(float f);
 
