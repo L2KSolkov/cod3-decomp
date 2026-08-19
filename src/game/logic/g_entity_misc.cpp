@@ -2513,7 +2513,6 @@ void** InplaceTree_Find_GdbFileRecords(void* tree, const char* const* key)
     return nullptr;
 }
 
-struct fe_manager_view;
 void* FEManager_GetDMS(void* self, int client)
 {
     (void)self; (void)client;
@@ -2534,27 +2533,12 @@ void* FEManager_GetIGMS(void* self, int client)
     (void)self; (void)client;
     return nullptr;
 }
-void FEManager_DrawAARMenus(fe_manager_view* self) { (void)self; }
 void FEManager_DrawControllerError(void* self) { (void)self; }
-void FEManager_DrawFrontEnd(fe_manager_view* self) { (void)self; }
 void FEManager_DrawIGO(void* self, int a) { (void)self; (void)a; }
-void FEManager_DrawInGameMenus(fe_manager_view* self) { (void)self; }
 void FEManager_InitDialogMenuSystem(void* self) { (void)self; }
 void FEManager_InitIGO(void* self) { (void)self; }
 void FEManager_LoadInGameMenus(void* self) { (void)self; }
 void FEManager_PlayFadeInOranScreen() {}
-void FEManager_UpdateAARMenus(fe_manager_view* self, float a)
-{
-    (void)self; (void)a;
-}
-void FEManager_UpdateFrontEnd(fe_manager_view* self, float a)
-{
-    (void)self; (void)a;
-}
-void FEManager_UpdateInGameMenus(fe_manager_view* self, float a)
-{
-    (void)self; (void)a;
-}
 void FEManager_UpdateLoadingMenu(void* self, float a) { (void)self; (void)a; }
 void FEManager_UpdateSplitScreen(void* self) { (void)self; }
 void g_femanager_IGO_Update(int a) { (void)a; }

@@ -15,6 +15,67 @@
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
 
+struct fe_menusys_view {
+    uint8_t _pad[0x2A];
+    bool is_active;
+    uint8_t _pad2B;
+
+    bool IsSystemActive() const { return is_active; }
+};
+
+struct IGOFrontEnd {
+    virtual void Update(float time_inc);
+};
+
+class InGameMenuSystem {
+public:
+    virtual void ReturnToPreviousMenu(int fallback);
+    bool IsSystemActive() const
+    {
+        return *reinterpret_cast<const bool*>(
+            reinterpret_cast<const unsigned char*>(this) + 0x2A);
+    }
+};
+class DialogMenuSystem {
+public:
+    virtual void MakeActive(int menu);
+};
+
+struct FEManager {
+    uint8_t _pad00[0x14];
+    IGOFrontEnd* IGO;                  // +0x14
+    void* ControllerDisconnected;      // +0x18
+    fe_menusys_view* fems;             // +0x1C
+    uint8_t _pad20[0x13];
+    bool skipFE;                       // +0x33
+    bool enablePause;                  // +0x34
+    bool IGO_active;                   // +0x35
+    bool inGame;                       // +0x36
+    bool menuMovieRunning;             // +0x37
+    bool legalMoviesFinished;          // +0x38
+    bool skipAllLegalMovies;           // +0x39
+    bool skipAllMovies;                // +0x3A
+    bool renderMovieOnly;              // +0x3B
+    bool mDontDrawHud;                 // +0x3C
+    char loadLevel[128];               // +0x3D
+    uint8_t _padBD[3];
+    float saveTime;                    // +0xC0
+    DialogMenuSystem* mDMS[1];         // +0xC4
+    InGameMenuSystem* mIGMS[1];        // +0xC8
+    fe_menusys_view* mAARS;            // +0xCC
+
+    void LoadFrontEnd();
+    void UpdateFrontEnd(float time_inc);
+    void UpdateAARMenus(float time_inc);
+    void UpdateInGameMenus(float time_inc);
+    void DrawFrontEnd();
+    void DrawAARMenus();
+    void DrawInGameMenus();
+    InGameMenuSystem* GetIGMS(int client);
+    DialogMenuSystem* GetDMS(int client);
+};
+extern FEManager g_femanager;
+
 
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
@@ -101,41 +162,6 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-// FEManager front-end view (shell.o owns the real class).  The fields below
-// match the IDA layout used by CL_InitUI: fems +0x1C, skipFE +0x33, inGame
-// +0x36.
-struct fe_menusys_view {
-    uint8_t _pad[0x2A];
-    bool is_active;
-    uint8_t _pad2B;
-
-    bool IsSystemActive() const { return is_active; }
-};
-
-class InGameMenuSystem {
-public:
-    virtual void ReturnToPreviousMenu(int fallback);
-};
-class DialogMenuSystem {
-public:
-    virtual void MakeActive(int menu);
-};
-struct FEManager {
-public:
-    uint8_t _pad00[0x1C];
-    fe_menusys_view* fems;
-    uint8_t _pad20[0x13];
-    bool skipFE;
-    bool enablePause;
-    bool IGO_active;
-    bool inGame;
-
-    void LoadFrontEnd();
-    InGameMenuSystem* GetIGMS(int client);
-    DialogMenuSystem* GetDMS(int client);
-};
-extern FEManager g_femanager;
-
 struct PakInfoNode {
     uint8_t _pad00[0xB4];
     TPakId pakId;
@@ -164,22 +190,6 @@ protected:
     friend class PauseMenu;
 };
 
-struct fe_manager_view {
-    void* IGO;
-    fe_menusys_view* fems;
-    char loadLevel[128];
-    bool IGO_active;
-    fe_menusys_view** mIGMS;
-    fe_menusys_view* mAARS;
-};
-fe_manager_view g_femanager_fe;  // ?g_femanager_fe (game.o)
-extern void FEManager_DrawInGameMenus(fe_manager_view* self);
-extern void FEManager_DrawFrontEnd(fe_manager_view* self);
-extern void FEManager_DrawAARMenus(fe_manager_view* self);
-extern void FEManager_UpdateFrontEnd(fe_manager_view* self, float time_inc);
-extern void FEManager_UpdateAARMenus(fe_manager_view* self, float time_inc);
-extern void FEManager_UpdateInGameMenus(fe_manager_view* self, float time_inc);
-
 // PauseMenu (cl.o; menus live on the InGameMenuSystem at +0x04)
 class PauseMenu : public FEMenu {
 public:
@@ -188,12 +198,10 @@ public:
     static PauseMenu* Me(int version);  // ?Me@PauseMenu@@SAPAV1@H@Z (cl.o 0x928DB0)
     void UnPause();
 };
-extern void* FEManager_GetIGMS(void* self, int client);  // g_entity_misc.cpp
-
 // ea: 0x928DB0
 PauseMenu* PauseMenu::Me(int version)
 {
-    void* igms = FEManager_GetIGMS(&g_femanager_fe, version);
+    InGameMenuSystem* igms = g_femanager.GetIGMS(version);
     void** menus = *(void***)((char*)igms + 4);  // InGameMenuSystem::menus
     return (PauseMenu*)menus[0];
 }
@@ -383,8 +391,8 @@ void SCR_DrawScreenField()
         int v0 = currCl;
         if (currCl != lFirstLocalClientIndex)
         {
-            if (g_femanager_fe.mAARS != nullptr
-                && g_femanager_fe.mAARS->IsSystemActive())
+            if (g_femanager.mAARS != nullptr
+                && g_femanager.mAARS->IsSystemActive())
                 return;
             v0 = currCl;
         }
@@ -392,16 +400,15 @@ void SCR_DrawScreenField()
         {
             if (cls.state == 1)  // CA_LOADING
             {
-                if (g_femanager_fe.mIGMS != nullptr
-                    && g_femanager_fe.mIGMS[v0] != nullptr
-                    && g_femanager_fe.mIGMS[v0]->IsSystemActive())
+                if (g_femanager.mIGMS[v0] != nullptr
+                    && g_femanager.mIGMS[v0]->IsSystemActive())
                 {
-                    FEManager_DrawInGameMenus(&g_femanager_fe);
+                    g_femanager.DrawInGameMenus();
                 }
-                if (g_femanager_fe.fems != nullptr
-                    && g_femanager_fe.fems->IsSystemActive())
+                if (g_femanager.fems != nullptr
+                    && g_femanager.fems->IsSystemActive())
                 {
-                    FEManager_DrawFrontEnd(&g_femanager_fe);
+                    g_femanager.DrawFrontEnd();
                 }
             }
             else if (cls.state == 2)  // CA_ACTIVE
@@ -432,24 +439,23 @@ void SCR_DrawScreenField()
             SoundDevice_UndampenAllSounds(SoundDevice::sInst);
             Cvar_Set("g_reloading", "0");
         }
-        if (g_femanager_fe.mAARS != nullptr
-            && g_femanager_fe.mAARS->IsSystemActive())
+        if (g_femanager.mAARS != nullptr
+            && g_femanager.mAARS->IsSystemActive())
         {
-            FEManager_DrawAARMenus(&g_femanager_fe);
+            g_femanager.DrawAARMenus();
         }
         else
         {
-            if (g_femanager_fe.mIGMS != nullptr
-                && g_femanager_fe.mIGMS[currCl] != nullptr
-                && g_femanager_fe.mIGMS[currCl]->IsSystemActive())
+            if (g_femanager.mIGMS[currCl] != nullptr
+                && g_femanager.mIGMS[currCl]->IsSystemActive())
             {
-                FEManager_DrawInGameMenus(&g_femanager_fe);
+                g_femanager.DrawInGameMenus();
             }
         }
-        if (g_femanager_fe.fems != nullptr
-            && g_femanager_fe.fems->IsSystemActive())
+        if (g_femanager.fems != nullptr
+            && g_femanager.fems->IsSystemActive())
         {
-            FEManager_DrawFrontEnd(&g_femanager_fe);
+            g_femanager.DrawFrontEnd();
         }
         Con_DrawConsole();
     }
@@ -481,39 +487,37 @@ void SCR_UpdateScreen(float screen_time_inc)
             if (currCl == lLastLocalClientIndex || cls.state != 2)
                 re.EndFrame(&time_frontend, &time_backend);
         }
-        if (g_femanager_fe.loadLevel[0] != 0)
+        if (g_femanager.loadLevel[0] != 0)
         {
             char tmpstr[128];
-            sprintf(tmpstr, "spmap %s", g_femanager_fe.loadLevel);
-            g_femanager_fe.loadLevel[0] = 0;
+            sprintf(tmpstr, "spmap %s", g_femanager.loadLevel);
+            g_femanager.loadLevel[0] = 0;
             Cmd_ExecuteServerString(tmpstr);
         }
-        if (g_femanager_fe.fems != nullptr
-            && g_femanager_fe.fems->IsSystemActive())
+        if (g_femanager.fems != nullptr
+            && g_femanager.fems->IsSystemActive())
         {
             if (lLastLocalClientIndex == currCl)
-                FEManager_UpdateFrontEnd(&g_femanager_fe, screen_time_inc);
+                g_femanager.UpdateFrontEnd(screen_time_inc);
             return;
         }
-        if (g_femanager_fe.mAARS != nullptr
-            && g_femanager_fe.mAARS->IsSystemActive())
+        if (g_femanager.mAARS != nullptr
+            && g_femanager.mAARS->IsSystemActive())
         {
-            FEManager_UpdateAARMenus(&g_femanager_fe, screen_time_inc);
+            g_femanager.UpdateAARMenus(screen_time_inc);
         }
         else
         {
-            if (g_femanager_fe.mIGMS != nullptr
-                && g_femanager_fe.mIGMS[currCl] != nullptr
-                && g_femanager_fe.mIGMS[currCl]->IsSystemActive())
+            if (g_femanager.mIGMS[currCl] != nullptr
+                && g_femanager.mIGMS[currCl]->IsSystemActive())
             {
-                FEManager_UpdateInGameMenus(&g_femanager_fe, screen_time_inc);
+                g_femanager.UpdateInGameMenus(screen_time_inc);
             }
             else
             {
-                if (g_femanager_fe.IGO_active && g_femanager_fe.IGO != nullptr)
+                if (g_femanager.IGO_active && g_femanager.IGO != nullptr)
                 {
-                    extern void IGO_Update(void* self, float time_inc);
-                    IGO_Update(g_femanager_fe.IGO, screen_time_inc);
+                    g_femanager.IGO->Update(screen_time_inc);
                 }
             }
         }
