@@ -4380,6 +4380,51 @@ void          nslDriverCalculateRolloff(float* dest, float value,
     if (dest != nullptr)
         *dest = result;
 }
+
+// ea: 0x00824860
+static void nslDriverSetMixBins(const nslDriverVoice* dv, int fx) {
+    const nslVoice* lv = dv->lv;
+    const bool useEffects = fx != 0;
+    const unsigned char speakerMap =
+        reinterpret_cast<const unsigned char*>(lv)[0x10Du];
+    unsigned char channelCount;
+    if (speakerMap != 0u) {
+        const unsigned char folded = static_cast<unsigned char>(
+            (((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) & 0x33u) +
+            (((((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) >> 2) &
+              0x33u)));
+        channelCount = static_cast<unsigned char>(
+            (folded >> 4) + (folded & 0x0Fu));
+    } else {
+        channelCount = 1u;
+    }
+
+    const unsigned char* lvRaw = reinterpret_cast<const unsigned char*>(lv);
+    const bool streaming = (lvRaw[0x10Bu] & 1u) != 0u;
+    const _DSMIXBINS* mixBins = &nsl_driverMixBin3D[useEffects ? 1 : 0];
+    if ((lvRaw[0x10Cu] & 1u) == 0u)
+        mixBins = &nsl_driverMixBinMono[useEffects ? 1 : 0];
+    if (channelCount == 1u) {
+        if (streaming) {
+            const HRESULT code = j_IDirectSoundStream_SetMixBins(
+                dv->stream, mixBins);
+            nslDriverCheck(code, "NSL",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 253);
+        } else {
+            const HRESULT code = j_IDirectSoundBuffer_SetMixBins(
+                dv->buffer, mixBins);
+            nslDriverCheck(code, "NSL",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 261);
+        }
+    } else if (streaming) {
+        txPrintf("NSL", 0,
+                 "Unsupported channelCount/speakerMap combo for the streaming sound\n");
+    } else {
+        txPrintf("NSL", 0,
+                 "Unsupported channelCount/speakerMap combo for the non-streaming sound\n");
+    }
+}
+
 // ea: 0x00825010
 void          nslDriverExit() {}
 // ea: 0x00825020
