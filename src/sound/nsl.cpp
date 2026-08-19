@@ -200,6 +200,15 @@ struct PACKET_CONTEXT {
     PACKET_OWNER poPacketOwner;
     unsigned dwPacketSize;
 };
+struct XMEDIAPACKET {
+    void* pvBuffer;
+    unsigned dwMaxSize;
+    unsigned* pdwCompletedSize;
+    unsigned* pdwStatus;
+    unsigned reserved;
+    std::int64_t* prtTimestamp;
+};
+static_assert(sizeof(XMEDIAPACKET) == 24, "IDA XMEDIAPACKET layout");
 struct nslVoice;
 struct nslDriverVoice {
     void* buffer;
@@ -218,6 +227,7 @@ struct nslDriverVoice {
     float rolloffCurve[16];
 
     int FindFreePacket(int* packetIndexPtr);
+    long ProcessSource(int packetIndex);
 };
 static_assert(sizeof(PACKET_CONTEXT) == 12, "IDA PACKET_CONTEXT layout");
 static_assert(sizeof(nslDriverVoice) == 172, "IDA nslDriverVoice layout");
@@ -438,6 +448,8 @@ static unsigned char ignoreAssert_0 = 0;
 static unsigned char ignoreAssert_1 = 0;
 static unsigned char ignoreAssert_2 = 0;
 static unsigned char ignoreAssert_3 = 0;
+static unsigned char ignoreAssert_9 = 0;
+static unsigned char ignoreAssert_10 = 0;
 static unsigned char ignoreAssert_14 = 0;
 int nsl_random_play = 0;
 nslWave* wave = nullptr;
@@ -4258,6 +4270,50 @@ int           nslDriverVoice::FindFreePacket(int* packetIndexPtr) {
 
     *packetIndexPtr = lastPacketIndex;
     return 1;
+}
+// ea: 0x00825270
+long          nslDriverVoice::ProcessSource(int packetIndex) {
+    const unsigned bufferSizeValue = bufferSize;
+    const unsigned streamBytesRemaining = m_dwStreamBytesRemaining;
+    XMEDIAPACKET packet{};
+    packet.pvBuffer = static_cast<unsigned char*>(m_pvSourceBuffer) +
+        static_cast<unsigned>(packetIndex) * bufferSizeValue;
+    packet.dwMaxSize = bufferSizeValue;
+    if (streamBytesRemaining < bufferSizeValue) {
+        m_aContexts[packetIndex].dwPacketSize = streamBytesRemaining;
+        packet.dwMaxSize = (streamBytesRemaining + 4095u) >> 12 << 12;
+        if (packet.dwMaxSize == 0) {
+            txAssertFailed(&ignoreAssert_10, "xmp.dwMaxSize > 0",
+                           "nslDriverVoice::ProcessSource",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp",
+                           1041);
+        }
+    }
+
+    m_aContexts[packetIndex].poPacketOwner = PACKET_OWNER_SOURCE;
+    PACKET_OWNER* packetOwner =
+        const_cast<PACKET_OWNER*>(&m_aContexts[packetIndex].poPacketOwner);
+    using ProcessFn = long (__stdcall *)(void*, const XMEDIAPACKET*, XMEDIAPACKET*);
+    void** vtable = *reinterpret_cast<void***>(m_pSourceXMO);
+    const long result = reinterpret_cast<ProcessFn>(vtable[4])(
+        m_pSourceXMO, nullptr, &packet);
+    if (m_dwStreamBytesRemaining < m_aContexts[packetIndex].dwPacketSize) {
+        txAssertFailed(&ignoreAssert_9,
+                       "m_dwStreamBytesRemaining >= m_aContexts[packetIndex].dwPacketSize",
+                       "nslDriverVoice::ProcessSource",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp",
+                       1047);
+    }
+
+    const unsigned packetSize = m_aContexts[packetIndex].dwPacketSize;
+    m_dwStreamBytesRemaining -= packetSize;
+    if (m_dwStreamBytesRemaining == 0) {
+        m_nLastPacketIndex = packetIndex;
+    } else if (result < 0 && result != static_cast<int>(0x8000000Au)) {
+        *packetOwner = PACKET_OWNER_DEST;
+        m_aContexts[packetIndex].dwPacketSize = bufferSize;
+    }
+    return 0;
 }
 // ea: 0x00824EF0
 unsigned char nslDriverGetVoiceType(const nslWave* wave) {
