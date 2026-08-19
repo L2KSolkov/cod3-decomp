@@ -40,7 +40,6 @@ public:
     AnimBank* GetBank(TPakId pak_id);  // ?GetBank@AnimBankManager@@QAEPAUAnimBank@@W4TPakId@@@Z
 };
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
-class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 
 void DestructibleBankManager::CreateInst() {}
@@ -73,8 +72,6 @@ void AnimBankManager_UnloadAll()
 {
     // stub
 }
-void BinFileManager::CreateInst() {}
-void BinFileManager::DeleteInst() {}
 void DynamicDecalMgr::CreateInst() {}
 void DynamicDecalMgr::DeleteInst() {}
 

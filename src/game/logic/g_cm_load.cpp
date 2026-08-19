@@ -1173,6 +1173,7 @@ extern void FS_FCloseFile(int f);  // core.o
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file,
                                  int line);  // core.o
+extern void mem_heap_free(void* ptr);  // core.o
 char* com_lumpBuf;  // ?com_lumpBuf@@3PADA (game.o)
 extern cvar_t* cm_noCurves;        // ?cm_noCurves@@3PAUcvar_t@@A
 extern cvar_t* cm_playerCurveClip; // ?cm_playerCurveClip@@3PAUcvar_t@@A
@@ -1245,27 +1246,81 @@ int CM_LoadLump(int lumpnum, char** pBuf)
 // ============================================================================
 extern "C" unsigned int AeHash(const char* str);  // core.o
 
-struct BinFileEntry {
-    unsigned int mHash;    // +0x00
-    TPakId       mPakId;   // +0x04
-    unsigned char* mData;  // +0x08
-};
-
 class BinFileManager {
 private:
     BinFileManager();        // ??0BinFileManager@@AAE@XZ
     ~BinFileManager();       // ??1BinFileManager@@AAE@XZ
 public:
-    int mTotalFiles;         // +0x00
-    BinFileEntry mArray[256];  // +0x04
+    struct DataElem {
+        unsigned int mHash;    // +0x00
+        TPakId mPakId;         // +0x04
+        unsigned char* mData;  // +0x08
+    };
+    DataElem mArray[50];       // +0x00
+    unsigned int mTotalFiles;  // +0x258
     static BinFileManager* sInst;  // ?sInst@BinFileManager@@2PAV1@A
 
+    static BinFileManager* CreateInst();  // ?CreateInst@BinFileManager@@SAPAV1@XZ
+    static void DeleteInst();             // ?DeleteInst@BinFileManager@@SAXXZ
     void Clear();            // ?Clear@BinFileManager@@QAEXXZ
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);  // ?DecodeBank@BinFileManager@@QAEXPBDPAEHW4TPakId@@@Z
     unsigned char* Find(const char* name);  // ?Find@BinFileManager@@QAEPAEPBD@Z
 };
+static_assert(sizeof(BinFileManager::DataElem) == 0x0C,
+              "BinFileManager::DataElem size mismatch");
+static_assert(sizeof(BinFileManager) == 0x25C,
+              "BinFileManager size mismatch");
 BinFileManager* BinFileManager::sInst = nullptr;
+
+// ea: 0x004DEB70
+BinFileManager* BinFileManager::CreateInst()
+{
+    if (BinFileManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\BinFileManager.h";
+        AeAssert::gCurrentLine = 30;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x25Cu, 4, "core", "c:\\cod\\code\\game\\BinFileManager.h", 30);
+    if (memory != nullptr)
+    {
+        BinFileManager* result = new (memory) BinFileManager();
+        BinFileManager::sInst = result;
+        return result;
+    }
+    BinFileManager::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004E2F50
+void BinFileManager::DeleteInst()
+{
+    if (BinFileManager::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\BinFileManager.h";
+        AeAssert::gCurrentLine = 30;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    BinFileManager* instance = BinFileManager::sInst;
+    if (instance != nullptr)
+    {
+        instance->~BinFileManager();
+        mem_heap_free(instance);
+    }
+    BinFileManager::sInst = nullptr;
+}
 
 // C-style bridge for cross-TU callers (g_cmd / g_scr_vehicle)
 unsigned char* BinFileManager_Find(void* self, const char* name)
@@ -1314,7 +1369,7 @@ void BinFileManager::DecodeBank(const char* name, unsigned char* data,
 unsigned char* BinFileManager::Find(const char* name)
 {
     unsigned int nameHash = AeHash(name);
-    int v3 = 0;
+    unsigned int v3 = 0;
     if (this->mTotalFiles == 0)
         return nullptr;
     while (this->mArray[v3].mHash != nameHash
