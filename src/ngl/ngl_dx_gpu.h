@@ -139,8 +139,8 @@ struct nglMeshLOD {
 static_assert(sizeof(nglMeshLOD) == 8, "nglMeshLOD size mismatch");
 
 struct nglMeshSectionTableEntry {
-    nglMeshSection* Section;   // +0x00
-    unsigned int    Flags;     // +0x04
+    unsigned int    Flags;     // +0x00
+    nglMeshSection* Section;   // +0x04
 };
 
 struct nglMesh {
