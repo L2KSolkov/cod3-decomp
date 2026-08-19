@@ -591,6 +591,25 @@ ConfigStringManager::~ConfigStringManager()
     AssetBankSet_dtor(this);
 }
 
+// ea: 0x004DD290
+void ConfigStringManager::DeleteInst()
+{
+    if (sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ConfigStringManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+
+    if (sInst != nullptr)
+        delete sInst;
+    sInst = nullptr;
+}
+
 // ea: 0x004C5CE0
 STBManager::STBManager()
 {
