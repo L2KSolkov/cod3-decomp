@@ -58,8 +58,6 @@ void DbTablesetMgr::CreateInst() {}
 void DbTablesetMgr::DeleteInst() {}
 void EffectEventSys::CreateInst() {}
 void EffectEventSys::DeleteInst() {}
-void GdbFileManager::CreateInst() {}
-void GdbFileManager::DeleteInst() {}
 void DialogueManager::CreateInst() {}
 void DialogueManager::DeleteInst() {}
 void MultiplayerMgr::DeleteInst() {}

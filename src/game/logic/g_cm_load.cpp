@@ -8801,6 +8801,8 @@ private:
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
     virtual ~GdbFileManager();  // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
 public:
+    static void CreateInst();  // ?CreateInst@GdbFileManager@@SAXXZ (core.o 0x4DDC20)
+    static void DeleteInst();  // ?DeleteInst@GdbFileManager@@SAXXZ (core.o 0x4DDD20)
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
     GdbFile GetGdbFile(TPakId pakId, const char* name, const char* type);
@@ -8808,6 +8810,45 @@ public:
     static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
 };
 GdbFileManager* GdbFileManager::sInst = nullptr;
+
+// ea: 0x004DDC20
+void GdbFileManager::CreateInst()
+{
+    if (GdbFileManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\GdbManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "core", "c:\\cod\\code\\game\\GdbManager.h", 19);
+    if (memory != nullptr)
+        GdbFileManager::sInst = new (memory) GdbFileManager();
+    else
+        GdbFileManager::sInst = nullptr;
+}
+
+// ea: 0x004DDD20
+void GdbFileManager::DeleteInst()
+{
+    if (GdbFileManager::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\GdbManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (GdbFileManager::sInst != nullptr)
+        delete GdbFileManager::sInst;
+    GdbFileManager::sInst = nullptr;
+}
 
 // ea: 0x00622C00
 DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle)
