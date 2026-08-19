@@ -27,6 +27,9 @@ bool Error(const char* fmt, ...);
 }
 
 extern void tlFinalPrint(const char* text);
+extern void nglDebugAddBox(const math::Mat43& mat,
+                           const math::DiagMat33& size,
+                           unsigned int color);
 
 // IDA global: g_bAnimCheck (scr.o)
 int g_bAnimCheck = 0;
@@ -1618,7 +1621,8 @@ void DebugRender::RenderLineBox(const math::Mat43& LToW,
                                 const math::DiagMat33& size,
                                 const Color& color)
 {
-    (void)LToW; (void)size; (void)color;
+    Color32 color32 = color.to_color32();
+    nglDebugAddBox(LToW, size, color32.i);
 }
 void DebugRender::RenderText(const char* text, int x, int y,
                              const Color& color, float scaleX, float scaleY)
