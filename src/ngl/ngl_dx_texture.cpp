@@ -136,10 +136,10 @@ void ngliGenMipmaps(nglTexture* Tex) {
     if (NMipmaps <= 1)
         return;
 
-    if ((Tex->Flags & 0x10) == 0 && !_tlAssert("src/dx/ngl_dx_texture.cpp", 416,
+    if ((Tex->Flags & 0x10) == 0 && _tlAssert("src/dx/ngl_dx_texture.cpp", 416,
             "Tex->Flags & NGLTEX_RENDER_TARGET",
             "NGL: Cannot generate mipmap for non-render-target texture."))
-        return;
+        __debugbreak();
     if ((Tex->Width == 0 || ((Tex->Width - 1) & Tex->Width) != 0 ||
          Tex->Height == 0 || ((Tex->Height - 1) & Tex->Height) != 0) &&
         _tlAssert("src/dx/ngl_dx_texture.cpp", 417,
