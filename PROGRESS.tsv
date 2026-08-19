@@ -286,7 +286,7 @@ render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	PORTED	
 
 render_xboxr:cdDebugShader.o	render_xboxr	cdDebugShader.o	engine	7	PORTED	cdDebugShader.h/.cpp (debug shader: mat ctor/Init/Toggle/Register/AddNode/GetSortInfo; Render deferred)
 
-render_xboxr:cdSimpleUVAnimShader.o	render_xboxr	cdSimpleUVAnimShader.o	engine	7	PORTED	cdSimpleUVAnimShader.h/.cpp (UV anim shader: mat ctor/Init/Toggle/Register/AddNode/SetTextureMatrix; Render deferred)
+render_xboxr:cdSimpleUVAnimShader.o	render_xboxr	cdSimpleUVAnimShader.o	engine	7	PORTED	cdSimpleUVAnimShader.h/.cpp (UV anim shader: mat ctor/Init/Toggle/Register/AddNode/SetTextureMatrix/Render)
 
 render_xboxr:cdWheelMarkShader.o	render_xboxr	cdWheelMarkShader.o	engine	7	PORTED	cdWheelMarkShader.h/.cpp (wheel mark shader: mat ctor/Init/Toggle(empty)/VertexDefBuilder/Register/AddNode; Render deferred)
 

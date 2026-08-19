@@ -8,12 +8,37 @@
 //   cdSimpleUVAnimShader::Register @0x7C6E70
 //   cdSimpleUVAnimShader::AddNode @0x7C6ED0
 //   cdSimpleUVAnimShaderNode::SetTextureMatrix @0x7C6F40
+//   cdSimpleUVAnimShaderNode::Render @0x7C70E0
 // ============================================================================
 #include "cdSimpleUVAnimShader.h"
 
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+#include "ngl/ngl_lighting.h"
+
 #include <intrin.h>
+#include <cstring>
 
 extern unsigned int TextureMatrixParamID;  // ?TextureMatrixParamID@@3IA
+extern unsigned int isRotatingTextureParamID;  // ?isRotatingTextureParamID@@3IA
+
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_BC2CFC;
+extern unsigned int dword_BC2CF8;
+extern unsigned int dword_BC2D00;
+extern unsigned int dword_BC2D04;
+extern unsigned int dword_BC2D80;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int D3D__TextureState[4][32];
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
+extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
 // Shader global pointer definitions
 cdSimpleUVAnimShader* gCDSimpleUVAnimShader = nullptr;  // ?gCDSimpleUVAnimShader@@3PAVcdSimpleUVAnimShader@@A
@@ -174,4 +199,131 @@ void cdSimpleUVAnimShaderNode::SetTextureMatrix(math::Mat44& matOut) {
         matOut.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
         matOut.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
     }
+}
+
+// ============================================================================
+// cdSimpleUVAnimShaderNode::Render — configure the UV animation shader and
+// draw its mesh section.
+// ea: 0x7C70E0
+// ============================================================================
+void cdSimpleUVAnimShaderNode::Render() {
+    const unsigned int cullMode = this->mMaterial->mCullMode == 2 ? 0u : 0x900u;
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, cullMode) == 0)
+        D3DDevice_SetRenderState_CullMode(cullMode);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40304, 0);
+        dword_BC2CFC = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 1) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40300, 1);
+        dword_BC2D00 = 1;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAFUNC, 0x204) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_4033C, 0x204);
+        dword_BC2CF8 = 0x204;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAREF, 0x80) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40340, 0x80);
+        dword_BC2D04 = 0x80;
+    }
+
+    nglDxState.PrevBM = (unsigned int)-1;
+    nglDetermineLights(this->MeshNode);
+
+    // IDA's v8[3] immediately precedes the 276-byte context.  Keeping the
+    // same contiguous layout preserves the 0x44-dword constant upload.
+    alignas(16) unsigned char constants[12 + 276] = {};
+    unsigned char* context = constants + 12;
+    std::memcpy(constants, &this->MeshNode->LocalToScreen, sizeof(math::Mat44));
+    nglGetDirLightMatrix(this->MeshNode,
+                         reinterpret_cast<math::Mat44*>(context + 52),
+                         reinterpret_cast<math::Mat44*>(context + 116));
+    this->SetTextureMatrix(*reinterpret_cast<math::Mat44*>(context + 180));
+    *reinterpret_cast<unsigned int*>(context + 240) = 1065353216u;
+    D3DDevice_SetVertexShaderConstantNotInlineFast(
+        6, reinterpret_cast<unsigned int*>(constants), 0x44u);
+
+    nglDxSetTexture(0, this->mMaterial->mTexture, 1u, 3u);
+
+    const unsigned int rotatingId = isRotatingTextureParamID;
+    const unsigned int* array = this->MeshNode->ShaderParams.Array;
+    int rotating;
+    if ((1u << (rotatingId & 0x1Fu)) & array[rotatingId >> 5]) {
+        rotating = array[rotatingId + 2];
+    } else {
+        const bool assertIgnored = !_tlAssert(
+            "c:\\cod\\code\\tl\\ngl\\include\\ngl_params.h", 139,
+            "IsSet( Param::GetID() )", "Parameter not set.");
+        rotating = array[rotatingId + 2];
+        if (!assertIgnored)
+            __debugbreak();
+    }
+
+    if (rotating != 0) {
+        if (nglDxTexCache.Prev[0].WrapU != 3) {
+            nglDxTexCache.Prev[0].WrapU = 3;
+            if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 3) == 0) {
+                D3D__DirtyFlags |= 1u;
+                D3D__TextureState[0][D3DTSS_ADDRESSU] = 3;
+            }
+        }
+        if (nglDxTexCache.Prev[0].WrapV != 3) {
+            nglDxTexCache.Prev[0].WrapV = 3;
+            if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 3) == 0) {
+                D3D__DirtyFlags |= 1u;
+                D3D__TextureState[0][D3DTSS_ADDRESSV] = 3;
+            }
+        }
+    } else {
+        if (nglDxTexCache.Prev[0].WrapU != 1) {
+            nglDxTexCache.Prev[0].WrapU = 1;
+            if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 1) == 0) {
+                D3D__DirtyFlags |= 1u;
+                D3D__TextureState[0][D3DTSS_ADDRESSU] = 1;
+            }
+        }
+        if (nglDxTexCache.Prev[0].WrapV != 1) {
+            nglDxTexCache.Prev[0].WrapV = 1;
+            if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 1) == 0) {
+                D3D__DirtyFlags |= 1u;
+                D3D__TextureState[0][D3DTSS_ADDRESSV] = 1;
+            }
+        }
+    }
+
+    nglDxInitShaders(false);
+    if (cdSimpleUVAnimRender::VS[0] != gpuHashVertexShader) {
+        gpuHashVertexShader = static_cast<unsigned int>(cdSimpleUVAnimRender::VS[0]);
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(
+                static_cast<uintptr_t>(cdSimpleUVAnimRender::VS[0])), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+
+    const _D3DPixelShaderDef* pixelShader =
+        reinterpret_cast<const _D3DPixelShaderDef*>(cdSimpleUVAnimFullbrightPixel::PS[0]);
+    if (ShaderCommon::GetDebugRenderMode() != ShaderCommon::kDebugRenderModeFullbright)
+        pixelShader = reinterpret_cast<const _D3DPixelShaderDef*>(cdSimpleUVAnimPixel::PS[0]);
+    if (pixelShader != reinterpret_cast<const _D3DPixelShaderDef*>(
+                       static_cast<uintptr_t>(gpuHashPixelShader))) {
+        gpuHashPixelShader = static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
+        D3DDevice_SetPixelShaderProgram(pixelShader);
+    }
+
+    nglDxSetupVShaderFog(-73, this->MeshNode, nglBuildScene->FogNear,
+                         nglBuildScene->FogFar, nglBuildScene->FogMin,
+                         nglBuildScene->FogMax);
+    const __m128 fogScaled = _mm_mul_ps(nglBuildScene->FogColor.v, _mm_set1_ps(127.0f));
+    const unsigned int c0 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[0]));
+    const unsigned int c1 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[1]));
+    const unsigned int c2 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[2]));
+    const unsigned int c3 = static_cast<unsigned int>(static_cast<int>(fogScaled.m128_f32[3]));
+    const unsigned int fogColor = c3 | (c2 << 8) | (c1 << 16) | (c0 << 24);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR, fogColor) == 0)
+        D3DDevice_SetRenderState_FogColor(fogColor);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 1;
+    }
+    nglGpuDrawSection(this->Section);
 }
