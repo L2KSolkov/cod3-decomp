@@ -94,9 +94,10 @@ void nglStringNode::Render() {
                 float y = v10->y;
                 unsigned int PBArraySize = (96 * v10->Length) >> 2;
                 if (PBArraySize > 0x7FF) {
-                    _tlAssert("src/dx/ngl_dx_font.cpp", 99,
-                              "PBArraySize <= D3DPUSH_MAX_COUNT",
-                              "Push buffer INLINE_ARRAY overflow ! (too many chars per string)");
+                    if (_tlAssert("src/dx/ngl_dx_font.cpp", 99,
+                                  "PBArraySize <= D3DPUSH_MAX_COUNT",
+                                  "Push buffer INLINE_ARRAY overflow ! (too many chars per string)"))
+                        __debugbreak();
                 }
                 v9[0] = (PBArraySize << 18) + 1073747992;
                 ++v9;
