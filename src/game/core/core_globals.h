@@ -27,7 +27,7 @@ enum ELanguage {
     kLanguageJapanese = 5,
     kLanguageUnlocalized = 6,
 };
-struct ae_heap;
+class ae_heap;
 
 // ============================================================================
 // Math / misc

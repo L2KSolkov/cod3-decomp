@@ -750,6 +750,8 @@ public:
 
 // FEMenu base (0x4C) - minimal view; members/virtuals used by mp.o overrides
 class FEMenuEntry;  // full minimal view below
+class FEDoubleEntry;
+class FEMenuListBox;
 class FEMenu {
 public:
     FEMenuEntry** entries;              // +0x04
@@ -770,23 +772,81 @@ public:
     FEMultiLineText* helpbar3;          // +0x44
     PanelFile*    panel;                // +0x48
 
-    virtual void SetPanelFile(PanelFile* pf);  // slot 0 shell.o 0x5AEA10
-    virtual void PanelFileUnloaded(PanelFile* pf);  // slot 1 shell.o 0x5B7570
-    virtual void UpdateWidescreen(bool widescreen); // slot 2 shell.o 0x57DF20
-    virtual ~FEMenu();                               // slot 3 shell.o 0x592150
-    virtual void Draw();                             // slot 20 shell.o (?Draw@FEMenu@@UAEXXZ)
-    virtual void Update(float time_inc);             // slot 23 shell.o (?Update@FEMenu@@UAEXM@Z)
-    virtual void OnActivate();                       // slot 28 shell.o 0x570750
-    virtual void OnUp(int c);                        // slot 32 shell.o 0x5AE910
-    virtual void OnDown(int c);                      // slot 33 shell.o 0x5AE920
-    virtual void OnTriangle(int c);                  // slot 46 shell.o
-    virtual void OnLeft(int c);                      // slot 34 shell.o 0x5AF820
-    virtual void OnRight(int c);                     // slot 35 shell.o 0x5AF830
-    virtual void SetHigh(int index, bool anim);      // slot 48 shell.o 0x171C70
-    void Cleanup();                 // ?Cleanup@FEMenu@@QAEXXZ (shell.o)
+    virtual void SetPanelFile(PanelFile* pf);
+    virtual void PanelFileUnloaded(PanelFile* pf);
+    virtual void UpdateWidescreen(bool widescreen);
+    virtual ~FEMenu();
+    virtual void AddEntry(int index, FEText* t, bool delete_me);
+    virtual void AddEntry(int index, const char* text);
+    virtual void EnableNavigationSound(bool enable) { (void)enable; }
+    virtual void PlayNavigationSound();
+    virtual void PlayNavigationSoundWait();
+    virtual void InputLock(bool enable) { lockInput = enable; }
+    virtual class FEComboBox* AddComboBox(int index, int numOptions,
+                                          FEText* text, FEText* label,
+                                          PanelQuad* leftArrow,
+                                          PanelQuad* rightArrow);
+    virtual class FEComboBox* AddComboBox(int index, int numOptions,
+                                          FEText* text,
+                                          PanelQuad* leftArrow,
+                                          PanelQuad* rightArrow);
+    virtual class FESlider* AddSlider(int index, FEText* barText,
+                                      FEText* label);
+    virtual class FESlider* AddSlider(int index, PanelQuad* bar,
+                                      FEText* label);
+    virtual FEDoubleEntry* AddDoubleEntry(int index, FEText* barText,
+                                          FEText* label);
+    virtual FEMenuListBox* AddListBoxEntry(int index, FEText* t,
+                                           int numLines);
+    virtual void OnDeactivate(FEMenu* m) { (void)m; }
+    virtual void Init();
+    virtual void Load() { Load(false); }
+    virtual void Load(bool floating) { (void)floating; }
+    virtual void Draw();
+    virtual void Draw3D() {}
+    virtual void UpdateInScene() {}
+    virtual void Update(float time_inc);
+    virtual void HighlightDefault();
+    virtual void Select(int entry_num, int controller) { Select(entry_num); (void)controller; }
+    virtual void Select(int entry_num) { (void)entry_num; }
+    virtual void OnActivate(int prev) { (void)prev; OnActivate(); }
+    virtual void OnActivate();
+    virtual void OnSelect(int c) { (void)c; }
+    virtual void OnSquare(int c) { (void)c; }
+    virtual void OnCircle(int c) { (void)c; }
+    virtual void OnUp(int c);
+    virtual void OnDown(int c);
+    virtual void OnLeft(int c);
+    virtual void OnRight(int c);
+    virtual void OnCross(int c);
+    virtual void OnL1(int c) { (void)c; }
+    virtual void OnR1(int c) { (void)c; }
+    virtual void OnL2(int c) { (void)c; }
+    virtual void OnTrueCircle(int c) { (void)c; }
+    virtual void OnTrueTriangle(int c) { (void)c; }
+    virtual void OnStart(int c) { (void)c; }
+    virtual void OnR2(int c) { (void)c; }
+    virtual void OnAnyButtonPress(int c, int b);
+    virtual void OnButtonRelease(int c, int b);
+    virtual void OnTriangle(int c) { (void)c; }
+    virtual void UpdateSplitScreen() {}
+    virtual void SetHigh(int index, bool anim);
+    virtual void SetVis(int first);
+    virtual void SetDistanceBetweenEntries(int dbe) { (void)dbe; }
+    virtual void SetVerticalJust(bool top, bool bottom);
+    virtual void SetScaleThroughout(float sc);
+    virtual void SetZThroughout(float z, panel_layer layer);
+    virtual void SetDefaultColorScheme(char csi) { default_color_scheme = csi; }
+    virtual char GetDefaultColorScheme() { return default_color_scheme; }
+    virtual FEMenuSystem* GetSystem() { return system; }
+    virtual int GetFlags() { return flags; }
+    void Cleanup();
 protected:
-    virtual void Up();              // ?Up@FEMenu@@MAEXXZ (shell.o 0x164020)
-    virtual void Down();            // ?Down@FEMenu@@MAEXXZ (shell.o 0x163F00)
+    virtual void Up();
+    virtual void Down();
+    virtual void Left();
+    virtual void Right();
+    virtual void ButtonHeldAction();
 public:
     FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve, int flg);  // ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z (shell.o)
 };

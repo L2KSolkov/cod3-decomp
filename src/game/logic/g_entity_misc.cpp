@@ -2767,7 +2767,6 @@ void SetAnimCheck(int bAnimCheck)
 struct nglShaderParamSet;
 struct Color;
 void setup_color(const Color& c, nglShaderParamSet& p) { (void)c; (void)p; }
-void SetupActorHeap() {}
 void SetupCDHeatHazeShader() {}
 void SoundDevice_DampenAllSounds(void* self, float a) { (void)self; (void)a; }
 void SoundDevice_PauseAllSounds(void* self) { (void)self; }

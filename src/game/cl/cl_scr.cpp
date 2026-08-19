@@ -120,7 +120,7 @@ class DialogMenuSystem {
 public:
     virtual void MakeActive(int menu);
 };
-class FEManager {
+struct FEManager {
 public:
     uint8_t _pad00[0x1C];
     fe_menusys_view* fems;

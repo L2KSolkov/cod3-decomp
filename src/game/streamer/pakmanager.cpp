@@ -358,7 +358,10 @@ struct mem_heap {
     unsigned int used_byte; // +0x488
     unsigned int high_used_byte;  // +0x48C
     mem_heap* reserve;      // +0x490
+    int total_allocs;       // +0x494
+    int total_frees;        // +0x498
 };
+static_assert(sizeof(mem_heap) == 0x49C, "mem_heap size mismatch");
 
 template <typename T, int N>
 struct ae_array {
@@ -1022,15 +1025,13 @@ void ThroughputMeasurer::reset()
 }
 
 // FEManager (shell.o; DrawDiscError + UnloadBank stubs)
-class FEManager {
+struct FEManager {
 public:
     void DrawDiscError();  // ?DrawDiscError@FEManager@@QAEXXZ (shell.o; stub)
     void UnloadBank(TPakId pakId);  // ?UnloadBank@FEManager@@QAEXW4TPakId@@@Z (shell.o; stub)
     void UpdateButtonFontForLanguage();  // ?UpdateButtonFontForLanguage@FEManager@@QAEXXZ
 };
 extern FEManager g_femanager;
-// shell.o owns the real symbol; placeholder until shell.o is ported
-FEManager g_femanager;
 void FEManager::UnloadBank(TPakId pakId)
 {
     (void)pakId;
@@ -3099,23 +3100,56 @@ ae_sized_array<TPakId, 99> loaded_ids;  // ?loaded_ids@@3V?$ae_sized_array@W4TPa
 class ae_heap {
 public:
     void** __vftable;  // +0x00
+    mem_heap mHeap;     // +0x04 (IDA ae_heap::mHeap)
     ae_heap(unsigned int size);
     void* Malloc(unsigned int size, unsigned int alignment);
     void* Malloc(unsigned int size, int alignment);
     void Free(void* ptr);  // ?Free@ae_heap@@QAEXPAX@Z (core_xboxr)
+    bool CheckFree(void* ptr);
     mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ (core_xboxr)
 };
+static_assert(sizeof(ae_heap) == 0x4A0, "ae_heap size mismatch");
 extern ae_heap* gActorHeap;  // ?gActorHeap@@3PAVae_heap@@A @ 0xF00E5C
 extern void* gBrocHeap;       // ?gBrocHeap@@3PAVae_heap@@A @ 0xF3ABE0 (g_globals.cpp)
 
-// Cross-object stubs (ae_heap core_xboxr; ported with core)
+// The release vtable has the scalar-deleting destructor followed by the four
+// ae_heap virtuals.  The local class declarations in older reconstructed
+// objects are non-virtual, so this adapter supplies the verified table while
+// preserving their existing direct-call ABI.
+class ae_heap_vtable_adapter {
+public:
+    virtual ~ae_heap_vtable_adapter() {}
+    virtual void* Malloc(unsigned int size, unsigned int alignment)
+    {
+        return reinterpret_cast<ae_heap*>(this)->Malloc(size, alignment);
+    }
+    virtual void Free(void* ptr)
+    {
+        reinterpret_cast<ae_heap*>(this)->Free(ptr);
+    }
+    virtual bool CheckFree(void* ptr)
+    {
+        return reinterpret_cast<ae_heap*>(this)->CheckFree(ptr);
+    }
+    virtual mem_heap* GetHeapPointer()
+    {
+        return reinterpret_cast<ae_heap*>(this)->GetHeapPointer();
+    }
+};
+static ae_heap_vtable_adapter s_ae_heap_vtable_adapter;
+
+// ae_heap (core_xboxr; reconstructed from IDA 0x7BBE40-0x7BC00B)
 ae_heap::ae_heap(unsigned int size)
 {
-    (void)size;
+    __vftable = *reinterpret_cast<void***>(&s_ae_heap_vtable_adapter);
+    void* block = mem_heap_malloc(size);
+    mem_heap_create(&mHeap, block, static_cast<char*>(block) + size,
+                    nullptr);
 }
 void* ae_heap::Malloc(unsigned int size, unsigned int alignment)
 {
-    (void)size; (void)alignment;
+    if (size + mHeap.used_byte <= mHeap.size)
+        return mem_heap_malloc(&mHeap, static_cast<int>(alignment), size);
     return nullptr;
 }
 void* ae_heap::Malloc(unsigned int size, int alignment)
@@ -3124,13 +3158,40 @@ void* ae_heap::Malloc(unsigned int size, int alignment)
 }
 void ae_heap::Free(void* ptr)
 {
-    (void)ptr;  // stub: core_xboxr
+    mem_heap_free(&mHeap, ptr);
+}
+bool ae_heap::CheckFree(void* ptr)
+{
+    if (ptr < mHeap.start || ptr >= mHeap.end)
+        return false;
+    mem_heap_free(&mHeap, ptr);
+    return true;
 }
 mem_heap* ae_heap::GetHeapPointer()
 {
-    return nullptr;  // stub: core_xboxr
+    return &mHeap;
 }
-ae_heap* gActorHeap = nullptr;
+
+// ea: 0x4BB280 (core.o; exact IDA reconstruction)
+ae_heap* SetupActorHeap()
+{
+    ae_heap* result = gActorHeap;
+    if (gActorHeap == nullptr)
+    {
+        ae_heap* storage = (ae_heap*)mem_heap_malloc(0x4A0u);
+        if (storage != nullptr)
+        {
+            result = new (storage) ae_heap(0x8000u);
+            gActorHeap = result;
+        }
+        else
+        {
+            gActorHeap = nullptr;
+            return nullptr;
+        }
+    }
+    return result;
+}
 
 // ea: 0x8A39E0 (core.o inline)
 void PakManager::CreateInst()

@@ -156,7 +156,6 @@ int XGetLaunchInfo(unsigned int* pdwLaunchDataType,
 XboxLiveOptionsMenu::XboxLiveOptionsMenu(FEMenuSystem* s)
     : FEMenu(s, 0, 320, 240, 8, 0), m_ListBox(5, 1, 5, true)
 {
-    *(void***)this = (void**)0;  // vftable set by derived data; overwritten below
     memset(m_pOldTextColor.m_elements, 0, sizeof(m_pOldTextColor.m_elements));
     memset(m_pOldSelectedTextColor.m_elements, 0,
            sizeof(m_pOldSelectedTextColor.m_elements));
