@@ -19682,6 +19682,7 @@ struct PtrFixupTable {
 
 class AssetBankSet {
 public:
+    AssetBankSet();             // ??0AssetBankSet@@QAE@XZ (0x6663A0)
     virtual ~AssetBankSet();  // real in g_entity_misc.cpp
 };
 

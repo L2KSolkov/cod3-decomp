@@ -875,6 +875,7 @@ void StopAllSceneAnims(TPakId pakId)
 
 // AssetBankSet (streamer.o; sBankArray @ 0xF59348)
 struct AssetBankSet {
+    AssetBankSet();
     virtual ~AssetBankSet();  // defined in g_entity_misc.cpp
     virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AssetBankSet@@UAEXW4TPakId@@@Z (streamer.o)
 
@@ -882,6 +883,12 @@ struct AssetBankSet {
     static void UnloadBanks(TPakId pakId);  // ?UnloadBanks@AssetBankSet@@SAXW4TPakId@@@Z (streamer.o 0x66B0E0)
 };
 ae_sized_array<AssetBankSet*, 24> AssetBankSet::sBankArray;
+
+// ea: 0x006663A0
+AssetBankSet::AssetBankSet()
+{
+    AssetBankSet::sBankArray.push_back(this);
+}
 
 // AssetBankSet dtor body (0x675850) - removes `self` from sBankArray.
 // Shared by the AssetBankSet/SceneManager/StreamZoneManager dtor chain.
@@ -954,6 +961,13 @@ void AssetBankSet::UnloadBanks(TPakId pakId)
 void AssetBankSet::UnloadBank(TPakId pakId)
 {
     (void)pakId;
+}
+
+// Void-return bridge used by the game-side constructors. The release
+// constructor above owns the actual vtable and bank-array initialization.
+void AssetBankSet_ctor(void* self)
+{
+    new (self) AssetBankSet();
 }
 
 // ThroughputMeasurer (streamer.o PakFile.cpp; 16 bytes, verified IDA)

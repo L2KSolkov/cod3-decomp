@@ -1222,6 +1222,7 @@ struct AnimHeap : nalHeap {
 static_assert(sizeof(AnimHeap) == 0x4A4, "AnimHeap size mismatch");
 
 struct AssetBankSet {
+    AssetBankSet();       // ??0AssetBankSet@@QAE@XZ (streamer.o @ 0x006663A0)
     virtual ~AssetBankSet();  // __vftable at +0x00
 };
 static_assert(sizeof(AssetBankSet) == 0x4, "AssetBankSet size mismatch");
