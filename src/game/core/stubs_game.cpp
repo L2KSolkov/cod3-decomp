@@ -54,8 +54,6 @@ void PhysDataBankManager::CreateInst() {}
 void PhysDataBankManager::DeleteInst() {}
 void SoundMediaMgr::CreateInst() {}
 void SoundMediaMgr::DeleteInst() {}
-void MusicMgr::CreateInst() {}
-void MusicMgr::DeleteInst() {}
 void DbTablesetMgr::CreateInst() {}
 void DbTablesetMgr::DeleteInst() {}
 void EffectEventSys::CreateInst() {}

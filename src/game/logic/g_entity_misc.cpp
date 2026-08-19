@@ -3487,6 +3487,8 @@ struct MusicMgr {
     float  mIndoorFadeTime;  // +0x14
     float  mDelayCount;      // +0x18
     int    mCrossFadeType;   // +0x1C
+    static void CreateInst(); // ?CreateInst@MusicMgr@@SAXXZ (core.o 0x4DCC00)
+    static void DeleteInst(); // ?DeleteInst@MusicMgr@@SAXXZ (core.o 0x4E27E0)
     MusicMgr();              // ??0MusicMgr@@QAE@XZ
     ~MusicMgr();             // ??1MusicMgr@@QAE@XZ (game.o 0x63A7D0)
     void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o 0x62D6D0)
@@ -3511,6 +3513,49 @@ MusicMgr::MusicMgr()
     this->mIndoorFadeTime = 1.0f;
     this->mDelayCount = 0.0f;
     this->mCrossFadeType = 0;
+}
+
+// ea: 0x004DCC00
+void MusicMgr::CreateInst()
+{
+    if (MusicMgr::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MusicMgr.h";
+        AeAssert::gCurrentLine = 21;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x20u, 4, "fx", "c:\\cod\\code\\game\\MusicMgr.h", 21);
+    if (memory != nullptr)
+        MusicMgr::sInst = new (memory) MusicMgr();
+    else
+        MusicMgr::sInst = nullptr;
+}
+
+// ea: 0x004E27E0
+void MusicMgr::DeleteInst()
+{
+    MusicMgr* instance = MusicMgr::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MusicMgr.h";
+        AeAssert::gCurrentLine = 21;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~MusicMgr();
+        mem_heap_free(instance);
+    }
+    MusicMgr::sInst = nullptr;
 }
 
 // ============================================================================
