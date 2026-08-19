@@ -4797,7 +4797,7 @@ unsigned int BrocSys::ThreadNotifyInternal(const char* file, int line,
 // scr.o batch 16 - mover cluster + misc wrappers
 // ============================================================================
 
-extern unsigned int AeHash(const char* str);  // ae_hash.cpp (core_xboxr)
+extern "C" unsigned int AeHash(const char* str);  // ae_hash.cpp (core_xboxr)
 
 // ea: 0x005BFBF0
 void BrocSys::Mover_SetupMove(trajectory_t* pTr, const math::Position3& vPos,
@@ -7726,7 +7726,7 @@ void BrocSys::Mover_GravityMove(Entity* pEnt, const float* const vVel,
 // scr.o batch 32 - BrocSys wrappers (AnimScripted1..Cinematic2)
 // ============================================================================
 
-extern unsigned int AeHash(const char* str);  // ?AeHash@@YAIPBD@Z (core.o)
+extern "C" unsigned int AeHash(const char* str);  // _AeHash (core_xboxr)
 extern char* Info_ValueForKey(const char* s, const char* key);  // core.o
 extern void Q_strncpyz(char* dest, const char* src, int destsize);  // core.o
 extern vmCvar_t g_changelevel_time;  // ?g_changelevel_time@@3UvmCvar_t@@A

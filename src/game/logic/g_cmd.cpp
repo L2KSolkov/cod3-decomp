@@ -315,7 +315,7 @@ void CurveManager::AddConditionFunc(
 }
 
 // Curve evaluator statics (CurveManager.cpp; file-static Eval* helpers)
-extern unsigned int AeHash(const char* str);  // ae_hash.cpp
+extern "C" unsigned int AeHash(const char* str);  // ae_hash.cpp
 float g_VehSndSmoothingMaxVelocity = 40.0f;  // ?g_VehSndSmoothingMaxVelocity@@3MA (game.o @ 0xDF6BB0)
 unsigned int s_SurfaceHashes[23];             // game.o @ 0xF53AC8
 unsigned int s_SurfaceValues[23] = {         // game.o @ 0xDF6B50

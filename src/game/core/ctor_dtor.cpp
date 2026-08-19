@@ -43,7 +43,7 @@ bool Assert(const char* fmt, ...);
         }                                                                  \
     } while (0)
 
-extern unsigned int AeHash(const char* str);
+extern "C" unsigned int AeHash(const char* str);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 struct mem_heap;

@@ -413,7 +413,7 @@ extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
 extern char* va(const char* fmt, ...);  // ?va@@YAPADPBDZZ (g_q_shared.cpp)
 extern void tlMemFree(void* ptr);                // tl_system.o
-extern unsigned int AeHash(const char* str);     // ae_hash.cpp
+extern "C" unsigned int AeHash(const char* str);     // ae_hash.cpp
 struct cvar_t {
     char*  name;      // +0x00
     char*  string;    // +0x04

@@ -9,7 +9,7 @@
 #include <string.h>
 #include <new>
 
-extern unsigned int AeHash(const char* str);        // core/ae_hash.cpp (binary _AeHash 0x7BF220)
+extern "C" unsigned int AeHash(const char* str);        // core/ae_hash.cpp (binary _AeHash 0x7BF220)
 extern void* mem_heap_malloc(unsigned int size);    // core.o
 extern void mem_heap_free(void* ptr);               // core.o
 extern void* FEManager_GetIGMS(void* self, int client);  // g_entity_misc.cpp

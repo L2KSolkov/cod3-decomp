@@ -19,7 +19,7 @@ public:
     static PakManager* sInst;
 };  // ?sInst@PakManager@@2PAV1@A
 
-extern unsigned int AeHash(const char* str);
+extern "C" unsigned int AeHash(const char* str);
 extern unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key);
 extern void* InplaceAssetBank_Index(void* bank, int i);
 extern void InplaceAssetBank_Fixup_ConfigString(void* data);

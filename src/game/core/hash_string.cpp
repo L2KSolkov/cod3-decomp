@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-extern unsigned int AeHash(const char* str);
+extern "C" unsigned int AeHash(const char* str);
 
 struct LanguageName {
     const char* first;

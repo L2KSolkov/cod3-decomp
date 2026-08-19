@@ -116,7 +116,7 @@ extern math::Position3* nglProjectPoint(math::Position3* result,
                                         const math::Position3* In,
                                         nglScene* Scene);  // ngl/ngl_scene.h
 extern nglScene* nglBuildScene;  // render
-extern unsigned int AeHash(const char* str);  // core/ae_hash.cpp
+extern "C" unsigned int AeHash(const char* str);  // core/ae_hash.cpp
 
 // DObjSkelMat minimal view (full in core/core_types.h).
 struct DObjSkelMat {

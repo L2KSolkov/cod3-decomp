@@ -1242,7 +1242,7 @@ int CM_LoadLump(int lumpnum, char** pBuf)
 // ============================================================================
 // BinFileManager + DecodeBin - ea: 0x608ED0..0x608F70, 0x6180D0
 // ============================================================================
-extern unsigned int AeHash(const char* str);  // core.o
+extern "C" unsigned int AeHash(const char* str);  // core.o
 
 struct BinFileEntry {
     unsigned int mHash;    // +0x00

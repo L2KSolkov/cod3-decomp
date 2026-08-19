@@ -151,7 +151,7 @@ extern void Scr_Notify(Entity* ent, HashString hashValue,
                        unsigned int paramcount);
 extern int g_debug_sync_queries;  // 0x00F00E78
 extern TPakId CurPakId();
-extern unsigned int AeHash(const char* str);
+extern "C" unsigned int AeHash(const char* str);
 extern apsEffectTemplate* cdGetEffectTemplate(
     TPakId pakId, const tlFixedString& name);  // streamer.o 0x677AC0
 extern void Com_Printf(const char* fmt, ...);

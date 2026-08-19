@@ -5893,7 +5893,7 @@ extern const char* nslGetWaveGroup(nslWaveID wave);          // ?nslGetWaveGroup
 extern float nslGetWaveParam(nslWaveID wave, int b, float c);// nsl
 extern nslSourceID nslNewSource(nslWaveID wave, int mImportance);  // ?nslNewSource@@YA?AW4nslSourceID@@W4nslWaveID@@H@Z
 extern void nslQueueSource(nslSourceID sid);                 // ?nslQueueSource@@YAXW4nslSourceID@@@Z
-extern unsigned int AeHash(const char* str);                 // ae_hash.cpp
+extern "C" unsigned int AeHash(const char* str);                 // ae_hash.cpp
 extern int currCl;                                           // ?currCl@@3HA @ 0xF1579C
 extern DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A @ 0xDEB5B4
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // ?AddRenderer@DebugRender@@QAEXP6AXXZ@Z (render.o)

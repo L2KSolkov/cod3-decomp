@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <stdint.h>
 
-unsigned int AeHash(const char* str) {
+extern "C" unsigned int AeHash(const char* str) {
     if (!str) return 0;
     unsigned int hash = 0;
     for (const char* p = str; *p; ++p) {

@@ -560,7 +560,7 @@ bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	PORTED	
 
 CallFunctor.o		CallFunctor.o	game	1	PORTED	AeThreadFunctor.h + CallFunctor.cpp (virtual CallFunction dispatch)
 
-core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
+core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	VERIFIED	AeHash at 0x7BF220 now uses the IDA-confirmed C linkage and unsigned hash return; canonical Win32 build succeeds and cod3_core.lib exports _AeHash
 
 inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
 
