@@ -33,6 +33,80 @@ extern void InplaceAssetBankSet_Find_DbTableset(void* self, void* result,
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 extern int PakManager_GetPakFile(void* self, TPakId pakId);
 
+namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+struct U32TreeElement {
+    unsigned int mKey;
+    unsigned int mValue;
+};
+
+struct GenericAssetBankLayout {
+    unsigned int mFileId;
+    float mVersion;
+    unsigned int mTreeSize;
+    void* mTreeArray;
+    unsigned int mPtrsSize;
+    void** mPtrsList;
+    void* mPtrFixupTable;
+};
+
+class PtrFixupTable {
+public:
+    void Fixup(const void* basePtr);
+};
+
+static bool U32TreeIsUsed(GenericAssetBankLayout* tree,
+                          U32TreeElement* elements, unsigned int index)
+{
+    if (index >= tree->mTreeSize) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+        AeAssert::gCurrentLine = 211;
+        AeAssert::gCurrentExpr = "index >= 0 && index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    static const unsigned char nullElement[sizeof(U32TreeElement)] = {};
+    return memcmp(&elements[index], nullElement, sizeof(U32TreeElement)) != 0;
+}
+
+static unsigned int* U32TreeFind(GenericAssetBankLayout* tree,
+                                 unsigned int* key)
+{
+    U32TreeElement* elements =
+        reinterpret_cast<U32TreeElement*>(tree->mTreeArray);
+    unsigned int index = 0;
+    if (tree->mTreeSize == 0)
+        return nullptr;
+    for (;;) {
+        if (!U32TreeIsUsed(tree, elements, index)) {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 101;
+            AeAssert::gCurrentExpr = "IsUsed(index)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index must be used"))
+                __debugbreak();
+        }
+        unsigned int nodeKey = elements[index].mKey;
+        if (nodeKey == *key)
+            return &elements[index].mValue;
+        index = nodeKey >= *key ? (2 * index + 1) : (2 * index + 2);
+        if (index >= tree->mTreeSize
+            || !U32TreeIsUsed(tree, elements, index)
+            || index >= tree->mTreeSize)
+            return nullptr;
+    }
+}
+
 // ?STBManager_sInst@@3PAUSTBManager@@A (core.o)
 STBManager* STBManager_sInst = nullptr;
 
@@ -77,17 +151,27 @@ void STBManager::DeleteInst()
 // streamer.o helpers (stubs, port later)
 unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key)
 {
-    (void)tree; (void)key;
-    return nullptr;
+    return U32TreeFind(reinterpret_cast<GenericAssetBankLayout*>(
+                           reinterpret_cast<unsigned char*>(tree) - 8),
+                       key);
 }
 void* InplaceAssetBank_Index(void* bank, int i)
 {
-    (void)bank; (void)i;
-    return nullptr;
+    GenericAssetBankLayout* assetBank =
+        reinterpret_cast<GenericAssetBankLayout*>(bank);
+    if ((unsigned int)i >= assetBank->mPtrsSize) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 199;
+        AeAssert::gCurrentExpr = "i<mPtrs.size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bounds check"))
+            __debugbreak();
+    }
+    return assetBank->mPtrsList[i];
 }
 void PtrFixupTable_Fixup(void* self, void* basePtr)
 {
-    (void)self; (void)basePtr;
+    reinterpret_cast<PtrFixupTable*>(self)->Fixup(basePtr);
 }
 void InplaceAssetBankSet_AddBank_DbTableset(void* self, TPakId pak, void* bank)
 {
