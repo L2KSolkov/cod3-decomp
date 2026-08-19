@@ -11903,14 +11903,19 @@ public:
 class PhysDataBank;
 class DestructibleBank;
 class DestructibleLocal;
-class PhysDataBankManager {
+class PhysDataBankManager : public InplaceAssetBankSet<PhysDataBank> {
 public:
     static PhysDataBankManager* sInst;  // ?sInst@PhysDataBankManager@@2PAV1@A (g_globals.cpp)
+    static PhysDataBankManager* CreateInst();
+    static void DeleteInst();
+    PhysDataBankManager();
+    virtual ~PhysDataBankManager();
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);  // ?DecodeBank@PhysDataBankManager@@QAEXPBDPAEHW4TPakId@@@Z
     IVPointer<PhysData> GetPhysData(
         TPakId pak_id, const char* name);  // ?GetPhysData@PhysDataBankManager@@QAE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PBD@Z
 };
+
 class DestructibleBankManager : public InplaceAssetBankSet<DestructibleBank> {
 public:
     static DestructibleBankManager* sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A (g_globals.cpp)
@@ -11924,10 +11929,75 @@ public:
         TPakId pak_id, const char* name);  // ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z
 };
 
+static_assert(sizeof(InplaceAssetBankSet<PhysDataBank>) == 0x190,
+              "InplaceAssetBankSet<PhysDataBank> size mismatch");
+static_assert(sizeof(PhysDataBankManager) == 0x190,
+              "PhysDataBankManager size mismatch");
 static_assert(sizeof(InplaceAssetBankSet<DestructibleBank>) == 0x190,
               "InplaceAssetBankSet<DestructibleBank> size mismatch");
 static_assert(sizeof(DestructibleBankManager) == 0x190,
               "DestructibleBankManager size mismatch");
+
+// ea: 0x004E5E20
+PhysDataBankManager::PhysDataBankManager()
+    : InplaceAssetBankSet<PhysDataBank>()
+{
+}
+
+// ea: 0x004E5E70
+PhysDataBankManager::~PhysDataBankManager()
+{
+}
+
+// ea: 0x004E86F0
+PhysDataBankManager* PhysDataBankManager::CreateInst()
+{
+    if (PhysDataBankManager::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\PhysData.h";
+        AeAssert::gCurrentLine = 147;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "core", "c:\\cod\\code\\game\\PhysData.h", 147);
+    if (memory != nullptr)
+    {
+        PhysDataBankManager* result =
+            new (memory) PhysDataBankManager();
+        PhysDataBankManager::sInst = result;
+        return result;
+    }
+    PhysDataBankManager::sInst = nullptr;
+    return nullptr;
+}
+
+// ea: 0x004DC420
+void PhysDataBankManager::DeleteInst()
+{
+    PhysDataBankManager* instance = PhysDataBankManager::sInst;
+    if (instance == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\PhysData.h";
+        AeAssert::gCurrentLine = 147;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (instance != nullptr)
+    {
+        instance->~PhysDataBankManager();
+        mem_heap_free(instance);
+    }
+    PhysDataBankManager::sInst = nullptr;
+}
 
 // ea: 0x004E5CF0
 DestructibleBankManager::DestructibleBankManager()

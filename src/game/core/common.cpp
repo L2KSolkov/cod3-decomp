@@ -477,7 +477,7 @@ class LightGridMgr { public: static void CreateInst(); static void DeleteInst();
 class XModelManager { public: static void CreateInst(); static void DeleteInst(); };
 class XModelPartsManager { public: static void CreateInst(); static void DeleteInst(); };
 class DestructibleBankManager { public: static DestructibleBankManager* CreateInst(); static void DeleteInst(); };
-class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class PhysDataBankManager { public: static PhysDataBankManager* CreateInst(); static void DeleteInst(); };
 class AITypeManager { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SoundMediaMgr { public: static SoundMediaMgr* CreateInst(); static void DeleteInst(); };

@@ -17,7 +17,6 @@ void __cod3_stub_game_core(void) {
 // core.o: ?CreateInst@<Class>@@SAXXZ / ?DeleteInst@<Class>@@SAXXZ). Ported
 // into the owning class files as each singleton is reconstructed.
 class BankManager { public: static void CreateInst(); static void DeleteInst(); };
-class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class SoundDevice { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -42,8 +41,6 @@ public:
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 
-void PhysDataBankManager::CreateInst() {}
-void PhysDataBankManager::DeleteInst() {}
 void DbTablesetMgr::CreateInst() {}
 void DbTablesetMgr::DeleteInst() {}
 AnimBank* AnimBankManager::GetBank(TPakId pak_id)
