@@ -222,7 +222,7 @@ void jqFlush(int groupID) {
 // jqAddBatch — enqueue a batch job
 // ea: 0x8350A0
 // ============================================================================
-int jqAddBatch(const jqBatch* data) {
+int jqAddBatch(const jqBatch& data) {
     jqValidate();
 
     int idx = jqPool.BatchPoolHead;
@@ -237,7 +237,7 @@ int jqAddBatch(const jqBatch* data) {
     --jqPool.BatchPoolCount;
 
     // Copy data
-    memcpy(batch, data, sizeof(jqBatch));
+    memcpy(batch, &data, sizeof(jqBatch));
 
     uint32_t priority = batch->Priority;
     batch->Handle = idx;

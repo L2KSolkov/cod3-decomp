@@ -158,7 +158,7 @@ render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	PORTED	cdO
 
 controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
 
-jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
+jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	VERIFIED	Phase 2: jobqueue.cpp (batch job system); jqAddBatch const-reference ABI aligned to IDA ?jqAddBatch@@YAHABUjqBatch@@@Z and canonical build passed
 
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys_xboxr] rbc_def_ragdoll.cpp: ragdoll constraint (14 funcs)
 

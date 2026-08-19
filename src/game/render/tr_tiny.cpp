@@ -3780,7 +3780,7 @@ const apsEffectTemplate::Element& apsEffectTemplate::GetElement(int i) const  //
 // UpdateEffects
 static bool staticUpdate;
 extern int gThreadedParticles;                 // ?gThreadedParticles@@3HA
-extern int jqAddBatch(const jqBatch* Data);    // ?jqAddBatch@@YAHPBUjqBatch@@@Z
+extern int jqAddBatch(const jqBatch& Data);    // ?jqAddBatch@@YAHABUjqBatch@@@Z
 extern void ThreadedUpdateEffects(jqBatch* batch);  // ?ThreadedUpdateEffects@@YAXPAUjqBatch@@@Z
 jqModule ParticleUpdateFunctor = { ThreadedUpdateEffects, "ParticleUpdateFunctor" };
 void UpdateEffects(bool bUpdate)  // ?UpdateEffects@@YAX_N@Z @ 0x6DAB20
@@ -3794,7 +3794,7 @@ void UpdateEffects(bool bUpdate)  // ?UpdateEffects@@YAX_N@Z @ 0x6DAB20
     batch.Module = &ParticleUpdateFunctor;
     memset(&batch.InputSize, 0, 12);
     if (gThreadedParticles != 0)
-        jqAddBatch(&batch);
+        jqAddBatch(batch);
     else
         ThreadedUpdateEffects(&batch);
 }
