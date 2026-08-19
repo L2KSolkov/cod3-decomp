@@ -168,7 +168,7 @@ bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: ne
 
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 
-nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (voice size/clamp/rolloff/type helpers ported from IDA; DirectSound lifecycle and voice calls remain shim stubs)
+nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp; nslDriverGetVoiceType return ABI corrected to IDA/map unsigned 8-bit (1 of 13 exact); remaining six DirectSound lifecycle/voice calls remain explicit Win32 shim boundaries
 
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	PORTED	[ngl_xboxr] ngl_gpu.cpp: full 13 funcs - pack/unpack vertex buffer (14 format cases each), SetBonesWorld/Local; gpuVertexElementUsage enum added; fixed dx_shader bone-matrix order (InvRest*Rel) + identity rows
 

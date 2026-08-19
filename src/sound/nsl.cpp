@@ -523,7 +523,7 @@ void nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader, unsigned waveBankL
 nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader);
 void nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader);
 void nslWaveBankSort(nslWaveBank* waveBank);
-int nslDriverGetVoiceType(const nslWave* wave);
+unsigned char nslDriverGetVoiceType(const nslWave* wave);
 enum nflRequestState : unsigned {
     NFL_REQUEST_STATE_INVALID = (unsigned)-1,
     NFL_REQUEST_STATE_COMPLETED = 0,
@@ -4205,7 +4205,7 @@ void          nslDriverCalculateRolloff(float* dest, float value,
         *dest = result;
 }
 // ea: 0x00824EF0
-int           nslDriverGetVoiceType(const nslWave* wave) {
+unsigned char nslDriverGetVoiceType(const nslWave* wave) {
     const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
     const unsigned char* nameOffset =
         *reinterpret_cast<const unsigned char* const*>(raw);
