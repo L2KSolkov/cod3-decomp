@@ -60,6 +60,7 @@ class LightGridMgr : public AssetBankSet {
 public:
     LightGridMgr();                              // ??0LightGridMgr@@QAE@XZ
     static LightGridMgr* sInst;                  // ?sInst@LightGridMgr@@2PAV1@A
+    static void CreateInst();                     // ?CreateInst@LightGridMgr@@SAXXZ
     void SetLightGridFailedColor();  // ?SetLightGridFailedColor@LightGridMgr@@QAEXXZ
     LightGrid::TOC* GetLightGrid(TPakId iPakId); // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@W4TPakId@@@Z
     LightGrid::TOC* GetLightGrid(int cellNum);   // ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@H@Z
@@ -104,6 +105,8 @@ math::Position3 nglProjectPoint(const math::Position3& In, nglScene* Scene);
 
 extern char* va(const char* fmt, ...);  // core.o
 extern void* mem_heap_malloc(unsigned int size);  // core.o
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 extern void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
                            bool ExtraSafety);  // streamer.o
 extern void tlPrint(const char* lpOutputString);  // tl lib
@@ -407,6 +410,34 @@ void DebugRender::Init()
 // ============================================================================
 // LightGridMgr
 // ============================================================================
+
+// ea: 0x004B5180
+void LightGridMgr::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\LightGridMgr.h";
+        AeAssert::gCurrentLine = 27;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    LightGridMgr* result = static_cast<LightGridMgr*>(
+        mem_heap_malloc_ctx(0x190u, 4, "core",
+                            "c:\\cod\\code\\game\\LightGridMgr.h", 27));
+    if (result != nullptr)
+    {
+        result = new (result) LightGridMgr();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
+}
 
 // ea: 0x006BC870
 void LightGridMgr::SetLightGridFailedColor()
