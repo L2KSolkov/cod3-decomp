@@ -396,6 +396,35 @@ static void nullD3DGetSwizzleMasks(unsigned int Width, unsigned int Height,
     *MaskV = V & CombinedMask;
 }
 
+static unsigned int nullD3DSwizzleCoordinate(unsigned int Mask, unsigned int Value) {
+    // Swizzler::SwizzleU/SwizzleV, translated from the release XBE decompile.
+    unsigned int Result = 0;
+    for (unsigned int Bit = 1; Bit <= Mask; Bit <<= 1) {
+        if ((Mask & Bit) != 0)
+            Result |= Value & Bit;
+        else
+            Value <<= 1;
+    }
+    return Result;
+}
+
+static void nullD3DUnswizzleBytes(const unsigned char* Source, unsigned char* Dest,
+                                  unsigned int Width, unsigned int Height,
+                                  unsigned int BytesPerPixel) {
+    unsigned int MaskU = 0;
+    unsigned int MaskV = 0;
+    nullD3DGetSwizzleMasks(Width, Height, &MaskU, &MaskV);
+    for (unsigned int y = 0; y < Height; ++y) {
+        unsigned int V = nullD3DSwizzleCoordinate(MaskV, y);
+        for (unsigned int x = 0; x < Width; ++x) {
+            unsigned int U = nullD3DSwizzleCoordinate(MaskU, x);
+            size_t SourceOffset = (size_t)(U | V) * BytesPerPixel;
+            size_t DestinationOffset = ((size_t)y * Width + x) * BytesPerPixel;
+            memcpy(Dest + DestinationOffset, Source + SourceOffset, BytesPerPixel);
+        }
+    }
+}
+
 static void nullD3DUnswizzle32(const unsigned char* Source, unsigned int* Dest,
                                unsigned int Width, unsigned int Height) {
     unsigned int MaskU = 0;
@@ -464,18 +493,24 @@ static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size) {
     if (BytesPerPixel == 0)
         return;
     if (XGIsSwizzledFormat(Info->Format)) {
-        if (BytesPerPixel != 4 || Info->Width < 8 || Info->Height < 8)
+        if (BytesPerPixel != 1 && BytesPerPixel != 2 && BytesPerPixel != 4)
             return;
         COD3_D3D9_LOCKED_RECT Locked = {};
         if (FAILED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0)))
             return;
-        unsigned int* Linear = (unsigned int*)calloc((size_t)Info->Width * Info->Height,
-                                                      sizeof(unsigned int));
+        size_t LinearBytes = (size_t)Info->Width * Info->Height * BytesPerPixel;
+        unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
         if (Linear != NULL) {
-            nullD3DUnswizzle32(Info->Bits, Linear, Info->Width, Info->Height);
+            if (BytesPerPixel == 4 && Info->Width >= 8 && Info->Height >= 8)
+                nullD3DUnswizzle32(Info->Bits, (unsigned int*)Linear,
+                                   Info->Width, Info->Height);
+            else
+                nullD3DUnswizzleBytes(Info->Bits, Linear, Info->Width, Info->Height,
+                                      BytesPerPixel);
             for (unsigned int y = 0; y < Info->Height; ++y)
                 memcpy((unsigned char*)Locked.pBits + y * Locked.Pitch,
-                       Linear + y * Info->Width, Info->Width * sizeof(unsigned int));
+                       Linear + (size_t)y * Info->Width * BytesPerPixel,
+                       Info->Width * BytesPerPixel);
             free(Linear);
         }
         Info->NativeTexture->UnlockRect(0);
