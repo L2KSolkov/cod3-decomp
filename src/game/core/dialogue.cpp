@@ -3,8 +3,13 @@
 // ============================================================================
 
 #include "game/core/core_systems.h"
+#include "game/core/core_globals.h"
 
+#include <new>
 #include <string.h>
+
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1 };
@@ -38,8 +43,49 @@ unsigned int* InplaceTree_Find_Dialogue(void* tree, unsigned int* key)
     return nullptr;
 }
 
-// DialogueManager.mBanks is opaque; expose element access
-DialogueManager* DialogueManager_sInst = nullptr;
+// DialogueManager.mBanks is opaque; expose element access through the
+// IDA-backed singleton holder at 0x012F0374.
+
+// ea: 0x004E5E80
+void DialogueManager::CreateInst()
+{
+    if (DialogueManagerStatics::sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DialogueManager.h";
+        AeAssert::gCurrentLine = 10;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+    void* memory = mem_heap_malloc_ctx(
+        0x190u, 4, "dlg", "c:\\cod\\code\\game\\DialogueManager.h", 10);
+    if (memory != nullptr)
+        DialogueManagerStatics::sInst = new (memory) DialogueManager();
+    else
+        DialogueManagerStatics::sInst = nullptr;
+}
+
+// ea: 0x004DCA40
+void DialogueManager::DeleteInst()
+{
+    if (DialogueManagerStatics::sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\DialogueManager.h";
+        AeAssert::gCurrentLine = 10;
+        AeAssert::gCurrentExpr = "sInst!=0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton not created!"))
+            __debugbreak();
+    }
+    if (DialogueManagerStatics::sInst != nullptr)
+        delete DialogueManagerStatics::sInst;
+    DialogueManagerStatics::sInst = nullptr;
+}
 
 // ea: 0x004C0BE0
 void DialogueManager::UnloadBank(TPakId pakId)
@@ -104,5 +150,5 @@ void DecodeDialogueBank(const char* name, unsigned char* data, int size,
                         TPakId pakId, PakFile* pakFile)
 {
     (void)pakFile;
-    DialogueManager_sInst->DecodeDialogueBank(name, data, size, pakId);
+    DialogueManagerStatics::sInst->DecodeDialogueBank(name, data, size, pakId);
 }
