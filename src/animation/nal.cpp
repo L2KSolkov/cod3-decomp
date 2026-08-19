@@ -2575,7 +2575,15 @@ int nalReleaseAllSkeletons()
 // ============================================================================
 // nal animation file management
 // ============================================================================
-nalAnimFile* nalLoadAnimFile(const tlFixedString&) { return nullptr; }
+// ea: 0x00870810
+nalAnimFile* nalLoadAnimFile(const tlFixedString& fileName)
+{
+    nalAnimFile* result = nalAnimFileDirectory->Find(fileName);
+    if (result == nullptr)
+        return nalAnimFileDirectory->Load(fileName);
+    ++result->Header.RefCount;
+    return result;
+}
 
 // ea: 0x00870570
 static bool nalLoadAnimFileInternal(nalAnimFile* animFile)
@@ -2678,21 +2686,41 @@ nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& fileName, void* data)
     nalAnimFileDirectory->Add(animFile);
     return animFile;
 }
-int nalReleaseAnimFile(nalAnimFile*) { return 0; }
-int nalReleaseAnimFile(const tlFixedString&) { return 0; }
+// ea: 0x00870960
+int nalReleaseAnimFile(nalAnimFile* animFile)
+{
+    return nalAnimFileDirectory->Release(animFile, 0, false);
+}
+
+// ea: 0x00870980
+int nalReleaseAnimFile(const tlFixedString& fileName)
+{
+    nalAnimFile* result = nalAnimFileDirectory->Find(fileName);
+    if (result != nullptr)
+        return nalAnimFileDirectory->Release(result, 0, false);
+    return 0;
+}
 void nalReleaseAllAnimFiles() {}
-nalAnimClass<nalAnyPose>* nalGetAnim(const tlFixedString&) { return nullptr; }
+// ea: 0x008704F0
+nalAnimClass<nalAnyPose>* nalGetAnim(const tlFixedString& name)
+{
+    return nalAnimDirectory->Find(name);
+}
 nalAnimClass<nalAnyPose>* nalGetFirstAnimInFile(nalAnimFile* animFile)
 {
     return animFile != nullptr ? animFile->Header.FirstAnim : nullptr;
 }
-nalAnimClass<nalAnyPose>* nalGetFirstAnimInFile(const tlFixedString&) { return nullptr; }
+// ea: 0x00870530
+nalAnimClass<nalAnyPose>* nalGetFirstAnimInFile(const tlFixedString& fileName)
+{
+    nalAnimFile* animFile = nalAnimFileDirectory->Find(fileName);
+    return animFile != nullptr ? animFile->Header.FirstAnim : nullptr;
+}
 nalAnimClass<nalAnyPose>* nalGetNextAnimInFile(nalAnimClass<nalAnyPose>* anim)
 {
     if (anim == nullptr)
         return nullptr;
-    return *reinterpret_cast<nalAnimClass<nalAnyPose>**>(
-        reinterpret_cast<unsigned char*>(anim) + 4);
+    return anim->NextAnim;
 }
 
 // ============================================================================
