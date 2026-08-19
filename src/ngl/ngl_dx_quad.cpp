@@ -16,7 +16,9 @@ extern unsigned int dword_40304;
 
 // d3d8d data (owned by d3d8d:state.obj)
 extern unsigned int D3D__DirtyFlags;
-extern unsigned int _D3D__TextureState[4][1];
+// The XDK cache has 32 DWORDs per texture stage.  Use the shim-owned table
+// directly so stages 1-3 update their own ADDRESSU/ADDRESSV slots.
+extern unsigned int D3D__TextureState[4][32];
 
 // ============================================================================
 // nglDxSetTextureU — set texture wrap-U state (inline COMDAT)
@@ -27,7 +29,7 @@ void nglDxSetTextureU(unsigned int Stage, unsigned int Mode) {
         nglDxTexCache.Prev[Stage].WrapU = Mode;
         if (D3DDevice_SetTextureState_ParameterCheck(Stage, D3DTSS_ADDRESSU, Mode) == 0) {
             D3D__DirtyFlags |= 1 << Stage;
-            _D3D__TextureState[Stage][0] = Mode;
+            D3D__TextureState[Stage][D3DTSS_ADDRESSU] = Mode;
         }
     }
 }
@@ -41,7 +43,7 @@ void nglDxSetTextureV(unsigned int Stage, unsigned int Mode) {
         nglDxTexCache.Prev[Stage].WrapV = Mode;
         if (D3DDevice_SetTextureState_ParameterCheck(Stage, D3DTSS_ADDRESSV, Mode) == 0) {
             D3D__DirtyFlags |= 1 << Stage;
-            _D3D__TextureState[Stage][0] = Mode;
+            D3D__TextureState[Stage][D3DTSS_ADDRESSV] = Mode;
         }
     }
 }
