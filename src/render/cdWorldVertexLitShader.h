@@ -29,8 +29,16 @@ static_assert(sizeof(cdWorldVertexLitShaderMat) == 0x14, "cdWorldVertexLitShader
 // ============================================================================
 struct cdWorldVertexLitShaderNode : nglShaderNode {
     cdWorldVertexLitShaderMat* mMaterial;  // +0x14
+
+    void Render() override;                 // @0x7DE940
 };
 static_assert(sizeof(cdWorldVertexLitShaderNode) == 0x18, "cdWorldVertexLitShaderNode size mismatch");
+
+// IDA type 7940: the vertex-constant payload is one 4x4 matrix.
+struct BackgroundContext {
+    math::Mat44 mLToS;
+};
+static_assert(sizeof(BackgroundContext) == 0x40, "BackgroundContext size mismatch");
 
 // ============================================================================
 // cdWorldVertexLitShader — world vertex-lit shader (16 bytes)

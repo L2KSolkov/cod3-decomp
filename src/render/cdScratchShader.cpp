@@ -154,7 +154,7 @@ void cdScratchShaderNode::Render() {
     nglDxInitShaders(false);
 
     const unsigned int vertexShader = static_cast<unsigned int>(
-        reinterpret_cast<uintptr_t>(cdScratchShaderVertex::VS));
+        cdScratchShaderVertex::VS[0]);
     if (vertexShader != gpuHashVertexShader) {
         gpuHashVertexShader = vertexShader;
         D3DDevice_LoadVertexShaderProgram(

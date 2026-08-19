@@ -180,7 +180,7 @@ void cdDebugShaderNode::Render() {
     nglDxInitShaders(false);
 
     const unsigned int vertexShader = static_cast<unsigned int>(
-        reinterpret_cast<uintptr_t>(cdDebugShaderRender::VS));
+        cdDebugShaderRender::VS[0]);
     if (vertexShader != gpuHashVertexShader) {
         gpuHashVertexShader = vertexShader;
         D3DDevice_LoadVertexShaderProgram(
