@@ -199,7 +199,7 @@ extern vmCvar_t g_debugProneCheck;             // ?g_debugProneCheck@@3UvmCvar_t
 extern vmCvar_t g_debugProneCheckDepthCheck;   // ?g_debugProneCheckDepthCheck@@3UvmCvar_t@@A (g.o)
 extern const char* nslGetSourceName(nslSourceID sid);   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 extern float nslGetSourceParam(nslSourceID sid, int index, float defaultValue);  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z
-extern void nslGetSourcePosition(nslSourceID sid, float* position);  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z
+extern void nslGetSourcePosition(nslSourceID sid, float* const position);  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z
 
 #define NSL_SOURCE_ID_INVALID ((nslSourceID)-1)
 

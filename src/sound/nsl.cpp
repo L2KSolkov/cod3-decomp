@@ -28,9 +28,15 @@ extern const char defaultFileName[];
 // Handle types
 // ============================================================================
 enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
-typedef unsigned nslEmitterID;
+enum nslEmitterID : int {
+    NSL_EMITTER_ID_INVALID = -1,
+    NSL_EMITTER_ID_FORCE32 = 0x7FFFFFFF
+};
 enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
-typedef unsigned nslWaveBankID;
+enum nslWaveBankID : int {
+    NSL_WAVE_BANK_ID_INVALID = -1,
+    NSL_WAVE_BANK_ID_FORCE32 = 0x7FFFFFFF
+};
 typedef unsigned nslGroupID;
 typedef unsigned nslVoiceID;
 typedef unsigned txSlot;
@@ -668,7 +674,7 @@ nslEmitterID  nslNewEmitter(const float* position) {
                 params[21] = position[2];
                 *reinterpret_cast<unsigned*>(emitterRaw + 0x8u) |= 0x380000u;
             }
-            return slot;
+            return static_cast<nslEmitterID>(slot);
         }
     }
     txPrintf("NSL", 0,
@@ -847,7 +853,7 @@ void          nslSetSourceParam(nslSourceID sid, int index, float value) {
 }
 
 // ea: 0x00820F80
-void          nslSetEmitterParam(nslEmitterID eid, unsigned index, float value) {
+void          nslSetEmitterParam(nslEmitterID eid, int index, float value) {
     const int emitterIndex = nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(eid));
     if (emitterIndex == -1)
         return;
@@ -861,7 +867,7 @@ void          nslSetEmitterParam(nslEmitterID eid, unsigned index, float value) 
 }
 
 // ea: 0x00821050
-float         nslGetEmitterParam(nslEmitterID eid, unsigned index,
+float         nslGetEmitterParam(nslEmitterID eid, int index,
                                  float defaultValue) {
     const int emitterIndex = nslSlotIndex(&nsl_emitterPool, static_cast<txSlot>(eid));
     if (emitterIndex == -1)
@@ -913,15 +919,15 @@ nslSourceState nslGetSourceState(nslSourceID sid) {
     return static_cast<nslSourceState>(state);
 }
 // ea: 0x00822D60
-bool          nslIsSourceQueued(nslSourceID sid) {
+int           nslIsSourceQueued(nslSourceID sid) {
     return nslGetSourceState(sid) == NSL_SOURCE_STATE_QUEUED;
 }
 // ea: 0x00822D80
-bool          nslIsSourcePlaying(nslSourceID sid) {
+int           nslIsSourcePlaying(nslSourceID sid) {
     return nslGetSourceState(sid) == NSL_SOURCE_STATE_PLAYING;
 }
 // ea: 0x00822DA0
-bool          nslIsSourceFinished(nslSourceID sid) {
+int           nslIsSourceFinished(nslSourceID sid) {
     return nslGetSourceState(sid) == NSL_SOURCE_STATE_INVALID;
 }
 // ea: 0x00820CB0
@@ -958,7 +964,7 @@ unsigned      nslGetSourceOffset(nslSourceID sid) {
         reinterpret_cast<const unsigned char*>(source) + 0x130u);
 }
 // ea: 0x008212D0
-void          nslGetSourcePosition(nslSourceID sid, float* position) {
+void          nslGetSourcePosition(nslSourceID sid, float* const position) {
     nslSource* source = nslSourcePtr(sid);
     if (source == nullptr)
         return;
@@ -969,7 +975,7 @@ void          nslGetSourcePosition(nslSourceID sid, float* position) {
     position[2] = value[2];
 }
 // ea: 0x00821590
-void          nslGetSourceVelocity(nslSourceID sid, float* velocity) {
+void          nslGetSourceVelocity(nslSourceID sid, float* const velocity) {
     nslSource* source = nslSourcePtr(sid);
     if (source == nullptr)
         return;
@@ -980,7 +986,7 @@ void          nslGetSourceVelocity(nslSourceID sid, float* velocity) {
     velocity[2] = value[2];
 }
 // ea: 0x008210B0
-void          nslSetSourcePosition(nslSourceID sid, const float* position) {
+void          nslSetSourcePosition(nslSourceID sid, const float* const position) {
     nslSource* source = nslSourcePtr(sid);
     if (source == nullptr)
         return;
@@ -1010,7 +1016,7 @@ void          nslSetSourcePosition(nslSourceID sid, const float* position) {
     source->paramsUpdate |= 0x00380000u;
 }
 // ea: 0x00821370
-void          nslSetSourceVelocity(nslSourceID sid, const float* velocity) {
+void          nslSetSourceVelocity(nslSourceID sid, const float* const velocity) {
     nslSource* source = nslSourcePtr(sid);
     if (source == nullptr)
         return;
@@ -1040,7 +1046,7 @@ void          nslSetSourceVelocity(nslSourceID sid, const float* velocity) {
     source->paramsUpdate |= 0x01C00000u;
 }
 // ea: 0x008211C0
-void          nslSetEmitterPosition(nslEmitterID sid, const float* position) {
+void          nslSetEmitterPosition(nslEmitterID sid, const float* const position) {
     nslEmitter* emitter = nslEmitterPtr(sid);
     if (emitter == nullptr)
         return;
@@ -1068,7 +1074,7 @@ void          nslSetEmitterPosition(nslEmitterID sid, const float* position) {
     emitter->params[21] = position[2];
 }
 // ea: 0x00821320
-void          nslGetEmitterPosition(nslEmitterID sid, float* position) {
+void          nslGetEmitterPosition(nslEmitterID sid, float* const position) {
     nslEmitter* emitter = nslEmitterPtr(sid);
     if (emitter == nullptr)
         return;
@@ -1077,7 +1083,7 @@ void          nslGetEmitterPosition(nslEmitterID sid, float* position) {
     position[2] = emitter->params[21];
 }
 // ea: 0x00821480
-void          nslSetEmitterVelocity(nslEmitterID sid, const float* velocity) {
+void          nslSetEmitterVelocity(nslEmitterID sid, const float* const velocity) {
     nslEmitter* emitter = nslEmitterPtr(sid);
     if (emitter == nullptr)
         return;
@@ -1105,7 +1111,7 @@ void          nslSetEmitterVelocity(nslEmitterID sid, const float* velocity) {
     emitter->params[24] = velocity[2];
 }
 // ea: 0x008215E0
-void          nslGetEmitterVelocity(nslEmitterID sid, float* velocity) {
+void          nslGetEmitterVelocity(nslEmitterID sid, float* const velocity) {
     nslEmitter* emitter = nslEmitterPtr(sid);
     if (emitter == nullptr)
         return;
@@ -1414,7 +1420,7 @@ void          nslStart(void* work) {
              nsl_workUsed, nsl_workUsed >> 10);
     std::memset(nsl_work, 0, nsl_workUsed);
     if (nsl_initParams.aramBase != 0)
-        nsl_waveBankSlots->waveBankID = nsl_initParams.aramBase;
+        nsl_waveBankSlots->waveBankID = static_cast<nslWaveBankID>(nsl_initParams.aramBase);
     nslSlotPoolInit(&nsl_sourcePool, nsl_sourceEntries,
                     static_cast<int>(nsl_initParams.maxSources), 12u);
     nslSlotPoolInit(&nsl_emitterPool, nsl_emitterEntries,
@@ -2055,7 +2061,7 @@ nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flag
     slot->profile.frameStarted = static_cast<unsigned>(-1);
     slot->profile.frameLoaded = static_cast<unsigned>(-1);
     slot->profile.timeCreated = nsl_time;
-    slot->waveBankID = (generation << 16) | 0xffffu;
+    slot->waveBankID = static_cast<nslWaveBankID>((generation << 16) | 0xffffu);
     slot->profile.frameCreated = nsl_frame;
     slot->flags = flags;
     slot->file = file;
@@ -2227,7 +2233,8 @@ void          nslWaveBankFree(nslWaveBankID waveBankID) {
         nslMemoryFree(slot->waveBank);
         slot->waveBank = nullptr;
     }
-    slot->waveBankID += nsl_initParams.aramBase << 16;
+    slot->waveBankID = static_cast<nslWaveBankID>(
+        static_cast<unsigned>(slot->waveBankID) + (nsl_initParams.aramBase << 16));
     slot->state = NSL_WAVE_BANK_SLOT_STATE_NOTUSED;
 }
 unsigned      nslWaveBankSlotsGetCount() { return nsl_initParams.aramBase; }
