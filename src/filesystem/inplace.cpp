@@ -34,16 +34,16 @@ public:
 // ExtractNode — unpack a packed node entry into offset + next pointer
 // ea: 0x7E1A10
 // ============================================================================
-void ExtractNode(int packed, uint32_t nextBits, int* outOffset, uint32_t* outNext) {
-    int val = packed;
-    if (packed >= 0) {
-        uint32_t mask = (1 << (31 - (int)nextBits)) - 1;
+void ExtractNode(unsigned int packed, int nextBits, int* outOffset, uint32_t* outNext) {
+    int val = (int)packed;
+    if (val >= 0) {
+        uint32_t mask = (1 << (31 - nextBits)) - 1;
         int extracted = val & mask;
-        int signBit = ~((1 << ((31 - (int)nextBits) - 1)) - 1);
+        int signBit = ~((1 << ((31 - nextBits) - 1)) - 1);
         if (signBit & extracted)
             extracted |= signBit;  // sign-extend
         *outOffset = extracted;
-        *outNext = (val & 0x7FFFFFFF) >> (31 - (int)nextBits);
+        *outNext = (val & 0x7FFFFFFF) >> (31 - nextBits);
     } else {
         if (!(val & 0x40000000))
             val = val & 0x7FFFFFFF;

@@ -566,7 +566,7 @@ inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	PORTED	Phase 2:
 
 inplace_xboxr:PtrFixupTable.o	inplace_xboxr	PtrFixupTable.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
 
-inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
+inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	VERIFIED	Phase 2: inplace.cpp (fixups, tree extract); ExtractNode signature aligned to IDA ?ExtractNode@@YAXIHPAHPAI@Z and canonical build passed
 
 zlib_xboxr:uncompr.o	zlib_xboxr	uncompr.o	engine	1	PORTED	Replaced by upstream zlib 1.3.1 target cod3_zlib; original Xbox zlib sources intentionally skipped per Phase 2
 
