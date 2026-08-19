@@ -57,6 +57,27 @@ extern "C" HRESULT __stdcall j_IDirectSoundStream_SetEG(
     return E_NOTIMPL;
 }
 
+extern "C" void __stdcall j_XAudioCreatePcmFormat(
+    unsigned short, unsigned int, unsigned short, tWAVEFORMATEX*) {}
+
+extern "C" void __stdcall j_XAudioCreateAdpcmFormat(
+    unsigned short, unsigned int, xbox_adpcmwaveformat_tag*) {}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetFormat(
+    IDirectSoundStream*, const tWAVEFORMATEX*) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_IDirectSoundStream_SetMixBins(
+    IDirectSoundStream*, const _DSMIXBINS*) {
+    return E_NOTIMPL;
+}
+
+extern "C" HRESULT __stdcall j_XFileCreateMediaObjectAsync(
+    void*, unsigned int, XFileMediaObject**) {
+    return E_NOTIMPL;
+}
+
 extern "C" HRESULT __stdcall j_IDirectSoundBuffer_SetHeadroom(
     IDirectSoundBuffer*, unsigned int) {
     return E_NOTIMPL;

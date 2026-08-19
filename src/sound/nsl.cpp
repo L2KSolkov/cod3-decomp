@@ -13,6 +13,7 @@
 
 #include "core/tlFixedString.h"
 #include "../../platform/xbox_shim/xbox_directsound.h"
+#include "../../platform/xbox_shim/xlive.h"
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
@@ -24,7 +25,11 @@ extern "C" int __cdecl __fpclass(float value);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern "C" char* txPathFix(const char* src, char* dir, int dirSize);
 extern const char defaultFileName[];
+enum nflFileID : unsigned;
 extern void nflUpdate();
+extern void* nflGetFileHandle(nflFileID fileID, unsigned* pHandleSize,
+                              unsigned* pFileStart, unsigned* pFileLength,
+                              unsigned* pFileStride);
 extern const char nsl_driverDSPImage[];
 extern const unsigned int nsl_driverDSPImageSize;
 extern _DSEFFECTIMAGEDESC* nsl_fxDesc;
@@ -217,7 +222,7 @@ struct nslVoice;
 struct nslDriverVoice {
     IDirectSoundBuffer* buffer;
     xbox_WAVEFORMATEXTENSIBLE format;
-    void* m_pSourceXMO;
+    XFileMediaObject* m_pSourceXMO;
     IDirectSoundStream* stream;
     void* m_pvSourceBuffer;
     volatile PACKET_CONTEXT m_aContexts[2];
@@ -230,11 +235,49 @@ struct nslDriverVoice {
     nslVoice* lv;
     float rolloffCurve[16];
 
+    HRESULT Init(const nslVoice* lv, const nslWave* w);
     int FindFreePacket(int* packetIndexPtr);
     long ProcessSource(int packetIndex);
 };
 static_assert(sizeof(PACKET_CONTEXT) == 12, "IDA PACKET_CONTEXT layout");
 static_assert(sizeof(nslDriverVoice) == 172, "IDA nslDriverVoice layout");
+
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBin51pairs[6] = {
+    {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBin51pairsFX[7] = {
+    {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {10, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBin3Dpairs[6] = {
+    {6, 0}, {8, 0}, {7, 0}, {9, 0}, {2, 0}, {3, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBin3DpairsFX[7] = {
+    {10, 0}, {6, 0}, {8, 0}, {7, 0}, {9, 0}, {2, 0}, {3, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBin2Dpairs[2] = {
+    {0, 0}, {1, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBin2DpairsFX[3] = {
+    {0, 0}, {1, 0}, {10, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBinMonoSon[2] = {
+    {0, 0}, {1, 0}
+};
+static _DSMIXBINVOLUMEPAIR nsl_driverMixBinMonoSonFX[3] = {
+    {0, 0}, {1, 0}, {10, 0}
+};
+static _DSMIXBINS nsl_driverMixBin51[2] = {
+    {6, nsl_driverMixBin51pairs}, {7, nsl_driverMixBin51pairsFX}
+};
+static _DSMIXBINS nsl_driverMixBin3D[2] = {
+    {6, nsl_driverMixBin3Dpairs}, {7, nsl_driverMixBin3DpairsFX}
+};
+static _DSMIXBINS nsl_driverMixBin2D[2] = {
+    {2, nsl_driverMixBin2Dpairs}, {3, nsl_driverMixBin2DpairsFX}
+};
+static _DSMIXBINS nsl_driverMixBinMono[2] = {
+    {2, nsl_driverMixBinMonoSon}, {3, nsl_driverMixBinMonoSonFX}
+};
 // IDA type_inspect: nslParam is an 8-byte map followed by a flexible float array.
 struct nslParam {
     unsigned __int64 map;
@@ -358,6 +401,21 @@ struct nslVoice {
 static_assert(sizeof(nslVoice) == 224, "IDA nslVoice layout");
 struct nslListener {};
 struct nslDriverParams {};
+struct nslEffect {
+    int lRoom;
+    int lRoomHF;
+    float flRoomRolloffFactor;
+    float flDecayTime;
+    float flDecayHFRatio;
+    int lReflections;
+    float flReflectionsDelay;
+    int lReverb;
+    float flReverbDelay;
+    float flDiffusion;
+    float flDensity;
+    float flHFReference;
+};
+static_assert(sizeof(nslEffect) == 48, "IDA nslEffect layout");
 enum nflRequestID : unsigned { NFL_REQUEST_ID_INVALID = (unsigned)-1 };
 struct nslWaveBankLoader {
     nslWaveBankLoaderState state;
@@ -402,6 +460,8 @@ _DSI3DL2LISTENER nsl_driverI3DL2Setting = {
     -1000, -6000, 0.0f, 0.17f, 0.1f, -1204,
     0.001f, 207, 0.0020000001f, 100.0f, 100.0f, 5000.0f
 };
+static _DSI3DL2LISTENER lastI3DL2Setting{};
+static unsigned int _S1_2 = 0;
 // Listener-frame globals and initial speaker table from IDA's release data.
 nslSpeaker nsl_speakers[8] = {
     {{-1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}},
@@ -549,6 +609,8 @@ extern "C" txSlot txSlotNew(txSlotPool* pool);
 
 // Forward declarations for the IDA-backed bank layer below.
 unsigned nslDriverVoiceSize();
+HRESULT nslDriverCheck(HRESULT code, const char* funcName,
+                       const char* fileName, int lineNumber);
 void* nslAramGetBase();
 unsigned nslAramGetSize();
 nslWaveBankID nslWaveBankLoad(nflFileID file, unsigned fileOffset, unsigned flags);
@@ -1533,7 +1595,69 @@ void          nslExit() {
     nsl_workUsed = 0;
     nsl_workLimit = 0;
 }
-void          nslSetEffect(const void*) {}
+// ea: 0x00825390
+void          nslSetEffect(const nslEffect* fx) {
+    if (fx != nullptr) {
+        bool valid = true;
+        if ((_S1_2 & 1u) == 0u) {
+            _S1_2 |= 1u;
+            lastI3DL2Setting = nsl_driverI3DL2Setting;
+        }
+
+        if (fx->lRoom < -10000 || fx->lRoom > 0)
+            valid = false;
+        nsl_driverI3DL2Setting.lRoom = fx->lRoom;
+        if (fx->lRoomHF < -10000 || fx->lRoomHF > 0)
+            valid = false;
+        nsl_driverI3DL2Setting.lRoomHF = fx->lRoomHF;
+        if (fx->flRoomRolloffFactor < 0.0f || fx->flRoomRolloffFactor > 10.0f)
+            valid = false;
+        nsl_driverI3DL2Setting.flRoomRolloffFactor = fx->flRoomRolloffFactor;
+        if (fx->flDecayTime < 0.1f || fx->flDecayTime > 20.0f)
+            valid = false;
+        nsl_driverI3DL2Setting.flDecayTime = fx->flDecayTime;
+        if (fx->flDecayHFRatio < 0.1f || fx->flDecayHFRatio > 2.0f)
+            valid = false;
+        nsl_driverI3DL2Setting.flDecayHFRatio = fx->flDecayHFRatio;
+        if (fx->lReflections < -10000 || fx->lReflections > 1000)
+            valid = false;
+        nsl_driverI3DL2Setting.lReflections = fx->lReflections;
+        if (fx->flReflectionsDelay < 0.0f || fx->flReflectionsDelay > 0.30000001f)
+            valid = false;
+        nsl_driverI3DL2Setting.flReflectionsDelay = fx->flReflectionsDelay;
+        if (fx->lReverb < -10000 || fx->lReverb > 2000)
+            valid = false;
+        nsl_driverI3DL2Setting.lReverb = fx->lReverb;
+        if (fx->flReverbDelay < 0.0f || fx->flReverbDelay > 0.1f)
+            valid = false;
+        nsl_driverI3DL2Setting.flReverbDelay = fx->flReverbDelay;
+        if (fx->flDiffusion < 0.0f || fx->flDiffusion > 100.0f)
+            valid = false;
+        nsl_driverI3DL2Setting.flDiffusion = fx->flDiffusion;
+        if (fx->flDensity < 0.0f || fx->flDensity > 100.0f)
+            valid = false;
+        nsl_driverI3DL2Setting.flDensity = fx->flDensity;
+        if (fx->flHFReference < 20.0f || fx->flHFReference > 5000.0f)
+            valid = false;
+
+        nsl_driverI3DL2Setting.flHFReference = fx->flHFReference;
+        if (!valid) {
+            txPrintf("NSL", 0,
+                     "Problem with XBox reverb setting. Reverb setting ignored\n");
+            nsl_driverI3DL2Setting = lastI3DL2Setting;
+        }
+    }
+
+    const HRESULT code = j_IDirectSound_SetI3DL2Listener(
+        nsl_driverDevice, &nsl_driverI3DL2Setting, 0);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 1117);
+}
+// Existing game translation units carry the same release pointer ABI as void*;
+// keep that linker-facing wrapper while retaining the IDA nslEffect symbol.
+void          nslSetEffect(const void* fx) {
+    nslSetEffect(reinterpret_cast<const nslEffect*>(fx));
+}
 void          nslSetListenerPosition(const float* const) {}
 void          nslSetListenerOrientation(const float* const, const float* const) {}
 // ea: 0x008270B0
@@ -4262,6 +4386,133 @@ void          nslDriverCalculateRolloff(float* dest, float value,
 }
 // ea: 0x00825010
 void          nslDriverExit() {}
+// ea: 0x00825020
+static int nslWaveGetChannelCount_0(const nslWave* w) {
+    if (w == nullptr)
+        return 0;
+    const unsigned char* nameOffset =
+        *reinterpret_cast<const unsigned char* const*>(w);
+    if (nameOffset == nullptr)
+        return 0;
+    const unsigned char speakerMap = nameOffset[6];
+    if (speakerMap == 0)
+        return 1;
+    const unsigned char folded = static_cast<unsigned char>(
+        (((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) & 0x33u) +
+        (((((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) >> 2) &
+          0x33u)));
+    return (folded >> 4) + (folded & 0x0Fu);
+}
+
+// ea: 0x00825020
+HRESULT       nslDriverVoice::Init(const nslVoice* lv, const nslWave* w) {
+    XFileMediaObject* sourceXMO = m_pSourceXMO;
+    if (sourceXMO != nullptr)
+        sourceXMO->__vftable->Release(sourceXMO);
+    m_pSourceXMO = nullptr;
+    m_dwFileLength = 0;
+    m_nLastPacketIndex = -1;
+
+    const unsigned char* nameOffset =
+        *reinterpret_cast<const unsigned char* const*>(w);
+    const unsigned char waveFormatCode = nameOffset[4];
+    xbox_adpcmwaveformat_tag waveFormat;
+    if (waveFormatCode == 17) {
+        unsigned short channelCount;
+        if (nameOffset != nullptr) {
+            const unsigned char speakerMap = nameOffset[6];
+            if (speakerMap != 0) {
+                const unsigned char folded = static_cast<unsigned char>(
+                    (((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) &
+                     0x33u) +
+                    (((((speakerMap & 0x55u) + ((speakerMap >> 1) & 0x55u)) >>
+                       2) & 0x33u)));
+                channelCount = static_cast<unsigned short>(
+                    (folded >> 4) + (folded & 0x0Fu));
+            } else {
+                channelCount = 1;
+            }
+        } else {
+            channelCount = 0;
+        }
+        j_XAudioCreatePcmFormat(
+            channelCount, *reinterpret_cast<const unsigned short*>(nameOffset),
+            0x10u, &waveFormat.wfx);
+    } else if (waveFormatCode == 32) {
+        const unsigned sampleRate =
+            *reinterpret_cast<const unsigned short*>(nameOffset);
+        j_XAudioCreateAdpcmFormat(
+            static_cast<unsigned short>(nslWaveGetChannelCount_0(w)),
+            sampleRate, &waveFormat);
+    }
+
+    HRESULT code = j_IDirectSoundStream_SetFormat(stream, &waveFormat.wfx);
+    nslDriverCheck(code, "NSL",
+                   "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp", 898);
+
+    const _DSMIXBINS* mixBins = nullptr;
+    int mixBinLine = 0;
+    switch (waveFormat.wfx.nChannels) {
+    case 1: {
+        mixBins = nsl_driverMixBin3D;
+        unsigned paramBits;
+        std::memcpy(&paramBits, &lv[1].params[9], sizeof(paramBits));
+        if ((paramBits & 1u) == 0u)
+            mixBins = nsl_driverMixBinMono;
+        code = j_IDirectSoundStream_SetMixBins(stream, mixBins);
+        mixBinLine = 903;
+        break;
+    }
+    case 2:
+        code = j_IDirectSoundStream_SetMixBins(stream, nsl_driverMixBin2D);
+        mixBinLine = 902;
+        break;
+    case 6:
+        code = j_IDirectSoundStream_SetMixBins(stream, nsl_driverMixBin51);
+        mixBinLine = 901;
+        break;
+    default:
+        break;
+    }
+    if (mixBinLine != 0)
+        nslDriverCheck(code, "NSL",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslDriverXBOXDSOUND.cpp",
+                       mixBinLine);
+
+    unsigned waveIDBits;
+    std::memcpy(&waveIDBits, &lv[1].params[10], sizeof(waveIDBits));
+    const nflFileID file = nslWaveGetFile(
+        static_cast<nslWaveID>(static_cast<int>(waveIDBits)));
+    void** fileHandle = static_cast<void**>(
+        nflGetFileHandle(file, nullptr, nullptr, nullptr, nullptr));
+    HRESULT result = j_XFileCreateMediaObjectAsync(
+        *fileHandle, 2u, &m_pSourceXMO);
+    if (result < 0)
+        return result;
+
+    if (waveFormatCode == 17) {
+        m_dwFileLength = 16u * w->sampleCount *
+            static_cast<unsigned>(nslWaveGetChannelCount_0(w));
+    } else if (waveFormatCode == 32) {
+        m_dwFileLength = 36u * (w->sampleCount >> 6) *
+            static_cast<unsigned>(nslWaveGetChannelCount_0(w));
+    }
+    m_dwStreamBytesRemaining = m_dwFileLength;
+    const unsigned formatWord = *reinterpret_cast<const unsigned*>(
+        reinterpret_cast<const unsigned char*>(w) + 4u);
+    fileOffset = static_cast<int>(formatWord);
+    m_pSourceXMO->__vftable->Seek(m_pSourceXMO, fileOffset, 0, nullptr);
+
+    volatile PACKET_CONTEXT* contexts = m_aContexts;
+    for (int i = 2; i != 0; --i) {
+        contexts->dwPacketSize = bufferSize;
+        contexts->dwPacketStatus = 0;
+        contexts->poPacketOwner = PACKET_OWNER_DEST;
+        ++contexts;
+    }
+    return 0;
+}
+
 // ea: 0x00825210
 int           nslDriverVoice::FindFreePacket(int* packetIndexPtr) {
     const int lastPacketIndex = m_nLastPacketIndex;

@@ -168,7 +168,7 @@ bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: ne
 
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 
-nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: IDA-backed nslDriverCheck, nslDriverInit, initVoices, and nslDriverStart now match the release path, including exact DirectSound call order, error table, DSP image bytes, 0x100/0x7E0000/0x1000/0x10000 constants, 3D-before-2D voice allocation priority, 0x12000/0x24000/0x48000 buffers, 0x15888/0x2B110 format immediates, and listener settings; remaining driver lifecycle/voice calls stay explicit Win32 shim boundaries
+nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	14	PORTED	Phase 3: IDA-backed nslDriverCheck, nslDriverInit, initVoices, nslDriverStart, nslSetEffect, and nslDriverVoice::Init now match the release path, including exact DirectSound call order, error table, DSP image bytes, 0x100/0x7E0000/0x1000/0x10000 constants, 3D-before-2D voice allocation priority, 0x12000/0x24000/0x48000 buffers, 0x15888/0x2B110 format immediates, listener settings, reverb range validation, stream format/mix-bin selection, file-media setup, byte lengths, seek offset, and packet initialization; remaining driver lifecycle/voice calls stay explicit Win32 shim boundaries
 
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	PORTED	[ngl_xboxr] ngl_gpu.cpp: full 13 funcs - pack/unpack vertex buffer (14 format cases each), SetBonesWorld/Local; gpuVertexElementUsage enum added; fixed dx_shader bone-matrix order (InvRest*Rel) + identity rows
 

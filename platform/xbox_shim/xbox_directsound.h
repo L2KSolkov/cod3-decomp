@@ -11,6 +11,41 @@ struct IDirectSoundStream {
 };
 struct _DSMIXBINS;
 
+// IDA's XMediaObject/XFileMediaObject interfaces are four-byte vtable
+// objects. Keep the exact Xbox ABI here; the Win32 implementation remains a
+// shim boundary until the audio backend is ported.
+struct _XMEDIAINFO;
+struct _XMEDIAPACKET;
+struct XMediaObject;
+struct XFileMediaObject;
+struct XMediaObject_vtbl {
+    unsigned int (__stdcall *AddRef)(XMediaObject*);
+    unsigned int (__stdcall *Release)(XMediaObject*);
+    HRESULT (__stdcall *GetInfo)(XMediaObject*, _XMEDIAINFO*);
+    HRESULT (__stdcall *GetStatus)(XMediaObject*, unsigned int*);
+    HRESULT (__stdcall *Process)(XMediaObject*, const _XMEDIAPACKET*, const _XMEDIAPACKET*);
+    HRESULT (__stdcall *Discontinuity)(XMediaObject*);
+    HRESULT (__stdcall *Flush)(XMediaObject*);
+};
+struct XMediaObject {
+    XMediaObject_vtbl* __vftable;
+};
+struct XFileMediaObject_vtbl {
+    unsigned int (__stdcall *AddRef)(XFileMediaObject*);
+    unsigned int (__stdcall *Release)(XFileMediaObject*);
+    HRESULT (__stdcall *GetInfo)(XFileMediaObject*, _XMEDIAINFO*);
+    HRESULT (__stdcall *GetStatus)(XFileMediaObject*, unsigned int*);
+    HRESULT (__stdcall *Process)(XFileMediaObject*, const _XMEDIAPACKET*, const _XMEDIAPACKET*);
+    HRESULT (__stdcall *Discontinuity)(XFileMediaObject*);
+    HRESULT (__stdcall *Flush)(XFileMediaObject*);
+    HRESULT (__stdcall *Seek)(XFileMediaObject*, int, unsigned int, unsigned int*);
+    HRESULT (__stdcall *GetLength)(XFileMediaObject*, unsigned int*);
+    void (__stdcall *DoWork)(XFileMediaObject*);
+};
+struct XFileMediaObject {
+    XFileMediaObject_vtbl* __vftable;
+};
+
 // IDA's Xbox WAVEFORMATEXTENSIBLE uses the Windows tWAVEFORMATEX layout;
 // keep a distinct name because the Win32 multimedia headers do not expose
 // the Xbox typedef under WAVEFORMATEXTENSIBLE in every translation unit.
@@ -98,6 +133,9 @@ struct _DSBUFFERDESC {
 
 static_assert(sizeof(xbox_adpcmwaveformat_tag) == 20,
               "Xbox ADPCM format layout mismatch");
+static_assert(sizeof(XMediaObject) == 4, "Xbox XMediaObject layout mismatch");
+static_assert(sizeof(XFileMediaObject) == 4,
+              "Xbox XFileMediaObject layout mismatch");
 static_assert(sizeof(tWAVEFORMATEX) == 18, "Xbox WAVEFORMATEX layout mismatch");
 static_assert(sizeof(xbox_WAVEFORMATEXTENSIBLE) == 40,
               "Xbox WAVEFORMATEXTENSIBLE layout mismatch");
@@ -139,6 +177,19 @@ HRESULT __stdcall j_IDirectSoundStream_SetMode(IDirectSoundStream* pStream,
                                                 unsigned int dwFlags);
 HRESULT __stdcall j_IDirectSoundStream_SetEG(
     IDirectSoundStream* pStream, const _DSENVELOPEDESC* pEnvelopeDesc);
+void __stdcall j_XAudioCreatePcmFormat(unsigned short nChannels,
+                                       unsigned int nSamplesPerSec,
+                                       unsigned short wBitsPerSample,
+                                       tWAVEFORMATEX* pwfx);
+void __stdcall j_XAudioCreateAdpcmFormat(unsigned short nChannels,
+                                         unsigned int nSamplesPerSec,
+                                         xbox_adpcmwaveformat_tag* pwfx);
+HRESULT __stdcall j_IDirectSoundStream_SetFormat(
+    IDirectSoundStream* pStream, const tWAVEFORMATEX* pwfxFormat);
+HRESULT __stdcall j_IDirectSoundStream_SetMixBins(
+    IDirectSoundStream* pStream, const _DSMIXBINS* pMixBins);
+HRESULT __stdcall j_XFileCreateMediaObjectAsync(
+    void* hFile, unsigned int dwMaxPackets, XFileMediaObject** ppMediaObject);
 HRESULT __stdcall j_IDirectSoundBuffer_SetHeadroom(IDirectSoundBuffer* pBuffer,
                                                     unsigned int dwHeadroom);
 HRESULT __stdcall j_IDirectSoundBuffer_SetMode(IDirectSoundBuffer* pBuffer,
