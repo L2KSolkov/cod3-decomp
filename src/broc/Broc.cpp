@@ -20,6 +20,7 @@
 // are released through the matching ownership check.
 extern void* mem_alloc(unsigned int size, unsigned int align);
 extern void mem_free(void* ptr);
+extern const char defaultFileName[];
 
 extern int gNumStringsAlloc;
 extern int gNumStringsFreed;
@@ -461,7 +462,7 @@ string::~string() {
 
 const char* string::c_str() const {
     if (!mBlock)
-        return "";
+        return defaultFileName;
     return mBlock->mBuff;
 }
 
@@ -597,8 +598,8 @@ string& string::operator+=(float val) {
 // ============================================================================
 
 void string::Append(const char* txt, unsigned int len) {
-    if (!txt)
-        txt = "(null)";
+    if (!txt || len == 0)
+        return;
 
     if (!mBlock) {
         mBlock = AllocBlock(txt, len, 0);
@@ -620,7 +621,7 @@ void string::Append(const char* txt, unsigned int len) {
         oldBlock->DecrementCount();
     } else {
         unsigned int oldLen = mBlock->mLength;
-        if (oldLen + len + 1 <= mBlock->mBlockSize) {
+        if (oldLen + len + 1 < mBlock->mBlockSize) {
             memcpy(mBlock->mBuff + oldLen, txt, len);
             mBlock->mBuff[oldLen + len] = '\0';
             mBlock->mLength = (unsigned short)(oldLen + len);
