@@ -19,6 +19,31 @@
 #include <cmath>
 
 namespace apsMath {
+
+float ACos(float x) {
+    const float ax = std::fabs(x);
+    float value;
+
+    if (ax < 0.5f) {
+        const float x2 = ax * ax;
+        const float x3 = x2 * ax;
+        const float x5 = x3 * x2;
+        const float x7 = x5 * x2;
+        value = x7 * 0.053981241f + x5 * 0.075000003f
+              + x3 * 0.1666667f + ax;
+    } else {
+        const float root = std::sqrt(std::fabs((1.0f - ax) * 0.5f));
+        const float root2 = root * root;
+        const float root3 = root2 * root;
+        const float root5 = root3 * root2;
+        const float root7 = root5 * root2;
+        value = root7 * -0.1079625f - root5 * 0.15000001f
+              - root3 * 0.33333331f - root * 2.0f + 1.570796f;
+    }
+
+    return 1.5707964f - (x < 0.0f ? -value : value);
+}
+
 // ?FloatRand@apsMath@@YAMMM@Z (apsEffect.o; pseudo-random float in [min,max])
 float FloatRand(float min, float max)
 {
