@@ -18,7 +18,7 @@ void __cod3_stub_game_core(void) {
 // into the owning class files as each singleton is reconstructed.
 class BankManager { public: static void CreateInst(); static void DeleteInst(); };
 class LightGridMgr { public: static void DeleteInst(); };
-class XModelManager { public: static void CreateInst(); static void DeleteInst(); };
+class XModelManager { public: static void DeleteInst(); };
 class XModelPartsManager { public: static void CreateInst(); static void DeleteInst(); };
 class DestructibleBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
@@ -58,7 +58,6 @@ class PlayerAnimMgr { public: static void CreateInst(); static void DeleteInst()
 class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 
 void LightGridMgr::DeleteInst() {}
-void XModelManager::CreateInst() {}
 void XModelManager::DeleteInst() {}
 void XModelPartsManager::CreateInst() {}
 void XModelPartsManager::DeleteInst() {}

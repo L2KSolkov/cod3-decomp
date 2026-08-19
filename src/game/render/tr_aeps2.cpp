@@ -6,6 +6,7 @@
 #include "aeps/apsError.h"
 #include "core/ae_array.h"
 
+#include <new>
 #include <string.h>
 
 // AeAssert (game.o defines the real symbols; local decls only)
@@ -28,6 +29,8 @@ extern void ValidatePakId(TPakId pakId);  // streamer.o (pakmanager.cpp)
 extern void GetPakPrerequisites(
     TPakId pakId,
     ae_sized_array<TPakId, 32>* prereqs);  // ?GetPakPrerequisites@@YAXW4TPakId@@PAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
+                                 const char* ctx, const char* file, int line);
 
 // InplaceString (ae in-place char*; class tag per VInplaceString mangling)
 class InplaceString {
@@ -446,6 +449,7 @@ private:
     void PostProcess(XModelBank* xmodelBank, TPakId pak_id);  // ?PostProcess@XModelManager@@AAEXPAVXModelBank@@W4TPakId@@@Z
 public:
     static XModelManager* sInst;  // ?sInst@XModelManager@@2PAV1@A (sv_globals.cpp)
+    static void CreateInst();      // ?CreateInst@XModelManager@@SAXXZ
     IVPointer<XModel> GetXModel(TPakId pak_id,
                                 const char* name);  // ?GetXModel@XModelManager@@QAE?AV?$IVPointer@VXModel@@@@W4TPakId@@PBD@Z
 };
@@ -467,6 +471,34 @@ XModelManager::XModelManager()
 
 XModelManager::~XModelManager()
 {
+}
+
+// ea: 0x004B4E40
+void XModelManager::CreateInst()
+{
+    if (sInst != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "sInst==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("singleton already created!"))
+            __debugbreak();
+    }
+
+    XModelManager* result = static_cast<XModelManager*>(
+        mem_heap_malloc_ctx(0x190u, 4, "core",
+                            "c:\\cod\\code\\game\\XModelManager.h", 36));
+    if (result != nullptr)
+    {
+        result = new (result) XModelManager();
+        sInst = result;
+    }
+    else
+    {
+        sInst = nullptr;
+    }
 }
 
 XModelPartsManager::XModelPartsManager()
