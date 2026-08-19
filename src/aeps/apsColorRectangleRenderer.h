@@ -41,12 +41,12 @@ static_assert(sizeof(apsColorRectangleRenderer) == 0x80, "apsColorRectangleRende
 struct apsColorRectangleRender {
     static unsigned int* VS;                  // ?VS@apsColorRectangleRender@@3PAKA
     static const unsigned int** VShaderTable; // ?VShaderTable@apsColorRectangleRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader((unsigned int*)VS, VShaderTable[0]); }   // ea: 0x804930
+    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x804930
 };
 struct apsColorRectangleRenderPixel {
     static unsigned int** PS;                 // ?PS@apsColorRectangleRenderPixel@@3PAPAKA
     static const unsigned int** PShaderTable; // ?PShaderTable@apsColorRectangleRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader((unsigned int**)PS, PShaderTable[0]); }   // ea: 0x804910
+    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x804910
     static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x804860
 };
 #endif // COD3_AEPS_APSCOLORRECTANGLERENDERER_H

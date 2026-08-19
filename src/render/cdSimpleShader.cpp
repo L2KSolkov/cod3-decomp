@@ -69,8 +69,8 @@ cdSimpleShaderMat::cdSimpleShaderMat(nglTexture* iTexture) {
 void cdSimpleShader::Register() {
     nglShader::Register();
     cdSimpleRender::RegisterVShader();
-    nglDxRegisterPShader(cdSimplePixel::PS, cdSimplePixel::PShaderTable[0]);
-    nglDxRegisterPShader(cdSimpleFullbrightPixel::PS,
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdSimplePixel::PS), cdSimplePixel::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdSimpleFullbrightPixel::PS),
                          cdSimpleFullbrightPixel::PShaderTable[0]);
 }
 
@@ -224,7 +224,7 @@ void cdSimpleShaderNode::Render() {
 // ============================================================================
 void cdSimpleRender::RegisterVShader() {
     for (int i = 0; i != 2; ++i)
-        nglDxRegisterVShader(&VS[i], VShaderTable[i]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&VS[i]), VShaderTable[i]);
 }
 
 unsigned int cdSimpleRender::GetVShader(unsigned int index) {
@@ -232,7 +232,7 @@ unsigned int cdSimpleRender::GetVShader(unsigned int index) {
 }
 
 void cdSimplePixel::RegisterPShader() {
-    nglDxRegisterPShader(PS, PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
 }
 
 unsigned int* cdSimplePixel::GetPShader() {
@@ -240,7 +240,7 @@ unsigned int* cdSimplePixel::GetPShader() {
 }
 
 void cdSimpleFullbrightPixel::RegisterPShader() {
-    nglDxRegisterPShader(PS, PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
 }
 
 unsigned int* cdSimpleFullbrightPixel::GetPShader() {

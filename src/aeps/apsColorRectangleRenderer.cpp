@@ -30,9 +30,9 @@ apsColorRectangleRenderer::apsColorRectangleRenderer(const apsColorRectangleRend
 // ============================================================================
 void apsColorRectangleRenderer::Init() {
     if (apsColorRectangleRender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsColorRectangleRender::VS, apsColorRectangleRender::VShaderTable[0]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorRectangleRender::VS), apsColorRectangleRender::VShaderTable[0]);
     if (apsColorRectangleRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsColorRectangleRenderPixel::PS, apsColorRectangleRenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorRectangleRenderPixel::PS), apsColorRectangleRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

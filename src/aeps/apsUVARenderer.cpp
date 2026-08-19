@@ -38,9 +38,9 @@ apsUVARenderer::apsUVARenderer(const apsUVARenderer::cArgs* args)
 // ============================================================================
 void apsUVARenderer::Init() {
     if (apsUVARender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsUVARender::VS, apsUVARender::VShaderTable[0]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsUVARender::VS), apsUVARender::VShaderTable[0]);
     if (apsUVARenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsUVARenderPixel::PS, apsUVARenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsUVARenderPixel::PS), apsUVARenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

@@ -30,16 +30,12 @@ static __m128 BonesArray_3[3 * 48 + 1];   // 0x10E6060
 // ============================================================================
 // nglDxRegisterVShader / nglDxRegisterPShader
 // ============================================================================
-void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode) {
-    if (VS == nullptr)
-        return;  // shader microcode not ported yet (Phase 6)
-    *VS = (unsigned int)Microcode;
+void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode) {
+    *VS = (unsigned long)Microcode;
 }
 
-void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode) {
-    if (PS == nullptr)
-        return;  // shader microcode not ported yet (Phase 6)
-    *PS = (unsigned int*)Microcode;
+void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode) {
+    *PS = (unsigned long*)Microcode;
 }
 
 // ============================================================================

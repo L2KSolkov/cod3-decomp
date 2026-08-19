@@ -33,9 +33,9 @@ apsUVARectangleRenderer::apsUVARectangleRenderer(const apsUVARectangleRenderer::
 // ============================================================================
 void apsUVARectangleRenderer::Init() {
     if (apsUVARectangleRender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsUVARectangleRender::VS, apsUVARectangleRender::VShaderTable[0]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsUVARectangleRender::VS), apsUVARectangleRender::VShaderTable[0]);
     if (apsUVARectangleRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsUVARectangleRenderPixel::PS, apsUVARectangleRenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsUVARectangleRenderPixel::PS), apsUVARectangleRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

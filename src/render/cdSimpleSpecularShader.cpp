@@ -131,9 +131,9 @@ void ToggleCDSimpleSpecularShader() {
 void cdSimpleSpecularShader::Register() {
     nglShader::Register();
     cdSimpleSpecularRender::RegisterVShader();
-    nglDxRegisterPShader(reinterpret_cast<unsigned int**>(cdSimpleSpecularPixel::PS),
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdSimpleSpecularPixel::PS),
                          cdSimpleSpecularPixel::PShaderTable[0]);
-    nglDxRegisterPShader(reinterpret_cast<unsigned int**>(cdSimpleSpecularFullbrightPixel::PS),
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdSimpleSpecularFullbrightPixel::PS),
                          cdSimpleSpecularFullbrightPixel::PShaderTable[0]);
 }
 
@@ -301,5 +301,5 @@ void cdSimpleSpecularShaderNode::Render() {
 
 void cdSimpleSpecularRender::RegisterVShader() {
     for (int i = 0; i != 2; ++i)
-        nglDxRegisterVShader(reinterpret_cast<unsigned int*>(&VS[i]), VShaderTable[i]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&VS[i]), VShaderTable[i]);
 }

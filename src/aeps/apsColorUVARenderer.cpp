@@ -30,9 +30,9 @@ apsColorUVARenderer::apsColorUVARenderer(const apsColorUVARenderer::cArgs* args)
 // ============================================================================
 void apsColorUVARenderer::Init() {
     if (apsColorUVARender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsColorUVARender::VS, apsColorUVARender::VShaderTable[0]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorUVARender::VS), apsColorUVARender::VShaderTable[0]);
     if (apsColorUVARenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsColorUVARenderPixel::PS, apsColorUVARenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorUVARenderPixel::PS), apsColorUVARenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

@@ -258,28 +258,28 @@ void nglGpuInitShaders() {
         nglGpuDebugVertexShader::VS != nullptr
             ? nglGpuDebugVertexShader::VS[0]
             : 0;
-    nglDxRegisterPShader(nglGpuDebugPixelShader::PS, nglGpuDebugPixelShader::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(nglGpuDebugPixelShader::PS), nglGpuDebugPixelShader::PShaderTable[0]);
     nglGpuDebugPixelShader::Shader = nglGpuDebugPixelShader::PS[0];
-    nglDxRegisterVShader(nglGpuQuadPCVertexShader::VS, nglGpuQuadPCVertexShader::VShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(nglGpuQuadPCVertexShader::VS), nglGpuQuadPCVertexShader::VShaderTable[0]);
     nglGpuQuadPCVertexShader::Shader = nglGpuQuadPCVertexShader::VS[0];
-    nglDxRegisterVShader(nglGpuQuadPUVVertexShader::VS, nglGpuQuadPUVVertexShader::VShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(nglGpuQuadPUVVertexShader::VS), nglGpuQuadPUVVertexShader::VShaderTable[0]);
     nglGpuQuadPUVVertexShader::Shader = nglGpuQuadPUVVertexShader::VS[0];
-    nglDxRegisterVShader(nglGpuQuadPCUVVertexShader::VS, nglGpuQuadPCUVVertexShader::VShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(nglGpuQuadPCUVVertexShader::VS), nglGpuQuadPCUVVertexShader::VShaderTable[0]);
     nglGpuQuadPCUVVertexShader::Shader = nglGpuQuadPCUVVertexShader::VS[0];
-    nglDxRegisterVShader(nglGpuQuadPUV4VertexShader::VS, nglGpuQuadPUV4VertexShader::VShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(nglGpuQuadPUV4VertexShader::VS), nglGpuQuadPUV4VertexShader::VShaderTable[0]);
     nglGpuQuadPUV4VertexShader::Shader = nglGpuQuadPUV4VertexShader::VS[0];
-    nglDxRegisterVShader(nglGpuQuadPUVMatColVertexShader::VS,
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(nglGpuQuadPUVMatColVertexShader::VS),
                          nglGpuQuadPUVMatColVertexShader::VShaderTable[0]);
     nglGpuQuadPUVMatColVertexShader::Shader = nglGpuQuadPUVMatColVertexShader::VS[0];
-    nglDxRegisterPShader(nglGpuTexColPixelShader::PS, nglGpuTexColPixelShader::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(nglGpuTexColPixelShader::PS), nglGpuTexColPixelShader::PShaderTable[0]);
     nglGpuTexColPixelShader::Shader = nglGpuTexColPixelShader::PS[0];
-    nglDxRegisterPShader(nglGpuTexPixelShader::PS, nglGpuTexPixelShader::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(nglGpuTexPixelShader::PS), nglGpuTexPixelShader::PShaderTable[0]);
     nglGpuTexPixelShader::Shader = nglGpuTexPixelShader::PS[0];
-    nglDxRegisterPShader(nglGpuColPixelShader::PS, nglGpuColPixelShader::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(nglGpuColPixelShader::PS), nglGpuColPixelShader::PShaderTable[0]);
     nglGpuColPixelShader::Shader = nglGpuColPixelShader::PS[0];
-    nglDxRegisterPShader(nglGpuFilterPixelShader::PS, nglGpuFilterPixelShader::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(nglGpuFilterPixelShader::PS), nglGpuFilterPixelShader::PShaderTable[0]);
     nglGpuFilterPixelShader::Shader = nglGpuFilterPixelShader::PS[0];
-    nglDxRegisterPShader(nglGpuZFogPixelShader::PS, nglGpuZFogPixelShader::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(nglGpuZFogPixelShader::PS), nglGpuZFogPixelShader::PShaderTable[0]);
     nglGpuZFogPixelShader::Shader = nglGpuZFogPixelShader::PS[0];
 }
 

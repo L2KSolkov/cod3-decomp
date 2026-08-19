@@ -47,9 +47,9 @@ bool apsBillboardRenderer::UsesDiffuseLighting() const {
 // ============================================================================
 void apsBillboardRenderer::Init() {
     if (apsBillboardRender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsBillboardRender::VS, apsBillboardRender::VShaderTable[0]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsBillboardRender::VS), apsBillboardRender::VShaderTable[0]);
     if (apsBillboardRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsBillboardRenderPixel::PS, apsBillboardRenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsBillboardRenderPixel::PS), apsBillboardRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

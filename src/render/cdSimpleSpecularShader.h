@@ -85,8 +85,8 @@ namespace cdSimpleSpecularFullbrightPixel {
 // ============================================================================
 void GetEyePos(nglMeshNode* meshNode, math::Vector4& eyePos);  // @0x7D4F00
 
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdSimpleSpecularShader* gCDSimpleSpecularShader;  // @0x10DE574
 

@@ -9,8 +9,8 @@ class nglMeshNode;
 struct nglMeshSection;
 
 // ngl_dx_shader.o (functions, defined in ngl_dx_shader.cpp)
-void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);
-void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
+void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);
 void nglDxSetBonesWorld(int p, nglMeshNode* MeshNode, nglMeshSection* Section);
 void nglDxSetupVShaderFog(int VSReg, nglMeshNode* MeshNode, float FogNear, float FogFar,
                           float FogMin, float FogMax);

@@ -25,9 +25,9 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // ============================================================================
 void apsShrimpRenderer::Init() {
     if (apsShrimpRender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsShrimpRender::VS, apsShrimpRender::VShaderTable[0]);
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsShrimpRender::VS), apsShrimpRender::VShaderTable[0]);
     if (apsShrimpRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsShrimpRenderPixel::PS, apsShrimpRenderPixel::PShaderTable[0]);
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsShrimpRenderPixel::PS), apsShrimpRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================
