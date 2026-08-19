@@ -2036,7 +2036,7 @@ void FEMultiLineText::Draw(int start_line, int end_line)
                 ++start_linea;
                 --end_linea;
             }
-            while (end_linea != 1);
+            while (end_linea != 0);
         }
     }
 }
