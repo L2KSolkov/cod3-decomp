@@ -83,6 +83,13 @@ static unsigned int gD3D9VertexOffsets[4] = {};
 static unsigned int gD3D9VertexStrides[4] = {};
 static unsigned int gNullTextureWidths[4] = {};
 static unsigned int gNullTextureHeights[4] = {};
+static D3DBaseTexture* gNullBoundTextures[4] = {};
+static D3DPalette* gNullPalettes[4] = {};
+struct nullD3DPaletteInfo {
+    D3DPalette* Object;
+    unsigned int Entries;
+};
+static nullD3DPaletteInfo gNullPaletteInfos[64] = {};
 static HWND gD3D9Window = NULL;
 static unsigned int gNullWidth = 640;
 static unsigned int gNullHeight = 480;
@@ -305,6 +312,16 @@ static nullD3DExternalTexture* nullD3DFindExternalTexture(D3DBaseTexture* Textur
     return NULL;
 }
 
+static unsigned int nullD3DPaletteEntryCount(D3DPalette* Palette) {
+    if (Palette == NULL)
+        return 0;
+    for (unsigned int i = 0; i < sizeof(gNullPaletteInfos) / sizeof(gNullPaletteInfos[0]); ++i) {
+        if (gNullPaletteInfos[i].Object == Palette)
+            return gNullPaletteInfos[i].Entries;
+    }
+    return 256;
+}
+
 static unsigned int nullD3DExternalTextureWidth(unsigned int Format, unsigned int Size) {
     if (Size != 0)
         return (Size & 0xFFFu) + 1;
@@ -506,12 +523,48 @@ static void nullD3DUnswizzle32(const unsigned char* Source, unsigned int* Dest,
     }
 }
 
-static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size) {
+static void nullD3DUploadExternalTexture(nullD3DInfo* Info, unsigned int Size,
+                                         D3DPalette* Palette) {
     if (Info == NULL || Info->NativeTexture == NULL || Info->Bits == NULL)
         return;
     unsigned int BytesPerPixel = nullD3DFormatBytesPerPixel(Info->Format);
     if (BytesPerPixel == 0)
         return;
+    if (Info->Format == D3DFMT_P8) {
+        if (Palette == NULL || Palette->Data == 0)
+            return;
+        unsigned int Entries = nullD3DPaletteEntryCount(Palette);
+        if (Entries == 0)
+            return;
+        size_t LinearBytes = (size_t)Info->Width * Info->Height;
+        unsigned char* Linear = (unsigned char*)calloc(1, LinearBytes);
+        if (Linear == NULL)
+            return;
+        if (XGIsSwizzledFormat(Info->Format))
+            nullD3DUnswizzleBytes(Info->Bits, Linear, Info->Width, Info->Height, 1);
+        else {
+            unsigned int SourcePitch = Info->Width;
+            if (Size != 0)
+                SourcePitch = (((Size >> 24) & 0xFFu) + 1u) << 6;
+            for (unsigned int y = 0; y < Info->Height; ++y)
+                memcpy(Linear + (size_t)y * Info->Width,
+                       Info->Bits + (size_t)y * SourcePitch, Info->Width);
+        }
+        COD3_D3D9_LOCKED_RECT Locked = {};
+        if (SUCCEEDED(Info->NativeTexture->LockRect(0, &Locked, NULL, 0))) {
+            const unsigned int* Colors = (const unsigned int*)(uintptr_t)Palette->Data;
+            for (unsigned int y = 0; y < Info->Height; ++y) {
+                unsigned int* Destination = (unsigned int*)((unsigned char*)Locked.pBits +
+                                                             y * Locked.Pitch);
+                const unsigned char* Source = Linear + (size_t)y * Info->Width;
+                for (unsigned int x = 0; x < Info->Width; ++x)
+                    Destination[x] = Colors[Source[x] < Entries ? Source[x] : 0];
+            }
+            Info->NativeTexture->UnlockRect(0);
+        }
+        free(Linear);
+        return;
+    }
     if (XGIsSwizzledFormat(Info->Format)) {
         if (BytesPerPixel != 1 && BytesPerPixel != 2 && BytesPerPixel != 4)
             return;
@@ -564,7 +617,18 @@ static void nullD3DCreateExternalNative(nullD3DInfo* Info, unsigned int Size,
                                           &Info->NativeTexture, NULL)))
         return;
     Info->NativeResource = Info->NativeTexture;
-    nullD3DUploadExternalTexture(Info, Size);
+    nullD3DUploadExternalTexture(Info, Size, NULL);
+}
+
+static void nullD3DReuploadPaletteTexture(unsigned int Stage) {
+    if (Stage >= 4 || gNullBoundTextures[Stage] == NULL || gNullPalettes[Stage] == NULL)
+        return;
+    nullD3DInfo* Info = nullD3DTextureInfo(gNullBoundTextures[Stage]);
+    nullD3DExternalTexture* External = nullD3DFindExternalTexture(gNullBoundTextures[Stage]);
+    if (Info == NULL || Info->Format != D3DFMT_P8)
+        return;
+    nullD3DUploadExternalTexture(Info, External != NULL ? External->PackedSize : 0,
+                                 gNullPalettes[Stage]);
 }
 
 static nullD3DInfo* nullD3DAdoptExternalTexture(D3DBaseTexture* Texture) {
@@ -1077,7 +1141,12 @@ void __stdcall D3DDevice_SetIndices(D3DIndexBuffer* IndexBuffer, unsigned int) {
     }
     gD3D9Device->SetIndices(gD3D9IndexBuffer);
 }
-void __stdcall D3DDevice_SetPalette(unsigned int, D3DPalette*) {}
+void __stdcall D3DDevice_SetPalette(unsigned int Stage, D3DPalette* Palette) {
+    if (Stage >= 4)
+        return;
+    gNullPalettes[Stage] = Palette;
+    nullD3DReuploadPaletteTexture(Stage);
+}
 void __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int Value) {
     if (gD3D9Device != NULL)
         gD3D9Device->SetRenderState(COD3_D3D9_RS_MULTISAMPLEANTIALIAS, Value != 0);
@@ -1111,7 +1180,10 @@ void __stdcall D3DDevice_SetRenderTarget(D3DSurface* RenderTarget, D3DSurface* Z
 }
 void __stdcall D3DDevice_SetShaderConstantMode(unsigned int) {}
 void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture) {
-    if (gD3D9Device == NULL || Stage >= 4)
+    if (Stage >= 4)
+        return;
+    gNullBoundTextures[Stage] = Texture;
+    if (gD3D9Device == NULL)
         return;
     IDirect3DBaseTexture9* NativeTexture = NULL;
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);
@@ -1124,6 +1196,7 @@ void __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* Texture)
     gNullTextureWidths[Stage] = Info != NULL ? Info->Width : 0;
     gNullTextureHeights[Stage] = Info != NULL ? Info->Height : 0;
     gD3D9Device->SetTexture(Stage, NativeTexture);
+    nullD3DReuploadPaletteTexture(Stage);
 }
 int __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
                                                         _D3DTEXTURESTAGESTATETYPE Type,
@@ -1205,7 +1278,9 @@ void __stdcall D3DDevice_Swap(unsigned int) {
     }
 }
 void __stdcall D3DDevice_SwitchTexture(unsigned int, unsigned int, unsigned int) {}
-unsigned int __stdcall D3DPalette_Lock2(D3DPalette*, unsigned int) { return 0; }
+unsigned int __stdcall D3DPalette_Lock2(D3DPalette* Palette, unsigned int) {
+    return Palette == NULL ? 0 : Palette->Data;
+}
 void __stdcall D3DResource_BlockUntilNotBusy(D3DResource*) {}
 void __stdcall D3DResource_Register(D3DResource* Resource, void* Base) {
     if (Resource == NULL || Base == NULL)
@@ -1450,8 +1525,18 @@ int __stdcall XGIsSwizzledFormat(unsigned int Format) {
         return 1;
     return 0;
 }
-void __stdcall XGSetPaletteHeader(_D3DPALETTESIZE, D3DPalette* Palette, void* Data) {
-    if (Palette != NULL) Palette->Data = (unsigned int)(uintptr_t)Data;
+void __stdcall XGSetPaletteHeader(_D3DPALETTESIZE Size, D3DPalette* Palette, void* Data) {
+    if (Palette == NULL)
+        return;
+    unsigned int Entries = 256u >> (unsigned int)Size;
+    for (unsigned int i = 0; i < sizeof(gNullPaletteInfos) / sizeof(gNullPaletteInfos[0]); ++i) {
+        if (gNullPaletteInfos[i].Object == Palette || gNullPaletteInfos[i].Object == NULL) {
+            gNullPaletteInfos[i].Object = Palette;
+            gNullPaletteInfos[i].Entries = Entries;
+            break;
+        }
+    }
+    Palette->Data = (unsigned int)(uintptr_t)Data;
 }
 void __stdcall XGSetTextureHeader(unsigned int Width, unsigned int Height, unsigned int Levels,
                                   unsigned int Usage, unsigned int Format, unsigned int,
