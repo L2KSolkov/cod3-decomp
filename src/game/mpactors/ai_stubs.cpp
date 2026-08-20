@@ -741,7 +741,7 @@
 }
 
 // ea: 0x0077C6D0  (?Actor_GetSuppressionCount@@YI?BHPAUactor_s@@@Z)
-    int __fastcall Actor_GetSuppressionCount(actor_s*)
+    const int __fastcall Actor_GetSuppressionCount(actor_s*)
 {
     return 0;
 }

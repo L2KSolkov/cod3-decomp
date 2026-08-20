@@ -14740,7 +14740,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14739	0x0077C6A0	0x00B6BBA0	?Actor_IsSuppressed@@YIHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14740	0x0077C6B0	0x00B6BBB0	?Actor_IsMoveSuppressed@@YIHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14741	0x0077C6C0	0x00B6BBC0	?Actor_GetSuppressionPlanes@@YI?BHPAUactor_s@@QAY01MQAM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	YES	VERIFIED
-14742	0x0077C6D0	0x00B6BBD0	?Actor_GetSuppressionCount@@YI?BHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14742	0x0077C6D0	0x00B6BBD0	?Actor_GetSuppressionCount@@YI?BHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14743	0x0077C6E0	0x00B6BBE0	?Actor_InterruptPoint@@YAXPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14744	0x0077C6F0	0x00B6BBF0	?Actor_CurrentLookAtAnimYawMax@@YAMPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14745	0x0077C700	0x00B6BC00	?Actor_CurrentLookAtYawMax@@YAMPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
