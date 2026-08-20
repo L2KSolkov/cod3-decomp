@@ -1072,3 +1072,4 @@ nal_init.o	?Convert@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked1
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked8EntropyFloat4Data@@VnalComponentPacked8EntropyFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
+nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentPacked16EntropyFloat4Data@@VnalComponentPacked16EntropyFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
