@@ -791,7 +791,7 @@
 }
 
 // ea: 0x0077C760  (?Path_AttemptedCompleteLookahead@@YI?BHPBUpath_t@@@Z)
-    int __fastcall Path_AttemptedCompleteLookahead(const path_t*)
+    const int __fastcall Path_AttemptedCompleteLookahead(const path_t*)
 {
     return 0;
 }

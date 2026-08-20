@@ -14749,7 +14749,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14748	0x0077C730	0x00B6BC30	?Path_Clear@@YIXPAUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14749	0x0077C740	0x00B6BC40	?Path_Exists@@YI?BHPBUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14750	0x0077C750	0x00B6BC50	?Path_CompleteLookahead@@YI?BHPBUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-14751	0x0077C760	0x00B6BC60	?Path_AttemptedCompleteLookahead@@YI?BHPBUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14751	0x0077C760	0x00B6BC60	?Path_AttemptedCompleteLookahead@@YI?BHPBUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14752	0x0077C770	0x00B6BC70	?Path_UsesObstacleNegotiation@@YI?BHPBUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14753	0x0077C780	0x00B6BC80	?Path_AllowsObstacleNegotiation@@YI?BHPBUpath_t@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 14754	0x0077C790	0x00B6BC90	?Path_GetObstacleNegotiationScript@@YIXPBUpath_t@@PAUscr_animscript_t@@PAM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

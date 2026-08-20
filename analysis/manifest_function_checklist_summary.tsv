@@ -517,7 +517,7 @@ mlock.obj	6	0	0	6	0	0	0
 modf.obj	1	0	0	1	0	0	0
 mountmu.obj	6	0	0	6	0	0	0
 mp.o	1142	874	268	0	0	0	0
-mp_actors.o	436	368	68	0	0	0	0
+mp_actors.o	436	369	67	0	0	0	0
 mp_anim_wad.o	430	10	420	0	0	0	0
 mp_level_wad.o	1062	36	1026	0	0	0	0
 mp_shell.o	835	791	44	0	0	0	0
