@@ -1113,28 +1113,48 @@ nflFileID nflOpenSubFile(nflFileID parentID, unsigned parentOffset,
 // ea: 0x0041F760
 nflRequestID nflAddRequest(const nflRequestParams* params)
 {
-    if (params == nullptr || !ValidFile(params->fileID)) return NFL_REQUEST_ID_INVALID;
-    nfsLock();
+    if (params == nullptr) return NFL_REQUEST_ID_INVALID;
+    if (!ValidFile(params->fileID)) {
+        nfsWarning("nflAddRequest: requestParams->fileID=%p is invalid or dead\n",
+                   params->fileID);
+        return NFL_REQUEST_ID_INVALID;
+    }
+    const bool multiThreaded = s_initParams.threadMode == NFL_THREAD_MODE_MULTI;
+    if (multiThreaded)
+        nfsLock();
     nflStreamID stream = params->streamID == NFL_STREAM_ID_DEFAULT ? s_defaultStreamID : (nflStreamID)params->streamID;
-    if (!ValidStream(stream)) { nfsUnlock(); return NFL_REQUEST_ID_INVALID; }
+    nfsStream* requestStream = nfsGetStream(stream);
+    if (requestStream == nullptr) {
+        if (multiThreaded) nfsUnlock();
+        nfsWarning("nflAddRequest: requestParams->streamID=%p is invalid or dead\n",
+                   params->streamID);
+        return NFL_REQUEST_ID_INVALID;
+    }
     nflRequestID id = AllocateRequest();
-    if (id == NFL_REQUEST_ID_INVALID) { nfsUnlock(); return id; }
-    const int index = RequestIndex(id);
-    if (index < 0) { nfsUnlock(); return NFL_REQUEST_ID_INVALID; }
-    nfsRequest& request = s_requests[index]; ClearSlotObject(&request);
+    if (id == NFL_REQUEST_ID_INVALID) {
+        if (multiThreaded) nfsUnlock();
+        nfsWarning("nflAddRequest: out of request slots. Please increase the request numbers in the nflInitParams structure");
+        return id;
+    }
+    nfsRequest* requestPtr = nfsGetRequest(id);
+    if (requestPtr == nullptr)
+        txAssertFailed(nullptr, "request", "nflAddRequest",
+                       "c:/cod/code/tl/nfl/src/nfl_system.cpp", 831);
+    nfsRequest& request = *requestPtr;
+    ClearSlotObject(&request);
     request.fileOffset = params->fileOffset; request.type = params->type;
     request.streamID = params->streamID; request.fileID = params->fileID;
     request.callback = params->callback; request.callbackData = params->userData;
     request.queueTime = Now(); request.expirationTime = params->timeout
         ? request.queueTime + params->timeout : 0x7FFFFFFFu;
-    nfsStream* requestStream = nfsGetStream(stream);
-    request.priority = params->priority | ((requestStream != nullptr ? requestStream->priority : NFL_PRIORITY_NORMAL) << 8);
+    request.priority = params->priority | (requestStream->priority << 8);
     request.buffer = (char*)params->buffer; request.bufferSize = params->dataSize;
     request.state = NFS_REQUEST_STATE_WAITING; request.lastWorkingTime = request.queueTime;
-    nfsUnlock();
+    request.bytesCompleted = 0;
+    if (multiThreaded)
+        nfsUnlock();
 #ifdef _WIN32
-    if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI && s_nfsEvent != nullptr)
-        SetEvent(s_nfsEvent);
+    if (multiThreaded && s_nfsEvent != nullptr) SetEvent(s_nfsEvent);
 #endif
     return id;
 }
