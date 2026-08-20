@@ -876,15 +876,15 @@ void pulse_sum_normal::apply(const float* s_) {
     }
 }
 
-float pulse_sum_normal::clamp_pulse_sum(float ps) {
+double pulse_sum_normal::clamp_pulse_sum(float ps) {
     if ((m_flags & 1) != 0) {
         if (m_pulse_parent == NULL &&
             _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 76,
-                      "m_pulse_parent", ""))
+                      "m_pulse_parent", defaultFileName))
             __debugbreak();
         if (m_pulse_limit_ratio < 0.0f &&
             _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 77,
-                      "m_pulse_limit_ratio >= 0.0f", ""))
+                      "m_pulse_limit_ratio >= 0.0f", defaultFileName))
             __debugbreak();
         float v3 = fabs(m_pulse_parent->m_pulse_sum) * m_pulse_limit_ratio;
         m_pulse_sum_max = v3;
@@ -892,7 +892,7 @@ float pulse_sum_normal::clamp_pulse_sum(float ps) {
     }
     if (m_pulse_sum_max < m_pulse_sum_min &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal_inline.h", 81,
-                  "m_pulse_sum_min <= m_pulse_sum_max", ""))
+                  "m_pulse_sum_min <= m_pulse_sum_max", defaultFileName))
         __debugbreak();
     unsigned int m_flags = this->m_flags;
     if (m_pulse_sum_min <= ps) {
@@ -977,8 +977,9 @@ void pulse_sum_normal::SOLVER_apply_relaxation(float* error_sq, bool add_error) 
 }
 
 void pulse_sum_normal::SOLVER_solver_intermediate(int iter, float delta_t) {
-    (void)iter;
-    (void)delta_t;
+    m_pulse_sum_cache->m_pulse_sum = m_pulse_sum / delta_t;
+    m_pulse_sum_cache->m_visit_key = iter;
+    m_right_side = m_big_dirt + m_right_side;
 }
 
 void pulse_sum_normal::SOLVER_solver_prolog(int iter, float delta_t) {
@@ -987,6 +988,9 @@ void pulse_sum_normal::SOLVER_solver_prolog(int iter, float delta_t) {
 }
 
 void pulse_sum_normal::project() {
+    float* p_m_pulse_sum = &m_pulse_sum;
+    m_pulse_sum = (float)clamp_pulse_sum(m_pulse_sum);
+    apply(p_m_pulse_sum);
 }
 
 // ============================================================================
@@ -1030,16 +1034,23 @@ const math::Dir3* pulse_sum_point::phys_diag_multiply_and_square(
 }
 
 void pulse_sum_point::apply(const math::Dir3* s_) {
-    // ea: 0x8928E0 - apply impulse along x/y/z rows.
     pulse_sum_node* m_b1 = this->m_b1;
-    m_b1->t_vel.v = _mm_add_ps(m_b1->t_vel.v, _mm_mul_ps(_mm_set_ss(m_b1->m_inv_mass * s_->v.m128_f32[0]), m_b1_apx.v));
-    m_b1->t_vel.v = _mm_add_ps(m_b1->t_vel.v, _mm_mul_ps(_mm_set_ss(m_b1->m_inv_mass * s_->v.m128_f32[1]), m_b1_apy.v));
-    m_b1->t_vel.v = _mm_add_ps(m_b1->t_vel.v, _mm_mul_ps(_mm_set_ss(m_b1->m_inv_mass * s_->v.m128_f32[2]), m_b1_apz.v));
+    __m128 inv_mass = _mm_set1_ps(m_b1->m_inv_mass);
+    m_b1->t_vel.v = _mm_add_ps(m_b1->t_vel.v, _mm_mul_ps(s_->v, inv_mass));
+    __m128 sx = _mm_set1_ps(s_->v.m128_f32[0]);
+    __m128 sy = _mm_set1_ps(s_->v.m128_f32[1]);
+    __m128 sz = _mm_set1_ps(s_->v.m128_f32[2]);
+    m_b1->a_vel.v = _mm_add_ps(
+        m_b1->a_vel.v,
+        _mm_add_ps(_mm_add_ps(_mm_mul_ps(m_b1_apx.v, sx), _mm_mul_ps(m_b1_apy.v, sy)),
+                   _mm_mul_ps(m_b1_apz.v, sz)));
     pulse_sum_node* m_b2 = this->m_b2;
     if (m_b2 != NULL) {
-        m_b2->t_vel.v = _mm_sub_ps(m_b2->t_vel.v, _mm_mul_ps(_mm_set_ss(m_b2->m_inv_mass * s_->v.m128_f32[0]), m_b2_apx.v));
-        m_b2->t_vel.v = _mm_sub_ps(m_b2->t_vel.v, _mm_mul_ps(_mm_set_ss(m_b2->m_inv_mass * s_->v.m128_f32[1]), m_b2_apy.v));
-        m_b2->t_vel.v = _mm_sub_ps(m_b2->t_vel.v, _mm_mul_ps(_mm_set_ss(m_b2->m_inv_mass * s_->v.m128_f32[2]), m_b2_apz.v));
+        m_b2->t_vel.v = _mm_sub_ps(m_b2->t_vel.v, _mm_mul_ps(s_->v, _mm_set1_ps(m_b2->m_inv_mass)));
+        m_b2->a_vel.v = _mm_sub_ps(
+            m_b2->a_vel.v,
+            _mm_add_ps(_mm_add_ps(_mm_mul_ps(m_b2_apx.v, sx), _mm_mul_ps(m_b2_apy.v, sy)),
+                       _mm_mul_ps(m_b2_apz.v, sz)));
     }
 }
 
@@ -1231,6 +1242,7 @@ void pulse_sum_point::calc_abs() {
 }
 
 void pulse_sum_point::project() {
+    apply(&m_pulse_sum);
 }
 
 void pulse_sum_point::SOLVER_apply_relaxation(float* error_sq) {
@@ -1353,7 +1365,34 @@ void pulse_sum_angular::calc_abs() {
         __debugbreak();
 }
 
+double pulse_sum_angular::clamp_pulse_sum(float ps) {
+    if (m_pulse_sum_max < m_pulse_sum_min &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 60,
+                  "m_pulse_sum_min <= m_pulse_sum_max", defaultFileName))
+        __debugbreak();
+    if (m_pulse_sum_min > ps)
+        return m_pulse_sum_min;
+    if (ps <= m_pulse_sum_max)
+        return ps;
+    return m_pulse_sum_max;
+}
+
 void pulse_sum_angular::project() {
+    float m_pulse_sum = this->m_pulse_sum;
+    float* p_m_pulse_sum = &this->m_pulse_sum;
+    if (m_pulse_sum_max < m_pulse_sum_min &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular_inline.h", 60,
+                  "m_pulse_sum_min <= m_pulse_sum_max", defaultFileName))
+        __debugbreak();
+    if (m_pulse_sum_min <= m_pulse_sum) {
+        if (m_pulse_sum > m_pulse_sum_max)
+            m_pulse_sum = m_pulse_sum_max;
+        *p_m_pulse_sum = m_pulse_sum;
+        apply(p_m_pulse_sum);
+    } else {
+        *p_m_pulse_sum = m_pulse_sum_min;
+        apply(p_m_pulse_sum);
+    }
 }
 
 void pulse_sum_angular::SOLVER_apply_relaxation(float* error_sq) {
@@ -1413,30 +1452,38 @@ void pulse_sum_angular::set_object_col_pt(const math::Dir3* object_col_pt) {
 // pulse_sum_wheel row methods
 // ============================================================================
 bool pulse_sum_wheel::clamp_pulse_sum_pulse_chain(float* ps1_, float* ps2_) {
-    // ea: 0x892D10 - clamp side/fwd to suspension friction cone.
-    if (m_side == NULL || m_fwd == NULL)
-        return false;
-    float limit = fabs(m_suspension.m_pulse_sum) * m_side->m_pulse_limit_ratio;
-    float ps1 = m_side->m_pulse_sum;
-    if (ps1 > limit) ps1 = limit;
-    if (ps1 < -limit) ps1 = -limit;
-    float limit2 = fabs(m_suspension.m_pulse_sum) * m_fwd->m_pulse_limit_ratio;
-    float ps2 = m_fwd->m_pulse_sum;
-    if (ps2 > limit2) ps2 = limit2;
-    if (ps2 < -limit2) ps2 = -limit2;
-    *ps1_ = ps1;
-    *ps2_ = ps2;
-    return true;
+    pulse_sum_normal* m_side = this->m_side;
+    pulse_sum_normal* m_fwd = this->m_fwd;
+    float v5 = 0.0f;
+    float m_pulse_sum = m_side->m_pulse_sum;
+    float v7 = m_fwd->m_pulse_sum;
+    float v8 = 0.0f - (m_fwd->m_pulse_limit_ratio * m_suspension.m_pulse_sum);
+    float v9 = 0.0f - (m_side->m_pulse_limit_ratio * m_suspension.m_pulse_sum);
+    float v10 = v9 * v9;
+    float v11 = v8 * v8;
+    float v12 = (m_pulse_sum * m_pulse_sum) * v11;
+    float v13 = v11 * v10;
+    float v14 = v12 + ((v7 * v7) * v10);
+    if (v14 >= v13 || v13 < 0.0000099999997f) {
+        m_fwd->m_flags |= 4u;
+        if (v14 > 0.0000099999997f)
+            v5 = sqrt(v13 / v14);
+        *ps1_ = v5 * m_pulse_sum;
+        *ps2_ = v5 * v7;
+        return true;
+    }
+    m_fwd->m_flags &= ~4u;
+    *ps1_ = m_side->m_pulse_sum;
+    *ps2_ = m_fwd->m_pulse_sum;
+    return false;
 }
 
 bool pulse_sum_wheel::pulse_chain_within_limits() {
-    if (m_side == NULL || m_fwd == NULL)
-        return true;
-    float v6 = 0.0f - (m_side->m_pulse_limit_ratio * m_suspension.m_pulse_sum);
-    float v7 = 0.0f - (m_fwd->m_pulse_limit_ratio * m_suspension.m_pulse_sum);
-    return (v7 * v7) * (v6 * v6) >=
-           ((m_side->m_pulse_sum * m_side->m_pulse_sum) * (v7 * v7) +
-            (m_fwd->m_pulse_sum * m_fwd->m_pulse_sum) * (v6 * v6)) * 0.99999f;
+    float v3 = 0.0f - (m_side->m_pulse_limit_ratio * m_suspension.m_pulse_sum);
+    float v4 = 0.0f - (m_fwd->m_pulse_limit_ratio * m_suspension.m_pulse_sum);
+    return ((v4 * v4) * (v3 * v3)) >=
+           (((m_side->m_pulse_sum * m_side->m_pulse_sum) * (v4 * v4) +
+             (m_fwd->m_pulse_sum * m_fwd->m_pulse_sum) * (v3 * v3)) * 0.99998999f);
 }
 
 void pulse_sum_wheel::addp_pulse_chain() {
@@ -1451,7 +1498,7 @@ void pulse_sum_wheel::addp_pulse_chain() {
     }
     if (!pulse_chain_within_limits() &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_wheel_inline.h", 85,
-                  "pulse_chain_within_limits()", ""))
+                  "pulse_chain_within_limits()", defaultFileName))
         __debugbreak();
 }
 
