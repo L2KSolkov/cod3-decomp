@@ -456,11 +456,78 @@ void bdBitBuffer::writeRangedUInt32(unsigned int value, unsigned int min,
     writeBits(&v8, bits);
 }
 
-// bdBitBuffer::writeRangedFloat32 - ea: 0x89C2F0 (stub; port with writeBits)
 void bdBitBuffer::writeRangedFloat32(float value, float min, float max,
                                      float scale)
 {
-    (void)value; (void)min; (void)max; (void)scale;
+    do
+    {
+        if (max < min)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "void __thiscall bdBitBuffer::writeRangedFloat32(const float,const float,const float,const float)",
+                                 0x97u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedFloat32, end of range is less then the begining.");
+        }
+    } while (g_assertFalse);
+    do
+    {
+        if (scale <= 0.0f)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "void __thiscall bdBitBuffer::writeRangedFloat32(const float,const float,const float,const float)",
+                                 0x98u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedFloat32, precision must be positive.");
+        }
+    } while (g_assertFalse);
+
+    if (m_typeChecked)
+    {
+        writeRangedUInt32(0xFu, 0, 0x1Fu, false);
+        if (m_typeChecked)
+        {
+            writeRangedUInt32(0xDu, 0, 0x1Fu, false);
+            writeBits(&min, 0x20u);
+            if (m_typeChecked)
+                writeRangedUInt32(0xDu, 0, 0x1Fu, false);
+            writeBits(&max, 0x20u);
+            if (m_typeChecked)
+                writeRangedUInt32(0xDu, 0, 0x1Fu, false);
+            writeBits(&scale, 0x20u);
+        }
+    }
+
+    const float precision = (float)fabs(scale);
+    const float scaledRange = (max - min) / precision;
+    if (scaledRange <= 4294967300.0f)
+    {
+        unsigned int bitCount = 0;
+        const unsigned int range = (unsigned int)scaledRange;
+        if (range != 0)
+            bitCount = bdHighBitNumber(range) + 1;
+
+        float clamped = value;
+        if (clamped < min)
+            clamped = min;
+        else if (clamped > max)
+            clamped = max;
+        unsigned int encoded = (unsigned int)(((clamped - min) / precision) + 0.5f);
+        if (encoded > range)
+            encoded = range;
+        writeBits(&encoded, bitCount);
+    }
+    else
+    {
+        bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                             "void __thiscall bdBitBuffer::writeRangedFloat32(const float,const float,const float,const float)",
+                             0xA9u, "dw/warn/");
+        proxy.log("bdCore/bitBuffer",
+                  "The numerical space defined by range/precision combination is too large. No compression performed.");
+        if (m_typeChecked)
+            writeRangedUInt32(0xDu, 0, 0x1Fu, false);
+        writeBits(&value, 0x20u);
+    }
 }
 
 bool bdBitBuffer::readRangedInt32(int& value, int min, int max)
@@ -564,7 +631,83 @@ bool bdBitBuffer::readRangedUInt32(unsigned int& value, unsigned int min,
 bool bdBitBuffer::readRangedFloat32(float& value, float min, float max,
                                     float scale)
 {
-    (void)value; (void)min; (void)max; (void)scale;
+    do
+    {
+        if (max < min)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "bool __thiscall bdBitBuffer::readRangedFloat32(float &,const float,const float,const float)",
+                                 0x170u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedFloat32, end of range is less then the begining.");
+        }
+    } while (g_assertFalse);
+    do
+    {
+        if (scale <= 0.0f)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "bool __thiscall bdBitBuffer::readRangedFloat32(float &,const float,const float,const float)",
+                                 0x171u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::writeRangedFloat32, precision must be positive.");
+        }
+    } while (g_assertFalse);
+
+    bool result = readDataType(BD_BB_RANGED_FLOAT32_TYPE);
+    if (m_typeChecked)
+    {
+        float encodedMin = 0.0f;
+        float encodedMax = 0.0f;
+        float encodedScale = 0.0f;
+        if (!result ||
+            !readDataType(BD_BB_FLOAT32_TYPE) || !readBits(&encodedMin, 0x20u) ||
+            !readDataType(BD_BB_FLOAT32_TYPE) || !readBits(&encodedMax, 0x20u) ||
+            !readDataType(BD_BB_FLOAT32_TYPE) || !readBits(&encodedScale, 0x20u))
+            return false;
+        if (min != encodedMin || max != encodedMax || scale != encodedScale)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "bool __thiscall bdBitBuffer::readRangedFloat32(float &,const float,const float,const float)",
+                                 0x181u, "dw/err/");
+            proxy.log("bdCore/bitBuffer",
+                      "Range error. Expected: (%f,%f,%f), read: (%f,%f,%f)",
+                      min, max, scale, encodedMin, encodedMax, encodedScale);
+        }
+    }
+    else if (!result)
+    {
+        return false;
+    }
+
+    const float precision = (float)fabs(scale);
+    const float scaledRange = (max - min) / precision;
+    if (scaledRange <= 4294967300.0f)
+    {
+        const unsigned int range = (unsigned int)scaledRange;
+        unsigned int bitCount = 0;
+        if (range != 0)
+            bitCount = bdHighBitNumber(range) + 1;
+        unsigned int encoded = 0;
+        if (!readBits(&encoded, bitCount))
+            return false;
+        value = (float)encoded * precision + min;
+    }
+    else
+    {
+        bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                             "bool __thiscall bdBitBuffer::readRangedFloat32(float &,const float,const float,const float)",
+                             0x18Cu, "dw/warn/");
+        proxy.log("bdCore/bitBuffer",
+                  "The numerical space defined by range/precision combination is too large. No compression performed.");
+        if (!readDataType(BD_BB_FLOAT32_TYPE) || !readBits(&value, 0x20u))
+            return false;
+    }
+
+    if (value < min)
+        value = min;
+    else if (value > max)
+        value = max;
     return true;
 }
 
