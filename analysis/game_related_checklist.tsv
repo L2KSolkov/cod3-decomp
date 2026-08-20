@@ -20288,14 +20288,14 @@ index	status	map_line
 20287	SKIPPED	0002:00455140 ??_GnalComponentIKSpinBase@@UAEPAXI@Z 00C44640 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20288	SKIPPED	0002:00455140 ??_EnalComponentIKSpinBase@@UAEPAXI@Z 00C44640 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20289	PORTED	0002:00455170 ?GetPoseAlignment@nalComponentIKSpinBase@@UBEHXZ 00C44670 f i nal_init.o
-20290	PENDING	0002:00455180 ?Del@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE_NPBVnalAnimFile@@@Z 00C44680 f i nal_init.o
-20291	PENDING	0002:004552c0 ?Del@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE_NPBV?$nalAnimClass@VnalAnyPose@@@@@Z 00C447C0 f i nal_init.o
-20292	PENDING	0002:00455400 ?Del@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE_NPBVnalSceneAnim@@@Z 00C44900 f i nal_init.o
-20293	PENDING	0002:00455540 ?Del@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE_NPBVnalBaseSkeleton@@@Z 00C44A40 f i nal_init.o
-20294	PENDING	0002:00455680 ?Destroy@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ 00C44B80 f i nal_init.o
-20295	PENDING	0002:004556c0 ?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ 00C44BC0 f i nal_init.o
-20296	PENDING	0002:00455700 ?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ 00C44C00 f i nal_init.o
-20297	PENDING	0002:00455740 ?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ 00C44C40 f i nal_init.o
+20290	VERIFIED	0002:00455180 ?Del@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE_NPBVnalAnimFile@@@Z 00C44680 f i nal_init.o
+20291	VERIFIED	0002:004552c0 ?Del@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE_NPBV?$nalAnimClass@VnalAnyPose@@@@@Z 00C447C0 f i nal_init.o
+20292	VERIFIED	0002:00455400 ?Del@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE_NPBVnalSceneAnim@@@Z 00C44900 f i nal_init.o
+20293	VERIFIED	0002:00455540 ?Del@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE_NPBVnalBaseSkeleton@@@Z 00C44A40 f i nal_init.o
+20294	VERIFIED	0002:00455680 ?Destroy@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ 00C44B80 f i nal_init.o
+20295	VERIFIED	0002:004556c0 ?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ 00C44BC0 f i nal_init.o
+20296	VERIFIED	0002:00455700 ?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ 00C44C00 f i nal_init.o
+20297	VERIFIED	0002:00455740 ?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ 00C44C40 f i nal_init.o
 20298	PENDING	0002:00455780 ??1nalComponentEntropyFloat1@@UAE@XZ 00C44C80 f i nal_init.o
 20299	PENDING	0002:00455790 ??1nalComponentPacked8Float1@@UAE@XZ 00C44C90 f i nal_init.o
 20300	PENDING	0002:004557a0 ??1nalComponentFloat3@@UAE@XZ 00C44CA0 f i nal_init.o

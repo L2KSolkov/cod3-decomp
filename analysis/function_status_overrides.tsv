@@ -523,3 +523,11 @@ nal_init.o	??0?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData
 nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	??0?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@IAE@XZ	VERIFIED
 nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?Del@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE_NPBVnalAnimFile@@@Z	VERIFIED
+nal_init.o	?Del@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE_NPBV?$nalAnimClass@VnalAnyPose@@@@@Z	VERIFIED
+nal_init.o	?Del@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE_NPBVnalSceneAnim@@@Z	VERIFIED
+nal_init.o	?Del@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE_NPBVnalBaseSkeleton@@@Z	VERIFIED
+nal_init.o	?Destroy@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAEXXZ	VERIFIED
+nal_init.o	?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAEXXZ	VERIFIED
+nal_init.o	?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ	VERIFIED
+nal_init.o	?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ	VERIFIED
