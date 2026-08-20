@@ -368,13 +368,11 @@ int controller_num_controllers()
     return controller::inst()->get_num_controllers();
 }
 namespace LocalClient { extern int ClientToPort(int client); }
-extern void* STBManager_sInst;
-// ?STBManager_GetSTBString@@YAPBDPAXPBD@Z artifact (real member
-// STBManager::GetSTBString, core.o 0x4C5E30; STB entry table not ported yet)
+extern STBManager* STBManager_sInst;
+// The call-site artifact forwards to the IDA-verified member at 0x004C5E30.
 const char* STBManager_GetSTBString(void* self, const char* pszReference)
 {
-    (void)self;
-    return pszReference;
+    return static_cast<STBManager*>(self)->GetSTBString(pszReference);
 }
 extern void* FEManager_GetDMS(void* self, int client);
 extern void DialogMenuSystem_BringUp(void* self, const char* t, bool type_ok,
