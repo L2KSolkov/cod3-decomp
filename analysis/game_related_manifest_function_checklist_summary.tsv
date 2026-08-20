@@ -13,7 +13,7 @@ XboxMemoryUnit.o	46	28	18	0	0	0	0
 adler32.o	2	2	0	0	0	0	0
 ae_controller.o	2	1	1	0	0	0	0
 ae_fixed_string.o	9	9	0	0	0	0	0
-ae_heap.o	12	1	11	0	0	0	0
+ae_heap.o	12	2	10	0	0	0	0
 afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0
 anim.o	741	728	13	0	0	0	0
@@ -179,7 +179,7 @@ cl.o	341	268	73	0	0	0	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	10	1	0	0	0	0
 controller_xbox.o	16	12	4	0	0	0	0
-core.o	1437	779	658	0	0	0	0
+core.o	1437	781	656	0	0	0	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	0	15	0	0	0	0

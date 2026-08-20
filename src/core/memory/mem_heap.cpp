@@ -421,11 +421,13 @@ int mem_host_fprintf(unsigned handle, const char* fmt, ...) {
 
 class ae_heap_base {
 public:
-    virtual ~ae_heap_base() {}
+    virtual ~ae_heap_base();
     void* MemAlloc(unsigned size, unsigned align, mem_heap* heap);
     void  MemFree(void* ptr, mem_heap* heap);
     bool  MemCheckFree(void* ptr, mem_heap* heap);
 };
+
+ae_heap_base::~ae_heap_base() {}
 
 class ae_heap : public ae_heap_base {
     mem_heap mHeap;

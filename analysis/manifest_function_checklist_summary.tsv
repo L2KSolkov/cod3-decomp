@@ -45,7 +45,7 @@ adler32.o	2	2	0	0	0	0	0
 advnotif.obj	21	0	0	21	0	0	0
 ae_controller.o	2	1	1	0	0	0	0
 ae_fixed_string.o	9	9	0	0	0	0	0
-ae_heap.o	12	1	11	0	0	0	0
+ae_heap.o	12	2	10	0	0	0	0
 afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0
 allocate.obj	18	0	0	18	0	0	0
@@ -275,7 +275,7 @@ controller.o	11	10	1	0	0	0	0
 controller_xbox.o	16	12	4	0	0	0	0
 contsig.obj	22	0	0	22	0	0	0
 contutil.obj	13	0	0	13	0	0	0
-core.o	1437	779	658	0	0	0	0
+core.o	1437	781	656	0	0	0	0
 corrfunc.obj	1	0	0	1	0	0	0
 cos.obj	1	0	0	1	0	0	0
 cpudetect.obj	7	0	0	7	0	0	0

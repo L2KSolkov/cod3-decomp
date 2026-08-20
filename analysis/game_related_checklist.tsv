@@ -2569,8 +2569,8 @@ index	status	map_line
 2568	VERIFIED	0002:000e2430 ??0DbQueryResults@@QAE@XZ 008D1930 f i core.o
 2569	VERIFIED	0002:000e2450 ??0SimpleCollisionDesc@@QAE@XZ 008D1950 f i core.o
 2570	VERIFIED	0002:000e2470 ??0CollisionDesc@@QAE@XZ 008D1970 f i core.o
-2571	PORTED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
-2572	PORTED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
+2571	VERIFIED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
+2572	VERIFIED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
 2573	PORTED	0002:000e24c0 ?Update@ServerTime@@QAEXH@Z 008D19C0 f i core.o
 2574	PORTED	0002:000e2520 ?Choose@DialogueInstance@@QAEPBDXZ 008D1A20 f i core.o
 2575	VERIFIED	0002:000e2560 ??0SoundParams@@QAE@XZ 008D1A60 f i core.o
@@ -15919,7 +15919,7 @@ index	status	map_line
 15918	VERIFIED	0002:003bbde0 ??0?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAE@XZ 00BAB2E0 f i mem_lib.o
 15919	PORTED	0002:003bbdf0 ??0mem_heap_context@@QAE@PAUmem_heap@@@Z 00BAB2F0 f i mem_lib.o
 15920	PORTED	0002:003bbe10 ??1mem_heap_context@@QAE@XZ 00BAB310 f i mem_lib.o
-15921	PORTED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
+15921	VERIFIED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
 15922	VERIFIED	0002:003bbe30 ??0ae_heap@@QAE@I@Z 00BAB330 f ae_heap.o
 15923	PORTED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
 15924	PORTED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o

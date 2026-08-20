@@ -2569,8 +2569,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 2568	0x004E2430	0x008D1930	??0DbQueryResults@@QAE@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 2569	0x004E2450	0x008D1950	??0SimpleCollisionDesc@@QAE@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 2570	0x004E2470	0x008D1970	??0CollisionDesc@@QAE@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-2571	0x004E2490	0x008D1990	??_Gae_heap_base@@UAEPAXI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-2572	0x004E2490	0x008D1990	??_Eae_heap_base@@UAEPAXI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+2571	0x004E2490	0x008D1990	??_Gae_heap_base@@UAEPAXI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
+2572	0x004E2490	0x008D1990	??_Eae_heap_base@@UAEPAXI@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 2573	0x004E24C0	0x008D19C0	?Update@ServerTime@@QAEXH@Z		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 2574	0x004E2520	0x008D1A20	?Choose@DialogueInstance@@QAEPBDXZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 2575	0x004E2560	0x008D1A60	??0SoundParams@@QAE@XZ		core.o	game		f i	1	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
@@ -15919,7 +15919,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 15918	0x007BBDE0	0x00BAB2E0	??0?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAE@XZ	mem_mp_xboxr	mem_lib.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15919	0x007BBDF0	0x00BAB2F0	??0mem_heap_context@@QAE@PAUmem_heap@@@Z	mem_mp_xboxr	mem_lib.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 15920	0x007BBE10	0x00BAB310	??1mem_heap_context@@QAE@XZ	mem_mp_xboxr	mem_lib.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-15921	0x007BBE20	0x00BAB320	??1ae_heap_base@@UAE@XZ	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+15921	0x007BBE20	0x00BAB320	??1ae_heap_base@@UAE@XZ	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15922	0x007BBE30	0x00BAB330	??0ae_heap@@QAE@I@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 15923	0x007BBE90	0x00BAB390	??1ae_heap@@UAE@XZ	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 15924	0x007BBEE0	0x00BAB3E0	?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z	mem_mp_xboxr	ae_heap.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY

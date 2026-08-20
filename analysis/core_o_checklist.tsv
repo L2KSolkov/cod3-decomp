@@ -1099,8 +1099,8 @@ index	status	map_line
 1098	VERIFIED	0002:000e2430 ??0DbQueryResults@@QAE@XZ 008D1930 f i core.o
 1099	VERIFIED	0002:000e2450 ??0SimpleCollisionDesc@@QAE@XZ 008D1950 f i core.o
 1100	VERIFIED	0002:000e2470 ??0CollisionDesc@@QAE@XZ 008D1970 f i core.o
-1101	PORTED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
-1102	PORTED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
+1101	VERIFIED	0002:000e2490 ??_Gae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
+1102	VERIFIED	0002:000e2490 ??_Eae_heap_base@@UAEPAXI@Z 008D1990 f i core.o
 1103	PORTED	0002:000e24c0 ?Update@ServerTime@@QAEXH@Z 008D19C0 f i core.o
 1104	PORTED	0002:000e2520 ?Choose@DialogueInstance@@QAEPBDXZ 008D1A20 f i core.o
 1105	VERIFIED	0002:000e2560 ??0SoundParams@@QAE@XZ 008D1A60 f i core.o

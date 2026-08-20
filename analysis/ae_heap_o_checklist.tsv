@@ -1,5 +1,5 @@
 index	status	map_line
-1	PORTED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
+1	VERIFIED	0002:003bbe20 ??1ae_heap_base@@UAE@XZ 00BAB320 f ae_heap.o
 2	VERIFIED	0002:003bbe30 ??0ae_heap@@QAE@I@Z 00BAB330 f ae_heap.o
 3	PORTED	0002:003bbe90 ??1ae_heap@@UAE@XZ 00BAB390 f ae_heap.o
 4	PORTED	0002:003bbee0 ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z 00BAB3E0 f ae_heap.o
