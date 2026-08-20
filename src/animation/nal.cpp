@@ -13665,6 +13665,21 @@ void FastCopy<nalComponentRLE8Int1, unsigned char>(
     *srcPtr = (const char*)*srcPtr + count;
 }
 
+// ea: 0x00864E70
+template <>
+void FastCopy<nalComponentPacked16EntropyIKSpin, nalIKSpin>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void** dstPtr, const void** srcPtr)
+{
+    *dstPtr = (void*)(((uintptr_t)*dstPtr + 15u) & ~uintptr_t(15u));
+    *srcPtr = (const void*)(((uintptr_t)*srcPtr + 15u)
+                            & ~uintptr_t(15u));
+    const unsigned int bytes = 96u * componentInfo->Count;
+    std::memcpy(*dstPtr, *srcPtr, bytes);
+    *dstPtr = (char*)*dstPtr + bytes;
+    *srcPtr = (const char*)*srcPtr + bytes;
+}
+
 template <>
 void FastCopy<nalComponentFloat3, math::Dir3>(
     const nalGeneric::nalComponentInfo* componentInfo,
@@ -13678,6 +13693,17 @@ void FastCopy<nalComponentFloat3, math::Dir3>(
     std::memcpy(*dstPtr, alignedSrc, size);
     *dstPtr = (char*)*dstPtr + size;
     *srcPtr = (const char*)*srcPtr + size;
+}
+
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentPacked16EntropyIKSpin, nalIKSpin>(
+        componentInfo, &dstPtr, &srcPtr);
 }
 
 template <>
