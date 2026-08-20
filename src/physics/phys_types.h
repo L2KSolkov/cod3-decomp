@@ -833,7 +833,11 @@ struct rigid_body_constraint_contact : rigid_body_constraint {
         return n;
     }
     // epilog_cache - ea: 0x88E8E0
-    void epilog_cache() {}
+    void epilog_cache() {
+        m_list_contact_point_info_buffer_2.m_first =
+            m_list_contact_point_info_buffer_1.m_first;
+        m_list_contact_point_info_buffer_1.m_first = NULL;
+    }
 
     void verify_constraint(rigid_body* b1_, rigid_body* b2_);
     void add_cpi_simple(contact_point_info* cpi, rigid_body* const b1_,

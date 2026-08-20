@@ -36,6 +36,49 @@ const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG =
 
 template struct phys_memory_heap_template<char>;
 
+template rigid_body_constraint_point* rbcint::get_next(
+    const rigid_body_constraint_point*);
+template rigid_body_constraint_hinge* rbcint::get_next(
+    const rigid_body_constraint_hinge*);
+template rigid_body_constraint_distance* rbcint::get_next(
+    const rigid_body_constraint_distance*);
+template rigid_body_constraint_ragdoll* rbcint::get_next(
+    const rigid_body_constraint_ragdoll*);
+template rigid_body_constraint_wheel* rbcint::get_next(
+    const rigid_body_constraint_wheel*);
+template rigid_body_constraint_angular_actuator* rbcint::get_next(
+    const rigid_body_constraint_angular_actuator*);
+template rigid_body_constraint_custom_orientation* rbcint::get_next(
+    const rigid_body_constraint_custom_orientation*);
+template rigid_body_constraint_custom_path* rbcint::get_next(
+    const rigid_body_constraint_custom_path*);
+template rigid_body_constraint_contact* rbcint::get_next(
+    const rigid_body_constraint_contact*);
+
+template void IPN_add<rigid_body_constraint_point>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_point*);
+template void IPN_add<rigid_body_constraint_hinge>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_hinge*);
+template void IPN_add<rigid_body_constraint_distance>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_distance*);
+template void IPN_add<rigid_body_constraint_ragdoll>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_ragdoll*);
+template void IPN_add<rigid_body_constraint_wheel>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_wheel*);
+template void IPN_add<rigid_body_constraint_angular_actuator>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_angular_actuator*);
+template void IPN_add<rigid_body_constraint_custom_orientation>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_custom_orientation*);
+template void IPN_add<rigid_body_constraint_custom_path>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_custom_path*);
+template void IPN_add<rigid_body_constraint_contact>(
+    rigid_body*, rigid_body_constraint**, rigid_body_constraint_contact*);
+
+template phys_inplace_avl_tree<rigid_body_pair_key,
+                               rigid_body_constraint_contact>::phys_inplace_avl_tree();
+template void phys_inplace_avl_tree<rigid_body_pair_key,
+                                    rigid_body_constraint_contact>::remove_all();
+
 void PHYS_START_PROF_TIMER(phys_proftimer_e p) {
     if (g_phys_proftimer_callbacks.proftimer_start != nullptr)
         g_phys_proftimer_callbacks.proftimer_start(p);
@@ -72,11 +115,11 @@ void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1,
 void rbint::calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t) {
     if ((rb->m_flags & 0x20) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 128,
-                  "rb->is_user_rigid_body()", ""))
+                  "rb->is_user_rigid_body()", defaultFileName))
         __debugbreak();
     if (rb->m_dictator == NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 129,
-                  "rb->m_dictator", ""))
+                  "rb->m_dictator", defaultFileName))
         __debugbreak();
     float m_time = rb->m_time_scale.m_time * outside_delta_t->m_time;
     math::Dir3 v4;

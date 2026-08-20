@@ -454,6 +454,10 @@ template <typename Key, typename T>
 struct phys_inplace_avl_tree {
     T* m_tree_root;  // +0x00
 
+    phys_inplace_avl_tree() : m_tree_root(NULL) {}  // ea: 0x88EE40
+
+    void remove_all() { m_tree_root = NULL; }  // ea: 0x88E5E0
+
     struct stack_item {
         T** m_node;
         int  m_child;
@@ -807,6 +811,7 @@ struct phys_heap_memory_pool {
         T* operator->() const { return *m_ptr; }
         iterator& operator++() { ++m_ptr; return *this; }
         iterator& operator--() { --m_ptr; return *this; }
+        void operator--(int) { --m_ptr; }  // ea: 0x88E5D0
         bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
         iterator next_after_remove() const { return iterator(m_ptr); }
         iterator next() const { return iterator(m_ptr + 1); }  // ea: 0x88EF20
@@ -827,7 +832,7 @@ struct phys_heap_memory_pool {
     void calc_index_array();            // ea: 0x88E320
     void swap_adjacent_fast(iterator* i, iterator* i_next);  // ea: 0x88E370
 
-    static int get_alignment() { return 16; }  // ea: 0x88EE50
+    static int get_alignment() { return (int)alignof(T); }  // ea: 0x88EE50
     static int get_buffer_size(int size);      // ea: 0x88E2B0
     void allocate_buffer(int size, phys_memory_heap* allocater);  // ea: 0x88F740
     ~phys_heap_memory_pool() { destroy(); }
@@ -1364,7 +1369,7 @@ static inline void prolog_frame_advance(rigid_body* rb, const outer_time* outsid
     rb->m_torque_sum.v = _mm_div_ps(rb->m_torque_sum.v, m_time_low);
     if (rb->m_inv_mass <= 0.0001f &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 167,
-                  "rb->get_inv_mass() > .0001f", ""))
+                  "rb->get_inv_mass() > .0001f", defaultFileName))
         __debugbreak();
     float grav = (rb->m_gravity_multiplier / rb->m_inv_mass) * 9.8000002f;
     rb->m_force_sum.v = _mm_add_ps(
@@ -1424,7 +1429,7 @@ static inline math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb,
                          const math::Dir3* t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 76,
-                  "rb->debug_flag_is_not_in_collision()", ""))
+                  "rb->debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     math::Dir3 v3;
     v3.v = rb->m_inv_inertia.v;
@@ -1552,6 +1557,11 @@ static const math::Dir3 sub_pos(rigid_body* b, const math::Dir3& p) {
 namespace rbcint {
 const outer_time* get_time_scale(rigid_body_constraint* rbc);
 
+template <typename Constraint>
+inline Constraint* get_next(const Constraint* rbc) {
+    return (Constraint*)rbc->m_next;
+}
+
 // process_constraint_info - ea: 0x87EA70
 inline void process_constraint_info(rigid_body_constraint* rbc) {
     if (rbc->b1 != NULL)
@@ -1587,6 +1597,19 @@ inline void set(rigid_body_constraint* rbc, rigid_body* const b1, rigid_body* co
 inline void set_next(rigid_body_constraint* rbc, rigid_body_constraint* next) {
     rbc->m_next = next;
 }
+}
+
+template <typename Constraint>
+inline void IPN_add(rigid_body* rb_partition_head,
+                    rigid_body_constraint** rbc_first,
+                    Constraint* rbc) {
+    if (rb_partition_head->m_partition_node.m_partition_head != rb_partition_head &&
+        _tlAssert("source/physics_system_internal.cpp", 186,
+                  "GIPN(rb_partition_head)->m_partition_head == rb_partition_head",
+                  defaultFileName))
+        __debugbreak();
+    rbc->m_next = *rbc_first;
+    *rbc_first = rbc;
 }
 
 // ============================================================================
