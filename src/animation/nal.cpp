@@ -10814,6 +10814,88 @@ void nalComponent<nalComponentQuatBase,
     }
 }
 
+// ea: 0x00860670
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const char*)skeletonComponentData + 4;
+}
+
+// ea: 0x00860680
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    animData = (const char*)animData + 4;
+}
+
+// ea: 0x00860690
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x008606A0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+// ea: 0x008606B0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const void*)(((uintptr_t)skeletonComponentData + 3u)
+                                           & ~uintptr_t(3u));
+}
+
+// ea: 0x008606D0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    animData = (const void*)(((uintptr_t)animData + 3u)
+                             & ~uintptr_t(3u));
+}
+
+// ea: 0x008606F0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+// ea: 0x00860700
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
