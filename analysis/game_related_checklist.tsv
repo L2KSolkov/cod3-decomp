@@ -20851,7 +20851,7 @@ index	status	map_line
 20850	PORTED	0002:00464e20 ?Delete@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C54320 f i nal_init.o
 20851	PORTED	0002:00464e50 ?Copy@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54350 f i nal_init.o
 20852	PORTED	0002:00464e70 ??$FastCopy@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54370 f i nal_init.o
-20853	PENDING	0002:00464ed0 ?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C543D0 f i nal_init.o
+20853	PORTED	0002:00464ed0 ?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C543D0 f i nal_init.o
 20854	PORTED	0002:00464f60 ??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C54460 f i nal_init.o
 20855	PORTED	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o
 20856	PORTED	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o
