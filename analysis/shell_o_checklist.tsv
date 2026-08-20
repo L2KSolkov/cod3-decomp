@@ -2021,7 +2021,7 @@ index	status	map_line
 2019	PENDING	0002:001ab820       ??_GDialogMenuDisplay@@QAEPAXI@Z 009a6d20 f i shell.o
 2020	PENDING	0002:001ab890       ?OnLeft@DialogMenu@@UAEXH@Z 009a6d90 f i shell.o
 2021	PENDING	0002:001ab8a0       ?OnRight@DialogMenu@@UAEXH@Z 009a6da0 f i shell.o
-2022	PENDING	0002:001ab8b0       ?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z 009a6db0 f i shell.o
+2022	PORTED	0002:001ab8b0       ?SetPanelFile@DialogMenu@@UAEXPAVPanelFile@@@Z 009a6db0 f i shell.o
 2023	PENDING	0002:001ab910       ?Init@MemCardCheckMenu@@UAEXXZ 009a6e10 f i shell.o
 2024	PENDING	0002:001ab920       ?Init@OptionsGameplayMenu@@UAEXXZ 009a6e20 f i shell.o
 2025	PENDING	0002:001ab930       ?OnLeft@OptionsGameplayMenu@@UAEXH@Z 009a6e30 f i shell.o

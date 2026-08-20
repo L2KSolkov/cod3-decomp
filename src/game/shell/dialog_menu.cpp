@@ -457,6 +457,19 @@ DialogMenu::DialogMenu(FEMenuSystem* s)
     mClient = 0;
 }
 
+// ea: 0x005B78B0
+void DialogMenu::SetPanelFile(PanelFile* pf)
+{
+    (void)pf;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DialogMenu.h";
+    AeAssert::gCurrentLine = 50;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Dialog menu system takes no panel file!"))
+        __debugbreak();
+}
+
 // ea: 0x005AEDE0
 void DialogMenu::SetHighLight(short index)
 {

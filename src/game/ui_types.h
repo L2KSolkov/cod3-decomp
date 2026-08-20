@@ -1809,6 +1809,7 @@ public:
     int    mClient;         // +0x74
 
     DialogMenu(FEMenuSystem* s);        // 0x592340
+    virtual void SetPanelFile(PanelFile* pf); // 0x5B78B0
     virtual void OnActivate();          // 0x572BE0
     virtual void Draw();                // 0x572BF0
     virtual void Update(float time_inc);// 0x572C00
