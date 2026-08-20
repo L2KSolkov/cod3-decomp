@@ -148,7 +148,7 @@ mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_he
 
 nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	VERIFIED	Phase 3: nslWave directory/path helpers, wave-info sizing/allocation/copy/free, sound-info setup, and packed wave copy ported from IDA; all 15 release symbols now match, including nslWaveCopy's unused trailing parameters, and canonical build passed
 
-nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (IDA-typed transaction slot pools; free-list direction matched to IDA assembly)
+nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	VERIFIED	Compared all fifteen release symbols against codmp_xboxr.xbe.c and IDA; corrected txSlotNew to consume the free-list head as in the reference; remaining slot-pool operations match.
 
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	IDA-grounded AFMV VLC/DC, coefficient, motion-compensation, IDCT/RGB, DecodeSlice, and DecodeFrame ports compile; all 15 non-inline manifest decorations match after restoring IDA top-level const qualifiers.
 

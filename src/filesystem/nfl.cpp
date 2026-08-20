@@ -2289,7 +2289,7 @@ txSlot txSlotEntryInc(const txSlotPool* pool, txSlotEntry* entry)
 // ea: 0x00420BD0
 txSlot txSlotNew(txSlotPool* pool)
 {
-    txSlotEntry* entry = pool->freeSlots.prev;
+    txSlotEntry* entry = pool->freeSlots.next;
     if (entry == &pool->freeSlots) return TX_SLOT_INVALID;
     txSlotEntryUnlink(entry); txSlotEntryLinkTail(&pool->usedSlots, entry);
     return txSlotEntryInc(pool, entry);
