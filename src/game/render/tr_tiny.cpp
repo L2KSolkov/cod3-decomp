@@ -214,11 +214,28 @@ void cdAepsShader::operator delete(void* ptr) { mem_heap_free(ptr); }
 // ============================================================================
 // apsClient
 // ============================================================================
+class apsEffect;
+class apsEffectTemplate;
+namespace apsLight { struct LightInfo; }
 class apsClient {
 public:
     apsClient();                     // ??0apsClient@@QAE@XZ @ 0x6E8720
-    virtual ~apsClient();            // ??1apsClient@@UAE@XZ (aeps stubs.cpp)
+    virtual ~apsClient() = 0;        // ??1apsClient@@UAE@XZ (aeps stubs.cpp)
+    virtual apsEffect* CreateSpawnedEffectImmediate(int,
+        const apsEffectTemplate*, float) = 0;
+    virtual bool GetLightInfoAtPosition(const math::Dir3&,
+                                        apsLight::LightInfo&) = 0;
     virtual void UpdateAndRender(float dt);  // ?UpdateAndRender@apsClient@@UAEXM@Z @ 0x6E86C0
+    virtual void DebugDrawBox(const math::Dir3&, const math::Dir3&,
+                              const math::Vector4&) = 0;
+    virtual void DebugDrawSolidSphere(const math::Dir3&, float,
+                                      const math::Vector4&, float) = 0;
+    virtual void DebugDrawSolidSphere(const math::Dir3&, float,
+                                      const math::Vector4&) = 0;
+    virtual void DebugDrawLine(const math::Dir3&, const math::Dir3&,
+                               const math::Vector4&, float, float) = 0;
+    virtual void DebugDrawLine(const math::Dir3&, const math::Dir3&,
+                               const math::Vector4&, float) = 0;
 };
 apsClient::apsClient() {}
 void apsClient::UpdateAndRender(float) {}

@@ -20,12 +20,6 @@ void __cod3_stub_aeps(void) {
 #include "apsInternal.h"
 void apsRenderNode::Render() {}
 apsClient::~apsClient() {}
-bool apsClient::GetLightInfoAtPosition(const math::Dir3& iPosition,
-                                       apsLight::LightInfo& oInfo)
-{
-    (void)iPosition; (void)oInfo;
-    return false;
-}
 
 // apsEffect / apsCommon free artifacts (render.o; stubs, port later)
 #include "apsEffect.h"

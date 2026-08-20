@@ -42,7 +42,22 @@ public:
     virtual ~apsClient() = 0;   // ??1apsClient@@UAE@XZ (render.o)
     virtual apsEffect* CreateSpawnedEffectImmediate(int pakId,
         const apsEffectTemplate* effectTemplate, float startTime) = 0;  // render.o
-    virtual bool GetLightInfoAtPosition(const math::Dir3& iPosition, apsLight::LightInfo& oInfo);  // ?GetLightInfoAtPosition@ApsGameClient@@UAE_NABVDir3@math@@AAULightInfo@apsLight@@@Z (render.o)
+    virtual bool GetLightInfoAtPosition(const math::Dir3& iPosition,
+                                        apsLight::LightInfo& oInfo) = 0;  // render.o
+    virtual void UpdateAndRender(float dt);  // ?UpdateAndRender@apsClient@@UAEXM@Z
+    virtual void DebugDrawBox(const math::Dir3& min, const math::Dir3& max,
+                              const math::Vector4& color) = 0;  // render.o
+    virtual void DebugDrawSolidSphere(const math::Dir3& center, float radius,
+                                      const math::Vector4& color,
+                                      float lifeTime) = 0;  // render.o
+    virtual void DebugDrawSolidSphere(const math::Dir3& center, float radius,
+                                      const math::Vector4& color) = 0;  // render.o
+    virtual void DebugDrawLine(const math::Dir3& start, const math::Dir3& end,
+                               const math::Vector4& color,
+                               float lifeTime, float thickness) = 0;  // render.o
+    virtual void DebugDrawLine(const math::Dir3& start, const math::Dir3& end,
+                               const math::Vector4& color,
+                               float thickness) = 0;  // render.o
 };
 
 // ApsGameClient - the game's APS client singleton (render.o owns the full
