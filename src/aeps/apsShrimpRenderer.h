@@ -97,9 +97,6 @@ public:
     virtual float GetVersion() const;
     virtual int IsCameraFacing() const;
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
-    virtual float GetChanceToRemove() const;
-    virtual bool GetMeshRadius(float& oRadius) const;
-
     APS_DECLARE_RETRIEVE_LEAF(apsShrimpRenderer)};
 static_assert(sizeof(apsShrimpRenderer) == 0x40, "apsShrimpRenderer size mismatch");
 

@@ -434,7 +434,7 @@ render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	POR
 
 render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	PORTED	cdSkyShader.h/.cpp (sky shader: Init/Toggle/Register; Render deferred)
 
-aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs)
+aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs); removed invented GetChanceToRemove override so it inherits apsRenderer::GetChanceToRemove per codmp_xboxr.xbe.c/map; retained only emitted apsSimpleMeshRenderer::GetMeshRadius; canonical Debug build passed
 
 aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + verified SpriteVertex::Set + 12 data globals)
 
@@ -472,7 +472,7 @@ aeps_xboxr:apsVFC.o	aeps_xboxr	apsVFC.o	engine	3	PORTED	Phase 3: apsVFC.cpp (fru
 
 aeps_xboxr:apsError.o	aeps_xboxr	apsError.o	engine	3	PORTED	Phase 3: apsError.cpp/.h (error singleton + allocator, 3 funcs)
 
-aeps_xboxr:apsShrimpRenderer.o	aeps_xboxr	apsShrimpRenderer.o	engine	3	PORTED	apsShrimpRenderer.h/.cpp (shrimp/sprite renderer, shrimp node + apsEBlendMode)
+aeps_xboxr:apsShrimpRenderer.o	aeps_xboxr	apsShrimpRenderer.o	engine	3	PORTED	apsShrimpRenderer.h/.cpp (shrimp/sprite renderer, shrimp node + apsEBlendMode); removed un-emitted GetChanceToRemove/GetMeshRadius overrides so vtable inherits apsRenderer slots per codmp_xboxr.xbe.c/map; canonical Debug build passed
 
 aeps_xboxr:apsColorRectangleRenderer.o	aeps_xboxr	apsColorRectangleRenderer.o	engine	3	PORTED	apsColorRectangleRenderer.h/.cpp (color rectangle renderer + node)
 

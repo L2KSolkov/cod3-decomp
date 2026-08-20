@@ -13,26 +13,12 @@ void __cod3_stub_aeps(void) {
 
 // apsShrimpRenderer virtuals (apsShrimpRenderer.o; stubs, port later)
 #include "apsShrimpRenderer.h"
-float apsShrimpRenderer::GetChanceToRemove() const
-{
-    return 0.0f;
-}
-bool apsShrimpRenderer::GetMeshRadius(float& oRadius) const
-{
-    (void)oRadius;
-    return false;
-}
-
 // apsRenderNode / apsSimpleMeshRenderer / apsBounds / apsClient (stubs)
 #include "apsRenderNode.h"
 #include "apsGroup.h"
 #include "apsSimpleMeshRenderer.h"
 #include "apsInternal.h"
 void apsRenderNode::Render() {}
-float apsSimpleMeshRenderer::GetChanceToRemove() const
-{
-    return 0.0f;
-}
 apsClient::~apsClient() {}
 bool apsClient::GetLightInfoAtPosition(const math::Dir3& iPosition,
                                        apsLight::LightInfo& oInfo)

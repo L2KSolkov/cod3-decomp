@@ -70,7 +70,6 @@ public:
     virtual float GetVersion() const;
     virtual int IsCameraFacing() const;
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
-    virtual float GetChanceToRemove() const;
     virtual bool GetMeshRadius(float& oRadius) const;
     APS_DECLARE_RETRIEVE_LEAF(apsSimpleMeshRenderer)};
 static_assert(sizeof(apsSimpleMeshRenderer) == 0x18, "apsSimpleMeshRenderer size mismatch");
