@@ -2360,7 +2360,89 @@ public:
 // ============================================================================
 void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
                     const math::Dir3& d1, const math::Dir3& d2,
-                    float a8, float a9, nalMatrix4x4& m1, nalMatrix4x4& m2) {}
+                    const math::Dir3& d3,
+                    float a8, float a9, nalMatrix4x4& m1, nalMatrix4x4& m2)
+{
+    const __m128 target = d2.v;
+    const __m128 mid = d3.v;
+    const __m128 targetYZX = _mm_shuffle_ps(target, target, 0x09);
+    const __m128 targetZXY = _mm_shuffle_ps(target, target, 0x12);
+    const __m128 midYZX = _mm_shuffle_ps(mid, mid, 0x09);
+    const __m128 midZXY = _mm_shuffle_ps(mid, mid, 0x12);
+
+    __m128 normal = _mm_sub_ps(_mm_mul_ps(targetYZX, midZXY),
+                               _mm_mul_ps(targetZXY, midYZX));
+    const float normalLength = sqrtf(normal.m128_f32[0] * normal.m128_f32[0] +
+                                     normal.m128_f32[1] * normal.m128_f32[1] +
+                                     normal.m128_f32[2] * normal.m128_f32[2]);
+    if (normalLength <= 0.01f)
+        normal = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    else
+        normal = _mm_div_ps(normal, _mm_set1_ps(normalLength));
+
+    const __m128 tangent = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(normal, normal, 0x09), targetZXY),
+        _mm_mul_ps(_mm_shuffle_ps(normal, normal, 0x12), targetYZX));
+
+    nalMatrix4x4 base;
+    base.x.v = _mm_set_ps(0.0f, target.m128_f32[2], target.m128_f32[1],
+                          target.m128_f32[0]);
+    base.y.v = tangent;
+    base.y.v.m128_f32[3] = 0.0f;
+    base.z.v = normal;
+    base.z.v.m128_f32[3] = 0.0f;
+    base.w.v = _mm_set_ps(1.0f, d1.v.m128_f32[2], d1.v.m128_f32[1],
+                          d1.v.m128_f32[0]);
+
+    const float sinTwist = a8;
+    const float cosTwist = a9;
+    const float upperLength = a1;
+    const float sinUpper = a2;
+    const float cosUpper = a3;
+    const float sinLower = a4;
+    const float cosLower = a5;
+
+    nalMatrix4x4 upper;
+    upper.x.v = _mm_set_ps(0.0f, sinUpper * sinTwist,
+                            sinUpper * cosTwist, cosUpper);
+    upper.y.v = _mm_set_ps(0.0f, cosUpper * sinTwist,
+                            cosUpper * cosTwist, -sinUpper);
+    upper.z.v = _mm_set_ps(0.0f, cosTwist, -sinTwist, 0.0f);
+    upper.w.v = _mm_set_ps(1.0f, upperLength * sinUpper * sinTwist,
+                            upperLength * sinUpper * cosTwist,
+                            upperLength * cosUpper);
+
+    const auto multiplyRows = [](const nalMatrix4x4& lhs,
+                                 const nalMatrix4x4& rhs,
+                                 nalMatrix4x4& out)
+    {
+        const __m128 rhsX = rhs.x.v;
+        const __m128 rhsY = rhs.y.v;
+        const __m128 rhsZ = rhs.z.v;
+        const __m128 rhsW = rhs.w.v;
+        const auto multiplyRow = [&](const __m128 row) {
+            return _mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(row, row, 0x00), rhsX),
+                           _mm_mul_ps(_mm_shuffle_ps(row, row, 0x55), rhsY)),
+                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(row, row, 0xAA), rhsZ),
+                           _mm_mul_ps(_mm_shuffle_ps(row, row, 0xFF), rhsW)));
+        };
+        out.x.v = multiplyRow(lhs.x.v);
+        out.y.v = multiplyRow(lhs.y.v);
+        out.z.v = multiplyRow(lhs.z.v);
+        out.w.v = multiplyRow(lhs.w.v);
+    };
+    multiplyRows(upper, base, m1);
+
+    nalMatrix4x4 lower;
+    lower.x.v = _mm_set_ps(0.0f, -sinLower * sinTwist,
+                           -sinLower * cosTwist, cosLower);
+    lower.y.v = _mm_set_ps(0.0f, cosLower * sinTwist,
+                           cosLower * cosTwist, sinLower);
+    lower.z.v = _mm_set_ps(0.0f, cosTwist, -sinTwist, 0.0f);
+    lower.w = upper.w;
+    multiplyRows(lower, base, m2);
+}
 void nalIKSolve2D(const nalMatrix4x4& m1, const math::Dir3& d1, const math::Dir3& d2,
                   float a1, float a2, float a3, float a4,
                   math::Dir3& out1, math::Dir3& out2,

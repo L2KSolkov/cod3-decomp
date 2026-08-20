@@ -21118,7 +21118,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 21117	0x0086FBD0	0x00C5F0D0	??_EnalGenericInstance@nalGeneric@@UAEPAXI@Z	nal_xboxr	nal_generic.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21118	0x0086FC00	0x00C5F100	?VirtualGetPose@nalGenericInstance@nalGeneric@@MAEXMMAAVnalBasePose@@ABV3@H@Z	nal_xboxr	nal_generic.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21119	0x0086FC30	0x00C5F130	??0nalMatrix3x3@@QAE@ABVDir3@math@@00@Z	nal_xboxr	nal_math.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-21120	0x0086FC90	0x00C5F190	?nalIKMap2DTo3D@@YAXMMMMMABVDir3@math@@00MMAAVnalMatrix4x4@@1@Z	nal_xboxr	nal_ik.o	engine		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+21120	0x0086FC90	0x00C5F190	?nalIKMap2DTo3D@@YAXMMMMMABVDir3@math@@00MMAAVnalMatrix4x4@@1@Z	nal_xboxr	nal_ik.o	engine		f	0	PORTED	FUNCTION status override	YES	YES	VERIFIED
 21121	0x00870330	0x00C5F830	?nalIKSolve2D@@YAXABVnalMatrix4x4@@ABVDir3@math@@1MMMMAAV23@2AAM333@Z	nal_xboxr	nal_ik.o	engine		f	0	FIXED	FUNCTION status override	YES	YES	VERIFIED
 21122	0x00870460	0x00C5F960	?set_vtbl_ptr@nalVirtual@@QAEXPAX@Z	nal_xboxr	nal_anim.o	engine		f i	1	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 21123	0x00870470	0x00C5F970	?GetAnimTypeName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ	nal_xboxr	nal_anim.o	engine		f i	1	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
