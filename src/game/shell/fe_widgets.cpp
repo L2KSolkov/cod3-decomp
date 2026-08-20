@@ -762,18 +762,18 @@ FEMenuListBox::FEMenuListBox(FEText* t, FEMenu* m, int numLines)
     mItems.mElements = nullptr;
     mItems.mCapacity = 0;
     mItems.mSize = 0;
+    mHasHeadings = false;
     for (int i = 0; i < 4; ++i)
         mColumnHeadings[i] = Broc::string((Broc::string::Block*)nullptr);
+    mNumLines = numLines;
+    mTopLine = 0;
+    mSelectedLine = 0;
     mColumnWidths[0] = 100.0f;
     mColumnWidths[1] = 100.0f;
     mColumnWidths[2] = 100.0f;
     mColumnWidths[3] = 100.0f;
     mHeadingSpacing = 30.0f;
     mRowHeight = 35.0f;
-    mTopLine = 0;
-    mSelectedLine = 0;
-    mNumLines = numLines;
-    mHasHeadings = false;
 }
 
 // ea: 0x5B6950
