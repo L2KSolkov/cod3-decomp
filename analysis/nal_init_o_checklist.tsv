@@ -393,7 +393,7 @@ index	status	map_line
 392	PORTED	0002:0045b600 ?Decode@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C4AB00 f i nal_init.o
 393	PORTED	0002:0045b6f0 ?Skip@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4ABF0 f i nal_init.o
 394	PORTED	0002:0045b7b0 ?Convert@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4ACB0 f i nal_init.o
-395	PENDING	0002:0045b920 ?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4AE20 f i nal_init.o
+395	PORTED	0002:0045b920 ?ConvertPerfect@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4AE20 f i nal_init.o
 396	PORTED	0002:0045b9d0 ?GetTrajectory@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C4AED0 f i nal_init.o
 397	PORTED	0002:0045ba70 ?Construct@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C4AF70 f i nal_init.o
 398	PORTED	0002:0045baa0 ?Delete@?$nalComponent@VnalComponentFloat4Base@@VnalComponentFloat4Data@@VnalComponentFloat4@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C4AFA0 f i nal_init.o
