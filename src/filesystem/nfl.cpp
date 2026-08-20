@@ -901,7 +901,7 @@ void nflShutdown()
     }
     if (s_nfsEvent != nullptr) { CloseHandle(s_nfsEvent); s_nfsEvent = nullptr; }
 #endif
-    for (int index = 0; index < s_nfsDriversCount; ++index) {
+    for (int index = s_nfsDriversCount - 1; index >= 0; --index) {
         nfdDriver* driver = s_nfsDrivers[index];
         if (driver != nullptr && driver->init != nullptr && driver->init->fnDone != nullptr)
             driver->init->fnDone(driver);
