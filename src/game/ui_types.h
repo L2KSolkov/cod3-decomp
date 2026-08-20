@@ -69,11 +69,69 @@ static_assert(sizeof(color32) == 4, "color32 size mismatch");
 // ============================================================================
 // ae_vector<T> â€” dynamic array (12 bytes) â€” verified against IDA
 // ============================================================================
+namespace AeAssert {
+enum ECoderId : int;
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
 template <typename T>
 struct ae_vector {
     T*  mElements;  // +0x00
     int mCapacity;  // +0x04
     int mSize;      // +0x08
+
+    ae_vector()
+        : mElements(nullptr), mCapacity(0), mSize(0)
+    {
+    }
+
+    int size() const
+    {
+        return mSize;
+    }
+
+    const T& operator[](int iIndex) const
+    {
+        if (iIndex < 0 || iIndex >= mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 161;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return mElements[iIndex];
+    }
+
+    T& operator[](int iIndex)
+    {
+        if (iIndex < 0 || iIndex >= mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return mElements[iIndex];
+    }
+
+    T* begin()
+    {
+        return mElements;
+    }
+
+    T* end()
+    {
+        return &mElements[mSize];
+    }
 };
 static_assert(sizeof(ae_vector<char>) == 0x0C, "ae_vector size mismatch");
 
@@ -172,8 +230,33 @@ template <typename T, int CAPACITY>
 struct ae_array {
     T m_elements[CAPACITY];  // +0x00
 
-    T& operator[](int idx) { return m_elements[idx]; }
-    const T& operator[](int idx) const { return m_elements[idx]; }
+    T& operator[](int idx)
+    {
+        if (idx < 0 || idx >= CAPACITY)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return m_elements[idx];
+    }
+
+    const T& operator[](int idx) const
+    {
+        if (idx < 0 || idx >= CAPACITY)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return m_elements[idx];
+    }
 };
 
 // ae_array_dynamic<T> - small dynamic array (8 bytes: ptr + u16 cap + s16
