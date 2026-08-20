@@ -470,7 +470,6 @@ IGOHealthWidget::IGOHealthWidget(int client)
     cross = nullptr;
     flash = nullptr;
     health = 0.0f;
-    last_health = 0.0f;
     draw_flash = false;
 }
 
