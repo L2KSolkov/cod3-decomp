@@ -381,12 +381,12 @@ extern void DialogMenuSystem_BringUp(void* self, const char* t, bool type_ok,
 extern void DialogMenuSystem_CloseDialog(void* self);
 extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivatePauseMenu(void* self);
-// ?InGameMenuSystem_IsSystemActive@@YA_NPAX@Z artifact (real member in
-// InGameMenuSystem::IsSystemActive, shell.o; not ported yet)
+// The derived call-site artifact uses FEMenuSystem::IsSystemActive at
+// 0x005AFA20, which reads the inherited is_active byte at +0x2A.
 bool InGameMenuSystem_IsSystemActive(void* self)
 {
-    (void)self;
-    return false;
+    return *reinterpret_cast<const bool*>(
+        reinterpret_cast<const unsigned char*>(self) + 0x2A);
 }
 extern void GamePause_SetGamePaused(int client, bool paused);
 extern void GamePause_SetAllPaused(bool paused);
