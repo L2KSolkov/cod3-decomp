@@ -1321,6 +1321,13 @@ void MultiLineString::Draw(float z, int col, int button_col,
 // FEMultiLineText (FEText.cpp family)
 // ============================================================================
 
+// ea: 0x005B1B90
+FEMultiLineText::FEMultiLineText()
+    : FEText()
+{
+    button_color.i = 0;
+}
+
 // ea: 0x00584DA0
 FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, int z1,
                                  panel_layer layer, float s, int horizJust,
@@ -1983,8 +1990,7 @@ FEText* FEMultiLineText::Clone()
     FEMultiLineText* v3 = (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v3 != nullptr)
     {
-        new (v3) FEText();
-        v3->button_color.i = 0;
+        new (v3) FEMultiLineText();
     }
     else
     {
@@ -2006,7 +2012,7 @@ void FEMultiLineText::Draw(int start_line, int end_line)
             end_line = line_num;
         color32 tmp_color;
         tmp_color.i = color1.i;
-        if ((FEText::flags & 8) == 0)
+        if ((FEText::flags & 8) != 0)
             tmp_color.i = flash_info->GetColor(color1).i;
         int v6 = (int)((unsigned char)(tmp_color.c.a * visibility)
                        | ((tmp_color.c.r | ((tmp_color.c.g

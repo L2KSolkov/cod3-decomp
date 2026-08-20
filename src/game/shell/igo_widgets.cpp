@@ -3423,7 +3423,7 @@ void IGOHintWidget::Init(PanelFile* panel)
             color32 col = TextPointer->GetColor();
             text = new (text) FEMultiLineText(
                 TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
-                (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, (int)col.i,
+                (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, 0,
                 col);
         }
         text->SetNumLines(3);
@@ -3441,7 +3441,7 @@ void IGOHintWidget::Init(PanelFile* panel)
                 text = new (text) FEMultiLineText(
                     TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
                     (panel_layer)TextPointer->GetScaleX(), 0.0f, 0,
-                    (int)col2.i, col2);
+                    0, col2);
             }
             else
             {
@@ -5949,7 +5949,7 @@ void IGOFrontEnd::SetPanelFile(PanelFile* pf)
             color32 col = TextPointer->GetColor();
             hintText[0] = new (hintText[0]) FEMultiLineText(
                 TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
-                (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, (int)col.i,
+                    (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, 0,
                 col);
         }
         hintText[0]->SetNumLines(2);

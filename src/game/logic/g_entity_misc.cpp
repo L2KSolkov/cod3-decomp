@@ -1929,37 +1929,6 @@ void GamePause_SetAllPaused(bool paused)
     GamePause::SetAllPaused(paused);
 }
 
-// EntityManager_GetPlayer* artifacts (cl.o/cg.o surface; stubs, port later).
-// Distinct manglings by return tag; each maps to EntityManager::GetPlayer.
-struct entity_view2 {
-    struct { float v[4]; } currentOrigin;
-    void* client;
-};
-struct EntityView {
-    void* client;
-};
-struct EntityView2 {
-    void* client;
-};
-struct EntityView5 {
-    void* client;
-};
-EntityView2* EntityManager_GetPlayer2(void* inst, int idx)
-{
-    (void)inst; (void)idx;
-    return nullptr;
-}
-void* EntityManager_GetPlayer3(void* inst, int idx)
-{
-    (void)inst; (void)idx;
-    return nullptr;
-}
-void* EntityManager_GetPlayer5(void* inst, int idx)
-{
-    (void)inst; (void)idx;
-    return nullptr;
-}
-
 const char* CG_SafeTranslateString_Internal(const char* string,
                                             const char* defaultString)
 {
@@ -2541,8 +2510,6 @@ void DCGBank_load_inplace(void* bank, char* data, int* size)
 }
 void CGBankManager_UnloadAll(void* self) { (void)self; }
 void CGBankManager_UnloadAll() {}
-void CL_AddConsoleInfoColor(int a, const float* b) { (void)a; (void)b; }
-void CL_AddDeathMessageText(const char* a, int b) { (void)a; (void)b; }
 void Client_ClaimNode(Entity* e) { (void)e; }
 void ClientImpacts(Entity* e, struct pmove_t* pm) { (void)e; (void)pm; }
 class BaseCmdFuncInfo;

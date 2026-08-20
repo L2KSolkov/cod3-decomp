@@ -5,7 +5,9 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "game/game_types.h"
 
+#include <stddef.h>
 #include <string.h>
 
 // ============================================================================
@@ -35,18 +37,26 @@ extern struct cvar_t* cl_pitchspeed;
 extern struct cvar_t* cl_stanceHoldTime;
 extern usercmd_s CL_CreateCmd();
 
-// Client entity view for view-angle setters
-struct ClientEntityView {
-    struct ClientPSView {
-        float delta_angles[3];
-        float viewangles[3];
-    } ps;
+class EntityManager {
+public:
+    static EntityManager* sInst;
+    Entity* GetPlayer(int idx);
 };
-struct EntityView2 {
-    ClientEntityView* client;
+
+// Client::ps offsets are from the authoritative player_types layout.
+struct ClientPSAnglesView {
+    unsigned char _pad0[0x54];
+    int delta_angles[3];
+    unsigned char _pad60[0x70];
+    float viewangles[3];
 };
-extern EntityView2* EntityManager_GetPlayer2(void* inst, int idx);
-void* EntityManager_sInst2 = nullptr;  // cl.o artifact (EntityManager*)
+struct ClientAnglesView {
+    ClientPSAnglesView ps;
+};
+static_assert(offsetof(ClientPSAnglesView, delta_angles) == 0x54,
+              "Client::ps.delta_angles offset mismatch");
+static_assert(offsetof(ClientPSAnglesView, viewangles) == 0xD0,
+              "Client::ps.viewangles offset mismatch");
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -262,8 +272,8 @@ void CL_CapTurnRate(float maxPitchSpeed, float maxYawSpeed)
 // ea: 0x528530
 void CL_SetViewAngles(float* angles)
 {
-    ClientEntityView* client =
-        EntityManager_GetPlayer2(EntityManager_sInst2, currCl)->client;
+    ClientAnglesView* client = (ClientAnglesView*)
+        EntityManager::sInst->GetPlayer(currCl)->client;
     float v2 = angles[0] - (client->ps.delta_angles[0] * 0.0054931641f);
     float v3 = angles[1] - (client->ps.delta_angles[1] * 0.0054931641f);
     float v4 = client->ps.delta_angles[2];
@@ -275,8 +285,8 @@ void CL_SetViewAngles(float* angles)
 // ea: 0x5285B0
 void CL_SetViewAnglesAxis(int axis, float angle)
 {
-    ClientEntityView* client =
-        EntityManager_GetPlayer2(EntityManager_sInst2, currCl)->client;
+    ClientAnglesView* client = (ClientAnglesView*)
+        EntityManager::sInst->GetPlayer(currCl)->client;
     cl[currCl].viewangles[axis] = angle - (client->ps.delta_angles[axis] * 0.0054931641f);
     client->ps.viewangles[axis] = angle;
     cl[currCl].cmds[cl[currCl].cmdNumber & 0x3F] = CL_CreateCmd();

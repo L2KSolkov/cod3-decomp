@@ -186,7 +186,8 @@ LiveWrapper* LiveWrapper::theWrapper;
 bool Controller_HandleUIXInput(unsigned int port, void* controller_input)
 {
     if (LiveWrapper::theWrapper == nullptr
-        || !LiveWrapper::theWrapper->renderingEnabled)
+        || !LiveWrapper::theWrapper->renderingEnabled
+        || LiveWrapper::theWrapper->internalMode == kNotSetup)
         return false;
     return LiveWrapper::theWrapper->HandleInput(
         port, static_cast<const XINPUT_STATE*>(controller_input));

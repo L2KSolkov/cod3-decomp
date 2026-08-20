@@ -109,11 +109,35 @@ int iLastCompassTime[4];   // @ 0xF3A4C4 (cg.o)
 int unk_F6A28C[4 * 802] = {};   // ?unk_F6A28C@@3PAHA (cl.o)
 extern void re_LocateDebugStrings(int a1, int a2);
 extern void re_LocateDebugLines(int a1, int a2);
-// CL_SaveMessageType artifact (cl.o; stub)
+// ea: 0x5292B0
 int CL_SaveMessageType(unsigned char* buffer, int used, int total,
-                       void* msgwnd)
+                       messagewindow_t* msgwnd)
 {
-    (void)buffer; (void)used; (void)total; (void)msgwnd;
+    for (int i = 0; i < msgwnd->count; ++i)
+    {
+        int index = (i + msgwnd->current_line) % msgwnd->count;
+        int endTime = msgwnd->endtimes[index];
+        int savedEndTime = endTime < cl[currCl].serverTime ? 0 : endTime;
+        int endOffset = used + 4;
+        if (endOffset > total)
+            Com_Error((errorParm_t)1, "CL_SaveMessages: buffer too small (%i)", total);
+        *reinterpret_cast<int*>(&buffer[used]) = savedEndTime;
+        used = endOffset;
+        if (savedEndTime > 0)
+        {
+            int startTime = msgwnd->starttimes[index];
+            int textOffset = used + 4;
+            if (textOffset > total)
+                Com_Error((errorParm_t)1, "CL_SaveMessages: buffer too small (%i)", total);
+            *reinterpret_cast<int*>(&buffer[used]) = startTime;
+            unsigned int textBytes = 2u * (unsigned int)con.linewidth;
+            if (textOffset + (int)textBytes > total)
+                Com_Error((errorParm_t)1, "CL_SaveMessages: buffer too small (%i)", total);
+            memcpy(&buffer[textOffset], (const char*)con.text +
+                   2 * (msgwnd->lines[index] % con.totallines), textBytes);
+            used = textOffset + (int)textBytes;
+        }
+    }
     return used;
 }
 
@@ -449,6 +473,6 @@ int CL_SaveMessages(unsigned char* buffer, int bufSize)
     if (bufSize < 4)
         Com_Error((errorParm_t)1, "CL_SaveMessages: buffer too small (%i)", bufSize);
     buffer[0] = (unsigned char)con.linewidth;
-    int v2 = CL_SaveMessageType(buffer, 4, bufSize, &con.gamemsg_starttimes);
+    int v2 = CL_SaveMessageType(buffer, 4, bufSize, &con.windows.gamemsg);
     return CL_SaveMessageType(buffer, v2, bufSize, &msgwnd);
 }

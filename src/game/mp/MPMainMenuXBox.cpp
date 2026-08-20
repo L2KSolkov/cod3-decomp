@@ -619,7 +619,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
                 color32 col;
                 v35 = new (v35) FEMultiLineText(v11, x1, 0.0f, 0,
                                                 (panel_layer)layer,
-                                                0.0f, 0, (int)v37.i, col);
+                                                0.0f, 0, 0, col);
             }
             helpbar1 = v35;
             helpbar1->SetNumLines(1);
@@ -656,7 +656,7 @@ void MPMainMenuXBox::SetPanelFile(PanelFile* pf)
         v36 = new (v36) FEMultiLineText(v16, x1a, 0.0f, 1,
                                         (panel_layer)layera,
                                         optionDescriptionScale.value, 64,
-                                        (int)v37.i, v37);
+                                        0, v37);
     }
     mOptionDescription = v36;
     mOptionDescription->SetNumLines(5);

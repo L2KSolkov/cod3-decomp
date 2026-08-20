@@ -1635,7 +1635,7 @@ void CreateSessionMenu::SetPanelFile(PanelFile* pf)
                 panel_layer layer = (panel_layer)text->GetScaleX();
                 helpbarText = new (helpbarText)
                     FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
-                                    layer, 0.0f, 0, (int)col.i, col);
+                                    layer, 0.0f, 0, 0, col);
             }
             helpbar1 = helpbarText;
             helpbar1->SetNumLines(1);
@@ -2044,7 +2044,7 @@ void CreateLanSessionMenu::SetPanelFile(PanelFile* pf)
                 panel_layer layer = (panel_layer)text->GetScaleX();
                 helpbarText = new (helpbarText)
                     FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
-                                    layer, 0.0f, 0, (int)col.i, col);
+                                    layer, 0.0f, 0, 0, col);
             }
             helpbar1 = helpbarText;
             helpbar1->SetNumLines(1);
@@ -5534,7 +5534,7 @@ void GameSettingsView::SetPanelFileMain(PanelFile* pf)
         float x = helpbar->GetX();
         helpbarCopy = new (helpbarText)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 1, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = helpbarCopy;
     if (helpbarCopy != nullptr)
@@ -5712,7 +5712,7 @@ void GameSettingsEdit::SetPanelFileMain(PanelFile* pf)
         float x = helpbar->GetX();
         helpbarCopy = new (helpbarText)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 1, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = helpbarCopy;
     if (helpbarCopy != nullptr)
@@ -5944,7 +5944,7 @@ void WeaponSelectMenu::SetPanelFileMain(PanelFile* pf)
         panel_layer layer = (panel_layer)helpbar->GetScaleX();
         helpbarText = new (helpbarText)
             FEMultiLineText(helpbar->GetFont(), helpbar->GetY(), 0.0f, 0,
-                            layer, 0.0f, 0, (int)col.i, col);
+                            layer, 0.0f, 0, 0, col);
     }
     helpbar1 = helpbarText;
     helpbar1->SetNumLines(1);
@@ -6083,7 +6083,7 @@ void InGameSwitchSides::SetPanelFileMain(PanelFile* pf)
         float x = helpbar->GetX();
         helpbarCopy = new (helpbarText)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = helpbarCopy;
     helpbar1->SetNumLines(1);
@@ -6791,7 +6791,7 @@ void FindSessionMenu::SetPanelFile(PanelFile* pf)
                 panel_layer layer = (panel_layer)text->GetScaleX();
                 helpbarText = new (helpbarText)
                     FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
-                                    layer, 0.0f, 0, (int)col.i, col);
+                                    layer, 0.0f, 0, 0, col);
             }
             helpbar1 = helpbarText;
             helpbar1->SetNumLines(1);
@@ -7005,7 +7005,7 @@ void FindLanSessionMenu::SetPanelFile(PanelFile* pf)
                 panel_layer layer = (panel_layer)text->GetScaleX();
                 helpbarText = new (helpbarText)
                     FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
-                                    layer, 0.0f, 0, (int)col.i, col);
+                                    layer, 0.0f, 0, 0, col);
             }
             helpbar1 = helpbarText;
             helpbar1->SetNumLines(1);
@@ -7219,7 +7219,7 @@ void CreateSessionAdvancedMenu::SetPanelFile(PanelFile* pf)
                 panel_layer layer = (panel_layer)text->GetScaleX();
                 helpbarText = new (helpbarText)
                     FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
-                                    layer, 0.0f, 0, (int)col.i, col);
+                                    layer, 0.0f, 0, 0, col);
             }
             helpbar1 = helpbarText;
             helpbar1->SetNumLines(1);
@@ -7430,7 +7430,7 @@ void CreateLanSessionAdvancedMenu::SetPanelFile(PanelFile* pf)
                 panel_layer layer = (panel_layer)text->GetScaleX();
                 helpbarText = new (helpbarText)
                     FEMultiLineText(text->GetFont(), text->GetY(), 0.0f, 0,
-                                    layer, 0.0f, 0, (int)col.i, col);
+                                    layer, 0.0f, 0, 0, col);
             }
             helpbar1 = helpbarText;
             helpbar1->SetNumLines(1);
@@ -8016,7 +8016,7 @@ void AARScoreboardBase::SetPanelFile(PanelFile* pf)
         float x = helpbar->GetX();
         helpbar1Text = new (helpbar1Text)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = helpbar1Text;
     helpbar1->SetNumLines(1);
@@ -8031,7 +8031,7 @@ void AARScoreboardBase::SetPanelFile(PanelFile* pf)
         float x = helpbar->GetX();
         helpbar2Text = new (helpbar2Text)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar2 = helpbar2Text;
     helpbar2->SetNumLines(1);
@@ -10100,7 +10100,7 @@ void VoteGameTypeMenu::SetPanelFile(PanelFile* pf)
         float v11 = helpbar->GetX();
         v5 = new (v5)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v5;
     if (v5 != nullptr)
@@ -10124,7 +10124,7 @@ void VoteMapMenu::SetPanelFile(PanelFile* pf)
         float v11 = helpbar->GetX();
         v5 = new (v5)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v5;
     if (v5 != nullptr)
@@ -10146,7 +10146,7 @@ void AARPersonalStats::SetPanelHelpBar()
         float v7 = v13->GetX();
         v12 = new (v12)
             FEMultiLineText(v13->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v12;
     if (v12 != nullptr)
@@ -10580,7 +10580,7 @@ void SpectateMenu::SetPanelFile(PanelFile* pf)
         float v17 = helpbar->GetX();
         v11 = new (v11)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v11;
     if (v11 != nullptr)
@@ -11023,7 +11023,7 @@ void PauseMenu::SetPanelFileMain(PanelFile* pf)
         (void)x;
         helpbarCopy = new (helpbarText)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 1, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = helpbarCopy;
     if (helpbarCopy != nullptr)
@@ -11092,7 +11092,7 @@ void AARPauseMenu::SetPanelFile(PanelFile* pf)
         float v12 = v4->GetX();
         v6 = new (v5)
             FEMultiLineText(v4->GetFont(), x1, 0.0f, 1, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v6;
     if (v6 != nullptr)
@@ -13151,7 +13151,7 @@ void InstantActionMenu::SetPanelFile(PanelFile* pf)
         float v25 = helpbar->GetX();
         v23 = new (v19)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v23;
     if (v23 != nullptr)
@@ -13206,7 +13206,7 @@ void SessionDetailsMenu::SetPanelFile(PanelFile* pf)
         float v32 = helpbar->GetX();
         v30 = new (v26)
             FEMultiLineText(helpbar->GetFont(), x1, 0.0f, 0, layer,
-                            0.0f, 0, (int)col.i, col);
+                            0.0f, 0, 0, col);
     }
     helpbar1 = v30;
     if (v30 != nullptr)

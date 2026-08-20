@@ -6,6 +6,7 @@
 #include "cl_input.h"
 #include "cl_console.h"
 
+#include <stddef.h>
 #include <string.h>
 
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
@@ -28,6 +29,31 @@ extern struct cvar_t* cl_shownet;
 struct MultiplayerMgr {
     static MultiplayerMgr* sInst;
     void DropHotJoiningPlayers();
+};
+namespace View { bool IsSplitScreen(); }
+struct InGameMenuSystemView {
+    void (*gap1C)(void* self, float value);
+};
+struct AARMenuSystemView {
+    void (*gap1C)(void* self, float value);
+};
+struct FEManagerView {
+    unsigned char _pad00[0x36];
+    bool inGame;                         // +0x36
+    unsigned char _pad37[0x91];
+    InGameMenuSystemView* mIGMS[1];      // +0xC8
+    AARMenuSystemView* mAARS;            // +0xCC
+};
+static_assert(offsetof(FEManagerView, inGame) == 0x36,
+              "FEManager::inGame offset mismatch");
+static_assert(offsetof(FEManagerView, mIGMS) == 0xC8,
+              "FEManager::mIGMS offset mismatch");
+struct FEManager;
+extern FEManager g_femanager;
+class PauseMenu {
+public:
+    static PauseMenu* Me(int version);
+    void UnPause();
 };
 extern int unk_F6A28C[];  // per-client controller ports
 extern int dword_F6A28C; // active port
@@ -199,7 +225,8 @@ int LocalClient::PortToValidClient(int port)
 {
     int result = 0;
     int* v2 = &unk_F6A28C[0];
-    while (v2[1] == 0 || *v2 != port)
+    FEManagerView& manager = *(FEManagerView*)&g_femanager;
+    while ((manager.inGame && v2[1] == 0) || *v2 != port)
     {
         v2 += 802;
         ++result;
@@ -270,12 +297,17 @@ int LocalClient_ConfigureLocalClients()
 // ea: 0x52F140
 bool LocalClient::QuitClientOutOfGame(int client)
 {
-    (void)client;
+    if (client == 0)
+        View::IsSplitScreen();
     MultiplayerMgr::sInst->DropHotJoiningPlayers();
     extern void (*gpBrocAPI_mCallbackQuitGame)();
     void (*mCallbackQuitGame)() = gpBrocAPI_mCallbackQuitGame;
     if (mCallbackQuitGame != nullptr)
         mCallbackQuitGame();
+    FEManagerView& manager = *(FEManagerView*)&g_femanager;
+    PauseMenu::Me(0)->UnPause();
+    manager.mIGMS[0]->gap1C(manager.mIGMS[0], -1.0f);
+    manager.mAARS->gap1C(manager.mAARS, -1.0f);
     return 1;
 }
 bool LocalClient_QuitClientOutOfGame(int client)

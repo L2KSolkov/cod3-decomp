@@ -235,13 +235,13 @@ public:
     {
         return (flags & 0x10) != 0 || (flags & 0x20) != 0;
     }
-    virtual bool IsShown()                           // +0x38 inline 0x5B1AE0
+    virtual bool IsShown()                           // +0x38 inline 0x5B1B00
     {
-        return (flags & 1) != 0;
+        return (flags & 4) != 0;
     }
-    virtual void SetShown(bool shown)                // +0x3C inline 0x5B1AF0
+    virtual void SetShown(bool shown)                // +0x3C inline 0x5B1B10
     {
-        flags = shown ? (char)(flags | 1) : (char)(flags & 0xFE);
+        flags = shown ? (char)(flags | 4) : (char)(flags & 0xFB);
     }
     virtual void SetColor(color32 c) = 0;            // +0x40 pure
     virtual color32 GetColor() = 0;                  // +0x44 pure
@@ -601,47 +601,24 @@ public:
     int16_t          flags;                 // +0x6C
     uint8_t          _pad6E[2];             // +0x6E
 
-    // shell.o inline COMDATs (verified manglings)
-    virtual void Draw() { Draw(false); }  // ?Draw@FEText@@UAEXXZ (0x5AD830)
-    virtual void SetColor(color32 c) { SetNoFlash(c); }  // 0x5ADC20
-    virtual void SetTextNoLocalize(const char* s) { text = s; }
-    virtual void SetPos(float x, float y) { xy.x = x; xy.y = y; }
-    virtual void SetY(float y) { xy.y = y; }
-    virtual void SetAlpha(float a) { (void)a; }
-    virtual void SetColorMenuItem(color32 normal, color32 selected)
-    {
-        color1 = normal;
-        color_unselected = selected;
-    }
-    virtual float GetScaleX() const { return scale.x; }
-    virtual color32 GetColor() { return color1; }
-    virtual color32 GetUnselectedColor() { return color_unselected; }
-    virtual float GetX() { return xy.x; }
-    virtual float GetY() { return xy.y; }
-    virtual bool GetFlag(int f) { return (flags & f) != 0; }
-    virtual bool IsOnMenu() { return GetFlag(2); }       // 0x5AD860
-    virtual void AddedToMenu(bool add) { SetFlag(2, add); }  // 0x5AD840
-    virtual bool IsMultiLineObject() { return false; }    // 0x5AD870
-    virtual Broc::string GetName() { return name; }      // 0x5ADC50
-    virtual void SetName(const char* n) { name = n; }    // 0x5ADAA0
-    virtual Broc::string GetText() { return text; }      // 0x5ADC80
-    virtual void SetPanelTextIndex(int the_index)        // 0x5ADC10
-    {
-        panel_text_index = the_index;
-    }
-    virtual void SetFont(font_index f) { font = f; }     // 0x5AD8B0
-    virtual void SetEvenNumberSpacing(bool on)           // 0x5AD8C0
+    // shell.o virtual layout follows FEText_vtbl from IDA (0xCF1784).
+    virtual void Draw() { Draw(false); }                 // +0x04
+    virtual void Update(float time_inc);                 // +0x08
+    virtual void SetColor(color32 c) { SetNoFlash(c); }  // +0x40
+    virtual color32 GetColor() { return color1; }        // +0x44
+    virtual void CopyFrom(FEText* fet);                  // +0x48
+    virtual void Draw(bool selected);                    // +0x4C
+    virtual void AddedToMenu(bool add) { SetFlag(2, add); } // +0x50
+    virtual bool IsOnMenu() { return GetFlag(2); }        // +0x54
+    virtual bool IsMultiLineObject() { return false; }   // +0x58
+    virtual void SetHJustify(int h);                     // +0x5C
+    virtual void SetVJustify(int v);                     // +0x60
+    virtual void SetFont(font_index f) { font = f; }     // +0x64
+    virtual void SetEvenNumberSpacing(bool on)           // +0x68
     {
         flags = (int16_t)(on ? (flags | 4) : (flags & ~4));
     }
-    virtual void SetScale(float s)                       // 0x5AD8E0
-    {
-        scale.x = s;
-        scale.y = s;
-        scale_unselected.x = s;
-        scale_unselected.y = s;
-    }
-    virtual void SetScale(float sx, float sy)            // 0x5AD950
+    virtual void SetScale(float sx, float sy)            // +0x6C
     {
         scale.x = sx;
         scale.y = sy;
@@ -649,24 +626,14 @@ public:
         scale_unselected.y = sy;
         scale_unselected.z = 0.0f;
     }
-    virtual void SetScaleInit(float sx, float sy)        // 0x5ADA50
+    virtual void SetScale(float s)                       // +0x70
     {
-        scale_init.x = sx;
-        scale_init.y = sy;
-        scale_init.z = 0.0f;
+        scale.x = s;
+        scale.y = s;
+        scale_unselected.x = s;
+        scale_unselected.y = s;
     }
-    virtual void Shift(float offx, float offy)           // 0x5ADAB0
-    {
-        SetPos(GetX() + offx, GetY() + offy);
-    }
-    virtual void ShiftXYInitial(Broc::vector offset)     // 0x5ADAF0
-    {
-        xy_initial.x += offset.x;
-        xy_initial.y += offset.y;
-        xy_initial.z += offset.z;
-    }
-    virtual void SetX(float posX) { xy.x = posX; }       // 0x5ADBA0
-    virtual void SetScaleMenuItem(float s_selected,      // 0x5AD9D0
+    virtual void SetScaleMenuItem(float s_selected,      // +0x74
                                   float s_unselected)
     {
         scale.x = s_selected;
@@ -677,73 +644,108 @@ public:
         scale_unselected.z = 0.0f;
         scale_init.z = s_unselected;
     }
-    virtual void SetLineSpacing(int) {}                  // 0x5ADE10 (empty)
-    virtual void UpdateInScene(bool) {}                  // 0x5ADE00 (empty)
-    virtual void SetLocation3D(Broc::vector) {}          // 0x5ADE30 (empty)
-    virtual void SetBehaviorNF(float, float) {}          // 0x5ADE40 (empty)
-    virtual void SetBehavior(bool) {}                    // 0x5ADE50 (empty)
-    virtual int GetLineNum() { return 1; }               // 0x5ADD80
-    virtual void AddFont(int, font_index) {}             // delegate (FEMultiLineText)
-    virtual float GetScaleY() const { return scale.y; }
-    virtual float GetScaleInitX() const { return scale_init.x; }
-    virtual float GetScaleInitY() const { return scale_init.y; }
-    virtual bool GetEvenNumberSpacing() const
+    virtual void SetScaleInit(float sx, float sy)        // +0x78
+    {
+        scale_init.x = sx;
+        scale_init.y = sy;
+        scale_init.z = 0.0f;
+    }
+    virtual void SetName(const char* n) { name = n; }    // +0x7C
+    virtual void SetText(unsigned int hash);             // +0x80
+    virtual void SetText(const char* s);                 // +0x84
+    virtual void Shift(float offx, float offy)            // +0x88
+    {
+        SetPos(GetX() + offx, GetY() + offy);
+    }
+    virtual void ShiftXYInitial(Broc::vector offset)      // +0x8C
+    {
+        xy_initial.x += offset.x;
+        xy_initial.y += offset.y;
+        xy_initial.z += offset.z;
+    }
+    virtual void SetTextNoLocalize(const char* s) { text = s; } // +0x90
+    virtual void SetPos(float x, float y)                // +0x94
+    {
+        xy.x = x;
+        xy.y = y;
+        xy.z = 0.0f;
+    }
+    virtual void SetX(float posX) { xy.x = posX; }        // +0x98
+    virtual void SetY(float y) { xy.y = y; }              // +0x9C
+    virtual void SetAlpha(float a) { (void)a; }           // +0xA0
+    virtual void SetPanelTextIndex(int the_index)        // +0xA4
+    {
+        panel_text_index = the_index;
+    }
+    virtual void SetNoFlash(color32 c);                  // +0xA8
+    virtual void SetFlash(color32 c1, color32 c2, float period); // +0xAC
+    virtual void SetColorMenuItem(color32 normal, color32 selected) // +0xB0
+    {
+        color1 = normal;
+        color_unselected = selected;
+    }
+    virtual void SetNoColor();                           // +0xB4
+    virtual Broc::string GetName() { return name; }       // +0xB8
+    virtual Broc::string GetText() { return text; }       // +0xBC
+    virtual float GetScaleX() const { return scale.x; }   // +0xC0
+    virtual float GetScaleInitX() const { return scale_init.x; } // +0xC4
+    virtual float GetScaleInitY() const { return scale_init.y; } // +0xC8
+    virtual float GetScaleY() const { return scale.y; }   // +0xCC
+    virtual bool GetEvenNumberSpacing() const             // +0xD0
     {
         return (flags & 4) != 0;
     }
-    virtual int GetFlags() { return flags; }
-    virtual int GetHJustify() { return flags & 0x30; }
-    virtual int GetVJustify() { return flags & 0xC0; }
-    virtual Broc::vector GetLocation3D()
-    {
-        Broc::vector v;
-        v.x = v.y = v.z = 0.0f;
-        return v;
-    }
-    virtual void SetFlag(int f, bool on)
+    virtual font_index GetFont();                         // +0xD4
+    virtual color32 GetUnselectedColor() { return color_unselected; } // +0xD8
+    virtual int GetFlags() { return flags; }              // +0xDC
+    virtual int GetHJustify() { return flags & 0x30; }    // +0xE0
+    virtual int GetVJustify() { return flags & 0xC0; }    // +0xE4
+    virtual int GetLineNum() { return 1; }                // +0xE8
+    virtual float GetX() { return xy.x; }                 // +0xEC
+    virtual float GetY() { return xy.y; }                 // overrides PanelAnimObject +0x30
+    virtual float GetWidth(const float* p);               // +0xF0
+    virtual float GetHeight(const float* p);              // +0xF4
+    virtual bool GetFlag(int f) { return (flags & f) != 0; } // +0xF8
+    virtual void SetFlag(int f, bool on)                  // +0xFC
     {
         if (on)
             flags = (int16_t)(flags | f);
         else
             flags = (int16_t)(flags & ~f);
     }
+    virtual void UpdateInScene(bool) {}                   // +0x100
+    virtual void SetLineSpacing(int) {}                   // +0x104
+    virtual void ResetLineSpacing() {}                    // +0x108
+    virtual void SetLocation3D(Broc::vector) {}           // +0x10C
+    virtual void SetBehaviorNF(float, float) {}           // +0x110
+    virtual void SetBehavior(bool) {}                     // +0x114
+    virtual Broc::vector GetLocation3D()                  // +0x118
+    {
+        Broc::vector v;
+        v.x = v.y = v.z = 0.0f;
+        return v;
+    }
+    virtual void UpdateForHUDSplitScreen(int viewport, int old_viewport,
+                                         int client, float widescreen,
+                                         float split);     // +0x11C
+    virtual void UpdateForSplitScreen(int viewport, int old_viewport); // +0x120
+    virtual void MoveForSplitScreen(int viewport, int old_viewport);   // +0x124
+    virtual void UpdateForWidescreen(bool widescreen, int viewport);    // +0x128
+    virtual void UpdateForWidescreen(bool widescreen);                   // +0x12C
 
     FEText();  // shell.o 0x5AD690
     FEText(font_index f, const char* s, float x, float y, int z,
            panel_layer layer, float scale, int hJustify, int vJustify,
            color32 col);                    // shell.o 0x56BA80
+    void AddFont(int, font_index) {}         // helper retained outside vtable
     virtual ~FEText();                      // shell.o 0x56BCE0
     virtual FEText* Clone();                // shell.o 0x56BD50
-    virtual void CopyFrom(FEText* fet);     // shell.o 0x56BDC0
-    virtual void Update(float time_inc);    // shell.o 0x56BEF0
-    virtual void UpdateForWidescreen(bool widescreen);  // shell.o 0x56BFF0
-    virtual void UpdateForWidescreen(bool widescreen, int viewport);
-                                            // shell.o 0x56C120
-    virtual void MoveForSplitScreen(int viewport, int old_viewport);
-                                            // shell.o 0x56C250
-    virtual void UpdateForHUDSplitScreen(int viewport, int old_viewport,
-                                         int client, float widescreen,
-                                         float split);  // shell.o 0x56C380
-    virtual void UpdateForSplitScreen(int viewport, int old_viewport);
-                                            // shell.o 0x56C4F0
-    virtual void SetHJustify(int h);        // shell.o 0x56C7F0
-    virtual void SetVJustify(int v);        // shell.o 0x56C830
-    virtual void SetText(const char* s);    // shell.o 0x56C870
-    virtual void SetText(unsigned int hash);// shell.o 0x56C900
-    virtual void SetNoFlash(color32 c);     // shell.o 0x56C930
-    virtual void SetFlash(color32 c1, color32 c2, float period);
-                                            // shell.o 0x56C950
-    virtual void SetNoColor();              // shell.o 0x56C9D0
     static void CreateNGLColorCode(color32 c, char* dest);  // shell.o 0x56C9E0
-    virtual void Draw(bool localize);       // shell.o 0x57C390
-    virtual float GetWidth(const float* p); // shell.o 0x57C6E0
-    virtual float GetHeight(const float* p);// shell.o 0x57C910
 protected:
     virtual void Animate(math::Mat43* m, float time);  // shell.o 0x56CA30
     virtual void AdjustForJustification(float& x, float& y, float z);
                                             // shell.o 0x56CB60
 public:
-    font_index GetFont();
 };
 static_assert(sizeof(FEText) == 0x70, "FEText size mismatch");
 static_assert(offsetof(FEText, font) == 0x18, "FEText::font offset mismatch");
@@ -1344,58 +1346,99 @@ public:
     bool    cut_off_if_too_long;       // +0xA6
     uint8_t _padA7[1];                 // +0xA7
 
-    virtual void SetTextBox(const char* reference, int w,
-                            float sc_override);  // ?SetTextBox@FEMultiLineText@@UAEXPBDHM@Z 0x56E5A0
-    void UpdateForSplitScreen(int viewport, int old_viewport);
-    void UpdateForWidescreen(bool widescreen);
-    virtual void SetNumLines(int n);      // ?SetNumLines@FEMultiLineText@@UAEXH@Z (0x56D6D0)
-    virtual void SetText(const char* s);  // ?SetText@FEMultiLineText@@UAEXPBD@Z (0x56D7E0)
-    virtual void SetLineSpacing(int new_spacing);  // 0x57CFA0
-    virtual void Draw(bool selected);      // 0x56D2F0
-    virtual void Draw(int start_line, int end_line);  // 0x57CDE0
-    virtual float GetWidth();             // 0x56D340
-    virtual float GetHeight();            // 0x57CF20
-    virtual void AddFont(int index, font_index f);  // 0x56D380
-    virtual void SetFont(font_index f);   // 0x56D3F0
-    virtual void Shift(float x_shift, float y_shift);  // 0x56D430
-    virtual void Scroll(float offset);    // 0x56D4A0
-    virtual void SetScrollable(int height, bool edge_based);  // 0x56D5B0
-    virtual float GetPercentage();        // 0x56D630
-    virtual void SetText(unsigned int hash);  // 0x56D820
-    virtual const char* ConvertActionToButton(const char* stringIn);  // 0x56D850
-    virtual const char* TranslateAction(const char* token);  // 0x56DCB0
-    virtual FEText* Clone();              // 0x57CD60
-    virtual void SetScaleAdjustButtons(float sx, float sy);  // 0x584ED0
-    virtual void SetPos(float x1, float y1);  // 0x584FC0
-    virtual void SetTextNoLocalize(const char* s);  // 0x58D500
-    virtual void SetTextAllocNoLocalize(const char* buffer,
-                                        int buffer_size);  // 0x58D710
-    virtual void SetTextBoxNoLocalize(Broc::string s, int w,
-                                      float sc_override);  // 0x5917C0
-    virtual void SetTextBoxAllocNoLocalize(Broc::string t, int w,
-                                           float sc_override);  // 0x591930
+    // FEMultiLineText's inherited FEText slots are overridden by the
+    // declarations below; new slots begin at +0x138 in the IDA vtable.
+    virtual bool IsMultiLineObject() { return true; }                  // +0x58
+    virtual int GetLineNum() { return line_num; }                      // +0xE8
+    virtual void SetText(const char* s);                               // +0x84
+    virtual void SetLineSpacing(int new_spacing);                      // +0x104
+    virtual void Draw(bool selected);                                  // +0x4C
+    virtual void SetFont(font_index f);                                // +0x64
+    virtual void Shift(float x_shift, float y_shift);                  // +0x88
+    virtual void SetText(unsigned int hash);                             // +0x80
+    virtual void UpdateForWidescreen(bool widescreen);                 // +0x12C
+    virtual void UpdateForSplitScreen(int viewport, int old_viewport); // +0x120
+    virtual void SetHJustify(int h)                                    // +0x5C
+    {
+        SetFlag(0x30, false);
+        if (h == 16 || h == 32)
+            SetFlag(h, true);
+        AdjustForJustification();
+    }
+    virtual void SetVJustify(int v)                                    // +0x60
+    {
+        SetFlag(0xC0, false);
+        if (v == 64 || v == 128)
+            SetFlag(v, true);
+        AdjustForJustification();
+    }
+    virtual void SetScale(float s)                                     // +0x70
+    {
+        scale.x = s;
+        scale.y = s;
+        scale_unselected.x = s;
+        scale_unselected.y = s;
+        scale_unselected.z = 0.0f;
+        AdjustForJustification();
+    }
+    virtual void SetScale(float sx, float sy)                           // +0x6C
+    {
+        scale.x = sx;
+        scale.y = sy;
+        scale_unselected.x = sx;
+        scale_unselected.y = sy;
+        scale_unselected.z = 0.0f;
+        AdjustForJustification();
+    }
+    virtual void SetPos(float x1, float y1);                           // +0x94
+    virtual void SetTextNoLocalize(const char* s);                     // +0x90
+    virtual void Animate(math::Mat43* mat, float vis);                 // +0x18
+    virtual FEText* Clone();                                           // +0x130
+
+    // New FEMultiLineText slots, in IDA order (+0x138..+0x18C).
+    virtual void Draw(int start_line, int end_line);                      // +0x138
+    virtual int GetLineAvailNum() { return line_avail_num; }            // +0x13C
+    virtual int GetBoxWidth() { return box_width; }                    // +0x140
+    virtual float GetWidth();                                           // +0x144
+    virtual float GetHeight();                                          // +0x148
+    virtual void SetScaleAdjustButtons(float sx, float sy);             // +0x14C
+    virtual void SetButtonScale(float s) { button_scale = s; }          // +0x150
+    virtual void SetButtonColor(color32 col) { button_color = col; }     // +0x154
+    virtual void AddFont(int index, font_index f);                      // +0x158
+    virtual void SetBoxWidth(int width) { box_width = width; }           // +0x15C
+    virtual void GetPos(float* x, float* y)                             // +0x160
+    {
+        *x = xy.x;
+        *y = xy.y;
+    }
+    virtual void Scroll(float offset);                                  // +0x164
+    virtual void SetScrollable(int height, bool edge_based);            // +0x168
+    virtual float GetPercentage();                                       // +0x16C
+    virtual void SetCutOffIfTooLong(bool coitl)                         // +0x170
+    {
+        cut_off_if_too_long = coitl;
+    }
+    virtual const char* ConvertActionToButton(const char* stringIn);     // +0x174
+    virtual const char* TranslateAction(const char* token);              // +0x178
+    virtual void SetNumLines(int n);                                     // +0x17C
+    virtual void SetTextBox(const char* reference, int w,                // +0x180
+                            float sc_override);
+    virtual void SetTextBoxNoLocalize(Broc::string s, int w,              // +0x184
+                                      float sc_override);
+    virtual void SetTextAllocNoLocalize(const char* buffer,              // +0x188
+                                        int buffer_size);
+    virtual void SetTextBoxAllocNoLocalize(Broc::string t, int w,         // +0x18C
+                                           float sc_override);
+
     void CopyFrom(FEMultiLineText* fet);  // 0x56D180
-protected:
-    virtual void Animate(math::Mat43* mat, float vis);  // 0x585010 (MAE)
 private:
     bool CheckIfNotTooLong(int num);      // 0x56E600
     void AdjustForJustification();        // 0x57D020
     int  MakeBox(const char* buffer, int buffer_size, int w, float sc_x,
                  float sc_y, bool save);  // 0x58D8E0
 public:
-    virtual void SetBoxWidth(int width)            // inline 0x5B1C30
-    {
-        box_width = width;
-    }
-    virtual int GetBoxWidth()                      // inline 0x5B1BE0
-    {
-        return box_width;
-    }
-    virtual void SetCutOffIfTooLong(bool coitl)    // inline 0x5B1C70
-    {
-        cut_off_if_too_long = coitl;
-    }
     static Broc::string ReplaceEndlines(Broc::string t);  // shell.o 0x56E670
+    FEMultiLineText();
     FEMultiLineText(font_index f, float x1, float y1, int z1,
                     panel_layer layer, float s, int horizJust, int vertJust,
                     color32 col);

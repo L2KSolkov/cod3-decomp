@@ -90,13 +90,43 @@ extern void Con_Close();
 extern int Con_OneTimeInit();
 extern int CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
                                    int linewidth, int color, int flags);
-// CL_RestoreMessageType artifact (cl.o; stub)
+extern "C" void* _Z_MallocInternal(int size);
+extern "C" void _Z_FreeInternal(void* ptr);
+
+// ea: 0x5293E0
 int CL_RestoreMessageType(unsigned char* buffer, int used, int total,
-                          void* msgwnd, int type, int linewidth)
+                          messagewindow_t* msgwnd, int type, int linewidth)
 {
-    (void)buffer; (void)used; (void)total; (void)msgwnd;
-    (void)type; (void)linewidth;
-    return 0;
+    unsigned int textBytes = 2u * (unsigned int)linewidth;
+    short* text = (short*)_Z_MallocInternal((int)textBytes);
+    int copyWidth = linewidth < con.linewidth ? linewidth : con.linewidth;
+    unsigned int copyBytes = 2u * (unsigned int)copyWidth;
+    msgwnd->current_line = 0;
+    for (int i = 0; i < msgwnd->count; ++i)
+    {
+        int endOffset = used + 4;
+        if (endOffset > total)
+            Com_Error((errorParm_t)1, "CL_RestoreMessages: buffer too small (%i)", total);
+        msgwnd->endtimes[i] = *reinterpret_cast<int*>(&buffer[used]);
+        used = endOffset;
+        if (msgwnd->endtimes[i] > 0)
+        {
+            int startOffset = used + 4;
+            if (startOffset > total)
+                Com_Error((errorParm_t)1, "CL_RestoreMessages: buffer too small (%i)", total);
+            msgwnd->starttimes[i] = *reinterpret_cast<int*>(&buffer[used]);
+            int textOffset = startOffset;
+            if (textOffset + (int)textBytes > total)
+                Com_Error((errorParm_t)1, "CL_RestoreMessages: buffer too small (%i)", total);
+            memcpy(text, &buffer[textOffset], textBytes);
+            memcpy(con.text + con.linewidth * (con.current % con.totallines),
+                   text, copyBytes);
+            msgwnd->lines[i] = con.current++;
+            used = textOffset + (int)textBytes;
+        }
+    }
+    _Z_FreeInternal(text);
+    return used;
 }
 extern unsigned char ColorIndex(unsigned char c);
 extern void Con_Linefeed(int type, int duration, int flags);
@@ -297,7 +327,7 @@ int CL_RestoreMessages(unsigned char* buffer, int bufSize)
         Com_Error((errorParm_t)1, "CL_RestoreMessages: buffer too small (%i)", bufSize);
     int v3 = *buffer;
     int v4 = CL_RestoreMessageType(buffer, 4, bufSize,
-                                   &con.gamemsg_starttimes, PMSG_CONSOLE,
+                                   &con.windows.gamemsg, PMSG_CONSOLE,
                                    *buffer);
     int v5 = CL_RestoreMessageType(buffer, v4, bufSize, &msgwnd, 0, v3);
     for (int i = 0; i < con.linewidth; ++i)

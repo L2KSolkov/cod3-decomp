@@ -5,6 +5,7 @@
 
 #include "cl_input.h"
 #include "cl_console.h"
+#include "game/game_types.h"
 
 #include "core/math_types.h"
 
@@ -633,18 +634,12 @@ extern struct cvar_t* cl_mouseAccel;
 extern struct cvar_t* cl_showMouseRate;
 extern struct cvar_t* m_yaw;
 extern struct cvar_t* m_pitch;
-extern bool IsPlayerFullySeatedInVehicle(class Entity* player);
-class Entity {
-public:
-    bool IsCameraTweening() const;  // ?IsCameraTweening@Entity@@QBE_NXZ
-};
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 class EntityManager {
 public:
     static EntityManager* sInst;
     Entity* GetPlayer(int idx);
 };
-extern void* EntityManager_GetPlayer3(void* inst, int idx);
-void* EntityManager_sInst3 = nullptr;  // cl.o artifact (EntityManager*)
 extern const signed char ClampChar(int i);
 
 // ea: 0x530AE0
@@ -735,8 +730,8 @@ void CL_GamepadMove(usercmd_s* cmd)
 LABEL_40:
     float v17;
     float v18;
-    if ((EntityManager_GetPlayer3(EntityManager_sInst3, v6) != nullptr
-         && (IsPlayerFullySeatedInVehicle((Entity*)EntityManager_GetPlayer3(EntityManager_sInst3, currCl))
+    if ((EntityManager::sInst->GetPlayer(v6) != nullptr
+         && (IsPlayerFullySeatedInVehicle(EntityManager::sInst->GetPlayer(currCl))
              || EntityManager::sInst->GetPlayer(currCl)->IsCameraTweening()))
         || GamePause::IsGamePaused(currCl))
     {

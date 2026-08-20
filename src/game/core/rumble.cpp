@@ -5,6 +5,7 @@
 #include "game/core/core_systems.h"
 
 #include "game/core/core_globals.h"
+#include "game/game_types.h"
 
 #include <string.h>
 #include <new>
@@ -219,13 +220,11 @@ extern void controller_rumble(void* self, int i_controller_num, int i_motor,
                               float intensity);
 extern int currCl;
 extern int level_time;
-extern void* EntityManager_sInst;
-extern void* EntityManager_GetPlayer(void* inst, int idx);
-void* EntityManager_GetPlayer(void* inst, int idx)
-{
-    (void)inst; (void)idx;
-    return nullptr;
-}
+class EntityManager {
+public:
+    static EntityManager* sInst;
+    Entity* GetPlayer(int idx);
+};
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h; mData defined
 // in g_entity_misc.cpp).
 struct GamePause {
@@ -323,7 +322,7 @@ RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect& effect,
                "c:\\cod\\code\\game\\RumbleManager.cpp", 85);
     }
     int playerState =
-        *(int*)((char*)EntityManager_GetPlayer(EntityManager_sInst, mClient) + 0x100);
+        *(int*)((char*)EntityManager::sInst->GetPlayer(mClient) + 0x100);
     if (playerState == 4 || playerState == 3)
     {
         result.mVal = mNextHandle.mVal;

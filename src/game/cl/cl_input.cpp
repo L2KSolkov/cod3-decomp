@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "game/cvar_types.h"
+#include "game/game_types.h"
 #include "game/platform_xbox/MPLiveEngine.h"
 #include "input/controller.h"
 
@@ -27,6 +28,22 @@ extern int currCl;
 extern int dword_106000;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
 extern int dword_F6A28C[];     // ?dword_F6A28C (per-client port array)
+namespace BrocSys { void GiveWeapon(Entity* pSelf, const char* pszWeaponName); }
+
+// Client layout fields used by the IDA input routines.  Client is opaque in
+// game_types.h; these offsets come from the authoritative PlayerState/Client
+// types and keep the input code from dereferencing an invented class shape.
+struct InputClientView {
+    unsigned char _pad00[0xA4];
+    int weapon;                 // PlayerState::weapon +0xA4
+    unsigned char _padA8[0x5C8 - 0xA8];
+    unsigned int mFlags;        // PlayerState::mFlags +0x5C8
+    unsigned char _pad5CC[0x65C - 0x5CC];
+    int persPlayerState;        // Client::pers.playerState +0x65C
+};
+static_assert(offsetof(InputClientView, weapon) == 0xA4, "Client weapon offset mismatch");
+static_assert(offsetof(InputClientView, mFlags) == 0x5C8, "Client mFlags offset mismatch");
+static_assert(offsetof(InputClientView, persPlayerState) == 0x65C, "Client pers offset mismatch");
 
 // sysEvent_t / sysEventType_t (game_xbox.o GameXbox.cpp)
 enum sysEventType_t {
@@ -136,16 +153,11 @@ int cl_analogStickLean_integer;
 int cl_freelook_integer;
 int cl_binocButtonDown_integer;
 
-struct EntityView {
-    void* client;
+class EntityManager {
+public:
+    static EntityManager* sInst;
+    Entity* GetPlayer(int idx);
 };
-extern EntityView* EntityManager_GetPlayer(void* inst, int idx);
-EntityView* EntityManager_GetPlayer(void* inst, int idx)
-{
-    (void)inst; (void)idx;
-    return nullptr;
-}
-extern void* EntityManager_sInst;
 
 // ============================================================================
 // Globals (cl.o data)
@@ -195,7 +207,6 @@ void IN_KeyDown(kbutton_t* b, int key, unsigned int time)
 // ea: 0x52A630
 void IN_KeyUp(kbutton_t* b, unsigned int key, int time)
 {
-    (void)time;
     if (key == (unsigned int)-1)
     {
         b->down[1] = 0;
@@ -209,24 +220,37 @@ void IN_KeyUp(kbutton_t* b, unsigned int key, int time)
     }
     if ((unsigned int)b->down[0] >= 0x100)
     {
-        ASSERT("down[0] < 256", "c:\\cod\\code\\game\\cl_input.cpp", 172);
+        ASSERT("b->down[0] >= 0 && b->down[0] < 256",
+               "c:\\cod\\code\\game\\cl_input.cpp", 166);
     }
-    if (b->down[0] == (int)key)
+    if ((unsigned int)b->down[1] >= 0x100)
+    {
+        ASSERT("b->down[1] >= 0 && b->down[1] < 256",
+               "c:\\cod\\code\\game\\cl_input.cpp", 167);
+    }
+    int down0 = b->down[0];
+    if (down0 == (int)key)
     {
         b->down[0] = 0;
     }
     else if (b->down[1] == (int)key)
     {
         b->down[1] = 0;
+        if (down0 != 0)
+            return;
     }
     else
     {
         return;
     }
-    if (b->down[0] == 0 && b->down[1] == 0)
+    if (b->down[1] == 0)
     {
+        unsigned int msec = b->msec;
         b->active = 0;
-        b->wasPressed = 0;
+        if (time != 0)
+            b->msec = (unsigned int)(time - b->downtime) + msec;
+        else
+            b->msec = (frame_msec >> 1) + msec;
     }
 }
 
@@ -854,7 +878,7 @@ int IN_Stance_Up()
     {
         if (cl[currCl].stanceHeld && cl[currCl].stancePosition == 1)
             cl_stance_ss[currCl] = 0;
-        cl[currCl].joystickAxis[6] = 0;
+        *reinterpret_cast<int*>(&cl[currCl].stanceHeld) = 0;
     }
     return kb[KB_WBUTTON6].active;
 }
@@ -927,8 +951,15 @@ void IN_ClassButtonDown(int key, int time)
             if (v4 != 0)
             {
                 weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v4);
-                if (InfoForWeapon->type == 1 && InfoForWeapon->weapClass == 1)
-                    CG_WeaponSlot_f(9);
+                if (InfoForWeapon->type == 2 && InfoForWeapon->weapClass == 5)
+                {
+                    int ammoIndex = BG_AmmoForWeapon(v4);
+                    int clipIndex = BG_ClipForWeapon(v4);
+                    if (cl[currCl].snap.ps.ammoclip[clipIndex]
+                            + cl[currCl].snap.ps.ammo[ammoIndex] <= 0)
+                        return;
+                }
+                CG_WeaponSlot_f(9);
             }
         }
     }
@@ -1030,11 +1061,15 @@ void IN_SprintUp(int key, int time)
 // ea: 0x530560
 void IN_SprintBreathDown(int key, int time)
 {
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr
-        && (cl[currCl].snap.ps.pm_flags & 0x20) != 0
-        && (BG_GetInfoForWeapon(cl[currCl].snap.ps.weapon)->weapClass == 11))
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    InputClientView* client = player != nullptr
+        ? reinterpret_cast<InputClientView*>(player->client) : nullptr;
+    weaponFileInfo_t* info = (client != nullptr)
+        ? BG_GetInfoForWeapon(client->weapon) : nullptr;
+    if (client != nullptr && (cl[currCl].snap.ps.pm_flags & 0x20) != 0
+        && info != nullptr && info->weapClass == 10)
     {
-        cl[currCl].snap.ps.mFlags_mask |= 1u;
+        client->mFlags |= 1u;
     }
     else
     {
@@ -1045,11 +1080,15 @@ void IN_SprintBreathDown(int key, int time)
 // ea: 0x530610
 void IN_SprintBreathUp(int key, int time)
 {
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr
-        && (cl[currCl].snap.ps.pm_flags & 0x20) != 0
-        && (BG_GetInfoForWeapon(cl[currCl].snap.ps.weapon)->weapClass == 11))
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    InputClientView* client = player != nullptr
+        ? reinterpret_cast<InputClientView*>(player->client) : nullptr;
+    weaponFileInfo_t* info = (client != nullptr)
+        ? BG_GetInfoForWeapon(client->weapon) : nullptr;
+    if (client != nullptr && (cl[currCl].snap.ps.pm_flags & 0x20) != 0
+        && info != nullptr && info->weapClass == 10)
     {
-        cl[currCl].snap.ps.mFlags_mask &= ~1u;
+        client->mFlags &= ~1u;
     }
     else
     {
@@ -1062,8 +1101,11 @@ void IN_HoldBreathDown(int key, int time)
 {
     (void)key;
     (void)time;
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr)
-        cl[currCl].snap.ps.mFlags_mask |= 1u;
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    InputClientView* client = player != nullptr
+        ? reinterpret_cast<InputClientView*>(player->client) : nullptr;
+    if (client != nullptr)
+        client->mFlags |= 1u;
 }
 
 // ea: 0x530720
@@ -1071,17 +1113,22 @@ void IN_HoldBreathUp(int key, int time)
 {
     (void)key;
     (void)time;
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr)
-        cl[currCl].snap.ps.mFlags_mask &= ~1u;
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    InputClientView* client = player != nullptr
+        ? reinterpret_cast<InputClientView*>(player->client) : nullptr;
+    if (client != nullptr)
+        client->mFlags &= ~1u;
 }
 
 // ea: 0x533970
 void IN_BinocularsDown(int key, int time)
 {
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr
-        && cl[currCl].snap.ps.weapon != 0)
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    InputClientView* client = player != nullptr
+        ? reinterpret_cast<InputClientView*>(player->client) : nullptr;
+    if (client != nullptr && client->weapon != 0)
     {
-        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(cl[currCl].snap.ps.weapon);
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(client->weapon);
         if (InfoForWeapon != nullptr)
         {
             if (InfoForWeapon->slot == 7)
@@ -1095,7 +1142,13 @@ void IN_BinocularsDown(int key, int time)
             }
             else
             {
-                IN_KeyDown(&kb[KB_BUTTON0], key, (unsigned int)time);
+                BrocSys::GiveWeapon(player, "binoculars_offhand");
+                CG_WeaponSlot_f(7);
+                InputClientView* switchedClient = reinterpret_cast<InputClientView*>(player->client);
+                weaponFileInfo_t* switchedInfo = switchedClient != nullptr
+                    ? BG_GetInfoForWeapon(switchedClient->weapon) : nullptr;
+                if (switchedInfo != nullptr && switchedInfo->slot == 7)
+                    cl_binocButtonDown_integer = 1;
             }
         }
     }
@@ -1105,13 +1158,15 @@ void IN_BinocularsDown(int key, int time)
 void IN_BinocularsUp(int key, int time)
 {
     IN_HoldBreathUp(key, time);
-    IN_KeyUp(&kb[KB_BUTTON0], (unsigned int)key, time);
 }
 
 // ea: 0x52B870
 void IN_ActivateMoveUpDown(int key, int time)
 {
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr)
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    InputClientView* client = player != nullptr
+        ? reinterpret_cast<InputClientView*>(player->client) : nullptr;
+    if (client != nullptr && client->persPlayerState == 1)
         IN_KeyDown(&kb[KB_ACTIVATE], key, (unsigned int)time);
     if (cl[currCl].snap.ps.serverCursorHint != 0 || (dword_106000 & cl[currCl].snap.ps.eFlags) != 0)
         IN_KeyDown(&kb[KB_ACTIVATE], key, (unsigned int)time);

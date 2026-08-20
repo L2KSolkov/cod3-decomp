@@ -39,7 +39,6 @@ public:
     Entity* GetPlayer(int idx);
 };
 extern Entity* GetPlayer(int idx);
-void* EntityManager_sInst;  // cl.o artifact required by legacy object bridges
 struct ClientFrameView {
     unsigned char _pad_ps[0x550];
     int spectatorClient;  // Client::ps.spectatorClient @ +0x550
@@ -81,7 +80,6 @@ int dword_F0F1FC[2];   // cl.o BSS
 int dword_F0F200[2];   // cl.o BSS
 char** svc_strings;    // ?svc_strings@@3PAPAD (cl.o)
 char dest[128];        // cl.o BSS
-void* EntityManager_sInst5 = nullptr;  // cl.o artifact (EntityManager*)
 char byte_F0D1FC[4 * 19528];  // cl.o BSS (server command buffers)
 extern void CL_SystemInfoChanged();
 int dword_F6A28C;  // ?dword_F6A28C@@3HA (cl.o active port scalar)
@@ -872,16 +870,9 @@ void CL_ParseSnapshot(msg_t* msg)
     *(int*)&v5[12] = dword_F0F1FC[4882 * currCl];    // messageNum
     *(int*)&v5[4] = MSG_ReadByte(msg);               // snapFlags
     *(int*)&v5[0] = 1;                               // valid
-    {
-        extern void* EntityManager_GetPlayer5(void* inst, int idx);
-        struct EntityView5 { void* client; };
-        extern void* EntityManager_sInst5;
-        struct EntityView5* Player =
-            (EntityView5*)EntityManager_GetPlayer5(EntityManager_sInst5,
-                                                   currCl);
-        if (Player != nullptr && Player->client != nullptr)
-            memcpy(&v5[32], Player->client, 0x5D0);
-    }
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if (player != nullptr && player->client != nullptr)
+        memcpy(&v5[32], player->client, 0x5D0);
     int v4 = cl[currCl].snap.messageNum + 1;
     if (*(int*)&v5[12] - v4 < 1 && v4 < *(int*)&v5[12])
         cl_snapshots[currCl][0].valid = 0;

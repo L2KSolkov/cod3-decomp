@@ -45,24 +45,51 @@ static_assert(sizeof(usercmd_s) == 0x30, "usercmd_s size mismatch");
 // clSnapshot_t snap at +0 and other fields at binary offsets.
 // ============================================================================
 struct clPlayerState {
-    int eFlags;
-    int pm_flags;
-    int pm_type;
-    int weapon;
-    int weaponslots[16];
-    int serverCursorHint;
-    float delta_angles[3];
-    float fWeaponPosFrac;
-    int prevTargetPointValid;
-    int vehType;
-    int vehPos;
-    unsigned int mFlags_mask;
+    unsigned char _pad00[0x24];
+    int pm_type;               // +0x24
+    unsigned char _pad28[0x2C - 0x28];
+    int pm_flags;             // +0x2C
+    unsigned char _pad30[0x54 - 0x30];
+    int delta_angles[3];      // +0x54
+    unsigned char _pad60[0xA4 - 0x60];
+    int weapon;               // +0xA4
+    unsigned char _padA8[0xAC - 0xA8];
+    float fWeaponPosFrac;     // +0xAC
+    unsigned char _padB0[0xD0 - 0xB0];
+    float viewangles[3];      // +0xD0
+    unsigned char _padDC[0xF4 - 0xDC];
+    int eFlags;               // +0xF4
+    unsigned char _padF8[0x144 - 0xF8];
+    int ammo[92];              // +0x144
+    int ammoclip[92];          // +0x2B4
+    unsigned char _pad42C[0x42C - 0x424];
+    char weaponslots[10];      // +0x42C
+    unsigned char _pad436[0x4A8 - 0x436];
+    int serverCursorHint;      // +0x4A8
+    unsigned char _pad4AC[0x524 - 0x4AC];
+    int vehPos;                // +0x524
+    int vehType;               // +0x528
+    unsigned char _pad52C[0x5A0 - 0x52C];
+    int prevTargetPointValid;  // +0x5A0
+    unsigned char _pad5A4[0x5C8 - 0x5A4];
+    unsigned int mFlags_mask;  // +0x5C8
+    unsigned char _pad5CC[0x5D0 - 0x5CC];
 };
+static_assert(sizeof(clPlayerState) == 0x5D0, "clPlayerState size mismatch");
 struct clSnapshot {
-    clPlayerState ps;
-    int messageNum;
-    int serverTime;
+    int valid;                 // +0x00
+    int snapFlags;             // +0x04
+    int serverTime;            // +0x08
+    int messageNum;            // +0x0C
+    int cmdNum;                // +0x10
+    unsigned char _pad14[0x20 - 0x14];
+    clPlayerState ps;          // +0x20
+    int numEntities;           // +0x5F0
+    int parseEntitiesNum;      // +0x5F4
+    int serverCommandNum;      // +0x5F8
+    unsigned char _tail5FC[4];
 };
+static_assert(sizeof(clSnapshot) == 0x600, "clSnapshot size mismatch");
 struct outPacket_t {
     int p_cmdNumber;   // +0x00
     int p_serverTime;  // +0x04
@@ -71,36 +98,42 @@ struct outPacket_t {
 static_assert(sizeof(outPacket_t) == 0x0C, "outPacket_t size mismatch");
 struct clientActive_t {
     clSnapshot snap;
-    float viewangles[3];
-    bool stanceHeld;
-    int stancePosition;
-    int stanceTime;
-    int joystickAxis[8];
-    int cmdNumber;
-    usercmd_s cmds[64];
-    int serverId;
-    outPacket_t outPackets[1];
-    int serverTime;
-    int cgameUserCmdValue;
-    int cgameUserHoldableValue;
-    float cgameSensitivity;
-    float cgameGunPitch;
-    float cgameGunYaw;
-    float cgameGunXOfs;
-    float cgameGunYOfs;
-    float cgameGunZOfs;
-    float cgameMaxPitchSpeed;
-    float cgameMaxYawSpeed;
-    float cgameCurrentAimAccel;
-    int mouseIndex;
-    int mouseDx[4];
-    int mouseDy[4];
-    int bCmdForceValues;
-    int iForceButtons;
-    int iForceWeapon;
-    int cgameInShellshock;
-    int oldServerTime;
+    int serverTime;            // +0x600
+    int oldServerTime;         // +0x604
+    int parseEntitiesNum;      // +0x608
+    int mouseDx[2];            // +0x60C
+    int mouseDy[2];            // +0x614
+    int mouseIndex;            // +0x61C
+    int joystickAxis[6];       // +0x620
+    bool stanceHeld;           // +0x638
+    unsigned char _pad639[3];
+    int stancePosition;        // +0x63C
+    int stanceTime;            // +0x640
+    int cgameUserCmdValue;     // +0x644
+    int cgameUserHoldableValue;// +0x648
+    int cgameInShellshock;     // +0x64C
+    float cgameSensitivity;    // +0x650
+    float cgameMaxPitchSpeed;  // +0x654
+    float cgameMaxYawSpeed;    // +0x658
+    float cgameCurrentAimAccel;// +0x65C
+    float cgameGunPitch;       // +0x660
+    float cgameGunYaw;         // +0x664
+    float cgameGunXOfs;        // +0x668
+    float cgameGunYOfs;        // +0x66C
+    float cgameGunZOfs;        // +0x670
+    float viewangles[3];       // +0x674
+    int serverId;              // +0x680
+    int cameraMode;            // +0x684
+    usercmd_s cmds[64];        // +0x688
+    int cmdNumber;             // +0x1288
+    int bCmdForceValues;       // +0x128C
+    int iForceButtons;         // +0x1290
+    int iForceWeapon;          // +0x1294
+    outPacket_t outPackets[1]; // +0x1298
+    unsigned char _pad12A4[0x12B0 - 0x12A4];
+    clSnapshot snapshots[1];  // +0x12B0
 };
+static_assert(sizeof(clientActive_t) == 0x18B0, "clientActive_t size mismatch");
 extern clientActive_t cl[2];
 
 // cl[] snapshot/entity externs used by input + usercmd code
@@ -111,6 +144,8 @@ extern cvar_t* com_cl_running;
 extern const signed char ClampChar(int i);
 extern bool CL_IsADS(int client);
 extern int CL_StanceButtonUpdate();
+extern int BG_AmmoForWeapon(int iWeapon);
+extern int BG_ClipForWeapon(int iWeapon);
 
 struct weaponFileInfo_t {
     int weapClass;

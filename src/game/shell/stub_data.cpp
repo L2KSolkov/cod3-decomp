@@ -443,7 +443,9 @@ void SaveGameData::Init()
     memset(ammoclip, 0, sizeof(ammoclip));
     weapons[0] = 0;
     weapons[1] = 0;
-    memset(weaponslots, 0, sizeof(weaponslots));
+    weaponslots[0] = 0;
+    weaponslots[4] = 0;
+    weaponslots[8] = 0;
     weaponrechamber[0] = 0;
     weaponrechamber[1] = 0;
     mPlayerHealth = -1.0f;
@@ -458,7 +460,9 @@ void SaveGameData::Init()
     mPlayerPosition[0] = 0.0f;
     mPlayerPosition[1] = 0.0f;
     mPlayerPosition[2] = 0.0f;
-    memset(m_title_prefix, 0, sizeof(m_title_prefix));
+    m_title_prefix[0] = 0;
+    m_title_prefix[4] = 0;
+    m_title_prefix[8] = 0;
 }
 
 // ea: 0x00564D30

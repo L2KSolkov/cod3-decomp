@@ -23,6 +23,7 @@ extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern char* va(const char* fmt, ...);
+extern const char defaultFileName[];
 extern void SV_SetCheckSum(int checksum);
 extern void CG_DrawActiveFrame(int serverTime, int demoPlayback,
                                int cubemapShot, int cubemapSize,
@@ -126,9 +127,8 @@ void CL_DObjCalcAnim()
 }
 
 // ea: 0x528970
-int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex)
+int CL_DObjCreateSkelForBone(DObj* obj)
 {
-    (void)boneIndex;
     if (obj == nullptr)
     {
         ASSERT("obj", "c:\\cod\\code\\game\\cl_cgame.cpp", 561);
@@ -136,7 +136,7 @@ int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex)
     if (DObjSkelExists(obj, com_skelTimeStamp) != 0)
         return 1;
     unsigned int AllocSkelSize = DObjGetAllocSkelSize(obj);
-    char* v3 = (char*)mem_heap_malloc_ctx(AllocSkelSize, 16, "hunk",
+    char* v3 = (char*)mem_heap_malloc_ctx(16, AllocSkelSize, "hunk",
                                           "c:\\cod\\code\\game\\cl_cgame.cpp",
                                           569);
     DObjCreateSkel(obj, v3);
@@ -144,9 +144,8 @@ int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex)
 }
 
 // ea: 0x528A10
-int CL_DObjCreateSkelForBones(DObj* obj, int* boneMask)
+int CL_DObjCreateSkelForBones(DObj* obj)
 {
-    (void)boneMask;
     if (bCL_AllowedAllocSkel == 0)
     {
         ASSERT("bCL_AllowedAllocSkel", "c:\\cod\\code\\game\\cl_cgame.cpp", 586);
@@ -158,7 +157,7 @@ int CL_DObjCreateSkelForBones(DObj* obj, int* boneMask)
     if (DObjSkelExists(obj, com_skelTimeStamp) != 0)
         return 1;
     unsigned int AllocSkelSize = DObjGetAllocSkelSize(obj);
-    char* v3 = (char*)mem_heap_malloc_ctx(AllocSkelSize, 16, "hunk",
+    char* v3 = (char*)mem_heap_malloc_ctx(16, AllocSkelSize, "hunk",
                                           "c:\\cod\\code\\game\\cl_cgame.cpp",
                                           595);
     DObjCreateSkel(obj, v3);

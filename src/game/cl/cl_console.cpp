@@ -7,6 +7,7 @@
 
 #include "cl_console.h"
 
+#include <math.h>
 #include <string.h>
 
 // ============================================================================
@@ -34,16 +35,155 @@ extern void Con_UpdateMessageWindowLine(msgwnd_t* msgwnd, int linefeed,
                                         int duration, int flags);
 extern void Con_DrawMessageWindow(msgwnd_t* msgwnd, int x, int y,
                                   float alpha, msgwnd_mode_t mode);
-// CL_ConsolePrint_AddLine artifact (cl.o; stub)
+extern int SEH_PrintStrlen(const char* string);
+
+// ea: 0x529E60
 int CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
                             int linewidth, int color, int flags)
 {
-    (void)type; (void)txt; (void)duration; (void)linewidth;
-    (void)color; (void)flags;
-    return 0;
+    int targetLineWidth = linewidth;
+    if (linewidth <= 0 || linewidth > con.linewidth)
+        targetLineWidth = linewidth = con.linewidth;
+
+    if (type == PMSG_GAME || type == PMSG_BOLDGAME)
+    {
+        int textLength = SEH_PrintStrlen(txt);
+        if (textLength > linewidth)
+        {
+            double lines = ceil((double)textLength / linewidth);
+            targetLineWidth = (int)(textLength / lines);
+        }
+    }
+
+    if (type != con.prevType && con.x > 0)
+        Con_Linefeed(con.prevType, duration, flags);
+
+    const char* cursor = txt;
+    bool lineBroken = false;
+    while (*cursor != 0)
+    {
+        unsigned char ch = (unsigned char)*cursor;
+        if (ch == '^' && cursor[1] != 0 && cursor[1] != '^'
+            && cursor[1] >= '0' && cursor[1] <= '9')
+        {
+            color = ColorIndex((unsigned char)cursor[1]);
+            cursor += 2;
+            continue;
+        }
+
+        int i = 0;
+        for (; i < linewidth; ++i)
+        {
+            if ((unsigned char)cursor[i] <= 0x20)
+                break;
+        }
+        if (i != linewidth && i + con.x > linewidth)
+        {
+            Con_Linefeed((print_msg_type_t)type, duration, flags);
+            lineBroken = true;
+        }
+
+        ++cursor;
+        if (ch == '\n')
+        {
+            Con_Linefeed((print_msg_type_t)type, duration, flags);
+        }
+        else if (ch == '\r')
+        {
+            con.x = 0;
+        }
+        else if (con.x != 0 || ch != ' ' || !lineBroken)
+        {
+            con.text[con.x + con.linewidth * (con.current % con.totallines)] =
+                (short)(ch | (color << 8));
+            ++con.x;
+            if (con.x >= linewidth || (con.x >= targetLineWidth && ch == ' '))
+            {
+                Con_Linefeed((print_msg_type_t)type, duration, flags);
+                lineBroken = true;
+            }
+        }
+    }
+
+    if (con.x > 0)
+    {
+        if (type != PMSG_CONSOLE)
+        {
+            Con_Linefeed((print_msg_type_t)type, duration, flags);
+            con.prevType = (print_msg_type_t)type;
+            return color;
+        }
+        Con_UpdateNotifyLine(PMSG_CONSOLE, 0, duration, flags);
+    }
+    con.prevType = (print_msg_type_t)type;
+    return color;
 }
+// ea: 0x52A070
+void CL_AddConsoleInfoChar(short value, char info)
+{
+    unsigned short encoded = (unsigned short)(unsigned char)value;
+    encoded = (unsigned short)(encoded | ((unsigned short)(unsigned char)info << 8));
+    con.text[con.x + con.linewidth * (con.current % con.totallines)] =
+        (short)encoded;
+    ++con.x;
+}
+
+// ea: 0x52A0B0
+void CL_AddConsoleInfoColor(int firstInfo, const float* color)
+{
+    int red = (int)(color[0] * 255.0f);
+    if (red < 0) red = 0;
+    if (red > 255) red = 255;
+    con.text[con.x + con.linewidth * (con.current % con.totallines)] =
+        (short)(red | (firstInfo << 8));
+    ++con.x;
+
+    int green = (int)(color[1] * 255.0f);
+    if (green < 0) green = 0;
+    if (green > 255) green = 255;
+    con.text[con.x + con.linewidth * (con.current % con.totallines)] =
+        (short)(green | ((firstInfo + 1) << 8));
+    ++con.x;
+
+    int blue = (int)(color[2] * 255.0f);
+    if (blue < 0) blue = 0;
+    if (blue > 255) blue = 255;
+    con.text[con.x + con.linewidth * (con.current % con.totallines)] =
+        (short)(blue | ((firstInfo + 2) << 8));
+    ++con.x;
+}
+
+// ea: 0x52A1C0
+void CL_AddDeathMessageText(const char* string, int forceColor)
+{
+    unsigned char color = (unsigned char)forceColor;
+    if (forceColor < 0)
+        color = ColorIndex(0x37);
+
+    int line = con.current % con.totallines;
+    while (*string != 0)
+    {
+        unsigned char ch = (unsigned char)*string;
+        if (ch == '^' && string[1] != 0 && string[1] != '^' &&
+            string[1] >= '0' && string[1] <= '9')
+        {
+            if (forceColor < 0)
+                color = ColorIndex((unsigned char)string[1]);
+            string += 2;
+            continue;
+        }
+
+        ++string;
+        if (ch != '\n' && ch != '\r')
+        {
+            con.text[con.x + line * con.linewidth] =
+                (short)(ch | ((unsigned short)color << 8));
+            ++con.x;
+        }
+    }
+}
+
 extern void CL_AddConsoleInfoColor(int iFirstInfo, const float* vColor);
-extern void CL_AddDeathMessageText(const char* pszString, int iForceColor);
 extern void* FEManager_GetFont(void* self, int f, float scale);
 struct FEManager; extern FEManager g_femanager;
 class nglFont;

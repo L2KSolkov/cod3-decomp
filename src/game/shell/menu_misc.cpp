@@ -131,7 +131,7 @@ void ControllerDisconnectedMenu::SetPanelFile(PanelFile* pf)
         col.i = TextPointer->GetColor().i;
         new (text) FEMultiLineText(
             TextPointer->GetFont(), TextPointer->GetY(), 0.0f, 0,
-            (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, (int)col.i, col);
+            (panel_layer)TextPointer->GetScaleX(), 0.0f, 0, 0, col);
     }
     text->SetNumLines(8);
     text->SetNoFlash(color32(-1));

@@ -551,7 +551,7 @@ void LoadingMenu::SetPanelFile(PanelFile* pf)
         new (mTipEntry) FEMultiLineText(
             tipBase->GetFont(), tipBase->GetY(), 0.0f, 0,
             (panel_layer)tipBase->GetScaleX(), tipScale.value, 64,
-            (int)col.i, col);
+            0, col);
     }
     mTipEntry->SetNumLines(10);
     PanelQuad* Pointer = panel->GetPointer("loading_bar_use");
