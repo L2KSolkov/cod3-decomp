@@ -708,7 +708,7 @@ index	status	map_line
 707	PENDING	0002:00464e50 ?Copy@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54350 f i nal_init.o
 708	PENDING	0002:00464e70 ??$FastCopy@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C54370 f i nal_init.o
 709	PENDING	0002:00464ed0 ?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C543D0 f i nal_init.o
-710	PENDING	0002:00464f60 ??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C54460 f i nal_init.o
+710	PORTED	0002:00464f60 ??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ 00C54460 f i nal_init.o
 711	PORTED	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o
 712	PORTED	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o
 713	PORTED	0002:00464f90 ??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C54490 f i nal_init.o

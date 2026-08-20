@@ -20852,7 +20852,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 20851	0x00864E50	0x00C54350	?Copy@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20852	0x00864E70	0x00C54370	??$FastCopy@VnalComponentPacked16EntropyIKSpin@@VnalIKSpin@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
 20853	0x00864ED0	0x00C543D0	?ReleaseCache@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-20854	0x00864F60	0x00C54460	??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+20854	0x00864F60	0x00C54460	??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 20855	0x00864F70	0x00C54470	??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20856	0x00864F80	0x00C54480	??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED
 20857	0x00864F90	0x00C54490	??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ	nal_xboxr	nal_init.o	engine		f i	1	PORTED	FUNCTION status override	YES	YES	VERIFIED

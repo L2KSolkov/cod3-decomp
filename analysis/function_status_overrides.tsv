@@ -583,6 +583,7 @@ nal_init.o	?Destroy@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@
 nal_init.o	?Destroy@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAEXXZ	VERIFIED
 nal_init.o	?Destroy@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAEXXZ	VERIFIED
 nal_init.o	??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ	PORTED
+nal_init.o	??1?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QAE@XZ	PORTED
 nal_init.o	??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ	PORTED
 nal_init.o	??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ	PORTED
 nal_init.o	??1nalComponentEntropyFloat1@@UAE@XZ	PORTED
