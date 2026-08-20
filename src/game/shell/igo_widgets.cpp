@@ -1248,9 +1248,9 @@ void IGOAmmoWidget::UpdateWidescreen(bool widescreen, float about_x)
 void IGOAmmoWidget::UpdateSplitScreen(int viewport, int old_viewport)
 {
     clipAmmo->UpdateForHUDSplitScreen(viewport, old_viewport, 10, -5.0f,
-                                      -2.0f);
+                                      -4.0f);
     totalAmmo->UpdateForHUDSplitScreen(viewport, old_viewport, 10, 5.0f,
-                                       -2.0f);
+                                       -4.0f);
     frame->FormatHUDForSplitScreen(viewport, old_viewport, 10, 0.0f, 0.0f);
 }
 
@@ -1427,9 +1427,6 @@ IGOActionHintWidget::IGOActionHintWidget(int client)
         text = nullptr;
     }
     dont_draw = false;
-    lastAlpha = 0.0f;
-    isFadingDown = false;
-    startHintTime = 0;
 }
 
 // ea: 0x00567310
@@ -1827,9 +1824,9 @@ void IGOInGameScoreWidget::UpdateSplitScreen(int viewport, int old_viewport)
     m_pAxisFlagIcon->FormatHUDForSplitScreen(viewport, old_viewport, 5,
                                              0.0f, 32.0f);
     m_pAlliesScoreText->UpdateForHUDSplitScreen(viewport, old_viewport, 5,
-                                                0.0f, 0.0f);
+                                                0.0f, 22.0f);
     m_pAxisScoreText->UpdateForHUDSplitScreen(viewport, old_viewport, 5,
-                                              0.0f, 0.0f);
+                                              0.0f, 32.0f);
 }
 
 // ============================================================================
@@ -2324,9 +2321,9 @@ void IGOGrenadeWidget::UpdateSplitScreen(int viewport, int old_viewport)
     apMine->FormatHUDForSplitScreen(viewport, old_viewport, 10, -10.0f,
                                     -16.0f);
     ammoLeft->UpdateForHUDSplitScreen(viewport, old_viewport, 10, -10.0f,
-                                      -8.0f);
+                                      -16.0f);
     ammoRight->UpdateForHUDSplitScreen(viewport, old_viewport, 10, 3.0f,
-                                       -8.0f);
+                                       -16.0f);
 }
 
 // ============================================================================
@@ -4256,20 +4253,31 @@ void IGOWarStatusWidget::UpdateWidescreen(bool widescreen, float about_x)
 // ea: 0x00577FC0
 void IGOWarStatusWidget::UpdateSplitScreen(int viewport, int old_viewport)
 {
+    if (viewport == 3)
+        viewport = 5;
+    else if (viewport == 4)
+        viewport = 7;
+    if (old_viewport == 3)
+        old_viewport = 5;
+    else if (old_viewport == 4)
+        old_viewport = 7;
+
+    float war_width = -30.0f;
     for (int i = 0; i < 5; ++i)
     {
-        m_pObjectiveFrameUS.m_elements[i]->FormatForSplitScreen(viewport,
-                                                                old_viewport);
-        m_pObjectiveFrameGerman.m_elements[i]->FormatForSplitScreen(
-            viewport, old_viewport);
-        m_pObjectiveGerman.m_elements[i]->FormatForSplitScreen(
-            viewport, old_viewport);
-        m_pObjectiveUS.m_elements[i]->FormatForSplitScreen(viewport,
-                                                           old_viewport);
-        m_pIconGerman.m_elements[i]->FormatForSplitScreen(viewport,
-                                                          old_viewport);
-        m_pIconUS.m_elements[i]->FormatForSplitScreen(viewport,
-                                                      old_viewport);
+        m_pObjectiveFrameUS.m_elements[i]->FormatHUDForSplitScreen(
+            viewport, old_viewport, 4, war_width, 20.0f);
+        m_pObjectiveFrameGerman.m_elements[i]->FormatHUDForSplitScreen(
+            viewport, old_viewport, 4, war_width, 20.0f);
+        m_pObjectiveGerman.m_elements[i]->FormatHUDForSplitScreen(
+            viewport, old_viewport, 4, war_width, 20.0f);
+        m_pObjectiveUS.m_elements[i]->FormatHUDForSplitScreen(
+            viewport, old_viewport, 4, war_width, 20.0f);
+        m_pIconGerman.m_elements[i]->FormatHUDForSplitScreen(
+            viewport, old_viewport, 4, war_width, 20.0f);
+        m_pIconUS.m_elements[i]->FormatHUDForSplitScreen(
+            viewport, old_viewport, 4, war_width, 20.0f);
+        war_width += 15.0f;
     }
 }
 
