@@ -8649,7 +8649,30 @@ NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8EntropyQuat,
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyQuat,
                             nalComponentQuatBase);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPO, nalComponentPOBase);
-NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyPO, nalComponentPOBase);
+struct nalComponentEntropyPOData : nalComponentData {
+    struct SkeletonComponentData {
+        float PositionQuantization;
+        float OrientationQuantization;
+    };
+    struct AnimData {
+        float QuantizationScale;
+    };
+};
+class nalComponentEntropyPO
+    : public nalComponent<nalComponentPOBase,
+                           nalComponentEntropyPOData,
+                           nalComponentEntropyPO> {
+public:
+    nalComponentEntropyPO(nalRegisterKey key);
+    virtual ~nalComponentEntropyPO();
+    static void ComponentSkip(
+        const unsigned char** srcPtr, int quantity,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyPOData::AnimData* animData,
+        nalComponentEntropyPOData::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentData::AnimComponentData* animComponentData);
+};
 class nalComponentTrajectoryPO
     : public nalComponent<nalComponentPOBase,
                            nalComponentTrajectoryPOData,
@@ -8681,6 +8704,14 @@ public:
         nalComponentEntropyTrajectoryPOData::AnimComponentData*
             animComponentData,
         bool trajabs);
+    static void ComponentSkip(
+        const unsigned char** srcPtr, int quantity,
+        nalComponentData::SkeletonData* skeletonData,
+        nalComponentEntropyTrajectoryPOData::AnimData* animData,
+        nalComponentEntropyTrajectoryPOData::SkeletonComponentData*
+            skeletonComponentData,
+        nalComponentEntropyTrajectoryPOData::AnimComponentData*
+            animComponentData);
 };
 struct nalComponentPacked16EntropyIKSpinData : nalComponentData {
     struct SkeletonComponentData {
@@ -14533,6 +14564,25 @@ void nalComponent<nalComponentPOBase,
         pose = (char*)pose + 32;
 }
 
+// ea: 0x00862560
+void nalComponentEntropyPO::ComponentSkip(
+    const unsigned char** srcPtr, int quantity,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyPOData::AnimData* animData,
+    nalComponentEntropyPOData::SkeletonComponentData* skeletonComponentData,
+    nalComponentData::AnimComponentData* animComponentData)
+{
+    (void)quantity;
+    (void)skeletonData;
+    (void)animData;
+    (void)skeletonComponentData;
+    (void)animComponentData;
+    const unsigned char* cursor = *srcPtr;
+    for (int channel = 0; channel < 4; ++channel)
+        cursor += *cursor + 1;
+    *srcPtr = cursor;
+}
+
 // ea: 0x00862450
 template <>
 void nalComponent<nalComponentPOBase,
@@ -15683,6 +15733,26 @@ void nalComponent<nalComponentPOBase,
     pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
     for (int i = 0; i < componentInfo->Count; ++i)
         pose = (char*)pose + 32;
+}
+
+// ea: 0x00863D60
+void nalComponentEntropyTrajectoryPO::ComponentSkip(
+    const unsigned char** srcPtr, int quantity,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentEntropyTrajectoryPOData::AnimData* animData,
+    nalComponentEntropyTrajectoryPOData::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentEntropyTrajectoryPOData::AnimComponentData* animComponentData)
+{
+    (void)quantity;
+    (void)skeletonData;
+    (void)animData;
+    (void)skeletonComponentData;
+    (void)animComponentData;
+    const unsigned char* cursor = *srcPtr;
+    for (int channel = 0; channel < 4; ++channel)
+        cursor += *cursor + 1;
+    *srcPtr = cursor;
 }
 
 // ea: 0x00863C40
