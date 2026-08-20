@@ -592,11 +592,11 @@ index	status	map_line
 591	SKIPPED	0002:00461590 ??_G?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@MAEPAXI@Z 00C50A90 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 592	PORTED	0002:004615c0 ?Process@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C50AC0 f i nal_init.o
 593	PORTED	0002:004615f0 ?SetupPartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C50AF0 f i nal_init.o
-594	PENDING	0002:004616c0 ?PartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C50BC0 f i nal_init.o
-595	PENDING	0002:004617b0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C50CB0 f i nal_init.o
-596	PENDING	0002:004618a0 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C50DA0 f i nal_init.o
-597	PENDING	0002:00461960 ?Convert@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C50E60 f i nal_init.o
-598	PENDING	0002:00461aa0 ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C50FA0 f i nal_init.o
+594	PORTED	0002:004616c0 ?PartialDecode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C50BC0 f i nal_init.o
+595	PORTED	0002:004617b0 ?Decode@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C50CB0 f i nal_init.o
+596	PORTED	0002:004618a0 ?Skip@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C50DA0 f i nal_init.o
+597	PORTED	0002:00461960 ?Convert@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C50E60 f i nal_init.o
+598	PORTED	0002:00461aa0 ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C50FA0 f i nal_init.o
 599	PORTED	0002:00461b50 ?GetTrajectory@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C51050 f i nal_init.o
 600	PORTED	0002:00461bf0 ?Construct@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C510F0 f i nal_init.o
 601	PORTED	0002:00461c20 ?Delete@?$nalComponent@VnalComponentPOBase@@VnalComponentPOData@@VnalComponentPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C51120 f i nal_init.o
