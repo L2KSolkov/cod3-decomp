@@ -2494,8 +2494,25 @@ void rbint::setup_constraint(rigid_body* rb, pulse_sum_node* psn) {
 }
 
 void rbint::substep(user_rigid_body* rb, float delta_t) {
-    // ea: 0x895210 - integrate pos with a-vel applied.
-    euler_integrate_pos(rb, delta_t);
+    // ea: 0x895210 - translate and rotate the user body for one substep.
+    rb->m_mat.w.v = _mm_add_ps(rb->m_mat.w.v,
+                               _mm_mul_ps(rb->m_t_vel.v, _mm_set1_ps(delta_t)));
+    math::Mat43 rot;
+    make_rotate(&rot, rb->m_a_vel, delta_t);
+    const math::Dir3 old_x = rb->m_mat.x;
+    const math::Dir3 old_y = rb->m_mat.y;
+    const math::Dir3 old_z = rb->m_mat.z;
+    auto rotate_row = [&rot](const math::Dir3& row) {
+        math::Dir3 result;
+        result.v = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(row.v, row.v, 0), rot.x.v),
+                       _mm_mul_ps(_mm_shuffle_ps(row.v, row.v, 85), rot.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(row.v, row.v, 170), rot.z.v));
+        return result;
+    };
+    rb->m_mat.x = rotate_row(old_x);
+    rb->m_mat.y = rotate_row(old_y);
+    rb->m_mat.z = rotate_row(old_z);
 }
 
 // ============================================================================
@@ -2539,4 +2556,35 @@ rigid_body** rbcint::get_urb(user_rigid_body** rbc) {
 rigid_body& rigid_body::operator=(const rigid_body& other) {
     memcpy(this, &other, sizeof(rigid_body));
     return *this;
+}
+
+user_rigid_body& user_rigid_body::operator=(const user_rigid_body& other) {
+    rigid_body::operator=(other);
+    m_dictator = other.m_dictator;
+    return *this;
+}
+
+void nuge::tensor_transform_principle(const math::Dir3* diag, const math::Mat43* mat,
+                                      math::Mat33* tensor) {
+    math::Dir3 v3;
+    v3.v = mat->y.v;
+    math::Dir3 v4;
+    v4.v = mat->z.v;
+    __m128 v5 = _mm_shuffle_ps(mat->x.v, v3.v, 68);
+    __m128 v6 = _mm_mul_ps(_mm_shuffle_ps(v5, v4.v, 221), diag->v);
+    __m128 v7 = _mm_mul_ps(_mm_shuffle_ps(v5, v4.v, 136), diag->v);
+    __m128 v8 = _mm_mul_ps(
+        _mm_shuffle_ps(_mm_shuffle_ps(mat->x.v, v3.v, 238), v4.v, 168), diag->v);
+    __m128 v9 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 170), v4.v);
+    __m128 v10 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 85), v3.v);
+    __m128 v11 = _mm_shuffle_ps(v7, v7, 0);
+    tensor->x.v = _mm_add_ps(_mm_add_ps(_mm_mul_ps(v11, mat->x.v), v10), v9);
+    tensor->y.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v6, v6, 0), mat->x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(v6, v6, 85), v3.v)),
+        _mm_mul_ps(_mm_shuffle_ps(v6, v6, 170), v4.v));
+    tensor->z.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v8, v8, 0), mat->x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(v8, v8, 85), v3.v)),
+        _mm_mul_ps(_mm_shuffle_ps(v8, v8, 170), v4.v));
 }

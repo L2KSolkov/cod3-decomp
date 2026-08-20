@@ -86,7 +86,7 @@ index	status	map_line
 85	FIXED	0002:00493f50 ?set@pulse_sum_angular@@QAEXQAVrigid_body@@ABVDir3@math@@011QAVpulse_sum_cache@@@Z 00C83450 f phys_constraint_solver_multithreaded.o
 86	FIXED	0002:004941f0 ?set@pulse_sum_contact@@QAEXQAVrigid_body@@0PAVcontact_point_info@@M@Z 00C836F0 f phys_constraint_solver_multithreaded.o
 87	FIXED	0002:004945b0 ?solve_iterative@pulse_sum_constraint_solver@@QAEXHM@Z 00C83AB0 f phys_constraint_solver_multithreaded.o
-88	PENDING	0002:00494a50 ?process@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPBVphysics_system@@H@Z 00C83F50 f phys_constraint_solver_multithreaded.o
+88	VERIFIED	0002:00494a50 ?process@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPBVphysics_system@@H@Z 00C83F50 f phys_constraint_solver_multithreaded.o
 89	VERIFIED	0002:00494aa0 ?remove_all@?$phys_link_list@Vpulse_sum_node@@@@QAEXXZ 00C83FA0 f i phys_constraint_solver_multithreaded.o
 90	VERIFIED	0002:00494ab0 ?remove_all@?$phys_link_list@Vpulse_sum_normal@@@@QAEXXZ 00C83FB0 f i phys_constraint_solver_multithreaded.o
 91	VERIFIED	0002:00494ac0 ?remove_all@?$phys_link_list@Vpulse_sum_point@@@@QAEXXZ 00C83FC0 f i phys_constraint_solver_multithreaded.o
@@ -118,14 +118,14 @@ index	status	map_line
 117	VERIFIED	0002:00494cc0 ??0iterator@?$phys_link_list@Vpulse_sum_wheel@@@@QAE@PAVpulse_sum_wheel@@@Z 00C841C0 f i phys_constraint_solver_multithreaded.o
 118	VERIFIED	0002:00494cd0 ??0iterator@?$phys_link_list@Vpulse_sum_contact@@@@QAE@PAVpulse_sum_contact@@@Z 00C841D0 f i phys_constraint_solver_multithreaded.o
 119	VERIFIED	0002:00494ce0 ??0iterator@?$phys_link_list@Vpulse_sum_node@@@@QAE@PAVpulse_sum_node@@@Z 00C841E0 f i phys_constraint_solver_multithreaded.o
-120	PENDING	0002:00494cf0 ??$to_phys_mat33@VMat33@math@@@@YAABVMat33@math@@ABV01@@Z 00C841F0 f i phys_constraint_solver_multithreaded.o
+120	PORTED	0002:00494cf0 ??$to_phys_mat33@VMat33@math@@@@YAABVMat33@math@@ABV01@@Z 00C841F0 f i phys_constraint_solver_multithreaded.o
 121	VERIFIED	0002:00494d00 ?orthonormalize@@YAXPAVMat43@math@@@Z 00C84200 f i phys_constraint_solver_multithreaded.o
-122	PENDING	0002:00494e80 ??4user_rigid_body@@QAEAAV0@ABV0@@Z 00C84380 f i phys_constraint_solver_multithreaded.o
-123	PENDING	0002:00494eb0 ?tensor_transform_principle@nuge@@SAXABVDir3@math@@ABVMat43@3@PAVMat33@3@@Z 00C843B0 f i phys_constraint_solver_multithreaded.o
-124	PENDING	0002:00494fe0 ?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C844E0 f i phys_constraint_solver_multithreaded.o
-125	PENDING	0002:00495080 ?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@M@Z 00C84580 f i phys_constraint_solver_multithreaded.o
-126	PENDING	0002:00495130 ?mul_inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C84630 f i phys_constraint_solver_multithreaded.o
-127	PENDING	0002:00495210 ?substep@rbint@@SAXPAVuser_rigid_body@@M@Z 00C84710 f i phys_constraint_solver_multithreaded.o
+122	PORTED	0002:00494e80 ??4user_rigid_body@@QAEAAV0@ABV0@@Z 00C84380 f i phys_constraint_solver_multithreaded.o
+123	PORTED	0002:00494eb0 ?tensor_transform_principle@nuge@@SAXABVDir3@math@@ABVMat43@3@PAVMat33@3@@Z 00C843B0 f i phys_constraint_solver_multithreaded.o
+124	FIXED	0002:00494fe0 ?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C844E0 f i phys_constraint_solver_multithreaded.o
+125	FIXED	0002:00495080 ?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@M@Z 00C84580 f i phys_constraint_solver_multithreaded.o
+126	FIXED	0002:00495130 ?mul_inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z 00C84630 f i phys_constraint_solver_multithreaded.o
+127	FIXED	0002:00495210 ?substep@rbint@@SAXPAVuser_rigid_body@@M@Z 00C84710 f i phys_constraint_solver_multithreaded.o
 128	VERIFIED	0002:00495350 ?euler_integrate_velocity@rbint@@SAXQAVrigid_body@@M@Z 00C84850 f i phys_constraint_solver_multithreaded.o
 129	VERIFIED	0002:00495410 ?euler_integrate_pos@rbint@@SAXQAVrigid_body@@M@Z 00C84910 f i phys_constraint_solver_multithreaded.o
 130	VERIFIED	0002:004955a0 ?gtv@rbint@@SA?BVDir3@math@@QAVrigid_body@@ABV23@@Z 00C84AA0 f i phys_constraint_solver_multithreaded.o

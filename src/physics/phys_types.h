@@ -719,6 +719,7 @@ struct user_rigid_body : rigid_body {
     const math::Mat43* m_dictator;  // +0x1B0
 
     void set(const math::Mat43* const dictator);  // ?set@user_rigid_body@@QAEXQBVMat43@math@@@Z
+    user_rigid_body& operator=(const user_rigid_body& other);  // ea: 0x894E80
     user_rigid_body() {}  // ea: 0x881720
 };
 static_assert(sizeof(user_rigid_body) == 0x1C0, "user_rigid_body size mismatch");

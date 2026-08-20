@@ -382,3 +382,11 @@ phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_angula
 phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_angular@@AAEXHM@Z	FIXED
 phys_constraint_solver_multithreaded.o	?SOLVER_apply_relaxation@pulse_sum_wheel@@AAEXAAM@Z	FIXED
 phys_constraint_solver_multithreaded.o	?SOLVER_solver_prolog@pulse_sum_wheel@@AAEXHM@Z	FIXED
+phys_constraint_solver_multithreaded.o	?process@list_constraint_solver@phys_constraint_solver_multithreaded@@QAEXPBVphysics_system@@H@Z	VERIFIED
+phys_constraint_solver_multithreaded.o	??$to_phys_mat33@VMat33@math@@@@YAABVMat33@math@@ABV01@@Z	PORTED
+phys_constraint_solver_multithreaded.o	??4user_rigid_body@@QAEAAV0@ABV0@@Z	PORTED
+phys_constraint_solver_multithreaded.o	?tensor_transform_principle@nuge@@SAXABVDir3@math@@ABVMat43@3@PAVMat33@3@@Z	PORTED
+phys_constraint_solver_multithreaded.o	?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@M@Z	FIXED
+phys_constraint_solver_multithreaded.o	?mul_inv_L@rbint@@SA?BVDir3@math@@PBVrigid_body@@ABV23@@Z	FIXED
+phys_constraint_solver_multithreaded.o	?substep@rbint@@SAXPAVuser_rigid_body@@M@Z	FIXED

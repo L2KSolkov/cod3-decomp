@@ -98,7 +98,12 @@ extern const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG;
 namespace nuge {
 void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float delta_t,
                      math::Dir3* t_vel, math::Dir3* a_vel);
+void tensor_transform_principle(const math::Dir3* diag, const math::Mat43* mat,
+                                math::Mat33* tensor); // ea: 0x894EB0
 }
+
+template <typename T>
+const T* to_phys_mat33(const T* m) { return m; } // ea: 0x894CF0
 
 // ============================================================================
 // pulse_sum_angular — angular constraint row (144 bytes, verified against IDA)
@@ -1252,7 +1257,7 @@ static inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body
                                const math::Dir3* t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 19,
-                  "rb->debug_flag_is_not_in_collision()", ""))
+                  "rb->debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     ((math::Dir3*)result)->v = _mm_add_ps(
         _mm_add_ps(
@@ -1267,7 +1272,7 @@ static inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body
                                const math::Dir3* t, float delta_t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 30,
-                  "rb->debug_flag_is_not_in_collision()", ""))
+                  "rb->debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     ((math::Dir3*)result)->v = _mm_mul_ps(
         _mm_add_ps(
@@ -1284,7 +1289,7 @@ static inline const math::Dir3* mul_inv_L(const math::Dir3* result, const rigid_
                                    const math::Dir3* t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 41,
-                  "rb->debug_flag_is_not_in_collision()", ""))
+                  "rb->debug_flag_is_not_in_collision()", defaultFileName))
         __debugbreak();
     math::Dir3 v3;
     v3.v = rb->m_mat.y.v;
