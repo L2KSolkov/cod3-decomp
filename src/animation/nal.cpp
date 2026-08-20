@@ -10200,6 +10200,241 @@ void nalComponentPacked16EntropyFloat4::ComponentSetupPartialDecode(
     *srcPtr = cursor + channel3Size;
 }
 
+// ea: 0x0085E610
+void nalComponentPacked16EntropyFloat4::ComponentSkip(
+    const unsigned char** srcPtr, int quantity,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentPacked16EntropyFloat4Data::AnimData* animData,
+    nalComponentPacked16EntropyFloat4Data::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentData::AnimComponentData* animComponentData)
+{
+    (void)quantity;
+    (void)skeletonData;
+    (void)animData;
+    (void)skeletonComponentData;
+    (void)animComponentData;
+    const unsigned char* cursor = *srcPtr;
+    cursor += *cursor + 1;
+    cursor += *cursor + 1;
+    cursor += *cursor + 1;
+    cursor += *cursor + 1;
+    *srcPtr = cursor;
+}
+
+// ea: 0x0085E7F0
+void nalComponentPacked16EntropyFloat4::ComponentConvert(
+    math::Vector4* dstPtr,
+    const nalComponentPacked16EntropyFloat4Data::CacheType* srcPtr,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentPacked16EntropyFloat4Data::AnimData* animData,
+    nalComponentPacked16EntropyFloat4Data::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentData::AnimComponentData* animComponentData)
+{
+    (void)skeletonData;
+    (void)animData;
+    (void)animComponentData;
+    const __m128 packed = _mm_set_ps((float)srcPtr->w, (float)srcPtr->z,
+                                     (float)srcPtr->y, (float)srcPtr->x);
+    dstPtr->v = _mm_add_ps(
+        _mm_mul_ps(packed, _mm_set1_ps(skeletonComponentData->Scale)),
+        _mm_set1_ps(skeletonComponentData->Bias));
+}
+
+// ea: 0x0085E510
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    dst = (void*)(((uintptr_t)dst + 1u) & ~uintptr_t(1u));
+    const auto* animData =
+        (const nalComponentPacked16EntropyFloat4Data::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (const char*)animData
+                      + sizeof(nalComponentPacked16EntropyFloat4Data::AnimData);
+    const void* skeletonData = *customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked16EntropyFloat4::ComponentSkip(
+                (const unsigned char**)&src, quantity,
+                (nalComponentData::SkeletonData*)skeletonData,
+                (nalComponentPacked16EntropyFloat4Data::AnimData*)animData,
+                (nalComponentPacked16EntropyFloat4Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            dst = (char*)dst + 8;
+        }
+        *customSkeletonData =
+            (const char*)*customSkeletonData
+            + sizeof(nalComponentPacked16EntropyFloat4Data::SkeletonComponentData);
+    }
+}
+
+// ea: 0x0085E640
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    src = (const void*)(((uintptr_t)src + 1u) & ~uintptr_t(1u));
+    const auto* animData =
+        (const nalComponentPacked16EntropyFloat4Data::AnimData*)
+            (((uintptr_t)*customAnimData + 3u) & ~uintptr_t(3u));
+    *customAnimData = (const char*)animData
+                      + sizeof(nalComponentPacked16EntropyFloat4Data::AnimData);
+    const void* skeletonData = *customSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    unsigned char* out = (unsigned char*)dst;
+    const unsigned char* defaults = (const unsigned char*)def;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int offset = offsetTable[track];
+        if (offset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + 8;
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked16EntropyFloat4::ComponentConvert(
+                (math::Vector4*)(out + offset),
+                (const nalComponentPacked16EntropyFloat4Data::CacheType*)src,
+                (nalComponentData::SkeletonData*)skeletonData,
+                (nalComponentPacked16EntropyFloat4Data::AnimData*)animData,
+                (nalComponentPacked16EntropyFloat4Data::SkeletonComponentData*)
+                    *customSkeletonData,
+                (nalComponentData::AnimComponentData*)*customAnimData);
+            src = (const char*)src + 8;
+        }
+        else
+        {
+            std::memcpy(out + offset, defaults + offset, sizeof(math::Vector4));
+        }
+        *customSkeletonData =
+            (const char*)*customSkeletonData
+            + sizeof(nalComponentPacked16EntropyFloat4Data::SkeletonComponentData);
+    }
+}
+
+// ea: 0x0085E9C0
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *componentEnum.CustomAnimData =
+        (const char*)(((uintptr_t)*componentEnum.CustomAnimData + 3u)
+                      & ~uintptr_t(3u)) + 4;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+        *customSkeletonData =
+            (const char*)*customSkeletonData
+            + sizeof(nalComponentPacked16EntropyFloat4Data::SkeletonComponentData);
+    }
+}
+
+// ea: 0x0085EA80
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 16 * componentInfo->Count;
+}
+
+// ea: 0x0085EAB0
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 16;
+}
+
+// ea: 0x0085EB00
+template <>
+void FastCopy<nalComponentPacked16EntropyFloat4, math::Vector4>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr)
+{
+    dstPtr = (void*)(((uintptr_t)dstPtr + 15u) & ~uintptr_t(15u));
+    srcPtr = (const void*)(((uintptr_t)srcPtr + 15u) & ~uintptr_t(15u));
+    const unsigned int bytes = 16u * componentInfo->Count;
+    std::memcpy(dstPtr, srcPtr, bytes);
+    dstPtr = (char*)dstPtr + bytes;
+    srcPtr = (const char*)srcPtr + bytes;
+}
+
+// ea: 0x0085EAE0
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentPacked16EntropyFloat4, math::Vector4>(
+        componentInfo, dstPtr, srcPtr);
+}
+
+// ea: 0x0085EB50
+template <>
+void nalComponent<nalComponentFloat4Base,
+                  nalComponentPacked16EntropyFloat4Data,
+                  nalComponentPacked16EntropyFloat4>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 1u) & ~uintptr_t(1u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ptr = (char*)ptr + 8;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
