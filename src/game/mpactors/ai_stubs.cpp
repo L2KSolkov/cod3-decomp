@@ -432,7 +432,7 @@
 }
 
 // ea: 0x0077C320  (?Actor_Cover_FindCoverNearSelf@@YI?BHPAUactor_s@@H@Z)
-    int __fastcall Actor_Cover_FindCoverNearSelf(actor_s*, int)
+    const int __fastcall Actor_Cover_FindCoverNearSelf(actor_s*, int)
 {
     return 0;
 }
