@@ -3246,7 +3246,7 @@ int  turret_think_manual(Entity* self, actor_s* pActor);
 void turret_think(Entity* self, int msec);
 void turret_think_init(Entity* self, int msec);
 void turret_think_client(Entity* self);
-void turret_controller(Entity* self, int* partBits);
+void turret_controller(Entity* self, int* const partBits);
 void turret_track(Entity* self, Entity* other);
 void turret_shoot(Entity* self, Entity* owner);
 void turret_shoot_internal(Entity* self, Entity* other);

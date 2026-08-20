@@ -1898,7 +1898,7 @@ L46:
 }
 
 // ea: 0x00479790
-void turret_controller(Entity* self, int* /*partBits*/)
+void turret_controller(Entity* self, int* const /*partBits*/)
 {
     if (!(s_initController & 1))
     {

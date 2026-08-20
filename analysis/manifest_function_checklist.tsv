@@ -640,7 +640,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 639	0x00478A10	0x00867F10	?turret_think_auto@@YAHPAVEntity@@PAUactor_s@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 640	0x004791F0	0x008686F0	?turret_think_manual@@YAHPAVEntity@@PAUactor_s@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 641	0x00479460	0x00868960	?turret_think@@YAXPAVEntity@@H@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
-642	0x00479790	0x00868C90	?turret_controller@@YAXPAVEntity@@QAH@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+642	0x00479790	0x00868C90	?turret_controller@@YAXPAVEntity@@QAH@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 643	0x00479970	0x00868E70	?G_FreeTurret@@YAXPAVEntity@@@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 644	0x00479A40	0x00868F40	?turret_use@@YAXPAVEntity@@00@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
 645	0x00479D90	0x00869290	?G_SpawnTurret@@YAXPAVEntity@@PBD@Z		g.o	game		f	0	PORTED	PROGRESS object aggregate	YES	YES	VERIFIED
