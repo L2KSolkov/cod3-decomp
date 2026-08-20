@@ -53,8 +53,8 @@ public:
         const tlFixedString& Key() const { return *GetKeyOf(DataPtr); }
     };
 
-    int       Level;         // +0x08
-    Instance* Head;          // +0x0C
+    Instance* Head;          // +0x08
+    int       Level;         // +0x0C
 
     tlSkipList() {
         RandomBits = (unsigned int)rand();
