@@ -440,7 +440,7 @@ aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVer
 
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	PORTED	apsPFD.cpp (field descriptor: sizes/offsets/stride + sElementSizes data)
 
-nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (driver alignment/completion path)
+nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	VERIFIED	Compared nfdBufferAlign, nfdIoExecute, nflInjectError, and nfdIoComplete against codmp_xboxr.xbe.c and IDA; alignment, buffered reads, completion/error simulation, and cancel-state transitions match. Null checks and callback fallback are intentional host adaptations.
 
 ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	6	PORTED	ngl_dx_state.cpp: nglDxRenderState Reset/SetBlendMode/FSAAFixup/Init/SetBlendColor/SetMaxAnisotropy (4 non-inline + 2 inline-ish); verbatim BM bitfield; XDK state-cache externs in d3d8.h
 
@@ -596,7 +596,7 @@ aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	P
 
 nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 
-nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (IDA media binding compatibility and DISC|HOST registry)
+nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	VERIFIED	Compared nfd_xbox_MediaBind against codmp_xboxr.xbe.c and IDA; drive-letter handling, media validation, and slash normalization match. Win32 DISC/HOST paths intentionally bind beneath GameData\\.
 
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	VERIFIED	Phase 2: tl_system.cpp + tl_instbank.cpp; tlInitListInit/Register contract verified against IDA
 
