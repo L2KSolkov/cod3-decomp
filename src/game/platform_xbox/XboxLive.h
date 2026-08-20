@@ -178,6 +178,7 @@ public:
     bool renderingEnabled;          // +0x44CB
 
     static LiveWrapper* theWrapper; // ?theWrapper@LiveWrapper@@1PAV1@A
+    static LiveWrapper* GetHandle(); // shell.o 0x5AD250
 
     ~LiveWrapper();
     LiveLocal* GetLocalPlayer(unsigned int portNumber);

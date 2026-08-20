@@ -181,6 +181,12 @@ void LiveLocal::Reset()
 
 LiveWrapper* LiveWrapper::theWrapper;
 
+// shell.o 0x5AD250
+LiveWrapper* LiveWrapper::GetHandle()
+{
+    return theWrapper;
+}
+
 // Controller input bridge: keeps the Xbox-layout XINPUT_STATE local to this
 // translation unit while the Win32 controller adapter owns device polling.
 bool Controller_HandleUIXInput(unsigned int port, void* controller_input)
