@@ -1658,8 +1658,21 @@ void          nslSetEffect(const nslEffect* fx) {
 void          nslSetEffect(const void* fx) {
     nslSetEffect(reinterpret_cast<const nslEffect*>(fx));
 }
-void          nslSetListenerPosition(const float* const) {}
-void          nslSetListenerOrientation(const float* const, const float* const) {}
+
+void nslListenerSetPosition(unsigned listenerIndex, const float* const position);
+void nslListenerSetOrientation(unsigned listenerIndex, const float* const front,
+                                const float* const top);
+
+// ea: 0x00820370
+void          nslSetListenerOrientation(const float* const front,
+                                         const float* const top) {
+    nslListenerSetOrientation(0, front, top);
+}
+
+// ea: 0x00820390
+void          nslSetListenerPosition(const float* const position) {
+    nslListenerSetPosition(0, position);
+}
 // ea: 0x008270B0
 unsigned int  nslWaveGetHash(nslWaveID waveID) {
     const unsigned encodedWaveID = static_cast<unsigned>(waveID) | 0xFFFFu;
