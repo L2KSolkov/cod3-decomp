@@ -24,6 +24,8 @@ apsSimpleMeshNode.o	??0MeshParticleContext@@QAE@XZ	PORTED
 ngl_dx_fsaa.o	?SetMultiSampleAntiAlias@nglDxRenderState@@QAEX_N@Z	VERIFIED
 nvl_base.o	?GetVersion@nvlMovieBase@@SAIXZ	VERIFIED
 nslSource.o	?tlIsPow2@@YA_NI@Z	VERIFIED
+nfl_system.o	?nfsLock@@YAXXZ	VERIFIED
+nfl_system.o	?nfsUnlock@@YAXXZ	VERIFIED
 apsRectangleRenderer.o	??0apsRectangleRenderer@@QAE@ABVcArgs@0@@Z	FIXED
 apsRectangleRenderer.o	?Init@apsRectangleRenderer@@SAXXZ	FIXED
 apsRectangleRenderer.o	?RegisterVShader@apsRectangleRender@@YAXXZ	PORTED

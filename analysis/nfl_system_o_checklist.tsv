@@ -1,7 +1,7 @@
 index	status	map_line
 1	VERIFIED	0002:0042a770 ??0nflStreamParams@@QAE@XZ 00C19C70 f i nfl_system.o
-2	PENDING	0002:0042a780 ?nfsLock@@YAXXZ 00C19C80 f nfl_system.o
-3	PENDING	0002:0042a7a0 ?nfsUnlock@@YAXXZ 00C19CA0 f nfl_system.o
+2	VERIFIED	0002:0042a780 ?nfsLock@@YAXXZ 00C19C80 f nfl_system.o
+3	VERIFIED	0002:0042a7a0 ?nfsUnlock@@YAXXZ 00C19CA0 f nfl_system.o
 4	VERIFIED	0002:0042a7c0 ?nfsGetMediaDriverIndex@@YAHW4nflMediaID@@@Z 00C19CC0 f nfl_system.o
 5	VERIFIED	0002:0042a800 ?nfsGetMediaDriver@@YAPAUnfdDriver@@W4nflMediaID@@@Z 00C19D00 f nfl_system.o
 6	VERIFIED	0002:0042a830 ?nfsGetFile@@YAPAUnfsFile@@W4nflFileID@@@Z 00C19D30 f nfl_system.o

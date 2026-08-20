@@ -19175,8 +19175,8 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 19174	0x0082A740	0x00C19C40	?nflWriteFile@@YAIW4nflFileID@@IPAXI@Z	nfl_xboxr	nfl_common.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19175	0x0082A760	0x00C19C60	?nflGetVersion@@YAIXZ	nfl_xboxr	nfl_common.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19176	0x0082A770	0x00C19C70	??0nflStreamParams@@QAE@XZ	nfl_xboxr	nfl_system.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-19177	0x0082A780	0x00C19C80	?nfsLock@@YAXXZ	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
-19178	0x0082A7A0	0x00C19CA0	?nfsUnlock@@YAXXZ	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+19177	0x0082A780	0x00C19C80	?nfsLock@@YAXXZ	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
+19178	0x0082A7A0	0x00C19CA0	?nfsUnlock@@YAXXZ	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 19179	0x0082A7C0	0x00C19CC0	?nfsGetMediaDriverIndex@@YAHW4nflMediaID@@@Z	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19180	0x0082A800	0x00C19D00	?nfsGetMediaDriver@@YAPAUnfdDriver@@W4nflMediaID@@@Z	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 19181	0x0082A830	0x00C19D30	?nfsGetFile@@YAPAUnfsFile@@W4nflFileID@@@Z	nfl_xboxr	nfl_system.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED

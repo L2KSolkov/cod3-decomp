@@ -19175,8 +19175,8 @@ index	status	map_line
 19174	VERIFIED	0002:0042a740 ?nflWriteFile@@YAIW4nflFileID@@IPAXI@Z 00C19C40 f nfl_common.o
 19175	VERIFIED	0002:0042a760 ?nflGetVersion@@YAIXZ 00C19C60 f nfl_common.o
 19176	VERIFIED	0002:0042a770 ??0nflStreamParams@@QAE@XZ 00C19C70 f i nfl_system.o
-19177	PENDING	0002:0042a780 ?nfsLock@@YAXXZ 00C19C80 f nfl_system.o
-19178	PENDING	0002:0042a7a0 ?nfsUnlock@@YAXXZ 00C19CA0 f nfl_system.o
+19177	VERIFIED	0002:0042a780 ?nfsLock@@YAXXZ 00C19C80 f nfl_system.o
+19178	VERIFIED	0002:0042a7a0 ?nfsUnlock@@YAXXZ 00C19CA0 f nfl_system.o
 19179	VERIFIED	0002:0042a7c0 ?nfsGetMediaDriverIndex@@YAHW4nflMediaID@@@Z 00C19CC0 f nfl_system.o
 19180	VERIFIED	0002:0042a800 ?nfsGetMediaDriver@@YAPAUnfdDriver@@W4nflMediaID@@@Z 00C19D00 f nfl_system.o
 19181	VERIFIED	0002:0042a830 ?nfsGetFile@@YAPAUnfsFile@@W4nflFileID@@@Z 00C19D30 f nfl_system.o
