@@ -195,7 +195,7 @@ jobqueue_legacy.o	11	8	3	0	0	0	0
 mem_lib.o	47	37	10	0	0	0	0
 mem_lib_platform.o	11	9	2	0	0	0	0
 mp.o	1142	874	268	0	0	0	0
-mp_actors.o	436	383	53	0	0	0	0
+mp_actors.o	436	384	52	0	0	0	0
 mp_anim_wad.o	430	10	420	0	0	0	0
 mp_level_wad.o	1062	36	1026	0	0	0	0
 mp_shell.o	835	791	44	0	0	0	0
