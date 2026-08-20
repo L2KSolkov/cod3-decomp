@@ -15003,6 +15003,59 @@ void nalComponentEntropyPO::ComponentSetupPartialDecode(
     *srcPtr = cursor + length;
 }
 
+// ea: 0x008620D0
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyPOData,
+                  nalComponentEntropyPO>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 15u) & ~uintptr_t(15u));
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentEntropyPOData::StateType* decoderState =
+                (nalComponentEntropyPOData::StateType*)state;
+            const float* skeletonData = (const float*)*customSkeletonData;
+            float* position = (float*)dst + 4;
+            const float positionScale = *animData * skeletonData[0];
+            decoderState->FloatDecoder[0].Decode(
+                position, (unsigned int)stride, (unsigned int)quantity,
+                positionScale);
+            decoderState->FloatDecoder[1].Decode(
+                position + 1, (unsigned int)stride, (unsigned int)quantity,
+                positionScale);
+            decoderState->FloatDecoder[2].Decode(
+                position + 2, (unsigned int)stride, (unsigned int)quantity,
+                positionScale);
+            decoderState->QuatDecoder.Decode(
+                (math::Quaternion*)dst, (unsigned int)stride,
+                (unsigned int)quantity, *animData * skeletonData[1]);
+            state = (char*)state + sizeof(
+                nalComponentEntropyPOData::StateType);
+            dst = (char*)dst + sizeof(nalPositionOrientation);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 8;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ea: 0x00862560
 void nalComponentEntropyPO::ComponentSkip(
     const unsigned char** srcPtr, int quantity,
