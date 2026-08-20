@@ -8800,6 +8800,18 @@ void nalComponent<nalComponentFloat1Base,
         pose = (char*)pose + 4;
 }
 
+// ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z
+// (nal_init.o 0x857dd0)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 3u) & ~uintptr_t(3u));
+    ptr = (char*)ptr + 4 * componentInfo->Count;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentFloat3Data,
