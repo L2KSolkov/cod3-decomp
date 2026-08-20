@@ -138,7 +138,7 @@ ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	PORTED	ngl_mesh.cpp: process
 
 ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	PORTED	ngl_dx_scene.cpp: render/z-target + cube-map setters with release assert flow, FSAA device matrix, release garbage-state randomization, scene setup (Z/stencil/viewport/clear), render scene recursion + render-node dispatch, scene-node callback, begin-scene defaults, fog/DOF enable; ngliScene base (ClearStencil/CubeMapFace) added; RopZCmpAlwaysRead/SetViewport/Clear shims
 
-nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	VERIFIED	Compared all nslMaster.o functions and bus globals against codmp_xboxr.xbe.c: master lookup, volume/pitch registration, bounded add/remove, indexed accessors, and scalar getters match the release bodies
 
 phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	PORTED	[phys_xboxr] rbc_def_generic.cpp: generic constraints (16 funcs) plus IDA-backed pulse_sum_point::setup_vel_bi_standard (0x88A5E0), pulse_sum_constraint_solver::create_point (0x88A7E0), create_pulse_sum_angular (0x88A880), and create_hinge (0x88A910)
 
