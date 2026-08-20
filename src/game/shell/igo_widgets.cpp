@@ -7085,6 +7085,7 @@ void IGOCompassWidget::DrawVehcile()
     if (gCvarShowEnemy.integer == 0)
         return;
     PanelQuad* v4 = objectiveIcons[1];
+    v4->SetZvalueAbs(15.0f);
     v4->ResetToInitialXY();
     unsigned int mVal =
         EntityManager::sInst->GetPlayer(mClient)->r.mOwner.mHandle.mVal;
