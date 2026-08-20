@@ -8844,6 +8844,34 @@ void nalComponent<nalComponentFloat1Base,
     }
 }
 
+// ?GetTrajectory@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z
+// (nal_init.o 0x857d20)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentPacked8Float1Data,
+                  nalComponentPacked8Float1>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+        *customSkeletonData = (const char*)*customSkeletonData + 8;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentFloat3Data,
