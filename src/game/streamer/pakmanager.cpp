@@ -453,7 +453,7 @@ extern bool mem_heap_free_check_reserve(mem_heap* heap, void* ptr);  // mem_heap
 extern const char defaultFileName[];  // g_globals.cpp
 namespace AeStringSupport {
 void CStrToAeStr(char* dst, int* const dstLen, int capacity, const char* src);
-void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
+void GetFileName(char* dst, int* const dstLen, const char* path, int pathLen,
                  bool includeExt);
 void AeStrCopy(char* dst, int* const dstLen, int dstCapacity, const char* src,
                int srcLen);

@@ -255,35 +255,39 @@ void Split(char* dstBuff, int* const dstLen, char* srcBuff, int* const srcLen,
 // GetFileName — extract filename from path
 // ea: 0x7BF160
 // ============================================================================
-void GetFileName(char* dst, int* dstLen, const char* path, int pathLen, bool includeExt) {
-    // Walk backwards to find last slash/backslash
+void GetFileName(char* dst, int* const dstLen, const char* path, int pathLen,
+                 bool truncExt) {
     int slashPos = -1;
-    for (int i = pathLen - 1; i >= 0; --i) {
+    int dotPos = pathLen;
+    for (int i = 0; i < pathLen; ++i) {
         char c = path[i];
-        if (c == '\\' || c == '/') {
+        if (c == '\\' || c == '/')
             slashPos = i;
-            break;
-        }
+        else if (c == '.')
+            dotPos = i;
     }
 
-    const char* start = path + slashPos + 1;
-    int len = pathLen - (slashPos + 1);
+    if (truncExt && dotPos != 0) {
+        SubStr(dst, dstLen, path, slashPos + 1,
+               dotPos - slashPos - 1, 0xFFFF);
+        return;
+    }
 
-    if (!includeExt) {
-        // Strip extension
-        for (int i = len - 1; i >= 0; --i) {
-            if (start[i] == '.') {
-                len = i;
+    int begin = slashPos + 1;
+    if (begin < 0xFFFF) {
+        int limit = pathLen;
+        if (limit > 0xFFFE)
+            limit = 0xFFFE;
+        int out = 0;
+        for (int i = begin; i < limit; ++i) {
+            char c = path[i];
+            if (c == 0)
                 break;
-            }
+            dst[out++] = c;
         }
+        *dstLen = out;
+        dst[out] = 0;
     }
-
-    // Copy
-    for (int i = 0; i < len; ++i)
-        dst[i] = start[i];
-    dst[len] = 0;
-    *dstLen = len;
 }
 
 } // namespace AeStringSupport

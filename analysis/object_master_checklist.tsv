@@ -44,7 +44,7 @@ acos.obj	analysis/acos_obj_checklist.tsv	analysis/acos_obj_inventory.tsv	analysi
 adler32.o	analysis/adler32_o_checklist.tsv	analysis/adler32_o_inventory.tsv	analysis/adler32_o_plan.tsv	2	2	0	0	0	0	0
 advnotif.obj	analysis/advnotif_obj_checklist.tsv	analysis/advnotif_obj_inventory.tsv	analysis/advnotif_obj_plan.tsv	21	0	0	21	0	0	0
 ae_controller.o	analysis/ae_controller_o_checklist.tsv	analysis/ae_controller_o_inventory.tsv	analysis/ae_controller_o_plan.tsv	2	1	1	0	0	0	0
-ae_fixed_string.o	analysis/ae_fixed_string_o_checklist.tsv	analysis/ae_fixed_string_o_inventory.tsv	analysis/ae_fixed_string_o_plan.tsv	9	8	1	0	0	0	0
+ae_fixed_string.o	analysis/ae_fixed_string_o_checklist.tsv	analysis/ae_fixed_string_o_inventory.tsv	analysis/ae_fixed_string_o_plan.tsv	9	9	0	0	0	0	0
 ae_heap.o	analysis/ae_heap_o_checklist.tsv	analysis/ae_heap_o_inventory.tsv	analysis/ae_heap_o_plan.tsv	12	1	11	0	0	0	0
 afmv_dx_idct.o	analysis/afmv_dx_idct_o_checklist.tsv	analysis/afmv_dx_idct_o_inventory.tsv	analysis/afmv_dx_idct_o_plan.tsv	3	3	0	0	0	0	0
 afmv_dx_rgb.o	analysis/afmv_dx_rgb_o_checklist.tsv	analysis/afmv_dx_rgb_o_inventory.tsv	analysis/afmv_dx_rgb_o_plan.tsv	2	2	0	0	0	0	0
