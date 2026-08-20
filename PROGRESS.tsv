@@ -236,7 +236,7 @@ nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	VERIFIED	Compared all nine nslA
 
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	VERIFIED	nflGetVersion at 0x82A760 now matches the IDA release decoration ?nflGetVersion@@YAIXZ while returning the original D3DX string address; canonical Win32 build succeeds and cod3_filesystem.lib exports the exact symbol
 
-nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (IDA-named Win32 driver globals, 4/0x1000/0x800/0x20000 buffer geometry, callback handles, overlapped I/O, and completion/error path)
+nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	VERIFIED	Compared all nine release symbols against codmp_xboxr.xbe.c and IDA: Win32 access/creation flags, overlapped I/O offsets, completion callback, read/write dispatch, cancellation, and alertable update match. Null guards and the Win32 physical-sort-key fallback are intentional host adaptations.
 
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 
