@@ -83,6 +83,18 @@ FEMenuEntry::FEMenuEntry(const char* text, FEMenu* m, bool floating,
         v9->AddedToMenu(false);
 }
 
+// ea: 0x005AE4B0
+void FEMenuEntry::SetUp(short entryIndex)
+{
+    up = entryIndex;
+}
+
+// ea: 0x005AE4D0
+void FEMenuEntry::SetDown(short entryIndex)
+{
+    down = entryIndex;
+}
+
 // ea: 0x005AE460 (inline COMDAT)
 FEMenuEntry::~FEMenuEntry()
 {

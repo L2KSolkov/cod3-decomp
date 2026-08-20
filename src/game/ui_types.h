@@ -851,27 +851,23 @@ public:
     }
     virtual void UpdateInScene()                // slot 9 0x5AE570
     {
-        if (text != nullptr)
-            text->UpdateInScene(false);
+        text->UpdateInScene(false);
     }
     virtual void CopyFrom(FEText* fet);         // slot 10 0x56FC20
     virtual void SetText(Broc::string ref)      // slot 11 0x5B1D00
     {
-        if (text != nullptr)
-            text->SetText(ref.mBlock != nullptr
-                               ? (const char*)&ref.mBlock[1]
-                               : defaultFileName);
+        text->SetText(ref.mBlock != nullptr
+                          ? (const char*)&ref.mBlock[1]
+                          : defaultFileName);
     }
     virtual void SetText(const char* s)         // slot 12 0x5AE5E0
     {
-        if (text != nullptr)
-            text->SetText(s);
+        text->SetText(s);
     }
     virtual void SetText(FEText* fet);          // slot 13 0x56FC30
     virtual void SetShown(bool on)              // slot 14 0x5AE590
     {
-        if (text != nullptr)
-            text->SetShown(on);
+        text->SetShown(on);
     }
     virtual void Highlight(bool h, bool anim);  // slot 15 0x56FC40
     virtual void Disable(bool d);               // slot 16 0x56FC70
@@ -882,60 +878,49 @@ public:
     virtual void StartFade(bool s, bool f,      // slot 18 0x5AE5B0
                            float t)
     {
-        if (text != nullptr)
-            text->StartFade(s, f, t);
+        text->StartFade(s, f, t);
     }
     virtual void SetPos(float x, float y)       // slot 19 0x5AE5C0
     {
-        if (text != nullptr)
-            text->SetPos(x, y);
+        text->SetPos(x, y);
     }
     virtual void SetTextNoLocalize(char* txt)   // slot 20 0x5AE600
     {
-        if (text != nullptr)
-            text->SetTextNoLocalize(txt);
+        text->SetTextNoLocalize(txt);
     }
     virtual void SetTextNoLocalize(Broc::string str)  // slot 21 0x5B1D80
     {
-        if (text != nullptr)
-            text->SetTextNoLocalize(str.mBlock != nullptr
-                                        ? (const char*)&str.mBlock[1]
-                                        : defaultFileName);
+        text->SetTextNoLocalize(str.mBlock != nullptr
+                                    ? (const char*)&str.mBlock[1]
+                                    : defaultFileName);
     }
     virtual void SetLocation3D(Broc::vector loc)  // slot 22 0x5AE620
     {
-        if (text != nullptr)
-            text->SetLocation3D(loc);
+        text->SetLocation3D(loc);
     }
     virtual void SetHJustify(int h)             // slot 23 0x5AE660
     {
-        if (text != nullptr)
-            text->SetHJustify(h);
+        text->SetHJustify(h);
     }
     virtual void SetVJustify(int v)             // slot 24 0x5AE670
     {
-        if (text != nullptr)
-            text->SetVJustify(v);
+        text->SetVJustify(v);
     }
     virtual void SetLineSpacing(int s)          // slot 25 0x5AE680
     {
-        if (text != nullptr)
-            text->SetLineSpacing(s);
+        text->SetLineSpacing(s);
     }
     virtual void SetFont(font_index f)          // slot 26 0x5AE6A0
     {
-        if (text != nullptr)
-            text->SetFont(f);
+        text->SetFont(f);
     }
     virtual void SetBehaviorNF(float x, float y)  // slot 27 0x5AE6B0
     {
-        if (text != nullptr)
-            text->SetBehaviorNF(x, y);
+        text->SetBehaviorNF(x, y);
     }
     virtual void SetBehavior(bool nfb)          // slot 28 0x5AE6D0
     {
-        if (text != nullptr)
-            text->SetBehavior(nfb);
+        text->SetBehavior(nfb);
     }
     virtual void SetColorSchemeIndex(char csi)  // slot 29 0x5AE6F0
     {
@@ -944,46 +929,43 @@ public:
     }
     virtual void SetScale(float s, float su)    // slot 30 0x5AE720
     {
-        if (text != nullptr)
-            text->SetScaleMenuItem(s, su);
+        text->SetScaleMenuItem(s, su);
     }
     virtual void SetScale(float s)              // slot 31 0x5AE710
     {
-        if (text != nullptr)
-            text->SetScale(s);
+        text->SetScale(s);
     }
     virtual void SetZ(float z, panel_layer layer)  // slot 32 0x5AE730
     {
-        if (text != nullptr)
-            text->SetZvalue(z, layer);
+        text->SetZvalue(z, layer);
     }
     virtual Broc::string GetText()              // slot 33 0x5AE740
     {
-        return text != nullptr ? text->GetText() : Broc::string();
+        return text->GetText();
     }
     virtual float GetWidth()                    // slot 34 0x5AE770
     {
-        return text != nullptr ? text->GetWidth(nullptr) : 0.0f;
+        return text->GetWidth(nullptr);
     }
     virtual float GetX()                        // slot 35 0x5AE780
     {
-        return text != nullptr ? text->GetX() : 0.0f;
+        return text->GetX();
     }
     virtual float GetY()                        // slot 36 0x5AE790
     {
-        return text != nullptr ? text->GetY() : 0.0f;
+        return text->GetY();
     }
     virtual int GetLineNum()                    // slot 37 0x5AE7A0
     {
-        return text != nullptr ? text->GetLineNum() : 0;
+        return text->GetLineNum();
     }
     virtual float GetScaleX()                   // slot 38 0x5AE7B0
     {
-        return text != nullptr ? text->GetScaleX() : 0.0f;
+        return text->GetScaleX();
     }
     virtual float GetScaleY()                   // slot 39 0x5AE7C0
     {
-        return text != nullptr ? text->GetScaleY() : 0.0f;
+        return text->GetScaleY();
     }
     virtual char GetColorSchemeIndex()          // slot 40
     {
@@ -991,16 +973,15 @@ public:
     }
     virtual color32 GetColor()                  // slot 41
     {
-        return text != nullptr ? text->GetColor() : color32(0);
+        return text->GetColor();
     }
     virtual float GetZ()                        // slot 42
     {
-        return text != nullptr ? text->GetZvalue() : 0.0f;
+        return text->GetZvalue();
     }
     virtual void AddFont(int index, font_index f)  // slot 43 0x5AE810
     {
-        if (text != nullptr)
-            text->AddFont(index, f);
+        text->AddFont(index, f);
     }
     virtual color32 WithAlpha(color32 c, int alpha);  // slot 44 0x56FC90
 protected:
@@ -1015,6 +996,8 @@ public:
     virtual void SetValue(int) {}               // slot 51 0x5AE840 (empty)
 
     void CommonConstructor(FEText* text, FEMenu* menu);  // shell.o 0x56FBC0
+    void SetUp(short entryIndex);               // shell.o 0x5AE4B0
+    void SetDown(short entryIndex);             // shell.o 0x5AE4D0
     FEMenuEntry() : menu(nullptr), up(-1), down(-1), left(-1), right(-1),
                     text(nullptr), color_scheme_index(0), highlight(false),
                     disabled(false), must_delete_text(false) {}
