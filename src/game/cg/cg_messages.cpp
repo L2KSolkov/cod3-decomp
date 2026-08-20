@@ -8,12 +8,18 @@
 #include <string.h>
 
 extern int currCl;
-// ?SEH_LocalizeTextMessage@@YAPBDPBD0@Z (render.o; string-ed not ported yet)
+enum msgLocErrType_t {
+    LOCMSG_NOERR = 0,
+    LOCMSG_ERR = 1,
+};
+extern const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
+                                           const char* pszMessageType,
+                                           msgLocErrType_t errType);
+// ea: 0x006C2D60
 const char* SEH_LocalizeTextMessage(const char* pszMessage,
                                     const char* pszMsgType)
 {
-    (void)pszMsgType;
-    return pszMessage;
+    return SEH_LocalizeTextMessage(pszMessage, pszMsgType, LOCMSG_NOERR);
 }
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern unsigned int SEH_ReadCharFromString(const char** ppsText,

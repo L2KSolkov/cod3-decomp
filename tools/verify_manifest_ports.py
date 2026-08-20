@@ -94,6 +94,21 @@ def dumpbin_symbols() -> set[str]:
     return symbols
 
 
+def symbol_compat_variants(name: str) -> set[str]:
+    """Return known VC7.1/modern-MSVC pointer-decoration equivalents."""
+    variants = {name}
+    # VC7.1's map encoded pointer qualifiers as QAM/QBM/QAY/QBY in several
+    # release signatures; current MSVC emits the corresponding P* forms.
+    for old, modern in (("QAM", "PAM"), ("QBM", "PBM"),
+                        ("QAY", "PAY"), ("QBY", "PBY")):
+        for value in tuple(variants):
+            if old in value:
+                variants.add(value.replace(old, modern))
+            if modern in value:
+                variants.add(value.replace(modern, old))
+    return variants
+
+
 def source_status(
     row: dict[str, str], exact: dict[tuple[str, str], str], by_obj: dict[str, str]
 ) -> tuple[str, str]:
@@ -121,10 +136,13 @@ def main() -> None:
         status, basis = source_status(row, exact, by_obj)
         name = row.get("name", "")
         symbol = "YES" if name in symbols else "NO"
+        symbol_compat = "YES" if symbol == "YES" or any(
+            candidate in symbols for candidate in symbol_compat_variants(name)
+        ) else "NO"
         row_class = row.get("class", "")
         if row_class in {"xdk", "crt"}:
             verification = "EXTERNAL"
-        elif status in {"PORTED", "COMPLETE", "VERIFIED", "VALIDATED"} and symbol == "YES":
+        elif status in {"PORTED", "COMPLETE", "VERIFIED", "VALIDATED"} and symbol_compat == "YES":
             verification = "VERIFIED"
         elif status in {"PORTED", "COMPLETE", "VERIFIED", "VALIDATED"}:
             verification = "PORT_STATUS_ONLY"
@@ -149,6 +167,7 @@ def main() -> None:
                 "aggregate_status": status,
                 "status_basis": basis,
                 "debug_symbol": symbol,
+                "debug_symbol_compat": symbol_compat,
                 "verification": verification,
             }
         )
