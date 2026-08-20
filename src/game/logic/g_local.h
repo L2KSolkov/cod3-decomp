@@ -5005,7 +5005,7 @@ extern void GetFileName(char* dstBuff, int* dstLen, const char* srcBuff,
                         int srcLen, bool truncExt);  // ?GetFileName@AeStringSupport@@YAXPADPAHPBDH_N@Z
 extern void AeStrCopy(char* oBuff, int* const oLen, int capacity,
                       const char* src, int srcLen);  // ?AeStrCopy@AeStringSupport@@YAXPADPAHHPBDH@Z
-extern void SubStr(char* oBuff, int* oLen, const char* src, int begin,
+extern void SubStr(char* oBuff, int* const oLen, const char* src, int begin,
                    int len, int srcCapacity);
 }
 

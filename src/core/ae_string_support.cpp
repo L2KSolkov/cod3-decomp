@@ -192,14 +192,12 @@ void AeStrCopy(char* dst, int* const dstLen, int dstCapacity, const char* src, i
 // SubStr — extract substring
 // ea: 0x7BF040
 // ============================================================================
-void SubStr(char* dst, int* dstLen, const char* src, int begin, int count, int srcLen) {
-    if (begin >= srcLen) {
-        *dstLen = 0;
-        *dst = 0;
+void SubStr(char* dst, int* const dstLen, const char* src, int begin, int count,
+            int srcCapacity) {
+    if (begin >= srcCapacity)
         return;
-    }
 
-    int end = srcLen - 1;
+    int end = srcCapacity - 1;
     if (end >= begin + count)
         end = begin + count;
 
