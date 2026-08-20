@@ -9038,6 +9038,132 @@ void nalComponent<nalComponentFloat1Base,
     src = source;
 }
 
+// ?PartialDecode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z
+// (nal_init.o 0x856b10)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    dst = (void*)(((uintptr_t)dst + 3u) & ~uintptr_t(3u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalEntropyDecoder::nalFloatDecoder* decoder =
+                (nalEntropyDecoder::nalFloatDecoder*)state;
+            decoder->Decode((float*)dst, (unsigned int)stride,
+                            (unsigned int)quantity,
+                            *(const float*)*customSkeletonData * *animData);
+            state = (char*)state + 16;
+            dst = (char*)dst + 4;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// ?Decode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z
+// (nal_init.o 0x857030)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    dst = (void*)(((uintptr_t)dst + 3u) & ~uintptr_t(3u));
+    float* animData = (float*)(((uintptr_t)*customAnimData + 3u)
+                               & ~uintptr_t(3u));
+    *customAnimData = animData + 1;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* encoded = (const unsigned char*)src;
+            const unsigned char quantityBytes = *encoded;
+            const unsigned char* payload = encoded + 1;
+            nalEntropyDecoder::nalFloatDecoder decoder{};
+            decoder.channel.ptr = payload;
+            decoder.channel.bitpos = 0;
+            decoder.channel.zeroes = 0;
+            decoder.channel.decoder = static_cast<unsigned char>(-1);
+            decoder.Decode((float*)dst, (unsigned int)stride,
+                           (unsigned int)quantity,
+                           *(const float*)*customSkeletonData * *animData);
+            src = payload + quantityBytes;
+            dst = (char*)dst + 4;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
+// ?Convert@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x857240)
+template <>
+void nalComponent<nalComponentFloat1Base,
+                  nalComponentEntropyFloat1Data,
+                  nalComponentEntropyFloat1>::Convert(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 3u)
+                                    & ~uintptr_t(3u));
+    *customAnimData = (const char*)*customAnimData + 4;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const int outputOffset = offsetTable[track];
+        if (outputOffset < 0)
+        {
+            if (nalComponentTrackPresent(&componentEnum, track))
+                src = (const char*)src + 4;
+        }
+        else if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            *(float*)((char*)dst + outputOffset) = *(const float*)src;
+            src = (const char*)src + 4;
+        }
+        else
+        {
+            *(float*)((char*)dst + outputOffset) =
+                *(const float*)((const char*)def + outputOffset);
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 4;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat1Base,
                   nalComponentPacked8Float1Data,
