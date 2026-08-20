@@ -8117,6 +8117,260 @@ static float nalFloatFromBits(std::uint32_t bits)
 
 unsigned int nalEntropyDecoder::QuatDecoderBase::FirstValBits[4] = {3u, 5u, 8u, 21u};
 
+// ea: 0x0085F6B0
+nalEntropyDecoder::QuatDecoderBase::QuatDecoderBase(
+    unsigned int quantity, float scale, const unsigned char* src,
+    unsigned char bitpos)
+{
+    (void)quantity;
+    channels[0].decoder = 0xFF;
+    channels[0].zeroes = 0;
+    channels[1].decoder = 0xFF;
+    channels[1].zeroes = 0;
+    channels[2].decoder = 0xFF;
+    channels[2].zeroes = 0;
+    channels[0].ptr = src;
+    channels[0].bitpos = bitpos;
+
+    float initial[4] = {};
+    unsigned char* nextPtrField = (unsigned char*)&channels[1].ptr;
+    for (unsigned int channel = 0; channel < 3; ++channel,
+         nextPtrField += 8)
+    {
+        const unsigned char* input =
+            *(const unsigned char**)(nextPtrField - 8);
+        unsigned int* word =
+            (unsigned int*)((uintptr_t)input & ~uintptr_t(3u));
+        unsigned int nextWord = word[1];
+        unsigned int remaining =
+            *(nextPtrField - 4) + 8u * ((uintptr_t)input & 3u);
+        unsigned int value = word[0] >> remaining;
+        unsigned int* cursor = word + 2;
+        remaining = 32u - remaining;
+        unsigned int skipBytes = 0;
+
+        if (channel < 2)
+        {
+            unsigned int flag;
+            if (remaining != 0)
+            {
+                flag = value & 1u;
+                value >>= 1;
+                --remaining;
+            }
+            else
+            {
+                flag = (value | nextWord) & 1u;
+                value = nextWord >> 1;
+                nextWord = *cursor++;
+                remaining = 31;
+            }
+            if (flag != 0)
+            {
+                unsigned int code;
+                if (remaining < 11)
+                {
+                    code = (value | (nextWord << remaining)) & 0x7FFu;
+                    value = nextWord >> (11 - remaining);
+                    nextWord = cursor[-1];
+                    cursor++;
+                    remaining += 21;
+                }
+                else
+                {
+                    code = value & 0x7FFu;
+                    value >>= 11;
+                    remaining -= 11;
+                }
+                skipBytes = code + 256;
+            }
+        }
+
+        unsigned int decoderBits;
+        if (remaining < 5)
+        {
+            decoderBits = (value | (nextWord << remaining)) & 0x1Fu;
+            value = nextWord >> (5 - remaining);
+            nextWord = *cursor++;
+            remaining += 27;
+        }
+        else
+        {
+            decoderBits = value & 0x1Fu;
+            value >>= 5;
+            remaining -= 5;
+        }
+        *(nextPtrField - 3) = (unsigned char)decoderBits;
+        const float magnitude = scale >= 0.0f ? scale : -scale;
+        if (scale < 0.0f)
+            *(nextPtrField - 3) = (unsigned char)(decoderBits + 32);
+
+        unsigned int selector;
+        unsigned int selectorValue;
+        if (remaining < 2)
+        {
+            selector = (value | (nextWord << remaining)) & 3u;
+            selectorValue = nextWord >> (2 - remaining);
+            nextWord = *cursor++;
+            remaining += 30;
+        }
+        else
+        {
+            selector = value & 3u;
+            selectorValue = value >> 2;
+            remaining -= 2;
+        }
+
+        unsigned int bits = FirstValBits[selector];
+        unsigned int firstCode;
+        if (bits > remaining)
+        {
+            firstCode = (selectorValue | (nextWord << remaining))
+                        & ((1u << bits) - 1u);
+            selectorValue = nextWord >> (bits - remaining);
+            nextWord = cursor[-1];
+            cursor++;
+            remaining = 32u - bits + remaining;
+        }
+        else
+        {
+            firstCode = selectorValue & ((1u << bits) - 1u);
+            selectorValue >>= bits;
+            remaining -= bits;
+        }
+        const int firstDelta = (firstCode & 1u)
+                                   ? -(int)(firstCode >> 1)
+                                   : (int)(firstCode >> 1);
+        initial[channel] = magnitude * 0.25f * (float)firstDelta;
+
+        int deltaValue;
+        unsigned int remainingAfter;
+        if (scale >= 0.0f)
+        {
+            unsigned int code = remaining < 12
+                                     ? (selectorValue | (nextWord << remaining)) & 0xFFFu
+                                     : selectorValue & 0xFFFu;
+            if ((code & 0x1Fu) != 0)
+            {
+                if ((code & 1u) != 0)
+                {
+                    int valuePart = (int)(code >> 1);
+                    int shift = (int)((code >> 4) & 7u) + 1;
+                    int exponent = (int)((valuePart & 7) + 1);
+                    if ((shift & 4) == 0)
+                        shift -= 7;
+                    deltaValue = shift << exponent;
+                    remainingAfter = remaining >= 7 ? remaining - 7
+                                                      : remaining + 25;
+                    if (remaining >= 7)
+                        ;
+                    else
+                        cursor++;
+                }
+                else
+                {
+                    deltaValue = (int)((code >> 1) & 0xFu) - 8;
+                    remainingAfter = remaining >= 5 ? remaining - 5
+                                                      : remaining + 27;
+                    if (remaining < 5)
+                        cursor++;
+                }
+            }
+            else
+            {
+                int shift = (int)((code >> 5) & 0xFu) + 9;
+                int exponent = (int)(code >> 9);
+                if ((exponent & 4) == 0)
+                    exponent -= 7;
+                deltaValue = exponent << shift;
+                remainingAfter = remaining >= 12 ? remaining - 12
+                                                   : remaining + 20;
+                if (remaining < 12)
+                    cursor++;
+            }
+        }
+        else
+        {
+            if (remaining < 2)
+            {
+                selector = (selectorValue | (nextWord << remaining)) & 3u;
+                selectorValue = nextWord >> (2 - remaining);
+                nextWord = *cursor++;
+                remaining += 30;
+            }
+            else
+            {
+                selector = selectorValue & 3u;
+                selectorValue >>= 2;
+                remaining -= 2;
+            }
+            bits = FirstValBits[selector];
+            unsigned int secondCode;
+            if (bits > remaining)
+            {
+                secondCode = ((selectorValue | (nextWord << remaining))
+                              & ((1u << bits) - 1u));
+                remainingAfter = 32u - bits + remaining;
+                cursor++;
+            }
+            else
+            {
+                secondCode = selectorValue & ((1u << bits) - 1u);
+                remainingAfter = remaining - bits;
+            }
+            deltaValue = (secondCode & 1u)
+                             ? -(int)(secondCode >> 1)
+                             : (int)(secondCode >> 1);
+        }
+
+        unsigned int newBitpos = (-remainingAfter) & 7u;
+        unsigned int* newPtr = cursor + ((32u - remainingAfter) >> 3) - 8;
+        *(unsigned int*)(nextPtrField - 8) = (unsigned int)(uintptr_t)newPtr;
+        *(nextPtrField - 4) = (unsigned char)newBitpos;
+
+        if (skipBytes != 0)
+        {
+            unsigned int nextBitpos = newBitpos + (skipBytes & 7u);
+            unsigned int* skippedPtr = newPtr + (skipBytes >> 3);
+            *(unsigned int*)nextPtrField =
+                (unsigned int)(uintptr_t)skippedPtr;
+            *(nextPtrField + 4) = (unsigned char)nextBitpos;
+            if (nextBitpos >= 8u)
+            {
+                *(unsigned int*)nextPtrField =
+                    (unsigned int)(uintptr_t)(skippedPtr + 1);
+                *(nextPtrField + 4) = (unsigned char)(nextBitpos - 8u);
+            }
+        }
+        else if (channel < 2)
+        {
+            if (quantity > 2)
+            {
+                int scratch = 0;
+                channels[channel].Decode(&scratch, 0, quantity - 2);
+                newBitpos = channels[channel].bitpos;
+                newPtr = (unsigned int*)(uintptr_t)channels[channel].ptr;
+            }
+            *(unsigned int*)nextPtrField =
+                (unsigned int)(uintptr_t)newPtr;
+            *(nextPtrField + 4) = (unsigned char)newBitpos;
+            *(nextPtrField + 1) = *(nextPtrField - 3);
+            *(unsigned short*)(nextPtrField + 2) = 0;
+        }
+        delta[channel] = deltaValue;
+    }
+
+    const __m128 v = _mm_setr_ps(initial[0], initial[1], initial[2], 0.0f);
+    const __m128 squared = _mm_mul_ps(v, v);
+    const float w = sqrtf(fabsf(1.0f - (squared.m128_f32[0]
+        + _mm_shuffle_ps(squared, squared, 85).m128_f32[0]
+        + _mm_shuffle_ps(squared, squared, 170).m128_f32[0])));
+    const __m128 q = _mm_shuffle_ps(
+        v, _mm_shuffle_ps(_mm_set1_ps(w), v, 160), 52);
+    _mm_storeu_ps(&qval.x, q);
+    channels[0].decoder |= 0x80u;
+}
+
 // ea: 0x0085FC50
 void nalEntropyDecoder::nalQuatDecoder::Decode(
     math::Quaternion* dst, unsigned int stride, unsigned int qty, float scale)
