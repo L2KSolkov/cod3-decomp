@@ -8189,6 +8189,33 @@ void nalComponent<nalComponentFloat1Base,
 }
 
 template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    (void)animData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
                   nalComponentSignalCounter>::Process(

@@ -611,3 +611,12 @@ nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat1Base@@VnalCom
 nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAPBX@Z	VERIFIED
 nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	??0?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@IAE@XZ	VERIFIED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	VERIFIED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z	PORTED

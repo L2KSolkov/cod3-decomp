@@ -270,15 +270,15 @@ index	status	map_line
 269	PENDING	0002:00457e20 ?Copy@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C47320 f i nal_init.o
 270	PENDING	0002:00457e40 ??$FastCopy@VnalComponentPacked8Float1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C47340 f i nal_init.o
 271	PENDING	0002:00457e90 ?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C47390 f i nal_init.o
-272	PENDING	0002:00457f20 ??0?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@IAE@XZ 00C47420 f i nal_init.o
-273	PENDING	0002:00457f30 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47430 f i nal_init.o
-274	PENDING	0002:00457f40 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47440 f i nal_init.o
-275	PENDING	0002:00457f50 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47450 f i nal_init.o
-276	PENDING	0002:00457f60 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47460 f i nal_init.o
-277	PENDING	0002:00457f70 ?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47470 f i nal_init.o
-278	PENDING	0002:00457f80 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47480 f i nal_init.o
-279	PENDING	0002:00457f90 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47490 f i nal_init.o
-280	PENDING	0002:00457fa0 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C474A0 f i nal_init.o
+272	VERIFIED	0002:00457f20 ??0?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@IAE@XZ 00C47420 f i nal_init.o
+273	VERIFIED	0002:00457f30 ?VirtualAlignSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47430 f i nal_init.o
+274	VERIFIED	0002:00457f40 ?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47440 f i nal_init.o
+275	VERIFIED	0002:00457f50 ?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47450 f i nal_init.o
+276	VERIFIED	0002:00457f60 ?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47460 f i nal_init.o
+277	PORTED	0002:00457f70 ?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47470 f i nal_init.o
+278	VERIFIED	0002:00457f80 ?VirtualAdvanceAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47480 f i nal_init.o
+279	PORTED	0002:00457f90 ?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C47490 f i nal_init.o
+280	PORTED	0002:00457fa0 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAPBX@Z 00C474A0 f i nal_init.o
 281	SKIPPED	0002:00457fb0 ??_E?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@MAEPAXI@Z 00C474B0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 282	SKIPPED	0002:00457fb0 ??_G?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@MAEPAXI@Z 00C474B0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 283	PENDING	0002:00457fe0 ?Process@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C474E0 f i nal_init.o
