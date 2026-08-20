@@ -15685,6 +15685,45 @@ void nalComponent<nalComponentPOBase,
         pose = (char*)pose + 32;
 }
 
+// ea: 0x00863C40
+template <>
+void nalComponent<nalComponentPOBase,
+                  nalComponentEntropyTrajectoryPOData,
+                  nalComponentEntropyTrajectoryPO>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    (void)quantity;
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const void** customAnimData = componentEnum.CustomAnimData;
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 3u)
+                                    & ~uintptr_t(3u));
+    *customAnimData = (const char*)*customAnimData + 4;
+    *customAnimData = (const void*)(((uintptr_t)*customAnimData + 15u)
+                                    & ~uintptr_t(15u));
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *customSkeletonData = (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                                        & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            const unsigned char* compressed =
+                (const unsigned char*)src;
+            for (int channel = 0; channel < 4; ++channel)
+                compressed += *compressed + 1;
+            src = compressed;
+            dst = (char*)dst + 32;
+            *customAnimData = (const char*)*customAnimData + 32;
+        }
+        *customSkeletonData = (const char*)*customSkeletonData + 8;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+}
+
 // ?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
 // (nal_init.o 0x863f20)
 template <>
