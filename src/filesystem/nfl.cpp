@@ -1525,10 +1525,12 @@ void nflCancelFileRequests(nflFileID fileID)
 // ea: 0x0041F5D0
 void nflSetRequestPriority(nflRequestID requestID, nflPriority priority)
 {
-    nfsLock();
+    if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
+        nfsLock();
     nfsRequest* request = nfsGetRequest(requestID);
     if (request != nullptr) request->priority = priority | (request->priority & 0xFF00);
-    nfsUnlock();
+    if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
+        nfsUnlock();
 }
 // ea: 0x0041F640
 nflPriority nflGetRequestPriority(nflRequestID requestID)
