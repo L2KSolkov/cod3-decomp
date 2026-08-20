@@ -8,12 +8,77 @@
 
 void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
 {
-    (void)viewport; (void)old_viewport;
+    if (viewport == old_viewport)
+        return;
+
+    FEText::UpdateForSplitScreen(viewport, old_viewport);
+
+    float old_scale;
+    switch (old_viewport)
+    {
+    case 3:
+    case 4:
+        old_scale = 1.4285715f;
+        box_width = (int)(box_width * old_scale);
+        button_scale *= old_scale;
+        break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        old_scale = 1.6666666f;
+        box_width = (int)(box_width * old_scale);
+        button_scale *= old_scale;
+        break;
+    default:
+        break;
+    }
+
+    float new_scale;
+    switch (viewport)
+    {
+    case 3:
+    case 4:
+        new_scale = 0.69999999f;
+        box_width = (int)(box_width * new_scale);
+        button_scale *= new_scale;
+        break;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        new_scale = 0.60000002f;
+        box_width = (int)(box_width * new_scale);
+        button_scale *= new_scale;
+        break;
+    default:
+        return;
+    }
 }
 
 void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 {
-    (void)widescreen;
+    FEText::UpdateForWidescreen(widescreen);
+    if (widescreen)
+        box_width = (int)(box_width * 0.75f);
+    else
+        box_width = (int)(box_width * 1.3333334f);
+
+    if (line_avail_num > 1)
+    {
+        Broc::string text((Broc::string::Block*)nullptr);
+        for (int i = 0; i < line_num; ++i)
+        {
+            text += lines[i].data;
+            text += ' ';
+        }
+        if (text.mBlock != nullptr && text.mBlock != (Broc::string::Block*)-12
+            && text.mBlock->mBuff[0] != 0)
+        {
+            SetTextBoxNoLocalize(Broc::string(text.c_str()), GetBoxWidth(),
+                                 -1.0f);
+        }
+    }
 }
 
 // OverlayMenu / InGameLiveOptionsMenu statics (shell.o; stubs, port later)
