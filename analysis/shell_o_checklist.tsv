@@ -1678,8 +1678,8 @@ index	status	map_line
 1677	VERIFIED	0002:001a5b00       ?IsShown@PanelAnimObject@@UAE_NXZ 009a1000 f i shell.o
 1678	VERIFIED	0002:001a5b10       ?SetShown@PanelAnimObject@@UAEX_N@Z 009a1010 f i shell.o
 1679	FIXED	0002:001a5b40       ?ResetFlash@FEText@@QAEXXZ 009a1040 f i shell.o
-1680	PENDING	0002:001a5b60       ??_EFEText@@UAEPAXI@Z      009a1060 f i shell.o
-1681	PENDING	0002:001a5b60       ??_GFEText@@UAEPAXI@Z      009a1060 f i shell.o
+1680	VERIFIED	0002:001a5b60       ??_EFEText@@UAEPAXI@Z      009a1060 f i shell.o
+1681	VERIFIED	0002:001a5b60       ??_GFEText@@UAEPAXI@Z      009a1060 f i shell.o
 1682	VERIFIED	0002:001a5b90       ??0FEMultiLineText@@QAE@XZ 009a1090 f i shell.o
 1683	VERIFIED	0002:001a5bb0       ?IsMultiLineObject@FEMultiLineText@@UAE_NXZ 009a10b0 f i shell.o
 1684	VERIFIED	0002:001a5bc0       ?GetLineNum@FEMultiLineText@@UAEHXZ 009a10c0 f i shell.o
@@ -1787,7 +1787,7 @@ index	status	map_line
 1786	VERIFIED	0002:001a7690       ?SetShown@FEDoubleEntry@@UAEX_N@Z 009a2b90 f i shell.o
 1787	PENDING	0002:001a76d0       ??_GFEDoubleEntry@@UAEPAXI@Z 009a2bd0 f i shell.o
 1788	PENDING	0002:001a76d0       ??_EFEDoubleEntry@@UAEPAXI@Z 009a2bd0 f i shell.o
-1789	PENDING	0002:001a7700       ??_GFEMenuListBoxItem@@QAEPAXI@Z 009a2c00 f i shell.o
+1789	VERIFIED	0002:001a7700       ??_GFEMenuListBoxItem@@QAEPAXI@Z 009a2c00 f i shell.o
 1790	PENDING	0002:001a7730       ??_GGameSettings@@UAEPAXI@Z 009a2c30 f i shell.o
 1791	PENDING	0002:001a7730       ??_EGameSettings@@UAEPAXI@Z 009a2c30 f i shell.o
 1792	PENDING	0002:001a7770       ??A?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAADI@Z 009a2c70 f i shell.o
@@ -2002,7 +2002,7 @@ index	status	map_line
 2000	PENDING	0002:001ab4d0       ??1_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE@XZ 009a69d0 f i shell.o
 2001	PENDING	0002:001ab4e0       ??1PanelFile@@QAE@XZ       009a69e0 f i shell.o
 2002	PENDING	0002:001ab570       ?PanelFileUnloaded@FEMenu@@UAEXPAVPanelFile@@@Z 009a6a70 f i shell.o
-2003	PENDING	0002:001ab580       ?SetColumnCount@UIListBoxRow@UIListBox@@QAEXH@Z 009a6a80 f i shell.o
+2003	VERIFIED	0002:001ab580       ?SetColumnCount@UIListBoxRow@UIListBox@@QAEXH@Z 009a6a80 f i shell.o
 2004	PENDING	0002:001ab600       ??_EIGOWeaponNameWidget@@UAEPAXI@Z 009a6b00 f i shell.o
 2005	PENDING	0002:001ab600       ??_GIGOWeaponNameWidget@@UAEPAXI@Z 009a6b00 f i shell.o
 2006	PENDING	0002:001ab630       ??1IGOWeaponNameWidget@@UAE@XZ 009a6b30 f i shell.o
@@ -2163,9 +2163,9 @@ index	status	map_line
 2161	PENDING	0002:001ada90       ?_Erase@?$_Tree@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@std@@IAEXPAU_Node@?$_Tree_nod@V?$_Tset_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@$0A@@std@@@2@@Z 009a8f90 f i shell.o
 2162	PENDING	0002:001adaf0       ??0_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QAE@PAU012@00ABU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@2@D@Z 009a8ff0 f i shell.o
 2163	PENDING	0002:001adb40       ??0_Node@?$_Tree_nod@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@$0A@@std@@@std@@QAE@PAU012@00ABU?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@2@D@Z 009a9040 f i shell.o
-2164	PENDING	0002:001adbb0       ??1UIListBox@@UAE@XZ       009a90b0 f i shell.o
-2165	PENDING	0002:001adc60       ??_EUIListBox@@UAEPAXI@Z   009a9160 f i shell.o
-2166	PENDING	0002:001adc60       ??_GUIListBox@@UAEPAXI@Z   009a9160 f i shell.o
+2164	VERIFIED	0002:001adbb0       ??1UIListBox@@UAE@XZ       009a90b0 f i shell.o
+2165	VERIFIED	0002:001adc60       ??_EUIListBox@@UAEPAXI@Z   009a9160 f i shell.o
+2166	VERIFIED	0002:001adc60       ??_GUIListBox@@UAEPAXI@Z   009a9160 f i shell.o
 2167	PENDING	0002:001adc90       ??_GMultilineFrontendOverlayMenu@@UAEPAXI@Z 009a9190 f i shell.o
 2168	PENDING	0002:001adc90       ??_EMultilineFrontendOverlayMenu@@UAEPAXI@Z 009a9190 f i shell.o
 2169	PENDING	0002:001adcc0       ??1MultilineFrontendOverlayMenu@@UAE@XZ 009a91c0 f i shell.o
