@@ -8064,6 +8064,9 @@ class nalComponentPacked8EntropyFloat3
                            nalComponentPacked8EntropyFloat3> {
 public:
     virtual ~nalComponentPacked8EntropyFloat3();
+    static void ComponentSetupPartialDecode(
+        nalComponentPacked8EntropyFloat3Data::StateType* statePtr,
+        const unsigned char** srcPtr);
 };
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyFloat3,
                             nalComponentFloat3Base);
@@ -8358,6 +8361,42 @@ void nalComponentEntropyFloat3::ComponentSetupPartialDecode(
     *srcPtr = cursor + channel2Size;
 }
 
+void nalComponentPacked8EntropyFloat3::ComponentSetupPartialDecode(
+    nalComponentPacked8EntropyFloat3Data::StateType* statePtr,
+    const unsigned char** srcPtr)
+{
+    const unsigned char* cursor = *srcPtr;
+    const unsigned char channel0Size = *cursor++;
+    if (statePtr != nullptr)
+    {
+        statePtr->Decoder[0].channel.ptr = cursor;
+        statePtr->Decoder[0].channel.bitpos = 0;
+        statePtr->Decoder[0].channel.decoder = 0xFF;
+        statePtr->Decoder[0].channel.zeroes = 0;
+    }
+    cursor += channel0Size;
+
+    const unsigned char channel1Size = *cursor++;
+    if (statePtr != nullptr)
+    {
+        statePtr->Decoder[1].channel.ptr = cursor;
+        statePtr->Decoder[1].channel.bitpos = 0;
+        statePtr->Decoder[1].channel.decoder = 0xFF;
+        statePtr->Decoder[1].channel.zeroes = 0;
+    }
+    cursor += channel1Size;
+
+    const unsigned char channel2Size = *cursor++;
+    if (statePtr != nullptr)
+    {
+        statePtr->Decoder[2].channel.ptr = cursor;
+        statePtr->Decoder[2].channel.bitpos = 0;
+        statePtr->Decoder[2].channel.decoder = 0xFF;
+        statePtr->Decoder[2].channel.zeroes = 0;
+    }
+    *srcPtr = cursor + channel2Size;
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
@@ -8389,6 +8428,40 @@ void nalComponent<nalComponentFloat3Base,
         }
         *skeletonData = (const char*)*skeletonData
                         + sizeof(nalComponentEntropyFloat3Data::SkeletonComponentData);
+    }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked8EntropyFloat3Data,
+                  nalComponentPacked8EntropyFloat3>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    (void)quantity;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const void** animData = componentEnum.CustomAnimData;
+    const void** skeletonData = componentEnum.CustomSkeletonData;
+    *animData = (const void*)(((uintptr_t)*animData + 3u)
+                              & ~uintptr_t(3u));
+    *animData = (const char*)*animData + 4;
+    *skeletonData = (const void*)(((uintptr_t)*skeletonData + 3u)
+                                  & ~uintptr_t(3u));
+
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            nalComponentPacked8EntropyFloat3::ComponentSetupPartialDecode(
+                (nalComponentPacked8EntropyFloat3Data::StateType*)state,
+                (const unsigned char**)&src);
+            state = (char*)state + sizeof(nalComponentPacked8EntropyFloat3Data::StateType);
+        }
+        *skeletonData = (const char*)*skeletonData
+                        + sizeof(nalComponentPacked8EntropyFloat3Data::SkeletonComponentData);
     }
 }
 
