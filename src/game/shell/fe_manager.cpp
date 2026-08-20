@@ -761,8 +761,7 @@ void FEManager::PlayFadeInOranScreen()
     float v11 = (640.0f - width) * 0.5f;
     v3->SetPos(v11, 460.0f);
     v3->SetAlpha(0);
-    unsigned long long v6 = __rdtsc();
-    int v8 = (int)v6;
+    unsigned long long v8 = __rdtsc();
     float totalTime = 0.0f;
     int v7 = 0;
     float visibility = 0.0f;
@@ -783,10 +782,11 @@ void FEManager::PlayFadeInOranScreen()
             nglPresent();
             codNflUpdate();
             unsigned long long v14 = __rdtsc();
-            v8 = (int)v14;
-            double v10 = (double)(v14 - (unsigned long long)v8)
+            unsigned long long delta = v14 - v8;
+            double v10 = (double)delta
                              * 0.0000013636364 * 0.001
                          + totalTime;
+            v8 = v14;
             totalTime = (float)v10;
             if (totalTime >= 2.0f)
                 break;
