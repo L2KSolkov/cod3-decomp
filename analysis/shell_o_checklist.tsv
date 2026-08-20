@@ -1544,7 +1544,7 @@ index	status	map_line
 1543	PORTED	0002:001a48b0       ?push_back@?$ae_sized_array@PAVPanelFileUser@@$0M@@@QAEXABQAVPanelFileUser@@@Z 0099fdb0 f i shell.o
 1544	PENDING	0002:001a4930       ??8const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 0099fe30 f i shell.o
 1545	PENDING	0002:001a4950       ??9const_iterator@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@USE_Entry_s@@@std@@@2@$0A@@std@@@std@@QBE_NABV012@@Z 0099fe50 f i shell.o
-1546	PENDING	0002:001a4970       ??1UIListBoxData@UIListBox@@QAE@XZ 0099fe70 f i shell.o
+1546	PORTED	0002:001a4970       ??1UIListBoxData@UIListBox@@QAE@XZ 0099fe70 f i shell.o
 1547	PENDING	0002:001a4980       ?construct_array@?$ae_vector@PAVPanelQuadSection@@@@AAEPAPAVPanelQuadSection@@HH@Z 0099fe80 f i shell.o
 1548	PENDING	0002:001a49b0       ?construct_array@?$ae_vector@PAVPanelQuad@@@@AAEPAPAVPanelQuad@@HH@Z 0099feb0 f i shell.o
 1549	PENDING	0002:001a49e0       ?destroy_all@?$ae_vector@PAVPanelQuad@@@@AAEXXZ 0099fee0 f i shell.o

@@ -28,7 +28,7 @@ static void DestroyUIListBoxDataVector(
     if (vector->mElements != nullptr)
     {
         for (int i = 0; i < vector->mSize; ++i)
-            vector->mElements[i].mText.~string();
+            vector->mElements[i].~UIListBoxData();
         tlMemFree(vector->mElements);
         vector->mElements = nullptr;
         vector->mCapacity = 0;
@@ -44,6 +44,12 @@ UIListBox::UIListBoxData::UIListBoxData()
 {
     mState = 0;
     mText = Broc::string((Broc::string::Block*)nullptr);
+}
+
+// ea: 0x5B0970
+UIListBox::UIListBoxData::~UIListBoxData()
+{
+    mText.~string();
 }
 
 // ea: 0x5AEBE0

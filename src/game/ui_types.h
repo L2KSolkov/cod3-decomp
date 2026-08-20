@@ -3021,6 +3021,7 @@ public:
         int          mState;  // +0x04
 
         UIListBoxData();      // 0x5AEBB0
+        ~UIListBoxData();     // 0x5B0970
         void SetState(int state);  // 0x5AEBE0
         void SetText(const char* text);  // 0x5AEC70
         void ClearText();      // 0x5AEC80
