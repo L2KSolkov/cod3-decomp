@@ -1052,6 +1052,10 @@ void nflCloseFile(nflFileID fileID)
         nfsFile& file = s_files[index];
         nflCancelFileRequests(fileID);
         if (file.fileType == NFS_FILE_TYPE_NATIVE) {
+            if (file.as.native.childCount < 0)
+                txAssertFailed(nullptr, "file->as.native.childCount>=0",
+                               "nflCloseFile",
+                               "c:/cod/code/tl/nfl/src/nfl_system.cpp", 711);
             if (file.as.native.childCount == 0) {
                 if (file.as.native.driver != nullptr && file.as.native.driver->file != nullptr
                     && file.as.native.driver->file->fnClose != nullptr)
@@ -1067,7 +1071,12 @@ void nflCloseFile(nflFileID fileID)
         }
         const nflFileID parentID = (nflFileID)file.as.subfile.parent;
         nfsFile* parent = nfsGetFile(parentID);
-        if (parent == nullptr) return;
+        if (parent == nullptr || parent->as.native.childCount < 0) {
+            txAssertFailed(nullptr, "parentFile && parentFile->as.native.childCount>=0",
+                           "nflCloseFile",
+                           "c:/cod/code/tl/nfl/src/nfl_system.cpp", 721);
+            return;
+        }
         --parent->as.native.childCount;
         fileID = parentID;
     }
