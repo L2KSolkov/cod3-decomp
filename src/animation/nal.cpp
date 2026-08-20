@@ -10747,6 +10747,73 @@ void nalComponent<nalComponentQuatBase,
     }
 }
 
+// ea: 0x008604F0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 16 * componentInfo->Count;
+}
+
+// ea: 0x00860520
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 16;
+}
+
+// ea: 0x00860570
+template <>
+void FastCopy<nalComponentEntropyQuat, math::Quaternion>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr)
+{
+    dstPtr = (void*)(((uintptr_t)dstPtr + 15u) & ~uintptr_t(15u));
+    srcPtr = (const void*)(((uintptr_t)srcPtr + 15u) & ~uintptr_t(15u));
+    const unsigned int bytes = 16u * componentInfo->Count;
+    std::memcpy(dstPtr, srcPtr, bytes);
+    dstPtr = (char*)dstPtr + bytes;
+    srcPtr = (const char*)srcPtr + bytes;
+}
+
+// ea: 0x00860550
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentEntropyQuat, math::Quaternion>(
+        componentInfo, dstPtr, srcPtr);
+}
+
+// ea: 0x008605C0
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentEntropyQuatData,
+                  nalComponentEntropyQuat>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+            ptr = (char*)ptr + 16;
+    }
+}
+
 template <>
 void nalComponent<nalComponentFloat3Base,
                   nalComponentEntropyFloat3Data,
