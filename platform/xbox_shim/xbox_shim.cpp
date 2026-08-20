@@ -19,6 +19,14 @@ void MmPersistContiguousMemory(void*, unsigned int, int) {}
 void MmGetPhysicalAddress(void*, unsigned int* out) { *out = 0; }
 unsigned int XGetTickCount(void) { return GetTickCount(); }
 
+unsigned int __stdcall XLaunchNewImageA(const char* lpTitlePath,
+                                        LAUNCH_DATA* pLaunchData) {
+    (void)lpTitlePath;
+    (void)pLaunchData;
+    // Win32 has no Xbox dashboard handoff; preserve the XDK call boundary.
+    return 0;
+}
+
 // D3D state globals (d3d8d:globals.obj) - the Win32 shim owns these.
 unsigned int D3D__DirtyFlags = 0;       // _D3D__DirtyFlags
 unsigned int D3D__TextureState[4][32];  // _D3D__TextureState

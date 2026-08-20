@@ -75,6 +75,14 @@ unsigned int XGetTickCount(void);
 unsigned int XGetVideoFlags(void);
 unsigned int XGetVideoStandard(void);
 
+// XDK launch payload used by dashboard/title transitions.  The original
+// header defines this as a 3072-byte opaque data block.
+typedef struct _LAUNCH_DATA {
+    unsigned char Data[3072];
+} LAUNCH_DATA;
+unsigned int __stdcall XLaunchNewImageA(const char* lpTitlePath,
+                                         LAUNCH_DATA* pLaunchData);
+
 // ============================================================================
 // Event / Semaphore / Mutex (stubbed to Win32 equivalents)
 // ============================================================================

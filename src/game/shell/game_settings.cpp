@@ -5,6 +5,7 @@
 
 #include "game/shell/shell_types.h"
 #include "game/platform_xbox/MemoryUnitManager.h"
+#include "xbox_shim.h"
 #include "core/ae_fixed_string.h"
 
 #include <new>
@@ -435,9 +436,24 @@ void GameSettings::collect_GameSettings(SaveGameData* sd)
     sd->mStubData = src->mStubData;
 }
 
-// ea: 0x00581010 (Xbox-specific dashboard reboot; structural stub)
+// ea: 0x00581010
 void GameSettings::dashboard_reboot_to_free_blocks()
 {
+    LAUNCH_DATA launchData = {};
+    LAUNCH_DATA launchDashboard = {};
+    *reinterpret_cast<unsigned int*>(&launchDashboard.Data[0]) = 2;
+    *reinterpret_cast<unsigned int*>(&launchDashboard.Data[4]) = 0;
+    *reinterpret_cast<unsigned int*>(&launchDashboard.Data[8]) = 85;
+    unsigned int gameSaveBytes =
+        6 * MemoryUnitManager::GetGameSaveSize(0x1BF4u);
+    unsigned int withClusters =
+        gameSaveBytes + 2 * MemoryUnitManager::GetClusterSize();
+    unsigned int clusterSize = MemoryUnitManager::GetClusterSize();
+    *reinterpret_cast<unsigned int*>(&launchDashboard.Data[12]) =
+        MemoryUnitManager::BytesToBlocks(
+            clusterSize + withClusters + 4 * clusterSize);
+    launchData = launchDashboard;
+    XLaunchNewImageA(nullptr, &launchData);
 }
 
 // ea: 0x00587380
