@@ -449,7 +449,7 @@ system_time GetSystemDate()
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("old cod assert"))
             __debugbreak();
-        sd.day = sd.day < 1 ? 1 : 31;
+        sd.month = sd.day < 1 ? 1 : 31;
     }
     if (sd.hour < 0 || sd.hour > 23)
     {
