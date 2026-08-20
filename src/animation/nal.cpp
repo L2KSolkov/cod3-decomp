@@ -8216,6 +8216,52 @@ void nalComponent<nalComponentFloat3Base,
 }
 
 template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentEntropyFloat3Data,
+                  nalComponentEntropyFloat3>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const char*)skeletonComponentData + 4;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentEntropyFloat3Data,
+                  nalComponentEntropyFloat3>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    animData = (const char*)animData + 4;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentEntropyFloat3Data,
+                  nalComponentEntropyFloat3>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const void*)(((uintptr_t)skeletonComponentData + 3u)
+                                           & ~uintptr_t(3u));
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentEntropyFloat3Data,
+                  nalComponentEntropyFloat3>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentEntropyFloat3Data,
+                  nalComponentEntropyFloat3>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
                   nalComponentSignalCounter>::Process(
