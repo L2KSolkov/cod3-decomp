@@ -8015,6 +8015,62 @@ struct nalFloatDecoder {
 
 template <typename T>
 struct nalPackedFloatDecoder : nalFloatDecoder {};
+
+struct nalQuaternion8 {
+    signed char x;
+    signed char y;
+    signed char z;
+
+    operator math::Quaternion() const;
+};
+
+struct nalQuaternion16 {
+    short x;
+    short y;
+    short z;
+    short w;
+
+    operator math::Quaternion() const;
+};
+}
+
+static float nalFloatFromBits(std::uint32_t bits)
+{
+    float value;
+    std::memcpy(&value, &bits, sizeof(value));
+    return value;
+}
+
+// ea: 0x00860A10
+nalEntropyDecoder::nalQuaternion8::operator math::Quaternion() const
+{
+    const __m128 packed = _mm_setr_ps((float)x, (float)y, (float)z, 0.0f);
+    const __m128 scaled = _mm_mul_ps(
+        packed, _mm_set1_ps(nalFloatFromBits(0x3C010204u)));
+    const __m128 squared = _mm_mul_ps(scaled, scaled);
+    const __m128 sum = _mm_add_ps(
+        squared,
+        _mm_add_ps(_mm_shuffle_ps(squared, squared, _MM_SHUFFLE(2, 2, 2, 2)),
+                    _mm_shuffle_ps(squared, squared, _MM_SHUFFLE(1, 1, 1, 1))));
+    const float w = sqrtf(fabsf(1.0f - sum.m128_f32[0]));
+    const __m128 result = _mm_shuffle_ps(
+        scaled,
+        _mm_shuffle_ps(_mm_set1_ps(w), scaled, _MM_SHUFFLE(2, 2, 2, 2)),
+        _MM_SHUFFLE(0, 3, 1, 0));
+    math::Quaternion out;
+    _mm_storeu_ps(&out.x, result);
+    return out;
+}
+
+// ea: 0x00861180
+nalEntropyDecoder::nalQuaternion16::operator math::Quaternion() const
+{
+    const __m128 packed = _mm_setr_ps((float)x, (float)y, (float)z, (float)w);
+    const __m128 result = _mm_mul_ps(
+        packed, _mm_set1_ps(nalFloatFromBits(0x38000100u)));
+    math::Quaternion out;
+    _mm_storeu_ps(&out.x, result);
+    return out;
 }
 
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat1, nalComponentFloat1Base);
