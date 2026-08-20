@@ -8066,9 +8066,14 @@ struct QuatDecoderBase {
     math::Quaternion qval;
     nalChannelDecoder channels[3];
     int delta[3];
+
+    QuatDecoderBase(unsigned int quantity, const unsigned char* src, unsigned char decoder);
+    static unsigned int FirstValBits[4];
 };
 
-struct nalQuatDecoder : QuatDecoderBase {};
+struct nalQuatDecoder : QuatDecoderBase {
+    void Decode(math::Quaternion* dst, unsigned int stride, unsigned int qty);
+};
 
 template <typename T>
 struct nalPackedFloatDecoder : nalFloatDecoder {};
@@ -8078,6 +8083,7 @@ struct nalQuaternion8 {
     signed char y;
     signed char z;
 
+    nalQuaternion8(const math::Quaternion* q);
     operator math::Quaternion() const;
 };
 
@@ -8087,6 +8093,7 @@ struct nalQuaternion16 {
     short z;
     short w;
 
+    nalQuaternion16(const math::Quaternion* q);
     operator math::Quaternion() const;
 };
 }
@@ -8104,6 +8111,32 @@ static float nalFloatFromBits(std::uint32_t bits)
     float value;
     std::memcpy(&value, &bits, sizeof(value));
     return value;
+}
+
+unsigned int nalEntropyDecoder::QuatDecoderBase::FirstValBits[4] = {3u, 5u, 8u, 21u};
+
+// ea: 0x00865E40
+nalEntropyDecoder::nalQuaternion8::nalQuaternion8(const math::Quaternion* q)
+{
+    __m128 value = _mm_loadu_ps(&q->x);
+    const __m128 signMask = _mm_set1_ps(-0.0f);
+    if (value.m128_f32[3] < 0.0f)
+        value = _mm_xor_ps(value, signMask);
+    value = _mm_mul_ps(value, _mm_set1_ps(nalFloatFromBits(0x42FE0000u)));
+    x = static_cast<signed char>(value.m128_f32[0]);
+    y = static_cast<signed char>(value.m128_f32[1]);
+    z = static_cast<signed char>(value.m128_f32[2]);
+}
+
+// ea: 0x00866670
+nalEntropyDecoder::nalQuaternion16::nalQuaternion16(const math::Quaternion* q)
+{
+    const __m128 value = _mm_mul_ps(
+        _mm_loadu_ps(&q->x), _mm_set1_ps(nalFloatFromBits(0x46FFFE00u)));
+    x = static_cast<short>(value.m128_f32[0]);
+    y = static_cast<short>(value.m128_f32[1]);
+    z = static_cast<short>(value.m128_f32[2]);
+    w = static_cast<short>(value.m128_f32[3]);
 }
 
 // ea: 0x00860A10
