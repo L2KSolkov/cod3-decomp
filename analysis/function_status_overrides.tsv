@@ -1080,3 +1080,4 @@ nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentQu
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
 nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
+nal_init.o	?ConvertPerfect@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyPOData@@VnalComponentEntropyPO@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z	PORTED
