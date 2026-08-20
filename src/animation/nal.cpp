@@ -8485,6 +8485,19 @@ void nalComponent<nalComponentFloat3Base,
 }
 
 template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentEntropyFloat3Data,
+                  nalComponentEntropyFloat3>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 16;
+}
+
+template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
                   nalComponentSignalCounter>::Process(
