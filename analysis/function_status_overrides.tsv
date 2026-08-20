@@ -806,3 +806,12 @@ nal_init.o	?Delete@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQua
 nal_init.o	?Copy@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	??$FastCopy@VnalComponentEntropyQuat@@VQuaternion@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentQuatBase@@VnalComponentEntropyQuatData@@VnalComponentEntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
+nal_init.o	??0?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@IAE@XZ	VERIFIED
+nal_init.o	?VirtualAdvanceSkeletonComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceSkeletonData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z	PORTED
