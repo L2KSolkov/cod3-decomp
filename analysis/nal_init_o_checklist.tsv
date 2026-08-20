@@ -546,8 +546,8 @@ index	status	map_line
 545	PORTED	0002:00460700 ?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAPBX@Z 00C4FC00 f i nal_init.o
 546	SKIPPED	0002:00460710 ??_G?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@MAEPAXI@Z 00C4FC10 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 547	SKIPPED	0002:00460710 ??_E?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@MAEPAXI@Z 00C4FC10 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-548	PENDING	0002:00460740 ?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C4FC40 f i nal_init.o
-549	PENDING	0002:00460770 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4FC70 f i nal_init.o
+548	PORTED	0002:00460740 ?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C4FC40 f i nal_init.o
+549	PORTED	0002:00460770 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C4FC70 f i nal_init.o
 550	PENDING	0002:00460850 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4FD50 f i nal_init.o
 551	PENDING	0002:00460a10 ??BnalQuaternion8@nalEntropyDecoder@@QBE?AVQuaternion@math@@XZ 00C4FF10 f i nal_init.o
 552	PENDING	0002:00460ac0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C4FFC0 f i nal_init.o
@@ -569,7 +569,7 @@ index	status	map_line
 568	SKIPPED	0002:00460e80 ??_E?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@MAEPAXI@Z 00C50380 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 569	SKIPPED	0002:00460e80 ??_G?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@MAEPAXI@Z 00C50380 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 570	PORTED	0002:00460eb0 ?Process@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C503B0 f i nal_init.o
-571	PENDING	0002:00460ee0 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C503E0 f i nal_init.o
+571	PORTED	0002:00460ee0 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C503E0 f i nal_init.o
 572	PENDING	0002:00460fc0 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C504C0 f i nal_init.o
 573	PENDING	0002:00461180 ??BnalQuaternion16@nalEntropyDecoder@@QBE?AVQuaternion@math@@XZ 00C50680 f i nal_init.o
 574	PENDING	0002:004611f0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C506F0 f i nal_init.o
