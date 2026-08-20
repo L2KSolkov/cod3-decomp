@@ -126,6 +126,8 @@ struct pulse_sum_normal {
     uint8_t      _pad94[12];                       // +0x94
 
     float get_pos() const { return m_pulse_sum; }
+    const math::Dir3* object_vel_();
+    const math::Dir3* object_col_pt_();
     void  set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2, const math::Dir3* b2_r,
               const math::Dir3* ud, pulse_sum_cache* ps_cache, const math::Dir3* b1_r_displace);
     void  setup_vel_uni_standard(float delta_t, float max_penalty_restitution_vel);
@@ -146,6 +148,7 @@ struct pulse_sum_normal {
     float get_unclamped_pulse_sum();
     void  set_object_vel(const math::Dir3* object_vel);
     void  set_object_col_pt(const math::Dir3* object_col_pt);
+    double get_pulse_sum();
     void  SOLVER_apply_relaxation(float* error_sq, bool add_error);
     void  SOLVER_solver_intermediate(int iter, float delta_t);
     void  SOLVER_solver_prolog(int iter, float delta_t);
@@ -372,6 +375,7 @@ public:
 
     rigid_body() {}  // ea: 0x880C60
     rigid_body& operator=(const rigid_body& other);  // ea: 0x892160
+    unsigned int is_no_auto_remove();  // ea: 0x891C80
 
     // get_time_scale / get_max_delta_t - ea: 0x88B0B0 / 0x88B0C0
     const outer_time* get_time_scale() const { return &m_time_scale; }

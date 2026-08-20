@@ -325,6 +325,8 @@ Position3 Mul(const Position3& _v, const DiagMat33& _m);  // ?Mul@math@@YA?AVPos
 Position3 operator*(const Position3& _v, const DiagMat33& _m);  // ??Dmath@@YA?AVPosition3@0@ABV10@ABVDiagMat33@0@@Z (ngl_debug.o 0x8356F0)
 Position3 operator/(const Position3& _v, const Mat43& _m);  // ??Kmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z (g.o 0x4A82C0)
 Mat33 Mul(const Mat33& _a, const Mat33& _b);  // ?Mul@math@@YA?AVMat33@1@ABV21@0@Z (g.o 0x4A77C0)
+Mat33 Mul(const Mat33& _a, const DiagMat33& _b);  // phys_constraint_solver_multithreaded.o 0x891B40
+Mat33 operator*(const Mat33& _a, const DiagMat33& _b);  // phys_constraint_solver_multithreaded.o 0x891BE0
 Mat43 Mul(const Mat43& _a, const Mat43& _b);  // ?Mul@math@@YA?AVMat43@1@ABV21@0@Z (g.o 0x4A7BC0)
 Mat43 operator*(const Mat43& _a, const Mat43& _b);  // ??Dmath@@YA?AVMat43@0@ABV10@0@Z (g.o 0x4A7D90)
 Mat43 operator/(const Mat43& _a, const Mat43& _b);  // ??Kmath@@YA?AVMat43@0@ABV10@0@Z (cdl_common.o 0x81D260)

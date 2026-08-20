@@ -128,6 +128,8 @@ struct pulse_sum_angular {
 
     void set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
              const math::Dir3* b2_r, const math::Dir3* ud, pulse_sum_cache* ps_cache);
+    const math::Dir3* object_vel_();
+    const math::Dir3* object_col_pt_();
     float get_vel();
     float get_pos();
     float get_objective();
@@ -168,11 +170,13 @@ struct pulse_sum_point {
 
     void set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
              const math::Dir3* b2_r, pulse_sum_cache* ps_cache);
+    const math::Dir3* object_vel_();
+    const math::Dir3* object_col_pt_();
     void setup_vel_bi_standard(float delta_t);
     const math::Dir3* get_vel(const math::Dir3* result);
     const math::Dir3* get_pos(const math::Dir3* result);
     const math::Dir3* get_objective(const math::Dir3* result);
-    const math::Dir3* phys_diag_multiply_and_square(const math::Dir3* result,
+    const math::Dir3* phys_diag_multiply_and_square(math::Dir3* result,
                                                     const math::Dir3* v1,
                                                     const math::Dir3* v2);
     void  apply(const math::Dir3* s_);
@@ -236,6 +240,7 @@ struct pulse_sum_contact {
     int        m_list_cpi_count;                   // +0x30
 
     void set(rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t);
+    static double get_std_max_penalty_restitution_vel();
 };
 static_assert(sizeof(pulse_sum_contact) == 0x40, "pulse_sum_contact size mismatch");
 
@@ -270,8 +275,10 @@ struct pulse_sum_contact::psc_cpi {
         m_pulse_sum_cache = NULL;
     }
 
-    void set_object_vel(psc_cpi* self, const math::Dir3* object_vel);
-    void set_object_col_pt(psc_cpi* self, const math::Dir3* object_col_pt);
+    const math::Dir3* object_vel_();
+    const math::Dir3* object_col_pt_();
+    void set_object_vel(pulse_sum_contact* psc, const math::Dir3* object_vel);
+    void set_object_col_pt(pulse_sum_contact* psc, const math::Dir3* object_col_pt);
     math::Dir3 get_relative_velocity_change_dir(pulse_sum_contact* psc);
     math::Dir3 get_relative_velocity(pulse_sum_contact* psc);
     math::Dir3 get_last_relative_velocity(pulse_sum_contact* psc);
@@ -406,7 +413,7 @@ public:
     void list_urbri_restore(user_rigid_body_restore_info* list_urbri);  // ea: 0x893260
     void set_solver_params(int psys_psc_visit_counter, int psys_next_psc_visit_counter,
                            int psys_max_vel_iters, int psys_max_vel_pos_iters);  // ea: 0x893290
-    static bool psc_is_persistant(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x892140
+    static int psc_is_persistant(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x892140
     static void set_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter, float pulse_sum);  // ea: 0x8926A0
     static float get_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x8926C0
     void solve_iterative(int max_iters, float max_error_sq);  // ea: 0x8945B0
@@ -1211,6 +1218,10 @@ extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
 class rbint {
 public:
 static void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
+
+static inline const math::Mat33* get_world_inv_inertia(rigid_body* rb) {
+    return &rb->m_world_inv_inertia;
+}
 
 // get_pulse_sum_node - ea: 0x8924A0
 static inline pulse_sum_node* get_pulse_sum_node(const rigid_body* rb) {

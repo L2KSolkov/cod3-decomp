@@ -24,6 +24,68 @@ const __m128 Float4_XAxis_214 = {1.0f, 0.0f, 0.0f, 0.0f};
 const __m128 Float4_YAxis_214 = {0.0f, 1.0f, 0.0f, 0.0f};
 const __m128 Float4_ZAxis_214 = {0.0f, 0.0f, 1.0f, 0.0f};
 
+bool rel_cmp_ge(float v1, float v2, float e) {
+    return v1 >= ((1.0f - e) * v2);
+}
+
+namespace math {
+Mat33 Mul(const Mat33& a, const DiagMat33& b) {
+    Mat33 result;
+    result.x.v = _mm_mul_ps(a.x.v, b.v);
+    result.y.v = _mm_mul_ps(a.y.v, b.v);
+    result.z.v = _mm_mul_ps(a.z.v, b.v);
+    return result;
+}
+
+Mat33 operator*(const Mat33& a, const DiagMat33& b) {
+    Mat33 result;
+    result.x.v = _mm_mul_ps(a.x.v, b.v);
+    result.y.v = _mm_mul_ps(a.y.v, b.v);
+    result.z.v = _mm_mul_ps(a.z.v, b.v);
+    return result;
+}
+}
+
+unsigned int rigid_body::is_no_auto_remove() {
+    return m_flags & 0x100;
+}
+
+const math::Dir3* pulse_sum_normal::object_vel_() {
+    return &m_b2_ap;
+}
+
+const math::Dir3* pulse_sum_normal::object_col_pt_() {
+    return &m_b2_r;
+}
+
+double pulse_sum_normal::get_pulse_sum() {
+    return m_pulse_sum;
+}
+
+const math::Dir3* pulse_sum_point::object_vel_() {
+    return &m_b2_apx;
+}
+
+const math::Dir3* pulse_sum_point::object_col_pt_() {
+    return &m_b2_r;
+}
+
+const math::Dir3* pulse_sum_angular::object_vel_() {
+    return &m_b2_ap;
+}
+
+const math::Dir3* pulse_sum_angular::object_col_pt_() {
+    return &m_b2_r;
+}
+
+const math::Dir3* pulse_sum_contact::psc_cpi::object_vel_() {
+    return &m_b2_ap_n;
+}
+
+const math::Dir3* pulse_sum_contact::psc_cpi::object_col_pt_() {
+    return &m_b2_r;
+}
+
 // ============================================================================
 // phys_constraint_solver_multithreaded::init / shutdown - ea: 0x8932B0/0x8932C0
 // ============================================================================
@@ -890,7 +952,7 @@ void pulse_sum_normal::calc_abs(const math::Dir3* b1_r_displace) {
 void pulse_sum_normal::set_object_vel(const math::Dir3* object_vel) {
     if (m_b2 != NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal.h", 79,
-                  "m_b2 == NULL", ""))
+                  "m_b2 == NULL", defaultFileName))
         __debugbreak();
     m_b2_ap.v = object_vel->v;
 }
@@ -898,7 +960,7 @@ void pulse_sum_normal::set_object_vel(const math::Dir3* object_vel) {
 void pulse_sum_normal::set_object_col_pt(const math::Dir3* object_col_pt) {
     if (m_b2 != NULL &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_normal.h", 82,
-                  "m_b2 == NULL", ""))
+                  "m_b2 == NULL", defaultFileName))
         __debugbreak();
     m_b2_r.v = object_col_pt->v;
 }
@@ -956,11 +1018,14 @@ const math::Dir3* pulse_sum_point::get_objective(const math::Dir3* result) {
 }
 
 const math::Dir3* pulse_sum_point::phys_diag_multiply_and_square(
-    const math::Dir3* result, const math::Dir3* v1, const math::Dir3* v2) {
-    // ea: 0x891E20 - (v1 * denom) element-wise, squared into result.
-    math::Dir3 r;
-    r.v = _mm_mul_ps(v1->v, v2->v);
-    ((math::Dir3*)result)->v = _mm_mul_ps(r.v, r.v);
+    math::Dir3* result, const math::Dir3* v1, const math::Dir3* v2) {
+    float x = v1->v.m128_f32[0] * v2->v.m128_f32[0];
+    float y = v1->v.m128_f32[1] * v2->v.m128_f32[1];
+    float z = v1->v.m128_f32[2] * v2->v.m128_f32[2];
+    result->v.m128_f32[0] = x * x;
+    result->v.m128_f32[1] = y * y;
+    result->v.m128_f32[2] = z * z;
+    result->v.m128_f32[3] = 0.0f;
     return result;
 }
 
@@ -1216,10 +1281,18 @@ void pulse_sum_point::SOLVER_solver_intermediate(int iter, float delta_t) {
 }
 
 void pulse_sum_point::set_object_vel(const math::Dir3* object_vel) {
+    if (m_b2 != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point.h", 43,
+                  "m_b2 == NULL", defaultFileName))
+        __debugbreak();
     m_b2_apx.v = object_vel->v;
 }
 
 void pulse_sum_point::set_object_col_pt(const math::Dir3* object_col_pt) {
+    if (m_b2 != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_point.h", 44,
+                  "m_b2 == NULL", defaultFileName))
+        __debugbreak();
     m_b2_r.v = object_col_pt->v;
 }
 
@@ -1321,10 +1394,18 @@ void pulse_sum_angular::SOLVER_solver_intermediate(int iter, float delta_t) {
 }
 
 void pulse_sum_angular::set_object_vel(const math::Dir3* object_vel) {
+    if (m_b2 != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular.h", 48,
+                  "m_b2 == NULL", defaultFileName))
+        __debugbreak();
     m_b2_ap.v = object_vel->v;
 }
 
 void pulse_sum_angular::set_object_col_pt(const math::Dir3* object_col_pt) {
+    if (m_b2 != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_angular.h", 50,
+                  "m_b2 == NULL", defaultFileName))
+        __debugbreak();
     m_b2_r.v = object_col_pt->v;
 }
 
@@ -1863,12 +1944,24 @@ void pulse_sum_contact::psc_cpi::setup_vel_uni_restitution(
     }
 }
 
-void pulse_sum_contact::psc_cpi::set_object_vel(psc_cpi* self, const math::Dir3* object_vel) {
+void pulse_sum_contact::psc_cpi::set_object_vel(pulse_sum_contact* psc, const math::Dir3* object_vel) {
+    if (psc->m_b2 != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new.h", 51,
+                  "psc->m_b2 == NULL", defaultFileName))
+        __debugbreak();
     m_b2_ap_n.v = object_vel->v;
 }
 
-void pulse_sum_contact::psc_cpi::set_object_col_pt(psc_cpi* self, const math::Dir3* object_col_pt) {
+void pulse_sum_contact::psc_cpi::set_object_col_pt(pulse_sum_contact* psc, const math::Dir3* object_col_pt) {
+    if (psc->m_b2 != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\constraint_solver\\pulse_sum_contact_new.h", 52,
+                  "psc->m_b2 == NULL", defaultFileName))
+        __debugbreak();
     m_b2_r.v = object_col_pt->v;
+}
+
+double pulse_sum_contact::get_std_max_penalty_restitution_vel() {
+    return 170.0;
 }
 
 // ============================================================================
@@ -2298,7 +2391,7 @@ void rbint::substep(user_rigid_body* rb, float delta_t) {
 // ============================================================================
 // pulse_sum_constraint_solver::psc_is_persistant - ea: 0x892140
 // ============================================================================
-bool pulse_sum_constraint_solver::psc_is_persistant(pulse_sum_cache* ps_cache, int visit_counter) {
+int pulse_sum_constraint_solver::psc_is_persistant(pulse_sum_cache* ps_cache, int visit_counter) {
     return ps_cache->m_visit_key == -1 || ps_cache->m_visit_key == visit_counter;
 }
 
