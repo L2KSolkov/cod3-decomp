@@ -20402,7 +20402,7 @@ index	status	map_line
 20401	SKIPPED	0002:00457720 ??_G?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@MAEPAXI@Z 00C46C20 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20402	SKIPPED	0002:00457720 ??_E?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@MAEPAXI@Z 00C46C20 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 20403	PORTED	0002:00457750 ?Process@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z 00C46C50 f i nal_init.o
-20404	PENDING	0002:00457780 ?SetupPartialDecode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C46C80 f i nal_init.o
+20404	PORTED	0002:00457780 ?SetupPartialDecode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C46C80 f i nal_init.o
 20405	PENDING	0002:00457870 ?PartialDecode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z 00C46D70 f i nal_init.o
 20406	PENDING	0002:00457960 ?Decode@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z 00C46E60 f i nal_init.o
 20407	PENDING	0002:00457a50 ?Skip@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C46F50 f i nal_init.o
