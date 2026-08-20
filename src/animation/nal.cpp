@@ -8687,6 +8687,21 @@ void nalComponent<nalComponentIKSpinBase,
     (void)animComponentData;
 }
 
+// ?Process@?$nalComponent@VnalComponentIKSpinBase@@VnalComponentPacked16EntropyIKSpinData@@VnalComponentPacked16EntropyIKSpin@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z
+// (nal_init.o 0x864540)
+template <>
+void nalComponent<nalComponentIKSpinBase,
+                  nalComponentPacked16EntropyIKSpinData,
+                  nalComponentPacked16EntropyIKSpin>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 96;
+}
+
 // ?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@@PBUCacheType@nalComponentPacked16EntropyIKSpinData@@PAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@4@@Z
 // (nal_init.o 0x864a50)
 void nalComponentPacked16EntropyIKSpin::ComponentConvert(
