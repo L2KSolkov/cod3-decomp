@@ -280,13 +280,54 @@ bool bdBitBuffer::getTypeCheck() const
     return m_typeChecked;
 }
 
-// bdBitBuffer IO primitives (bdCore:bdBitBuffer.obj). Stubs; port from IDA
-// (writeBits ea 0x89BCF0). Note: the binary keeps writeDataType/readDataType
-// private (IAE mangling); the public QAE forms here satisfy the reconstructed
-// callers until the typed-writer API is ported.
+// bdBitBuffer IO primitives (bdCore:bdBitBuffer.obj), reconstructed from the
+// generated release dump (writeBits 0x89BCF0, readBits 0x89B2F0).
 void bdBitBuffer::writeBits(const void* data, unsigned int bitCount)
 {
-    (void)data; (void)bitCount;
+    unsigned int writePosition = m_writePosition;
+    unsigned int lastByte = (bitCount + writePosition - 1) >> 3;
+    if (lastByte >= m_data.m_size)
+    {
+        unsigned int capacity = m_data.m_capacity;
+        unsigned int newSize = lastByte + 1;
+        if (capacity < newSize)
+            m_data.increaseCapacity(newSize - capacity);
+        m_data.m_size = newSize;
+        m_data.m_data[lastByte] = 0;
+    }
+
+    const unsigned char* source = (const unsigned char*)data;
+    unsigned int remaining = bitCount;
+    unsigned int sourceLastByte = (bitCount - 1) >> 3;
+    while (remaining != 0)
+    {
+        unsigned int bitOffset = m_writePosition & 7;
+        unsigned int chunk = remaining;
+        if (chunk >= 8 - bitOffset)
+            chunk = 8 - bitOffset;
+
+        unsigned int byteIndex = m_writePosition >> 3;
+        unsigned char mask = (unsigned char)((255u >> (8 - bitOffset)) |
+                                             (~0u << (bitOffset + chunk)));
+        unsigned char oldValue = (unsigned char)(mask & m_data.m_data[byteIndex]);
+        unsigned int sourceByte = (bitCount - remaining) >> 3;
+        unsigned char nextValue = 0;
+        if (sourceLastByte > sourceByte)
+            nextValue = source[sourceByte + 1];
+        unsigned int sourceBit = (bitCount - remaining) & 7;
+        unsigned char value = source[sourceByte];
+        m_data.m_data[byteIndex] = (unsigned char)(oldValue |
+            (unsigned char)(~mask & (unsigned char)(
+                ((unsigned int)((nextValue << (8 - sourceBit)) |
+                                (value >> sourceBit))) << bitOffset)));
+
+        unsigned int nextPosition = chunk + m_writePosition;
+        unsigned int consumed = remaining - chunk;
+        if (m_maxWritePosition < nextPosition)
+            m_maxWritePosition = nextPosition;
+        m_writePosition = nextPosition;
+        remaining = consumed;
+    }
 }
 
 void bdBitBuffer::writeDataType(bdBitBufferDataType type)
@@ -513,8 +554,47 @@ bool bdBitBuffer::readDataType(bdBitBufferDataType type)
 
 bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
 {
-    (void)data; (void)bitCount;
-    return true;
+    if (bitCount == 0)
+        return true;
+
+    if (bitCount + m_readPosition > m_maxWritePosition)
+    {
+        m_failedRead = true;
+        return false;
+    }
+
+    unsigned char* destination = (unsigned char*)data;
+    unsigned int remaining = bitCount;
+    unsigned int byteIndex = m_readPosition >> 3;
+    while (byteIndex < m_data.m_size)
+    {
+        unsigned int chunk = remaining;
+        if (chunk >= 8)
+            chunk = 8;
+        unsigned char value = m_data.m_data[byteIndex];
+        unsigned int bitOffset = m_readPosition & 7;
+        ++byteIndex;
+        unsigned char output;
+        if (bitOffset + chunk <= 8)
+        {
+            output = (unsigned char)((value >> bitOffset) & (255u >> (8 - chunk)));
+        }
+        else
+        {
+            if (byteIndex >= m_data.m_size)
+                break;
+            output = (unsigned char)((255u >> (8 - chunk)) &
+                ((value >> bitOffset) | (m_data.m_data[byteIndex] << (8 - bitOffset))));
+        }
+        *destination++ = output;
+        m_readPosition += chunk;
+        remaining -= chunk;
+        if (remaining == 0)
+            return true;
+    }
+
+    m_failedRead = true;
+    return false;
 }
 
 #define COD3_UNIMPLEMENTED(lib) \

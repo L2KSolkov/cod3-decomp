@@ -126,7 +126,7 @@ ngl_xboxr:ngl_dx_filters.o	ngl_xboxr	ngl_dx_filters.o	engine	18	PORTED	ngl_dx_fi
 
 phys_xboxr:phys_constraint_solver_multithreaded.o	phys_xboxr	phys_constraint_solver_multithreaded.o	engine	18	VERIFIED	phys_constraint_solver_multithreaded.cpp: pulse_sum_normal/point/angular set+get_vel/get_pos/get_objective/apply/clamp/relax, pulse_sum_contact::set + psc_cpi (get_vel/get_objective/apply/SOLVER prolog/relax/intermediate), solve_iterative, list_constraint_solver::process, execute_constraint_solver/solve_constraints/create_pulse_sum_node/add_urb/list_urbri_restore/set_solver_params, temp_user_rigid_body/user_rigid_body_restore_info, rbint euler_integrate_velocity/pos/update_stability/gtv/inv_L/mul_inv_L/setup_constraint/substep, phys_link_list iterator; exact IDA ports added for pulse_sum_normal/point/angular::calc_abs, contact psc_cpi velocity/impact/friction/restitution routines, construct_orth_ud, and the five smallest standard setup/limit-ratio routines
 
-bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation; replaced writeBits/readBits no-ops with the complete release-dump bit packing/unpacking bodies at 0x89BCF0/0x89B2F0; canonical Debug build passed
 
 bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	PORTED	bdAddr.cpp: address+port (18 funcs) from IDA + Demonware 2.0
 
