@@ -9,6 +9,16 @@
 
 #include <stdint.h>
 
+namespace AeAssert {
+enum ECoderId : int;
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
 template <typename T, int CAPACITY>
 class ae_sized_array {
 public:
@@ -20,17 +30,42 @@ public:
     int size() const { return m_size; }
 
     T& operator[](int idx) {
+        if (idx < 0 || idx >= CAPACITY) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         return m_elements[idx];
     }
 
     const T& operator[](int idx) const {
+        if (idx < 0 || idx >= CAPACITY) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 148;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         return m_elements[idx];
     }
 
     void push_back(const T& val) {
-        // assert: m_size < CAPACITY
-        m_elements[m_size] = val;
-        ++m_size;
+        if (m_size >= CAPACITY) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 174;
+            AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array"))
+                __debugbreak();
+        }
+        if (m_size < CAPACITY) {
+            m_elements[m_size] = val;
+            ++m_size;
+        }
     }
     int capacity() const { return CAPACITY; }
     int free_space() const { return CAPACITY - m_size; }
