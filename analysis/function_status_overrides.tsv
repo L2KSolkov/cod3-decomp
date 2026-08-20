@@ -629,3 +629,14 @@ nal_init.o	?VirtualAlignSkeletonComponentData@?$nalComponent@VnalComponentFloat3
 nal_init.o	?VirtualAlignAnimData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAPBX@Z	VERIFIED
 nal_init.o	?VirtualAlignAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAPBX@Z	PORTED
 nal_init.o	?VirtualAdvanceAnimComponentData@?$nalComponent@VnalComponentFloat3Base@@VnalComponentEntropyFloat3Data@@VnalComponentEntropyFloat3@@@@UBEXAAPBX@Z	PORTED
+nal_init.o	?Process@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX1@Z	PORTED
+nal_init.o	?SetupPartialDecode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?PartialDecode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAX1PAXHHH@Z	PORTED
+nal_init.o	?Decode@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXHH@Z	PORTED
+nal_init.o	?Skip@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z	PORTED
+nal_init.o	?GetTrajectory@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z	PORTED
+nal_init.o	?Construct@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Delete@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z	PORTED
+nal_init.o	?Copy@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	??$FastCopy@VnalComponentFloat3@@VDir3@math@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
+nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentFloat3Base@@VnalComponentFloat3Data@@VnalComponentFloat3@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED

@@ -8262,6 +8262,194 @@ void nalComponent<nalComponentFloat3Base,
 }
 
 template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 16;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::SetupPartialDecode(
+    nalComponentEnum& componentEnum, void*& state,
+    const void*& src, int quantity) const
+{
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (nalComponentTrackPresent(&componentEnum, track))
+        {
+            src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+            const void* next = src;
+            void* stateBlock = state;
+            if (stateBlock != nullptr)
+                *(const void**)stateBlock = next;
+            src = (const char*)src + 16 * quantity;
+            state = (char*)state + 4;
+        }
+    }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::PartialDecode(
+    nalComponentEnum& componentEnum, void*& dst, void*& state,
+    void* work, int offset, int quantity, int stride) const
+{
+    (void)work;
+    (void)offset;
+    state = (void*)(((uintptr_t)state + 3u) & ~uintptr_t(3u));
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        unsigned int** sourceSlot = (unsigned int**)state;
+        unsigned int* source = *sourceSlot;
+        unsigned int* out = (unsigned int*)dst;
+        for (int sample = 0; sample < quantity; ++sample)
+        {
+            out[0] = source[0];
+            out[1] = source[1];
+            out[2] = source[2];
+            out[3] = source[3];
+            out += stride;
+            source += 4;
+        }
+        *sourceSlot = source;
+        state = (char*)state + 4;
+        dst = (char*)dst + 16;
+    }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Decode(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity, int stride) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        unsigned int* out = (unsigned int*)dst;
+        const unsigned int* source = (const unsigned int*)src;
+        for (int sample = 0; sample < quantity; ++sample)
+        {
+            out[0] = source[0];
+            out[1] = source[1];
+            out[2] = source[2];
+            out[3] = source[3];
+            out += stride;
+            source += 4;
+        }
+        src = source;
+        dst = (char*)dst + 16;
+    }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Skip(
+    nalComponentEnum& componentEnum, void*& dst, const void*& src,
+    int quantity) const
+{
+    dst = (void*)(((uintptr_t)dst + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (!nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            continue;
+        src = (const void*)(((uintptr_t)src + 3u) & ~uintptr_t(3u));
+        src = (const char*)src + 16 * quantity;
+        dst = (char*)dst + 16;
+    }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::GetTrajectory(
+    nalComponentEnum& componentEnum, void* dst, bool trajabs,
+    const int* offsetTable) const
+{
+    (void)dst;
+    (void)trajabs;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        if (offsetTable[track] >= 0)
+            (void)nalComponentTrackPresent(&componentEnum, track);
+        (void)nalComponentTrackPresent(&componentEnum, track);
+    }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Construct(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    ptr = (char*)ptr + 16 * componentInfo->Count;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Delete(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        ptr = (char*)ptr + 16;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::ReleaseCache(
+    nalComponentEnum& componentEnum, void*& ptr) const
+{
+    ptr = (void*)(((uintptr_t)ptr + 15u) & ~uintptr_t(15u));
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        if (nalComponentTrackPresent(
+                &componentEnum, i + componentInfo->StartIndex))
+            ptr = (char*)ptr + 16;
+    }
+}
+
+template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
                   nalComponentSignalCounter>::Process(
@@ -8840,6 +9028,21 @@ void FastCopy<nalComponentRLE8Int1, unsigned char>(
 }
 
 template <>
+void FastCopy<nalComponentFloat3, math::Dir3>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void** dstPtr, const void** srcPtr)
+{
+    *dstPtr = (void*)(((uintptr_t)*dstPtr + 15u) & ~uintptr_t(15u));
+    const void* alignedSrc =
+        (const void*)(((uintptr_t)*srcPtr + 15u) & ~uintptr_t(15u));
+    *srcPtr = alignedSrc;
+    const unsigned int size = 16u * componentInfo->Count;
+    std::memcpy(*dstPtr, alignedSrc, size);
+    *dstPtr = (char*)*dstPtr + size;
+    *srcPtr = (const char*)*srcPtr + size;
+}
+
+template <>
 void nalComponent<nalComponentU8Base,
                   nalComponentSignalCounterData,
                   nalComponentSignalCounter>::Copy(
@@ -8858,6 +9061,17 @@ void nalComponent<nalComponentU8Base,
     void*& dstPtr, const void*& srcPtr) const
 {
     FastCopy<nalComponentRLE8Int1, unsigned char>(
+        componentInfo, &dstPtr, &srcPtr);
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentFloat3Data,
+                  nalComponentFloat3>::Copy(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& dstPtr, const void*& srcPtr) const
+{
+    FastCopy<nalComponentFloat3, math::Dir3>(
         componentInfo, &dstPtr, &srcPtr);
 }
 
