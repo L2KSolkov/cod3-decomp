@@ -1976,6 +1976,21 @@ void UIListBox::SetColumnSelectable(int column, bool selectable)
     mSelectedRowColorChangeColumns.mElements[column] = selectable;
 }
 
+// ea: 0x005B33A0
+void UIHighlightListBox::HighlightRow(int row, bool highlighted)
+{
+    if (row < 0 || row >= mHighlights.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    mHighlights.mElements[row] = highlighted;
+}
+
 // ea: 0x581D40
 void UIListBox::SetAllColumnsSelectable(bool selectable)
 {

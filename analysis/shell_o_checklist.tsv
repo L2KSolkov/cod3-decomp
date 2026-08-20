@@ -1766,7 +1766,7 @@ index	status	map_line
 1765	PENDING	0002:001a7360       ??1IGORowboatWidget@@UAE@XZ 009a2860 f i shell.o
 1766	PENDING	0002:001a7370       ??_EIGOItemIcons@@UAEPAXI@Z 009a2870 f i shell.o
 1767	PENDING	0002:001a7370       ??_GIGOItemIcons@@UAEPAXI@Z 009a2870 f i shell.o
-1768	PENDING	0002:001a73a0       ?HighlightRow@UIHighlightListBox@@QAEXH_N@Z 009a28a0 f i shell.o
+1768	FIXED	0002:001a73a0       ?HighlightRow@UIHighlightListBox@@QAEXH_N@Z 009a28a0 f i shell.o
 1769	PENDING	0002:001a73d0       ?DrawBackground@FESplitScreenMenu@@SAXXZ 009a28d0 f i shell.o
 1770	PENDING	0002:001a73f0       ??0FEMenuListBoxItem@@QAE@IABVstring@Broc@@H@Z 009a28f0 f i shell.o
 1771	PENDING	0002:001a7480       ??_EInGameOptionsMenu@@UAEPAXI@Z 009a2980 f i shell.o

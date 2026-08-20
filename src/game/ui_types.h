@@ -3144,6 +3144,7 @@ public:
     virtual void Refresh();           // 0x5909D0
 
     void ClearHighlights();         // 0x581DC0
+    void HighlightRow(int row, bool highlighted); // 0x5B33A0
     void SetEntryColor(int y, int x, color32 colorUnLit,
                        color32 colorLit);  // 0x588390
 protected:
