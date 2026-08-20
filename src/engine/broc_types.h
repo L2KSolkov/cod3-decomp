@@ -170,7 +170,10 @@ struct vector {
     float z;  // +0x08
 
     vector() : x(0.0f), y(0.0f), z(0.0f) {}
+    vector(float ix, float iy) : x(ix), y(iy), z(0.0f) {}
     vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
+    vector& operator+=(const vector& rhs);
+    bool operator==(const vector& rhs);
     float operator[](int i) const { return (&x)[i]; }
     void Set(float X, float Y, float Z);  // ?Set@vector@Broc@@QAEXMMM@Z (g.o 0x4A5DE0)
 };

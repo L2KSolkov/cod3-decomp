@@ -13,6 +13,12 @@ extern const char defaultFileName[];
 
 class PakFile;
 
+// shell.o 0x5AD4C0
+bool IsMedic(int playerClass)
+{
+    return playerClass == 3;
+}
+
 // ============================================================================
 // FEManager methods from FEManager.cpp (IDA 0x58DD60 and 0x58DE00).
 // ============================================================================

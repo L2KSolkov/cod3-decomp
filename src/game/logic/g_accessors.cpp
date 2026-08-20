@@ -1096,6 +1096,13 @@ const math::Position3 EntityState::GetLerpAngles() const
     return lerpAngles;
 }
 
+// shell.o 0x5AD2D0
+const math::Position3* EntityState::GetLerpOrigin(math::Position3* result)
+{
+    *result = lerpOrigin;
+    return result;
+}
+
 // ============================================================================
 // Misc accessors (g.o)
 // ============================================================================

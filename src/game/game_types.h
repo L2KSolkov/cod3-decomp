@@ -251,6 +251,7 @@ public:
     EntityState();                            // ??0EntityState@@QAE@XZ (game.o 0x620480)
     void SetLerpAngles(const math::Position3& angles);  // ?SetLerpAngles@EntityState@@QAEXABVPosition3@math@@@Z (cg.o 0x6BBAC0)
     const math::Position3 GetLerpAngles() const;  // ?GetLerpAngles@EntityState@@QBE?BVPosition3@math@@XZ (g.o 0x4A5750)
+    const math::Position3* GetLerpOrigin(math::Position3* result);  // shell.o 0x5AD2D0
     void SetLerpOrigin(const math::Position3& origin);  // ?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z (g.o 0x4AF2A0)
 
     uint8_t  eType;                               // +0x00

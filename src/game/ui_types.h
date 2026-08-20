@@ -49,6 +49,18 @@ public:
     };
 
     color32() {}
+    color32(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a)
+    {
+        c.b = _b;
+        c.g = _g;
+        c.r = _r;
+        c.a = _a;
+    }
+    uint8_t get_red() { return c.r; }
+    uint8_t get_green() { return c.g; }
+    uint8_t get_blue() { return c.b; }
+    uint8_t get_alpha() { return c.a; }
+    void set_alpha(uint8_t alpha) { c.a = alpha; }
     // ??0color32@@QAE@I@Z (anim.o 0x53A320)
     color32(unsigned int ic) { i = ic; }
 };
@@ -235,6 +247,14 @@ public:
     {
         return (flags & 0x10) != 0 || (flags & 0x20) != 0;
     }
+    void SetPAOFlag(char f, bool on)
+    {
+        if (on)
+            flags |= f;
+        else
+            flags &= (char)~f;
+    }
+    bool GetPAOFlag(int f) { return (flags & f) != 0; }
     virtual bool IsShown()                           // +0x38 inline 0x5B1B00
     {
         return (flags & 4) != 0;

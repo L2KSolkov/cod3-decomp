@@ -208,6 +208,47 @@ float VecDistanceSquared(const vector* v0, const vector* v1) {
     return VectorDistanceSquared(&v0->x, &v1->x);
 }
 
+vector& vector::operator+=(const vector& rhs)
+{
+    x = rhs.x + x;
+    y = rhs.y + y;
+    z = rhs.z + z;
+    return *this;
+}
+
+bool vector::operator==(const vector& rhs)
+{
+    return x == rhs.x && y == rhs.y && z == rhs.z;
+}
+
+vector operator+(const vector& lhs, const vector& rhs)
+{
+    vector result;
+    result.x = lhs.x + rhs.x;
+    result.y = lhs.y + rhs.y;
+    result.z = lhs.z + rhs.z;
+    return result;
+}
+
+vector operator-(const vector& lhs, const vector& rhs)
+{
+    vector result;
+    result.x = lhs.x - rhs.x;
+    result.y = lhs.y - rhs.y;
+    result.z = lhs.z - rhs.z;
+    return result;
+}
+
+vector operator/(const vector& lhs, float rhs)
+{
+    const float inverse = 1.0f / rhs;
+    vector result;
+    result.x = lhs.x * inverse;
+    result.y = lhs.y * inverse;
+    result.z = lhs.z * inverse;
+    return result;
+}
+
 // ea: 0x005E9730
 int VecCloser(const vector* vRef, const vector* vA, const vector* vB) {
     float fDistASqrd = VectorDistanceSquared(&vA->x, &vRef->x);

@@ -989,6 +989,9 @@ struct SCheckpointGameVar {
     unsigned int mHashVarName;  // +0x00
     unsigned int mVal;          // +0x04
     unsigned int mDataSize;     // +0x08
+
+    SCheckpointGameVar()
+        : mHashVarName(0), mVal(0), mDataSize(0) {}
 };
 
 // ae_vector<T> - dynamic array (12 bytes) - verified against IDA
@@ -1032,6 +1035,10 @@ public:
         char  mTargetname[32];            // +0x00
         float mOrientation[3];            // +0x20
         float mOrigin[3];                 // +0x2C
+
+        SEntitySaveInfo()
+            : mTargetname{0}, mOrientation{0.0f, 0.0f, 0.0f},
+              mOrigin{0.0f, 0.0f, 0.0f} {}
     } mFriendlies[16];                    // +0x578
     int          mFriendlyCount;          // +0x8F8
     Broc::string mEvent;                  // +0x8FC (Broc::string)
