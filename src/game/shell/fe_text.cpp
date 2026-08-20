@@ -936,51 +936,6 @@ const char* const FEMenuColorSchemeText[17] = {
     "BODY_TEXT_06",
 };
 
-// MultiLineString (32 bytes) - verified against IDA
-// ============================================================================
-struct MultiLineButtons {
-    short text_start_index;  // +0x00
-    short x_offset;          // +0x02
-
-    MultiLineButtons();
-    void CopyFrom(MultiLineButtons* fet);
-};
-
-class MultiLineString {
-public:
-    font_index     font;             // +0x00
-    Broc::vector   xy;               // +0x04
-    float          total_width;      // +0x10
-    Broc::string   data;             // +0x14
-    MultiLineButtons* button_array;  // +0x18
-    int            button_array_size;  // +0x1C
-
-    MultiLineString();               // shell.o 0x56CC40
-    ~MultiLineString();              // shell.o 0x56CD00
-    void CopyFrom(MultiLineString* fet);  // shell.o 0x56CD30
-    void SetPos(float xp, float yp);  // shell.o 0x5ADF10
-    void Shift(float x, float y);    // shell.o 0x5ADF60
-    float GetTotalWidth();            // shell.o 0x5ADFA0
-    void AdjustForScale(float scale_factor);  // shell.o 0x56CDE0
-    static int ConvertStringToButtonCode(const char* text,
-                                         const char** buttonCode,
-                                         const Broc::string& whole_string);
-                                      // shell.o 0x56CEE0
-    void Draw(float z, int col, int button_col,
-              float scale_x, float scale_y, float button_scale,
-              float button_y_offset);  // shell.o 0x57C980
-    static float GetWidth(const char* text, float scale, font_index f);
-                                      // shell.o 0x57CC20
-    static float GetStringWidth(const char* text, font_index f, float scale,
-                                float button_scale);  // shell.o 0x584910
-    void Set(const char* d, font_index f, float scale,
-             float button_scale);    // shell.o 0x58D3B0
-private:
-    void ParseForButtons(float scale, float button_scale);  // shell.o 0x584AB0
-};
-static_assert(sizeof(MultiLineString) == 32, "MultiLineString size mismatch");
-static_assert(sizeof(MultiLineButtons) == 4, "MultiLineButtons size mismatch");
-
 // ea: 0x005ADED0
 MultiLineButtons::MultiLineButtons()
 {

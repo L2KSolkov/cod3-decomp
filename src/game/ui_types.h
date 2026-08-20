@@ -1368,7 +1368,45 @@ static_assert(offsetof(FEMenu, panel) == 0x48, "FEMenu::panel offset mismatch");
 // ============================================================================
 // MultiLineString â€” multiline text storage (opaque)
 // ============================================================================
-struct MultiLineString;
+struct MultiLineButtons {
+    short text_start_index;
+    short x_offset;
+
+    MultiLineButtons();
+    void CopyFrom(MultiLineButtons* fet);
+};
+
+class MultiLineString {
+public:
+    font_index font;
+    Broc::vector xy;
+    float total_width;
+    Broc::string data;
+    MultiLineButtons* button_array;
+    int button_array_size;
+
+    MultiLineString();
+    ~MultiLineString();
+    void CopyFrom(MultiLineString* fet);
+    void SetPos(float xp, float yp);
+    void Shift(float x, float y);
+    float GetTotalWidth();
+    void AdjustForScale(float scale_factor);
+    static int ConvertStringToButtonCode(const char* text,
+                                         const char** buttonCode,
+                                         const Broc::string& whole_string);
+    void Draw(float z, int col, int button_col,
+              float scale_x, float scale_y, float button_scale,
+              float button_y_offset);
+    static float GetWidth(const char* text, float scale, font_index f);
+    static float GetStringWidth(const char* text, font_index f, float scale,
+                                float button_scale);
+    void Set(const char* d, font_index f, float scale, float button_scale);
+private:
+    void ParseForButtons(float scale, float button_scale);
+};
+static_assert(sizeof(MultiLineString) == 32, "MultiLineString size mismatch");
+static_assert(sizeof(MultiLineButtons) == 4, "MultiLineButtons size mismatch");
 
 // ============================================================================
 // FEMultiLineText â€” multiline text element (168 bytes)
