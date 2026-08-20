@@ -20716,7 +20716,7 @@ index	status	map_line
 20715	PORTED	0002:00460ee0 ?Skip@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@AAPAXAAPBXH@Z 00C503E0 f i nal_init.o
 20716	PENDING	0002:00460fc0 ?Convert@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C504C0 f i nal_init.o
 20717	PORTED	0002:00461180 ??BnalQuaternion16@nalEntropyDecoder@@QBE?AVQuaternion@math@@XZ 00C50680 f i nal_init.o
-20718	PENDING	0002:004611f0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C506F0 f i nal_init.o
+20718	PORTED	0002:004611f0 ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C506F0 f i nal_init.o
 20719	PORTED	0002:004612e0 ?GetTrajectory@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C507E0 f i nal_init.o
 20720	PORTED	0002:004613a0 ?Construct@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C508A0 f i nal_init.o
 20721	PORTED	0002:004613d0 ?Delete@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked16EntropyQuatData@@VnalComponentPacked16EntropyQuat@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C508D0 f i nal_init.o
