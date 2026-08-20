@@ -29,7 +29,7 @@ extern nglTexture* nglGetTexture(const tlFixedString& FileName);  // ngl_texture
 extern void* mem_heap_malloc(unsigned int size);  // core.o (1-arg overload)
 extern bool gMPLoadingUnthreaded;      // ?gMPLoadingUnthreaded@@3_NA
 namespace AeStringSupport {
-extern void Concat(char* dst, int* dstLen, int dstCapacity,
+extern void Concat(char* dst, int* const dstLen, int dstCapacity,
                    const char* src);  // core.o
 }
 

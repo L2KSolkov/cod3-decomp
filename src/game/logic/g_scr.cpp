@@ -69,7 +69,7 @@ enum TPakInfo {
 };
 
 namespace AeStringSupport {
-void Concat(char* dst, int* dstLen, int dstCapacity,
+void Concat(char* dst, int* const dstLen, int dstCapacity,
             const char* src);  // ?Concat@AeStringSupport@@YAXPADAAHHPBD@Z
 void CStrToAeStr(char* dst, int* dstLen, int dstCapacity,
                  const char* src);  // ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z

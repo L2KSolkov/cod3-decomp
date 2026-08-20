@@ -141,7 +141,7 @@ void CStrToAeStr(char* dst, int* const dstLen, int dstCapacity, const char* src)
 // Concat — append C-string to ae_fixed_string
 // ea: 0x7BEFA0
 // ============================================================================
-void Concat(char* dst, int* dstLen, int dstCapacity, const char* src) {
+void Concat(char* dst, int* const dstLen, int dstCapacity, const char* src) {
     if (!src) return;
 
     int len = *dstLen;
