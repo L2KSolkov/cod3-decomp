@@ -156,17 +156,11 @@ long __stdcall D3DDevice::PersistDisplay()
     return 0;  // S_OK
 }
 
-// PathNodeMgr stubs (mp_actors.o / path.o; ported later)
+// PathNodeMgr::SetCoverNodeStatus remains the separate mp_actors.o port target.
 void PathNodeMgr::SetCoverNodeStatus(const Broc::string& name, int inValid)
 {
     (void)name; (void)inValid;
 }
-void PathNodeMgr::AttachSentientToChainNode(sentient_s* pSentient,
-                                            const Broc::string& targetname)
-{
-    (void)pSentient; (void)targetname;
-}
-
 // ============================================================================
 // Cross-object externs
 // ============================================================================

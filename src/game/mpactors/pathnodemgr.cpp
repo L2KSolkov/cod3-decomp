@@ -200,6 +200,73 @@ void PathNodeMgr::DissociateSentient(sentient_s* pSentient)
     }
 }
 
+// ea: 0x00783820
+void PathNodeMgr::AttachSentientToChainNode(
+    sentient_s* pSentient, const Broc::string& targetname)
+{
+    if (pSentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\pathnodemgr.cpp";
+        AeAssert::gCurrentLine = 2616;
+        AeAssert::gCurrentExpr = "pSentient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    PathNodes::TOC1* levelTOC = mLevelTOC;
+    if (levelTOC == nullptr || levelTOC->mNodeCount == 0)
+        return;
+
+    PathNodes::NodeHandle* actualChainPos = &pSentient->mActualChainPos;
+    PathNodes::PathNode* node = nullptr;
+    if (actualChainPos->mValue != 0 && actualChainPos->mValue != 0xFFFF)
+        node = GetNode(*actualChainPos);
+    if (node != nullptr
+        && Broc::operator==(node->mConstant.mTargetName, targetname))
+        return;
+
+    for (int i = 0; i < levelTOC->mChainNodeCount; ++i)
+    {
+        PathNodes::NodeHandle chainHandle = levelTOC->mChainNodes[i];
+        if (levelTOC->mNodeCount <= (chainHandle.mValue - 1))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 2646;
+            AeAssert::gCurrentExpr =
+                "zone->mNodeCount > mLevelTOC->mChainNodes[i].GetZoneIndex()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+
+        PathNodes::PathNode* chainNode =
+            &levelTOC->mNodes[chainHandle.mValue - 1];
+        if (chainNode == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\pathnodemgr.cpp";
+            AeAssert::gCurrentLine = 2649;
+            AeAssert::gCurrentExpr = "pNode";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (Broc::operator==(chainNode->mConstant.mTargetName, targetname))
+        {
+            pSentient->mActualChainPos.mValue = chainNode->mHandle.mValue;
+            return;
+        }
+    }
+
+    const char* text = targetname.mBlock != nullptr
+        ? (const char*)(targetname.mBlock + 1)
+        : defaultFileName;
+    G_Error("Friendly chain node '%s' does not exist\n", text);
+}
+
 // ea: 0x0077F3B0
 void PathNodeMgr::CleanUpManager()
 {
