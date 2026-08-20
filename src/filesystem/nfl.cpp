@@ -1571,13 +1571,16 @@ nflRequestState nflGetRequestState(nflRequestID requestID)
 // ea: 0x0041F910
 void nflCancelRequest(nflRequestID requestID)
 {
-    nfsLock();
+    const bool multiThreaded = s_initParams.threadMode == NFL_THREAD_MODE_MULTI;
+    if (multiThreaded)
+        nfsLock();
     nfsRequest* request = nfsGetRequest(requestID);
     if (request != nullptr) {
         request->state = request->state == NFS_REQUEST_STATE_WORKING
             ? NFS_REQUEST_STATE_CANCELING : NFS_REQUEST_STATE_CANCELED;
     }
-    nfsUnlock();
+    if (multiThreaded)
+        nfsUnlock();
 }
 void nflCancelFileRequests(nflFileID fileID)
 {
