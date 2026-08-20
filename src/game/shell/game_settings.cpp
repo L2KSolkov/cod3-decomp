@@ -351,6 +351,9 @@ int GameSettings::get_blocks_total()
 void GameSettings::get_insufficient_space_error(char* str, bool from_fe)
 {
     (void)from_fe;
+    (void)MemoryUnitManager::GetGameSaveSize(0x1BF4u);
+    (void)MemoryUnitManager::GetClusterSize();
+    (void)MemoryUnitManager::GetClusterSize();
     const char* STBString = STBManager::sInst->GetSTBString(
         "MEM_ERROR_NOT_ENOUGH_BLOCKS1");
     const char* v6 = STBManager::sInst->GetSTBString(
