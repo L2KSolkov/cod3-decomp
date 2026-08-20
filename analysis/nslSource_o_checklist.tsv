@@ -1,5 +1,5 @@
 index	status	map_line
-1	PENDING	0002:00420410 ?tlIsPow2@@YA_NI@Z 00C0F910 f i nslSource.o
+1	VERIFIED	0002:00420410 ?tlIsPow2@@YA_NI@Z 00C0F910 f i nslSource.o
 2	VERIFIED	0002:004207a0 ?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z 00C0FCA0 f nslSource.o
 3	VERIFIED	0002:004207d0 ?nslEmitterPtr@@YAPAUnslEmitter@@W4nslEmitterID@@@Z 00C0FCD0 f nslSource.o
 4	VERIFIED	0002:00420800 ?nslNewEmitter@@YA?AW4nslEmitterID@@PBM@Z 00C0FD00 f nslSource.o

@@ -18904,7 +18904,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 18903	0x008203E0	0x00C0F8E0	?nslGetVoice@@YAPAUnslVoice@@I@Z	nsl_xboxr	nslCompat.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 18904	0x008203F0	0x00C0F8F0	?nslGetNumVoices@@YAIXZ	nsl_xboxr	nslCompat.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 18905	0x00820400	0x00C0F900	?nslGetMaxNumVoices@@YAIXZ	nsl_xboxr	nslCompat.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
-18906	0x00820410	0x00C0F910	?tlIsPow2@@YA_NI@Z	nsl_xboxr	nslSource.o	engine		f i	1	VERIFIED	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+18906	0x00820410	0x00C0F910	?tlIsPow2@@YA_NI@Z	nsl_xboxr	nslSource.o	engine		f i	1	VERIFIED	FUNCTION status override	NO	NO	PORT_STATUS_ONLY
 18907	0x008207A0	0x00C0FCA0	?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z	nsl_xboxr	nslSource.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 18908	0x008207D0	0x00C0FCD0	?nslEmitterPtr@@YAPAUnslEmitter@@W4nslEmitterID@@@Z	nsl_xboxr	nslSource.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED
 18909	0x00820800	0x00C0FD00	?nslNewEmitter@@YA?AW4nslEmitterID@@PBM@Z	nsl_xboxr	nslSource.o	engine		f	0	VERIFIED	PROGRESS object aggregate	YES	YES	VERIFIED

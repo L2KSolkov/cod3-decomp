@@ -18904,7 +18904,7 @@ index	status	map_line
 18903	VERIFIED	0002:004203e0 ?nslGetVoice@@YAPAUnslVoice@@I@Z 00C0F8E0 f nslCompat.o
 18904	VERIFIED	0002:004203f0 ?nslGetNumVoices@@YAIXZ 00C0F8F0 f nslCompat.o
 18905	VERIFIED	0002:00420400 ?nslGetMaxNumVoices@@YAIXZ 00C0F900 f nslCompat.o
-18906	PENDING	0002:00420410 ?tlIsPow2@@YA_NI@Z 00C0F910 f i nslSource.o
+18906	VERIFIED	0002:00420410 ?tlIsPow2@@YA_NI@Z 00C0F910 f i nslSource.o
 18907	VERIFIED	0002:004207a0 ?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z 00C0FCA0 f nslSource.o
 18908	VERIFIED	0002:004207d0 ?nslEmitterPtr@@YAPAUnslEmitter@@W4nslEmitterID@@@Z 00C0FCD0 f nslSource.o
 18909	VERIFIED	0002:00420800 ?nslNewEmitter@@YA?AW4nslEmitterID@@PBM@Z 00C0FD00 f nslSource.o
