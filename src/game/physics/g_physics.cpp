@@ -5,6 +5,7 @@
 
 #include "physics/physics_system.h"
 #include "physics/rb_ragdoll_model.h"
+#include "core/ae_array.h"
 #include "core/tlFixedString.h"
 #include <float.h>
 #include <intrin.h>
@@ -12065,12 +12066,121 @@ void Destructible::AddPiece(Entity* ent, const char* exploderType)
 // PhysDataBankManager / DestructibleBankManager DecodeBank family (physics.o
 // RBPhysData.cpp / RBDestructible.cpp). The InplaceAssetBank<> Fixup and
 // InplaceAssetBankSet<> AddBank calls are template instantiations from
-// inplace.o/streamer.o; local C-name helpers stand in until those templates
-// are ported (same pattern as ConfigStringManager::DecodeBank).
+// inplace.o/streamer.o.
 // ============================================================================
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);
+
+namespace AeStringSupport {
+void CStrToAeStr(char* dst, int* dstLen, int capacity, const char* src);
+void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
+                 bool includeExt);
+void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
+               int srcLen);
+}
+
+class InplaceString {
+public:
+    char* mStr;  // +0x00
+};
+
+template <typename KeyT, typename ValueT>
+struct InplaceTree {
+    struct Element {
+        KeyT mKey;      // +0x00
+        ValueT mVal;    // +0x04
+    };
+
+    unsigned int mSize;  // +0x00
+    Element* m_array;    // +0x04
+
+    bool IsUsed(unsigned int index) const
+    {
+        if (index >= mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+            AeAssert::gCurrentLine = 211;
+            AeAssert::gCurrentExpr = "index >= 0 && index < mSize";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        const unsigned char* bytes =
+            reinterpret_cast<const unsigned char*>(&m_array[index]);
+        for (unsigned int i = 0; i < sizeof(Element); ++i)
+        {
+            if (bytes[i] != 0)
+                return true;
+        }
+        return false;
+    }
+
+    template <typename LookupKey>
+    unsigned int* Find(const LookupKey& key) const
+    {
+        if (mSize == 0)
+            return nullptr;
+
+        unsigned int index = 0;
+        while (true)
+        {
+            if (!IsUsed(index))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceTree.h";
+                AeAssert::gCurrentLine = 101;
+                AeAssert::gCurrentExpr = "IsUsed(index)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("index must be used"))
+                    __debugbreak();
+            }
+
+            const char* stored = m_array[index].mKey.mStr;
+            int compare = _stricmp(stored, key);
+            if (compare == 0)
+                return &m_array[index].mVal;
+
+            index = compare >= 0 ? index * 2 + 1 : index * 2 + 2;
+            if (index >= mSize || !IsUsed(index))
+                return nullptr;
+        }
+    }
+};
+
+template <typename T, typename Tree>
+class InplaceAssetBank {
+public:
+    typedef T ElementType;
+    unsigned int mFileId;  // +0x00
+    float mVersion;        // +0x04
+    Tree mTree;             // +0x08
+    InplaceVector<const T*> mPtrs;  // +0x10
+    void* mPtrFixupTable;   // +0x18
+
+    T* operator[](unsigned int index)
+    {
+        if (index >= mPtrs.mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+            AeAssert::gCurrentLine = 199;
+            AeAssert::gCurrentExpr = "i<mPtrs.size()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("bounds check"))
+                __debugbreak();
+        }
+        return const_cast<T*>(mPtrs.mList[index]);
+    }
+};
+
+template <typename ValueT>
+class AeType {
+};
+
+extern void GetPakPrerequisites(TPakId pakId,
+                                ae_sized_array<TPakId, 32>* ret);
 
 class AssetBankSet {
 public:
@@ -12105,10 +12215,91 @@ public:
     {
         (void)bank;
     }
+
+    template <typename KeyT, typename ValueT>
+    ValueT Find(TPakId pakId, KeyT key, AeType<ValueT>,
+                TPakId* foundPakId) const;
+};
+
+template <typename BankT>
+template <typename KeyT, typename ValueT>
+ValueT InplaceAssetBankSet<BankT>::Find(TPakId pakId, KeyT key,
+                                        AeType<ValueT>,
+                                        TPakId* foundPakId) const
+{
+    ValueT result;
+    if (pakId == PAK_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 121;
+        AeAssert::gCurrentExpr = "pakId != PAK_ID_INVALID";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bad pak id"))
+            __debugbreak();
+        result.mValue = nullptr;
+        result.mPakId = PAK_ID_INVALID;
+        return result;
+    }
+
+    ae_sized_array<TPakId, 32> prereqs;
+    GetPakPrerequisites(pakId, &prereqs);
+    unsigned int index = 0;
+    if (prereqs.m_size <= 0)
+    {
+        result.mValue = nullptr;
+        result.mPakId = PAK_ID_INVALID;
+        return result;
+    }
+
+    while (true)
+    {
+        if (index >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core\\ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+
+        TPakId candidatePak = prereqs.m_elements[index];
+        if (candidatePak != PAK_ID_INVALID)
+        {
+            BankT* bank = mBankArray[(int)candidatePak];
+            if (bank != nullptr)
+            {
+                unsigned int* found = bank->mTree.Find(key);
+                if (found != nullptr)
+                {
+                    unsigned int elementIndex = *found;
+                    if (foundPakId != nullptr)
+                        *foundPakId = candidatePak;
+                    result.mPakId = candidatePak;
+                    result.mValue = bank->operator[](elementIndex);
+                    return result;
+                }
+            }
+        }
+
+        ++index;
+        if (index >= (unsigned int)prereqs.m_size)
+            break;
+    }
+
+    result.mValue = nullptr;
+    result.mPakId = PAK_ID_INVALID;
+    return result;
+}
+
+class DestructibleBank
+    : public InplaceAssetBank<Destructible,
+                              InplaceTree<InplaceString, unsigned int>> {
 };
 
 class PhysDataBank;
-class DestructibleBank;
 class DestructibleLocal;
 class PhysDataBankManager : public InplaceAssetBankSet<PhysDataBank> {
 public:
@@ -12215,6 +12406,28 @@ DestructibleBankManager::DestructibleBankManager()
 // ea: 0x004E5D40
 DestructibleBankManager::~DestructibleBankManager()
 {
+}
+
+// ea: 0x00705CD0
+IVPointer<Destructible> DestructibleBankManager::GetDestructible(
+    TPakId pak_id, const char* name)
+{
+    char oBuff[128];
+    char nm[128];
+    char dstBuff[127];
+    int nameLen = 0;
+    int outLen = 0;
+
+    AeStringSupport::CStrToAeStr(nm, &nameLen, 127, name);
+    nm[127] = 0;
+    dstBuff[0] = 0;
+    AeStringSupport::GetFileName(dstBuff, &nameLen, nm, nameLen, true);
+    AeStringSupport::AeStrCopy(oBuff, &outLen, 127, dstBuff, nameLen);
+    oBuff[127] = 0;
+    memcpy(nm, oBuff, sizeof(nm));
+
+    return Find<char*, IVPointer<Destructible>>(
+        pak_id, nm, AeType<IVPointer<Destructible>>(), nullptr);
 }
 
 // ea: 0x004E7FE0

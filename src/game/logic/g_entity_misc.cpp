@@ -1788,15 +1788,10 @@ bool IsLocalPlayer(Entity* entity)
     return EntityManager::sInst->IsLocalPlayer(entity);
 }
 
-// XModelManager / DestructibleBankManager / PhysDataBankManager accessors
-// XModelManager::GetXModel defined in tr_aeps2.cpp (render.o canonical)
-IVPointer<Destructible> DestructibleBankManager::GetDestructible(
-    TPakId pak_id, const char* name)
-{
-    (void)pak_id; (void)name;
-    IVPointer<Destructible> r = {};
-    return r;
-}
+// XModelManager / PhysDataBankManager accessors
+// XModelManager::GetXModel defined in tr_aeps2.cpp (render.o canonical).
+// DestructibleBankManager::GetDestructible is defined with the physics.o
+// bank layout beside its InplaceAssetBankSet<DestructibleBank>::Find body.
 IVPointer<PhysData> PhysDataBankManager::GetPhysData(TPakId pak_id,
                                                      const char* name)
 {
