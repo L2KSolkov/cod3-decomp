@@ -8068,8 +8068,31 @@ public:
         nalComponentPacked8EntropyFloat3Data::StateType* statePtr,
         const unsigned char** srcPtr);
 };
-NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyFloat3,
-                            nalComponentFloat3Base);
+struct nalComponentPacked16EntropyFloat3Data : nalComponentData {
+    struct SkeletonComponentData {
+        float Quantization;
+        float Bias;
+        float Scale;
+    };
+    struct AnimData {
+        float QuantizationScale;
+    };
+    struct StateType {
+        nalEntropyDecoder::nalPackedFloatDecoder<short> Decoder[3];
+    };
+    struct CacheType {
+        short x;
+        short y;
+        short z;
+    };
+};
+class nalComponentPacked16EntropyFloat3
+    : public nalComponent<nalComponentFloat3Base,
+                           nalComponentPacked16EntropyFloat3Data,
+                           nalComponentPacked16EntropyFloat3> {
+public:
+    virtual ~nalComponentPacked16EntropyFloat3();
+};
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentFloat4, nalComponentFloat4Base);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentEntropyFloat4, nalComponentFloat4Base);
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked8EntropyFloat4,
@@ -8998,6 +9021,93 @@ void nalComponent<nalComponentFloat3Base,
         if (nalComponentTrackPresent(&componentEnum, track))
             ptr = (char*)ptr + 3;
     }
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAdvanceSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const char*)skeletonComponentData + 12;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAdvanceAnimData(
+    const void*& animData) const
+{
+    animData = (const char*)animData + 4;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAlignSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAdvanceSkeletonData(
+    const void*& skeletonData) const
+{
+    (void)skeletonData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAlignSkeletonComponentData(
+    const void*& skeletonComponentData) const
+{
+    skeletonComponentData = (const void*)(((uintptr_t)skeletonComponentData + 3u)
+                                           & ~uintptr_t(3u));
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAlignAnimData(
+    const void*& animData) const
+{
+    animData = (const void*)(((uintptr_t)animData + 3u)
+                             & ~uintptr_t(3u));
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAlignAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::VirtualAdvanceAnimComponentData(
+    const void*& animComponentData) const
+{
+    (void)animComponentData;
+}
+
+template <>
+void nalComponent<nalComponentFloat3Base,
+                  nalComponentPacked16EntropyFloat3Data,
+                  nalComponentPacked16EntropyFloat3>::Process(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void*& pose, void*& extra) const
+{
+    (void)extra;
+    pose = (void*)(((uintptr_t)pose + 15u) & ~uintptr_t(15u));
+    for (int i = 0; i < componentInfo->Count; ++i)
+        pose = (char*)pose + 16;
 }
 
 template <>
