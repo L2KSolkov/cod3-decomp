@@ -8596,6 +8596,55 @@ nalComponentTrajectoryPO::~nalComponentTrajectoryPO() {}
 nalComponentEntropyTrajectoryPO::~nalComponentEntropyTrajectoryPO() {}
 nalComponentPacked16EntropyIKSpin::~nalComponentPacked16EntropyIKSpin() {}
 
+// ?ComponentConvert@nalComponentPacked16EntropyIKSpin@@SAXPAVnalIKSpin@@PBUCacheType@nalComponentPacked16EntropyIKSpinData@@PAUSkeletonData@nalComponentData@@PAUAnimData@4@PAUSkeletonComponentData@4@PAUAnimComponentData@4@@Z
+// (nal_init.o 0x864a50)
+void nalComponentPacked16EntropyIKSpin::ComponentConvert(
+    nalIKSpin* dstPtr,
+    const nalComponentPacked16EntropyIKSpinData::CacheType* srcPtr,
+    nalComponentData::SkeletonData* skeletonData,
+    nalComponentPacked16EntropyIKSpinData::AnimData* animData,
+    nalComponentPacked16EntropyIKSpinData::SkeletonComponentData*
+        skeletonComponentData,
+    nalComponentPacked16EntropyIKSpinData::AnimComponentData*
+        animComponentData)
+{
+    (void)skeletonData;
+    (void)animData;
+    nalIKSpin converted;
+    if (animComponentData->IKActive)
+    {
+        converted.TargetModelOrientation =
+            static_cast<math::Quaternion>(srcPtr->TargetOrientation);
+        const __m128 targetPosition = _mm_setr_ps(
+            (float)srcPtr->TargetPosition.x,
+            (float)srcPtr->TargetPosition.y,
+            (float)srcPtr->TargetPosition.z,
+            0.0f);
+        const __m128 positionBias = _mm_setr_ps(
+            skeletonComponentData->PositionBias,
+            skeletonComponentData->PositionBias,
+            skeletonComponentData->PositionBias,
+            0.0f);
+        const __m128 positionScale =
+            _mm_set1_ps(skeletonComponentData->PositionScale);
+        converted.TargetModelPosition = math::Dir3(
+            _mm_sub_ps(_mm_div_ps(targetPosition, positionScale),
+                       positionBias));
+        converted.Spin = srcPtr->Angle;
+        converted.Blend = 1.0f;
+    }
+    else
+    {
+        converted.TargetLocalOrientation =
+            static_cast<math::Quaternion>(srcPtr->TargetOrientation);
+        converted.UpperLocalOrientation =
+            static_cast<math::Quaternion>(srcPtr->UpperOrientation);
+        converted.JointAngle = srcPtr->Angle;
+        converted.Blend = 0.0f;
+    }
+    *dstPtr = converted;
+}
+
 static bool nalComponentTrackPresent(const nalComponentEnum* componentEnum,
                                      int track);
 
