@@ -919,3 +919,7 @@ nal_init.o	?Delete@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTraje
 nal_init.o	?Copy@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	??$FastCopy@VnalComponentEntropyTrajectoryPO@@VnalPositionOrientation@@@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z	PORTED
 nal_init.o	?ReleaseCache@?$nalComponent@VnalComponentPOBase@@VnalComponentEntropyTrajectoryPOData@@VnalComponentEntropyTrajectoryPO@@@@UBEXAAVnalComponentEnum@@AAPAX@Z	PORTED
+nal_init.o	?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z	PORTED
+nal_init.o	??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z	PORTED
+nal_init.o	?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z	PORTED
+nal_init.o	??$FastCycleTrajectory@VnalComponentRLE8Int1@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@3@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z	PORTED

@@ -20856,10 +20856,10 @@ index	status	map_line
 20855	PENDING	0002:00464f70 ??1?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QAE@XZ 00C54470 f i nal_init.o
 20856	PENDING	0002:00464f80 ??1?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QAE@XZ 00C54480 f i nal_init.o
 20857	PENDING	0002:00464f90 ??1?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QAE@XZ 00C54490 f i nal_init.o
-20858	PENDING	0002:00464fa0 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544A0 f i nal_init.o
-20859	PENDING	0002:00464fd0 ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544D0 f i nal_init.o
-20860	PENDING	0002:00465060 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54560 f i nal_init.o
-20861	PENDING	0002:00465090 ??$FastCycleTrajectory@VnalComponentRLE8Int1@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@3@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54590 f i nal_init.o
+20858	PORTED	0002:00464fa0 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentSignalCounterData@@VnalComponentSignalCounter@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544A0 f i nal_init.o
+20859	PORTED	0002:00464fd0 ??$FastCycleTrajectory@VnalComponentSignalCounter@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@nalComponentSignalCounterData@@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C544D0 f i nal_init.o
+20860	PORTED	0002:00465060 ?CycleTrajectory@?$nalComponent@VnalComponentU8Base@@VnalComponentRLE8Int1Data@@VnalComponentRLE8Int1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54560 f i nal_init.o
+20861	PORTED	0002:00465090 ??$FastCycleTrajectory@VnalComponentRLE8Int1@@EUSkeletonData@nalComponentData@@UAnimData@3@USkeletonComponentData@3@UAnimComponentData@3@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54590 f i nal_init.o
 20862	PENDING	0002:004650f0 ?CycleTrajectory@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C545F0 f i nal_init.o
 20863	PENDING	0002:00465120 ??$FastCycleTrajectory@VnalComponentEntropyFloat1@@MUSkeletonData@nalComponentData@@UAnimData@nalComponentEntropyFloat1Data@@USkeletonComponentData@5@UAnimComponentData@3@@@YAXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C54620 f i nal_init.o
 20864	PENDING	0002:004651a0 ?CycleTrajectory@?$nalComponent@VnalComponentFloat1Base@@VnalComponentPacked8Float1Data@@VnalComponentPacked8Float1@@@@UBEXAAVnalComponentEnum@@PAX1H_NPBH@Z 00C546A0 f i nal_init.o
