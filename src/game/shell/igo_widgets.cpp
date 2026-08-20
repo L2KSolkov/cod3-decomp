@@ -825,7 +825,6 @@ IGOStanceWidget::IGOStanceWidget(int client)
     cur_stance = 0;
     last_change_time = -1;
     last_stance = -1;
-    draw_flash = false;
 }
 
 // ea: 0x00598250
