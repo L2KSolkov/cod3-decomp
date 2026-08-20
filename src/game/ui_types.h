@@ -2872,6 +2872,9 @@ public:
         UIListBoxData();      // 0x5AEBB0
         void SetState(int state);  // 0x5AEBE0
         void SetText(const char* text);  // 0x5AEC70
+        void ClearText();      // 0x5AEC80
+        void ClearItem();      // 0x5AECA0
+        void operator=(const UIListBoxData& rhs); // 0x5AECD0
         const char* GetText();  // 0x5B2580
     };
     static_assert(sizeof(UIListBoxData) == 8, "UIListBoxData size mismatch");
@@ -2885,6 +2888,8 @@ public:
         bool mEnabled;                      // +0x10
 
         UIListBoxDataRow();  // 0x5B6160
+        bool IsEnabled();    // 0x5AECF0
+        void SetEnabled(bool enabled); // 0x5AED00
         void ClearItem();    // 0x5B2DB0
         void SetColumnCount(int columns);  // 0x5B6180
         void SetItemState(int column, int state);  // 0x5B2BF0
@@ -3469,6 +3474,11 @@ public:
     virtual void UpdateWidescreen(bool widescreen); // slot 2 0x577200
     void SetTutorialText(int ref, int viewport);// 0x565180
     void SetActionHint(int ref, int viewport);  // 0x565260
+    char* GetActivateKey();                     // 0x5AED10
+    const char* GetLMGKey();                    // 0x5AED20
+    int GetActionHintTimer(int viewport);       // 0x5AED40
+    void SetActionHintTimer(int time, int viewport); // 0x5AED60
+    int GetActionHintText(int viewport);        // 0x5AED80
     void Draw3DWorldSpace();                    // 0x565660
     void Draw3DScreenSpace();                   // 0x5771D0
     void UpdateSplitScreen();                   // 0x565690
@@ -3483,6 +3493,5 @@ public:
                  int client);                   // 0x5775A0
     void AddActiveGrenade(const Entity* grenade);  // 0x590AF0
     void UpdateAfterWeaponsLoaded();            // 0x59C460
-    const char* GetLMGKey();                    // 0x56DE50
 };
 static_assert(sizeof(IGOFrontEnd) == 0xA8, "IGOFrontEnd size mismatch");

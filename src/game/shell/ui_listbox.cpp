@@ -55,6 +55,26 @@ void UIListBox::UIListBoxData::SetText(const char* text)
     mText = text;
 }
 
+// ea: 0x5AEC80
+void UIListBox::UIListBoxData::ClearText()
+{
+    mText = defaultFileName;
+}
+
+// ea: 0x5AECA0
+void UIListBox::UIListBoxData::ClearItem()
+{
+    mText = defaultFileName;
+    SetState(0);
+}
+
+// ea: 0x5AECD0
+void UIListBox::UIListBoxData::operator=(const UIListBoxData& rhs)
+{
+    mState = rhs.mState;
+    mText = rhs.mText;
+}
+
 // ea: 0x5B2580
 const char* UIListBox::UIListBoxData::GetText()
 {
@@ -74,6 +94,18 @@ UIListBox::UIListBoxDataRow::UIListBoxDataRow()
     mColumns.mSize = 0;
     mColumnCount = 0;
     mEnabled = true;
+}
+
+// ea: 0x5AECF0
+bool UIListBox::UIListBoxDataRow::IsEnabled()
+{
+    return mEnabled;
+}
+
+// ea: 0x5AED00
+void UIListBox::UIListBoxDataRow::SetEnabled(bool enabled)
+{
+    mEnabled = enabled;
 }
 
 // ea: 0x5B2DB0

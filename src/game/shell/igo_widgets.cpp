@@ -5964,7 +5964,13 @@ void IGOFrontEnd::UpdateAfterWeaponsLoaded()
         hintWidget[currCl]->SetWeaponsPQs(panel, iconsPanel);
 }
 
-// ea: 0x005AED20 (inline COMDAT)
+// ea: 0x005AED10
+char* IGOFrontEnd::GetActivateKey()
+{
+    return activate_key;
+}
+
+// ea: 0x005AED20
 const char* IGOFrontEnd::GetLMGKey()
 {
     const char* result = run_key;
@@ -5972,6 +5978,27 @@ const char* IGOFrontEnd::GetLMGKey()
         return speed_key;
     return result;
 }
+
+// ea: 0x005AED40
+int IGOFrontEnd::GetActionHintTimer(int viewport)
+{
+    return actionHintTimer[viewport];
+}
+
+// ea: 0x005AED60
+void IGOFrontEnd::SetActionHintTimer(int time, int viewport)
+{
+    actionHintTimer[viewport] = time;
+}
+
+// ea: 0x005AED80
+int IGOFrontEnd::GetActionHintText(int viewport)
+{
+    return actionHintText[viewport];
+}
+
+// ea: 0x005AED20 (inline COMDAT)
+// GetLMGKey is defined above with its shell.o address.
 
 // ============================================================================
 // IGOCompassWidget
