@@ -205,6 +205,11 @@ static_assert(sizeof(PanelFileUser) == 4, "PanelFileUser size mismatch");
 // ============================================================================
 class PanelAnimObject {
 public:
+    PanelAnimObject()
+    {
+        flags = 4;
+        visibility = 1.0f;
+    }
     virtual ~PanelAnimObject() {}            // +0x00 (vfptr)
     float visibility;                        // +0x04
     float z_value;                           // +0x08
