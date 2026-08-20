@@ -1222,6 +1222,14 @@ void DialogMenuSystem::AddOption(const char* t, bool (*responseFunc)(int))
     ((DialogMenu*)menus[v4 != 0])->AddOption(t, responseFunc);
 }
 
+// ea: 0x005B56C0
+void DialogMenuSystem::CloseOnDelay(int delaySeconds,
+                                    void (*responseFunc)(int))
+{
+    int v4 = GetActiveMenu();
+    ((DialogMenu*)menus[v4 != 0])->CloseOnDelay(delaySeconds, responseFunc);
+}
+
 // ea: 0x004E2A50
 void DialogMenuSystem::Reformat(bool vertical)
 {

@@ -1793,6 +1793,8 @@ public:
     void HighlightOption(int index);         // 0x57F1A0
     void AddOption(const char* t,
                    bool (*responseFunc)(int));  // 0x5B5670
+    void CloseOnDelay(int delaySeconds,
+                      void (*responseFunc)(int)); // 0x5B56C0
     void Reformat(bool vertical);            // 0x4E2A50
 private:
     void CountDown(float time_inc);          // 0x586470
@@ -2966,12 +2968,15 @@ public:
         UIListBoxItem();  // 0x5B4D50
         void SetState(int state);       // 0x5B1E30
         void SetStateCount(int count);  // 0x5B4DC0
+        void SetItem(FEText* text, int state);       // 0x5B4E60
+        void SetItem(PanelQuad* quad, int state);    // 0x5B4E90
         void SetText(const char* text); // 0x5813A0
         void SetSelected(bool selected, bool flashing);  // 0x581460
         void SetColor(color32 unselectedColor,
                       color32 selectedcolor);  // 0x581580
         void SetEnabled(bool enabled);  // 0x581650
         void ClearText();               // 0x5B4EC0
+        void ClearItem();               // 0x5B4FC0
         void RemoveItems();             // 0x5B2070
         color32 GetColor();             // 0x5B22B0
         color32 GetUnselectedColor();   // 0x5B23D0

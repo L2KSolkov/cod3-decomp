@@ -294,6 +294,20 @@ void UIListBox::UIListBoxItem::SetStateCount(int count)
     mState = 0;
 }
 
+// ea: 0x5B4E60
+void UIListBox::UIListBoxItem::SetItem(FEText* text, int state)
+{
+    SetObject(text, state);
+    mType = kTypeText;
+}
+
+// ea: 0x5B4E90
+void UIListBox::UIListBoxItem::SetItem(PanelQuad* quad, int state)
+{
+    SetObject(quad, state);
+    mType = kTypeQuad;
+}
+
 // ea: 0x5813A0
 void UIListBox::UIListBoxItem::SetText(const char* text)
 {
@@ -352,12 +366,27 @@ void UIListBox::UIListBoxItem::SetEnabled(bool enabled)
 // ea: 0x5B4EC0
 void UIListBox::UIListBoxItem::ClearText()
 {
-    if (mObjects.mSize > 0 && mObjects.mElements[0] != nullptr
-        && mType == kTypeText)
+    if (mObjects.mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    if (mObjects.mElements[0] != nullptr && mType == kTypeText)
     {
         ((FEText*)mObjects.mElements[0])->SetText(defaultFileName);
     }
     SetEnabled(true);
+}
+
+// ea: 0x5B4FC0
+void UIListBox::UIListBoxItem::ClearItem()
+{
+    ClearText();
+    SetState(0);
 }
 
 // ea: 0x5B2070
