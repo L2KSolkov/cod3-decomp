@@ -817,7 +817,18 @@ const char* nfdMediaStateText(nfdMediaState state)
     default: return "NFD_MEDIA_STATE_???";
     }
 }
-const char* nfdIoStateText(nfdIoState state) { return state == NFD_IO_STATE_IDLE ? "NFD_IO_STATE_IDLE" : "NFD_IO_STATE_???"; }
+const char* nfdIoStateText(nfdIoState state)
+{
+    switch (state) {
+    case NFD_IO_STATE_IDLE: return "NFD_IO_STATE_IDLE";
+    case NFD_IO_STATE_WORKING: return "NFD_IO_STATE_WORKING";
+    case NFD_IO_STATE_WORKDONE: return "NFD_IO_STATE_WORKDONE";
+    case NFD_IO_STATE_CANCELING: return "NFD_IO_STATE_CANCELING";
+    case NFD_IO_STATE_CANCELED: return "NFD_IO_STATE_CANCELED";
+    case NFD_IO_STATE_ERROR: return "NFD_IO_STATE_ERROR";
+    default: return "NFD_IO_STATE_???";
+    }
+}
 
 // ea: 0x0041EE20
 void nflSetStreamPriority(nflStreamID streamID, nflPriority priority);
