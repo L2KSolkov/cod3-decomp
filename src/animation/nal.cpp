@@ -7998,6 +7998,7 @@ void nalComponentRLE8Int1::VirtualAlignAnimComponentData(
     struct NAME##Data : nalComponentData {}; \
     class NAME : public nalComponent<BASE, NAME##Data, NAME> { \
     public: \
+        NAME(nalRegisterKey key); \
         virtual ~NAME(); \
     }
 
@@ -8119,6 +8120,7 @@ class nalComponentEntropyFloat1
                            nalComponentEntropyFloat1Data,
                            nalComponentEntropyFloat1> {
 public:
+    nalComponentEntropyFloat1(nalRegisterKey key);
     virtual ~nalComponentEntropyFloat1();
 };
 
@@ -8133,6 +8135,7 @@ class nalComponentPacked8Float1
                            nalComponentPacked8Float1Data,
                            nalComponentPacked8Float1> {
 public:
+    nalComponentPacked8Float1(nalRegisterKey key);
     virtual ~nalComponentPacked8Float1();
 };
 NAL_DECLARE_EMPTY_COMPONENT(nalComponentFloat3, nalComponentFloat3Base);
@@ -8152,6 +8155,7 @@ class nalComponentEntropyFloat3
                            nalComponentEntropyFloat3Data,
                            nalComponentEntropyFloat3> {
 public:
+    nalComponentEntropyFloat3(nalRegisterKey key);
     virtual ~nalComponentEntropyFloat3();
     static void ComponentSetupPartialDecode(
         nalComponentEntropyFloat3Data::StateType* statePtr,
@@ -8180,6 +8184,7 @@ class nalComponentPacked8EntropyFloat3
                            nalComponentPacked8EntropyFloat3Data,
                            nalComponentPacked8EntropyFloat3> {
 public:
+    nalComponentPacked8EntropyFloat3(nalRegisterKey key);
     virtual ~nalComponentPacked8EntropyFloat3();
     static void ComponentSetupPartialDecode(
         nalComponentPacked8EntropyFloat3Data::StateType* statePtr,
@@ -8208,6 +8213,7 @@ class nalComponentPacked16EntropyFloat3
                            nalComponentPacked16EntropyFloat3Data,
                            nalComponentPacked16EntropyFloat3> {
 public:
+    nalComponentPacked16EntropyFloat3(nalRegisterKey key);
     virtual ~nalComponentPacked16EntropyFloat3();
     static void ComponentSetupPartialDecode(
         nalComponentPacked16EntropyFloat3Data::StateType* statePtr,
@@ -8230,6 +8236,7 @@ class nalComponentEntropyFloat4
                            nalComponentEntropyFloat4Data,
                            nalComponentEntropyFloat4> {
 public:
+    nalComponentEntropyFloat4(nalRegisterKey key);
     virtual ~nalComponentEntropyFloat4();
     static void ComponentSetupPartialDecode(
         nalComponentEntropyFloat4Data::StateType* statePtr,
@@ -8279,6 +8286,7 @@ class nalComponentPacked8EntropyFloat4
                            nalComponentPacked8EntropyFloat4Data,
                            nalComponentPacked8EntropyFloat4> {
 public:
+    nalComponentPacked8EntropyFloat4(nalRegisterKey key);
     virtual ~nalComponentPacked8EntropyFloat4();
     static void ComponentSetupPartialDecode(
         nalComponentPacked8EntropyFloat4Data::StateType* statePtr,
@@ -8328,6 +8336,7 @@ class nalComponentPacked16EntropyFloat4
                            nalComponentPacked16EntropyFloat4Data,
                            nalComponentPacked16EntropyFloat4> {
 public:
+    nalComponentPacked16EntropyFloat4(nalRegisterKey key);
     virtual ~nalComponentPacked16EntropyFloat4();
     static void ComponentSetupPartialDecode(
         nalComponentPacked16EntropyFloat4Data::StateType* statePtr,
@@ -8366,6 +8375,7 @@ class nalComponentTrajectoryPO
                            nalComponentTrajectoryPOData,
                            nalComponentTrajectoryPO> {
 public:
+    nalComponentTrajectoryPO(nalRegisterKey key);
     virtual ~nalComponentTrajectoryPO();
     static void ComponentCycleTrajectory(
         nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
@@ -8380,6 +8390,7 @@ class nalComponentEntropyTrajectoryPO
                            nalComponentEntropyTrajectoryPOData,
                            nalComponentEntropyTrajectoryPO> {
 public:
+    nalComponentEntropyTrajectoryPO(nalRegisterKey key);
     virtual ~nalComponentEntropyTrajectoryPO();
     static void ComponentCycleTrajectory(
         nalPositionOrientation* ptr, nalPositionOrientation* prev, int cycle,
@@ -8395,6 +8406,81 @@ NAL_DECLARE_EMPTY_COMPONENT(nalComponentPacked16EntropyIKSpin,
                             nalComponentIKSpinBase);
 
 #undef NAL_DECLARE_EMPTY_COMPONENT
+
+#define NAL_DEFINE_REGISTER_COMPONENT(NAME, BASE, DATA, LINE) \
+    NAME::NAME(nalRegisterKey key) \
+        : nalComponent<BASE, DATA, NAME>() \
+    { \
+        if (key == NAL_REGISTER_KEY) \
+            return; \
+        if (_tlAssert( \
+                "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic_component.h", \
+                LINE, "key == NAL_REGISTER_KEY", \
+                "this function is for internal use only")) \
+        { \
+            __debugbreak(); \
+        } \
+    }
+
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentEntropyFloat1,
+                              nalComponentFloat1Base,
+                              nalComponentEntropyFloat1Data, 1002)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked8Float1,
+                              nalComponentFloat1Base,
+                              nalComponentPacked8Float1Data, 1066)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentFloat3,
+                              nalComponentFloat3Base,
+                              nalComponentFloat3Data, 1166)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentEntropyFloat3,
+                              nalComponentFloat3Base,
+                              nalComponentEntropyFloat3Data, 1219)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked8EntropyFloat3,
+                              nalComponentFloat3Base,
+                              nalComponentPacked8EntropyFloat3Data, 1321)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked16EntropyFloat3,
+                              nalComponentFloat3Base,
+                              nalComponentPacked16EntropyFloat3Data, 1424)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentFloat4,
+                              nalComponentFloat4Base,
+                              nalComponentFloat4Data, 1547)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentEntropyFloat4,
+                              nalComponentFloat4Base,
+                              nalComponentEntropyFloat4Data, 1600)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked8EntropyFloat4,
+                              nalComponentFloat4Base,
+                              nalComponentPacked8EntropyFloat4Data, 1718)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked16EntropyFloat4,
+                              nalComponentFloat4Base,
+                              nalComponentPacked16EntropyFloat4Data, 1837)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentQuat,
+                              nalComponentQuatBase,
+                              nalComponentQuatData, 2016)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentEntropyQuat,
+                              nalComponentQuatBase,
+                              nalComponentEntropyQuatData, 2069)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked8EntropyQuat,
+                              nalComponentQuatBase,
+                              nalComponentPacked8EntropyQuatData, 2133)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked16EntropyQuat,
+                              nalComponentQuatBase,
+                              nalComponentPacked16EntropyQuatData, 2198)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPO,
+                              nalComponentPOBase,
+                              nalComponentPOData, 2340)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentEntropyPO,
+                              nalComponentPOBase,
+                              nalComponentEntropyPOData, 2394)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentTrajectoryPO,
+                              nalComponentPOBase,
+                              nalComponentTrajectoryPOData, 2513)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentEntropyTrajectoryPO,
+                              nalComponentPOBase,
+                              nalComponentEntropyTrajectoryPOData, 2604)
+NAL_DEFINE_REGISTER_COMPONENT(nalComponentPacked16EntropyIKSpin,
+                              nalComponentIKSpinBase,
+                              nalComponentPacked16EntropyIKSpinData, 2826)
+
+#undef NAL_DEFINE_REGISTER_COMPONENT
 
 nalComponentEntropyFloat1::~nalComponentEntropyFloat1() {}
 nalComponentPacked8Float1::~nalComponentPacked8Float1() {}
