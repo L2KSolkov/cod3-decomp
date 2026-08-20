@@ -445,3 +445,16 @@ nal_init.o	?Key@Instance@?$tlSkipList@VnalAnimFile@@VtlFixedString@@@@QBEABVtlFi
 nal_init.o	?Key@Instance@?$tlSkipList@V?$nalAnimClass@VnalAnyPose@@@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
 nal_init.o	?Key@Instance@?$tlSkipList@VnalSceneAnim@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
 nal_init.o	?Key@Instance@?$tlSkipList@VnalBaseSkeleton@@VtlFixedString@@@@QBEABVtlFixedString@@XZ	VERIFIED
+nal_init.o	??0nalGenericPose@nalGeneric@@IAE@XZ	VERIFIED
+nal_init.o	?CheckVersion@nalGenericSkeleton@nalGeneric@@MBE_NXZ	VERIFIED
+nal_init.o	?VirtualGetLODCount@nalGenericSkeleton@nalGeneric@@MBEIXZ	VERIFIED
+nal_init.o	?VirtualGetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@MBEIH@Z	VERIFIED
+nal_init.o	?VirtualGetBoneMatrices@nalGenericSkeleton@nalGeneric@@MBEXABVnalBasePose@@PAVnalMatrix4x4@@H@Z	VERIFIED
+nal_init.o	?VirtualGetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@MBEXABVnalBasePose@@AAVnalPositionOrientation@@@Z	VERIFIED
+nal_init.o	?VirtualGetPose@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@PBVnalMatrix4x4@@PAV4@ABV3@H@Z	VERIFIED
+nal_init.o	?VirtualGetDefaultPose@nalGenericSkeleton@nalGeneric@@MBEABVnalBasePose@@XZ	VERIFIED
+nal_init.o	?VirtualCreatePose@nalGenericSkeleton@nalGeneric@@MBEPAVnalBasePose@@XZ	VERIFIED
+nal_init.o	?VirtualCopyPose@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@ABV3@@Z	VERIFIED
+nal_init.o	?VirtualBlend@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@MABV3@1@Z	VERIFIED
+nal_init.o	?VirtualDestroyPose@nalGenericSkeleton@nalGeneric@@MBEXPAVnalBasePose@@@Z	VERIFIED
+nal_init.o	?VirtualCreateInstance@nalGenericAnim@nalGeneric@@MAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z	VERIFIED

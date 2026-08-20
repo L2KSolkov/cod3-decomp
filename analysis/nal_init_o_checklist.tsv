@@ -53,25 +53,25 @@ index	status	map_line
 52	SKIPPED	0002:00454970 ??_EnalBaseSkeleton@@UAEPAXI@Z 00C43E70 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 53	SKIPPED	0002:004549a0 ??_GnalInitListAnimType@@UAEPAXI@Z 00C43EA0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 54	SKIPPED	0002:004549a0 ??_EnalInitListAnimType@@UAEPAXI@Z 00C43EA0 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-55	PENDING	0002:004549d0 ??0nalGenericPose@nalGeneric@@IAE@XZ 00C43ED0 f i nal_init.o
+55	VERIFIED	0002:004549d0 ??0nalGenericPose@nalGeneric@@IAE@XZ 00C43ED0 f i nal_init.o
 56	PENDING	0002:004549e0 ??0nalGenericSkeleton@nalGeneric@@QAE@W4nalRegisterKey@@@Z 00C43EE0 f i nal_init.o
-57	PENDING	0002:00454a70 ?CheckVersion@nalGenericSkeleton@nalGeneric@@MBE_NXZ 00C43F70 f i nal_init.o
-58	PENDING	0002:00454a80 ?VirtualGetLODCount@nalGenericSkeleton@nalGeneric@@MBEIXZ 00C43F80 f i nal_init.o
-59	PENDING	0002:00454a90 ?VirtualGetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@MBEIH@Z 00C43F90 f i nal_init.o
-60	PENDING	0002:00454ab0 ?VirtualGetBoneMatrices@nalGenericSkeleton@nalGeneric@@MBEXABVnalBasePose@@PAVnalMatrix4x4@@H@Z 00C43FB0 f i nal_init.o
-61	PENDING	0002:00454ac0 ?VirtualGetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@MBEXABVnalBasePose@@AAVnalPositionOrientation@@@Z 00C43FC0 f i nal_init.o
-62	PENDING	0002:00454ad0 ?VirtualGetPose@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@PBVnalMatrix4x4@@PAV4@ABV3@H@Z 00C43FD0 f i nal_init.o
-63	PENDING	0002:00454ae0 ?VirtualGetDefaultPose@nalGenericSkeleton@nalGeneric@@MBEABVnalBasePose@@XZ 00C43FE0 f i nal_init.o
-64	PENDING	0002:00454af0 ?VirtualCreatePose@nalGenericSkeleton@nalGeneric@@MBEPAVnalBasePose@@XZ 00C43FF0 f i nal_init.o
+57	VERIFIED	0002:00454a70 ?CheckVersion@nalGenericSkeleton@nalGeneric@@MBE_NXZ 00C43F70 f i nal_init.o
+58	VERIFIED	0002:00454a80 ?VirtualGetLODCount@nalGenericSkeleton@nalGeneric@@MBEIXZ 00C43F80 f i nal_init.o
+59	VERIFIED	0002:00454a90 ?VirtualGetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@MBEIH@Z 00C43F90 f i nal_init.o
+60	VERIFIED	0002:00454ab0 ?VirtualGetBoneMatrices@nalGenericSkeleton@nalGeneric@@MBEXABVnalBasePose@@PAVnalMatrix4x4@@H@Z 00C43FB0 f i nal_init.o
+61	VERIFIED	0002:00454ac0 ?VirtualGetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@MBEXABVnalBasePose@@AAVnalPositionOrientation@@@Z 00C43FC0 f i nal_init.o
+62	VERIFIED	0002:00454ad0 ?VirtualGetPose@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@PBVnalMatrix4x4@@PAV4@ABV3@H@Z 00C43FD0 f i nal_init.o
+63	VERIFIED	0002:00454ae0 ?VirtualGetDefaultPose@nalGenericSkeleton@nalGeneric@@MBEABVnalBasePose@@XZ 00C43FE0 f i nal_init.o
+64	VERIFIED	0002:00454af0 ?VirtualCreatePose@nalGenericSkeleton@nalGeneric@@MBEPAVnalBasePose@@XZ 00C43FF0 f i nal_init.o
 65	VERIFIED	0002:00454b00 ?CreatePose@nalGenericSkeleton@nalGeneric@@QBEPAVnalGenericPose@2@XZ 00C44000 f i nal_init.o
-66	PENDING	0002:00454b30 ?VirtualCopyPose@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@ABV3@@Z 00C44030 f i nal_init.o
-67	PENDING	0002:00454b50 ?VirtualBlend@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@MABV3@1@Z 00C44050 f i nal_init.o
-68	PENDING	0002:00454b70 ?VirtualDestroyPose@nalGenericSkeleton@nalGeneric@@MBEXPAVnalBasePose@@@Z 00C44070 f i nal_init.o
+66	VERIFIED	0002:00454b30 ?VirtualCopyPose@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@ABV3@@Z 00C44030 f i nal_init.o
+67	VERIFIED	0002:00454b50 ?VirtualBlend@nalGenericSkeleton@nalGeneric@@MBEXAAVnalBasePose@@MABV3@1@Z 00C44050 f i nal_init.o
+68	VERIFIED	0002:00454b70 ?VirtualDestroyPose@nalGenericSkeleton@nalGeneric@@MBEXPAVnalBasePose@@@Z 00C44070 f i nal_init.o
 69	SKIPPED	0002:00454b90 ??_GnalGenericSkeleton@nalGeneric@@UAEPAXI@Z 00C44090 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 70	SKIPPED	0002:00454b90 ??_EnalGenericSkeleton@nalGeneric@@UAEPAXI@Z 00C44090 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 71	VERIFIED	0002:00454bc0 ??0nalGenericAnim@nalGeneric@@QAE@W4nalRegisterKey@@@Z 00C440C0 f i nal_init.o
 72	VERIFIED	0002:00454c20 ?CheckVersion@nalGenericAnim@nalGeneric@@UBE_NXZ 00C44120 f i nal_init.o
-73	PENDING	0002:00454c30 ?VirtualCreateInstance@nalGenericAnim@nalGeneric@@MAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 00C44130 f i nal_init.o
+73	VERIFIED	0002:00454c30 ?VirtualCreateInstance@nalGenericAnim@nalGeneric@@MAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@@Z 00C44130 f i nal_init.o
 74	SKIPPED	0002:00454c40 ??_EnalGenericAnim@nalGeneric@@UAEPAXI@Z 00C44140 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 75	SKIPPED	0002:00454c40 ??_GnalGenericAnim@nalGeneric@@UAEPAXI@Z 00C44140 f i nal_init.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 76	PENDING	0002:00454c70 ??1nalComponentSignalCounter@@UAE@XZ 00C44170 f i nal_init.o
