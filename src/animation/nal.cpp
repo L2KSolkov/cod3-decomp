@@ -13804,6 +13804,22 @@ void FastCopy<nalComponentEntropyFloat1, float>(
     *srcPtr = (const char*)*srcPtr + size;
 }
 
+// ??$FastCopy@VnalComponentPacked8Float1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
+// (nal_init.o 0x857e40)
+template <>
+void FastCopy<nalComponentPacked8Float1, float>(
+    const nalGeneric::nalComponentInfo* componentInfo,
+    void** dstPtr, const void** srcPtr)
+{
+    *dstPtr = (void*)(((uintptr_t)*dstPtr + 3u) & ~uintptr_t(3u));
+    *srcPtr = (const void*)(((uintptr_t)*srcPtr + 3u)
+                            & ~uintptr_t(3u));
+    const unsigned int size = 4u * componentInfo->Count;
+    std::memcpy(*dstPtr, *srcPtr, size);
+    *dstPtr = (char*)*dstPtr + size;
+    *srcPtr = (const char*)*srcPtr + size;
+}
+
 // ?Copy@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
 // (nal_init.o 0x857570)
 template <>
