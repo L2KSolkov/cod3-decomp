@@ -92,6 +92,23 @@ static void Path_UpdateBadPlaceCountForLink(PathNodes::PathLink* pLink,
 // PathNodeMgr
 // ============================================================================
 
+// ea: 0x0077BD20
+void Actor_SetSubState(actor_s* pSelf, ai_substate_e eSubState)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\actor.h";
+        AeAssert::gCurrentLine = 1233;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    pSelf->eSubState = eSubState;
+    pSelf->iSubStateTime = level.time + 1;
+    pSelf->changeYawTime = level.time + 501;
+}
+
 // ea: 0x0077F340
 PathNodeMgr::PathNodeMgr()
     : AssetBankSet()
