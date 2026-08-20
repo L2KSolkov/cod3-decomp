@@ -560,6 +560,9 @@ public:
     static const int GetMaxPlayersCount();  // ?GetMaxPlayersCount@MPUIInterface@@SA?BHXZ
     static const int GetRespawnTimeCount(); // ?GetRespawnTimeCount@MPUIInterface@@SA?BHXZ
     static const int GetReturnMenu();       // ?GetReturnMenu@MPUIInterface@@SA?BHXZ
+    static void SetReturnMenu(int menu);    // 0x5AF090
+    static void SetCableDisconnect(bool disconnect); // 0x5AF0A0
+    static sServerCreateParams* GetServerParams();   // 0x5AF0B0
     static const char* GetGameTypeString(unsigned long gameType);       // ?GetGameTypeString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F770)
     static const char* GetGameTypeShortString(unsigned long gameType);  // ?GetGameTypeShortString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F7D0)
     static const char* GetMapRotationString(unsigned long mapRotation); // ?GetMapRotationString@MPUIInterface@@SAPBDK@Z (mp.o 0x72F8A0)

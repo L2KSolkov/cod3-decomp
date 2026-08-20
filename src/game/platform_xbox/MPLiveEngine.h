@@ -289,6 +289,10 @@ namespace knet {
 class sTime {
 public:
     int mTime;
+
+    sTime(int ms);
+    sTime operator-(const sTime& t) const;
+    float getSeconds() const;
 };
 }
 }

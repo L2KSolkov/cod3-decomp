@@ -4866,6 +4866,24 @@ const int MPUIInterface::GetReturnMenu()
     return mReturnMenu;
 }
 
+// ea: 0x005AF090
+void MPUIInterface::SetReturnMenu(int menu)
+{
+    mReturnMenu = menu;
+}
+
+// ea: 0x005AF0A0
+void MPUIInterface::SetCableDisconnect(bool disconnect)
+{
+    mCableDisconnect = disconnect;
+}
+
+// ea: 0x005AF0B0
+sServerCreateParams* MPUIInterface::GetServerParams()
+{
+    return &mServerParams;
+}
+
 void MPUIInterface::GameListingEnd()
 {
 }

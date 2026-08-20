@@ -22,6 +22,21 @@ MPUIInterface::EGameConnectionType MPUIInterface::mGameConnectionType =
     MPUIInterface::kGameConnectionTypeOnline;  // binary data init @ 0xE36E40 = 1 (Online)
 bool MPUIInterface::mInSession = false;    // ?mInSession@MPUIInterface@@1_NA
 
+// ea: 0x005AF040
+kuju::knet::sTime::sTime(int ms) : mTime(ms) {}
+
+// ea: 0x005AF060
+kuju::knet::sTime kuju::knet::sTime::operator-(const sTime& t) const
+{
+    return sTime(mTime - t.mTime);
+}
+
+// ea: 0x005AF080
+float kuju::knet::sTime::getSeconds() const
+{
+    return mTime * 0.001f;
+}
+
 // ea: 0x0072F480 (mp.o)
 bool MPUIInterface::IsOnlineGame()  // ?IsOnlineGame@MPUIInterface@@SA_NXZ
 {
