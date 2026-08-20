@@ -14686,7 +14686,7 @@ index	ida_ea	va	name	lib	obj	class	source_cpp	flags	is_inline	aggregate_status	s
 14685	0x0077C330	0x00B6B830	?Actor_Cover_FindCoverNearPoint@@YI?BHPAUactor_s@@QBM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14686	0x0077C340	0x00B6B840	?Actor_Cover_FindCoverFromPoint@@YI?BHPAUactor_s@@QBMM@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14687	0x0077C350	0x00B6B850	?Actor_Cover_IsValidCover@@YI?BHPAUactor_s@@PAUPathNode@PathNodes@@_N@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
-14688	0x0077C360	0x00B6B860	?Actor_Cover_FindNewCover@@YI?BHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	NO	NO	PORT_STATUS_ONLY
+14688	0x0077C360	0x00B6B860	?Actor_Cover_FindNewCover@@YI?BHPAUactor_s@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14689	0x0077C370	0x00B6B870	?Actor_PreThink@@YIXPAUactor_s@@H@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14690	0x0077C380	0x00B6B880	?Actor_PostThink@@YIXPAUactor_s@@H@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED
 14691	0x0077C390	0x00B6B890	?Actor_IsStateOnStack@@YIHPAUactor_s@@W4ai_state_e@@@Z		mp_actors.o	game		f	0	COMPLETE	PROGRESS object aggregate	YES	YES	VERIFIED

@@ -456,7 +456,7 @@
 }
 
 // ea: 0x0077C360  (?Actor_Cover_FindNewCover@@YI?BHPAUactor_s@@@Z)
-    int __fastcall Actor_Cover_FindNewCover(actor_s*)
+    const int __fastcall Actor_Cover_FindNewCover(actor_s*)
 {
     return 0;
 }
