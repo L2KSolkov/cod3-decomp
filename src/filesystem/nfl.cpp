@@ -1550,8 +1550,38 @@ nflStreamID nflCreateStream(const nflStreamParams* params)
 void nflSetStreamPriority(nflStreamID streamID, nflPriority priority)
 {
     if (streamID == NFL_STREAM_ID_DEFAULT) streamID = s_defaultStreamID;
-    nfsStream* stream = nfsGetStream(streamID);
-    if (stream != nullptr) stream->priority = priority;
+    const int streamIndex = s_streamPool.slots == nullptr
+        ? -1 : txSlotIndex(&s_streamPool, (txSlot)streamID);
+    if (streamIndex == -1)
+        return;
+    nfsStream* stream = &s_streams[streamIndex];
+    if (stream == nullptr)
+        return;
+    if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
+        nfsLock();
+    stream->priority = priority;
+    txSlot requestSlot = txSlotFirst(&s_requestPool);
+    if (requestSlot != TX_SLOT_INVALID) {
+        for (;;) {
+            const txSlot currentSlot = requestSlot;
+            requestSlot = txSlotNext(&s_requestPool, currentSlot);
+            const int requestIndex = txSlotIndex(&s_requestPool, currentSlot);
+            if (requestIndex == -1)
+                break;
+            nfsRequest* request = &s_requests[requestIndex];
+            if (request == nullptr) {
+                txAssertFailed(nullptr, "request", "nflSetStreamPriority",
+                               "c:/cod/code/tl/nfl/src/nfl_system.cpp", 447);
+            } else if (request->streamID == streamID) {
+                request->priority = (static_cast<unsigned>(priority) << 8)
+                                  | request->priority;
+            }
+            if (requestSlot == TX_SLOT_INVALID)
+                break;
+        }
+    }
+    if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
+        nfsUnlock();
 }
 // ea: 0x0041F090
 nflPriority nflGetStreamPriority(nflStreamID streamID)
