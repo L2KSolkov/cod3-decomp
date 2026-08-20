@@ -12275,6 +12275,46 @@ void nalComponent<nalComponentQuatBase,
         pose = (char*)pose + 16;
 }
 
+// ?ConvertPerfect@?$nalComponent@VnalComponentQuatBase@@VnalComponentPacked8EntropyQuatData@@VnalComponentPacked8EntropyQuat@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z
+// (nal_init.o 0x860ac0)
+template <>
+void nalComponent<nalComponentQuatBase,
+                  nalComponentPacked8EntropyQuatData,
+                  nalComponentPacked8EntropyQuat>::ConvertPerfect(
+    nalComponentEnum& componentEnum, void* dst, const void*& src,
+    const void* def, const int* offsetTable) const
+{
+    (void)def;
+    const void** customAnimData = componentEnum.CustomAnimData;
+    const void** customSkeletonData = componentEnum.CustomSkeletonData;
+    *customAnimData =
+        (const void*)((((uintptr_t)*customAnimData + 3u)
+                       & ~uintptr_t(3u)) + 4u);
+    *customSkeletonData =
+        (const void*)(((uintptr_t)*customSkeletonData + 3u)
+                      & ~uintptr_t(3u));
+    const nalEntropyDecoder::nalQuaternion8* current =
+        (const nalEntropyDecoder::nalQuaternion8*)src;
+    unsigned char* skeletonData = (unsigned char*)*customSkeletonData;
+    unsigned char* animComponentData = (unsigned char*)*customAnimData;
+    const nalGeneric::nalComponentInfo* componentInfo =
+        componentEnum.ComponentInfo;
+    for (int i = 0; i < componentInfo->Count; ++i)
+    {
+        const int track = componentInfo->StartIndex + i;
+        const math::Quaternion value = (math::Quaternion)*current;
+        std::memcpy((char*)dst + offsetTable[track], &value,
+                    sizeof(math::Quaternion));
+        ++current;
+        skeletonData += sizeof(float);
+        ++animComponentData;
+        componentInfo = componentEnum.ComponentInfo;
+    }
+    src = current;
+    *customSkeletonData = skeletonData;
+    *customAnimData = animComponentData;
+}
+
 // ea: 0x00860770
 template <>
 void nalComponent<nalComponentQuatBase,
