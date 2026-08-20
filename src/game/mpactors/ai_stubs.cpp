@@ -444,7 +444,7 @@
 }
 
 // ea: 0x0077C340  (?Actor_Cover_FindCoverFromPoint@@YI?BHPAUactor_s@@QBMM@Z)
-    int __fastcall Actor_Cover_FindCoverFromPoint(actor_s*, const float* const, float)
+    const int __fastcall Actor_Cover_FindCoverFromPoint(actor_s*, const float* const, float)
 {
     return 0;
 }
