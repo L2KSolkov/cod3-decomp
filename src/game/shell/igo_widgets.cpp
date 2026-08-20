@@ -473,6 +473,11 @@ IGOHealthWidget::IGOHealthWidget(int client)
     draw_flash = false;
 }
 
+IGOHealthWidget::~IGOHealthWidget()
+{
+    delete flash;
+}
+
 // ea: 0x00598330
 void IGOHealthWidget::Init(PanelFile* panel)
 {
@@ -670,6 +675,11 @@ IGOVoteWidget::IGOVoteWidget(int client)
     force_appear = false;
     mClient = client;
     vote = nullptr;
+}
+
+IGOVoteWidget::~IGOVoteWidget()
+{
+    delete vote;
 }
 
 // ea: 0x00598D70
@@ -970,6 +980,13 @@ IGORankWidget::IGORankWidget(int client)
     friendlyRanks[2] = nullptr;
 }
 
+IGORankWidget::~IGORankWidget()
+{
+    delete friendlyRanks[0];
+    delete friendlyRanks[1];
+    delete friendlyRanks[2];
+}
+
 // ea: 0x00598D00
 void IGORankWidget::Init(PanelFile* panel)
 {
@@ -1205,6 +1222,12 @@ IGOAmmoWidget::IGOAmmoWidget(int client)
     clipAmmo = nullptr;
     totalAmmo = nullptr;
     draw_time = 0.0f;
+}
+
+IGOAmmoWidget::~IGOAmmoWidget()
+{
+    delete clipAmmo;
+    delete totalAmmo;
 }
 
 // ea: 0x00598660
@@ -2344,6 +2367,13 @@ IGOSpecialWeaponWidget::IGOSpecialWeaponWidget(int client)
     scale = 1.0f;
 }
 
+IGOSpecialWeaponWidget::~IGOSpecialWeaponWidget()
+{
+    delete artillery;
+    delete health;
+    delete ammo;
+}
+
 // ea: 0x00598DE0
 void IGOSpecialWeaponWidget::Init(PanelFile* panel)
 {
@@ -3362,6 +3392,11 @@ IGOHintWidget::IGOHintWidget(int client)
     wide_weapon = false;
     current_icon = -1;
     last_icon = -2;
+}
+
+IGOHintWidget::~IGOHintWidget()
+{
+    delete text;
 }
 
 // ea: 0x0059A2E0
@@ -6003,6 +6038,16 @@ int IGOFrontEnd::GetActionHintText(int viewport)
 // ============================================================================
 // IGOCompassWidget
 // ============================================================================
+
+IGOCompassWidget::IGOFriendly::IGOFriendly()
+{
+    draw = false;
+}
+
+IGOCompassWidget::IGOEnemy::IGOEnemy()
+{
+    draw = false;
+}
 
 // ea: 0x005783F0
 IGOCompassWidget::IGOCompassWidget(int client)

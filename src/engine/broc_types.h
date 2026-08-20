@@ -280,6 +280,7 @@ public:
     int   rfind(const char* txt) const;
     string& remove_leading(const char* chars);
     string& remove_trailing(const char* chars);
+    string& remove_surrounding_whitespace();
     void  set_char(unsigned int idx, char c);
     string substr(unsigned int start, unsigned int count) const;
 

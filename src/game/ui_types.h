@@ -2247,6 +2247,7 @@ public:
     bool       draw_flash;   // +0x24
 
     IGOHealthWidget(int client);  // 0x565EA0
+    virtual ~IGOHealthWidget();
     virtual void Init(PanelFile* panel);              // 0x598330
     virtual void Update(float time_inc);              // 0x5826B0
     virtual void Draw();                              // 0x565EE0
@@ -2285,6 +2286,7 @@ public:
     PanelQuad* vote;  // +0x0C
 
     IGOVoteWidget(int client);  // 0x5677A0
+    virtual ~IGOVoteWidget();
     virtual void Init(PanelFile* panel);              // 0x598D70
     virtual void Update(float time_inc);              // 0x5677D0
     virtual void Draw();                              // 0x5677F0
@@ -2355,6 +2357,7 @@ public:
     int        timeForNormalSize; // +0x1C
 
     IGORankWidget(int client);  // 0x567630
+    virtual ~IGORankWidget();
     virtual void Init(PanelFile* panel);              // 0x598D00
     virtual void Update(float time_inc);              // 0x567660
     virtual void Draw();                              // 0x567760
@@ -2402,6 +2405,7 @@ public:
     float      draw_time; // +0x24
 
     IGOAmmoWidget(int client);  // 0x566530
+    virtual ~IGOAmmoWidget();
     virtual void Init(PanelFile* panel);              // 0x598660
     virtual void Update(float time_inc);              // 0x588510
     virtual void Draw();                              // 0x566560
@@ -2589,6 +2593,7 @@ public:
     float      scale;             // +0x24
 
     IGOSpecialWeaponWidget(int client);  // 0x567820
+    virtual ~IGOSpecialWeaponWidget();
     virtual void Init(PanelFile* panel);              // 0x598DE0
     virtual void Update(float time_inc);              // 0x567860
     virtual void Draw();                              // 0x5832D0
@@ -2660,6 +2665,7 @@ public:
     bool       wide_weapon;        // +0x469
 
     IGOHintWidget(int client);  // 0x568AF0
+    virtual ~IGOHintWidget();
     virtual void Init(PanelFile* panel);              // 0x59A2E0
     virtual void Update(float time_inc);              // 0x578AD0
     virtual void Draw();                              // 0x568B50
@@ -3371,9 +3377,13 @@ public:
         float last_yaw;   // +0x14
         float last_pos[2];// +0x18
         int   flags;      // +0x20
+
+        IGOFriendly();
     };
     struct IGOEnemy : IGOFriendly {
         int   last_shot_time;  // +0x24
+
+        IGOEnemy();
     };
     struct IGOObjective : IGOMapObject {
         float ring_alpha; // +0x10

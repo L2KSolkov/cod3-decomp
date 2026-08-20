@@ -801,6 +801,12 @@ string& string::remove_trailing(const char* chars) {
     return *this;
 }
 
+string& string::remove_surrounding_whitespace() {
+    remove_leading(" \n\t\r");
+    remove_trailing(" \n\t\r");
+    return *this;
+}
+
 void string::set_char(unsigned int idx, char c) {
     if (!mBlock || idx >= mBlock->mLength)
         return;
@@ -852,6 +858,10 @@ bool operator==(const string& lhs, const char* rhs) {
         ++a; ++b;
     }
     return true;
+}
+
+bool operator!=(const string& lhs, const char* rhs) {
+    return !operator==(lhs, rhs);
 }
 
 bool operator==(const string& lhs, const string& rhs) {
