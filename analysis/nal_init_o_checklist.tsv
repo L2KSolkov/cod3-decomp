@@ -242,7 +242,7 @@ index	status	map_line
 241	PENDING	0002:004573b0 ?ConvertPerfect@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@PAXAAPBXPBXPBH@Z 00C468B0 f i nal_init.o
 242	PENDING	0002:00457460 ?GetTrajectory@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@PAX_NPBH@Z 00C46960 f i nal_init.o
 243	PORTED	0002:00457520 ?Construct@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C46A20 f i nal_init.o
-244	PENDING	0002:00457540 ?Delete@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C46A40 f i nal_init.o
+244	PORTED	0002:00457540 ?Delete@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAX@Z 00C46A40 f i nal_init.o
 245	PENDING	0002:00457570 ?Copy@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C46A70 f i nal_init.o
 246	PENDING	0002:00457590 ??$FastCopy@VnalComponentEntropyFloat1@@M@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z 00C46A90 f i nal_init.o
 247	PENDING	0002:004575e0 ?ReleaseCache@?$nalComponent@VnalComponentFloat1Base@@VnalComponentEntropyFloat1Data@@VnalComponentEntropyFloat1@@@@UBEXAAVnalComponentEnum@@AAPAX@Z 00C46AE0 f i nal_init.o
